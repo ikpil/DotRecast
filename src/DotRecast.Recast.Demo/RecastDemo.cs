@@ -18,18 +18,17 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using Serilog;
-using Silk.NET.GLFW;
 using Silk.NET.Input;
 using Silk.NET.Maths;
 using Silk.NET.OpenGL;
 using Silk.NET.OpenGL.Extensions.ImGui;
 using Silk.NET.Windowing;
+using ImGuiNET;
 using DotRecast.Core;
 using DotRecast.Detour;
 using DotRecast.Detour.Extras.Unity.Astar;
@@ -40,10 +39,9 @@ using DotRecast.Recast.Demo.Geom;
 using DotRecast.Recast.Demo.Settings;
 using DotRecast.Recast.Demo.Tools;
 using DotRecast.Recast.Demo.UI;
-using ImGuiNET;
-using Silk.NET.SDL;
 using Silk.NET.Windowing.Sdl;
 using static DotRecast.Detour.DetourCommon;
+using Color = System.Drawing.Color;
 using Window = Silk.NET.Windowing.Window;
 
 namespace DotRecast.Recast.Demo;
@@ -58,7 +56,9 @@ public class RecastDemo : MouseListener
     private GL _gl;
     private int width = 1000;
     private int height = 900;
+
     private readonly string title = "DotRecast Demo";
+
     //private readonly RecastDebugDraw dd;
     private readonly NavMeshRenderer renderer;
     private bool building = false;
@@ -97,10 +97,11 @@ public class RecastDemo : MouseListener
     private ToolsUI toolsUI;
     private RcSettingsView _rcSettingsView;
     private long prevFrameTime;
+    private RecastDebugDraw dd;
 
     public RecastDemo()
     {
-        // dd = new RecastDebugDraw();
+        //dd = new RecastDebugDraw();
         // renderer = new NavMeshRenderer(dd);
     }
 
@@ -286,11 +287,14 @@ public class RecastDemo : MouseListener
         // glfwWindowHint(GLFW_GREEN_BITS, mode.greenBits());
         // glfwWindowHint(GLFW_BLUE_BITS, mode.blueBits());
         // glfwWindowHint(GLFW_REFRESH_RATE, mode.refreshRate());
+        
 
         var options = WindowOptions.Default;
         options.Title = title;
         options.Size = new Vector2D<int>(width, height);
         options.Position = new Vector2D<int>((resolution.X - width) / 2, (resolution.Y - height) / 2);
+        options.VSync = false;
+        options.ShouldSwapAutomatically = false;
         window = Window.Create(options);
 
         if (window == null)
@@ -298,7 +302,10 @@ public class RecastDemo : MouseListener
             throw new Exception("Failed to create the GLFW window");
         }
 
+        window.Closing += OnWindowClosing;
         window.Load += OnWindowOnLoad;
+        window.Resize += OnWindowResize;
+        window.FramebufferResize += OnWindowFramebufferSizeChanged;
         window.Update += OnWindowOnUpdate;
         window.Render += OnWindowOnRender;
 
@@ -347,13 +354,35 @@ public class RecastDemo : MouseListener
         }
     }
 
+    private void OnWindowClosing()
+    {
+    }
+
+    private void OnWindowResize(Vector2D<int> size)
+    {
+        width = size.X;
+        height = size.Y;
+        
+        //_gl.FramebufferParameter(GLEnum.Size);
+        //_graphicsDevice.ResizeMainWindow((uint)size.X, (uint)size.Y);
+    }
+
+    private void OnWindowFramebufferSizeChanged(Vector2D<int> size)
+    {
+        _gl.Viewport(size);
+    }
+
+
     private void OnWindowOnLoad()
     {
+        var s = SdlWindowing.GetExistingApi(window);
+        
         _input = window.CreateInput();
         _gl = window.CreateOpenGL();
+        //dd.init(_gl, camr);
+        
         _imgui = new ImGuiController(_gl, window, _input);
 
-        //dd.init(_gl, camr);
 
         // // if (capabilities.OpenGL43) {
         // // GL43.glDebugMessageControl(GL43.GL_DEBUG_SOURCE_API, GL43.GL_DEBUG_TYPE_OTHER,
@@ -658,18 +687,30 @@ public class RecastDemo : MouseListener
         // }
         //
         // dd.fog(false);
+
+        var io = ImGui.GetIO();
+
+        io.DisplaySize = new Vector2(width, height);
+        io.DisplayFramebufferScale = Vector2.One;
+        io.DeltaTime = (float)dt;
+
+        //window.DoEvents();
         _imgui.Update((float)dt);
     }
 
     private unsafe void OnWindowOnRender(double dt)
     {
+        _gl.ClearColor(Color.CornflowerBlue);
         _gl.Clear(ClearBufferMask.ColorBufferBit);
         
+
         mouseOverMenu = _viewSys.render(window, 0, 0, width, height, (int)mousePos[0], (int)mousePos[1]);
         ImGui.Button("hello");
         ImGui.Button("world");
 
         _imgui.Render();
+        
+        window.SwapBuffers();
     }
 
 

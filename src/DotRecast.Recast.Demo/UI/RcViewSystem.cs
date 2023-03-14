@@ -16,6 +16,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using ImGuiNET;
 using Silk.NET.Input;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
@@ -140,6 +141,7 @@ public class RcViewSystem {
     }
     
     public bool render(IWindow ctx, int x, int y, int width, int height, int mouseX, int mouseY) {
+        ImGui.ShowDemoWindow();
         mouseOverUI = false;
         foreach (IRcView m in _views) {
             mouseOverUI = m.render(ctx, x, y, width, height, mouseX, mouseY) | mouseOverUI;
