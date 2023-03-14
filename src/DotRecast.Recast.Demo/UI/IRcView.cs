@@ -20,10 +20,7 @@ using Silk.NET.Windowing;
 
 namespace DotRecast.Recast.Demo.UI;
 
+public interface IRcView {
 
-
-public interface NuklearUIModule {
-
-    bool layout(IWindow ctx, int x, int y, int width, int height, int mouseX, int mouseY);
-
+    bool render(IWindow ctx, int x, int y, int width, int height, int mouseX, int mouseY);
 }

@@ -16,16 +16,13 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using System;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Demo.UI;
-using ImGuiNET;
-using Silk.NET.OpenGL.Extensions.ImGui;
 using Silk.NET.Windowing;
 
 namespace DotRecast.Recast.Demo.Settings;
 
-public class SettingsUI : NuklearUIModule {
+public class RcSettingsView : IRcView {
 
     private readonly float[] cellSize = new[] { 0.3f };
     private readonly float[] cellHeight = new[] { 0.2f };
@@ -68,7 +65,7 @@ public class SettingsUI : NuklearUIModule {
     private bool meshInputTrigerred;
     private bool navMeshInputTrigerred;
 
-    public bool layout(IWindow i, int x, int y, int width, int height, int mouseX, int mouseY) {
+    public bool render(IWindow i, int x, int y, int width, int height, int mouseX, int mouseY) {
         bool mouseInside = false;
         // nk_rgb(255, 255, 255, white);
         // nk_rgba(0, 0, 0, 192, background);
@@ -212,43 +209,35 @@ public class SettingsUI : NuklearUIModule {
     }
 
     public float getCellSize() {
-        //return cellSize[0];
-        return 0;
+        return cellSize[0];
     }
 
     public float getCellHeight() {
-        //return cellHeight[0];
-        return 0;
+        return cellHeight[0];
     }
 
     public float getAgentHeight() {
-        //return agentHeight[0];
-        return 0;
+        return agentHeight[0];
     }
 
     public float getAgentRadius() {
-        //return agentRadius[0];
-        return 0;
+        return agentRadius[0];
     }
 
     public float getAgentMaxClimb() {
-        //return agentMaxClimb[0];
-        return 0;
+        return agentMaxClimb[0];
     }
 
     public float getAgentMaxSlope() {
-        //return agentMaxSlope[0];
-        return 0;
+        return agentMaxSlope[0];
     }
 
     public int getMinRegionSize() {
-        //return minRegionSize[0];
-        return 0;
+        return minRegionSize[0];
     }
 
     public int getMergedRegionSize() {
-        //return mergedRegionSize[0];
-        return 0;
+        return mergedRegionSize[0];
     }
 
     public PartitionType getPartitioning() {

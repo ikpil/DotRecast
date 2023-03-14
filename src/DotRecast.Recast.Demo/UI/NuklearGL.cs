@@ -33,7 +33,7 @@ public class NuklearGL {
     private static readonly int FONT_BITMAP_H = 1024;
     private static readonly int FONT_HEIGHT = 15;
 
-    private readonly NuklearUI context;
+    private readonly RcViewSystem context;
     // private readonly NkDrawNullTexture null_texture = NkDrawNullTexture.create();
     // private readonly NkBuffer cmds = NkBuffer.create();
     // private readonly NkUserFont default_font;
@@ -45,7 +45,7 @@ public class NuklearGL {
     private readonly int vao;
     //private readonly Buffer vertexLayout;
 
-    public NuklearGL(NuklearUI context) {
+    public NuklearGL(RcViewSystem context) {
         this.context = context;
         // nk_buffer_init(cmds, context.allocator, BUFFER_INITIAL_SIZE);
         // vertexLayout = NkDrawVertexLayoutElement.create(4)//

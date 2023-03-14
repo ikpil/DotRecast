@@ -18,23 +18,22 @@ freely, subject to the following restrictions:
 
 using Silk.NET.Input;
 using Silk.NET.OpenGL;
-using Silk.NET.OpenGL.Extensions.ImGui;
 using Silk.NET.Windowing;
 
 namespace DotRecast.Recast.Demo.UI;
 
-public class NuklearUI {
+public class RcViewSystem {
 
     // readonly NkAllocator allocator;
     private readonly IWindow _window;
     private readonly GL _gl;
     // readonly NkColor background;
     // readonly NkColor white;
-    private readonly NuklearUIModule[] _modules;
+    private readonly IRcView[] _views;
     private readonly NuklearGL glContext;
     private bool mouseOverUI;
 
-    public NuklearUI(IWindow window, IInputContext input, params NuklearUIModule[] modules)
+    public RcViewSystem(IWindow window, IInputContext input, params IRcView[] views)
     {
         var mouse = new Mouse(input);
         _window = window;
@@ -58,7 +57,7 @@ public class NuklearUI {
         // setupClipboard(window);
         // glfwSetCharCallback(window, (w, codepoint) => nk_input_unicode(ctx, codepoint));
         // glContext = new NuklearGL(this);
-        _modules = modules;
+        _views = views;
     }
 
     private void setupMouse(Mouse mouse) {
@@ -139,11 +138,11 @@ public class NuklearUI {
         // }
         // nk_input_end(ctx);
     }
-
-    public bool layout(IWindow ctx, int x, int y, int width, int height, int mouseX, int mouseY) {
+    
+    public bool render(IWindow ctx, int x, int y, int width, int height, int mouseX, int mouseY) {
         mouseOverUI = false;
-        foreach (NuklearUIModule m in _modules) {
-            mouseOverUI = m.layout(ctx, x, y, width, height, mouseX, mouseY) | mouseOverUI;
+        foreach (IRcView m in _views) {
+            mouseOverUI = m.render(ctx, x, y, width, height, mouseX, mouseY) | mouseOverUI;
         }
         return mouseOverUI;
     }

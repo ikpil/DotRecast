@@ -49,13 +49,13 @@ public class NavMeshRenderer {
         DemoInputGeomProvider geom = sample.getInputGeom();
         IList<RecastBuilderResult> rcBuilderResults = sample.getRecastResults();
         NavMesh navMesh = sample.getNavMesh();
-        SettingsUI settingsUI = sample.getSettingsUI();
+        RcSettingsView rcSettingsView = sample.getSettingsUI();
         debugDraw.fog(true);
         debugDraw.depthMask(true);
-        DrawMode drawMode = settingsUI.getDrawMode();
+        DrawMode drawMode = rcSettingsView.getDrawMode();
 
-        float texScale = 1.0f / (settingsUI.getCellSize() * 10.0f);
-        float m_agentMaxSlope = settingsUI.getAgentMaxSlope();
+        float texScale = 1.0f / (rcSettingsView.getCellSize() * 10.0f);
+        float m_agentMaxSlope = rcSettingsView.getAgentMaxSlope();
 
         if (drawMode != DrawMode.DRAWMODE_NAVMESH_TRANS) {
             // Draw mesh

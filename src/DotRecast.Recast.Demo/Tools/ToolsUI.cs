@@ -23,7 +23,7 @@ using Silk.NET.Windowing;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class ToolsUI : NuklearUIModule {
+public class ToolsUI : IRcView {
 
     //private readonly NkColor white = NkColor.create();
     private Tool currentTool;
@@ -34,7 +34,7 @@ public class ToolsUI : NuklearUIModule {
         this.tools = tools;
     }
 
-    public bool layout(IWindow ctx, int x, int y, int width, int height, int mouseX, int mouseY) {
+    public bool render(IWindow ctx, int x, int y, int width, int height, int mouseX, int mouseY) {
         bool mouseInside = false;
         // nk_rgb(255, 255, 255, white);
         // try (MemoryStack stack = stackPush()) {

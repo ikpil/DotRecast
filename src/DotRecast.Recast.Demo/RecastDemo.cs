@@ -51,7 +51,7 @@ namespace DotRecast.Recast.Demo;
 public class RecastDemo : MouseListener
 {
     private readonly ILogger logger = Log.ForContext<RecastDemo>();
-    private NuklearUI nuklearUI;
+    private RcViewSystem _viewSys;
     private IWindow window;
     private IInputContext _input;
     private ImGuiController _imgui;
@@ -95,7 +95,7 @@ public class RecastDemo : MouseListener
     private bool markerPositionSet;
     private readonly float[] markerPosition = new float[3];
     private ToolsUI toolsUI;
-    private SettingsUI settingsUI;
+    private RcSettingsView _rcSettingsView;
     private long prevFrameTime;
 
     public RecastDemo()
@@ -378,7 +378,7 @@ public class RecastDemo : MouseListener
         window.CreateInput();
 
 
-        settingsUI = new SettingsUI();
+        _rcSettingsView = new RcSettingsView();
         toolsUI = new ToolsUI(
             new TestNavmeshTool(),
             new OffMeshConnectionTool(),
@@ -387,7 +387,7 @@ public class RecastDemo : MouseListener
             new JumpLinkBuilderTool(),
             new DynamicUpdateTool());
 
-        nuklearUI = new NuklearUI(window, _input, settingsUI, toolsUI);
+        _viewSys = new RcViewSystem(window, _input, _rcSettingsView, toolsUI);
 
         DemoInputGeomProvider geom = loadInputMesh(Loader.ToBytes("nav_test.obj"));
         //sample = new Sample(geom, ImmutableArray<RecastBuilderResult>.Empty, null, settingsUI, dd);
@@ -410,9 +410,9 @@ public class RecastDemo : MouseListener
         //     settingsUI.setMaxPolys(tileNavMeshBuilder.getMaxPolysPerTile(sample.getInputGeom(), settingsUI.getCellSize(), settingsUI.getTileSize()));
         // }
 
-        nuklearUI.inputBegin();
+        _viewSys.inputBegin();
         window.DoEvents();
-        nuklearUI.inputEnd(window);
+        _viewSys.inputEnd(window);
 
         long time = Stopwatch.GetTimestamp() / 1000;
         //float dt = (time - prevFrameTime) / 1000000.0f;
@@ -446,7 +446,7 @@ public class RecastDemo : MouseListener
 
         //mouseOverMenu = nuklearUI.layout(window, 0, 0, width, height, (int)mousePos[0], (int)mousePos[1]);
 
-        if (settingsUI.isMeshInputTrigerred())
+        if (_rcSettingsView.isMeshInputTrigerred())
         {
             // aFilterPatterns.put(stack.UTF8("*.obj"));
             // aFilterPatterns.flip();
@@ -460,7 +460,7 @@ public class RecastDemo : MouseListener
             //     }
             // }
         }
-        else if (settingsUI.isNavMeshInputTrigerred())
+        else if (_rcSettingsView.isNavMeshInputTrigerred())
         {
             // try (MemoryStack stack = stackPush()) {
             //     PointerBuffer aFilterPatterns = stack.mallocPointer(4);
@@ -664,9 +664,8 @@ public class RecastDemo : MouseListener
     private unsafe void OnWindowOnRender(double dt)
     {
         _gl.Clear(ClearBufferMask.ColorBufferBit);
-        // Render GUI
-        //mouseOverMenu = nuklearUI.layout(window, 0, 0, width, height, (int)mousePos[0], (int)mousePos[1]);
-        //nuklearUI.render();
+        
+        mouseOverMenu = _viewSys.render(window, 0, 0, width, height, (int)mousePos[0], (int)mousePos[1]);
         ImGui.Button("hello");
         ImGui.Button("world");
 
@@ -674,13 +673,7 @@ public class RecastDemo : MouseListener
     }
 
 
-    public static void Main(string[] args)
-    {
-        var demo = new RecastDemo();
-        demo.start();
-    }
-
-    private static void ErrorCallback(Silk.NET.GLFW.ErrorCode code, string message)
+    private void ErrorCallback(Silk.NET.GLFW.ErrorCode code, string message)
     {
         Console.WriteLine($"GLFW error [{code}]: {message}");
     }
