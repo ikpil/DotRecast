@@ -16,24 +16,26 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System.Numerics;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Demo.UI;
+using ImGuiNET;
 using Silk.NET.Windowing;
 
 namespace DotRecast.Recast.Demo.Settings;
 
-public class RcSettingsView : IRcView {
+public class RcSettingsView : IRcView
+{
+    private float cellSize = 0.3f;
+    private float cellHeight = 0.2f;
 
-    private readonly float[] cellSize = new[] { 0.3f };
-    private readonly float[] cellHeight = new[] { 0.2f };
-    
-    private readonly float[] agentHeight = new[] { 2f };
-    private readonly float[] agentRadius = new[] { 0.6f };
-    private readonly float[] agentMaxClimb = new[] { 0.9f };
-    private readonly float[] agentMaxSlope = new[] { 45f };
-    
-    private readonly int[] minRegionSize = new[] { 8 };
-    private readonly int[] mergedRegionSize = new[] { 20 };
+    private float agentHeight = 2.0f;
+    private float agentRadius = 0.6f;
+    private float agentMaxClimb = 0.9f;
+    private float agentMaxSlope = 45f;
+
+    private int minRegionSize = 8;
+    private int mergedRegionSize = 20;
 
     private PartitionType partitioning = PartitionType.WATERSHED;
 
@@ -44,13 +46,13 @@ public class RcSettingsView : IRcView {
     private readonly float[] edgeMaxLen = new[] { 12f };
     private readonly float[] edgeMaxError = new[] { 1.3f };
     private readonly int[] vertsPerPoly = new[] { 6 };
-    
+
     private readonly float[] detailSampleDist = new[] { 6f };
     private readonly float[] detailSampleMaxError = new[] { 1f };
 
     private bool tiled = false;
     private readonly int[] tileSize = new[] { 32 };
-    
+
     // public readonly NkColor white = NkColor.create();
     // public readonly NkColor background = NkColor.create();
     // public readonly NkColor transparent = NkColor.create();
@@ -65,68 +67,44 @@ public class RcSettingsView : IRcView {
     private bool meshInputTrigerred;
     private bool navMeshInputTrigerred;
 
-    public bool render(IWindow i, int x, int y, int width, int height, int mouseX, int mouseY) {
+    public bool render(IWindow i, int x, int y, int width, int height, int mouseX, int mouseY)
+    {
+        ImGui.Begin("Properties");
+        renderInternal(i, x, y, width, height, mouseX, mouseY);
+        ImGui.End();
+
+        return true;
+    }
+
+    public bool renderInternal(IWindow i, int x, int y, int width, int height, int mouseX, int mouseY)
+    {
         bool mouseInside = false;
-        // nk_rgb(255, 255, 255, white);
-        // nk_rgba(0, 0, 0, 192, background);
-        // nk_rgba(255, 0, 0, 0, transparent);
-        // try (MemoryStack stack = stackPush()) {
-        //     ctx.style().text().color().set(white);
-        //     ctx.style().option().text_normal().set(white);
-        //     ctx.style().property().label_normal().set(white);
-        //     ctx.style().window().background().set(background);
-        //     NkStyleItem styleItem = NkStyleItem.mallocStack(stack);
-        //     nk_style_item_color(background, styleItem);
-        //     ctx.style().window().fixed_background().set(styleItem);
-        //     nk_style_item_color(white, styleItem);
-        //     ctx.style().option().cursor_hover().set(styleItem);
-        //     ctx.style().option().cursor_normal().set(styleItem);
-        //     nk_style_item_color(transparent, styleItem);
-        //     ctx.style().tab().node_minimize_button().normal().set(styleItem);
-        //     ctx.style().tab().node_minimize_button().active().set(styleItem);
-        //     ctx.style().tab().node_maximize_button().normal().set(styleItem);
-        //     ctx.style().tab().node_maximize_button().active().set(styleItem);
-        // }
-        // try (MemoryStack stack = stackPush()) {
-        //     NkRect rect = NkRect.mallocStack(stack);
-        //     if (nk_begin(ctx, "Properties", nk_rect(width - 255, 5, 250, height - 10, rect),
-        //             NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_TITLE)) {
-        //
-        //         nk_layout_row_dynamic(ctx, 18, 1);
-        //         nk_label(ctx, "Input Mesh", NK_TEXT_ALIGN_LEFT);
-        //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         meshInputTrigerred = nk_button_text(ctx, "Load Source Geom...");
-        //         nk_layout_row_dynamic(ctx, 18, 1);
-        //         nk_label(ctx, string.format("Verts: %d Tris: %d", 0, 0), NK_TEXT_ALIGN_RIGHT);
-        //
-        //         nk_layout_row_dynamic(ctx, 18, 1);
-        //         nk_label(ctx, "Rasterization", NK_TEXT_ALIGN_LEFT);
-        //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         nk_property_float(ctx, "Cell Size", 0.1f, cellSize, 1f, 0.01f, 0.01f);
-        //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         nk_property_float(ctx, "Cell Height", 0.1f, cellHeight, 1f, 0.01f, 0.01f);
-        //         nk_layout_row_dynamic(ctx, 18, 1);
-        //         nk_label(ctx, string.format("Voxels %d x %d", voxels[0], voxels[1]), NK_TEXT_ALIGN_RIGHT);
-        //
-        //         nk_layout_row_dynamic(ctx, 18, 1);
-        //         nk_label(ctx, "Agent", NK_TEXT_ALIGN_LEFT);
-        //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         nk_property_float(ctx, "Height", 0.1f, agentHeight, 5f, 0.1f, 0.1f);
-        //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         nk_property_float(ctx, "Radius", 0.0f, agentRadius, 5f, 0.1f, 0.1f);
-        //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         nk_property_float(ctx, "Max Climb", 0.1f, agentMaxClimb, 5f, 0.1f, 0.1f);
-        //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         nk_property_float(ctx, "Max Slope", 0f, agentMaxSlope, 90f, 1f, 1f);
-        //
-        //         nk_layout_row_dynamic(ctx, 3, 1);
-        //         nk_spacing(ctx, 1);
-        //         nk_layout_row_dynamic(ctx, 18, 1);
-        //         nk_label(ctx, "Region", NK_TEXT_ALIGN_LEFT);
-        //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         nk_property_int(ctx, "Min Region Size", 0, minRegionSize, 150, 1, 1f);
-        //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         nk_property_int(ctx, "Merged Region Size", 0, mergedRegionSize, 150, 1, 1f);
+        ImGui.Text("Input Mesh");
+        ImGui.Separator();
+        ImGui.Button("Load Source Geom...");
+        ImGui.Text($"Verts: {voxels[0]} Tris: {voxels[1]}");
+        ImGui.NewLine();
+
+        ImGui.Text("Rasterization");
+        ImGui.Separator();
+
+        ImGui.SliderFloat("Cell Size", ref cellSize, 0.01f, 1f, $"{cellSize}");
+        ImGui.SliderFloat("Cell Height", ref cellHeight, 0.01f, 1f, $"{cellHeight}");
+        ImGui.Text($"Voxels {voxels[0]} x {voxels[1]}");
+        ImGui.NewLine();
+
+        ImGui.Text("Agent");
+        ImGui.Separator();
+        ImGui.SliderFloat("Height", ref agentHeight, 5f, 0.1f, $"{agentHeight}");
+        ImGui.SliderFloat("Radius", ref agentRadius, 5f, 0.1f, $"{agentRadius}");
+        ImGui.SliderFloat("Max Climb", ref agentMaxClimb, 5f, 0.1f, $"{agentMaxClimb}");
+        ImGui.SliderFloat("Max Slope", ref agentMaxSlope, 90f, 1f, $"{agentMaxSlope}");
+        ImGui.NewLine();
+        
+        ImGui.Text("Region");
+        ImGui.Separator();
+        ImGui.SliderInt("Min Region Size", ref minRegionSize, 1, 150);
+        ImGui.SliderInt("Merged Region Size", ref mergedRegionSize, 1, 150);
         //
         //         nk_layout_row_dynamic(ctx, 3, 1);
         //         nk_spacing(ctx, 1);
@@ -208,118 +186,145 @@ public class RcSettingsView : IRcView {
         return mouseInside;
     }
 
-    public float getCellSize() {
-        return cellSize[0];
+    public float getCellSize()
+    {
+        return cellSize;
     }
 
-    public float getCellHeight() {
-        return cellHeight[0];
+    public float getCellHeight()
+    {
+        return cellHeight;
     }
 
-    public float getAgentHeight() {
-        return agentHeight[0];
+    public float getAgentHeight()
+    {
+        return agentHeight;
     }
 
-    public float getAgentRadius() {
-        return agentRadius[0];
+    public float getAgentRadius()
+    {
+        return agentRadius;
     }
 
-    public float getAgentMaxClimb() {
-        return agentMaxClimb[0];
+    public float getAgentMaxClimb()
+    {
+        return agentMaxClimb;
     }
 
-    public float getAgentMaxSlope() {
-        return agentMaxSlope[0];
+    public float getAgentMaxSlope()
+    {
+        return agentMaxSlope;
     }
 
-    public int getMinRegionSize() {
-        return minRegionSize[0];
+    public int getMinRegionSize()
+    {
+        return minRegionSize;
     }
 
-    public int getMergedRegionSize() {
-        return mergedRegionSize[0];
+    public int getMergedRegionSize()
+    {
+        return mergedRegionSize;
     }
 
-    public PartitionType getPartitioning() {
+    public PartitionType getPartitioning()
+    {
         return partitioning;
     }
 
-    public bool isBuildTriggered() {
+    public bool isBuildTriggered()
+    {
         return buildTriggered;
     }
 
-    public bool isFilterLowHangingObstacles() {
+    public bool isFilterLowHangingObstacles()
+    {
         return filterLowHangingObstacles;
     }
 
-    public bool isFilterLedgeSpans() {
+    public bool isFilterLedgeSpans()
+    {
         return filterLedgeSpans;
     }
 
-    public bool isFilterWalkableLowHeightSpans() {
+    public bool isFilterWalkableLowHeightSpans()
+    {
         return filterWalkableLowHeightSpans;
     }
 
-    public void setBuildTime(long buildTime) {
+    public void setBuildTime(long buildTime)
+    {
         this.buildTime = buildTime;
     }
 
-    public DrawMode getDrawMode() {
+    public DrawMode getDrawMode()
+    {
         return drawMode;
     }
 
-    public float getEdgeMaxLen() {
+    public float getEdgeMaxLen()
+    {
         return edgeMaxLen[0];
     }
 
-    public float getEdgeMaxError() {
+    public float getEdgeMaxError()
+    {
         return edgeMaxError[0];
     }
 
-    public int getVertsPerPoly() {
+    public int getVertsPerPoly()
+    {
         return vertsPerPoly[0];
     }
 
-    public float getDetailSampleDist() {
+    public float getDetailSampleDist()
+    {
         return detailSampleDist[0];
     }
 
-    public float getDetailSampleMaxError() {
+    public float getDetailSampleMaxError()
+    {
         return detailSampleMaxError[0];
     }
 
-    public void setVoxels(int[] voxels) {
+    public void setVoxels(int[] voxels)
+    {
         this.voxels[0] = voxels[0];
         this.voxels[1] = voxels[1];
     }
 
-    public bool isTiled() {
+    public bool isTiled()
+    {
         return tiled;
     }
 
-    public int getTileSize() {
+    public int getTileSize()
+    {
         return tileSize[0];
     }
 
-    public void setTiles(int[] tiles) {
+    public void setTiles(int[] tiles)
+    {
         this.tiles[0] = tiles[0];
         this.tiles[1] = tiles[1];
     }
 
-    public void setMaxTiles(int maxTiles) {
+    public void setMaxTiles(int maxTiles)
+    {
         this.maxTiles = maxTiles;
     }
 
-    public void setMaxPolys(int maxPolys) {
+    public void setMaxPolys(int maxPolys)
+    {
         this.maxPolys = maxPolys;
     }
 
-    public bool isMeshInputTrigerred() {
+    public bool isMeshInputTrigerred()
+    {
         return meshInputTrigerred;
     }
 
-    public bool isNavMeshInputTrigerred() {
+    public bool isNavMeshInputTrigerred()
+    {
         return navMeshInputTrigerred;
     }
-
 }

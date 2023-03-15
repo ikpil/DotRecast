@@ -141,7 +141,6 @@ public class RcViewSystem {
     }
     
     public bool render(IWindow ctx, int x, int y, int width, int height, int mouseX, int mouseY) {
-        ImGui.ShowDemoWindow();
         mouseOverUI = false;
         foreach (IRcView m in _views) {
             mouseOverUI = m.render(ctx, x, y, width, height, mouseX, mouseY) | mouseOverUI;
