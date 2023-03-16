@@ -21,7 +21,9 @@ using System.Collections.Generic;
 using System.Linq;
 using DotRecast.Recast;
 
-namespace DotRecast.Detour.Dynamic.Colliders;
+namespace DotRecast.Detour.Dynamic.Colliders
+{
+
 
 public class CompositeCollider : Collider {
 
@@ -61,5 +63,7 @@ public class CompositeCollider : Collider {
         foreach (var c in colliders)
             c.rasterize(hf, telemetry);
     }
+
+}
 
 }

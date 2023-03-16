@@ -21,7 +21,9 @@ freely, subject to the following restrictions:
 using DotRecast.Core;
 using K4os.Compression.LZ4;
 
-namespace DotRecast.Detour.TileCache.Io.Compress;
+namespace DotRecast.Detour.TileCache.Io.Compress
+{
+
 
 public class FastLzTileCacheCompressor : TileCacheCompressor {
 
@@ -36,5 +38,7 @@ public class FastLzTileCacheCompressor : TileCacheCompressor {
         int len = FastLz.compress(buf, 0, buf.Length, output, 0, output.Length);
         return ArrayUtils.CopyOf(output, len);
     }
+
+}
 
 }

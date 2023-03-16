@@ -18,7 +18,9 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 public class AreaModification
 {
@@ -67,4 +69,5 @@ public class AreaModification
     {
         return ((value & mask) | (area & ~mask));
     }
+}
 }

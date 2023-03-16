@@ -18,7 +18,9 @@ freely, subject to the following restrictions:
 
 using DotRecast.Core;
 
-namespace DotRecast.Detour.Extras.Unity.Astar;
+namespace DotRecast.Detour.Extras.Unity.Astar
+{
+
 
 public class OffMeshLinkCreator {
 
@@ -60,4 +62,6 @@ public class OffMeshLinkCreator {
             }
         }
     }
+}
+
 }

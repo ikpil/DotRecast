@@ -20,7 +20,9 @@ using System;
 using System.IO;
 using DotRecast.Core;
 
-namespace DotRecast.Detour.Io;
+namespace DotRecast.Detour.Io
+{
+
 
 using static DetourCommon;
 
@@ -124,4 +126,6 @@ public class MeshSetReader {
         int ip = refs & polyMask;
         return NavMesh.encodePolyId(salt, it, ip);
     }
+}
+
 }

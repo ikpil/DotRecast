@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 //TODO: (PP) Add comments
 public class FindLocalNeighbourhoodResult {
@@ -40,4 +42,5 @@ public class FindLocalNeighbourhoodResult {
         return parentRefs;
     }
 
+}
 }

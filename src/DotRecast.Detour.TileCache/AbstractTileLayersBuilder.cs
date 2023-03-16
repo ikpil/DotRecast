@@ -25,7 +25,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using DotRecast.Core;
 
-namespace DotRecast.Detour.TileCache;
+namespace DotRecast.Detour.TileCache
+{
+
 
 public abstract class AbstractTileLayersBuilder {
 
@@ -37,7 +39,7 @@ public abstract class AbstractTileLayersBuilder {
     }
 
     private List<byte[]> buildSingleThread(ByteOrder order, bool cCompatibility, int tw, int th) {
-        List<byte[]> layers = new();
+        List<byte[]> layers = new List<byte[]>();
         for (int y = 0; y < th; ++y) {
             for (int x = 0; x < tw; ++x) {
                 layers.AddRange(build(x, y, order, cCompatibility));
@@ -64,7 +66,7 @@ public abstract class AbstractTileLayersBuilder {
             .Select(x => x.Result)
             .ToDictionary(x => Tuple.Create(x.Item1, x.Item2), x => x.Item3);
         
-        List<byte[]> layers = new();
+        List<byte[]> layers = new List<byte[]>();
         for (int y = 0; y < th; ++y) {
             for (int x = 0; x < tw; ++x) {
                 var key = Tuple.Create(x, y);
@@ -75,4 +77,6 @@ public abstract class AbstractTileLayersBuilder {
     }
 
     protected abstract List<byte[]> build(int tx, int ty, ByteOrder order, bool cCompatibility);
+}
+
 }

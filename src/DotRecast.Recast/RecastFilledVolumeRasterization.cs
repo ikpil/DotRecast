@@ -19,7 +19,9 @@ freely, subject to the following restrictions:
 using System;
 using DotRecast.Core;
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 using static RecastConstants;
 using static RecastVectors;
@@ -799,4 +801,5 @@ public class RecastFilledVolumeRasterization
         overlap = (amin[2] > bounds[5] || amax[2] < bounds[2]) ? false : overlap;
         return overlap;
     }
+}
 }

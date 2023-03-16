@@ -19,7 +19,9 @@ freely, subject to the following restrictions:
 using System.IO;
 using DotRecast.Core;
 
-namespace DotRecast.Detour.Io;
+namespace DotRecast.Detour.Io
+{
+
 
 public class MeshDataWriter : DetourWriter {
 
@@ -138,5 +140,7 @@ public class MeshDataWriter : DetourWriter {
             write(stream, data.offMeshCons[i].userId, order);
         }
     }
+
+}
 
 }

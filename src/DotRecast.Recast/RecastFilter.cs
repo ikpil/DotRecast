@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 
 using System;
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 using static RecastConstants;
 
@@ -202,4 +204,5 @@ public class RecastFilter
 
         ctx.stopTimer("FILTER_WALKABLE");
     }
+}
 }

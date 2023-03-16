@@ -23,7 +23,9 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using DotRecast.Core;
 
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 using static DetourCommon;
 
@@ -58,8 +60,8 @@ public class NavMesh {
     float m_tileWidth, m_tileHeight; /// < Dimensions of each tile.
     int m_maxTiles; /// < Max number of tiles.
     private readonly int m_tileLutMask; /// < Tile hash lookup mask.
-    private readonly Dictionary<int, List<MeshTile>> posLookup = new();
-    private readonly LinkedList<MeshTile> availableTiles = new();
+    private readonly Dictionary<int, List<MeshTile>> posLookup = new Dictionary<int, List<MeshTile>>();
+    private readonly LinkedList<MeshTile> availableTiles = new LinkedList<MeshTile>();
     private readonly MeshTile[] m_tiles; /// < List of tiles.
     /** The maximum number of vertices per navigation polygon. */
     private readonly int m_maxVertPerPoly;
@@ -285,7 +287,7 @@ public class NavMesh {
     // for off-mesh connection finding.
 
     List<long> queryPolygonsInTile(MeshTile tile, float[] qmin, float[] qmax) {
-        List<long> polys = new();
+        List<long> polys = new List<long>();
         if (tile.data.bvTree != null) {
             int nodeIndex = 0;
             float[] tbmin = tile.data.header.bmin;
@@ -756,7 +758,7 @@ public class NavMesh {
         if (tile == null) {
             return ImmutableArray<Tuple<long, float, float>>.Empty;
         }
-        List<Tuple<long, float, float>> result = new();
+        List<Tuple<long, float, float>> result = new List<Tuple<long, float, float>>();
         float[] amin = new float[2];
         float[] amax = new float[2];
         calcSlabEndPoints(verts, va, vb, amin, amax, side);
@@ -1195,7 +1197,7 @@ public class NavMesh {
     }
 
     public List<MeshTile> getTilesAt(int x, int y) {
-        List<MeshTile> tiles = new();
+        List<MeshTile> tiles = new List<MeshTile>();
         foreach (MeshTile tile in getTileListByPos(x, y)) {
             if (tile.data.header != null && tile.data.header.x == x && tile.data.header.y == y) {
                 tiles.Add(tile);
@@ -1418,10 +1420,12 @@ public class NavMesh {
         var tileHash = computeTileHash(x, z, m_tileLutMask);
         if (!posLookup.TryGetValue(tileHash, out var tiles))
         {
-            tiles = new();
+            tiles = new List<MeshTile>();
             posLookup.Add(tileHash, tiles);
         }
 
         return tiles;
     }
+}
+
 }

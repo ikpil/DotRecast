@@ -18,7 +18,9 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 /// Represents a set of heightfield layers.
 /// @ingroup recast
@@ -75,4 +77,5 @@ public class HeightfieldLayerSet
     }
 
     public HeightfieldLayer[] layers; /// < The layers in the set. [Size: #nlayers]
+}
 }

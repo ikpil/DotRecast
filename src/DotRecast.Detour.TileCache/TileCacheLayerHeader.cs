@@ -17,7 +17,9 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-namespace DotRecast.Detour.TileCache;
+namespace DotRecast.Detour.TileCache
+{
+
 
 public class TileCacheLayerHeader {
 
@@ -32,5 +34,7 @@ public class TileCacheLayerHeader {
     public int hmin, hmax; /// < Height min/max range
     public int width, height; /// < Dimension of the layer.
     public int minx, maxx, miny, maxy; /// < Usable sub-region.
+
+}
 
 }

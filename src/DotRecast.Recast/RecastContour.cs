@@ -21,7 +21,9 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 using static RecastConstants;
 
@@ -842,8 +844,8 @@ public class RecastContour
 
         ctx.stopTimer("CONTOURS_TRACE");
 
-        List<int> verts = new(256);
-        List<int> simplified = new(64);
+        List<int> verts = new List<int>(256);
+        List<int> simplified = new List<int>(64);
 
         for (int y = 0; y < h; ++y)
         {
@@ -1017,4 +1019,5 @@ public class RecastContour
         ctx.stopTimer("CONTOURS");
         return cset;
     }
+}
 }

@@ -17,7 +17,9 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-namespace DotRecast.Detour.TileCache.Io;
+namespace DotRecast.Detour.TileCache.Io
+{
+
 
 public class TileCacheSetHeader {
 
@@ -30,5 +32,7 @@ public class TileCacheSetHeader {
     public int numTiles;
     public NavMeshParams meshParams = new NavMeshParams();
     public TileCacheParams cacheParams = new TileCacheParams();
+
+}
 
 }

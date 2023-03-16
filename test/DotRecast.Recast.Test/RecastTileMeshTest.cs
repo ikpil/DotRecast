@@ -157,6 +157,7 @@ public class RecastTileMeshTest
         }
         catch (Exception e)
         {
+            Console.WriteLine(e);
         }
     }
 

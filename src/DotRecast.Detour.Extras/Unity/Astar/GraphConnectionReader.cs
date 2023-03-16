@@ -20,12 +20,14 @@ using System.Collections.Generic;
 using System.IO.Compression;
 using DotRecast.Core;
 
-namespace DotRecast.Detour.Extras.Unity.Astar;
+namespace DotRecast.Detour.Extras.Unity.Astar
+{
+
 
 class GraphConnectionReader : ZipBinaryReader {
 
     public List<int[]> read(ZipArchive file, string filename, Meta meta, int[] indexToNode) {
-        List<int[]> connections = new();
+        List<int[]> connections = new List<int[]>();
         ByteBuffer buffer = toByteBuffer(file, filename);
         while (buffer.remaining() > 0) {
             int count = buffer.getInt();
@@ -43,5 +45,7 @@ class GraphConnectionReader : ZipBinaryReader {
         }
         return connections;
     }
+
+}
 
 }

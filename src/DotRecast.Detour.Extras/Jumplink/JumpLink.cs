@@ -1,4 +1,6 @@
-namespace DotRecast.Detour.Extras.Jumplink;
+namespace DotRecast.Detour.Extras.Jumplink
+{
+
 
 public class JumpLink {
 
@@ -11,5 +13,7 @@ public class JumpLink {
     public GroundSegment start;
     public GroundSegment end;
     public Trajectory trajectory;
+
+}
 
 }

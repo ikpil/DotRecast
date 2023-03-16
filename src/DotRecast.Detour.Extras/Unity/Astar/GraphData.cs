@@ -18,7 +18,9 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 
-namespace DotRecast.Detour.Extras.Unity.Astar;
+namespace DotRecast.Detour.Extras.Unity.Astar
+{
+
 
 
 
@@ -40,5 +42,7 @@ public class GraphData {
         this.graphMeshData = graphMeshData;
         this.graphConnections = graphConnections;
     }
+
+}
 
 }

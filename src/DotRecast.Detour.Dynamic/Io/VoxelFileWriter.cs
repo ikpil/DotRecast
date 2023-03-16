@@ -20,7 +20,9 @@ using System.IO;
 using DotRecast.Core;
 using DotRecast.Detour.Io;
 
-namespace DotRecast.Detour.Dynamic.Io;
+namespace DotRecast.Detour.Dynamic.Io
+{
+
 
 public class VoxelFileWriter : DetourWriter {
 
@@ -85,5 +87,7 @@ public class VoxelFileWriter : DetourWriter {
         write(stream, bytes.Length, byteOrder);
         stream.Write(bytes);
     }
+
+}
 
 }

@@ -20,13 +20,15 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 /** Represents a group of related contours. */
 public class ContourSet
 {
     /** A list of the contours in the set. */
-    public List<Contour> conts = new();
+    public List<Contour> conts = new List<Contour>();
 
     /** The minimum bounds in world space. [(x, y, z)] */
     public float[] bmin = new float[3];
@@ -51,4 +53,5 @@ public class ContourSet
 
     /** The max edge error that this contour set was simplified with. */
     public float maxError;
+}
 }

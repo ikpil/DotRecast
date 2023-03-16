@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 
 using K4os.Compression.LZ4;
 
-namespace DotRecast.Detour.TileCache.Io.Compress;
+namespace DotRecast.Detour.TileCache.Io.Compress
+{
+
 
 public class LZ4TileCacheCompressor : TileCacheCompressor {
 
@@ -31,5 +33,7 @@ public class LZ4TileCacheCompressor : TileCacheCompressor {
     public byte[] compress(byte[] buf) {
         return LZ4Pickler.Pickle(buf);
     }
+
+}
 
 }

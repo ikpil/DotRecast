@@ -18,7 +18,9 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 public class ConvexVolume
 {
@@ -26,4 +28,5 @@ public class ConvexVolume
     public float hmin;
     public float hmax;
     public AreaModification areaMod;
+}
 }

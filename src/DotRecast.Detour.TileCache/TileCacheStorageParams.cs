@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 
 using DotRecast.Core;
 
-namespace DotRecast.Detour.TileCache;
+namespace DotRecast.Detour.TileCache
+{
+
 
 public class TileCacheStorageParams {
 
@@ -31,5 +33,7 @@ public class TileCacheStorageParams {
         this.byteOrder = byteOrder;
         this.cCompatibility = cCompatibility;
     }
+
+}
 
 }

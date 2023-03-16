@@ -19,7 +19,9 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 
-namespace DotRecast.Detour.Extras.Unity.Astar;
+namespace DotRecast.Detour.Extras.Unity.Astar
+{
+
 
 public class LinkBuilder {
 
@@ -62,5 +64,7 @@ public class LinkBuilder {
             node.neis[PolyUtils.findEdge(node, tile, tile.header.bmin[2], 2)] = NavMesh.DT_EXT_LINK | 6;
         }
     }
+
+}
 
 }

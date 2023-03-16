@@ -17,7 +17,9 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 /**
  * Defines a link between polygons.
@@ -38,5 +40,7 @@ public class Link {
     public int bmin;
     /** If a boundary link, defines the maximum sub-edge area. */
     public int bmax;
+
+}
 
 }

@@ -18,7 +18,9 @@ freely, subject to the following restrictions:
 
 using DotRecast.Recast;
 
-namespace DotRecast.Detour.Dynamic.Colliders;
+namespace DotRecast.Detour.Dynamic.Colliders
+{
+
 
 public abstract class AbstractCollider : Collider {
 
@@ -40,5 +42,7 @@ public abstract class AbstractCollider : Collider {
     {
         ///?
     }
+
+}
 
 }

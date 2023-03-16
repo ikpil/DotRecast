@@ -1,6 +1,8 @@
 ﻿using System.Threading;
 
-namespace DotRecast.Core;
+namespace DotRecast.Core
+{
+
 
 public class AtomicInteger
 {
@@ -63,4 +65,5 @@ public class AtomicInteger
         return Interlocked.Add(ref _location, value);
     }
  
+}
 }

@@ -19,7 +19,9 @@ freely, subject to the following restrictions:
 using System.IO.Compression;
 using DotRecast.Core;
 
-namespace DotRecast.Detour.Extras.Unity.Astar;
+namespace DotRecast.Detour.Extras.Unity.Astar
+{
+
 
 class NodeIndexReader : ZipBinaryReader {
 
@@ -34,5 +36,7 @@ class NodeIndexReader : ZipBinaryReader {
         }
         return int2Node;
     }
+
+}
 
 }

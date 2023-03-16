@@ -23,7 +23,9 @@ using DotRecast.Core;
 using DotRecast.Detour.Io;
 using DotRecast.Detour.TileCache.Io.Compress;
 
-namespace DotRecast.Detour.TileCache.Io;
+namespace DotRecast.Detour.TileCache.Io
+{
+
 
 public class TileCacheReader {
 
@@ -92,4 +94,6 @@ public class TileCacheReader {
         option.maxObstacles = bb.getInt();
         return option;
     }
+}
+
 }

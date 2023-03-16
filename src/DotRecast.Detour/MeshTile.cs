@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 /**
  * Defines a navigation mesh tile.
@@ -33,7 +35,7 @@ public class MeshTile {
     public MeshData data;
     public int[] polyLinks;
     /** The tile links. */
-    public readonly List<Link> links = new();
+    public readonly List<Link> links = new List<Link>();
     /** Index to the next free link. */
     public int linksFreeList = NavMesh.DT_NULL_LINK; // FIXME: Remove
     /** Tile flags. (See: #dtTileFlags) */
@@ -42,5 +44,7 @@ public class MeshTile {
     public MeshTile(int index) {
         this.index = index;
     }
+
+}
 
 }

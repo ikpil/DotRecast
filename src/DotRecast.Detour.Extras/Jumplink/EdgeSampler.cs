@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using static DotRecast.Detour.DetourCommon;
 
-namespace DotRecast.Detour.Extras.Jumplink;
+namespace DotRecast.Detour.Extras.Jumplink
+{
+
 
 public class EdgeSampler {
     public readonly GroundSegment start = new GroundSegment();
-    public readonly List<GroundSegment> end = new();
+    public readonly List<GroundSegment> end = new List<GroundSegment>();
     public readonly Trajectory trajectory;
 
     public readonly float[] ax = new float[3];
@@ -21,5 +23,7 @@ public class EdgeSampler {
         vNormalize(az);
         vSet(ay, 0, 1, 0);
     }
+
+}
 
 }

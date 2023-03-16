@@ -20,7 +20,9 @@ using System;
 using DotRecast.Core;
 using K4os.Compression.LZ4;
 
-namespace DotRecast.Detour.Dynamic.Io;
+namespace DotRecast.Detour.Dynamic.Io
+{
+
 
 public class LZ4VoxelTileCompressor {
 
@@ -36,5 +38,7 @@ public class LZ4VoxelTileCompressor {
         Array.Copy(compressed, 0, result, 4, compressed.Length);
         return result;
     }
+
+}
 
 }

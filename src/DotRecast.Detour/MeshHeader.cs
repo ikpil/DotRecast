@@ -17,7 +17,9 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 /** Provides high level information related to a dtMeshTile object. */
 public class MeshHeader {
@@ -76,4 +78,6 @@ public class MeshHeader {
     public readonly float[] bmax = new float[3];
     /** The bounding volume quantization factor. */
     public float bvQuantFactor;
+}
+
 }

@@ -1,7 +1,9 @@
 using System.IO;
 using DotRecast.Core;
 
-namespace DotRecast.Detour.Io;
+namespace DotRecast.Detour.Io
+{
+
 
 public class NavMeshParamWriter : DetourWriter {
 
@@ -14,5 +16,7 @@ public class NavMeshParamWriter : DetourWriter {
 		write(stream, option.maxTiles, order);
 		write(stream, option.maxPolys, order);
 	}
+
+}
 
 }

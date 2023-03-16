@@ -16,16 +16,19 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
-namespace DotRecast.Recast.Geom;
+namespace DotRecast.Recast.Geom
+{
+
 
 public class SingleTrimeshInputGeomProvider : InputGeomProvider
 {
     private readonly float[] bmin;
     private readonly float[] bmax;
-    private readonly ImmutableArray<TriMesh> _meshes;
+    private readonly TriMesh[] _meshes;
 
     public SingleTrimeshInputGeomProvider(float[] vertices, int[] faces)
     {
@@ -39,7 +42,7 @@ public class SingleTrimeshInputGeomProvider : InputGeomProvider
             RecastVectors.max(bmax, vertices, i * 3);
         }
 
-        _meshes = ImmutableArray.Create(new TriMesh(vertices, faces));
+        _meshes = new[] { new TriMesh(vertices, faces) };
     }
 
     public float[] getMeshBoundsMin()
@@ -61,4 +64,5 @@ public class SingleTrimeshInputGeomProvider : InputGeomProvider
     {
         return ImmutableArray<ConvexVolume>.Empty;
     }
+}
 }

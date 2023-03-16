@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 
 using System;
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 public class RecastCommon
 {
@@ -82,4 +84,5 @@ public class RecastCommon
     }
 
 
+}
 }

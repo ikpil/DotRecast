@@ -16,7 +16,9 @@
 
 using System;
 
-namespace DotRecast.Detour.TileCache.Io.Compress;
+namespace DotRecast.Detour.TileCache.Io.Compress
+{
+
 
 /**
  * Core of FastLZ compression algorithm.
@@ -311,10 +313,10 @@ public class FastLz {
             if (level == LEVEL_2) {
                 if (distance < MAX_DISTANCE) {
                     if (len < 7) {
-                        output[outOffset + op++] = (byte) ((len << 5) + (distance >>> 8));
+                        output[outOffset + op++] = (byte) ((len << 5) + (int)((ulong)distance >> 8));
                         output[outOffset + op++] = (byte) (distance & 255);
                     } else {
-                        output[outOffset + op++] = (byte) ((7 << 5) + (distance >>> 8));
+                        output[outOffset + op++] = (byte) ((7 << 5) + ((ulong)distance >> 8));
                         for (len -= 7; len >= 255; len -= 255) {
                             output[outOffset + op++] = (byte) 255;
                         }
@@ -327,7 +329,7 @@ public class FastLz {
                         distance -= MAX_DISTANCE;
                         output[outOffset + op++] = (byte) ((len << 5) + 31);
                         output[outOffset + op++] = (byte) 255;
-                        output[outOffset + op++] = (byte) (distance >>> 8);
+                        output[outOffset + op++] = (byte) ((ulong)distance >> 8);
                         output[outOffset + op++] = (byte) (distance & 255);
                     } else {
                         distance -= MAX_DISTANCE;
@@ -337,14 +339,14 @@ public class FastLz {
                         }
                         output[outOffset + op++] = (byte) len;
                         output[outOffset + op++] = (byte) 255;
-                        output[outOffset + op++] = (byte) (distance >>> 8);
+                        output[outOffset + op++] = (byte) ((ulong)distance >> 8);
                         output[outOffset + op++] = (byte) (distance & 255);
                     }
                 }
             } else {
                 if (len > MAX_LEN - 2) {
                     while (len > MAX_LEN - 2) {
-                        output[outOffset + op++] = (byte) ((7 << 5) + (distance >>> 8));
+                        output[outOffset + op++] = (byte) ((7 << 5) + ((ulong)distance >> 8));
                         output[outOffset + op++] = (byte) (MAX_LEN - 2 - 7 - 2);
                         output[outOffset + op++] = (byte) (distance & 255);
                         len -= MAX_LEN - 2;
@@ -352,10 +354,10 @@ public class FastLz {
                 }
 
                 if (len < 7) {
-                    output[outOffset + op++] = (byte) ((len << 5) + (distance >>> 8));
+                    output[outOffset + op++] = (byte) ((len << 5) + (int)((ulong)distance >> 8));
                     output[outOffset + op++] = (byte) (distance & 255);
                 } else {
-                    output[outOffset + op++] = (byte) ((7 << 5) + (distance >>> 8));
+                    output[outOffset + op++] = (byte) ((7 << 5) + (int)((ulong)distance >> 8));
                     output[outOffset + op++] = (byte) (len - 7);
                     output[outOffset + op++] = (byte) (distance & 255);
                 }
@@ -573,4 +575,5 @@ public class FastLz {
     }
 
     private FastLz() { }
+}
 }

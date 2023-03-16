@@ -17,7 +17,9 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 /// Represents the source data used to build an navigation mesh tile.
 public class NavMeshDataCreateParams {
@@ -99,4 +101,5 @@ public class NavMeshDataCreateParams {
 
     /// @}
 
+}
 }

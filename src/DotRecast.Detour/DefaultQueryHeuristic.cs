@@ -16,7 +16,9 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 using static DetourCommon;
 
@@ -35,5 +37,7 @@ public class DefaultQueryHeuristic : QueryHeuristic {
     public float getCost(float[] neighbourPos, float[] endPos) {
         return vDist(neighbourPos, endPos) * scale;
     }
+
+}
 
 }

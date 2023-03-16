@@ -21,7 +21,9 @@ freely, subject to the following restrictions:
 using System.IO;
 using DotRecast.Core;
 
-namespace DotRecast.Detour.TileCache.Io;
+namespace DotRecast.Detour.TileCache.Io
+{
+
 
 public class TileCacheLayerHeaderReader {
 
@@ -57,5 +59,7 @@ public class TileCacheLayerHeaderReader {
         }
         return header;
     }
+
+}
 
 }

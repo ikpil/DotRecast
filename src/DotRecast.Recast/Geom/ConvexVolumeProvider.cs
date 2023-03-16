@@ -18,9 +18,12 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 
-namespace DotRecast.Recast.Geom;
+namespace DotRecast.Recast.Geom
+{
+
 
 public interface ConvexVolumeProvider
 {
     IList<ConvexVolume> convexVolumes();
+}
 }

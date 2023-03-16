@@ -25,7 +25,9 @@ using DotRecast.Detour.TileCache.Io;
 
 using static DotRecast.Detour.DetourCommon;
 
-namespace DotRecast.Detour.TileCache;
+namespace DotRecast.Detour.TileCache
+{
+
 
 public class TileCache {
 
@@ -46,11 +48,11 @@ public class TileCache {
     private readonly TileCacheCompressor m_tcomp;
     private readonly TileCacheMeshProcess m_tmproc;
 
-    private readonly List<TileCacheObstacle> m_obstacles = new();
+    private readonly List<TileCacheObstacle> m_obstacles = new List<TileCacheObstacle>();
     private TileCacheObstacle m_nextFreeObstacle;
 
-    private readonly List<ObstacleRequest> m_reqs = new();
-    private readonly List<long> m_update = new();
+    private readonly List<ObstacleRequest> m_reqs = new List<ObstacleRequest>();
+    private readonly List<long> m_update = new List<long>();
 
     private readonly TileCacheBuilder builder = new TileCacheBuilder();
     private readonly TileCacheLayerHeaderReader tileReader = new TileCacheLayerHeaderReader();
@@ -137,7 +139,7 @@ public class TileCache {
     }
 
     public List<long> getTilesAt(int tx, int ty) {
-        List<long> tiles = new();
+        List<long> tiles = new List<long>();
 
         // Find tile based on hash.
         int h = NavMesh.computeTileHash(tx, ty, m_tileLutMask);
@@ -357,7 +359,7 @@ public class TileCache {
     }
 
     List<long> queryTiles(float[] bmin, float[] bmax) {
-        List<long> results = new();
+        List<long> results = new List<long>();
         float tw = m_params.width * m_params.cs;
         float th = m_params.height * m_params.cs;
         int tx0 = (int) Math.Floor((bmin[0] - m_params.orig[0]) / tw);
@@ -602,4 +604,6 @@ public class TileCache {
     public NavMesh getNavMesh() {
         return m_navmesh;
     }
+}
+
 }

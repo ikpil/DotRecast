@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 
 using System;
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 using static RecastConstants;
 
@@ -1211,4 +1213,6 @@ public class RecastMesh {
         Array.Copy(src.flags, 0, dst.flags, 0, dst.flags.Length);
         return dst;
     }
+}
+
 }

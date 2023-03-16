@@ -19,7 +19,9 @@ freely, subject to the following restrictions:
 using System;
 using DotRecast.Recast;
 
-namespace DotRecast.Detour.Dynamic.Colliders;
+namespace DotRecast.Detour.Dynamic.Colliders
+{
+
 
 public class BoxCollider : AbstractCollider {
 
@@ -75,5 +77,7 @@ public class BoxCollider : AbstractCollider {
         halfEdges[2][2] *= extent[2];
         return halfEdges;
     }
+
+}
 
 }

@@ -17,7 +17,9 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 /**
  * Defines an navigation mesh off-mesh connection within a dtMeshTile object. An off-mesh connection is a user defined
@@ -41,4 +43,5 @@ public class OffMeshConnection {
     public int side;
     /** The id of the offmesh connection. (User assigned when the navigation mesh is built.) */
     public int userId;
+}
 }

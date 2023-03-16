@@ -21,7 +21,9 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 
-namespace DotRecast.Detour.Crowd;
+namespace DotRecast.Detour.Crowd
+{
+
 
 using static DetourCommon;
 
@@ -95,7 +97,7 @@ public class PathCorridor {
         // Concatenate paths.
 
         // Adjust beginning of the buffer to include the visited.
-        List<long> result = new();
+        List<long> result = new List<long>();
         // Store visited
         for (int i = visited.Count - 1; i > furthestVisited; --i) {
             result.Add(visited[i]);
@@ -171,7 +173,7 @@ public class PathCorridor {
      * Allocates the corridor's path buffer.
      */
     public PathCorridor() {
-        m_path = new();
+        m_path = new List<long>();
     }
 
     /**
@@ -209,7 +211,7 @@ public class PathCorridor {
      * @return Corners
      */
     public List<StraightPathItem> findCorners(int maxCorners, NavMeshQuery navquery, QueryFilter filter) {
-        List<StraightPathItem> path = new();
+        List<StraightPathItem> path = new List<StraightPathItem>();
         Result<List<StraightPathItem>> result = navquery.findStraightPath(m_pos, m_target, m_path, maxCorners, 0);
         if (result.succeeded()) {
             path = result.result;
@@ -441,7 +443,7 @@ public class PathCorridor {
 
     public void setCorridor(float[] target, List<long> path) {
         vCopy(m_target, target);
-        m_path = new(path);
+        m_path = new List<long>(path);
     }
 
     public void fixPathStart(long safeRef, float[] safePos) {
@@ -559,4 +561,6 @@ public class PathCorridor {
     public int getPathCount() {
         return m_path.Count;
     }
+}
+
 }

@@ -345,10 +345,10 @@ public class Crowd4Test : AbstractCrowdTest {
         setMoveTarget(endPoss[0], false);
         for (int i = 0; i < EXPECTED_A1Q2T.Length; i++)
         {
-            if (i == 37)
-            {
-                int a = 3;
-            }
+            // if (i == 37)
+            // {
+            //     int a = 3;
+            // }
 
             crowd.update(1 / 5f, null);
             CrowdAgent ag = agents[2];

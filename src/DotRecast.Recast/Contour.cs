@@ -18,7 +18,9 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 /** Represents a simple, non-overlapping contour in field space. */
 public class Contour
@@ -40,4 +42,5 @@ public class Contour
 
     /** The area id of the contour. */
     public int reg;
+}
 }

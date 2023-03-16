@@ -21,14 +21,16 @@ using System.Collections.Generic;
 using System.IO;
 using DotRecast.Recast.Geom;
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 public static class ObjImporter
 {
     public class ObjImporterContext
     {
-        public List<float> vertexPositions = new();
-        public List<int> meshFaces = new();
+        public List<float> vertexPositions = new List<float>();
+        public List<int> meshFaces = new List<int>();
     }
 
     public static InputGeomProvider load(byte[] chunck)
@@ -135,4 +137,5 @@ public static class ObjImporter
 
         return posi;
     }
+}
 }

@@ -67,7 +67,7 @@ public class FindNearestPolyTest : AbstractDetourTest {
             float[] startPos = startPoss[i];
             Result<FindNearestPolyResult> poly = query.findNearestPoly(startPos, extents, filter);
             Assert.That(poly.succeeded(), Is.True);
-            Assert.That(0L, Is.EqualTo(poly.result.getNearestRef()));
+            Assert.That(poly.result.getNearestRef(), Is.EqualTo(0L));
             for (int v = 0; v < POLY_POS[i].Length; v++) {
                 Assert.That(poly.result.getNearestPos()[v], Is.EqualTo(startPos[v]).Within(0.001f));
             }

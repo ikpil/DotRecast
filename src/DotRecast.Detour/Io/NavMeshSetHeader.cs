@@ -15,7 +15,9 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-namespace DotRecast.Detour.Io;
+namespace DotRecast.Detour.Io
+{
+
 
 public class NavMeshSetHeader {
 
@@ -29,5 +31,7 @@ public class NavMeshSetHeader {
     public int numTiles;
     public NavMeshParams option = new NavMeshParams();
     public int maxVertsPerPoly;
+
+}
 
 }

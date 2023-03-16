@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 
-namespace DotRecast.Detour.TileCache;
+namespace DotRecast.Detour.TileCache
+{
+
 
 public class TileCacheObstacle {
 
@@ -37,8 +39,8 @@ public class TileCacheObstacle {
     public readonly float[] center = new float[3];
     public readonly float[] extents = new float[3];
     public readonly float[] rotAux = new float[2]; // { cos(0.5f*angle)*sin(-0.5f*angle); cos(0.5f*angle)*cos(0.5f*angle) - 0.5 }
-    public List<long> touched = new();
-    public readonly List<long> pending = new();
+    public List<long> touched = new List<long>();
+    public readonly List<long> pending = new List<long>();
     public int salt;
     public ObstacleState state = ObstacleState.DT_OBSTACLE_EMPTY;
     public TileCacheObstacle next;
@@ -47,5 +49,7 @@ public class TileCacheObstacle {
         salt = 1;
         this.index = index;
     }
+
+}
 
 }

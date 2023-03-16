@@ -18,10 +18,14 @@ freely, subject to the following restrictions:
 
 using DotRecast.Recast;
 
-namespace DotRecast.Detour.Dynamic.Colliders;
+namespace DotRecast.Detour.Dynamic.Colliders
+{
+
 
 public interface Collider {
 
     float[] bounds();
     void rasterize(Heightfield hf, Telemetry telemetry);
+}
+
 }

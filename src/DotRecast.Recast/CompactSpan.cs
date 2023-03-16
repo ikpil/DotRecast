@@ -18,7 +18,9 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 /** Represents a span of unobstructed space within a compact heightfield. */
 public class CompactSpan
@@ -34,4 +36,5 @@ public class CompactSpan
 
     /** The height of the span. (Measured from #y.) */
     public int h;
+}
 }

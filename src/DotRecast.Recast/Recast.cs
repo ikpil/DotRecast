@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 
 using System;
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 using static RecastConstants;
 
@@ -119,4 +121,5 @@ public class Recast
                 areas[i] = RC_NULL_AREA;
         }
     }
+}
 }

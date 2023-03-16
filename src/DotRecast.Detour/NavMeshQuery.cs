@@ -22,7 +22,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 using static DetourCommon;
 using static Node;
@@ -636,7 +638,7 @@ public class NavMeshQuery {
         int[] maxxy = m_nav.calcTileLoc(bmax);
         int maxx = maxxy[0];
         int maxy = maxxy[1];
-        List<MeshTile> tiles = new();
+        List<MeshTile> tiles = new List<MeshTile>();
         for (int y = miny; y <= maxy; ++y) {
             for (int x = minx; x <= maxx; ++x) {
                 tiles.AddRange(m_nav.getTilesAt(x, y));
@@ -694,7 +696,7 @@ public class NavMeshQuery {
         }
 
         if (startRef == endRef) {
-            List<long> singlePath = new(1);
+            List<long> singlePath = new List<long>(1);
             singlePath.Add(startRef);
             return Results.success(singlePath);
         }
@@ -1181,7 +1183,7 @@ public class NavMeshQuery {
     /// @returns The status flags for the query.
     public virtual Result<List<long>> finalizeSlicedFindPath() {
 
-        List<long> path = new(64);
+        List<long> path = new List<long>(64);
         if (m_query.status.isFailed()) {
             // Reset query.
             m_query = new QueryData();
@@ -1215,7 +1217,7 @@ public class NavMeshQuery {
     /// @returns The status flags for the query.
     public virtual Result<List<long>> finalizeSlicedFindPathPartial(List<long> existing) {
 
-        List<long> path = new(64);
+        List<long> path = new List<long>(64);
         if (null == existing || existing.Count <= 0) {
             return Results.failure(path);
         }
@@ -1350,7 +1352,7 @@ public class NavMeshQuery {
     public virtual Result<List<StraightPathItem>> findStraightPath(float[] startPos, float[] endPos, List<long> path,
             int maxStraightPath, int options) {
 
-        List<StraightPathItem> straightPath = new();
+        List<StraightPathItem> straightPath = new List<StraightPathItem>();
         if (null == startPos || !vIsFinite(startPos) || null == endPos || !vIsFinite(endPos)
                 || null == path || 0 == path.Count || path[0] == 0 || maxStraightPath <= 0) {
             return Results.invalidParam<List<StraightPathItem>>();
@@ -1578,7 +1580,7 @@ public class NavMeshQuery {
         startNode.total = 0;
         startNode.id = startRef;
         startNode.flags = Node.DT_NODE_CLOSED;
-        LinkedList<Node> stack = new();
+        LinkedList<Node> stack = new LinkedList<Node>();
         stack.AddLast(startNode);
 
         float[] bestPos = new float[3];
@@ -1690,7 +1692,7 @@ public class NavMeshQuery {
             }
         }
 
-        List<long> visited = new();
+        List<long> visited = new List<long>();
         if (bestNode != null) {
             // Reverse the path.
             Node prev = null;
@@ -2157,9 +2159,9 @@ public class NavMeshQuery {
             return Results.invalidParam<FindPolysAroundResult>();
         }
 
-        List<long> resultRef = new();
-        List<long> resultParent = new();
-        List<float> resultCost = new();
+        List<long> resultRef = new List<long>();
+        List<long> resultParent = new List<long>();
+        List<float> resultCost = new List<float>();
 
         m_nodePool.clear();
         m_openList.clear();
@@ -2316,9 +2318,9 @@ public class NavMeshQuery {
             return Results.invalidParam<FindPolysAroundResult>();
         }
 
-        List<long> resultRef = new();
-        List<long> resultParent = new();
-        List<float> resultCost = new();
+        List<long> resultRef = new List<long>();
+        List<long> resultParent = new List<long>();
+        List<float> resultCost = new List<float>();
 
         m_nodePool.clear();
         m_openList.clear();
@@ -2488,8 +2490,8 @@ public class NavMeshQuery {
             return Results.invalidParam<FindLocalNeighbourhoodResult>();
         }
 
-        List<long> resultRef = new();
-        List<long> resultParent = new();
+        List<long> resultRef = new List<long>();
+        List<long> resultParent = new List<long>();
 
         NodePool tinyNodePool = new NodePool();
 
@@ -2497,7 +2499,7 @@ public class NavMeshQuery {
         startNode.pidx = 0;
         startNode.id = startRef;
         startNode.flags = Node.DT_NODE_CLOSED;
-        LinkedList<Node> stack = new();
+        LinkedList<Node> stack = new LinkedList<Node>();
         stack.AddLast(startNode);
 
         resultRef.Add(startNode.id);
@@ -2679,9 +2681,9 @@ public class NavMeshQuery {
         MeshTile tile = tileAndPoly.result.Item1;
         Poly poly = tileAndPoly.result.Item2;
 
-        List<long> segmentRefs = new();
-        List<float[]> segmentVerts = new();
-        List<SegInterval> ints = new(16);
+        List<long> segmentRefs = new List<long>();
+        List<float[]> segmentVerts = new List<float[]>();
+        List<SegInterval> ints = new List<SegInterval>(16);
 
         for (int i = 0, j = poly.vertCount - 1; i < poly.vertCount; j = i++) {
             // Skip non-solid edges.
@@ -3012,7 +3014,7 @@ public class NavMeshQuery {
      * Gets the path leading to the specified end node.
      */
     protected List<long> getPathToNode(Node endNode) {
-        List<long> path = new();
+        List<long> path = new List<long>();
         // Reverse the path.
         Node curNode = endNode;
         do {
@@ -3053,4 +3055,5 @@ public class NavMeshQuery {
         return m_nodePool;
     }
 
+}
 }

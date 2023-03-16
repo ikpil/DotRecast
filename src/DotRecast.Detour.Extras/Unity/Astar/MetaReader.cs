@@ -23,7 +23,9 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 
-namespace DotRecast.Detour.Extras.Unity.Astar;
+namespace DotRecast.Detour.Extras.Unity.Astar
+{
+
 
 public class MetaReader {
 
@@ -50,5 +52,7 @@ public class MetaReader {
         }
         return meta;
     }
+
+}
 
 }

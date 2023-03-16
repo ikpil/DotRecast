@@ -19,7 +19,9 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 using static DetourCommon;
 
@@ -45,7 +47,7 @@ public class LegacyNavMeshQuery : NavMeshQuery {
         }
 
         if (startRef == endRef) {
-            List<long> singlePath = new(1);
+            List<long> singlePath = new List<long>(1);
             singlePath.Add(startRef);
             return Results.success(singlePath);
         }
@@ -412,7 +414,7 @@ public class LegacyNavMeshQuery : NavMeshQuery {
     /// @returns The status flags for the query.
     public override Result<List<long>> finalizeSlicedFindPath() {
 
-        List<long> path = new(64);
+        List<long> path = new List<long>(64);
         if (m_query.status.isFailed()) {
             // Reset query.
             m_query = new QueryData();
@@ -480,7 +482,7 @@ public class LegacyNavMeshQuery : NavMeshQuery {
     /// @returns The status flags for the query.
     public override Result<List<long>> finalizeSlicedFindPathPartial(List<long> existing) {
 
-        List<long> path = new(64);
+        List<long> path = new List<long>(64);
         if (null == existing || existing.Count <= 0) {
             return Results.failure(path);
         }
@@ -727,4 +729,6 @@ public class LegacyNavMeshQuery : NavMeshQuery {
         }
         return Results.success(new FindDistanceToWallResult((float) Math.Sqrt(radiusSqr), hitPos, hitNormal));
     }
+}
+
 }

@@ -21,7 +21,9 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 
-namespace DotRecast.Detour.Crowd;
+namespace DotRecast.Detour.Crowd
+{
+
 
 using static DetourCommon;
 
@@ -60,7 +62,7 @@ public class CrowdAgent {
     /// Time since the agent's path corridor was optimized.
     public float topologyOptTime;
     /// The known neighbors of the agent.
-    public List<Crowd.CrowdNeighbour> neis = new();
+    public List<Crowd.CrowdNeighbour> neis = new List<Crowd.CrowdNeighbour>();
     /// The desired speed.
     public float desiredSpeed;
 
@@ -78,7 +80,7 @@ public class CrowdAgent {
     /// The agent's configuration parameters.
     public CrowdAgentParams option;
     /// The local path corridor corners for the agent.
-    public List<StraightPathItem> corners = new();
+    public List<StraightPathItem> corners = new List<StraightPathItem>();
 
     public MoveRequestState targetState; /// < State of the movement request.
     public long targetRef; /// < Target polyref of the movement request.
@@ -189,4 +191,5 @@ public class CrowdAgent {
         }
     }
 
+}
 }

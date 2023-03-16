@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 
 using System;
 
-namespace DotRecast.Detour.Crowd.Tracking;
+namespace DotRecast.Detour.Crowd.Tracking
+{
+
 
 using static DetourCommon;
 
@@ -122,4 +124,5 @@ public class ObstacleAvoidanceDebugData {
     public float getSampleCollisionTimePenalty(int i) {
         return m_tpen[i];
     }
+}
 }

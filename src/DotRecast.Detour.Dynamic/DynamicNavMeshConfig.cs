@@ -18,7 +18,9 @@ freely, subject to the following restrictions:
 
 using DotRecast.Recast;
 
-namespace DotRecast.Detour.Dynamic;
+namespace DotRecast.Detour.Dynamic
+{
+
 
 public class DynamicNavMeshConfig {
 
@@ -52,5 +54,7 @@ public class DynamicNavMeshConfig {
         this.tileSizeZ = tileSizeZ;
         this.cellSize = cellSize;
     }
+
+}
 
 }

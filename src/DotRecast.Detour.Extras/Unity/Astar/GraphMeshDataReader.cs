@@ -21,7 +21,9 @@ using System.IO.Compression;
 using System.Numerics;
 using DotRecast.Core;
 
-namespace DotRecast.Detour.Extras.Unity.Astar;
+namespace DotRecast.Detour.Extras.Unity.Astar
+{
+
 
 public class GraphMeshDataReader : ZipBinaryReader {
 
@@ -137,15 +139,27 @@ public class GraphMeshDataReader : ZipBinaryReader {
         return new GraphMeshData(tileXCount, tileZCount, tiles);
     }
 
+    public static int highestOneBit(uint i)
+    {
+        i |= (i >>  1);
+        i |= (i >>  2);
+        i |= (i >>  4);
+        i |= (i >>  8);
+        i |= (i >>  16);
+        return (int)(i - (i >> 1));
+    }
+    
     // See NavmeshBase.cs: ASTAR_RECAST_LARGER_TILES
     private int getVertMask(int vertsCount)
     {
-        int vertMask = 1 << (BitOperations.Log2((uint)vertsCount) + 1);
+        int vertMask = 1 << highestOneBit((uint)vertsCount);
         if (vertMask != vertsCount) {
             vertMask *= 2;
         }
         vertMask--;
         return vertMask;
     }
+
+}
 
 }

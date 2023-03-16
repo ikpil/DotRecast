@@ -5,7 +5,9 @@ using DotRecast.Core;
 using DotRecast.Recast;
 using static DotRecast.Detour.DetourCommon;
 
-namespace DotRecast.Detour.Extras.Jumplink;
+namespace DotRecast.Detour.Extras.Jumplink
+{
+
 
 public class JumpLinkBuilder {
 
@@ -24,7 +26,7 @@ public class JumpLinkBuilder {
     }
 
     public List<JumpLink> build(JumpLinkBuilderConfig acfg, JumpLinkType type) {
-        List<JumpLink> links = new();
+        List<JumpLink> links = new List<JumpLink>();
         for (int tile = 0; tile < results.Count; tile++) {
             Edge[] edges = this.edges[tile];
             foreach (Edge edge in edges) {
@@ -44,7 +46,7 @@ public class JumpLinkBuilder {
 
 
     private List<JumpLink> buildJumpLinks(JumpLinkBuilderConfig acfg, EdgeSampler es, JumpSegment[] jumpSegments) {
-        List<JumpLink> links = new();
+        List<JumpLink> links = new List<JumpLink>();
         foreach (JumpSegment js in jumpSegments) {
             float[] sp = es.start.gsamples[js.startSample].p;
             float[] sq = es.start.gsamples[js.startSample + js.samples - 1].p;
@@ -80,5 +82,7 @@ public class JumpLinkBuilder {
     public List<Edge[]> getEdges() {
         return edges;
     }
+
+}
 
 }

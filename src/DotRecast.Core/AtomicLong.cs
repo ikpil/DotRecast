@@ -1,6 +1,8 @@
 ﻿using System.Threading;
 
-namespace DotRecast.Core;
+namespace DotRecast.Core
+{
+
 
 public class AtomicLong
 {
@@ -49,4 +51,5 @@ public class AtomicLong
     {
         return Interlocked.Add(ref _location, value);
     }
+}
 }

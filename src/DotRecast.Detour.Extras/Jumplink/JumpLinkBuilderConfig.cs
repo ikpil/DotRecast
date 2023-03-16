@@ -1,4 +1,6 @@
-namespace DotRecast.Detour.Extras.Jumplink;
+namespace DotRecast.Detour.Extras.Jumplink
+{
+
 
 public class JumpLinkBuilderConfig {
 
@@ -29,5 +31,7 @@ public class JumpLinkBuilderConfig {
         heightRange = maxHeight - minHeight;
         this.jumpHeight = jumpHeight;
     }
+
+}
 
 }

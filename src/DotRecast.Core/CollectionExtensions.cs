@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DotRecast.Core;
+namespace DotRecast.Core
+{
+
 
 public static class CollectionExtensions
 {
@@ -26,4 +28,5 @@ public static class CollectionExtensions
             list[n] = value;
         }
     }
+}
 }

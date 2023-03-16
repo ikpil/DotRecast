@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 
 using System;
 
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 using static DetourCommon;
 
@@ -98,5 +100,7 @@ public class DefaultQueryFilter : QueryFilter {
     public void setExcludeFlags(int flags) {
         m_excludeFlags = flags;
     }
+
+}
 
 }

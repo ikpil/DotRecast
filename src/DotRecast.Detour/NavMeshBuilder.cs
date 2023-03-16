@@ -21,7 +21,9 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 using static DetourCommon;
 
@@ -598,5 +600,7 @@ public class NavMeshBuilder {
         nmd.offMeshCons = offMeshCons;
         return nmd;
     }
+
+}
 
 }

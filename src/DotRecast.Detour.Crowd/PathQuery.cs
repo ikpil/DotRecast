@@ -17,7 +17,9 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-namespace DotRecast.Detour.Crowd;
+namespace DotRecast.Detour.Crowd
+{
+
 
 public class PathQuery {
     /// Path find start and end location.
@@ -28,5 +30,7 @@ public class PathQuery {
     public QueryFilter filter; /// < TODO: This is potentially dangerous!
     public readonly PathQueryResult result = new PathQueryResult();
     public NavMeshQuery navQuery;
+
+}
 
 }

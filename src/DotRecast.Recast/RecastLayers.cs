@@ -21,7 +21,9 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 using static RecastCommon;
 using static RecastConstants;
@@ -45,8 +47,8 @@ public class RecastLayers {
             id = i;
             ymin = 0xFFFF;
             layerId = 0xff;
-            layers = new();
-            neis = new();
+            layers = new List<int>();
+            neis = new List<int>();
         }
 
     };
@@ -174,7 +176,7 @@ public class RecastLayers {
         }
 
         // Find region neighbours and overlapping regions.
-        List<int> lregs = new();
+        List<int> lregs = new List<int>();
         for (int y = 0; y < h; ++y) {
             for (int x = 0; x < w; ++x) {
                 CompactCell c = chf.cells[x + y * w];
@@ -225,7 +227,7 @@ public class RecastLayers {
         // Create 2D layers from regions.
         int layerId = 0;
 
-        List<int> stack = new();
+        List<int> stack = new List<int>();
 
         for (int i = 0; i < nregs; ++i) {
             LayerRegion root = regs[i];
@@ -504,4 +506,6 @@ public class RecastLayers {
         // ctx->stopTimer(RC_TIMER_BUILD_LAYERS);
         return lset;
     }
+}
+
 }

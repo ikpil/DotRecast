@@ -1,6 +1,8 @@
 ﻿using System.Threading;
 
-namespace DotRecast.Core;
+namespace DotRecast.Core
+{
+
 
 public class AtomicBoolean
 {
@@ -15,4 +17,5 @@ public class AtomicBoolean
     {
         return 0 != _location;
     }
+}
 }

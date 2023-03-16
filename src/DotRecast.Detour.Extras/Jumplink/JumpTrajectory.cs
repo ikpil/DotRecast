@@ -1,6 +1,8 @@
 using System;
 
-namespace DotRecast.Detour.Extras.Jumplink;
+namespace DotRecast.Detour.Extras.Jumplink
+{
+
 
 public class JumpTrajectory : Trajectory {
 
@@ -37,5 +39,7 @@ public class JumpTrajectory : Trajectory {
         float v = (u - t) / (1.0f - t);
         return ys + h1 - h2 * v * v;
     }
+
+}
 
 }

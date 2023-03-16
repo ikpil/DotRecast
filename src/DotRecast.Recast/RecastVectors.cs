@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 
 using System;
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 public static class RecastVectors
 {
@@ -95,4 +97,5 @@ public static class RecastVectors
     {
         return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
     }
+}
 }

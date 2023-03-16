@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 
 public class GetPolyWallSegmentsResult {
@@ -40,5 +42,7 @@ public class GetPolyWallSegmentsResult {
     public List<long> getSegmentRefs() {
         return segmentRefs;
     }
+
+}
 
 }

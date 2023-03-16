@@ -20,7 +20,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Text.Json;
 
-namespace DotRecast.Detour.Extras.Unity.Astar;
+namespace DotRecast.Detour.Extras.Unity.Astar
+{
+
 
 public class GraphMetaReader {
 
@@ -35,4 +37,6 @@ public class GraphMetaReader {
         var json = reader.ReadToEnd();
         return JsonSerializer.Deserialize<GraphMeta>(json, options);
     }
+}
+
 }

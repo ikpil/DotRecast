@@ -15,7 +15,9 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-namespace DotRecast.Detour.Extras.Unity.Astar;
+namespace DotRecast.Detour.Extras.Unity.Astar
+{
+
 
 
 
@@ -36,4 +38,6 @@ public class GraphMeta {
     public Vector3f rotation { get; set; }
     public Vector3f forcedBoundsCenter { get; set; }
     public Vector3f forcedBoundsSize { get; set; }
+}
+
 }

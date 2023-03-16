@@ -17,7 +17,9 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 /** Represents a polygon mesh suitable for use in building a navigation mesh. */
 public class PolyMesh
@@ -66,4 +68,5 @@ public class PolyMesh
 
     /** The max error of the polygon edges in the mesh. */
     public float maxEdgeError;
+}
 }

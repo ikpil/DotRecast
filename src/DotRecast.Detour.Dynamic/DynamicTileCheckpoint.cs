@@ -21,7 +21,9 @@ using DotRecast.Recast;
 
 using static DotRecast.Detour.DetourCommon;
 
-namespace DotRecast.Detour.Dynamic;
+namespace DotRecast.Detour.Dynamic
+{
+
 
 public class DynamicTileCheckpoint {
 
@@ -57,5 +59,7 @@ public class DynamicTileCheckpoint {
         }
         return clone;
     }
+
+}
 
 }

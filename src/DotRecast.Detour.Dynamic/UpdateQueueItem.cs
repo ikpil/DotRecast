@@ -18,12 +18,16 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 
-namespace DotRecast.Detour.Dynamic;
+namespace DotRecast.Detour.Dynamic
+{
+
 
 public interface UpdateQueueItem {
 
     ICollection<DynamicTile> affectedTiles();
 
     void process(DynamicTile tile);
+
+}
 
 }

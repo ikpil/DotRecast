@@ -17,14 +17,16 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 public class Status {
-    public static Status FAILURE = new(0);
-    public static Status SUCCSESS = new(1);
-    public static Status IN_PROGRESS = new(2);
-    public static Status PARTIAL_RESULT = new(3);
-    public static Status FAILURE_INVALID_PARAM = new(4);
+    public static Status FAILURE = new Status(0);
+    public static Status SUCCSESS = new Status(1);
+    public static Status IN_PROGRESS = new Status(2);
+    public static Status PARTIAL_RESULT = new Status(3);
+    public static Status FAILURE_INVALID_PARAM = new Status(4);
     
     public int Value { get; }
 
@@ -52,4 +54,6 @@ public static class StatusEx
         return @this == Status.PARTIAL_RESULT;
     }
     
+}
+
 }

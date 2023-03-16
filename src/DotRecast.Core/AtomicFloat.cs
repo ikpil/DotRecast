@@ -1,6 +1,8 @@
 ﻿using System.Threading;
 
-namespace DotRecast.Core;
+namespace DotRecast.Core
+{
+
 
 public class AtomicFloat
 {
@@ -25,4 +27,5 @@ public class AtomicFloat
     {
         return Interlocked.CompareExchange(ref _location, value, comparand);
     }
+}
 }

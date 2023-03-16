@@ -18,7 +18,9 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 /** Provides information on the content of a cell column in a compact heightfield. */
 public class CompactCell
@@ -28,4 +30,5 @@ public class CompactCell
 
     /** Number of spans in the column. */
     public int count;
+}
 }

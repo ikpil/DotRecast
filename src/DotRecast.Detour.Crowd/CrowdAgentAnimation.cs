@@ -17,7 +17,9 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-namespace DotRecast.Detour.Crowd;
+namespace DotRecast.Detour.Crowd
+{
+
 
 public class CrowdAgentAnimation {
     public bool active;
@@ -26,5 +28,7 @@ public class CrowdAgentAnimation {
     public float[] endPos = new float[3];
     public long polyRef;
     public float t, tmax;
+
+}
 
 }

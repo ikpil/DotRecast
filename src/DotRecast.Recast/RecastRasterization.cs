@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 
 using System;
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 using static RecastConstants;
 
@@ -481,4 +483,5 @@ public class RecastRasterization
 
         ctx.stopTimer("RASTERIZE_TRIANGLES");
     }
+}
 }

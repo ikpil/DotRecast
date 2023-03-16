@@ -18,7 +18,9 @@ freely, subject to the following restrictions:
 
 using System.IO;
 
-namespace DotRecast.Detour.Extras;
+namespace DotRecast.Detour.Extras
+{
+
 
 public class ObjExporter {
 
@@ -61,4 +63,6 @@ public class ObjExporter {
 
 
      */
+}
+
 }

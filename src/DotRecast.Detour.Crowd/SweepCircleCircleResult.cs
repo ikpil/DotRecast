@@ -17,7 +17,9 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-namespace DotRecast.Detour.Crowd;
+namespace DotRecast.Detour.Crowd
+{
+
 
 public class SweepCircleCircleResult {
 
@@ -30,5 +32,7 @@ public class SweepCircleCircleResult {
         this.htmin = htmin;
         this.htmax = htmax;
     }
+
+}
 
 }

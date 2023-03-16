@@ -18,7 +18,9 @@ freely, subject to the following restrictions:
 
 using System;
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 using static RecastConstants;
 using static RecastVectors;
@@ -183,4 +185,5 @@ public class RecastCompact
 
         return spanCount;
     }
+}
 }

@@ -19,7 +19,9 @@ freely, subject to the following restrictions:
 using System;
 using DotRecast.Recast;
 
-namespace DotRecast.Detour.Dynamic.Colliders;
+namespace DotRecast.Detour.Dynamic.Colliders
+{
+
 
 public class ConvexTrimeshCollider : AbstractCollider {
 
@@ -42,5 +44,7 @@ public class ConvexTrimeshCollider : AbstractCollider {
         RecastFilledVolumeRasterization.rasterizeConvex(hf, vertices, triangles, area,
                 (int) Math.Floor(flagMergeThreshold / hf.ch), telemetry);
     }
+
+}
 
 }

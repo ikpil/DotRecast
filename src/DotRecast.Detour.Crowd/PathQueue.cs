@@ -20,14 +20,16 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 
-namespace DotRecast.Detour.Crowd;
+namespace DotRecast.Detour.Crowd
+{
+
 
 using static DetourCommon;
 
 public class PathQueue {
 
     private readonly CrowdConfig config;
-    private readonly LinkedList<PathQuery> queue = new();
+    private readonly LinkedList<PathQuery> queue = new LinkedList<PathQuery>();
 
     public PathQueue(CrowdConfig config) {
         this.config = config;
@@ -79,5 +81,7 @@ public class PathQueue {
         queue.AddLast(q);
         return q.result;
     }
+
+}
 
 }

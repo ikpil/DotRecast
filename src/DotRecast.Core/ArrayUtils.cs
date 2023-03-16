@@ -1,6 +1,8 @@
 ﻿using System;
 
-namespace DotRecast.Core;
+namespace DotRecast.Core
+{
+
 
 public static class ArrayUtils
 {
@@ -38,4 +40,5 @@ public static class ArrayUtils
 
         return temp;
     } 
+}
 }

@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 
-namespace DotRecast.Recast.Geom;
+namespace DotRecast.Recast.Geom
+{
+
 
 public interface InputGeomProvider : ConvexVolumeProvider
 {
@@ -29,4 +31,5 @@ public interface InputGeomProvider : ConvexVolumeProvider
     float[] getMeshBoundsMax();
 
     IEnumerable<TriMesh> meshes();
+}
 }

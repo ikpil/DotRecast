@@ -18,7 +18,9 @@ freely, subject to the following restrictions:
 
 using static DotRecast.Detour.DetourCommon;
 
-namespace DotRecast.Detour.Extras;
+namespace DotRecast.Detour.Extras
+{
+
 
 public class BVTreeBuilder {
 
@@ -51,5 +53,7 @@ public class BVTreeBuilder {
         }
         return NavMeshBuilder.subdivide(items, data.header.polyCount, 0, data.header.polyCount, 0, nodes);
     }
+
+}
 
 }

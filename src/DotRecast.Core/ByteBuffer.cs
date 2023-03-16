@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Buffers.Binary;
 
-namespace DotRecast.Core;
+namespace DotRecast.Core
+{
+
 
 public class ByteBuffer
 {
@@ -93,14 +95,16 @@ public class ByteBuffer
     public float getFloat()
     {
         var span = ReadBytes(4);
-        if (_order == ByteOrder.BIG_ENDIAN)
+        if (_order == ByteOrder.BIG_ENDIAN && BitConverter.IsLittleEndian)
         {
-            return BinaryPrimitives.ReadSingleBigEndian(span);
+            span.Reverse();
         }
-        else
+        else if (_order == ByteOrder.LITTLE_ENDIAN && !BitConverter.IsLittleEndian)
         {
-            return BinaryPrimitives.ReadSingleLittleEndian(span);
+            span.Reverse();
         }
+
+        return BitConverter.ToSingle(span);
     }
 
     public long getLong()
@@ -125,4 +129,5 @@ public class ByteBuffer
     {
         // ?
     }
+}
 }

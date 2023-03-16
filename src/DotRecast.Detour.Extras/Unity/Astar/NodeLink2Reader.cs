@@ -19,7 +19,9 @@ freely, subject to the following restrictions:
 using System.IO.Compression;
 using DotRecast.Core;
 
-namespace DotRecast.Detour.Extras.Unity.Astar;
+namespace DotRecast.Detour.Extras.Unity.Astar
+{
+
 
 public class NodeLink2Reader : ZipBinaryReader {
 
@@ -46,4 +48,6 @@ public class NodeLink2Reader : ZipBinaryReader {
         }
         return links;
     }
+}
+
 }

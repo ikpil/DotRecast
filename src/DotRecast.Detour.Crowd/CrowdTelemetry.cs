@@ -21,7 +21,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace DotRecast.Detour.Crowd;
+namespace DotRecast.Detour.Crowd
+{
+
 
 
 public class CrowdTelemetry {
@@ -29,8 +31,8 @@ public class CrowdTelemetry {
     public const int TIMING_SAMPLES = 10;
     private float _maxTimeToEnqueueRequest;
     private float _maxTimeToFindPath;
-    private readonly Dictionary<string, long> _executionTimings = new();
-    private readonly Dictionary<string, List<long>> _executionTimingSamples = new();
+    private readonly Dictionary<string, long> _executionTimings = new Dictionary<string, long>();
+    private readonly Dictionary<string, List<long>> _executionTimingSamples = new Dictionary<string, List<long>>();
 
     public float maxTimeToEnqueueRequest() {
         return _maxTimeToEnqueueRequest;
@@ -66,7 +68,7 @@ public class CrowdTelemetry {
         long duration = Stopwatch.GetTimestamp() - _executionTimings[name];
         if (!_executionTimingSamples.TryGetValue(name, out var s))
         {
-            s = new();
+            s = new List<long>();
             _executionTimingSamples.Add(name, s);
         }
         
@@ -76,4 +78,6 @@ public class CrowdTelemetry {
         s.Add(duration);
         _executionTimings[name] = (long) s.Average();
     }
+}
+
 }

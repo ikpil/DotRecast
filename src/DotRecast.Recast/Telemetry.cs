@@ -23,12 +23,14 @@ using System.Diagnostics;
 using System.Threading;
 using DotRecast.Core;
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 public class Telemetry
 {
-    private readonly ThreadLocal<Dictionary<string, AtomicLong>> timerStart = new(() => new Dictionary<string, AtomicLong>());
-    private readonly ConcurrentDictionary<string, AtomicLong> timerAccum = new();
+    private readonly ThreadLocal<Dictionary<string, AtomicLong>> timerStart = new ThreadLocal<Dictionary<string, AtomicLong>>(() => new Dictionary<string, AtomicLong>());
+    private readonly ConcurrentDictionary<string, AtomicLong> timerAccum = new ConcurrentDictionary<string, AtomicLong>();
 
     public void startTimer(string name)
     {
@@ -54,4 +56,5 @@ public class Telemetry
             Console.WriteLine(n + ": " + v.Read() / 1000000);
         }
     }
+}
 }

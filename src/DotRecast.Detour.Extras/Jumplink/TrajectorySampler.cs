@@ -2,7 +2,9 @@ using System;
 using DotRecast.Recast;
 using static DotRecast.Detour.DetourCommon;
 
-namespace DotRecast.Detour.Extras.Jumplink;
+namespace DotRecast.Detour.Extras.Jumplink
+{
+
 
 class TrajectorySampler {
 
@@ -72,5 +74,7 @@ class TrajectorySampler {
     private bool overlapRange(float amin, float amax, float bmin, float bmax) {
         return (amin > bmax || amax < bmin) ? false : true;
     }
+
+}
 
 }

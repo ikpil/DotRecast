@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 
 using System;
 
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 public static class DetourCommon {
 
@@ -633,5 +635,7 @@ public static class DetourCommon {
     public static bool vIsFinite2D(float[] v) {
         return float.IsFinite(v[0]) && float.IsFinite(v[2]);
     }
+
+}
 
 }

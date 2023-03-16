@@ -18,7 +18,9 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 
-namespace DotRecast.Core;
+namespace DotRecast.Core
+{
+
 
 public static class ConvexUtils {
 
@@ -27,7 +29,7 @@ public static class ConvexUtils {
     // returns number of points on hull.
     public static List<int> convexhull(List<float> pts) {
         int npts = pts.Count / 3;
-        List<int> @out = new();
+        List<int> @out = new List<int>();
         // Find lower-leftmost point.
         int hull = 0;
         for (int i = 1; i < npts; ++i) {
@@ -81,5 +83,7 @@ public static class ConvexUtils {
         float v2 = c[2] - a[2];
         return u1 * v2 - v1 * u2 < 0;
     }
+
+}
 
 }

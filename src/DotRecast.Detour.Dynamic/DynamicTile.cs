@@ -20,13 +20,14 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Collections.ObjectModel;
 using System.Linq;
 using DotRecast.Detour.Dynamic.Colliders;
 using DotRecast.Detour.Dynamic.Io;
 using DotRecast.Recast;
 
-namespace DotRecast.Detour.Dynamic;
+namespace DotRecast.Detour.Dynamic
+{
+
 
 public class DynamicTile {
 
@@ -34,7 +35,7 @@ public class DynamicTile {
     public DynamicTileCheckpoint checkpoint;
     public RecastBuilderResult recastResult;
     MeshData meshData;
-    private readonly ConcurrentDictionary<long, Collider> colliders = new();
+    private readonly ConcurrentDictionary<long, Collider> colliders = new ConcurrentDictionary<long, Collider>();
     private bool dirty = true;
     private long id;
 
@@ -55,7 +56,7 @@ public class DynamicTile {
     }
 
     private Heightfield buildHeightfield(DynamicNavMeshConfig config, Telemetry telemetry) {
-        ICollection<long> rasterizedColliders = checkpoint != null ? checkpoint.colliders : ImmutableArray<long>.Empty;
+        ICollection<long> rasterizedColliders = checkpoint != null ? checkpoint.colliders : ImmutableHashSet<long>.Empty;
         Heightfield heightfield = checkpoint != null ? checkpoint.heightfield : voxelTile.heightfield();
         foreach (var (cid, c) in colliders) {
             if (!rasterizedColliders.Contains(cid)) {
@@ -151,4 +152,6 @@ public class DynamicTile {
             id = 0;
         }
     }
+}
+
 }

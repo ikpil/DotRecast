@@ -26,7 +26,9 @@ using DotRecast.Detour.TileCache.Io;
 using DotRecast.Detour.TileCache.Io.Compress;
 using static DotRecast.Detour.DetourCommon;
 
-namespace DotRecast.Detour.TileCache;
+namespace DotRecast.Detour.TileCache
+{
+
 
 public class TileCacheBuilder {
 
@@ -42,7 +44,7 @@ public class TileCacheBuilder {
 
     public class LayerMonotoneRegion {
         public int area;
-        public List<int> neis = new(16);
+        public List<int> neis = new List<int>(16);
         public int regId;
         public int areaId;
     };
@@ -53,9 +55,9 @@ public class TileCacheBuilder {
         public List<int> poly;
 
         public TempContour() {
-            verts = new();
+            verts = new List<int>();
             nverts = 0;
-            poly = new();
+            poly = new List<int>();
         }
 
         public int npoly() {
@@ -1195,7 +1197,7 @@ public class TileCacheBuilder {
             return false;
 
         // Find edges which share the removed vertex.
-        List<int> edges = new();
+        List<int> edges = new List<int>();
         int nedges = 0;
 
         for (int i = 0; i < mesh.npolys; ++i) {
@@ -1262,10 +1264,10 @@ public class TileCacheBuilder {
         }
 
         int nedges = 0;
-        List<int> edges = new();
+        List<int> edges = new List<int>();
         int nhole = 0;
-        List<int> hole = new();
-        List<int> harea = new();
+        List<int> hole = new List<int>();
+        List<int> harea = new List<int>();
 
         for (int i = 0; i < mesh.npolys; ++i) {
             int p = i * maxVertsPerPoly * 2;
@@ -1839,5 +1841,7 @@ public class TileCacheBuilder {
         }
 
     }
+
+}
 
 }

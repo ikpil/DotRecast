@@ -3,7 +3,9 @@ using System;
 using DotRecast.Recast;
 using static DotRecast.Detour.DetourCommon;
 
-namespace DotRecast.Detour.Extras.Jumplink;
+namespace DotRecast.Detour.Extras.Jumplink
+{
+
 
 public abstract class AbstractGroundSampler : GroundSampler {
 
@@ -44,5 +46,7 @@ public abstract class AbstractGroundSampler : GroundSampler {
             s.validHeight = true;
         }
     }
+
+}
 
 }

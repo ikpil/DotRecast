@@ -21,7 +21,9 @@ using System.IO.Compression;
 using DotRecast.Core;
 using DotRecast.Detour.Io;
 
-namespace DotRecast.Detour.Extras.Unity.Astar;
+namespace DotRecast.Detour.Extras.Unity.Astar
+{
+
 
 public abstract class ZipBinaryReader {
 
@@ -33,5 +35,7 @@ public abstract class ZipBinaryReader {
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         return buffer;
     }
+
+}
 
 }

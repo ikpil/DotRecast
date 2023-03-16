@@ -27,17 +27,19 @@ using DotRecast.Detour.Dynamic.Colliders;
 using DotRecast.Detour.Dynamic.Io;
 using DotRecast.Recast;
 
-namespace DotRecast.Detour.Dynamic;
+namespace DotRecast.Detour.Dynamic
+{
+
 
 public class DynamicNavMesh {
 
     public const int MAX_VERTS_PER_POLY = 6;
     public readonly DynamicNavMeshConfig config;
     private readonly RecastBuilder builder;
-    private readonly Dictionary<long, DynamicTile> _tiles = new();
+    private readonly Dictionary<long, DynamicTile> _tiles = new Dictionary<long, DynamicTile>();
     private readonly Telemetry telemetry;
     private readonly NavMeshParams navMeshParams;
-    private readonly BlockingCollection<UpdateQueueItem> updateQueue = new();
+    private readonly BlockingCollection<UpdateQueueItem> updateQueue = new BlockingCollection<UpdateQueueItem>();
     private readonly AtomicLong currentColliderId = new AtomicLong(0);
     private NavMesh _navMesh;
     private bool dirty = true;
@@ -127,7 +129,7 @@ public class DynamicNavMesh {
     }
 
     private List<UpdateQueueItem> consumeQueue() {
-        List<UpdateQueueItem> items = new();
+        List<UpdateQueueItem> items = new List<UpdateQueueItem>();
         while (updateQueue.TryTake(out var item)) {
             items.Add(item);
         }
@@ -170,7 +172,7 @@ public class DynamicNavMesh {
         int minz = (int) Math.Floor((bounds[2] - navMeshParams.orig[2]) / navMeshParams.tileHeight);
         int maxx = (int) Math.Floor((bounds[3] - navMeshParams.orig[0]) / navMeshParams.tileWidth);
         int maxz = (int) Math.Floor((bounds[5] - navMeshParams.orig[2]) / navMeshParams.tileHeight);
-        List<DynamicTile> tiles = new();
+        List<DynamicTile> tiles = new List<DynamicTile>();
         for (int z = minz; z <= maxz; ++z) {
             for (int x = minx; x <= maxx; ++x) {
                 DynamicTile tile = getTileAt(x, z);
@@ -222,5 +224,7 @@ public class DynamicNavMesh {
     public List<RecastBuilderResult> recastResults() {
         return _tiles.Values.Select(t => t.recastResult).ToList();
     }
+
+}
 
 }

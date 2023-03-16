@@ -1,6 +1,8 @@
 using DotRecast.Core;
 
-namespace DotRecast.Detour.Io;
+namespace DotRecast.Detour.Io
+{
+
 
 public class NavMeshParamReader {
 
@@ -15,5 +17,7 @@ public class NavMeshParamReader {
 		option.maxPolys = bb.getInt();
 		return option;
 	}
+
+}
 
 }

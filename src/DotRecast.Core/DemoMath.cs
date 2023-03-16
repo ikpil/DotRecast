@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 
 using System;
 
-namespace DotRecast.Core;
+namespace DotRecast.Core
+{
+
 
 public class DemoMath {
     public static float vDistSqr(float[] v1, float[] v2, int i) {
@@ -76,4 +78,6 @@ public class DemoMath {
     public static float lerp(float f, float g, float u) {
         return u * g + (1f - u) * f;
     }
+}
+
 }

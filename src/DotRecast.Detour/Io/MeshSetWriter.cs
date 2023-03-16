@@ -19,7 +19,9 @@ freely, subject to the following restrictions:
 using System.IO;
 using DotRecast.Core;
 
-namespace DotRecast.Detour.Io;
+namespace DotRecast.Detour.Io
+{
+
 
 public class MeshSetWriter : DetourWriter {
 
@@ -74,5 +76,7 @@ public class MeshSetWriter : DetourWriter {
             stream.Write(ba);
         }
     }
+
+}
 
 }

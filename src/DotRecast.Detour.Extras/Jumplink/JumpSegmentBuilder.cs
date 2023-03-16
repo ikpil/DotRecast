@@ -3,7 +3,9 @@ using System.Collections.Generic;
 
 using DotRecast.Core;
 
-namespace DotRecast.Detour.Extras.Jumplink;
+namespace DotRecast.Detour.Extras.Jumplink
+{
+
 
 class JumpSegmentBuilder {
 
@@ -91,5 +93,7 @@ class JumpSegmentBuilder {
             queue.Enqueue(new int[] { i, j });
         }
     }
+
+}
 
 }

@@ -21,7 +21,9 @@ using System.Collections.Generic;
 using DotRecast.Core;
 using DotRecast.Recast;
 
-namespace DotRecast.Detour.Dynamic.Io;
+namespace DotRecast.Detour.Dynamic.Io
+{
+
 
 public class VoxelFile {
 
@@ -54,7 +56,7 @@ public class VoxelFile {
     public int tileSizeZ;
     public float[] rotation = new float[3];
     public float[] bounds = new float[6];
-    public readonly List<VoxelTile> tiles = new();
+    public readonly List<VoxelTile> tiles = new List<VoxelTile>();
 
     public void addTile(VoxelTile tile) {
         tiles.Add(tile);
@@ -144,5 +146,7 @@ public class VoxelFile {
         }
         return f;
     }
+
+}
 
 }

@@ -19,7 +19,9 @@ freely, subject to the following restrictions:
 using System;
 using DotRecast.Recast;
 
-namespace DotRecast.Detour.Dynamic.Colliders;
+namespace DotRecast.Detour.Dynamic.Colliders
+{
+
 
 public class SphereCollider : AbstractCollider {
 
@@ -41,5 +43,7 @@ public class SphereCollider : AbstractCollider {
         return new float[] { center[0] - radius, center[1] - radius, center[2] - radius, center[0] + radius, center[1] + radius,
                 center[2] + radius };
     }
+
+}
 
 }

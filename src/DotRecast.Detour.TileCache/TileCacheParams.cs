@@ -17,7 +17,9 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-namespace DotRecast.Detour.TileCache;
+namespace DotRecast.Detour.TileCache
+{
+
 
 public class TileCacheParams {
     public readonly float[] orig = new float[3];
@@ -29,5 +31,7 @@ public class TileCacheParams {
     public float maxSimplificationError;
     public int maxTiles;
     public int maxObstacles;
+
+}
 
 }

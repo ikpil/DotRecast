@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 
 public class MoveAlongSurfaceResult {
@@ -42,5 +44,7 @@ public class MoveAlongSurfaceResult {
     public List<long> getVisited() {
         return visited;
     }
+
+}
 
 }

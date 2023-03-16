@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 
 /**
@@ -32,9 +34,11 @@ public class RaycastHit {
     /** hitNormal The normal of the nearest wall hit. [(x, y, z)] */
     public readonly float[] hitNormal = new float[3];
     /** Visited polygons. */
-    public readonly List<long> path = new();
+    public readonly List<long> path = new List<long>();
     /** The cost of the path until hit. */
     public float pathCost;
     /** The index of the edge on the readonly polygon where the wall was hit. */
     public int hitEdgeIndex;
+}
+
 }

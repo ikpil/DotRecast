@@ -18,7 +18,9 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 
-namespace DotRecast.Detour.Dynamic;
+namespace DotRecast.Detour.Dynamic
+{
+
 
 public class RemoveColliderQueueItem : UpdateQueueItem {
 
@@ -37,5 +39,7 @@ public class RemoveColliderQueueItem : UpdateQueueItem {
     public void process(DynamicTile tile) {
         tile.removeCollider(colliderId);
     }
+
+}
 
 }

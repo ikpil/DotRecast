@@ -1,6 +1,8 @@
 ﻿using System.IO;
 
-namespace DotRecast.Core;
+namespace DotRecast.Core
+{
+
 
 public static class Loader
 {
@@ -29,4 +31,5 @@ public static class Loader
 
         return filename;
     }
+}
 }

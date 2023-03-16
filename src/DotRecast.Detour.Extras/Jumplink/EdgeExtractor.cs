@@ -3,11 +3,13 @@ using DotRecast.Recast;
 using static DotRecast.Recast.RecastConstants;
 
 
-namespace DotRecast.Detour.Extras.Jumplink;
+namespace DotRecast.Detour.Extras.Jumplink
+{
+
 
 public class EdgeExtractor {
     public Edge[] extractEdges(PolyMesh mesh) {
-        List<Edge> edges = new();
+        List<Edge> edges = new List<Edge>();
         if (mesh != null) {
             float[] orig = mesh.bmin;
             float cs = mesh.cs;
@@ -54,5 +56,7 @@ public class EdgeExtractor {
 
         return edges.ToArray();
     }
+
+}
 
 }

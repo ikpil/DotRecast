@@ -18,7 +18,9 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 /**
  * Contains triangle meshes that represent detailed height data associated with the polygons in its associated polygon
@@ -43,4 +45,5 @@ public class PolyMeshDetail
 
     /** The number of triangles in #tris. */
     public int ntris;
+}
 }

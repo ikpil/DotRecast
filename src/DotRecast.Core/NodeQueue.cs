@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 
 using System;
 
-namespace DotRecast.Core;
+namespace DotRecast.Core
+{
+
 
 using System.Collections.Generic;
 
@@ -32,7 +34,7 @@ public class OrderedQueue<T>
 
     public OrderedQueue(Comparison<T> comparison)
     {
-        _items = new();
+        _items = new List<T>();
         _comparison = comparison;
     }
 
@@ -70,4 +72,6 @@ public class OrderedQueue<T>
     {
         return 0 == _items.Count;
     }
+}
+
 }

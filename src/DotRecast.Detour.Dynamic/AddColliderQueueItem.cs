@@ -19,7 +19,9 @@ freely, subject to the following restrictions:
 using System.Collections.Generic;
 using DotRecast.Detour.Dynamic.Colliders;
 
-namespace DotRecast.Detour.Dynamic;
+namespace DotRecast.Detour.Dynamic
+{
+
 
 public class AddColliderQueueItem : UpdateQueueItem {
 
@@ -40,5 +42,7 @@ public class AddColliderQueueItem : UpdateQueueItem {
     public void process(DynamicTile tile) {
         tile.addCollider(colliderId, collider);
     }
+
+}
 
 }

@@ -22,7 +22,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 using static RecastConstants;
 
@@ -360,7 +362,7 @@ public class RecastRegion {
             }
         }
 
-        List<int> dirtyEntries = new();
+        List<int> dirtyEntries = new List<int>();
         int iter = 0;
         while (stack.Count > 0) {
             int failed = 0;
@@ -493,8 +495,8 @@ public class RecastRegion {
         public Region(int i) {
             id = i;
             ymin = 0xFFFF;
-            connections = new();
-            floors = new();
+            connections = new List<int>();
+            floors = new List<int>();
         }
 
     }
@@ -563,7 +565,7 @@ public class RecastRegion {
         int bid = regb.id;
 
         // Duplicate current neighbourhood.
-        List<int> acon = new(rega.connections);
+        List<int> acon = new List<int>(rega.connections);
         List<int> bcon = regb.connections;
 
         // Find insertion point on A.
@@ -770,8 +772,8 @@ public class RecastRegion {
         }
 
         // Remove too small regions.
-        List<int> stack = new(32);
-        List<int> trace = new(32);
+        List<int> stack = new List<int>(32);
+        List<int> trace = new List<int>(32);
         for (int i = 0; i < nreg; ++i) {
             Region reg = regions[i];
             if (reg.id == 0 || (reg.id & RC_BORDER_REG) != 0) {
@@ -966,7 +968,7 @@ public class RecastRegion {
         }
 
         // Find region neighbours and overlapping regions.
-        List<int> lregs = new(32);
+        List<int> lregs = new List<int>(32);
         for (int y = 0; y < h; ++y) {
             for (int x = 0; x < w; ++x) {
                 CompactCell c = chf.cells[x + y * w];
@@ -1029,7 +1031,7 @@ public class RecastRegion {
         }
 
         // Merge montone regions to create non-overlapping areas.
-        List<int> stack = new(32);
+        List<int> stack = new List<int>(32);
         for (int i = 1; i < nreg; ++i) {
             Region root = regions[i];
             // Skip already visited.
@@ -1333,7 +1335,7 @@ public class RecastRegion {
         ctx.startTimer("REGIONS_FILTER");
 
         // Merge regions and filter out small regions.
-        List<int> overlaps = new();
+        List<int> overlaps = new List<int>();
         chf.maxRegions = mergeAndFilterRegions(ctx, minRegionArea, mergeRegionArea, id, chf, srcReg, overlaps);
 
         // Monotone partitioning does not generate overlapping regions.
@@ -1380,12 +1382,12 @@ public class RecastRegion {
 
         int LOG_NB_STACKS = 3;
         int NB_STACKS = 1 << LOG_NB_STACKS;
-        List<List<int>> lvlStacks = new();
+        List<List<int>> lvlStacks = new List<List<int>>();
         for (int i = 0; i < NB_STACKS; ++i) {
-            lvlStacks.Add(new (1024));
+            lvlStacks.Add(new List<int>(1024));
         }
 
-        List<int> stack = new(1024);
+        List<int> stack = new List<int>(1024);
 
         int[] srcReg = new int[chf.spanCount];
         int[] srcDist = new int[chf.spanCount];
@@ -1464,7 +1466,7 @@ public class RecastRegion {
         ctx.startTimer("REGIONS_FILTER");
 
         // Merge regions and filter out smalle regions.
-        List<int> overlaps = new();
+        List<int> overlaps = new List<int>();
         chf.maxRegions = mergeAndFilterRegions(ctx, minRegionArea, mergeRegionArea, regionId, chf, srcReg, overlaps);
 
         // If overlapping regions were found during merging, split those regions.
@@ -1603,7 +1605,7 @@ public class RecastRegion {
         ctx.startTimer("REGIONS_FILTER");
 
         // Merge monotone regions to layers and remove small regions.
-        List<int> overlaps = new();
+        List<int> overlaps = new List<int>();
         chf.maxRegions = mergeAndFilterLayerRegions(ctx, minRegionArea, id, chf, srcReg, overlaps);
 
         ctx.stopTimer("REGIONS_FILTER");
@@ -1616,4 +1618,6 @@ public class RecastRegion {
         ctx.stopTimer("REGIONS");
 
     }
+}
+
 }

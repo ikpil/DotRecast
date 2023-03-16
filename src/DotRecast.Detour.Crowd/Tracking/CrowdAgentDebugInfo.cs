@@ -17,7 +17,9 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-namespace DotRecast.Detour.Crowd.Tracking;
+namespace DotRecast.Detour.Crowd.Tracking
+{
+
 
 public class CrowdAgentDebugInfo {
 
@@ -25,5 +27,7 @@ public class CrowdAgentDebugInfo {
     public float[] optStart = new float[3];
     public float[] optEnd = new float[3];
     public ObstacleAvoidanceDebugData vod;
+
+}
 
 }

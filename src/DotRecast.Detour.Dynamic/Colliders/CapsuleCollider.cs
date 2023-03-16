@@ -19,7 +19,9 @@ freely, subject to the following restrictions:
 using System;
 using DotRecast.Recast;
 
-namespace DotRecast.Detour.Dynamic.Colliders;
+namespace DotRecast.Detour.Dynamic.Colliders
+{
+
 
 public class CapsuleCollider : AbstractCollider {
 
@@ -45,5 +47,7 @@ public class CapsuleCollider : AbstractCollider {
                 Math.Min(start[2], end[2]) - radius, Math.Max(start[0], end[0]) + radius, Math.Max(start[1], end[1]) + radius,
                 Math.Max(start[2], end[2]) + radius };
     }
+
+}
 
 }

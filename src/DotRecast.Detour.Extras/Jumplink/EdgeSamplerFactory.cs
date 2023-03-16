@@ -1,6 +1,8 @@
 using System;
 
-namespace DotRecast.Detour.Extras.Jumplink;
+namespace DotRecast.Detour.Extras.Jumplink
+{
+
 
 class EdgeSamplerFactory {
 
@@ -75,5 +77,7 @@ class EdgeSamplerFactory {
         dst[1] = ax[1] * pt[0] + ay[1] * pt[1];
         dst[2] = ax[2] * pt[0] + ay[2] * pt[1];
     }
+
+}
 
 }

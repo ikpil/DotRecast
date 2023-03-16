@@ -17,7 +17,9 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-namespace DotRecast.Detour.TileCache;
+namespace DotRecast.Detour.TileCache
+{
+
 
 public class TileCachePolyMesh {
     public int nvp;
@@ -31,4 +33,6 @@ public class TileCachePolyMesh {
     public TileCachePolyMesh(int nvp) {
         this.nvp = nvp;
     }
+}
+
 }

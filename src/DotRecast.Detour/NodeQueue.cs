@@ -17,13 +17,15 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 using System.Collections.Generic;
 
 public class NodeQueue {
     
-    private readonly List<Node> m_heap = new();
+    private readonly List<Node> m_heap = new List<Node>();
 
     public int count()
     {
@@ -60,4 +62,6 @@ public class NodeQueue {
     {
         return 0 == m_heap.Count;
     }
+}
+
 }

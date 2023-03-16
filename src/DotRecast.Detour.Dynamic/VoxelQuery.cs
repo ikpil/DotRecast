@@ -19,7 +19,9 @@ freely, subject to the following restrictions:
 using System;
 using DotRecast.Recast;
 
-namespace DotRecast.Detour.Dynamic;
+namespace DotRecast.Detour.Dynamic
+{
+
 
 
 /**
@@ -156,5 +158,7 @@ public class VoxelQuery {
 
         return null;
     }
+
+}
 
 }

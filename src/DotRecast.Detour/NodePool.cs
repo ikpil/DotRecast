@@ -20,14 +20,16 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 
 public class NodePool
 {
 
-    private readonly Dictionary<long, List<Node>> m_map = new();
-    private readonly List<Node> m_nodes = new();
+    private readonly Dictionary<long, List<Node>> m_map = new Dictionary<long, List<Node>>();
+    private readonly List<Node> m_nodes = new List<Node>();
 
     public NodePool() {
 
@@ -41,7 +43,7 @@ public class NodePool
     public List<Node> findNodes(long id) {
         var hasNode = m_map.TryGetValue(id, out var nodes);;
         if (nodes == null) {
-            nodes = new();
+            nodes = new List<Node>();
         }
         return nodes;
     }
@@ -73,7 +75,7 @@ public class NodePool
         m_nodes.Add(node);
         var hasNode = m_map.TryGetValue(id, out var nodes);;
         if (nodes == null) {
-            nodes = new();
+            nodes = new List<Node>();
             m_map.Add(id, nodes);
         }
         nodes.Add(node);
@@ -95,5 +97,7 @@ public class NodePool
     public Dictionary<long, List<Node>> getNodeMap() {
         return m_map;
     }
+
+}
 
 }

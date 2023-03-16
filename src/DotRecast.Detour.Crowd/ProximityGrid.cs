@@ -22,7 +22,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DotRecast.Detour.Crowd;
+namespace DotRecast.Detour.Crowd
+{
+
 
 public class ProximityGrid {
 
@@ -33,7 +35,7 @@ public class ProximityGrid {
     public ProximityGrid(float m_cellSize) {
         this.m_cellSize = m_cellSize;
         m_invCellSize = 1.0f / m_cellSize;
-        items = new();
+        items = new Dictionary<ItemKey, List<CrowdAgent>>();
     }
 
     void clear() {
@@ -50,7 +52,7 @@ public class ProximityGrid {
             for (int x = iminx; x <= imaxx; ++x) {
                 ItemKey key = new ItemKey(x, y);
                 if (!items.TryGetValue(key, out var ids)) {
-                    ids = new();
+                    ids = new List<CrowdAgent>();
                     items.Add(key, ids);
                 }
                 ids.Add(agent);
@@ -64,7 +66,7 @@ public class ProximityGrid {
         int imaxx = (int) Math.Floor(maxx * m_invCellSize);
         int imaxy = (int) Math.Floor(maxy * m_invCellSize);
 
-        HashSet<CrowdAgent> result = new();
+        HashSet<CrowdAgent> result = new HashSet<CrowdAgent>();
         for (int y = iminy; y <= imaxy; ++y) {
             for (int x = iminx; x <= imaxx; ++x) {
                 ItemKey key = new ItemKey(x, y);
@@ -127,4 +129,6 @@ public class ProximityGrid {
         }
 
     };
+}
+
 }

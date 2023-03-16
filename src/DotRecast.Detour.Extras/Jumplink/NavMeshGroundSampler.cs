@@ -2,7 +2,9 @@ using System;
 using DotRecast.Core;
 using DotRecast.Recast;
 
-namespace DotRecast.Detour.Extras.Jumplink;
+namespace DotRecast.Detour.Extras.Jumplink
+{
+
 
 class NavMeshGroundSampler : AbstractGroundSampler {
 
@@ -87,5 +89,7 @@ class NavMeshGroundSampler : AbstractGroundSampler {
         }
         return Tuple.Create(false, pt[1]);
     }
+
+}
 
 }

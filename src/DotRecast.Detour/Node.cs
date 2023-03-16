@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 
 public class Node {
@@ -58,5 +60,7 @@ public class Node {
     public override string ToString() {
         return "Node [id=" + id + "]";
     }
+
+}
 
 }

@@ -18,7 +18,9 @@ freely, subject to the following restrictions:
 
 using DotRecast.Core;
 
-namespace DotRecast.Detour.Dynamic.Io;
+namespace DotRecast.Detour.Dynamic.Io
+{
+
 
 public static class ByteUtils {
 
@@ -50,28 +52,30 @@ public static class ByteUtils {
 
     public static int putInt(int value, byte[] data, int position, ByteOrder order) {
         if (order == ByteOrder.BIG_ENDIAN) {
-            data[position] = (byte) (value >>> 24);
-            data[position + 1] = (byte) (value >>> 16);
-            data[position + 2] = (byte) (value >>> 8);
+            data[position] = (byte) ((uint)value >> 24);
+            data[position + 1] = (byte) ((uint)value >> 16);
+            data[position + 2] = (byte) ((uint)value >> 8);
             data[position + 3] = (byte) (value & 0xFF);
         } else {
             data[position] = (byte) (value & 0xFF);
-            data[position + 1] = (byte) (value >>> 8);
-            data[position + 2] = (byte) (value >>> 16);
-            data[position + 3] = (byte) (value >>> 24);
+            data[position + 1] = (byte) ((uint)value >> 8);
+            data[position + 2] = (byte) ((uint)value >> 16);
+            data[position + 3] = (byte) ((uint)value >> 24);
         }
         return position + 4;
     }
 
     public static int putShort(int value, byte[] data, int position, ByteOrder order) {
         if (order == ByteOrder.BIG_ENDIAN) {
-            data[position] = (byte) (value >>> 8);
+            data[position] = (byte) ((uint)value >> 8);
             data[position + 1] = (byte) (value & 0xFF);
         } else {
             data[position] = (byte) (value & 0xFF);
-            data[position + 1] = (byte) (value >>> 8);
+            data[position + 1] = (byte) ((uint)value >> 8);
         }
         return position + 2;
     }
+
+}
 
 }

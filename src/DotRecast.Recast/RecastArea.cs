@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 
 using System;
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 using static RecastConstants;
 
@@ -582,4 +584,5 @@ public class RecastArea
 
         ctx.stopTimer("MARK_CYLINDER_AREA");
     }
+}
 }

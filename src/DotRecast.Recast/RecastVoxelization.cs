@@ -19,7 +19,9 @@ freely, subject to the following restrictions:
 using System.Collections.Generic;
 using DotRecast.Recast.Geom;
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 public class RecastVoxelization {
 
@@ -69,5 +71,7 @@ public class RecastVoxelization {
 
         return solid;
     }
+
+}
 
 }

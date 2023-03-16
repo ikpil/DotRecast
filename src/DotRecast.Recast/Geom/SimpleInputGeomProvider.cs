@@ -22,7 +22,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
-namespace DotRecast.Recast.Geom;
+namespace DotRecast.Recast.Geom
+{
+
 
 public class SimpleInputGeomProvider : InputGeomProvider
 {
@@ -31,7 +33,7 @@ public class SimpleInputGeomProvider : InputGeomProvider
     public readonly float[] normals;
     readonly float[] bmin;
     readonly float[] bmax;
-    readonly List<ConvexVolume> volumes = new();
+    readonly List<ConvexVolume> volumes = new List<ConvexVolume>();
 
     public SimpleInputGeomProvider(List<float> vertexPositions, List<int> meshFaces)
         : this(mapVertices(vertexPositions), mapFaces(meshFaces))
@@ -102,8 +104,7 @@ public class SimpleInputGeomProvider : InputGeomProvider
         volumes.Add(vol);
     }
 
-    public IEnumerable<TriMesh> meshes()
-    {
+    public IEnumerable<TriMesh> meshes() {
         return ImmutableArray.Create(new TriMesh(vertices, faces));
     }
 
@@ -134,4 +135,5 @@ public class SimpleInputGeomProvider : InputGeomProvider
             }
         }
     }
+}
 }

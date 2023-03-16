@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 
 using System;
 
-namespace DotRecast.Detour.Crowd;
+namespace DotRecast.Detour.Crowd
+{
+
 
 /// Configuration parameters for a crowd agent.
 /// @ingroup crowd
@@ -59,4 +61,5 @@ public class CrowdAgentParams {
 
     /// User defined data attached to the agent.
     public object userData;
+}
 }

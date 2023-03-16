@@ -300,6 +300,7 @@ public class RecastSoloMeshTest
         }
         catch (Exception e)
         {
+            Console.WriteLine(e);
         }
     }
 
@@ -332,6 +333,7 @@ public class RecastSoloMeshTest
         }
         catch (Exception e)
         {
+            Console.WriteLine(e);
         }
     }
 }

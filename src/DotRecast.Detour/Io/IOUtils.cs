@@ -20,7 +20,9 @@ using System;
 using System.IO;
 using DotRecast.Core;
 
-namespace DotRecast.Detour.Io;
+namespace DotRecast.Detour.Io
+{
+
 
 public static class IOUtils {
 
@@ -51,8 +53,11 @@ public static class IOUtils {
 		return new ByteBuffer(bytes);
 	}
 
-	public static int swapEndianness(int i) {
-		var s = ((i >>> 24) & 0xFF) | ((i>>8) & 0xFF00) | ((i<<8) & 0xFF0000) | ((i << 24) & 0xFF000000);
+	public static int swapEndianness(int i)
+	{
+		var s = (((uint)i >> 24) & 0xFF) | (((uint)i>>8) & 0xFF00) | (((uint)i<<8) & 0xFF0000) | ((i << 24) & 0xFF000000);
 		return (int)s;
 	}
+}
+
 }

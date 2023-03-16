@@ -19,7 +19,9 @@ freely, subject to the following restrictions:
 using System.IO;
 using DotRecast.Core;
 
-namespace DotRecast.Detour.Io;
+namespace DotRecast.Detour.Io
+{
+
 
 public class MeshDataReader {
 
@@ -197,5 +199,7 @@ public class MeshDataReader {
         }
         return cons;
     }
+
+}
 
 }

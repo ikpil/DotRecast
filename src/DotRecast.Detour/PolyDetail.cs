@@ -17,7 +17,9 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 /** Defines the location of detail sub-mesh data within a dtMeshTile. */
 public class PolyDetail {
@@ -29,4 +31,6 @@ public class PolyDetail {
     public int vertCount;
     /** The number of triangles in the sub-mesh. */
     public int triCount;
+}
+
 }

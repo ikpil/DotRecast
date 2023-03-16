@@ -1,6 +1,8 @@
 using System;
 
-namespace DotRecast.Detour.Extras.Jumplink;
+namespace DotRecast.Detour.Extras.Jumplink
+{
+
 
 public class Trajectory {
 
@@ -12,5 +14,7 @@ public class Trajectory {
     {
         throw new NotImplementedException();
     }
+
+}
 
 }

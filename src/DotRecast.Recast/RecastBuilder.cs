@@ -25,7 +25,9 @@ using System.Threading.Tasks;
 using DotRecast.Core;
 using DotRecast.Recast.Geom;
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 public class RecastBuilder
 {
@@ -52,7 +54,7 @@ public class RecastBuilder
         int[] twh = Recast.calcTileCount(bmin, bmax, cfg.cs, cfg.tileSizeX, cfg.tileSizeZ);
         int tw = twh[0];
         int th = twh[1];
-        List<RecastBuilderResult> results = new();
+        List<RecastBuilderResult> results = new List<RecastBuilderResult>();
         if (null != taskFactory)
         {
             buildMultiThreadAsync(geom, cfg, bmin, bmax, tw, th, results, taskFactory, default);
@@ -104,7 +106,7 @@ public class RecastBuilder
     {
         AtomicInteger counter = new AtomicInteger(0);
         CountdownEvent latch = new CountdownEvent(tw * th);
-        List<Task> tasks = new();
+        List<Task> tasks = new List<Task>();
 
         for (int x = 0; x < tw; ++x)
         {
@@ -317,4 +319,5 @@ public class RecastBuilder
         CompactHeightfield chf = buildCompactHeightfield(geom, builderCfg.cfg, ctx, solid);
         return RecastLayers.buildHeightfieldLayers(ctx, chf, builderCfg.cfg.walkableHeight);
     }
+}
 }

@@ -18,7 +18,9 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 public static class RecastConstants
 {
@@ -82,4 +84,5 @@ public static class RecastConstants
 
 
     public const int RC_LOG_WARNING = 1;
+}
 }

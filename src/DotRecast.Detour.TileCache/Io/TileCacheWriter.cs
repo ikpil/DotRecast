@@ -22,7 +22,9 @@ using System.IO;
 using DotRecast.Core;
 using DotRecast.Detour.Io;
 
-namespace DotRecast.Detour.TileCache.Io;
+namespace DotRecast.Detour.TileCache.Io
+{
+
 
 public class TileCacheWriter : DetourWriter {
 
@@ -71,5 +73,7 @@ public class TileCacheWriter : DetourWriter {
         write(stream, option.maxTiles, order);
         write(stream, option.maxObstacles, order);
     }
+
+}
 
 }

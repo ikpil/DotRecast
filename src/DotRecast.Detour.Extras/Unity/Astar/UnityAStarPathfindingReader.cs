@@ -20,7 +20,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 
-namespace DotRecast.Detour.Extras.Unity.Astar;
+namespace DotRecast.Detour.Extras.Unity.Astar
+{
+
 
 public class UnityAStarPathfindingReader {
 
@@ -47,9 +49,9 @@ public class UnityAStarPathfindingReader {
         // Read NodeLink2 data (off-mesh links)
         NodeLink2[] nodeLinks2 = nodeLink2Reader.read(file, NODE_LINK_2_FILE_NAME, indexToNode);
         // Read graph by graph
-        List<GraphMeta> metaList = new();
-        List<GraphMeshData> meshDataList = new();
-        List<List<int[]>> connectionsList = new();
+        List<GraphMeta> metaList = new List<GraphMeta>();
+        List<GraphMeshData> meshDataList = new List<GraphMeshData>();
+        List<List<int[]>> connectionsList = new List<List<int[]>>();
         for (int graphIndex = 0; graphIndex < meta.graphs; graphIndex++) {
             GraphMeta graphMeta = graphMetaReader.read(file, string.Format(GRAPH_META_FILE_NAME_PATTERN, graphIndex));
             // First graph mesh data - vertices and polygons
@@ -64,4 +66,6 @@ public class UnityAStarPathfindingReader {
         }
         return new GraphData(meta, indexToNode, nodeLinks2, metaList, meshDataList, connectionsList);
     }
+}
+
 }

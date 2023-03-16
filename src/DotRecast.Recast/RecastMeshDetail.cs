@@ -22,7 +22,9 @@ using System;
 using System.Collections.Generic;
 using DotRecast.Core;
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 using static RecastCommon;
 using static RecastConstants;
@@ -454,7 +456,7 @@ public class RecastMeshDetail {
     private static void delaunayHull(Telemetry ctx, int npts, float[] pts, int nhull, int[] hull, List<int> tris) {
         int nfaces = 0;
         int maxEdges = npts * 10;
-        List<int> edges = new(64);
+        List<int> edges = new List<int>(64);
         for (int i = 0, j = nhull - 1; i < nhull; j = i++) {
             addEdge(ctx, edges, maxEdges, hull[j], hull[i], EV_HULL, EV_UNDEF);
         }
@@ -618,7 +620,7 @@ public class RecastMeshDetail {
     static int buildPolyDetail(Telemetry ctx, float[] @in, int nin, float sampleDist, float sampleMaxError,
             int heightSearchRadius, CompactHeightfield chf, HeightPatch hp, float[] verts, List<int> tris) {
 
-        List<int> samples = new(512);
+        List<int> samples = new List<int>(512);
 
         int nverts = 0;
         float[] edge = new float[(MAX_VERTS_PER_EDGE + 1) * 3];
@@ -988,7 +990,7 @@ public class RecastMeshDetail {
         // Note: Reads to the compact heightfield are offset by border size (bs)
         // since border size offset is already removed from the polymesh vertices.
 
-        List<int> queue = new(512);
+        List<int> queue = new List<int>(512);
         Array.Fill(hp.data, RC_UNSET_HEIGHT, 0, (hp.width * hp.height) - (0));
 
         bool empty = true;
@@ -1127,7 +1129,7 @@ public class RecastMeshDetail {
         int borderSize = mesh.borderSize;
         int heightSearchRadius = (int) Math.Max(1, Math.Ceiling(mesh.maxEdgeError));
 
-        List<int> tris = new(512);
+        List<int> tris = new List<int>(512);
         float[] verts = new float[256 * 3];
         HeightPatch hp = new HeightPatch();
         int nPolyVerts = 0;
@@ -1331,5 +1333,7 @@ public class RecastMeshDetail {
         ctx.stopTimer("MERGE_POLYMESHDETAIL");
         return mesh;
     }
+
+}
 
 }

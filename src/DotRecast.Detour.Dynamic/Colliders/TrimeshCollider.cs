@@ -19,7 +19,9 @@ freely, subject to the following restrictions:
 using System;
 using DotRecast.Recast;
 
-namespace DotRecast.Detour.Dynamic.Colliders;
+namespace DotRecast.Detour.Dynamic.Colliders
+{
+
 
 public class TrimeshCollider : AbstractCollider {
 
@@ -57,5 +59,7 @@ public class TrimeshCollider : AbstractCollider {
                     (int) Math.Floor(flagMergeThreshold / hf.ch), telemetry);
         }
     }
+
+}
 
 }

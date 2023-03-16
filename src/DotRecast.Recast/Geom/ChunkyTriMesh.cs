@@ -21,7 +21,9 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 
-namespace DotRecast.Recast.Geom;
+namespace DotRecast.Recast.Geom
+{
+
 
 public class ChunkyTriMesh
 {
@@ -150,7 +152,7 @@ public class ChunkyTriMesh
     {
         int nchunks = (ntris + trisPerChunk - 1) / trisPerChunk;
 
-        nodes = new(nchunks);
+        nodes = new List<ChunkyTriMeshNode>(nchunks);
         this.ntris = ntris;
 
         // Build tree
@@ -219,7 +221,7 @@ public class ChunkyTriMesh
     public List<ChunkyTriMeshNode> getChunksOverlappingRect(float[] bmin, float[] bmax)
     {
         // Traverse tree
-        List<ChunkyTriMeshNode> ids = new();
+        List<ChunkyTriMeshNode> ids = new List<ChunkyTriMeshNode>();
         int i = 0;
         while (i < nodes.Count)
         {
@@ -244,4 +246,5 @@ public class ChunkyTriMesh
 
         return ids;
     }
+}
 }

@@ -19,7 +19,9 @@ freely, subject to the following restrictions:
 using System;
 using System.Text.RegularExpressions;
 
-namespace DotRecast.Detour.Extras.Unity.Astar;
+namespace DotRecast.Detour.Extras.Unity.Astar
+{
+
 
 public class Meta {
 
@@ -69,5 +71,7 @@ public class Meta {
         }
         return false;
     }
+
+}
 
 }

@@ -1,4 +1,6 @@
-﻿namespace DotRecast.Recast;
+﻿namespace DotRecast.Recast
+{
+
 
 public class RecastBuilderResult
 {
@@ -53,4 +55,6 @@ public class RecastBuilderResult
     {
         return telemetry;
     }
+}
+
 }

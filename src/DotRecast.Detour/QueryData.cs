@@ -17,7 +17,9 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 public class QueryData {
     public Status status;
@@ -30,4 +32,5 @@ public class QueryData {
     public int options;
     public float raycastLimitSqr;
     public QueryHeuristic heuristic;
+}
 }

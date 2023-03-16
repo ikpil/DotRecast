@@ -17,7 +17,9 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 /**
  * Bounding volume node.
@@ -32,4 +34,6 @@ public class BVNode {
     public int[] bmax = new int[3];
     /** The node's index. (Negative for escape sequence.) */
     public int i;
+}
+
 }

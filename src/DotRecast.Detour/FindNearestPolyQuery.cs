@@ -1,6 +1,8 @@
 using System;
 
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 using static DetourCommon;
 
@@ -49,5 +51,7 @@ public class FindNearestPolyQuery : PolyQuery {
     public FindNearestPolyResult result() {
         return new FindNearestPolyResult(nearestRef, nearestPt, overPoly);
     }
+
+}
 
 }

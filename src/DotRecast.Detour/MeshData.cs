@@ -17,7 +17,9 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 public class MeshData {
 
@@ -43,4 +45,5 @@ public class MeshData {
     /** The tile off-mesh connections. [Size: MeshHeader::offMeshConCount] */
     public OffMeshConnection[] offMeshCons;
 
+}
 }

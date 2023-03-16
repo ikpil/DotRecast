@@ -15,7 +15,9 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-namespace DotRecast.Detour.Extras.Unity.Astar;
+namespace DotRecast.Detour.Extras.Unity.Astar
+{
+
 
 public class NodeLink2 {
     public readonly long linkID;
@@ -31,5 +33,7 @@ public class NodeLink2 {
         this.clamped1 = clamped1;
         this.clamped2 = clamped2;
     }
+
+}
 
 }

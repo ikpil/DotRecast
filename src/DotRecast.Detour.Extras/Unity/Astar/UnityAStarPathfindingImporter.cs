@@ -20,7 +20,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace DotRecast.Detour.Extras.Unity.Astar;
+namespace DotRecast.Detour.Extras.Unity.Astar
+{
+
 
 /**
  * Import navmeshes created with A* Pathfinding Project Unity plugin (https://arongranberg.com/astar/). Graph data is
@@ -71,5 +73,7 @@ public class UnityAStarPathfindingImporter {
         }
         return meshes;
     }
+
+}
 
 }

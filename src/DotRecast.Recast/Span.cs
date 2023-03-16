@@ -17,7 +17,9 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 /** Represents a span in a heightfield. */
 public class Span {
@@ -30,5 +32,7 @@ public class Span {
     public int area;
     /** The next span higher up in column. */
     public Span next;
+
+}
 
 }

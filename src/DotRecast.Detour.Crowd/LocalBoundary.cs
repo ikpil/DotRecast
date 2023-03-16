@@ -21,7 +21,9 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 
-namespace DotRecast.Detour.Crowd;
+namespace DotRecast.Detour.Crowd
+{
+
 
 using static DetourCommon;
 
@@ -37,8 +39,8 @@ public class LocalBoundary {
     }
 
     float[] m_center = new float[3];
-    List<Segment> m_segs = new();
-    List<long> m_polys = new();
+    List<Segment> m_segs = new List<Segment>();
+    List<long> m_polys = new List<long>();
 
     public LocalBoundary() {
         m_center[0] = m_center[1] = m_center[2] = float.MaxValue;
@@ -134,4 +136,6 @@ public class LocalBoundary {
     public int getSegmentCount() {
         return m_segs.Count;
     }
+}
+
 }

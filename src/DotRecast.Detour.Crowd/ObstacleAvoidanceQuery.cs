@@ -21,7 +21,9 @@ freely, subject to the following restrictions:
 using System;
 using DotRecast.Detour.Crowd.Tracking;
 
-namespace DotRecast.Detour.Crowd;
+namespace DotRecast.Detour.Crowd
+{
+
 
 using static DetourCommon;
 
@@ -506,4 +508,6 @@ public class ObstacleAvoidanceQuery {
 
         return Tuple.Create(ns, nvel);
     }
+}
+
 }

@@ -25,7 +25,9 @@ using System.Collections.ObjectModel;
 using DotRecast.Core;
 using DotRecast.Detour.Crowd.Tracking;
 
-namespace DotRecast.Detour.Crowd;
+namespace DotRecast.Detour.Crowd
+{
+
 
 using static DetourCommon;
 
@@ -177,7 +179,7 @@ public class Crowd {
 
         // Allocate temp buffer for merging paths.
         m_pathq = new PathQueue(config);
-        m_agents = new();
+        m_agents = new HashSet<CrowdAgent>();
 
         // The navQuery is mostly used for local searches, no need for large node pool.
         navMesh = nav;
@@ -334,7 +336,7 @@ public class Crowd {
      * @return List of active agents
      */
     public List<CrowdAgent> getActiveAgents() {
-        return new(m_agents);
+        return new List<CrowdAgent>(m_agents);
     }
 
     public float[] getQueryExtents() {
@@ -516,7 +518,7 @@ public class Crowd {
     private void updateMoveRequest(ICollection<CrowdAgent> agents, float dt) {
         _telemetry.start("updateMoveRequest");
 
-        OrderedQueue<CrowdAgent> queue = new((a1, a2) => a2.targetReplanTime.CompareTo(a1.targetReplanTime));
+        OrderedQueue<CrowdAgent> queue = new OrderedQueue<CrowdAgent>((a1, a2) => a2.targetReplanTime.CompareTo(a1.targetReplanTime));
 
         // Fire off new requests.
         foreach (CrowdAgent ag in agents) {
@@ -559,7 +561,7 @@ public class Crowd {
                         if (cr.succeeded()) {
                             reqPos = cr.result.getClosest();
                         } else {
-                            reqPath = new();
+                            reqPath = new List<long>();
                         }
                     } else {
                         vCopy(reqPos, ag.targetPos);
@@ -568,7 +570,7 @@ public class Crowd {
                     // Could not find path, start the request from current
                     // location.
                     vCopy(reqPos, ag.npos);
-                    reqPath = new();
+                    reqPath = new List<long>();
                     reqPath.Add(path[0]);
                 }
 
@@ -717,7 +719,7 @@ public class Crowd {
     private void updateTopologyOptimization(ICollection<CrowdAgent> agents, float dt) {
         _telemetry.start("updateTopologyOptimization");
 
-        OrderedQueue<CrowdAgent> queue = new((a1, a2) => a2.topologyOptTime.CompareTo(a1.topologyOptTime));
+        OrderedQueue<CrowdAgent> queue = new OrderedQueue<CrowdAgent>((a1, a2) => a2.topologyOptTime.CompareTo(a1.topologyOptTime));
 
         foreach (CrowdAgent ag in agents) {
             if (ag.state != CrowdAgent.CrowdAgentState.DT_CROWDAGENT_STATE_WALKING) {
@@ -779,7 +781,7 @@ public class Crowd {
 
     private List<CrowdNeighbour> getNeighbours(float[] pos, float height, float range, CrowdAgent skip, ProximityGrid grid) {
 
-        List<CrowdNeighbour> result = new();
+        List<CrowdNeighbour> result = new List<CrowdNeighbour>();
         HashSet<CrowdAgent> proxAgents = grid.queryItems(pos[0] - range, pos[2] - range, pos[0] + range, pos[2] + range);
 
         foreach (CrowdAgent ag in proxAgents) {
@@ -1168,5 +1170,7 @@ public class Crowd {
             this.dist = dist;
         }
     };
+
+}
 
 }

@@ -18,7 +18,9 @@ freely, subject to the following restrictions:
 
 using System;
 
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 using static DetourCommon;
 
@@ -91,4 +93,6 @@ public interface PolygonByCircleConstraint {
             return circle;
         }
     }
+}
+
 }

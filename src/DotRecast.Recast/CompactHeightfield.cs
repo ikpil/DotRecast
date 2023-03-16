@@ -18,7 +18,9 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-namespace DotRecast.Recast;
+namespace DotRecast.Recast
+{
+
 
 /** A compact, static heightfield representing unobstructed space. */
 public class CompactHeightfield
@@ -70,4 +72,5 @@ public class CompactHeightfield
 
     /** Array containing area id data. [Size: #spanCount] */
     public int[] areas;
+}
 }

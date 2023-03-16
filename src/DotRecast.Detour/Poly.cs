@@ -17,7 +17,9 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 /** Defines a polygon within a MeshTile object. */
 public class Poly {
@@ -67,5 +69,7 @@ public class Poly {
     public int getType() {
         return areaAndtype >> 6;
     }
+
+}
 
 }

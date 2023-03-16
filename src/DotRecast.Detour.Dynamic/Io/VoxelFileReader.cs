@@ -20,7 +20,9 @@ using System.IO;
 using DotRecast.Core;
 using DotRecast.Detour.Io;
 
-namespace DotRecast.Detour.Dynamic.Io;
+namespace DotRecast.Detour.Dynamic.Io
+{
+
 
 public class VoxelFileReader {
 
@@ -121,5 +123,7 @@ public class VoxelFileReader {
         }
         return file;
     }
+
+}
 
 }

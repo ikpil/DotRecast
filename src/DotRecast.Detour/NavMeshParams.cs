@@ -17,7 +17,9 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 /**
  * Configuration parameters used to define multi-tile navigation meshes. The values are used to allocate space during
@@ -36,4 +38,6 @@ public class NavMeshParams {
     public int maxTiles;
     /** The maximum number of polygons each tile can contain. */
     public int maxPolys;
+}
+
 }

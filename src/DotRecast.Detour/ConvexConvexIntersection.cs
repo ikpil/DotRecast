@@ -18,7 +18,9 @@ freely, subject to the following restrictions:
 
 using System;
 
-namespace DotRecast.Detour;
+namespace DotRecast.Detour
+{
+
 
 using static DetourCommon;
 
@@ -234,4 +236,6 @@ public static class ConvexConvexIntersection {
             return ((a[2] <= c[2]) && (c[2] <= b[2])) || ((a[2] >= c[2]) && (c[2] >= b[2]));
         }
     }
+}
+
 }

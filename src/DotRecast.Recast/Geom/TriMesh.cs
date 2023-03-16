@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 
-namespace DotRecast.Recast.Geom;
+namespace DotRecast.Recast.Geom
+{
+
 
 public class TriMesh
 {
@@ -49,4 +51,5 @@ public class TriMesh
     {
         return chunkyTriMesh.getChunksOverlappingRect(bmin, bmax);
     }
+}
 }

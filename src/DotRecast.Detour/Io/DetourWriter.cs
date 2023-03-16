@@ -20,7 +20,9 @@ using System;
 using System.IO;
 using DotRecast.Core;
 
-namespace DotRecast.Detour.Io;
+namespace DotRecast.Detour.Io
+{
+
 
 public abstract class DetourWriter {
 
@@ -42,11 +44,11 @@ public abstract class DetourWriter {
 
     protected void write(BinaryWriter stream, long value, ByteOrder order)  {
         if (order == ByteOrder.BIG_ENDIAN) {
-            write(stream, (int) (value >>> 32), order);
+            write(stream, (int) ((ulong)value >> 32), order);
             write(stream, (int) (value & 0xFFFFFFFF), order);
         } else {
             write(stream, (int) (value & 0xFFFFFFFF), order);
-            write(stream, (int) (value >>> 32), order);
+            write(stream, (int) ((ulong)value >> 32), order);
         }
     }
 
@@ -78,5 +80,7 @@ public abstract class DetourWriter {
         data.Read(buffer, 0, buffer.Length);
         stream.Write(buffer);
     }
+
+}
 
 }

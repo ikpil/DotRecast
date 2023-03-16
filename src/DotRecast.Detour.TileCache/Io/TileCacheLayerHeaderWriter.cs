@@ -22,7 +22,9 @@ using System.IO;
 using DotRecast.Core;
 using DotRecast.Detour.Io;
 
-namespace DotRecast.Detour.TileCache.Io;
+namespace DotRecast.Detour.TileCache.Io
+{
+
 
 public class TileCacheLayerHeaderWriter : DetourWriter {
 
@@ -50,5 +52,7 @@ public class TileCacheLayerHeaderWriter : DetourWriter {
             write(stream, (short) 0, order); // C struct padding
         }
     }
+
+}
 
 }
