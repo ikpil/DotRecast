@@ -152,7 +152,7 @@ public class GraphMeshDataReader : ZipBinaryReader {
     // See NavmeshBase.cs: ASTAR_RECAST_LARGER_TILES
     private int getVertMask(int vertsCount)
     {
-        int vertMask = 1 << highestOneBit((uint)vertsCount);
+        int vertMask = highestOneBit((uint)vertsCount);
         if (vertMask != vertsCount) {
             vertMask *= 2;
         }
