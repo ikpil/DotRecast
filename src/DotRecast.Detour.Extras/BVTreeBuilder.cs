@@ -20,40 +20,43 @@ using static DotRecast.Detour.DetourCommon;
 
 namespace DotRecast.Detour.Extras
 {
-
-
-public class BVTreeBuilder {
-
-    public void build(MeshData data) {
-        data.bvTree = new BVNode[data.header.polyCount * 2];
-        data.header.bvNodeCount = data.bvTree.Length == 0 ? 0
+    public class BVTreeBuilder
+    {
+        public void build(MeshData data)
+        {
+            data.bvTree = new BVNode[data.header.polyCount * 2];
+            data.header.bvNodeCount = data.bvTree.Length == 0
+                ? 0
                 : createBVTree(data, data.bvTree, data.header.bvQuantFactor);
-    }
-
-    private static int createBVTree(MeshData data, BVNode[] nodes, float quantFactor) {
-        NavMeshBuilder.BVItem[] items = new NavMeshBuilder.BVItem[data.header.polyCount];
-        for (int i = 0; i < data.header.polyCount; i++) {
-            NavMeshBuilder.BVItem it = new NavMeshBuilder.BVItem();
-            items[i] = it;
-            it.i = i;
-            float[] bmin = new float[3];
-            float[] bmax = new float[3];
-            vCopy(bmin, data.verts, data.polys[i].verts[0] * 3);
-            vCopy(bmax, data.verts, data.polys[i].verts[0] * 3);
-            for (int j = 1; j < data.polys[i].vertCount; j++) {
-                vMin(bmin, data.verts, data.polys[i].verts[j] * 3);
-                vMax(bmax, data.verts, data.polys[i].verts[j] * 3);
-            }
-            it.bmin[0] = clamp((int) ((bmin[0] - data.header.bmin[0]) * quantFactor), 0, 0x7fffffff);
-            it.bmin[1] = clamp((int) ((bmin[1] - data.header.bmin[1]) * quantFactor), 0, 0x7fffffff);
-            it.bmin[2] = clamp((int) ((bmin[2] - data.header.bmin[2]) * quantFactor), 0, 0x7fffffff);
-            it.bmax[0] = clamp((int) ((bmax[0] - data.header.bmin[0]) * quantFactor), 0, 0x7fffffff);
-            it.bmax[1] = clamp((int) ((bmax[1] - data.header.bmin[1]) * quantFactor), 0, 0x7fffffff);
-            it.bmax[2] = clamp((int) ((bmax[2] - data.header.bmin[2]) * quantFactor), 0, 0x7fffffff);
         }
-        return NavMeshBuilder.subdivide(items, data.header.polyCount, 0, data.header.polyCount, 0, nodes);
+
+        private static int createBVTree(MeshData data, BVNode[] nodes, float quantFactor)
+        {
+            NavMeshBuilder.BVItem[] items = new NavMeshBuilder.BVItem[data.header.polyCount];
+            for (int i = 0; i < data.header.polyCount; i++)
+            {
+                NavMeshBuilder.BVItem it = new NavMeshBuilder.BVItem();
+                items[i] = it;
+                it.i = i;
+                float[] bmin = new float[3];
+                float[] bmax = new float[3];
+                vCopy(bmin, data.verts, data.polys[i].verts[0] * 3);
+                vCopy(bmax, data.verts, data.polys[i].verts[0] * 3);
+                for (int j = 1; j < data.polys[i].vertCount; j++)
+                {
+                    vMin(bmin, data.verts, data.polys[i].verts[j] * 3);
+                    vMax(bmax, data.verts, data.polys[i].verts[j] * 3);
+                }
+
+                it.bmin[0] = clamp((int)((bmin[0] - data.header.bmin[0]) * quantFactor), 0, 0x7fffffff);
+                it.bmin[1] = clamp((int)((bmin[1] - data.header.bmin[1]) * quantFactor), 0, 0x7fffffff);
+                it.bmin[2] = clamp((int)((bmin[2] - data.header.bmin[2]) * quantFactor), 0, 0x7fffffff);
+                it.bmax[0] = clamp((int)((bmax[0] - data.header.bmin[0]) * quantFactor), 0, 0x7fffffff);
+                it.bmax[1] = clamp((int)((bmax[1] - data.header.bmin[1]) * quantFactor), 0, 0x7fffffff);
+                it.bmax[2] = clamp((int)((bmax[2] - data.header.bmin[2]) * quantFactor), 0, 0x7fffffff);
+            }
+
+            return NavMeshBuilder.subdivide(items, data.header.polyCount, 0, data.header.polyCount, 0, nodes);
+        }
     }
-
-}
-
 }

@@ -6,9 +6,9 @@ namespace DotRecast.Recast.Demo.Tools;
 
 public static class DemoObjImporter
 {
-    public static DemoInputGeomProvider load(byte[] chunk) {
+    public static DemoInputGeomProvider load(byte[] chunk)
+    {
         var context = ObjImporter.loadContext(chunk);
         return new DemoInputGeomProvider(context.vertexPositions, context.meshFaces);
-
-    } 
+    }
 }

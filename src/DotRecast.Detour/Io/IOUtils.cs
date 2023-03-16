@@ -22,42 +22,43 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour.Io
 {
+    public static class IOUtils
+    {
+        public static ByteBuffer toByteBuffer(BinaryReader @is, bool direct)
+        {
+            byte[] data = toByteArray(@is);
+            if (direct)
+            {
+                Array.Reverse(data);
+            }
+
+            return new ByteBuffer(data);
+        }
+
+        public static byte[] toByteArray(BinaryReader inputStream)
+        {
+            using var baos = new MemoryStream();
+            byte[] buffer = new byte[4096];
+            int l;
+            while ((l = inputStream.Read(buffer)) > 0)
+            {
+                baos.Write(buffer, 0, l);
+            }
+
+            return baos.ToArray();
+        }
 
 
-public static class IOUtils {
+        public static ByteBuffer toByteBuffer(BinaryReader inputStream)
+        {
+            var bytes = toByteArray(inputStream);
+            return new ByteBuffer(bytes);
+        }
 
-	public static ByteBuffer toByteBuffer(BinaryReader @is, bool direct) {
-		byte[] data = toByteArray(@is);
-		if (direct) {
-			Array.Reverse(data);
-		} 
-		
-		return new ByteBuffer(data);
-	}
-	
-	public static byte[] toByteArray(BinaryReader inputStream) {
-		using var baos = new MemoryStream();
-		byte[] buffer = new byte[4096];
-		int l;
-		while ((l = inputStream.Read(buffer)) > 0) {
-			baos.Write(buffer, 0, l);
-		}
-
-		return baos.ToArray();
-	}
-
-
-	public static ByteBuffer toByteBuffer(BinaryReader inputStream)
-	{
-		var bytes = toByteArray(inputStream);
-		return new ByteBuffer(bytes);
-	}
-
-	public static int swapEndianness(int i)
-	{
-		var s = (((uint)i >> 24) & 0xFF) | (((uint)i>>8) & 0xFF00) | (((uint)i<<8) & 0xFF0000) | ((i << 24) & 0xFF000000);
-		return (int)s;
-	}
-}
-
+        public static int swapEndianness(int i)
+        {
+            var s = (((uint)i >> 24) & 0xFF) | (((uint)i >> 8) & 0xFF00) | (((uint)i << 8) & 0xFF0000) | ((i << 24) & 0xFF000000);
+            return (int)s;
+        }
+    }
 }

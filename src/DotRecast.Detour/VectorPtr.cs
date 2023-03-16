@@ -20,31 +20,29 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Detour
 {
-
-
-/**
+    /**
  * Wrapper for 3-element pieces (3D vectors) of a bigger float array.
  *
  */
-public class VectorPtr
-{
-    private readonly float[] array;
-    private readonly int index;
-
-    public VectorPtr(float[] array) :
-        this(array, 0)
+    public class VectorPtr
     {
-    }
+        private readonly float[] array;
+        private readonly int index;
 
-    public VectorPtr(float[] array, int index)
-    {
-        this.array = array;
-        this.index = index;
-    }
+        public VectorPtr(float[] array) :
+            this(array, 0)
+        {
+        }
 
-    public float get(int offset)
-    {
-        return array[index + offset];
+        public VectorPtr(float[] array, int index)
+        {
+            this.array = array;
+            this.index = index;
+        }
+
+        public float get(int offset)
+        {
+            return array[index + offset];
+        }
     }
-}
 }

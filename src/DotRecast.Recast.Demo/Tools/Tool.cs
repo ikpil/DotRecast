@@ -23,8 +23,8 @@ using Silk.NET.Windowing;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public abstract class Tool {
-
+public abstract class Tool
+{
     public abstract void setSample(Sample m_sample);
 
     public abstract void handleClick(float[] s, float[] p, bool shift);

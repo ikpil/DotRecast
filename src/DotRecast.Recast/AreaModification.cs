@@ -20,54 +20,52 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Recast
 {
+    public class AreaModification
+    {
+        public readonly int RC_AREA_FLAGS_MASK = 0x3F;
 
+        private readonly int value;
+        private readonly int mask;
 
-public class AreaModification
-{
-    public readonly int RC_AREA_FLAGS_MASK = 0x3F;
-    
-    private readonly int value;
-    private readonly int mask;
-
-    /**
+        /**
      * Mask is set to all available bits, which means value is fully applied
      *
      * @param value
      *            The area id to apply. [Limit: &lt;= #RC_AREA_FLAGS_MASK]
      */
-    public AreaModification(int value)
-    {
-        this.value = value;
-        mask = RC_AREA_FLAGS_MASK;
-    }
+        public AreaModification(int value)
+        {
+            this.value = value;
+            mask = RC_AREA_FLAGS_MASK;
+        }
 
-    /**
+        /**
      *
      * @param value
      *            The area id to apply. [Limit: &lt;= #RC_AREA_FLAGS_MASK]
      * @param mask
      *            Bitwise mask used when applying value. [Limit: &lt;= #RC_AREA_FLAGS_MASK]
      */
-    public AreaModification(int value, int mask)
-    {
-        this.value = value;
-        this.mask = mask;
-    }
+        public AreaModification(int value, int mask)
+        {
+            this.value = value;
+            this.mask = mask;
+        }
 
-    public AreaModification(AreaModification other)
-    {
-        value = other.value;
-        mask = other.mask;
-    }
+        public AreaModification(AreaModification other)
+        {
+            value = other.value;
+            mask = other.mask;
+        }
 
-    public int getMaskedValue()
-    {
-        return value & mask;
-    }
+        public int getMaskedValue()
+        {
+            return value & mask;
+        }
 
-    public int apply(int area)
-    {
-        return ((value & mask) | (area & ~mask));
+        public int apply(int area)
+        {
+            return ((value & mask) | (area & ~mask));
+        }
     }
-}
 }

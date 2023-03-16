@@ -23,11 +23,13 @@ using Silk.NET.Windowing;
 
 namespace DotRecast.Recast.Demo.UI;
 
-public class RcViewSystem {
-
+public class RcViewSystem
+{
     // readonly NkAllocator allocator;
     private readonly IWindow _window;
+
     private readonly GL _gl;
+
     // readonly NkColor background;
     // readonly NkColor white;
     private readonly IRcView[] _views;
@@ -61,7 +63,8 @@ public class RcViewSystem {
         _views = views;
     }
 
-    private void setupMouse(Mouse mouse) {
+    private void setupMouse(Mouse mouse)
+    {
         // mouse.addListener(new MouseListener() {
         //
         //     @Override
@@ -99,7 +102,8 @@ public class RcViewSystem {
         // });
     }
 
-    private void setupClipboard(long window) {
+    private void setupClipboard(long window)
+    {
         // ctx.clip().copy((handle, text, len) => {
         //     if (len == 0) {
         //         return;
@@ -120,11 +124,13 @@ public class RcViewSystem {
         // });
     }
 
-    public void inputBegin() {
+    public void inputBegin()
+    {
         //nk_input_begin(ctx);
     }
 
-    public void inputEnd(IWindow win) {
+    public void inputEnd(IWindow win)
+    {
         // NkMouse mouse = ctx.input().mouse();
         // if (mouse.grab()) {
         //     glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
@@ -139,12 +145,15 @@ public class RcViewSystem {
         // }
         // nk_input_end(ctx);
     }
-    
-    public bool render(IWindow ctx, int x, int y, int width, int height, int mouseX, int mouseY) {
+
+    public bool render(IWindow ctx, int x, int y, int width, int height, int mouseX, int mouseY)
+    {
         mouseOverUI = false;
-        foreach (IRcView m in _views) {
+        foreach (IRcView m in _views)
+        {
             mouseOverUI = m.render(ctx, x, y, width, height, mouseX, mouseY) | mouseOverUI;
         }
+
         return mouseOverUI;
     }
 }

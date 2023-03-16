@@ -18,53 +18,60 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Detour.Crowd
 {
+    public class CrowdConfig
+    {
+        public readonly float maxAgentRadius;
 
-
-public class CrowdConfig {
-
-    public readonly float maxAgentRadius;
-    /**
+        /**
      * Max number of path requests in the queue
      */
-    public int pathQueueSize = 32;
-    /**
+        public int pathQueueSize = 32;
+
+        /**
      * Max number of sliced path finding iterations executed per update (used to handle longer paths and replans)
      */
-    public int maxFindPathIterations = 100;
-    /**
+        public int maxFindPathIterations = 100;
+
+        /**
      * Max number of sliced path finding iterations executed per agent to find the initial path to target
      */
-    public int maxTargetFindPathIterations = 20;
-    /**
+        public int maxTargetFindPathIterations = 20;
+
+        /**
      * Min time between topology optimizations (in seconds)
      */
-    public float topologyOptimizationTimeThreshold = 0.5f;
-    /**
+        public float topologyOptimizationTimeThreshold = 0.5f;
+
+        /**
      * The number of polygons from the beginning of the corridor to check to ensure path validity
      */
-    public int checkLookAhead = 10;
-    /**
+        public int checkLookAhead = 10;
+
+        /**
      * Min time between target re-planning (in seconds)
      */
-    public float targetReplanDelay = 1.0f;
-    /**
+        public float targetReplanDelay = 1.0f;
+
+        /**
      * Max number of sliced path finding iterations executed per topology optimization per agent
      */
-    public int maxTopologyOptimizationIterations = 32;
-    public float collisionResolveFactor = 0.7f;
-    /**
+        public int maxTopologyOptimizationIterations = 32;
+
+        public float collisionResolveFactor = 0.7f;
+
+        /**
      * Max number of neighbour agents to consider in obstacle avoidance processing
      */
-    public int maxObstacleAvoidanceCircles = 6;
-    /**
+        public int maxObstacleAvoidanceCircles = 6;
+
+        /**
      * Max number of neighbour segments to consider in obstacle avoidance processing
      */
-    public int maxObstacleAvoidanceSegments = 8;
+        public int maxObstacleAvoidanceSegments = 8;
 
-    public CrowdConfig(float maxAgentRadius) {
-        this.maxAgentRadius = maxAgentRadius;
+        public CrowdConfig(float maxAgentRadius)
+        {
+            this.maxAgentRadius = maxAgentRadius;
+        }
     }
-
-}
-
 }

@@ -22,23 +22,24 @@ using System.Collections.Generic;
 
 namespace DotRecast.Detour
 {
-
-
-
-/**
+    /**
  * Provides information about raycast hit. Filled by NavMeshQuery::raycast
  */
-public class RaycastHit {
-    /** The hit parameter. (float.MaxValue if no wall hit.) */
-    public float t;
-    /** hitNormal The normal of the nearest wall hit. [(x, y, z)] */
-    public readonly float[] hitNormal = new float[3];
-    /** Visited polygons. */
-    public readonly List<long> path = new List<long>();
-    /** The cost of the path until hit. */
-    public float pathCost;
-    /** The index of the edge on the readonly polygon where the wall was hit. */
-    public int hitEdgeIndex;
-}
+    public class RaycastHit
+    {
+        /** The hit parameter. (float.MaxValue if no wall hit.) */
+        public float t;
 
+        /** hitNormal The normal of the nearest wall hit. [(x, y, z)] */
+        public readonly float[] hitNormal = new float[3];
+
+        /** Visited polygons. */
+        public readonly List<long> path = new List<long>();
+
+        /** The cost of the path until hit. */
+        public float pathCost;
+
+        /** The index of the edge on the readonly polygon where the wall was hit. */
+        public int hitEdgeIndex;
+    }
 }

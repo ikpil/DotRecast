@@ -100,7 +100,7 @@ public class RcSettingsView : IRcView
         ImGui.SliderFloat("Max Climb", ref agentMaxClimb, 5f, 0.1f, $"{agentMaxClimb}");
         ImGui.SliderFloat("Max Slope", ref agentMaxSlope, 90f, 1f, $"{agentMaxSlope}");
         ImGui.NewLine();
-        
+
         ImGui.Text("Region");
         ImGui.Separator();
         ImGui.SliderInt("Min Region Size", ref minRegionSize, 1, 150);

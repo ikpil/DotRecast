@@ -22,9 +22,10 @@ using static DotRecast.Detour.DetourCommon;
 
 namespace DotRecast.Recast.Demo.Geom;
 
-public class Intersections {
-
-    public static float? intersectSegmentTriangle(float[] sp, float[] sq, float[] a, float[] b, float[] c) {
+public class Intersections
+{
+    public static float? intersectSegmentTriangle(float[] sp, float[] sq, float[] a, float[] b, float[] c)
+    {
         float v, w;
         float[] ab = vSub(b, a);
         float[] ac = vSub(c, a);
@@ -37,7 +38,8 @@ public class Intersections {
         // Compute denominator d. If d <= 0, segment is parallel to or points
         // away from triangle, so exit early
         float d = DemoMath.vDot(qp, norm);
-        if (d <= 0.0f) {
+        if (d <= 0.0f)
+        {
             return null;
         }
 
@@ -46,21 +48,27 @@ public class Intersections {
         // dividing by d until intersection has been found to pierce triangle
         float[] ap = vSub(sp, a);
         float t = DemoMath.vDot(ap, norm);
-        if (t < 0.0f) {
+        if (t < 0.0f)
+        {
             return null;
         }
-        if (t > d) {
+
+        if (t > d)
+        {
             return null; // For segment; exclude this code line for a ray test
         }
 
         // Compute barycentric coordinate components and test if within bounds
         float[] e = DemoMath.vCross(qp, ap);
         v = DemoMath.vDot(ac, e);
-        if (v < 0.0f || v > d) {
+        if (v < 0.0f || v > d)
+        {
             return null;
         }
+
         w = -DemoMath.vDot(ab, e);
-        if (w < 0.0f || v + w > d) {
+        if (w < 0.0f || v + w > d)
+        {
             return null;
         }
 
@@ -70,8 +78,8 @@ public class Intersections {
         return t;
     }
 
-    public static float[] intersectSegmentAABB(float[] sp, float[] sq, float[] amin, float[] amax) {
-
+    public static float[] intersectSegmentAABB(float[] sp, float[] sq, float[] amin, float[] amax)
+    {
         float EPS = 1e-6f;
 
         float[] d = new float[3];
@@ -81,27 +89,39 @@ public class Intersections {
         float tmin = 0.0f;
         float tmax = 1.0f;
 
-        for (int i = 0; i < 3; i++) {
-            if (Math.Abs(d[i]) < EPS) {
-                if (sp[i] < amin[i] || sp[i] > amax[i]) {
+        for (int i = 0; i < 3; i++)
+        {
+            if (Math.Abs(d[i]) < EPS)
+            {
+                if (sp[i] < amin[i] || sp[i] > amax[i])
+                {
                     return null;
                 }
-            } else {
+            }
+            else
+            {
                 float ood = 1.0f / d[i];
                 float t1 = (amin[i] - sp[i]) * ood;
                 float t2 = (amax[i] - sp[i]) * ood;
-                if (t1 > t2) {
+                if (t1 > t2)
+                {
                     float tmp = t1;
                     t1 = t2;
                     t2 = tmp;
                 }
-                if (t1 > tmin) {
+
+                if (t1 > tmin)
+                {
                     tmin = t1;
                 }
-                if (t2 < tmax) {
+
+                if (t2 < tmax)
+                {
                     tmax = t2;
                 }
-                if (tmin > tmax) {
+
+                if (tmin > tmax)
+                {
                     return null;
                 }
             }
@@ -109,5 +129,4 @@ public class Intersections {
 
         return new float[] { tmin, tmax };
     }
-
 }

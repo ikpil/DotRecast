@@ -17,22 +17,22 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Recast
 {
+    /** Represents a span in a heightfield. */
+    public class Span
+    {
+        /** The lower limit of the span. [Limit: &lt; smax] */
+        public int smin;
 
+        /** The upper limit of the span. [Limit: &lt;= SPAN_MAX_HEIGHT] */
+        public int smax;
 
-/** Represents a span in a heightfield. */
-public class Span {
+        /** The area id assigned to the span. */
+        public int area;
 
-    /** The lower limit of the span. [Limit: &lt; smax] */
-    public int smin;
-    /** The upper limit of the span. [Limit: &lt;= SPAN_MAX_HEIGHT] */
-    public int smax;
-    /** The area id assigned to the span. */
-    public int area;
-    /** The next span higher up in column. */
-    public Span next;
-
-}
-
+        /** The next span higher up in column. */
+        public Span next;
+    }
 }

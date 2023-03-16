@@ -18,26 +18,24 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Detour
 {
+    using static DetourCommon;
 
-
-using static DetourCommon;
-
-public class DefaultQueryHeuristic : QueryHeuristic {
-
-    private readonly float scale;
-
-    public DefaultQueryHeuristic() : this(0.999f)
+    public class DefaultQueryHeuristic : QueryHeuristic
     {
+        private readonly float scale;
+
+        public DefaultQueryHeuristic() : this(0.999f)
+        {
+        }
+
+        public DefaultQueryHeuristic(float scale)
+        {
+            this.scale = scale;
+        }
+
+        public float getCost(float[] neighbourPos, float[] endPos)
+        {
+            return vDist(neighbourPos, endPos) * scale;
+        }
     }
-
-    public DefaultQueryHeuristic(float scale) {
-        this.scale = scale;
-    }
-
-    public float getCost(float[] neighbourPos, float[] endPos) {
-        return vDist(neighbourPos, endPos) * scale;
-    }
-
-}
-
 }

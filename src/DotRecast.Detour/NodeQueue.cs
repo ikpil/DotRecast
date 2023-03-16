@@ -17,51 +17,52 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour
 {
+    using System.Collections.Generic;
 
-
-using System.Collections.Generic;
-
-public class NodeQueue {
-    
-    private readonly List<Node> m_heap = new List<Node>();
-
-    public int count()
+    public class NodeQueue
     {
-        return m_heap.Count;
-    }
+        private readonly List<Node> m_heap = new List<Node>();
 
-    public void clear() {
-        m_heap.Clear();
-    }
+        public int count()
+        {
+            return m_heap.Count;
+        }
 
-    public Node top()
-    {
-        return m_heap[0];
-    }
+        public void clear()
+        {
+            m_heap.Clear();
+        }
 
-    public Node pop()
-    {
-        var node = top();
-        m_heap.Remove(node);
-        return node;
-    }
+        public Node top()
+        {
+            return m_heap[0];
+        }
 
-    public void push(Node node) {
-        m_heap.Add(node);
-        m_heap.Sort((x, y) => x.total.CompareTo(y.total));
-    }
+        public Node pop()
+        {
+            var node = top();
+            m_heap.Remove(node);
+            return node;
+        }
 
-    public void modify(Node node) {
-        m_heap.Remove(node);
-        push(node);
-    }
+        public void push(Node node)
+        {
+            m_heap.Add(node);
+            m_heap.Sort((x, y) => x.total.CompareTo(y.total));
+        }
 
-    public bool isEmpty()
-    {
-        return 0 == m_heap.Count;
-    }
-}
+        public void modify(Node node)
+        {
+            m_heap.Remove(node);
+            push(node);
+        }
 
+        public bool isEmpty()
+        {
+            return 0 == m_heap.Count;
+        }
+    }
 }

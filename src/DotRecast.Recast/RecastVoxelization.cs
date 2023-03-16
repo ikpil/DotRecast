@@ -21,57 +21,59 @@ using DotRecast.Recast.Geom;
 
 namespace DotRecast.Recast
 {
+    public class RecastVoxelization
+    {
+        public static Heightfield buildSolidHeightfield(InputGeomProvider geomProvider, RecastBuilderConfig builderCfg,
+            Telemetry ctx)
+        {
+            RecastConfig cfg = builderCfg.cfg;
 
-
-public class RecastVoxelization {
-
-    public static Heightfield buildSolidHeightfield(InputGeomProvider geomProvider, RecastBuilderConfig builderCfg,
-            Telemetry ctx) {
-        RecastConfig cfg = builderCfg.cfg;
-
-        // Allocate voxel heightfield where we rasterize our input data to.
-        Heightfield solid = new Heightfield(builderCfg.width, builderCfg.height, builderCfg.bmin, builderCfg.bmax, cfg.cs,
+            // Allocate voxel heightfield where we rasterize our input data to.
+            Heightfield solid = new Heightfield(builderCfg.width, builderCfg.height, builderCfg.bmin, builderCfg.bmax, cfg.cs,
                 cfg.ch, cfg.borderSize);
 
-        // Allocate array that can hold triangle area types.
-        // If you have multiple meshes you need to process, allocate
-        // and array which can hold the max number of triangles you need to
-        // process.
+            // Allocate array that can hold triangle area types.
+            // If you have multiple meshes you need to process, allocate
+            // and array which can hold the max number of triangles you need to
+            // process.
 
-        // Find triangles which are walkable based on their slope and rasterize
-        // them.
-        // If your input data is multiple meshes, you can transform them here,
-        // calculate
-        // the are type for each of the meshes and rasterize them.
-        foreach (TriMesh geom in geomProvider.meshes()) {
-            float[] verts = geom.getVerts();
-            if (cfg.useTiles) {
-                float[] tbmin = new float[2];
-                float[] tbmax = new float[2];
-                tbmin[0] = builderCfg.bmin[0];
-                tbmin[1] = builderCfg.bmin[2];
-                tbmax[0] = builderCfg.bmax[0];
-                tbmax[1] = builderCfg.bmax[2];
-                List<ChunkyTriMeshNode> nodes = geom.getChunksOverlappingRect(tbmin, tbmax);
-                foreach (ChunkyTriMeshNode node in nodes) {
-                    int[] tris = node.tris;
+            // Find triangles which are walkable based on their slope and rasterize
+            // them.
+            // If your input data is multiple meshes, you can transform them here,
+            // calculate
+            // the are type for each of the meshes and rasterize them.
+            foreach (TriMesh geom in geomProvider.meshes())
+            {
+                float[] verts = geom.getVerts();
+                if (cfg.useTiles)
+                {
+                    float[] tbmin = new float[2];
+                    float[] tbmax = new float[2];
+                    tbmin[0] = builderCfg.bmin[0];
+                    tbmin[1] = builderCfg.bmin[2];
+                    tbmax[0] = builderCfg.bmax[0];
+                    tbmax[1] = builderCfg.bmax[2];
+                    List<ChunkyTriMeshNode> nodes = geom.getChunksOverlappingRect(tbmin, tbmax);
+                    foreach (ChunkyTriMeshNode node in nodes)
+                    {
+                        int[] tris = node.tris;
+                        int ntris = tris.Length / 3;
+                        int[] m_triareas = Recast.markWalkableTriangles(ctx, cfg.walkableSlopeAngle, verts, tris, ntris,
+                            cfg.walkableAreaMod);
+                        RecastRasterization.rasterizeTriangles(solid, verts, tris, m_triareas, ntris, cfg.walkableClimb, ctx);
+                    }
+                }
+                else
+                {
+                    int[] tris = geom.getTris();
                     int ntris = tris.Length / 3;
                     int[] m_triareas = Recast.markWalkableTriangles(ctx, cfg.walkableSlopeAngle, verts, tris, ntris,
-                            cfg.walkableAreaMod);
+                        cfg.walkableAreaMod);
                     RecastRasterization.rasterizeTriangles(solid, verts, tris, m_triareas, ntris, cfg.walkableClimb, ctx);
                 }
-            } else {
-                int[] tris = geom.getTris();
-                int ntris = tris.Length / 3;
-                int[] m_triareas = Recast.markWalkableTriangles(ctx, cfg.walkableSlopeAngle, verts, tris, ntris,
-                        cfg.walkableAreaMod);
-                RecastRasterization.rasterizeTriangles(solid, verts, tris, m_triareas, ntris, cfg.walkableClimb, ctx);
             }
+
+            return solid;
         }
-
-        return solid;
     }
-
-}
-
 }

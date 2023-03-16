@@ -28,10 +28,11 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.TileCache.Test;
 
-public class TileCacheTest : AbstractTileCacheTest {
-
+public class TileCacheTest : AbstractTileCacheTest
+{
     [Test]
-    public void testFastLz() {
+    public void testFastLz()
+    {
         testDungeon(ByteOrder.LITTLE_ENDIAN, false);
         testDungeon(ByteOrder.LITTLE_ENDIAN, true);
         testDungeon(ByteOrder.BIG_ENDIAN, false);
@@ -43,7 +44,8 @@ public class TileCacheTest : AbstractTileCacheTest {
     }
 
     [Test]
-    public void testLZ4() {
+    public void testLZ4()
+    {
         testDungeon(ByteOrder.LITTLE_ENDIAN, false);
         testDungeon(ByteOrder.LITTLE_ENDIAN, true);
         testDungeon(ByteOrder.BIG_ENDIAN, false);
@@ -54,7 +56,8 @@ public class TileCacheTest : AbstractTileCacheTest {
         test(ByteOrder.BIG_ENDIAN, true);
     }
 
-    private void testDungeon(ByteOrder order, bool cCompatibility) {
+    private void testDungeon(ByteOrder order, bool cCompatibility)
+    {
         InputGeomProvider geom = ObjImporter.load(Loader.ToBytes("dungeon.obj"));
         TileCache tc = getTileCache(geom, order, cCompatibility);
         TestTileLayerBuilder layerBuilder = new TestTileLayerBuilder(geom);
@@ -62,15 +65,17 @@ public class TileCacheTest : AbstractTileCacheTest {
         int cacheLayerCount = 0;
         int cacheCompressedSize = 0;
         int cacheRawSize = 0;
-        foreach (byte[] layer in layers) {
+        foreach (byte[] layer in layers)
+        {
             long refs = tc.addTile(layer, 0);
             tc.buildNavMeshTile(refs);
             cacheLayerCount++;
             cacheCompressedSize += layer.Length;
             cacheRawSize += 4 * 48 * 48 + 56; // FIXME
         }
+
         Console.WriteLine("Compressor: " + tc.getCompressor().GetType().Name + " C Compatibility: " + cCompatibility
-                + " Layers: " + cacheLayerCount + " Raw Size: " + cacheRawSize + " Compressed: " + cacheCompressedSize);
+                          + " Layers: " + cacheLayerCount + " Raw Size: " + cacheRawSize + " Compressed: " + cacheCompressedSize);
         Assert.That(tc.getNavMesh().getMaxTiles(), Is.EqualTo(256));
         Assert.That(tc.getNavMesh().getParams().maxPolys, Is.EqualTo(16384));
         Assert.That(tc.getNavMesh().getParams().tileWidth, Is.EqualTo(14.4f).Within(0.001f));
@@ -147,7 +152,8 @@ public class TileCacheTest : AbstractTileCacheTest {
         Assert.That(data.detailTris.Length, Is.EqualTo(4 * 3));
     }
 
-    private void test(ByteOrder order, bool cCompatibility) {
+    private void test(ByteOrder order, bool cCompatibility)
+    {
         InputGeomProvider geom = ObjImporter.load(Loader.ToBytes("nav_test.obj"));
         TileCache tc = getTileCache(geom, order, cCompatibility);
         TestTileLayerBuilder layerBuilder = new TestTileLayerBuilder(geom);
@@ -155,46 +161,56 @@ public class TileCacheTest : AbstractTileCacheTest {
         int cacheLayerCount = 0;
         int cacheCompressedSize = 0;
         int cacheRawSize = 0;
-        foreach (byte[] layer in layers) {
+        foreach (byte[] layer in layers)
+        {
             long refs = tc.addTile(layer, 0);
             tc.buildNavMeshTile(refs);
             cacheLayerCount++;
             cacheCompressedSize += layer.Length;
             cacheRawSize += 4 * 48 * 48 + 56;
         }
+
         Console.WriteLine("Compressor: " + tc.getCompressor().GetType().Name + " C Compatibility: " + cCompatibility
-                + " Layers: " + cacheLayerCount + " Raw Size: " + cacheRawSize + " Compressed: " + cacheCompressedSize);
+                          + " Layers: " + cacheLayerCount + " Raw Size: " + cacheRawSize + " Compressed: " + cacheCompressedSize);
     }
 
     [Test]
-    public void testPerformance() {
+    public void testPerformance()
+    {
         int threads = 4;
         ByteOrder order = ByteOrder.LITTLE_ENDIAN;
         bool cCompatibility = false;
         InputGeomProvider geom = ObjImporter.load(Loader.ToBytes("dungeon.obj"));
         TestTileLayerBuilder layerBuilder = new TestTileLayerBuilder(geom);
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++)
+        {
             layerBuilder.build(order, cCompatibility, 1);
             layerBuilder.build(order, cCompatibility, threads);
         }
-        
+
         long t1 = Stopwatch.GetTimestamp();
         List<byte[]> layers = null;
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 8; i++)
+        {
             layers = layerBuilder.build(order, cCompatibility, 1);
         }
+
         long t2 = Stopwatch.GetTimestamp();
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 8; i++)
+        {
             layers = layerBuilder.build(order, cCompatibility, threads);
         }
+
         long t3 = Stopwatch.GetTimestamp();
         Console.WriteLine(" Time ST : " + (t2 - t1) / 1000000);
         Console.WriteLine(" Time MT : " + (t3 - t2) / 1000000);
         TileCache tc = getTileCache(geom, order, cCompatibility);
-        foreach (byte[] layer in layers) {
+        foreach (byte[] layer in layers)
+        {
             long refs = tc.addTile(layer, 0);
             tc.buildNavMeshTile(refs);
         }
+
         Assert.That(tc.getNavMesh().getMaxTiles(), Is.EqualTo(256));
         Assert.That(tc.getNavMesh().getParams().maxPolys, Is.EqualTo(16384));
         Assert.That(tc.getNavMesh().getParams().tileWidth, Is.EqualTo(14.4f).Within(0.001f));
@@ -269,5 +285,4 @@ public class TileCacheTest : AbstractTileCacheTest {
         Assert.That(data.detailVerts.Length, Is.EqualTo(0));
         Assert.That(data.detailTris.Length, Is.EqualTo(4 * 3));
     }
-
 }

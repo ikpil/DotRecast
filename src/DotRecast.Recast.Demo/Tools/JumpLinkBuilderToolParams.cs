@@ -20,9 +20,8 @@ using DotRecast.Detour.Extras.Jumplink;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-
-public class JumpLinkBuilderToolParams {
-
+public class JumpLinkBuilderToolParams
+{
     public const int DRAW_WALKABLE_SURFACE = 1 << 0;
     public const int DRAW_WALKABLE_BORDER = 1 << 1;
     public const int DRAW_SELECTED_EDGE = 1 << 2;
@@ -41,5 +40,4 @@ public class JumpLinkBuilderToolParams {
     public readonly float[] edgeJumpDownMaxHeight = new[] { 2.5f };
     public readonly float[] edgeJumpUpMaxHeight = new[] { 0.3f };
     public int buildTypes = (1 << (int)JumpLinkType.EDGE_CLIMB_DOWN) | (1 << (int)JumpLinkType.EDGE_JUMP);
-
 }

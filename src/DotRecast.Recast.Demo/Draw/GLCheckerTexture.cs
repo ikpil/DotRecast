@@ -22,17 +22,19 @@ using Silk.NET.OpenGL;
 
 namespace DotRecast.Recast.Demo.Draw;
 
-public class GLCheckerTexture {
-
+public class GLCheckerTexture
+{
     int m_texId;
 
-    public void release() {
+    public void release()
+    {
         // if (m_texId != 0) {
         //     glDeleteTextures(m_texId);
         // }
     }
 
-    public void bind() {
+    public void bind()
+    {
         // if (m_texId == 0) {
         //     // Create checker pattern.
         //     int col0 = DebugDraw.duRGBA(215, 215, 215, 255);

@@ -21,33 +21,34 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic.Colliders
 {
-
-
-public class CapsuleCollider : AbstractCollider {
-
-    private readonly float[] start;
-    private readonly float[] end;
-    private readonly float radius;
-
-    public CapsuleCollider(float[] start, float[] end, float radius, int area, float flagMergeThreshold) : 
-        base(area, flagMergeThreshold, bounds(start, end, radius))
+    public class CapsuleCollider : AbstractCollider
     {
-        this.start = start;
-        this.end = end;
-        this.radius = radius;
-    }
+        private readonly float[] start;
+        private readonly float[] end;
+        private readonly float radius;
 
-    public void rasterize(Heightfield hf, Telemetry telemetry) {
-        RecastFilledVolumeRasterization.rasterizeCapsule(hf, start, end, radius, area, (int) Math.Floor(flagMergeThreshold / hf.ch),
+        public CapsuleCollider(float[] start, float[] end, float radius, int area, float flagMergeThreshold) :
+            base(area, flagMergeThreshold, bounds(start, end, radius))
+        {
+            this.start = start;
+            this.end = end;
+            this.radius = radius;
+        }
+
+        public void rasterize(Heightfield hf, Telemetry telemetry)
+        {
+            RecastFilledVolumeRasterization.rasterizeCapsule(hf, start, end, radius, area, (int)Math.Floor(flagMergeThreshold / hf.ch),
                 telemetry);
-    }
+        }
 
-    private static float[] bounds(float[] start, float[] end, float radius) {
-        return new float[] { Math.Min(start[0], end[0]) - radius, Math.Min(start[1], end[1]) - radius,
+        private static float[] bounds(float[] start, float[] end, float radius)
+        {
+            return new float[]
+            {
+                Math.Min(start[0], end[0]) - radius, Math.Min(start[1], end[1]) - radius,
                 Math.Min(start[2], end[2]) - radius, Math.Max(start[0], end[0]) + radius, Math.Max(start[1], end[1]) + radius,
-                Math.Max(start[2], end[2]) + radius };
+                Math.Max(start[2], end[2]) + radius
+            };
+        }
     }
-
-}
-
 }

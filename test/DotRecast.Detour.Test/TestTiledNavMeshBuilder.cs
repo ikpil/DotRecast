@@ -20,13 +20,12 @@ using System.Collections.Generic;
 using DotRecast.Core;
 using DotRecast.Recast;
 using DotRecast.Recast.Geom;
-
 using static DotRecast.Recast.RecastVectors;
 
 namespace DotRecast.Detour.Test;
 
-public class TestTiledNavMeshBuilder {
-
+public class TestTiledNavMeshBuilder
+{
     private readonly NavMesh navMesh;
     private const float m_cellSize = 0.3f;
     private const float m_cellHeight = 0.2f;
@@ -47,17 +46,17 @@ public class TestTiledNavMeshBuilder {
 
     public TestTiledNavMeshBuilder() :
         this(ObjImporter.load(Loader.ToBytes("dungeon.obj")),
-                PartitionType.WATERSHED, m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_agentMaxSlope,
-                m_regionMinSize, m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, m_detailSampleDist,
-                m_detailSampleMaxError, m_tileSize)
+            PartitionType.WATERSHED, m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_agentMaxSlope,
+            m_regionMinSize, m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, m_detailSampleDist,
+            m_detailSampleMaxError, m_tileSize)
     {
     }
 
     public TestTiledNavMeshBuilder(InputGeomProvider m_geom, PartitionType m_partitionType, float m_cellSize, float m_cellHeight,
-            float m_agentHeight, float m_agentRadius, float m_agentMaxClimb, float m_agentMaxSlope, int m_regionMinSize,
-            int m_regionMergeSize, float m_edgeMaxLen, float m_edgeMaxError, int m_vertsPerPoly, float m_detailSampleDist,
-            float m_detailSampleMaxError, int m_tileSize) {
-
+        float m_agentHeight, float m_agentRadius, float m_agentMaxClimb, float m_agentMaxSlope, int m_regionMinSize,
+        int m_regionMergeSize, float m_edgeMaxLen, float m_edgeMaxError, int m_vertsPerPoly, float m_detailSampleDist,
+        float m_detailSampleMaxError, int m_tileSize)
+    {
         // Create empty nav mesh
         NavMeshParams navMeshParams = new NavMeshParams();
         copy(navMeshParams.orig, m_geom.getMeshBoundsMin());
@@ -69,22 +68,27 @@ public class TestTiledNavMeshBuilder {
 
         // Build all tiles
         RecastConfig cfg = new RecastConfig(true, m_tileSize, m_tileSize, RecastConfig.calcBorder(m_agentRadius, m_cellSize),
-                m_partitionType, m_cellSize, m_cellHeight, m_agentMaxSlope, true, true, true, m_agentHeight, m_agentRadius,
-                m_agentMaxClimb, m_regionMinArea, m_regionMergeArea, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, true,
-                m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
+            m_partitionType, m_cellSize, m_cellHeight, m_agentMaxSlope, true, true, true, m_agentHeight, m_agentRadius,
+            m_agentMaxClimb, m_regionMinArea, m_regionMergeArea, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, true,
+            m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
         RecastBuilder rcBuilder = new RecastBuilder();
         List<RecastBuilderResult> rcResult = rcBuilder.buildTiles(m_geom, cfg, null);
 
         // Add tiles to nav mesh
 
-        foreach (RecastBuilderResult result in rcResult) {
+        foreach (RecastBuilderResult result in rcResult)
+        {
             PolyMesh pmesh = result.getMesh();
-            if (pmesh.npolys == 0) {
+            if (pmesh.npolys == 0)
+            {
                 continue;
             }
-            for (int i = 0; i < pmesh.npolys; ++i) {
+
+            for (int i = 0; i < pmesh.npolys; ++i)
+            {
                 pmesh.flags[i] = 1;
             }
+
             NavMeshDataCreateParams option = new NavMeshDataCreateParams();
             option.verts = pmesh.verts;
             option.vertCount = pmesh.nverts;
@@ -113,8 +117,8 @@ public class TestTiledNavMeshBuilder {
         }
     }
 
-    public NavMesh getNavMesh() {
+    public NavMesh getNavMesh()
+    {
         return navMesh;
     }
-
 }

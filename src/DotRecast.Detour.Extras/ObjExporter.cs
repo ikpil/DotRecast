@@ -20,49 +20,57 @@ using System.IO;
 
 namespace DotRecast.Detour.Extras
 {
-
-
-public class ObjExporter {
-
-    public void export(NavMesh mesh) {
-        string filename = Path.Combine(Directory.GetCurrentDirectory(), "Demo", "astar.obj");
-        using var fs = new FileStream(filename, FileMode.CreateNew);
-        using var fw = new StreamWriter(fs);
-        for (int i = 0; i < mesh.getTileCount(); i++) {
-            MeshTile tile = mesh.getTile(i);
-            if (tile != null) {
-                for (int v = 0; v < tile.data.header.vertCount; v++) {
-                    fw.Write("v " + tile.data.verts[v * 3] + " " + tile.data.verts[v * 3 + 1] + " "
-                            + tile.data.verts[v * 3 + 2] + "\n");
-                }
-            }
-        }
-        int vertexOffset = 1;
-        for (int i = 0; i < mesh.getTileCount(); i++) {
-            MeshTile tile = mesh.getTile(i);
-            if (tile != null) {
-                for (int p = 0; p < tile.data.header.polyCount; p++) {
-                    fw.Write("f ");
-                    Poly poly = tile.data.polys[p];
-                    for (int v = 0; v < poly.vertCount; v++) {
-                        fw.Write(poly.verts[v] + vertexOffset + " ");
+    public class ObjExporter
+    {
+        public void export(NavMesh mesh)
+        {
+            string filename = Path.Combine(Directory.GetCurrentDirectory(), "Demo", "astar.obj");
+            using var fs = new FileStream(filename, FileMode.CreateNew);
+            using var fw = new StreamWriter(fs);
+            for (int i = 0; i < mesh.getTileCount(); i++)
+            {
+                MeshTile tile = mesh.getTile(i);
+                if (tile != null)
+                {
+                    for (int v = 0; v < tile.data.header.vertCount; v++)
+                    {
+                        fw.Write("v " + tile.data.verts[v * 3] + " " + tile.data.verts[v * 3 + 1] + " "
+                                 + tile.data.verts[v * 3 + 2] + "\n");
                     }
-                    fw.Write("\n");
                 }
-                vertexOffset += tile.data.header.vertCount;
+            }
+
+            int vertexOffset = 1;
+            for (int i = 0; i < mesh.getTileCount(); i++)
+            {
+                MeshTile tile = mesh.getTile(i);
+                if (tile != null)
+                {
+                    for (int p = 0; p < tile.data.header.polyCount; p++)
+                    {
+                        fw.Write("f ");
+                        Poly poly = tile.data.polys[p];
+                        for (int v = 0; v < poly.vertCount; v++)
+                        {
+                            fw.Write(poly.verts[v] + vertexOffset + " ");
+                        }
+
+                        fw.Write("\n");
+                    }
+
+                    vertexOffset += tile.data.header.vertCount;
+                }
             }
         }
+
+        /*
+         *
+            MeshSetReader reader = new MeshSetReader();
+            ObjExporter exporter = new ObjExporter();
+            exporter.export(mesh);
+            reader.read(new FileInputStream("/home/piotr/Downloads/graph/all_tiles_navmesh.bin"), 3);
+    
+    
+         */
     }
-
-    /*
-     *
-        MeshSetReader reader = new MeshSetReader();
-    	ObjExporter exporter = new ObjExporter();
-    	exporter.export(mesh);
-    	reader.read(new FileInputStream("/home/piotr/Downloads/graph/all_tiles_navmesh.bin"), 3);
-
-
-     */
-}
-
 }

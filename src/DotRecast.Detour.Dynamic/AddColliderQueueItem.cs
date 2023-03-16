@@ -21,28 +21,27 @@ using DotRecast.Detour.Dynamic.Colliders;
 
 namespace DotRecast.Detour.Dynamic
 {
+    public class AddColliderQueueItem : UpdateQueueItem
+    {
+        private readonly long colliderId;
+        private readonly Collider collider;
+        private readonly ICollection<DynamicTile> _affectedTiles;
 
+        public AddColliderQueueItem(long colliderId, Collider collider, ICollection<DynamicTile> affectedTiles)
+        {
+            this.colliderId = colliderId;
+            this.collider = collider;
+            _affectedTiles = affectedTiles;
+        }
 
-public class AddColliderQueueItem : UpdateQueueItem {
+        public ICollection<DynamicTile> affectedTiles()
+        {
+            return _affectedTiles;
+        }
 
-    private readonly long colliderId;
-    private readonly Collider collider;
-    private readonly ICollection<DynamicTile> _affectedTiles;
-
-    public AddColliderQueueItem(long colliderId, Collider collider, ICollection<DynamicTile> affectedTiles) {
-        this.colliderId = colliderId;
-        this.collider = collider;
-        _affectedTiles = affectedTiles;
+        public void process(DynamicTile tile)
+        {
+            tile.addCollider(colliderId, collider);
+        }
     }
-
-    public ICollection<DynamicTile> affectedTiles() {
-        return _affectedTiles;
-    }
-
-    public void process(DynamicTile tile) {
-        tile.addCollider(colliderId, collider);
-    }
-
-}
-
 }

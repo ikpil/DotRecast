@@ -17,13 +17,14 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour.TileCache
 {
-
-
-public enum ObstacleState {
-
-    DT_OBSTACLE_EMPTY, DT_OBSTACLE_PROCESSING, DT_OBSTACLE_PROCESSED, DT_OBSTACLE_REMOVING
-}
-
+    public enum ObstacleState
+    {
+        DT_OBSTACLE_EMPTY,
+        DT_OBSTACLE_PROCESSING,
+        DT_OBSTACLE_PROCESSED,
+        DT_OBSTACLE_REMOVING
+    }
 }

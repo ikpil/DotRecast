@@ -8,8 +8,8 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Dynamic.Test;
 
-public class DynamicNavMeshTest {
-
+public class DynamicNavMeshTest
+{
     private static readonly float[] START_POS = new float[] { 70.87453f, 0.0010070801f, 86.69021f };
     private static readonly float[] END_POS = new float[] { -50.22061f, 0.0010070801f, -70.761444f };
     private static readonly float[] EXTENT = new float[] { 0.1f, 0.1f, 0.1f };
@@ -17,11 +17,12 @@ public class DynamicNavMeshTest {
 
 
     [Test]
-    public void e2eTest() {
+    public void e2eTest()
+    {
         byte[] bytes = Loader.ToBytes("test_tiles.voxels");
         using var ms = new MemoryStream(bytes);
         using var bis = new BinaryReader(ms);
-        
+
         // load voxels from file
         VoxelFileReader reader = new VoxelFileReader();
         VoxelFile f = reader.read(bis);
@@ -38,7 +39,7 @@ public class DynamicNavMeshTest {
         FindNearestPolyResult start = query.findNearestPoly(START_POS, EXTENT, filter).result;
         FindNearestPolyResult end = query.findNearestPoly(END_POS, EXTENT, filter).result;
         List<long> path = query.findPath(start.getNearestRef(), end.getNearestRef(), start.getNearestPos(),
-                end.getNearestPos(), filter, NavMeshQuery.DT_FINDPATH_ANY_ANGLE, float.MaxValue).result;
+            end.getNearestPos(), filter, NavMeshQuery.DT_FINDPATH_ANY_ANGLE, float.MaxValue).result;
         // check path length without any obstacles
         Assert.That(path.Count, Is.EqualTo(16));
         // place obstacle
@@ -54,7 +55,7 @@ public class DynamicNavMeshTest {
         start = query.findNearestPoly(START_POS, EXTENT, filter).result;
         end = query.findNearestPoly(END_POS, EXTENT, filter).result;
         path = query.findPath(start.getNearestRef(), end.getNearestRef(), start.getNearestPos(), end.getNearestPos(), filter,
-                NavMeshQuery.DT_FINDPATH_ANY_ANGLE, float.MaxValue).result;
+            NavMeshQuery.DT_FINDPATH_ANY_ANGLE, float.MaxValue).result;
         // check path length with obstacles
         Assert.That(path.Count, Is.EqualTo(19));
         // remove obstacle
@@ -69,7 +70,7 @@ public class DynamicNavMeshTest {
         start = query.findNearestPoly(START_POS, EXTENT, filter).result;
         end = query.findNearestPoly(END_POS, EXTENT, filter).result;
         path = query.findPath(start.getNearestRef(), end.getNearestRef(), start.getNearestPos(), end.getNearestPos(), filter,
-                NavMeshQuery.DT_FINDPATH_ANY_ANGLE, float.MaxValue).result;
+            NavMeshQuery.DT_FINDPATH_ANY_ANGLE, float.MaxValue).result;
         // path length should be back to the initial value
         Assert.That(path.Count, Is.EqualTo(16));
     }

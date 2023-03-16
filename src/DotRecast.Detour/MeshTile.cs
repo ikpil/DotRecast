@@ -22,29 +22,33 @@ using System.Collections.Generic;
 
 namespace DotRecast.Detour
 {
-
-
-/**
+    /**
  * Defines a navigation mesh tile.
  */
-public class MeshTile {
-    public readonly int index;
-    /** Counter describing modifications to the tile. */
-    public int salt;
-    /** The tile data. */
-    public MeshData data;
-    public int[] polyLinks;
-    /** The tile links. */
-    public readonly List<Link> links = new List<Link>();
-    /** Index to the next free link. */
-    public int linksFreeList = NavMesh.DT_NULL_LINK; // FIXME: Remove
-    /** Tile flags. (See: #dtTileFlags) */
-    public int flags;
+    public class MeshTile
+    {
+        public readonly int index;
 
-    public MeshTile(int index) {
-        this.index = index;
+        /** Counter describing modifications to the tile. */
+        public int salt;
+
+        /** The tile data. */
+        public MeshData data;
+
+        public int[] polyLinks;
+
+        /** The tile links. */
+        public readonly List<Link> links = new List<Link>();
+
+        /** Index to the next free link. */
+        public int linksFreeList = NavMesh.DT_NULL_LINK; // FIXME: Remove
+
+        /** Tile flags. (See: #dtTileFlags) */
+        public int flags;
+
+        public MeshTile(int index)
+        {
+            this.index = index;
+        }
     }
-
-}
-
 }

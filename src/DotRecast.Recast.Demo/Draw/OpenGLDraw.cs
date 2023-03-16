@@ -2,8 +2,8 @@ using Silk.NET.OpenGL;
 
 namespace DotRecast.Recast.Demo.Draw;
 
-public interface OpenGLDraw {
-
+public interface OpenGLDraw
+{
     void init(GL gl);
 
     void clear();
@@ -31,5 +31,4 @@ public interface OpenGLDraw {
     void viewMatrix(float[] viewMatrix);
 
     void fog(float start, float end);
-
 }

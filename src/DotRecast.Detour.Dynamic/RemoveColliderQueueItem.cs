@@ -20,26 +20,25 @@ using System.Collections.Generic;
 
 namespace DotRecast.Detour.Dynamic
 {
+    public class RemoveColliderQueueItem : UpdateQueueItem
+    {
+        private readonly long colliderId;
+        private readonly ICollection<DynamicTile> _affectedTiles;
 
+        public RemoveColliderQueueItem(long colliderId, ICollection<DynamicTile> affectedTiles)
+        {
+            this.colliderId = colliderId;
+            this._affectedTiles = affectedTiles;
+        }
 
-public class RemoveColliderQueueItem : UpdateQueueItem {
+        public ICollection<DynamicTile> affectedTiles()
+        {
+            return _affectedTiles;
+        }
 
-    private readonly long colliderId;
-    private readonly ICollection<DynamicTile> _affectedTiles;
-
-    public RemoveColliderQueueItem(long colliderId, ICollection<DynamicTile> affectedTiles) {
-        this.colliderId = colliderId;
-        this._affectedTiles = affectedTiles;
+        public void process(DynamicTile tile)
+        {
+            tile.removeCollider(colliderId);
+        }
     }
-
-    public ICollection<DynamicTile> affectedTiles() {
-        return _affectedTiles;
-    }
-
-    public void process(DynamicTile tile) {
-        tile.removeCollider(colliderId);
-    }
-
-}
-
 }

@@ -17,23 +17,26 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour.TileCache
 {
+    public class CompressedTile
+    {
+        public readonly int index;
+        public int salt;
 
+        /// < Counter describing modifications to the tile.
+        public TileCacheLayerHeader header;
 
-public class CompressedTile {
-    public readonly int index;
-    public int salt; /// < Counter describing modifications to the tile.
-    public TileCacheLayerHeader header;
-    public byte[] data;
-    public int compressed; // offset of compressed data
-    public int flags;
-    public CompressedTile next;
+        public byte[] data;
+        public int compressed; // offset of compressed data
+        public int flags;
+        public CompressedTile next;
 
-    public CompressedTile(int index) {
-        this.index = index;
-        salt = 1;
+        public CompressedTile(int index)
+        {
+            this.index = index;
+            salt = 1;
+        }
     }
-}
-
 }

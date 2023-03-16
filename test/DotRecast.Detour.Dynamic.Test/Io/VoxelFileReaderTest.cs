@@ -23,18 +23,19 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Dynamic.Test.Io;
 
-public class VoxelFileReaderTest {
-
+public class VoxelFileReaderTest
+{
     [Test]
-    public void shouldReadSingleTileFile() {
+    public void shouldReadSingleTileFile()
+    {
         byte[] bytes = Loader.ToBytes("test.voxels");
         using var ms = new MemoryStream(bytes);
         using var bis = new BinaryReader(ms);
-        
+
         VoxelFileReader reader = new VoxelFileReader();
         VoxelFile f = reader.read(bis);
         Assert.That(f.useTiles, Is.False);
-        Assert.That(f.bounds, Is.EqualTo(new float[] {-100.0f, 0f, -100f, 100f, 5f, 100f}));
+        Assert.That(f.bounds, Is.EqualTo(new float[] { -100.0f, 0f, -100f, 100f, 5f, 100f }));
         Assert.That(f.cellSize, Is.EqualTo(0.25f));
         Assert.That(f.walkableRadius, Is.EqualTo(0.5f));
         Assert.That(f.walkableHeight, Is.EqualTo(2f));
@@ -46,19 +47,20 @@ public class VoxelFileReaderTest {
         Assert.That(f.tiles[0].cellHeight, Is.EqualTo(0.001f));
         Assert.That(f.tiles[0].width, Is.EqualTo(810));
         Assert.That(f.tiles[0].depth, Is.EqualTo(810));
-        Assert.That(f.tiles[0].boundsMin, Is.EqualTo(new float[] {-101.25f, 0f, -101.25f}));
-        Assert.That(f.tiles[0].boundsMax, Is.EqualTo(new float[] {101.25f, 5.0f, 101.25f}));
+        Assert.That(f.tiles[0].boundsMin, Is.EqualTo(new float[] { -101.25f, 0f, -101.25f }));
+        Assert.That(f.tiles[0].boundsMax, Is.EqualTo(new float[] { 101.25f, 5.0f, 101.25f }));
     }
 
     [Test]
-    public void shouldReadMultiTileFile() {
+    public void shouldReadMultiTileFile()
+    {
         byte[] bytes = Loader.ToBytes("test_tiles.voxels");
         using var ms = new MemoryStream(bytes);
         using var bis = new BinaryReader(ms);
-        
+
         VoxelFileReader reader = new VoxelFileReader();
         VoxelFile f = reader.read(bis);
-        
+
         Assert.That(f.useTiles, Is.True);
         Assert.That(f.bounds, Is.EqualTo(new float[] { -100.0f, 0f, -100f, 100f, 5f, 100f }));
         Assert.That(f.cellSize, Is.EqualTo(0.25f));

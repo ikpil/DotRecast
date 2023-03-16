@@ -17,10 +17,11 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Recast.Demo.Draw;
 
-public enum DebugDrawPrimitives {
-
+public enum DebugDrawPrimitives
+{
     POINTS,
     LINES,
     TRIS,

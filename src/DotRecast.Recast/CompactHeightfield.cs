@@ -20,57 +20,55 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Recast
 {
+    /** A compact, static heightfield representing unobstructed space. */
+    public class CompactHeightfield
+    {
+        /** The width of the heightfield. (Along the x-axis in cell units.) */
+        public int width;
 
+        /** The height of the heightfield. (Along the z-axis in cell units.) */
+        public int height;
 
-/** A compact, static heightfield representing unobstructed space. */
-public class CompactHeightfield
-{
-    /** The width of the heightfield. (Along the x-axis in cell units.) */
-    public int width;
+        /** The number of spans in the heightfield. */
+        public int spanCount;
 
-    /** The height of the heightfield. (Along the z-axis in cell units.) */
-    public int height;
+        /** The walkable height used during the build of the field. (See: RecastConfig::walkableHeight) */
+        public int walkableHeight;
 
-    /** The number of spans in the heightfield. */
-    public int spanCount;
+        /** The walkable climb used during the build of the field. (See: RecastConfig::walkableClimb) */
+        public int walkableClimb;
 
-    /** The walkable height used during the build of the field. (See: RecastConfig::walkableHeight) */
-    public int walkableHeight;
+        /** The AABB border size used during the build of the field. (See: RecastConfig::borderSize) */
+        public int borderSize;
 
-    /** The walkable climb used during the build of the field. (See: RecastConfig::walkableClimb) */
-    public int walkableClimb;
+        /** The maximum distance value of any span within the field. */
+        public int maxDistance;
 
-    /** The AABB border size used during the build of the field. (See: RecastConfig::borderSize) */
-    public int borderSize;
+        /** The maximum region id of any span within the field. */
+        public int maxRegions;
 
-    /** The maximum distance value of any span within the field. */
-    public int maxDistance;
+        /** The minimum bounds in world space. [(x, y, z)] */
+        public float[] bmin = new float[3];
 
-    /** The maximum region id of any span within the field. */
-    public int maxRegions;
+        /** The maximum bounds in world space. [(x, y, z)] */
+        public float[] bmax = new float[3];
 
-    /** The minimum bounds in world space. [(x, y, z)] */
-    public float[] bmin = new float[3];
+        /** The size of each cell. (On the xz-plane.) */
+        public float cs;
 
-    /** The maximum bounds in world space. [(x, y, z)] */
-    public float[] bmax = new float[3];
+        /** The height of each cell. (The minimum increment along the y-axis.) */
+        public float ch;
 
-    /** The size of each cell. (On the xz-plane.) */
-    public float cs;
+        /** Array of cells. [Size: #width*#height] */
+        public CompactCell[] cells;
 
-    /** The height of each cell. (The minimum increment along the y-axis.) */
-    public float ch;
+        /** Array of spans. [Size: #spanCount] */
+        public CompactSpan[] spans;
 
-    /** Array of cells. [Size: #width*#height] */
-    public CompactCell[] cells;
+        /** Array containing border distance data. [Size: #spanCount] */
+        public int[] dist;
 
-    /** Array of spans. [Size: #spanCount] */
-    public CompactSpan[] spans;
-
-    /** Array containing border distance data. [Size: #spanCount] */
-    public int[] dist;
-
-    /** Array containing area id data. [Size: #spanCount] */
-    public int[] areas;
-}
+        /** Array containing area id data. [Size: #spanCount] */
+        public int[] areas;
+    }
 }

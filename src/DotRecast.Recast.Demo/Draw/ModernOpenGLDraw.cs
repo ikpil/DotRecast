@@ -7,7 +7,8 @@ using Silk.NET.Windowing;
 
 namespace DotRecast.Recast.Demo.Draw;
 
-public class ModernOpenGLDraw : OpenGLDraw {
+public class ModernOpenGLDraw : OpenGLDraw
+{
     private GL _gl;
     private uint program;
     private int uniformTexture;
@@ -33,36 +34,36 @@ public class ModernOpenGLDraw : OpenGLDraw {
     {
         _gl = gl;
         string NK_SHADER_VERSION = PlatformID.MacOSX == Environment.OSVersion.Platform ? "#version 150\n" : "#version 300 es\n";
-        string vertex_shader = NK_SHADER_VERSION + "uniform mat4 ProjMtx;\n"//
-                + "uniform mat4 ViewMtx;\n"//
-                + "in vec3 Position;\n"//
-                + "in vec2 TexCoord;\n"//
-                + "in vec4 Color;\n"//
-                + "out vec2 Frag_UV;\n"//
-                + "out vec4 Frag_Color;\n"//
-                + "out float Frag_Depth;\n"//
-                + "void main() {\n"//
-                + "   Frag_UV = TexCoord;\n"//
-                + "   Frag_Color = Color;\n"//
-                + "   vec4 VSPosition = ViewMtx * vec4(Position, 1);\n"//
-                + "   Frag_Depth = -VSPosition.z;\n"//
-                + "   gl_Position = ProjMtx * VSPosition;\n"//
-                + "}\n";
-        string fragment_shader = NK_SHADER_VERSION + "precision mediump float;\n"//
-                + "uniform sampler2D Texture;\n"//
-                + "uniform float UseTexture;\n"//
-                + "uniform float EnableFog;\n"//
-                + "uniform float FogStart;\n"//
-                + "uniform float FogEnd;\n"//
-                + "const vec4 FogColor = vec4(0.3f, 0.3f, 0.32f, 1.0f);\n"//
-                + "in vec2 Frag_UV;\n"//
-                + "in vec4 Frag_Color;\n"//
-                + "in float Frag_Depth;\n"//
-                + "out vec4 Out_Color;\n"//
-                + "void main(){\n"//
-                + "   Out_Color = mix(FogColor, Frag_Color * mix(vec4(1), texture(Texture, Frag_UV.st), UseTexture), 1.0 - EnableFog * clamp( (Frag_Depth - FogStart) / (FogEnd - FogStart), 0.0, 1.0) );\n"//
-                + "}\n";
-        
+        string vertex_shader = NK_SHADER_VERSION + "uniform mat4 ProjMtx;\n" //
+                                                 + "uniform mat4 ViewMtx;\n" //
+                                                 + "in vec3 Position;\n" //
+                                                 + "in vec2 TexCoord;\n" //
+                                                 + "in vec4 Color;\n" //
+                                                 + "out vec2 Frag_UV;\n" //
+                                                 + "out vec4 Frag_Color;\n" //
+                                                 + "out float Frag_Depth;\n" //
+                                                 + "void main() {\n" //
+                                                 + "   Frag_UV = TexCoord;\n" //
+                                                 + "   Frag_Color = Color;\n" //
+                                                 + "   vec4 VSPosition = ViewMtx * vec4(Position, 1);\n" //
+                                                 + "   Frag_Depth = -VSPosition.z;\n" //
+                                                 + "   gl_Position = ProjMtx * VSPosition;\n" //
+                                                 + "}\n";
+        string fragment_shader = NK_SHADER_VERSION + "precision mediump float;\n" //
+                                                   + "uniform sampler2D Texture;\n" //
+                                                   + "uniform float UseTexture;\n" //
+                                                   + "uniform float EnableFog;\n" //
+                                                   + "uniform float FogStart;\n" //
+                                                   + "uniform float FogEnd;\n" //
+                                                   + "const vec4 FogColor = vec4(0.3f, 0.3f, 0.32f, 1.0f);\n" //
+                                                   + "in vec2 Frag_UV;\n" //
+                                                   + "in vec4 Frag_Color;\n" //
+                                                   + "in float Frag_Depth;\n" //
+                                                   + "out vec4 Out_Color;\n" //
+                                                   + "void main(){\n" //
+                                                   + "   Out_Color = mix(FogColor, Frag_Color * mix(vec4(1), texture(Texture, Frag_UV.st), UseTexture), 1.0 - EnableFog * clamp( (Frag_Depth - FogStart) / (FogEnd - FogStart), 0.0, 1.0) );\n" //
+                                                   + "}\n";
+
         program = _gl.CreateProgram();
         uint vert_shdr = _gl.CreateShader(GLEnum.VertexShader);
         uint frag_shdr = _gl.CreateShader(GLEnum.FragmentShader);
@@ -71,20 +72,26 @@ public class ModernOpenGLDraw : OpenGLDraw {
         _gl.CompileShader(vert_shdr);
         _gl.CompileShader(frag_shdr);
         gl.GetShader(vert_shdr, GLEnum.CompileStatus, out var status);
-        if (status != (int) GLEnum.True) {
+        if (status != (int)GLEnum.True)
+        {
             throw new InvalidOperationException();
         }
+
         gl.GetShader(frag_shdr, GLEnum.CompileStatus, out status);
-        if (status != (int) GLEnum.True) {
+        if (status != (int)GLEnum.True)
+        {
             throw new InvalidOperationException();
         }
+
         _gl.AttachShader(program, vert_shdr);
         _gl.AttachShader(program, frag_shdr);
         _gl.LinkProgram(program);
         _gl.GetProgram(program, GLEnum.LinkStatus, out status);
-        if (status != (int) GLEnum.True) {
+        if (status != (int)GLEnum.True)
+        {
             throw new InvalidOperationException();
         }
+
         uniformTexture = _gl.GetUniformLocation(program, "Texture");
         uniformUseTexture = _gl.GetUniformLocation(program, "UseTexture");
         uniformFog = _gl.GetUniformLocation(program, "EnableFog");
@@ -92,19 +99,19 @@ public class ModernOpenGLDraw : OpenGLDraw {
         uniformFogEnd = _gl.GetUniformLocation(program, "FogEnd");
         uniformProjectionMatrix = _gl.GetUniformLocation(program, "ProjMtx");
         uniformViewMatrix = _gl.GetUniformLocation(program, "ViewMtx");
-        uint attrib_pos = (uint) _gl.GetAttribLocation(program, "Position");
-        uint attrib_uv = (uint) _gl.GetAttribLocation(program, "TexCoord");
-        uint attrib_col = (uint) _gl.GetAttribLocation(program, "Color");
-        
+        uint attrib_pos = (uint)_gl.GetAttribLocation(program, "Position");
+        uint attrib_uv = (uint)_gl.GetAttribLocation(program, "TexCoord");
+        uint attrib_col = (uint)_gl.GetAttribLocation(program, "Color");
+
         // buffer setup
         _gl.GenBuffers(1, out vbo);
         _gl.GenBuffers(1, out ebo);
         _gl.GenVertexArrays(1, out vao);
-        
+
         _gl.BindVertexArray(vao);
         _gl.BindBuffer(GLEnum.ArrayBuffer, vbo);
         _gl.BindBuffer(GLEnum.ElementArrayBuffer, ebo);
-        
+
         _gl.EnableVertexAttribArray(attrib_pos);
         _gl.EnableVertexAttribArray(attrib_uv);
         _gl.EnableVertexAttribArray(attrib_col);
@@ -112,18 +119,19 @@ public class ModernOpenGLDraw : OpenGLDraw {
         // _gl.VertexAttribPointer(attrib_pos, 3, GLEnum.Float, false, 24, 0);
         // _gl.VertexAttribPointer(attrib_uv, 2, GLEnum.Float, false, 24, 12);
         // _gl.VertexAttribPointer(attrib_col, 4, GLEnum.UnsignedByte, true, 24, 20);
-        
+
         _gl.VertexAttribP3(attrib_pos, GLEnum.Float, false, 0);
         _gl.VertexAttribP2(attrib_uv, GLEnum.Float, false, 12);
         _gl.VertexAttribP4(attrib_col, GLEnum.UnsignedByte, true, 20);
-        
+
         _gl.BindTexture(GLEnum.Texture2D, 0);
         _gl.BindBuffer(GLEnum.ArrayBuffer, 0);
         _gl.BindBuffer(GLEnum.ElementArrayBuffer, 0);
         _gl.BindVertexArray(0);
     }
 
-    public void clear() {
+    public void clear()
+    {
         _gl.ClearColor(0.3f, 0.3f, 0.32f, 1.0f);
         _gl.Clear((uint)GLEnum.ColorBufferBit | (uint)GLEnum.DepthBufferBit);
         _gl.Enable(GLEnum.Blend);
@@ -133,14 +141,16 @@ public class ModernOpenGLDraw : OpenGLDraw {
         _gl.Enable(GLEnum.CullFace);
     }
 
-    public void begin(DebugDrawPrimitives prim, float size) {
+    public void begin(DebugDrawPrimitives prim, float size)
+    {
         currentPrim = prim;
         vertices.Clear();
         _gl.LineWidth(size);
         _gl.PointSize(size);
     }
 
-    public void end() {
+    public void end()
+    {
         // if (vertices.isEmpty()) {
         //     return;
         // }
@@ -217,48 +227,58 @@ public class ModernOpenGLDraw : OpenGLDraw {
         // glPointSize(1.0f);
     }
 
-    public void vertex(float x, float y, float z, int color) {
+    public void vertex(float x, float y, float z, int color)
+    {
         vertices.Add(new OpenGLVertex(x, y, z, color));
     }
 
-    public void vertex(float[] pos, int color) {
+    public void vertex(float[] pos, int color)
+    {
         vertices.Add(new OpenGLVertex(pos, color));
     }
 
-    public void vertex(float[] pos, int color, float[] uv) {
+    public void vertex(float[] pos, int color, float[] uv)
+    {
         vertices.Add(new OpenGLVertex(pos, uv, color));
     }
 
-    public void vertex(float x, float y, float z, int color, float u, float v) {
+    public void vertex(float x, float y, float z, int color, float u, float v)
+    {
         vertices.Add(new OpenGLVertex(x, y, z, u, v, color));
     }
 
-    public void depthMask(bool state) {
+    public void depthMask(bool state)
+    {
         _gl.DepthMask(state);
     }
 
-    public void texture(GLCheckerTexture g_tex, bool state) {
+    public void texture(GLCheckerTexture g_tex, bool state)
+    {
         _texture = state ? g_tex : null;
-        if (_texture != null) {
+        if (_texture != null)
+        {
             _texture.bind();
         }
     }
 
-    public void projectionMatrix(float[] projectionMatrix) {
+    public void projectionMatrix(float[] projectionMatrix)
+    {
         this._projectionMatrix = projectionMatrix;
     }
 
-    public void viewMatrix(float[] viewMatrix) {
+    public void viewMatrix(float[] viewMatrix)
+    {
         this._viewMatrix = viewMatrix;
     }
 
-    public void fog(float start, float end) {
+    public void fog(float start, float end)
+    {
         fogStart = start;
         fogEnd = end;
     }
 
-    public void fog(bool state) {
+    public void fog(bool state)
+    {
         fogEnabled = state;
     }
-
 }

@@ -23,22 +23,20 @@ using K4os.Compression.LZ4;
 
 namespace DotRecast.Detour.TileCache.Io.Compress
 {
+    public class FastLzTileCacheCompressor : TileCacheCompressor
+    {
+        public byte[] decompress(byte[] buf, int offset, int len, int outputlen)
+        {
+            byte[] output = new byte[outputlen];
+            FastLz.decompress(buf, offset, len, output, 0, outputlen);
+            return output;
+        }
 
-
-public class FastLzTileCacheCompressor : TileCacheCompressor {
-
-    public byte[] decompress(byte[] buf, int offset, int len, int outputlen) {
-        byte[] output = new byte[outputlen];
-        FastLz.decompress(buf, offset, len, output, 0, outputlen);
-        return output;
+        public byte[] compress(byte[] buf)
+        {
+            byte[] output = new byte[FastLz.calculateOutputBufferLength(buf.Length)];
+            int len = FastLz.compress(buf, 0, buf.Length, output, 0, output.Length);
+            return ArrayUtils.CopyOf(output, len);
+        }
     }
-
-    public byte[] compress(byte[] buf) {
-        byte[] output = new byte[FastLz.calculateOutputBufferLength(buf.Length)];
-        int len = FastLz.compress(buf, 0, buf.Length, output, 0, output.Length);
-        return ArrayUtils.CopyOf(output, len);
-    }
-
-}
-
 }

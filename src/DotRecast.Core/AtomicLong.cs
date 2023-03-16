@@ -2,54 +2,52 @@
 
 namespace DotRecast.Core
 {
-
-
-public class AtomicLong
-{
-    private long _location;
-
-    public AtomicLong() : this(0)
+    public class AtomicLong
     {
-    }
-        
-    public AtomicLong(long location)
-    {
-        _location = location;
-    }
+        private long _location;
 
-    public long IncrementAndGet()
-    {
-        return Interlocked.Increment(ref _location);
-    }
+        public AtomicLong() : this(0)
+        {
+        }
 
-    public long DecrementAndGet()
-    {
-        return Interlocked.Decrement(ref _location);
-    }
+        public AtomicLong(long location)
+        {
+            _location = location;
+        }
 
-    public long Read()
-    {
-        return Interlocked.Read(ref _location);
-    }
+        public long IncrementAndGet()
+        {
+            return Interlocked.Increment(ref _location);
+        }
 
-    public long Exchange(long exchange)
-    {
-        return Interlocked.Exchange(ref _location, exchange);
-    }
+        public long DecrementAndGet()
+        {
+            return Interlocked.Decrement(ref _location);
+        }
 
-    public long Decrease(long value)
-    {
-        return Interlocked.Add(ref _location, -value);
-    }
+        public long Read()
+        {
+            return Interlocked.Read(ref _location);
+        }
 
-    public long CompareExchange(long value, long comparand)
-    {
-        return Interlocked.CompareExchange(ref _location, value, comparand);
-    }
+        public long Exchange(long exchange)
+        {
+            return Interlocked.Exchange(ref _location, exchange);
+        }
 
-    public long AddAndGet(long value)
-    {
-        return Interlocked.Add(ref _location, value);
+        public long Decrease(long value)
+        {
+            return Interlocked.Add(ref _location, -value);
+        }
+
+        public long CompareExchange(long value, long comparand)
+        {
+            return Interlocked.CompareExchange(ref _location, value, comparand);
+        }
+
+        public long AddAndGet(long value)
+        {
+            return Interlocked.Add(ref _location, value);
+        }
     }
-}
 }

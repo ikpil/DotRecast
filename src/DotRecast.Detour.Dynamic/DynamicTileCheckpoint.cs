@@ -18,48 +18,53 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 using DotRecast.Recast;
-
 using static DotRecast.Detour.DetourCommon;
 
 namespace DotRecast.Detour.Dynamic
 {
+    public class DynamicTileCheckpoint
+    {
+        public readonly Heightfield heightfield;
+        public readonly ISet<long> colliders;
 
+        public DynamicTileCheckpoint(Heightfield heightfield, ISet<long> colliders)
+        {
+            this.colliders = colliders;
+            this.heightfield = clone(heightfield);
+        }
 
-public class DynamicTileCheckpoint {
-
-    public readonly Heightfield heightfield;
-    public readonly ISet<long> colliders;
-
-    public DynamicTileCheckpoint(Heightfield heightfield, ISet<long> colliders) {
-        this.colliders = colliders;
-        this.heightfield = clone(heightfield);
-    }
-
-    private Heightfield clone(Heightfield source) {
-        Heightfield clone = new Heightfield(source.width, source.height, vCopy(source.bmin), vCopy(source.bmax), source.cs,
+        private Heightfield clone(Heightfield source)
+        {
+            Heightfield clone = new Heightfield(source.width, source.height, vCopy(source.bmin), vCopy(source.bmax), source.cs,
                 source.ch, source.borderSize);
-        for (int z = 0, pz = 0; z < source.height; z++, pz += source.width) {
-            for (int x = 0; x < source.width; x++) {
-                Span span = source.spans[pz + x];
-                Span prevCopy = null;
-                while (span != null) {
-                    Span copy = new Span();
-                    copy.smin = span.smin;
-                    copy.smax = span.smax;
-                    copy.area = span.area;
-                    if (prevCopy == null) {
-                        clone.spans[pz + x] = copy;
-                    } else {
-                        prevCopy.next = copy;
+            for (int z = 0, pz = 0; z < source.height; z++, pz += source.width)
+            {
+                for (int x = 0; x < source.width; x++)
+                {
+                    Span span = source.spans[pz + x];
+                    Span prevCopy = null;
+                    while (span != null)
+                    {
+                        Span copy = new Span();
+                        copy.smin = span.smin;
+                        copy.smax = span.smax;
+                        copy.area = span.area;
+                        if (prevCopy == null)
+                        {
+                            clone.spans[pz + x] = copy;
+                        }
+                        else
+                        {
+                            prevCopy.next = copy;
+                        }
+
+                        prevCopy = copy;
+                        span = span.next;
                     }
-                    prevCopy = copy;
-                    span = span.next;
                 }
             }
+
+            return clone;
         }
-        return clone;
     }
-
-}
-
 }

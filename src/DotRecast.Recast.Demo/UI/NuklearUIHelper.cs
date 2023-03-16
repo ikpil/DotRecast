@@ -20,8 +20,8 @@ using System.Runtime.InteropServices.JavaScript;
 
 namespace DotRecast.Recast.Demo.UI;
 
-public class NuklearUIHelper {
-
+public class NuklearUIHelper
+{
     // public static void nk_color_rgb(IWindow ctx, NkColorf color) {
     //     try (MemoryStack stack = stackPush()) {
     //         if (nk_combo_begin_color(ctx, nk_rgb_cf(color, NkColor.mallocStack(stack)),

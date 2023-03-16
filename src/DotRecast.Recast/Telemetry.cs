@@ -25,36 +25,34 @@ using DotRecast.Core;
 
 namespace DotRecast.Recast
 {
-
-
-public class Telemetry
-{
-    private readonly ThreadLocal<Dictionary<string, AtomicLong>> timerStart = new ThreadLocal<Dictionary<string, AtomicLong>>(() => new Dictionary<string, AtomicLong>());
-    private readonly ConcurrentDictionary<string, AtomicLong> timerAccum = new ConcurrentDictionary<string, AtomicLong>();
-
-    public void startTimer(string name)
+    public class Telemetry
     {
-        timerStart.Value[name] = new AtomicLong(Stopwatch.GetTimestamp());
-    }
+        private readonly ThreadLocal<Dictionary<string, AtomicLong>> timerStart = new ThreadLocal<Dictionary<string, AtomicLong>>(() => new Dictionary<string, AtomicLong>());
+        private readonly ConcurrentDictionary<string, AtomicLong> timerAccum = new ConcurrentDictionary<string, AtomicLong>();
 
-    public void stopTimer(string name)
-    {
-        timerAccum
-            .GetOrAdd(name, _ => new AtomicLong(0))
-            .AddAndGet(Stopwatch.GetTimestamp() - timerStart.Value?[name].Read() ?? 0);
-    }
-
-    public void warn(string @string)
-    {
-        Console.WriteLine(@string);
-    }
-
-    public void print()
-    {
-        foreach (var (n, v) in timerAccum)
+        public void startTimer(string name)
         {
-            Console.WriteLine(n + ": " + v.Read() / 1000000);
+            timerStart.Value[name] = new AtomicLong(Stopwatch.GetTimestamp());
+        }
+
+        public void stopTimer(string name)
+        {
+            timerAccum
+                .GetOrAdd(name, _ => new AtomicLong(0))
+                .AddAndGet(Stopwatch.GetTimestamp() - timerStart.Value?[name].Read() ?? 0);
+        }
+
+        public void warn(string @string)
+        {
+            Console.WriteLine(@string);
+        }
+
+        public void print()
+        {
+            foreach (var (n, v) in timerAccum)
+            {
+                Console.WriteLine(n + ": " + v.Read() / 1000000);
+            }
         }
     }
-}
 }

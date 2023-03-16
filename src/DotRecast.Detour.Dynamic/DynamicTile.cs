@@ -27,131 +27,154 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic
 {
+    public class DynamicTile
+    {
+        public readonly VoxelTile voxelTile;
+        public DynamicTileCheckpoint checkpoint;
+        public RecastBuilderResult recastResult;
+        MeshData meshData;
+        private readonly ConcurrentDictionary<long, Collider> colliders = new ConcurrentDictionary<long, Collider>();
+        private bool dirty = true;
+        private long id;
 
+        public DynamicTile(VoxelTile voxelTile)
+        {
+            this.voxelTile = voxelTile;
+        }
 
-public class DynamicTile {
-
-    public readonly VoxelTile voxelTile;
-    public DynamicTileCheckpoint checkpoint;
-    public RecastBuilderResult recastResult;
-    MeshData meshData;
-    private readonly ConcurrentDictionary<long, Collider> colliders = new ConcurrentDictionary<long, Collider>();
-    private bool dirty = true;
-    private long id;
-
-    public DynamicTile(VoxelTile voxelTile) {
-        this.voxelTile = voxelTile;
-    }
-
-    public bool build(RecastBuilder builder, DynamicNavMeshConfig config, Telemetry telemetry) {
-        if (dirty) {
-            Heightfield heightfield = buildHeightfield(config, telemetry);
-            RecastBuilderResult r = buildRecast(builder, config, voxelTile, heightfield, telemetry);
-            NavMeshDataCreateParams option = navMeshCreateParams(voxelTile.tileX, voxelTile.tileZ, voxelTile.cellSize,
+        public bool build(RecastBuilder builder, DynamicNavMeshConfig config, Telemetry telemetry)
+        {
+            if (dirty)
+            {
+                Heightfield heightfield = buildHeightfield(config, telemetry);
+                RecastBuilderResult r = buildRecast(builder, config, voxelTile, heightfield, telemetry);
+                NavMeshDataCreateParams option = navMeshCreateParams(voxelTile.tileX, voxelTile.tileZ, voxelTile.cellSize,
                     voxelTile.cellHeight, config, r);
-            meshData = NavMeshBuilder.createNavMeshData(option);
-            return true;
-        }
-        return false;
-    }
-
-    private Heightfield buildHeightfield(DynamicNavMeshConfig config, Telemetry telemetry) {
-        ICollection<long> rasterizedColliders = checkpoint != null ? checkpoint.colliders : ImmutableHashSet<long>.Empty;
-        Heightfield heightfield = checkpoint != null ? checkpoint.heightfield : voxelTile.heightfield();
-        foreach (var (cid, c) in colliders) {
-            if (!rasterizedColliders.Contains(cid)) {
-                heightfield.bmax[1] = Math.Max(heightfield.bmax[1], c.bounds()[4] + heightfield.ch * 2);
-                c.rasterize(heightfield, telemetry);
+                meshData = NavMeshBuilder.createNavMeshData(option);
+                return true;
             }
-        }
-        if (config.enableCheckpoints) {
-            checkpoint = new DynamicTileCheckpoint(heightfield, colliders.Keys.ToHashSet());
-        }
-        return heightfield;
-    }
 
-    private RecastBuilderResult buildRecast(RecastBuilder builder, DynamicNavMeshConfig config, VoxelTile vt,
-            Heightfield heightfield, Telemetry telemetry) {
-        RecastConfig rcConfig = new RecastConfig(config.useTiles, config.tileSizeX, config.tileSizeZ, vt.borderSize,
+            return false;
+        }
+
+        private Heightfield buildHeightfield(DynamicNavMeshConfig config, Telemetry telemetry)
+        {
+            ICollection<long> rasterizedColliders = checkpoint != null ? checkpoint.colliders : ImmutableHashSet<long>.Empty;
+            Heightfield heightfield = checkpoint != null ? checkpoint.heightfield : voxelTile.heightfield();
+            foreach (var (cid, c) in colliders)
+            {
+                if (!rasterizedColliders.Contains(cid))
+                {
+                    heightfield.bmax[1] = Math.Max(heightfield.bmax[1], c.bounds()[4] + heightfield.ch * 2);
+                    c.rasterize(heightfield, telemetry);
+                }
+            }
+
+            if (config.enableCheckpoints)
+            {
+                checkpoint = new DynamicTileCheckpoint(heightfield, colliders.Keys.ToHashSet());
+            }
+
+            return heightfield;
+        }
+
+        private RecastBuilderResult buildRecast(RecastBuilder builder, DynamicNavMeshConfig config, VoxelTile vt,
+            Heightfield heightfield, Telemetry telemetry)
+        {
+            RecastConfig rcConfig = new RecastConfig(config.useTiles, config.tileSizeX, config.tileSizeZ, vt.borderSize,
                 config.partitionType, vt.cellSize, vt.cellHeight, config.walkableSlopeAngle, true, true, true,
                 config.walkableHeight, config.walkableRadius, config.walkableClimb, config.minRegionArea, config.regionMergeArea,
                 config.maxEdgeLen, config.maxSimplificationError,
                 Math.Min(DynamicNavMesh.MAX_VERTS_PER_POLY, config.vertsPerPoly), true, config.detailSampleDistance,
                 config.detailSampleMaxError, null);
-        RecastBuilderResult r = builder.build(vt.tileX, vt.tileZ, null, rcConfig, heightfield, telemetry);
-        if (config.keepIntermediateResults) {
-            recastResult = r;
+            RecastBuilderResult r = builder.build(vt.tileX, vt.tileZ, null, rcConfig, heightfield, telemetry);
+            if (config.keepIntermediateResults)
+            {
+                recastResult = r;
+            }
+
+            return r;
         }
-        return r;
-    }
 
-    public void addCollider(long cid, Collider collider) {
-        colliders[cid] = collider;
-        dirty = true;
-    }
-
-    public bool containsCollider(long cid) {
-        return colliders.ContainsKey(cid);
-    }
-
-    public void removeCollider(long colliderId) {
-        if (colliders.TryRemove(colliderId, out var collider)) {
+        public void addCollider(long cid, Collider collider)
+        {
+            colliders[cid] = collider;
             dirty = true;
-            checkpoint = null;
+        }
+
+        public bool containsCollider(long cid)
+        {
+            return colliders.ContainsKey(cid);
+        }
+
+        public void removeCollider(long colliderId)
+        {
+            if (colliders.TryRemove(colliderId, out var collider))
+            {
+                dirty = true;
+                checkpoint = null;
+            }
+        }
+
+        private NavMeshDataCreateParams navMeshCreateParams(int tilex, int tileZ, float cellSize, float cellHeight,
+            DynamicNavMeshConfig config, RecastBuilderResult rcResult)
+        {
+            PolyMesh m_pmesh = rcResult.getMesh();
+            PolyMeshDetail m_dmesh = rcResult.getMeshDetail();
+            NavMeshDataCreateParams option = new NavMeshDataCreateParams();
+            for (int i = 0; i < m_pmesh.npolys; ++i)
+            {
+                m_pmesh.flags[i] = 1;
+            }
+
+            option.tileX = tilex;
+            option.tileZ = tileZ;
+            option.verts = m_pmesh.verts;
+            option.vertCount = m_pmesh.nverts;
+            option.polys = m_pmesh.polys;
+            option.polyAreas = m_pmesh.areas;
+            option.polyFlags = m_pmesh.flags;
+            option.polyCount = m_pmesh.npolys;
+            option.nvp = m_pmesh.nvp;
+            if (m_dmesh != null)
+            {
+                option.detailMeshes = m_dmesh.meshes;
+                option.detailVerts = m_dmesh.verts;
+                option.detailVertsCount = m_dmesh.nverts;
+                option.detailTris = m_dmesh.tris;
+                option.detailTriCount = m_dmesh.ntris;
+            }
+
+            option.walkableHeight = config.walkableHeight;
+            option.walkableRadius = config.walkableRadius;
+            option.walkableClimb = config.walkableClimb;
+            option.bmin = m_pmesh.bmin;
+            option.bmax = m_pmesh.bmax;
+            option.cs = cellSize;
+            option.ch = cellHeight;
+            option.buildBvTree = true;
+
+            option.offMeshConCount = 0;
+            option.offMeshConVerts = new float[0];
+            option.offMeshConRad = new float[0];
+            option.offMeshConDir = new int[0];
+            option.offMeshConAreas = new int[0];
+            option.offMeshConFlags = new int[0];
+            option.offMeshConUserID = new int[0];
+            return option;
+        }
+
+        public void addTo(NavMesh navMesh)
+        {
+            if (meshData != null)
+            {
+                id = navMesh.addTile(meshData, 0, 0);
+            }
+            else
+            {
+                navMesh.removeTile(id);
+                id = 0;
+            }
         }
     }
-
-    private NavMeshDataCreateParams navMeshCreateParams(int tilex, int tileZ, float cellSize, float cellHeight,
-            DynamicNavMeshConfig config, RecastBuilderResult rcResult) {
-        PolyMesh m_pmesh = rcResult.getMesh();
-        PolyMeshDetail m_dmesh = rcResult.getMeshDetail();
-        NavMeshDataCreateParams option = new NavMeshDataCreateParams();
-        for (int i = 0; i < m_pmesh.npolys; ++i) {
-            m_pmesh.flags[i] = 1;
-        }
-        option.tileX = tilex;
-        option.tileZ = tileZ;
-        option.verts = m_pmesh.verts;
-        option.vertCount = m_pmesh.nverts;
-        option.polys = m_pmesh.polys;
-        option.polyAreas = m_pmesh.areas;
-        option.polyFlags = m_pmesh.flags;
-        option.polyCount = m_pmesh.npolys;
-        option.nvp = m_pmesh.nvp;
-        if (m_dmesh != null) {
-            option.detailMeshes = m_dmesh.meshes;
-            option.detailVerts = m_dmesh.verts;
-            option.detailVertsCount = m_dmesh.nverts;
-            option.detailTris = m_dmesh.tris;
-            option.detailTriCount = m_dmesh.ntris;
-        }
-        option.walkableHeight = config.walkableHeight;
-        option.walkableRadius = config.walkableRadius;
-        option.walkableClimb = config.walkableClimb;
-        option.bmin = m_pmesh.bmin;
-        option.bmax = m_pmesh.bmax;
-        option.cs = cellSize;
-        option.ch = cellHeight;
-        option.buildBvTree = true;
-
-        option.offMeshConCount = 0;
-        option.offMeshConVerts = new float[0];
-        option.offMeshConRad = new float[0];
-        option.offMeshConDir = new int[0];
-        option.offMeshConAreas = new int[0];
-        option.offMeshConFlags = new int[0];
-        option.offMeshConUserID = new int[0];
-        return option;
-    }
-
-    public void addTo(NavMesh navMesh) {
-        if (meshData != null) {
-            id = navMesh.addTile(meshData, 0, 0);
-        } else {
-            navMesh.removeTile(id);
-            id = 0;
-        }
-    }
-}
-
 }

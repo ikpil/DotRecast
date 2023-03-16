@@ -15,20 +15,19 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour.Extras.Unity.Astar
 {
+    public class BVTreeCreator
+    {
+        private readonly BVTreeBuilder builder = new BVTreeBuilder();
 
-
-public class BVTreeCreator {
-
-    private readonly BVTreeBuilder builder = new BVTreeBuilder();
-
-    public void build(GraphMeshData graphData) {
-        foreach (MeshData d in graphData.tiles) {
-            builder.build(d);
+        public void build(GraphMeshData graphData)
+        {
+            foreach (MeshData d in graphData.tiles)
+            {
+                builder.build(d);
+            }
         }
     }
-
-}
-
 }

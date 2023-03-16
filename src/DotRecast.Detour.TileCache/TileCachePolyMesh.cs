@@ -17,22 +17,33 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour.TileCache
 {
+    public class TileCachePolyMesh
+    {
+        public int nvp;
+        public int nverts;
 
+        /// < Number of vertices.
+        public int npolys;
 
-public class TileCachePolyMesh {
-    public int nvp;
-    public int nverts; /// < Number of vertices.
-    public int npolys; /// < Number of polygons.
-    public int[] verts; /// < Vertices of the mesh, 3 elements per vertex.
-    public int[] polys; /// < Polygons of the mesh, nvp*2 elements per polygon.
-    public int[] flags; /// < Per polygon flags.
-    public int[] areas; /// < Area ID of polygons.
+        /// < Number of polygons.
+        public int[] verts;
 
-    public TileCachePolyMesh(int nvp) {
-        this.nvp = nvp;
+        /// < Vertices of the mesh, 3 elements per vertex.
+        public int[] polys;
+
+        /// < Polygons of the mesh, nvp*2 elements per polygon.
+        public int[] flags;
+
+        /// < Per polygon flags.
+        public int[] areas;
+
+        /// < Area ID of polygons.
+        public TileCachePolyMesh(int nvp)
+        {
+            this.nvp = nvp;
+        }
     }
-}
-
 }

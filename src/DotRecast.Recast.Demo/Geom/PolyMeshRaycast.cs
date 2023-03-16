@@ -21,13 +21,17 @@ using DotRecast.Core;
 
 namespace DotRecast.Recast.Demo.Geom;
 
-public class PolyMeshRaycast {
-
-    public static float? raycast(IList<RecastBuilderResult> results, float[] src, float[] dst) {
-        foreach (RecastBuilderResult result in results) {
-            if (result.getMeshDetail() != null) {
+public class PolyMeshRaycast
+{
+    public static float? raycast(IList<RecastBuilderResult> results, float[] src, float[] dst)
+    {
+        foreach (RecastBuilderResult result in results)
+        {
+            if (result.getMeshDetail() != null)
+            {
                 float? intersection = raycast(result.getMesh(), result.getMeshDetail(), src, dst);
-                if (null != intersection) {
+                if (null != intersection)
+                {
                     return intersection;
                 }
             }
@@ -36,29 +40,38 @@ public class PolyMeshRaycast {
         return null;
     }
 
-    private static float? raycast(PolyMesh poly, PolyMeshDetail meshDetail, float[] sp, float[] sq) {
-        if (meshDetail != null) {
-            for (int i = 0; i < meshDetail.nmeshes; ++i) {
+    private static float? raycast(PolyMesh poly, PolyMeshDetail meshDetail, float[] sp, float[] sq)
+    {
+        if (meshDetail != null)
+        {
+            for (int i = 0; i < meshDetail.nmeshes; ++i)
+            {
                 int m = i * 4;
                 int bverts = meshDetail.meshes[m];
                 int btris = meshDetail.meshes[m + 2];
                 int ntris = meshDetail.meshes[m + 3];
                 int verts = bverts * 3;
                 int tris = btris * 4;
-                for (int j = 0; j < ntris; ++j) {
+                for (int j = 0; j < ntris; ++j)
+                {
                     float[][] vs = ArrayUtils.Of<float>(3, 3);
-                    for (int k = 0; k < 3; ++k) {
+                    for (int k = 0; k < 3; ++k)
+                    {
                         vs[k][0] = meshDetail.verts[verts + meshDetail.tris[tris + j * 4 + k] * 3];
                         vs[k][1] = meshDetail.verts[verts + meshDetail.tris[tris + j * 4 + k] * 3 + 1];
                         vs[k][2] = meshDetail.verts[verts + meshDetail.tris[tris + j * 4 + k] * 3 + 2];
                     }
+
                     float? intersection = Intersections.intersectSegmentTriangle(sp, sq, vs[0], vs[1], vs[2]);
-                    if (null != intersection) {
+                    if (null != intersection)
+                    {
                         return intersection;
                     }
                 }
             }
-        } else {
+        }
+        else
+        {
             // TODO: check PolyMesh instead
         }
 

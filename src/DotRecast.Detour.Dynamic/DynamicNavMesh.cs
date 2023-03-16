@@ -29,202 +29,234 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic
 {
+    public class DynamicNavMesh
+    {
+        public const int MAX_VERTS_PER_POLY = 6;
+        public readonly DynamicNavMeshConfig config;
+        private readonly RecastBuilder builder;
+        private readonly Dictionary<long, DynamicTile> _tiles = new Dictionary<long, DynamicTile>();
+        private readonly Telemetry telemetry;
+        private readonly NavMeshParams navMeshParams;
+        private readonly BlockingCollection<UpdateQueueItem> updateQueue = new BlockingCollection<UpdateQueueItem>();
+        private readonly AtomicLong currentColliderId = new AtomicLong(0);
+        private NavMesh _navMesh;
+        private bool dirty = true;
 
+        public DynamicNavMesh(VoxelFile voxelFile)
+        {
+            config = new DynamicNavMeshConfig(voxelFile.useTiles, voxelFile.tileSizeX, voxelFile.tileSizeZ, voxelFile.cellSize);
+            config.walkableHeight = voxelFile.walkableHeight;
+            config.walkableRadius = voxelFile.walkableRadius;
+            config.walkableClimb = voxelFile.walkableClimb;
+            config.walkableSlopeAngle = voxelFile.walkableSlopeAngle;
+            config.maxSimplificationError = voxelFile.maxSimplificationError;
+            config.maxEdgeLen = voxelFile.maxEdgeLen;
+            config.minRegionArea = voxelFile.minRegionArea;
+            config.regionMergeArea = voxelFile.regionMergeArea;
+            config.vertsPerPoly = voxelFile.vertsPerPoly;
+            config.buildDetailMesh = voxelFile.buildMeshDetail;
+            config.detailSampleDistance = voxelFile.detailSampleDistance;
+            config.detailSampleMaxError = voxelFile.detailSampleMaxError;
+            builder = new RecastBuilder();
+            navMeshParams = new NavMeshParams();
+            navMeshParams.orig[0] = voxelFile.bounds[0];
+            navMeshParams.orig[1] = voxelFile.bounds[1];
+            navMeshParams.orig[2] = voxelFile.bounds[2];
+            navMeshParams.tileWidth = voxelFile.cellSize * voxelFile.tileSizeX;
+            navMeshParams.tileHeight = voxelFile.cellSize * voxelFile.tileSizeZ;
+            navMeshParams.maxTiles = voxelFile.tiles.Count;
+            navMeshParams.maxPolys = 0x8000;
+            foreach (var t in voxelFile.tiles)
+            {
+                _tiles.Add(lookupKey(t.tileX, t.tileZ), new DynamicTile(t));
+            }
 
-public class DynamicNavMesh {
+            ;
+            telemetry = new Telemetry();
+        }
 
-    public const int MAX_VERTS_PER_POLY = 6;
-    public readonly DynamicNavMeshConfig config;
-    private readonly RecastBuilder builder;
-    private readonly Dictionary<long, DynamicTile> _tiles = new Dictionary<long, DynamicTile>();
-    private readonly Telemetry telemetry;
-    private readonly NavMeshParams navMeshParams;
-    private readonly BlockingCollection<UpdateQueueItem> updateQueue = new BlockingCollection<UpdateQueueItem>();
-    private readonly AtomicLong currentColliderId = new AtomicLong(0);
-    private NavMesh _navMesh;
-    private bool dirty = true;
+        public NavMesh navMesh()
+        {
+            return _navMesh;
+        }
 
-    public DynamicNavMesh(VoxelFile voxelFile) {
-        config = new DynamicNavMeshConfig(voxelFile.useTiles, voxelFile.tileSizeX, voxelFile.tileSizeZ, voxelFile.cellSize);
-        config.walkableHeight = voxelFile.walkableHeight;
-        config.walkableRadius = voxelFile.walkableRadius;
-        config.walkableClimb = voxelFile.walkableClimb;
-        config.walkableSlopeAngle = voxelFile.walkableSlopeAngle;
-        config.maxSimplificationError = voxelFile.maxSimplificationError;
-        config.maxEdgeLen = voxelFile.maxEdgeLen;
-        config.minRegionArea = voxelFile.minRegionArea;
-        config.regionMergeArea = voxelFile.regionMergeArea;
-        config.vertsPerPoly = voxelFile.vertsPerPoly;
-        config.buildDetailMesh = voxelFile.buildMeshDetail;
-        config.detailSampleDistance = voxelFile.detailSampleDistance;
-        config.detailSampleMaxError = voxelFile.detailSampleMaxError;
-        builder = new RecastBuilder();
-        navMeshParams = new NavMeshParams();
-        navMeshParams.orig[0] = voxelFile.bounds[0];
-        navMeshParams.orig[1] = voxelFile.bounds[1];
-        navMeshParams.orig[2] = voxelFile.bounds[2];
-        navMeshParams.tileWidth = voxelFile.cellSize * voxelFile.tileSizeX;
-        navMeshParams.tileHeight = voxelFile.cellSize * voxelFile.tileSizeZ;
-        navMeshParams.maxTiles = voxelFile.tiles.Count;
-        navMeshParams.maxPolys = 0x8000;
-        foreach (var t in voxelFile.tiles) {
-            _tiles.Add(lookupKey(t.tileX, t.tileZ), new DynamicTile(t));
-        };
-        telemetry = new Telemetry();
-    }
-
-    public NavMesh navMesh() {
-        return _navMesh;
-    }
-
-    /**
+        /**
      * Voxel queries require checkpoints to be enabled in {@link DynamicNavMeshConfig}
      */
-    public VoxelQuery voxelQuery() {
-        return new VoxelQuery(navMeshParams.orig, navMeshParams.tileWidth, navMeshParams.tileHeight, lookupHeightfield);
-    }
+        public VoxelQuery voxelQuery()
+        {
+            return new VoxelQuery(navMeshParams.orig, navMeshParams.tileWidth, navMeshParams.tileHeight, lookupHeightfield);
+        }
 
-    private Heightfield lookupHeightfield(int x, int z) {
-        return getTileAt(x, z)?.checkpoint.heightfield;
-    }
+        private Heightfield lookupHeightfield(int x, int z)
+        {
+            return getTileAt(x, z)?.checkpoint.heightfield;
+        }
 
-    public long addCollider(Collider collider) {
-        long cid = currentColliderId.IncrementAndGet();
-        updateQueue.Add(new AddColliderQueueItem(cid, collider, getTiles(collider.bounds())));
-        return cid;
-    }
+        public long addCollider(Collider collider)
+        {
+            long cid = currentColliderId.IncrementAndGet();
+            updateQueue.Add(new AddColliderQueueItem(cid, collider, getTiles(collider.bounds())));
+            return cid;
+        }
 
-    public void removeCollider(long colliderId) {
-        updateQueue.Add(new RemoveColliderQueueItem(colliderId, getTilesByCollider(colliderId)));
-    }
+        public void removeCollider(long colliderId)
+        {
+            updateQueue.Add(new RemoveColliderQueueItem(colliderId, getTilesByCollider(colliderId)));
+        }
 
-    /**
+        /**
      * Perform full build of the nav mesh
      */
-    public void build() {
-        processQueue();
-        rebuild(_tiles.Values);
-    }
+        public void build()
+        {
+            processQueue();
+            rebuild(_tiles.Values);
+        }
 
-    /**
+        /**
      * Perform incremental update of the nav mesh
      */
-    public bool update() {
-        return rebuild(processQueue());
-    }
-
-    private bool rebuild(ICollection<DynamicTile> stream) {
-        foreach (var dynamicTile in stream)
-            rebuild(dynamicTile);
-        return updateNavMesh();
-    }
-
-    private HashSet<DynamicTile> processQueue() {
-        var items = consumeQueue();
-        foreach (var item in items) {
-            process(item);
-        }
-
-        return items.SelectMany(i => i.affectedTiles()).ToHashSet();
-    }
-
-    private List<UpdateQueueItem> consumeQueue() {
-        List<UpdateQueueItem> items = new List<UpdateQueueItem>();
-        while (updateQueue.TryTake(out var item)) {
-            items.Add(item);
-        }
-        return items;
-    }
-
-    private void process(UpdateQueueItem item) {
-        foreach (var tile in item.affectedTiles())
+        public bool update()
         {
-            item.process(tile);
+            return rebuild(processQueue());
         }
-    }
 
-    /**
-     * Perform full build concurrently using the given {@link ExecutorService}
-     */
-    public Task<bool> build(TaskFactory executor) {
-        processQueue();
-        return rebuild(_tiles.Values, executor);
-    }
-
-    /**
-     * Perform incremental update concurrently using the given {@link ExecutorService}
-     */
-    public Task<bool> update(TaskFactory executor) {
-        return rebuild(processQueue(), executor);
-    }
-
-    private Task<bool> rebuild(ICollection<DynamicTile> tiles, TaskFactory executor)
-    {
-        var tasks = tiles.Select(tile => executor.StartNew(() => rebuild(tile))).ToArray();
-        return Task.WhenAll(tasks).ContinueWith(k => updateNavMesh());
-    }
-
-    private ICollection<DynamicTile> getTiles(float[] bounds) {
-        if (bounds == null) {
-            return _tiles.Values;
+        private bool rebuild(ICollection<DynamicTile> stream)
+        {
+            foreach (var dynamicTile in stream)
+                rebuild(dynamicTile);
+            return updateNavMesh();
         }
-        int minx = (int) Math.Floor((bounds[0] - navMeshParams.orig[0]) / navMeshParams.tileWidth);
-        int minz = (int) Math.Floor((bounds[2] - navMeshParams.orig[2]) / navMeshParams.tileHeight);
-        int maxx = (int) Math.Floor((bounds[3] - navMeshParams.orig[0]) / navMeshParams.tileWidth);
-        int maxz = (int) Math.Floor((bounds[5] - navMeshParams.orig[2]) / navMeshParams.tileHeight);
-        List<DynamicTile> tiles = new List<DynamicTile>();
-        for (int z = minz; z <= maxz; ++z) {
-            for (int x = minx; x <= maxx; ++x) {
-                DynamicTile tile = getTileAt(x, z);
-                if (tile != null) {
-                    tiles.Add(tile);
-                }
+
+        private HashSet<DynamicTile> processQueue()
+        {
+            var items = consumeQueue();
+            foreach (var item in items)
+            {
+                process(item);
+            }
+
+            return items.SelectMany(i => i.affectedTiles()).ToHashSet();
+        }
+
+        private List<UpdateQueueItem> consumeQueue()
+        {
+            List<UpdateQueueItem> items = new List<UpdateQueueItem>();
+            while (updateQueue.TryTake(out var item))
+            {
+                items.Add(item);
+            }
+
+            return items;
+        }
+
+        private void process(UpdateQueueItem item)
+        {
+            foreach (var tile in item.affectedTiles())
+            {
+                item.process(tile);
             }
         }
-        return tiles;
-    }
 
-    private List<DynamicTile> getTilesByCollider(long cid)  {
-        return _tiles.Values.Where(t => t.containsCollider(cid)).ToList();
-    }
-
-    private void rebuild(DynamicTile tile) {
-        NavMeshDataCreateParams option = new NavMeshDataCreateParams();
-        option.walkableHeight = config.walkableHeight;
-        dirty = dirty | tile.build(builder, config, telemetry);
-    }
-
-    private bool updateNavMesh() {
-        if (dirty) {
-            NavMesh navMesh = new NavMesh(navMeshParams, MAX_VERTS_PER_POLY);
-            foreach (var t in _tiles.Values)
-                t.addTo(navMesh);
-            
-            this._navMesh = navMesh;
-            dirty = false;
-            return true;
+        /**
+     * Perform full build concurrently using the given {@link ExecutorService}
+     */
+        public Task<bool> build(TaskFactory executor)
+        {
+            processQueue();
+            return rebuild(_tiles.Values, executor);
         }
-        return false;
+
+        /**
+     * Perform incremental update concurrently using the given {@link ExecutorService}
+     */
+        public Task<bool> update(TaskFactory executor)
+        {
+            return rebuild(processQueue(), executor);
+        }
+
+        private Task<bool> rebuild(ICollection<DynamicTile> tiles, TaskFactory executor)
+        {
+            var tasks = tiles.Select(tile => executor.StartNew(() => rebuild(tile))).ToArray();
+            return Task.WhenAll(tasks).ContinueWith(k => updateNavMesh());
+        }
+
+        private ICollection<DynamicTile> getTiles(float[] bounds)
+        {
+            if (bounds == null)
+            {
+                return _tiles.Values;
+            }
+
+            int minx = (int)Math.Floor((bounds[0] - navMeshParams.orig[0]) / navMeshParams.tileWidth);
+            int minz = (int)Math.Floor((bounds[2] - navMeshParams.orig[2]) / navMeshParams.tileHeight);
+            int maxx = (int)Math.Floor((bounds[3] - navMeshParams.orig[0]) / navMeshParams.tileWidth);
+            int maxz = (int)Math.Floor((bounds[5] - navMeshParams.orig[2]) / navMeshParams.tileHeight);
+            List<DynamicTile> tiles = new List<DynamicTile>();
+            for (int z = minz; z <= maxz; ++z)
+            {
+                for (int x = minx; x <= maxx; ++x)
+                {
+                    DynamicTile tile = getTileAt(x, z);
+                    if (tile != null)
+                    {
+                        tiles.Add(tile);
+                    }
+                }
+            }
+
+            return tiles;
+        }
+
+        private List<DynamicTile> getTilesByCollider(long cid)
+        {
+            return _tiles.Values.Where(t => t.containsCollider(cid)).ToList();
+        }
+
+        private void rebuild(DynamicTile tile)
+        {
+            NavMeshDataCreateParams option = new NavMeshDataCreateParams();
+            option.walkableHeight = config.walkableHeight;
+            dirty = dirty | tile.build(builder, config, telemetry);
+        }
+
+        private bool updateNavMesh()
+        {
+            if (dirty)
+            {
+                NavMesh navMesh = new NavMesh(navMeshParams, MAX_VERTS_PER_POLY);
+                foreach (var t in _tiles.Values)
+                    t.addTo(navMesh);
+
+                this._navMesh = navMesh;
+                dirty = false;
+                return true;
+            }
+
+            return false;
+        }
+
+        private DynamicTile getTileAt(int x, int z)
+        {
+            return _tiles.TryGetValue(lookupKey(x, z), out var tile)
+                ? tile
+                : null;
+        }
+
+        private long lookupKey(long x, long z)
+        {
+            return (z << 32) | x;
+        }
+
+        public List<VoxelTile> voxelTiles()
+        {
+            return _tiles.Values.Select(t => t.voxelTile).ToList();
+        }
+
+        public List<RecastBuilderResult> recastResults()
+        {
+            return _tiles.Values.Select(t => t.recastResult).ToList();
+        }
     }
-
-    private DynamicTile getTileAt(int x, int z) {
-        return _tiles.TryGetValue(lookupKey(x, z), out var tile)
-            ? tile
-            : null;
-    }
-
-    private long lookupKey(long x, long z) {
-        return (z << 32) | x;
-    }
-
-    public List<VoxelTile> voxelTiles() {
-        return _tiles.Values.Select(t => t.voxelTile).ToList();
-    }
-
-    public List<RecastBuilderResult> recastResults() {
-        return _tiles.Values.Select(t => t.recastResult).ToList();
-    }
-
-}
-
 }

@@ -23,18 +23,20 @@ using Silk.NET.Windowing;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class ToolsUI : IRcView {
-
+public class ToolsUI : IRcView
+{
     //private readonly NkColor white = NkColor.create();
     private Tool currentTool;
     private bool enabled;
     private readonly Tool[] tools;
 
-    public ToolsUI(params Tool[] tools) {
+    public ToolsUI(params Tool[] tools)
+    {
         this.tools = tools;
     }
 
-    public bool render(IWindow ctx, int x, int y, int width, int height, int mouseX, int mouseY) {
+    public bool render(IWindow ctx, int x, int y, int width, int height, int mouseX, int mouseY)
+    {
         bool mouseInside = false;
         // nk_rgb(255, 255, 255, white);
         // try (MemoryStack stack = stackPush()) {
@@ -63,20 +65,23 @@ public class ToolsUI : IRcView {
         return mouseInside;
     }
 
-    public void setEnabled(bool enabled) {
+    public void setEnabled(bool enabled)
+    {
         this.enabled = enabled;
     }
 
-    public Tool getTool() {
+    public Tool getTool()
+    {
         return currentTool;
     }
 
-    public void setSample(Sample sample) {
+    public void setSample(Sample sample)
+    {
         tools.forEach(t => t.setSample(sample));
     }
 
-    public void handleUpdate(float dt) {
+    public void handleUpdate(float dt)
+    {
         tools.forEach(t => t.handleUpdate(dt));
     }
-
 }

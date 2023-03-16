@@ -21,29 +21,31 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic.Colliders
 {
+    public class SphereCollider : AbstractCollider
+    {
+        private readonly float[] center;
+        private readonly float radius;
 
+        public SphereCollider(float[] center, float radius, int area, float flagMergeThreshold) :
+            base(area, flagMergeThreshold, bounds(center, radius))
+        {
+            this.center = center;
+            this.radius = radius;
+        }
 
-public class SphereCollider : AbstractCollider {
-
-    private readonly float[] center;
-    private readonly float radius;
-
-    public SphereCollider(float[] center, float radius, int area, float flagMergeThreshold) : 
-        base(area, flagMergeThreshold, bounds(center, radius)) {
-        this.center = center;
-        this.radius = radius;
-    }
-
-    public void rasterize(Heightfield hf, Telemetry telemetry) {
-        RecastFilledVolumeRasterization.rasterizeSphere(hf, center, radius, area, (int) Math.Floor(flagMergeThreshold / hf.ch),
+        public void rasterize(Heightfield hf, Telemetry telemetry)
+        {
+            RecastFilledVolumeRasterization.rasterizeSphere(hf, center, radius, area, (int)Math.Floor(flagMergeThreshold / hf.ch),
                 telemetry);
+        }
+
+        private static float[] bounds(float[] center, float radius)
+        {
+            return new float[]
+            {
+                center[0] - radius, center[1] - radius, center[2] - radius, center[0] + radius, center[1] + radius,
+                center[2] + radius
+            };
+        }
     }
-
-    private static float[] bounds(float[] center, float radius) {
-        return new float[] { center[0] - radius, center[1] - radius, center[2] - radius, center[0] + radius, center[1] + radius,
-                center[2] + radius };
-    }
-
-}
-
 }

@@ -21,50 +21,64 @@ using System.Collections.Generic;
 
 namespace DotRecast.Detour.Extras.Unity.Astar
 {
-
-
-public class LinkBuilder {
-
-    // Process connections and transform them into recast neighbour flags
-    public void build(int nodeOffset, GraphMeshData graphData, List<int[]> connections) {
-        for (int n = 0; n < connections.Count; n++) {
-            int[] nodeConnections = connections[n];
-            MeshData tile = graphData.getTile(n);
-            Poly node = graphData.getNode(n);
-            foreach (int connection in nodeConnections) {
-                MeshData neighbourTile = graphData.getTile(connection - nodeOffset);
-                if (neighbourTile != tile) {
-                    buildExternalLink(tile, node, neighbourTile);
-                } else {
-                    Poly neighbour = graphData.getNode(connection - nodeOffset);
-                    buildInternalLink(tile, node, neighbourTile, neighbour);
+    public class LinkBuilder
+    {
+        // Process connections and transform them into recast neighbour flags
+        public void build(int nodeOffset, GraphMeshData graphData, List<int[]> connections)
+        {
+            for (int n = 0; n < connections.Count; n++)
+            {
+                int[] nodeConnections = connections[n];
+                MeshData tile = graphData.getTile(n);
+                Poly node = graphData.getNode(n);
+                foreach (int connection in nodeConnections)
+                {
+                    MeshData neighbourTile = graphData.getTile(connection - nodeOffset);
+                    if (neighbourTile != tile)
+                    {
+                        buildExternalLink(tile, node, neighbourTile);
+                    }
+                    else
+                    {
+                        Poly neighbour = graphData.getNode(connection - nodeOffset);
+                        buildInternalLink(tile, node, neighbourTile, neighbour);
+                    }
                 }
             }
         }
-    }
 
-    private void buildInternalLink(MeshData tile, Poly node, MeshData neighbourTile, Poly neighbour) {
-        int edge = PolyUtils.findEdge(node, neighbour, tile, neighbourTile);
-        if (edge >= 0) {
-            node.neis[edge] = neighbour.index + 1;
-        } else {
-            throw new ArgumentException();
+        private void buildInternalLink(MeshData tile, Poly node, MeshData neighbourTile, Poly neighbour)
+        {
+            int edge = PolyUtils.findEdge(node, neighbour, tile, neighbourTile);
+            if (edge >= 0)
+            {
+                node.neis[edge] = neighbour.index + 1;
+            }
+            else
+            {
+                throw new ArgumentException();
+            }
+        }
+
+        // In case of external link to other tiles we must find the direction
+        private void buildExternalLink(MeshData tile, Poly node, MeshData neighbourTile)
+        {
+            if (neighbourTile.header.bmin[0] > tile.header.bmin[0])
+            {
+                node.neis[PolyUtils.findEdge(node, tile, neighbourTile.header.bmin[0], 0)] = NavMesh.DT_EXT_LINK;
+            }
+            else if (neighbourTile.header.bmin[0] < tile.header.bmin[0])
+            {
+                node.neis[PolyUtils.findEdge(node, tile, tile.header.bmin[0], 0)] = NavMesh.DT_EXT_LINK | 4;
+            }
+            else if (neighbourTile.header.bmin[2] > tile.header.bmin[2])
+            {
+                node.neis[PolyUtils.findEdge(node, tile, neighbourTile.header.bmin[2], 2)] = NavMesh.DT_EXT_LINK | 2;
+            }
+            else
+            {
+                node.neis[PolyUtils.findEdge(node, tile, tile.header.bmin[2], 2)] = NavMesh.DT_EXT_LINK | 6;
+            }
         }
     }
-
-    // In case of external link to other tiles we must find the direction
-    private void buildExternalLink(MeshData tile, Poly node, MeshData neighbourTile) {
-        if (neighbourTile.header.bmin[0] > tile.header.bmin[0]) {
-            node.neis[PolyUtils.findEdge(node, tile, neighbourTile.header.bmin[0], 0)] = NavMesh.DT_EXT_LINK;
-        } else if (neighbourTile.header.bmin[0] < tile.header.bmin[0]) {
-            node.neis[PolyUtils.findEdge(node, tile, tile.header.bmin[0], 0)] = NavMesh.DT_EXT_LINK | 4;
-        } else if (neighbourTile.header.bmin[2] > tile.header.bmin[2]) {
-            node.neis[PolyUtils.findEdge(node, tile, neighbourTile.header.bmin[2], 2)] = NavMesh.DT_EXT_LINK | 2;
-        } else {
-            node.neis[PolyUtils.findEdge(node, tile, tile.header.bmin[2], 2)] = NavMesh.DT_EXT_LINK | 6;
-        }
-    }
-
-}
-
 }

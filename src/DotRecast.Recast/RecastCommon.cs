@@ -22,67 +22,63 @@ using System;
 
 namespace DotRecast.Recast
 {
-
-
-public class RecastCommon
-{
-    /// Gets neighbor connection data for the specified direction.
-    /// @param[in] s The span to check.
-    /// @param[in] dir The direction to check. [Limits: 0 <= value < 4]
-    /// @return The neighbor connection data for the specified direction,
-    /// or #RC_NOT_CONNECTED if there is no connection.
-    public static int GetCon(CompactSpan s, int dir)
+    public class RecastCommon
     {
-        int shift = dir * 6;
-        return (s.con >> shift) & 0x3f;
+        /// Gets neighbor connection data for the specified direction.
+        /// @param[in] s The span to check.
+        /// @param[in] dir The direction to check. [Limits: 0 <= value < 4]
+        /// @return The neighbor connection data for the specified direction,
+        /// or #RC_NOT_CONNECTED if there is no connection.
+        public static int GetCon(CompactSpan s, int dir)
+        {
+            int shift = dir * 6;
+            return (s.con >> shift) & 0x3f;
+        }
+
+        /// Gets the standard width (x-axis) offset for the specified direction.
+        /// @param[in] dir The direction. [Limits: 0 <= value < 4]
+        /// @return The width offset to apply to the current cell position to move
+        /// in the direction.
+        public static int GetDirOffsetX(int dir)
+        {
+            int[] offset = { -1, 0, 1, 0, };
+            return offset[dir & 0x03];
+        }
+
+        /// Gets the standard height (z-axis) offset for the specified direction.
+        /// @param[in] dir The direction. [Limits: 0 <= value < 4]
+        /// @return The height offset to apply to the current cell position to move
+        /// in the direction.
+        public static int GetDirOffsetY(int dir)
+        {
+            int[] offset = { 0, 1, 0, -1 };
+            return offset[dir & 0x03];
+        }
+
+        /// Gets the direction for the specified offset. One of x and y should be 0.
+        /// @param[in] x The x offset. [Limits: -1 <= value <= 1]
+        /// @param[in] y The y offset. [Limits: -1 <= value <= 1]
+        /// @return The direction that represents the offset.
+        public static int rcGetDirForOffset(int x, int y)
+        {
+            int[] dirs = { 3, 0, -1, 2, 1 };
+            return dirs[((y + 1) << 1) + x];
+        }
+
+        /// Sets the neighbor connection data for the specified direction.
+        /// @param[in] s The span to update.
+        /// @param[in] dir The direction to set. [Limits: 0 <= value < 4]
+        /// @param[in] i The index of the neighbor span.
+        public static void SetCon(CompactSpan s, int dir, int i)
+        {
+            int shift = dir * 6;
+            int con = s.con;
+            s.con = (con & ~(0x3f << shift)) | ((i & 0x3f) << shift);
+        }
+
+        public static int clamp(int v, int min, int max)
+        {
+            return Math.Max(Math.Min(max, v), min);
+        }
     }
-
-    /// Gets the standard width (x-axis) offset for the specified direction.
-    /// @param[in] dir The direction. [Limits: 0 <= value < 4]
-    /// @return The width offset to apply to the current cell position to move
-    /// in the direction.
-    public static int GetDirOffsetX(int dir)
-    {
-        int[] offset = { -1, 0, 1, 0, };
-        return offset[dir & 0x03];
-    }
-
-    /// Gets the standard height (z-axis) offset for the specified direction.
-    /// @param[in] dir The direction. [Limits: 0 <= value < 4]
-    /// @return The height offset to apply to the current cell position to move
-    /// in the direction.
-    public static int GetDirOffsetY(int dir)
-    {
-        int[] offset = { 0, 1, 0, -1 };
-        return offset[dir & 0x03];
-    }
-
-    /// Gets the direction for the specified offset. One of x and y should be 0.
-    /// @param[in] x The x offset. [Limits: -1 <= value <= 1]
-    /// @param[in] y The y offset. [Limits: -1 <= value <= 1]
-    /// @return The direction that represents the offset.
-    public static int rcGetDirForOffset(int x, int y)
-    {
-        int[] dirs = { 3, 0, -1, 2, 1 };
-        return dirs[((y + 1) << 1) + x];
-    }
-
-    /// Sets the neighbor connection data for the specified direction.
-    /// @param[in] s The span to update.
-    /// @param[in] dir The direction to set. [Limits: 0 <= value < 4]
-    /// @param[in] i The index of the neighbor span.
-    public static void SetCon(CompactSpan s, int dir, int i)
-    {
-        int shift = dir * 6;
-        int con = s.con;
-        s.con = (con & ~(0x3f << shift)) | ((i & 0x3f) << shift);
-    }
-
-    public static int clamp(int v, int min, int max)
-    {
-        return Math.Max(Math.Min(max, v), min);
-    }
-
-
-}
 }

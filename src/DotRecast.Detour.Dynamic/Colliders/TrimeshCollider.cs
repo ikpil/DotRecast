@@ -21,45 +21,48 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic.Colliders
 {
+    public class TrimeshCollider : AbstractCollider
+    {
+        private readonly float[] vertices;
+        private readonly int[] triangles;
 
-
-public class TrimeshCollider : AbstractCollider {
-
-    private readonly float[] vertices;
-    private readonly int[] triangles;
-
-    public TrimeshCollider(float[] vertices, int[] triangles, int area, float flagMergeThreshold) : 
-        base(area, flagMergeThreshold, computeBounds(vertices)) {
-        this.vertices = vertices;
-        this.triangles = triangles;
-    }
-
-    public TrimeshCollider(float[] vertices, int[] triangles, float[] bounds, int area, float flagMergeThreshold) : 
-        base(area, flagMergeThreshold, bounds) {
-        this.vertices = vertices;
-        this.triangles = triangles;
-    }
-
-    public static float[] computeBounds(float[] vertices) {
-        float[] bounds = new float[] { vertices[0], vertices[1], vertices[2], vertices[0], vertices[1], vertices[2] };
-        for (int i = 3; i < vertices.Length; i += 3) {
-            bounds[0] = Math.Min(bounds[0], vertices[i]);
-            bounds[1] = Math.Min(bounds[1], vertices[i + 1]);
-            bounds[2] = Math.Min(bounds[2], vertices[i + 2]);
-            bounds[3] = Math.Max(bounds[3], vertices[i]);
-            bounds[4] = Math.Max(bounds[4], vertices[i + 1]);
-            bounds[5] = Math.Max(bounds[5], vertices[i + 2]);
+        public TrimeshCollider(float[] vertices, int[] triangles, int area, float flagMergeThreshold) :
+            base(area, flagMergeThreshold, computeBounds(vertices))
+        {
+            this.vertices = vertices;
+            this.triangles = triangles;
         }
-        return bounds;
-    }
 
-    public void rasterize(Heightfield hf, Telemetry telemetry) {
-        for (int i = 0; i < triangles.Length; i += 3) {
-            RecastRasterization.rasterizeTriangle(hf, vertices, triangles[i], triangles[i + 1], triangles[i + 2], area,
-                    (int) Math.Floor(flagMergeThreshold / hf.ch), telemetry);
+        public TrimeshCollider(float[] vertices, int[] triangles, float[] bounds, int area, float flagMergeThreshold) :
+            base(area, flagMergeThreshold, bounds)
+        {
+            this.vertices = vertices;
+            this.triangles = triangles;
+        }
+
+        public static float[] computeBounds(float[] vertices)
+        {
+            float[] bounds = new float[] { vertices[0], vertices[1], vertices[2], vertices[0], vertices[1], vertices[2] };
+            for (int i = 3; i < vertices.Length; i += 3)
+            {
+                bounds[0] = Math.Min(bounds[0], vertices[i]);
+                bounds[1] = Math.Min(bounds[1], vertices[i + 1]);
+                bounds[2] = Math.Min(bounds[2], vertices[i + 2]);
+                bounds[3] = Math.Max(bounds[3], vertices[i]);
+                bounds[4] = Math.Max(bounds[4], vertices[i + 1]);
+                bounds[5] = Math.Max(bounds[5], vertices[i + 2]);
+            }
+
+            return bounds;
+        }
+
+        public void rasterize(Heightfield hf, Telemetry telemetry)
+        {
+            for (int i = 0; i < triangles.Length; i += 3)
+            {
+                RecastRasterization.rasterizeTriangle(hf, vertices, triangles[i], triangles[i + 1], triangles[i + 2], area,
+                    (int)Math.Floor(flagMergeThreshold / hf.ch), telemetry);
+            }
         }
     }
-
-}
-
 }

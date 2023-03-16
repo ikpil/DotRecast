@@ -23,47 +23,53 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic.Colliders
 {
+    public class CompositeCollider : Collider
+    {
+        private readonly List<Collider> colliders;
+        private readonly float[] _bounds;
 
-
-public class CompositeCollider : Collider {
-
-    private readonly List<Collider> colliders;
-    private readonly float[] _bounds;
-
-    public CompositeCollider(List<Collider> colliders) {
-        this.colliders = colliders;
-        _bounds = bounds(colliders);
-    }
-
-    public CompositeCollider(params Collider[] colliders) {
-        this.colliders = colliders.ToList();
-        _bounds = bounds(this.colliders);
-    }
-
-    public float[] bounds() {
-        return _bounds;
-    }
-
-    private static float[] bounds(List<Collider> colliders) {
-        float[] bounds = new float[] { float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity,
-                float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity };
-        foreach (Collider collider in colliders) {
-            float[] b = collider.bounds();
-            bounds[0] = Math.Min(bounds[0], b[0]);
-            bounds[1] = Math.Min(bounds[1], b[1]);
-            bounds[2] = Math.Min(bounds[2], b[2]);
-            bounds[3] = Math.Max(bounds[3], b[3]);
-            bounds[4] = Math.Max(bounds[4], b[4]);
-            bounds[5] = Math.Max(bounds[5], b[5]);
+        public CompositeCollider(List<Collider> colliders)
+        {
+            this.colliders = colliders;
+            _bounds = bounds(colliders);
         }
-        return bounds;
+
+        public CompositeCollider(params Collider[] colliders)
+        {
+            this.colliders = colliders.ToList();
+            _bounds = bounds(this.colliders);
+        }
+
+        public float[] bounds()
+        {
+            return _bounds;
+        }
+
+        private static float[] bounds(List<Collider> colliders)
+        {
+            float[] bounds = new float[]
+            {
+                float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity,
+                float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity
+            };
+            foreach (Collider collider in colliders)
+            {
+                float[] b = collider.bounds();
+                bounds[0] = Math.Min(bounds[0], b[0]);
+                bounds[1] = Math.Min(bounds[1], b[1]);
+                bounds[2] = Math.Min(bounds[2], b[2]);
+                bounds[3] = Math.Max(bounds[3], b[3]);
+                bounds[4] = Math.Max(bounds[4], b[4]);
+                bounds[5] = Math.Max(bounds[5], b[5]);
+            }
+
+            return bounds;
+        }
+
+        public void rasterize(Heightfield hf, Telemetry telemetry)
+        {
+            foreach (var c in colliders)
+                c.rasterize(hf, telemetry);
+        }
     }
-
-    public void rasterize(Heightfield hf, Telemetry telemetry) {
-        foreach (var c in colliders)
-            c.rasterize(hf, telemetry);
-    }
-
-}
-
 }

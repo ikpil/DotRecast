@@ -26,26 +26,33 @@ namespace DotRecast.Detour.Crowd.Test;
 
 using static DetourCommon;
 
-public class AbstractCrowdTest {
-
-    protected readonly long[] startRefs = { 281474976710696L, 281474976710773L, 281474976710680L, 281474976710753L,
-            281474976710733L };
+public class AbstractCrowdTest
+{
+    protected readonly long[] startRefs =
+    {
+        281474976710696L, 281474976710773L, 281474976710680L, 281474976710753L,
+        281474976710733L
+    };
 
     protected readonly long[] endRefs = { 281474976710721L, 281474976710767L, 281474976710758L, 281474976710731L, 281474976710772L };
 
-    protected readonly float[][] startPoss = { 
-        new[] { 22.60652f, 10.197294f, -45.918674f }, 
+    protected readonly float[][] startPoss =
+    {
+        new[] { 22.60652f, 10.197294f, -45.918674f },
         new[] { 22.331268f, 10.197294f, -1.0401875f },
-        new[] { 18.694363f, 15.803535f, -73.090416f }, 
+        new[] { 18.694363f, 15.803535f, -73.090416f },
         new[] { 0.7453353f, 10.197294f, -5.94005f },
-        new[] { -20.651257f, 5.904126f, -13.712508f } };
+        new[] { -20.651257f, 5.904126f, -13.712508f }
+    };
 
-    protected readonly float[][] endPoss = { 
-        new[] { 6.4576626f, 10.197294f, -18.33406f }, 
+    protected readonly float[][] endPoss =
+    {
+        new[] { 6.4576626f, 10.197294f, -18.33406f },
         new[] { -5.8023443f, 0.19729415f, 3.008419f },
-            new[] { 38.423977f, 10.197294f, -0.116066754f }, 
-            new[] { 0.8635526f, 10.197294f, -10.31032f },
-            new[] { 18.784092f, 10.197294f, 3.0543678f } };
+        new[] { 38.423977f, 10.197294f, -0.116066754f },
+        new[] { 0.8635526f, 10.197294f, -10.31032f },
+        new[] { 18.784092f, 10.197294f, 3.0543678f }
+    };
 
     protected MeshData nmd;
     protected NavMeshQuery query;
@@ -54,7 +61,8 @@ public class AbstractCrowdTest {
     protected List<CrowdAgent> agents;
 
     [SetUp]
-    public void setUp() {
+    public void setUp()
+    {
         nmd = new RecastTestMeshBuilder().getMeshData();
         navmesh = new NavMesh(nmd, 6, 0);
         query = new NavMeshQuery(navmesh);
@@ -87,7 +95,8 @@ public class AbstractCrowdTest {
         agents = new();
     }
 
-    protected CrowdAgentParams getAgentParams(int updateFlags, int obstacleAvoidanceType) {
+    protected CrowdAgentParams getAgentParams(int updateFlags, int obstacleAvoidanceType)
+    {
         CrowdAgentParams ap = new CrowdAgentParams();
         ap.radius = 0.6f;
         ap.height = 2f;
@@ -101,10 +110,13 @@ public class AbstractCrowdTest {
         return ap;
     }
 
-    protected void addAgentGrid(int size, float distance, int updateFlags, int obstacleAvoidanceType, float[] startPos) {
+    protected void addAgentGrid(int size, float distance, int updateFlags, int obstacleAvoidanceType, float[] startPos)
+    {
         CrowdAgentParams ap = getAgentParams(updateFlags, obstacleAvoidanceType);
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
                 float[] pos = new float[3];
                 pos[0] = startPos[0] + i * distance;
                 pos[1] = startPos[1];
@@ -114,23 +126,30 @@ public class AbstractCrowdTest {
         }
     }
 
-    protected void setMoveTarget(float[] pos, bool adjust) {
+    protected void setMoveTarget(float[] pos, bool adjust)
+    {
         float[] ext = crowd.getQueryExtents();
         QueryFilter filter = crowd.getFilter(0);
-        if (adjust) {
-            foreach (CrowdAgent ag in crowd.getActiveAgents()) {
+        if (adjust)
+        {
+            foreach (CrowdAgent ag in crowd.getActiveAgents())
+            {
                 float[] vel = calcVel(ag.npos, pos, ag.option.maxSpeed);
                 crowd.requestMoveVelocity(ag, vel);
             }
-        } else {
+        }
+        else
+        {
             Result<FindNearestPolyResult> nearest = query.findNearestPoly(pos, ext, filter);
-            foreach (CrowdAgent ag in crowd.getActiveAgents()) {
+            foreach (CrowdAgent ag in crowd.getActiveAgents())
+            {
                 crowd.requestMoveTarget(ag, nearest.result.getNearestRef(), nearest.result.getNearestPos());
             }
         }
     }
 
-    protected float[] calcVel(float[] pos, float[] tgt, float speed) {
+    protected float[] calcVel(float[] pos, float[] tgt, float speed)
+    {
         float[] vel = vSub(tgt, pos);
         vel[1] = 0.0f;
         vNormalize(vel);
@@ -138,13 +157,14 @@ public class AbstractCrowdTest {
         return vel;
     }
 
-    protected void dumpActiveAgents(int i) {
+    protected void dumpActiveAgents(int i)
+    {
         Console.WriteLine(crowd.getActiveAgents().Count);
-        foreach (CrowdAgent ag in crowd.getActiveAgents()) {
+        foreach (CrowdAgent ag in crowd.getActiveAgents())
+        {
             Console.WriteLine(ag.state + ", " + ag.targetState);
             Console.WriteLine(ag.npos[0] + ", " + ag.npos[1] + ", " + ag.npos[2]);
             Console.WriteLine(ag.nvel[0] + ", " + ag.nvel[1] + ", " + ag.nvel[2]);
         }
     }
-
 }

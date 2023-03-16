@@ -17,20 +17,21 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour
 {
+    public class DetourBuilder
+    {
+        public MeshData build(NavMeshDataCreateParams option, int tileX, int tileY)
+        {
+            MeshData data = NavMeshBuilder.createNavMeshData(option);
+            if (data != null)
+            {
+                data.header.x = tileX;
+                data.header.y = tileY;
+            }
 
-
-public class DetourBuilder {
-
-    public MeshData build(NavMeshDataCreateParams option, int tileX, int tileY) {
-        MeshData data = NavMeshBuilder.createNavMeshData(option);
-        if (data != null) {
-            data.header.x = tileX;
-            data.header.y = tileY;
+            return data;
         }
-        return data;
     }
-}
-
 }

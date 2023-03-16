@@ -17,29 +17,31 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour
 {
-
-
 //TODO: (PP) Add comments
-public class FindRandomPointResult {
-    private readonly long randomRef;
-    private readonly float[] randomPt;
+    public class FindRandomPointResult
+    {
+        private readonly long randomRef;
+        private readonly float[] randomPt;
 
-    public FindRandomPointResult(long randomRef, float[] randomPt) {
-        this.randomRef = randomRef;
-        this.randomPt = randomPt;
+        public FindRandomPointResult(long randomRef, float[] randomPt)
+        {
+            this.randomRef = randomRef;
+            this.randomPt = randomPt;
+        }
+
+        /// @param[out] randomRef The reference id of the random location.
+        public long getRandomRef()
+        {
+            return randomRef;
+        }
+
+        /// @param[out] randomPt The random location.
+        public float[] getRandomPt()
+        {
+            return randomPt;
+        }
     }
-
-    /// @param[out] randomRef The reference id of the random location.
-    public long getRandomRef() {
-        return randomRef;
-    }
-
-    /// @param[out] randomPt The random location.
-    public float[] getRandomPt() {
-        return randomPt;
-    }
-
-}
 }

@@ -20,12 +20,9 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic.Colliders
 {
-
-
-public interface Collider {
-
-    float[] bounds();
-    void rasterize(Heightfield hf, Telemetry telemetry);
-}
-
+    public interface Collider
+    {
+        float[] bounds();
+        void rasterize(Heightfield hf, Telemetry telemetry);
+    }
 }

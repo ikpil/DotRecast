@@ -20,79 +20,92 @@ using System;
 
 namespace DotRecast.Detour
 {
+    using static DetourCommon;
 
+    public interface PolygonByCircleConstraint
+    {
+        float[] aply(float[] polyVerts, float[] circleCenter, float radius);
 
-using static DetourCommon;
-
-public interface PolygonByCircleConstraint {
-
-    float[] aply(float[] polyVerts, float[] circleCenter, float radius);
-
-    public static PolygonByCircleConstraint noop() {
-        return new NoOpPolygonByCircleConstraint();
-    }
-
-    public static PolygonByCircleConstraint strict() {
-        return new StrictPolygonByCircleConstraint();
-    }
-
-    public class NoOpPolygonByCircleConstraint : PolygonByCircleConstraint {
-
-        public float[] aply(float[] polyVerts, float[] circleCenter, float radius) {
-            return polyVerts;
+        public static PolygonByCircleConstraint noop()
+        {
+            return new NoOpPolygonByCircleConstraint();
         }
 
-    }
+        public static PolygonByCircleConstraint strict()
+        {
+            return new StrictPolygonByCircleConstraint();
+        }
 
-    /**
+        public class NoOpPolygonByCircleConstraint : PolygonByCircleConstraint
+        {
+            public float[] aply(float[] polyVerts, float[] circleCenter, float radius)
+            {
+                return polyVerts;
+            }
+        }
+
+        /**
      * Calculate the intersection between a polygon and a circle. A dodecagon is used as an approximation of the circle.
      */
-    public class StrictPolygonByCircleConstraint : PolygonByCircleConstraint {
+        public class StrictPolygonByCircleConstraint : PolygonByCircleConstraint
+        {
+            private const int CIRCLE_SEGMENTS = 12;
+            private static float[] unitCircle;
 
-        private const int CIRCLE_SEGMENTS = 12;
-        private static float[] unitCircle;
-
-        public float[] aply(float[] verts, float[] center, float radius) {
-            float radiusSqr = radius * radius;
-            int outsideVertex = -1;
-            for (int pv = 0; pv < verts.Length; pv += 3) {
-                if (vDist2DSqr(center, verts, pv) > radiusSqr) {
-                    outsideVertex = pv;
-                    break;
+            public float[] aply(float[] verts, float[] center, float radius)
+            {
+                float radiusSqr = radius * radius;
+                int outsideVertex = -1;
+                for (int pv = 0; pv < verts.Length; pv += 3)
+                {
+                    if (vDist2DSqr(center, verts, pv) > radiusSqr)
+                    {
+                        outsideVertex = pv;
+                        break;
+                    }
                 }
-            }
-            if (outsideVertex == -1) {
-                // polygon inside circle
-                return verts;
-            }
-            float[] qCircle = circle(center, radius);
-            float[] intersection = ConvexConvexIntersection.intersect(verts, qCircle);
-            if (intersection == null && pointInPolygon(center, verts, verts.Length / 3)) {
-                // circle inside polygon
-                return qCircle;
-            }
-            return intersection;
-        }
 
-        private float[] circle(float[] center, float radius) {
-            if (unitCircle == null) {
-                unitCircle = new float[CIRCLE_SEGMENTS * 3];
-                for (int i = 0; i < CIRCLE_SEGMENTS; i++) {
-                    double a = i * Math.PI * 2 / CIRCLE_SEGMENTS;
-                    unitCircle[3 * i] = (float) Math.Cos(a);
-                    unitCircle[3 * i + 1] = 0;
-                    unitCircle[3 * i + 2] = (float) -Math.Sin(a);
+                if (outsideVertex == -1)
+                {
+                    // polygon inside circle
+                    return verts;
                 }
+
+                float[] qCircle = circle(center, radius);
+                float[] intersection = ConvexConvexIntersection.intersect(verts, qCircle);
+                if (intersection == null && pointInPolygon(center, verts, verts.Length / 3))
+                {
+                    // circle inside polygon
+                    return qCircle;
+                }
+
+                return intersection;
             }
-            float[] circle = new float[12 * 3];
-            for (int i = 0; i < CIRCLE_SEGMENTS * 3; i += 3) {
-                circle[i] = unitCircle[i] * radius + center[0];
-                circle[i + 1] = center[1];
-                circle[i + 2] = unitCircle[i + 2] * radius + center[2];
+
+            private float[] circle(float[] center, float radius)
+            {
+                if (unitCircle == null)
+                {
+                    unitCircle = new float[CIRCLE_SEGMENTS * 3];
+                    for (int i = 0; i < CIRCLE_SEGMENTS; i++)
+                    {
+                        double a = i * Math.PI * 2 / CIRCLE_SEGMENTS;
+                        unitCircle[3 * i] = (float)Math.Cos(a);
+                        unitCircle[3 * i + 1] = 0;
+                        unitCircle[3 * i + 2] = (float)-Math.Sin(a);
+                    }
+                }
+
+                float[] circle = new float[12 * 3];
+                for (int i = 0; i < CIRCLE_SEGMENTS * 3; i += 3)
+                {
+                    circle[i] = unitCircle[i] * radius + center[0];
+                    circle[i + 1] = center[1];
+                    circle[i + 2] = unitCircle[i + 2] * radius + center[2];
+                }
+
+                return circle;
             }
-            return circle;
         }
     }
-}
-
 }

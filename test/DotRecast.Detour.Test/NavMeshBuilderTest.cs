@@ -20,18 +20,19 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
 
-
-public class NavMeshBuilderTest {
-
+public class NavMeshBuilderTest
+{
     private MeshData nmd;
 
     [SetUp]
-    public void setUp() {
+    public void setUp()
+    {
         nmd = new RecastTestMeshBuilder().getMeshData();
     }
 
     [Test]
-    public void testBVTree() {
+    public void testBVTree()
+    {
         Assert.That(nmd.verts.Length / 3, Is.EqualTo(225));
         Assert.That(nmd.polys.Length, Is.EqualTo(119));
         Assert.That(nmd.header.maxLinkCount, Is.EqualTo(457));
@@ -42,12 +43,16 @@ public class NavMeshBuilderTest {
         Assert.That(nmd.header.offMeshBase, Is.EqualTo(118));
         Assert.That(nmd.bvTree.Length, Is.EqualTo(236));
         Assert.That(nmd.bvTree.Length, Is.GreaterThanOrEqualTo(nmd.header.bvNodeCount));
-        for (int i = 0; i < nmd.header.bvNodeCount; i++) {
+        for (int i = 0; i < nmd.header.bvNodeCount; i++)
+        {
             Assert.That(nmd.bvTree[i], Is.Not.Null);
         }
-        for (int i = 0; i < 6; i++) {
+
+        for (int i = 0; i < 6; i++)
+        {
             Assert.That(nmd.verts[223 * 3 + i], Is.EqualTo(nmd.offMeshCons[0].pos[i]));
         }
+
         Assert.That(nmd.offMeshCons[0].rad, Is.EqualTo(0.1f));
         Assert.That(nmd.offMeshCons[0].poly, Is.EqualTo(118));
         Assert.That(nmd.offMeshCons[0].flags, Is.EqualTo(NavMesh.DT_OFFMESH_CON_BIDIR));
@@ -59,6 +64,5 @@ public class NavMeshBuilderTest {
         Assert.That(nmd.polys[118].flags, Is.EqualTo(12));
         Assert.That(nmd.polys[118].getArea(), Is.EqualTo(2));
         Assert.That(nmd.polys[118].getType(), Is.EqualTo(Poly.DT_POLYTYPE_OFFMESH_CONNECTION));
-
     }
 }

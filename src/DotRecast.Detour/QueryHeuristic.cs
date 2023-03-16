@@ -18,12 +18,8 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Detour
 {
-
-
-public interface QueryHeuristic {
-
-    float getCost(float[] neighbourPos, float[] endPos);
-
-}
-
+    public interface QueryHeuristic
+    {
+        float getCost(float[] neighbourPos, float[] endPos);
+    }
 }

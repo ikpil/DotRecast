@@ -23,19 +23,16 @@ using DotRecast.Detour.Io;
 
 namespace DotRecast.Detour.Extras.Unity.Astar
 {
-
-
-public abstract class ZipBinaryReader {
-
-    protected ByteBuffer toByteBuffer(ZipArchive file, string filename) {
-        ZipArchiveEntry graphReferences = file.GetEntry(filename);
-        using var entryStream = graphReferences.Open();
-        using var bis = new BinaryReader(entryStream);
-        ByteBuffer buffer = IOUtils.toByteBuffer(bis);
-        buffer.order(ByteOrder.LITTLE_ENDIAN);
-        return buffer;
+    public abstract class ZipBinaryReader
+    {
+        protected ByteBuffer toByteBuffer(ZipArchive file, string filename)
+        {
+            ZipArchiveEntry graphReferences = file.GetEntry(filename);
+            using var entryStream = graphReferences.Open();
+            using var bis = new BinaryReader(entryStream);
+            ByteBuffer buffer = IOUtils.toByteBuffer(bis);
+            buffer.order(ByteOrder.LITTLE_ENDIAN);
+            return buffer;
+        }
     }
-
-}
-
 }

@@ -17,33 +17,36 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour
 {
-
-
 //TODO: (PP) Add comments
-public class FindDistanceToWallResult {
-    private readonly float distance;
-    private readonly float[] position;
-    private readonly float[] normal;
+    public class FindDistanceToWallResult
+    {
+        private readonly float distance;
+        private readonly float[] position;
+        private readonly float[] normal;
 
-    public FindDistanceToWallResult(float distance, float[] position, float[] normal) {
-        this.distance = distance;
-        this.position = position;
-        this.normal = normal;
+        public FindDistanceToWallResult(float distance, float[] position, float[] normal)
+        {
+            this.distance = distance;
+            this.position = position;
+            this.normal = normal;
+        }
+
+        public float getDistance()
+        {
+            return distance;
+        }
+
+        public float[] getPosition()
+        {
+            return position;
+        }
+
+        public float[] getNormal()
+        {
+            return normal;
+        }
     }
-
-    public float getDistance() {
-        return distance;
-    }
-
-    public float[] getPosition() {
-        return position;
-    }
-
-    public float[] getNormal() {
-        return normal;
-    }
-
-}
 }

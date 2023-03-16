@@ -20,41 +20,38 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic
 {
+    public class DynamicNavMeshConfig
+    {
+        public readonly bool useTiles;
+        public readonly int tileSizeX;
+        public readonly int tileSizeZ;
+        public readonly float cellSize;
+        public PartitionType partitionType = PartitionType.WATERSHED;
+        public AreaModification walkableAreaModification = new AreaModification(1);
+        public float walkableHeight;
+        public float walkableSlopeAngle;
+        public float walkableRadius;
+        public float walkableClimb;
+        public float minRegionArea;
+        public float regionMergeArea;
+        public float maxEdgeLen;
+        public float maxSimplificationError;
+        public int vertsPerPoly;
+        public bool buildDetailMesh;
+        public float detailSampleDistance;
+        public float detailSampleMaxError;
+        public bool filterLowHangingObstacles = true;
+        public bool filterLedgeSpans = true;
+        public bool filterWalkableLowHeightSpans = true;
+        public bool enableCheckpoints = true;
+        public bool keepIntermediateResults = false;
 
-
-public class DynamicNavMeshConfig {
-
-    public readonly bool useTiles;
-    public readonly int tileSizeX;
-    public readonly int tileSizeZ;
-    public readonly float cellSize;
-    public PartitionType partitionType = PartitionType.WATERSHED;
-    public AreaModification walkableAreaModification = new AreaModification(1);
-    public float walkableHeight;
-    public float walkableSlopeAngle;
-    public float walkableRadius;
-    public float walkableClimb;
-    public float minRegionArea;
-    public float regionMergeArea;
-    public float maxEdgeLen;
-    public float maxSimplificationError;
-    public int vertsPerPoly;
-    public bool buildDetailMesh;
-    public float detailSampleDistance;
-    public float detailSampleMaxError;
-    public bool filterLowHangingObstacles = true;
-    public bool filterLedgeSpans = true;
-    public bool filterWalkableLowHeightSpans = true;
-    public bool enableCheckpoints = true;
-    public bool keepIntermediateResults = false;
-
-    public DynamicNavMeshConfig(bool useTiles, int tileSizeX, int tileSizeZ, float cellSize) {
-        this.useTiles = useTiles;
-        this.tileSizeX = tileSizeX;
-        this.tileSizeZ = tileSizeZ;
-        this.cellSize = cellSize;
+        public DynamicNavMeshConfig(bool useTiles, int tileSizeX, int tileSizeZ, float cellSize)
+        {
+            this.useTiles = useTiles;
+            this.tileSizeX = tileSizeX;
+            this.tileSizeZ = tileSizeZ;
+            this.cellSize = cellSize;
+        }
     }
-
-}
-
 }

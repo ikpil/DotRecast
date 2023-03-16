@@ -1,21 +1,24 @@
 ﻿using DotRecast.Recast.Demo.Draw;
-
 using static DotRecast.Recast.RecastVectors;
 using static DotRecast.Detour.DetourCommon;
 using static DotRecast.Recast.Demo.Tools.Gizmos.GizmoHelper;
 
 namespace DotRecast.Recast.Demo.Tools.Gizmos;
 
-
-public class CapsuleGizmo : ColliderGizmo {
+public class CapsuleGizmo : ColliderGizmo
+{
     private readonly float[] vertices;
     private readonly int[] triangles;
     private readonly float[] center;
     private readonly float[] gradient;
 
-    public CapsuleGizmo(float[] start, float[] end, float radius) {
-        center = new float[] { 0.5f * (start[0] + end[0]), 0.5f * (start[1] + end[1]),
-                0.5f * (start[2] + end[2]) };
+    public CapsuleGizmo(float[] start, float[] end, float radius)
+    {
+        center = new float[]
+        {
+            0.5f * (start[0] + end[0]), 0.5f * (start[1] + end[1]),
+            0.5f * (start[2] + end[2])
+        };
         float[] axis = new float[] { end[0] - start[0], end[1] - start[1], end[2] - start[2] };
         float[][] normals = new float[3][];
         normals[1] = new float[] { end[0] - start[0], end[1] - start[1], end[2] - start[2] };
@@ -33,7 +36,8 @@ public class CapsuleGizmo : ColliderGizmo {
         vertices = new float[spVertices.Length];
         gradient = new float[spVertices.Length / 3];
         float[] v = new float[3];
-        for (int i = 0; i < spVertices.Length; i += 3) {
+        for (int i = 0; i < spVertices.Length; i += 3)
+        {
             float offset = (i >= spVertices.Length / 2) ? -halfLength : halfLength;
             float x = radius * spVertices[i];
             float y = radius * spVertices[i + 1] + offset;
@@ -47,14 +51,16 @@ public class CapsuleGizmo : ColliderGizmo {
             normalize(v);
             gradient[i / 3] = clamp(0.57735026f * (v[0] + v[1] + v[2]), -1, 1);
         }
-
     }
 
-    private float[] getSideVector(float[] axis) {
+    private float[] getSideVector(float[] axis)
+    {
         float[] side = { 1, 0, 0 };
-        if (axis[0] > 0.8) {
+        if (axis[0] > 0.8)
+        {
             side = new float[] { 0, 0, 1 };
         }
+
         float[] forward = new float[3];
         cross(forward, side, axis);
         cross(side, axis, forward);
@@ -62,19 +68,21 @@ public class CapsuleGizmo : ColliderGizmo {
         return side;
     }
 
-    public void render(RecastDebugDraw debugDraw) {
-
+    public void render(RecastDebugDraw debugDraw)
+    {
         debugDraw.begin(DebugDrawPrimitives.TRIS);
-        for (int i = 0; i < triangles.Length; i += 3) {
-            for (int j = 0; j < 3; j++) {
+        for (int i = 0; i < triangles.Length; i += 3)
+        {
+            for (int j = 0; j < 3; j++)
+            {
                 int v = triangles[i + j] * 3;
                 float c = gradient[triangles[i + j]];
                 int col = DebugDraw.duLerpCol(DebugDraw.duRGBA(32, 32, 0, 160), DebugDraw.duRGBA(220, 220, 0, 160),
-                        (int) (127 * (1 + c)));
+                    (int)(127 * (1 + c)));
                 debugDraw.vertex(vertices[v], vertices[v + 1], vertices[v + 2], col);
             }
         }
+
         debugDraw.end();
     }
-
 }

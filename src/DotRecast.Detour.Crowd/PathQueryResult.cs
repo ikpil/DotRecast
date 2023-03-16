@@ -20,11 +20,9 @@ using System.Collections.Generic;
 
 namespace DotRecast.Detour.Crowd
 {
-
-
-public class PathQueryResult {
-    public Status status;
-    public List<long> path = new List<long>();
-}
-
+    public class PathQueryResult
+    {
+        public Status status;
+        public List<long> path = new List<long>();
+    }
 }

@@ -1,8 +1,6 @@
 namespace DotRecast.Recast
 {
-
-
-public class InputGeomReader
-{
-}
+    public class InputGeomReader
+    {
+    }
 }

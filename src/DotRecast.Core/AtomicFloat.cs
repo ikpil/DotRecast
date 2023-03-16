@@ -2,30 +2,28 @@
 
 namespace DotRecast.Core
 {
-
-
-public class AtomicFloat
-{
-    private volatile float _location;
-
-    public AtomicFloat(float location)
+    public class AtomicFloat
     {
-        _location = location;
-    }
+        private volatile float _location;
 
-    public float Get()
-    {
-        return _location;
-    }
+        public AtomicFloat(float location)
+        {
+            _location = location;
+        }
 
-    public float Exchange(float exchange)
-    {
-        return Interlocked.Exchange(ref _location, exchange);
-    }
+        public float Get()
+        {
+            return _location;
+        }
 
-    public float CompareExchange(float value, float comparand)
-    {
-        return Interlocked.CompareExchange(ref _location, value, comparand);
+        public float Exchange(float exchange)
+        {
+            return Interlocked.Exchange(ref _location, exchange);
+        }
+
+        public float CompareExchange(float value, float comparand)
+        {
+            return Interlocked.CompareExchange(ref _location, value, comparand);
+        }
     }
-}
 }

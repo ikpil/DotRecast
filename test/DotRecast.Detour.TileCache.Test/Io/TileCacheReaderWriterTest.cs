@@ -28,30 +28,33 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.TileCache.Test.Io;
 
-
-public class TileCacheReaderWriterTest : AbstractTileCacheTest {
-
+public class TileCacheReaderWriterTest : AbstractTileCacheTest
+{
     private readonly TileCacheReader reader = new TileCacheReader();
     private readonly TileCacheWriter writer = new TileCacheWriter();
 
     [Test]
-    public void testFastLz() {
+    public void testFastLz()
+    {
         testDungeon(false);
         testDungeon(true);
     }
 
     [Test]
-    public void testLZ4() {
+    public void testLZ4()
+    {
         testDungeon(true);
         testDungeon(false);
     }
 
-    private void testDungeon(bool cCompatibility) {
+    private void testDungeon(bool cCompatibility)
+    {
         InputGeomProvider geom = ObjImporter.load(Loader.ToBytes("dungeon.obj"));
         TestTileLayerBuilder layerBuilder = new TestTileLayerBuilder(geom);
         List<byte[]> layers = layerBuilder.build(ByteOrder.LITTLE_ENDIAN, cCompatibility, 1);
         TileCache tc = getTileCache(geom, ByteOrder.LITTLE_ENDIAN, cCompatibility);
-        foreach (byte[] layer in layers) {
+        foreach (byte[] layer in layers)
+        {
             long refs = tc.addTile(layer, 0);
             tc.buildNavMeshTile(refs);
         }
@@ -134,5 +137,4 @@ public class TileCacheReaderWriterTest : AbstractTileCacheTest {
         Assert.That(data.detailVerts.Length, Is.EqualTo(0));
         Assert.That(data.detailTris.Length, Is.EqualTo(4 * 3));
     }
-
 }

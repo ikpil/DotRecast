@@ -22,56 +22,55 @@ using System;
 
 namespace DotRecast.Core
 {
+    using System.Collections.Generic;
 
-
-using System.Collections.Generic;
-
-public class OrderedQueue<T>
-{
-
-    private readonly List<T> _items;
-    private readonly Comparison<T> _comparison;
-
-    public OrderedQueue(Comparison<T> comparison)
+    public class OrderedQueue<T>
     {
-        _items = new List<T>();
-        _comparison = comparison;
-    }
+        private readonly List<T> _items;
+        private readonly Comparison<T> _comparison;
 
-    public int count()
-    {
-        return _items.Count;
-    }
+        public OrderedQueue(Comparison<T> comparison)
+        {
+            _items = new List<T>();
+            _comparison = comparison;
+        }
 
-    public void clear() {
-        _items.Clear();
-    }
+        public int count()
+        {
+            return _items.Count;
+        }
 
-    public T top()
-    {
-        return _items[0];
-    }
+        public void clear()
+        {
+            _items.Clear();
+        }
 
-    public T Dequeue()
-    {
-        var node = top();
-        _items.Remove(node);
-        return node;
-    }
+        public T top()
+        {
+            return _items[0];
+        }
 
-    public void Enqueue(T item) {
-        _items.Add(item);
-        _items.Sort(_comparison);
-    }
+        public T Dequeue()
+        {
+            var node = top();
+            _items.Remove(node);
+            return node;
+        }
 
-    public void Remove(T item) {
-        _items.Remove(item);
-    }
+        public void Enqueue(T item)
+        {
+            _items.Add(item);
+            _items.Sort(_comparison);
+        }
 
-    public bool isEmpty()
-    {
-        return 0 == _items.Count;
-    }
-}
+        public void Remove(T item)
+        {
+            _items.Remove(item);
+        }
 
+        public bool isEmpty()
+        {
+            return 0 == _items.Count;
+        }
+    }
 }

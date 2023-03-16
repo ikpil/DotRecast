@@ -23,13 +23,12 @@ using DotRecast.Detour.Io;
 using DotRecast.Recast;
 using DotRecast.Recast.Geom;
 using NUnit.Framework;
-
 using static DotRecast.Detour.DetourCommon;
 
 namespace DotRecast.Detour.Test.Io;
 
-public class MeshSetReaderWriterTest {
-
+public class MeshSetReaderWriterTest
+{
     private readonly MeshSetWriter writer = new MeshSetWriter();
     private readonly MeshSetReader reader = new MeshSetReader();
     private const float m_cellSize = 0.3f;
@@ -52,8 +51,8 @@ public class MeshSetReaderWriterTest {
     private const int m_maxPolysPerTile = 0x8000;
 
     [Test]
-    public void test() {
-
+    public void test()
+    {
         InputGeomProvider geom = ObjImporter.load(Loader.ToBytes("dungeon.obj"));
 
         NavMeshSetHeader header = new NavMeshSetHeader();
@@ -72,17 +71,20 @@ public class MeshSetReaderWriterTest {
         int[] twh = DotRecast.Recast.Recast.calcTileCount(bmin, bmax, m_cellSize, m_tileSize, m_tileSize);
         int tw = twh[0];
         int th = twh[1];
-        for (int y = 0; y < th; ++y) {
-            for (int x = 0; x < tw; ++x) {
+        for (int y = 0; y < th; ++y)
+        {
+            for (int x = 0; x < tw; ++x)
+            {
                 RecastConfig cfg = new RecastConfig(true, m_tileSize, m_tileSize,
-                        RecastConfig.calcBorder(m_agentRadius, m_cellSize), PartitionType.WATERSHED, m_cellSize, m_cellHeight,
-                        m_agentMaxSlope, true, true, true, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_regionMinArea,
-                        m_regionMergeArea, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, true, m_detailSampleDist,
-                        m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
+                    RecastConfig.calcBorder(m_agentRadius, m_cellSize), PartitionType.WATERSHED, m_cellSize, m_cellHeight,
+                    m_agentMaxSlope, true, true, true, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_regionMinArea,
+                    m_regionMergeArea, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, true, m_detailSampleDist,
+                    m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
                 RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, bmin, bmax, x, y);
                 TestDetourBuilder db = new TestDetourBuilder();
                 MeshData data = db.build(geom, bcfg, m_agentHeight, m_agentRadius, m_agentMaxClimb, x, y, true);
-                if (data != null) {
+                if (data != null)
+                {
                     mesh.removeTile(mesh.getTileRefAt(x, y, 0));
                     mesh.addTile(data, 0, 0);
                 }
@@ -115,6 +117,5 @@ public class MeshSetReaderWriterTest {
         Assert.That(tiles.Count, Is.EqualTo(1));
         Assert.That(tiles[0].data.polys.Length, Is.EqualTo(5));
         Assert.That(tiles[0].data.verts.Length, Is.EqualTo(17 * 3));
-
     }
 }

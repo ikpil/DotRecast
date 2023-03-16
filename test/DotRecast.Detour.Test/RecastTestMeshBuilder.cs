@@ -22,8 +22,8 @@ using DotRecast.Recast.Geom;
 
 namespace DotRecast.Detour.Test;
 
-public class RecastTestMeshBuilder {
-
+public class RecastTestMeshBuilder
+{
     private readonly MeshData meshData;
     private const float m_cellSize = 0.3f;
     private const float m_cellHeight = 0.2f;
@@ -41,26 +41,29 @@ public class RecastTestMeshBuilder {
 
     public RecastTestMeshBuilder() :
         this(ObjImporter.load(Loader.ToBytes("dungeon.obj")),
-                PartitionType.WATERSHED, m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_agentMaxSlope,
-                m_regionMinSize, m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, m_detailSampleDist,
-                m_detailSampleMaxError)
+            PartitionType.WATERSHED, m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_agentMaxSlope,
+            m_regionMinSize, m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, m_detailSampleDist,
+            m_detailSampleMaxError)
     {
     }
 
     public RecastTestMeshBuilder(InputGeomProvider m_geom, PartitionType m_partitionType, float m_cellSize,
-            float m_cellHeight, float m_agentHeight, float m_agentRadius, float m_agentMaxClimb, float m_agentMaxSlope,
-            int m_regionMinSize, int m_regionMergeSize, float m_edgeMaxLen, float m_edgeMaxError, int m_vertsPerPoly,
-            float m_detailSampleDist, float m_detailSampleMaxError) {
+        float m_cellHeight, float m_agentHeight, float m_agentRadius, float m_agentMaxClimb, float m_agentMaxSlope,
+        int m_regionMinSize, int m_regionMergeSize, float m_edgeMaxLen, float m_edgeMaxError, int m_vertsPerPoly,
+        float m_detailSampleDist, float m_detailSampleMaxError)
+    {
         RecastConfig cfg = new RecastConfig(m_partitionType, m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius,
-                m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize, m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError,
-                m_vertsPerPoly, m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
+            m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize, m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError,
+            m_vertsPerPoly, m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
         RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, m_geom.getMeshBoundsMin(), m_geom.getMeshBoundsMax());
         RecastBuilder rcBuilder = new RecastBuilder();
         RecastBuilderResult rcResult = rcBuilder.build(m_geom, bcfg);
         PolyMesh m_pmesh = rcResult.getMesh();
-        for (int i = 0; i < m_pmesh.npolys; ++i) {
+        for (int i = 0; i < m_pmesh.npolys; ++i)
+        {
             m_pmesh.flags[i] = 1;
         }
+
         PolyMeshDetail m_dmesh = rcResult.getMeshDetail();
         NavMeshDataCreateParams option = new NavMeshDataCreateParams();
         option.verts = m_pmesh.verts;
@@ -105,7 +108,8 @@ public class RecastTestMeshBuilder {
         meshData = NavMeshBuilder.createNavMeshData(option);
     }
 
-    public MeshData getMeshData() {
+    public MeshData getMeshData()
+    {
         return meshData;
     }
 }

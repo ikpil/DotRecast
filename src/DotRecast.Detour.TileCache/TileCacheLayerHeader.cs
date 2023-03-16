@@ -17,24 +17,32 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour.TileCache
 {
+    public class TileCacheLayerHeader
+    {
+        public const int DT_TILECACHE_MAGIC = 'D' << 24 | 'T' << 16 | 'L' << 8 | 'R';
 
+        /// < 'DTLR';
+        public const int DT_TILECACHE_VERSION = 1;
 
-public class TileCacheLayerHeader {
+        public int magic;
 
-    public const int DT_TILECACHE_MAGIC = 'D' << 24 | 'T' << 16 | 'L' << 8 | 'R'; /// < 'DTLR';
-    public const int DT_TILECACHE_VERSION = 1;
+        /// < Data magic
+        public int version;
 
-    public int magic; /// < Data magic
-    public int version; /// < Data version
-    public int tx, ty, tlayer;
-    public float[] bmin = new float[3];
-    public float[] bmax = new float[3];
-    public int hmin, hmax; /// < Height min/max range
-    public int width, height; /// < Dimension of the layer.
-    public int minx, maxx, miny, maxy; /// < Usable sub-region.
+        /// < Data version
+        public int tx, ty, tlayer;
 
-}
+        public float[] bmin = new float[3];
+        public float[] bmax = new float[3];
+        public int hmin, hmax;
 
+        /// < Height min/max range
+        public int width, height;
+
+        /// < Dimension of the layer.
+        public int minx, maxx, miny, maxy; /// < Usable sub-region.
+    }
 }

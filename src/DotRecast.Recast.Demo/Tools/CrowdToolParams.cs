@@ -15,11 +15,11 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Recast.Demo.Tools;
 
-
-public class CrowdToolParams {
-
+public class CrowdToolParams
+{
     public readonly int[] m_expandSelectedDebugDraw = new[] { 1 };
     public bool m_showCorners;
     public bool m_showCollisionSegments;

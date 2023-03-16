@@ -24,14 +24,18 @@ namespace DotRecast.Recast.Demo.Geom;
 /**
  * Simple helper to find an intersection between a ray and a nav mesh
  */
-public class NavMeshRaycast {
-
-    public static float? raycast(NavMesh mesh, float[] src, float[]dst) {
-        for (int t = 0; t < mesh.getMaxTiles(); ++t) {
+public class NavMeshRaycast
+{
+    public static float? raycast(NavMesh mesh, float[] src, float[] dst)
+    {
+        for (int t = 0; t < mesh.getMaxTiles(); ++t)
+        {
             MeshTile tile = mesh.getTile(t);
-            if (tile != null && tile.data != null) {
+            if (tile != null && tile.data != null)
+            {
                 float? intersection = raycast(tile, src, dst);
-                if (null != intersection) {
+                if (null != intersection)
+                {
                     return intersection;
                 }
             }
@@ -40,36 +44,50 @@ public class NavMeshRaycast {
         return null;
     }
 
-    private static float? raycast(MeshTile tile, float[] sp, float[]sq) {
-        for (int i = 0; i < tile.data.header.polyCount; ++i) {
+    private static float? raycast(MeshTile tile, float[] sp, float[] sq)
+    {
+        for (int i = 0; i < tile.data.header.polyCount; ++i)
+        {
             Poly p = tile.data.polys[i];
-            if (p.getType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION) {
+            if (p.getType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+            {
                 continue;
             }
+
             PolyDetail pd = tile.data.detailMeshes[i];
 
-            if (pd != null) {
+            if (pd != null)
+            {
                 float[][] verts = ArrayUtils.Of<float>(3, 3);
-                for (int j = 0; j < pd.triCount; ++j) {
+                for (int j = 0; j < pd.triCount; ++j)
+                {
                     int t = (pd.triBase + j) * 4;
-                    for (int k = 0; k < 3; ++k) {
+                    for (int k = 0; k < 3; ++k)
+                    {
                         int v = tile.data.detailTris[t + k];
-                        if (v < p.vertCount) {
+                        if (v < p.vertCount)
+                        {
                             verts[k][0] = tile.data.verts[p.verts[v] * 3];
                             verts[k][1] = tile.data.verts[p.verts[v] * 3 + 1];
                             verts[k][2] = tile.data.verts[p.verts[v] * 3 + 2];
-                        } else {
+                        }
+                        else
+                        {
                             verts[k][0] = tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3];
                             verts[k][1] = tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3 + 1];
                             verts[k][2] = tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3 + 2];
                         }
                     }
+
                     float? intersection = Intersections.intersectSegmentTriangle(sp, sq, verts[0], verts[1], verts[2]);
-                    if (null != intersection) {
+                    if (null != intersection)
+                    {
                         return intersection;
                     }
                 }
-            } else {
+            }
+            else
+            {
                 // FIXME: Use Poly if PolyDetail is unavailable
             }
         }

@@ -20,7 +20,7 @@ using Silk.NET.Windowing;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public interface ToolUIModule {
-
+public interface ToolUIModule
+{
     void layout(IWindow ctx);
 }

@@ -17,30 +17,33 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour
 {
-
-
-/**
+    /**
  * Defines a link between polygons.
  *
  * @note This structure is rarely if ever used by the end user.
  * @see MeshTile
  */
-public class Link {
-    /** Neighbour reference. (The neighbor that is linked to.) */
-    public long refs;
-    /** Index of the next link. */
-    public int next;
-    /** Index of the polygon edge that owns this link. */
-    public int edge;
-    /** If a boundary link, defines on which side the link is. */
-    public int side;
-    /** If a boundary link, defines the minimum sub-edge area. */
-    public int bmin;
-    /** If a boundary link, defines the maximum sub-edge area. */
-    public int bmax;
+    public class Link
+    {
+        /** Neighbour reference. (The neighbor that is linked to.) */
+        public long refs;
 
-}
+        /** Index of the next link. */
+        public int next;
 
+        /** Index of the polygon edge that owns this link. */
+        public int edge;
+
+        /** If a boundary link, defines on which side the link is. */
+        public int side;
+
+        /** If a boundary link, defines the minimum sub-edge area. */
+        public int bmin;
+
+        /** If a boundary link, defines the maximum sub-edge area. */
+        public int bmax;
+    }
 }

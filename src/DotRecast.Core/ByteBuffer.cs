@@ -3,131 +3,131 @@ using System.Buffers.Binary;
 
 namespace DotRecast.Core
 {
-
-
-public class ByteBuffer
-{
-    private ByteOrder _order;
-    private byte[] _bytes;
-    private int _position;
-
-    public ByteBuffer(byte[] bytes)
+    public class ByteBuffer
     {
-        _order = BitConverter.IsLittleEndian
-            ? ByteOrder.LITTLE_ENDIAN
-            : ByteOrder.BIG_ENDIAN;
+        private ByteOrder _order;
+        private byte[] _bytes;
+        private int _position;
 
-        _bytes = bytes;
-        _position = 0;
-    }
-
-    public ByteOrder order()
-    {
-        return _order;
-    }
-
-    public void order(ByteOrder order)
-    {
-        _order = order;
-    }
-
-    public int limit() {
-        return _bytes.Length - _position;
-    }
-    
-    public int remaining() {
-        int rem = limit();
-        return rem > 0 ? rem : 0;
-    }
-
-
-    public void position(int pos)
-    {
-        _position = pos;
-    }
-
-    public int position()
-    {
-        return _position;
-    }
-
-    public Span<byte> ReadBytes(int length)
-    {
-        var nextPos = _position + length;
-        (nextPos, _position) = (_position, nextPos);
-
-        return _bytes.AsSpan(nextPos, length);
-    }
-
-    public byte get()
-    {
-        var span = ReadBytes(1);
-        return span[0];
-    }
-
-    public short getShort()
-    {
-        var span = ReadBytes(2);
-        if (_order == ByteOrder.BIG_ENDIAN)
+        public ByteBuffer(byte[] bytes)
         {
-            return BinaryPrimitives.ReadInt16BigEndian(span);
-        }
-        else
-        {
-            return BinaryPrimitives.ReadInt16LittleEndian(span);
-        }
-    }
+            _order = BitConverter.IsLittleEndian
+                ? ByteOrder.LITTLE_ENDIAN
+                : ByteOrder.BIG_ENDIAN;
 
-
-    public int getInt()
-    {
-        var span = ReadBytes(4);
-        if (_order == ByteOrder.BIG_ENDIAN)
-        {
-            return BinaryPrimitives.ReadInt32BigEndian(span);
-        }
-        else
-        {
-            return BinaryPrimitives.ReadInt32LittleEndian(span);
-        }
-    }
-
-    public float getFloat()
-    {
-        var span = ReadBytes(4);
-        if (_order == ByteOrder.BIG_ENDIAN && BitConverter.IsLittleEndian)
-        {
-            span.Reverse();
-        }
-        else if (_order == ByteOrder.LITTLE_ENDIAN && !BitConverter.IsLittleEndian)
-        {
-            span.Reverse();
+            _bytes = bytes;
+            _position = 0;
         }
 
-        return BitConverter.ToSingle(span);
-    }
-
-    public long getLong()
-    {
-        var span = ReadBytes(8);
-        if (_order == ByteOrder.BIG_ENDIAN)
+        public ByteOrder order()
         {
-            return BinaryPrimitives.ReadInt64BigEndian(span);
+            return _order;
         }
-        else
-        {
-            return BinaryPrimitives.ReadInt64LittleEndian(span);
-        }
-    }
-    
-    public void putFloat(float v)
-    {
-        // ?
-    }
 
-    public void putInt(int v)
-    {
-        // ?
+        public void order(ByteOrder order)
+        {
+            _order = order;
+        }
+
+        public int limit()
+        {
+            return _bytes.Length - _position;
+        }
+
+        public int remaining()
+        {
+            int rem = limit();
+            return rem > 0 ? rem : 0;
+        }
+
+
+        public void position(int pos)
+        {
+            _position = pos;
+        }
+
+        public int position()
+        {
+            return _position;
+        }
+
+        public Span<byte> ReadBytes(int length)
+        {
+            var nextPos = _position + length;
+            (nextPos, _position) = (_position, nextPos);
+
+            return _bytes.AsSpan(nextPos, length);
+        }
+
+        public byte get()
+        {
+            var span = ReadBytes(1);
+            return span[0];
+        }
+
+        public short getShort()
+        {
+            var span = ReadBytes(2);
+            if (_order == ByteOrder.BIG_ENDIAN)
+            {
+                return BinaryPrimitives.ReadInt16BigEndian(span);
+            }
+            else
+            {
+                return BinaryPrimitives.ReadInt16LittleEndian(span);
+            }
+        }
+
+
+        public int getInt()
+        {
+            var span = ReadBytes(4);
+            if (_order == ByteOrder.BIG_ENDIAN)
+            {
+                return BinaryPrimitives.ReadInt32BigEndian(span);
+            }
+            else
+            {
+                return BinaryPrimitives.ReadInt32LittleEndian(span);
+            }
+        }
+
+        public float getFloat()
+        {
+            var span = ReadBytes(4);
+            if (_order == ByteOrder.BIG_ENDIAN && BitConverter.IsLittleEndian)
+            {
+                span.Reverse();
+            }
+            else if (_order == ByteOrder.LITTLE_ENDIAN && !BitConverter.IsLittleEndian)
+            {
+                span.Reverse();
+            }
+
+            return BitConverter.ToSingle(span);
+        }
+
+        public long getLong()
+        {
+            var span = ReadBytes(8);
+            if (_order == ByteOrder.BIG_ENDIAN)
+            {
+                return BinaryPrimitives.ReadInt64BigEndian(span);
+            }
+            else
+            {
+                return BinaryPrimitives.ReadInt64LittleEndian(span);
+            }
+        }
+
+        public void putFloat(float v)
+        {
+            // ?
+        }
+
+        public void putInt(int v)
+        {
+            // ?
+        }
     }
-}
 }

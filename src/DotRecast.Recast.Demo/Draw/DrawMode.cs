@@ -17,9 +17,11 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Recast.Demo.Draw;
 
-public class DrawMode {
+public class DrawMode
+{
     public static readonly DrawMode DRAWMODE_MESH = new("Input Mesh");
     public static readonly DrawMode DRAWMODE_NAVMESH = new("Navmesh");
     public static readonly DrawMode DRAWMODE_NAVMESH_INVIS = new("Navmesh Invis");
@@ -38,14 +40,16 @@ public class DrawMode {
     public static readonly DrawMode DRAWMODE_CONTOURS = new("Contours");
     public static readonly DrawMode DRAWMODE_POLYMESH = new("Poly Mesh");
     public static readonly DrawMode DRAWMODE_POLYMESH_DETAIL = new("Poly Mesh Detils");
-    
+
     private readonly string text;
 
-    private DrawMode(string text) {
+    private DrawMode(string text)
+    {
         this.text = text;
     }
 
-    public override string ToString() {
+    public override string ToString()
+    {
         return text;
     }
 }

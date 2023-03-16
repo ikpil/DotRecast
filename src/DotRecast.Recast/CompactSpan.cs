@@ -20,21 +20,19 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Recast
 {
+    /** Represents a span of unobstructed space within a compact heightfield. */
+    public class CompactSpan
+    {
+        /** The lower extent of the span. (Measured from the heightfield's base.) */
+        public int y;
 
+        /** The id of the region the span belongs to. (Or zero if not in a region.) */
+        public int reg;
 
-/** Represents a span of unobstructed space within a compact heightfield. */
-public class CompactSpan
-{
-    /** The lower extent of the span. (Measured from the heightfield's base.) */
-    public int y;
+        /** Packed neighbor connection data. */
+        public int con;
 
-    /** The id of the region the span belongs to. (Or zero if not in a region.) */
-    public int reg;
-
-    /** Packed neighbor connection data. */
-    public int con;
-
-    /** The height of the span. (Measured from #y.) */
-    public int h;
-}
+        /** The height of the span. (Measured from #y.) */
+        public int h;
+    }
 }

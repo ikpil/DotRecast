@@ -22,11 +22,9 @@ using System;
 
 namespace DotRecast.Detour
 {
+    using static DetourCommon;
 
-
-using static DetourCommon;
-
-/**
+    /**
  * <b>The Default Implementation</b>
  *
  * At construction: All area costs default to 1.0. All flags are included and none are excluded.
@@ -51,56 +49,66 @@ using static DetourCommon;
  *
  * @see NavMeshQuery
  */
-public class DefaultQueryFilter : QueryFilter {
+    public class DefaultQueryFilter : QueryFilter
+    {
+        private int m_excludeFlags;
+        private int m_includeFlags;
+        private readonly float[] m_areaCost = new float[NavMesh.DT_MAX_AREAS];
 
-    private int m_excludeFlags;
-    private int m_includeFlags;
-    private readonly float[] m_areaCost = new float[NavMesh.DT_MAX_AREAS];
+        public DefaultQueryFilter()
+        {
+            m_includeFlags = 0xffff;
+            m_excludeFlags = 0;
+            for (int i = 0; i < NavMesh.DT_MAX_AREAS; ++i)
+            {
+                m_areaCost[i] = 1.0f;
+            }
+        }
 
-    public DefaultQueryFilter() {
-        m_includeFlags = 0xffff;
-        m_excludeFlags = 0;
-        for (int i = 0; i < NavMesh.DT_MAX_AREAS; ++i) {
-            m_areaCost[i] = 1.0f;
+        public DefaultQueryFilter(int includeFlags, int excludeFlags, float[] areaCost)
+        {
+            m_includeFlags = includeFlags;
+            m_excludeFlags = excludeFlags;
+            for (int i = 0; i < Math.Min(NavMesh.DT_MAX_AREAS, areaCost.Length); ++i)
+            {
+                m_areaCost[i] = areaCost[i];
+            }
+
+            for (int i = areaCost.Length; i < NavMesh.DT_MAX_AREAS; ++i)
+            {
+                m_areaCost[i] = 1.0f;
+            }
+        }
+
+        public bool passFilter(long refs, MeshTile tile, Poly poly)
+        {
+            return (poly.flags & m_includeFlags) != 0 && (poly.flags & m_excludeFlags) == 0;
+        }
+
+        public float getCost(float[] pa, float[] pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef,
+            MeshTile curTile, Poly curPoly, long nextRef, MeshTile nextTile, Poly nextPoly)
+        {
+            return vDist(pa, pb) * m_areaCost[curPoly.getArea()];
+        }
+
+        public int getIncludeFlags()
+        {
+            return m_includeFlags;
+        }
+
+        public void setIncludeFlags(int flags)
+        {
+            m_includeFlags = flags;
+        }
+
+        public int getExcludeFlags()
+        {
+            return m_excludeFlags;
+        }
+
+        public void setExcludeFlags(int flags)
+        {
+            m_excludeFlags = flags;
         }
     }
-
-    public DefaultQueryFilter(int includeFlags, int excludeFlags, float[] areaCost) {
-        m_includeFlags = includeFlags;
-        m_excludeFlags = excludeFlags;
-        for (int i = 0; i < Math.Min(NavMesh.DT_MAX_AREAS, areaCost.Length); ++i) {
-            m_areaCost[i] = areaCost[i];
-        }
-        for (int i = areaCost.Length; i < NavMesh.DT_MAX_AREAS; ++i) {
-            m_areaCost[i] = 1.0f;
-        }
-    }
-
-    public bool passFilter(long refs, MeshTile tile, Poly poly) {
-        return (poly.flags & m_includeFlags) != 0 && (poly.flags & m_excludeFlags) == 0;
-    }
-
-    public float getCost(float[] pa, float[] pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef,
-            MeshTile curTile, Poly curPoly, long nextRef, MeshTile nextTile, Poly nextPoly) {
-        return vDist(pa, pb) * m_areaCost[curPoly.getArea()];
-    }
-
-    public int getIncludeFlags() {
-        return m_includeFlags;
-    }
-
-    public void setIncludeFlags(int flags) {
-        m_includeFlags = flags;
-    }
-
-    public int getExcludeFlags() {
-        return m_excludeFlags;
-    }
-
-    public void setExcludeFlags(int flags) {
-        m_excludeFlags = flags;
-    }
-
-}
-
 }

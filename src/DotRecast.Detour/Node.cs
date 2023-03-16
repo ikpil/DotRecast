@@ -22,45 +22,50 @@ using System.Collections.Generic;
 
 namespace DotRecast.Detour
 {
+    public class Node
+    {
+        public const int DT_NODE_OPEN = 0x01;
+        public const int DT_NODE_CLOSED = 0x02;
 
+        /** parent of the node is not adjacent. Found using raycast. */
+        public const int DT_NODE_PARENT_DETACHED = 0x04;
 
+        public readonly int index;
 
-public class Node {
+        /** Position of the node. */
+        public float[] pos = new float[3];
 
-    public const int DT_NODE_OPEN = 0x01;
-    public const int DT_NODE_CLOSED = 0x02;
-    /** parent of the node is not adjacent. Found using raycast. */
-    public const int DT_NODE_PARENT_DETACHED = 0x04;
+        /** Cost of reaching the given node. */
+        public float cost;
 
-    public readonly int index;
+        /** Total cost of reaching the goal via the given node including heuristics. */
+        public float total;
 
-    /** Position of the node. */
-    public float[] pos = new float[3];
-    /** Cost of reaching the given node. */
-    public float cost;
-    /** Total cost of reaching the goal via the given node including heuristics. */
-    public float total;
-    /** Index to parent node. */
-    public int pidx;
-    /**
+        /** Index to parent node. */
+        public int pidx;
+
+        /**
      * extra state information. A polyRef can have multiple nodes with different extra info. see DT_MAX_STATES_PER_NODE
      */
-    public int state;
-    /** Node flags. A combination of dtNodeFlags. */
-    public int flags;
-    /** Polygon ref the node corresponds to. */
-    public long id;
-    /** Shortcut found by raycast. */
-    public List<long> shortcut;
+        public int state;
 
-    public Node(int index) {
-        this.index = index;
+        /** Node flags. A combination of dtNodeFlags. */
+        public int flags;
+
+        /** Polygon ref the node corresponds to. */
+        public long id;
+
+        /** Shortcut found by raycast. */
+        public List<long> shortcut;
+
+        public Node(int index)
+        {
+            this.index = index;
+        }
+
+        public override string ToString()
+        {
+            return "Node [id=" + id + "]";
+        }
     }
-
-    public override string ToString() {
-        return "Node [id=" + id + "]";
-    }
-
-}
-
 }

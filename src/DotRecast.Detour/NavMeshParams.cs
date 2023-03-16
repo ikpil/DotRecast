@@ -17,27 +17,30 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour
 {
-
-
-/**
+    /**
  * Configuration parameters used to define multi-tile navigation meshes. The values are used to allocate space during
  * the initialization of a navigation mesh.
  *
  * @see NavMesh
  */
-public class NavMeshParams {
-    /** The world space origin of the navigation mesh's tile space. [(x, y, z)] */
-    public readonly float[] orig = new float[3];
-    /** The width of each tile. (Along the x-axis.) */
-    public float tileWidth;
-    /** The height of each tile. (Along the z-axis.) */
-    public float tileHeight;
-    /** The maximum number of tiles the navigation mesh can contain. */
-    public int maxTiles;
-    /** The maximum number of polygons each tile can contain. */
-    public int maxPolys;
-}
+    public class NavMeshParams
+    {
+        /** The world space origin of the navigation mesh's tile space. [(x, y, z)] */
+        public readonly float[] orig = new float[3];
 
+        /** The width of each tile. (Along the x-axis.) */
+        public float tileWidth;
+
+        /** The height of each tile. (Along the z-axis.) */
+        public float tileHeight;
+
+        /** The maximum number of tiles the navigation mesh can contain. */
+        public int maxTiles;
+
+        /** The maximum number of polygons each tile can contain. */
+        public int maxPolys;
+    }
 }

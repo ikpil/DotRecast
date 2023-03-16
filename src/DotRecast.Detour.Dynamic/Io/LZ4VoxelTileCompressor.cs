@@ -22,23 +22,21 @@ using K4os.Compression.LZ4;
 
 namespace DotRecast.Detour.Dynamic.Io
 {
+    public class LZ4VoxelTileCompressor
+    {
+        public byte[] decompress(byte[] data)
+        {
+            int compressedSize = ByteUtils.getIntBE(data, 0);
+            return LZ4Pickler.Unpickle(data.AsSpan(4, compressedSize));
+        }
 
-
-public class LZ4VoxelTileCompressor {
-
-    public byte[] decompress(byte[] data) {
-        int compressedSize = ByteUtils.getIntBE(data, 0);
-        return LZ4Pickler.Unpickle(data.AsSpan(4, compressedSize));
+        public byte[] compress(byte[] data)
+        {
+            byte[] compressed = LZ4Pickler.Pickle(data, LZ4Level.L12_MAX);
+            byte[] result = new byte[4 + compressed.Length];
+            ByteUtils.putInt(compressed.Length, result, 0, ByteOrder.BIG_ENDIAN);
+            Array.Copy(compressed, 0, result, 4, compressed.Length);
+            return result;
+        }
     }
-
-    public byte[] compress(byte[] data) {
-        byte[] compressed = LZ4Pickler.Pickle(data, LZ4Level.L12_MAX);
-        byte[] result = new byte[4 + compressed.Length];
-        ByteUtils.putInt(compressed.Length, result, 0, ByteOrder.BIG_ENDIAN);
-        Array.Copy(compressed, 0, result, 4, compressed.Length);
-        return result;
-    }
-
-}
-
 }

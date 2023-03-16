@@ -22,13 +22,11 @@ using System;
 
 namespace DotRecast.Recast
 {
+    using static RecastConstants;
 
-
-using static RecastConstants;
-
-public class RecastRasterization
-{
-    /**
+    public class RecastRasterization
+    {
+        /**
      * Check whether two bounding boxes overlap
      *
      * @param amin
@@ -41,16 +39,16 @@ public class RecastRasterization
      *            Max axis extents of bounding box B
      * @returns true if the two bounding boxes overlap. False otherwise
      */
-    private static bool overlapBounds(float[] amin, float[] amax, float[] bmin, float[] bmax)
-    {
-        bool overlap = true;
-        overlap = (amin[0] > bmax[0] || amax[0] < bmin[0]) ? false : overlap;
-        overlap = (amin[1] > bmax[1] || amax[1] < bmin[1]) ? false : overlap;
-        overlap = (amin[2] > bmax[2] || amax[2] < bmin[2]) ? false : overlap;
-        return overlap;
-    }
+        private static bool overlapBounds(float[] amin, float[] amax, float[] bmin, float[] bmax)
+        {
+            bool overlap = true;
+            overlap = (amin[0] > bmax[0] || amax[0] < bmin[0]) ? false : overlap;
+            overlap = (amin[1] > bmax[1] || amax[1] < bmin[1]) ? false : overlap;
+            overlap = (amin[2] > bmax[2] || amax[2] < bmin[2]) ? false : overlap;
+            return overlap;
+        }
 
-    /**
+        /**
      * Adds a span to the heightfield. If the new span overlaps existing spans, it will merge the new span with the
      * existing ones. The span addition can be set to favor flags. If the span is merged to another span and the new
      * spanMax is within flagMergeThreshold units from the existing span, the span flags are merged.
@@ -71,77 +69,77 @@ public class RecastRasterization
      *            The merge theshold. [Limit: >= 0] [Units: vx]
      * @see Heightfield, Span.
      */
-    public static void addSpan(Heightfield heightfield, int x, int y, int spanMin, int spanMax, int areaId,
-        int flagMergeThreshold)
-    {
-        int idx = x + y * heightfield.width;
-
-        Span s = new Span();
-        s.smin = spanMin;
-        s.smax = spanMax;
-        s.area = areaId;
-        s.next = null;
-
-        // Empty cell, add the first span.
-        if (heightfield.spans[idx] == null)
+        public static void addSpan(Heightfield heightfield, int x, int y, int spanMin, int spanMax, int areaId,
+            int flagMergeThreshold)
         {
-            heightfield.spans[idx] = s;
-            return;
-        }
+            int idx = x + y * heightfield.width;
 
-        Span prev = null;
-        Span cur = heightfield.spans[idx];
+            Span s = new Span();
+            s.smin = spanMin;
+            s.smax = spanMax;
+            s.area = areaId;
+            s.next = null;
 
-        // Insert and merge spans.
-        while (cur != null)
-        {
-            if (cur.smin > s.smax)
+            // Empty cell, add the first span.
+            if (heightfield.spans[idx] == null)
             {
-                // Current span is further than the new span, break.
-                break;
+                heightfield.spans[idx] = s;
+                return;
             }
-            else if (cur.smax < s.smin)
+
+            Span prev = null;
+            Span cur = heightfield.spans[idx];
+
+            // Insert and merge spans.
+            while (cur != null)
             {
-                // Current span is before the new span advance.
-                prev = cur;
-                cur = cur.next;
+                if (cur.smin > s.smax)
+                {
+                    // Current span is further than the new span, break.
+                    break;
+                }
+                else if (cur.smax < s.smin)
+                {
+                    // Current span is before the new span advance.
+                    prev = cur;
+                    cur = cur.next;
+                }
+                else
+                {
+                    // Merge spans.
+                    if (cur.smin < s.smin)
+                        s.smin = cur.smin;
+                    if (cur.smax > s.smax)
+                        s.smax = cur.smax;
+
+                    // Merge flags.
+                    if (Math.Abs(s.smax - cur.smax) <= flagMergeThreshold)
+                        s.area = Math.Max(s.area, cur.area);
+
+                    // Remove current span.
+                    Span next = cur.next;
+                    if (prev != null)
+                        prev.next = next;
+                    else
+                        heightfield.spans[idx] = next;
+                    cur = next;
+                }
+            }
+
+            // Insert new span.
+            if (prev != null)
+            {
+                s.next = prev.next;
+                prev.next = s;
             }
             else
             {
-                // Merge spans.
-                if (cur.smin < s.smin)
-                    s.smin = cur.smin;
-                if (cur.smax > s.smax)
-                    s.smax = cur.smax;
-
-                // Merge flags.
-                if (Math.Abs(s.smax - cur.smax) <= flagMergeThreshold)
-                    s.area = Math.Max(s.area, cur.area);
-
-                // Remove current span.
-                Span next = cur.next;
-                if (prev != null)
-                    prev.next = next;
-                else
-                    heightfield.spans[idx] = next;
-                cur = next;
+                s.next = heightfield.spans[idx];
+                heightfield.spans[idx] = s;
             }
         }
 
-        // Insert new span.
-        if (prev != null)
-        {
-            s.next = prev.next;
-            prev.next = s;
-        }
-        else
-        {
-            s.next = heightfield.spans[idx];
-            heightfield.spans[idx] = s;
-        }
-    }
-
-    /**
+        /**
      * Divides a convex polygon of max 12 vertices into two convex polygons across a separating axis.
      *
      * @param inVerts
@@ -160,63 +158,63 @@ public class RecastRasterization
      *            The separating axis
      * @return The number of resulting polygon 1 and polygon 2 vertices
      */
-    private static int[] dividePoly(float[] inVerts, int inVertsOffset, int inVertsCount, int outVerts1, int outVerts2, float axisOffset,
-        int axis)
-    {
-        float[] d = new float[12];
-        for (int i = 0; i < inVertsCount; ++i)
-            d[i] = axisOffset - inVerts[inVertsOffset + i * 3 + axis];
-
-        int m = 0, n = 0;
-        for (int i = 0, j = inVertsCount - 1; i < inVertsCount; j = i, ++i)
+        private static int[] dividePoly(float[] inVerts, int inVertsOffset, int inVertsCount, int outVerts1, int outVerts2, float axisOffset,
+            int axis)
         {
-            bool ina = d[j] >= 0;
-            bool inb = d[i] >= 0;
-            if (ina != inb)
+            float[] d = new float[12];
+            for (int i = 0; i < inVertsCount; ++i)
+                d[i] = axisOffset - inVerts[inVertsOffset + i * 3 + axis];
+
+            int m = 0, n = 0;
+            for (int i = 0, j = inVertsCount - 1; i < inVertsCount; j = i, ++i)
             {
-                float s = d[j] / (d[j] - d[i]);
-                inVerts[outVerts1 + m * 3 + 0] = inVerts[inVertsOffset + j * 3 + 0]
-                                                 + (inVerts[inVertsOffset + i * 3 + 0] - inVerts[inVertsOffset + j * 3 + 0]) * s;
-                inVerts[outVerts1 + m * 3 + 1] = inVerts[inVertsOffset + j * 3 + 1]
-                                                 + (inVerts[inVertsOffset + i * 3 + 1] - inVerts[inVertsOffset + j * 3 + 1]) * s;
-                inVerts[outVerts1 + m * 3 + 2] = inVerts[inVertsOffset + j * 3 + 2]
-                                                 + (inVerts[inVertsOffset + i * 3 + 2] - inVerts[inVertsOffset + j * 3 + 2]) * s;
-                RecastVectors.copy(inVerts, outVerts2 + n * 3, inVerts, outVerts1 + m * 3);
-                m++;
-                n++;
-                // add the i'th point to the right polygon. Do NOT add points that are on the dividing line
-                // since these were already added above
-                if (d[i] > 0)
+                bool ina = d[j] >= 0;
+                bool inb = d[i] >= 0;
+                if (ina != inb)
                 {
-                    RecastVectors.copy(inVerts, outVerts1 + m * 3, inVerts, inVertsOffset + i * 3);
+                    float s = d[j] / (d[j] - d[i]);
+                    inVerts[outVerts1 + m * 3 + 0] = inVerts[inVertsOffset + j * 3 + 0]
+                                                     + (inVerts[inVertsOffset + i * 3 + 0] - inVerts[inVertsOffset + j * 3 + 0]) * s;
+                    inVerts[outVerts1 + m * 3 + 1] = inVerts[inVertsOffset + j * 3 + 1]
+                                                     + (inVerts[inVertsOffset + i * 3 + 1] - inVerts[inVertsOffset + j * 3 + 1]) * s;
+                    inVerts[outVerts1 + m * 3 + 2] = inVerts[inVertsOffset + j * 3 + 2]
+                                                     + (inVerts[inVertsOffset + i * 3 + 2] - inVerts[inVertsOffset + j * 3 + 2]) * s;
+                    RecastVectors.copy(inVerts, outVerts2 + n * 3, inVerts, outVerts1 + m * 3);
                     m++;
+                    n++;
+                    // add the i'th point to the right polygon. Do NOT add points that are on the dividing line
+                    // since these were already added above
+                    if (d[i] > 0)
+                    {
+                        RecastVectors.copy(inVerts, outVerts1 + m * 3, inVerts, inVertsOffset + i * 3);
+                        m++;
+                    }
+                    else if (d[i] < 0)
+                    {
+                        RecastVectors.copy(inVerts, outVerts2 + n * 3, inVerts, inVertsOffset + i * 3);
+                        n++;
+                    }
                 }
-                else if (d[i] < 0)
+                else // same side
                 {
+                    // add the i'th point to the right polygon. Addition is done even for points on the dividing line
+                    if (d[i] >= 0)
+                    {
+                        RecastVectors.copy(inVerts, outVerts1 + m * 3, inVerts, inVertsOffset + i * 3);
+                        m++;
+                        if (d[i] != 0)
+                            continue;
+                    }
+
                     RecastVectors.copy(inVerts, outVerts2 + n * 3, inVerts, inVertsOffset + i * 3);
                     n++;
                 }
             }
-            else // same side
-            {
-                // add the i'th point to the right polygon. Addition is done even for points on the dividing line
-                if (d[i] >= 0)
-                {
-                    RecastVectors.copy(inVerts, outVerts1 + m * 3, inVerts, inVertsOffset + i * 3);
-                    m++;
-                    if (d[i] != 0)
-                        continue;
-                }
 
-                RecastVectors.copy(inVerts, outVerts2 + n * 3, inVerts, inVertsOffset + i * 3);
-                n++;
-            }
+            return new int[] { m, n };
         }
 
-        return new int[] { m, n };
-    }
-
-    /**
+        /**
      * Rasterize a single triangle to the heightfield. This code is extremely hot, so much care should be given to
      * maintaining maximum perf here.
      *
@@ -245,138 +243,138 @@ public class RecastRasterization
      * @param flagMergeThreshold
      *            The threshold in which area flags will be merged
      */
-    private static void rasterizeTri(float[] verts, int v0, int v1, int v2, int area, Heightfield hf, float[] hfBBMin,
-        float[] hfBBMax, float cellSize, float inverseCellSize, float inverseCellHeight, int flagMergeThreshold)
-    {
-        float[] tmin = new float[3];
-        float[] tmax = new float[3];
-        float by = hfBBMax[1] - hfBBMin[1];
-
-        // Calculate the bounding box of the triangle.
-        RecastVectors.copy(tmin, verts, v0 * 3);
-        RecastVectors.copy(tmax, verts, v0 * 3);
-        RecastVectors.min(tmin, verts, v1 * 3);
-        RecastVectors.min(tmin, verts, v2 * 3);
-        RecastVectors.max(tmax, verts, v1 * 3);
-        RecastVectors.max(tmax, verts, v2 * 3);
-
-        // If the triangle does not touch the bbox of the heightfield, skip the triagle.
-        if (!overlapBounds(hfBBMin, hfBBMax, tmin, tmax))
-            return;
-
-        // Calculate the footprint of the triangle on the grid's y-axis
-        int z0 = (int)((tmin[2] - hfBBMin[2]) * inverseCellSize);
-        int z1 = (int)((tmax[2] - hfBBMin[2]) * inverseCellSize);
-
-        int w = hf.width;
-        int h = hf.height;
-        // use -1 rather than 0 to cut the polygon properly at the start of the tile
-        z0 = RecastCommon.clamp(z0, -1, h - 1);
-        z1 = RecastCommon.clamp(z1, 0, h - 1);
-
-        // Clip the triangle into all grid cells it touches.
-        float[] buf = new float[7 * 3 * 4];
-        int @in = 0;
-        int inRow = 7 * 3;
-        int p1 = inRow + 7 * 3;
-        int p2 = p1 + 7 * 3;
-
-        RecastVectors.copy(buf, 0, verts, v0 * 3);
-        RecastVectors.copy(buf, 3, verts, v1 * 3);
-        RecastVectors.copy(buf, 6, verts, v2 * 3);
-        int nvRow, nvIn = 3;
-
-        for (int z = z0; z <= z1; ++z)
+        private static void rasterizeTri(float[] verts, int v0, int v1, int v2, int area, Heightfield hf, float[] hfBBMin,
+            float[] hfBBMax, float cellSize, float inverseCellSize, float inverseCellHeight, int flagMergeThreshold)
         {
-            // Clip polygon to row. Store the remaining polygon as well
-            float cellZ = hfBBMin[2] + z * cellSize;
-            int[] nvrowin = dividePoly(buf, @in, nvIn, inRow, p1, cellZ + cellSize, 2);
-            nvRow = nvrowin[0];
-            nvIn = nvrowin[1];
-            {
-                int temp = @in;
-                @in = p1;
-                p1 = temp;
-            }
-            if (nvRow < 3)
-                continue;
+            float[] tmin = new float[3];
+            float[] tmax = new float[3];
+            float by = hfBBMax[1] - hfBBMin[1];
 
-            if (z < 0)
-            {
-                continue;
-            }
+            // Calculate the bounding box of the triangle.
+            RecastVectors.copy(tmin, verts, v0 * 3);
+            RecastVectors.copy(tmax, verts, v0 * 3);
+            RecastVectors.min(tmin, verts, v1 * 3);
+            RecastVectors.min(tmin, verts, v2 * 3);
+            RecastVectors.max(tmax, verts, v1 * 3);
+            RecastVectors.max(tmax, verts, v2 * 3);
 
-            // find the horizontal bounds in the row
-            float minX = buf[inRow], maxX = buf[inRow];
-            for (int i = 1; i < nvRow; ++i)
-            {
-                float v = buf[inRow + i * 3];
-                minX = Math.Min(minX, v);
-                maxX = Math.Max(maxX, v);
-            }
+            // If the triangle does not touch the bbox of the heightfield, skip the triagle.
+            if (!overlapBounds(hfBBMin, hfBBMax, tmin, tmax))
+                return;
 
-            int x0 = (int)((minX - hfBBMin[0]) * inverseCellSize);
-            int x1 = (int)((maxX - hfBBMin[0]) * inverseCellSize);
-            if (x1 < 0 || x0 >= w)
-            {
-                continue;
-            }
+            // Calculate the footprint of the triangle on the grid's y-axis
+            int z0 = (int)((tmin[2] - hfBBMin[2]) * inverseCellSize);
+            int z1 = (int)((tmax[2] - hfBBMin[2]) * inverseCellSize);
 
-            x0 = RecastCommon.clamp(x0, -1, w - 1);
-            x1 = RecastCommon.clamp(x1, 0, w - 1);
+            int w = hf.width;
+            int h = hf.height;
+            // use -1 rather than 0 to cut the polygon properly at the start of the tile
+            z0 = RecastCommon.clamp(z0, -1, h - 1);
+            z1 = RecastCommon.clamp(z1, 0, h - 1);
 
-            int nv, nv2 = nvRow;
-            for (int x = x0; x <= x1; ++x)
+            // Clip the triangle into all grid cells it touches.
+            float[] buf = new float[7 * 3 * 4];
+            int @in = 0;
+            int inRow = 7 * 3;
+            int p1 = inRow + 7 * 3;
+            int p2 = p1 + 7 * 3;
+
+            RecastVectors.copy(buf, 0, verts, v0 * 3);
+            RecastVectors.copy(buf, 3, verts, v1 * 3);
+            RecastVectors.copy(buf, 6, verts, v2 * 3);
+            int nvRow, nvIn = 3;
+
+            for (int z = z0; z <= z1; ++z)
             {
-                // Clip polygon to column. store the remaining polygon as well
-                float cx = hfBBMin[0] + x * cellSize;
-                int[] nvnv2 = dividePoly(buf, inRow, nv2, p1, p2, cx + cellSize, 0);
-                nv = nvnv2[0];
-                nv2 = nvnv2[1];
+                // Clip polygon to row. Store the remaining polygon as well
+                float cellZ = hfBBMin[2] + z * cellSize;
+                int[] nvrowin = dividePoly(buf, @in, nvIn, inRow, p1, cellZ + cellSize, 2);
+                nvRow = nvrowin[0];
+                nvIn = nvrowin[1];
                 {
-                    int temp = inRow;
-                    inRow = p2;
-                    p2 = temp;
+                    int temp = @in;
+                    @in = p1;
+                    p1 = temp;
                 }
-                if (nv < 3)
+                if (nvRow < 3)
                     continue;
-                if (x < 0)
-                {
-                    continue;
-                }
 
-                // Calculate min and max of the span.
-                float spanMin = buf[p1 + 1];
-                float spanMax = buf[p1 + 1];
-                for (int i = 1; i < nv; ++i)
+                if (z < 0)
                 {
-                    spanMin = Math.Min(spanMin, buf[p1 + i * 3 + 1]);
-                    spanMax = Math.Max(spanMax, buf[p1 + i * 3 + 1]);
+                    continue;
                 }
 
-                spanMin -= hfBBMin[1];
-                spanMax -= hfBBMin[1];
-                // Skip the span if it is outside the heightfield bbox
-                if (spanMax < 0.0f)
-                    continue;
-                if (spanMin > by)
-                    continue;
-                // Clamp the span to the heightfield bbox.
-                if (spanMin < 0.0f)
-                    spanMin = 0;
-                if (spanMax > by)
-                    spanMax = by;
+                // find the horizontal bounds in the row
+                float minX = buf[inRow], maxX = buf[inRow];
+                for (int i = 1; i < nvRow; ++i)
+                {
+                    float v = buf[inRow + i * 3];
+                    minX = Math.Min(minX, v);
+                    maxX = Math.Max(maxX, v);
+                }
 
-                // Snap the span to the heightfield height grid.
-                int spanMinCellIndex = RecastCommon.clamp((int)Math.Floor(spanMin * inverseCellHeight), 0, SPAN_MAX_HEIGHT);
-                int spanMaxCellIndex = RecastCommon.clamp((int)Math.Ceiling(spanMax * inverseCellHeight), spanMinCellIndex + 1, SPAN_MAX_HEIGHT);
+                int x0 = (int)((minX - hfBBMin[0]) * inverseCellSize);
+                int x1 = (int)((maxX - hfBBMin[0]) * inverseCellSize);
+                if (x1 < 0 || x0 >= w)
+                {
+                    continue;
+                }
 
-                addSpan(hf, x, z, spanMinCellIndex, spanMaxCellIndex, area, flagMergeThreshold);
+                x0 = RecastCommon.clamp(x0, -1, w - 1);
+                x1 = RecastCommon.clamp(x1, 0, w - 1);
+
+                int nv, nv2 = nvRow;
+                for (int x = x0; x <= x1; ++x)
+                {
+                    // Clip polygon to column. store the remaining polygon as well
+                    float cx = hfBBMin[0] + x * cellSize;
+                    int[] nvnv2 = dividePoly(buf, inRow, nv2, p1, p2, cx + cellSize, 0);
+                    nv = nvnv2[0];
+                    nv2 = nvnv2[1];
+                    {
+                        int temp = inRow;
+                        inRow = p2;
+                        p2 = temp;
+                    }
+                    if (nv < 3)
+                        continue;
+                    if (x < 0)
+                    {
+                        continue;
+                    }
+
+                    // Calculate min and max of the span.
+                    float spanMin = buf[p1 + 1];
+                    float spanMax = buf[p1 + 1];
+                    for (int i = 1; i < nv; ++i)
+                    {
+                        spanMin = Math.Min(spanMin, buf[p1 + i * 3 + 1]);
+                        spanMax = Math.Max(spanMax, buf[p1 + i * 3 + 1]);
+                    }
+
+                    spanMin -= hfBBMin[1];
+                    spanMax -= hfBBMin[1];
+                    // Skip the span if it is outside the heightfield bbox
+                    if (spanMax < 0.0f)
+                        continue;
+                    if (spanMin > by)
+                        continue;
+                    // Clamp the span to the heightfield bbox.
+                    if (spanMin < 0.0f)
+                        spanMin = 0;
+                    if (spanMax > by)
+                        spanMax = by;
+
+                    // Snap the span to the heightfield height grid.
+                    int spanMinCellIndex = RecastCommon.clamp((int)Math.Floor(spanMin * inverseCellHeight), 0, SPAN_MAX_HEIGHT);
+                    int spanMaxCellIndex = RecastCommon.clamp((int)Math.Ceiling(spanMax * inverseCellHeight), spanMinCellIndex + 1, SPAN_MAX_HEIGHT);
+
+                    addSpan(hf, x, z, spanMinCellIndex, spanMaxCellIndex, area, flagMergeThreshold);
+                }
             }
         }
-    }
 
-    /**
+        /**
      * Rasterizes a single triangle into the specified heightfield. Calling this for each triangle in a mesh is less
      * efficient than calling rasterizeTriangles. No spans will be added if the triangle does not overlap the
      * heightfield grid.
@@ -397,20 +395,20 @@ public class RecastRasterization
      *            The distance where the walkable flag is favored over the non-walkable flag. [Limit: >= 0] [Units: vx]
      * @see Heightfield
      */
-    public static void rasterizeTriangle(Heightfield heightfield, float[] verts, int v0, int v1, int v2, int area,
-        int flagMergeThreshold, Telemetry ctx)
-    {
-        ctx.startTimer("RASTERIZE_TRIANGLES");
+        public static void rasterizeTriangle(Heightfield heightfield, float[] verts, int v0, int v1, int v2, int area,
+            int flagMergeThreshold, Telemetry ctx)
+        {
+            ctx.startTimer("RASTERIZE_TRIANGLES");
 
-        float inverseCellSize = 1.0f / heightfield.cs;
-        float inverseCellHeight = 1.0f / heightfield.ch;
-        rasterizeTri(verts, v0, v1, v2, area, heightfield, heightfield.bmin, heightfield.bmax, heightfield.cs, inverseCellSize,
-            inverseCellHeight, flagMergeThreshold);
+            float inverseCellSize = 1.0f / heightfield.cs;
+            float inverseCellHeight = 1.0f / heightfield.ch;
+            rasterizeTri(verts, v0, v1, v2, area, heightfield, heightfield.bmin, heightfield.bmax, heightfield.cs, inverseCellSize,
+                inverseCellHeight, flagMergeThreshold);
 
-        ctx.stopTimer("RASTERIZE_TRIANGLES");
-    }
+            ctx.stopTimer("RASTERIZE_TRIANGLES");
+        }
 
-    /**
+        /**
      * Rasterizes an indexed triangle mesh into the specified heightfield. Spans will only be added for triangles that
      * overlap the heightfield grid.
      *
@@ -428,26 +426,26 @@ public class RecastRasterization
      *            The distance where the walkable flag is favored over the non-walkable flag. [Limit: >= 0] [Units: vx]
      * @see Heightfield
      */
-    public static void rasterizeTriangles(Heightfield heightfield, float[] verts, int[] tris, int[] areaIds, int numTris,
-        int flagMergeThreshold, Telemetry ctx)
-    {
-        ctx.startTimer("RASTERIZE_TRIANGLES");
-
-        float inverseCellSize = 1.0f / heightfield.cs;
-        float inverseCellHeight = 1.0f / heightfield.ch;
-        for (int triIndex = 0; triIndex < numTris; ++triIndex)
+        public static void rasterizeTriangles(Heightfield heightfield, float[] verts, int[] tris, int[] areaIds, int numTris,
+            int flagMergeThreshold, Telemetry ctx)
         {
-            int v0 = tris[triIndex * 3 + 0];
-            int v1 = tris[triIndex * 3 + 1];
-            int v2 = tris[triIndex * 3 + 2];
-            rasterizeTri(verts, v0, v1, v2, areaIds[triIndex], heightfield, heightfield.bmin, heightfield.bmax, heightfield.cs,
-                inverseCellSize, inverseCellHeight, flagMergeThreshold);
+            ctx.startTimer("RASTERIZE_TRIANGLES");
+
+            float inverseCellSize = 1.0f / heightfield.cs;
+            float inverseCellHeight = 1.0f / heightfield.ch;
+            for (int triIndex = 0; triIndex < numTris; ++triIndex)
+            {
+                int v0 = tris[triIndex * 3 + 0];
+                int v1 = tris[triIndex * 3 + 1];
+                int v2 = tris[triIndex * 3 + 2];
+                rasterizeTri(verts, v0, v1, v2, areaIds[triIndex], heightfield, heightfield.bmin, heightfield.bmax, heightfield.cs,
+                    inverseCellSize, inverseCellHeight, flagMergeThreshold);
+            }
+
+            ctx.stopTimer("RASTERIZE_TRIANGLES");
         }
 
-        ctx.stopTimer("RASTERIZE_TRIANGLES");
-    }
-
-    /**
+        /**
      * Rasterizes a triangle list into the specified heightfield. Expects each triangle to be specified as three
      * sequential vertices of 3 floats. Spans will only be added for triangles that overlap the heightfield grid.
      *
@@ -465,23 +463,23 @@ public class RecastRasterization
      *            The distance where the walkable flag is favored over the non-walkable flag. [Limit: >= 0] [Units: vx]
      * @see Heightfield
      */
-    public static void rasterizeTriangles(Heightfield heightfield, float[] verts, int[] areaIds, int numTris,
-        int flagMergeThreshold, Telemetry ctx)
-    {
-        ctx.startTimer("RASTERIZE_TRIANGLES");
-
-        float inverseCellSize = 1.0f / heightfield.cs;
-        float inverseCellHeight = 1.0f / heightfield.ch;
-        for (int triIndex = 0; triIndex < numTris; ++triIndex)
+        public static void rasterizeTriangles(Heightfield heightfield, float[] verts, int[] areaIds, int numTris,
+            int flagMergeThreshold, Telemetry ctx)
         {
-            int v0 = (triIndex * 3 + 0);
-            int v1 = (triIndex * 3 + 1);
-            int v2 = (triIndex * 3 + 2);
-            rasterizeTri(verts, v0, v1, v2, areaIds[triIndex], heightfield, heightfield.bmin, heightfield.bmax, heightfield.cs,
-                inverseCellSize, inverseCellHeight, flagMergeThreshold);
-        }
+            ctx.startTimer("RASTERIZE_TRIANGLES");
 
-        ctx.stopTimer("RASTERIZE_TRIANGLES");
+            float inverseCellSize = 1.0f / heightfield.cs;
+            float inverseCellHeight = 1.0f / heightfield.ch;
+            for (int triIndex = 0; triIndex < numTris; ++triIndex)
+            {
+                int v0 = (triIndex * 3 + 0);
+                int v1 = (triIndex * 3 + 1);
+                int v2 = (triIndex * 3 + 2);
+                rasterizeTri(verts, v0, v1, v2, areaIds[triIndex], heightfield, heightfield.bmin, heightfield.bmax, heightfield.cs,
+                    inverseCellSize, inverseCellHeight, flagMergeThreshold);
+            }
+
+            ctx.stopTimer("RASTERIZE_TRIANGLES");
+        }
     }
-}
 }

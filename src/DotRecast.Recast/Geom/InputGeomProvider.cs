@@ -22,14 +22,12 @@ using System.Collections.Generic;
 
 namespace DotRecast.Recast.Geom
 {
+    public interface InputGeomProvider : ConvexVolumeProvider
+    {
+        float[] getMeshBoundsMin();
 
+        float[] getMeshBoundsMax();
 
-public interface InputGeomProvider : ConvexVolumeProvider
-{
-    float[] getMeshBoundsMin();
-
-    float[] getMeshBoundsMax();
-
-    IEnumerable<TriMesh> meshes();
-}
+        IEnumerable<TriMesh> meshes();
+    }
 }

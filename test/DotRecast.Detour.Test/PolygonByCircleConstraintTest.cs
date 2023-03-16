@@ -20,13 +20,13 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
 
-
-public class PolygonByCircleConstraintTest {
-
+public class PolygonByCircleConstraintTest
+{
     private readonly PolygonByCircleConstraint constraint = new PolygonByCircleConstraint.StrictPolygonByCircleConstraint();
 
     [Test]
-    public void shouldHandlePolygonFullyInsideCircle() {
+    public void shouldHandlePolygonFullyInsideCircle()
+    {
         float[] polygon = { -2, 0, 2, 2, 0, 2, 2, 0, -2, -2, 0, -2 };
         float[] center = { 1, 0, 1 };
         float[] constrained = constraint.aply(polygon, center, 6);
@@ -35,18 +35,20 @@ public class PolygonByCircleConstraintTest {
     }
 
     [Test]
-    public void shouldHandleVerticalSegment() {
+    public void shouldHandleVerticalSegment()
+    {
         int expectedSize = 21;
         float[] polygon = { -2, 0, 2, 2, 0, 2, 2, 0, -2, -2, 0, -2 };
         float[] center = { 2, 0, 0 };
 
         float[] constrained = constraint.aply(polygon, center, 3);
         Assert.That(constrained.Length, Is.EqualTo(expectedSize));
-        Assert.That(constrained, Is.SupersetOf(new[] {2f, 0f, 2f, 2f, 0f, -2f}));
+        Assert.That(constrained, Is.SupersetOf(new[] { 2f, 0f, 2f, 2f, 0f, -2f }));
     }
 
     [Test]
-    public void shouldHandleCircleFullyInsidePolygon() {
+    public void shouldHandleCircleFullyInsidePolygon()
+    {
         int expectedSize = 12 * 3;
         float[] polygon = { -4, 0, 0, -3, 0, 3, 2, 0, 3, 3, 0, -3, -2, 0, -4 };
         float[] center = { -1, 0, -1 };
@@ -54,7 +56,8 @@ public class PolygonByCircleConstraintTest {
 
         Assert.That(constrained.Length, Is.EqualTo(expectedSize));
 
-        for (int i = 0; i < expectedSize; i += 3) {
+        for (int i = 0; i < expectedSize; i += 3)
+        {
             float x = constrained[i] + 1;
             float z = constrained[i + 2] + 1;
             Assert.That(x * x + z * z, Is.EqualTo(4).Within(1e-4f));
@@ -62,7 +65,8 @@ public class PolygonByCircleConstraintTest {
     }
 
     [Test]
-    public void shouldHandleCircleInsidePolygon() {
+    public void shouldHandleCircleInsidePolygon()
+    {
         int expectedSize = 9 * 3;
         float[] polygon = { -4, 0, 0, -3, 0, 3, 2, 0, 3, 3, 0, -3, -2, 0, -4 };
         float[] center = { -2, 0, -1 };
@@ -82,6 +86,5 @@ public class PolygonByCircleConstraintTest {
 
         Assert.That(constrained.Length, Is.EqualTo(expectedSize));
         Assert.That(constrained, Is.SupersetOf(new[] { 1.5358982f, 0f, 3f, 2f, 0f, 3f, 3f, 0f, -3f }));
-}
-
+    }
 }

@@ -22,30 +22,31 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour.Extras.Unity.Astar
 {
-
-
-class GraphConnectionReader : ZipBinaryReader {
-
-    public List<int[]> read(ZipArchive file, string filename, Meta meta, int[] indexToNode) {
-        List<int[]> connections = new List<int[]>();
-        ByteBuffer buffer = toByteBuffer(file, filename);
-        while (buffer.remaining() > 0) {
-            int count = buffer.getInt();
-            int[] nodeConnections = new int[count];
-            connections.Add(nodeConnections);
-            for (int i = 0; i < count; i++) {
-                int nodeIndex = buffer.getInt();
-                nodeConnections[i] = indexToNode[nodeIndex];
-                // XXX: Is there anything we can do with the cost?
-                int cost = buffer.getInt();
-                if (meta.isVersionAtLeast(Meta.UPDATED_STRUCT_VERSION)) {
-                    byte shapeEdge = buffer.get();
+    class GraphConnectionReader : ZipBinaryReader
+    {
+        public List<int[]> read(ZipArchive file, string filename, Meta meta, int[] indexToNode)
+        {
+            List<int[]> connections = new List<int[]>();
+            ByteBuffer buffer = toByteBuffer(file, filename);
+            while (buffer.remaining() > 0)
+            {
+                int count = buffer.getInt();
+                int[] nodeConnections = new int[count];
+                connections.Add(nodeConnections);
+                for (int i = 0; i < count; i++)
+                {
+                    int nodeIndex = buffer.getInt();
+                    nodeConnections[i] = indexToNode[nodeIndex];
+                    // XXX: Is there anything we can do with the cost?
+                    int cost = buffer.getInt();
+                    if (meta.isVersionAtLeast(Meta.UPDATED_STRUCT_VERSION))
+                    {
+                        byte shapeEdge = buffer.get();
+                    }
                 }
             }
+
+            return connections;
         }
-        return connections;
     }
-
-}
-
 }

@@ -21,40 +21,52 @@ using DotRecast.Recast.Geom;
 
 namespace DotRecast.Detour.Test;
 
-public class TestDetourBuilder : DetourBuilder {
-
+public class TestDetourBuilder : DetourBuilder
+{
     public MeshData build(InputGeomProvider geom, RecastBuilderConfig rcConfig, float agentHeight, float agentRadius,
-            float agentMaxClimb, int x, int y, bool applyRecastDemoFlags) {
+        float agentMaxClimb, int x, int y, bool applyRecastDemoFlags)
+    {
         RecastBuilder rcBuilder = new RecastBuilder();
         RecastBuilderResult rcResult = rcBuilder.build(geom, rcConfig);
         PolyMesh pmesh = rcResult.getMesh();
 
-        if (applyRecastDemoFlags) {
+        if (applyRecastDemoFlags)
+        {
             // Update poly flags from areas.
-            for (int i = 0; i < pmesh.npolys; ++i) {
+            for (int i = 0; i < pmesh.npolys; ++i)
+            {
                 if (pmesh.areas[i] == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GROUND
-                        || pmesh.areas[i] == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GRASS
-                        || pmesh.areas[i] == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD) {
+                    || pmesh.areas[i] == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GRASS
+                    || pmesh.areas[i] == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD)
+                {
                     pmesh.flags[i] = SampleAreaModifications.SAMPLE_POLYFLAGS_WALK;
-                } else if (pmesh.areas[i] == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER) {
-                    pmesh.flags[i] = SampleAreaModifications.SAMPLE_POLYFLAGS_SWIM;
-                } else if (pmesh.areas[i] == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_DOOR) {
-                    pmesh.flags[i] = SampleAreaModifications.SAMPLE_POLYFLAGS_WALK
-                            | SampleAreaModifications.SAMPLE_POLYFLAGS_DOOR;
                 }
-                if (pmesh.areas[i] > 0) {
+                else if (pmesh.areas[i] == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER)
+                {
+                    pmesh.flags[i] = SampleAreaModifications.SAMPLE_POLYFLAGS_SWIM;
+                }
+                else if (pmesh.areas[i] == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_DOOR)
+                {
+                    pmesh.flags[i] = SampleAreaModifications.SAMPLE_POLYFLAGS_WALK
+                                     | SampleAreaModifications.SAMPLE_POLYFLAGS_DOOR;
+                }
+
+                if (pmesh.areas[i] > 0)
+                {
                     pmesh.areas[i]--;
                 }
             }
         }
+
         PolyMeshDetail dmesh = rcResult.getMeshDetail();
         NavMeshDataCreateParams option = getNavMeshCreateParams(rcConfig.cfg, pmesh, dmesh, agentHeight, agentRadius,
-                agentMaxClimb);
+            agentMaxClimb);
         return build(option, x, y);
     }
 
     public NavMeshDataCreateParams getNavMeshCreateParams(RecastConfig rcConfig, PolyMesh pmesh, PolyMeshDetail dmesh,
-            float agentHeight, float agentRadius, float agentMaxClimb) {
+        float agentHeight, float agentRadius, float agentMaxClimb)
+    {
         NavMeshDataCreateParams option = new NavMeshDataCreateParams();
         option.verts = pmesh.verts;
         option.vertCount = pmesh.nverts;
@@ -63,13 +75,15 @@ public class TestDetourBuilder : DetourBuilder {
         option.polyFlags = pmesh.flags;
         option.polyCount = pmesh.npolys;
         option.nvp = pmesh.nvp;
-        if (dmesh != null) {
+        if (dmesh != null)
+        {
             option.detailMeshes = dmesh.meshes;
             option.detailVerts = dmesh.verts;
             option.detailVertsCount = dmesh.nverts;
             option.detailTris = dmesh.tris;
             option.detailTriCount = dmesh.ntris;
         }
+
         option.walkableHeight = agentHeight;
         option.walkableRadius = agentRadius;
         option.walkableClimb = agentMaxClimb;
@@ -86,6 +100,5 @@ public class TestDetourBuilder : DetourBuilder {
          * option.offMeshConCount = m_geom->getOffMeshConnectionCount();
          */
         return option;
-
     }
 }

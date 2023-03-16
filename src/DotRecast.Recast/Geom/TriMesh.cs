@@ -22,34 +22,32 @@ using System.Collections.Generic;
 
 namespace DotRecast.Recast.Geom
 {
-
-
-public class TriMesh
-{
-    private readonly float[] vertices;
-    private readonly int[] faces;
-    private readonly ChunkyTriMesh chunkyTriMesh;
-
-    public TriMesh(float[] vertices, int[] faces)
+    public class TriMesh
     {
-        this.vertices = vertices;
-        this.faces = faces;
-        chunkyTriMesh = new ChunkyTriMesh(vertices, faces, faces.Length / 3, 32);
-    }
+        private readonly float[] vertices;
+        private readonly int[] faces;
+        private readonly ChunkyTriMesh chunkyTriMesh;
 
-    public int[] getTris()
-    {
-        return faces;
-    }
+        public TriMesh(float[] vertices, int[] faces)
+        {
+            this.vertices = vertices;
+            this.faces = faces;
+            chunkyTriMesh = new ChunkyTriMesh(vertices, faces, faces.Length / 3, 32);
+        }
 
-    public float[] getVerts()
-    {
-        return vertices;
-    }
+        public int[] getTris()
+        {
+            return faces;
+        }
 
-    public List<ChunkyTriMeshNode> getChunksOverlappingRect(float[] bmin, float[] bmax)
-    {
-        return chunkyTriMesh.getChunksOverlappingRect(bmin, bmax);
+        public float[] getVerts()
+        {
+            return vertices;
+        }
+
+        public List<ChunkyTriMeshNode> getChunksOverlappingRect(float[] bmin, float[] bmax)
+        {
+            return chunkyTriMesh.getChunksOverlappingRect(bmin, bmax);
+        }
     }
-}
 }

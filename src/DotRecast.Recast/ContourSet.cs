@@ -22,36 +22,34 @@ using System.Collections.Generic;
 
 namespace DotRecast.Recast
 {
+    /** Represents a group of related contours. */
+    public class ContourSet
+    {
+        /** A list of the contours in the set. */
+        public List<Contour> conts = new List<Contour>();
 
+        /** The minimum bounds in world space. [(x, y, z)] */
+        public float[] bmin = new float[3];
 
-/** Represents a group of related contours. */
-public class ContourSet
-{
-    /** A list of the contours in the set. */
-    public List<Contour> conts = new List<Contour>();
+        /** The maximum bounds in world space. [(x, y, z)] */
+        public float[] bmax = new float[3];
 
-    /** The minimum bounds in world space. [(x, y, z)] */
-    public float[] bmin = new float[3];
+        /** The size of each cell. (On the xz-plane.) */
+        public float cs;
 
-    /** The maximum bounds in world space. [(x, y, z)] */
-    public float[] bmax = new float[3];
+        /** The height of each cell. (The minimum increment along the y-axis.) */
+        public float ch;
 
-    /** The size of each cell. (On the xz-plane.) */
-    public float cs;
+        /** The width of the set. (Along the x-axis in cell units.) */
+        public int width;
 
-    /** The height of each cell. (The minimum increment along the y-axis.) */
-    public float ch;
+        /** The height of the set. (Along the z-axis in cell units.) */
+        public int height;
 
-    /** The width of the set. (Along the x-axis in cell units.) */
-    public int width;
+        /** The AABB border size used to generate the source data from which the contours were derived. */
+        public int borderSize;
 
-    /** The height of the set. (Along the z-axis in cell units.) */
-    public int height;
-
-    /** The AABB border size used to generate the source data from which the contours were derived. */
-    public int borderSize;
-
-    /** The max edge error that this contour set was simplified with. */
-    public float maxError;
-}
+        /** The max edge error that this contour set was simplified with. */
+        public float maxError;
+    }
 }

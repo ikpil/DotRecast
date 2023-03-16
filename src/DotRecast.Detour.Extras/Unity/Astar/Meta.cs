@@ -21,57 +21,69 @@ using System.Text.RegularExpressions;
 
 namespace DotRecast.Detour.Extras.Unity.Astar
 {
+    public class Meta
+    {
+        public const string TYPENAME_RECAST_GRAPH = "Pathfinding.RecastGraph";
+        public const string MIN_SUPPORTED_VERSION = "4.0.6";
+        public const string UPDATED_STRUCT_VERSION = "4.1.16";
+        public static readonly Regex VERSION_PATTERN = new Regex(@"(\d+)\.(\d+)\.(\d+)");
+        public string version { get; set; }
+        public int graphs { get; set; }
+        public string[] guids { get; set; }
+        public string[] typeNames { get; set; }
 
-
-public class Meta {
-
-    public const string TYPENAME_RECAST_GRAPH = "Pathfinding.RecastGraph";
-    public const string MIN_SUPPORTED_VERSION = "4.0.6";
-    public const string UPDATED_STRUCT_VERSION = "4.1.16";
-    public static readonly Regex VERSION_PATTERN = new Regex(@"(\d+)\.(\d+)\.(\d+)");
-    public string version { get; set; }
-    public int graphs { get; set; }
-    public string[] guids { get; set; }
-    public string[] typeNames { get; set; }
-
-    public bool isSupportedVersion() {
-        return isVersionAtLeast(MIN_SUPPORTED_VERSION);
-    }
-
-    public bool isVersionAtLeast(string minVersion) {
-        int[] actual = parseVersion(version);
-        int[] minSupported = parseVersion(minVersion);
-        for (int i = 0; i < Math.Min(actual.Length, minSupported.Length); i++) {
-            if (actual[i] > minSupported[i]) {
-                return true;
-            } else if (minSupported[i] > actual[i]) {
-                return false;
-            }
+        public bool isSupportedVersion()
+        {
+            return isVersionAtLeast(MIN_SUPPORTED_VERSION);
         }
-        return true;
-    }
 
-    private int[] parseVersion(string version) {
-        Match m = VERSION_PATTERN.Match(version);
-        if (m.Success) {
-            int[] v = new int[m.Groups.Count - 1];
-            for (int i = 0; i < v.Length; i++) {
-                v[i] = int.Parse(m.Groups[i + 1].Value);
+        public bool isVersionAtLeast(string minVersion)
+        {
+            int[] actual = parseVersion(version);
+            int[] minSupported = parseVersion(minVersion);
+            for (int i = 0; i < Math.Min(actual.Length, minSupported.Length); i++)
+            {
+                if (actual[i] > minSupported[i])
+                {
+                    return true;
+                }
+                else if (minSupported[i] > actual[i])
+                {
+                    return false;
+                }
             }
-            return v;
-        }
-        throw new ArgumentException("Invalid version format: " + version);
-    }
 
-    public bool isSupportedType() {
-        foreach (string t in typeNames) {
-            if (t == TYPENAME_RECAST_GRAPH) {
-                return true;
+            return true;
+        }
+
+        private int[] parseVersion(string version)
+        {
+            Match m = VERSION_PATTERN.Match(version);
+            if (m.Success)
+            {
+                int[] v = new int[m.Groups.Count - 1];
+                for (int i = 0; i < v.Length; i++)
+                {
+                    v[i] = int.Parse(m.Groups[i + 1].Value);
+                }
+
+                return v;
             }
+
+            throw new ArgumentException("Invalid version format: " + version);
         }
-        return false;
+
+        public bool isSupportedType()
+        {
+            foreach (string t in typeNames)
+            {
+                if (t == TYPENAME_RECAST_GRAPH)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
-
-}
-
 }

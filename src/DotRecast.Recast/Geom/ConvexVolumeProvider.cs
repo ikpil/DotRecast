@@ -20,10 +20,8 @@ using System.Collections.Generic;
 
 namespace DotRecast.Recast.Geom
 {
-
-
-public interface ConvexVolumeProvider
-{
-    IList<ConvexVolume> convexVolumes();
-}
+    public interface ConvexVolumeProvider
+    {
+        IList<ConvexVolume> convexVolumes();
+    }
 }

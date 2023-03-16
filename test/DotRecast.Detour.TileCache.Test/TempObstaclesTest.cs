@@ -26,19 +26,22 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.TileCache.Test;
 
-public class TempObstaclesTest : AbstractTileCacheTest {
-
+public class TempObstaclesTest : AbstractTileCacheTest
+{
     [Test]
-    public void testDungeon() {
+    public void testDungeon()
+    {
         bool cCompatibility = true;
         InputGeomProvider geom = ObjImporter.load(Loader.ToBytes("dungeon.obj"));
         TestTileLayerBuilder layerBuilder = new TestTileLayerBuilder(geom);
         List<byte[]> layers = layerBuilder.build(ByteOrder.LITTLE_ENDIAN, cCompatibility, 1);
         TileCache tc = getTileCache(geom, ByteOrder.LITTLE_ENDIAN, cCompatibility);
-        foreach (byte[] data in layers) {
+        foreach (byte[] data in layers)
+        {
             long refs = tc.addTile(data, 0);
             tc.buildNavMeshTile(refs);
         }
+
         List<MeshTile> tiles = tc.getNavMesh().getTilesAt(1, 4);
         MeshTile tile = tiles[0];
         Assert.That(tile.data.header.vertCount, Is.EqualTo(16));
@@ -60,22 +63,25 @@ public class TempObstaclesTest : AbstractTileCacheTest {
     }
 
     [Test]
-    public void testDungeonBox() {
+    public void testDungeonBox()
+    {
         bool cCompatibility = true;
         InputGeomProvider geom = ObjImporter.load(Loader.ToBytes("dungeon.obj"));
         TestTileLayerBuilder layerBuilder = new TestTileLayerBuilder(geom);
         List<byte[]> layers = layerBuilder.build(ByteOrder.LITTLE_ENDIAN, cCompatibility, 1);
         TileCache tc = getTileCache(geom, ByteOrder.LITTLE_ENDIAN, cCompatibility);
-        foreach (byte[] data in layers) {
+        foreach (byte[] data in layers)
+        {
             long refs = tc.addTile(data, 0);
             tc.buildNavMeshTile(refs);
         }
+
         List<MeshTile> tiles = tc.getNavMesh().getTilesAt(1, 4);
         MeshTile tile = tiles[0];
         Assert.That(tile.data.header.vertCount, Is.EqualTo(16));
         Assert.That(tile.data.header.polyCount, Is.EqualTo(6));
         long o = tc.addBoxObstacle(new float[] { -2.315208f, 9.998184f, -20.807983f },
-                new float[] { -1.315208f, 11.998184f, -19.807983f });
+            new float[] { -1.315208f, 11.998184f, -19.807983f });
         bool upToDate = tc.update();
         Assert.That(upToDate, Is.True);
         tiles = tc.getNavMesh().getTilesAt(1, 4);

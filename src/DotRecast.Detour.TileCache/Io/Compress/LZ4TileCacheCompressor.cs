@@ -22,18 +22,16 @@ using K4os.Compression.LZ4;
 
 namespace DotRecast.Detour.TileCache.Io.Compress
 {
+    public class LZ4TileCacheCompressor : TileCacheCompressor
+    {
+        public byte[] decompress(byte[] buf, int offset, int len, int outputlen)
+        {
+            return LZ4Pickler.Unpickle(buf, offset, len);
+        }
 
-
-public class LZ4TileCacheCompressor : TileCacheCompressor {
-
-    public byte[] decompress(byte[] buf, int offset, int len, int outputlen) {
-        return LZ4Pickler.Unpickle(buf, offset, len);
+        public byte[] compress(byte[] buf)
+        {
+            return LZ4Pickler.Pickle(buf);
+        }
     }
-
-    public byte[] compress(byte[] buf) {
-        return LZ4Pickler.Pickle(buf);
-    }
-
-}
-
 }

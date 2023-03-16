@@ -25,13 +25,12 @@ using DotRecast.Detour.Crowd;
 using DotRecast.Recast.Demo.Builder;
 using DotRecast.Recast.Demo.Draw;
 using Silk.NET.Windowing;
-
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class CrowdProfilingTool {
-
+public class CrowdProfilingTool
+{
     private readonly Func<CrowdAgentParams> agentParamsSupplier;
     private readonly int[] expandSimOptions = new[] { 1 };
     private readonly int[] expandCrowdOptions = new[] { 1 };
@@ -50,11 +49,13 @@ public class CrowdProfilingTool {
     private readonly List<FindRandomPointResult> zones = new();
     private long crowdUpdateTime;
 
-    public CrowdProfilingTool(Func<CrowdAgentParams> agentParamsSupplier) {
+    public CrowdProfilingTool(Func<CrowdAgentParams> agentParamsSupplier)
+    {
         this.agentParamsSupplier = agentParamsSupplier;
     }
 
-    public void layout(IWindow ctx) {
+    public void layout(IWindow ctx)
+    {
         // nk_layout_row_dynamic(ctx, 1, 1);
         // nk_spacing(ctx, 1);
         // if (nk_tree_state_push(ctx, 0, "Simulation Options", expandSimOptions)) {
@@ -141,43 +142,58 @@ public class CrowdProfilingTool {
         // }
     }
 
-    private float[] getMobPosition(NavMeshQuery navquery, QueryFilter filter, float[] pos) {
+    private float[] getMobPosition(NavMeshQuery navquery, QueryFilter filter, float[] pos)
+    {
         Result<FindRandomPointResult> result = navquery.findRandomPoint(filter, rnd);
-        if (result.succeeded()) {
+        if (result.succeeded())
+        {
             pos = result.result.getRandomPt();
         }
+
         return pos;
     }
 
-    private float[] getVillagerPosition(NavMeshQuery navquery, QueryFilter filter, float[] pos) {
-        if (0 < zones.Count) {
-            int zone = (int) (rnd.frand() * zones.Count);
+    private float[] getVillagerPosition(NavMeshQuery navquery, QueryFilter filter, float[] pos)
+    {
+        if (0 < zones.Count)
+        {
+            int zone = (int)(rnd.frand() * zones.Count);
             Result<FindRandomPointResult> result = navquery.findRandomPointWithinCircle(zones[zone].getRandomRef(),
-                    zones[zone].getRandomPt(), zoneRadius[0], filter, rnd);
-            if (result.succeeded()) {
+                zones[zone].getRandomPt(), zoneRadius[0], filter, rnd);
+            if (result.succeeded())
+            {
                 pos = result.result.getRandomPt();
             }
         }
+
         return pos;
     }
 
-    private void createZones() {
+    private void createZones()
+    {
         zones.Clear();
         QueryFilter filter = new DefaultQueryFilter();
         NavMeshQuery navquery = new NavMeshQuery(navMesh);
-        for (int i = 0; i < numberOfZones[0]; i++) {
+        for (int i = 0; i < numberOfZones[0]; i++)
+        {
             float zoneSeparation = zoneRadius[0] * zoneRadius[0] * 16;
-            for (int k = 0; k < 100; k++) {
+            for (int k = 0; k < 100; k++)
+            {
                 Result<FindRandomPointResult> result = navquery.findRandomPoint(filter, rnd);
-                if (result.succeeded()) {
+                if (result.succeeded())
+                {
                     bool valid = true;
-                    foreach (FindRandomPointResult zone in zones) {
-                        if (DemoMath.vDistSqr(zone.getRandomPt(), result.result.getRandomPt(), 0) < zoneSeparation) {
+                    foreach (FindRandomPointResult zone in zones)
+                    {
+                        if (DemoMath.vDistSqr(zone.getRandomPt(), result.result.getRandomPt(), 0) < zoneSeparation)
+                        {
                             valid = false;
                             break;
                         }
                     }
-                    if (valid) {
+
+                    if (valid)
+                    {
                         zones.Add(result.result);
                         break;
                     }
@@ -186,9 +202,10 @@ public class CrowdProfilingTool {
         }
     }
 
-    private void createCrowd() {
+    private void createCrowd()
+    {
         crowd = new Crowd(config, navMesh, __ => new DefaultQueryFilter(SampleAreaModifications.SAMPLE_POLYFLAGS_ALL,
-                SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED, new float[] { 1f, 10f, 1f, 1f, 2f, 1.5f }));
+            SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED, new float[] { 1f, 10f, 1f, 1f, 2f, 1.5f }));
 
         ObstacleAvoidanceQuery.ObstacleAvoidanceParams option = new ObstacleAvoidanceQuery.ObstacleAvoidanceParams(crowd.getObstacleAvoidanceParams(0));
         // Low (11)
@@ -217,123 +234,156 @@ public class CrowdProfilingTool {
         crowd.setObstacleAvoidanceParams(3, option);
     }
 
-    public void update(float dt) {
+    public void update(float dt)
+    {
         long startTime = Stopwatch.GetTimestamp();
-        if (crowd != null) {
+        if (crowd != null)
+        {
             crowd.config().pathQueueSize = pathQueueSize[0];
             crowd.config().maxFindPathIterations = maxIterations[0];
             crowd.update(dt, null);
         }
-        long endTime = Stopwatch.GetTimestamp();
-        if (crowd != null) {
 
+        long endTime = Stopwatch.GetTimestamp();
+        if (crowd != null)
+        {
             NavMeshQuery navquery = new NavMeshQuery(navMesh);
             QueryFilter filter = new DefaultQueryFilter();
-            foreach (CrowdAgent ag in crowd.getActiveAgents()) {
-                if (needsNewTarget(ag)) {
-                    AgentData agentData = (AgentData) ag.option.userData;
-                    switch (agentData.type) {
-                    case AgentType.MOB:
-                        moveMob(navquery, filter, ag, agentData);
-                        break;
-                    case AgentType.VILLAGER:
-                        moveVillager(navquery, filter, ag, agentData);
-                        break;
-                    case AgentType.TRAVELLER:
-                        moveTraveller(navquery, filter, ag, agentData);
-                        break;
+            foreach (CrowdAgent ag in crowd.getActiveAgents())
+            {
+                if (needsNewTarget(ag))
+                {
+                    AgentData agentData = (AgentData)ag.option.userData;
+                    switch (agentData.type)
+                    {
+                        case AgentType.MOB:
+                            moveMob(navquery, filter, ag, agentData);
+                            break;
+                        case AgentType.VILLAGER:
+                            moveVillager(navquery, filter, ag, agentData);
+                            break;
+                        case AgentType.TRAVELLER:
+                            moveTraveller(navquery, filter, ag, agentData);
+                            break;
                     }
                 }
             }
         }
+
         crowdUpdateTime = (endTime - startTime) / 1_000_000;
     }
 
-    private void moveMob(NavMeshQuery navquery, QueryFilter filter, CrowdAgent ag, AgentData agentData) {
+    private void moveMob(NavMeshQuery navquery, QueryFilter filter, CrowdAgent ag, AgentData agentData)
+    {
         // Move somewhere
         Result<FindNearestPolyResult> nearestPoly = navquery.findNearestPoly(ag.npos, crowd.getQueryExtents(), filter);
-        if (nearestPoly.succeeded()) {
+        if (nearestPoly.succeeded())
+        {
             Result<FindRandomPointResult> result = navquery.findRandomPointAroundCircle(nearestPoly.result.getNearestRef(),
-                    agentData.home, zoneRadius[0] * 2f, filter, rnd);
-            if (result.succeeded()) {
+                agentData.home, zoneRadius[0] * 2f, filter, rnd);
+            if (result.succeeded())
+            {
                 crowd.requestMoveTarget(ag, result.result.getRandomRef(), result.result.getRandomPt());
             }
         }
     }
 
-    private void moveVillager(NavMeshQuery navquery, QueryFilter filter, CrowdAgent ag, AgentData agentData) {
+    private void moveVillager(NavMeshQuery navquery, QueryFilter filter, CrowdAgent ag, AgentData agentData)
+    {
         // Move somewhere close
         Result<FindNearestPolyResult> nearestPoly = navquery.findNearestPoly(ag.npos, crowd.getQueryExtents(), filter);
-        if (nearestPoly.succeeded()) {
+        if (nearestPoly.succeeded())
+        {
             Result<FindRandomPointResult> result = navquery.findRandomPointAroundCircle(nearestPoly.result.getNearestRef(),
-                    agentData.home, zoneRadius[0] * 0.2f, filter, rnd);
-            if (result.succeeded()) {
+                agentData.home, zoneRadius[0] * 0.2f, filter, rnd);
+            if (result.succeeded())
+            {
                 crowd.requestMoveTarget(ag, result.result.getRandomRef(), result.result.getRandomPt());
             }
         }
     }
 
-    private void moveTraveller(NavMeshQuery navquery, QueryFilter filter, CrowdAgent ag, AgentData agentData) {
+    private void moveTraveller(NavMeshQuery navquery, QueryFilter filter, CrowdAgent ag, AgentData agentData)
+    {
         // Move to another zone
         List<FindRandomPointResult> potentialTargets = new();
-        foreach (FindRandomPointResult zone in zones) {
-            if (DemoMath.vDistSqr(zone.getRandomPt(), ag.npos, 0) > zoneRadius[0] * zoneRadius[0]) {
+        foreach (FindRandomPointResult zone in zones)
+        {
+            if (DemoMath.vDistSqr(zone.getRandomPt(), ag.npos, 0) > zoneRadius[0] * zoneRadius[0])
+            {
                 potentialTargets.Add(zone);
             }
         }
-        if (0 < potentialTargets.Count) {
+
+        if (0 < potentialTargets.Count)
+        {
             potentialTargets.Shuffle();
             crowd.requestMoveTarget(ag, potentialTargets[0].getRandomRef(), potentialTargets[0].getRandomPt());
         }
     }
 
-    private bool needsNewTarget(CrowdAgent ag) {
+    private bool needsNewTarget(CrowdAgent ag)
+    {
         if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_NONE
-                || ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_FAILED) {
+            || ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_FAILED)
+        {
             return true;
         }
-        if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_VALID) {
+
+        if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_VALID)
+        {
             float dx = ag.targetPos[0] - ag.npos[0];
             float dy = ag.targetPos[1] - ag.npos[1];
             float dz = ag.targetPos[2] - ag.npos[2];
             return dx * dx + dy * dy + dz * dz < 0.3f;
         }
+
         return false;
     }
 
-    public void setup(float maxAgentRadius, NavMesh nav) {
+    public void setup(float maxAgentRadius, NavMesh nav)
+    {
         navMesh = nav;
-        if (nav != null) {
+        if (nav != null)
+        {
             config = new CrowdConfig(maxAgentRadius);
         }
     }
 
-    public void handleRender(NavMeshRenderer renderer) {
+    public void handleRender(NavMeshRenderer renderer)
+    {
         RecastDebugDraw dd = renderer.getDebugDraw();
         dd.depthMask(false);
-        if (crowd != null) {
-            foreach (CrowdAgent ag in crowd.getActiveAgents()) {
+        if (crowd != null)
+        {
+            foreach (CrowdAgent ag in crowd.getActiveAgents())
+            {
                 float radius = ag.option.radius;
                 float[] pos = ag.npos;
                 dd.debugDrawCircle(pos[0], pos[1], pos[2], radius, duRGBA(0, 0, 0, 32), 2.0f);
             }
 
-            foreach (CrowdAgent ag in crowd.getActiveAgents()) {
-                AgentData agentData = (AgentData) ag.option.userData;
+            foreach (CrowdAgent ag in crowd.getActiveAgents())
+            {
+                AgentData agentData = (AgentData)ag.option.userData;
 
                 float height = ag.option.height;
                 float radius = ag.option.radius;
                 float[] pos = ag.npos;
 
                 int col = duRGBA(220, 220, 220, 128);
-                if (agentData.type == AgentType.TRAVELLER) {
+                if (agentData.type == AgentType.TRAVELLER)
+                {
                     col = duRGBA(100, 160, 100, 128);
                 }
-                if (agentData.type == AgentType.VILLAGER) {
+
+                if (agentData.type == AgentType.VILLAGER)
+                {
                     col = duRGBA(120, 80, 160, 128);
                 }
+
                 if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING
-                        || ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE)
+                    || ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE)
                     col = duLerpCol(col, duRGBA(255, 255, 32, 128), 128);
                 else if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_PATH)
                     col = duLerpCol(col, duRGBA(255, 64, 32, 128), 128);
@@ -343,37 +393,45 @@ public class CrowdProfilingTool {
                     col = duLerpCol(col, duRGBA(64, 255, 0, 128), 128);
 
                 dd.debugDrawCylinder(pos[0] - radius, pos[1] + radius * 0.1f, pos[2] - radius, pos[0] + radius, pos[1] + height,
-                        pos[2] + radius, col);
+                    pos[2] + radius, col);
             }
         }
 
         dd.depthMask(true);
     }
 
-    private CrowdAgent addAgent(float[] p, AgentType type) {
+    private CrowdAgent addAgent(float[] p, AgentType type)
+    {
         CrowdAgentParams ap = agentParamsSupplier.Invoke();
         ap.userData = new AgentData(type, p);
         return crowd.addAgent(p, ap);
     }
 
-    public enum AgentType {
-        VILLAGER, TRAVELLER, MOB,
+    public enum AgentType
+    {
+        VILLAGER,
+        TRAVELLER,
+        MOB,
     }
 
-    private class AgentData {
+    private class AgentData
+    {
         public readonly AgentType type;
         public readonly float[] home = new float[3];
 
-        public AgentData(AgentType type, float[] home) {
+        public AgentData(AgentType type, float[] home)
+        {
             this.type = type;
             RecastVectors.copy(this.home, home);
         }
-
     }
 
-    public void updateAgentParams(int updateFlags, int obstacleAvoidanceType, float separationWeight) {
-        if (crowd != null) {
-            foreach (CrowdAgent ag in crowd.getActiveAgents()) {
+    public void updateAgentParams(int updateFlags, int obstacleAvoidanceType, float separationWeight)
+    {
+        if (crowd != null)
+        {
+            foreach (CrowdAgent ag in crowd.getActiveAgents())
+            {
                 CrowdAgentParams option = new CrowdAgentParams();
                 option.radius = ag.option.radius;
                 option.height = ag.option.height;

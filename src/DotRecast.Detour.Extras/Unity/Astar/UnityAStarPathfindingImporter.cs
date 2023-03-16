@@ -22,58 +22,61 @@ using System.IO;
 
 namespace DotRecast.Detour.Extras.Unity.Astar
 {
-
-
-/**
+    /**
  * Import navmeshes created with A* Pathfinding Project Unity plugin (https://arongranberg.com/astar/). Graph data is
  * loaded from a zip archive and converted to Recast navmesh objects.
  */
-public class UnityAStarPathfindingImporter {
+    public class UnityAStarPathfindingImporter
+    {
+        private readonly UnityAStarPathfindingReader reader = new UnityAStarPathfindingReader();
+        private readonly BVTreeCreator bvTreeCreator = new BVTreeCreator();
+        private readonly LinkBuilder linkCreator = new LinkBuilder();
+        private readonly OffMeshLinkCreator offMeshLinkCreator = new OffMeshLinkCreator();
 
-    private readonly UnityAStarPathfindingReader reader = new UnityAStarPathfindingReader();
-    private readonly BVTreeCreator bvTreeCreator = new BVTreeCreator();
-    private readonly LinkBuilder linkCreator = new LinkBuilder();
-    private readonly OffMeshLinkCreator offMeshLinkCreator = new OffMeshLinkCreator();
+        public NavMesh[] load(FileStream zipFile)
+        {
+            GraphData graphData = reader.read(zipFile);
+            Meta meta = graphData.meta;
+            NodeLink2[] nodeLinks2 = graphData.nodeLinks2;
+            NavMesh[] meshes = new NavMesh[meta.graphs];
+            int nodeOffset = 0;
+            for (int graphIndex = 0; graphIndex < meta.graphs; graphIndex++)
+            {
+                GraphMeta graphMeta = graphData.graphMeta[graphIndex];
+                GraphMeshData graphMeshData = graphData.graphMeshData[graphIndex];
+                List<int[]> connections = graphData.graphConnections[graphIndex];
+                int nodeCount = graphMeshData.countNodes();
+                if (connections.Count != nodeCount)
+                {
+                    throw new ArgumentException("Inconsistent number of nodes in data file: " + nodeCount
+                                                                                              + " and connecton files: " + connections.Count);
+                }
 
-    public NavMesh[] load(FileStream zipFile) {
-        GraphData graphData = reader.read(zipFile);
-        Meta meta = graphData.meta;
-        NodeLink2[] nodeLinks2 = graphData.nodeLinks2;
-        NavMesh[] meshes = new NavMesh[meta.graphs];
-        int nodeOffset = 0;
-        for (int graphIndex = 0; graphIndex < meta.graphs; graphIndex++) {
-            GraphMeta graphMeta = graphData.graphMeta[graphIndex];
-            GraphMeshData graphMeshData = graphData.graphMeshData[graphIndex];
-            List<int[]> connections = graphData.graphConnections[graphIndex];
-            int nodeCount = graphMeshData.countNodes();
-            if (connections.Count != nodeCount) {
-                throw new ArgumentException("Inconsistent number of nodes in data file: " + nodeCount
-                        + " and connecton files: " + connections.Count);
+                // Build BV tree
+                bvTreeCreator.build(graphMeshData);
+                // Create links between nodes (both internal and portals between tiles)
+                linkCreator.build(nodeOffset, graphMeshData, connections);
+                // Finally, process all the off-mesh links that can be actually converted to detour data
+                offMeshLinkCreator.build(graphMeshData, nodeLinks2, nodeOffset);
+                NavMeshParams option = new NavMeshParams();
+                option.maxTiles = graphMeshData.tiles.Length;
+                option.maxPolys = 32768;
+                option.tileWidth = graphMeta.tileSizeX * graphMeta.cellSize;
+                option.tileHeight = graphMeta.tileSizeZ * graphMeta.cellSize;
+                option.orig[0] = -0.5f * graphMeta.forcedBoundsSize.x + graphMeta.forcedBoundsCenter.x;
+                option.orig[1] = -0.5f * graphMeta.forcedBoundsSize.y + graphMeta.forcedBoundsCenter.y;
+                option.orig[2] = -0.5f * graphMeta.forcedBoundsSize.z + graphMeta.forcedBoundsCenter.z;
+                NavMesh mesh = new NavMesh(option, 3);
+                foreach (MeshData t in graphMeshData.tiles)
+                {
+                    mesh.addTile(t, 0, 0);
+                }
+
+                meshes[graphIndex] = mesh;
+                nodeOffset += graphMeshData.countNodes();
             }
-            // Build BV tree
-            bvTreeCreator.build(graphMeshData);
-            // Create links between nodes (both internal and portals between tiles)
-            linkCreator.build(nodeOffset, graphMeshData, connections);
-            // Finally, process all the off-mesh links that can be actually converted to detour data
-            offMeshLinkCreator.build(graphMeshData, nodeLinks2, nodeOffset);
-            NavMeshParams option = new NavMeshParams();
-            option.maxTiles = graphMeshData.tiles.Length;
-            option.maxPolys = 32768;
-            option.tileWidth = graphMeta.tileSizeX * graphMeta.cellSize;
-            option.tileHeight = graphMeta.tileSizeZ * graphMeta.cellSize;
-            option.orig[0] = -0.5f * graphMeta.forcedBoundsSize.x + graphMeta.forcedBoundsCenter.x;
-            option.orig[1] = -0.5f * graphMeta.forcedBoundsSize.y + graphMeta.forcedBoundsCenter.y;
-            option.orig[2] = -0.5f * graphMeta.forcedBoundsSize.z + graphMeta.forcedBoundsCenter.z;
-            NavMesh mesh = new NavMesh(option, 3);
-            foreach (MeshData t in graphMeshData.tiles) {
-                mesh.addTile(t, 0, 0);
-            }
-            meshes[graphIndex] = mesh;
-            nodeOffset += graphMeshData.countNodes();
+
+            return meshes;
         }
-        return meshes;
     }
-
-}
-
 }

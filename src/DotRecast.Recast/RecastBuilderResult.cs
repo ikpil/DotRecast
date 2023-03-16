@@ -1,60 +1,57 @@
 ﻿namespace DotRecast.Recast
 {
-
-
-public class RecastBuilderResult
-{
-    public readonly int tileX;
-    public readonly int tileZ;
-    private readonly CompactHeightfield chf;
-    private readonly ContourSet cs;
-    private readonly PolyMesh pmesh;
-    private readonly PolyMeshDetail dmesh;
-    private readonly Heightfield solid;
-    private readonly Telemetry telemetry;
-
-    public RecastBuilderResult(int tileX, int tileZ, Heightfield solid, CompactHeightfield chf, ContourSet cs, PolyMesh pmesh,
-        PolyMeshDetail dmesh, Telemetry ctx)
+    public class RecastBuilderResult
     {
-        this.tileX = tileX;
-        this.tileZ = tileZ;
-        this.solid = solid;
-        this.chf = chf;
-        this.cs = cs;
-        this.pmesh = pmesh;
-        this.dmesh = dmesh;
-        telemetry = ctx;
-    }
+        public readonly int tileX;
+        public readonly int tileZ;
+        private readonly CompactHeightfield chf;
+        private readonly ContourSet cs;
+        private readonly PolyMesh pmesh;
+        private readonly PolyMeshDetail dmesh;
+        private readonly Heightfield solid;
+        private readonly Telemetry telemetry;
 
-    public PolyMesh getMesh()
-    {
-        return pmesh;
-    }
+        public RecastBuilderResult(int tileX, int tileZ, Heightfield solid, CompactHeightfield chf, ContourSet cs, PolyMesh pmesh,
+            PolyMeshDetail dmesh, Telemetry ctx)
+        {
+            this.tileX = tileX;
+            this.tileZ = tileZ;
+            this.solid = solid;
+            this.chf = chf;
+            this.cs = cs;
+            this.pmesh = pmesh;
+            this.dmesh = dmesh;
+            telemetry = ctx;
+        }
 
-    public PolyMeshDetail getMeshDetail()
-    {
-        return dmesh;
-    }
+        public PolyMesh getMesh()
+        {
+            return pmesh;
+        }
 
-    public CompactHeightfield getCompactHeightfield()
-    {
-        return chf;
-    }
+        public PolyMeshDetail getMeshDetail()
+        {
+            return dmesh;
+        }
 
-    public ContourSet getContourSet()
-    {
-        return cs;
-    }
+        public CompactHeightfield getCompactHeightfield()
+        {
+            return chf;
+        }
 
-    public Heightfield getSolidHeightfield()
-    {
-        return solid;
-    }
+        public ContourSet getContourSet()
+        {
+            return cs;
+        }
 
-    public Telemetry getTelemetry()
-    {
-        return telemetry;
-    }
-}
+        public Heightfield getSolidHeightfield()
+        {
+            return solid;
+        }
 
+        public Telemetry getTelemetry()
+        {
+            return telemetry;
+        }
+    }
 }

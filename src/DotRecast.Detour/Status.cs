@@ -17,43 +17,45 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour
 {
-
-
-public class Status {
-    public static Status FAILURE = new Status(0);
-    public static Status SUCCSESS = new Status(1);
-    public static Status IN_PROGRESS = new Status(2);
-    public static Status PARTIAL_RESULT = new Status(3);
-    public static Status FAILURE_INVALID_PARAM = new Status(4);
-    
-    public int Value { get; }
-
-    private Status(int vlaue)
+    public class Status
     {
-        Value = vlaue;
-    }
-}
+        public static Status FAILURE = new Status(0);
+        public static Status SUCCSESS = new Status(1);
+        public static Status IN_PROGRESS = new Status(2);
+        public static Status PARTIAL_RESULT = new Status(3);
+        public static Status FAILURE_INVALID_PARAM = new Status(4);
 
-public static class StatusEx
-{
-    public static bool isFailed(this Status @this) {
-        return @this == Status.FAILURE || @this == Status.FAILURE_INVALID_PARAM;
-    }
+        public int Value { get; }
 
-    public static bool isInProgress(this Status @this) {
-        return @this == Status.IN_PROGRESS;
-    }
-
-    public static bool isSuccess(this Status @this) {
-        return @this == Status.SUCCSESS || @this == Status.PARTIAL_RESULT;
+        private Status(int vlaue)
+        {
+            Value = vlaue;
+        }
     }
 
-    public static bool isPartial(this Status @this) {
-        return @this == Status.PARTIAL_RESULT;
-    }
-    
-}
+    public static class StatusEx
+    {
+        public static bool isFailed(this Status @this)
+        {
+            return @this == Status.FAILURE || @this == Status.FAILURE_INVALID_PARAM;
+        }
 
+        public static bool isInProgress(this Status @this)
+        {
+            return @this == Status.IN_PROGRESS;
+        }
+
+        public static bool isSuccess(this Status @this)
+        {
+            return @this == Status.SUCCSESS || @this == Status.PARTIAL_RESULT;
+        }
+
+        public static bool isPartial(this Status @this)
+        {
+            return @this == Status.PARTIAL_RESULT;
+        }
+    }
 }

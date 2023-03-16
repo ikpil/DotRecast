@@ -22,29 +22,28 @@ using System.Collections.Generic;
 
 namespace DotRecast.Detour
 {
+    public class MoveAlongSurfaceResult
+    {
+        /** The result position of the mover. [(x, y, z)] */
+        private readonly float[] resultPos;
 
+        /** The reference ids of the polygons visited during the move. */
+        private readonly List<long> visited;
 
+        public MoveAlongSurfaceResult(float[] resultPos, List<long> visited)
+        {
+            this.resultPos = resultPos;
+            this.visited = visited;
+        }
 
-public class MoveAlongSurfaceResult {
+        public float[] getResultPos()
+        {
+            return resultPos;
+        }
 
-    /** The result position of the mover. [(x, y, z)] */
-    private readonly float[] resultPos;
-    /** The reference ids of the polygons visited during the move. */
-    private readonly List<long> visited;
-
-    public MoveAlongSurfaceResult(float[] resultPos, List<long> visited) {
-        this.resultPos = resultPos;
-        this.visited = visited;
+        public List<long> getVisited()
+        {
+            return visited;
+        }
     }
-
-    public float[] getResultPos() {
-        return resultPos;
-    }
-
-    public List<long> getVisited() {
-        return visited;
-    }
-
-}
-
 }

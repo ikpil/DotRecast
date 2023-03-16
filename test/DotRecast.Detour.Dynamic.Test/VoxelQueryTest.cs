@@ -28,18 +28,18 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Dynamic.Test;
 
-public class VoxelQueryTest {
-
+public class VoxelQueryTest
+{
     private const int TILE_WIDTH = 100;
     private const int TILE_DEPTH = 90;
     private static readonly float[] ORIGIN = new float[] { 50, 10, 40 };
-    
+
 
     [Test]
     public void shouldTraverseTiles()
     {
         var hfProvider = new Mock<Func<int, int, Heightfield>>();
-        
+
         // Given
         List<int> captorX = new();
         List<int> captorZ = new();
@@ -52,21 +52,22 @@ public class VoxelQueryTest {
                 captorX.Add(x);
                 captorZ.Add(z);
             });
-        
+
         VoxelQuery query = new VoxelQuery(ORIGIN, TILE_WIDTH, TILE_DEPTH, hfProvider.Object);
         float[] start = { 120, 10, 365 };
         float[] end = { 320, 10, 57 };
-        
+
         // When
         query.raycast(start, end);
         // Then
         hfProvider.Verify(mock => mock.Invoke(It.IsAny<int>(), It.IsAny<int>()), Times.Exactly(6));
-        Assert.That(captorX, Is.EqualTo(new[] { 0, 1, 1, 1, 2, 2}));
-        Assert.That(captorZ, Is.EqualTo(new[] { 3, 3, 2, 1, 1, 0}));
+        Assert.That(captorX, Is.EqualTo(new[] { 0, 1, 1, 1, 2, 2 }));
+        Assert.That(captorZ, Is.EqualTo(new[] { 3, 3, 2, 1, 1, 0 }));
     }
 
     [Test]
-    public void shouldHandleRaycastWithoutObstacles() {
+    public void shouldHandleRaycastWithoutObstacles()
+    {
         DynamicNavMesh mesh = createDynaMesh();
         VoxelQuery query = mesh.voxelQuery();
         float[] start = { 7.4f, 0.5f, -64.8f };
@@ -76,7 +77,8 @@ public class VoxelQueryTest {
     }
 
     [Test]
-    public void shouldHandleRaycastWithObstacles() {
+    public void shouldHandleRaycastWithObstacles()
+    {
         DynamicNavMesh mesh = createDynaMesh();
         VoxelQuery query = mesh.voxelQuery();
         float[] start = { 32.3f, 0.5f, 47.9f };
@@ -86,11 +88,12 @@ public class VoxelQueryTest {
         Assert.That(hit.Value, Is.EqualTo(0.5263836f).Within(1e-7f));
     }
 
-    private DynamicNavMesh createDynaMesh() {
+    private DynamicNavMesh createDynaMesh()
+    {
         var bytes = Loader.ToBytes("test_tiles.voxels");
         using var ms = new MemoryStream(bytes);
         using var bis = new BinaryReader(ms);
-        
+
         // load voxels from file
         VoxelFileReader reader = new VoxelFileReader();
         VoxelFile f = reader.read(bis);

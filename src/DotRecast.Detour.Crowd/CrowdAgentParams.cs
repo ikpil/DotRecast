@@ -22,44 +22,55 @@ using System;
 
 namespace DotRecast.Detour.Crowd
 {
+    /// Configuration parameters for a crowd agent.
+    /// @ingroup crowd
+    public class CrowdAgentParams
+    {
+        public float radius;
 
+        /// < Agent radius. [Limit: >= 0]
+        public float height;
 
-/// Configuration parameters for a crowd agent.
-/// @ingroup crowd
-public class CrowdAgentParams {
-    public float radius; /// < Agent radius. [Limit: >= 0]
-    public float height; /// < Agent height. [Limit: > 0]
-    public float maxAcceleration; /// < Maximum allowed acceleration. [Limit: >= 0]
-    public float maxSpeed; /// < Maximum allowed speed. [Limit: >= 0]
+        /// < Agent height. [Limit: > 0]
+        public float maxAcceleration;
 
-    /// Defines how close a collision element must be before it is considered for steering behaviors. [Limits: > 0]
-    public float collisionQueryRange;
+        /// < Maximum allowed acceleration. [Limit: >= 0]
+        public float maxSpeed;
 
-    public float pathOptimizationRange; /// < The path visibility optimization range. [Limit: > 0]
+        /// < Maximum allowed speed. [Limit: >= 0]
+        /// Defines how close a collision element must be before it is considered for steering behaviors. [Limits: > 0]
+        public float collisionQueryRange;
 
-    /// How aggresive the agent manager should be at avoiding collisions with this agent. [Limit: >= 0]
-    public float separationWeight;
+        public float pathOptimizationRange;
 
-    /// Crowd agent update flags.
-    public const int DT_CROWD_ANTICIPATE_TURNS = 1;
-    public const int DT_CROWD_OBSTACLE_AVOIDANCE = 2;
-    public const int DT_CROWD_SEPARATION = 4;
-    public const int DT_CROWD_OPTIMIZE_VIS = 8; /// < Use #dtPathCorridor::optimizePathVisibility() to optimize
-                                                       /// the agent path.
-    public const int DT_CROWD_OPTIMIZE_TOPO = 16; /// < Use dtPathCorridor::optimizePathTopology() to optimize
-                                                         /// the agent path.
+        /// < The path visibility optimization range. [Limit: > 0]
+        /// How aggresive the agent manager should be at avoiding collisions with this agent. [Limit: >= 0]
+        public float separationWeight;
 
-    /// Flags that impact steering behavior. (See: #UpdateFlags)
-    public int updateFlags;
+        /// Crowd agent update flags.
+        public const int DT_CROWD_ANTICIPATE_TURNS = 1;
 
-    /// The index of the avoidance configuration to use for the agent.
-    /// [Limits: 0 <= value < #DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS]
-    public int obstacleAvoidanceType;
+        public const int DT_CROWD_OBSTACLE_AVOIDANCE = 2;
+        public const int DT_CROWD_SEPARATION = 4;
+        public const int DT_CROWD_OPTIMIZE_VIS = 8;
 
-    /// The index of the query filter used by this agent.
-    public int queryFilterType;
+        /// < Use #dtPathCorridor::optimizePathVisibility() to optimize
+        /// the agent path.
+        public const int DT_CROWD_OPTIMIZE_TOPO = 16;
 
-    /// User defined data attached to the agent.
-    public object userData;
-}
+        /// < Use dtPathCorridor::optimizePathTopology() to optimize
+        /// the agent path.
+        /// Flags that impact steering behavior. (See: #UpdateFlags)
+        public int updateFlags;
+
+        /// The index of the avoidance configuration to use for the agent.
+        /// [Limits: 0 <= value < #DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS]
+        public int obstacleAvoidanceType;
+
+        /// The index of the query filter used by this agent.
+        public int queryFilterType;
+
+        /// User defined data attached to the agent.
+        public object userData;
+    }
 }

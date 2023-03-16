@@ -21,14 +21,13 @@ freely, subject to the following restrictions:
 using DotRecast.Core;
 using DotRecast.Detour.TileCache.Io.Compress;
 using DotRecast.Recast.Geom;
-
 using static DotRecast.Detour.DetourCommon;
 using static DotRecast.Recast.RecastVectors;
 
 namespace DotRecast.Detour.TileCache.Test;
 
-public class AbstractTileCacheTest {
-
+public class AbstractTileCacheTest
+{
     private const int EXPECTED_LAYERS_PER_TILE = 4;
     private readonly float m_cellSize = 0.3f;
     private readonly float m_cellHeight = 0.2f;
@@ -38,15 +37,19 @@ public class AbstractTileCacheTest {
     private readonly float m_edgeMaxError = 1.3f;
     private readonly int m_tileSize = 48;
 
-    protected class TestTileCacheMeshProcess : TileCacheMeshProcess {
-        public void process(NavMeshDataCreateParams option) {
-            for (int i = 0; i < option.polyCount; ++i) {
+    protected class TestTileCacheMeshProcess : TileCacheMeshProcess
+    {
+        public void process(NavMeshDataCreateParams option)
+        {
+            for (int i = 0; i < option.polyCount; ++i)
+            {
                 option.polyFlags[i] = 1;
             }
         }
     }
 
-    public TileCache getTileCache(InputGeomProvider geom, ByteOrder order, bool cCompatibility) {
+    public TileCache getTileCache(InputGeomProvider geom, ByteOrder order, bool cCompatibility)
+    {
         TileCacheParams option = new TileCacheParams();
         int[] twh = Recast.Recast.calcTileCount(geom.getMeshBoundsMin(), geom.getMeshBoundsMax(), m_cellSize, m_tileSize, m_tileSize);
         option.ch = m_cellHeight;
@@ -68,8 +71,7 @@ public class AbstractTileCacheTest {
         navMeshParams.maxPolys = 16384;
         NavMesh navMesh = new NavMesh(navMeshParams, 6);
         TileCache tc = new TileCache(option, new TileCacheStorageParams(order, cCompatibility), navMesh,
-                TileCacheCompressorFactory.get(cCompatibility), new TestTileCacheMeshProcess());
+            TileCacheCompressorFactory.get(cCompatibility), new TestTileCacheMeshProcess());
         return tc;
     }
-
 }

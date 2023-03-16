@@ -22,47 +22,45 @@ using System.Collections.Immutable;
 
 namespace DotRecast.Recast.Geom
 {
-
-
-public class SingleTrimeshInputGeomProvider : InputGeomProvider
-{
-    private readonly float[] bmin;
-    private readonly float[] bmax;
-    private readonly TriMesh[] _meshes;
-
-    public SingleTrimeshInputGeomProvider(float[] vertices, int[] faces)
+    public class SingleTrimeshInputGeomProvider : InputGeomProvider
     {
-        bmin = new float[3];
-        bmax = new float[3];
-        RecastVectors.copy(bmin, vertices, 0);
-        RecastVectors.copy(bmax, vertices, 0);
-        for (int i = 1; i < vertices.Length / 3; i++)
+        private readonly float[] bmin;
+        private readonly float[] bmax;
+        private readonly TriMesh[] _meshes;
+
+        public SingleTrimeshInputGeomProvider(float[] vertices, int[] faces)
         {
-            RecastVectors.min(bmin, vertices, i * 3);
-            RecastVectors.max(bmax, vertices, i * 3);
+            bmin = new float[3];
+            bmax = new float[3];
+            RecastVectors.copy(bmin, vertices, 0);
+            RecastVectors.copy(bmax, vertices, 0);
+            for (int i = 1; i < vertices.Length / 3; i++)
+            {
+                RecastVectors.min(bmin, vertices, i * 3);
+                RecastVectors.max(bmax, vertices, i * 3);
+            }
+
+            _meshes = new[] { new TriMesh(vertices, faces) };
         }
 
-        _meshes = new[] { new TriMesh(vertices, faces) };
-    }
+        public float[] getMeshBoundsMin()
+        {
+            return bmin;
+        }
 
-    public float[] getMeshBoundsMin()
-    {
-        return bmin;
-    }
+        public float[] getMeshBoundsMax()
+        {
+            return bmax;
+        }
 
-    public float[] getMeshBoundsMax()
-    {
-        return bmax;
-    }
+        public IEnumerable<TriMesh> meshes()
+        {
+            return _meshes;
+        }
 
-    public IEnumerable<TriMesh> meshes()
-    {
-        return _meshes;
+        public IList<ConvexVolume> convexVolumes()
+        {
+            return ImmutableArray<ConvexVolume>.Empty;
+        }
     }
-
-    public IList<ConvexVolume> convexVolumes()
-    {
-        return ImmutableArray<ConvexVolume>.Empty;
-    }
-}
 }

@@ -37,8 +37,8 @@ public class FindDistanceToWallTest : AbstractDetourTest
     {
         new[] { -0.955779f, 0.0f, -0.29408592f },
         new[] { 0.0f, 0.0f, 1.0f },
-        new[] { 0.97014254f, 0.0f, 0.24253564f }, 
-        new[] { -1.0f, 0.0f, 0.0f }, 
+        new[] { 0.97014254f, 0.0f, 0.24253564f },
+        new[] { -1.0f, 0.0f, 0.0f },
         new[] { 1.0f, 0.0f, 0.0f }
     };
 

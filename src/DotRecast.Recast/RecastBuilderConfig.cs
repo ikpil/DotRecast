@@ -20,84 +20,82 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Recast
 {
+    using static RecastVectors;
 
-
-using static RecastVectors;
-
-public class RecastBuilderConfig
-{
-    public readonly RecastConfig cfg;
-
-    public readonly int tileX;
-    public readonly int tileZ;
-
-    /** The width of the field along the x-axis. [Limit: >= 0] [Units: vx] **/
-    public readonly int width;
-
-    /** The height of the field along the z-axis. [Limit: >= 0] [Units: vx] **/
-    public readonly int height;
-
-    /** The minimum bounds of the field's AABB. [(x, y, z)] [Units: wu] **/
-    public readonly float[] bmin = new float[3];
-
-    /** The maximum bounds of the field's AABB. [(x, y, z)] [Units: wu] **/
-    public readonly float[] bmax = new float[3];
-
-    public RecastBuilderConfig(RecastConfig cfg, float[] bmin, float[] bmax) : this(cfg, bmin, bmax, 0, 0)
+    public class RecastBuilderConfig
     {
-    }
+        public readonly RecastConfig cfg;
 
-    public RecastBuilderConfig(RecastConfig cfg, float[] bmin, float[] bmax, int tileX, int tileZ)
-    {
-        this.tileX = tileX;
-        this.tileZ = tileZ;
-        this.cfg = cfg;
-        copy(this.bmin, bmin);
-        copy(this.bmax, bmax);
-        if (cfg.useTiles)
+        public readonly int tileX;
+        public readonly int tileZ;
+
+        /** The width of the field along the x-axis. [Limit: >= 0] [Units: vx] **/
+        public readonly int width;
+
+        /** The height of the field along the z-axis. [Limit: >= 0] [Units: vx] **/
+        public readonly int height;
+
+        /** The minimum bounds of the field's AABB. [(x, y, z)] [Units: wu] **/
+        public readonly float[] bmin = new float[3];
+
+        /** The maximum bounds of the field's AABB. [(x, y, z)] [Units: wu] **/
+        public readonly float[] bmax = new float[3];
+
+        public RecastBuilderConfig(RecastConfig cfg, float[] bmin, float[] bmax) : this(cfg, bmin, bmax, 0, 0)
         {
-            float tsx = cfg.tileSizeX * cfg.cs;
-            float tsz = cfg.tileSizeZ * cfg.cs;
-            this.bmin[0] += tileX * tsx;
-            this.bmin[2] += tileZ * tsz;
-            this.bmax[0] = this.bmin[0] + tsx;
-            this.bmax[2] = this.bmin[2] + tsz;
-            // Expand the heighfield bounding box by border size to find the extents of geometry we need to build this
-            // tile.
-            //
-            // This is done in order to make sure that the navmesh tiles connect correctly at the borders,
-            // and the obstacles close to the border work correctly with the dilation process.
-            // No polygons (or contours) will be created on the border area.
-            //
-            // IMPORTANT!
-            //
-            // :''''''''':
-            // : +-----+ :
-            // : | | :
-            // : | |<--- tile to build
-            // : | | :
-            // : +-----+ :<-- geometry needed
-            // :.........:
-            //
-            // You should use this bounding box to query your input geometry.
-            //
-            // For example if you build a navmesh for terrain, and want the navmesh tiles to match the terrain tile size
-            // you will need to pass in data from neighbour terrain tiles too! In a simple case, just pass in all the 8
-            // neighbours,
-            // or use the bounding box below to only pass in a sliver of each of the 8 neighbours.
-            this.bmin[0] -= cfg.borderSize * cfg.cs;
-            this.bmin[2] -= cfg.borderSize * cfg.cs;
-            this.bmax[0] += cfg.borderSize * cfg.cs;
-            this.bmax[2] += cfg.borderSize * cfg.cs;
-            width = cfg.tileSizeX + cfg.borderSize * 2;
-            height = cfg.tileSizeZ + cfg.borderSize * 2;
         }
-        else
+
+        public RecastBuilderConfig(RecastConfig cfg, float[] bmin, float[] bmax, int tileX, int tileZ)
         {
-            int[] wh = Recast.calcGridSize(this.bmin, this.bmax, cfg.cs);
-            width = wh[0];
-            height = wh[1];
+            this.tileX = tileX;
+            this.tileZ = tileZ;
+            this.cfg = cfg;
+            copy(this.bmin, bmin);
+            copy(this.bmax, bmax);
+            if (cfg.useTiles)
+            {
+                float tsx = cfg.tileSizeX * cfg.cs;
+                float tsz = cfg.tileSizeZ * cfg.cs;
+                this.bmin[0] += tileX * tsx;
+                this.bmin[2] += tileZ * tsz;
+                this.bmax[0] = this.bmin[0] + tsx;
+                this.bmax[2] = this.bmin[2] + tsz;
+                // Expand the heighfield bounding box by border size to find the extents of geometry we need to build this
+                // tile.
+                //
+                // This is done in order to make sure that the navmesh tiles connect correctly at the borders,
+                // and the obstacles close to the border work correctly with the dilation process.
+                // No polygons (or contours) will be created on the border area.
+                //
+                // IMPORTANT!
+                //
+                // :''''''''':
+                // : +-----+ :
+                // : | | :
+                // : | |<--- tile to build
+                // : | | :
+                // : +-----+ :<-- geometry needed
+                // :.........:
+                //
+                // You should use this bounding box to query your input geometry.
+                //
+                // For example if you build a navmesh for terrain, and want the navmesh tiles to match the terrain tile size
+                // you will need to pass in data from neighbour terrain tiles too! In a simple case, just pass in all the 8
+                // neighbours,
+                // or use the bounding box below to only pass in a sliver of each of the 8 neighbours.
+                this.bmin[0] -= cfg.borderSize * cfg.cs;
+                this.bmin[2] -= cfg.borderSize * cfg.cs;
+                this.bmax[0] += cfg.borderSize * cfg.cs;
+                this.bmax[2] += cfg.borderSize * cfg.cs;
+                width = cfg.tileSizeX + cfg.borderSize * 2;
+                height = cfg.tileSizeZ + cfg.borderSize * 2;
+            }
+            else
+            {
+                int[] wh = Recast.calcGridSize(this.bmin, this.bmax, cfg.cs);
+                width = wh[0];
+                height = wh[1];
+            }
         }
     }
-}
 }

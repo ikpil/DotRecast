@@ -20,13 +20,11 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Recast
 {
-
-
-public class ConvexVolume
-{
-    public float[] verts;
-    public float hmin;
-    public float hmax;
-    public AreaModification areaMod;
-}
+    public class ConvexVolume
+    {
+        public float[] verts;
+        public float hmin;
+        public float hmax;
+        public AreaModification areaMod;
+    }
 }

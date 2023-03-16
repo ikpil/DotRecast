@@ -20,29 +20,27 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic.Colliders
 {
-
-
-public abstract class AbstractCollider : Collider {
-
-    protected readonly int area;
-    protected readonly float flagMergeThreshold;
-    protected readonly float[] _bounds;
-
-    public AbstractCollider(int area, float flagMergeThreshold, float[] bounds) {
-        this.area = area;
-        this.flagMergeThreshold = flagMergeThreshold;
-        this._bounds = bounds;
-    }
-
-    public float[] bounds() {
-        return _bounds;
-    }
-
-    public void rasterize(Heightfield hf, Telemetry telemetry)
+    public abstract class AbstractCollider : Collider
     {
-        ///?
+        protected readonly int area;
+        protected readonly float flagMergeThreshold;
+        protected readonly float[] _bounds;
+
+        public AbstractCollider(int area, float flagMergeThreshold, float[] bounds)
+        {
+            this.area = area;
+            this.flagMergeThreshold = flagMergeThreshold;
+            this._bounds = bounds;
+        }
+
+        public float[] bounds()
+        {
+            return _bounds;
+        }
+
+        public void rasterize(Heightfield hf, Telemetry telemetry)
+        {
+            ///?
+        }
     }
-
-}
-
 }

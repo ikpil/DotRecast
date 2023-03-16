@@ -26,14 +26,15 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.TileCache.Test;
 
-public class TileCacheFindPathTest : AbstractTileCacheTest {
-
+public class TileCacheFindPathTest : AbstractTileCacheTest
+{
     private readonly float[] start = { 39.44734f, 9.998177f, -0.784811f };
     private readonly float[] end = { 19.292645f, 11.611748f, -57.750366f };
     private readonly NavMesh navmesh;
     private readonly NavMeshQuery query;
 
-    public TileCacheFindPathTest() {
+    public TileCacheFindPathTest()
+    {
         using var msis = new MemoryStream(Loader.ToBytes("dungeon_all_tiles_tilecache.bin"));
         using var @is = new BinaryReader(msis);
         TileCache tcC = new TileCacheReader().read(@is, 6, new TestTileCacheMeshProcess());
@@ -42,7 +43,8 @@ public class TileCacheFindPathTest : AbstractTileCacheTest {
     }
 
     [Test]
-    public void testFindPath() {
+    public void testFindPath()
+    {
         QueryFilter filter = new DefaultQueryFilter();
         float[] extents = new float[] { 2f, 4f, 2f };
         Result<FindNearestPolyResult> findPolyStart = query.findNearestPoly(start, extents, filter);
@@ -55,8 +57,7 @@ public class TileCacheFindPathTest : AbstractTileCacheTest {
         int maxStraightPath = 256;
         int options = 0;
         Result<List<StraightPathItem>> pathStr = query.findStraightPath(startPos, endPos, path.result, maxStraightPath,
-                options);
+            options);
         Assert.That(pathStr.result.Count, Is.EqualTo(8));
     }
-
 }

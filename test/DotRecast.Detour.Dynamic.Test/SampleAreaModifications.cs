@@ -20,8 +20,8 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic.Test;
 
-public class SampleAreaModifications {
-
+public class SampleAreaModifications
+{
     public const int SAMPLE_POLYAREA_TYPE_MASK = 0x07;
     public const int SAMPLE_POLYAREA_TYPE_GROUND = 0x1;
     public const int SAMPLE_POLYAREA_TYPE_WATER = 0x2;
@@ -31,17 +31,22 @@ public class SampleAreaModifications {
     public const int SAMPLE_POLYAREA_TYPE_JUMP = 0x6;
 
     public static AreaModification SAMPLE_AREAMOD_GROUND = new AreaModification(SAMPLE_POLYAREA_TYPE_GROUND,
-            SAMPLE_POLYAREA_TYPE_MASK);
+        SAMPLE_POLYAREA_TYPE_MASK);
+
     public static AreaModification SAMPLE_AREAMOD_WATER = new AreaModification(SAMPLE_POLYAREA_TYPE_WATER,
-            SAMPLE_POLYAREA_TYPE_MASK);
+        SAMPLE_POLYAREA_TYPE_MASK);
+
     public static AreaModification SAMPLE_AREAMOD_ROAD = new AreaModification(SAMPLE_POLYAREA_TYPE_ROAD,
-            SAMPLE_POLYAREA_TYPE_MASK);
+        SAMPLE_POLYAREA_TYPE_MASK);
+
     public static AreaModification SAMPLE_AREAMOD_GRASS = new AreaModification(SAMPLE_POLYAREA_TYPE_GRASS,
-            SAMPLE_POLYAREA_TYPE_MASK);
+        SAMPLE_POLYAREA_TYPE_MASK);
+
     public static AreaModification SAMPLE_AREAMOD_DOOR = new AreaModification(SAMPLE_POLYAREA_TYPE_DOOR,
-            SAMPLE_POLYAREA_TYPE_DOOR);
+        SAMPLE_POLYAREA_TYPE_DOOR);
+
     public static AreaModification SAMPLE_AREAMOD_JUMP = new AreaModification(SAMPLE_POLYAREA_TYPE_JUMP,
-            SAMPLE_POLYAREA_TYPE_JUMP);
+        SAMPLE_POLYAREA_TYPE_JUMP);
 
     public const int SAMPLE_POLYFLAGS_WALK = 0x01; // Ability to walk (ground, grass, road)
     public const int SAMPLE_POLYFLAGS_SWIM = 0x02; // Ability to swim (water).

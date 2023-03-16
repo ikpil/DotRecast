@@ -27,56 +27,67 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour.TileCache
 {
-
-
-public abstract class AbstractTileLayersBuilder {
-
-    protected List<byte[]> build(ByteOrder order, bool cCompatibility, int threads, int tw, int th) {
-        if (threads == 1) {
-            return buildSingleThread(order, cCompatibility, tw, th);
-        }
-        return buildMultiThread(order, cCompatibility, tw, th, threads);
-    }
-
-    private List<byte[]> buildSingleThread(ByteOrder order, bool cCompatibility, int tw, int th) {
-        List<byte[]> layers = new List<byte[]>();
-        for (int y = 0; y < th; ++y) {
-            for (int x = 0; x < tw; ++x) {
-                layers.AddRange(build(x, y, order, cCompatibility));
+    public abstract class AbstractTileLayersBuilder
+    {
+        protected List<byte[]> build(ByteOrder order, bool cCompatibility, int threads, int tw, int th)
+        {
+            if (threads == 1)
+            {
+                return buildSingleThread(order, cCompatibility, tw, th);
             }
-        }
-        return layers;
-    }
 
-    private List<byte[]> buildMultiThread(ByteOrder order, bool cCompatibility, int tw, int th, int threads) {
-        var tasks = new ConcurrentQueue<Task<Tuple<int, int, List<byte[]>>>>();
-        for (int y = 0; y < th; ++y) {
-            for (int x = 0; x < tw; ++x) {
-                int tx = x;
-                int ty = y;
-                var task = Task.Run(() => {
-                    var partial= build(tx, ty, order, cCompatibility);
-                    return Tuple.Create(tx, ty, partial);
-                });
-                tasks.Enqueue(task);
+            return buildMultiThread(order, cCompatibility, tw, th, threads);
+        }
+
+        private List<byte[]> buildSingleThread(ByteOrder order, bool cCompatibility, int tw, int th)
+        {
+            List<byte[]> layers = new List<byte[]>();
+            for (int y = 0; y < th; ++y)
+            {
+                for (int x = 0; x < tw; ++x)
+                {
+                    layers.AddRange(build(x, y, order, cCompatibility));
+                }
             }
+
+            return layers;
         }
 
-        var partialResults = tasks
-            .Select(x => x.Result)
-            .ToDictionary(x => Tuple.Create(x.Item1, x.Item2), x => x.Item3);
-        
-        List<byte[]> layers = new List<byte[]>();
-        for (int y = 0; y < th; ++y) {
-            for (int x = 0; x < tw; ++x) {
-                var key = Tuple.Create(x, y);
-                layers.AddRange(partialResults[key]);
+        private List<byte[]> buildMultiThread(ByteOrder order, bool cCompatibility, int tw, int th, int threads)
+        {
+            var tasks = new ConcurrentQueue<Task<Tuple<int, int, List<byte[]>>>>();
+            for (int y = 0; y < th; ++y)
+            {
+                for (int x = 0; x < tw; ++x)
+                {
+                    int tx = x;
+                    int ty = y;
+                    var task = Task.Run(() =>
+                    {
+                        var partial = build(tx, ty, order, cCompatibility);
+                        return Tuple.Create(tx, ty, partial);
+                    });
+                    tasks.Enqueue(task);
+                }
             }
+
+            var partialResults = tasks
+                .Select(x => x.Result)
+                .ToDictionary(x => Tuple.Create(x.Item1, x.Item2), x => x.Item3);
+
+            List<byte[]> layers = new List<byte[]>();
+            for (int y = 0; y < th; ++y)
+            {
+                for (int x = 0; x < tw; ++x)
+                {
+                    var key = Tuple.Create(x, y);
+                    layers.AddRange(partialResults[key]);
+                }
+            }
+
+            return layers;
         }
-        return layers;
+
+        protected abstract List<byte[]> build(int tx, int ty, ByteOrder order, bool cCompatibility);
     }
-
-    protected abstract List<byte[]> build(int tx, int ty, ByteOrder order, bool cCompatibility);
-}
-
 }

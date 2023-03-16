@@ -288,7 +288,7 @@ public class RecastDemo : MouseListener
         // glfwWindowHint(GLFW_GREEN_BITS, mode.greenBits());
         // glfwWindowHint(GLFW_BLUE_BITS, mode.blueBits());
         // glfwWindowHint(GLFW_REFRESH_RATE, mode.refreshRate());
-        
+
 
         var options = WindowOptions.Default;
         options.Title = title;
@@ -363,7 +363,7 @@ public class RecastDemo : MouseListener
     {
         width = size.X;
         height = size.Y;
-        
+
         //_gl.FramebufferParameter(GLEnum.Size);
         //_graphicsDevice.ResizeMainWindow((uint)size.X, (uint)size.Y);
     }
@@ -377,11 +377,11 @@ public class RecastDemo : MouseListener
     private void OnWindowOnLoad()
     {
         var s = SdlWindowing.GetExistingApi(window);
-        
+
         _input = window.CreateInput();
         _gl = window.CreateOpenGL();
         //dd.init(_gl, camr);
-        
+
         _imgui = new ImGuiController(_gl, window, _input);
 
 
@@ -703,14 +703,14 @@ public class RecastDemo : MouseListener
     {
         _gl.ClearColor(Color.CornflowerBlue);
         _gl.Clear(ClearBufferMask.ColorBufferBit);
-        
+
 
         mouseOverMenu = _viewSys.render(window, 0, 0, width, height, (int)mousePos[0], (int)mousePos[1]);
         ImGui.Button("hello");
         ImGui.Button("world");
 
         _imgui.Render();
-        
+
         window.SwapBuffers();
     }
 

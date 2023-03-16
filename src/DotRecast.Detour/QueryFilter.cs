@@ -17,17 +17,14 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour
 {
+    public interface QueryFilter
+    {
+        bool passFilter(long refs, MeshTile tile, Poly poly);
 
-
-public interface QueryFilter {
-
-    bool passFilter(long refs, MeshTile tile, Poly poly);
-
-    float getCost(float[] pa, float[] pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef, MeshTile curTile,
-        Poly curPoly, long nextRef, MeshTile nextTile, Poly nextPoly);
-}
-
-
+        float getCost(float[] pa, float[] pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef, MeshTile curTile,
+            Poly curPoly, long nextRef, MeshTile nextTile, Poly nextPoly);
+    }
 }

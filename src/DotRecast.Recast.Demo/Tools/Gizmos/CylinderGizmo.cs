@@ -6,16 +6,20 @@ using static DotRecast.Recast.Demo.Tools.Gizmos.GizmoHelper;
 
 namespace DotRecast.Recast.Demo.Tools.Gizmos;
 
-
-public class CylinderGizmo : ColliderGizmo {
+public class CylinderGizmo : ColliderGizmo
+{
     private readonly float[] vertices;
     private readonly int[] triangles;
     private readonly float[] center;
     private readonly float[] gradient;
 
-    public CylinderGizmo(float[] start, float[] end, float radius) {
-        center = new float[] { 0.5f * (start[0] + end[0]), 0.5f * (start[1] + end[1]),
-                0.5f * (start[2] + end[2]) };
+    public CylinderGizmo(float[] start, float[] end, float radius)
+    {
+        center = new float[]
+        {
+            0.5f * (start[0] + end[0]), 0.5f * (start[1] + end[1]),
+            0.5f * (start[2] + end[2])
+        };
         float[] axis = new float[] { end[0] - start[0], end[1] - start[1], end[2] - start[2] };
         float[][] normals = new float[3][];
         normals[1] = new float[] { end[0] - start[0], end[1] - start[1], end[2] - start[2] };
@@ -32,7 +36,8 @@ public class CylinderGizmo : ColliderGizmo {
         float halfLength = 0.5f * vLen(axis);
         gradient = new float[vertices.Length / 3];
         float[] v = new float[3];
-        for (int i = 0; i < vertices.Length; i += 3) {
+        for (int i = 0; i < vertices.Length; i += 3)
+        {
             float offset = (i >= vertices.Length / 2) ? -halfLength : halfLength;
             float x = radius * vertices[i];
             float y = vertices[i + 1] + offset;
@@ -40,9 +45,12 @@ public class CylinderGizmo : ColliderGizmo {
             vertices[i] = x * trX[0] + y * trX[1] + z * trX[2] + center[0];
             vertices[i + 1] = x * trY[0] + y * trY[1] + z * trY[2] + center[1];
             vertices[i + 2] = x * trZ[0] + y * trZ[1] + z * trZ[2] + center[2];
-            if (i < vertices.Length / 4 || i >= 3 * vertices.Length / 4) {
+            if (i < vertices.Length / 4 || i >= 3 * vertices.Length / 4)
+            {
                 gradient[i / 3] = 1;
-            } else {
+            }
+            else
+            {
                 v[0] = vertices[i] - center[0];
                 v[1] = vertices[i + 1] - center[1];
                 v[2] = vertices[i + 2] - center[2];
@@ -52,11 +60,14 @@ public class CylinderGizmo : ColliderGizmo {
         }
     }
 
-    private float[] getSideVector(float[] axis) {
+    private float[] getSideVector(float[] axis)
+    {
         float[] side = { 1, 0, 0 };
-        if (axis[0] > 0.8) {
+        if (axis[0] > 0.8)
+        {
             side = new float[] { 0, 0, 1 };
         }
+
         float[] forward = new float[3];
         cross(forward, side, axis);
         cross(side, axis, forward);
@@ -64,19 +75,21 @@ public class CylinderGizmo : ColliderGizmo {
         return side;
     }
 
-    public void render(RecastDebugDraw debugDraw) {
-
+    public void render(RecastDebugDraw debugDraw)
+    {
         debugDraw.begin(DebugDrawPrimitives.TRIS);
-        for (int i = 0; i < triangles.Length; i += 3) {
-            for (int j = 0; j < 3; j++) {
+        for (int i = 0; i < triangles.Length; i += 3)
+        {
+            for (int j = 0; j < 3; j++)
+            {
                 int v = triangles[i + j] * 3;
                 float c = gradient[triangles[i + j]];
                 int col = DebugDraw.duLerpCol(DebugDraw.duRGBA(32, 32, 0, 160), DebugDraw.duRGBA(220, 220, 0, 160),
-                        (int) (127 * (1 + c)));
+                    (int)(127 * (1 + c)));
                 debugDraw.vertex(vertices[v], vertices[v + 1], vertices[v + 2], col);
             }
         }
+
         debugDraw.end();
     }
-
 }

@@ -17,22 +17,20 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour.Crowd
 {
+    public class SweepCircleCircleResult
+    {
+        public readonly bool intersection;
+        public readonly float htmin;
+        public readonly float htmax;
 
-
-public class SweepCircleCircleResult {
-
-    public readonly bool intersection;
-    public readonly float htmin;
-    public readonly float htmax;
-
-    public SweepCircleCircleResult(bool intersection, float htmin, float htmax) {
-        this.intersection = intersection;
-        this.htmin = htmin;
-        this.htmax = htmax;
+        public SweepCircleCircleResult(bool intersection, float htmin, float htmax)
+        {
+            this.intersection = intersection;
+            this.htmin = htmin;
+            this.htmax = htmax;
+        }
     }
-
-}
-
 }

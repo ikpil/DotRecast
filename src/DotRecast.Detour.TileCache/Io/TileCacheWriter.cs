@@ -24,56 +24,60 @@ using DotRecast.Detour.Io;
 
 namespace DotRecast.Detour.TileCache.Io
 {
+    public class TileCacheWriter : DetourWriter
+    {
+        private readonly NavMeshParamWriter paramWriter = new NavMeshParamWriter();
+        private readonly TileCacheBuilder builder = new TileCacheBuilder();
 
-
-public class TileCacheWriter : DetourWriter {
-
-    private readonly NavMeshParamWriter paramWriter = new NavMeshParamWriter();
-    private readonly TileCacheBuilder builder = new TileCacheBuilder();
-
-    public void write(BinaryWriter stream, TileCache cache, ByteOrder order, bool cCompatibility) {
-        write(stream, TileCacheSetHeader.TILECACHESET_MAGIC, order);
-        write(stream, cCompatibility ? TileCacheSetHeader.TILECACHESET_VERSION
+        public void write(BinaryWriter stream, TileCache cache, ByteOrder order, bool cCompatibility)
+        {
+            write(stream, TileCacheSetHeader.TILECACHESET_MAGIC, order);
+            write(stream, cCompatibility
+                ? TileCacheSetHeader.TILECACHESET_VERSION
                 : TileCacheSetHeader.TILECACHESET_VERSION_RECAST4J, order);
-        int numTiles = 0;
-        for (int i = 0; i < cache.getTileCount(); ++i) {
-            CompressedTile tile = cache.getTile(i);
-            if (tile == null || tile.data == null)
-                continue;
-            numTiles++;
+            int numTiles = 0;
+            for (int i = 0; i < cache.getTileCount(); ++i)
+            {
+                CompressedTile tile = cache.getTile(i);
+                if (tile == null || tile.data == null)
+                    continue;
+                numTiles++;
+            }
+
+            write(stream, numTiles, order);
+            paramWriter.write(stream, cache.getNavMesh().getParams(), order);
+            writeCacheParams(stream, cache.getParams(), order);
+            for (int i = 0; i < cache.getTileCount(); i++)
+            {
+                CompressedTile tile = cache.getTile(i);
+                if (tile == null || tile.data == null)
+                    continue;
+                write(stream, (int)cache.getTileRef(tile), order);
+                byte[] data = tile.data;
+                TileCacheLayer layer = cache.decompressTile(tile);
+                data = builder.compressTileCacheLayer(layer, order, cCompatibility);
+                write(stream, data.Length, order);
+                stream.Write(data);
+            }
         }
-        write(stream, numTiles, order);
-        paramWriter.write(stream, cache.getNavMesh().getParams(), order);
-        writeCacheParams(stream, cache.getParams(), order);
-        for (int i = 0; i < cache.getTileCount(); i++) {
-            CompressedTile tile = cache.getTile(i);
-            if (tile == null || tile.data == null)
-                continue;
-            write(stream, (int) cache.getTileRef(tile), order);
-            byte[] data = tile.data;
-            TileCacheLayer layer = cache.decompressTile(tile);
-            data = builder.compressTileCacheLayer(layer, order, cCompatibility);
-            write(stream, data.Length, order);
-            stream.Write(data);
+
+        private void writeCacheParams(BinaryWriter stream, TileCacheParams option, ByteOrder order)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                write(stream, option.orig[i], order);
+            }
+
+            write(stream, option.cs, order);
+            write(stream, option.ch, order);
+            write(stream, option.width, order);
+            write(stream, option.height, order);
+            write(stream, option.walkableHeight, order);
+            write(stream, option.walkableRadius, order);
+            write(stream, option.walkableClimb, order);
+            write(stream, option.maxSimplificationError, order);
+            write(stream, option.maxTiles, order);
+            write(stream, option.maxObstacles, order);
         }
     }
-
-    private void writeCacheParams(BinaryWriter stream, TileCacheParams option, ByteOrder order) {
-        for (int i = 0; i < 3; i++) {
-            write(stream, option.orig[i], order);
-        }
-        write(stream, option.cs, order);
-        write(stream, option.ch, order);
-        write(stream, option.width, order);
-        write(stream, option.height, order);
-        write(stream, option.walkableHeight, order);
-        write(stream, option.walkableRadius, order);
-        write(stream, option.walkableClimb, order);
-        write(stream, option.maxSimplificationError, order);
-        write(stream, option.maxTiles, order);
-        write(stream, option.maxObstacles, order);
-    }
-
-}
-
 }

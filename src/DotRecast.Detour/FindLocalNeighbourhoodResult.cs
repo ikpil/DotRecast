@@ -22,25 +22,26 @@ using System.Collections.Generic;
 
 namespace DotRecast.Detour
 {
-
-
 //TODO: (PP) Add comments
-public class FindLocalNeighbourhoodResult {
-    private readonly List<long> refs;
-    private readonly List<long> parentRefs;
+    public class FindLocalNeighbourhoodResult
+    {
+        private readonly List<long> refs;
+        private readonly List<long> parentRefs;
 
-    public FindLocalNeighbourhoodResult(List<long> refs, List<long> parentRefs) {
-        this.@refs = refs;
-        this.parentRefs = parentRefs;
+        public FindLocalNeighbourhoodResult(List<long> refs, List<long> parentRefs)
+        {
+            this.@refs = refs;
+            this.parentRefs = parentRefs;
+        }
+
+        public List<long> getRefs()
+        {
+            return refs;
+        }
+
+        public List<long> getParentRefs()
+        {
+            return parentRefs;
+        }
     }
-
-    public List<long> getRefs() {
-        return refs;
-    }
-
-    public List<long> getParentRefs() {
-        return parentRefs;
-    }
-
-}
 }

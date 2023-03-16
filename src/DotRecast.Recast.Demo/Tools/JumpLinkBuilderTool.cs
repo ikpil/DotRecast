@@ -22,60 +22,69 @@ using DotRecast.Detour.Extras.Jumplink;
 using DotRecast.Recast.Demo.Builder;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Demo.Geom;
-
 using static DotRecast.Detour.DetourCommon;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class JumpLinkBuilderTool : Tool {
-
+public class JumpLinkBuilderTool : Tool
+{
     private readonly List<JumpLink> links = new();
     private Sample sample;
     private JumpLinkBuilder annotationBuilder;
     private readonly int selEdge = -1;
     private readonly JumpLinkBuilderToolParams option = new JumpLinkBuilderToolParams();
 
-    public override void setSample(Sample sample) {
+    public override void setSample(Sample sample)
+    {
         this.sample = sample;
         annotationBuilder = null;
     }
 
-    public override void handleClick(float[] s, float[] p, bool shift) {
-
+    public override void handleClick(float[] s, float[] p, bool shift)
+    {
     }
 
-    public override void handleRender(NavMeshRenderer renderer) {
+    public override void handleRender(NavMeshRenderer renderer)
+    {
         int col0 = duLerpCol(duRGBA(32, 255, 96, 255), duRGBA(255, 255, 255, 255), 200);
         int col1 = duRGBA(32, 255, 96, 255);
         RecastDebugDraw dd = renderer.getDebugDraw();
         dd.depthMask(false);
 
-        if ((option.flags & JumpLinkBuilderToolParams.DRAW_WALKABLE_BORDER) != 0) {
-            if (annotationBuilder != null) {
-                foreach (Edge[] edges in annotationBuilder.getEdges()) {
+        if ((option.flags & JumpLinkBuilderToolParams.DRAW_WALKABLE_BORDER) != 0)
+        {
+            if (annotationBuilder != null)
+            {
+                foreach (Edge[] edges in annotationBuilder.getEdges())
+                {
                     dd.begin(LINES, 3.0f);
-                    for (int i = 0; i < edges.Length; ++i) {
+                    for (int i = 0; i < edges.Length; ++i)
+                    {
                         int col = duRGBA(0, 96, 128, 255);
                         if (i == selEdge)
                             continue;
                         dd.vertex(edges[i].sp, col);
                         dd.vertex(edges[i].sq, col);
                     }
+
                     dd.end();
 
                     dd.begin(POINTS, 8.0f);
-                    for (int i = 0; i < edges.Length; ++i) {
+                    for (int i = 0; i < edges.Length; ++i)
+                    {
                         int col = duRGBA(0, 96, 128, 255);
                         if (i == selEdge)
                             continue;
                         dd.vertex(edges[i].sp, col);
                         dd.vertex(edges[i].sq, col);
                     }
+
                     dd.end();
 
-                    if (selEdge >= 0 && selEdge < edges.Length) {
+                    if (selEdge >= 0 && selEdge < edges.Length)
+                    {
                         int col = duRGBA(48, 16, 16, 255); // duRGBA(255,192,0,255);
                         dd.begin(LINES, 3.0f);
                         dd.vertex(edges[selEdge].sp, col);
@@ -88,62 +97,75 @@ public class JumpLinkBuilderTool : Tool {
                     }
 
                     dd.begin(POINTS, 4.0f);
-                    for (int i = 0; i < edges.Length; ++i) {
+                    for (int i = 0; i < edges.Length; ++i)
+                    {
                         int col = duRGBA(190, 190, 190, 255);
                         dd.vertex(edges[i].sp, col);
                         dd.vertex(edges[i].sq, col);
                     }
+
                     dd.end();
                 }
             }
         }
 
-        if ((option.flags & JumpLinkBuilderToolParams.DRAW_ANNOTATIONS) != 0) {
+        if ((option.flags & JumpLinkBuilderToolParams.DRAW_ANNOTATIONS) != 0)
+        {
             dd.begin(QUADS);
-            foreach (JumpLink link in links) {
-                for (int j = 0; j < link.nspine - 1; ++j) {
+            foreach (JumpLink link in links)
+            {
+                for (int j = 0; j < link.nspine - 1; ++j)
+                {
                     int u = (j * 255) / link.nspine;
                     int col = duTransCol(duLerpCol(col0, col1, u), 128);
                     dd.vertex(link.spine1[j * 3], link.spine1[j * 3 + 1], link.spine1[j * 3 + 2], col);
                     dd.vertex(link.spine1[(j + 1) * 3], link.spine1[(j + 1) * 3 + 1], link.spine1[(j + 1) * 3 + 2],
-                            col);
+                        col);
                     dd.vertex(link.spine0[(j + 1) * 3], link.spine0[(j + 1) * 3 + 1], link.spine0[(j + 1) * 3 + 2],
-                            col);
+                        col);
                     dd.vertex(link.spine0[j * 3], link.spine0[j * 3 + 1], link.spine0[j * 3 + 2], col);
                 }
             }
+
             dd.end();
             dd.begin(LINES, 3.0f);
-            foreach (JumpLink link in links) {
-                for (int j = 0; j < link.nspine - 1; ++j) {
+            foreach (JumpLink link in links)
+            {
+                for (int j = 0; j < link.nspine - 1; ++j)
+                {
                     // int u = (j*255)/link.nspine;
-                    int col = duTransCol(duDarkenCol(col1)/*duDarkenCol(duLerpCol(col0,col1,u))*/, 128);
+                    int col = duTransCol(duDarkenCol(col1) /*duDarkenCol(duLerpCol(col0,col1,u))*/, 128);
 
                     dd.vertex(link.spine0[j * 3], link.spine0[j * 3 + 1], link.spine0[j * 3 + 2], col);
                     dd.vertex(link.spine0[(j + 1) * 3], link.spine0[(j + 1) * 3 + 1], link.spine0[(j + 1) * 3 + 2],
-                            col);
+                        col);
                     dd.vertex(link.spine1[j * 3], link.spine1[j * 3 + 1], link.spine1[j * 3 + 2], col);
                     dd.vertex(link.spine1[(j + 1) * 3], link.spine1[(j + 1) * 3 + 1], link.spine1[(j + 1) * 3 + 2],
-                            col);
+                        col);
                 }
 
                 dd.vertex(link.spine0[0], link.spine0[1], link.spine0[2], duDarkenCol(col1));
                 dd.vertex(link.spine1[0], link.spine1[1], link.spine1[2], duDarkenCol(col1));
 
                 dd.vertex(link.spine0[(link.nspine - 1) * 3], link.spine0[(link.nspine - 1) * 3 + 1],
-                        link.spine0[(link.nspine - 1) * 3 + 2], duDarkenCol(col1));
+                    link.spine0[(link.nspine - 1) * 3 + 2], duDarkenCol(col1));
                 dd.vertex(link.spine1[(link.nspine - 1) * 3], link.spine1[(link.nspine - 1) * 3 + 1],
-                        link.spine1[(link.nspine - 1) * 3 + 2], duDarkenCol(col1));
+                    link.spine1[(link.nspine - 1) * 3 + 2], duDarkenCol(col1));
             }
+
             dd.end();
         }
-        if (annotationBuilder != null) {
-            foreach (JumpLink link in links) {
-                if ((option.flags & JumpLinkBuilderToolParams.DRAW_ANIM_TRAJECTORY) != 0) {
+
+        if (annotationBuilder != null)
+        {
+            foreach (JumpLink link in links)
+            {
+                if ((option.flags & JumpLinkBuilderToolParams.DRAW_ANIM_TRAJECTORY) != 0)
+                {
                     float r = link.start.height;
 
                     int col = duLerpCol(duRGBA(255, 192, 0, 255),
-                            duRGBA(255, 255, 255, 255), 64);
+                        duRGBA(255, 255, 255, 255), 64);
                     int cola = duTransCol(col, 192);
                     int colb = duRGBA(255, 255, 255, 255);
 
@@ -203,84 +225,104 @@ public class JumpLinkBuilderTool : Tool {
                     dd.vertex(end.q, colm);
                     dd.end();
                 }
-                if ((option.flags & JumpLinkBuilderToolParams.DRAW_LAND_SAMPLES) != 0) {
+
+                if ((option.flags & JumpLinkBuilderToolParams.DRAW_LAND_SAMPLES) != 0)
+                {
                     dd.begin(POINTS, 8.0f);
-                    for (int i = 0; i < link.start.gsamples.Length; ++i) {
+                    for (int i = 0; i < link.start.gsamples.Length; ++i)
+                    {
                         GroundSample s = link.start.gsamples[i];
-                        float u = i / (float) (link.start.gsamples.Length - 1);
+                        float u = i / (float)(link.start.gsamples.Length - 1);
                         float[] spt = vLerp(link.start.p, link.start.q, u);
                         int col = duRGBA(48, 16, 16, 255); // duRGBA(255,(s->flags & 4)?255:0,0,255);
                         float off = 0.1f;
-                        if (!s.validHeight) {
+                        if (!s.validHeight)
+                        {
                             off = 0;
                             col = duRGBA(220, 32, 32, 255);
                         }
+
                         spt[1] = s.p[1] + off;
                         dd.vertex(spt, col);
                     }
+
                     dd.end();
 
                     dd.begin(POINTS, 4.0f);
-                    for (int i = 0; i < link.start.gsamples.Length; ++i) {
+                    for (int i = 0; i < link.start.gsamples.Length; ++i)
+                    {
                         GroundSample s = link.start.gsamples[i];
-                        float u = i / (float) (link.start.gsamples.Length - 1);
+                        float u = i / (float)(link.start.gsamples.Length - 1);
                         float[] spt = vLerp(link.start.p, link.start.q, u);
                         int col = duRGBA(255, 255, 255, 255);
                         float off = 0;
-                        if (s.validHeight) {
+                        if (s.validHeight)
+                        {
                             off = 0.1f;
                         }
+
                         spt[1] = s.p[1] + off;
                         dd.vertex(spt, col);
                     }
+
                     dd.end();
                     {
                         GroundSegment end = link.end;
                         dd.begin(POINTS, 8.0f);
-                        for (int i = 0; i < end.gsamples.Length; ++i) {
+                        for (int i = 0; i < end.gsamples.Length; ++i)
+                        {
                             GroundSample s = end.gsamples[i];
-                            float u = i / (float) (end.gsamples.Length - 1);
+                            float u = i / (float)(end.gsamples.Length - 1);
                             float[] spt = vLerp(end.p, end.q, u);
                             int col = duRGBA(48, 16, 16, 255); // duRGBA(255,(s->flags & 4)?255:0,0,255);
                             float off = 0.1f;
-                            if (!s.validHeight) {
+                            if (!s.validHeight)
+                            {
                                 off = 0;
                                 col = duRGBA(220, 32, 32, 255);
                             }
+
                             spt[1] = s.p[1] + off;
                             dd.vertex(spt, col);
                         }
+
                         dd.end();
                         dd.begin(POINTS, 4.0f);
-                        for (int i = 0; i < end.gsamples.Length; ++i) {
+                        for (int i = 0; i < end.gsamples.Length; ++i)
+                        {
                             GroundSample s = end.gsamples[i];
-                            float u = i / (float) (end.gsamples.Length - 1);
+                            float u = i / (float)(end.gsamples.Length - 1);
                             float[] spt = vLerp(end.p, end.q, u);
                             int col = duRGBA(255, 255, 255, 255);
                             float off = 0;
-                            if (s.validHeight) {
+                            if (s.validHeight)
+                            {
                                 off = 0.1f;
                             }
+
                             spt[1] = s.p[1] + off;
                             dd.vertex(spt, col);
                         }
+
                         dd.end();
                     }
                 }
             }
         }
+
         dd.depthMask(true);
     }
 
-    private void drawTrajectory(RecastDebugDraw dd, JumpLink link, float[] pa, float[] pb, Trajectory tra, int cola) {
-
+    private void drawTrajectory(RecastDebugDraw dd, JumpLink link, float[] pa, float[] pb, Trajectory tra, int cola)
+    {
     }
 
-    public override void handleUpdate(float dt) {
-
+    public override void handleUpdate(float dt)
+    {
     }
 
-    public override void layout(IWindow ctx) {
+    public override void layout(IWindow ctx)
+    {
         // if (!sample.getRecastResults().isEmpty()) {
         //
         //     nk_layout_row_dynamic(ctx, 18, 1);
@@ -403,25 +445,27 @@ public class JumpLinkBuilderTool : Tool {
         //                     : 0;
         //     params.flags = newFlags;
         // }
-
     }
 
-    private void addOffMeshLink(JumpLink link, DemoInputGeomProvider geom, float agentRadius) {
+    private void addOffMeshLink(JumpLink link, DemoInputGeomProvider geom, float agentRadius)
+    {
         int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP_AUTO;
         int flags = SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP;
         float[] prev = new float[3];
-        for (int i = 0; i < link.startSamples.Length; i++) {
+        for (int i = 0; i < link.startSamples.Length; i++)
+        {
             float[] p = link.startSamples[i].p;
             float[] q = link.endSamples[i].p;
-            if (i == 0 || vDist2D(prev, p) > agentRadius) {
+            if (i == 0 || vDist2D(prev, p) > agentRadius)
+            {
                 geom.addOffMeshConnection(p, q, agentRadius, false, area, flags);
                 prev = p;
             }
         }
     }
 
-    public override string getName() {
+    public override string getName()
+    {
         return "Annotation Builder";
     }
-
 }

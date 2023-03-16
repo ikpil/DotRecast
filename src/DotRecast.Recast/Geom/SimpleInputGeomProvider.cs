@@ -24,116 +24,115 @@ using System.Collections.Immutable;
 
 namespace DotRecast.Recast.Geom
 {
-
-
-public class SimpleInputGeomProvider : InputGeomProvider
-{
-    public readonly float[] vertices;
-    public readonly int[] faces;
-    public readonly float[] normals;
-    readonly float[] bmin;
-    readonly float[] bmax;
-    readonly List<ConvexVolume> volumes = new List<ConvexVolume>();
-
-    public SimpleInputGeomProvider(List<float> vertexPositions, List<int> meshFaces)
-        : this(mapVertices(vertexPositions), mapFaces(meshFaces))
+    public class SimpleInputGeomProvider : InputGeomProvider
     {
-    }
+        public readonly float[] vertices;
+        public readonly int[] faces;
+        public readonly float[] normals;
+        readonly float[] bmin;
+        readonly float[] bmax;
+        readonly List<ConvexVolume> volumes = new List<ConvexVolume>();
 
-    private static int[] mapFaces(List<int> meshFaces)
-    {
-        int[] faces = new int[meshFaces.Count];
-        for (int i = 0; i < faces.Length; i++)
+        public SimpleInputGeomProvider(List<float> vertexPositions, List<int> meshFaces)
+            : this(mapVertices(vertexPositions), mapFaces(meshFaces))
         {
-            faces[i] = meshFaces[i];
         }
 
-        return faces;
-    }
-
-    private static float[] mapVertices(List<float> vertexPositions)
-    {
-        float[] vertices = new float[vertexPositions.Count];
-        for (int i = 0; i < vertices.Length; i++)
+        private static int[] mapFaces(List<int> meshFaces)
         {
-            vertices[i] = vertexPositions[i];
-        }
-
-        return vertices;
-    }
-
-    public SimpleInputGeomProvider(float[] vertices, int[] faces)
-    {
-        this.vertices = vertices;
-        this.faces = faces;
-        normals = new float[faces.Length];
-        calculateNormals();
-        bmin = new float[3];
-        bmax = new float[3];
-        RecastVectors.copy(bmin, vertices, 0);
-        RecastVectors.copy(bmax, vertices, 0);
-        for (int i = 1; i < vertices.Length / 3; i++)
-        {
-            RecastVectors.min(bmin, vertices, i * 3);
-            RecastVectors.max(bmax, vertices, i * 3);
-        }
-    }
-
-    public float[] getMeshBoundsMin()
-    {
-        return bmin;
-    }
-
-    public float[] getMeshBoundsMax()
-    {
-        return bmax;
-    }
-
-    public IList<ConvexVolume> convexVolumes()
-    {
-        return volumes;
-    }
-
-    public void addConvexVolume(float[] verts, float minh, float maxh, AreaModification areaMod)
-    {
-        ConvexVolume vol = new ConvexVolume();
-        vol.hmin = minh;
-        vol.hmax = maxh;
-        vol.verts = verts;
-        vol.areaMod = areaMod;
-        volumes.Add(vol);
-    }
-
-    public IEnumerable<TriMesh> meshes() {
-        return ImmutableArray.Create(new TriMesh(vertices, faces));
-    }
-
-    public void calculateNormals()
-    {
-        for (int i = 0; i < faces.Length; i += 3)
-        {
-            int v0 = faces[i] * 3;
-            int v1 = faces[i + 1] * 3;
-            int v2 = faces[i + 2] * 3;
-            float[] e0 = new float[3], e1 = new float[3];
-            for (int j = 0; j < 3; ++j)
+            int[] faces = new int[meshFaces.Count];
+            for (int i = 0; i < faces.Length; i++)
             {
-                e0[j] = vertices[v1 + j] - vertices[v0 + j];
-                e1[j] = vertices[v2 + j] - vertices[v0 + j];
+                faces[i] = meshFaces[i];
             }
 
-            normals[i] = e0[1] * e1[2] - e0[2] * e1[1];
-            normals[i + 1] = e0[2] * e1[0] - e0[0] * e1[2];
-            normals[i + 2] = e0[0] * e1[1] - e0[1] * e1[0];
-            float d = (float)Math.Sqrt(normals[i] * normals[i] + normals[i + 1] * normals[i + 1] + normals[i + 2] * normals[i + 2]);
-            if (d > 0)
+            return faces;
+        }
+
+        private static float[] mapVertices(List<float> vertexPositions)
+        {
+            float[] vertices = new float[vertexPositions.Count];
+            for (int i = 0; i < vertices.Length; i++)
             {
-                d = 1.0f / d;
-                normals[i] *= d;
-                normals[i + 1] *= d;
-                normals[i + 2] *= d;
+                vertices[i] = vertexPositions[i];
+            }
+
+            return vertices;
+        }
+
+        public SimpleInputGeomProvider(float[] vertices, int[] faces)
+        {
+            this.vertices = vertices;
+            this.faces = faces;
+            normals = new float[faces.Length];
+            calculateNormals();
+            bmin = new float[3];
+            bmax = new float[3];
+            RecastVectors.copy(bmin, vertices, 0);
+            RecastVectors.copy(bmax, vertices, 0);
+            for (int i = 1; i < vertices.Length / 3; i++)
+            {
+                RecastVectors.min(bmin, vertices, i * 3);
+                RecastVectors.max(bmax, vertices, i * 3);
+            }
+        }
+
+        public float[] getMeshBoundsMin()
+        {
+            return bmin;
+        }
+
+        public float[] getMeshBoundsMax()
+        {
+            return bmax;
+        }
+
+        public IList<ConvexVolume> convexVolumes()
+        {
+            return volumes;
+        }
+
+        public void addConvexVolume(float[] verts, float minh, float maxh, AreaModification areaMod)
+        {
+            ConvexVolume vol = new ConvexVolume();
+            vol.hmin = minh;
+            vol.hmax = maxh;
+            vol.verts = verts;
+            vol.areaMod = areaMod;
+            volumes.Add(vol);
+        }
+
+        public IEnumerable<TriMesh> meshes()
+        {
+            return ImmutableArray.Create(new TriMesh(vertices, faces));
+        }
+
+        public void calculateNormals()
+        {
+            for (int i = 0; i < faces.Length; i += 3)
+            {
+                int v0 = faces[i] * 3;
+                int v1 = faces[i + 1] * 3;
+                int v2 = faces[i + 2] * 3;
+                float[] e0 = new float[3], e1 = new float[3];
+                for (int j = 0; j < 3; ++j)
+                {
+                    e0[j] = vertices[v1 + j] - vertices[v0 + j];
+                    e1[j] = vertices[v2 + j] - vertices[v0 + j];
+                }
+
+                normals[i] = e0[1] * e1[2] - e0[2] * e1[1];
+                normals[i + 1] = e0[2] * e1[0] - e0[0] * e1[2];
+                normals[i + 2] = e0[0] * e1[1] - e0[1] * e1[0];
+                float d = (float)Math.Sqrt(normals[i] * normals[i] + normals[i + 1] * normals[i + 1] + normals[i + 2] * normals[i + 2]);
+                if (d > 0)
+                {
+                    d = 1.0f / d;
+                    normals[i] *= d;
+                    normals[i + 1] *= d;
+                    normals[i + 2] *= d;
+                }
             }
         }
     }
-}
 }

@@ -17,17 +17,19 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Recast.Demo.Geom;
 
-public class DemoOffMeshConnection {
-
+public class DemoOffMeshConnection
+{
     public readonly float[] verts;
     public readonly float radius;
     public readonly bool bidir;
     public readonly int area;
     public readonly int flags;
 
-    public DemoOffMeshConnection(float[] start, float[] end, float radius, bool bidir, int area, int flags) {
+    public DemoOffMeshConnection(float[] start, float[] end, float radius, bool bidir, int area, int flags)
+    {
         verts = new float[6];
         verts[0] = start[0];
         verts[1] = start[1];
@@ -40,5 +42,4 @@ public class DemoOffMeshConnection {
         this.area = area;
         this.flags = flags;
     }
-
 }

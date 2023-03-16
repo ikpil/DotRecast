@@ -17,22 +17,19 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour.TileCache.Io
 {
+    public class TileCacheSetHeader
+    {
+        public const int TILECACHESET_MAGIC = 'T' << 24 | 'S' << 16 | 'E' << 8 | 'T'; // 'TSET';
+        public const int TILECACHESET_VERSION = 1;
+        public const int TILECACHESET_VERSION_RECAST4J = 0x8801;
 
-
-public class TileCacheSetHeader {
-
-    public const int TILECACHESET_MAGIC = 'T' << 24 | 'S' << 16 | 'E' << 8 | 'T'; // 'TSET';
-    public const int TILECACHESET_VERSION = 1;
-    public const int TILECACHESET_VERSION_RECAST4J = 0x8801;
-
-    public int magic;
-    public int version;
-    public int numTiles;
-    public NavMeshParams meshParams = new NavMeshParams();
-    public TileCacheParams cacheParams = new TileCacheParams();
-
-}
-
+        public int magic;
+        public int version;
+        public int numTiles;
+        public NavMeshParams meshParams = new NavMeshParams();
+        public TileCacheParams cacheParams = new TileCacheParams();
+    }
 }

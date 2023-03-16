@@ -17,35 +17,37 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour
 {
+    public class FindNearestPolyResult
+    {
+        private readonly long nearestRef;
+        private readonly float[] nearestPos;
+        private readonly bool overPoly;
 
+        public FindNearestPolyResult(long nearestRef, float[] nearestPos, bool overPoly)
+        {
+            this.nearestRef = nearestRef;
+            this.nearestPos = nearestPos;
+            this.overPoly = overPoly;
+        }
 
-public class FindNearestPolyResult {
-    private readonly long nearestRef;
-    private readonly float[] nearestPos;
-    private readonly bool overPoly;
+        /** Returns the reference id of the nearest polygon. 0 if no polygon is found. */
+        public long getNearestRef()
+        {
+            return nearestRef;
+        }
 
-    public FindNearestPolyResult(long nearestRef, float[] nearestPos, bool overPoly) {
-        this.nearestRef = nearestRef;
-        this.nearestPos = nearestPos;
-        this.overPoly = overPoly;
+        /** Returns the nearest point on the polygon. [opt] [(x, y, z)]. Unchanged if no polygon is found. */
+        public float[] getNearestPos()
+        {
+            return nearestPos;
+        }
+
+        public bool isOverPoly()
+        {
+            return overPoly;
+        }
     }
-
-    /** Returns the reference id of the nearest polygon. 0 if no polygon is found. */
-    public long getNearestRef() {
-        return nearestRef;
-    }
-
-    /** Returns the nearest point on the polygon. [opt] [(x, y, z)]. Unchanged if no polygon is found. */
-    public float[] getNearestPos() {
-        return nearestPos;
-    }
-
-    public bool isOverPoly() {
-        return overPoly;
-    }
-
-}
-
 }

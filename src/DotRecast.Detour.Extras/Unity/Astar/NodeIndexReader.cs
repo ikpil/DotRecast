@@ -21,22 +21,21 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour.Extras.Unity.Astar
 {
+    class NodeIndexReader : ZipBinaryReader
+    {
+        public int[] read(ZipArchive file, string filename)
+        {
+            ByteBuffer buffer = toByteBuffer(file, filename);
+            int maxNodeIndex = buffer.getInt();
+            int[] int2Node = new int[maxNodeIndex + 1];
+            int node = 0;
+            while (buffer.remaining() > 0)
+            {
+                int index = buffer.getInt();
+                int2Node[index] = node++;
+            }
 
-
-class NodeIndexReader : ZipBinaryReader {
-
-    public int[] read(ZipArchive file, string filename) {
-        ByteBuffer buffer = toByteBuffer(file, filename);
-        int maxNodeIndex = buffer.getInt();
-        int[] int2Node = new int[maxNodeIndex + 1];
-        int node = 0;
-        while (buffer.remaining() > 0) {
-            int index = buffer.getInt();
-            int2Node[index] = node++;
+            return int2Node;
         }
-        return int2Node;
     }
-
-}
-
 }

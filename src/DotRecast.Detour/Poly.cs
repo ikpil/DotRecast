@@ -17,59 +17,68 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour
 {
+    /** Defines a polygon within a MeshTile object. */
+    public class Poly
+    {
+        public readonly int index;
 
+        /** The polygon is a standard convex polygon that is part of the surface of the mesh. */
+        public const int DT_POLYTYPE_GROUND = 0;
 
-/** Defines a polygon within a MeshTile object. */
-public class Poly {
+        /** The polygon is an off-mesh connection consisting of two vertices. */
+        public const int DT_POLYTYPE_OFFMESH_CONNECTION = 1;
 
-    public readonly int index;
-    /** The polygon is a standard convex polygon that is part of the surface of the mesh. */
-    public const int DT_POLYTYPE_GROUND = 0;
-    /** The polygon is an off-mesh connection consisting of two vertices. */
-    public const int DT_POLYTYPE_OFFMESH_CONNECTION = 1;
-    /** The indices of the polygon's vertices. The actual vertices are located in MeshTile::verts. */
-    public readonly int[] verts;
-    /** Packed data representing neighbor polygons references and flags for each edge. */
-    public readonly int[] neis;
-    /** The user defined polygon flags. */
-    public int flags;
-    /** The number of vertices in the polygon. */
-    public int vertCount;
-    /**
+        /** The indices of the polygon's vertices. The actual vertices are located in MeshTile::verts. */
+        public readonly int[] verts;
+
+        /** Packed data representing neighbor polygons references and flags for each edge. */
+        public readonly int[] neis;
+
+        /** The user defined polygon flags. */
+        public int flags;
+
+        /** The number of vertices in the polygon. */
+        public int vertCount;
+
+        /**
      * The bit packed area id and polygon type.
      *
      * @note Use the structure's set and get methods to access this value.
      */
-    public int areaAndtype;
+        public int areaAndtype;
 
-    public Poly(int index, int maxVertsPerPoly) {
-        this.index = index;
-        verts = new int[maxVertsPerPoly];
-        neis = new int[maxVertsPerPoly];
+        public Poly(int index, int maxVertsPerPoly)
+        {
+            this.index = index;
+            verts = new int[maxVertsPerPoly];
+            neis = new int[maxVertsPerPoly];
+        }
+
+        /** Sets the user defined area id. [Limit: &lt; {@link org.recast4j.detour.NavMesh#DT_MAX_AREAS}] */
+        public void setArea(int a)
+        {
+            areaAndtype = (areaAndtype & 0xc0) | (a & 0x3f);
+        }
+
+        /** Sets the polygon type. (See: #dtPolyTypes.) */
+        public void setType(int t)
+        {
+            areaAndtype = (areaAndtype & 0x3f) | (t << 6);
+        }
+
+        /** Gets the user defined area id. */
+        public int getArea()
+        {
+            return areaAndtype & 0x3f;
+        }
+
+        /** Gets the polygon type. (See: #dtPolyTypes) */
+        public int getType()
+        {
+            return areaAndtype >> 6;
+        }
     }
-
-    /** Sets the user defined area id. [Limit: &lt; {@link org.recast4j.detour.NavMesh#DT_MAX_AREAS}] */
-    public void setArea(int a) {
-        areaAndtype = (areaAndtype & 0xc0) | (a & 0x3f);
-    }
-
-    /** Sets the polygon type. (See: #dtPolyTypes.) */
-    public void setType(int t) {
-        areaAndtype = (areaAndtype & 0x3f) | (t << 6);
-    }
-
-    /** Gets the user defined area id. */
-    public int getArea() {
-        return areaAndtype & 0x3f;
-    }
-
-    /** Gets the polygon type. (See: #dtPolyTypes) */
-    public int getType() {
-        return areaAndtype >> 6;
-    }
-
-}
-
 }

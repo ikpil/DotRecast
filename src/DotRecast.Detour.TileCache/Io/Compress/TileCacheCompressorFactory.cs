@@ -17,21 +17,17 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour.TileCache.Io.Compress
 {
-
-
-
-
-public class TileCacheCompressorFactory {
-
-    public static TileCacheCompressor get(bool cCompatibility)
+    public class TileCacheCompressorFactory
     {
-        if (cCompatibility)
-            return new FastLzTileCacheCompressor();
-        
-        return new LZ4TileCacheCompressor();
-    }
-}
+        public static TileCacheCompressor get(bool cCompatibility)
+        {
+            if (cCompatibility)
+                return new FastLzTileCacheCompressor();
 
+            return new LZ4TileCacheCompressor();
+        }
+    }
 }

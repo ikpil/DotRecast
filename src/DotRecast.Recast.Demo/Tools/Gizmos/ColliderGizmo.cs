@@ -2,7 +2,7 @@ using DotRecast.Recast.Demo.Draw;
 
 namespace DotRecast.Recast.Demo.Tools.Gizmos;
 
-public interface ColliderGizmo {
-
+public interface ColliderGizmo
+{
     void render(RecastDebugDraw debugDraw);
 }

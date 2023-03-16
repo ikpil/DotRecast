@@ -21,165 +21,198 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic.Io
 {
+    public class VoxelTile
+    {
+        private const int SERIALIZED_SPAN_COUNT_BYTES = 2;
+        private const int SERIALIZED_SPAN_BYTES = 12;
+        public readonly int tileX;
+        public readonly int tileZ;
+        public readonly int borderSize;
+        public int width;
+        public int depth;
+        public readonly float[] boundsMin;
+        public float[] boundsMax;
+        public float cellSize;
+        public float cellHeight;
+        public readonly byte[] spanData;
 
-
-
-public class VoxelTile {
-
-    private const int SERIALIZED_SPAN_COUNT_BYTES = 2;
-    private const int SERIALIZED_SPAN_BYTES = 12;
-    public readonly int tileX;
-    public readonly int tileZ;
-    public readonly int borderSize;
-    public int width;
-    public int depth;
-    public readonly float[] boundsMin;
-    public float[] boundsMax;
-    public float cellSize;
-    public float cellHeight;
-    public readonly byte[] spanData;
-
-    public VoxelTile(int tileX, int tileZ, int width, int depth, float[] boundsMin, float[] boundsMax, float cellSize,
-            float cellHeight, int borderSize, ByteBuffer buffer) {
-        this.tileX = tileX;
-        this.tileZ = tileZ;
-        this.width = width;
-        this.depth = depth;
-        this.boundsMin = boundsMin;
-        this.boundsMax = boundsMax;
-        this.cellSize = cellSize;
-        this.cellHeight = cellHeight;
-        this.borderSize = borderSize;
-        spanData = toByteArray(buffer, width, depth, VoxelFile.PREFERRED_BYTE_ORDER);
-    }
-
-    public VoxelTile(int tileX, int tileZ, Heightfield heightfield) {
-        this.tileX = tileX;
-        this.tileZ = tileZ;
-        width = heightfield.width;
-        depth = heightfield.height;
-        boundsMin = heightfield.bmin;
-        boundsMax = heightfield.bmax;
-        cellSize = heightfield.cs;
-        cellHeight = heightfield.ch;
-        borderSize = heightfield.borderSize;
-        spanData = serializeSpans(heightfield, VoxelFile.PREFERRED_BYTE_ORDER);
-    }
-
-    public Heightfield heightfield() {
-        return VoxelFile.PREFERRED_BYTE_ORDER == ByteOrder.BIG_ENDIAN ? heightfieldBE() : heightfieldLE();
-    }
-
-    private Heightfield heightfieldBE() {
-        Heightfield hf = new Heightfield(width, depth, boundsMin, boundsMax, cellSize, cellHeight, borderSize);
-        int position = 0;
-        for (int z = 0, pz = 0; z < depth; z++, pz += width) {
-            for (int x = 0; x < width; x++) {
-                Span prev = null;
-                int spanCount = ByteUtils.getShortBE(spanData, position);
-                position += 2;
-                for (int s = 0; s < spanCount; s++) {
-                    Span span = new Span();
-                    span.smin = ByteUtils.getIntBE(spanData, position);
-                    position += 4;
-                    span.smax = ByteUtils.getIntBE(spanData, position);
-                    position += 4;
-                    span.area = ByteUtils.getIntBE(spanData, position);
-                    position += 4;
-                    if (prev == null) {
-                        hf.spans[pz + x] = span;
-                    } else {
-                        prev.next = span;
-                    }
-                    prev = span;
-                }
-            }
+        public VoxelTile(int tileX, int tileZ, int width, int depth, float[] boundsMin, float[] boundsMax, float cellSize,
+            float cellHeight, int borderSize, ByteBuffer buffer)
+        {
+            this.tileX = tileX;
+            this.tileZ = tileZ;
+            this.width = width;
+            this.depth = depth;
+            this.boundsMin = boundsMin;
+            this.boundsMax = boundsMax;
+            this.cellSize = cellSize;
+            this.cellHeight = cellHeight;
+            this.borderSize = borderSize;
+            spanData = toByteArray(buffer, width, depth, VoxelFile.PREFERRED_BYTE_ORDER);
         }
-        return hf;
-    }
 
-    private Heightfield heightfieldLE() {
-        Heightfield hf = new Heightfield(width, depth, boundsMin, boundsMax, cellSize, cellHeight, borderSize);
-        int position = 0;
-        for (int z = 0, pz = 0; z < depth; z++, pz += width) {
-            for (int x = 0; x < width; x++) {
-                Span prev = null;
-                int spanCount = ByteUtils.getShortLE(spanData, position);
-                position += 2;
-                for (int s = 0; s < spanCount; s++) {
-                    Span span = new Span();
-                    span.smin = ByteUtils.getIntLE(spanData, position);
-                    position += 4;
-                    span.smax = ByteUtils.getIntLE(spanData, position);
-                    position += 4;
-                    span.area = ByteUtils.getIntLE(spanData, position);
-                    position += 4;
-                    if (prev == null) {
-                        hf.spans[pz + x] = span;
-                    } else {
-                        prev.next = span;
-                    }
-                    prev = span;
-                }
-            }
+        public VoxelTile(int tileX, int tileZ, Heightfield heightfield)
+        {
+            this.tileX = tileX;
+            this.tileZ = tileZ;
+            width = heightfield.width;
+            depth = heightfield.height;
+            boundsMin = heightfield.bmin;
+            boundsMax = heightfield.bmax;
+            cellSize = heightfield.cs;
+            cellHeight = heightfield.ch;
+            borderSize = heightfield.borderSize;
+            spanData = serializeSpans(heightfield, VoxelFile.PREFERRED_BYTE_ORDER);
         }
-        return hf;
-    }
 
-    private byte[] serializeSpans(Heightfield heightfield, ByteOrder order) {
-        int[] counts = new int[heightfield.width * heightfield.height];
-        int totalCount = 0;
-        for (int z = 0, pz = 0; z < heightfield.height; z++, pz += heightfield.width) {
-            for (int x = 0; x < heightfield.width; x++) {
-                Span span = heightfield.spans[pz + x];
-                while (span != null) {
-                    counts[pz + x]++;
-                    totalCount++;
-                    span = span.next;
-                }
-            }
+        public Heightfield heightfield()
+        {
+            return VoxelFile.PREFERRED_BYTE_ORDER == ByteOrder.BIG_ENDIAN ? heightfieldBE() : heightfieldLE();
         }
-        byte[] data = new byte[totalCount * SERIALIZED_SPAN_BYTES + counts.Length * SERIALIZED_SPAN_COUNT_BYTES];
-        int position = 0;
-        for (int z = 0, pz = 0; z < heightfield.height; z++, pz += heightfield.width) {
-            for (int x = 0; x < heightfield.width; x++) {
-                position = ByteUtils.putShort(counts[pz + x], data, position, order);
-                Span span = heightfield.spans[pz + x];
-                while (span != null) {
-                    position = ByteUtils.putInt(span.smin, data, position, order);
-                    position = ByteUtils.putInt(span.smax, data, position, order);
-                    position = ByteUtils.putInt(span.area, data, position, order);
-                    span = span.next;
-                }
-            }
-        }
-        return data;
-    }
 
-    private byte[] toByteArray(ByteBuffer buf, int width, int height, ByteOrder order) {
-        byte[] data;
-        if (buf.order() == order) {
-            data = buf.ReadBytes(buf.limit()).ToArray();
-        } else {
-            data = new byte[buf.limit()];
-            int l = width * height;
+        private Heightfield heightfieldBE()
+        {
+            Heightfield hf = new Heightfield(width, depth, boundsMin, boundsMax, cellSize, cellHeight, borderSize);
             int position = 0;
-            for (int i = 0; i < l; i++) {
-                int count = buf.getShort();
-                ByteUtils.putShort(count, data, position, order);
-                position += 2;
-                for (int j = 0; j < count; j++) {
-                    ByteUtils.putInt(buf.getInt(), data, position, order);
-                    position += 4;
-                    ByteUtils.putInt(buf.getInt(), data, position, order);
-                    position += 4;
-                    ByteUtils.putInt(buf.getInt(), data, position, order);
-                    position += 4;
+            for (int z = 0, pz = 0; z < depth; z++, pz += width)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    Span prev = null;
+                    int spanCount = ByteUtils.getShortBE(spanData, position);
+                    position += 2;
+                    for (int s = 0; s < spanCount; s++)
+                    {
+                        Span span = new Span();
+                        span.smin = ByteUtils.getIntBE(spanData, position);
+                        position += 4;
+                        span.smax = ByteUtils.getIntBE(spanData, position);
+                        position += 4;
+                        span.area = ByteUtils.getIntBE(spanData, position);
+                        position += 4;
+                        if (prev == null)
+                        {
+                            hf.spans[pz + x] = span;
+                        }
+                        else
+                        {
+                            prev.next = span;
+                        }
+
+                        prev = span;
+                    }
                 }
             }
-        }
-        return data;
-    }
-}
 
+            return hf;
+        }
+
+        private Heightfield heightfieldLE()
+        {
+            Heightfield hf = new Heightfield(width, depth, boundsMin, boundsMax, cellSize, cellHeight, borderSize);
+            int position = 0;
+            for (int z = 0, pz = 0; z < depth; z++, pz += width)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    Span prev = null;
+                    int spanCount = ByteUtils.getShortLE(spanData, position);
+                    position += 2;
+                    for (int s = 0; s < spanCount; s++)
+                    {
+                        Span span = new Span();
+                        span.smin = ByteUtils.getIntLE(spanData, position);
+                        position += 4;
+                        span.smax = ByteUtils.getIntLE(spanData, position);
+                        position += 4;
+                        span.area = ByteUtils.getIntLE(spanData, position);
+                        position += 4;
+                        if (prev == null)
+                        {
+                            hf.spans[pz + x] = span;
+                        }
+                        else
+                        {
+                            prev.next = span;
+                        }
+
+                        prev = span;
+                    }
+                }
+            }
+
+            return hf;
+        }
+
+        private byte[] serializeSpans(Heightfield heightfield, ByteOrder order)
+        {
+            int[] counts = new int[heightfield.width * heightfield.height];
+            int totalCount = 0;
+            for (int z = 0, pz = 0; z < heightfield.height; z++, pz += heightfield.width)
+            {
+                for (int x = 0; x < heightfield.width; x++)
+                {
+                    Span span = heightfield.spans[pz + x];
+                    while (span != null)
+                    {
+                        counts[pz + x]++;
+                        totalCount++;
+                        span = span.next;
+                    }
+                }
+            }
+
+            byte[] data = new byte[totalCount * SERIALIZED_SPAN_BYTES + counts.Length * SERIALIZED_SPAN_COUNT_BYTES];
+            int position = 0;
+            for (int z = 0, pz = 0; z < heightfield.height; z++, pz += heightfield.width)
+            {
+                for (int x = 0; x < heightfield.width; x++)
+                {
+                    position = ByteUtils.putShort(counts[pz + x], data, position, order);
+                    Span span = heightfield.spans[pz + x];
+                    while (span != null)
+                    {
+                        position = ByteUtils.putInt(span.smin, data, position, order);
+                        position = ByteUtils.putInt(span.smax, data, position, order);
+                        position = ByteUtils.putInt(span.area, data, position, order);
+                        span = span.next;
+                    }
+                }
+            }
+
+            return data;
+        }
+
+        private byte[] toByteArray(ByteBuffer buf, int width, int height, ByteOrder order)
+        {
+            byte[] data;
+            if (buf.order() == order)
+            {
+                data = buf.ReadBytes(buf.limit()).ToArray();
+            }
+            else
+            {
+                data = new byte[buf.limit()];
+                int l = width * height;
+                int position = 0;
+                for (int i = 0; i < l; i++)
+                {
+                    int count = buf.getShort();
+                    ByteUtils.putShort(count, data, position, order);
+                    position += 2;
+                    for (int j = 0; j < count; j++)
+                    {
+                        ByteUtils.putInt(buf.getInt(), data, position, order);
+                        position += 4;
+                        ByteUtils.putInt(buf.getInt(), data, position, order);
+                        position += 4;
+                        ByteUtils.putInt(buf.getInt(), data, position, order);
+                        position += 4;
+                    }
+                }
+            }
+
+            return data;
+        }
+    }
 }

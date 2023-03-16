@@ -26,8 +26,8 @@ using DotRecast.Recast.Geom;
 
 namespace DotRecast.Recast.Demo.Geom;
 
-public class DemoInputGeomProvider : InputGeomProvider {
-
+public class DemoInputGeomProvider : InputGeomProvider
+{
     public readonly float[] vertices;
     public readonly int[] faces;
     public readonly float[] normals;
@@ -37,27 +37,35 @@ public class DemoInputGeomProvider : InputGeomProvider {
     private readonly List<DemoOffMeshConnection> offMeshConnections = new();
     private readonly ChunkyTriMesh chunkyTriMesh;
 
-    public DemoInputGeomProvider(List<float> vertexPositions, List<int> meshFaces) : 
-        this(mapVertices(vertexPositions), mapFaces(meshFaces)) {
+    public DemoInputGeomProvider(List<float> vertexPositions, List<int> meshFaces) :
+        this(mapVertices(vertexPositions), mapFaces(meshFaces))
+    {
     }
 
-    private static int[] mapFaces(List<int> meshFaces) {
+    private static int[] mapFaces(List<int> meshFaces)
+    {
         int[] faces = new int[meshFaces.Count];
-        for (int i = 0; i < faces.Length; i++) {
+        for (int i = 0; i < faces.Length; i++)
+        {
             faces[i] = meshFaces[i];
         }
+
         return faces;
     }
 
-    private static float[] mapVertices(List<float> vertexPositions) {
+    private static float[] mapVertices(List<float> vertexPositions)
+    {
         float[] vertices = new float[vertexPositions.Count];
-        for (int i = 0; i < vertices.Length; i++) {
+        for (int i = 0; i < vertices.Length; i++)
+        {
             vertices[i] = vertexPositions[i];
         }
+
         return vertices;
     }
 
-    public DemoInputGeomProvider(float[] vertices, int[] faces) {
+    public DemoInputGeomProvider(float[] vertices, int[] faces)
+    {
         this.vertices = vertices;
         this.faces = faces;
         normals = new float[faces.Length];
@@ -66,36 +74,45 @@ public class DemoInputGeomProvider : InputGeomProvider {
         bmax = new float[3];
         RecastVectors.copy(bmin, vertices, 0);
         RecastVectors.copy(bmax, vertices, 0);
-        for (int i = 1; i < vertices.Length / 3; i++) {
+        for (int i = 1; i < vertices.Length / 3; i++)
+        {
             RecastVectors.min(bmin, vertices, i * 3);
             RecastVectors.max(bmax, vertices, i * 3);
         }
+
         chunkyTriMesh = new ChunkyTriMesh(vertices, faces, faces.Length / 3, 256);
     }
 
-    public float[] getMeshBoundsMin() {
+    public float[] getMeshBoundsMin()
+    {
         return bmin;
     }
 
-    public float[] getMeshBoundsMax() {
+    public float[] getMeshBoundsMax()
+    {
         return bmax;
     }
 
-    public void calculateNormals() {
-        for (int i = 0; i < faces.Length; i += 3) {
+    public void calculateNormals()
+    {
+        for (int i = 0; i < faces.Length; i += 3)
+        {
             int v0 = faces[i] * 3;
             int v1 = faces[i + 1] * 3;
             int v2 = faces[i + 2] * 3;
             float[] e0 = new float[3], e1 = new float[3];
-            for (int j = 0; j < 3; ++j) {
+            for (int j = 0; j < 3; ++j)
+            {
                 e0[j] = vertices[v1 + j] - vertices[v0 + j];
                 e1[j] = vertices[v2 + j] - vertices[v0 + j];
             }
+
             normals[i] = e0[1] * e1[2] - e0[2] * e1[1];
             normals[i + 1] = e0[2] * e1[0] - e0[0] * e1[2];
             normals[i + 2] = e0[0] * e1[1] - e0[1] * e1[0];
-            float d = (float) Math.Sqrt(normals[i] * normals[i] + normals[i + 1] * normals[i + 1] + normals[i + 2] * normals[i + 2]);
-            if (d > 0) {
+            float d = (float)Math.Sqrt(normals[i] * normals[i] + normals[i + 1] * normals[i + 1] + normals[i + 2] * normals[i + 2]);
+            if (d > 0)
+            {
                 d = 1.0f / d;
                 normals[i] *= d;
                 normals[i + 1] *= d;
@@ -104,34 +121,41 @@ public class DemoInputGeomProvider : InputGeomProvider {
         }
     }
 
-    public IList<ConvexVolume> convexVolumes() {
+    public IList<ConvexVolume> convexVolumes()
+    {
         return _convexVolumes;
     }
 
-    public IEnumerable<TriMesh> meshes() {
+    public IEnumerable<TriMesh> meshes()
+    {
         return ImmutableArray.Create(new TriMesh(vertices, faces));
     }
 
-    public List<DemoOffMeshConnection> getOffMeshConnections() {
+    public List<DemoOffMeshConnection> getOffMeshConnections()
+    {
         return offMeshConnections;
     }
 
-    public void addOffMeshConnection(float[] start, float[] end, float radius, bool bidir, int area, int flags) {
+    public void addOffMeshConnection(float[] start, float[] end, float radius, bool bidir, int area, int flags)
+    {
         offMeshConnections.Add(new DemoOffMeshConnection(start, end, radius, bidir, area, flags));
     }
 
-    public void removeOffMeshConnections(Predicate<DemoOffMeshConnection> filter) {
+    public void removeOffMeshConnections(Predicate<DemoOffMeshConnection> filter)
+    {
         //offMeshConnections.retainAll(offMeshConnections.stream().filter(c -> !filter.test(c)).collect(toList()));
         offMeshConnections.RemoveAll(filter); // TODO : 확인 필요
     }
 
-    public float? raycastMesh(float[] src, float[] dst) {
-
+    public float? raycastMesh(float[] src, float[] dst)
+    {
         // Prune hit ray.
         float[] btminmax = Intersections.intersectSegmentAABB(src, dst, bmin, bmax);
-        if (null == btminmax) {
+        if (null == btminmax)
+        {
             return null;
         }
+
         float btmin = btminmax[0];
         float btmax = btminmax[1];
         float[] p = new float[2], q = new float[2];
@@ -141,26 +165,41 @@ public class DemoInputGeomProvider : InputGeomProvider {
         q[1] = src[2] + (dst[2] - src[2]) * btmax;
 
         List<ChunkyTriMeshNode> chunks = chunkyTriMesh.getChunksOverlappingSegment(p, q);
-        if (0 == chunks.Count) {
+        if (0 == chunks.Count)
+        {
             return null;
         }
 
         float tmin = 1.0f;
         bool hit = false;
-        foreach (ChunkyTriMeshNode chunk in chunks) {
+        foreach (ChunkyTriMeshNode chunk in chunks)
+        {
             int[] tris = chunk.tris;
-            for (int j = 0; j < chunk.tris.Length; j += 3) {
-                float[] v1 = new float[] { vertices[tris[j] * 3], vertices[tris[j] * 3 + 1],
-                        vertices[tris[j] * 3 + 2] };
-                float[] v2 = new float[] { vertices[tris[j + 1] * 3], vertices[tris[j + 1] * 3 + 1],
-                        vertices[tris[j + 1] * 3 + 2] };
-                float[] v3 = new float[] { vertices[tris[j + 2] * 3], vertices[tris[j + 2] * 3 + 1],
-                        vertices[tris[j + 2] * 3 + 2] };
+            for (int j = 0; j < chunk.tris.Length; j += 3)
+            {
+                float[] v1 = new float[]
+                {
+                    vertices[tris[j] * 3], vertices[tris[j] * 3 + 1],
+                    vertices[tris[j] * 3 + 2]
+                };
+                float[] v2 = new float[]
+                {
+                    vertices[tris[j + 1] * 3], vertices[tris[j + 1] * 3 + 1],
+                    vertices[tris[j + 1] * 3 + 2]
+                };
+                float[] v3 = new float[]
+                {
+                    vertices[tris[j + 2] * 3], vertices[tris[j + 2] * 3 + 1],
+                    vertices[tris[j + 2] * 3 + 2]
+                };
                 float? t = Intersections.intersectSegmentTriangle(src, dst, v1, v2, v3);
-                if (null != t) {
-                    if (t.Value < tmin) {
+                if (null != t)
+                {
+                    if (t.Value < tmin)
+                    {
                         tmin = t.Value;
                     }
+
                     hit = true;
                 }
             }
@@ -170,7 +209,8 @@ public class DemoInputGeomProvider : InputGeomProvider {
     }
 
 
-    public void addConvexVolume(float[] verts, float minh, float maxh, AreaModification areaMod) {
+    public void addConvexVolume(float[] verts, float minh, float maxh, AreaModification areaMod)
+    {
         ConvexVolume volume = new ConvexVolume();
         volume.verts = verts;
         volume.hmin = minh;
@@ -179,8 +219,8 @@ public class DemoInputGeomProvider : InputGeomProvider {
         _convexVolumes.Add(volume);
     }
 
-    public void clearConvexVolumes() {
+    public void clearConvexVolumes()
+    {
         _convexVolumes.Clear();
     }
-
 }

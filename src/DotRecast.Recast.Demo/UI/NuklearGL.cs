@@ -23,9 +23,8 @@ using Microsoft.DotNet.PlatformAbstractions;
 
 namespace DotRecast.Recast.Demo.UI;
 
-
-public class NuklearGL {
-
+public class NuklearGL
+{
     private static readonly int BUFFER_INITIAL_SIZE = 4 * 1024;
     private static readonly int MAX_VERTEX_BUFFER = 512 * 1024;
     private static readonly int MAX_ELEMENT_BUFFER = 128 * 1024;
@@ -34,6 +33,7 @@ public class NuklearGL {
     private static readonly int FONT_HEIGHT = 15;
 
     private readonly RcViewSystem context;
+
     // private readonly NkDrawNullTexture null_texture = NkDrawNullTexture.create();
     // private readonly NkBuffer cmds = NkBuffer.create();
     // private readonly NkUserFont default_font;
@@ -42,10 +42,12 @@ public class NuklearGL {
     private readonly int uniform_proj;
     private readonly int vbo;
     private readonly int ebo;
+
     private readonly int vao;
     //private readonly Buffer vertexLayout;
 
-    public NuklearGL(RcViewSystem context) {
+    public NuklearGL(RcViewSystem context)
+    {
         this.context = context;
         // nk_buffer_init(cmds, context.allocator, BUFFER_INITIAL_SIZE);
         // vertexLayout = NkDrawVertexLayoutElement.create(4)//
@@ -128,7 +130,8 @@ public class NuklearGL {
         // nk_style_set_font(context.ctx, default_font);
     }
 
-    private long setupFont() {
+    private long setupFont()
+    {
         return 0;
         // NkUserFont font = NkUserFont.create();
         // ByteBuffer ttf;
@@ -240,7 +243,8 @@ public class NuklearGL {
         // return font;
     }
 
-    void render(long win, int AA) {
+    void render(long win, int AA)
+    {
         // int width;
         // int height;
         // int display_width;

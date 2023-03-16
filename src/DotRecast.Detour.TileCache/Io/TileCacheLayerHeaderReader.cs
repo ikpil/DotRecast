@@ -23,43 +23,46 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour.TileCache.Io
 {
+    public class TileCacheLayerHeaderReader
+    {
+        public TileCacheLayerHeader read(ByteBuffer data, bool cCompatibility)
+        {
+            TileCacheLayerHeader header = new TileCacheLayerHeader();
+            header.magic = data.getInt();
+            header.version = data.getInt();
 
+            if (header.magic != TileCacheLayerHeader.DT_TILECACHE_MAGIC)
+                throw new IOException("Invalid magic");
+            if (header.version != TileCacheLayerHeader.DT_TILECACHE_VERSION)
+                throw new IOException("Invalid version");
 
-public class TileCacheLayerHeaderReader {
+            header.tx = data.getInt();
+            header.ty = data.getInt();
+            header.tlayer = data.getInt();
+            for (int j = 0; j < 3; j++)
+            {
+                header.bmin[j] = data.getFloat();
+            }
 
-    public TileCacheLayerHeader read(ByteBuffer data, bool cCompatibility) {
-        TileCacheLayerHeader header = new TileCacheLayerHeader();
-        header.magic = data.getInt();
-        header.version = data.getInt();
+            for (int j = 0; j < 3; j++)
+            {
+                header.bmax[j] = data.getFloat();
+            }
 
-        if (header.magic != TileCacheLayerHeader.DT_TILECACHE_MAGIC)
-            throw new IOException("Invalid magic");
-        if (header.version != TileCacheLayerHeader.DT_TILECACHE_VERSION)
-            throw new IOException("Invalid version");
+            header.hmin = data.getShort() & 0xFFFF;
+            header.hmax = data.getShort() & 0xFFFF;
+            header.width = data.get() & 0xFF;
+            header.height = data.get() & 0xFF;
+            header.minx = data.get() & 0xFF;
+            header.maxx = data.get() & 0xFF;
+            header.miny = data.get() & 0xFF;
+            header.maxy = data.get() & 0xFF;
+            if (cCompatibility)
+            {
+                data.getShort(); // C struct padding
+            }
 
-        header.tx = data.getInt();
-        header.ty = data.getInt();
-        header.tlayer = data.getInt();
-        for (int j = 0; j < 3; j++) {
-            header.bmin[j] = data.getFloat();
+            return header;
         }
-        for (int j = 0; j < 3; j++) {
-            header.bmax[j] = data.getFloat();
-        }
-        header.hmin = data.getShort() & 0xFFFF;
-        header.hmax = data.getShort() & 0xFFFF;
-        header.width = data.get() & 0xFF;
-        header.height = data.get() & 0xFF;
-        header.minx = data.get() & 0xFF;
-        header.maxx = data.get() & 0xFF;
-        header.miny = data.get() & 0xFF;
-        header.maxy = data.get() & 0xFF;
-        if (cCompatibility) {
-            data.getShort(); // C struct padding
-        }
-        return header;
     }
-
-}
-
 }

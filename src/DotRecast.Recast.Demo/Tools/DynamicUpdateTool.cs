@@ -30,20 +30,31 @@ using DotRecast.Recast.Demo.Geom;
 using DotRecast.Recast.Demo.Tools.Gizmos;
 using DotRecast.Recast.Demo.UI;
 using Silk.NET.Windowing;
-
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 using static DotRecast.Detour.DetourCommon;
 
 namespace DotRecast.Recast.Demo.Tools;
-public class DynamicUpdateTool : Tool {
 
-    private enum ToolMode {
-        BUILD, COLLIDERS, RAYCAST
+public class DynamicUpdateTool : Tool
+{
+    private enum ToolMode
+    {
+        BUILD,
+        COLLIDERS,
+        RAYCAST
     }
 
-    private enum ColliderShape {
-        SPHERE, CAPSULE, BOX, CYLINDER, COMPOSITE, CONVEX, TRIMESH_BRIDGE, TRIMESH_HOUSE
+    private enum ColliderShape
+    {
+        SPHERE,
+        CAPSULE,
+        BOX,
+        CYLINDER,
+        COMPOSITE,
+        CONVEX,
+        TRIMESH_BRIDGE,
+        TRIMESH_HOUSE
     }
 
     private Sample sample;
@@ -94,49 +105,78 @@ public class DynamicUpdateTool : Tool {
         convexGeom = DemoObjImporter.load(Loader.ToBytes("convex.obj"));
     }
 
-    public override void setSample(Sample sample) {
+    public override void setSample(Sample sample)
+    {
         this.sample = sample;
     }
 
-    public override void handleClick(float[] s, float[] p, bool shift) {
-        if (mode == ToolMode.COLLIDERS) {
-            if (!shift) {
+    public override void handleClick(float[] s, float[] p, bool shift)
+    {
+        if (mode == ToolMode.COLLIDERS)
+        {
+            if (!shift)
+            {
                 Tuple<Collider, ColliderGizmo> colliderWithGizmo = null;
-                if (dynaMesh != null) {
-                    if (colliderShape == ColliderShape.SPHERE) {
+                if (dynaMesh != null)
+                {
+                    if (colliderShape == ColliderShape.SPHERE)
+                    {
                         colliderWithGizmo = sphereCollider(p);
-                    } else if (colliderShape == ColliderShape.CAPSULE) {
+                    }
+                    else if (colliderShape == ColliderShape.CAPSULE)
+                    {
                         colliderWithGizmo = capsuleCollider(p);
-                    } else if (colliderShape == ColliderShape.BOX) {
+                    }
+                    else if (colliderShape == ColliderShape.BOX)
+                    {
                         colliderWithGizmo = boxCollider(p);
-                    } else if (colliderShape == ColliderShape.CYLINDER) {
+                    }
+                    else if (colliderShape == ColliderShape.CYLINDER)
+                    {
                         colliderWithGizmo = cylinderCollider(p);
-                    } else if (colliderShape == ColliderShape.COMPOSITE) {
+                    }
+                    else if (colliderShape == ColliderShape.COMPOSITE)
+                    {
                         colliderWithGizmo = compositeCollider(p);
-                    } else if (colliderShape == ColliderShape.TRIMESH_BRIDGE) {
+                    }
+                    else if (colliderShape == ColliderShape.TRIMESH_BRIDGE)
+                    {
                         colliderWithGizmo = trimeshBridge(p);
-                    } else if (colliderShape == ColliderShape.TRIMESH_HOUSE) {
+                    }
+                    else if (colliderShape == ColliderShape.TRIMESH_HOUSE)
+                    {
                         colliderWithGizmo = trimeshHouse(p);
-                    } else if (colliderShape == ColliderShape.CONVEX) {
+                    }
+                    else if (colliderShape == ColliderShape.CONVEX)
+                    {
                         colliderWithGizmo = convexTrimesh(p);
                     }
                 }
-                if (colliderWithGizmo != null) {
+
+                if (colliderWithGizmo != null)
+                {
                     long id = dynaMesh.addCollider(colliderWithGizmo.Item1);
                     colliders.Add(id, colliderWithGizmo.Item1);
                     colliderGizmos.Add(id, colliderWithGizmo.Item2);
                 }
             }
         }
-        if (mode == ToolMode.RAYCAST) {
-            if (shift) {
+
+        if (mode == ToolMode.RAYCAST)
+        {
+            if (shift)
+            {
                 sposSet = true;
                 spos = ArrayUtils.CopyOf(p, p.Length);
-            } else {
+            }
+            else
+            {
                 eposSet = true;
                 epos = ArrayUtils.CopyOf(p, p.Length);
             }
-            if (sposSet && eposSet && dynaMesh != null) {
+
+            if (sposSet && eposSet && dynaMesh != null)
+            {
                 float[] sp = { spos[0], spos[1] + 1.3f, spos[2] };
                 float[] ep = { epos[0], epos[1] + 1.3f, epos[2] };
                 long t1 = Stopwatch.GetTimestamp();
@@ -144,21 +184,23 @@ public class DynamicUpdateTool : Tool {
                 long t2 = Stopwatch.GetTimestamp();
                 raycastTime = (t2 - t1) / 1_000_000L;
                 raycastHit = hitPos.HasValue;
-                raycastHitPos = hitPos.HasValue 
+                raycastHitPos = hitPos.HasValue
                     ? new float[] { sp[0] + hitPos.Value * (ep[0] - sp[0]), sp[1] + hitPos.Value * (ep[1] - sp[1]), sp[2] + hitPos.Value * (ep[2] - sp[2]) }
                     : ep;
             }
         }
     }
 
-    private Tuple<Collider, ColliderGizmo> sphereCollider(float[] p) {
+    private Tuple<Collider, ColliderGizmo> sphereCollider(float[] p)
+    {
         float radius = 1 + (float)random.NextDouble() * 10;
         return Tuple.Create<Collider, ColliderGizmo>(
-                new SphereCollider(p, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb),
-                GizmoFactory.sphere(p, radius));
+            new SphereCollider(p, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb),
+            GizmoFactory.sphere(p, radius));
     }
 
-    private Tuple<Collider, ColliderGizmo> capsuleCollider(float[] p) {
+    private Tuple<Collider, ColliderGizmo> capsuleCollider(float[] p)
+    {
         float radius = 0.4f + (float)random.NextDouble() * 4f;
         float[] a = new float[] { (1f - 2 * (float)random.NextDouble()), 0.01f + (float)random.NextDouble(), (1f - 2 * (float)random.NextDouble()) };
         vNormalize(a);
@@ -169,21 +211,26 @@ public class DynamicUpdateTool : Tool {
         float[] start = new float[] { p[0], p[1], p[2] };
         float[] end = new float[] { p[0] + a[0], p[1] + a[1], p[2] + a[2] };
         return Tuple.Create<Collider, ColliderGizmo>(new CapsuleCollider(start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER,
-                dynaMesh.config.walkableClimb), GizmoFactory.capsule(start, end, radius));
+            dynaMesh.config.walkableClimb), GizmoFactory.capsule(start, end, radius));
     }
 
-    private Tuple<Collider, ColliderGizmo> boxCollider(float[] p) {
-        float[] extent = new float[] { 0.5f + (float)random.NextDouble() * 6f, 0.5f + (float)random.NextDouble() * 6f,
-                0.5f + (float)random.NextDouble() * 6f };
+    private Tuple<Collider, ColliderGizmo> boxCollider(float[] p)
+    {
+        float[] extent = new float[]
+        {
+            0.5f + (float)random.NextDouble() * 6f, 0.5f + (float)random.NextDouble() * 6f,
+            0.5f + (float)random.NextDouble() * 6f
+        };
         float[] forward = new float[] { (1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()) };
         float[] up = new float[] { (1f - 2 * (float)random.NextDouble()), 0.01f + (float)random.NextDouble(), (1f - 2 * (float)random.NextDouble()) };
         float[][] halfEdges = BoxCollider.getHalfEdges(up, forward, extent);
         return Tuple.Create<Collider, ColliderGizmo>(
-                new BoxCollider(p, halfEdges, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb),
-                GizmoFactory.box(p, halfEdges));
+            new BoxCollider(p, halfEdges, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb),
+            GizmoFactory.box(p, halfEdges));
     }
 
-    private Tuple<Collider, ColliderGizmo> cylinderCollider(float[] p) {
+    private Tuple<Collider, ColliderGizmo> cylinderCollider(float[] p)
+    {
         float radius = 0.7f + (float)random.NextDouble() * 4f;
         float[] a = new float[] { (1f - 2 * (float)random.NextDouble()), 0.01f + (float)random.NextDouble(), (1f - 2 * (float)random.NextDouble()) };
         vNormalize(a);
@@ -194,10 +241,11 @@ public class DynamicUpdateTool : Tool {
         float[] start = new float[] { p[0], p[1], p[2] };
         float[] end = new float[] { p[0] + a[0], p[1] + a[1], p[2] + a[2] };
         return Tuple.Create<Collider, ColliderGizmo>(new CylinderCollider(start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER,
-                dynaMesh.config.walkableClimb), GizmoFactory.cylinder(start, end, radius));
+            dynaMesh.config.walkableClimb), GizmoFactory.cylinder(start, end, radius));
     }
 
-    private Tuple<Collider, ColliderGizmo> compositeCollider(float[] p) {
+    private Tuple<Collider, ColliderGizmo> compositeCollider(float[] p)
+    {
         float[] baseExtent = new float[] { 5, 3, 8 };
         float[] baseCenter = new float[] { p[0], p[1] + 3, p[2] };
         float[] baseUp = new float[] { 0, 1, 0 };
@@ -205,22 +253,28 @@ public class DynamicUpdateTool : Tool {
         vNormalize(forward);
         float[] side = DemoMath.vCross(forward, baseUp);
         BoxCollider @base = new BoxCollider(baseCenter, BoxCollider.getHalfEdges(baseUp, forward, baseExtent),
-                SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, dynaMesh.config.walkableClimb);
+            SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, dynaMesh.config.walkableClimb);
         float[] roofExtent = new float[] { 4.5f, 4.5f, 8f };
         float[] rx = GLU.build_4x4_rotation_matrix(45, forward[0], forward[1], forward[2]);
         float[] roofUp = mulMatrixVector(new float[3], rx, baseUp);
         float[] roofCenter = new float[] { p[0], p[1] + 6, p[2] };
         BoxCollider roof = new BoxCollider(roofCenter, BoxCollider.getHalfEdges(roofUp, forward, roofExtent),
-                SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, dynaMesh.config.walkableClimb);
-        float[] trunkStart = new float[] { baseCenter[0] - forward[0] * 15 + side[0] * 6, p[1],
-                baseCenter[2] - forward[2] * 15 + side[2] * 6 };
+            SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, dynaMesh.config.walkableClimb);
+        float[] trunkStart = new float[]
+        {
+            baseCenter[0] - forward[0] * 15 + side[0] * 6, p[1],
+            baseCenter[2] - forward[2] * 15 + side[2] * 6
+        };
         float[] trunkEnd = new float[] { trunkStart[0], trunkStart[1] + 10, trunkStart[2] };
         CapsuleCollider trunk = new CapsuleCollider(trunkStart, trunkEnd, 0.5f, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD,
-                dynaMesh.config.walkableClimb);
-        float[] crownCenter = new float[] { baseCenter[0] - forward[0] * 15 + side[0] * 6, p[1] + 10,
-                baseCenter[2] - forward[2] * 15 + side[2] * 6 };
+            dynaMesh.config.walkableClimb);
+        float[] crownCenter = new float[]
+        {
+            baseCenter[0] - forward[0] * 15 + side[0] * 6, p[1] + 10,
+            baseCenter[2] - forward[2] * 15 + side[2] * 6
+        };
         SphereCollider crown = new SphereCollider(crownCenter, 4f, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GRASS,
-                dynaMesh.config.walkableClimb);
+            dynaMesh.config.walkableClimb);
         CompositeCollider collider = new CompositeCollider(@base, roof, trunk, crown);
         ColliderGizmo baseGizmo = GizmoFactory.box(baseCenter, BoxCollider.getHalfEdges(baseUp, forward, baseExtent));
         ColliderGizmo roofGizmo = GizmoFactory.box(roofCenter, BoxCollider.getHalfEdges(roofUp, forward, roofExtent));
@@ -230,36 +284,42 @@ public class DynamicUpdateTool : Tool {
         return Tuple.Create<Collider, ColliderGizmo>(collider, gizmo);
     }
 
-    private Tuple<Collider, ColliderGizmo> trimeshBridge(float[] p) {
+    private Tuple<Collider, ColliderGizmo> trimeshBridge(float[] p)
+    {
         return trimeshCollider(p, bridgeGeom);
     }
 
-    private Tuple<Collider, ColliderGizmo> trimeshHouse(float[] p) {
+    private Tuple<Collider, ColliderGizmo> trimeshHouse(float[] p)
+    {
         return trimeshCollider(p, houseGeom);
     }
 
-    private Tuple<Collider, ColliderGizmo> convexTrimesh(float[] p) {
+    private Tuple<Collider, ColliderGizmo> convexTrimesh(float[] p)
+    {
         float[] verts = transformVertices(p, convexGeom, 360);
         ConvexTrimeshCollider collider = new ConvexTrimeshCollider(verts, convexGeom.faces,
-                SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, dynaMesh.config.walkableClimb * 10);
+            SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, dynaMesh.config.walkableClimb * 10);
         return Tuple.Create<Collider, ColliderGizmo>(collider, GizmoFactory.trimesh(verts, convexGeom.faces));
     }
 
-    private Tuple<Collider, ColliderGizmo> trimeshCollider(float[] p, DemoInputGeomProvider geom) {
+    private Tuple<Collider, ColliderGizmo> trimeshCollider(float[] p, DemoInputGeomProvider geom)
+    {
         float[] verts = transformVertices(p, geom, 0);
         TrimeshCollider collider = new TrimeshCollider(verts, geom.faces, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD,
-                dynaMesh.config.walkableClimb * 10);
+            dynaMesh.config.walkableClimb * 10);
         return Tuple.Create<Collider, ColliderGizmo>(collider, GizmoFactory.trimesh(verts, geom.faces));
     }
 
-    private float[] transformVertices(float[] p, DemoInputGeomProvider geom, float ax) {
+    private float[] transformVertices(float[] p, DemoInputGeomProvider geom, float ax)
+    {
         float[] rx = GLU.build_4x4_rotation_matrix((float)random.NextDouble() * ax, 1, 0, 0);
         float[] ry = GLU.build_4x4_rotation_matrix((float)random.NextDouble() * 360, 0, 1, 0);
         float[] m = GLU.mul(rx, ry);
         float[] verts = new float[geom.vertices.Length];
         float[] v = new float[3];
         float[] vr = new float[3];
-        for (int i = 0; i < geom.vertices.Length; i += 3) {
+        for (int i = 0; i < geom.vertices.Length; i += 3)
+        {
             v[0] = geom.vertices[i];
             v[1] = geom.vertices[i + 1];
             v[2] = geom.vertices[i + 2];
@@ -271,21 +331,28 @@ public class DynamicUpdateTool : Tool {
             verts[i + 1] = vr[1];
             verts[i + 2] = vr[2];
         }
+
         return verts;
     }
 
-    private float[] mulMatrixVector(float[] resultvector, float[] matrix, float[] pvector) {
+    private float[] mulMatrixVector(float[] resultvector, float[] matrix, float[] pvector)
+    {
         resultvector[0] = matrix[0] * pvector[0] + matrix[4] * pvector[1] + matrix[8] * pvector[2];
         resultvector[1] = matrix[1] * pvector[0] + matrix[5] * pvector[1] + matrix[9] * pvector[2];
         resultvector[2] = matrix[2] * pvector[0] + matrix[6] * pvector[1] + matrix[10] * pvector[2];
         return resultvector;
     }
 
-    public override void handleClickRay(float[] start, float[] dir, bool shift) {
-        if (mode == ToolMode.COLLIDERS) {
-            if (shift) {
-                foreach (var e in colliders) {
-                    if (hit(start, dir, e.Value.bounds())) {
+    public override void handleClickRay(float[] start, float[] dir, bool shift)
+    {
+        if (mode == ToolMode.COLLIDERS)
+        {
+            if (shift)
+            {
+                foreach (var e in colliders)
+                {
+                    if (hit(start, dir, e.Value.bounds()))
+                    {
                         dynaMesh.removeCollider(e.Key);
                         colliders.Remove(e.Key);
                         colliderGizmos.Remove(e.Key);
@@ -296,7 +363,8 @@ public class DynamicUpdateTool : Tool {
         }
     }
 
-    private bool hit(float[] point, float[] dir, float[] bounds) {
+    private bool hit(float[] point, float[] dir, float[] bounds)
+    {
         float cx = 0.5f * (bounds[0] + bounds[3]);
         float cy = 0.5f * (bounds[1] + bounds[4]);
         float cz = 0.5f * (bounds[2] + bounds[5]);
@@ -308,46 +376,62 @@ public class DynamicUpdateTool : Tool {
         float my = point[1] - cy;
         float mz = point[2] - cz;
         float c = mx * mx + my * my + mz * mz - rSqr;
-        if (c <= 0.0f) {
+        if (c <= 0.0f)
+        {
             return true;
         }
+
         float b = mx * dir[0] + my * dir[1] + mz * dir[2];
-        if (b > 0.0f) {
+        if (b > 0.0f)
+        {
             return false;
         }
+
         float disc = b * b - c;
         return disc >= 0.0f;
     }
 
-    public override void handleRender(NavMeshRenderer renderer) {
-        if (mode == ToolMode.COLLIDERS) {
-            if (showColliders) {
+    public override void handleRender(NavMeshRenderer renderer)
+    {
+        if (mode == ToolMode.COLLIDERS)
+        {
+            if (showColliders)
+            {
                 colliderGizmos.Values.forEach(g => g.render(renderer.getDebugDraw()));
             }
         }
-        if (mode == ToolMode.RAYCAST) {
+
+        if (mode == ToolMode.RAYCAST)
+        {
             RecastDebugDraw dd = renderer.getDebugDraw();
             int startCol = duRGBA(128, 25, 0, 192);
             int endCol = duRGBA(51, 102, 0, 129);
-            if (sposSet) {
+            if (sposSet)
+            {
                 drawAgent(dd, spos, startCol);
             }
-            if (eposSet) {
+
+            if (eposSet)
+            {
                 drawAgent(dd, epos, endCol);
             }
+
             dd.depthMask(false);
-            if (raycastHitPos != null) {
+            if (raycastHitPos != null)
+            {
                 int spathCol = raycastHit ? duRGBA(128, 32, 16, 220) : duRGBA(64, 128, 240, 220);
                 dd.begin(LINES, 2.0f);
                 dd.vertex(spos[0], spos[1] + 1.3f, spos[2], spathCol);
                 dd.vertex(raycastHitPos[0], raycastHitPos[1], raycastHitPos[2], spathCol);
                 dd.end();
             }
+
             dd.depthMask(true);
         }
     }
 
-    private void drawAgent(RecastDebugDraw dd, float[] pos, int col) {
+    private void drawAgent(RecastDebugDraw dd, float[] pos, int col)
+    {
         float r = sample.getSettingsUI().getAgentRadius();
         float h = sample.getSettingsUI().getAgentHeight();
         float c = sample.getSettingsUI().getAgentMaxClimb();
@@ -367,29 +451,35 @@ public class DynamicUpdateTool : Tool {
         dd.depthMask(true);
     }
 
-    public override void handleUpdate(float dt) {
-        if (dynaMesh != null) {
+    public override void handleUpdate(float dt)
+    {
+        if (dynaMesh != null)
+        {
             updateDynaMesh();
         }
     }
 
-    private void updateDynaMesh() {
+    private void updateDynaMesh()
+    {
         long t = Stopwatch.GetTimestamp();
         try
         {
             bool updated = dynaMesh.update(executor).Result;
-            if (updated) {
+            if (updated)
+            {
                 buildTime = (Stopwatch.GetTimestamp() - t) / 1_000_000;
                 sample.update(null, dynaMesh.recastResults(), dynaMesh.navMesh());
                 sample.setChanged(false);
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             Console.WriteLine(e);
         }
     }
 
-    public override void layout(IWindow ctx) {
-
+    public override void layout(IWindow ctx)
+    {
         // nk_layout_row_dynamic(ctx, 18, 1);
         // if (nk_option_label(ctx, "Build", mode == ToolMode.BUILD)) {
         //     mode = ToolMode.BUILD;
@@ -557,10 +647,10 @@ public class DynamicUpdateTool : Tool {
         // } else {
         //     nk_label(ctx, string.format("Build Time: %d ms", buildTime), NK_TEXT_ALIGN_LEFT);
         // }
-
     }
 
-    private void load() {
+    private void load()
+    {
         // try (MemoryStack stack = stackPush()) {
         //     PointerBuffer aFilterPatterns = stack.mallocPointer(1);
         //     aFilterPatterns.put(stack.UTF8("*.voxels"));
@@ -570,10 +660,10 @@ public class DynamicUpdateTool : Tool {
         //         load(filename);
         //     }
         // }
-
     }
 
-    private void load(string filename) {
+    private void load(string filename)
+    {
         // File file = new File(filename);
         // if (file.exists()) {
         //     VoxelFileReader reader = new VoxelFileReader();
@@ -591,7 +681,8 @@ public class DynamicUpdateTool : Tool {
         // }
     }
 
-    private void save() {
+    private void save()
+    {
         // try (MemoryStack stack = stackPush()) {
         //     PointerBuffer aFilterPatterns = stack.mallocPointer(1);
         //     aFilterPatterns.put(stack.UTF8("*.voxels"));
@@ -601,10 +692,10 @@ public class DynamicUpdateTool : Tool {
         //         save(filename);
         //     }
         // }
-
     }
 
-    private void save(string filename) {
+    private void save(string filename)
+    {
         // File file = new File(filename);
         // try (FileOutputStream fos = new FileOutputStream(file)) {
         //     VoxelFile voxelFile = VoxelFile.from(dynaMesh);
@@ -613,23 +704,27 @@ public class DynamicUpdateTool : Tool {
         // } catch (Exception e) {
         //     Console.WriteLine(e);
         // }
-
     }
 
-    private void buildDynaMesh() {
+    private void buildDynaMesh()
+    {
         configDynaMesh();
         long t = Stopwatch.GetTimestamp();
         try
         {
             var _ = dynaMesh.build(executor).Result;
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             Console.WriteLine(e);
         }
+
         buildTime = (Stopwatch.GetTimestamp() - t) / 1_000_000;
         sample.update(null, dynaMesh.recastResults(), dynaMesh.navMesh());
     }
 
-    private void configDynaMesh() {
+    private void configDynaMesh()
+    {
         dynaMesh.config.partitionType = partitioning;
         dynaMesh.config.walkableHeight = walkableHeight[0];
         dynaMesh.config.walkableSlopeAngle = walkableSlopeAngle[0];
@@ -648,7 +743,8 @@ public class DynamicUpdateTool : Tool {
         dynaMesh.config.detailSampleMaxError = detailSampleMaxError[0];
     }
 
-    private void updateUI() {
+    private void updateUI()
+    {
         cellSize[0] = dynaMesh.config.cellSize;
         partitioning = dynaMesh.config.partitionType;
         walkableHeight[0] = dynaMesh.config.walkableHeight;
@@ -668,8 +764,8 @@ public class DynamicUpdateTool : Tool {
         filterWalkableLowHeightSpans = dynaMesh.config.filterWalkableLowHeightSpans;
     }
 
-    public override string getName() {
+    public override string getName()
+    {
         return "Dynamic Updates";
     }
-
 }

@@ -17,71 +17,79 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour
 {
+    public static class Results
+    {
+        public static Result<T> success<T>(T result)
+        {
+            return new Result<T>(result, Status.SUCCSESS, null);
+        }
 
+        public static Result<T> failure<T>()
+        {
+            return new Result<T>(default, Status.FAILURE, null);
+        }
 
-public static class Results
-{
-    public static Result<T> success<T>(T result) {
-        return new Result<T>(result, Status.SUCCSESS, null);
+        public static Result<T> invalidParam<T>()
+        {
+            return new Result<T>(default, Status.FAILURE_INVALID_PARAM, null);
+        }
+
+        public static Result<T> failure<T>(string message)
+        {
+            return new Result<T>(default, Status.FAILURE, message);
+        }
+
+        public static Result<T> invalidParam<T>(string message)
+        {
+            return new Result<T>(default, Status.FAILURE_INVALID_PARAM, message);
+        }
+
+        public static Result<T> failure<T>(T result)
+        {
+            return new Result<T>(result, Status.FAILURE, null);
+        }
+
+        public static Result<T> partial<T>(T result)
+        {
+            return new Result<T>(default, Status.PARTIAL_RESULT, null);
+        }
+
+        public static Result<T> of<T>(Status status, string message)
+        {
+            return new Result<T>(default, status, message);
+        }
+
+        public static Result<T> of<T>(Status status, T result)
+        {
+            return new Result<T>(result, status, null);
+        }
     }
 
-    public static Result<T> failure<T>() {
-        return new Result<T>(default, Status.FAILURE, null);
+    public class Result<T>
+    {
+        public readonly T result;
+        public readonly Status status;
+        public readonly string message;
+
+        internal Result(T result, Status status, string message)
+        {
+            this.result = result;
+            this.status = status;
+            this.message = message;
+        }
+
+
+        public bool failed()
+        {
+            return status.isFailed();
+        }
+
+        public bool succeeded()
+        {
+            return status.isSuccess();
+        }
     }
-
-    public static Result<T> invalidParam<T>() {
-        return new Result<T>(default, Status.FAILURE_INVALID_PARAM, null);
-    }
-
-    public static Result<T> failure<T>(string message) {
-        return new Result<T>(default, Status.FAILURE, message);
-    }
-
-    public static Result<T> invalidParam<T>(string message) {
-        return new Result<T>(default, Status.FAILURE_INVALID_PARAM, message);
-    }
-
-    public static Result<T> failure<T>(T result) {
-        return new Result<T>(result, Status.FAILURE, null);
-    }
-
-    public static Result<T> partial<T>(T result) {
-        return new Result<T>(default, Status.PARTIAL_RESULT, null);
-    }
-
-    public static Result<T> of<T>(Status status, string message) {
-        return new Result<T>(default, status, message);
-    }
-
-    public static Result<T> of<T>(Status status, T result) {
-        return new Result<T>(result, status, null);
-    }
-    
-}
-
-public class Result<T> {
-
-    public readonly T result;
-    public readonly Status status;
-    public readonly string message;
-
-    internal Result(T result, Status status, string message) {
-        this.result = result;
-        this.status = status;
-        this.message = message;
-    }
-
-
-    public bool failed() {
-        return status.isFailed();
-    }
-
-    public bool succeeded() {
-        return status.isSuccess();
-    }
-
-}
-
 }

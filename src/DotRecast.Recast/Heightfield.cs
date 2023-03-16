@@ -20,45 +20,43 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Recast
 {
-
-
-/** Represents a heightfield layer within a layer set. */
-public class Heightfield
-{
-    /** The width of the heightfield. (Along the x-axis in cell units.) */
-    public readonly int width;
-
-    /** The height of the heightfield. (Along the z-axis in cell units.) */
-    public readonly int height;
-
-    /** The minimum bounds in world space. [(x, y, z)] */
-    public readonly float[] bmin;
-
-    /** The maximum bounds in world space. [(x, y, z)] */
-    public readonly float[] bmax;
-
-    /** The size of each cell. (On the xz-plane.) */
-    public readonly float cs;
-
-    /** The height of each cell. (The minimum increment along the y-axis.) */
-    public readonly float ch;
-
-    /** Heightfield of spans (width*height). */
-    public readonly Span[] spans;
-
-    /** Border size in cell units */
-    public readonly int borderSize;
-
-    public Heightfield(int width, int height, float[] bmin, float[] bmax, float cs, float ch, int borderSize)
+    /** Represents a heightfield layer within a layer set. */
+    public class Heightfield
     {
-        this.width = width;
-        this.height = height;
-        this.bmin = bmin;
-        this.bmax = bmax;
-        this.cs = cs;
-        this.ch = ch;
-        this.borderSize = borderSize;
-        spans = new Span[width * height];
+        /** The width of the heightfield. (Along the x-axis in cell units.) */
+        public readonly int width;
+
+        /** The height of the heightfield. (Along the z-axis in cell units.) */
+        public readonly int height;
+
+        /** The minimum bounds in world space. [(x, y, z)] */
+        public readonly float[] bmin;
+
+        /** The maximum bounds in world space. [(x, y, z)] */
+        public readonly float[] bmax;
+
+        /** The size of each cell. (On the xz-plane.) */
+        public readonly float cs;
+
+        /** The height of each cell. (The minimum increment along the y-axis.) */
+        public readonly float ch;
+
+        /** Heightfield of spans (width*height). */
+        public readonly Span[] spans;
+
+        /** Border size in cell units */
+        public readonly int borderSize;
+
+        public Heightfield(int width, int height, float[] bmin, float[] bmax, float cs, float ch, int borderSize)
+        {
+            this.width = width;
+            this.height = height;
+            this.bmin = bmin;
+            this.bmax = bmax;
+            this.cs = cs;
+            this.ch = ch;
+            this.borderSize = borderSize;
+            spans = new Span[width * height];
+        }
     }
-}
 }

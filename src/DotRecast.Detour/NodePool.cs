@@ -22,82 +22,99 @@ using System.Collections.Generic;
 
 namespace DotRecast.Detour
 {
+    public class NodePool
+    {
+        private readonly Dictionary<long, List<Node>> m_map = new Dictionary<long, List<Node>>();
+        private readonly List<Node> m_nodes = new List<Node>();
 
-
-
-public class NodePool
-{
-
-    private readonly Dictionary<long, List<Node>> m_map = new Dictionary<long, List<Node>>();
-    private readonly List<Node> m_nodes = new List<Node>();
-
-    public NodePool() {
-
-    }
-
-    public void clear() {
-        m_nodes.Clear();
-        m_map.Clear();
-    }
-
-    public List<Node> findNodes(long id) {
-        var hasNode = m_map.TryGetValue(id, out var nodes);;
-        if (nodes == null) {
-            nodes = new List<Node>();
+        public NodePool()
+        {
         }
-        return nodes;
-    }
 
-    public Node findNode(long id) {
-        var hasNode = m_map.TryGetValue(id, out var nodes);;
-        if (nodes != null && 0 != nodes.Count) {
-            return nodes[0];
+        public void clear()
+        {
+            m_nodes.Clear();
+            m_map.Clear();
         }
-        return null;
-    }
 
-    public Node getNode(long id, int state) {
-        var hasNode = m_map.TryGetValue(id, out var nodes);;
-        if (nodes != null) {
-            foreach (Node node in nodes) {
-                if (node.state == state) {
-                    return node;
+        public List<Node> findNodes(long id)
+        {
+            var hasNode = m_map.TryGetValue(id, out var nodes);
+            ;
+            if (nodes == null)
+            {
+                nodes = new List<Node>();
+            }
+
+            return nodes;
+        }
+
+        public Node findNode(long id)
+        {
+            var hasNode = m_map.TryGetValue(id, out var nodes);
+            ;
+            if (nodes != null && 0 != nodes.Count)
+            {
+                return nodes[0];
+            }
+
+            return null;
+        }
+
+        public Node getNode(long id, int state)
+        {
+            var hasNode = m_map.TryGetValue(id, out var nodes);
+            ;
+            if (nodes != null)
+            {
+                foreach (Node node in nodes)
+                {
+                    if (node.state == state)
+                    {
+                        return node;
+                    }
                 }
             }
+
+            return create(id, state);
         }
-        return create(id, state);
-    }
 
-    protected Node create(long id, int state) {
-        Node node = new Node(m_nodes.Count + 1);
-        node.id = id;
-        node.state = state;
-        m_nodes.Add(node);
-        var hasNode = m_map.TryGetValue(id, out var nodes);;
-        if (nodes == null) {
-            nodes = new List<Node>();
-            m_map.Add(id, nodes);
+        protected Node create(long id, int state)
+        {
+            Node node = new Node(m_nodes.Count + 1);
+            node.id = id;
+            node.state = state;
+            m_nodes.Add(node);
+            var hasNode = m_map.TryGetValue(id, out var nodes);
+            ;
+            if (nodes == null)
+            {
+                nodes = new List<Node>();
+                m_map.Add(id, nodes);
+            }
+
+            nodes.Add(node);
+            return node;
         }
-        nodes.Add(node);
-        return node;
+
+        public int getNodeIdx(Node node)
+        {
+            return node != null ? node.index : 0;
+        }
+
+        public Node getNodeAtIdx(int idx)
+        {
+            return idx != 0 ? m_nodes[idx - 1] : null;
+        }
+
+        public Node getNode(long refs)
+        {
+            return getNode(refs, 0);
+        }
+
+        public Dictionary<long, List<Node>> getNodeMap()
+        {
+            return m_map;
+        }
     }
-
-    public int getNodeIdx(Node node) {
-        return node != null ? node.index : 0;
-    }
-
-    public Node getNodeAtIdx(int idx) {
-        return idx != 0 ? m_nodes[idx - 1] : null;
-    }
-
-    public Node getNode(long refs) {
-        return getNode(refs, 0);
-    }
-
-    public Dictionary<long, List<Node>> getNodeMap() {
-        return m_map;
-    }
-
-}
-
 }

@@ -24,22 +24,25 @@ using DotRecast.Detour;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-
-public static class PathUtils {
-
+public static class PathUtils
+{
     private readonly static int MAX_STEER_POINTS = 3;
 
 
     public static SteerTarget getSteerTarget(NavMeshQuery navQuery, float[] startPos, float[] endPos,
-            float minTargetDist, List<long> path) {
+        float minTargetDist, List<long> path)
+    {
         // Find steer target.
         Result<List<StraightPathItem>> result = navQuery.findStraightPath(startPos, endPos, path, MAX_STEER_POINTS, 0);
-        if (result.failed()) {
+        if (result.failed())
+        {
             return null;
         }
+
         List<StraightPathItem> straightPath = result.result;
         float[] steerPoints = new float[straightPath.Count * 3];
-        for (int i = 0; i < straightPath.Count; i++) {
+        for (int i = 0; i < straightPath.Count; i++)
+        {
             steerPoints[i * 3] = straightPath[i].getPos()[0];
             steerPoints[i * 3 + 1] = straightPath[i].getPos()[1];
             steerPoints[i * 3 + 2] = straightPath[i].getPos()[2];
@@ -47,48 +50,58 @@ public static class PathUtils {
 
         // Find vertex far enough to steer to.
         int ns = 0;
-        while (ns < straightPath.Count) {
+        while (ns < straightPath.Count)
+        {
             // Stop at Off-Mesh link or when point is further than slop away.
             if (((straightPath[ns].getFlags() & NavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
-                    || !inRange(straightPath[ns].getPos(), startPos, minTargetDist, 1000.0f))
+                || !inRange(straightPath[ns].getPos(), startPos, minTargetDist, 1000.0f))
                 break;
             ns++;
         }
+
         // Failed to find good point to steer to.
         if (ns >= straightPath.Count)
             return null;
 
-        float[] steerPos = new float[] { straightPath[ns].getPos()[0], startPos[1],
-                straightPath[ns].getPos()[2] };
+        float[] steerPos = new float[]
+        {
+            straightPath[ns].getPos()[0], startPos[1],
+            straightPath[ns].getPos()[2]
+        };
         int steerPosFlag = straightPath[ns].getFlags();
         long steerPosRef = straightPath[ns].getRef();
 
         SteerTarget target = new SteerTarget(steerPos, steerPosFlag, steerPosRef, steerPoints);
         return target;
-
     }
 
-    public static bool inRange(float[] v1, float[] v2, float r, float h) {
+    public static bool inRange(float[] v1, float[] v2, float r, float h)
+    {
         float dx = v2[0] - v1[0];
         float dy = v2[1] - v1[1];
         float dz = v2[2] - v1[2];
         return (dx * dx + dz * dz) < r * r && Math.Abs(dy) < h;
     }
 
-    public static List<long> fixupCorridor(List<long> path, List<long> visited) {
+    public static List<long> fixupCorridor(List<long> path, List<long> visited)
+    {
         int furthestPath = -1;
         int furthestVisited = -1;
 
         // Find furthest common polygon.
-        for (int i = path.Count - 1; i >= 0; --i) {
+        for (int i = path.Count - 1; i >= 0; --i)
+        {
             bool found = false;
-            for (int j = visited.Count - 1; j >= 0; --j) {
-                if (path[i] == visited[j]) {
+            for (int j = visited.Count - 1; j >= 0; --j)
+            {
+                if (path[i] == visited[j])
+                {
                     furthestPath = i;
                     furthestVisited = j;
                     found = true;
                 }
             }
+
             if (found)
                 break;
         }
@@ -105,10 +118,13 @@ public static class PathUtils {
         int size = Math.Max(0, path.Count - orig);
         List<long> fixupPath = new();
         // Store visited
-        for (int i = 0; i < req; ++i) {
+        for (int i = 0; i < req; ++i)
+        {
             fixupPath.Add(visited[(visited.Count - 1) - i]);
         }
-        for (int i = 0; i < size; i++) {
+
+        for (int i = 0; i < size; i++)
+        {
             fixupPath.Add(path[orig + i]);
         }
 
@@ -126,8 +142,10 @@ public static class PathUtils {
     // +-S-+-T-+
     // |:::| | <-- the step can end up in here, resulting U-turn path.
     // +---+---+
-    public static List<long> fixupShortcuts(List<long> path, NavMeshQuery navQuery) {
-        if (path.Count < 3) {
+    public static List<long> fixupShortcuts(List<long> path, NavMeshQuery navQuery)
+    {
+        if (path.Count < 3)
+        {
             return path;
         }
 
@@ -135,15 +153,19 @@ public static class PathUtils {
         List<long> neis = new();
 
         Result<Tuple<MeshTile, Poly>> tileAndPoly = navQuery.getAttachedNavMesh().getTileAndPolyByRef(path[0]);
-        if (tileAndPoly.failed()) {
+        if (tileAndPoly.failed())
+        {
             return path;
         }
+
         MeshTile tile = tileAndPoly.result.Item1;
         Poly poly = tileAndPoly.result.Item2;
 
-        for (int k = tile.polyLinks[poly.index]; k != NavMesh.DT_NULL_LINK; k = tile.links[k].next) {
+        for (int k = tile.polyLinks[poly.index]; k != NavMesh.DT_NULL_LINK; k = tile.links[k].next)
+        {
             Link link = tile.links[k];
-            if (link.refs != 0) {
+            if (link.refs != 0)
+            {
                 neis.Add(link.refs);
             }
         }
@@ -152,21 +174,26 @@ public static class PathUtils {
         // in the path, short cut to that polygon directly.
         int maxLookAhead = 6;
         int cut = 0;
-        for (int i = Math.Min(maxLookAhead, path.Count) - 1; i > 1 && cut == 0; i--) {
-            for (int j = 0; j < neis.Count; j++) {
-                if (path[i] == neis[j]) {
+        for (int i = Math.Min(maxLookAhead, path.Count) - 1; i > 1 && cut == 0; i--)
+        {
+            for (int j = 0; j < neis.Count; j++)
+            {
+                if (path[i] == neis[j])
+                {
                     cut = i;
                     break;
                 }
             }
         }
-        if (cut > 1) {
+
+        if (cut > 1)
+        {
             List<long> shortcut = new();
             shortcut.Add(path[0]);
             shortcut.AddRange(path.GetRange(cut, path.Count - cut));
             return shortcut;
         }
+
         return path;
     }
-
 }

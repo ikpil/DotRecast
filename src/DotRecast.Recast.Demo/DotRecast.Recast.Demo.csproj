@@ -1,24 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  
-  <ItemGroup>
-    <PackageReference Include="Serilog" Version="2.12.0" />
-    <PackageReference Include="Silk.NET" Version="2.16.0" />
-    <PackageReference Include="Silk.NET.OpenGL.Extensions.ImGui" Version="2.16.0" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\DotRecast.Detour.Crowd\DotRecast.Detour.Crowd.csproj" />
-    <ProjectReference Include="..\DotRecast.Detour.Dynamic\DotRecast.Detour.Dynamic.csproj" />
-    <ProjectReference Include="..\DotRecast.Detour.Extras\DotRecast.Detour.Extras.csproj" />
-    <ProjectReference Include="..\DotRecast.Detour.TileCache\DotRecast.Detour.TileCache.csproj" />
-    <ProjectReference Include="..\DotRecast.Detour\DotRecast.Detour.csproj" />
-    <ProjectReference Include="..\DotRecast.Recast\DotRecast.Recast.csproj" />
-  </ItemGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Serilog" Version="2.12.0"/>
+        <PackageReference Include="Silk.NET" Version="2.16.0"/>
+        <PackageReference Include="Silk.NET.OpenGL.Extensions.ImGui" Version="2.16.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\DotRecast.Detour.Crowd\DotRecast.Detour.Crowd.csproj"/>
+        <ProjectReference Include="..\DotRecast.Detour.Dynamic\DotRecast.Detour.Dynamic.csproj"/>
+        <ProjectReference Include="..\DotRecast.Detour.Extras\DotRecast.Detour.Extras.csproj"/>
+        <ProjectReference Include="..\DotRecast.Detour.TileCache\DotRecast.Detour.TileCache.csproj"/>
+        <ProjectReference Include="..\DotRecast.Detour\DotRecast.Detour.csproj"/>
+        <ProjectReference Include="..\DotRecast.Recast\DotRecast.Recast.csproj"/>
+    </ItemGroup>
 
 </Project>

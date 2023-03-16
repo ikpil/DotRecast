@@ -21,11 +21,10 @@ using DotRecast.Core;
 
 namespace DotRecast.Recast.Demo.Draw;
 
-
-
-public class GLU {
-
-    public static float[] gluPerspective(float fovy, float aspect, float near, float far) {
+public class GLU
+{
+    public static float[] gluPerspective(float fovy, float aspect, float near, float far)
+    {
         float[] projectionMatrix = new float[16];
         glhPerspectivef2(projectionMatrix, fovy, aspect, near, far);
         //glLoadMatrixf(projectionMatrix);
@@ -33,15 +32,17 @@ public class GLU {
     }
 
     public static void glhPerspectivef2(float[] matrix, float fovyInDegrees, float aspectRatio, float znear,
-            float zfar) {
+        float zfar)
+    {
         float ymax, xmax;
-        ymax = (float) (znear * Math.Tan(fovyInDegrees * Math.PI / 360.0));
+        ymax = (float)(znear * Math.Tan(fovyInDegrees * Math.PI / 360.0));
         xmax = ymax * aspectRatio;
         glhFrustumf2(matrix, -xmax, xmax, -ymax, ymax, znear, zfar);
     }
 
     private static void glhFrustumf2(float[] matrix, float left, float right, float bottom, float top, float znear,
-            float zfar) {
+        float zfar)
+    {
         float temp, temp2, temp3, temp4;
         temp = 2.0f * znear;
         temp2 = right - left;
@@ -66,7 +67,8 @@ public class GLU {
     }
 
     public static int glhUnProjectf(float winx, float winy, float winz, float[] modelview, float[] projection,
-            int[] viewport, float[] objectCoordinate) {
+        int[] viewport, float[] objectCoordinate)
+    {
         // Transformation matrices
         float[] m = new float[16], A = new float[16];
         float[] @in = new float[4], @out = new float[4];
@@ -92,54 +94,57 @@ public class GLU {
         return 1;
     }
 
-    static void MultiplyMatrices4by4OpenGL_FLOAT(float[] result, float[] matrix1, float[] matrix2) {
+    static void MultiplyMatrices4by4OpenGL_FLOAT(float[] result, float[] matrix1, float[] matrix2)
+    {
         result[0] = matrix1[0] * matrix2[0] + matrix1[4] * matrix2[1] + matrix1[8] * matrix2[2]
-                + matrix1[12] * matrix2[3];
+                    + matrix1[12] * matrix2[3];
         result[4] = matrix1[0] * matrix2[4] + matrix1[4] * matrix2[5] + matrix1[8] * matrix2[6]
-                + matrix1[12] * matrix2[7];
+                    + matrix1[12] * matrix2[7];
         result[8] = matrix1[0] * matrix2[8] + matrix1[4] * matrix2[9] + matrix1[8] * matrix2[10]
-                + matrix1[12] * matrix2[11];
+                    + matrix1[12] * matrix2[11];
         result[12] = matrix1[0] * matrix2[12] + matrix1[4] * matrix2[13] + matrix1[8] * matrix2[14]
-                + matrix1[12] * matrix2[15];
+                     + matrix1[12] * matrix2[15];
         result[1] = matrix1[1] * matrix2[0] + matrix1[5] * matrix2[1] + matrix1[9] * matrix2[2]
-                + matrix1[13] * matrix2[3];
+                    + matrix1[13] * matrix2[3];
         result[5] = matrix1[1] * matrix2[4] + matrix1[5] * matrix2[5] + matrix1[9] * matrix2[6]
-                + matrix1[13] * matrix2[7];
+                    + matrix1[13] * matrix2[7];
         result[9] = matrix1[1] * matrix2[8] + matrix1[5] * matrix2[9] + matrix1[9] * matrix2[10]
-                + matrix1[13] * matrix2[11];
+                    + matrix1[13] * matrix2[11];
         result[13] = matrix1[1] * matrix2[12] + matrix1[5] * matrix2[13] + matrix1[9] * matrix2[14]
-                + matrix1[13] * matrix2[15];
+                     + matrix1[13] * matrix2[15];
         result[2] = matrix1[2] * matrix2[0] + matrix1[6] * matrix2[1] + matrix1[10] * matrix2[2]
-                + matrix1[14] * matrix2[3];
+                    + matrix1[14] * matrix2[3];
         result[6] = matrix1[2] * matrix2[4] + matrix1[6] * matrix2[5] + matrix1[10] * matrix2[6]
-                + matrix1[14] * matrix2[7];
+                    + matrix1[14] * matrix2[7];
         result[10] = matrix1[2] * matrix2[8] + matrix1[6] * matrix2[9] + matrix1[10] * matrix2[10]
-                + matrix1[14] * matrix2[11];
+                     + matrix1[14] * matrix2[11];
         result[14] = matrix1[2] * matrix2[12] + matrix1[6] * matrix2[13] + matrix1[10] * matrix2[14]
-                + matrix1[14] * matrix2[15];
+                     + matrix1[14] * matrix2[15];
         result[3] = matrix1[3] * matrix2[0] + matrix1[7] * matrix2[1] + matrix1[11] * matrix2[2]
-                + matrix1[15] * matrix2[3];
+                    + matrix1[15] * matrix2[3];
         result[7] = matrix1[3] * matrix2[4] + matrix1[7] * matrix2[5] + matrix1[11] * matrix2[6]
-                + matrix1[15] * matrix2[7];
+                    + matrix1[15] * matrix2[7];
         result[11] = matrix1[3] * matrix2[8] + matrix1[7] * matrix2[9] + matrix1[11] * matrix2[10]
-                + matrix1[15] * matrix2[11];
+                     + matrix1[15] * matrix2[11];
         result[15] = matrix1[3] * matrix2[12] + matrix1[7] * matrix2[13] + matrix1[11] * matrix2[14]
-                + matrix1[15] * matrix2[15];
+                     + matrix1[15] * matrix2[15];
     }
 
-    static void MultiplyMatrixByVector4by4OpenGL_FLOAT(float[] resultvector, float[] matrix, float[] pvector) {
+    static void MultiplyMatrixByVector4by4OpenGL_FLOAT(float[] resultvector, float[] matrix, float[] pvector)
+    {
         resultvector[0] = matrix[0] * pvector[0] + matrix[4] * pvector[1] + matrix[8] * pvector[2]
-                + matrix[12] * pvector[3];
+                          + matrix[12] * pvector[3];
         resultvector[1] = matrix[1] * pvector[0] + matrix[5] * pvector[1] + matrix[9] * pvector[2]
-                + matrix[13] * pvector[3];
+                          + matrix[13] * pvector[3];
         resultvector[2] = matrix[2] * pvector[0] + matrix[6] * pvector[1] + matrix[10] * pvector[2]
-                + matrix[14] * pvector[3];
+                          + matrix[14] * pvector[3];
         resultvector[3] = matrix[3] * pvector[0] + matrix[7] * pvector[1] + matrix[11] * pvector[2]
-                + matrix[15] * pvector[3];
+                          + matrix[15] * pvector[3];
     }
 
     // This code comes directly from GLU except that it is for float
-    static int glhInvertMatrixf2(float[] m, float[] @out) {
+    static int glhInvertMatrixf2(float[] m, float[] @out)
+    {
         float[][] wtmp = ArrayUtils.Of<float>(4, 8);
         float m0, m1, m2, m3, s;
         float[] r0, r1, r2, r3;
@@ -172,21 +177,27 @@ public class GLU {
         r3[7] = 1.0f;
         r3[4] = r3[5] = r3[6] = 0.0f;
         /* choose pivot - or die */
-        if (Math.Abs(r3[0]) > Math.Abs(r2[0])) {
+        if (Math.Abs(r3[0]) > Math.Abs(r2[0]))
+        {
             float[] r = r2;
             r2 = r3;
             r3 = r;
         }
-        if (Math.Abs(r2[0]) > Math.Abs(r1[0])) {
+
+        if (Math.Abs(r2[0]) > Math.Abs(r1[0]))
+        {
             float[] r = r2;
             r2 = r1;
             r1 = r;
         }
-        if (Math.Abs(r1[0]) > Math.Abs(r0[0])) {
+
+        if (Math.Abs(r1[0]) > Math.Abs(r0[0]))
+        {
             float[] r = r1;
             r1 = r0;
             r0 = r;
         }
+
         if (0.0 == r0[0])
             return 0;
         /* eliminate first variable */
@@ -206,40 +217,52 @@ public class GLU {
         r2[3] -= m2 * s;
         r3[3] -= m3 * s;
         s = r0[4];
-        if (s != 0.0) {
+        if (s != 0.0)
+        {
             r1[4] -= m1 * s;
             r2[4] -= m2 * s;
             r3[4] -= m3 * s;
         }
+
         s = r0[5];
-        if (s != 0.0) {
+        if (s != 0.0)
+        {
             r1[5] -= m1 * s;
             r2[5] -= m2 * s;
             r3[5] -= m3 * s;
         }
+
         s = r0[6];
-        if (s != 0.0) {
+        if (s != 0.0)
+        {
             r1[6] -= m1 * s;
             r2[6] -= m2 * s;
             r3[6] -= m3 * s;
         }
+
         s = r0[7];
-        if (s != 0.0) {
+        if (s != 0.0)
+        {
             r1[7] -= m1 * s;
             r2[7] -= m2 * s;
             r3[7] -= m3 * s;
         }
+
         /* choose pivot - or die */
-        if (Math.Abs(r3[1]) > Math.Abs(r2[1])) {
+        if (Math.Abs(r3[1]) > Math.Abs(r2[1]))
+        {
             float[] r = r2;
             r2 = r3;
             r3 = r;
         }
-        if (Math.Abs(r2[1]) > Math.Abs(r1[1])) {
+
+        if (Math.Abs(r2[1]) > Math.Abs(r1[1]))
+        {
             float[] r = r2;
             r2 = r1;
             r1 = r;
         }
+
         if (0.0 == r1[1])
             return 0;
         /* eliminate second variable */
@@ -250,31 +273,41 @@ public class GLU {
         r2[3] -= m2 * r1[3];
         r3[3] -= m3 * r1[3];
         s = r1[4];
-        if (0.0 != s) {
+        if (0.0 != s)
+        {
             r2[4] -= m2 * s;
             r3[4] -= m3 * s;
         }
+
         s = r1[5];
-        if (0.0 != s) {
+        if (0.0 != s)
+        {
             r2[5] -= m2 * s;
             r3[5] -= m3 * s;
         }
+
         s = r1[6];
-        if (0.0 != s) {
+        if (0.0 != s)
+        {
             r2[6] -= m2 * s;
             r3[6] -= m3 * s;
         }
+
         s = r1[7];
-        if (0.0 != s) {
+        if (0.0 != s)
+        {
             r2[7] -= m2 * s;
             r3[7] -= m3 * s;
         }
+
         /* choose pivot - or die */
-        if (Math.Abs(r3[2]) > Math.Abs(r2[2])) {
+        if (Math.Abs(r3[2]) > Math.Abs(r2[2]))
+        {
             float[] r = r2;
             r2 = r3;
             r3 = r;
         }
+
         if (0.0 == r2[2])
             return 0;
         /* eliminate third variable */
@@ -344,19 +377,22 @@ public class GLU {
         return 1;
     }
 
-    static float MAT(float[] m, int r, int c) {
+    static float MAT(float[] m, int r, int c)
+    {
         return m[(c) * 4 + (r)];
     }
 
-    static void MAT(float[] m, int r, int c, float v) {
+    static void MAT(float[] m, int r, int c, float v)
+    {
         m[(c) * 4 + (r)] = v;
     }
 
-    public static float[] build_4x4_rotation_matrix(float a, float x, float y, float z) {
+    public static float[] build_4x4_rotation_matrix(float a, float x, float y, float z)
+    {
         float[] matrix = new float[16];
-        a = (float) (a * Math.PI / 180.0); // convert to radians
-        float s = (float) Math.Sin(a);
-        float c = (float) Math.Cos(a);
+        a = (float)(a * Math.PI / 180.0); // convert to radians
+        float s = (float)Math.Sin(a);
+        float c = (float)Math.Cos(a);
         float t = 1.0f - c;
 
         float tx = t * x;
@@ -387,10 +423,10 @@ public class GLU {
         matrix[14] = 0;
         matrix[15] = 1;
         return matrix;
-
     }
 
-    public static float[] mul(float[] left, float[] right) {
+    public static float[] mul(float[] left, float[] right)
+    {
         float m00 = left[0] * right[0] + left[4] * right[1] + left[8] * right[2] + left[12] * right[3];
         float m01 = left[1] * right[0] + left[5] * right[1] + left[9] * right[2] + left[13] * right[3];
         float m02 = left[2] * right[0] + left[6] * right[1] + left[10] * right[2] + left[14] * right[3];
@@ -428,5 +464,4 @@ public class GLU {
 
         return dest;
     }
-
 }

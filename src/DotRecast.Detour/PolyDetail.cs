@@ -17,20 +17,22 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour
 {
+    /** Defines the location of detail sub-mesh data within a dtMeshTile. */
+    public class PolyDetail
+    {
+        /** The offset of the vertices in the MeshTile::detailVerts array. */
+        public int vertBase;
 
+        /** The offset of the triangles in the MeshTile::detailTris array. */
+        public int triBase;
 
-/** Defines the location of detail sub-mesh data within a dtMeshTile. */
-public class PolyDetail {
-    /** The offset of the vertices in the MeshTile::detailVerts array. */
-    public int vertBase;
-    /** The offset of the triangles in the MeshTile::detailTris array. */
-    public int triBase;
-    /** The number of vertices in the sub-mesh. */
-    public int vertCount;
-    /** The number of triangles in the sub-mesh. */
-    public int triCount;
-}
+        /** The number of vertices in the sub-mesh. */
+        public int vertCount;
 
+        /** The number of triangles in the sub-mesh. */
+        public int triCount;
+    }
 }

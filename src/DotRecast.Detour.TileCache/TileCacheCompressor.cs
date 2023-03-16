@@ -17,15 +17,13 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour.TileCache
 {
+    public interface TileCacheCompressor
+    {
+        byte[] decompress(byte[] buf, int offset, int len, int outputlen);
 
-
-public interface TileCacheCompressor {
-
-    byte[] decompress(byte[] buf, int offset, int len, int outputlen);
-
-    byte[] compress(byte[] buf);
-}
-
+        byte[] compress(byte[] buf);
+    }
 }

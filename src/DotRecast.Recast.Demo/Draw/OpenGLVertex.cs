@@ -2,8 +2,8 @@ using DotRecast.Core;
 
 namespace DotRecast.Recast.Demo.Draw;
 
-public class OpenGLVertex {
-
+public class OpenGLVertex
+{
     private readonly float x;
     private readonly float y;
     private readonly float z;
@@ -12,18 +12,22 @@ public class OpenGLVertex {
     private readonly float v;
 
     public OpenGLVertex(float[] pos, float[] uv, int color) :
-        this(pos[0], pos[1], pos[2], uv[0], uv[1], color) {
+        this(pos[0], pos[1], pos[2], uv[0], uv[1], color)
+    {
     }
 
-    public OpenGLVertex(float[] pos, int color) : 
-        this(pos[0], pos[1], pos[2], 0f, 0f, color) {
+    public OpenGLVertex(float[] pos, int color) :
+        this(pos[0], pos[1], pos[2], 0f, 0f, color)
+    {
     }
 
-    public OpenGLVertex(float x, float y, float z, int color) : 
-        this(x, y, z, 0f, 0f, color) {
+    public OpenGLVertex(float x, float y, float z, int color) :
+        this(x, y, z, 0f, 0f, color)
+    {
     }
 
-    public OpenGLVertex(float x, float y, float z, float u, float v, int color) {
+    public OpenGLVertex(float x, float y, float z, float u, float v, int color)
+    {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -32,7 +36,8 @@ public class OpenGLVertex {
         this.color = color;
     }
 
-    public void store(ByteBuffer buffer) {
+    public void store(ByteBuffer buffer)
+    {
         buffer.putFloat(x);
         buffer.putFloat(y);
         buffer.putFloat(z);

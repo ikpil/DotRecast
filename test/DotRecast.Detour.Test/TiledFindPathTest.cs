@@ -21,16 +21,23 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
 
-public class TiledFindPathTest {
-
+public class TiledFindPathTest
+{
     private static readonly Status[] STATUSES = { Status.SUCCSESS };
-    private static readonly long[][] RESULTS = { 
-    new[] { 281475015507969L, 281475014459393L, 281475014459392L, 281475006070784L,
+
+    private static readonly long[][] RESULTS =
+    {
+        new[]
+        {
+            281475015507969L, 281475014459393L, 281475014459392L, 281475006070784L,
             281475005022208L, 281475003973636L, 281475012362240L, 281475012362241L, 281475012362242L, 281475003973634L,
             281475003973635L, 281475003973633L, 281475002925059L, 281475002925057L, 281475002925056L, 281474998730753L,
             281474998730754L, 281474994536450L, 281474994536451L, 281474994536452L, 281474994536448L, 281474990342146L,
             281474990342145L, 281474991390723L, 281474991390724L, 281474991390725L, 281474987196418L, 281474987196417L,
-            281474988244996L, 281474988244995L, 281474988244997L, 281474985099266L } };
+            281474988244996L, 281474988244995L, 281474988244997L, 281474985099266L
+        }
+    };
+
     protected static readonly long[] START_REFS = { 281475015507969L };
     protected static readonly long[] END_REFS = { 281474985099266L };
     protected static readonly float[][] START_POS = { new[] { 39.447338f, 9.998177f, -0.784811f } };
@@ -40,19 +47,23 @@ public class TiledFindPathTest {
     protected NavMesh navmesh;
 
     [SetUp]
-    public void setUp() {
+    public void setUp()
+    {
         navmesh = createNavMesh();
         query = new NavMeshQuery(navmesh);
     }
 
-    protected NavMesh createNavMesh() {
+    protected NavMesh createNavMesh()
+    {
         return new TestTiledNavMeshBuilder().getNavMesh();
     }
 
     [Test]
-    public void testFindPath() {
+    public void testFindPath()
+    {
         QueryFilter filter = new DefaultQueryFilter();
-        for (int i = 0; i < START_REFS.Length; i++) {
+        for (int i = 0; i < START_REFS.Length; i++)
+        {
             long startRef = START_REFS[i];
             long endRef = END_REFS[i];
             float[] startPos = START_POS[i];
@@ -60,10 +71,10 @@ public class TiledFindPathTest {
             Result<List<long>> path = query.findPath(startRef, endRef, startPos, endPos, filter);
             Assert.That(path.status, Is.EqualTo(STATUSES[i]));
             Assert.That(path.result.Count, Is.EqualTo(RESULTS[i].Length));
-            for (int j = 0; j < RESULTS[i].Length; j++) {
+            for (int j = 0; j < RESULTS[i].Length; j++)
+            {
                 Assert.That(RESULTS[i][j], Is.EqualTo(path.result[j]));
             }
         }
     }
-
 }

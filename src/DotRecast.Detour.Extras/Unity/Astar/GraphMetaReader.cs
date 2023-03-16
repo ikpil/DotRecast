@@ -22,21 +22,20 @@ using System.Text.Json;
 
 namespace DotRecast.Detour.Extras.Unity.Astar
 {
+    public class GraphMetaReader
+    {
+        public GraphMeta read(ZipArchive file, string filename)
+        {
+            ZipArchiveEntry entry = file.GetEntry(filename);
+            using StreamReader reader = new StreamReader(entry.Open());
 
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
 
-public class GraphMetaReader {
-
-    public GraphMeta read(ZipArchive file, string filename) {
-        ZipArchiveEntry entry = file.GetEntry(filename);
-        using StreamReader reader = new StreamReader(entry.Open());
-        
-        JsonSerializerOptions options = new JsonSerializerOptions {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        };
-
-        var json = reader.ReadToEnd();
-        return JsonSerializer.Deserialize<GraphMeta>(json, options);
+            var json = reader.ReadToEnd();
+            return JsonSerializer.Deserialize<GraphMeta>(json, options);
+        }
     }
-}
-
 }

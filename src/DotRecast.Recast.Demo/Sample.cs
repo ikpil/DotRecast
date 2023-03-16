@@ -26,8 +26,8 @@ using DotRecast.Recast.Demo.Settings;
 
 namespace DotRecast.Recast.Demo;
 
-public class Sample {
-
+public class Sample
+{
     private DemoInputGeomProvider inputGeom;
     private NavMesh navMesh;
     private NavMeshQuery navMeshQuery;
@@ -36,7 +36,8 @@ public class Sample {
     private bool changed;
 
     public Sample(DemoInputGeomProvider inputGeom, IList<RecastBuilderResult> recastResults, NavMesh navMesh,
-            RcSettingsView rcSettingsView, RecastDebugDraw debugDraw) {
+        RcSettingsView rcSettingsView, RecastDebugDraw debugDraw)
+    {
         this.inputGeom = inputGeom;
         this.recastResults = recastResults;
         this.navMesh = navMesh;
@@ -45,39 +46,48 @@ public class Sample {
         changed = true;
     }
 
-    private void setQuery(NavMesh navMesh) {
+    private void setQuery(NavMesh navMesh)
+    {
         navMeshQuery = navMesh != null ? new NavMeshQuery(navMesh) : null;
     }
 
-    public DemoInputGeomProvider getInputGeom() {
+    public DemoInputGeomProvider getInputGeom()
+    {
         return inputGeom;
     }
 
-    public IList<RecastBuilderResult> getRecastResults() {
+    public IList<RecastBuilderResult> getRecastResults()
+    {
         return recastResults;
     }
 
-    public NavMesh getNavMesh() {
+    public NavMesh getNavMesh()
+    {
         return navMesh;
     }
 
-    public RcSettingsView getSettingsUI() {
+    public RcSettingsView getSettingsUI()
+    {
         return _rcSettingsView;
     }
 
-    public NavMeshQuery getNavMeshQuery() {
+    public NavMeshQuery getNavMeshQuery()
+    {
         return navMeshQuery;
     }
 
-    public bool isChanged() {
+    public bool isChanged()
+    {
         return changed;
     }
 
-    public void setChanged(bool changed) {
+    public void setChanged(bool changed)
+    {
         this.changed = changed;
     }
 
-    public void update(DemoInputGeomProvider geom, IList<RecastBuilderResult> recastResults, NavMesh navMesh) {
+    public void update(DemoInputGeomProvider geom, IList<RecastBuilderResult> recastResults, NavMesh navMesh)
+    {
         inputGeom = geom;
         this.recastResults = recastResults;
         this.navMesh = navMesh;

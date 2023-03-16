@@ -24,12 +24,13 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Test.Io;
 
-public class MeshSetReaderTest {
-
+public class MeshSetReaderTest
+{
     private readonly MeshSetReader reader = new MeshSetReader();
 
     [Test]
-    public void testNavmesh() {
+    public void testNavmesh()
+    {
         byte[] @is = Loader.ToBytes("all_tiles_navmesh.bin");
         using var ms = new MemoryStream(@is);
         using var bris = new BinaryReader(ms);
@@ -56,7 +57,8 @@ public class MeshSetReaderTest {
     }
 
     [Test]
-    public void testDungeon() {
+    public void testDungeon()
+    {
         byte[] @is = Loader.ToBytes("dungeon_all_tiles_navmesh.bin");
         using var ms = new MemoryStream(@is);
         using var bris = new BinaryReader(ms);
@@ -84,7 +86,8 @@ public class MeshSetReaderTest {
     }
 
     [Test]
-    public void testDungeon32Bit() {
+    public void testDungeon32Bit()
+    {
         byte[] @is = Loader.ToBytes("dungeon_all_tiles_navmesh_32bit.bin");
         using var ms = new MemoryStream(@is);
         using var bris = new BinaryReader(ms);

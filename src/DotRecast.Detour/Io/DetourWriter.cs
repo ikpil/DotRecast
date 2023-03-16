@@ -22,65 +22,77 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour.Io
 {
+    public abstract class DetourWriter
+    {
+        protected void write(BinaryWriter stream, float value, ByteOrder order)
+        {
+            byte[] bytes = BitConverter.GetBytes(value);
+            int i = BitConverter.ToInt32(bytes, 0);
+            write(stream, i, order);
+        }
 
+        protected void write(BinaryWriter stream, short value, ByteOrder order)
+        {
+            if (order == ByteOrder.BIG_ENDIAN)
+            {
+                stream.Write((byte)((value >> 8) & 0xFF));
+                stream.Write((byte)(value & 0xFF));
+            }
+            else
+            {
+                stream.Write((byte)(value & 0xFF));
+                stream.Write((byte)((value >> 8) & 0xFF));
+            }
+        }
 
-public abstract class DetourWriter {
+        protected void write(BinaryWriter stream, long value, ByteOrder order)
+        {
+            if (order == ByteOrder.BIG_ENDIAN)
+            {
+                write(stream, (int)((ulong)value >> 32), order);
+                write(stream, (int)(value & 0xFFFFFFFF), order);
+            }
+            else
+            {
+                write(stream, (int)(value & 0xFFFFFFFF), order);
+                write(stream, (int)((ulong)value >> 32), order);
+            }
+        }
 
-    protected void write(BinaryWriter stream, float value, ByteOrder order) {
-        byte[] bytes = BitConverter.GetBytes(value);
-        int i = BitConverter.ToInt32(bytes, 0);
-        write(stream, i, order);
-    }
+        protected void write(BinaryWriter stream, int value, ByteOrder order)
+        {
+            if (order == ByteOrder.BIG_ENDIAN)
+            {
+                stream.Write((byte)((value >> 24) & 0xFF));
+                stream.Write((byte)((value >> 16) & 0xFF));
+                stream.Write((byte)((value >> 8) & 0xFF));
+                stream.Write((byte)(value & 0xFF));
+            }
+            else
+            {
+                stream.Write((byte)(value & 0xFF));
+                stream.Write((byte)((value >> 8) & 0xFF));
+                stream.Write((byte)((value >> 16) & 0xFF));
+                stream.Write((byte)((value >> 24) & 0xFF));
+            }
+        }
 
-    protected void write(BinaryWriter stream, short value, ByteOrder order)  {
-        if (order == ByteOrder.BIG_ENDIAN) {
-            stream.Write((byte)((value >> 8) & 0xFF));
-            stream.Write((byte)(value & 0xFF));
-        } else {
-            stream.Write((byte)(value & 0xFF));
-            stream.Write((byte)((value >> 8) & 0xFF));
+        protected void write(BinaryWriter stream, bool @bool)
+        {
+            write(stream, (byte)(@bool ? 1 : 0));
+        }
+
+        protected void write(BinaryWriter stream, byte value)
+        {
+            stream.Write(value);
+        }
+
+        protected void write(BinaryWriter stream, MemoryStream data)
+        {
+            data.Position = 0;
+            byte[] buffer = new byte[data.Length];
+            data.Read(buffer, 0, buffer.Length);
+            stream.Write(buffer);
         }
     }
-
-    protected void write(BinaryWriter stream, long value, ByteOrder order)  {
-        if (order == ByteOrder.BIG_ENDIAN) {
-            write(stream, (int) ((ulong)value >> 32), order);
-            write(stream, (int) (value & 0xFFFFFFFF), order);
-        } else {
-            write(stream, (int) (value & 0xFFFFFFFF), order);
-            write(stream, (int) ((ulong)value >> 32), order);
-        }
-    }
-
-    protected void write(BinaryWriter stream, int value, ByteOrder order)  {
-        if (order == ByteOrder.BIG_ENDIAN) {
-            stream.Write((byte)((value >> 24) & 0xFF));
-            stream.Write((byte)((value >> 16) & 0xFF));
-            stream.Write((byte)((value >> 8) & 0xFF));
-            stream.Write((byte)(value & 0xFF));
-        } else {
-            stream.Write((byte)(value & 0xFF));
-            stream.Write((byte)((value >> 8) & 0xFF));
-            stream.Write((byte)((value >> 16) & 0xFF));
-            stream.Write((byte)((value >> 24) & 0xFF));
-        }
-    }
-
-    protected void write(BinaryWriter stream, bool @bool)  {
-        write(stream, (byte) (@bool ? 1 : 0));
-    }
-
-    protected void write(BinaryWriter stream, byte value)  {
-        stream.Write(value);
-    }
-
-    protected void write(BinaryWriter stream, MemoryStream data) {
-        data.Position = 0;
-        byte[] buffer = new byte[data.Length];
-        data.Read(buffer, 0, buffer.Length);
-        stream.Write(buffer);
-    }
-
-}
-
 }

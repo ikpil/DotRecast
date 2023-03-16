@@ -17,30 +17,30 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour
 {
+    public class ClosestPointOnPolyResult
+    {
+        private readonly bool posOverPoly;
+        private readonly float[] closest;
 
+        public ClosestPointOnPolyResult(bool posOverPoly, float[] closest)
+        {
+            this.posOverPoly = posOverPoly;
+            this.closest = closest;
+        }
 
-public class ClosestPointOnPolyResult {
+        /** Returns true if the position is over the polygon. */
+        public bool isPosOverPoly()
+        {
+            return posOverPoly;
+        }
 
-    private readonly bool posOverPoly;
-    private readonly float[] closest;
-
-    public ClosestPointOnPolyResult(bool posOverPoly, float[] closest) {
-        this.posOverPoly = posOverPoly;
-        this.closest = closest;
+        /** Returns the closest point on the polygon. [(x, y, z)] */
+        public float[] getClosest()
+        {
+            return closest;
+        }
     }
-
-    /** Returns true if the position is over the polygon. */
-    public bool isPosOverPoly() {
-        return posOverPoly;
-    }
-
-    /** Returns the closest point on the polygon. [(x, y, z)] */
-    public float[] getClosest() {
-        return closest;
-    }
-
-}
-
 }

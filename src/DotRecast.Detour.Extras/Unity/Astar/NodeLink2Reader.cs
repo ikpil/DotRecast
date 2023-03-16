@@ -21,33 +21,33 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour.Extras.Unity.Astar
 {
+    public class NodeLink2Reader : ZipBinaryReader
+    {
+        public NodeLink2[] read(ZipArchive file, string filename, int[] indexToNode)
+        {
+            ByteBuffer buffer = toByteBuffer(file, filename);
+            int linkCount = buffer.getInt();
+            NodeLink2[] links = new NodeLink2[linkCount];
+            for (int i = 0; i < linkCount; i++)
+            {
+                long linkID = buffer.getLong();
+                int startNode = indexToNode[buffer.getInt()];
+                int endNode = indexToNode[buffer.getInt()];
+                int connectedNode1 = buffer.getInt();
+                int connectedNode2 = buffer.getInt();
+                Vector3f clamped1 = new Vector3f();
+                clamped1.x = buffer.getFloat();
+                clamped1.y = buffer.getFloat();
+                clamped1.z = buffer.getFloat();
+                Vector3f clamped2 = new Vector3f();
+                clamped2.x = buffer.getFloat();
+                clamped2.y = buffer.getFloat();
+                clamped2.z = buffer.getFloat();
+                bool postScanCalled = buffer.get() != 0;
+                links[i] = new NodeLink2(linkID, startNode, endNode, clamped1, clamped2);
+            }
 
-
-public class NodeLink2Reader : ZipBinaryReader {
-
-    public NodeLink2[] read(ZipArchive file, string filename, int[] indexToNode) {
-        ByteBuffer buffer = toByteBuffer(file, filename);
-        int linkCount = buffer.getInt();
-        NodeLink2[] links = new NodeLink2[linkCount];
-        for (int i = 0; i < linkCount; i++) {
-            long linkID = buffer.getLong();
-            int startNode = indexToNode[buffer.getInt()];
-            int endNode = indexToNode[buffer.getInt()];
-            int connectedNode1 = buffer.getInt();
-            int connectedNode2 = buffer.getInt();
-            Vector3f clamped1 = new Vector3f();
-            clamped1.x = buffer.getFloat();
-            clamped1.y = buffer.getFloat();
-            clamped1.z = buffer.getFloat();
-            Vector3f clamped2 = new Vector3f();
-            clamped2.x = buffer.getFloat();
-            clamped2.y = buffer.getFloat();
-            clamped2.z = buffer.getFloat();
-            bool postScanCalled = buffer.get() != 0;
-            links[i] = new NodeLink2(linkID, startNode, endNode, clamped1, clamped2);
+            return links;
         }
-        return links;
     }
-}
-
 }

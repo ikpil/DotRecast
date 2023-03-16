@@ -26,10 +26,11 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Extras.Test.Unity.Astar;
 
-public class UnityAStarPathfindingImporterTest {
-
+public class UnityAStarPathfindingImporterTest
+{
     [Test]
-    public void test_v4_0_6() {
+    public void test_v4_0_6()
+    {
         NavMesh mesh = loadNavMesh("graph.zip");
         float[] startPos = new float[] { 8.200293f, 2.155071f, -26.176147f };
         float[] endPos = new float[] { 11.971109f, 0.000000f, 8.663261f };
@@ -40,7 +41,8 @@ public class UnityAStarPathfindingImporterTest {
     }
 
     [Test]
-    public void test_v4_1_16() {
+    public void test_v4_1_16()
+    {
         NavMesh mesh = loadNavMesh("graph_v4_1_16.zip");
         float[] startPos = new float[] { 22.93f, -2.37f, -5.11f };
         float[] endPos = new float[] { 16.81f, -2.37f, 25.52f };
@@ -51,7 +53,8 @@ public class UnityAStarPathfindingImporterTest {
     }
 
     [Test]
-    public void testBoundsTree() {
+    public void testBoundsTree()
+    {
         NavMesh mesh = loadNavMesh("test_boundstree.zip");
         float[] position = { 387.52988f, 19.997f, 368.86282f };
 
@@ -72,18 +75,20 @@ public class UnityAStarPathfindingImporterTest {
         Assert.That(bvResult.getNearestRef(), Is.EqualTo(clearResult.getNearestRef()));
     }
 
-    private NavMesh loadNavMesh(string filename) {
+    private NavMesh loadNavMesh(string filename)
+    {
         var filepath = Loader.ToRPath(filename);
         using var fs = new FileStream(filepath, FileMode.Open);
-        
+
         // Import the graphs
         UnityAStarPathfindingImporter importer = new UnityAStarPathfindingImporter();
-        
+
         NavMesh[] meshes = importer.load(fs);
         return meshes[0];
     }
 
-    private Result<List<long>> findPath(NavMesh mesh, float[] startPos, float[] endPos) {
+    private Result<List<long>> findPath(NavMesh mesh, float[] startPos, float[] endPos)
+    {
         // Perform a simple pathfinding
         NavMeshQuery query = new NavMeshQuery(mesh);
         QueryFilter filter = new DefaultQueryFilter();
@@ -92,26 +97,32 @@ public class UnityAStarPathfindingImporterTest {
         return query.findPath(polys[0].getNearestRef(), polys[1].getNearestRef(), startPos, endPos, filter);
     }
 
-    private FindNearestPolyResult[] getNearestPolys(NavMesh mesh, params float[][] positions) {
+    private FindNearestPolyResult[] getNearestPolys(NavMesh mesh, params float[][] positions)
+    {
         NavMeshQuery query = new NavMeshQuery(mesh);
         QueryFilter filter = new DefaultQueryFilter();
         float[] extents = new float[] { 0.1f, 0.1f, 0.1f };
 
         FindNearestPolyResult[] results = new FindNearestPolyResult[positions.Length];
-        for (int i = 0; i < results.Length; i++) {
+        for (int i = 0; i < results.Length; i++)
+        {
             float[] position = positions[i];
             Result<FindNearestPolyResult> result = query.findNearestPoly(position, extents, filter);
             Assert.That(result.succeeded(), Is.True);
             Assert.That(result.result.getNearestPos(), Is.Not.Null, "Nearest start position is null!");
             results[i] = result.result;
         }
+
         return results;
     }
 
-    private void saveMesh(NavMesh mesh, string filePostfix) {
+    private void saveMesh(NavMesh mesh, string filePostfix)
+    {
         // Set the flag to RecastDemo work properly
-        for (int i = 0; i < mesh.getTileCount(); i++) {
-            foreach (Poly p in mesh.getTile(i).data.polys) {
+        for (int i = 0; i < mesh.getTileCount(); i++)
+        {
+            foreach (Poly p in mesh.getTile(i).data.polys)
+            {
                 p.flags = 1;
             }
         }
@@ -124,5 +135,4 @@ public class UnityAStarPathfindingImporterTest {
         using var os = new BinaryWriter(fs);
         writer.write(os, mesh, ByteOrder.LITTLE_ENDIAN, true);
     }
-
 }

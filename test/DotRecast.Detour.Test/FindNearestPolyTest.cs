@@ -20,29 +20,33 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
 
-
-public class FindNearestPolyTest : AbstractDetourTest {
-
+public class FindNearestPolyTest : AbstractDetourTest
+{
     private static readonly long[] POLY_REFS = { 281474976710696L, 281474976710773L, 281474976710680L, 281474976710753L, 281474976710733L };
-    private static readonly float[][] POLY_POS = { 
+
+    private static readonly float[][] POLY_POS =
+    {
         new[] { 22.606520f, 10.197294f, -45.918674f }, new[] { 22.331268f, 10.197294f, -1.040187f },
-            new[] { 18.694363f, 15.803535f, -73.090416f }, new[] { 0.745335f, 10.197294f, -5.940050f },
-            new[] { -20.651257f, 5.904126f, -13.712508f } };
+        new[] { 18.694363f, 15.803535f, -73.090416f }, new[] { 0.745335f, 10.197294f, -5.940050f },
+        new[] { -20.651257f, 5.904126f, -13.712508f }
+    };
 
     [Test]
-    public void testFindNearestPoly() {
+    public void testFindNearestPoly()
+    {
         QueryFilter filter = new DefaultQueryFilter();
         float[] extents = { 2, 4, 2 };
-        for (int i = 0; i < startRefs.Length; i++) {
+        for (int i = 0; i < startRefs.Length; i++)
+        {
             float[] startPos = startPoss[i];
             Result<FindNearestPolyResult> poly = query.findNearestPoly(startPos, extents, filter);
             Assert.That(poly.succeeded(), Is.True);
             Assert.That(poly.result.getNearestRef(), Is.EqualTo(POLY_REFS[i]));
-            for (int v = 0; v < POLY_POS[i].Length; v++) {
+            for (int v = 0; v < POLY_POS[i].Length; v++)
+            {
                 Assert.That(poly.result.getNearestPos()[v], Is.EqualTo(POLY_POS[i][v]).Within(0.001f));
             }
         }
-
     }
 
     public class EmptyQueryFilter : QueryFilter
@@ -60,18 +64,20 @@ public class FindNearestPolyTest : AbstractDetourTest {
     }
 
     [Test]
-    public void shouldReturnStartPosWhenNoPolyIsValid() {
+    public void shouldReturnStartPosWhenNoPolyIsValid()
+    {
         var filter = new EmptyQueryFilter();
         float[] extents = { 2, 4, 2 };
-        for (int i = 0; i < startRefs.Length; i++) {
+        for (int i = 0; i < startRefs.Length; i++)
+        {
             float[] startPos = startPoss[i];
             Result<FindNearestPolyResult> poly = query.findNearestPoly(startPos, extents, filter);
             Assert.That(poly.succeeded(), Is.True);
             Assert.That(poly.result.getNearestRef(), Is.EqualTo(0L));
-            for (int v = 0; v < POLY_POS[i].Length; v++) {
+            for (int v = 0; v < POLY_POS[i].Length; v++)
+            {
                 Assert.That(poly.result.getNearestPos()[v], Is.EqualTo(startPos[v]).Within(0.001f));
             }
         }
-
     }
 }

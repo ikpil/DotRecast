@@ -17,10 +17,11 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Recast.Demo.Builder;
 
-public class SampleAreaModifications {
-
+public class SampleAreaModifications
+{
     public const int SAMPLE_POLYAREA_TYPE_GROUND = 0x0;
     public const int SAMPLE_POLYAREA_TYPE_WATER = 0x1;
     public const int SAMPLE_POLYAREA_TYPE_ROAD = 0x2;

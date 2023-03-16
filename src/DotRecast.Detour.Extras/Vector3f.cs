@@ -15,25 +15,24 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour.Extras
 {
+    public class Vector3f
+    {
+        public float x { get; set; }
+        public float y { get; set; }
+        public float z { get; set; }
 
+        public Vector3f()
+        {
+        }
 
-public class Vector3f {
-
-    public float x { get; set; }
-    public float y { get; set; }
-    public float z { get; set; }
-
-    public Vector3f() {
+        public Vector3f(float x, float y, float z)
+        {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
     }
-
-    public Vector3f(float x, float y, float z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-
-}
-
 }

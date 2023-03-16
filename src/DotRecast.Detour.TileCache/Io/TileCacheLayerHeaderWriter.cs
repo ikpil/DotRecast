@@ -24,35 +24,37 @@ using DotRecast.Detour.Io;
 
 namespace DotRecast.Detour.TileCache.Io
 {
+    public class TileCacheLayerHeaderWriter : DetourWriter
+    {
+        public void write(BinaryWriter stream, TileCacheLayerHeader header, ByteOrder order, bool cCompatibility)
+        {
+            write(stream, header.magic, order);
+            write(stream, header.version, order);
+            write(stream, header.tx, order);
+            write(stream, header.ty, order);
+            write(stream, header.tlayer, order);
+            for (int j = 0; j < 3; j++)
+            {
+                write(stream, header.bmin[j], order);
+            }
 
+            for (int j = 0; j < 3; j++)
+            {
+                write(stream, header.bmax[j], order);
+            }
 
-public class TileCacheLayerHeaderWriter : DetourWriter {
-
-    public void write(BinaryWriter stream, TileCacheLayerHeader header, ByteOrder order, bool cCompatibility) {
-        write(stream, header.magic, order);
-        write(stream, header.version, order);
-        write(stream, header.tx, order);
-        write(stream, header.ty, order);
-        write(stream, header.tlayer, order);
-        for (int j = 0; j < 3; j++) {
-            write(stream, header.bmin[j], order);
-        }
-        for (int j = 0; j < 3; j++) {
-            write(stream, header.bmax[j], order);
-        }
-        write(stream, (short) header.hmin, order);
-        write(stream, (short) header.hmax, order);
-        write(stream, (byte) header.width);
-        write(stream, (byte) header.height);
-        write(stream, (byte) header.minx);
-        write(stream, (byte) header.maxx);
-        write(stream, (byte) header.miny);
-        write(stream, (byte) header.maxy);
-        if (cCompatibility) {
-            write(stream, (short) 0, order); // C struct padding
+            write(stream, (short)header.hmin, order);
+            write(stream, (short)header.hmax, order);
+            write(stream, (byte)header.width);
+            write(stream, (byte)header.height);
+            write(stream, (byte)header.minx);
+            write(stream, (byte)header.maxx);
+            write(stream, (byte)header.miny);
+            write(stream, (byte)header.maxy);
+            if (cCompatibility)
+            {
+                write(stream, (short)0, order); // C struct padding
+            }
         }
     }
-
-}
-
 }

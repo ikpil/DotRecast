@@ -22,27 +22,25 @@ using System.Collections.Generic;
 
 namespace DotRecast.Detour
 {
+    public class GetPolyWallSegmentsResult
+    {
+        private readonly List<float[]> segmentVerts;
+        private readonly List<long> segmentRefs;
 
+        public GetPolyWallSegmentsResult(List<float[]> segmentVerts, List<long> segmentRefs)
+        {
+            this.segmentVerts = segmentVerts;
+            this.segmentRefs = segmentRefs;
+        }
 
+        public List<float[]> getSegmentVerts()
+        {
+            return segmentVerts;
+        }
 
-public class GetPolyWallSegmentsResult {
-
-    private readonly List<float[]> segmentVerts;
-    private readonly List<long> segmentRefs;
-
-    public GetPolyWallSegmentsResult(List<float[]> segmentVerts, List<long> segmentRefs) {
-        this.segmentVerts = segmentVerts;
-        this.segmentRefs = segmentRefs;
+        public List<long> getSegmentRefs()
+        {
+            return segmentRefs;
+        }
     }
-
-    public List<float[]> getSegmentVerts() {
-        return segmentVerts;
-    }
-
-    public List<long> getSegmentRefs() {
-        return segmentRefs;
-    }
-
-}
-
 }

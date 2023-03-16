@@ -1,16 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
 
-  <ItemGroup>
-    <PackageReference Include="K4os.Compression.LZ4" Version="1.3.5" />
-  </ItemGroup>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\DotRecast.Detour\DotRecast.Detour.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="K4os.Compression.LZ4" Version="1.3.5"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\DotRecast.Detour\DotRecast.Detour.csproj"/>
+    </ItemGroup>
 
 </Project>

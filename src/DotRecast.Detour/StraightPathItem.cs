@@ -17,35 +17,38 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour
 {
-
-
-using static DetourCommon;
+    using static DetourCommon;
 
 //TODO: (PP) Add comments
-public class StraightPathItem {
-    public float[] pos;
-    public int flags;
-    public long refs;
+    public class StraightPathItem
+    {
+        public float[] pos;
+        public int flags;
+        public long refs;
 
-    public StraightPathItem(float[] pos, int flags, long refs) {
-        this.pos = vCopy(pos);
-        this.flags = flags;
-        this.refs = refs;
+        public StraightPathItem(float[] pos, int flags, long refs)
+        {
+            this.pos = vCopy(pos);
+            this.flags = flags;
+            this.refs = refs;
+        }
+
+        public float[] getPos()
+        {
+            return pos;
+        }
+
+        public int getFlags()
+        {
+            return flags;
+        }
+
+        public long getRef()
+        {
+            return refs;
+        }
     }
-
-    public float[] getPos() {
-        return pos;
-    }
-
-    public int getFlags() {
-        return flags;
-    }
-
-    public long getRef() {
-        return refs;
-    }
-
-}
 }

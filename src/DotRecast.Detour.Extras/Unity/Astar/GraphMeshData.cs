@@ -15,52 +15,63 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour.Extras.Unity.Astar
 {
+    public class GraphMeshData
+    {
+        public readonly int tileXCount;
+        public readonly int tileZCount;
+        public readonly MeshData[] tiles;
 
-
-public class GraphMeshData {
-
-    public readonly int tileXCount;
-    public readonly int tileZCount;
-    public readonly MeshData[] tiles;
-
-    public GraphMeshData(int tileXCount, int tileZCount, MeshData[] tiles) {
-        this.tileXCount = tileXCount;
-        this.tileZCount = tileZCount;
-        this.tiles = tiles;
-    }
-
-    public int countNodes() {
-        int polyCount = 0;
-        foreach (MeshData t in tiles) {
-            polyCount += t.header.polyCount;
+        public GraphMeshData(int tileXCount, int tileZCount, MeshData[] tiles)
+        {
+            this.tileXCount = tileXCount;
+            this.tileZCount = tileZCount;
+            this.tiles = tiles;
         }
-        return polyCount;
-    }
 
-    public Poly getNode(int node) {
-        int index = 0;
-        foreach (MeshData t in tiles) {
-            if (node - index >= 0 && node - index < t.header.polyCount) {
-                return t.polys[node - index];
+        public int countNodes()
+        {
+            int polyCount = 0;
+            foreach (MeshData t in tiles)
+            {
+                polyCount += t.header.polyCount;
             }
-            index += t.header.polyCount;
-        }
-        return null;
-    }
 
-    public MeshData getTile(int node) {
-        int index = 0;
-        foreach (MeshData t in tiles) {
-            if (node - index >= 0 && node - index < t.header.polyCount) {
-                return t;
+            return polyCount;
+        }
+
+        public Poly getNode(int node)
+        {
+            int index = 0;
+            foreach (MeshData t in tiles)
+            {
+                if (node - index >= 0 && node - index < t.header.polyCount)
+                {
+                    return t.polys[node - index];
+                }
+
+                index += t.header.polyCount;
             }
-            index += t.header.polyCount;
+
+            return null;
         }
-        return null;
+
+        public MeshData getTile(int node)
+        {
+            int index = 0;
+            foreach (MeshData t in tiles)
+            {
+                if (node - index >= 0 && node - index < t.header.polyCount)
+                {
+                    return t;
+                }
+
+                index += t.header.polyCount;
+            }
+
+            return null;
+        }
     }
-
-}
-
 }

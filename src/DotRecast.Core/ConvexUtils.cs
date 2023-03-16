@@ -20,70 +20,84 @@ using System.Collections.Generic;
 
 namespace DotRecast.Core
 {
-
-
-public static class ConvexUtils {
-
-    // Calculates convex hull on xz-plane of points on 'pts',
-    // stores the indices of the resulting hull in 'out' and
-    // returns number of points on hull.
-    public static List<int> convexhull(List<float> pts) {
-        int npts = pts.Count / 3;
-        List<int> @out = new List<int>();
-        // Find lower-leftmost point.
-        int hull = 0;
-        for (int i = 1; i < npts; ++i) {
-            float[] a = new float[] { pts[i * 3], pts[i * 3 + 1], pts[i * 3 + 2] };
-            float[] b = new float[] { pts[hull * 3], pts[hull * 3 + 1], pts[hull * 3 + 2] };
-            if (cmppt(a, b)) {
-                hull = i;
-            }
-        }
-        // Gift wrap hull.
-        int endpt = 0;
-        do {
-            @out.Add(hull);
-            endpt = 0;
-            for (int j = 1; j < npts; ++j) {
-                float[] a = new float[] { pts[hull * 3], pts[hull * 3 + 1], pts[hull * 3 + 2] };
-                float[] b = new float[] { pts[endpt * 3], pts[endpt * 3 + 1], pts[endpt * 3 + 2] };
-                float[] c = new float[] { pts[j * 3], pts[j * 3 + 1], pts[j * 3 + 2] };
-                if (hull == endpt || left(a, b, c)) {
-                    endpt = j;
+    public static class ConvexUtils
+    {
+        // Calculates convex hull on xz-plane of points on 'pts',
+        // stores the indices of the resulting hull in 'out' and
+        // returns number of points on hull.
+        public static List<int> convexhull(List<float> pts)
+        {
+            int npts = pts.Count / 3;
+            List<int> @out = new List<int>();
+            // Find lower-leftmost point.
+            int hull = 0;
+            for (int i = 1; i < npts; ++i)
+            {
+                float[] a = new float[] { pts[i * 3], pts[i * 3 + 1], pts[i * 3 + 2] };
+                float[] b = new float[] { pts[hull * 3], pts[hull * 3 + 1], pts[hull * 3 + 2] };
+                if (cmppt(a, b))
+                {
+                    hull = i;
                 }
             }
-            hull = endpt;
-        } while (endpt != @out[0]);
 
-        return @out;
-    }
+            // Gift wrap hull.
+            int endpt = 0;
+            do
+            {
+                @out.Add(hull);
+                endpt = 0;
+                for (int j = 1; j < npts; ++j)
+                {
+                    float[] a = new float[] { pts[hull * 3], pts[hull * 3 + 1], pts[hull * 3 + 2] };
+                    float[] b = new float[] { pts[endpt * 3], pts[endpt * 3 + 1], pts[endpt * 3 + 2] };
+                    float[] c = new float[] { pts[j * 3], pts[j * 3 + 1], pts[j * 3 + 2] };
+                    if (hull == endpt || left(a, b, c))
+                    {
+                        endpt = j;
+                    }
+                }
 
-    // Returns true if 'a' is more lower-left than 'b'.
-    private static bool cmppt(float[] a, float[] b) {
-        if (a[0] < b[0]) {
-            return true;
+                hull = endpt;
+            } while (endpt != @out[0]);
+
+            return @out;
         }
-        if (a[0] > b[0]) {
+
+        // Returns true if 'a' is more lower-left than 'b'.
+        private static bool cmppt(float[] a, float[] b)
+        {
+            if (a[0] < b[0])
+            {
+                return true;
+            }
+
+            if (a[0] > b[0])
+            {
+                return false;
+            }
+
+            if (a[2] < b[2])
+            {
+                return true;
+            }
+
+            if (a[2] > b[2])
+            {
+                return false;
+            }
+
             return false;
         }
-        if (a[2] < b[2]) {
-            return true;
+
+        // Returns true if 'c' is left of line 'a'-'b'.
+        private static bool left(float[] a, float[] b, float[] c)
+        {
+            float u1 = b[0] - a[0];
+            float v1 = b[2] - a[2];
+            float u2 = c[0] - a[0];
+            float v2 = c[2] - a[2];
+            return u1 * v2 - v1 * u2 < 0;
         }
-        if (a[2] > b[2]) {
-            return false;
-        }
-        return false;
     }
-
-    // Returns true if 'c' is left of line 'a'-'b'.
-    private static bool left(float[] a, float[] b, float[] c) {
-        float u1 = b[0] - a[0];
-        float v1 = b[2] - a[2];
-        float u2 = c[0] - a[0];
-        float v2 = c[2] - a[2];
-        return u1 * v2 - v1 * u2 < 0;
-    }
-
-}
-
 }

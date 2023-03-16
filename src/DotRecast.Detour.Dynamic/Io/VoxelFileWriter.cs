@@ -22,72 +22,74 @@ using DotRecast.Detour.Io;
 
 namespace DotRecast.Detour.Dynamic.Io
 {
+    public class VoxelFileWriter : DetourWriter
+    {
+        private readonly LZ4VoxelTileCompressor compressor = new LZ4VoxelTileCompressor();
 
+        public void write(BinaryWriter stream, VoxelFile f, bool compression)
+        {
+            write(stream, f, VoxelFile.PREFERRED_BYTE_ORDER, compression);
+        }
 
-public class VoxelFileWriter : DetourWriter {
+        public void write(BinaryWriter stream, VoxelFile f, ByteOrder byteOrder, bool compression)
+        {
+            write(stream, VoxelFile.MAGIC, byteOrder);
+            write(stream, VoxelFile.VERSION_EXPORTER_RECAST4J | (compression ? VoxelFile.VERSION_COMPRESSION_LZ4 : 0), byteOrder);
+            write(stream, f.walkableRadius, byteOrder);
+            write(stream, f.walkableHeight, byteOrder);
+            write(stream, f.walkableClimb, byteOrder);
+            write(stream, f.walkableSlopeAngle, byteOrder);
+            write(stream, f.cellSize, byteOrder);
+            write(stream, f.maxSimplificationError, byteOrder);
+            write(stream, f.maxEdgeLen, byteOrder);
+            write(stream, f.minRegionArea, byteOrder);
+            write(stream, f.regionMergeArea, byteOrder);
+            write(stream, f.vertsPerPoly, byteOrder);
+            write(stream, f.buildMeshDetail);
+            write(stream, f.detailSampleDistance, byteOrder);
+            write(stream, f.detailSampleMaxError, byteOrder);
+            write(stream, f.useTiles);
+            write(stream, f.tileSizeX, byteOrder);
+            write(stream, f.tileSizeZ, byteOrder);
+            write(stream, f.rotation[0], byteOrder);
+            write(stream, f.rotation[1], byteOrder);
+            write(stream, f.rotation[2], byteOrder);
+            write(stream, f.bounds[0], byteOrder);
+            write(stream, f.bounds[1], byteOrder);
+            write(stream, f.bounds[2], byteOrder);
+            write(stream, f.bounds[3], byteOrder);
+            write(stream, f.bounds[4], byteOrder);
+            write(stream, f.bounds[5], byteOrder);
+            write(stream, f.tiles.Count, byteOrder);
+            foreach (VoxelTile t in f.tiles)
+            {
+                writeTile(stream, t, byteOrder, compression);
+            }
+        }
 
-    private readonly LZ4VoxelTileCompressor compressor = new LZ4VoxelTileCompressor();
+        public void writeTile(BinaryWriter stream, VoxelTile tile, ByteOrder byteOrder, bool compression)
+        {
+            write(stream, tile.tileX, byteOrder);
+            write(stream, tile.tileZ, byteOrder);
+            write(stream, tile.width, byteOrder);
+            write(stream, tile.depth, byteOrder);
+            write(stream, tile.borderSize, byteOrder);
+            write(stream, tile.boundsMin[0], byteOrder);
+            write(stream, tile.boundsMin[1], byteOrder);
+            write(stream, tile.boundsMin[2], byteOrder);
+            write(stream, tile.boundsMax[0], byteOrder);
+            write(stream, tile.boundsMax[1], byteOrder);
+            write(stream, tile.boundsMax[2], byteOrder);
+            write(stream, tile.cellSize, byteOrder);
+            write(stream, tile.cellHeight, byteOrder);
+            byte[] bytes = tile.spanData;
+            if (compression)
+            {
+                bytes = compressor.compress(bytes);
+            }
 
-    public void write(BinaryWriter stream, VoxelFile f, bool compression) {
-        write(stream, f, VoxelFile.PREFERRED_BYTE_ORDER, compression);
-    }
-
-    public void write(BinaryWriter stream, VoxelFile f, ByteOrder byteOrder, bool compression) {
-        write(stream, VoxelFile.MAGIC, byteOrder);
-        write(stream, VoxelFile.VERSION_EXPORTER_RECAST4J | (compression ? VoxelFile.VERSION_COMPRESSION_LZ4 : 0), byteOrder);
-        write(stream, f.walkableRadius, byteOrder);
-        write(stream, f.walkableHeight, byteOrder);
-        write(stream, f.walkableClimb, byteOrder);
-        write(stream, f.walkableSlopeAngle, byteOrder);
-        write(stream, f.cellSize, byteOrder);
-        write(stream, f.maxSimplificationError, byteOrder);
-        write(stream, f.maxEdgeLen, byteOrder);
-        write(stream, f.minRegionArea, byteOrder);
-        write(stream, f.regionMergeArea, byteOrder);
-        write(stream, f.vertsPerPoly, byteOrder);
-        write(stream, f.buildMeshDetail);
-        write(stream, f.detailSampleDistance, byteOrder);
-        write(stream, f.detailSampleMaxError, byteOrder);
-        write(stream, f.useTiles);
-        write(stream, f.tileSizeX, byteOrder);
-        write(stream, f.tileSizeZ, byteOrder);
-        write(stream, f.rotation[0], byteOrder);
-        write(stream, f.rotation[1], byteOrder);
-        write(stream, f.rotation[2], byteOrder);
-        write(stream, f.bounds[0], byteOrder);
-        write(stream, f.bounds[1], byteOrder);
-        write(stream, f.bounds[2], byteOrder);
-        write(stream, f.bounds[3], byteOrder);
-        write(stream, f.bounds[4], byteOrder);
-        write(stream, f.bounds[5], byteOrder);
-        write(stream, f.tiles.Count, byteOrder);
-        foreach (VoxelTile t in f.tiles) {
-            writeTile(stream, t, byteOrder, compression);
+            write(stream, bytes.Length, byteOrder);
+            stream.Write(bytes);
         }
     }
-
-    public void writeTile(BinaryWriter stream, VoxelTile tile, ByteOrder byteOrder, bool compression) {
-        write(stream, tile.tileX, byteOrder);
-        write(stream, tile.tileZ, byteOrder);
-        write(stream, tile.width, byteOrder);
-        write(stream, tile.depth, byteOrder);
-        write(stream, tile.borderSize, byteOrder);
-        write(stream, tile.boundsMin[0], byteOrder);
-        write(stream, tile.boundsMin[1], byteOrder);
-        write(stream, tile.boundsMin[2], byteOrder);
-        write(stream, tile.boundsMax[0], byteOrder);
-        write(stream, tile.boundsMax[1], byteOrder);
-        write(stream, tile.boundsMax[2], byteOrder);
-        write(stream, tile.cellSize, byteOrder);
-        write(stream, tile.cellHeight, byteOrder);
-        byte[] bytes = tile.spanData;
-        if (compression) {
-            bytes = compressor.compress(bytes);
-        }
-        write(stream, bytes.Length, byteOrder);
-        stream.Write(bytes);
-    }
-
-}
-
 }

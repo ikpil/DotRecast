@@ -22,32 +22,33 @@ using System.Collections.Generic;
 
 namespace DotRecast.Detour
 {
-
-
-
 // TODO: (PP) Add comments
-public class FindPolysAroundResult {
-    private readonly List<long> refs;
-    private readonly List<long> parentRefs;
-    private readonly List<float> costs;
+    public class FindPolysAroundResult
+    {
+        private readonly List<long> refs;
+        private readonly List<long> parentRefs;
+        private readonly List<float> costs;
 
-    public FindPolysAroundResult(List<long> refs, List<long> parentRefs, List<float> costs) {
-        this.@refs = refs;
-        this.parentRefs = parentRefs;
-        this.costs = costs;
+        public FindPolysAroundResult(List<long> refs, List<long> parentRefs, List<float> costs)
+        {
+            this.@refs = refs;
+            this.parentRefs = parentRefs;
+            this.costs = costs;
+        }
+
+        public List<long> getRefs()
+        {
+            return refs;
+        }
+
+        public List<long> getParentRefs()
+        {
+            return parentRefs;
+        }
+
+        public List<float> getCosts()
+        {
+            return costs;
+        }
     }
-
-    public List<long> getRefs() {
-        return refs;
-    }
-
-    public List<long> getParentRefs() {
-        return parentRefs;
-    }
-
-    public List<float> getCosts() {
-        return costs;
-    }
-
-}
 }

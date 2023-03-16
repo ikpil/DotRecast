@@ -22,18 +22,20 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Crowd.Test;
 
-public class PathCorridorTest {
-
+public class PathCorridorTest
+{
     private readonly PathCorridor corridor = new PathCorridor();
     private readonly QueryFilter filter = new DefaultQueryFilter();
 
     [SetUp]
-    public void setUp() {
-        corridor.reset(0, new float[] {10,20,30});
+    public void setUp()
+    {
+        corridor.reset(0, new float[] { 10, 20, 30 });
     }
 
     [Test]
-    public void shouldKeepOriginalPathInFindCornersWhenNothingCanBePruned() {
+    public void shouldKeepOriginalPathInFindCornersWhenNothingCanBePruned()
+    {
         List<StraightPathItem> straightPath = new();
         straightPath.Add(new StraightPathItem(new float[] { 11, 20, 30.00001f }, 0, 0));
         straightPath.Add(new StraightPathItem(new float[] { 12, 20, 30.00002f }, 0, 0));
@@ -42,10 +44,10 @@ public class PathCorridorTest {
         Result<List<StraightPathItem>> result = Results.success(straightPath);
         var mockQuery = new Mock<NavMeshQuery>(It.IsAny<NavMesh>());
         mockQuery.Setup(q => q.findStraightPath(
-            It.IsAny<float[]>(), 
-            It.IsAny<float[]>(), 
-            It.IsAny<List<long>>(), 
-            It.IsAny<int>(), 
+            It.IsAny<float[]>(),
+            It.IsAny<float[]>(),
+            It.IsAny<List<long>>(),
+            It.IsAny<int>(),
             It.IsAny<int>())
         ).Returns(result);
         List<StraightPathItem> path = corridor.findCorners(int.MaxValue, mockQuery.Object, filter);
@@ -54,7 +56,8 @@ public class PathCorridorTest {
     }
 
     [Test]
-    public void shouldPrunePathInFindCorners() {
+    public void shouldPrunePathInFindCorners()
+    {
         List<StraightPathItem> straightPath = new();
         straightPath.Add(new StraightPathItem(new float[] { 10, 20, 30.00001f }, 0, 0)); // too close
         straightPath.Add(new StraightPathItem(new float[] { 10, 20, 30.00002f }, 0, 0)); // too close
@@ -76,5 +79,4 @@ public class PathCorridorTest {
         Assert.That(path.Count, Is.EqualTo(2));
         Assert.That(path, Is.EqualTo(new List<StraightPathItem> { straightPath[2], straightPath[3] }));
     }
-
 }

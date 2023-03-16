@@ -22,13 +22,12 @@ using System.Collections.Generic;
 using DotRecast.Core;
 using DotRecast.Recast;
 using DotRecast.Recast.Geom;
-
 using static DotRecast.Detour.DetourCommon;
 
 namespace DotRecast.Detour.TileCache.Test;
 
-public class TestTileLayerBuilder : AbstractTileLayersBuilder {
-
+public class TestTileLayerBuilder : AbstractTileLayersBuilder
+{
     private const float m_cellSize = 0.3f;
     private const float m_cellHeight = 0.2f;
     private const float m_agentHeight = 2.0f;
@@ -50,12 +49,13 @@ public class TestTileLayerBuilder : AbstractTileLayersBuilder {
     private readonly int tw;
     private readonly int th;
 
-    public TestTileLayerBuilder(InputGeomProvider geom) {
+    public TestTileLayerBuilder(InputGeomProvider geom)
+    {
         this.geom = geom;
         rcConfig = new RecastConfig(true, m_tileSize, m_tileSize, RecastConfig.calcBorder(m_agentRadius, m_cellSize),
-                PartitionType.WATERSHED, m_cellSize, m_cellHeight, m_agentMaxSlope, true, true, true, m_agentHeight,
-                m_agentRadius, m_agentMaxClimb, m_regionMinArea, m_regionMergeArea, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly,
-                true, m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
+            PartitionType.WATERSHED, m_cellSize, m_cellHeight, m_agentMaxSlope, true, true, true, m_agentHeight,
+            m_agentRadius, m_agentMaxClimb, m_regionMinArea, m_regionMergeArea, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly,
+            true, m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
         float[] bmin = geom.getMeshBoundsMin();
         float[] bmax = geom.getMeshBoundsMax();
         int[] twh = Recast.Recast.calcTileCount(bmin, bmax, m_cellSize, m_tileSize, m_tileSize);
@@ -63,24 +63,30 @@ public class TestTileLayerBuilder : AbstractTileLayersBuilder {
         th = twh[1];
     }
 
-    public List<byte[]> build(ByteOrder order, bool cCompatibility, int threads) {
+    public List<byte[]> build(ByteOrder order, bool cCompatibility, int threads)
+    {
         return build(order, cCompatibility, threads, tw, th);
     }
 
-    public int getTw() {
+    public int getTw()
+    {
         return tw;
     }
 
-    public int getTh() {
+    public int getTh()
+    {
         return th;
     }
 
-    protected override List<byte[]> build(int tx, int ty, ByteOrder order, bool cCompatibility) {
+    protected override List<byte[]> build(int tx, int ty, ByteOrder order, bool cCompatibility)
+    {
         HeightfieldLayerSet lset = getHeightfieldSet(tx, ty);
         List<byte[]> result = new();
-        if (lset != null) {
+        if (lset != null)
+        {
             TileCacheBuilder builder = new TileCacheBuilder();
-            for (int i = 0; i < lset.layers.Length; ++i) {
+            for (int i = 0; i < lset.layers.Length; ++i)
+            {
                 HeightfieldLayerSet.HeightfieldLayer layer = lset.layers[i];
 
                 // Store header
@@ -107,10 +113,12 @@ public class TestTileLayerBuilder : AbstractTileLayersBuilder {
                 result.Add(builder.compressTileCacheLayer(header, layer.heights, layer.areas, layer.cons, order, cCompatibility));
             }
         }
+
         return result;
     }
 
-    protected HeightfieldLayerSet getHeightfieldSet(int tx, int ty) {
+    protected HeightfieldLayerSet getHeightfieldSet(int tx, int ty)
+    {
         RecastBuilder rcBuilder = new RecastBuilder();
         float[] bmin = geom.getMeshBoundsMin();
         float[] bmax = geom.getMeshBoundsMax();

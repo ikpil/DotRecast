@@ -24,15 +24,15 @@ using DotRecast.Core;
 using DotRecast.Detour.TileCache.Io;
 using NUnit.Framework;
 
-namespace DotRecast.Detour.TileCache.Test.Io; 
+namespace DotRecast.Detour.TileCache.Test.Io;
 
-public class TileCacheReaderTest {
-
+public class TileCacheReaderTest
+{
     private readonly TileCacheReader reader = new TileCacheReader();
 
     [Test]
-    public void testNavmesh() {
-
+    public void testNavmesh()
+    {
         using var ms = new MemoryStream(Loader.ToBytes("all_tiles_tilecache.bin"));
         using var @is = new BinaryReader(ms);
         TileCache tc = reader.read(@is, 6, null);
@@ -129,7 +129,8 @@ public class TileCacheReaderTest {
     }
 
     [Test]
-    public void testDungeon() {
+    public void testDungeon()
+    {
         using var ms = new MemoryStream(Loader.ToBytes("dungeon_all_tiles_tilecache.bin"));
         using var @is = new BinaryReader(ms);
         TileCache tc = reader.read(@is, 6, null);
@@ -220,5 +221,4 @@ public class TileCacheReaderTest {
         Assert.That(data.verts[6], Is.EqualTo(48.484783f).Within(0.0001f));
         Assert.That(data.verts[9], Is.EqualTo(48.484783f).Within(0.0001f));
     }
-
 }

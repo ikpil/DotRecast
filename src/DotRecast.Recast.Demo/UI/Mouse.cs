@@ -22,8 +22,8 @@ using Silk.NET.Windowing;
 
 namespace DotRecast.Recast.Demo.UI;
 
-public class Mouse {
-
+public class Mouse
+{
     private double x;
     private double y;
     private double scrollX;
@@ -52,80 +52,103 @@ public class Mouse {
         // glfwSetScrollCallback(window, (win, x, y) => scroll(x, y));
     }
 
-    public void cursorPos(double x, double y) {
-        foreach (MouseListener l in listeners) {
+    public void cursorPos(double x, double y)
+    {
+        foreach (MouseListener l in listeners)
+        {
             l.position(x, y);
         }
+
         this.x = x;
         this.y = y;
     }
 
-    public void scroll(double xoffset, double yoffset) {
-        foreach (MouseListener l in listeners) {
+    public void scroll(double xoffset, double yoffset)
+    {
+        foreach (MouseListener l in listeners)
+        {
             l.scroll(xoffset, yoffset);
         }
+
         scrollX += xoffset;
         scrollY += yoffset;
     }
 
-    public double getDX() {
+    public double getDX()
+    {
         return x - px;
     }
 
-    public double getDY() {
+    public double getDY()
+    {
         return y - py;
     }
 
-    public double getDScrollX() {
+    public double getDScrollX()
+    {
         return scrollX - pScrollX;
     }
 
-    public double getDScrollY() {
+    public double getDScrollY()
+    {
         return scrollY - pScrollY;
     }
 
-    public double getX() {
+    public double getX()
+    {
         return x;
     }
 
-    public void setX(double x) {
+    public void setX(double x)
+    {
         this.x = x;
     }
 
-    public double getY() {
+    public double getY()
+    {
         return y;
     }
 
-    public void setY(double y) {
+    public void setY(double y)
+    {
         this.y = y;
     }
 
-    public void setDelta() {
+    public void setDelta()
+    {
         px = x;
         py = y;
         pScrollX = scrollX;
         pScrollY = scrollY;
     }
 
-    public void buttonPress(int button, int mods) {
-        foreach (MouseListener l in listeners) {
+    public void buttonPress(int button, int mods)
+    {
+        foreach (MouseListener l in listeners)
+        {
             l.button(button, mods, true);
         }
+
         pressed.Add(button);
     }
 
-    public void buttonRelease(int button, int mods) {
-        foreach (MouseListener l in listeners) {
+    public void buttonRelease(int button, int mods)
+    {
+        foreach (MouseListener l in listeners)
+        {
             l.button(button, mods, false);
         }
+
         pressed.Remove(button);
     }
 
-    public bool isPressed(int button) {
+    public bool isPressed(int button)
+    {
         return pressed.Contains(button);
     }
 
-    public void addListener(MouseListener listener) {
+    public void addListener(MouseListener listener)
+    {
         listeners.Add(listener);
     }
 }

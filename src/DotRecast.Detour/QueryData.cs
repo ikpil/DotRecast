@@ -17,20 +17,20 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Detour
 {
-
-
-public class QueryData {
-    public Status status;
-    public Node lastBestNode;
-    public float lastBestNodeCost;
-    public long startRef, endRef;
-    public float[] startPos = new float[3];
-    public float[] endPos = new float[3];
-    public QueryFilter filter;
-    public int options;
-    public float raycastLimitSqr;
-    public QueryHeuristic heuristic;
-}
+    public class QueryData
+    {
+        public Status status;
+        public Node lastBestNode;
+        public float lastBestNodeCost;
+        public long startRef, endRef;
+        public float[] startPos = new float[3];
+        public float[] endPos = new float[3];
+        public QueryFilter filter;
+        public int options;
+        public float raycastLimitSqr;
+        public QueryHeuristic heuristic;
+    }
 }

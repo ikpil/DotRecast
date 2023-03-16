@@ -20,14 +20,10 @@ using System.Collections.Generic;
 
 namespace DotRecast.Detour.Dynamic
 {
+    public interface UpdateQueueItem
+    {
+        ICollection<DynamicTile> affectedTiles();
 
-
-public interface UpdateQueueItem {
-
-    ICollection<DynamicTile> affectedTiles();
-
-    void process(DynamicTile tile);
-
-}
-
+        void process(DynamicTile tile);
+    }
 }

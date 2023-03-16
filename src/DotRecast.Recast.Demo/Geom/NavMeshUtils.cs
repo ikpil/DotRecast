@@ -21,15 +21,19 @@ using DotRecast.Detour;
 
 namespace DotRecast.Recast.Demo.Geom;
 
-public class NavMeshUtils {
-
-    public static float[][] getNavMeshBounds(NavMesh mesh) {
+public class NavMeshUtils
+{
+    public static float[][] getNavMeshBounds(NavMesh mesh)
+    {
         float[] bmin = new float[] { float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity };
         float[] bmax = new float[] { float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity };
-        for (int t = 0; t < mesh.getMaxTiles(); ++t) {
+        for (int t = 0; t < mesh.getMaxTiles(); ++t)
+        {
             MeshTile tile = mesh.getTile(t);
-            if (tile != null && tile.data != null) {
-                for (int i = 0; i < tile.data.verts.Length; i += 3) {
+            if (tile != null && tile.data != null)
+            {
+                for (int i = 0; i < tile.data.verts.Length; i += 3)
+                {
                     bmin[0] = Math.Min(bmin[0], tile.data.verts[i]);
                     bmin[1] = Math.Min(bmin[1], tile.data.verts[i + 1]);
                     bmin[2] = Math.Min(bmin[2], tile.data.verts[i + 2]);
@@ -39,6 +43,7 @@ public class NavMeshUtils {
                 }
             }
         }
+
         return new float[][] { bmin, bmax };
     }
 }

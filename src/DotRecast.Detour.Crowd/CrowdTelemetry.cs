@@ -23,61 +23,67 @@ using System.Linq;
 
 namespace DotRecast.Detour.Crowd
 {
+    public class CrowdTelemetry
+    {
+        public const int TIMING_SAMPLES = 10;
+        private float _maxTimeToEnqueueRequest;
+        private float _maxTimeToFindPath;
+        private readonly Dictionary<string, long> _executionTimings = new Dictionary<string, long>();
+        private readonly Dictionary<string, List<long>> _executionTimingSamples = new Dictionary<string, List<long>>();
 
-
-
-public class CrowdTelemetry {
-
-    public const int TIMING_SAMPLES = 10;
-    private float _maxTimeToEnqueueRequest;
-    private float _maxTimeToFindPath;
-    private readonly Dictionary<string, long> _executionTimings = new Dictionary<string, long>();
-    private readonly Dictionary<string, List<long>> _executionTimingSamples = new Dictionary<string, List<long>>();
-
-    public float maxTimeToEnqueueRequest() {
-        return _maxTimeToEnqueueRequest;
-    }
-
-    public float maxTimeToFindPath() {
-        return _maxTimeToFindPath;
-    }
-
-    public Dictionary<string, long> executionTimings() {
-        return _executionTimings;
-    }
-
-    public void start() {
-        _maxTimeToEnqueueRequest = 0;
-        _maxTimeToFindPath = 0;
-        _executionTimings.Clear();
-    }
-
-    public void recordMaxTimeToEnqueueRequest(float time) {
-        _maxTimeToEnqueueRequest = Math.Max(_maxTimeToEnqueueRequest, time);
-    }
-
-    public void recordMaxTimeToFindPath(float time) {
-        _maxTimeToFindPath = Math.Max(_maxTimeToFindPath, time);
-    }
-
-    public void start(string name) {
-        _executionTimings.Add(name, Stopwatch.GetTimestamp());
-    }
-
-    public void stop(string name) {
-        long duration = Stopwatch.GetTimestamp() - _executionTimings[name];
-        if (!_executionTimingSamples.TryGetValue(name, out var s))
+        public float maxTimeToEnqueueRequest()
         {
-            s = new List<long>();
-            _executionTimingSamples.Add(name, s);
+            return _maxTimeToEnqueueRequest;
         }
-        
-        if (s.Count == TIMING_SAMPLES) {
-            s.RemoveAt(0);
-        }
-        s.Add(duration);
-        _executionTimings[name] = (long) s.Average();
-    }
-}
 
+        public float maxTimeToFindPath()
+        {
+            return _maxTimeToFindPath;
+        }
+
+        public Dictionary<string, long> executionTimings()
+        {
+            return _executionTimings;
+        }
+
+        public void start()
+        {
+            _maxTimeToEnqueueRequest = 0;
+            _maxTimeToFindPath = 0;
+            _executionTimings.Clear();
+        }
+
+        public void recordMaxTimeToEnqueueRequest(float time)
+        {
+            _maxTimeToEnqueueRequest = Math.Max(_maxTimeToEnqueueRequest, time);
+        }
+
+        public void recordMaxTimeToFindPath(float time)
+        {
+            _maxTimeToFindPath = Math.Max(_maxTimeToFindPath, time);
+        }
+
+        public void start(string name)
+        {
+            _executionTimings.Add(name, Stopwatch.GetTimestamp());
+        }
+
+        public void stop(string name)
+        {
+            long duration = Stopwatch.GetTimestamp() - _executionTimings[name];
+            if (!_executionTimingSamples.TryGetValue(name, out var s))
+            {
+                s = new List<long>();
+                _executionTimingSamples.Add(name, s);
+            }
+
+            if (s.Count == TIMING_SAMPLES)
+            {
+                s.RemoveAt(0);
+            }
+
+            s.Add(duration);
+            _executionTimings[name] = (long)s.Average();
+        }
+    }
 }

@@ -20,29 +20,24 @@ using System.Collections.Generic;
 
 namespace DotRecast.Detour.Extras.Unity.Astar
 {
+    public class GraphData
+    {
+        public readonly Meta meta;
+        public readonly int[] indexToNode;
+        public readonly NodeLink2[] nodeLinks2;
+        public readonly List<GraphMeta> graphMeta;
+        public readonly List<GraphMeshData> graphMeshData;
+        public readonly List<List<int[]>> graphConnections;
 
-
-
-
-public class GraphData {
-
-    public readonly Meta meta;
-    public readonly int[] indexToNode;
-    public readonly NodeLink2[] nodeLinks2;
-    public readonly List<GraphMeta> graphMeta;
-    public readonly List<GraphMeshData> graphMeshData;
-    public readonly List<List<int[]>> graphConnections;
-
-    public GraphData(Meta meta, int[] indexToNode, NodeLink2[] nodeLinks2, List<GraphMeta> graphMeta,
-            List<GraphMeshData> graphMeshData, List<List<int[]>> graphConnections) {
-        this.meta = meta;
-        this.indexToNode = indexToNode;
-        this.nodeLinks2 = nodeLinks2;
-        this.graphMeta = graphMeta;
-        this.graphMeshData = graphMeshData;
-        this.graphConnections = graphConnections;
+        public GraphData(Meta meta, int[] indexToNode, NodeLink2[] nodeLinks2, List<GraphMeta> graphMeta,
+            List<GraphMeshData> graphMeshData, List<List<int[]>> graphConnections)
+        {
+            this.meta = meta;
+            this.indexToNode = indexToNode;
+            this.nodeLinks2 = nodeLinks2;
+            this.graphMeta = graphMeta;
+            this.graphMeshData = graphMeshData;
+            this.graphConnections = graphConnections;
+        }
     }
-
-}
-
 }

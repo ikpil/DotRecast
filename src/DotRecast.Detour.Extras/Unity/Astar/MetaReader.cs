@@ -25,34 +25,34 @@ using System.Text.RegularExpressions;
 
 namespace DotRecast.Detour.Extras.Unity.Astar
 {
+    public class MetaReader
+    {
+        public Meta read(ZipArchive file, string filename)
+        {
+            ZipArchiveEntry entry = file.GetEntry(filename);
+            using StreamReader reader = new StreamReader(entry.Open());
 
 
-public class MetaReader {
+            var json = reader.ReadToEnd();
 
-    public Meta read(ZipArchive file, string filename) {
-        ZipArchiveEntry entry = file.GetEntry(filename);
-        using StreamReader reader = new StreamReader(entry.Open());
-        
+            // fixed : version 표기는 문자열이여야 한다
+            string pattern = @"(\d+\.\d+\.\d+),";
+            string replacement = "\"$1\",";
+            var regex = new Regex(pattern);
+            json = regex.Replace(json, replacement);
 
+            var meta = JsonSerializer.Deserialize<Meta>(json);
+            if (!meta.isSupportedType())
+            {
+                throw new ArgumentException("Unsupported graph type " + string.Join(", ", meta.typeNames));
+            }
 
-        var json = reader.ReadToEnd();
+            if (!meta.isSupportedVersion())
+            {
+                throw new ArgumentException("Unsupported version " + meta.version);
+            }
 
-        // fixed : version 표기는 문자열이여야 한다
-        string pattern = @"(\d+\.\d+\.\d+),";
-        string replacement = "\"$1\",";
-        var regex = new Regex(pattern);
-        json = regex.Replace(json, replacement);
-
-        var meta = JsonSerializer.Deserialize<Meta>(json);
-        if (!meta.isSupportedType()) {
-            throw new ArgumentException("Unsupported graph type " + string.Join(", ", meta.typeNames));
+            return meta;
         }
-        if (!meta.isSupportedVersion()) {
-            throw new ArgumentException("Unsupported version " + meta.version);
-        }
-        return meta;
     }
-
-}
-
 }

@@ -15,14 +15,14 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+
 namespace DotRecast.Recast.Demo.UI;
 
-public interface MouseListener {
-
+public interface MouseListener
+{
     void button(int button, int mods, bool down);
 
     void scroll(double xoffset, double yoffset);
 
     void position(double x, double y);
-
 }
