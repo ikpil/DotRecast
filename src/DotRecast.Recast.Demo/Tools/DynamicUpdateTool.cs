@@ -513,7 +513,7 @@ public class DynamicUpdateTool : Tool
         //     nk_layout_row_dynamic(ctx, 18, 1);
         ImGui.Text("Rasterization");
         //     nk_layout_row_dynamic(ctx, 18, 2);
-        //     nk_label(ctx, "Cell Size", NK_TEXT_ALIGN_LEFT);
+        ImGui.Text("Cell Size");
         //     nk_label(ctx, string.format("%.2f", cellSize[0]), NK_TEXT_ALIGN_RIGHT);
         //     nk_layout_row_dynamic(ctx, 1, 1);
         //     nk_spacing(ctx, 1);
@@ -526,7 +526,7 @@ public class DynamicUpdateTool : Tool
         //     nk_layout_row_dynamic(ctx, 20, 1);
         ImGui.SliderFloat("Max Climb", ref walkableClimb, 0f, 10f, "%.2f");
         //     nk_layout_row_dynamic(ctx, 18, 2);
-        //     nk_label(ctx, "Max Slope", NK_TEXT_ALIGN_LEFT);
+        ImGui.Text("Max Slope");
         //     nk_label(ctx, string.format("%.0f", walkableSlopeAngle[0]), NK_TEXT_ALIGN_RIGHT);
         //
         //     nk_layout_row_dynamic(ctx, 1, 1);
@@ -565,12 +565,12 @@ public class DynamicUpdateTool : Tool
         //     nk_layout_row_dynamic(ctx, 20, 1);
         ImGui.SliderFloat("Max Edge Error", ref maxSimplificationError, 0.1f, 10f, "%.1f");
         //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     nk_property_int(ctx, "Verts Per Poly", 3, vertsPerPoly, 12, 1, 1);
+        ImGui.SliderInt("Verts Per Poly", ref vertsPerPoly, 3, 12);
         //
         //     nk_layout_row_dynamic(ctx, 1, 1);
         //     nk_spacing(ctx, 1);
         //     nk_layout_row_dynamic(ctx, 18, 1);
-        //     nk_label(ctx, "Detail Mesh", NK_TEXT_ALIGN_LEFT);
+        ImGui.Text("Detail Mesh");
         //     nk_layout_row_dynamic(ctx, 20, 1);
         //     buildDetailMesh = nk_check_text(ctx, "Enable", buildDetailMesh);
         //     nk_layout_row_dynamic(ctx, 20, 1);

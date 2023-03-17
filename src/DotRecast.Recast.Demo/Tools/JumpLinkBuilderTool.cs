@@ -334,7 +334,7 @@ public class JumpLinkBuilderTool : Tool
         //     nk_spacing(ctx, 1);
         //
         //     nk_layout_row_dynamic(ctx, 18, 1);
-        //     nk_label(ctx, "Climb Down", NK_TEXT_ALIGN_LEFT);
+        ImGui.Text("Climb Down");
         //     nk_layout_row_dynamic(ctx, 20, 1);
         ImGui.SliderFloat("Distance", ref option.climbDownDistance, 0f, 5f, "%.2f");
         //     nk_layout_row_dynamic(ctx, 20, 1);
@@ -345,7 +345,7 @@ public class JumpLinkBuilderTool : Tool
         //     nk_spacing(ctx, 1);
         //
         //     nk_layout_row_dynamic(ctx, 18, 1);
-        //     nk_label(ctx, "Jump Down", NK_TEXT_ALIGN_LEFT);
+        ImGui.Text("Jump Down");
         //     nk_layout_row_dynamic(ctx, 20, 1);
         ImGui.SliderFloat("Max Distance", ref option.edgeJumpEndDistance, 0f, 10f, "%.2f");
         //     nk_layout_row_dynamic(ctx, 20, 1);
@@ -417,7 +417,7 @@ public class JumpLinkBuilderTool : Tool
         //     }
         //     nk_spacing(ctx, 1);
         //     nk_layout_row_dynamic(ctx, 18, 1);
-        //     nk_label(ctx, "Debug Draw Options", NK_TEXT_ALIGN_LEFT);
+        ImGui.Text("Debug Draw Options");
         //     nk_layout_row_dynamic(ctx, 20, 1);
         //     int newFlags = 0;
         //     newFlags |= nk_option_text(ctx, "Walkable Border",

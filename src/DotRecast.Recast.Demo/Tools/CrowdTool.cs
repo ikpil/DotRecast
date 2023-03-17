@@ -726,7 +726,7 @@ public class CrowdTool : Tool
         //     nk_layout_row_dynamic(ctx, 20, 1);
         //     toolParams.m_obstacleAvoidance = nk_option_text(ctx, "Obstacle Avoidance", toolParams.m_obstacleAvoidance);
         //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     nk_property_int(ctx, "Avoidance Quality", 0, toolParams.m_obstacleAvoidanceType, 3, 1, 0.1f);
+        ImGui.SliderInt("Avoidance Quality", ref toolParams.m_obstacleAvoidanceType, 0, 3);
         //     nk_layout_row_dynamic(ctx, 20, 1);
         //     toolParams.m_separation = nk_option_text(ctx, "Separation", toolParams.m_separation);
         //     nk_layout_row_dynamic(ctx, 20, 1);

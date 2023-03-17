@@ -5,6 +5,7 @@ using DotRecast.Core;
 using DotRecast.Detour;
 using DotRecast.Recast.Demo.Builder;
 using DotRecast.Recast.Demo.Draw;
+using ImGuiNET;
 using static DotRecast.Detour.DetourCommon;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
@@ -97,7 +98,7 @@ public class TestNavmeshTool : Tool
         // if (nk_option_label(ctx, "Pathfind Straight", m_toolMode == ToolMode.PATHFIND_STRAIGHT)) {
         //     m_toolMode = ToolMode.PATHFIND_STRAIGHT;
         //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     nk_label(ctx, "Vertices at crossings", NK_TEXT_ALIGN_LEFT);
+        ImGui.Text("Vertices at crossings");
         //     nk_layout_row_dynamic(ctx, 20, 1);
         //     if (nk_option_label(ctx, "None", m_straightPathOptions == 0)) {
         //         m_straightPathOptions = 0;
@@ -153,7 +154,7 @@ public class TestNavmeshTool : Tool
         // nk_layout_row_dynamic(ctx, 5, 1);
         // nk_spacing(ctx, 1);
         // nk_layout_row_dynamic(ctx, 20, 1);
-        // nk_label(ctx, "Include Flags", NK_TEXT_ALIGN_LEFT);
+        ImGui.Text("Include Flags");
         // nk_layout_row_dynamic(ctx, 20, 1);
         // int includeFlags = 0;
         // if (nk_option_label(ctx, "Walk",
@@ -177,7 +178,7 @@ public class TestNavmeshTool : Tool
         // nk_layout_row_dynamic(ctx, 5, 1);
         // nk_spacing(ctx, 1);
         // nk_layout_row_dynamic(ctx, 20, 1);
-        // nk_label(ctx, "Exclude Flags", NK_TEXT_ALIGN_LEFT);
+        ImGui.Text("Exclude Flags");
         // nk_layout_row_dynamic(ctx, 20, 1);
         // int excludeFlags = 0;
         // if (nk_option_label(ctx, "Walk",

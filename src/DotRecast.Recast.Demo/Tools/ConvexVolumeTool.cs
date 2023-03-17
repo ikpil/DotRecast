@@ -193,7 +193,7 @@ public class ConvexVolumeTool : Tool
         ImGui.SliderFloat("Shape Descent", ref boxDescent, 0.1f, 20f, "%.1f");
         // nk_layout_row_dynamic(ctx, 20, 1);
         ImGui.SliderFloat("Poly Offset", ref polyOffset, 0.1f, 10f, "%.1f");
-        // nk_label(ctx, "Area Type", NK_TEXT_ALIGN_LEFT);
+        ImGui.Text("Area Type");
         // nk_layout_row_dynamic(ctx, 20, 1);
         // if (nk_option_label(ctx, "Ground", areaType == SampleAreaModifications.SAMPLE_AREAMOD_GROUND)) {
         //     areaType = SampleAreaModifications.SAMPLE_AREAMOD_GROUND;

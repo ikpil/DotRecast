@@ -61,11 +61,11 @@ public class CrowdProfilingTool
         // nk_spacing(ctx, 1);
         // if (nk_tree_state_push(ctx, 0, "Simulation Options", expandSimOptions)) {
         //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     nk_property_int(ctx, "Agents", 0, agents, 10000, 1, 1);
+        ImGui.SliderInt("Agents", ref agents, 0, 10000);
         //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     nk_property_int(ctx, "Random Seed", 0, randomSeed, 1024, 1, 1);
+        ImGui.SliderInt("Random Seed", ref randomSeed, 0, 1024);
         //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     nk_property_int(ctx, "Number of Zones", 0, numberOfZones, 10, 1, 1);
+        ImGui.SliderInt("Number of Zones", ref numberOfZones, 0, 10);
         //     nk_layout_row_dynamic(ctx, 20, 1);
         ImGui.SliderFloat("Zone Radius", ref zoneRadius, 0, 100, "%.0f");
         //     nk_layout_row_dynamic(ctx, 20, 1);
@@ -76,9 +76,9 @@ public class CrowdProfilingTool
         // }
         // if (nk_tree_state_push(ctx, 0, "Crowd Options", expandCrowdOptions)) {
         //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     nk_property_int(ctx, "Path Queue Size", 0, pathQueueSize, 1024, 1, 1);
+        ImGui.SliderInt("Path Queue Size", ref pathQueueSize, 0, 1024);
         //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     nk_property_int(ctx, "Max Iterations", 0, maxIterations, 4000, 1, 1);
+        ImGui.SliderInt("Max Iterations", ref maxIterations, 0, 4000);
         //     nk_tree_state_pop(ctx);
         // }
         // nk_layout_row_dynamic(ctx, 1, 1);

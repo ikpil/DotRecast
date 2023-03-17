@@ -106,11 +106,12 @@ public class RcSettingsView : IRcView
 
         ImGui.Text("Region");
         ImGui.Separator();
-        ImGui.SliderInt("Min Region Size", ref minRegionSize, 1, 150, "%.0f");
-        ImGui.SliderInt("Merged Region Size", ref mergedRegionSize, 1, 150, "%.0f");
+        ImGui.SliderInt("Min Region Size", ref minRegionSize, 1, 150);
+        ImGui.SliderInt("Merged Region Size", ref mergedRegionSize, 1, 150);
         ImGui.NewLine();
 
         ImGui.Text("Partitioning");
+        ImGui.Separator();
         PartitionType.Values.forEach(partition =>
         {
             var label = partition.Name.Substring(0, 1).ToUpper()
@@ -120,38 +121,32 @@ public class RcSettingsView : IRcView
         ImGui.NewLine();
 
         ImGui.Text("Filtering");
+        ImGui.Separator();
         ImGui.Checkbox("Low Hanging Obstacles", ref filterLowHangingObstacles);
         ImGui.Checkbox("Ledge Spans", ref filterLedgeSpans);
         ImGui.Checkbox("Walkable Low Height Spans", ref filterWalkableLowHeightSpans);
         ImGui.NewLine();
 
         ImGui.Text("Polygonization");
-        //         nk_layout_row_dynamic(ctx, 20, 1);
+        ImGui.Separator();
         ImGui.SliderFloat("Max Edge Length", ref edgeMaxLen, 0f, 50f, "%.1f");
-        //         nk_layout_row_dynamic(ctx, 20, 1);
         ImGui.SliderFloat("Max Edge Error", ref edgeMaxError, 0.1f, 3f, "%.1f");
-        //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         nk_property_int(ctx, "Vert Per Poly", 3, vertsPerPoly, 12, 1, 1);
+        ImGui.SliderInt("Vert Per Poly", ref vertsPerPoly, 3, 12);
         ImGui.NewLine();
 
-        //         nk_layout_row_dynamic(ctx, 3, 1);
-        //         nk_spacing(ctx, 1);
-        //         nk_layout_row_dynamic(ctx, 18, 1);
-        //         nk_label(ctx, "Detail Mesh", NK_TEXT_ALIGN_LEFT);
-        //         nk_layout_row_dynamic(ctx, 20, 1);
+        ImGui.Text("Detail Mesh");
+        ImGui.Separator();
         ImGui.SliderFloat("Sample Distance", ref detailSampleDist, 0f, 16f, "%.1f");
-        //         nk_layout_row_dynamic(ctx, 20, 1);
         ImGui.SliderFloat("Max Sample Error", ref detailSampleMaxError, 0f, 16f, "%.1f");
-        //
-        //         nk_layout_row_dynamic(ctx, 3, 1);
-        //         nk_spacing(ctx, 1);
-        //         nk_layout_row_dynamic(ctx, 18, 1);
+        ImGui.NewLine();
+        
         ImGui.Text("Tiling");
+        ImGui.Separator();
         //         nk_layout_row_dynamic(ctx, 20, 1);
         //         tiled = nk_check_text(ctx, "Enable", tiled);
         //         if (tiled) {
         //             nk_layout_row_dynamic(ctx, 20, 1);
-        //             nk_property_int(ctx, "Tile Size", 16, tileSize, 1024, 16, 16);
+        ImGui.SliderInt("Tile Size", ref tileSize, 16, 1024);
         //             nk_layout_row_dynamic(ctx, 18, 1);
         //             nk_label(ctx, string.format("Tiles %d x %d", tiles[0], tiles[1]), NK_TEXT_ALIGN_RIGHT);
         //             nk_layout_row_dynamic(ctx, 18, 1);
@@ -170,7 +165,9 @@ public class RcSettingsView : IRcView
         //         navMeshInputTrigerred = nk_button_text(ctx, "Load Nav Mesh...");
         //
         //         nk_layout_row_dynamic(ctx, 18, 1);
+        ImGui.NewLine();
         ImGui.Text("Draw");
+        ImGui.Separator();
         //         drawMode = NuklearUIHelper.nk_radio(ctx, DrawMode.values(), drawMode, dm => dm.toString());
         //
         //         nk_window_get_bounds(ctx, rect);
@@ -181,6 +178,7 @@ public class RcSettingsView : IRcView
         //     }
         //     nk_end(ctx);
         // }
+        ImGui.NewLine();
         return mouseInside;
     }
 
