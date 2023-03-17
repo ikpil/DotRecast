@@ -16,7 +16,9 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System.Linq;
 using System.Numerics;
+using DotRecast.Core;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Demo.UI;
 using ImGuiNET;
@@ -37,21 +39,22 @@ public class RcSettingsView : IRcView
     private int minRegionSize = 8;
     private int mergedRegionSize = 20;
 
+    private int _partitioning = 0;
     private PartitionType partitioning = PartitionType.WATERSHED;
 
     private bool filterLowHangingObstacles = true;
     private bool filterLedgeSpans = true;
     private bool filterWalkableLowHeightSpans = true;
 
-    private readonly float[] edgeMaxLen = new[] { 12f };
-    private readonly float[] edgeMaxError = new[] { 1.3f };
-    private readonly int[] vertsPerPoly = new[] { 6 };
+    private float edgeMaxLen = 12f;
+    private float edgeMaxError = 1.3f;
+    private int vertsPerPoly = 6;
 
-    private readonly float[] detailSampleDist = new[] { 6f };
-    private readonly float[] detailSampleMaxError = new[] { 1f };
+    private float detailSampleDist = 6f;
+    private float detailSampleMaxError = 1f;
 
     private bool tiled = false;
-    private readonly int[] tileSize = new[] { 32 };
+    private int tileSize = 32;
 
     // public readonly NkColor white = NkColor.create();
     // public readonly NkColor background = NkColor.create();
@@ -76,7 +79,7 @@ public class RcSettingsView : IRcView
         return true;
     }
 
-    public bool renderInternal(IWindow i, int x, int y, int width, int height, int mouseX, int mouseY)
+    public bool renderInternal(IWindow win, int x, int y, int width, int height, int mouseX, int mouseY)
     {
         bool mouseInside = false;
         ImGui.Text("Input Mesh");
@@ -88,67 +91,62 @@ public class RcSettingsView : IRcView
         ImGui.Text("Rasterization");
         ImGui.Separator();
 
-        ImGui.SliderFloat("Cell Size", ref cellSize, 0.01f, 1f, $"{cellSize}");
-        ImGui.SliderFloat("Cell Height", ref cellHeight, 0.01f, 1f, $"{cellHeight}");
+        ImGui.SliderFloat("Cell Size", ref cellSize, 0.01f, 1f, "%.2f");
+        ImGui.SliderFloat("Cell Height", ref cellHeight, 0.01f, 1f, "%.2f");
         ImGui.Text($"Voxels {voxels[0]} x {voxels[1]}");
         ImGui.NewLine();
 
         ImGui.Text("Agent");
         ImGui.Separator();
-        ImGui.SliderFloat("Height", ref agentHeight, 5f, 0.1f, $"{agentHeight}");
-        ImGui.SliderFloat("Radius", ref agentRadius, 5f, 0.1f, $"{agentRadius}");
-        ImGui.SliderFloat("Max Climb", ref agentMaxClimb, 5f, 0.1f, $"{agentMaxClimb}");
-        ImGui.SliderFloat("Max Slope", ref agentMaxSlope, 90f, 1f, $"{agentMaxSlope}");
+        ImGui.SliderFloat("Height", ref agentHeight, 0.1f, 5f, "%.1f");
+        ImGui.SliderFloat("Radius", ref agentRadius, 0.1f, 5f, "%.1f");
+        ImGui.SliderFloat("Max Climb", ref agentMaxClimb, 0.1f, 5f, "%.1f");
+        ImGui.SliderFloat("Max Slope", ref agentMaxSlope, 1f, 90f, "%.0f");
         ImGui.NewLine();
 
         ImGui.Text("Region");
         ImGui.Separator();
-        ImGui.SliderInt("Min Region Size", ref minRegionSize, 1, 150);
-        ImGui.SliderInt("Merged Region Size", ref mergedRegionSize, 1, 150);
-        //
-        //         nk_layout_row_dynamic(ctx, 3, 1);
-        //         nk_spacing(ctx, 1);
-        //         nk_layout_row_dynamic(ctx, 18, 1);
-        //         nk_label(ctx, "Partitioning", NK_TEXT_ALIGN_LEFT);
-        //         partitioning = NuklearUIHelper.nk_radio(ctx, PartitionType.values(), partitioning,
-        //                 p => p.name().substring(0, 1) + p.name().substring(1).toLowerCase());
-        //
-        //         nk_layout_row_dynamic(ctx, 3, 1);
-        //         nk_spacing(ctx, 1);
-        //         nk_layout_row_dynamic(ctx, 18, 1);
-        //         nk_label(ctx, "Filtering", NK_TEXT_ALIGN_LEFT);
+        ImGui.SliderInt("Min Region Size", ref minRegionSize, 1, 150, "%.0f");
+        ImGui.SliderInt("Merged Region Size", ref mergedRegionSize, 1, 150, "%.0f");
+        ImGui.NewLine();
+
+        ImGui.Text("Partitioning");
+        PartitionType.Values.forEach(partition =>
+        {
+            var label = partition.Name.Substring(0, 1).ToUpper()
+                        + partition.Name.Substring(1).ToLower();
+            ImGui.RadioButton(label, ref _partitioning, partition.Idx);
+        });
+        ImGui.NewLine();
+
+        ImGui.Text("Filtering");
+        ImGui.Checkbox("Low Hanging Obstacles", ref filterLowHangingObstacles);
+        ImGui.Checkbox("Ledge Spans", ref filterLedgeSpans);
+        ImGui.Checkbox("Walkable Low Height Spans", ref filterWalkableLowHeightSpans);
+        ImGui.NewLine();
+
+        ImGui.Text("Polygonization");
         //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         filterLowHangingObstacles = nk_option_text(ctx, "Low Hanging Obstacles", filterLowHangingObstacles);
+        ImGui.SliderFloat("Max Edge Length", ref edgeMaxLen, 0f, 50f, "%.1f");
         //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         filterLedgeSpans = nk_option_text(ctx, "Ledge Spans", filterLedgeSpans);
-        //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         filterWalkableLowHeightSpans = nk_option_text(ctx, "Walkable Low Height Spans",
-        //                 filterWalkableLowHeightSpans);
-        //
-        //         nk_layout_row_dynamic(ctx, 3, 1);
-        //         nk_spacing(ctx, 1);
-        //         nk_layout_row_dynamic(ctx, 18, 1);
-        //         nk_label(ctx, "Polygonization", NK_TEXT_ALIGN_LEFT);
-        //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         nk_property_float(ctx, "Max Edge Length", 0f, edgeMaxLen, 50f, 0.1f, 0.1f);
-        //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         nk_property_float(ctx, "Max Edge Error", 0.1f, edgeMaxError, 3f, 0.1f, 0.1f);
+        ImGui.SliderFloat("Max Edge Error", ref edgeMaxError, 0.1f, 3f, "%.1f");
         //         nk_layout_row_dynamic(ctx, 20, 1);
         //         nk_property_int(ctx, "Vert Per Poly", 3, vertsPerPoly, 12, 1, 1);
-        //
+        ImGui.NewLine();
+
         //         nk_layout_row_dynamic(ctx, 3, 1);
         //         nk_spacing(ctx, 1);
         //         nk_layout_row_dynamic(ctx, 18, 1);
         //         nk_label(ctx, "Detail Mesh", NK_TEXT_ALIGN_LEFT);
         //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         nk_property_float(ctx, "Sample Distance", 0f, detailSampleDist, 16f, 0.1f, 0.1f);
+        ImGui.SliderFloat("Sample Distance", ref detailSampleDist, 0f, 16f, "%.1f");
         //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         nk_property_float(ctx, "Max Sample Error", 0f, detailSampleMaxError, 16f, 0.1f, 0.1f);
+        ImGui.SliderFloat("Max Sample Error", ref detailSampleMaxError, 0f, 16f, "%.1f");
         //
         //         nk_layout_row_dynamic(ctx, 3, 1);
         //         nk_spacing(ctx, 1);
         //         nk_layout_row_dynamic(ctx, 18, 1);
-        //         nk_label(ctx, "Tiling", NK_TEXT_ALIGN_LEFT);
+        ImGui.Text("Tiling");
         //         nk_layout_row_dynamic(ctx, 20, 1);
         //         tiled = nk_check_text(ctx, "Enable", tiled);
         //         if (tiled) {
@@ -172,7 +170,7 @@ public class RcSettingsView : IRcView
         //         navMeshInputTrigerred = nk_button_text(ctx, "Load Nav Mesh...");
         //
         //         nk_layout_row_dynamic(ctx, 18, 1);
-        //         nk_label(ctx, "Draw", NK_TEXT_ALIGN_LEFT);
+        ImGui.Text("Draw");
         //         drawMode = NuklearUIHelper.nk_radio(ctx, DrawMode.values(), drawMode, dm => dm.toString());
         //
         //         nk_window_get_bounds(ctx, rect);
@@ -263,27 +261,27 @@ public class RcSettingsView : IRcView
 
     public float getEdgeMaxLen()
     {
-        return edgeMaxLen[0];
+        return edgeMaxLen;
     }
 
     public float getEdgeMaxError()
     {
-        return edgeMaxError[0];
+        return edgeMaxError;
     }
 
     public int getVertsPerPoly()
     {
-        return vertsPerPoly[0];
+        return vertsPerPoly;
     }
 
     public float getDetailSampleDist()
     {
-        return detailSampleDist[0];
+        return detailSampleDist;
     }
 
     public float getDetailSampleMaxError()
     {
-        return detailSampleMaxError[0];
+        return detailSampleMaxError;
     }
 
     public void setVoxels(int[] voxels)
@@ -299,7 +297,7 @@ public class RcSettingsView : IRcView
 
     public int getTileSize()
     {
-        return tileSize[0];
+        return tileSize;
     }
 
     public void setTiles(int[] tiles)

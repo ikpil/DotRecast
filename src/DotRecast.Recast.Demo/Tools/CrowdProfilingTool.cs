@@ -24,6 +24,7 @@ using DotRecast.Detour;
 using DotRecast.Detour.Crowd;
 using DotRecast.Recast.Demo.Builder;
 using DotRecast.Recast.Demo.Draw;
+using ImGuiNET;
 using Silk.NET.Windowing;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 
@@ -32,16 +33,16 @@ namespace DotRecast.Recast.Demo.Tools;
 public class CrowdProfilingTool
 {
     private readonly Func<CrowdAgentParams> agentParamsSupplier;
-    private readonly int[] expandSimOptions = new[] { 1 };
-    private readonly int[] expandCrowdOptions = new[] { 1 };
-    private readonly int[] agents = new[] { 1000 };
-    private readonly int[] randomSeed = new[] { 270 };
-    private readonly int[] numberOfZones = new[] { 4 };
-    private readonly float[] zoneRadius = new[] { 20f };
-    private readonly float[] percentMobs = new[] { 80f };
-    private readonly float[] percentTravellers = new[] { 15f };
-    private readonly int[] pathQueueSize = new[] { 32 };
-    private readonly int[] maxIterations = new[] { 300 };
+    private int expandSimOptions = 1;
+    private int expandCrowdOptions = 1;
+    private int agents = 1000;
+    private int randomSeed = 270;
+    private int numberOfZones = 4;
+    private float zoneRadius = 20f;
+    private float percentMobs = 80f;
+    private float percentTravellers = 15f;
+    private int pathQueueSize = 32;
+    private int maxIterations = 300;
     private Crowd crowd;
     private NavMesh navMesh;
     private CrowdConfig config;
@@ -66,11 +67,11 @@ public class CrowdProfilingTool
         //     nk_layout_row_dynamic(ctx, 20, 1);
         //     nk_property_int(ctx, "Number of Zones", 0, numberOfZones, 10, 1, 1);
         //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     nk_property_float(ctx, "Zone Radius", 0, zoneRadius, 100, 1, 1);
+        ImGui.SliderFloat("Zone Radius", ref zoneRadius, 0, 100, "%.0f");
         //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     nk_property_float(ctx, "Mobs %", 0, percentMobs, 100, 1, 1);
+        ImGui.SliderFloat("Mobs %", ref percentMobs, 0, 100, "%.0f");
         //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     nk_property_float(ctx, "Travellers %", 0, percentTravellers, 100, 1, 1);
+        ImGui.SliderFloat("Travellers %", ref percentTravellers, 0, 100, "%.0f");
         //     nk_tree_state_pop(ctx);
         // }
         // if (nk_tree_state_push(ctx, 0, "Crowd Options", expandCrowdOptions)) {
@@ -159,7 +160,7 @@ public class CrowdProfilingTool
         {
             int zone = (int)(rnd.frand() * zones.Count);
             Result<FindRandomPointResult> result = navquery.findRandomPointWithinCircle(zones[zone].getRandomRef(),
-                zones[zone].getRandomPt(), zoneRadius[0], filter, rnd);
+                zones[zone].getRandomPt(), zoneRadius, filter, rnd);
             if (result.succeeded())
             {
                 pos = result.result.getRandomPt();
@@ -174,9 +175,9 @@ public class CrowdProfilingTool
         zones.Clear();
         QueryFilter filter = new DefaultQueryFilter();
         NavMeshQuery navquery = new NavMeshQuery(navMesh);
-        for (int i = 0; i < numberOfZones[0]; i++)
+        for (int i = 0; i < numberOfZones; i++)
         {
-            float zoneSeparation = zoneRadius[0] * zoneRadius[0] * 16;
+            float zoneSeparation = zoneRadius * zoneRadius * 16;
             for (int k = 0; k < 100; k++)
             {
                 Result<FindRandomPointResult> result = navquery.findRandomPoint(filter, rnd);
@@ -239,8 +240,8 @@ public class CrowdProfilingTool
         long startTime = Stopwatch.GetTimestamp();
         if (crowd != null)
         {
-            crowd.config().pathQueueSize = pathQueueSize[0];
-            crowd.config().maxFindPathIterations = maxIterations[0];
+            crowd.config().pathQueueSize = pathQueueSize;
+            crowd.config().maxFindPathIterations = maxIterations;
             crowd.update(dt, null);
         }
 
@@ -280,7 +281,7 @@ public class CrowdProfilingTool
         if (nearestPoly.succeeded())
         {
             Result<FindRandomPointResult> result = navquery.findRandomPointAroundCircle(nearestPoly.result.getNearestRef(),
-                agentData.home, zoneRadius[0] * 2f, filter, rnd);
+                agentData.home, zoneRadius * 2f, filter, rnd);
             if (result.succeeded())
             {
                 crowd.requestMoveTarget(ag, result.result.getRandomRef(), result.result.getRandomPt());
@@ -295,7 +296,7 @@ public class CrowdProfilingTool
         if (nearestPoly.succeeded())
         {
             Result<FindRandomPointResult> result = navquery.findRandomPointAroundCircle(nearestPoly.result.getNearestRef(),
-                agentData.home, zoneRadius[0] * 0.2f, filter, rnd);
+                agentData.home, zoneRadius * 0.2f, filter, rnd);
             if (result.succeeded())
             {
                 crowd.requestMoveTarget(ag, result.result.getRandomRef(), result.result.getRandomPt());
@@ -309,7 +310,7 @@ public class CrowdProfilingTool
         List<FindRandomPointResult> potentialTargets = new();
         foreach (FindRandomPointResult zone in zones)
         {
-            if (DemoMath.vDistSqr(zone.getRandomPt(), ag.npos, 0) > zoneRadius[0] * zoneRadius[0])
+            if (DemoMath.vDistSqr(zone.getRandomPt(), ag.npos, 0) > zoneRadius * zoneRadius)
             {
                 potentialTargets.Add(zone);
             }

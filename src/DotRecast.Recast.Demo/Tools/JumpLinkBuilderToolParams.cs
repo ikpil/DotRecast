@@ -31,13 +31,13 @@ public class JumpLinkBuilderToolParams
     public const int DRAW_ANNOTATIONS = 1 << 6;
 
     public int flags = DRAW_WALKABLE_SURFACE | DRAW_WALKABLE_BORDER | DRAW_SELECTED_EDGE | DRAW_ANIM_TRAJECTORY | DRAW_LAND_SAMPLES | DRAW_ANNOTATIONS;
-    public readonly float[] groundTolerance = new[] { 0.3f };
-    public readonly float[] climbDownDistance = new[] { 0.4f };
-    public readonly float[] climbDownMaxHeight = new[] { 3.2f };
-    public readonly float[] climbDownMinHeight = new[] { 1.5f };
-    public readonly float[] edgeJumpEndDistance = new[] { 2f };
-    public readonly float[] edgeJumpHeight = new[] { 0.4f };
-    public readonly float[] edgeJumpDownMaxHeight = new[] { 2.5f };
-    public readonly float[] edgeJumpUpMaxHeight = new[] { 0.3f };
+    public float groundTolerance = 0.3f;
+    public float climbDownDistance = 0.4f;
+    public float climbDownMaxHeight = 3.2f;
+    public float climbDownMinHeight = 1.5f;
+    public float edgeJumpEndDistance = 2f;
+    public float edgeJumpHeight = 0.4f;
+    public float edgeJumpDownMaxHeight = 2.5f;
+    public float edgeJumpUpMaxHeight = 0.3f;
     public int buildTypes = (1 << (int)JumpLinkType.EDGE_CLIMB_DOWN) | (1 << (int)JumpLinkType.EDGE_JUMP);
 }

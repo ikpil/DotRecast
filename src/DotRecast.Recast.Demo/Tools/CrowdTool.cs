@@ -27,6 +27,7 @@ using DotRecast.Detour.Crowd.Tracking;
 using DotRecast.Recast.Demo.Builder;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Demo.Geom;
+using ImGuiNET;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
@@ -232,8 +233,8 @@ public class CrowdTool : Tool
         ap.collisionQueryRange = ap.radius * 12.0f;
         ap.pathOptimizationRange = ap.radius * 30.0f;
         ap.updateFlags = getUpdateFlags();
-        ap.obstacleAvoidanceType = toolParams.m_obstacleAvoidanceType[0];
-        ap.separationWeight = toolParams.m_separationWeight[0];
+        ap.obstacleAvoidanceType = toolParams.m_obstacleAvoidanceType;
+        ap.separationWeight = toolParams.m_separationWeight;
         return ap;
     }
 
@@ -729,7 +730,7 @@ public class CrowdTool : Tool
         //     nk_layout_row_dynamic(ctx, 20, 1);
         //     toolParams.m_separation = nk_option_text(ctx, "Separation", toolParams.m_separation);
         //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     nk_property_float(ctx, "Separation Weight", 0f, toolParams.m_separationWeight, 20f, 0.01f, 0.01f);
+        ImGui.SliderFloat("Separation Weight", ref toolParams.m_separationWeight, 0f, 20f, "%.2f");
         //     if (m_optimizeVis != toolParams.m_optimizeVis || m_optimizeTopo != toolParams.m_optimizeTopo
         //             || m_anticipateTurns != toolParams.m_anticipateTurns || m_obstacleAvoidance != toolParams.m_obstacleAvoidance
         //             || m_separation != toolParams.m_separation
@@ -784,7 +785,7 @@ public class CrowdTool : Tool
         }
 
         int updateFlags = getUpdateFlags();
-        profilingTool.updateAgentParams(updateFlags, toolParams.m_obstacleAvoidanceType[0], toolParams.m_separationWeight[0]);
+        profilingTool.updateAgentParams(updateFlags, toolParams.m_obstacleAvoidanceType, toolParams.m_separationWeight);
         foreach (CrowdAgent ag in crowd.getActiveAgents())
         {
             CrowdAgentParams option = new CrowdAgentParams();
@@ -798,8 +799,8 @@ public class CrowdTool : Tool
             option.queryFilterType = ag.option.queryFilterType;
             option.userData = ag.option.userData;
             option.updateFlags = updateFlags;
-            option.obstacleAvoidanceType = toolParams.m_obstacleAvoidanceType[0];
-            option.separationWeight = toolParams.m_separationWeight[0];
+            option.obstacleAvoidanceType = toolParams.m_obstacleAvoidanceType;
+            option.separationWeight = toolParams.m_separationWeight;
             crowd.updateAgentParameters(ag, option);
         }
     }

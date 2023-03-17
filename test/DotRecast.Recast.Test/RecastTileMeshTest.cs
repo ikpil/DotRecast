@@ -48,7 +48,7 @@ public class RecastTileMeshTest
     private const int m_vertsPerPoly = 6;
     private const float m_detailSampleDist = 6.0f;
     private const float m_detailSampleMaxError = 1.0f;
-    private const PartitionType m_partitionType = PartitionType.WATERSHED;
+    private PartitionType m_partitionType = PartitionType.WATERSHED;
     private const int m_tileSize = 32;
 
     [Test]

@@ -22,6 +22,7 @@ using DotRecast.Detour.Extras.Jumplink;
 using DotRecast.Recast.Demo.Builder;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Demo.Geom;
+using ImGuiNET;
 using static DotRecast.Detour.DetourCommon;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
@@ -326,37 +327,37 @@ public class JumpLinkBuilderTool : Tool
         // if (!sample.getRecastResults().isEmpty()) {
         //
         //     nk_layout_row_dynamic(ctx, 18, 1);
-        //     nk_label(ctx, "Options", NK_TEXT_ALIGN_LEFT);
+        ImGui.Text("Options");
         //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     nk_property_float(ctx, "Ground Tolerance", 0f, option.groundTolerance, 2f, 0.05f, 0.01f);
+        ImGui.SliderFloat("Ground Tolerance", ref option.groundTolerance, 0f, 2f, "%.2f");
         //     nk_layout_row_dynamic(ctx, 5, 1);
         //     nk_spacing(ctx, 1);
         //
         //     nk_layout_row_dynamic(ctx, 18, 1);
         //     nk_label(ctx, "Climb Down", NK_TEXT_ALIGN_LEFT);
         //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     nk_property_float(ctx, "Distance", 0f, option.climbDownDistance, 5f, 0.05f, 0.01f);
+        ImGui.SliderFloat("Distance", ref option.climbDownDistance, 0f, 5f, "%.2f");
         //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     nk_property_float(ctx, "Min Cliff Height", 0f, option.climbDownMinHeight, 10f, 0.05f, 0.01f);
+        ImGui.SliderFloat("Min Cliff Height", ref option.climbDownMinHeight, 0f, 10f, "%.2f");
         //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     nk_property_float(ctx, "Max Cliff Height", 0f, option.climbDownMaxHeight, 10f, 0.05f, 0.01f);
+        ImGui.SliderFloat("Max Cliff Height", ref option.climbDownMaxHeight, 0f, 10f, "%.2f");
         //     nk_layout_row_dynamic(ctx, 5, 1);
         //     nk_spacing(ctx, 1);
         //
         //     nk_layout_row_dynamic(ctx, 18, 1);
         //     nk_label(ctx, "Jump Down", NK_TEXT_ALIGN_LEFT);
         //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     nk_property_float(ctx, "Max Distance", 0f, option.edgeJumpEndDistance, 10f, 0.05f, 0.01f);
+        ImGui.SliderFloat("Max Distance", ref option.edgeJumpEndDistance, 0f, 10f, "%.2f");
         //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     nk_property_float(ctx, "Jump Height", 0f, option.edgeJumpHeight, 10f, 0.05f, 0.01f);
+        ImGui.SliderFloat("Jump Height", ref option.edgeJumpHeight, 0f, 10f, "%.2f");
         //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     nk_property_float(ctx, "Max Jump Down", 0f, option.edgeJumpDownMaxHeight, 10f, 0.05f, 0.01f);
+        ImGui.SliderFloat("Max Jump Down", ref option.edgeJumpDownMaxHeight, 0f, 10f, "%.2f");
         //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     nk_property_float(ctx, "Max Jump Up", 0f, option.edgeJumpUpMaxHeight, 10f, 0.05f, 0.01f);
+        ImGui.SliderFloat("Max Jump Up", ref option.edgeJumpUpMaxHeight, 0f, 10f, "%.2f");
         //     nk_layout_row_dynamic(ctx, 5, 1);
         //     nk_spacing(ctx, 1);
         //     nk_layout_row_dynamic(ctx, 18, 1);
-        //     nk_label(ctx, "Mode", NK_TEXT_ALIGN_LEFT);
+        ImGui.Text("Mode");
         //     nk_layout_row_dynamic(ctx, 20, 1);
         //     int buildTypes = 0;
         //     buildTypes |= nk_option_text(ctx, "Climb Down",

@@ -25,6 +25,7 @@ using DotRecast.Core;
 using DotRecast.Recast.Demo.Builder;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Demo.Geom;
+using ImGuiNET;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
@@ -34,9 +35,9 @@ public class ConvexVolumeTool : Tool
 {
     private Sample sample;
     private AreaModification areaType = SampleAreaModifications.SAMPLE_AREAMOD_GRASS;
-    private readonly float[] boxHeight = new[] { 6f };
-    private readonly float[] boxDescent = new[] { 1f };
-    private readonly float[] polyOffset = new[] { 0f };
+    private float boxHeight = 6f;
+    private float boxDescent = 1f;
+    private float polyOffset = 0f;
     private readonly List<float> pts = new();
     private readonly List<int> hull = new();
 
@@ -99,13 +100,13 @@ public class ConvexVolumeTool : Tool
                         minh = Math.Min(minh, verts[i * 3 + 1]);
                     }
 
-                    minh -= boxDescent[0];
-                    maxh = minh + boxHeight[0];
+                    minh -= boxDescent;
+                    maxh = minh + boxHeight;
 
-                    if (polyOffset[0] > 0.01f)
+                    if (polyOffset > 0.01f)
                     {
                         float[] offset = new float[verts.Length * 2];
-                        int noffset = PolyUtils.offsetPoly(verts, hull.Count, polyOffset[0], offset,
+                        int noffset = PolyUtils.offsetPoly(verts, hull.Count, polyOffset, offset,
                             offset.Length);
                         if (noffset > 0)
                         {
@@ -151,8 +152,8 @@ public class ConvexVolumeTool : Tool
             minh = Math.Min(minh, pts[i + 1]);
         }
 
-        minh -= boxDescent[0];
-        maxh = minh + boxHeight[0];
+        minh -= boxDescent;
+        maxh = minh + boxHeight;
 
         dd.begin(POINTS, 4.0f);
         for (int i = 0; i < pts.Count; i += 3)
@@ -187,11 +188,11 @@ public class ConvexVolumeTool : Tool
     public override void layout(IWindow ctx)
     {
         // nk_layout_row_dynamic(ctx, 20, 1);
-        // nk_property_float(ctx, "Shape Height", 0.1f, boxHeight, 20f, 0.1f, 0.1f);
+        ImGui.SliderFloat("Shape Height", ref boxHeight, 0.1f, 20f, "%.1f");
         // nk_layout_row_dynamic(ctx, 20, 1);
-        // nk_property_float(ctx, "Shape Descent", 0.1f, boxDescent, 20f, 0.1f, 0.1f);
+        ImGui.SliderFloat("Shape Descent", ref boxDescent, 0.1f, 20f, "%.1f");
         // nk_layout_row_dynamic(ctx, 20, 1);
-        // nk_property_float(ctx, "Poly Offset", 0.1f, polyOffset, 10f, 0.1f, 0.1f);
+        ImGui.SliderFloat("Poly Offset", ref polyOffset, 0.1f, 10f, "%.1f");
         // nk_label(ctx, "Area Type", NK_TEXT_ALIGN_LEFT);
         // nk_layout_row_dynamic(ctx, 20, 1);
         // if (nk_option_label(ctx, "Ground", areaType == SampleAreaModifications.SAMPLE_AREAMOD_GROUND)) {

@@ -20,7 +20,7 @@ namespace DotRecast.Recast.Demo.Tools;
 
 public class CrowdToolParams
 {
-    public readonly int[] m_expandSelectedDebugDraw = new[] { 1 };
+    public int m_expandSelectedDebugDraw = 1;
     public bool m_showCorners;
     public bool m_showCollisionSegments;
     public bool m_showPath;
@@ -28,19 +28,19 @@ public class CrowdToolParams
     public bool m_showOpt;
     public bool m_showNeis;
 
-    public readonly int[] m_expandDebugDraw = new[] { 0 };
+    public int m_expandDebugDraw = 0;
     public bool m_showLabels;
     public bool m_showGrid;
     public bool m_showNodes;
     public bool m_showPerfGraph;
     public bool m_showDetailAll;
 
-    public readonly int[] m_expandOptions = new[] { 1 };
+    public int m_expandOptions = 1;
     public bool m_anticipateTurns = true;
     public bool m_optimizeVis = true;
     public bool m_optimizeTopo = true;
     public bool m_obstacleAvoidance = true;
-    public readonly int[] m_obstacleAvoidanceType = new[] { 3 };
+    public int m_obstacleAvoidanceType = 3;
     public bool m_separation;
-    public readonly float[] m_separationWeight = new[] { 2f };
+    public float m_separationWeight = 2f;
 }
