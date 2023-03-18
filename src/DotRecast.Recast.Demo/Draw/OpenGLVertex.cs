@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using DotRecast.Core;
 
 namespace DotRecast.Recast.Demo.Draw;
@@ -36,13 +38,13 @@ public class OpenGLVertex
         this.color = color;
     }
 
-    public void store(ByteBuffer buffer)
+    public void store(Stream writer)
     {
-        buffer.putFloat(x);
-        buffer.putFloat(y);
-        buffer.putFloat(z);
-        buffer.putFloat(u);
-        buffer.putFloat(v);
-        buffer.putInt(color);
+        writer.Write(BitConverter.GetBytes(x));
+        writer.Write(BitConverter.GetBytes(y));
+        writer.Write(BitConverter.GetBytes(z));
+        writer.Write(BitConverter.GetBytes(u));
+        writer.Write(BitConverter.GetBytes(v));
+        writer.Write(BitConverter.GetBytes(color));
     }
 }

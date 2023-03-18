@@ -31,17 +31,17 @@ public class Sample
     private DemoInputGeomProvider inputGeom;
     private NavMesh navMesh;
     private NavMeshQuery navMeshQuery;
-    private readonly RcSettingsView _rcSettingsView;
+    private readonly RcSettingsView _settingsView;
     private IList<RecastBuilderResult> recastResults;
     private bool changed;
 
     public Sample(DemoInputGeomProvider inputGeom, IList<RecastBuilderResult> recastResults, NavMesh navMesh,
-        RcSettingsView rcSettingsView, RecastDebugDraw debugDraw)
+        RcSettingsView settingsView, RecastDebugDraw debugDraw)
     {
         this.inputGeom = inputGeom;
         this.recastResults = recastResults;
         this.navMesh = navMesh;
-        this._rcSettingsView = rcSettingsView;
+        _settingsView = settingsView;
         setQuery(navMesh);
         changed = true;
     }
@@ -68,7 +68,7 @@ public class Sample
 
     public RcSettingsView getSettingsUI()
     {
-        return _rcSettingsView;
+        return _settingsView;
     }
 
     public NavMeshQuery getNavMeshQuery()

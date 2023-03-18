@@ -27,7 +27,7 @@ namespace DotRecast.Core
                 filePath = Path.Combine("..", filePath);
             }
 
-            return filename;
+            return Path.GetFullPath(filename);
         }
     }
 }

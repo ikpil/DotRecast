@@ -1,9 +1,15 @@
 using System;
+using System.Buffers;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using DotRecast.Core;
+using ImGuiNET;
 using Microsoft.DotNet.PlatformAbstractions;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
+using Buffer = Silk.NET.OpenGL.Buffer;
 
 namespace DotRecast.Recast.Demo.Draw;
 
@@ -30,7 +36,7 @@ public class ModernOpenGLDraw : OpenGLDraw
     private int uniformFogStart;
     private int uniformFogEnd;
 
-    public void init(GL gl)
+    public unsafe void init(GL gl)
     {
         _gl = gl;
         string NK_SHADER_VERSION = PlatformID.MacOSX == Environment.OSVersion.Platform ? "#version 150\n" : "#version 300 es\n";
@@ -116,13 +122,19 @@ public class ModernOpenGLDraw : OpenGLDraw
         _gl.EnableVertexAttribArray(attrib_uv);
         _gl.EnableVertexAttribArray(attrib_col);
 
-        // _gl.VertexAttribPointer(attrib_pos, 3, GLEnum.Float, false, 24, 0);
-        // _gl.VertexAttribPointer(attrib_uv, 2, GLEnum.Float, false, 24, 12);
-        // _gl.VertexAttribPointer(attrib_col, 4, GLEnum.UnsignedByte, true, 24, 20);
+        // _gl.VertexAttribP3(attrib_pos, GLEnum.Float, false, 24);
+        // _gl.VertexAttribP2(attrib_pos, GLEnum.Float, false, 24);
+        // _gl.VertexAttribP4(attrib_pos, GLEnum.UnsignedByte, true, 24);
+        IntPtr pointer1 = 0;
+        IntPtr pointer2 = 12;
+        IntPtr pointer3 = 20;
+        _gl.VertexAttribPointer(attrib_pos, 3, GLEnum.Float, false, 24, pointer1.ToPointer());
+        _gl.VertexAttribPointer(attrib_uv, 2, GLEnum.Float, false, 24, pointer2.ToPointer());
+        _gl.VertexAttribPointer(attrib_col, 4, GLEnum.UnsignedByte, true, 24, pointer3.ToPointer());
 
-        _gl.VertexAttribP3(attrib_pos, GLEnum.Float, false, 0);
-        _gl.VertexAttribP2(attrib_uv, GLEnum.Float, false, 12);
-        _gl.VertexAttribP4(attrib_col, GLEnum.UnsignedByte, true, 20);
+        // _gl.VertexAttribP3(attrib_pos, GLEnum.Float, false, 0);
+        // _gl.VertexAttribP2(attrib_uv, GLEnum.Float, false, 12);
+        // _gl.VertexAttribP4(attrib_col, GLEnum.UnsignedByte, true, 20);
 
         _gl.BindTexture(GLEnum.Texture2D, 0);
         _gl.BindBuffer(GLEnum.ArrayBuffer, 0);
@@ -149,57 +161,74 @@ public class ModernOpenGLDraw : OpenGLDraw
         _gl.PointSize(size);
     }
 
-    public void end()
+    public unsafe void end()
     {
-        // if (vertices.isEmpty()) {
-        //     return;
-        // }
-        // glUseProgram(program);
-        // glUniform1i(uniformTexture, 0);
-        // glUniformMatrix4fv(uniformViewMatrix, false, viewMatrix);
-        // glUniformMatrix4fv(uniformProjectionMatrix, false, projectionMatrix);
-        // glUniform1f(uniformFogStart, fogStart);
-        // glUniform1f(uniformFogEnd, fogEnd);
-        // glUniform1f(uniformFog, fogEnabled ? 1.0f : 0.0f);
-        // glBindVertexArray(vao);
-        // glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-        // // glBufferData(GL_ARRAY_BUFFER, MAX_VERTEX_BUFFER, GL_STREAM_DRAW);
-        // // glBufferData(GL_ELEMENT_ARRAY_BUFFER, MAX_ELEMENT_BUFFER, GL_STREAM_DRAW);
-        //
-        // int vboSize = vertices.size() * 24;
-        // int eboSize = currentPrim == DebugDrawPrimitives.QUADS ? vertices.size() * 6 : vertices.size() * 4;
-        //
-        // glBufferData(GL_ARRAY_BUFFER, vboSize, GL_STREAM_DRAW);
-        // glBufferData(GL_ELEMENT_ARRAY_BUFFER, eboSize, GL_STREAM_DRAW);
-        // // load draw vertices & elements directly into vertex + element buffer
-        // ByteBuffer verts = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY, vboSize, null);
-        // ByteBuffer elems = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY, eboSize, null);
-        // vertices.forEach(v => v.store(verts));
-        // if (currentPrim == DebugDrawPrimitives.QUADS) {
-        //     for (int i = 0; i < vertices.size(); i += 4) {
-        //         elems.putInt(i);
-        //         elems.putInt(i + 1);
-        //         elems.putInt(i + 2);
-        //         elems.putInt(i);
-        //         elems.putInt(i + 2);
-        //         elems.putInt(i + 3);
-        //     }
-        //
-        // } else {
-        //     for (int i = 0; i < vertices.size(); i++) {
-        //         elems.putInt(i);
-        //     }
-        // }
-        //
-        // glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
-        // glUnmapBuffer(GL_ARRAY_BUFFER);
-        // if (texture != null) {
-        //     texture.bind();
-        //     glUniform1f(uniformUseTexture, 1.0f);
-        // } else {
-        //     glUniform1f(uniformUseTexture, 0.0f);
-        // }
+        if (0 >= vertices.Count)
+        {
+            return;
+        }
+
+        _gl.UseProgram(program);
+        _gl.Uniform1(uniformTexture, 0);
+        _gl.UniformMatrix4(uniformViewMatrix, false, _viewMatrix);
+        _gl.UniformMatrix4(uniformProjectionMatrix, false, _projectionMatrix);
+        _gl.Uniform1(uniformFogStart, fogStart);
+        _gl.Uniform1(uniformFogEnd, fogEnd);
+        _gl.Uniform1(uniformFog, fogEnabled ? 1.0f : 0.0f);
+        _gl.BindVertexArray(vao);
+        _gl.BindBuffer(GLEnum.ArrayBuffer, vbo);
+        _gl.BindBuffer(GLEnum.ElementArrayBuffer, ebo);
+        // glBufferData(GL_ARRAY_BUFFER, MAX_VERTEX_BUFFER, GL_STREAM_DRAW);
+        // glBufferData(GL_ELEMENT_ARRAY_BUFFER, MAX_ELEMENT_BUFFER, GL_STREAM_DRAW);
+        
+        int vboSize = vertices.Count * 24;
+        int eboSize = currentPrim == DebugDrawPrimitives.QUADS ? vertices.Count * 6 : vertices.Count * 4;
+        // var ssss = new byte[vboSize];
+        // var ssss2 = new byte[eboSize];
+        
+        _gl.BufferData(GLEnum.ArrayBuffer, (nuint)vboSize, IntPtr.Zero, GLEnum.StreamDraw);
+        _gl.BufferData(GLEnum.ElementArrayBuffer, (nuint)eboSize, IntPtr.Zero, GLEnum.StreamDraw);
+        // load draw vertices & elements directly into vertex + element buffer
+        byte* pVerts = (byte*)_gl.MapBuffer(GLEnum.ArrayBuffer, GLEnum.WriteOnly);
+        byte* pElems = (byte*)_gl.MapBuffer(GLEnum.ElementArrayBuffer, GLEnum.WriteOnly);
+
+        {
+            using var verts = new UnmanagedMemoryStream(pVerts, vboSize, vboSize, FileAccess.Write);
+            using var elems = new UnmanagedMemoryStream(pElems, eboSize, eboSize, FileAccess.Write);
+
+            vertices.forEach(v => v.store(verts));
+            if (currentPrim == DebugDrawPrimitives.QUADS)
+            {
+                for (int i = 0; i < vertices.Count; i += 4)
+                {
+                    elems.Write(BitConverter.GetBytes(i));
+                    elems.Write(BitConverter.GetBytes(i + 1));
+                    elems.Write(BitConverter.GetBytes(i + 2));
+                    elems.Write(BitConverter.GetBytes(i));
+                    elems.Write(BitConverter.GetBytes(i + 2));
+                    elems.Write(BitConverter.GetBytes(i + 3));
+                }
+            }
+            else
+            {
+                for (int i = 0; i < vertices.Count; i++)
+                {
+                    elems.Write(BitConverter.GetBytes(i));
+                }
+            }
+
+            _gl.UnmapBuffer(GLEnum.ElementArrayBuffer);
+            _gl.UnmapBuffer(GLEnum.ArrayBuffer);
+        }
+        if (_texture != null)
+        {
+            _texture.bind();
+            _gl.Uniform1(uniformUseTexture, 1.0f);
+        }
+        else
+        {
+            _gl.Uniform1(uniformUseTexture, 0.0f);
+        }
         //
         // switch (currentPrim) {
         // case POINTS:
@@ -217,14 +246,14 @@ public class ModernOpenGLDraw : OpenGLDraw
         // default:
         //     break;
         // }
-        //
-        // glUseProgram(0);
-        // glBindBuffer(GL_ARRAY_BUFFER, 0);
-        // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        // glBindVertexArray(0);
-        // vertices.clear();
-        // glLineWidth(1.0f);
-        // glPointSize(1.0f);
+        
+        _gl.UseProgram(0);
+        _gl.BindBuffer(GLEnum.ArrayBuffer, 0);
+        _gl.BindBuffer(GLEnum.ElementArrayBuffer, 0);
+        _gl.BindVertexArray(0);
+        vertices.Clear();
+        _gl.LineWidth(1.0f);
+        _gl.PointSize(1.0f);
     }
 
     public void vertex(float x, float y, float z, int color)
