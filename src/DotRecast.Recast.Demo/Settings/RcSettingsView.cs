@@ -16,8 +16,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using System.Linq;
-using System.Numerics;
+using System;
+using System.IO;
 using DotRecast.Core;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Demo.UI;
@@ -85,7 +85,25 @@ public class RcSettingsView : IRcView
         bool mouseInside = false;
         ImGui.Text("Input Mesh");
         ImGui.Separator();
-        ImGui.Button("Load Source Geom...");
+        
+        const string strLoadSourceGeom = "Load Source Geom...";
+        if (ImGui.Button(strLoadSourceGeom))
+        {
+            ImGui.OpenPopup(strLoadSourceGeom);
+        }
+
+        bool loadSourceGeomPopup = true;
+        if (ImGui.BeginPopupModal(strLoadSourceGeom, ref loadSourceGeomPopup, ImGuiWindowFlags.NoTitleBar))
+        {
+            var picker = ImFilePicker.GetFilePicker(strLoadSourceGeom, Path.Combine(Environment.CurrentDirectory));
+            if (picker.Draw())
+            {
+                Console.WriteLine(picker.SelectedFile);
+                ImFilePicker.RemoveFilePicker(strLoadSourceGeom);
+            }
+            ImGui.EndPopup();
+        }
+        
         ImGui.Text($"Verts: {voxels[0]} Tris: {voxels[1]}");
         ImGui.NewLine();
 
@@ -120,7 +138,7 @@ public class RcSettingsView : IRcView
             ImGui.RadioButton(label, ref _partitioning, partition.Idx);
         });
         ImGui.NewLine();
-
+        
         ImGui.Text("Filtering");
         ImGui.Separator();
         ImGui.Checkbox("Low Hanging Obstacles", ref filterLowHangingObstacles);
@@ -159,8 +177,24 @@ public class RcSettingsView : IRcView
         ImGui.Text($"Build Time: {buildTime} ms");
         ImGui.Separator();
         buildTriggered = ImGui.Button("Build");
-        ImGui.SameLine();
-        navMeshInputTrigerred = ImGui.Button("Load Nav Mesh...");
+        const string strLoadNavMesh = "Load Nav Mesh...";
+        if (ImGui.Button(strLoadNavMesh))
+        {
+            ImGui.OpenPopup(strLoadNavMesh);
+        }
+
+        bool isLoadNavMesh = true;
+        if (ImGui.BeginPopupModal(strLoadNavMesh, ref isLoadNavMesh, ImGuiWindowFlags.NoTitleBar))
+        {
+            var picker = ImFilePicker.GetFilePicker(strLoadNavMesh, Path.Combine(Environment.CurrentDirectory));
+            if (picker.Draw())
+            {
+                Console.WriteLine(picker.SelectedFile);
+                ImFilePicker.RemoveFilePicker(strLoadNavMesh);
+            }
+            ImGui.EndPopup();
+        }
+        
         ImGui.NewLine();
         
         ImGui.Text("Draw");
