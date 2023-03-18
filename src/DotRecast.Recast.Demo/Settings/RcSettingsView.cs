@@ -66,6 +66,7 @@ public class RcSettingsView : IRcView
     private int maxTiles;
     private int maxPolys;
 
+    private int drawModeIdx = DrawMode.DRAWMODE_NAVMESH.Idx;
     private DrawMode drawMode = DrawMode.DRAWMODE_NAVMESH;
     private bool meshInputTrigerred;
     private bool navMeshInputTrigerred;
@@ -142,34 +143,33 @@ public class RcSettingsView : IRcView
         
         ImGui.Text("Tiling");
         ImGui.Separator();
-        //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         tiled = nk_check_text(ctx, "Enable", tiled);
-        //         if (tiled) {
-        //             nk_layout_row_dynamic(ctx, 20, 1);
-        ImGui.SliderInt("Tile Size", ref tileSize, 16, 1024);
-        //             nk_layout_row_dynamic(ctx, 18, 1);
-        //             nk_label(ctx, string.format("Tiles %d x %d", tiles[0], tiles[1]), NK_TEXT_ALIGN_RIGHT);
-        //             nk_layout_row_dynamic(ctx, 18, 1);
-        //             nk_label(ctx, string.format("Max Tiles %d", maxTiles), NK_TEXT_ALIGN_RIGHT);
-        //             nk_layout_row_dynamic(ctx, 18, 1);
-        //             nk_label(ctx, string.format("Max Polys %d", maxPolys), NK_TEXT_ALIGN_RIGHT);
-        //         }
-        //         nk_layout_row_dynamic(ctx, 18, 1);
-        //         nk_label(ctx, string.format("Build Time: %d ms", buildTime), NK_TEXT_ALIGN_LEFT);
-        //
-        //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         buildTriggered = nk_button_text(ctx, "Build");
-        //         nk_layout_row_dynamic(ctx, 3, 1);
-        //         nk_spacing(ctx, 1);
-        //         nk_layout_row_dynamic(ctx, 18, 1);
-        //         navMeshInputTrigerred = nk_button_text(ctx, "Load Nav Mesh...");
-        //
-        //         nk_layout_row_dynamic(ctx, 18, 1);
+        ImGui.Checkbox("Enable", ref tiled);
+        if (tiled)
+        {
+            if (0 < (tileSize % 16))
+                tileSize = tileSize + (16 - (tileSize % 16));
+            ImGui.SliderInt("Tile Size", ref tileSize, 16, 1024);
+            
+            ImGui.Text($"Tiles {tiles[0]} x {tiles[1]}");
+            ImGui.Text($"Max Tiles {maxTiles}");
+            ImGui.Text($"Max Polys {maxPolys}");
+        }
         ImGui.NewLine();
+
+        ImGui.Text($"Build Time: {buildTime} ms");
+        ImGui.Separator();
+        buildTriggered = ImGui.Button("Build");
+        ImGui.SameLine();
+        navMeshInputTrigerred = ImGui.Button("Load Nav Mesh...");
+        ImGui.NewLine();
+        
         ImGui.Text("Draw");
         ImGui.Separator();
-        //         drawMode = NuklearUIHelper.nk_radio(ctx, DrawMode.values(), drawMode, dm => dm.toString());
-        //
+        
+        DrawMode.Values.forEach(dm =>
+        {
+            ImGui.RadioButton(dm.Text, ref drawModeIdx, dm.Idx);
+        });
         //         nk_window_get_bounds(ctx, rect);
         //         if (mouseX >= rect.x() && mouseX <= rect.x() + rect.w() && mouseY >= rect.y()
         //                 && mouseY <= rect.y() + rect.h()) {

@@ -18,38 +18,63 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System.Collections.Immutable;
+
 namespace DotRecast.Recast.Demo.Draw;
 
 public class DrawMode
 {
-    public static readonly DrawMode DRAWMODE_MESH = new("Input Mesh");
-    public static readonly DrawMode DRAWMODE_NAVMESH = new("Navmesh");
-    public static readonly DrawMode DRAWMODE_NAVMESH_INVIS = new("Navmesh Invis");
-    public static readonly DrawMode DRAWMODE_NAVMESH_TRANS = new("Navmesh Trans");
-    public static readonly DrawMode DRAWMODE_NAVMESH_BVTREE = new("Navmesh BVTree");
-    public static readonly DrawMode DRAWMODE_NAVMESH_NODES = new("Navmesh Nodes");
-    public static readonly DrawMode DRAWMODE_NAVMESH_PORTALS = new("Navmesh Portals");
-    public static readonly DrawMode DRAWMODE_VOXELS = new("Voxels");
-    public static readonly DrawMode DRAWMODE_VOXELS_WALKABLE = new("Walkable Voxels");
-    public static readonly DrawMode DRAWMODE_COMPACT = new("Compact");
-    public static readonly DrawMode DRAWMODE_COMPACT_DISTANCE = new("Compact Distance");
-    public static readonly DrawMode DRAWMODE_COMPACT_REGIONS = new("Compact Regions");
-    public static readonly DrawMode DRAWMODE_REGION_CONNECTIONS = new("Region Connections");
-    public static readonly DrawMode DRAWMODE_RAW_CONTOURS = new("Raw Contours");
-    public static readonly DrawMode DRAWMODE_BOTH_CONTOURS = new("Both Contours");
-    public static readonly DrawMode DRAWMODE_CONTOURS = new("Contours");
-    public static readonly DrawMode DRAWMODE_POLYMESH = new("Poly Mesh");
-    public static readonly DrawMode DRAWMODE_POLYMESH_DETAIL = new("Poly Mesh Detils");
+    public static readonly DrawMode DRAWMODE_MESH = new(0, "Input Mesh");
+    public static readonly DrawMode DRAWMODE_NAVMESH = new(1, "Navmesh");
+    public static readonly DrawMode DRAWMODE_NAVMESH_INVIS = new(2, "Navmesh Invis");
+    public static readonly DrawMode DRAWMODE_NAVMESH_TRANS = new(3, "Navmesh Trans");
+    public static readonly DrawMode DRAWMODE_NAVMESH_BVTREE = new(4, "Navmesh BVTree");
+    public static readonly DrawMode DRAWMODE_NAVMESH_NODES = new(5, "Navmesh Nodes");
+    public static readonly DrawMode DRAWMODE_NAVMESH_PORTALS = new(6, "Navmesh Portals");
+    public static readonly DrawMode DRAWMODE_VOXELS = new(7, "Voxels");
+    public static readonly DrawMode DRAWMODE_VOXELS_WALKABLE = new(8, "Walkable Voxels");
+    public static readonly DrawMode DRAWMODE_COMPACT = new(9, "Compact");
+    public static readonly DrawMode DRAWMODE_COMPACT_DISTANCE = new(10, "Compact Distance");
+    public static readonly DrawMode DRAWMODE_COMPACT_REGIONS = new(11, "Compact Regions");
+    public static readonly DrawMode DRAWMODE_REGION_CONNECTIONS = new(12, "Region Connections");
+    public static readonly DrawMode DRAWMODE_RAW_CONTOURS = new(13, "Raw Contours");
+    public static readonly DrawMode DRAWMODE_BOTH_CONTOURS = new(14, "Both Contours");
+    public static readonly DrawMode DRAWMODE_CONTOURS = new(15, "Contours");
+    public static readonly DrawMode DRAWMODE_POLYMESH = new(16, "Poly Mesh");
+    public static readonly DrawMode DRAWMODE_POLYMESH_DETAIL = new(17, "Poly Mesh Detils");
 
-    private readonly string text;
+    public static readonly ImmutableArray<DrawMode> Values = ImmutableArray.Create(
+        DRAWMODE_MESH,
+        DRAWMODE_NAVMESH,
+        DRAWMODE_NAVMESH_INVIS,
+        DRAWMODE_NAVMESH_TRANS,
+        DRAWMODE_NAVMESH_BVTREE,
+        DRAWMODE_NAVMESH_NODES,
+        DRAWMODE_NAVMESH_PORTALS,
+        DRAWMODE_VOXELS,
+        DRAWMODE_VOXELS_WALKABLE,
+        DRAWMODE_COMPACT,
+        DRAWMODE_COMPACT_DISTANCE,
+        DRAWMODE_COMPACT_REGIONS,
+        DRAWMODE_REGION_CONNECTIONS,
+        DRAWMODE_RAW_CONTOURS,
+        DRAWMODE_BOTH_CONTOURS,
+        DRAWMODE_CONTOURS,
+        DRAWMODE_POLYMESH,
+        DRAWMODE_POLYMESH_DETAIL
+    );
 
-    private DrawMode(string text)
+    public int Idx { get; }
+    public string Text { get; }
+
+    private DrawMode(int idx, string text)
     {
-        this.text = text;
+        Idx = idx;
+        Text = text;
     }
 
     public override string ToString()
     {
-        return text;
+        return Text;
     }
 }
