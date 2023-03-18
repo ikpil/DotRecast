@@ -26,7 +26,7 @@ namespace DotRecast.Recast.Demo.Tools;
 
 public static class PathUtils
 {
-    private readonly static int MAX_STEER_POINTS = 3;
+    private const int MAX_STEER_POINTS = 3;
 
 
     public static SteerTarget getSteerTarget(NavMeshQuery navQuery, float[] startPos, float[] endPos,

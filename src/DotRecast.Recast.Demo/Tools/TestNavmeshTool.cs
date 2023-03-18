@@ -14,10 +14,13 @@ namespace DotRecast.Recast.Demo.Tools;
 
 public class TestNavmeshTool : Tool
 {
-    private readonly static int MAX_POLYS = 256;
-    private readonly static int MAX_SMOOTH = 2048;
+    private const int MAX_POLYS = 256;
+    private const int MAX_SMOOTH = 2048;
+    
     private Sample m_sample;
-    private ToolMode m_toolMode = ToolMode.PATHFIND_FOLLOW;
+
+    private int toolModeIdx = -1;
+    private TestNavmeshToolMode m_toolMode = TestNavmeshToolMode.PATHFIND_FOLLOW;
     private bool m_sposSet;
     private bool m_eposSet;
     private float[] m_spos;
@@ -42,18 +45,6 @@ public class TestNavmeshTool : Tool
     private readonly List<float[]> randomPoints = new();
     private bool constrainByCircle;
 
-    private enum ToolMode
-    {
-        PATHFIND_FOLLOW,
-        PATHFIND_STRAIGHT,
-        PATHFIND_SLICED,
-        DISTANCE_TO_WALL,
-        RAYCAST,
-        FIND_POLYS_IN_CIRCLE,
-        FIND_POLYS_IN_SHAPE,
-        FIND_LOCAL_NEIGHBOURHOOD,
-        RANDOM_POINTS_IN_CIRCLE
-    }
 
     public TestNavmeshTool()
     {
@@ -84,73 +75,55 @@ public class TestNavmeshTool : Tool
 
     public override void layout(IWindow ctx)
     {
-        ToolMode previousToolMode = m_toolMode;
+        TestNavmeshToolMode previousToolMode = m_toolMode;
         int previousStraightPathOptions = m_straightPathOptions;
         int previousIncludeFlags = m_filter.getIncludeFlags();
         int previousExcludeFlags = m_filter.getExcludeFlags();
         bool previousConstrainByCircle = constrainByCircle;
 
-        // nk_layout_row_dynamic(ctx, 20, 1);
-        // if (nk_option_label(ctx, "Pathfind Follow", m_toolMode == ToolMode.PATHFIND_FOLLOW)) {
-        //     m_toolMode = ToolMode.PATHFIND_FOLLOW;
-        // }
-        // nk_layout_row_dynamic(ctx, 20, 1);
-        // if (nk_option_label(ctx, "Pathfind Straight", m_toolMode == ToolMode.PATHFIND_STRAIGHT)) {
-        //     m_toolMode = ToolMode.PATHFIND_STRAIGHT;
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        ImGui.Text("Vertices at crossings");
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     if (nk_option_label(ctx, "None", m_straightPathOptions == 0)) {
-        //         m_straightPathOptions = 0;
-        //     }
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     if (nk_option_label(ctx, "Area", m_straightPathOptions == NavMeshQuery.DT_STRAIGHTPATH_AREA_CROSSINGS)) {
-        //         m_straightPathOptions = NavMeshQuery.DT_STRAIGHTPATH_AREA_CROSSINGS;
-        //     }
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     if (nk_option_label(ctx, "All", m_straightPathOptions == NavMeshQuery.DT_STRAIGHTPATH_ALL_CROSSINGS)) {
-        //         m_straightPathOptions = NavMeshQuery.DT_STRAIGHTPATH_ALL_CROSSINGS;
-        //     }
-        //     nk_layout_row_dynamic(ctx, 5, 1);
-        //     nk_spacing(ctx, 1);
-        // }
-        // nk_layout_row_dynamic(ctx, 20, 1);
-        // if (nk_option_label(ctx, "Pathfind Sliced", m_toolMode == ToolMode.PATHFIND_SLICED)) {
-        //     m_toolMode = ToolMode.PATHFIND_SLICED;
-        // }
-        // nk_layout_row_dynamic(ctx, 5, 1);
-        // nk_spacing(ctx, 1);
-        // nk_layout_row_dynamic(ctx, 20, 1);
-        // if (nk_option_label(ctx, "Distance to Wall", m_toolMode == ToolMode.DISTANCE_TO_WALL)) {
-        //     m_toolMode = ToolMode.DISTANCE_TO_WALL;
-        // }
-        // nk_layout_row_dynamic(ctx, 5, 1);
-        // nk_spacing(ctx, 1);
-        // nk_layout_row_dynamic(ctx, 20, 1);
-        // if (nk_option_label(ctx, "Raycast", m_toolMode == ToolMode.RAYCAST)) {
-        //     m_toolMode = ToolMode.RAYCAST;
-        // }
-        // nk_layout_row_dynamic(ctx, 5, 1);
-        // nk_spacing(ctx, 1);
-        // nk_layout_row_dynamic(ctx, 20, 1);
-        // if (nk_option_label(ctx, "Find Polys in Circle", m_toolMode == ToolMode.FIND_POLYS_IN_CIRCLE)) {
-        //     m_toolMode = ToolMode.FIND_POLYS_IN_CIRCLE;
-        // }
-        // if (nk_option_label(ctx, "Find Polys in Shape", m_toolMode == ToolMode.FIND_POLYS_IN_SHAPE)) {
-        //     m_toolMode = ToolMode.FIND_POLYS_IN_SHAPE;
-        // }
-        // nk_layout_row_dynamic(ctx, 5, 1);
-        // nk_spacing(ctx, 1);
-        // nk_layout_row_dynamic(ctx, 20, 1);
-        // if (nk_option_label(ctx, "Find Local Neighbourhood", m_toolMode == ToolMode.FIND_LOCAL_NEIGHBOURHOOD)) {
-        //     m_toolMode = ToolMode.FIND_LOCAL_NEIGHBOURHOOD;
-        // }
-        // if (nk_option_label(ctx, "Random Points in Circle", m_toolMode == ToolMode.RANDOM_POINTS_IN_CIRCLE)) {
-        //     m_toolMode = ToolMode.RANDOM_POINTS_IN_CIRCLE;
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     constrainByCircle = nk_check_text(ctx, "Constrained", constrainByCircle);
-        // }
-        //
+        ImGui.Text("Mode");
+        ImGui.Separator();
+        ImGui.RadioButton("Pathfind Follow", ref toolModeIdx, (int)TestNavmeshToolMode.PATHFIND_FOLLOW);
+        ImGui.RadioButton("Pathfind Straight", ref toolModeIdx, (int)TestNavmeshToolMode.PATHFIND_STRAIGHT);
+        ImGui.RadioButton("Pathfind Sliced", ref toolModeIdx, (int)TestNavmeshToolMode.PATHFIND_SLICED);
+        ImGui.RadioButton("Distance to Wall", ref toolModeIdx, (int)TestNavmeshToolMode.DISTANCE_TO_WALL);
+        ImGui.RadioButton("Raycast", ref toolModeIdx, (int)TestNavmeshToolMode.RAYCAST);
+        ImGui.RadioButton("Find Polys in Circle", ref toolModeIdx, (int)TestNavmeshToolMode.FIND_POLYS_IN_CIRCLE);
+        ImGui.RadioButton("Find Polys in Shape", ref toolModeIdx, (int)TestNavmeshToolMode.FIND_POLYS_IN_SHAPE);
+        ImGui.RadioButton("Find Local Neighbourhood", ref toolModeIdx, (int)TestNavmeshToolMode.FIND_LOCAL_NEIGHBOURHOOD);
+        ImGui.RadioButton("Random Points in Circle", ref toolModeIdx, (int)TestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE);
+        ImGui.NewLine();
+
+        if (toolModeIdx == (int)TestNavmeshToolMode.PATHFIND_FOLLOW)
+        {
+            
+        }
+
+        if (toolModeIdx == (int)TestNavmeshToolMode.PATHFIND_STRAIGHT)
+        {
+            //     m_toolMode = TestNavmeshToolMode.PATHFIND_STRAIGHT;
+            //     nk_layout_row_dynamic(ctx, 20, 1);
+            ImGui.Text("Vertices at crossings");
+            //     nk_layout_row_dynamic(ctx, 20, 1);
+            //     if (nk_option_label(ctx, "None", m_straightPathOptions == 0)) {
+            //         m_straightPathOptions = 0;
+            //     }
+            //     nk_layout_row_dynamic(ctx, 20, 1);
+            //     if (nk_option_label(ctx, "Area", m_straightPathOptions == NavMeshQuery.DT_STRAIGHTPATH_AREA_CROSSINGS)) {
+            //         m_straightPathOptions = NavMeshQuery.DT_STRAIGHTPATH_AREA_CROSSINGS;
+            //     }
+            //     nk_layout_row_dynamic(ctx, 20, 1);
+            //     if (nk_option_label(ctx, "All", m_straightPathOptions == NavMeshQuery.DT_STRAIGHTPATH_ALL_CROSSINGS)) {
+            //         m_straightPathOptions = NavMeshQuery.DT_STRAIGHTPATH_ALL_CROSSINGS;
+            //     }
+            //     nk_layout_row_dynamic(ctx, 5, 1);
+            //     nk_spacing(ctx, 1);
+        }
+
+        if (toolModeIdx == (int)TestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE)
+        {
+            //     constrainByCircle = nk_check_text(ctx, "Constrained", constrainByCircle);
+        }
         // nk_layout_row_dynamic(ctx, 5, 1);
         // nk_spacing(ctx, 1);
         // nk_layout_row_dynamic(ctx, 20, 1);
@@ -242,7 +215,7 @@ public class TestNavmeshTool : Tool
         }
 
         NavMesh m_navMesh = m_sample.getNavMesh();
-        if (m_toolMode == ToolMode.PATHFIND_FOLLOW)
+        if (m_toolMode == TestNavmeshToolMode.PATHFIND_FOLLOW)
         {
             if (m_sposSet && m_eposSet && m_startRef != 0 && m_endRef != 0)
             {
@@ -382,7 +355,7 @@ public class TestNavmeshTool : Tool
                 m_smoothPath = null;
             }
         }
-        else if (m_toolMode == ToolMode.PATHFIND_STRAIGHT)
+        else if (m_toolMode == TestNavmeshToolMode.PATHFIND_STRAIGHT)
         {
             if (m_sposSet && m_eposSet && m_startRef != 0 && m_endRef != 0)
             {
@@ -411,7 +384,7 @@ public class TestNavmeshTool : Tool
                 m_straightPath = null;
             }
         }
-        else if (m_toolMode == ToolMode.PATHFIND_SLICED)
+        else if (m_toolMode == TestNavmeshToolMode.PATHFIND_SLICED)
         {
             m_polys = null;
             m_straightPath = null;
@@ -421,7 +394,7 @@ public class TestNavmeshTool : Tool
                     enableRaycast ? NavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue);
             }
         }
-        else if (m_toolMode == ToolMode.RAYCAST)
+        else if (m_toolMode == TestNavmeshToolMode.RAYCAST)
         {
             m_straightPath = null;
             if (m_sposSet && m_eposSet && m_startRef != 0)
@@ -463,7 +436,7 @@ public class TestNavmeshTool : Tool
                 }
             }
         }
-        else if (m_toolMode == ToolMode.DISTANCE_TO_WALL)
+        else if (m_toolMode == TestNavmeshToolMode.DISTANCE_TO_WALL)
         {
             m_distanceToWall = 0;
             if (m_sposSet && m_startRef != 0)
@@ -479,7 +452,7 @@ public class TestNavmeshTool : Tool
                 }
             }
         }
-        else if (m_toolMode == ToolMode.FIND_POLYS_IN_CIRCLE)
+        else if (m_toolMode == TestNavmeshToolMode.FIND_POLYS_IN_CIRCLE)
         {
             if (m_sposSet && m_startRef != 0 && m_eposSet)
             {
@@ -495,7 +468,7 @@ public class TestNavmeshTool : Tool
                 }
             }
         }
-        else if (m_toolMode == ToolMode.FIND_POLYS_IN_SHAPE)
+        else if (m_toolMode == TestNavmeshToolMode.FIND_POLYS_IN_SHAPE)
         {
             if (m_sposSet && m_startRef != 0 && m_eposSet)
             {
@@ -527,7 +500,7 @@ public class TestNavmeshTool : Tool
                 }
             }
         }
-        else if (m_toolMode == ToolMode.FIND_LOCAL_NEIGHBOURHOOD)
+        else if (m_toolMode == TestNavmeshToolMode.FIND_LOCAL_NEIGHBOURHOOD)
         {
             if (m_sposSet && m_startRef != 0)
             {
@@ -541,7 +514,7 @@ public class TestNavmeshTool : Tool
                 }
             }
         }
-        else if (m_toolMode == ToolMode.RANDOM_POINTS_IN_CIRCLE)
+        else if (m_toolMode == TestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE)
         {
             randomPoints.Clear();
             if (m_sposSet && m_startRef != 0 && m_eposSet)
@@ -599,7 +572,7 @@ public class TestNavmeshTool : Tool
             return;
         }
 
-        if (m_toolMode == ToolMode.PATHFIND_FOLLOW)
+        if (m_toolMode == TestNavmeshToolMode.PATHFIND_FOLLOW)
         {
             dd.debugDrawNavMeshPoly(m_navMesh, m_startRef, startCol);
             dd.debugDrawNavMeshPoly(m_navMesh, m_endRef, endCol);
@@ -665,7 +638,7 @@ public class TestNavmeshTool : Tool
             }
             */
         }
-        else if (m_toolMode == ToolMode.PATHFIND_STRAIGHT || m_toolMode == ToolMode.PATHFIND_SLICED)
+        else if (m_toolMode == TestNavmeshToolMode.PATHFIND_STRAIGHT || m_toolMode == TestNavmeshToolMode.PATHFIND_SLICED)
         {
             dd.debugDrawNavMeshPoly(m_navMesh, m_startRef, startCol);
             dd.debugDrawNavMeshPoly(m_navMesh, m_endRef, endCol);
@@ -735,7 +708,7 @@ public class TestNavmeshTool : Tool
                 dd.depthMask(true);
             }
         }
-        else if (m_toolMode == ToolMode.RAYCAST)
+        else if (m_toolMode == TestNavmeshToolMode.RAYCAST)
         {
             dd.debugDrawNavMeshPoly(m_navMesh, m_startRef, startCol);
 
@@ -787,7 +760,7 @@ public class TestNavmeshTool : Tool
                 dd.depthMask(true);
             }
         }
-        else if (m_toolMode == ToolMode.DISTANCE_TO_WALL)
+        else if (m_toolMode == TestNavmeshToolMode.DISTANCE_TO_WALL)
         {
             dd.debugDrawNavMeshPoly(m_navMesh, m_startRef, startCol);
             dd.depthMask(false);
@@ -807,7 +780,7 @@ public class TestNavmeshTool : Tool
 
             dd.depthMask(true);
         }
-        else if (m_toolMode == ToolMode.FIND_POLYS_IN_CIRCLE)
+        else if (m_toolMode == TestNavmeshToolMode.FIND_POLYS_IN_CIRCLE)
         {
             if (m_polys != null)
             {
@@ -840,7 +813,7 @@ public class TestNavmeshTool : Tool
                 dd.depthMask(true);
             }
         }
-        else if (m_toolMode == ToolMode.FIND_POLYS_IN_SHAPE)
+        else if (m_toolMode == TestNavmeshToolMode.FIND_POLYS_IN_SHAPE)
         {
             if (m_polys != null)
             {
@@ -877,7 +850,7 @@ public class TestNavmeshTool : Tool
                 dd.depthMask(true);
             }
         }
-        else if (m_toolMode == ToolMode.FIND_LOCAL_NEIGHBOURHOOD)
+        else if (m_toolMode == TestNavmeshToolMode.FIND_LOCAL_NEIGHBOURHOOD)
         {
             if (m_polys != null)
             {
@@ -959,7 +932,7 @@ public class TestNavmeshTool : Tool
                 }
             }
         }
-        else if (m_toolMode == ToolMode.RANDOM_POINTS_IN_CIRCLE)
+        else if (m_toolMode == TestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE)
         {
             dd.depthMask(false);
             dd.begin(POINTS, 4.0f);
@@ -1037,7 +1010,7 @@ public class TestNavmeshTool : Tool
     public override void handleUpdate(float dt)
     {
         // TODO Auto-generated method stub
-        if (m_toolMode == ToolMode.PATHFIND_SLICED)
+        if (m_toolMode == TestNavmeshToolMode.PATHFIND_SLICED)
         {
             NavMeshQuery m_navQuery = m_sample.getNavMeshQuery();
             if (m_pathFindStatus.isInProgress())
