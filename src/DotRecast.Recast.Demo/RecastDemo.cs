@@ -25,7 +25,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.InteropServices;
 using Serilog;
 using Silk.NET.Input;
 using Silk.NET.Maths;
@@ -53,7 +52,8 @@ namespace DotRecast.Recast.Demo;
 
 public class RecastDemo : MouseListener
 {
-    private readonly ILogger logger = Log.ForContext<RecastDemo>();
+    private static readonly ILogger Logger = Log.ForContext<RecastDemo>();
+    
     private RcViewSystem _viewSys;
     private IWindow window;
     private IInputContext _input;
@@ -66,7 +66,7 @@ public class RecastDemo : MouseListener
     private readonly string title = "DotRecast Demo";
 
     //private readonly RecastDebugDraw dd;
-    private readonly NavMeshRenderer renderer;
+    private NavMeshRenderer renderer;
     private bool building = false;
     private float timeAcc = 0;
     private float camr = 1000;
@@ -107,8 +107,6 @@ public class RecastDemo : MouseListener
 
     public RecastDemo()
     {
-        dd = new RecastDebugDraw();
-        renderer = new NavMeshRenderer(dd);
     }
 
     public void start()
@@ -294,7 +292,6 @@ public class RecastDemo : MouseListener
         // glfwWindowHint(GLFW_BLUE_BITS, mode.blueBits());
         // glfwWindowHint(GLFW_REFRESH_RATE, mode.refreshRate());
 
-
         var options = WindowOptions.Default;
         options.Title = title;
         options.Size = new Vector2D<int>(width, height);
@@ -385,7 +382,11 @@ public class RecastDemo : MouseListener
 
         _input = window.CreateInput();
         _gl = window.CreateOpenGL();
-        dd.init(_gl, camr);
+        
+        dd = new RecastDebugDraw(_gl);
+        renderer = new NavMeshRenderer(dd);
+        
+        dd.init(camr);
 
         _imgui = new ImGuiController(_gl, window, _input);
 
@@ -399,19 +400,16 @@ public class RecastDemo : MouseListener
         // // ARBDebugOutput.GL_DEBUG_TYPE_OTHER_ARB, ARBDebugOutput.GL_DEBUG_SEVERITY_LOW_ARB, (int[]) null, false);
         // // }
         var vendor = _gl.GetStringS(GLEnum.Vendor);
-        logger.Debug(vendor);
+        Logger.Debug(vendor);
 
         var version = _gl.GetStringS(GLEnum.Version);
-        logger.Debug(version);
+        Logger.Debug(version);
 
         var renderGl = _gl.GetStringS(GLEnum.Renderer);
-        logger.Debug(renderGl);
+        Logger.Debug(renderGl);
 
         var glslString = _gl.GetStringS(GLEnum.ShadingLanguageVersion);
-        logger.Debug(glslString);
-
-        window.CreateInput();
-
+        Logger.Debug(glslString);
 
         settingsUI = new RcSettingsView();
         toolsUI = new ToolsView(
@@ -435,43 +433,43 @@ public class RecastDemo : MouseListener
           * try (MemoryStack stack = stackPush()) { int[] w = stack.mallocInt(1); int[] h =
           * stack.mallocInt(1); glfwGetWindowSize(win, w, h); width = w[0]; height = h[0]; }
        */
-        if (sample.getInputGeom() != null)
-        {
-            float[] bmin = sample.getInputGeom().getMeshBoundsMin();
-            float[] bmax = sample.getInputGeom().getMeshBoundsMax();
-            int[] voxels = Recast.calcGridSize(bmin, bmax, settingsUI.getCellSize());
-            settingsUI.setVoxels(voxels);
-            settingsUI.setTiles(tileNavMeshBuilder.getTiles(sample.getInputGeom(), settingsUI.getCellSize(), settingsUI.getTileSize()));
-            settingsUI.setMaxTiles(tileNavMeshBuilder.getMaxTiles(sample.getInputGeom(), settingsUI.getCellSize(), settingsUI.getTileSize()));
-            settingsUI.setMaxPolys(tileNavMeshBuilder.getMaxPolysPerTile(sample.getInputGeom(), settingsUI.getCellSize(), settingsUI.getTileSize()));
-        }
+        // if (sample.getInputGeom() != null)
+        // {
+        //     float[] bmin = sample.getInputGeom().getMeshBoundsMin();
+        //     float[] bmax = sample.getInputGeom().getMeshBoundsMax();
+        //     int[] voxels = Recast.calcGridSize(bmin, bmax, settingsUI.getCellSize());
+        //     settingsUI.setVoxels(voxels);
+        //     settingsUI.setTiles(tileNavMeshBuilder.getTiles(sample.getInputGeom(), settingsUI.getCellSize(), settingsUI.getTileSize()));
+        //     settingsUI.setMaxTiles(tileNavMeshBuilder.getMaxTiles(sample.getInputGeom(), settingsUI.getCellSize(), settingsUI.getTileSize()));
+        //     settingsUI.setMaxPolys(tileNavMeshBuilder.getMaxPolysPerTile(sample.getInputGeom(), settingsUI.getCellSize(), settingsUI.getTileSize()));
+        // }
 
-        _viewSys.inputBegin();
-        window.DoEvents();
-        _viewSys.inputEnd(window);
+        //_viewSys.inputBegin();
+        // window.DoEvents();
+        // _viewSys.inputEnd(window);
 
-        long time = Stopwatch.GetTimestamp() / 1000;
-        //float dt = (time - prevFrameTime) / 1000000.0f;
-        prevFrameTime = time;
+        // long time = Stopwatch.GetTimestamp() / 1000;
+        // //float dt = (time - prevFrameTime) / 1000000.0f;
+        // prevFrameTime = time;
+        //
+        // // Update sample simulation.
+        // float SIM_RATE = 20;
+        // float DELTA_TIME = 1.0f / SIM_RATE;
+        // timeAcc = clamp((float)(timeAcc + dt), -1.0f, 1.0f);
+        // int simIter = 0;
+        // while (timeAcc > DELTA_TIME)
+        // {
+        //     timeAcc -= DELTA_TIME;
+        //     if (simIter < 5 && sample != null)
+        //     {
+        //         toolsUI.handleUpdate((float)dt);
+        //     }
+        //
+        //     simIter++;
+        // }
 
-        // Update sample simulation.
-        float SIM_RATE = 20;
-        float DELTA_TIME = 1.0f / SIM_RATE;
-        timeAcc = clamp((float)(timeAcc + dt), -1.0f, 1.0f);
-        int simIter = 0;
-        while (timeAcc > DELTA_TIME)
-        {
-            timeAcc -= DELTA_TIME;
-            if (simIter < 5 && sample != null)
-            {
-                toolsUI.handleUpdate((float)dt);
-            }
-        
-            simIter++;
-        }
-
-        if (settingsUI.isMeshInputTrigerred())
-        {
+        // if (settingsUI.isMeshInputTrigerred())
+        // {
             // aFilterPatterns.put(stack.UTF8("*.obj"));
             // aFilterPatterns.flip();
             // string filename = TinyFileDialogs.tinyfd_openFileDialog("Open Mesh File", "", aFilterPatterns,
@@ -483,9 +481,9 @@ public class RecastDemo : MouseListener
             //         Console.WriteLine(e).printStackTrace();
             //     }
             // }
-        }
-        else if (settingsUI.isNavMeshInputTrigerred())
-        {
+        // }
+        // else if (settingsUI.isNavMeshInputTrigerred())
+        // {
             // try (MemoryStack stack = stackPush()) {
             //     PointerBuffer aFilterPatterns = stack.mallocPointer(4);
             //     aFilterPatterns.put(stack.UTF8("*.bin"));
@@ -507,58 +505,58 @@ public class RecastDemo : MouseListener
             //         }
             //     }
             // }
-        }
-        else if (settingsUI.isBuildTriggered() && sample.getInputGeom() != null)
-        {
-            if (!building)
-            {
-                float m_cellSize = settingsUI.getCellSize();
-                float m_cellHeight = settingsUI.getCellHeight();
-                float m_agentHeight = settingsUI.getAgentHeight();
-                float m_agentRadius = settingsUI.getAgentRadius();
-                float m_agentMaxClimb = settingsUI.getAgentMaxClimb();
-                float m_agentMaxSlope = settingsUI.getAgentMaxSlope();
-                int m_regionMinSize = settingsUI.getMinRegionSize();
-                int m_regionMergeSize = settingsUI.getMergedRegionSize();
-                float m_edgeMaxLen = settingsUI.getEdgeMaxLen();
-                float m_edgeMaxError = settingsUI.getEdgeMaxError();
-                int m_vertsPerPoly = settingsUI.getVertsPerPoly();
-                float m_detailSampleDist = settingsUI.getDetailSampleDist();
-                float m_detailSampleMaxError = settingsUI.getDetailSampleMaxError();
-                int m_tileSize = settingsUI.getTileSize();
-                long t = Stopwatch.GetTimestamp();
-        
-                Tuple<IList<RecastBuilderResult>, NavMesh> buildResult;
-                if (settingsUI.isTiled())
-                {
-                    buildResult = tileNavMeshBuilder.build(sample.getInputGeom(), settingsUI.getPartitioning(), m_cellSize,
-                        m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize,
-                        m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, m_detailSampleDist,
-                        m_detailSampleMaxError, settingsUI.isFilterLowHangingObstacles(), settingsUI.isFilterLedgeSpans(),
-                        settingsUI.isFilterWalkableLowHeightSpans(), m_tileSize);
-                }
-                else
-                {
-                    buildResult = soloNavMeshBuilder.build(sample.getInputGeom(), settingsUI.getPartitioning(), m_cellSize,
-                        m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize,
-                        m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, m_detailSampleDist,
-                        m_detailSampleMaxError, settingsUI.isFilterLowHangingObstacles(), settingsUI.isFilterLedgeSpans(),
-                        settingsUI.isFilterWalkableLowHeightSpans());
-                }
-        
-                sample.update(sample.getInputGeom(), buildResult.Item1, buildResult.Item2);
-                sample.setChanged(false);
-                settingsUI.setBuildTime((Stopwatch.GetTimestamp() - t) / 1_000_000);
-                toolsUI.setSample(sample);
-            }
-        }
-        else
-        {
-            building = false;
-        }
+        // }
+        // else if (settingsUI.isBuildTriggered() && sample.getInputGeom() != null)
+        // {
+        //     if (!building)
+        //     {
+        //         float m_cellSize = settingsUI.getCellSize();
+        //         float m_cellHeight = settingsUI.getCellHeight();
+        //         float m_agentHeight = settingsUI.getAgentHeight();
+        //         float m_agentRadius = settingsUI.getAgentRadius();
+        //         float m_agentMaxClimb = settingsUI.getAgentMaxClimb();
+        //         float m_agentMaxSlope = settingsUI.getAgentMaxSlope();
+        //         int m_regionMinSize = settingsUI.getMinRegionSize();
+        //         int m_regionMergeSize = settingsUI.getMergedRegionSize();
+        //         float m_edgeMaxLen = settingsUI.getEdgeMaxLen();
+        //         float m_edgeMaxError = settingsUI.getEdgeMaxError();
+        //         int m_vertsPerPoly = settingsUI.getVertsPerPoly();
+        //         float m_detailSampleDist = settingsUI.getDetailSampleDist();
+        //         float m_detailSampleMaxError = settingsUI.getDetailSampleMaxError();
+        //         int m_tileSize = settingsUI.getTileSize();
+        //         long t = Stopwatch.GetTimestamp();
+        //
+        //         Tuple<IList<RecastBuilderResult>, NavMesh> buildResult;
+        //         if (settingsUI.isTiled())
+        //         {
+        //             buildResult = tileNavMeshBuilder.build(sample.getInputGeom(), settingsUI.getPartitioning(), m_cellSize,
+        //                 m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize,
+        //                 m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, m_detailSampleDist,
+        //                 m_detailSampleMaxError, settingsUI.isFilterLowHangingObstacles(), settingsUI.isFilterLedgeSpans(),
+        //                 settingsUI.isFilterWalkableLowHeightSpans(), m_tileSize);
+        //         }
+        //         else
+        //         {
+        //             buildResult = soloNavMeshBuilder.build(sample.getInputGeom(), settingsUI.getPartitioning(), m_cellSize,
+        //                 m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize,
+        //                 m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, m_detailSampleDist,
+        //                 m_detailSampleMaxError, settingsUI.isFilterLowHangingObstacles(), settingsUI.isFilterLedgeSpans(),
+        //                 settingsUI.isFilterWalkableLowHeightSpans());
+        //         }
+        //
+        //         sample.update(sample.getInputGeom(), buildResult.Item1, buildResult.Item2);
+        //         sample.setChanged(false);
+        //         settingsUI.setBuildTime((Stopwatch.GetTimestamp() - t) / 1_000_000);
+        //         toolsUI.setSample(sample);
+        //     }
+        // }
+        // else
+        // {
+        //     building = false;
+        // }
 
-        if (!mouseOverMenu)
-        {
+        // if (!mouseOverMenu)
+        // {
             // GLU.glhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 0.0f, modelviewMatrix, projectionMatrix, viewport,
             //     rayStart);
             // GLU.glhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 1.0f, modelviewMatrix, projectionMatrix, viewport,
@@ -617,8 +615,8 @@ public class RecastDemo : MouseListener
             //     // }
             // }
 
-            processHitTest = false;
-        }
+        //     processHitTest = false;
+        // }
 
         if (sample.isChanged())
         {
@@ -693,7 +691,7 @@ public class RecastDemo : MouseListener
         // Set the viewport.
         // glViewport(0, 0, width, height);
         //_gl.Viewport(0, 0, (uint)width, (uint)height);
-        //int[] viewport = new int[] { 0, 0, width, height };
+        int[] viewport = new int[] { 0, 0, width, height };
         // glGetIntegerv(GL_VIEWPORT, viewport);
 
         // Clear the screen
@@ -703,17 +701,17 @@ public class RecastDemo : MouseListener
 
         dd.fog(camr * 0.1f, camr * 1.25f);
         renderer.render(sample);
-        Tool tool = toolsUI.getTool();
-        if (tool != null)
-        {
-            tool.handleRender(renderer);
-        }
+        // Tool tool = toolsUI.getTool();
+        // if (tool != null)
+        // {
+        //     tool.handleRender(renderer);
+        // }
         
         dd.fog(false);
         
-        mouseOverMenu = _viewSys.render(window, 0, 0, width, height, (int)mousePos[0], (int)mousePos[1]);
+        //mouseOverMenu = _viewSys.render(window, 0, 0, width, height, (int)mousePos[0], (int)mousePos[1]);
 
-        _imgui.Render();
+        //_imgui.Render();
 
         window.SwapBuffers();
     }

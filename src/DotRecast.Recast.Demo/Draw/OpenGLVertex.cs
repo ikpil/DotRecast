@@ -38,13 +38,21 @@ public class OpenGLVertex
         this.color = color;
     }
 
-    public void store(Stream writer)
+    public void store(BinaryWriter writer)
     {
-        writer.Write(BitConverter.GetBytes(x));
-        writer.Write(BitConverter.GetBytes(y));
-        writer.Write(BitConverter.GetBytes(z));
-        writer.Write(BitConverter.GetBytes(u));
-        writer.Write(BitConverter.GetBytes(v));
-        writer.Write(BitConverter.GetBytes(color));
+        // writer.Write(BitConverter.GetBytes(x));
+        // writer.Write(BitConverter.GetBytes(y));
+        // writer.Write(BitConverter.GetBytes(z));
+        // writer.Write(BitConverter.GetBytes(u));
+        // writer.Write(BitConverter.GetBytes(v));
+        // writer.Write(BitConverter.GetBytes(color));
+        
+        writer.Write(x);
+        writer.Write(y);
+        writer.Write(z);
+        writer.Write(u);
+        writer.Write(v);
+        writer.Write(color);
+        
     }
 }

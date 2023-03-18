@@ -24,42 +24,58 @@ namespace DotRecast.Recast.Demo.Draw;
 
 public class GLCheckerTexture
 {
-    int m_texId;
+    private readonly GL _gl;
+    private uint m_texId;
 
+    public GLCheckerTexture(GL gl)
+    {
+        _gl = gl;
+    }
+    
     public void release()
     {
-        // if (m_texId != 0) {
-        //     glDeleteTextures(m_texId);
-        // }
+        if (m_texId != 0)
+        {
+            _gl.DeleteTextures(1, m_texId);
+        }
     }
 
     public void bind()
     {
-        // if (m_texId == 0) {
-        //     // Create checker pattern.
-        //     int col0 = DebugDraw.duRGBA(215, 215, 215, 255);
-        //     int col1 = DebugDraw.duRGBA(255, 255, 255, 255);
-        //     int TSIZE = 64;
-        //     int[] data = new int[TSIZE * TSIZE];
-        //
-        //     m_texId = glGenTextures();
-        //     glBindTexture(GL_TEXTURE_2D, m_texId);
-        //
-        //     int level = 0;
-        //     int size = TSIZE;
-        //     while (size > 0) {
-        //         for (int y = 0; y < size; ++y)
-        //             for (int x = 0; x < size; ++x)
-        //                 data[x + y * size] = (x == 0 || y == 0) ? col0 : col1;
-        //         glTexImage2D(GL_TEXTURE_2D, level, GL_RGBA, size, size, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        //         size /= 2;
-        //         level++;
-        //     }
-        //
-        //     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-        //     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        // } else {
-        //     glBindTexture(GL_TEXTURE_2D, m_texId);
-        // }
+        if (m_texId == 0)
+        {
+            // Create checker pattern.
+            int col0 = DebugDraw.duRGBA(215, 215, 215, 255);
+            int col1 = DebugDraw.duRGBA(255, 255, 255, 255);
+            uint TSIZE = 64;
+            int[] data = new int[TSIZE * TSIZE];
+
+            _gl.GenTextures(1, out m_texId);
+            _gl.BindTexture(GLEnum.Texture2D, m_texId);
+
+            int level = 0;
+            uint size = TSIZE;
+            while (size > 0)
+            {
+                for (int y = 0; y < size; ++y)
+                {
+                    for (int x = 0; x < size; ++x)
+                    {
+                        data[x + y * size] = (x == 0 || y == 0) ? col0 : col1;
+                    }
+                }
+
+                _gl.TexImage2D<int>(GLEnum.Texture2D, level, InternalFormat.Rgba, size, size, 0, GLEnum.Rgba, GLEnum.UnsignedByte, data);
+                size /= 2;
+                level++;
+            }
+
+            _gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMinFilter, (uint)GLEnum.LinearMipmapNearest);
+            _gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMagFilter, (uint)GLEnum.Linear);
+        }
+        else
+        {
+            _gl.BindTexture(GLEnum.Texture2D, m_texId);
+        }
     }
 }

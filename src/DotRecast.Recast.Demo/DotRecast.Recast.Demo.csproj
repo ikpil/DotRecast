@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <PackageReference Include="Serilog" Version="2.12.0" />
+        <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
         <PackageReference Include="Silk.NET" Version="2.16.0" />
         <PackageReference Include="Silk.NET.OpenGL.Extensions.ImGui" Version="2.16.0" />
     </ItemGroup>

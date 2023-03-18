@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using DotRecast.Detour;
 using DotRecast.Recast.Demo.Builder;
+using Silk.NET.OpenGL;
 
 namespace DotRecast.Recast.Demo.Draw;
 
@@ -30,6 +31,10 @@ public class RecastDebugDraw : DebugDraw
     public static readonly int DRAWNAVMESH_OFFMESHCONS = 0x01;
     public static readonly int DRAWNAVMESH_CLOSEDLIST = 0x02;
     public static readonly int DRAWNAVMESH_COLOR_TILES = 0x04;
+
+    public RecastDebugDraw(GL gl) : base(gl)
+    {
+    }
 
     public void debugDrawTriMeshSlope(float[] verts, int[] tris, float[] normals, float walkableSlopeAngle,
         float texScale)

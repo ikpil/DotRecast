@@ -27,19 +27,25 @@ namespace DotRecast.Recast.Demo.Draw;
 
 public class DebugDraw
 {
-    private readonly GLCheckerTexture g_tex = new GLCheckerTexture();
-    private readonly OpenGLDraw openGlDraw = new ModernOpenGLDraw();
+    private readonly GLCheckerTexture g_tex;
+    private readonly OpenGLDraw openGlDraw;
     private readonly int[] boxIndices = { 7, 6, 5, 4, 0, 1, 2, 3, 1, 5, 6, 2, 3, 7, 4, 0, 2, 6, 7, 3, 0, 4, 5, 1, };
 
-    private readonly float[][] frustumPlanes =
+    private readonly float[][] frustumPlanes = ArrayUtils.Of<float>(6, 4);
+    // {
+    //     new[] { 0f, 0f, 0f, 0f },
+    //     new[] { 0f, 0f, 0f, 0f },
+    //     new[] { 0f, 0f, 0f, 0f },
+    //     new[] { 0f, 0f, 0f, 0f },
+    //     new[] { 0f, 0f, 0f, 0f },
+    //     new[] { 0f, 0f, 0f, 0f },
+    // };
+
+    public DebugDraw(GL gl)
     {
-        new[] { 0f, 0f, 0f, 0f },
-        new[] { 0f, 0f, 0f, 0f },
-        new[] { 0f, 0f, 0f, 0f },
-        new[] { 0f, 0f, 0f, 0f },
-        new[] { 0f, 0f, 0f, 0f },
-        new[] { 0f, 0f, 0f, 0f },
-    };
+        g_tex = new GLCheckerTexture(gl);
+        openGlDraw = new ModernOpenGLDraw(gl);
+    }
 
 
     public void begin(DebugDrawPrimitives prim)
@@ -554,9 +560,9 @@ public class DebugDraw
         getOpenGlDraw().texture(g_tex, state);
     }
 
-    public void init(GL gl, float fogDistance)
+    public void init(float fogDistance)
     {
-        getOpenGlDraw().init(gl);
+        getOpenGlDraw().init();
     }
 
     public void clear()

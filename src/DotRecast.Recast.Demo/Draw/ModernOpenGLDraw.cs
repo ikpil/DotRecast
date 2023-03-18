@@ -36,9 +36,13 @@ public class ModernOpenGLDraw : OpenGLDraw
     private int uniformFogStart;
     private int uniformFogEnd;
 
-    public unsafe void init(GL gl)
+    public ModernOpenGLDraw(GL gl)
     {
         _gl = gl;
+    }
+
+    public unsafe void init()
+    {
         string NK_SHADER_VERSION = PlatformID.MacOSX == Environment.OSVersion.Platform ? "#version 150\n" : "#version 300 es\n";
         string vertex_shader = NK_SHADER_VERSION + "uniform mat4 ProjMtx;\n" //
                                                  + "uniform mat4 ViewMtx;\n" //
@@ -77,13 +81,13 @@ public class ModernOpenGLDraw : OpenGLDraw
         _gl.ShaderSource(frag_shdr, fragment_shader);
         _gl.CompileShader(vert_shdr);
         _gl.CompileShader(frag_shdr);
-        gl.GetShader(vert_shdr, GLEnum.CompileStatus, out var status);
+        _gl.GetShader(vert_shdr, GLEnum.CompileStatus, out var status);
         if (status != (int)GLEnum.True)
         {
             throw new InvalidOperationException();
         }
 
-        gl.GetShader(frag_shdr, GLEnum.CompileStatus, out status);
+        _gl.GetShader(frag_shdr, GLEnum.CompileStatus, out status);
         if (status != (int)GLEnum.True)
         {
             throw new InvalidOperationException();
@@ -128,14 +132,19 @@ public class ModernOpenGLDraw : OpenGLDraw
         IntPtr pointer1 = 0;
         IntPtr pointer2 = 12;
         IntPtr pointer3 = 20;
-        _gl.VertexAttribPointer(attrib_pos, 3, GLEnum.Float, false, 24, pointer1.ToPointer());
-        _gl.VertexAttribPointer(attrib_uv, 2, GLEnum.Float, false, 24, pointer2.ToPointer());
-        _gl.VertexAttribPointer(attrib_col, 4, GLEnum.UnsignedByte, true, 24, pointer3.ToPointer());
+        // _gl.VertexAttribPointer(attrib_pos, 3, GLEnum.Float, false, 24, pointer1.ToPointer());
+        // _gl.VertexAttribPointer(attrib_uv, 2, GLEnum.Float, false, 24, pointer2.ToPointer());
+        // _gl.VertexAttribPointer(attrib_col, 4, GLEnum.UnsignedByte, true, 24, pointer3.ToPointer());
+        _gl.VertexAttribPointer(attrib_pos, 3, GLEnum.Float, false, 24, (void*)0);
+        _gl.VertexAttribPointer(attrib_uv, 2, GLEnum.Float, false, 24, (void*)12);
+        _gl.VertexAttribPointer(attrib_col, 4, GLEnum.UnsignedByte, true, 24, (void*)20);
+
 
         // _gl.VertexAttribP3(attrib_pos, GLEnum.Float, false, 0);
         // _gl.VertexAttribP2(attrib_uv, GLEnum.Float, false, 12);
         // _gl.VertexAttribP4(attrib_col, GLEnum.UnsignedByte, true, 20);
 
+        
         _gl.BindTexture(GLEnum.Texture2D, 0);
         _gl.BindBuffer(GLEnum.ArrayBuffer, 0);
         _gl.BindBuffer(GLEnum.ElementArrayBuffer, 0);
@@ -180,42 +189,54 @@ public class ModernOpenGLDraw : OpenGLDraw
         _gl.BindBuffer(GLEnum.ElementArrayBuffer, ebo);
         // glBufferData(GL_ARRAY_BUFFER, MAX_VERTEX_BUFFER, GL_STREAM_DRAW);
         // glBufferData(GL_ELEMENT_ARRAY_BUFFER, MAX_ELEMENT_BUFFER, GL_STREAM_DRAW);
-        
+
         int vboSize = vertices.Count * 24;
         int eboSize = currentPrim == DebugDrawPrimitives.QUADS ? vertices.Count * 6 : vertices.Count * 4;
-        // var ssss = new byte[vboSize];
-        // var ssss2 = new byte[eboSize];
-        
+
         _gl.BufferData(GLEnum.ArrayBuffer, (nuint)vboSize, IntPtr.Zero, GLEnum.StreamDraw);
         _gl.BufferData(GLEnum.ElementArrayBuffer, (nuint)eboSize, IntPtr.Zero, GLEnum.StreamDraw);
         // load draw vertices & elements directly into vertex + element buffer
-        byte* pVerts = (byte*)_gl.MapBuffer(GLEnum.ArrayBuffer, GLEnum.WriteOnly);
-        byte* pElems = (byte*)_gl.MapBuffer(GLEnum.ElementArrayBuffer, GLEnum.WriteOnly);
 
         {
-            using var verts = new UnmanagedMemoryStream(pVerts, vboSize, vboSize, FileAccess.Write);
-            using var elems = new UnmanagedMemoryStream(pElems, eboSize, eboSize, FileAccess.Write);
+            byte* pVerts = (byte*)_gl.MapBuffer(GLEnum.ArrayBuffer, GLEnum.WriteOnly);
+            byte* pElems = (byte*)_gl.MapBuffer(GLEnum.ElementArrayBuffer, GLEnum.WriteOnly);
+            
+            using var unmanagedVerts = new UnmanagedMemoryStream(pVerts, vboSize, vboSize, FileAccess.Write);
+            using var unmanagedElems = new UnmanagedMemoryStream(pElems, eboSize, eboSize, FileAccess.Write);
+            
+            using var verts = new BinaryWriter(unmanagedVerts);
+            using var elems = new BinaryWriter(unmanagedElems);
 
             vertices.forEach(v => v.store(verts));
             if (currentPrim == DebugDrawPrimitives.QUADS)
             {
                 for (int i = 0; i < vertices.Count; i += 4)
                 {
-                    elems.Write(BitConverter.GetBytes(i));
-                    elems.Write(BitConverter.GetBytes(i + 1));
-                    elems.Write(BitConverter.GetBytes(i + 2));
-                    elems.Write(BitConverter.GetBytes(i));
-                    elems.Write(BitConverter.GetBytes(i + 2));
-                    elems.Write(BitConverter.GetBytes(i + 3));
+                    // elems.Write(BitConverter.GetBytes(i));
+                    // elems.Write(BitConverter.GetBytes(i + 1));
+                    // elems.Write(BitConverter.GetBytes(i + 2));
+                    // elems.Write(BitConverter.GetBytes(i));
+                    // elems.Write(BitConverter.GetBytes(i + 2));
+                    // elems.Write(BitConverter.GetBytes(i + 3));
+                    elems.Write(i);
+                    elems.Write(i + 1);
+                    elems.Write(i + 2);
+                    elems.Write(i);
+                    elems.Write(i + 2);
+                    elems.Write(i + 3);
+
                 }
             }
             else
             {
                 for (int i = 0; i < vertices.Count; i++)
                 {
-                    elems.Write(BitConverter.GetBytes(i));
+                    //elems.Write(BitConverter.GetBytes(i));
+                    elems.Write(i);
                 }
             }
+            verts.Flush();
+            elems.Flush();
 
             _gl.UnmapBuffer(GLEnum.ElementArrayBuffer);
             _gl.UnmapBuffer(GLEnum.ArrayBuffer);
@@ -229,24 +250,25 @@ public class ModernOpenGLDraw : OpenGLDraw
         {
             _gl.Uniform1(uniformUseTexture, 0.0f);
         }
-        //
-        // switch (currentPrim) {
-        // case POINTS:
-        //     glDrawElements(GL_POINTS, vertices.size(), GL_UNSIGNED_INT, 0);
-        //     break;
-        // case LINES:
-        //     glDrawElements(GL_LINES, vertices.size(), GL_UNSIGNED_INT, 0);
-        //     break;
-        // case TRIS:
-        //     glDrawElements(GL_TRIANGLES, vertices.size(), GL_UNSIGNED_INT, 0);
-        //     break;
-        // case QUADS:
-        //     glDrawElements(GL_TRIANGLES, vertices.size() * 6 / 4, GL_UNSIGNED_INT, 0);
-        //     break;
-        // default:
-        //     break;
-        // }
-        
+
+        switch (currentPrim)
+        {
+            case DebugDrawPrimitives.POINTS:
+                _gl.DrawElements(GLEnum.Points, (uint)vertices.Count, GLEnum.UnsignedInt, 0);
+                break;
+            case DebugDrawPrimitives.LINES:
+                _gl.DrawElements(GLEnum.Lines, (uint)vertices.Count, GLEnum.UnsignedInt, 0);
+                break;
+            case DebugDrawPrimitives.TRIS:
+                _gl.DrawElements(GLEnum.Triangles, (uint)vertices.Count, GLEnum.UnsignedInt, 0);
+                break;
+            case DebugDrawPrimitives.QUADS:
+                _gl.DrawElements(GLEnum.Triangles, (uint)(vertices.Count * 6 / 4), GLEnum.UnsignedInt, 0);
+                break;
+            default:
+                break;
+        }
+
         _gl.UseProgram(0);
         _gl.BindBuffer(GLEnum.ArrayBuffer, 0);
         _gl.BindBuffer(GLEnum.ElementArrayBuffer, 0);

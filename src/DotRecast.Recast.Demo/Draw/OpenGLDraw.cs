@@ -4,7 +4,7 @@ namespace DotRecast.Recast.Demo.Draw;
 
 public interface OpenGLDraw
 {
-    void init(GL gl);
+    void init();
 
     void clear();
 

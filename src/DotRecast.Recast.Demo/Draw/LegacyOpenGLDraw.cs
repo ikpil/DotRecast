@@ -4,7 +4,9 @@ namespace DotRecast.Recast.Demo.Draw;
 
 public class LegacyOpenGLDraw : OpenGLDraw
 {
-    private GL _gl;
+    public LegacyOpenGLDraw(GL gl)
+    {
+    }
 
     public void fog(bool state)
     {
@@ -15,10 +17,8 @@ public class LegacyOpenGLDraw : OpenGLDraw
         // }
     }
 
-    public void init(GL gl)
+    public void init()
     {
-        _gl = gl;
-
         // // Fog.
         // float fogDistance = 1000f;
         // float fogColor[] = { 0.32f, 0.31f, 0.30f, 1.0f };
