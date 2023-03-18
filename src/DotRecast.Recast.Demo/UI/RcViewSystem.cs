@@ -41,21 +41,6 @@ public class RcViewSystem
         var mouse = new Mouse(input);
         _window = window;
         _gl = GL.GetApi(window);
-        // allocator = NkAllocator.create();
-        // allocator.alloc((handle, old, size) => {
-        //     long mem = nmemAlloc(size);
-        //     if (mem == NULL) {
-        //         throw new OutOfMemoryError();
-        //     }
-        //     return mem;
-        //
-        // });
-        // allocator.mfree((handle, ptr) => nmemFree(ptr));
-        // background = NkColor.create();
-        // nk_rgb(28, 48, 62, background);
-        // white = NkColor.create();
-        // nk_rgb(255, 255, 255, white);
-        // nk_init(ctx, allocator, null);
         setupMouse(mouse);
         // setupClipboard(window);
         // glfwSetCharCallback(window, (w, codepoint) => nk_input_unicode(ctx, codepoint));

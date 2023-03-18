@@ -71,10 +71,10 @@ public class RcSettingsView : IRcView
     private bool meshInputTrigerred;
     private bool navMeshInputTrigerred;
 
-    public bool render(IWindow i, int x, int y, int width, int height, int mouseX, int mouseY)
+    public bool render(IWindow window, int x, int y, int width, int height, int mouseX, int mouseY)
     {
         ImGui.Begin("Properties");
-        renderInternal(i, x, y, width, height, mouseX, mouseY);
+        renderInternal(window, x, y, width, height, mouseX, mouseY);
         ImGui.End();
 
         return true;

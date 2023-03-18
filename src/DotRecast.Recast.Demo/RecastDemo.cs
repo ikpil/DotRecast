@@ -95,7 +95,7 @@ public class RecastDemo : MouseListener
 
     private bool markerPositionSet;
     private readonly float[] markerPosition = new float[3];
-    private ToolsUI toolsUI;
+    private ToolsView _toolsView;
     private RcSettingsView _rcSettingsView;
     private long prevFrameTime;
     private RecastDebugDraw dd;
@@ -327,7 +327,7 @@ public class RecastDemo : MouseListener
     {
         DemoInputGeomProvider geom = DemoObjImporter.load(stream);
         //sample = new Sample(geom, ImmutableArray<RecastBuilderResult>.Empty, null, settingsUI, dd);
-        toolsUI.setEnabled(true);
+        _toolsView.setEnabled(true);
         return geom;
     }
 
@@ -351,7 +351,7 @@ public class RecastDemo : MouseListener
         if (mesh != null)
         {
             //sample = new Sample(null, ImmutableArray<RecastBuilderResult>.Empty, mesh, settingsUI, dd);
-            toolsUI.setEnabled(true);
+            _toolsView.setEnabled(true);
         }
     }
 
@@ -409,15 +409,16 @@ public class RecastDemo : MouseListener
 
 
         _rcSettingsView = new RcSettingsView();
-        toolsUI = new ToolsUI(
+        _toolsView = new ToolsView(
             new TestNavmeshTool(),
             new OffMeshConnectionTool(),
             new ConvexVolumeTool(),
             new CrowdTool(),
             new JumpLinkBuilderTool(),
-            new DynamicUpdateTool());
+            new DynamicUpdateTool()
+        );
 
-        _viewSys = new RcViewSystem(window, _input, _rcSettingsView, toolsUI);
+        _viewSys = new RcViewSystem(window, _input, _rcSettingsView, _toolsView);
 
         DemoInputGeomProvider geom = loadInputMesh(Loader.ToBytes("nav_test.obj"));
         //sample = new Sample(geom, ImmutableArray<RecastBuilderResult>.Empty, null, settingsUI, dd);
@@ -701,13 +702,10 @@ public class RecastDemo : MouseListener
 
     private unsafe void OnWindowOnRender(double dt)
     {
-        _gl.ClearColor(Color.CornflowerBlue);
+        _gl.ClearColor(Color.CadetBlue);
         _gl.Clear(ClearBufferMask.ColorBufferBit);
 
-
         mouseOverMenu = _viewSys.render(window, 0, 0, width, height, (int)mousePos[0], (int)mousePos[1]);
-        ImGui.Button("hello");
-        ImGui.Button("world");
 
         _imgui.Render();
 

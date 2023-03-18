@@ -19,50 +19,47 @@ freely, subject to the following restrictions:
 
 using DotRecast.Core;
 using DotRecast.Recast.Demo.UI;
+using ImGuiNET;
 using Silk.NET.Windowing;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class ToolsUI : IRcView
+public class ToolsView : IRcView
 {
     //private readonly NkColor white = NkColor.create();
+    private int _currentToolIdx = -1;
     private Tool currentTool;
     private bool enabled;
     private readonly Tool[] tools;
 
-    public ToolsUI(params Tool[] tools)
+    public ToolsView(params Tool[] tools)
     {
         this.tools = tools;
     }
 
-    public bool render(IWindow ctx, int x, int y, int width, int height, int mouseX, int mouseY)
+    public bool render(IWindow window, int x, int y, int width, int height, int mouseX, int mouseY)
     {
         bool mouseInside = false;
-        // nk_rgb(255, 255, 255, white);
-        // try (MemoryStack stack = stackPush()) {
-        //     NkRect rect = NkRect.mallocStack(stack);
-        //     if (nk_begin(ctx, "Tools", nk_rect(5, 5, 250, height - 10, rect), NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_TITLE)) {
-        //         if (enabled) {
-        //             foreach (Tool tool in tools) {
-        //                 nk_layout_row_dynamic(ctx, 20, 1);
-        //                 if (nk_option_label(ctx, tool.getName(), tool == currentTool)) {
-        //                     currentTool = tool;
-        //                 }
-        //             }
-        //             nk_layout_row_dynamic(ctx, 3, 1);
-        //             nk_spacing(ctx, 1);
-        //             if (currentTool != null) {
-        //                 currentTool.layout(ctx);
-        //             }
-        //         }
-        //         nk_window_get_bounds(ctx, rect);
-        //         if (mouseX >= rect.x() && mouseX <= rect.x() + rect.w() && mouseY >= rect.y() && mouseY <= rect.y() + rect.h()) {
-        //             mouseInside = true;
-        //         }
-        //     }
-        //     nk_end(ctx);
-        // }
-        return mouseInside;
+        ImGui.Begin("Tools");
+        for (int i = 0; i < tools.Length; ++i)
+        {
+            var tool = tools[i];
+            ImGui.RadioButton(tool.getName(), ref _currentToolIdx, i);
+        }
+        ImGui.NewLine();
+        
+        if (0 > _currentToolIdx || _currentToolIdx >= tools.Length)
+        {
+            ImGui.End();
+            return false;
+        }
+
+        currentTool = tools[_currentToolIdx];
+        ImGui.Text(currentTool.getName());
+        ImGui.Separator();
+        currentTool.layout(window);
+        ImGui.End();
+        return true;
     }
 
     public void setEnabled(bool enabled)
