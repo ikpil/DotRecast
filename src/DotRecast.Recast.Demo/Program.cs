@@ -8,10 +8,6 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        Log.Logger = new LoggerConfiguration()
-            .WriteTo.Console()
-            .MinimumLevel.Verbose()
-            .CreateLogger();
         
         var path = Loader.ToRPath("dungeon.obj");
         path = Path.GetDirectoryName(path);
@@ -22,6 +18,16 @@ public static class Program
             Directory.SetCurrentDirectory(workingDirectory);
         }
 
+        Log.Logger = new LoggerConfiguration()
+            .Enrich.WithThreadId()
+            //.Enrich.WithExceptionDetails()
+            .Enrich.FromLogContext()
+            //.Enrich.WithMethodFullName()
+            .MinimumLevel.Verbose()
+            .WriteTo.File("logs/log.txt")
+            .WriteTo.Console()
+            .CreateLogger();
+        
         var demo = new RecastDemo();
         demo.start();
     }
