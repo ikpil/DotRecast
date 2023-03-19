@@ -179,8 +179,8 @@ public class ModernOpenGLDraw : OpenGLDraw
 
         _gl.UseProgram(program);
         _gl.Uniform1(uniformTexture, 0);
-        _gl.UniformMatrix4(uniformViewMatrix, false, _viewMatrix);
-        _gl.UniformMatrix4(uniformProjectionMatrix, false, _projectionMatrix);
+        _gl.UniformMatrix4(uniformViewMatrix, 1, false, _viewMatrix);
+        _gl.UniformMatrix4(uniformProjectionMatrix, 1, false, _projectionMatrix);
         _gl.Uniform1(uniformFogStart, fogStart);
         _gl.Uniform1(uniformFogEnd, fogEnd);
         _gl.Uniform1(uniformFog, fogEnabled ? 1.0f : 0.0f);

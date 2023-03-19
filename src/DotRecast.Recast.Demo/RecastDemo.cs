@@ -701,17 +701,16 @@ public class RecastDemo : MouseListener
 
         dd.fog(camr * 0.1f, camr * 1.25f);
         renderer.render(sample);
-        // Tool tool = toolsUI.getTool();
-        // if (tool != null)
-        // {
-        //     tool.handleRender(renderer);
-        // }
+        Tool tool = toolsUI.getTool();
+        if (tool != null)
+        {
+            tool.handleRender(renderer);
+        }
         
         dd.fog(false);
         
-        //mouseOverMenu = _viewSys.render(window, 0, 0, width, height, (int)mousePos[0], (int)mousePos[1]);
-
-        //_imgui.Render();
+        mouseOverMenu = _viewSys.render(window, 0, 0, width, height, (int)mousePos[0], (int)mousePos[1]);
+        _imgui.Render();
 
         window.SwapBuffers();
     }
