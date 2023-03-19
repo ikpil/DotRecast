@@ -50,10 +50,10 @@ using Window = Silk.NET.Windowing.Window;
 
 namespace DotRecast.Recast.Demo;
 
-public class RecastDemo : MouseListener
+public class RecastDemo
 {
     private static readonly ILogger Logger = Log.ForContext<RecastDemo>();
-    
+
     private RcViewSystem _viewSys;
     private IWindow window;
     private IInputContext _input;
@@ -115,42 +115,35 @@ public class RecastDemo : MouseListener
         window.Run();
     }
 
-    private Mouse createMouse(IInputContext input)
+    public void OnMouseScrolled(IMouse mice, ScrollWheel scrollWheel)
     {
-        Mouse mouse = new Mouse(input);
-        mouse.addListener(this);
-        return mouse;
-    }
-
-    public void scroll(double xoffset, double yoffset)
-    {
-        if (yoffset < 0)
+        if (scrollWheel.Y < 0)
         {
             // wheel down
-            if (!mouseOverMenu)
-            {
-                scrollZoom += 1.0f;
-            }
+            // if (!mouseOverMenu)
+            // {
+            scrollZoom += 1.0f;
+            //}
         }
         else
         {
-            if (!mouseOverMenu)
-            {
-                scrollZoom -= 1.0f;
-            }
+            // if (!mouseOverMenu)
+            // {
+            scrollZoom -= 1.0f;
+            //}
         }
 
-        // float[] modelviewMatrix = dd.viewMatrix(cameraPos, cameraEulers);
-        // cameraPos[0] += scrollZoom * 2.0f * modelviewMatrix[2];
-        // cameraPos[1] += scrollZoom * 2.0f * modelviewMatrix[6];
-        // cameraPos[2] += scrollZoom * 2.0f * modelviewMatrix[10];
+        float[] modelviewMatrix = dd.viewMatrix(cameraPos, cameraEulers);
+        cameraPos[0] += scrollZoom * 2.0f * modelviewMatrix[2];
+        cameraPos[1] += scrollZoom * 2.0f * modelviewMatrix[6];
+        cameraPos[2] += scrollZoom * 2.0f * modelviewMatrix[10];
         scrollZoom = 0;
     }
 
-    public void position(double x, double y)
+    public void OnMouseMoved(IMouse mouse, Vector2 position)
     {
-        mousePos[0] = (float)x;
-        mousePos[1] = (float)y;
+        mousePos[0] = (float)position.X;
+        mousePos[1] = (float)position.Y;
         int dx = (int)(mousePos[0] - origMousePos[0]);
         int dy = (int)(mousePos[1] - origMousePos[1]);
         if (rotate)
@@ -163,85 +156,85 @@ public class RecastDemo : MouseListener
             }
         }
 
-        // if (pan)
-        // {
-        //     float[] modelviewMatrix = dd.viewMatrix(cameraPos, cameraEulers);
-        //     cameraPos[0] = origCameraPos[0];
-        //     cameraPos[1] = origCameraPos[1];
-        //     cameraPos[2] = origCameraPos[2];
-        //
-        //     cameraPos[0] -= 0.1f * dx * modelviewMatrix[0];
-        //     cameraPos[1] -= 0.1f * dx * modelviewMatrix[4];
-        //     cameraPos[2] -= 0.1f * dx * modelviewMatrix[8];
-        //
-        //     cameraPos[0] += 0.1f * dy * modelviewMatrix[1];
-        //     cameraPos[1] += 0.1f * dy * modelviewMatrix[5];
-        //     cameraPos[2] += 0.1f * dy * modelviewMatrix[9];
-        //     if (dx * dx + dy * dy > 3 * 3)
-        //     {
-        //         movedDuringPan = true;
-        //     }
-        // }
+        if (pan)
+        {
+            float[] modelviewMatrix = dd.viewMatrix(cameraPos, cameraEulers);
+            cameraPos[0] = origCameraPos[0];
+            cameraPos[1] = origCameraPos[1];
+            cameraPos[2] = origCameraPos[2];
+
+            cameraPos[0] -= 0.1f * dx * modelviewMatrix[0];
+            cameraPos[1] -= 0.1f * dx * modelviewMatrix[4];
+            cameraPos[2] -= 0.1f * dx * modelviewMatrix[8];
+
+            cameraPos[0] += 0.1f * dy * modelviewMatrix[1];
+            cameraPos[1] += 0.1f * dy * modelviewMatrix[5];
+            cameraPos[2] += 0.1f * dy * modelviewMatrix[9];
+            if (dx * dx + dy * dy > 3 * 3)
+            {
+                movedDuringPan = true;
+            }
+        }
     }
 
-    public void button(int button, int mods, bool down)
+    public void OnMouseUpAndDown(IMouse mouse, MouseButton button, bool down)
     {
-        modState = mods;
+        modState = 0;
         if (down)
         {
-            if (button == 1)
+            if (button == MouseButton.Right)
             {
-                if (!mouseOverMenu)
-                {
-                    // Rotate view
-                    rotate = true;
-                    movedDuringRotate = false;
-                    origMousePos[0] = mousePos[0];
-                    origMousePos[1] = mousePos[1];
-                    origCameraEulers[0] = cameraEulers[0];
-                    origCameraEulers[1] = cameraEulers[1];
-                }
+                // if (!mouseOverMenu)
+                // {
+                // Rotate view
+                rotate = true;
+                movedDuringRotate = false;
+                origMousePos[0] = mousePos[0];
+                origMousePos[1] = mousePos[1];
+                origCameraEulers[0] = cameraEulers[0];
+                origCameraEulers[1] = cameraEulers[1];
+                //}
             }
-            else if (button == 2)
+            else if (button == MouseButton.Middle)
             {
-                if (!mouseOverMenu)
-                {
-                    // Pan view
-                    pan = true;
-                    movedDuringPan = false;
-                    origMousePos[0] = mousePos[0];
-                    origMousePos[1] = mousePos[1];
-                    origCameraPos[0] = cameraPos[0];
-                    origCameraPos[1] = cameraPos[1];
-                    origCameraPos[2] = cameraPos[2];
-                }
+                // if (!mouseOverMenu)
+                // {
+                // Pan view
+                pan = true;
+                movedDuringPan = false;
+                origMousePos[0] = mousePos[0];
+                origMousePos[1] = mousePos[1];
+                origCameraPos[0] = cameraPos[0];
+                origCameraPos[1] = cameraPos[1];
+                origCameraPos[2] = cameraPos[2];
+                //}
             }
         }
         else
         {
             // Handle mouse clicks here.
-            if (button == 1)
+            if (button == MouseButton.Right)
             {
                 rotate = false;
-                if (!mouseOverMenu)
-                {
-                    if (!movedDuringRotate)
-                    {
-                        processHitTest = true;
-                        processHitTestShift = true;
-                    }
-                }
-            }
-            else if (button == 0)
-            {
-                if (!mouseOverMenu)
+                // if (!mouseOverMenu)
+                // {
+                if (!movedDuringRotate)
                 {
                     processHitTest = true;
-                    //processHitTestShift = (mods & Keys.GLFW_MOD_SHIFT) != 0 ? true : false;
-                    //processHitTestShift = (mods & Keys.) != 0 ? true : false;
+                    processHitTestShift = true;
                 }
+                //}
             }
-            else if (button == 2)
+            else if (button == MouseButton.Left)
+            {
+                // if (!mouseOverMenu)
+                // {
+                processHitTest = true;
+                //processHitTestShift = (mods & Keys.GLFW_MOD_SHIFT) != 0 ? true : false;
+                //processHitTestShift = (mods & Keys.) != 0 ? true : false;
+                //}
+            }
+            else if (button == MouseButton.Middle)
             {
                 pan = false;
             }
@@ -381,11 +374,19 @@ public class RecastDemo : MouseListener
         _sdl = SdlWindowing.GetExistingApi(window);
 
         _input = window.CreateInput();
+        foreach (var mice in _input.Mice)
+        {
+            mice.Scroll += OnMouseScrolled;
+            mice.MouseDown += (m, b) => OnMouseUpAndDown(m, b, true);
+            mice.MouseUp += (m, b) => OnMouseUpAndDown(m, b, false);
+            mice.MouseMove += OnMouseMoved;
+        }
+
         _gl = window.CreateOpenGL();
-        
+
         dd = new RecastDebugDraw(_gl);
         renderer = new NavMeshRenderer(dd);
-        
+
         dd.init(camr);
 
         _imgui = new ImGuiController(_gl, window, _input);
@@ -470,41 +471,41 @@ public class RecastDemo : MouseListener
 
         // if (settingsUI.isMeshInputTrigerred())
         // {
-            // aFilterPatterns.put(stack.UTF8("*.obj"));
-            // aFilterPatterns.flip();
-            // string filename = TinyFileDialogs.tinyfd_openFileDialog("Open Mesh File", "", aFilterPatterns,
-            //     "Mesh File (*.obj)", false);
-            // if (filename != null) {
-            //     try (InputStream stream = new FileInputStream(filename)) {
-            //         sample.update(loadInputMesh(stream), null, null);
-            //     } catch (IOException e) {
-            //         Console.WriteLine(e).printStackTrace();
-            //     }
-            // }
+        // aFilterPatterns.put(stack.UTF8("*.obj"));
+        // aFilterPatterns.flip();
+        // string filename = TinyFileDialogs.tinyfd_openFileDialog("Open Mesh File", "", aFilterPatterns,
+        //     "Mesh File (*.obj)", false);
+        // if (filename != null) {
+        //     try (InputStream stream = new FileInputStream(filename)) {
+        //         sample.update(loadInputMesh(stream), null, null);
+        //     } catch (IOException e) {
+        //         Console.WriteLine(e).printStackTrace();
+        //     }
+        // }
         // }
         // else if (settingsUI.isNavMeshInputTrigerred())
         // {
-            // try (MemoryStack stack = stackPush()) {
-            //     PointerBuffer aFilterPatterns = stack.mallocPointer(4);
-            //     aFilterPatterns.put(stack.UTF8("*.bin"));
-            //     aFilterPatterns.put(stack.UTF8("*.zip"));
-            //     aFilterPatterns.put(stack.UTF8("*.bytes"));
-            //     aFilterPatterns.put(stack.UTF8("*.navmesh"));
-            //     aFilterPatterns.flip();
-            //     string filename = TinyFileDialogs.tinyfd_openFileDialog("Open Nav Mesh File", "", aFilterPatterns,
-            //         "Nav Mesh File", false);
-            //     if (filename != null) {
-            //         File file = new File(filename);
-            //         if (file.exists()) {
-            //             try {
-            //                 loadNavMesh(file, filename);
-            //                 geom = null;
-            //             } catch (Exception e) {
-            //                 Console.WriteLine(e);
-            //             }
-            //         }
-            //     }
-            // }
+        // try (MemoryStack stack = stackPush()) {
+        //     PointerBuffer aFilterPatterns = stack.mallocPointer(4);
+        //     aFilterPatterns.put(stack.UTF8("*.bin"));
+        //     aFilterPatterns.put(stack.UTF8("*.zip"));
+        //     aFilterPatterns.put(stack.UTF8("*.bytes"));
+        //     aFilterPatterns.put(stack.UTF8("*.navmesh"));
+        //     aFilterPatterns.flip();
+        //     string filename = TinyFileDialogs.tinyfd_openFileDialog("Open Nav Mesh File", "", aFilterPatterns,
+        //         "Nav Mesh File", false);
+        //     if (filename != null) {
+        //         File file = new File(filename);
+        //         if (file.exists()) {
+        //             try {
+        //                 loadNavMesh(file, filename);
+        //                 geom = null;
+        //             } catch (Exception e) {
+        //                 Console.WriteLine(e);
+        //             }
+        //         }
+        //     }
+        // }
         // }
         // else if (settingsUI.isBuildTriggered() && sample.getInputGeom() != null)
         // {
@@ -557,63 +558,63 @@ public class RecastDemo : MouseListener
 
         // if (!mouseOverMenu)
         // {
-            // GLU.glhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 0.0f, modelviewMatrix, projectionMatrix, viewport,
-            //     rayStart);
-            // GLU.glhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 1.0f, modelviewMatrix, projectionMatrix, viewport,
-            //     rayEnd);
+        // GLU.glhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 0.0f, modelviewMatrix, projectionMatrix, viewport,
+        //     rayStart);
+        // GLU.glhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 1.0f, modelviewMatrix, projectionMatrix, viewport,
+        //     rayEnd);
 
-            // Hit test mesh.
-            // DemoInputGeomProvider inputGeom = sample.getInputGeom();
-            // if (processHitTest && sample != null)
-            // {
-            //     float? hit = null;
-            //     if (inputGeom != null)
-            //     {
-            //         hit = inputGeom.raycastMesh(rayStart, rayEnd);
-            //     }
-            //
-            //     if (!hit.HasValue && sample.getNavMesh() != null)
-            //     {
-            //         hit = NavMeshRaycast.raycast(sample.getNavMesh(), rayStart, rayEnd);
-            //     }
-            //
-            //     if (!hit.HasValue && sample.getRecastResults() != null)
-            //     {
-            //         hit = PolyMeshRaycast.raycast(sample.getRecastResults(), rayStart, rayEnd);
-            //     }
-            //
-            //     float[] rayDir = new float[] { rayEnd[0] - rayStart[0], rayEnd[1] - rayStart[1], rayEnd[2] - rayStart[2] };
-            //     Tool rayTool = toolsUI.getTool();
-            //     vNormalize(rayDir);
-            //     if (rayTool != null)
-            //     {
-            //         rayTool.handleClickRay(rayStart, rayDir, processHitTestShift);
-            //     }
-            //     // TODO : 잠시 주석
-            //     // if (hit.HasValue) {
-            //     //     float hitTime = hit.Value;
-            //     //     if ((modState & GLFW_MOD_CONTROL) != 0) {
-            //     //         // Marker
-            //     //         markerPositionSet = true;
-            //     //         markerPosition[0] = rayStart[0] + (rayEnd[0] - rayStart[0]) * hitTime;
-            //     //         markerPosition[1] = rayStart[1] + (rayEnd[1] - rayStart[1]) * hitTime;
-            //     //         markerPosition[2] = rayStart[2] + (rayEnd[2] - rayStart[2]) * hitTime;
-            //     //     } else {
-            //     //         float[] pos = new float[3];
-            //     //         pos[0] = rayStart[0] + (rayEnd[0] - rayStart[0]) * hitTime;
-            //     //         pos[1] = rayStart[1] + (rayEnd[1] - rayStart[1]) * hitTime;
-            //     //         pos[2] = rayStart[2] + (rayEnd[2] - rayStart[2]) * hitTime;
-            //     //         if (rayTool != null) {
-            //     //             rayTool.handleClick(rayStart, pos, processHitTestShift);
-            //     //         }
-            //     //     }
-            //     // } else {
-            //     //     if ((modState & GLFW_MOD_CONTROL) != 0) {
-            //     //         // Marker
-            //     //         markerPositionSet = false;
-            //     //     }
-            //     // }
-            // }
+        // Hit test mesh.
+        // DemoInputGeomProvider inputGeom = sample.getInputGeom();
+        // if (processHitTest && sample != null)
+        // {
+        //     float? hit = null;
+        //     if (inputGeom != null)
+        //     {
+        //         hit = inputGeom.raycastMesh(rayStart, rayEnd);
+        //     }
+        //
+        //     if (!hit.HasValue && sample.getNavMesh() != null)
+        //     {
+        //         hit = NavMeshRaycast.raycast(sample.getNavMesh(), rayStart, rayEnd);
+        //     }
+        //
+        //     if (!hit.HasValue && sample.getRecastResults() != null)
+        //     {
+        //         hit = PolyMeshRaycast.raycast(sample.getRecastResults(), rayStart, rayEnd);
+        //     }
+        //
+        //     float[] rayDir = new float[] { rayEnd[0] - rayStart[0], rayEnd[1] - rayStart[1], rayEnd[2] - rayStart[2] };
+        //     Tool rayTool = toolsUI.getTool();
+        //     vNormalize(rayDir);
+        //     if (rayTool != null)
+        //     {
+        //         rayTool.handleClickRay(rayStart, rayDir, processHitTestShift);
+        //     }
+        //     // TODO : 잠시 주석
+        //     // if (hit.HasValue) {
+        //     //     float hitTime = hit.Value;
+        //     //     if ((modState & GLFW_MOD_CONTROL) != 0) {
+        //     //         // Marker
+        //     //         markerPositionSet = true;
+        //     //         markerPosition[0] = rayStart[0] + (rayEnd[0] - rayStart[0]) * hitTime;
+        //     //         markerPosition[1] = rayStart[1] + (rayEnd[1] - rayStart[1]) * hitTime;
+        //     //         markerPosition[2] = rayStart[2] + (rayEnd[2] - rayStart[2]) * hitTime;
+        //     //     } else {
+        //     //         float[] pos = new float[3];
+        //     //         pos[0] = rayStart[0] + (rayEnd[0] - rayStart[0]) * hitTime;
+        //     //         pos[1] = rayStart[1] + (rayEnd[1] - rayStart[1]) * hitTime;
+        //     //         pos[2] = rayStart[2] + (rayEnd[2] - rayStart[2]) * hitTime;
+        //     //         if (rayTool != null) {
+        //     //             rayTool.handleClick(rayStart, pos, processHitTestShift);
+        //     //         }
+        //     //     }
+        //     // } else {
+        //     //     if ((modState & GLFW_MOD_CONTROL) != 0) {
+        //     //         // Marker
+        //     //         markerPositionSet = false;
+        //     //     }
+        //     // }
+        // }
 
         //     processHitTest = false;
         // }
@@ -644,7 +645,7 @@ public class RecastDemo : MouseListener
                             bmin = new float[] { float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity };
                             bmax = new float[] { float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity };
                         }
-        
+
                         for (int i = 0; i < 3; i++)
                         {
                             bmin[i] = Math.Min(bmin[i], result.getSolidHeightfield().bmin[i]);
@@ -653,7 +654,7 @@ public class RecastDemo : MouseListener
                     }
                 }
             }
-        
+
             if (bmin != null && bmax != null)
             {
                 camr = (float)(Math.Sqrt(
@@ -666,11 +667,10 @@ public class RecastDemo : MouseListener
                 cameraEulers[0] = 45;
                 cameraEulers[1] = -45;
             }
-        
+
             sample.setChanged(false);
             toolsUI.setSample(sample);
         }
-
 
 
         var io = ImGui.GetIO();
@@ -706,9 +706,9 @@ public class RecastDemo : MouseListener
         {
             tool.handleRender(renderer);
         }
-        
+
         dd.fog(false);
-        
+
         mouseOverMenu = _viewSys.render(window, 0, 0, width, height, (int)mousePos[0], (int)mousePos[1]);
         _imgui.Render();
 
