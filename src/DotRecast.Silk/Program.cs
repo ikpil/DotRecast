@@ -1,4 +1,5 @@
 ﻿using System;
+using DotRecast.Silk;
 using Serilog;
 using Serilog.Enrichers;
 
@@ -21,6 +22,7 @@ public class Program
                 outputTemplate: format)
             .CreateLogger();
 
-        Log.Logger.Information("Hello, World!");
+        var demo = new SilkDemo();
+        demo.Run();
     }
 }
