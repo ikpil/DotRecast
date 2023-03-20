@@ -1,24 +1,12 @@
-﻿using System.IO;
-using DotRecast.Core;
+﻿using System;
 using Serilog;
 using Serilog.Enrichers;
 
-namespace DotRecast.Recast.Demo;
-
-public static class Program
+public class Program
 {
+    // Only Graphics Test
     public static void Main(string[] args)
     {
-        
-        var path = Loader.ToRPath("dungeon.obj");
-        path = Path.GetDirectoryName(path);
-        if (!string.IsNullOrEmpty(path))
-        {
-            var workingDirectory = Path.Combine(path, "..");
-            workingDirectory = Path.GetFullPath(workingDirectory);
-            Directory.SetCurrentDirectory(workingDirectory);
-        }
-
         var format = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj} [{MemberName}()] [{ThreadName}:{ThreadId}] at {FilePath}:{LineNumber} {NewLine}{Exception}";
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Verbose()
@@ -33,7 +21,6 @@ public static class Program
                 outputTemplate: format)
             .CreateLogger();
 
-        var demo = new RecastDemo();
-        demo.start();
+        Log.Logger.Information("Hello, World!");
     }
 }
