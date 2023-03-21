@@ -1,15 +1,8 @@
 using System;
-using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using DotRecast.Core;
-using ImGuiNET;
-using Microsoft.DotNet.PlatformAbstractions;
 using Silk.NET.OpenGL;
-using Silk.NET.Windowing;
-using Buffer = Silk.NET.OpenGL.Buffer;
+using DotRecast.Core;
 
 namespace DotRecast.Recast.Demo.Draw;
 
@@ -76,17 +69,17 @@ public class ModernOpenGLDraw : OpenGLDraw
 
         program = _gl.CreateProgram();
         uint vert_shdr = _gl.CreateShader(GLEnum.VertexShader);
-        uint frag_shdr = _gl.CreateShader(GLEnum.FragmentShader);
         _gl.ShaderSource(vert_shdr, vertex_shader);
-        _gl.ShaderSource(frag_shdr, fragment_shader);
         _gl.CompileShader(vert_shdr);
-        _gl.CompileShader(frag_shdr);
         _gl.GetShader(vert_shdr, GLEnum.CompileStatus, out var status);
         if (status != (int)GLEnum.True)
         {
             throw new InvalidOperationException();
         }
 
+        uint frag_shdr = _gl.CreateShader(GLEnum.FragmentShader);
+        _gl.ShaderSource(frag_shdr, fragment_shader);
+        _gl.CompileShader(frag_shdr);
         _gl.GetShader(frag_shdr, GLEnum.CompileStatus, out status);
         if (status != (int)GLEnum.True)
         {
@@ -101,6 +94,11 @@ public class ModernOpenGLDraw : OpenGLDraw
         {
             throw new InvalidOperationException();
         }
+        
+        _gl.DetachShader(program, vert_shdr);
+        _gl.DetachShader(program, frag_shdr);
+        _gl.DeleteShader(vert_shdr);
+        _gl.DeleteShader(frag_shdr);
 
         uniformTexture = _gl.GetUniformLocation(program, "Texture");
         uniformUseTexture = _gl.GetUniformLocation(program, "UseTexture");
@@ -109,46 +107,49 @@ public class ModernOpenGLDraw : OpenGLDraw
         uniformFogEnd = _gl.GetUniformLocation(program, "FogEnd");
         uniformProjectionMatrix = _gl.GetUniformLocation(program, "ProjMtx");
         uniformViewMatrix = _gl.GetUniformLocation(program, "ViewMtx");
+        
         uint attrib_pos = (uint)_gl.GetAttribLocation(program, "Position");
         uint attrib_uv = (uint)_gl.GetAttribLocation(program, "TexCoord");
         uint attrib_col = (uint)_gl.GetAttribLocation(program, "Color");
 
         // buffer setup
-        _gl.GenBuffers(1, out vbo);
-        _gl.GenBuffers(1, out ebo);
-        _gl.GenVertexArrays(1, out vao);
+        vao = _gl.GenVertexArray();
+        vbo = _gl.GenBuffer();
+        ebo = _gl.GenBuffer();
 
         _gl.BindVertexArray(vao);
         _gl.BindBuffer(GLEnum.ArrayBuffer, vbo);
         _gl.BindBuffer(GLEnum.ElementArrayBuffer, ebo);
 
+
         _gl.EnableVertexAttribArray(attrib_pos);
         _gl.EnableVertexAttribArray(attrib_uv);
         _gl.EnableVertexAttribArray(attrib_col);
-
+        
         // _gl.VertexAttribP3(attrib_pos, GLEnum.Float, false, 24);
-        // _gl.VertexAttribP2(attrib_pos, GLEnum.Float, false, 24);
-        // _gl.VertexAttribP4(attrib_pos, GLEnum.UnsignedByte, true, 24);
+        // _gl.VertexAttribP2(attrib_uv, GLEnum.Float, false, 24);
+        // _gl.VertexAttribP4(attrib_col, GLEnum.UnsignedByte, true, 24);
         IntPtr pointer1 = 0;
         IntPtr pointer2 = 12;
         IntPtr pointer3 = 20;
-        // _gl.VertexAttribPointer(attrib_pos, 3, GLEnum.Float, false, 24, pointer1.ToPointer());
-        // _gl.VertexAttribPointer(attrib_uv, 2, GLEnum.Float, false, 24, pointer2.ToPointer());
-        // _gl.VertexAttribPointer(attrib_col, 4, GLEnum.UnsignedByte, true, 24, pointer3.ToPointer());
-        _gl.VertexAttribPointer(attrib_pos, 3, GLEnum.Float, false, 24, (void*)0);
-        _gl.VertexAttribPointer(attrib_uv, 2, GLEnum.Float, false, 24, (void*)12);
-        _gl.VertexAttribPointer(attrib_col, 4, GLEnum.UnsignedByte, true, 24, (void*)20);
+        _gl.VertexAttribPointer(attrib_pos, 3, VertexAttribPointerType.Float, false, 24, pointer1.ToPointer());
+        _gl.VertexAttribPointer(attrib_uv, 2, VertexAttribPointerType.Float, false, 24, pointer2.ToPointer());
+        _gl.VertexAttribPointer(attrib_col, 4, VertexAttribPointerType.UnsignedByte, true, 24, pointer3.ToPointer());
+
+        // _gl.VertexAttribPointer(attrib_pos, 3, GLEnum.Float, false, 24, (void*)0);
+        // _gl.VertexAttribPointer(attrib_uv, 2, GLEnum.Float, false, 24, (void*)12);
+        // _gl.VertexAttribPointer(attrib_col, 4, GLEnum.UnsignedByte, true, 24, (void*)20);
 
 
         // _gl.VertexAttribP3(attrib_pos, GLEnum.Float, false, 0);
         // _gl.VertexAttribP2(attrib_uv, GLEnum.Float, false, 12);
         // _gl.VertexAttribP4(attrib_col, GLEnum.UnsignedByte, true, 20);
 
-        
         _gl.BindTexture(GLEnum.Texture2D, 0);
+
+        _gl.BindVertexArray(0);
         _gl.BindBuffer(GLEnum.ArrayBuffer, 0);
         _gl.BindBuffer(GLEnum.ElementArrayBuffer, 0);
-        _gl.BindVertexArray(0);
     }
 
     public void clear()
@@ -190,20 +191,20 @@ public class ModernOpenGLDraw : OpenGLDraw
         // glBufferData(GL_ARRAY_BUFFER, MAX_VERTEX_BUFFER, GL_STREAM_DRAW);
         // glBufferData(GL_ELEMENT_ARRAY_BUFFER, MAX_ELEMENT_BUFFER, GL_STREAM_DRAW);
 
-        int vboSize = vertices.Count * 24;
-        int eboSize = currentPrim == DebugDrawPrimitives.QUADS ? vertices.Count * 6 : vertices.Count * 4;
+        uint vboSize = (uint)vertices.Count * 24;
+        uint eboSize = currentPrim == DebugDrawPrimitives.QUADS ? (uint)vertices.Count * 6 : (uint)vertices.Count * 4;
 
-        _gl.BufferData(GLEnum.ArrayBuffer, (nuint)vboSize, IntPtr.Zero, GLEnum.StreamDraw);
-        _gl.BufferData(GLEnum.ElementArrayBuffer, (nuint)eboSize, IntPtr.Zero, GLEnum.StreamDraw);
+        _gl.BufferData(GLEnum.ArrayBuffer, vboSize, null, GLEnum.StreamDraw);
+        _gl.BufferData(GLEnum.ElementArrayBuffer, eboSize, null, GLEnum.StreamDraw);
         // load draw vertices & elements directly into vertex + element buffer
 
         {
             byte* pVerts = (byte*)_gl.MapBuffer(GLEnum.ArrayBuffer, GLEnum.WriteOnly);
             byte* pElems = (byte*)_gl.MapBuffer(GLEnum.ElementArrayBuffer, GLEnum.WriteOnly);
-            
+
             using var unmanagedVerts = new UnmanagedMemoryStream(pVerts, vboSize, vboSize, FileAccess.Write);
             using var unmanagedElems = new UnmanagedMemoryStream(pElems, eboSize, eboSize, FileAccess.Write);
-            
+
             using var verts = new BinaryWriter(unmanagedVerts);
             using var elems = new BinaryWriter(unmanagedElems);
 
@@ -224,7 +225,6 @@ public class ModernOpenGLDraw : OpenGLDraw
                     elems.Write(i);
                     elems.Write(i + 2);
                     elems.Write(i + 3);
-
                 }
             }
             else
@@ -235,6 +235,7 @@ public class ModernOpenGLDraw : OpenGLDraw
                     elems.Write(i);
                 }
             }
+
             verts.Flush();
             elems.Flush();
 
@@ -254,25 +255,25 @@ public class ModernOpenGLDraw : OpenGLDraw
         switch (currentPrim)
         {
             case DebugDrawPrimitives.POINTS:
-                _gl.DrawElements(GLEnum.Points, (uint)vertices.Count, GLEnum.UnsignedInt, 0);
+                _gl.DrawElements(GLEnum.Points, (uint)vertices.Count, GLEnum.UnsignedInt, (void*)0);
                 break;
             case DebugDrawPrimitives.LINES:
-                _gl.DrawElements(GLEnum.Lines, (uint)vertices.Count, GLEnum.UnsignedInt, 0);
+                _gl.DrawElements(GLEnum.Lines, (uint)vertices.Count, GLEnum.UnsignedInt, (void*)0);
                 break;
             case DebugDrawPrimitives.TRIS:
-                _gl.DrawElements(GLEnum.Triangles, (uint)vertices.Count, GLEnum.UnsignedInt, 0);
+                _gl.DrawElements(GLEnum.Triangles, (uint)vertices.Count, GLEnum.UnsignedInt, (void*)0);
                 break;
             case DebugDrawPrimitives.QUADS:
-                _gl.DrawElements(GLEnum.Triangles, (uint)(vertices.Count * 6 / 4), GLEnum.UnsignedInt, 0);
+                _gl.DrawElements(GLEnum.Triangles, (uint)(vertices.Count * 6 / 4), GLEnum.UnsignedInt, (void*)0);
                 break;
             default:
                 break;
         }
 
         _gl.UseProgram(0);
+        _gl.BindVertexArray(0);
         _gl.BindBuffer(GLEnum.ArrayBuffer, 0);
         _gl.BindBuffer(GLEnum.ElementArrayBuffer, 0);
-        _gl.BindVertexArray(0);
         vertices.Clear();
         _gl.LineWidth(1.0f);
         _gl.PointSize(1.0f);

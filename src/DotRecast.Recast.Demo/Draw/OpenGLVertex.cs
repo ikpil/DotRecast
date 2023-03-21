@@ -53,6 +53,5 @@ public class OpenGLVertex
         writer.Write(u);
         writer.Write(v);
         writer.Write(color);
-        
     }
 }
