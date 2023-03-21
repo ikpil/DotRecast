@@ -213,12 +213,6 @@ public class ModernOpenGLDraw : OpenGLDraw
             {
                 for (int i = 0; i < vertices.Count; i += 4)
                 {
-                    // elems.Write(BitConverter.GetBytes(i));
-                    // elems.Write(BitConverter.GetBytes(i + 1));
-                    // elems.Write(BitConverter.GetBytes(i + 2));
-                    // elems.Write(BitConverter.GetBytes(i));
-                    // elems.Write(BitConverter.GetBytes(i + 2));
-                    // elems.Write(BitConverter.GetBytes(i + 3));
                     elems.Write(i);
                     elems.Write(i + 1);
                     elems.Write(i + 2);
@@ -231,7 +225,6 @@ public class ModernOpenGLDraw : OpenGLDraw
             {
                 for (int i = 0; i < vertices.Count; i++)
                 {
-                    //elems.Write(BitConverter.GetBytes(i));
                     elems.Write(i);
                 }
             }
