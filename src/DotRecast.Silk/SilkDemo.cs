@@ -56,7 +56,12 @@ public class SilkDemo
 
         // Create the VAO.
         _vao = _gl.GenVertexArray();
+        _vbo = _gl.GenBuffer(); // Create the VBO.
+        _ebo = _gl.GenBuffer(); // Create the EBO.
+        
         _gl.BindVertexArray(_vao);
+        _gl.BindBuffer(BufferTargetARB.ArrayBuffer, _vbo);
+        _gl.BindBuffer(BufferTargetARB.ElementArrayBuffer, _ebo);
 
         // The quad vertices data.
         float[] vertices =
@@ -67,10 +72,7 @@ public class SilkDemo
             -0.5f,  0.5f, 0.0f
         };
 
-        // Create the VBO.
-        _vbo = _gl.GenBuffer();
-        _gl.BindBuffer(BufferTargetARB.ArrayBuffer, _vbo);
-
+        
         // Upload the vertices data to the VBO.
         fixed (float* buf = vertices)
             _gl.BufferData(BufferTargetARB.ArrayBuffer, (nuint) (vertices.Length * sizeof(float)), buf, BufferUsageARB.StaticDraw);
@@ -82,9 +84,6 @@ public class SilkDemo
             1u, 2u, 3u
         };
 
-        // Create the EBO.
-        _ebo = _gl.GenBuffer();
-        _gl.BindBuffer(BufferTargetARB.ElementArrayBuffer, _ebo);
 
         // Upload the indices data to the EBO.
         fixed (uint* buf = indices)
@@ -106,29 +105,26 @@ void main()
     out_color = vec4(1.0, 0.5, 0.2, 1.0);
 }";
 
+        _program = _gl.CreateProgram();
         uint vertexShader = _gl.CreateShader(ShaderType.VertexShader);
+        uint fragmentShader = _gl.CreateShader(ShaderType.FragmentShader);
+        
         _gl.ShaderSource(vertexShader, vertexCode);
-
+        _gl.ShaderSource(fragmentShader, fragmentCode);
+        
         _gl.CompileShader(vertexShader);
-
+        _gl.CompileShader(fragmentShader);
+        
         _gl.GetShader(vertexShader, ShaderParameterName.CompileStatus, out int vStatus);
         if (vStatus != (int) GLEnum.True)
             throw new Exception("Vertex shader failed to compile: " + _gl.GetShaderInfoLog(vertexShader));
-
-        uint fragmentShader = _gl.CreateShader(ShaderType.FragmentShader);
-        _gl.ShaderSource(fragmentShader, fragmentCode);
-
-        _gl.CompileShader(fragmentShader);
 
         _gl.GetShader(fragmentShader, ShaderParameterName.CompileStatus, out int fStatus);
         if (fStatus != (int) GLEnum.True)
             throw new Exception("Fragment shader failed to compile: " + _gl.GetShaderInfoLog(fragmentShader));
 
-        _program = _gl.CreateProgram();
-
         _gl.AttachShader(_program, vertexShader);
         _gl.AttachShader(_program, fragmentShader);
-
         _gl.LinkProgram(_program);
 
         _gl.GetProgram(_program, ProgramPropertyARB.LinkStatus, out int lStatus);
@@ -139,8 +135,8 @@ void main()
         _gl.DetachShader(_program, fragmentShader);
         _gl.DeleteShader(vertexShader);
         _gl.DeleteShader(fragmentShader);
-
-        const uint positionLoc = 0;
+        
+        var positionLoc = (uint)_gl.GetAttribLocation(_program, "aPosition");
         _gl.EnableVertexAttribArray(positionLoc);
         _gl.VertexAttribPointer(positionLoc, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), (void*) 0);
 
