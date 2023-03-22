@@ -1,5 +1,5 @@
 # DotRecast
-![DotRecast of a navmesh baked with the sample program](/DotRecast.Recast.Demo/screenshot.png?raw=true)
+![DotRecast of a navmesh baked with the sample program](/src/DotRecast.Recast.Demo/screenshot.png?raw=true)
 
 DotRecast is a port of recast4j(https://github.com/ppiastucki/recast4j) to C# and has been built to target netstandard2.1 to work with both Unity3D and pure C#.
 
