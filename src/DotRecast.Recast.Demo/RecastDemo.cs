@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -98,6 +99,17 @@ public class RecastDemo
     private readonly float[] rayStart = new float[3];
     private readonly float[] rayEnd = new float[3];
 
+    private float[] projectionMatrix = new float[16];
+    private float[] modelviewMatrix = new float[16];
+
+    private float _moveFront;
+    private float _moveLeft;
+    private float _moveBack;
+    private float _moveRight;
+    private float _moveUp;
+    private float _moveDown;
+    private float _moveAccel;
+    
     private bool markerPositionSet;
     private readonly float[] markerPosition = new float[3];
     private ToolsView toolsUI;
@@ -241,6 +253,7 @@ public class RecastDemo
         }
     }
 
+
     private IWindow CreateWindow()
     {
         SdlWindowing.Use();
@@ -374,6 +387,8 @@ public class RecastDemo
         _sdl = SdlWindowing.GetExistingApi(window);
 
         _input = window.CreateInput();
+
+        // mouse input
         foreach (var mice in _input.Mice)
         {
             mice.Scroll += OnMouseScrolled;
@@ -381,6 +396,7 @@ public class RecastDemo
             mice.MouseUp += (m, b) => OnMouseUpAndDown(m, b, false);
             mice.MouseMove += OnMouseMoved;
         }
+
 
         _gl = window.CreateOpenGL();
 
@@ -428,26 +444,68 @@ public class RecastDemo
         sample = new Sample(geom, ImmutableArray<RecastBuilderResult>.Empty, null, settingsUI, dd);
     }
 
+    private void UpdateKeyboard(float dt)
+    {
+        // keyboard input
+        foreach (var keyboard in _input.Keyboards)
+        {
+            var tempMoveFront = keyboard.IsKeyPressed(Key.W) || keyboard.IsKeyPressed(Key.Up) ? 1.0f : -1f;
+            var tempMoveLeft = keyboard.IsKeyPressed(Key.A) || keyboard.IsKeyPressed(Key.Left) ? 1.0f : -1f;
+            var tempMoveBack = keyboard.IsKeyPressed(Key.S) || keyboard.IsKeyPressed(Key.Down) ? 1.0f : -1f;
+            var tempMoveRight = keyboard.IsKeyPressed(Key.D) || keyboard.IsKeyPressed(Key.Right) ? 1.0f : -1f;
+            var tempMoveUp = keyboard.IsKeyPressed(Key.Q) || keyboard.IsKeyPressed(Key.PageUp) ? 1.0f : -1f;
+            var tempMoveDown= keyboard.IsKeyPressed(Key.E) || keyboard.IsKeyPressed(Key.PageDown) ? 1.0f : -1f;
+            var tempMoveAccel= keyboard.IsKeyPressed(Key.ShiftLeft) || keyboard.IsKeyPressed(Key.ShiftRight) ? 1.0f : -1f;
+
+            _moveFront = DemoMath.clamp(_moveFront + tempMoveFront * dt * 4.0f, 0, 2.0f);
+            _moveLeft = DemoMath.clamp(_moveLeft + tempMoveLeft * dt * 4.0f, 0, 2.0f);
+            _moveBack = DemoMath.clamp(_moveBack + tempMoveBack * dt * 4.0f, 0, 2.0f);
+            _moveRight = DemoMath.clamp(_moveRight + tempMoveRight * dt * 4.0f, 0, 2.0f);
+            _moveUp = DemoMath.clamp(_moveUp + tempMoveUp * dt * 4.0f, 0, 2.0f);
+            _moveDown = DemoMath.clamp(_moveDown + tempMoveDown * dt * 4.0f, 0, 2.0f);
+            _moveAccel = DemoMath.clamp(_moveAccel + tempMoveAccel * dt * 4.0f, 0, 2.0f);
+        }
+    }
+
     private void OnWindowOnUpdate(double dt)
     {
         /*
           * try (MemoryStack stack = stackPush()) { int[] w = stack.mallocInt(1); int[] h =
           * stack.mallocInt(1); glfwGetWindowSize(win, w, h); width = w[0]; height = h[0]; }
        */
-        // if (sample.getInputGeom() != null)
-        // {
-        //     float[] bmin = sample.getInputGeom().getMeshBoundsMin();
-        //     float[] bmax = sample.getInputGeom().getMeshBoundsMax();
-        //     int[] voxels = Recast.calcGridSize(bmin, bmax, settingsUI.getCellSize());
-        //     settingsUI.setVoxels(voxels);
-        //     settingsUI.setTiles(tileNavMeshBuilder.getTiles(sample.getInputGeom(), settingsUI.getCellSize(), settingsUI.getTileSize()));
-        //     settingsUI.setMaxTiles(tileNavMeshBuilder.getMaxTiles(sample.getInputGeom(), settingsUI.getCellSize(), settingsUI.getTileSize()));
-        //     settingsUI.setMaxPolys(tileNavMeshBuilder.getMaxPolysPerTile(sample.getInputGeom(), settingsUI.getCellSize(), settingsUI.getTileSize()));
-        // }
+        if (sample.getInputGeom() != null)
+        {
+            float[] bmin = sample.getInputGeom().getMeshBoundsMin();
+            float[] bmax = sample.getInputGeom().getMeshBoundsMax();
+            int[] voxels = Recast.calcGridSize(bmin, bmax, settingsUI.getCellSize());
+            settingsUI.setVoxels(voxels);
+            settingsUI.setTiles(tileNavMeshBuilder.getTiles(sample.getInputGeom(), settingsUI.getCellSize(), settingsUI.getTileSize()));
+            settingsUI.setMaxTiles(tileNavMeshBuilder.getMaxTiles(sample.getInputGeom(), settingsUI.getCellSize(), settingsUI.getTileSize()));
+            settingsUI.setMaxPolys(tileNavMeshBuilder.getMaxPolysPerTile(sample.getInputGeom(), settingsUI.getCellSize(), settingsUI.getTileSize()));
+        }
 
-        //_viewSys.inputBegin();
-        // window.DoEvents();
-        // _viewSys.inputEnd(window);
+        UpdateKeyboard((float)dt);
+
+        // camera move
+        float keySpeed = 22.0f;
+        if (0 < _moveAccel)
+        {
+            keySpeed *= _moveAccel * 2.0f;
+        }
+
+        double movex = (_moveRight - _moveLeft) * keySpeed * dt;
+        double movey = (_moveBack - _moveFront) * keySpeed * dt + scrollZoom * 2.0f;
+        scrollZoom = 0;
+
+        cameraPos[0] += (float)(movex * modelviewMatrix[0]);
+        cameraPos[1] += (float)(movex * modelviewMatrix[4]);
+        cameraPos[2] += (float)(movex * modelviewMatrix[8]);
+
+        cameraPos[0] += (float)(movey * modelviewMatrix[2]);
+        cameraPos[1] += (float)(movey * modelviewMatrix[6]);
+        cameraPos[2] += (float)(movey * modelviewMatrix[10]);
+
+        cameraPos[1] += (float)((_moveUp - _moveDown) * keySpeed * dt);
 
         // long time = Stopwatch.GetTimestamp() / 1000;
         // //float dt = (time - prevFrameTime) / 1000000.0f;
@@ -507,54 +565,54 @@ public class RecastDemo
         //     }
         // }
         // }
-        // else if (settingsUI.isBuildTriggered() && sample.getInputGeom() != null)
-        // {
-        //     if (!building)
-        //     {
-        //         float m_cellSize = settingsUI.getCellSize();
-        //         float m_cellHeight = settingsUI.getCellHeight();
-        //         float m_agentHeight = settingsUI.getAgentHeight();
-        //         float m_agentRadius = settingsUI.getAgentRadius();
-        //         float m_agentMaxClimb = settingsUI.getAgentMaxClimb();
-        //         float m_agentMaxSlope = settingsUI.getAgentMaxSlope();
-        //         int m_regionMinSize = settingsUI.getMinRegionSize();
-        //         int m_regionMergeSize = settingsUI.getMergedRegionSize();
-        //         float m_edgeMaxLen = settingsUI.getEdgeMaxLen();
-        //         float m_edgeMaxError = settingsUI.getEdgeMaxError();
-        //         int m_vertsPerPoly = settingsUI.getVertsPerPoly();
-        //         float m_detailSampleDist = settingsUI.getDetailSampleDist();
-        //         float m_detailSampleMaxError = settingsUI.getDetailSampleMaxError();
-        //         int m_tileSize = settingsUI.getTileSize();
-        //         long t = Stopwatch.GetTimestamp();
-        //
-        //         Tuple<IList<RecastBuilderResult>, NavMesh> buildResult;
-        //         if (settingsUI.isTiled())
-        //         {
-        //             buildResult = tileNavMeshBuilder.build(sample.getInputGeom(), settingsUI.getPartitioning(), m_cellSize,
-        //                 m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize,
-        //                 m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, m_detailSampleDist,
-        //                 m_detailSampleMaxError, settingsUI.isFilterLowHangingObstacles(), settingsUI.isFilterLedgeSpans(),
-        //                 settingsUI.isFilterWalkableLowHeightSpans(), m_tileSize);
-        //         }
-        //         else
-        //         {
-        //             buildResult = soloNavMeshBuilder.build(sample.getInputGeom(), settingsUI.getPartitioning(), m_cellSize,
-        //                 m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize,
-        //                 m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, m_detailSampleDist,
-        //                 m_detailSampleMaxError, settingsUI.isFilterLowHangingObstacles(), settingsUI.isFilterLedgeSpans(),
-        //                 settingsUI.isFilterWalkableLowHeightSpans());
-        //         }
-        //
-        //         sample.update(sample.getInputGeom(), buildResult.Item1, buildResult.Item2);
-        //         sample.setChanged(false);
-        //         settingsUI.setBuildTime((Stopwatch.GetTimestamp() - t) / 1_000_000);
-        //         toolsUI.setSample(sample);
-        //     }
-        // }
-        // else
-        // {
-        //     building = false;
-        // }
+        if (settingsUI.isBuildTriggered() && sample.getInputGeom() != null)
+        {
+            if (!building)
+            {
+                float m_cellSize = settingsUI.getCellSize();
+                float m_cellHeight = settingsUI.getCellHeight();
+                float m_agentHeight = settingsUI.getAgentHeight();
+                float m_agentRadius = settingsUI.getAgentRadius();
+                float m_agentMaxClimb = settingsUI.getAgentMaxClimb();
+                float m_agentMaxSlope = settingsUI.getAgentMaxSlope();
+                int m_regionMinSize = settingsUI.getMinRegionSize();
+                int m_regionMergeSize = settingsUI.getMergedRegionSize();
+                float m_edgeMaxLen = settingsUI.getEdgeMaxLen();
+                float m_edgeMaxError = settingsUI.getEdgeMaxError();
+                int m_vertsPerPoly = settingsUI.getVertsPerPoly();
+                float m_detailSampleDist = settingsUI.getDetailSampleDist();
+                float m_detailSampleMaxError = settingsUI.getDetailSampleMaxError();
+                int m_tileSize = settingsUI.getTileSize();
+                long t = Stopwatch.GetTimestamp();
+
+                Tuple<IList<RecastBuilderResult>, NavMesh> buildResult;
+                if (settingsUI.isTiled())
+                {
+                    buildResult = tileNavMeshBuilder.build(sample.getInputGeom(), settingsUI.getPartitioning(), m_cellSize,
+                        m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize,
+                        m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, m_detailSampleDist,
+                        m_detailSampleMaxError, settingsUI.isFilterLowHangingObstacles(), settingsUI.isFilterLedgeSpans(),
+                        settingsUI.isFilterWalkableLowHeightSpans(), m_tileSize);
+                }
+                else
+                {
+                    buildResult = soloNavMeshBuilder.build(sample.getInputGeom(), settingsUI.getPartitioning(), m_cellSize,
+                        m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize,
+                        m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, m_detailSampleDist,
+                        m_detailSampleMaxError, settingsUI.isFilterLowHangingObstacles(), settingsUI.isFilterLedgeSpans(),
+                        settingsUI.isFilterWalkableLowHeightSpans());
+                }
+
+                sample.update(sample.getInputGeom(), buildResult.Item1, buildResult.Item2);
+                sample.setChanged(false);
+                settingsUI.setBuildTime((Stopwatch.GetTimestamp() - t) / 1_000_000);
+                toolsUI.setSample(sample);
+            }
+        }
+        else
+        {
+            building = false;
+        }
 
         // if (!mouseOverMenu)
         // {
@@ -696,8 +754,8 @@ public class RecastDemo
 
         // Clear the screen
         dd.clear();
-        float[] projectionMatrix = dd.projectionMatrix(50f, (float)width / (float)height, 1.0f, camr);
-        float[] modelviewMatrix = dd.viewMatrix(cameraPos, cameraEulers);
+        projectionMatrix = dd.projectionMatrix(50f, (float)width / (float)height, 1.0f, camr);
+        modelviewMatrix = dd.viewMatrix(cameraPos, cameraEulers);
 
         dd.fog(camr * 0.1f, camr * 1.25f);
         renderer.render(sample);
