@@ -109,7 +109,7 @@ public class OffMeshConnectionTool : Tool
         }
     }
 
-    public override void layout(IWindow ctx)
+    public override void layout()
     {
         // nk_layout_row_dynamic(ctx, 20, 1);
         // bidir = !nk_option_label(ctx, "One Way", !bidir);

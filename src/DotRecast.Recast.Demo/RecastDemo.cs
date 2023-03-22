@@ -83,7 +83,7 @@ public class RecastDemo
 
     private readonly float[] mousePos = new float[2];
 
-    private bool mouseOverMenu;
+    private bool _mouseOverMenu;
     private bool pan;
     private bool movedDuringPan;
     private bool rotate;
@@ -109,7 +109,7 @@ public class RecastDemo
     private float _moveUp;
     private float _moveDown;
     private float _moveAccel;
-    
+
     private bool markerPositionSet;
     private readonly float[] markerPosition = new float[3];
     private ToolsView toolsUI;
@@ -132,17 +132,17 @@ public class RecastDemo
         if (scrollWheel.Y < 0)
         {
             // wheel down
-            // if (!mouseOverMenu)
-            // {
-            scrollZoom += 1.0f;
-            //}
+            if (!_mouseOverMenu)
+            {
+                scrollZoom += 1.0f;
+            }
         }
         else
         {
-            // if (!mouseOverMenu)
-            // {
-            scrollZoom -= 1.0f;
-            //}
+            if (!_mouseOverMenu)
+            {
+                scrollZoom -= 1.0f;
+            }
         }
 
         float[] modelviewMatrix = dd.viewMatrix(cameraPos, cameraEulers);
@@ -196,30 +196,30 @@ public class RecastDemo
         {
             if (button == MouseButton.Right)
             {
-                // if (!mouseOverMenu)
-                // {
-                // Rotate view
-                rotate = true;
-                movedDuringRotate = false;
-                origMousePos[0] = mousePos[0];
-                origMousePos[1] = mousePos[1];
-                origCameraEulers[0] = cameraEulers[0];
-                origCameraEulers[1] = cameraEulers[1];
-                //}
+                if (!_mouseOverMenu)
+                {
+                    // Rotate view
+                    rotate = true;
+                    movedDuringRotate = false;
+                    origMousePos[0] = mousePos[0];
+                    origMousePos[1] = mousePos[1];
+                    origCameraEulers[0] = cameraEulers[0];
+                    origCameraEulers[1] = cameraEulers[1];
+                }
             }
             else if (button == MouseButton.Middle)
             {
-                // if (!mouseOverMenu)
-                // {
-                // Pan view
-                pan = true;
-                movedDuringPan = false;
-                origMousePos[0] = mousePos[0];
-                origMousePos[1] = mousePos[1];
-                origCameraPos[0] = cameraPos[0];
-                origCameraPos[1] = cameraPos[1];
-                origCameraPos[2] = cameraPos[2];
-                //}
+                if (!_mouseOverMenu)
+                {
+                    // Pan view
+                    pan = true;
+                    movedDuringPan = false;
+                    origMousePos[0] = mousePos[0];
+                    origMousePos[1] = mousePos[1];
+                    origCameraPos[0] = cameraPos[0];
+                    origCameraPos[1] = cameraPos[1];
+                    origCameraPos[2] = cameraPos[2];
+                }
             }
         }
         else
@@ -228,23 +228,23 @@ public class RecastDemo
             if (button == MouseButton.Right)
             {
                 rotate = false;
-                // if (!mouseOverMenu)
-                // {
-                if (!movedDuringRotate)
+                if (!_mouseOverMenu)
                 {
-                    processHitTest = true;
-                    processHitTestShift = true;
+                    if (!movedDuringRotate)
+                    {
+                        processHitTest = true;
+                        processHitTestShift = true;
+                    }
                 }
-                //}
             }
             else if (button == MouseButton.Left)
             {
-                // if (!mouseOverMenu)
-                // {
-                processHitTest = true;
-                //processHitTestShift = (mods & Keys.GLFW_MOD_SHIFT) != 0 ? true : false;
-                //processHitTestShift = (mods & Keys.) != 0 ? true : false;
-                //}
+                if (!_mouseOverMenu)
+                {
+                    processHitTest = true;
+                    //processHitTestShift = (mods & Keys.GLFW_MOD_SHIFT) != 0 ? true : false;
+                    //processHitTestShift = (mods & Keys.) != 0 ? true : false;
+                }
             }
             else if (button == MouseButton.Middle)
             {
@@ -454,8 +454,8 @@ public class RecastDemo
             var tempMoveBack = keyboard.IsKeyPressed(Key.S) || keyboard.IsKeyPressed(Key.Down) ? 1.0f : -1f;
             var tempMoveRight = keyboard.IsKeyPressed(Key.D) || keyboard.IsKeyPressed(Key.Right) ? 1.0f : -1f;
             var tempMoveUp = keyboard.IsKeyPressed(Key.Q) || keyboard.IsKeyPressed(Key.PageUp) ? 1.0f : -1f;
-            var tempMoveDown= keyboard.IsKeyPressed(Key.E) || keyboard.IsKeyPressed(Key.PageDown) ? 1.0f : -1f;
-            var tempMoveAccel= keyboard.IsKeyPressed(Key.ShiftLeft) || keyboard.IsKeyPressed(Key.ShiftRight) ? 1.0f : -1f;
+            var tempMoveDown = keyboard.IsKeyPressed(Key.E) || keyboard.IsKeyPressed(Key.PageDown) ? 1.0f : -1f;
+            var tempMoveAccel = keyboard.IsKeyPressed(Key.ShiftLeft) || keyboard.IsKeyPressed(Key.ShiftRight) ? 1.0f : -1f;
 
             _moveFront = DemoMath.clamp(_moveFront + tempMoveFront * dt * 4.0f, 0, 2.0f);
             _moveLeft = DemoMath.clamp(_moveLeft + tempMoveLeft * dt * 4.0f, 0, 2.0f);
@@ -767,7 +767,8 @@ public class RecastDemo
 
         dd.fog(false);
 
-        mouseOverMenu = _viewSys.render(window, 0, 0, width, height, (int)mousePos[0], (int)mousePos[1]);
+        _viewSys.Draw();
+        _mouseOverMenu = _viewSys.IsMouseOverUI();
         _imgui.Render();
 
         window.SwapBuffers();

@@ -33,7 +33,7 @@ public abstract class Tool
 
     public abstract void handleUpdate(float dt);
 
-    public abstract void layout(IWindow ctx);
+    public abstract void layout();
 
     public abstract string getName();
 

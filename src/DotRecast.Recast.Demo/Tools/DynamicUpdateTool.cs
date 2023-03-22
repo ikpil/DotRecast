@@ -479,7 +479,7 @@ public class DynamicUpdateTool : Tool
         }
     }
 
-    public override void layout(IWindow ctx)
+    public override void layout()
     {
         // nk_layout_row_dynamic(ctx, 18, 1);
         // if (nk_option_label(ctx, "Build", mode == ToolMode.BUILD)) {

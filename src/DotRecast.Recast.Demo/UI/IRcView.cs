@@ -22,5 +22,6 @@ namespace DotRecast.Recast.Demo.UI;
 
 public interface IRcView
 {
-    bool render(IWindow window, int x, int y, int width, int height, int mouseX, int mouseY);
+    bool IsMouseInside();
+    void Draw();
 }

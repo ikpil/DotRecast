@@ -684,7 +684,7 @@ public class CrowdTool : Tool
         m_agentDebug.agent = agent;
     }
 
-    public override void layout(IWindow ctx)
+    public override void layout()
     {
         // ToolMode previousToolMode = m_mode;
         // nk_layout_row_dynamic(ctx, 20, 1);

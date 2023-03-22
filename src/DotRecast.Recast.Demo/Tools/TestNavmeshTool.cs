@@ -73,7 +73,7 @@ public class TestNavmeshTool : Tool
         recalc();
     }
 
-    public override void layout(IWindow ctx)
+    public override void layout()
     {
         TestNavmeshToolMode previousToolMode = m_toolMode;
         int previousStraightPathOptions = m_straightPathOptions;

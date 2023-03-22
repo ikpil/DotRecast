@@ -185,7 +185,7 @@ public class ConvexVolumeTool : Tool
         dd.end();
     }
 
-    public override void layout(IWindow ctx)
+    public override void layout()
     {
         // nk_layout_row_dynamic(ctx, 20, 1);
         ImGui.SliderFloat("Shape Height", ref boxHeight, 0.1f, 20f, "%.1f");

@@ -71,18 +71,13 @@ public class RcSettingsView : IRcView
     private bool meshInputTrigerred;
     private bool navMeshInputTrigerred;
 
-    public bool render(IWindow window, int x, int y, int width, int height, int mouseX, int mouseY)
+    private bool _mouseInside;
+    public bool IsMouseInside() => _mouseInside;
+    public void Draw()
     {
         ImGui.Begin("Properties");
-        renderInternal(window, x, y, width, height, mouseX, mouseY);
-        ImGui.End();
-
-        return true;
-    }
-
-    public bool renderInternal(IWindow win, int x, int y, int width, int height, int mouseX, int mouseY)
-    {
-        bool mouseInside = false;
+        _mouseInside = ImGui.IsWindowHovered();
+        
         ImGui.Text("Input Mesh");
         ImGui.Separator();
         
@@ -213,7 +208,8 @@ public class RcSettingsView : IRcView
         //     nk_end(ctx);
         // }
         ImGui.NewLine();
-        return mouseInside;
+        
+        ImGui.End();
     }
 
     public float getCellSize()

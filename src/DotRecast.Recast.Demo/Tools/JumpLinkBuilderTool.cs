@@ -322,7 +322,7 @@ public class JumpLinkBuilderTool : Tool
     {
     }
 
-    public override void layout(IWindow ctx)
+    public override void layout()
     {
         // if (!sample.getRecastResults().isEmpty()) {
         //

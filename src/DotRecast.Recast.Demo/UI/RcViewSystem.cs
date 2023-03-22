@@ -17,6 +17,8 @@ freely, subject to the following restrictions:
 */
 
 using ImGuiNET;
+using Serilog;
+using Serilog.Core;
 using Silk.NET.Input;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
@@ -25,6 +27,7 @@ namespace DotRecast.Recast.Demo.UI;
 
 public class RcViewSystem
 {
+    private static readonly ILogger Logger = Log.ForContext<RecastDemo>();
     // readonly NkAllocator allocator;
     private readonly IWindow _window;
 
@@ -34,7 +37,8 @@ public class RcViewSystem
     // readonly NkColor white;
     private readonly IRcView[] _views;
     private readonly NuklearGL glContext;
-    private bool mouseOverUI;
+    private bool _mouseOverUI;
+    public bool IsMouseOverUI() => _mouseOverUI;
 
     public RcViewSystem(IWindow window, IInputContext input, params IRcView[] views)
     {
@@ -131,14 +135,17 @@ public class RcViewSystem
         // nk_input_end(ctx);
     }
 
-    public bool render(IWindow ctx, int x, int y, int width, int height, int mouseX, int mouseY)
+    public void Draw()
     {
-        mouseOverUI = false;
+        _mouseOverUI = false;
         foreach (IRcView m in _views)
         {
-            mouseOverUI = m.render(ctx, x, y, width, height, mouseX, mouseY) | mouseOverUI;
+            m.Draw();
+            _mouseOverUI |= m.IsMouseInside();
+            // if (_mouseOverUI)
+            // {
+            //     Logger.Information("mouse hover!");
+            // }
         }
-
-        return mouseOverUI;
     }
 }

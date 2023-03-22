@@ -36,11 +36,15 @@ public class ToolsView : IRcView
     {
         this.tools = tools;
     }
+    
+    private bool _mouseInside;
+    public bool IsMouseInside() => _mouseInside;
 
-    public bool render(IWindow window, int x, int y, int width, int height, int mouseX, int mouseY)
+    public void Draw()
     {
-        bool mouseInside = false;
         ImGui.Begin("Tools");
+        _mouseInside = ImGui.IsWindowHovered();
+        
         for (int i = 0; i < tools.Length; ++i)
         {
             var tool = tools[i];
@@ -51,15 +55,15 @@ public class ToolsView : IRcView
         if (0 > _currentToolIdx || _currentToolIdx >= tools.Length)
         {
             ImGui.End();
-            return false;
+            return;
         }
 
         currentTool = tools[_currentToolIdx];
         ImGui.Text(currentTool.getName());
         ImGui.Separator();
-        currentTool.layout(window);
+        currentTool.layout();
+
         ImGui.End();
-        return true;
     }
 
     public void setEnabled(bool enabled)
