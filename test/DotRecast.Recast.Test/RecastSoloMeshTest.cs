@@ -257,8 +257,8 @@ public class RecastSoloMeshTest
         Assert.That(m_dmesh.nverts, Is.EqualTo(expDetVerts), "Mesh Detail Verts");
         Assert.That(m_dmesh.ntris, Is.EqualTo(expDetTris), "Mesh Detail Tris");
         long time2 = Stopwatch.GetTimestamp();
-        Console.WriteLine(filename + " : " + partitionType + "  " + (time2 - time) / 1000000 + " ms");
-        Console.WriteLine("           " + (time3 - time) / 1000000 + " ms");
+        Console.WriteLine(filename + " : " + partitionType + "  " + (time2 - time) / TimeSpan.TicksPerMillisecond + " ms");
+        Console.WriteLine("           " + (time3 - time) / TimeSpan.TicksPerMillisecond + " ms");
         saveObj(filename.Substring(0, filename.LastIndexOf('.')) + "_" + partitionType + "_detail.obj", m_dmesh);
         saveObj(filename.Substring(0, filename.LastIndexOf('.')) + "_" + partitionType + ".obj", m_pmesh);
         m_ctx.print();

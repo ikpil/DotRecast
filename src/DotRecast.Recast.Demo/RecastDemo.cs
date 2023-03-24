@@ -507,8 +507,8 @@ public class RecastDemo
 
         cameraPos[1] += (float)((_moveUp - _moveDown) * keySpeed * dt);
 
-        // long time = Stopwatch.GetTimestamp() / 1000;
-        // //float dt = (time - prevFrameTime) / 1000000.0f;
+        // long time = Stopwatch.GetTimestamp();
+        // //float dt = (time - prevFrameTime) / TimeSpan.TicksPerMillisecond;
         // prevFrameTime = time;
         //
         // // Update sample simulation.
@@ -605,7 +605,7 @@ public class RecastDemo
 
                 sample.update(sample.getInputGeom(), buildResult.Item1, buildResult.Item2);
                 sample.setChanged(false);
-                settingsUI.setBuildTime((Stopwatch.GetTimestamp() - t) / 1_000_000);
+                settingsUI.setBuildTime((Stopwatch.GetTimestamp() - t) / TimeSpan.TicksPerMicrosecond);
                 toolsUI.setSample(sample);
             }
         }

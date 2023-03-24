@@ -51,7 +51,7 @@ namespace DotRecast.Recast
         {
             foreach (var (n, v) in timerAccum)
             {
-                Console.WriteLine(n + ": " + v.Read() / 1000000);
+                Console.WriteLine(n + ": " + v.Read() / TimeSpan.TicksPerMillisecond);
             }
         }
     }

@@ -119,8 +119,8 @@ public class RecastTileMeshTest
         }
 
         long t3 = Stopwatch.GetTimestamp();
-        Console.WriteLine(" Time ST : " + (t2 - t1) / 1000000);
-        Console.WriteLine(" Time MT : " + (t3 - t2) / 1000000);
+        Console.WriteLine(" Time ST : " + (t2 - t1) / TimeSpan.TicksPerMillisecond);
+        Console.WriteLine(" Time MT : " + (t3 - t2) / TimeSpan.TicksPerMillisecond);
     }
 
     private void build(InputGeomProvider geom, RecastBuilder builder, RecastConfig cfg, int threads, bool validate)

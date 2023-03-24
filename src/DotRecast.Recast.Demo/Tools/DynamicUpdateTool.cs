@@ -183,7 +183,7 @@ public class DynamicUpdateTool : Tool
                 long t1 = Stopwatch.GetTimestamp();
                 float? hitPos = dynaMesh.voxelQuery().raycast(sp, ep);
                 long t2 = Stopwatch.GetTimestamp();
-                raycastTime = (t2 - t1) / 1_000_000L;
+                raycastTime = (t2 - t1) / TimeSpan.TicksPerMicrosecond;
                 raycastHit = hitPos.HasValue;
                 raycastHitPos = hitPos.HasValue
                     ? new float[] { sp[0] + hitPos.Value * (ep[0] - sp[0]), sp[1] + hitPos.Value * (ep[1] - sp[1]), sp[2] + hitPos.Value * (ep[2] - sp[2]) }
@@ -468,7 +468,7 @@ public class DynamicUpdateTool : Tool
             bool updated = dynaMesh.update(executor).Result;
             if (updated)
             {
-                buildTime = (Stopwatch.GetTimestamp() - t) / 1_000_000;
+                buildTime = (Stopwatch.GetTimestamp() - t) / TimeSpan.TicksPerMicrosecond;
                 sample.update(null, dynaMesh.recastResults(), dynaMesh.navMesh());
                 sample.setChanged(false);
             }
@@ -720,7 +720,7 @@ public class DynamicUpdateTool : Tool
             Console.WriteLine(e);
         }
 
-        buildTime = (Stopwatch.GetTimestamp() - t) / 1_000_000;
+        buildTime = (Stopwatch.GetTimestamp() - t) / TimeSpan.TicksPerMicrosecond;
         sample.update(null, dynaMesh.recastResults(), dynaMesh.navMesh());
     }
 

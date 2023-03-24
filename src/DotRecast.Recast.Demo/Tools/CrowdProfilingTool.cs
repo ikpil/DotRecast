@@ -271,7 +271,7 @@ public class CrowdProfilingTool
             }
         }
 
-        crowdUpdateTime = (endTime - startTime) / 1_000_000;
+        crowdUpdateTime = (endTime - startTime) / TimeSpan.TicksPerMicrosecond;
     }
 
     private void moveMob(NavMeshQuery navquery, QueryFilter filter, CrowdAgent ag, AgentData agentData)

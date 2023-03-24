@@ -133,7 +133,7 @@ public class RandomPointTest : AbstractDetourTest
         }
 
         long t3 = Stopwatch.GetTimestamp();
-        Console.WriteLine("Random point around circle: " + (t2 - t1) / 1000000 + "ms");
-        Console.WriteLine("Random point within circle: " + (t3 - t2) / 1000000 + "ms");
+        Console.WriteLine("Random point around circle: " + (t2 - t1) / TimeSpan.TicksPerMillisecond + "ms");
+        Console.WriteLine("Random point within circle: " + (t3 - t2) / TimeSpan.TicksPerMillisecond + "ms");
     }
 }

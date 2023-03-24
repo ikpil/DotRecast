@@ -202,8 +202,8 @@ public class TileCacheTest : AbstractTileCacheTest
         }
 
         long t3 = Stopwatch.GetTimestamp();
-        Console.WriteLine(" Time ST : " + (t2 - t1) / 1000000);
-        Console.WriteLine(" Time MT : " + (t3 - t2) / 1000000);
+        Console.WriteLine(" Time ST : " + (t2 - t1) / TimeSpan.TicksPerMillisecond);
+        Console.WriteLine(" Time MT : " + (t3 - t2) / TimeSpan.TicksPerMillisecond);
         TileCache tc = getTileCache(geom, order, cCompatibility);
         foreach (byte[] layer in layers)
         {
