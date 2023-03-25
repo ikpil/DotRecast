@@ -68,6 +68,8 @@ public class RcSettingsView : IRcView
 
     private int drawModeIdx = DrawMode.DRAWMODE_NAVMESH.Idx;
     private DrawMode drawMode = DrawMode.DRAWMODE_NAVMESH;
+
+    private string meshInputFilePath;
     private bool meshInputTrigerred;
     private bool navMeshInputTrigerred;
 
@@ -90,13 +92,18 @@ public class RcSettingsView : IRcView
         bool loadSourceGeomPopup = true;
         if (ImGui.BeginPopupModal(strLoadSourceGeom, ref loadSourceGeomPopup, ImGuiWindowFlags.NoTitleBar))
         {
-            var picker = ImFilePicker.GetFilePicker(strLoadSourceGeom, Path.Combine(Environment.CurrentDirectory));
+            var picker = ImFilePicker.GetFilePicker(strLoadSourceGeom, Path.Combine(Environment.CurrentDirectory), ".obj");
             if (picker.Draw())
             {
-                Console.WriteLine(picker.SelectedFile);
+                meshInputTrigerred = true;
+                meshInputFilePath = picker.SelectedFile;
                 ImFilePicker.RemoveFilePicker(strLoadSourceGeom);
             }
             ImGui.EndPopup();
+        }
+        else
+        {
+            meshInputTrigerred = false;
         }
         
         ImGui.Text($"Verts: {voxels[0]} Tris: {voxels[1]}");
@@ -347,6 +354,11 @@ public class RcSettingsView : IRcView
     public bool isMeshInputTrigerred()
     {
         return meshInputTrigerred;
+    }
+
+    public string GetMeshInputFilePath()
+    {
+        return meshInputFilePath;
     }
 
     public bool isNavMeshInputTrigerred()

@@ -507,40 +507,31 @@ public class RecastDemo
 
         cameraPos[1] += (float)((_moveUp - _moveDown) * keySpeed * dt);
 
-        // long time = Stopwatch.GetTimestamp();
-        // //float dt = (time - prevFrameTime) / TimeSpan.TicksPerMillisecond;
-        // prevFrameTime = time;
-        //
-        // // Update sample simulation.
-        // float SIM_RATE = 20;
-        // float DELTA_TIME = 1.0f / SIM_RATE;
-        // timeAcc = clamp((float)(timeAcc + dt), -1.0f, 1.0f);
-        // int simIter = 0;
-        // while (timeAcc > DELTA_TIME)
-        // {
-        //     timeAcc -= DELTA_TIME;
-        //     if (simIter < 5 && sample != null)
-        //     {
-        //         toolsUI.handleUpdate((float)dt);
-        //     }
-        //
-        //     simIter++;
-        // }
+        long time = Stopwatch.GetTimestamp();
+        // float dt = (time - prevFrameTime) / TimeSpan.TicksPerMillisecond;
+        prevFrameTime = time;
+        
+        // Update sample simulation.
+        float SIM_RATE = 20;
+        float DELTA_TIME = 1.0f / SIM_RATE;
+        timeAcc = clamp((float)(timeAcc + dt), -1.0f, 1.0f);
+        int simIter = 0;
+        while (timeAcc > DELTA_TIME)
+        {
+            timeAcc -= DELTA_TIME;
+            if (simIter < 5 && sample != null)
+            {
+                toolsUI.handleUpdate((float)dt);
+            }
+        
+            simIter++;
+        }
 
-        // if (settingsUI.isMeshInputTrigerred())
-        // {
-        // aFilterPatterns.put(stack.UTF8("*.obj"));
-        // aFilterPatterns.flip();
-        // string filename = TinyFileDialogs.tinyfd_openFileDialog("Open Mesh File", "", aFilterPatterns,
-        //     "Mesh File (*.obj)", false);
-        // if (filename != null) {
-        //     try (InputStream stream = new FileInputStream(filename)) {
-        //         sample.update(loadInputMesh(stream), null, null);
-        //     } catch (IOException e) {
-        //         Console.WriteLine(e).printStackTrace();
-        //     }
-        // }
-        // }
+        if (settingsUI.isMeshInputTrigerred())
+        {
+            var bytes = Loader.ToBytes(settingsUI.GetMeshInputFilePath());
+            sample.update(loadInputMesh(bytes), null, null);
+        }
         // else if (settingsUI.isNavMeshInputTrigerred())
         // {
         // try (MemoryStack stack = stackPush()) {
