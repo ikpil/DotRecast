@@ -110,6 +110,7 @@ public class RecastDemo
     private float _moveDown;
     private float _moveAccel;
 
+    private int[] viewport;
     private bool markerPositionSet;
     private readonly float[] markerPosition = new float[3];
     private ToolsView toolsUI;
@@ -292,6 +293,7 @@ public class RecastDemo
         float aspect = 16.0f / 9.0f;
         width = Math.Min(resolution.X, (int)(resolution.Y * aspect)) - 100;
         height = resolution.Y - 100;
+        viewport = new int[] { 0, 0, width, height };
 
         // glfwWindowHint(GLFW_RED_BITS, mode.redBits());
         // glfwWindowHint(GLFW_GREEN_BITS, mode.greenBits());
@@ -379,6 +381,7 @@ public class RecastDemo
     private void OnWindowFramebufferSizeChanged(Vector2D<int> size)
     {
         _gl.Viewport(size);
+        viewport = new int[] { 0, 0, width, height };
     }
 
 
@@ -457,13 +460,14 @@ public class RecastDemo
             var tempMoveDown = keyboard.IsKeyPressed(Key.E) || keyboard.IsKeyPressed(Key.PageDown) ? 1.0f : -1f;
             var tempMoveAccel = keyboard.IsKeyPressed(Key.ShiftLeft) || keyboard.IsKeyPressed(Key.ShiftRight) ? 1.0f : -1f;
 
-            _moveFront = RecastMath.clamp(_moveFront + tempMoveFront * dt * 4.0f, 0, 2.0f);
-            _moveLeft = RecastMath.clamp(_moveLeft + tempMoveLeft * dt * 4.0f, 0, 2.0f);
-            _moveBack = RecastMath.clamp(_moveBack + tempMoveBack * dt * 4.0f, 0, 2.0f);
-            _moveRight = RecastMath.clamp(_moveRight + tempMoveRight * dt * 4.0f, 0, 2.0f);
-            _moveUp = RecastMath.clamp(_moveUp + tempMoveUp * dt * 4.0f, 0, 2.0f);
-            _moveDown = RecastMath.clamp(_moveDown + tempMoveDown * dt * 4.0f, 0, 2.0f);
-            _moveAccel = RecastMath.clamp(_moveAccel + tempMoveAccel * dt * 4.0f, 0, 2.0f);
+            modState = keyboard.IsKeyPressed(Key.ControlLeft) || keyboard.IsKeyPressed(Key.ShiftRight) ? 1 : 0;
+            _moveFront = clamp(_moveFront + tempMoveFront * dt * 4.0f, 0, 2.0f);
+            _moveLeft = clamp(_moveLeft + tempMoveLeft * dt * 4.0f, 0, 2.0f);
+            _moveBack = clamp(_moveBack + tempMoveBack * dt * 4.0f, 0, 2.0f);
+            _moveRight = clamp(_moveRight + tempMoveRight * dt * 4.0f, 0, 2.0f);
+            _moveUp = clamp(_moveUp + tempMoveUp * dt * 4.0f, 0, 2.0f);
+            _moveDown = clamp(_moveDown + tempMoveDown * dt * 4.0f, 0, 2.0f);
+            _moveAccel = clamp(_moveAccel + tempMoveAccel * dt * 4.0f, 0, 2.0f);
         }
     }
 
@@ -510,7 +514,7 @@ public class RecastDemo
         long time = Stopwatch.GetTimestamp();
         // float dt = (time - prevFrameTime) / TimeSpan.TicksPerMillisecond;
         prevFrameTime = time;
-        
+
         // Update sample simulation.
         float SIM_RATE = 20;
         float DELTA_TIME = 1.0f / SIM_RATE;
@@ -523,7 +527,7 @@ public class RecastDemo
             {
                 toolsUI.handleUpdate((float)dt);
             }
-        
+
             simIter++;
         }
 
@@ -532,6 +536,7 @@ public class RecastDemo
             var bytes = Loader.ToBytes(settingsUI.GetMeshInputFilePath());
             sample.update(loadInputMesh(bytes), null, null);
         }
+
         // else if (settingsUI.isNavMeshInputTrigerred())
         // {
         // try (MemoryStack stack = stackPush()) {
@@ -606,68 +611,74 @@ public class RecastDemo
             building = false;
         }
 
-        // if (!mouseOverMenu)
-        // {
-        // GLU.glhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 0.0f, modelviewMatrix, projectionMatrix, viewport,
-        //     rayStart);
-        // GLU.glhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 1.0f, modelviewMatrix, projectionMatrix, viewport,
-        //     rayEnd);
+        if (!_mouseOverMenu)
+        {
+            GLU.glhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 0.0f, modelviewMatrix, projectionMatrix, viewport, rayStart);
+            GLU.glhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 1.0f, modelviewMatrix, projectionMatrix, viewport, rayEnd);
 
-        // Hit test mesh.
-        // DemoInputGeomProvider inputGeom = sample.getInputGeom();
-        // if (processHitTest && sample != null)
-        // {
-        //     float? hit = null;
-        //     if (inputGeom != null)
-        //     {
-        //         hit = inputGeom.raycastMesh(rayStart, rayEnd);
-        //     }
-        //
-        //     if (!hit.HasValue && sample.getNavMesh() != null)
-        //     {
-        //         hit = NavMeshRaycast.raycast(sample.getNavMesh(), rayStart, rayEnd);
-        //     }
-        //
-        //     if (!hit.HasValue && sample.getRecastResults() != null)
-        //     {
-        //         hit = PolyMeshRaycast.raycast(sample.getRecastResults(), rayStart, rayEnd);
-        //     }
-        //
-        //     float[] rayDir = new float[] { rayEnd[0] - rayStart[0], rayEnd[1] - rayStart[1], rayEnd[2] - rayStart[2] };
-        //     Tool rayTool = toolsUI.getTool();
-        //     vNormalize(rayDir);
-        //     if (rayTool != null)
-        //     {
-        //         rayTool.handleClickRay(rayStart, rayDir, processHitTestShift);
-        //     }
-        //     // TODO : 잠시 주석
-        //     // if (hit.HasValue) {
-        //     //     float hitTime = hit.Value;
-        //     //     if ((modState & GLFW_MOD_CONTROL) != 0) {
-        //     //         // Marker
-        //     //         markerPositionSet = true;
-        //     //         markerPosition[0] = rayStart[0] + (rayEnd[0] - rayStart[0]) * hitTime;
-        //     //         markerPosition[1] = rayStart[1] + (rayEnd[1] - rayStart[1]) * hitTime;
-        //     //         markerPosition[2] = rayStart[2] + (rayEnd[2] - rayStart[2]) * hitTime;
-        //     //     } else {
-        //     //         float[] pos = new float[3];
-        //     //         pos[0] = rayStart[0] + (rayEnd[0] - rayStart[0]) * hitTime;
-        //     //         pos[1] = rayStart[1] + (rayEnd[1] - rayStart[1]) * hitTime;
-        //     //         pos[2] = rayStart[2] + (rayEnd[2] - rayStart[2]) * hitTime;
-        //     //         if (rayTool != null) {
-        //     //             rayTool.handleClick(rayStart, pos, processHitTestShift);
-        //     //         }
-        //     //     }
-        //     // } else {
-        //     //     if ((modState & GLFW_MOD_CONTROL) != 0) {
-        //     //         // Marker
-        //     //         markerPositionSet = false;
-        //     //     }
-        //     // }
-        // }
+            // Hit test mesh.
+            DemoInputGeomProvider inputGeom = sample.getInputGeom();
+            if (processHitTest && sample != null)
+            {
+                float? hit = null;
+                if (inputGeom != null)
+                {
+                    hit = inputGeom.raycastMesh(rayStart, rayEnd);
+                }
 
-        //     processHitTest = false;
-        // }
+                if (!hit.HasValue && sample.getNavMesh() != null)
+                {
+                    hit = NavMeshRaycast.raycast(sample.getNavMesh(), rayStart, rayEnd);
+                }
+
+                if (!hit.HasValue && sample.getRecastResults() != null)
+                {
+                    hit = PolyMeshRaycast.raycast(sample.getRecastResults(), rayStart, rayEnd);
+                }
+
+                float[] rayDir = new float[] { rayEnd[0] - rayStart[0], rayEnd[1] - rayStart[1], rayEnd[2] - rayStart[2] };
+                Tool rayTool = toolsUI.getTool();
+                vNormalize(rayDir);
+                if (rayTool != null)
+                {
+                    rayTool.handleClickRay(rayStart, rayDir, processHitTestShift);
+                }
+
+                if (hit.HasValue)
+                {
+                    float hitTime = hit.Value;
+                    if (0 != modState)
+                    {
+                        // Marker
+                        markerPositionSet = true;
+                        markerPosition[0] = rayStart[0] + (rayEnd[0] - rayStart[0]) * hitTime;
+                        markerPosition[1] = rayStart[1] + (rayEnd[1] - rayStart[1]) * hitTime;
+                        markerPosition[2] = rayStart[2] + (rayEnd[2] - rayStart[2]) * hitTime;
+                    }
+                    else
+                    {
+                        float[] pos = new float[3];
+                        pos[0] = rayStart[0] + (rayEnd[0] - rayStart[0]) * hitTime;
+                        pos[1] = rayStart[1] + (rayEnd[1] - rayStart[1]) * hitTime;
+                        pos[2] = rayStart[2] + (rayEnd[2] - rayStart[2]) * hitTime;
+                        if (rayTool != null)
+                        {
+                            rayTool.handleClick(rayStart, pos, processHitTestShift);
+                        }
+                    }
+                }
+                else
+                {
+                    if (0 != modState)
+                    {
+                        // Marker
+                        markerPositionSet = false;
+                    }
+                }
+            }
+
+            processHitTest = false;
+        }
 
         if (sample.isChanged())
         {
@@ -708,7 +719,7 @@ public class RecastDemo
             if (bmin != null && bmax != null)
             {
                 camr = (float)(Math.Sqrt(
-                                   RecastMath.sqr(bmax[0] - bmin[0]) + RecastMath.sqr(bmax[1] - bmin[1]) + RecastMath.sqr(bmax[2] - bmin[2]))
+                                   sqr(bmax[0] - bmin[0]) + sqr(bmax[1] - bmin[1]) + sqr(bmax[2] - bmin[2]))
                                / 2);
                 cameraPos[0] = (bmax[0] + bmin[0]) / 2 + camr;
                 cameraPos[1] = (bmax[1] + bmin[1]) / 2 + camr;
@@ -741,7 +752,7 @@ public class RecastDemo
         // Set the viewport.
         // glViewport(0, 0, width, height);
         //_gl.Viewport(0, 0, (uint)width, (uint)height);
-        int[] viewport = new int[] { 0, 0, width, height };
+        //viewport = new int[] { 0, 0, width, height };
         // glGetIntegerv(GL_VIEWPORT, viewport);
 
         // Clear the screen
