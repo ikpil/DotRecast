@@ -600,7 +600,7 @@ namespace DotRecast.Detour
         public static IntersectResult intersectSegmentPoly2D(float[] p0, float[] p1, float[] verts, int nverts)
         {
             IntersectResult result = new IntersectResult();
-            float EPS = 0.00000001f;
+            float EPS = 0.000001f;
             float[] dir = vSub(p1, p0);
 
             VectorPtr p0v = new VectorPtr(p0);
