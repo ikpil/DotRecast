@@ -73,6 +73,11 @@ public class DrawMode
         Text = text;
     }
 
+    public static DrawMode OfIdx(int idx)
+    {
+        return Values[idx];
+    }
+
     public override string ToString()
     {
         return Text;

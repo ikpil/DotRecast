@@ -69,8 +69,7 @@ public class RcSettingsView : IRcView
     private int maxTiles;
     private int maxPolys;
 
-    private int drawModeIdx = DrawMode.DRAWMODE_NAVMESH.Idx;
-    private DrawMode drawMode = DrawMode.DRAWMODE_NAVMESH;
+    private int drawMode = DrawMode.DRAWMODE_NAVMESH.Idx;
 
     private string meshInputFilePath;
     private bool meshInputTrigerred;
@@ -211,16 +210,8 @@ public class RcSettingsView : IRcView
         
         DrawMode.Values.forEach(dm =>
         {
-            ImGui.RadioButton(dm.Text, ref drawModeIdx, dm.Idx);
+            ImGui.RadioButton(dm.Text, ref drawMode, dm.Idx);
         });
-        //         nk_window_get_bounds(ctx, rect);
-        //         if (mouseX >= rect.x() && mouseX <= rect.x() + rect.w() && mouseY >= rect.y()
-        //                 && mouseY <= rect.y() + rect.h()) {
-        //             mouseInside = true;
-        //         }
-        //     }
-        //     nk_end(ctx);
-        // }
         ImGui.NewLine();
         
         ImGui.End();
@@ -307,7 +298,7 @@ public class RcSettingsView : IRcView
 
     public DrawMode getDrawMode()
     {
-        return drawMode;
+        return DrawMode.Values[drawMode];
     }
 
     public float getEdgeMaxLen()

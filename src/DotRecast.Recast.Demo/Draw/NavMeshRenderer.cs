@@ -58,7 +58,7 @@ public class NavMeshRenderer
         RcSettingsView rcSettingsView = sample.getSettingsUI();
         debugDraw.fog(true);
         debugDraw.depthMask(true);
-        DrawMode drawMode = rcSettingsView.getDrawMode();
+        var drawMode = rcSettingsView.getDrawMode();
 
         float texScale = 1.0f / (rcSettingsView.getCellSize() * 10.0f);
         float m_agentMaxSlope = rcSettingsView.getAgentMaxSlope();
