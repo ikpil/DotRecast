@@ -15,7 +15,7 @@ public interface OpenGLDraw
     void vertex(float x, float y, float z, int color);
 
     void vertex(float[] pos, int color);
-
+    
     void vertex(float[] pos, int color, float[] uv);
 
     void vertex(float x, float y, float z, int color, float u, float v);

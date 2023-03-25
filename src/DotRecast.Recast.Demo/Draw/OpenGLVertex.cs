@@ -1,17 +1,19 @@
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using DotRecast.Core;
 
 namespace DotRecast.Recast.Demo.Draw;
 
-public class OpenGLVertex
+[StructLayout(LayoutKind.Explicit, Pack = 1)]
+public struct OpenGLVertex
 {
-    private readonly float x;
-    private readonly float y;
-    private readonly float z;
-    private readonly int color;
-    private readonly float u;
-    private readonly float v;
+    [FieldOffset(0)] private readonly float x;
+    [FieldOffset(4)] private readonly float y;
+    [FieldOffset(8)] private readonly float z;
+    [FieldOffset(12)] private readonly float u;
+    [FieldOffset(16)] private readonly float v;
+    [FieldOffset(20)] private readonly int color;
 
     public OpenGLVertex(float[] pos, float[] uv, int color) :
         this(pos[0], pos[1], pos[2], uv[0], uv[1], color)

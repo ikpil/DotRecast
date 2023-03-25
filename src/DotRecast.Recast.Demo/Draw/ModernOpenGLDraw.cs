@@ -2,9 +2,47 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Silk.NET.OpenGL;
-using DotRecast.Core;
 
 namespace DotRecast.Recast.Demo.Draw;
+
+public class ArrayBuffer<T>
+{
+    private int _size;
+    private T[] _items;
+    public int Count => _size;
+
+    public ArrayBuffer()
+    {
+        _size = 0;
+        _items = Array.Empty<T>();
+    }
+
+    public void Add(T item)
+    {
+        if (0 >= _items.Length)
+        {
+            _items = new T[256];
+        }
+        
+        if (_items.Length <= _size)
+        {
+            var temp = new T[(int)(_size * 1.5)];
+            Array.Copy(_items, 0, temp, 0, _items.Length);
+            _items = temp;
+        }
+        _items[_size++] = item;
+    }
+
+    public void Clear()
+    {
+        _size = 0;
+    }
+
+    public T[] AsArray()
+    {
+        return _items;
+    }
+}
 
 public class ModernOpenGLDraw : OpenGLDraw
 {
@@ -20,7 +58,8 @@ public class ModernOpenGLDraw : OpenGLDraw
     private float fogEnd;
     private bool fogEnabled;
     private int uniformViewMatrix;
-    private readonly List<OpenGLVertex> vertices = new();
+    private readonly ArrayBuffer<OpenGLVertex> vertices = new();
+    private readonly ArrayBuffer<int> elements = new();
     private GLCheckerTexture _texture;
     private float[] _viewMatrix;
     private float[] _projectionMatrix;
@@ -94,7 +133,7 @@ public class ModernOpenGLDraw : OpenGLDraw
         {
             throw new InvalidOperationException();
         }
-        
+
         _gl.DetachShader(program, vert_shdr);
         _gl.DetachShader(program, frag_shdr);
         _gl.DeleteShader(vert_shdr);
@@ -107,7 +146,7 @@ public class ModernOpenGLDraw : OpenGLDraw
         uniformFogEnd = _gl.GetUniformLocation(program, "FogEnd");
         uniformProjectionMatrix = _gl.GetUniformLocation(program, "ProjMtx");
         uniformViewMatrix = _gl.GetUniformLocation(program, "ViewMtx");
-        
+
         uint attrib_pos = (uint)_gl.GetAttribLocation(program, "Position");
         uint attrib_uv = (uint)_gl.GetAttribLocation(program, "TexCoord");
         uint attrib_col = (uint)_gl.GetAttribLocation(program, "Color");
@@ -125,7 +164,7 @@ public class ModernOpenGLDraw : OpenGLDraw
         _gl.EnableVertexAttribArray(attrib_pos);
         _gl.EnableVertexAttribArray(attrib_uv);
         _gl.EnableVertexAttribArray(attrib_col);
-        
+
         // _gl.VertexAttribP3(attrib_pos, GLEnum.Float, false, 24);
         // _gl.VertexAttribP2(attrib_uv, GLEnum.Float, false, 24);
         // _gl.VertexAttribP4(attrib_col, GLEnum.UnsignedByte, true, 24);
@@ -202,15 +241,16 @@ public class ModernOpenGLDraw : OpenGLDraw
             byte* pVerts = (byte*)_gl.MapBuffer(GLEnum.ArrayBuffer, GLEnum.WriteOnly);
             byte* pElems = (byte*)_gl.MapBuffer(GLEnum.ElementArrayBuffer, GLEnum.WriteOnly);
 
-            using var unmanagedVerts = new UnmanagedMemoryStream(pVerts, vboSize, vboSize, FileAccess.Write);
-            using var unmanagedElems = new UnmanagedMemoryStream(pElems, eboSize, eboSize, FileAccess.Write);
+            //vertices.forEach(v => v.store(verts));
+            fixed (void* v = vertices.AsArray())
+            {
+                System.Buffer.MemoryCopy(v, pVerts, vboSize, vboSize);
+            }
 
-            using var verts = new BinaryWriter(unmanagedVerts);
-            using var elems = new BinaryWriter(unmanagedElems);
-
-            vertices.forEach(v => v.store(verts));
             if (currentPrim == DebugDrawPrimitives.QUADS)
             {
+                using var unmanagedElems = new UnmanagedMemoryStream(pElems, eboSize, eboSize, FileAccess.Write);
+                using var elems = new BinaryWriter(unmanagedElems);
                 for (int i = 0; i < vertices.Count; i += 4)
                 {
                     elems.Write(i);
@@ -223,14 +263,16 @@ public class ModernOpenGLDraw : OpenGLDraw
             }
             else
             {
-                for (int i = 0; i < vertices.Count; i++)
+                for (int i = elements.Count; i < vertices.Count; i++)
                 {
-                    elems.Write(i);
+                    elements.Add(i);
+                }
+
+                fixed (void* e = elements.AsArray())
+                {
+                    System.Buffer.MemoryCopy(e, pElems, eboSize, eboSize);
                 }
             }
-
-            verts.Flush();
-            elems.Flush();
 
             _gl.UnmapBuffer(GLEnum.ElementArrayBuffer);
             _gl.UnmapBuffer(GLEnum.ArrayBuffer);
