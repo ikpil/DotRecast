@@ -20,6 +20,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using DotRecast.Core;
 
@@ -47,12 +48,11 @@ namespace DotRecast.Recast
             Console.WriteLine(@string);
         }
 
-        public void print()
+        public List<Tuple<string, long>> ToList()
         {
-            foreach (var (n, v) in timerAccum)
-            {
-                Console.WriteLine(n + ": " + v.Read() / TimeSpan.TicksPerMillisecond);
-            }
+            return timerAccum
+                .Select(x => Tuple.Create(x.Key, x.Value.Read() / TimeSpan.TicksPerMillisecond))
+                .ToList();
         }
     }
 }

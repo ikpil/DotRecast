@@ -261,7 +261,10 @@ public class RecastSoloMeshTest
         Console.WriteLine("           " + (time3 - time) / TimeSpan.TicksPerMillisecond + " ms");
         saveObj(filename.Substring(0, filename.LastIndexOf('.')) + "_" + partitionType + "_detail.obj", m_dmesh);
         saveObj(filename.Substring(0, filename.LastIndexOf('.')) + "_" + partitionType + ".obj", m_pmesh);
-        m_ctx.print();
+        foreach (var (key, millis) in m_ctx.ToList())
+        {
+            Console.WriteLine($"{key} : {millis} ms");
+        }
     }
 
     private void saveObj(string filename, PolyMesh mesh)

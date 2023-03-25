@@ -17,7 +17,9 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using DotRecast.Core;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Demo.UI;
@@ -61,6 +63,7 @@ public class RcSettingsView : IRcView
     // public readonly NkColor transparent = NkColor.create();
     private bool buildTriggered;
     private long buildTime;
+    private Dictionary<string, long> telemetries = new();
     private readonly int[] voxels = new int[2];
     private readonly int[] tiles = new int[2];
     private int maxTiles;
@@ -177,6 +180,10 @@ public class RcSettingsView : IRcView
         ImGui.NewLine();
 
         ImGui.Text($"Build Time: {buildTime} ms");
+        foreach (var (key, millis) in telemetries)
+        {
+            ImGui.Text($"{key}: {millis} ms");
+        }
         ImGui.Separator();
         buildTriggered = ImGui.Button("Build");
         const string strLoadNavMesh = "Load Nav Mesh...";
@@ -287,6 +294,15 @@ public class RcSettingsView : IRcView
     public void setBuildTime(long buildTime)
     {
         this.buildTime = buildTime;
+    }
+
+    public void setBuildTelemetry(IList<Telemetry> telemetries)
+    {
+        this.telemetries = telemetries
+            .SelectMany(x => x.ToList())
+            .GroupBy(x => x.Item1)
+            .ToDictionary(x => x.Key, x => x.Sum(y => y.Item2));
+
     }
 
     public DrawMode getDrawMode()

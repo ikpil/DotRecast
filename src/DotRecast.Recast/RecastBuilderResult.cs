@@ -11,8 +11,7 @@
         private readonly Heightfield solid;
         private readonly Telemetry telemetry;
 
-        public RecastBuilderResult(int tileX, int tileZ, Heightfield solid, CompactHeightfield chf, ContourSet cs, PolyMesh pmesh,
-            PolyMeshDetail dmesh, Telemetry ctx)
+        public RecastBuilderResult(int tileX, int tileZ, Heightfield solid, CompactHeightfield chf, ContourSet cs, PolyMesh pmesh, PolyMeshDetail dmesh, Telemetry ctx)
         {
             this.tileX = tileX;
             this.tileZ = tileZ;
