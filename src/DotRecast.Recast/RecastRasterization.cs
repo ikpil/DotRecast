@@ -19,10 +19,11 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using static DotRecast.Core.RecastMath;
+using static DotRecast.Recast.RecastConstants;
 
 namespace DotRecast.Recast
 {
-    using static RecastConstants;
 
     public class RecastRasterization
     {
@@ -269,8 +270,8 @@ namespace DotRecast.Recast
             int w = hf.width;
             int h = hf.height;
             // use -1 rather than 0 to cut the polygon properly at the start of the tile
-            z0 = RecastCommon.clamp(z0, -1, h - 1);
-            z1 = RecastCommon.clamp(z1, 0, h - 1);
+            z0 = clamp(z0, -1, h - 1);
+            z1 = clamp(z1, 0, h - 1);
 
             // Clip the triangle into all grid cells it touches.
             float[] buf = new float[7 * 3 * 4];
@@ -320,8 +321,8 @@ namespace DotRecast.Recast
                     continue;
                 }
 
-                x0 = RecastCommon.clamp(x0, -1, w - 1);
-                x1 = RecastCommon.clamp(x1, 0, w - 1);
+                x0 = clamp(x0, -1, w - 1);
+                x1 = clamp(x1, 0, w - 1);
 
                 int nv, nv2 = nvRow;
                 for (int x = x0; x <= x1; ++x)
@@ -366,8 +367,8 @@ namespace DotRecast.Recast
                         spanMax = by;
 
                     // Snap the span to the heightfield height grid.
-                    int spanMinCellIndex = RecastCommon.clamp((int)Math.Floor(spanMin * inverseCellHeight), 0, SPAN_MAX_HEIGHT);
-                    int spanMaxCellIndex = RecastCommon.clamp((int)Math.Ceiling(spanMax * inverseCellHeight), spanMinCellIndex + 1, SPAN_MAX_HEIGHT);
+                    int spanMinCellIndex = clamp((int)Math.Floor(spanMin * inverseCellHeight), 0, SPAN_MAX_HEIGHT);
+                    int spanMaxCellIndex = clamp((int)Math.Ceiling(spanMax * inverseCellHeight), spanMinCellIndex + 1, SPAN_MAX_HEIGHT);
 
                     addSpan(hf, x, z, spanMinCellIndex, spanMaxCellIndex, area, flagMergeThreshold);
                 }

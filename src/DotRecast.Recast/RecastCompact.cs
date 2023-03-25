@@ -18,11 +18,12 @@ freely, subject to the following restrictions:
 
 using System;
 
+using static DotRecast.Core.RecastMath;
+using static DotRecast.Recast.RecastConstants;
+using static DotRecast.Recast.RecastVectors;
+
 namespace DotRecast.Recast
 {
-    using static RecastConstants;
-    using static RecastVectors;
-
     public class RecastCompact
     {
         private const int MAX_LAYERS = RC_NOT_CONNECTED - 1;
@@ -92,8 +93,8 @@ namespace DotRecast.Recast
                         {
                             int bot = s.smax;
                             int top = s.next != null ? (int)s.next.smin : MAX_HEIGHT;
-                            chf.spans[idx].y = RecastCommon.clamp(bot, 0, MAX_HEIGHT);
-                            chf.spans[idx].h = RecastCommon.clamp(top - bot, 0, MAX_HEIGHT);
+                            chf.spans[idx].y = clamp(bot, 0, MAX_HEIGHT);
+                            chf.spans[idx].h = clamp(top - bot, 0, MAX_HEIGHT);
                             chf.areas[idx] = s.area;
                             idx++;
                             c.count++;

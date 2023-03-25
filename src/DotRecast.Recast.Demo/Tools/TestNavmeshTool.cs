@@ -6,7 +6,7 @@ using DotRecast.Detour;
 using DotRecast.Recast.Demo.Builder;
 using DotRecast.Recast.Demo.Draw;
 using ImGuiNET;
-using static DotRecast.Detour.DetourCommon;
+using static DotRecast.Core.RecastMath;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
@@ -257,7 +257,7 @@ public class TestNavmeshTool : Tool
 
                         // Find movement delta.
                         float[] delta = vSub(steerTarget.steerPos, iterPos);
-                        float len = (float)Math.Sqrt(DemoMath.vDot(delta, delta));
+                        float len = (float)Math.Sqrt(RecastMath.vDot(delta, delta));
                         // If the steer target is end of path or off-mesh link, do not move past the location.
                         if ((endOfPath || offMeshConnection) && len < STEP_SIZE)
                         {
@@ -882,8 +882,8 @@ public class TestNavmeshTool : Tool
                                 float[] s = wallSegments.getSegmentVerts()[j];
                                 float[] s3 = new float[] { s[3], s[4], s[5] };
                                 // Skip too distant segments.
-                                Tuple<float, float> distSqr = DetourCommon.distancePtSegSqr2D(m_spos, s, 0, 3);
-                                if (distSqr.Item1 > DemoMath.sqr(m_neighbourhoodRadius))
+                                Tuple<float, float> distSqr = distancePtSegSqr2D(m_spos, s, 0, 3);
+                                if (distSqr.Item1 > RecastMath.sqr(m_neighbourhoodRadius))
                                 {
                                     continue;
                                 }
@@ -903,7 +903,7 @@ public class TestNavmeshTool : Tool
                                 else
                                 {
                                     int col = duRGBA(192, 32, 16, 192);
-                                    if (DetourCommon.triArea2D(m_spos, s, s3) < 0.0f)
+                                    if (triArea2D(m_spos, s, s3) < 0.0f)
                                     {
                                         col = duRGBA(96, 32, 16, 192);
                                     }
@@ -1026,7 +1026,7 @@ public class TestNavmeshTool : Tool
                 {
                     // In case of partial path, make sure the end point is clamped to the last polygon.
                     float[] epos = new float[3];
-                    DetourCommon.vCopy(epos, m_epos);
+                    vCopy(epos, m_epos);
                     if (m_polys[m_polys.Count - 1] != m_endRef)
                     {
                         Result<ClosestPointOnPolyResult> result = m_navQuery

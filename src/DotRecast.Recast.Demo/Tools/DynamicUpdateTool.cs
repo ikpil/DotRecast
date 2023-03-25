@@ -33,7 +33,7 @@ using ImGuiNET;
 using Silk.NET.Windowing;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
-using static DotRecast.Detour.DetourCommon;
+using static DotRecast.Core.RecastMath;
 
 namespace DotRecast.Recast.Demo.Tools;
 
@@ -252,7 +252,7 @@ public class DynamicUpdateTool : Tool
         float[] baseUp = new float[] { 0, 1, 0 };
         float[] forward = new float[] { (1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()) };
         vNormalize(forward);
-        float[] side = DemoMath.vCross(forward, baseUp);
+        float[] side = RecastMath.vCross(forward, baseUp);
         BoxCollider @base = new BoxCollider(baseCenter, BoxCollider.getHalfEdges(baseUp, forward, baseExtent),
             SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, dynaMesh.config.walkableClimb);
         float[] roofExtent = new float[] { 4.5f, 4.5f, 8f };

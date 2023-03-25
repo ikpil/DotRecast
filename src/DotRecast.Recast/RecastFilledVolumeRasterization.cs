@@ -19,12 +19,12 @@ freely, subject to the following restrictions:
 using System;
 using DotRecast.Core;
 
+using static DotRecast.Core.RecastMath;
+using static DotRecast.Recast.RecastConstants;
+using static DotRecast.Recast.RecastVectors;
+
 namespace DotRecast.Recast
 {
-    using static RecastConstants;
-    using static RecastVectors;
-    using static RecastCommon;
-
     public class RecastFilledVolumeRasterization
     {
         private const float EPSILON = 0.00001f;
@@ -230,8 +230,8 @@ namespace DotRecast.Recast
                         int smax = (int)Math.Ceiling((h[1] - hf.bmin[1]) * ich);
                         if (smin != smax)
                         {
-                            int ismin = RecastCommon.clamp(smin, 0, SPAN_MAX_HEIGHT);
-                            int ismax = RecastCommon.clamp(smax, ismin + 1, SPAN_MAX_HEIGHT);
+                            int ismin = clamp(smin, 0, SPAN_MAX_HEIGHT);
+                            int ismax = clamp(smax, ismin + 1, SPAN_MAX_HEIGHT);
                             RecastRasterization.addSpan(hf, x, z, ismin, ismax, area, flagMergeThr);
                         }
                     }
@@ -784,11 +784,6 @@ namespace DotRecast.Recast
         private static float lenSqr(float dx, float dy, float dz)
         {
             return dx * dx + dy * dy + dz * dz;
-        }
-
-        public static float clamp(float v, float min, float max)
-        {
-            return Math.Max(Math.Min(max, v), min);
         }
 
         private static bool overlapBounds(float[] amin, float[] amax, float[] bounds)

@@ -18,7 +18,7 @@ freely, subject to the following restrictions:
 
 using System;
 using DotRecast.Core;
-using static DotRecast.Detour.DetourCommon;
+using static DotRecast.Core.RecastMath;
 
 namespace DotRecast.Recast.Demo.Geom;
 
@@ -33,11 +33,11 @@ public class Intersections
 
         // Compute triangle normal. Can be precalculated or cached if
         // intersecting multiple segments against the same triangle
-        float[] norm = DemoMath.vCross(ab, ac);
+        float[] norm = RecastMath.vCross(ab, ac);
 
         // Compute denominator d. If d <= 0, segment is parallel to or points
         // away from triangle, so exit early
-        float d = DemoMath.vDot(qp, norm);
+        float d = RecastMath.vDot(qp, norm);
         if (d <= 0.0f)
         {
             return null;
@@ -47,7 +47,7 @@ public class Intersections
         // intersects iff 0 <= t. Segment intersects iff 0 <= t <= 1. Delay
         // dividing by d until intersection has been found to pierce triangle
         float[] ap = vSub(sp, a);
-        float t = DemoMath.vDot(ap, norm);
+        float t = RecastMath.vDot(ap, norm);
         if (t < 0.0f)
         {
             return null;
@@ -59,14 +59,14 @@ public class Intersections
         }
 
         // Compute barycentric coordinate components and test if within bounds
-        float[] e = DemoMath.vCross(qp, ap);
-        v = DemoMath.vDot(ac, e);
+        float[] e = RecastMath.vCross(qp, ap);
+        v = RecastMath.vDot(ac, e);
         if (v < 0.0f || v > d)
         {
             return null;
         }
 
-        w = -DemoMath.vDot(ab, e);
+        w = -RecastMath.vDot(ab, e);
         if (w < 0.0f || v + w > d)
         {
             return null;

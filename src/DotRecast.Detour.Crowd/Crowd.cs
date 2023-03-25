@@ -27,7 +27,7 @@ using DotRecast.Detour.Crowd.Tracking;
 
 namespace DotRecast.Detour.Crowd
 {
-    using static DetourCommon;
+    using static DotRecast.Core.RecastMath;
 
     /**
  * Members in this module implement local steering and dynamic avoidance features.

@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Detour
 {
-    using static DetourCommon;
+    using static DotRecast.Core.RecastMath;
 
 //TODO: (PP) Add comments
     public class StraightPathItem

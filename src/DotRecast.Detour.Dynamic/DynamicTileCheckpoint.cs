@@ -18,7 +18,7 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 using DotRecast.Recast;
-using static DotRecast.Detour.DetourCommon;
+using static DotRecast.Core.RecastMath;
 
 namespace DotRecast.Detour.Dynamic
 {

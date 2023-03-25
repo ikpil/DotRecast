@@ -19,7 +19,7 @@ freely, subject to the following restrictions:
 using System;
 using System.Diagnostics;
 using NUnit.Framework;
-using static DotRecast.Detour.DetourCommon;
+using static DotRecast.Core.RecastMath;
 
 namespace DotRecast.Detour.Test;
 

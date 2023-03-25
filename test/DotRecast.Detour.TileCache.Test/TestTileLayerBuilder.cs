@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using DotRecast.Core;
 using DotRecast.Recast;
 using DotRecast.Recast.Geom;
-using static DotRecast.Detour.DetourCommon;
+using static DotRecast.Core.RecastMath;
 
 namespace DotRecast.Detour.TileCache.Test;
 

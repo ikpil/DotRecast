@@ -22,7 +22,7 @@ using System;
 
 namespace DotRecast.Detour.Crowd.Tracking
 {
-    using static DetourCommon;
+    using static DotRecast.Core.RecastMath;
 
     public class ObstacleAvoidanceDebugData
     {

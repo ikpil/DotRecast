@@ -21,11 +21,12 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using DotRecast.Core;
+using static DotRecast.Core.RecastMath;
+using static DotRecast.Recast.RecastCommon;
+using static DotRecast.Recast.RecastConstants;
 
 namespace DotRecast.Recast
 {
-    using static RecastCommon;
-    using static RecastConstants;
 
     public class RecastMeshDetail
     {
@@ -273,8 +274,8 @@ namespace DotRecast.Recast
         {
             int ix = (int)Math.Floor(fx * ics + 0.01f);
             int iz = (int)Math.Floor(fz * ics + 0.01f);
-            ix = RecastCommon.clamp(ix - hp.xmin, 0, hp.width - 1);
-            iz = RecastCommon.clamp(iz - hp.ymin, 0, hp.height - 1);
+            ix = clamp(ix - hp.xmin, 0, hp.width - 1);
+            iz = clamp(iz - hp.ymin, 0, hp.height - 1);
             int h = hp.data[ix + iz * hp.width];
             if (h == RC_UNSET_HEIGHT)
             {

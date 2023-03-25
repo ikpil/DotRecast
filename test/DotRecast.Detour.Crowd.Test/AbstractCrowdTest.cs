@@ -24,7 +24,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Crowd.Test;
 
-using static DetourCommon;
+using static DotRecast.Core.RecastMath;
 
 public class AbstractCrowdTest
 {

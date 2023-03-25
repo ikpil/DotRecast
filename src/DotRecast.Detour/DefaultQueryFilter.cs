@@ -22,7 +22,7 @@ using System;
 
 namespace DotRecast.Detour
 {
-    using static DetourCommon;
+    using static DotRecast.Core.RecastMath;
 
     /**
  * <b>The Default Implementation</b>

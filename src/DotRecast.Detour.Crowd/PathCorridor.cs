@@ -23,7 +23,7 @@ using System.Collections.Generic;
 
 namespace DotRecast.Detour.Crowd
 {
-    using static DetourCommon;
+    using static DotRecast.Core.RecastMath;
 
     /**
  * Represents a dynamic polygon corridor used to plan agent movement.

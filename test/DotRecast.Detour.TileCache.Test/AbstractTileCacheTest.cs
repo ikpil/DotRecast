@@ -21,7 +21,7 @@ freely, subject to the following restrictions:
 using DotRecast.Core;
 using DotRecast.Detour.TileCache.Io.Compress;
 using DotRecast.Recast.Geom;
-using static DotRecast.Detour.DetourCommon;
+using static DotRecast.Core.RecastMath;
 using static DotRecast.Recast.RecastVectors;
 
 namespace DotRecast.Detour.TileCache.Test;

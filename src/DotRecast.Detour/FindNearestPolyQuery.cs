@@ -2,7 +2,7 @@ using System;
 
 namespace DotRecast.Detour
 {
-    using static DetourCommon;
+    using static DotRecast.Core.RecastMath;
 
     public class FindNearestPolyQuery : PolyQuery
     {

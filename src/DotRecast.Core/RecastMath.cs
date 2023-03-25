@@ -20,11 +20,79 @@ freely, subject to the following restrictions:
 
 using System;
 
-namespace DotRecast.Detour
+namespace DotRecast.Core
 {
-    public static class DetourCommon
+    public static class RecastMath
     {
         public const float EPS = 1e-4f;
+        private static readonly float EQUAL_THRESHOLD = sqr(1.0f / 16384.0f);
+        
+        public static float vDistSqr(float[] v1, float[] v2, int i)
+        {
+            float dx = v2[i] - v1[0];
+            float dy = v2[i + 1] - v1[1];
+            float dz = v2[i + 2] - v1[2];
+            return dx * dx + dy * dy + dz * dz;
+        }
+
+        public static float[] vCross(float[] v1, float[] v2)
+        {
+            float[] dest = new float[3];
+            dest[0] = v1[1] * v2[2] - v1[2] * v2[1];
+            dest[1] = v1[2] * v2[0] - v1[0] * v2[2];
+            dest[2] = v1[0] * v2[1] - v1[1] * v2[0];
+            return dest;
+        }
+
+        public static float vDot(float[] v1, float[] v2)
+        {
+            return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
+        }
+
+        public static float sqr(float f)
+        {
+            return f * f;
+        }
+
+        public static float getPathLen(float[] path, int npath)
+        {
+            float totd = 0;
+            for (int i = 0; i < npath - 1; ++i)
+            {
+                totd += (float)Math.Sqrt(vDistSqr(path, i * 3, (i + 1) * 3));
+            }
+
+            return totd;
+        }
+
+        public static float vDistSqr(float[] v, int i, int j)
+        {
+            float dx = v[i] - v[j];
+            float dy = v[i + 1] - v[j + 1];
+            float dz = v[i + 2] - v[j + 2];
+            return dx * dx + dy * dy + dz * dz;
+        }
+
+        public static float step(float threshold, float v)
+        {
+            return v < threshold ? 0.0f : 1.0f;
+        }
+
+        public static float clamp(float v, float min, float max)
+        {
+            return Math.Max(Math.Min(v, max), min);
+        }
+
+        public static int clamp(int v, int min, int max)
+        {
+            return Math.Max(Math.Min(v, max), min);
+        }
+
+        public static float lerp(float f, float g, float u)
+        {
+            return u * g + (1f - u) * f;
+        }
+        
 
         /// Performs a scaled vector addition. (@p v1 + (@p v2 * @p s))
         /// @param[out] dest The result vector. [(x, y, z)]
@@ -159,11 +227,6 @@ namespace DotRecast.Detour
             return dx * dx + dy * dy + dz * dz;
         }
 
-        public static float sqr(float a)
-        {
-            return a * a;
-        }
-
         /// Derives the square of the scalar length of the vector. (len * len)
         /// @param[in] v The vector. [(x, y, z)]
         /// @return The square of the scalar length of the vector.
@@ -185,15 +248,6 @@ namespace DotRecast.Detour
             return (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
         }
 
-        public static float clamp(float v, float min, float max)
-        {
-            return Math.Max(Math.Min(v, max), min);
-        }
-
-        public static int clamp(int v, int min, int max)
-        {
-            return Math.Max(Math.Min(v, max), min);
-        }
 
         /// Derives the distance between the specified points on the xz-plane.
         /// @param[in] v1 A point. [(x, y, z)]
@@ -236,7 +290,6 @@ namespace DotRecast.Detour
             }
         }
 
-        private static readonly float EQUAL_THRESHOLD = sqr(1.0f / 16384.0f);
 
         /// Performs a 'sloppy' colocation check of the specified points.
         /// @param[in] p0 A point. [(x, y, z)]

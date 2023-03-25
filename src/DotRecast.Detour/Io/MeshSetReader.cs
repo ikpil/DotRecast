@@ -22,7 +22,7 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour.Io
 {
-    using static DetourCommon;
+    using static DotRecast.Core.RecastMath;
 
 
     public class MeshSetReader

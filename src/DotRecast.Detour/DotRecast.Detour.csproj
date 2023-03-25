@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\DotRecast.Core\DotRecast.Core.csproj"/>
+        <ProjectReference Include="..\DotRecast.Core\DotRecast.Core.csproj" />
     </ItemGroup>
 
 </Project>

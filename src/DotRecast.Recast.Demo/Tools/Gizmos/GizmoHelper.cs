@@ -1,6 +1,6 @@
 using System;
 using DotRecast.Recast.Demo.Draw;
-using static DotRecast.Detour.DetourCommon;
+using static DotRecast.Core.RecastMath;
 
 namespace DotRecast.Recast.Demo.Tools.Gizmos;
 

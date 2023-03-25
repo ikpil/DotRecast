@@ -18,12 +18,12 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-namespace DotRecast.Detour
+namespace DotRecast.Core
 {
     /**
- * Wrapper for 3-element pieces (3D vectors) of a bigger float array.
- *
- */
+     * Wrapper for 3-element pieces (3D vectors) of a bigger float array.
+     *
+     */
     public class VectorPtr
     {
         private readonly float[] array;

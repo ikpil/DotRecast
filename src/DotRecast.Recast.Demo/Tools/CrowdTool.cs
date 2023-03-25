@@ -30,6 +30,7 @@ using DotRecast.Recast.Demo.Geom;
 using ImGuiNET;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
+using static DotRecast.Core.RecastMath;
 
 namespace DotRecast.Recast.Demo.Tools;
 
@@ -323,10 +324,10 @@ public class CrowdTool : Tool
 
     private float[] calcVel(float[] pos, float[] tgt, float speed)
     {
-        float[] vel = DetourCommon.vSub(tgt, pos);
+        float[] vel = vSub(tgt, pos);
         vel[1] = 0.0f;
-        DetourCommon.vNormalize(vel);
-        return DetourCommon.vScale(vel, speed);
+        vNormalize(vel);
+        return vScale(vel, speed);
     }
 
     public override void handleRender(NavMeshRenderer renderer)
@@ -414,7 +415,7 @@ public class CrowdTool : Tool
             dd.begin(LINES, 3.0f);
             float[] prev = new float[3];
             float preva = 1;
-            DetourCommon.vCopy(prev, pos);
+            vCopy(prev, pos);
             for (int j = 0; j < AGENT_MAX_TRAIL - 1; ++j)
             {
                 int idx = (trail.htrail + AGENT_MAX_TRAIL - j) % AGENT_MAX_TRAIL;
@@ -423,7 +424,7 @@ public class CrowdTool : Tool
                 dd.vertex(prev[0], prev[1] + 0.1f, prev[2], duRGBA(0, 0, 0, (int)(128 * preva)));
                 dd.vertex(trail.trail[v], trail.trail[v + 1] + 0.1f, trail.trail[v + 2], duRGBA(0, 0, 0, (int)(128 * a)));
                 preva = a;
-                DetourCommon.vCopy(prev, trail.trail, v);
+                vCopy(prev, trail.trail, v);
             }
 
             dd.end();
@@ -500,7 +501,7 @@ public class CrowdTool : Tool
                     float[] s = ag.boundary.getSegment(j);
                     float[] s0 = new float[] { s[0], s[1], s[2] };
                     float[] s3 = new float[] { s[3], s[4], s[5] };
-                    if (DetourCommon.triArea2D(pos, s0, s3) < 0.0f)
+                    if (triArea2D(pos, s0, s3) < 0.0f)
                         col = duDarkenCol(col);
 
                     dd.appendArrow(s[0], s[1] + 0.2f, s[2], s[3], s[4] + 0.2f, s[5], 0.0f, 0.3f, col);

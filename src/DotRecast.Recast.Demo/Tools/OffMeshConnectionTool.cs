@@ -56,7 +56,7 @@ public class OffMeshConnectionTool : Tool
             DemoOffMeshConnection nearestConnection = null;
             foreach (DemoOffMeshConnection offMeshCon in geom.getOffMeshConnections())
             {
-                float d = Math.Min(DemoMath.vDistSqr(p, offMeshCon.verts, 0), DemoMath.vDistSqr(p, offMeshCon.verts, 3));
+                float d = Math.Min(RecastMath.vDistSqr(p, offMeshCon.verts, 0), RecastMath.vDistSqr(p, offMeshCon.verts, 3));
                 if (d < nearestDist && Math.Sqrt(d) < sample.getSettingsUI().getAgentRadius())
                 {
                     nearestDist = d;

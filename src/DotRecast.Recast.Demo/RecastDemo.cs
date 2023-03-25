@@ -45,7 +45,7 @@ using DotRecast.Recast.Demo.Tools;
 using DotRecast.Recast.Demo.UI;
 using Silk.NET.SDL;
 using Silk.NET.Windowing.Sdl;
-using static DotRecast.Detour.DetourCommon;
+using static DotRecast.Core.RecastMath;
 using Color = System.Drawing.Color;
 using Window = Silk.NET.Windowing.Window;
 
@@ -457,13 +457,13 @@ public class RecastDemo
             var tempMoveDown = keyboard.IsKeyPressed(Key.E) || keyboard.IsKeyPressed(Key.PageDown) ? 1.0f : -1f;
             var tempMoveAccel = keyboard.IsKeyPressed(Key.ShiftLeft) || keyboard.IsKeyPressed(Key.ShiftRight) ? 1.0f : -1f;
 
-            _moveFront = DemoMath.clamp(_moveFront + tempMoveFront * dt * 4.0f, 0, 2.0f);
-            _moveLeft = DemoMath.clamp(_moveLeft + tempMoveLeft * dt * 4.0f, 0, 2.0f);
-            _moveBack = DemoMath.clamp(_moveBack + tempMoveBack * dt * 4.0f, 0, 2.0f);
-            _moveRight = DemoMath.clamp(_moveRight + tempMoveRight * dt * 4.0f, 0, 2.0f);
-            _moveUp = DemoMath.clamp(_moveUp + tempMoveUp * dt * 4.0f, 0, 2.0f);
-            _moveDown = DemoMath.clamp(_moveDown + tempMoveDown * dt * 4.0f, 0, 2.0f);
-            _moveAccel = DemoMath.clamp(_moveAccel + tempMoveAccel * dt * 4.0f, 0, 2.0f);
+            _moveFront = RecastMath.clamp(_moveFront + tempMoveFront * dt * 4.0f, 0, 2.0f);
+            _moveLeft = RecastMath.clamp(_moveLeft + tempMoveLeft * dt * 4.0f, 0, 2.0f);
+            _moveBack = RecastMath.clamp(_moveBack + tempMoveBack * dt * 4.0f, 0, 2.0f);
+            _moveRight = RecastMath.clamp(_moveRight + tempMoveRight * dt * 4.0f, 0, 2.0f);
+            _moveUp = RecastMath.clamp(_moveUp + tempMoveUp * dt * 4.0f, 0, 2.0f);
+            _moveDown = RecastMath.clamp(_moveDown + tempMoveDown * dt * 4.0f, 0, 2.0f);
+            _moveAccel = RecastMath.clamp(_moveAccel + tempMoveAccel * dt * 4.0f, 0, 2.0f);
         }
     }
 
@@ -708,7 +708,7 @@ public class RecastDemo
             if (bmin != null && bmax != null)
             {
                 camr = (float)(Math.Sqrt(
-                                   DemoMath.sqr(bmax[0] - bmin[0]) + DemoMath.sqr(bmax[1] - bmin[1]) + DemoMath.sqr(bmax[2] - bmin[2]))
+                                   RecastMath.sqr(bmax[0] - bmin[0]) + RecastMath.sqr(bmax[1] - bmin[1]) + RecastMath.sqr(bmax[2] - bmin[2]))
                                / 2);
                 cameraPos[0] = (bmax[0] + bmin[0]) / 2 + camr;
                 cameraPos[1] = (bmax[1] + bmin[1]) / 2 + camr;

@@ -79,7 +79,7 @@ public class ConvexVolumeTool : Tool
             // Create
 
             // If clicked on that last pt, create the shape.
-            if (pts.Count > 0 && DemoMath.vDistSqr(p,
+            if (pts.Count > 0 && RecastMath.vDistSqr(p,
                     new float[] { pts[pts.Count - 3], pts[pts.Count - 2], pts[pts.Count - 1] },
                     0) < 0.2f * 0.2f)
             {

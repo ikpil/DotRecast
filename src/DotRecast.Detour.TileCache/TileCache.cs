@@ -22,7 +22,7 @@ using System;
 using System.Collections.Generic;
 using DotRecast.Core;
 using DotRecast.Detour.TileCache.Io;
-using static DotRecast.Detour.DetourCommon;
+using static DotRecast.Core.RecastMath;
 
 namespace DotRecast.Detour.TileCache
 {

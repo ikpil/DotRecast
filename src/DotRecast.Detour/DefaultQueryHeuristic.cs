@@ -15,10 +15,10 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+using static DotRecast.Core.RecastMath;
 
 namespace DotRecast.Detour
 {
-    using static DetourCommon;
 
     public class DefaultQueryHeuristic : QueryHeuristic
     {

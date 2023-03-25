@@ -22,7 +22,7 @@ using System;
 
 namespace DotRecast.Recast
 {
-    public class RecastCommon
+    public static class RecastCommon
     {
         /// Gets neighbor connection data for the specified direction.
         /// @param[in] s The span to check.
@@ -74,11 +74,6 @@ namespace DotRecast.Recast
             int shift = dir * 6;
             int con = s.con;
             s.con = (con & ~(0x3f << shift)) | ((i & 0x3f) << shift);
-        }
-
-        public static int clamp(int v, int min, int max)
-        {
-            return Math.Max(Math.Min(max, v), min);
         }
     }
 }

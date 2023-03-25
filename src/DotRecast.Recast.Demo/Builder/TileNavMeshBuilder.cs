@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using DotRecast.Core;
 using DotRecast.Detour;
 using DotRecast.Recast.Demo.Geom;
+using static DotRecast.Core.RecastMath;
 
 namespace DotRecast.Recast.Demo.Builder;
 
@@ -99,7 +100,7 @@ public class TileNavMeshBuilder : AbstractNavMeshBuilder
         int[] wh = Recast.calcGridSize(geom.getMeshBoundsMin(), geom.getMeshBoundsMax(), cellSize);
         int tw = (wh[0] + tileSize - 1) / tileSize;
         int th = (wh[1] + tileSize - 1) / tileSize;
-        int tileBits = Math.Min(DetourCommon.ilog2(DetourCommon.nextPow2(tw * th)), 14);
+        int tileBits = Math.Min(ilog2(nextPow2(tw * th)), 14);
         return tileBits;
     }
 
