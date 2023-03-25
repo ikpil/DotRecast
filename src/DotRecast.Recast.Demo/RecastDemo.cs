@@ -596,7 +596,7 @@ public class RecastDemo
 
                 sample.update(sample.getInputGeom(), buildResult.Item1, buildResult.Item2);
                 sample.setChanged(false);
-                settingsUI.setBuildTime((Stopwatch.GetTimestamp() - t) / TimeSpan.TicksPerMicrosecond);
+                settingsUI.setBuildTime((Stopwatch.GetTimestamp() - t) / TimeSpan.TicksPerMillisecond);
                 toolsUI.setSample(sample);
             }
         }

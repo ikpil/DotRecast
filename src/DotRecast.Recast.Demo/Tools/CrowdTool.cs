@@ -676,7 +676,7 @@ public class CrowdTool : Tool
         m_agentDebug.vod.normalizeSamples();
 
         // m_crowdSampleCount.addSample((float) crowd.getVelocitySampleCount());
-        crowdUpdateTime = (endTime - startTime) / TimeSpan.TicksPerMicrosecond;
+        crowdUpdateTime = (endTime - startTime) / TimeSpan.TicksPerMillisecond;
     }
 
     private void hilightAgent(CrowdAgent agent)
