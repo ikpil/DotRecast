@@ -22,50 +22,50 @@ namespace DotRecast.Recast
 {
     public class AreaModification
     {
-        public readonly int RC_AREA_FLAGS_MASK = 0x3F;
+        public const int RC_AREA_FLAGS_MASK = 0x3F;
 
-        private readonly int value;
-        private readonly int mask;
+        public int Value { get; }
+        public int Mask { get; }
 
         /**
-     * Mask is set to all available bits, which means value is fully applied
-     *
-     * @param value
-     *            The area id to apply. [Limit: &lt;= #RC_AREA_FLAGS_MASK]
-     */
+         * Mask is set to all available bits, which means value is fully applied
+         *
+         * @param value
+         *            The area id to apply. [Limit: &lt;= #RC_AREA_FLAGS_MASK]
+         */
         public AreaModification(int value)
         {
-            this.value = value;
-            mask = RC_AREA_FLAGS_MASK;
+            this.Value = value;
+            Mask = RC_AREA_FLAGS_MASK;
         }
 
         /**
-     *
-     * @param value
-     *            The area id to apply. [Limit: &lt;= #RC_AREA_FLAGS_MASK]
-     * @param mask
-     *            Bitwise mask used when applying value. [Limit: &lt;= #RC_AREA_FLAGS_MASK]
-     */
+         *
+         * @param value
+         *            The area id to apply. [Limit: &lt;= #RC_AREA_FLAGS_MASK]
+         * @param mask
+         *            Bitwise mask used when applying value. [Limit: &lt;= #RC_AREA_FLAGS_MASK]
+         */
         public AreaModification(int value, int mask)
         {
-            this.value = value;
-            this.mask = mask;
+            this.Value = value;
+            this.Mask = mask;
         }
 
         public AreaModification(AreaModification other)
         {
-            value = other.value;
-            mask = other.mask;
+            Value = other.Value;
+            Mask = other.Mask;
         }
 
         public int getMaskedValue()
         {
-            return value & mask;
+            return Value & Mask;
         }
 
         public int apply(int area)
         {
-            return ((value & mask) | (area & ~mask));
+            return ((Value & Mask) | (area & ~Mask));
         }
     }
 }

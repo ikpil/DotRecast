@@ -34,6 +34,7 @@ namespace DotRecast.Recast.Demo.Tools;
 public class ConvexVolumeTool : Tool
 {
     private Sample sample;
+    private int areaTypeValue = SampleAreaModifications.SAMPLE_AREAMOD_GRASS.Value;
     private AreaModification areaType = SampleAreaModifications.SAMPLE_AREAMOD_GRASS;
     private float boxHeight = 6f;
     private float boxDescent = 1f;
@@ -106,8 +107,7 @@ public class ConvexVolumeTool : Tool
                     if (polyOffset > 0.01f)
                     {
                         float[] offset = new float[verts.Length * 2];
-                        int noffset = PolyUtils.offsetPoly(verts, hull.Count, polyOffset, offset,
-                            offset.Length);
+                        int noffset = PolyUtils.offsetPoly(verts, hull.Count, polyOffset, offset, offset.Length);
                         if (noffset > 0)
                         {
                             geom.addConvexVolume(ArrayUtils.CopyOf(offset, 0, noffset * 3), minh, maxh, areaType);
@@ -187,44 +187,44 @@ public class ConvexVolumeTool : Tool
 
     public override void layout()
     {
-        // nk_layout_row_dynamic(ctx, 20, 1);
         ImGui.SliderFloat("Shape Height", ref boxHeight, 0.1f, 20f, "%.1f");
-        // nk_layout_row_dynamic(ctx, 20, 1);
         ImGui.SliderFloat("Shape Descent", ref boxDescent, 0.1f, 20f, "%.1f");
-        // nk_layout_row_dynamic(ctx, 20, 1);
         ImGui.SliderFloat("Poly Offset", ref polyOffset, 0.1f, 10f, "%.1f");
+        ImGui.NewLine();
+
         ImGui.Text("Area Type");
-        // nk_layout_row_dynamic(ctx, 20, 1);
-        // if (nk_option_label(ctx, "Ground", areaType == SampleAreaModifications.SAMPLE_AREAMOD_GROUND)) {
-        //     areaType = SampleAreaModifications.SAMPLE_AREAMOD_GROUND;
-        // }
-        // if (nk_option_label(ctx, "Water", areaType == SampleAreaModifications.SAMPLE_AREAMOD_WATER)) {
-        //     areaType = SampleAreaModifications.SAMPLE_AREAMOD_WATER;
-        // }
-        // if (nk_option_label(ctx, "Road", areaType == SampleAreaModifications.SAMPLE_AREAMOD_ROAD)) {
-        //     areaType = SampleAreaModifications.SAMPLE_AREAMOD_ROAD;
-        // }
-        // if (nk_option_label(ctx, "Door", areaType == SampleAreaModifications.SAMPLE_AREAMOD_DOOR)) {
-        //     areaType = SampleAreaModifications.SAMPLE_AREAMOD_DOOR;
-        // }
-        // if (nk_option_label(ctx, "Grass", areaType == SampleAreaModifications.SAMPLE_AREAMOD_GRASS)) {
-        //     areaType = SampleAreaModifications.SAMPLE_AREAMOD_GRASS;
-        // }
-        // if (nk_option_label(ctx, "Jump", areaType == SampleAreaModifications.SAMPLE_AREAMOD_JUMP)) {
-        //     areaType = SampleAreaModifications.SAMPLE_AREAMOD_JUMP;
-        // }
-        // if (nk_button_text(ctx, "Clear Shape")) {
-        //     hull.clear();
-        //     pts.clear();
-        // }
-        // if (nk_button_text(ctx, "Remove All")) {
-        //     hull.clear();
-        //     pts.clear();
-        //     DemoInputGeomProvider geom = sample.getInputGeom();
-        //     if (geom != null) {
-        //         geom.clearConvexVolumes();
-        //     }
-        // }
+        ImGui.Separator();
+        int prevAreaTypeValue = areaTypeValue;
+        ImGui.RadioButton("Ground", ref areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_GROUND.Value);
+        ImGui.RadioButton("Water", ref areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_WATER.Value);
+        ImGui.RadioButton("Road", ref areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_ROAD.Value);
+        ImGui.RadioButton("Door", ref areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_DOOR.Value);
+        ImGui.RadioButton("Grass", ref areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_GRASS.Value);
+        ImGui.RadioButton("Jump", ref areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_JUMP.Value);
+        ImGui.NewLine();
+
+        if (prevAreaTypeValue != areaTypeValue)
+        {
+            areaType = SampleAreaModifications.OfValue(areaTypeValue);
+        }
+
+        if (ImGui.Button("Clear Shape"))
+        {
+            hull.Clear();
+            pts.Clear();
+        }
+
+        if (ImGui.Button("Remove All"))
+        {
+            hull.Clear();
+            pts.Clear();
+            
+            DemoInputGeomProvider geom = sample.getInputGeom();
+            if (geom != null)
+            {
+                geom.clearConvexVolumes();
+            }
+        }
     }
 
     public override string getName()

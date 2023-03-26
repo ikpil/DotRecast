@@ -18,6 +18,9 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System.Collections.Immutable;
+using System.Linq;
+
 namespace DotRecast.Recast.Demo.Builder;
 
 public class SampleAreaModifications
@@ -31,13 +34,28 @@ public class SampleAreaModifications
     public const int SAMPLE_POLYAREA_TYPE_JUMP_AUTO = 0x6;
     public const int SAMPLE_POLYAREA_TYPE_WALKABLE = 0x3f;
 
-    public static AreaModification SAMPLE_AREAMOD_WALKABLE = new AreaModification(SAMPLE_POLYAREA_TYPE_WALKABLE);
-    public static AreaModification SAMPLE_AREAMOD_GROUND = new AreaModification(SAMPLE_POLYAREA_TYPE_GROUND);
-    public static AreaModification SAMPLE_AREAMOD_WATER = new AreaModification(SAMPLE_POLYAREA_TYPE_WATER);
-    public static AreaModification SAMPLE_AREAMOD_ROAD = new AreaModification(SAMPLE_POLYAREA_TYPE_ROAD);
-    public static AreaModification SAMPLE_AREAMOD_GRASS = new AreaModification(SAMPLE_POLYAREA_TYPE_GRASS);
-    public static AreaModification SAMPLE_AREAMOD_DOOR = new AreaModification(SAMPLE_POLYAREA_TYPE_DOOR);
-    public static AreaModification SAMPLE_AREAMOD_JUMP = new AreaModification(SAMPLE_POLYAREA_TYPE_JUMP);
+    public static readonly AreaModification SAMPLE_AREAMOD_WALKABLE = new(SAMPLE_POLYAREA_TYPE_WALKABLE);
+    public static readonly AreaModification SAMPLE_AREAMOD_GROUND = new(SAMPLE_POLYAREA_TYPE_GROUND);
+    public static readonly AreaModification SAMPLE_AREAMOD_WATER = new(SAMPLE_POLYAREA_TYPE_WATER);
+    public static readonly AreaModification SAMPLE_AREAMOD_ROAD = new(SAMPLE_POLYAREA_TYPE_ROAD);
+    public static readonly AreaModification SAMPLE_AREAMOD_GRASS = new(SAMPLE_POLYAREA_TYPE_GRASS);
+    public static readonly AreaModification SAMPLE_AREAMOD_DOOR = new(SAMPLE_POLYAREA_TYPE_DOOR);
+    public static readonly AreaModification SAMPLE_AREAMOD_JUMP = new(SAMPLE_POLYAREA_TYPE_JUMP);
+
+    public static readonly ImmutableArray<AreaModification> Values = ImmutableArray.Create(
+        SAMPLE_AREAMOD_WALKABLE,
+        SAMPLE_AREAMOD_GROUND,
+        SAMPLE_AREAMOD_WATER,
+        SAMPLE_AREAMOD_ROAD,
+        SAMPLE_AREAMOD_GRASS,
+        SAMPLE_AREAMOD_DOOR,
+        SAMPLE_AREAMOD_JUMP
+    );
+
+    public static AreaModification OfValue(int value)
+    {
+        return Values.FirstOrDefault(x => x.Value == value, SAMPLE_AREAMOD_GRASS);
+    }
 
     public static readonly int SAMPLE_POLYFLAGS_WALK = 0x01; // Ability to walk (ground, grass, road)
     public static readonly int SAMPLE_POLYFLAGS_SWIM = 0x02; // Ability to swim (water).
