@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using DotRecast.Core;
 using DotRecast.Detour;
 using DotRecast.Detour.Crowd;
@@ -55,92 +56,93 @@ public class CrowdProfilingTool
         this.agentParamsSupplier = agentParamsSupplier;
     }
 
-    public void layout(IWindow ctx)
+    public void layout()
     {
-        // nk_layout_row_dynamic(ctx, 1, 1);
-        // nk_spacing(ctx, 1);
-        // if (nk_tree_state_push(ctx, 0, "Simulation Options", expandSimOptions)) {
-        //     nk_layout_row_dynamic(ctx, 20, 1);
+        ImGui.Text("Simulation Options");
+        ImGui.Separator();
         ImGui.SliderInt("Agents", ref agents, 0, 10000);
-        //     nk_layout_row_dynamic(ctx, 20, 1);
         ImGui.SliderInt("Random Seed", ref randomSeed, 0, 1024);
-        //     nk_layout_row_dynamic(ctx, 20, 1);
         ImGui.SliderInt("Number of Zones", ref numberOfZones, 0, 10);
-        //     nk_layout_row_dynamic(ctx, 20, 1);
         ImGui.SliderFloat("Zone Radius", ref zoneRadius, 0, 100, "%.0f");
-        //     nk_layout_row_dynamic(ctx, 20, 1);
         ImGui.SliderFloat("Mobs %", ref percentMobs, 0, 100, "%.0f");
-        //     nk_layout_row_dynamic(ctx, 20, 1);
         ImGui.SliderFloat("Travellers %", ref percentTravellers, 0, 100, "%.0f");
-        //     nk_tree_state_pop(ctx);
-        // }
-        // if (nk_tree_state_push(ctx, 0, "Crowd Options", expandCrowdOptions)) {
-        //     nk_layout_row_dynamic(ctx, 20, 1);
+        ImGui.NewLine();
+
+        ImGui.Text("Crowd Options");
+        ImGui.Separator();
         ImGui.SliderInt("Path Queue Size", ref pathQueueSize, 0, 1024);
-        //     nk_layout_row_dynamic(ctx, 20, 1);
         ImGui.SliderInt("Max Iterations", ref maxIterations, 0, 4000);
-        //     nk_tree_state_pop(ctx);
-        // }
-        // nk_layout_row_dynamic(ctx, 1, 1);
-        // nk_spacing(ctx, 1);
-        // nk_layout_row_dynamic(ctx, 20, 1);
-        // if (nk_button_text(ctx, "Start")) {
-        //     if (navMesh != null) {
-        //         rnd = new NavMeshQuery.FRand(randomSeed[0]);
-        //         createCrowd();
-        //         createZones();
-        //         NavMeshQuery navquery = new NavMeshQuery(navMesh);
-        //         QueryFilter filter = new DefaultQueryFilter();
-        //         for (int i = 0; i < agents[0]; i++) {
-        //             float tr = rnd.frand();
-        //             AgentType type = AgentType.MOB;
-        //             float mobsPcnt = percentMobs[0] / 100f;
-        //             if (tr > mobsPcnt) {
-        //                 tr = rnd.frand();
-        //                 float travellerPcnt = percentTravellers[0] / 100f;
-        //                 if (tr > travellerPcnt) {
-        //                     type = AgentType.VILLAGER;
-        //                 } else {
-        //                     type = AgentType.TRAVELLER;
-        //                 }
-        //             }
-        //             float[] pos = null;
-        //             switch (type) {
-        //             case MOB:
-        //                 pos = getMobPosition(navquery, filter, pos);
-        //                 break;
-        //             case VILLAGER:
-        //                 pos = getVillagerPosition(navquery, filter, pos);
-        //                 break;
-        //             case TRAVELLER:
-        //                 pos = getVillagerPosition(navquery, filter, pos);
-        //                 break;
-        //             }
-        //             if (pos != null) {
-        //                 addAgent(pos, type);
-        //             }
-        //         }
-        //     }
-        // }
-        // if (crowd != null) {
-        //     nk_layout_row_dynamic(ctx, 18, 1);
-        //     nk_label(ctx, string.format("Max time to enqueue request: %.3f s", crowd.telemetry().maxTimeToEnqueueRequest()),
-        //             NK_TEXT_ALIGN_LEFT);
-        //     nk_layout_row_dynamic(ctx, 18, 1);
-        //     nk_label(ctx, string.format("Max time to find path: %.3f s", crowd.telemetry().maxTimeToFindPath()),
-        //             NK_TEXT_ALIGN_LEFT);
-        //     List<Tuple<string, long>> timings = crowd.telemetry().executionTimings().entrySet().stream()
-        //             .map(e => Tuple.Create(e.getKey(), e.getValue())).sorted((t1, t2) => long.compare(t2.Item2, t1.Item2))
-        //             .collect(toList());
-        //     foreach (Tuple<string, long> e in timings) {
-        //         nk_layout_row_dynamic(ctx, 18, 1);
-        //         nk_label(ctx, string.format("%s: %d us", e.Item1, e.Item2 / 1_000), NK_TEXT_ALIGN_LEFT);
-        //     }
-        //     nk_layout_row_dynamic(ctx, 1, 1);
-        //     nk_spacing(ctx, 1);
-        //     nk_layout_row_dynamic(ctx, 18, 1);
-        //     nk_label(ctx, string.format("Update Time: %d ms", crowdUpdateTime), NK_TEXT_ALIGN_LEFT);
-        // }
+        ImGui.NewLine();
+
+        if (ImGui.Button("Start"))
+        {
+            if (navMesh != null)
+            {
+                rnd = new NavMeshQuery.FRand(randomSeed);
+                createCrowd();
+                createZones();
+                NavMeshQuery navquery = new NavMeshQuery(navMesh);
+                QueryFilter filter = new DefaultQueryFilter();
+                for (int i = 0; i < agents; i++)
+                {
+                    float tr = rnd.frand();
+                    AgentType type = AgentType.MOB;
+                    float mobsPcnt = percentMobs / 100f;
+                    if (tr > mobsPcnt)
+                    {
+                        tr = rnd.frand();
+                        float travellerPcnt = percentTravellers / 100f;
+                        if (tr > travellerPcnt)
+                        {
+                            type = AgentType.VILLAGER;
+                        }
+                        else
+                        {
+                            type = AgentType.TRAVELLER;
+                        }
+                    }
+
+                    float[] pos = null;
+                    switch (type)
+                    {
+                        case AgentType.MOB:
+                            pos = getMobPosition(navquery, filter, pos);
+                            break;
+                        case AgentType.VILLAGER:
+                            pos = getVillagerPosition(navquery, filter, pos);
+                            break;
+                        case AgentType.TRAVELLER:
+                            pos = getVillagerPosition(navquery, filter, pos);
+                            break;
+                    }
+
+                    if (pos != null)
+                    {
+                        addAgent(pos, type);
+                    }
+                }
+            }
+        }
+
+        ImGui.Text("Times");
+        ImGui.Separator();
+        if (crowd != null)
+        {
+            ImGui.Text($"Max time to enqueue request: {crowd.telemetry().maxTimeToEnqueueRequest()} s");
+            ImGui.Text($"Max time to find path: {crowd.telemetry().maxTimeToFindPath()} s");
+            List<Tuple<string, long>> timings = crowd.telemetry()
+                .executionTimings()
+                .Select(e => Tuple.Create(e.Key, e.Value))
+                .OrderBy(x => x.Item2)
+                .ToList();
+
+            foreach (Tuple<string, long> e in timings)
+            {
+                ImGui.Text($"{e.Item1}: {e.Item2 / 1_000} us");
+            }
+
+            ImGui.Text($"Update Time: {crowdUpdateTime} ms");
+        }
     }
 
     private float[] getMobPosition(NavMeshQuery navquery, QueryFilter filter, float[] pos)

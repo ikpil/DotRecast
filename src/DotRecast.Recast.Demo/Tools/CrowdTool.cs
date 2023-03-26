@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using Silk.NET.Windowing;
 using DotRecast.Detour;
@@ -34,17 +35,34 @@ using static DotRecast.Core.RecastMath;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class CrowdTool : Tool
+public class CrowdToolMode
 {
-    private enum ToolMode
-    {
+    public static readonly CrowdToolMode CREATE = new(0, "Create Agents");
+    public static readonly CrowdToolMode MOVE_TARGET = new(1, "Move Target");
+    public static readonly CrowdToolMode SELECT = new(2, "Select Agent");
+    public static readonly CrowdToolMode TOGGLE_POLYS = new(3, "Toggle Polys");
+    public static readonly CrowdToolMode PROFILING = new(4, "Profiling");
+
+    public static readonly ImmutableArray<CrowdToolMode> Values = ImmutableArray.Create(
         CREATE,
         MOVE_TARGET,
         SELECT,
         TOGGLE_POLYS,
         PROFILING
-    }
+    );
 
+    public int Idx { get; }
+    public string Label { get; }
+
+    private CrowdToolMode(int idx, string label)
+    {
+        Idx = idx;
+        Label = label;
+    }
+}
+
+public class CrowdTool : Tool
+{
     private readonly CrowdToolParams toolParams = new CrowdToolParams();
     private Sample sample;
     private NavMesh m_nav;
@@ -63,7 +81,8 @@ public class CrowdTool : Tool
     private readonly Dictionary<long, AgentTrail> m_trails = new();
     private float[] m_targetPos;
     private long m_targetRef;
-    private ToolMode m_mode = ToolMode.CREATE;
+    private CrowdToolMode m_mode = CrowdToolMode.CREATE;
+    private int m_modeIdx = CrowdToolMode.CREATE.Idx;
     private long crowdUpdateTime;
 
     public CrowdTool()
@@ -129,7 +148,7 @@ public class CrowdTool : Tool
 
     public override void handleClick(float[] s, float[] p, bool shift)
     {
-        if (m_mode == ToolMode.PROFILING)
+        if (m_mode == CrowdToolMode.PROFILING)
         {
             return;
         }
@@ -139,7 +158,7 @@ public class CrowdTool : Tool
             return;
         }
 
-        if (m_mode == ToolMode.CREATE)
+        if (m_mode == CrowdToolMode.CREATE)
         {
             if (shift)
             {
@@ -156,17 +175,17 @@ public class CrowdTool : Tool
                 addAgent(p);
             }
         }
-        else if (m_mode == ToolMode.MOVE_TARGET)
+        else if (m_mode == CrowdToolMode.MOVE_TARGET)
         {
             setMoveTarget(p, shift);
         }
-        else if (m_mode == ToolMode.SELECT)
+        else if (m_mode == CrowdToolMode.SELECT)
         {
             // Highlight
             CrowdAgent ahit = hitTestAgents(s, p);
             hilightAgent(ahit);
         }
-        else if (m_mode == ToolMode.TOGGLE_POLYS)
+        else if (m_mode == CrowdToolMode.TOGGLE_POLYS)
         {
             NavMesh nav = sample.getNavMesh();
             NavMeshQuery navquery = sample.getNavMeshQuery();
@@ -332,7 +351,7 @@ public class CrowdTool : Tool
 
     public override void handleRender(NavMeshRenderer renderer)
     {
-        if (m_mode == ToolMode.PROFILING)
+        if (m_mode == CrowdToolMode.PROFILING)
         {
             profilingTool.handleRender(renderer);
             return;
@@ -647,7 +666,7 @@ public class CrowdTool : Tool
 
     private void updateTick(float dt)
     {
-        if (m_mode == ToolMode.PROFILING)
+        if (m_mode == CrowdToolMode.PROFILING)
         {
             profilingTool.update(dt);
             return;
@@ -687,95 +706,72 @@ public class CrowdTool : Tool
 
     public override void layout()
     {
-        // ToolMode previousToolMode = m_mode;
-        // nk_layout_row_dynamic(ctx, 20, 1);
-        // if (nk_option_label(ctx, "Create Agents", m_mode == ToolMode.CREATE)) {
-        //     m_mode = ToolMode.CREATE;
-        // }
-        // nk_layout_row_dynamic(ctx, 20, 1);
-        // if (nk_option_label(ctx, "Move Target", m_mode == ToolMode.MOVE_TARGET)) {
-        //     m_mode = ToolMode.MOVE_TARGET;
-        // }
-        // nk_layout_row_dynamic(ctx, 20, 1);
-        // if (nk_option_label(ctx, "Select Agent", m_mode == ToolMode.SELECT)) {
-        //     m_mode = ToolMode.SELECT;
-        // }
-        // nk_layout_row_dynamic(ctx, 20, 1);
-        // if (nk_option_label(ctx, "Toggle Polys", m_mode == ToolMode.TOGGLE_POLYS)) {
-        //     m_mode = ToolMode.TOGGLE_POLYS;
-        // }
-        // nk_layout_row_dynamic(ctx, 20, 1);
-        // if (nk_option_label(ctx, "Profiling", m_mode == ToolMode.PROFILING)) {
-        //     m_mode = ToolMode.PROFILING;
-        // }
-        // nk_layout_row_dynamic(ctx, 1, 1);
-        // nk_spacing(ctx, 1);
-        // if (nk_tree_state_push(ctx, 0, "Options", toolParams.m_expandOptions)) {
-        //     bool m_optimizeVis = toolParams.m_optimizeVis;
-        //     bool m_optimizeTopo = toolParams.m_optimizeTopo;
-        //     bool m_anticipateTurns = toolParams.m_anticipateTurns;
-        //     bool m_obstacleAvoidance = toolParams.m_obstacleAvoidance;
-        //     bool m_separation = toolParams.m_separation;
-        //     int m_obstacleAvoidanceType = toolParams.m_obstacleAvoidanceType[0];
-        //     float m_separationWeight = toolParams.m_separationWeight[0];
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     toolParams.m_optimizeVis = nk_option_text(ctx, "Optimize Visibility", toolParams.m_optimizeVis);
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     toolParams.m_optimizeTopo = nk_option_text(ctx, "Optimize Topology", toolParams.m_optimizeTopo);
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     toolParams.m_anticipateTurns = nk_option_text(ctx, "Anticipate Turns", toolParams.m_anticipateTurns);
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     toolParams.m_obstacleAvoidance = nk_option_text(ctx, "Obstacle Avoidance", toolParams.m_obstacleAvoidance);
-        //     nk_layout_row_dynamic(ctx, 20, 1);
+        ImGui.Text($"Crowd Tool Mode");
+        ImGui.Separator();
+        CrowdToolMode previousToolMode = m_mode;
+        ImGui.RadioButton(CrowdToolMode.CREATE.Label, ref m_modeIdx, CrowdToolMode.CREATE.Idx);
+        ImGui.RadioButton(CrowdToolMode.MOVE_TARGET.Label, ref m_modeIdx, CrowdToolMode.MOVE_TARGET.Idx);
+        ImGui.RadioButton(CrowdToolMode.SELECT.Label, ref m_modeIdx, CrowdToolMode.SELECT.Idx);
+        ImGui.RadioButton(CrowdToolMode.TOGGLE_POLYS.Label, ref m_modeIdx, CrowdToolMode.TOGGLE_POLYS.Idx);
+        ImGui.RadioButton(CrowdToolMode.PROFILING.Label, ref m_modeIdx, CrowdToolMode.PROFILING.Idx);
+        ImGui.NewLine();
+
+        if (previousToolMode.Idx != m_modeIdx)
+        {
+            m_mode = CrowdToolMode.Values[m_modeIdx];
+        }
+
+        ImGui.Text("Options");
+        ImGui.Separator();
+        bool m_optimizeVis = toolParams.m_optimizeVis;
+        bool m_optimizeTopo = toolParams.m_optimizeTopo;
+        bool m_anticipateTurns = toolParams.m_anticipateTurns;
+        bool m_obstacleAvoidance = toolParams.m_obstacleAvoidance;
+        bool m_separation = toolParams.m_separation;
+        int m_obstacleAvoidanceType = toolParams.m_obstacleAvoidanceType;
+        float m_separationWeight = toolParams.m_separationWeight;
+        toolParams.m_optimizeVis = ImGui.RadioButton("Optimize Visibility", toolParams.m_optimizeVis);
+        toolParams.m_optimizeTopo = ImGui.RadioButton("Optimize Topology", toolParams.m_optimizeTopo);
+        toolParams.m_anticipateTurns = ImGui.RadioButton("Anticipate Turns", toolParams.m_anticipateTurns);
+        toolParams.m_obstacleAvoidance = ImGui.RadioButton("Obstacle Avoidance", toolParams.m_obstacleAvoidance);
         ImGui.SliderInt("Avoidance Quality", ref toolParams.m_obstacleAvoidanceType, 0, 3);
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     toolParams.m_separation = nk_option_text(ctx, "Separation", toolParams.m_separation);
-        //     nk_layout_row_dynamic(ctx, 20, 1);
+        toolParams.m_separation = ImGui.RadioButton("Separation", toolParams.m_separation);
         ImGui.SliderFloat("Separation Weight", ref toolParams.m_separationWeight, 0f, 20f, "%.2f");
-        //     if (m_optimizeVis != toolParams.m_optimizeVis || m_optimizeTopo != toolParams.m_optimizeTopo
-        //             || m_anticipateTurns != toolParams.m_anticipateTurns || m_obstacleAvoidance != toolParams.m_obstacleAvoidance
-        //             || m_separation != toolParams.m_separation
-        //             || m_obstacleAvoidanceType != toolParams.m_obstacleAvoidanceType[0]
-        //             || m_separationWeight != toolParams.m_separationWeight[0]) {
-        //         updateAgentParams();
-        //     }
-        //     nk_tree_state_pop(ctx);
-        // }
-        // if (m_mode == ToolMode.PROFILING) {
-        //     profilingTool.layout(ctx);
-        // }
-        // if (m_mode != ToolMode.PROFILING) {
-        //     nk_layout_row_dynamic(ctx, 1, 1);
-        //     nk_spacing(ctx, 1);
-        //     if (nk_tree_state_push(ctx, 0, "Selected Debug Draw", toolParams.m_expandSelectedDebugDraw)) {
-        //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         toolParams.m_showCorners = nk_option_text(ctx, "Show Corners", toolParams.m_showCorners);
-        //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         toolParams.m_showCollisionSegments = nk_option_text(ctx, "Show Collision Segs", toolParams.m_showCollisionSegments);
-        //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         toolParams.m_showPath = nk_option_text(ctx, "Show Path", toolParams.m_showPath);
-        //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         toolParams.m_showVO = nk_option_text(ctx, "Show VO", toolParams.m_showVO);
-        //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         toolParams.m_showOpt = nk_option_text(ctx, "Show Path Optimization", toolParams.m_showOpt);
-        //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         toolParams.m_showNeis = nk_option_text(ctx, "Show Neighbours", toolParams.m_showNeis);
-        //         nk_tree_state_pop(ctx);
-        //     }
-        //     nk_layout_row_dynamic(ctx, 1, 1);
-        //     nk_spacing(ctx, 1);
-        //     if (nk_tree_state_push(ctx, 0, "Debug Draw", toolParams.m_expandDebugDraw)) {
-        //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         toolParams.m_showGrid = nk_option_text(ctx, "Show Prox Grid", toolParams.m_showGrid);
-        //         nk_layout_row_dynamic(ctx, 20, 1);
-        //         toolParams.m_showNodes = nk_option_text(ctx, "Show Nodes", toolParams.m_showNodes);
-        //         nk_tree_state_pop(ctx);
-        //     }
-        //     nk_layout_row_dynamic(ctx, 2, 1);
-        //     nk_spacing(ctx, 1);
-        //     nk_layout_row_dynamic(ctx, 18, 1);
-        //     nk_label(ctx, string.format("Update Time: %d ms", crowdUpdateTime), NK_TEXT_ALIGN_LEFT);
-        // }
+        ImGui.NewLine();
+
+        if (m_optimizeVis != toolParams.m_optimizeVis || m_optimizeTopo != toolParams.m_optimizeTopo
+                                                      || m_anticipateTurns != toolParams.m_anticipateTurns || m_obstacleAvoidance != toolParams.m_obstacleAvoidance
+                                                      || m_separation != toolParams.m_separation
+                                                      || m_obstacleAvoidanceType != toolParams.m_obstacleAvoidanceType
+                                                      || m_separationWeight != toolParams.m_separationWeight)
+        {
+            updateAgentParams();
+        }
+
+
+        if (m_mode == CrowdToolMode.PROFILING)
+        {
+            profilingTool.layout();
+        }
+
+        if (m_mode != CrowdToolMode.PROFILING)
+        {
+            ImGui.Text("Selected Debug Draw");
+            ImGui.Separator();
+            toolParams.m_showCorners = ImGui.RadioButton("Show Corners", toolParams.m_showCorners);
+            toolParams.m_showCollisionSegments = ImGui.RadioButton("Show Collision Segs", toolParams.m_showCollisionSegments);
+            toolParams.m_showPath = ImGui.RadioButton("Show Path", toolParams.m_showPath);
+            toolParams.m_showVO = ImGui.RadioButton("Show VO", toolParams.m_showVO);
+            toolParams.m_showOpt = ImGui.RadioButton("Show Path Optimization", toolParams.m_showOpt);
+            toolParams.m_showNeis = ImGui.RadioButton("Show Neighbours", toolParams.m_showNeis);
+            ImGui.NewLine();
+
+            ImGui.Text("Debug Draw");
+            ImGui.Separator();
+            toolParams.m_showGrid = ImGui.RadioButton("Show Prox Grid", toolParams.m_showGrid);
+            toolParams.m_showNodes = ImGui.RadioButton("Show Nodes", toolParams.m_showNodes);
+            ImGui.Text($"Update Time: {crowdUpdateTime} ms");
+        }
     }
 
     private void updateAgentParams()
