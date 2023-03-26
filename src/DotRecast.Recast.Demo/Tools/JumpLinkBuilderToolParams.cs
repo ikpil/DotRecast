@@ -39,5 +39,5 @@ public class JumpLinkBuilderToolParams
     public float edgeJumpHeight = 0.4f;
     public float edgeJumpDownMaxHeight = 2.5f;
     public float edgeJumpUpMaxHeight = 0.3f;
-    public int buildTypes = (1 << JumpLinkType.EDGE_CLIMB_DOWN.Bit) | (1 << JumpLinkType.EDGE_JUMP.Bit);
+    public int buildTypes = JumpLinkType.EDGE_CLIMB_DOWN.Bit | JumpLinkType.EDGE_JUMP.Bit;
 }
