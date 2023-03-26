@@ -522,19 +522,48 @@ public class DynamicUpdateTool : Tool
         ImGui.Separator();
 
         if (mode == DynamicUpdateToolMode.BUILD)
-        {
+        { 
+            var loadVoxelPopupStrId = "Load Voxels Popup";
+            bool isLoadVoxelPopup = true;
             if (ImGui.Button("Load Voxels..."))
             {
-                load();
+                ImGui.OpenPopup(loadVoxelPopupStrId);
+            }
+            
+            if (ImGui.BeginPopupModal(loadVoxelPopupStrId, ref isLoadVoxelPopup, ImGuiWindowFlags.NoTitleBar))
+            {
+                var picker = ImFilePicker.GetFilePicker(loadVoxelPopupStrId, Path.Combine(Environment.CurrentDirectory), ".voxels");
+                if (picker.Draw())
+                {
+                    load(picker.SelectedFile);
+                    ImFilePicker.RemoveFilePicker(loadVoxelPopupStrId);
+                }
+                ImGui.EndPopup();
             }
 
+            var saveVoxelPopupStrId = "Save Voxels Popup";
+            bool isSaveVoxelPopup = true;
             if (dynaMesh != null)
             {
                 ImGui.Checkbox("Compression", ref compression);
                 if (ImGui.Button("Save Voxels..."))
                 {
-                    save();
+                    ImGui.BeginPopup(saveVoxelPopupStrId);
                 }
+                
+                if (ImGui.BeginPopupModal(saveVoxelPopupStrId, ref isSaveVoxelPopup, ImGuiWindowFlags.NoTitleBar))
+                {
+                    var picker = ImFilePicker.GetFilePicker(saveVoxelPopupStrId, Path.Combine(Environment.CurrentDirectory), ".voxels");
+                    if (picker.Draw())
+                    {
+                        if (string.IsNullOrEmpty(picker.SelectedFile))
+                            save(picker.SelectedFile);
+                        
+                        ImFilePicker.RemoveFilePicker(saveVoxelPopupStrId);
+                    }
+                    ImGui.EndPopup();
+                }
+
             }
 
             ImGui.NewLine();
@@ -648,18 +677,6 @@ public class DynamicUpdateTool : Tool
         }
     }
 
-    private void load()
-    {
-        // try (MemoryStack stack = stackPush()) {
-        //     PointerBuffer aFilterPatterns = stack.mallocPointer(1);
-        //     aFilterPatterns.put(stack.UTF8("*.voxels"));
-        //     aFilterPatterns.flip();
-        //     string filename = TinyFileDialogs.tinyfd_openFileDialog("Open Voxel File", "", aFilterPatterns, "Voxel File", false);
-        //     if (filename != null) {
-        //         load(filename);
-        //     }
-        // }
-    }
 
     private void load(string filename)
     {
@@ -683,18 +700,6 @@ public class DynamicUpdateTool : Tool
         }
     }
 
-    private void save()
-    {
-        // try (MemoryStack stack = stackPush()) {
-        //     PointerBuffer aFilterPatterns = stack.mallocPointer(1);
-        //     aFilterPatterns.put(stack.UTF8("*.voxels"));
-        //     aFilterPatterns.flip();
-        //     string filename = TinyFileDialogs.tinyfd_saveFileDialog("Save Voxel File", "", aFilterPatterns, "Voxel File");
-        //     if (filename != null) {
-        //         save(filename);
-        //     }
-        // }
-    }
 
     private void save(string filename)
     {
