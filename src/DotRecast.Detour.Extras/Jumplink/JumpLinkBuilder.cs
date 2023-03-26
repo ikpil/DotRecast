@@ -16,9 +16,9 @@ namespace DotRecast.Detour.Extras.Jumplink
         private readonly JumpSegmentBuilder jumpSegmentBuilder = new JumpSegmentBuilder();
 
         private readonly List<Edge[]> edges;
-        private readonly List<RecastBuilderResult> results;
+        private readonly IList<RecastBuilderResult> results;
 
-        public JumpLinkBuilder(List<RecastBuilderResult> results)
+        public JumpLinkBuilder(IList<RecastBuilderResult> results)
         {
             this.results = results;
             edges = results.Select(r => edgeExtractor.extractEdges(r.getMesh())).ToList();

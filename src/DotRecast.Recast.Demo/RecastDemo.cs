@@ -512,7 +512,6 @@ public class RecastDemo
         cameraPos[1] += (float)((_moveUp - _moveDown) * keySpeed * dt);
 
         long time = Stopwatch.GetTimestamp();
-        // float dt = (time - prevFrameTime) / TimeSpan.TicksPerMillisecond;
         prevFrameTime = time;
 
         // Update sample simulation.

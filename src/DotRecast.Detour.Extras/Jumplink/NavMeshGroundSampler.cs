@@ -22,7 +22,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             }
         }
 
-        public void sample(JumpLinkBuilderConfig acfg, RecastBuilderResult result, EdgeSampler es)
+        public override void sample(JumpLinkBuilderConfig acfg, RecastBuilderResult result, EdgeSampler es)
         {
             NavMeshQuery navMeshQuery = createNavMesh(result, acfg.agentRadius, acfg.agentHeight, acfg.agentClimb);
             sampleGround(acfg, es, (pt, h) => getNavMeshHeight(navMeshQuery, pt, acfg.cellSize, h));

@@ -19,13 +19,9 @@ namespace DotRecast.Detour.Extras.Jumplink
             }
         }
 
-        public void sample(JumpLinkBuilderConfig acfg, RecastBuilderResult result, EdgeSampler es)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract void sample(JumpLinkBuilderConfig acfg, RecastBuilderResult result, EdgeSampler es);
 
-        protected void sampleGroundSegment(Func<float[], float, Tuple<bool, float>> heightFunc, GroundSegment seg,
-            int nsamples)
+        protected void sampleGroundSegment(Func<float[], float, Tuple<bool, float>> heightFunc, GroundSegment seg, int nsamples)
         {
             seg.gsamples = new GroundSample[nsamples];
 

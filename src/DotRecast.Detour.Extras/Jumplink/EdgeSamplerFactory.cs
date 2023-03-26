@@ -7,15 +7,15 @@ namespace DotRecast.Detour.Extras.Jumplink
         public EdgeSampler get(JumpLinkBuilderConfig acfg, JumpLinkType type, Edge edge)
         {
             EdgeSampler es = null;
-            switch (type)
+            switch (type.Bit)
             {
-                case JumpLinkType.EDGE_JUMP:
+                case JumpLinkType.EDGE_JUMP_BIT:
                     es = initEdgeJumpSampler(acfg, edge);
                     break;
-                case JumpLinkType.EDGE_CLIMB_DOWN:
+                case JumpLinkType.EDGE_CLIMB_DOWN_BIT:
                     es = initClimbDownSampler(acfg, edge);
                     break;
-                case JumpLinkType.EDGE_JUMP_OVER:
+                case JumpLinkType.EDGE_JUMP_OVER_BIT:
                 default:
                     throw new ArgumentException("Unsupported jump type " + type);
             }

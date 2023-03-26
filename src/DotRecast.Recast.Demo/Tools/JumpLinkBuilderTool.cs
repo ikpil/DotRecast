@@ -17,6 +17,8 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using System.Linq;
+using DotRecast.Core;
 using Silk.NET.Windowing;
 using DotRecast.Detour.Extras.Jumplink;
 using DotRecast.Recast.Demo.Builder;
@@ -324,128 +326,105 @@ public class JumpLinkBuilderTool : Tool
 
     public override void layout()
     {
-        // if (!sample.getRecastResults().isEmpty()) {
-        //
-        //     nk_layout_row_dynamic(ctx, 18, 1);
+        if (0 >= sample.getRecastResults().Count)
+            return;
+
         ImGui.Text("Options");
-        //     nk_layout_row_dynamic(ctx, 20, 1);
+        ImGui.Separator();
         ImGui.SliderFloat("Ground Tolerance", ref option.groundTolerance, 0f, 2f, "%.2f");
-        //     nk_layout_row_dynamic(ctx, 5, 1);
-        //     nk_spacing(ctx, 1);
-        //
-        //     nk_layout_row_dynamic(ctx, 18, 1);
+        ImGui.NewLine();
+
         ImGui.Text("Climb Down");
-        //     nk_layout_row_dynamic(ctx, 20, 1);
+        ImGui.Separator();
         ImGui.SliderFloat("Distance", ref option.climbDownDistance, 0f, 5f, "%.2f");
-        //     nk_layout_row_dynamic(ctx, 20, 1);
         ImGui.SliderFloat("Min Cliff Height", ref option.climbDownMinHeight, 0f, 10f, "%.2f");
-        //     nk_layout_row_dynamic(ctx, 20, 1);
         ImGui.SliderFloat("Max Cliff Height", ref option.climbDownMaxHeight, 0f, 10f, "%.2f");
-        //     nk_layout_row_dynamic(ctx, 5, 1);
-        //     nk_spacing(ctx, 1);
-        //
-        //     nk_layout_row_dynamic(ctx, 18, 1);
+        ImGui.NewLine();
+
         ImGui.Text("Jump Down");
-        //     nk_layout_row_dynamic(ctx, 20, 1);
+        ImGui.Separator();
         ImGui.SliderFloat("Max Distance", ref option.edgeJumpEndDistance, 0f, 10f, "%.2f");
-        //     nk_layout_row_dynamic(ctx, 20, 1);
         ImGui.SliderFloat("Jump Height", ref option.edgeJumpHeight, 0f, 10f, "%.2f");
-        //     nk_layout_row_dynamic(ctx, 20, 1);
         ImGui.SliderFloat("Max Jump Down", ref option.edgeJumpDownMaxHeight, 0f, 10f, "%.2f");
-        //     nk_layout_row_dynamic(ctx, 20, 1);
         ImGui.SliderFloat("Max Jump Up", ref option.edgeJumpUpMaxHeight, 0f, 10f, "%.2f");
-        //     nk_layout_row_dynamic(ctx, 5, 1);
-        //     nk_spacing(ctx, 1);
-        //     nk_layout_row_dynamic(ctx, 18, 1);
+        ImGui.NewLine();
+
         ImGui.Text("Mode");
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     int buildTypes = 0;
-        //     buildTypes |= nk_option_text(ctx, "Climb Down",
-        //             (option.buildTypes & (1 << JumpLinkType.EDGE_CLIMB_DOWN.ordinal())) != 0)
-        //                     ? (1 << JumpLinkType.EDGE_CLIMB_DOWN.ordinal())
-        //                     : 0;
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     buildTypes |= nk_option_text(ctx, "Edge Jump",
-        //             (option.buildTypes & (1 << JumpLinkType.EDGE_JUMP.ordinal())) != 0)
-        //                     ? (1 << JumpLinkType.EDGE_JUMP.ordinal())
-        //                     : 0;
-        //     option.buildTypes = buildTypes;
-        //     bool build = false;
-        //     bool buildOffMeshConnections = false;
-        //     if (nk_button_text(ctx, "Build")) {
-        //         build = true;
-        //     }
-        //     if (nk_button_text(ctx, "Build Off-Mesh Links")) {
-        //         buildOffMeshConnections = true;
-        //     }
-        //     if (build || buildOffMeshConnections) {
-        //         if (annotationBuilder == null) {
-        //             if (sample != null && !sample.getRecastResults().isEmpty()) {
-        //                 annotationBuilder = new JumpLinkBuilder(sample.getRecastResults());
-        //             }
-        //         }
-        //         links.clear();
-        //         if (annotationBuilder != null) {
-        //             float cellSize = sample.getSettingsUI().getCellSize();
-        //             float agentHeight = sample.getSettingsUI().getAgentHeight();
-        //             float agentRadius = sample.getSettingsUI().getAgentRadius();
-        //             float agentClimb = sample.getSettingsUI().getAgentMaxClimb();
-        //             float cellHeight = sample.getSettingsUI().getCellHeight();
-        //             if ((buildTypes & (1 << JumpLinkType.EDGE_CLIMB_DOWN.ordinal())) != 0) {
-        //                 JumpLinkBuilderConfig config = new JumpLinkBuilderConfig(cellSize, cellHeight, agentRadius,
-        //                         agentHeight, agentClimb, option.groundTolerance[0], -agentRadius * 0.2f,
-        //                         cellSize + 2 * agentRadius + option.climbDownDistance[0],
-        //                         -option.climbDownMaxHeight[0], -option.climbDownMinHeight[0], 0);
-        //                 links.addAll(annotationBuilder.build(config, JumpLinkType.EDGE_CLIMB_DOWN));
-        //             }
-        //             if ((buildTypes & (1 << JumpLinkType.EDGE_JUMP.ordinal())) != 0) {
-        //                 JumpLinkBuilderConfig config = new JumpLinkBuilderConfig(cellSize, cellHeight, agentRadius,
-        //                         agentHeight, agentClimb, option.groundTolerance[0], -agentRadius * 0.2f,
-        //                         option.edgeJumpEndDistance[0], -option.edgeJumpDownMaxHeight[0],
-        //                         option.edgeJumpUpMaxHeight[0], option.edgeJumpHeight[0]);
-        //                 links.addAll(annotationBuilder.build(config, JumpLinkType.EDGE_JUMP));
-        //             }
-        //             if (buildOffMeshConnections) {
-        //                 DemoInputGeomProvider geom = sample.getInputGeom();
-        //                 if (geom != null) {
-        //                     int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP_AUTO;
-        //                     geom.removeOffMeshConnections(c => c.area == area);
-        //                     links.forEach(l => addOffMeshLink(l, geom, agentRadius));
-        //                 }
-        //             }
-        //         }
-        //     }
-        //     nk_spacing(ctx, 1);
-        //     nk_layout_row_dynamic(ctx, 18, 1);
+        ImGui.Separator();
+        //int buildTypes = 0;
+        ImGui.CheckboxFlags("Climb Down", ref option.buildTypes, JumpLinkType.EDGE_CLIMB_DOWN.Bit);
+        ImGui.CheckboxFlags("Edge Jump", ref option.buildTypes, JumpLinkType.EDGE_JUMP.Bit);
+        //option.buildTypes = buildTypes;
+        bool build = false;
+        bool buildOffMeshConnections = false;
+        if (ImGui.Button("Build"))
+        {
+            build = true;
+        }
+
+        if (ImGui.Button("Build Off-Mesh Links"))
+        {
+            buildOffMeshConnections = true;
+        }
+
+        if (build || buildOffMeshConnections)
+        {
+            if (annotationBuilder == null)
+            {
+                if (sample != null && 0 < sample.getRecastResults().Count)
+                {
+                    annotationBuilder = new JumpLinkBuilder(sample.getRecastResults());
+                }
+            }
+
+            links.Clear();
+            if (annotationBuilder != null)
+            {
+                float cellSize = sample.getSettingsUI().getCellSize();
+                float agentHeight = sample.getSettingsUI().getAgentHeight();
+                float agentRadius = sample.getSettingsUI().getAgentRadius();
+                float agentClimb = sample.getSettingsUI().getAgentMaxClimb();
+                float cellHeight = sample.getSettingsUI().getCellHeight();
+                if ((option.buildTypes & JumpLinkType.EDGE_CLIMB_DOWN.Bit) != 0)
+                {
+                    JumpLinkBuilderConfig config = new JumpLinkBuilderConfig(cellSize, cellHeight, agentRadius,
+                        agentHeight, agentClimb, option.groundTolerance, -agentRadius * 0.2f,
+                        cellSize + 2 * agentRadius + option.climbDownDistance,
+                        -option.climbDownMaxHeight, -option.climbDownMinHeight, 0);
+                    links.AddRange(annotationBuilder.build(config, JumpLinkType.EDGE_CLIMB_DOWN));
+                }
+
+                if ((option.buildTypes & JumpLinkType.EDGE_JUMP.Bit) != 0)
+                {
+                    JumpLinkBuilderConfig config = new JumpLinkBuilderConfig(cellSize, cellHeight, agentRadius,
+                        agentHeight, agentClimb, option.groundTolerance, -agentRadius * 0.2f,
+                        option.edgeJumpEndDistance, -option.edgeJumpDownMaxHeight,
+                        option.edgeJumpUpMaxHeight, option.edgeJumpHeight);
+                    links.AddRange(annotationBuilder.build(config, JumpLinkType.EDGE_JUMP));
+                }
+
+                if (buildOffMeshConnections)
+                {
+                    DemoInputGeomProvider geom = sample.getInputGeom();
+                    if (geom != null)
+                    {
+                        int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP_AUTO;
+                        geom.removeOffMeshConnections(c => c.area == area);
+                        links.forEach(l => addOffMeshLink(l, geom, agentRadius));
+                    }
+                }
+            }
+        }
+
         ImGui.Text("Debug Draw Options");
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     int newFlags = 0;
-        //     newFlags |= nk_option_text(ctx, "Walkable Border",
-        //             (params.flags & JumpLinkBuilderToolParams.DRAW_WALKABLE_BORDER) != 0)
-        //                     ? JumpLinkBuilderToolParams.DRAW_WALKABLE_BORDER
-        //                     : 0;
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     newFlags |= nk_option_text(ctx, "Selected Edge",
-        //             (params.flags & JumpLinkBuilderToolParams.DRAW_SELECTED_EDGE) != 0)
-        //                     ? JumpLinkBuilderToolParams.DRAW_SELECTED_EDGE
-        //                     : 0;
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     newFlags |= nk_option_text(ctx, "Anim Trajectory",
-        //             (params.flags & JumpLinkBuilderToolParams.DRAW_ANIM_TRAJECTORY) != 0)
-        //                     ? JumpLinkBuilderToolParams.DRAW_ANIM_TRAJECTORY
-        //                     : 0;
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     newFlags |= nk_option_text(ctx, "Land Samples",
-        //             (params.flags & JumpLinkBuilderToolParams.DRAW_LAND_SAMPLES) != 0)
-        //                     ? JumpLinkBuilderToolParams.DRAW_LAND_SAMPLES
-        //                     : 0;
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     newFlags |= nk_option_text(ctx, "All Annotations",
-        //             (params.flags & JumpLinkBuilderToolParams.DRAW_ANNOTATIONS) != 0)
-        //                     ? JumpLinkBuilderToolParams.DRAW_ANNOTATIONS
-        //                     : 0;
-        //     params.flags = newFlags;
-        // }
+        ImGui.Separator();
+        //int newFlags = 0;
+        ImGui.CheckboxFlags("Walkable Border", ref option.flags, JumpLinkBuilderToolParams.DRAW_WALKABLE_BORDER);
+        ImGui.CheckboxFlags("Selected Edge", ref option.flags, JumpLinkBuilderToolParams.DRAW_SELECTED_EDGE);
+        ImGui.CheckboxFlags("Anim Trajectory", ref option.flags, JumpLinkBuilderToolParams.DRAW_ANIM_TRAJECTORY);
+        ImGui.CheckboxFlags("Land Samples", ref option.flags, JumpLinkBuilderToolParams.DRAW_LAND_SAMPLES);
+        ImGui.CheckboxFlags("All Annotations", ref option.flags, JumpLinkBuilderToolParams.DRAW_ANNOTATIONS);
+        //option.flags = newFlags;
     }
 
     private void addOffMeshLink(JumpLink link, DemoInputGeomProvider geom, float agentRadius)
