@@ -730,12 +730,12 @@ public class CrowdTool : Tool
         bool m_separation = toolParams.m_separation;
         int m_obstacleAvoidanceType = toolParams.m_obstacleAvoidanceType;
         float m_separationWeight = toolParams.m_separationWeight;
-        toolParams.m_optimizeVis = ImGui.RadioButton("Optimize Visibility", toolParams.m_optimizeVis);
-        toolParams.m_optimizeTopo = ImGui.RadioButton("Optimize Topology", toolParams.m_optimizeTopo);
-        toolParams.m_anticipateTurns = ImGui.RadioButton("Anticipate Turns", toolParams.m_anticipateTurns);
-        toolParams.m_obstacleAvoidance = ImGui.RadioButton("Obstacle Avoidance", toolParams.m_obstacleAvoidance);
+        ImGui.Checkbox("Optimize Visibility", ref toolParams.m_optimizeVis);
+        ImGui.Checkbox("Optimize Topology", ref toolParams.m_optimizeTopo);
+        ImGui.Checkbox("Anticipate Turns", ref toolParams.m_anticipateTurns);
+        ImGui.Checkbox("Obstacle Avoidance", ref toolParams.m_obstacleAvoidance);
         ImGui.SliderInt("Avoidance Quality", ref toolParams.m_obstacleAvoidanceType, 0, 3);
-        toolParams.m_separation = ImGui.RadioButton("Separation", toolParams.m_separation);
+        ImGui.Checkbox("Separation", ref toolParams.m_separation);
         ImGui.SliderFloat("Separation Weight", ref toolParams.m_separationWeight, 0f, 20f, "%.2f");
         ImGui.NewLine();
 
@@ -758,18 +758,18 @@ public class CrowdTool : Tool
         {
             ImGui.Text("Selected Debug Draw");
             ImGui.Separator();
-            toolParams.m_showCorners = ImGui.RadioButton("Show Corners", toolParams.m_showCorners);
-            toolParams.m_showCollisionSegments = ImGui.RadioButton("Show Collision Segs", toolParams.m_showCollisionSegments);
-            toolParams.m_showPath = ImGui.RadioButton("Show Path", toolParams.m_showPath);
-            toolParams.m_showVO = ImGui.RadioButton("Show VO", toolParams.m_showVO);
-            toolParams.m_showOpt = ImGui.RadioButton("Show Path Optimization", toolParams.m_showOpt);
-            toolParams.m_showNeis = ImGui.RadioButton("Show Neighbours", toolParams.m_showNeis);
+            ImGui.Checkbox("Show Corners", ref toolParams.m_showCorners);
+            ImGui.Checkbox("Show Collision Segs", ref toolParams.m_showCollisionSegments);
+            ImGui.Checkbox("Show Path", ref toolParams.m_showPath);
+            ImGui.Checkbox("Show VO", ref toolParams.m_showVO);
+            ImGui.Checkbox("Show Path Optimization", ref toolParams.m_showOpt);
+            ImGui.Checkbox("Show Neighbours", ref toolParams.m_showNeis);
             ImGui.NewLine();
 
             ImGui.Text("Debug Draw");
             ImGui.Separator();
-            toolParams.m_showGrid = ImGui.RadioButton("Show Prox Grid", toolParams.m_showGrid);
-            toolParams.m_showNodes = ImGui.RadioButton("Show Nodes", toolParams.m_showNodes);
+            ImGui.Checkbox("Show Prox Grid", ref toolParams.m_showGrid);
+            ImGui.Checkbox("Show Nodes", ref toolParams.m_showNodes);
             ImGui.Text($"Update Time: {crowdUpdateTime} ms");
         }
     }
