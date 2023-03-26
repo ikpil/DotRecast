@@ -525,7 +525,7 @@ public class RecastDemo
             timeAcc -= DELTA_TIME;
             if (simIter < 5 && sample != null)
             {
-                toolsUI.handleUpdate((float)dt);
+                toolsUI.handleUpdate(DELTA_TIME);
             }
 
             simIter++;
