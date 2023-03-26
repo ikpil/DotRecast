@@ -41,7 +41,7 @@ public class RcSettingsView : IRcView
     private int minRegionSize = 8;
     private int mergedRegionSize = 20;
 
-    private int _partitioning = 0;
+    private int partitioningIdx = 0;
     private PartitionType partitioning = PartitionType.WATERSHED;
 
     private bool filterLowHangingObstacles = true;
@@ -139,7 +139,7 @@ public class RcSettingsView : IRcView
         {
             var label = partition.Name.Substring(0, 1).ToUpper()
                         + partition.Name.Substring(1).ToLower();
-            ImGui.RadioButton(label, ref _partitioning, partition.Idx);
+            ImGui.RadioButton(label, ref partitioningIdx, partition.Idx);
         });
         ImGui.NewLine();
         

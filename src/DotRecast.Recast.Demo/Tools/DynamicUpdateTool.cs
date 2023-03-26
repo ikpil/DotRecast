@@ -17,8 +17,11 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using DotRecast.Core;
 using DotRecast.Detour.Dynamic;
@@ -30,6 +33,7 @@ using DotRecast.Recast.Demo.Geom;
 using DotRecast.Recast.Demo.Tools.Gizmos;
 using DotRecast.Recast.Demo.UI;
 using ImGuiNET;
+using Silk.NET.OpenAL;
 using Silk.NET.Windowing;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
@@ -37,30 +41,46 @@ using static DotRecast.Core.RecastMath;
 
 namespace DotRecast.Recast.Demo.Tools;
 
+public class DynamicUpdateToolMode
+{
+    public static readonly DynamicUpdateToolMode BUILD = new(0, "Build");
+    public static readonly DynamicUpdateToolMode COLLIDERS = new(1, "Colliders");
+    public static readonly DynamicUpdateToolMode RAYCAST = new(2, "Raycast");
+
+    public static readonly ImmutableArray<DynamicUpdateToolMode> Values = ImmutableArray.Create(
+        BUILD, COLLIDERS, RAYCAST
+    );
+
+    public int Idx { get; }
+    public string Label { get; }
+
+    private DynamicUpdateToolMode(int idx, string label)
+    {
+        Idx = idx;
+        Label = label;
+    }
+}
+
+public enum ColliderShape
+{
+    SPHERE,
+    CAPSULE,
+    BOX,
+    CYLINDER,
+    COMPOSITE,
+    CONVEX,
+    TRIMESH_BRIDGE,
+    TRIMESH_HOUSE
+}
+
 public class DynamicUpdateTool : Tool
 {
-    private enum ToolMode
-    {
-        BUILD,
-        COLLIDERS,
-        RAYCAST
-    }
-
-    private enum ColliderShape
-    {
-        SPHERE,
-        CAPSULE,
-        BOX,
-        CYLINDER,
-        COMPOSITE,
-        CONVEX,
-        TRIMESH_BRIDGE,
-        TRIMESH_HOUSE
-    }
-
     private Sample sample;
-    private ToolMode mode = ToolMode.BUILD;
+    private int toolModeIdx = DynamicUpdateToolMode.BUILD.Idx;
+    private DynamicUpdateToolMode mode = DynamicUpdateToolMode.BUILD;
     private float cellSize = 0.3f;
+
+    private int partitioningIdx = PartitionType.WATERSHED.Idx;
     private PartitionType partitioning = PartitionType.WATERSHED;
     private bool filterLowHangingObstacles = true;
     private bool filterLedgeSpans = true;
@@ -81,6 +101,8 @@ public class DynamicUpdateTool : Tool
     private bool showColliders = false;
     private long buildTime;
     private long raycastTime;
+
+    private int colliderShapeIdx = (int)ColliderShape.SPHERE;
     private ColliderShape colliderShape = ColliderShape.SPHERE;
 
     private DynamicNavMesh dynaMesh;
@@ -113,7 +135,7 @@ public class DynamicUpdateTool : Tool
 
     public override void handleClick(float[] s, float[] p, bool shift)
     {
-        if (mode == ToolMode.COLLIDERS)
+        if (mode == DynamicUpdateToolMode.COLLIDERS)
         {
             if (!shift)
             {
@@ -163,7 +185,7 @@ public class DynamicUpdateTool : Tool
             }
         }
 
-        if (mode == ToolMode.RAYCAST)
+        if (mode == DynamicUpdateToolMode.RAYCAST)
         {
             if (shift)
             {
@@ -346,7 +368,7 @@ public class DynamicUpdateTool : Tool
 
     public override void handleClickRay(float[] start, float[] dir, bool shift)
     {
-        if (mode == ToolMode.COLLIDERS)
+        if (mode == DynamicUpdateToolMode.COLLIDERS)
         {
             if (shift)
             {
@@ -394,7 +416,7 @@ public class DynamicUpdateTool : Tool
 
     public override void handleRender(NavMeshRenderer renderer)
     {
-        if (mode == ToolMode.COLLIDERS)
+        if (mode == DynamicUpdateToolMode.COLLIDERS)
         {
             if (showColliders)
             {
@@ -402,7 +424,7 @@ public class DynamicUpdateTool : Tool
             }
         }
 
-        if (mode == ToolMode.RAYCAST)
+        if (mode == DynamicUpdateToolMode.RAYCAST)
         {
             RecastDebugDraw dd = renderer.getDebugDraw();
             int startCol = duRGBA(128, 25, 0, 192);
@@ -481,173 +503,147 @@ public class DynamicUpdateTool : Tool
 
     public override void layout()
     {
-        // nk_layout_row_dynamic(ctx, 18, 1);
-        // if (nk_option_label(ctx, "Build", mode == ToolMode.BUILD)) {
-        //     mode = ToolMode.BUILD;
-        // }
-        // nk_layout_row_dynamic(ctx, 18, 1);
-        // if (nk_option_label(ctx, "Colliders", mode == ToolMode.COLLIDERS)) {
-        //     mode = ToolMode.COLLIDERS;
-        // }
-        // nk_layout_row_dynamic(ctx, 18, 1);
-        // if (nk_option_label(ctx, "Raycast", mode == ToolMode.RAYCAST)) {
-        //     mode = ToolMode.RAYCAST;
-        // }
-        //
-        // nk_layout_row_dynamic(ctx, 1, 1);
-        // nk_spacing(ctx, 1);
-        // if (mode == ToolMode.BUILD) {
-        //     nk_layout_row_dynamic(ctx, 18, 1);
-        //     if (nk_button_text(ctx, "Load Voxels...")) {
-        //         load();
-        //     }
-        //     if (dynaMesh != null) {
-        //         nk_layout_row_dynamic(ctx, 18, 1);
-        //         compression = nk_check_text(ctx, "Compression", compression);
-        //         if (nk_button_text(ctx, "Save Voxels...")) {
-        //             save();
-        //         }
-        //     }
-        //     nk_layout_row_dynamic(ctx, 1, 1);
-        //     nk_spacing(ctx, 1);
-        //     nk_layout_row_dynamic(ctx, 18, 1);
-        ImGui.Text("Rasterization");
-        //     nk_layout_row_dynamic(ctx, 18, 2);
-        ImGui.Text("Cell Size");
-        //     nk_label(ctx, string.format("%.2f", cellSize[0]), NK_TEXT_ALIGN_RIGHT);
-        //     nk_layout_row_dynamic(ctx, 1, 1);
-        //     nk_spacing(ctx, 1);
-        //     nk_layout_row_dynamic(ctx, 18, 1);
-        ImGui.Text("Agent");
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        ImGui.SliderFloat("Height", ref walkableHeight, 0f, 5f, "%.2f");
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        ImGui.SliderFloat("Radius", ref walkableRadius, 0f, 10f, "%.2f");
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        ImGui.SliderFloat("Max Climb", ref walkableClimb, 0f, 10f, "%.2f");
-        //     nk_layout_row_dynamic(ctx, 18, 2);
-        ImGui.Text("Max Slope");
-        //     nk_label(ctx, string.format("%.0f", walkableSlopeAngle[0]), NK_TEXT_ALIGN_RIGHT);
-        //
-        //     nk_layout_row_dynamic(ctx, 1, 1);
-        //     nk_spacing(ctx, 1);
-        //     nk_layout_row_dynamic(ctx, 18, 1);
-        ImGui.Text("Partitioning");
-        //     partitioning = NuklearUIHelper.nk_radio(ctx, PartitionType.values(), partitioning,
-        //             p => p.name().substring(0, 1) + p.name().substring(1).toLowerCase());
-        //
-        //     nk_layout_row_dynamic(ctx, 1, 1);
-        //     nk_spacing(ctx, 1);
-        //     nk_layout_row_dynamic(ctx, 18, 1);
-        ImGui.Text("Filtering");
-        //     nk_layout_row_dynamic(ctx, 18, 1);
-        //     filterLowHangingObstacles = nk_option_text(ctx, "Low Hanging Obstacles", filterLowHangingObstacles);
-        //     nk_layout_row_dynamic(ctx, 18, 1);
-        //     filterLedgeSpans = nk_option_text(ctx, "Ledge Spans", filterLedgeSpans);
-        //     nk_layout_row_dynamic(ctx, 18, 1);
-        //     filterWalkableLowHeightSpans = nk_option_text(ctx, "Walkable Low Height Spans", filterWalkableLowHeightSpans);
-        //
-        //     nk_layout_row_dynamic(ctx, 1, 1);
-        //     nk_spacing(ctx, 1);
-        //     nk_layout_row_dynamic(ctx, 18, 1);
-        ImGui.Text("Region");
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        ImGui.SliderFloat("Min Region Size", ref minRegionArea, 0, 150, "%.1f");
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        ImGui.SliderFloat("Merged Region Size", ref regionMergeSize, 0, 400, "%.1f");
-        //
-        //     nk_layout_row_dynamic(ctx, 1, 1);
-        //     nk_spacing(ctx, 1);
-        //     nk_layout_row_dynamic(ctx, 18, 1);
-        ImGui.Text("Polygonization");
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        ImGui.SliderFloat("Max Edge Length", ref maxEdgeLen, 0f, 50f, "%.1f");
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        ImGui.SliderFloat("Max Edge Error", ref maxSimplificationError, 0.1f, 10f, "%.1f");
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        ImGui.SliderInt("Verts Per Poly", ref vertsPerPoly, 3, 12);
-        //
-        //     nk_layout_row_dynamic(ctx, 1, 1);
-        //     nk_spacing(ctx, 1);
-        //     nk_layout_row_dynamic(ctx, 18, 1);
-        ImGui.Text("Detail Mesh");
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     buildDetailMesh = nk_check_text(ctx, "Enable", buildDetailMesh);
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        ImGui.SliderFloat("Sample Distance", ref detailSampleDist, 0f, 16f, "%.1f");
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        ImGui.SliderFloat("Max Sample Error", ref detailSampleMaxError, 0f, 16f, "%.1f");
-        //     nk_layout_row_dynamic(ctx, 1, 1);
-        //     nk_spacing(ctx, 1);
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     if (nk_button_text(ctx, "Build")) {
-        //         if (dynaMesh != null) {
-        //             buildDynaMesh();
-        //             sample.setChanged(false);
-        //         }
-        //     }
-        // }
-        // if (mode == ToolMode.COLLIDERS) {
-        //     nk_layout_row_dynamic(ctx, 1, 1);
-        //     nk_spacing(ctx, 1);
-        //     nk_layout_row_dynamic(ctx, 18, 1);
-        ImGui.Text("Colliders");
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     showColliders = nk_check_text(ctx, "Show", showColliders);
-        //     nk_layout_row_dynamic(ctx, 20, 1);
-        //     if (nk_option_label(ctx, "Sphere", colliderShape == ColliderShape.SPHERE)) {
-        //         colliderShape = ColliderShape.SPHERE;
-        //     }
-        //     nk_layout_row_dynamic(ctx, 18, 1);
-        //     if (nk_option_label(ctx, "Capsule", colliderShape == ColliderShape.CAPSULE)) {
-        //         colliderShape = ColliderShape.CAPSULE;
-        //     }
-        //     nk_layout_row_dynamic(ctx, 18, 1);
-        //     if (nk_option_label(ctx, "Box", colliderShape == ColliderShape.BOX)) {
-        //         colliderShape = ColliderShape.BOX;
-        //     }
-        //     nk_layout_row_dynamic(ctx, 18, 1);
-        //     if (nk_option_label(ctx, "Cylinder", colliderShape == ColliderShape.CYLINDER)) {
-        //         colliderShape = ColliderShape.CYLINDER;
-        //     }
-        //     nk_layout_row_dynamic(ctx, 18, 1);
-        //     if (nk_option_label(ctx, "Composite", colliderShape == ColliderShape.COMPOSITE)) {
-        //         colliderShape = ColliderShape.COMPOSITE;
-        //     }
-        //     nk_layout_row_dynamic(ctx, 18, 1);
-        //     if (nk_option_label(ctx, "Convex Trimesh", colliderShape == ColliderShape.CONVEX)) {
-        //         colliderShape = ColliderShape.CONVEX;
-        //     }
-        //     nk_layout_row_dynamic(ctx, 18, 1);
-        //     if (nk_option_label(ctx, "Trimesh Bridge", colliderShape == ColliderShape.TRIMESH_BRIDGE)) {
-        //         colliderShape = ColliderShape.TRIMESH_BRIDGE;
-        //     }
-        //     nk_layout_row_dynamic(ctx, 18, 1);
-        //     if (nk_option_label(ctx, "Trimesh House", colliderShape == ColliderShape.TRIMESH_HOUSE)) {
-        //         colliderShape = ColliderShape.TRIMESH_HOUSE;
-        //     }
-        // }
-        // nk_layout_row_dynamic(ctx, 2, 1);
-        // nk_spacing(ctx, 1);
-        // nk_layout_row_dynamic(ctx, 18, 1);
-        // if (mode == ToolMode.RAYCAST) {
-        //     nk_label(ctx, string.format("Raycast Time: %d ms", raycastTime), NK_TEXT_ALIGN_LEFT);
-        //     if (sposSet) {
-        //         nk_layout_row_dynamic(ctx, 18, 1);
-        //         nk_label(ctx, string.format("Start: %.3f, %.3f, %.3f", spos[0], spos[1] + 1.3f, spos[2]), NK_TEXT_ALIGN_LEFT);
-        //     }
-        //     if (eposSet) {
-        //         nk_layout_row_dynamic(ctx, 18, 1);
-        //         nk_label(ctx, string.format("End: %.3f, %.3f, %.3f", epos[0], epos[1] + 1.3f, epos[2]), NK_TEXT_ALIGN_LEFT);
-        //     }
-        //     if (raycastHit) {
-        //         nk_layout_row_dynamic(ctx, 18, 1);
-        //         nk_label(ctx, string.format("Hit: %.3f, %.3f, %.3f", raycastHitPos[0], raycastHitPos[1], raycastHitPos[2]),
-        //                 NK_TEXT_ALIGN_LEFT);
-        //     }
-        // } else {
-        //     nk_label(ctx, string.format("Build Time: %d ms", buildTime), NK_TEXT_ALIGN_LEFT);
-        // }
+        ImGui.Text($"Dynamic Update Tool Modes");
+        ImGui.Separator();
+
+        var prevMode = mode;
+        ImGui.RadioButton(DynamicUpdateToolMode.BUILD.Label, ref toolModeIdx, DynamicUpdateToolMode.BUILD.Idx);
+        ImGui.RadioButton(DynamicUpdateToolMode.COLLIDERS.Label, ref toolModeIdx, DynamicUpdateToolMode.COLLIDERS.Idx);
+        ImGui.RadioButton(DynamicUpdateToolMode.RAYCAST.Label, ref toolModeIdx, DynamicUpdateToolMode.RAYCAST.Idx);
+        ImGui.NewLine();
+
+        if (prevMode.Idx != toolModeIdx)
+        {
+            mode = DynamicUpdateToolMode.Values[toolModeIdx];
+        }
+
+        ImGui.Text($"Selected mode - {mode.Label}");
+        ImGui.Separator();
+
+        if (mode == DynamicUpdateToolMode.BUILD)
+        {
+            if (ImGui.Button("Load Voxels..."))
+            {
+                load();
+            }
+
+            if (dynaMesh != null)
+            {
+                ImGui.Checkbox("Compression", ref compression);
+                if (ImGui.Button("Save Voxels..."))
+                {
+                    save();
+                }
+            }
+
+            ImGui.NewLine();
+
+            ImGui.Text("Rasterization");
+            ImGui.Separator();
+            ImGui.Text($"Cell Size - {cellSize}");
+            ImGui.NewLine();
+
+            ImGui.Text("Agent");
+            ImGui.Separator();
+            ImGui.SliderFloat("Height", ref walkableHeight, 0f, 5f, "%.2f");
+            ImGui.SliderFloat("Radius", ref walkableRadius, 0f, 10f, "%.2f");
+            ImGui.SliderFloat("Max Climb", ref walkableClimb, 0f, 10f, "%.2f");
+            ImGui.Text($"Max Slope : {walkableSlopeAngle}");
+            ImGui.NewLine();
+
+            ImGui.Text("Partitioning");
+            ImGui.Separator();
+            PartitionType.Values.forEach(partition =>
+            {
+                var label = partition.Name.Substring(0, 1).ToUpper()
+                            + partition.Name.Substring(1).ToLower();
+                ImGui.RadioButton(label, ref partitioningIdx, partition.Idx);
+            });
+            ImGui.NewLine();
+
+            ImGui.Text("Filtering");
+            ImGui.Separator();
+            ImGui.Checkbox("Low Hanging Obstacles", ref filterLowHangingObstacles);
+            ImGui.Checkbox("Ledge Spans", ref filterLedgeSpans);
+            ImGui.Checkbox("Walkable Low Height Spans", ref filterWalkableLowHeightSpans);
+            ImGui.NewLine();
+
+            ImGui.Text("Region");
+            ImGui.Separator();
+            ImGui.SliderFloat("Min Region Size", ref minRegionArea, 0, 150, "%.1f");
+            ImGui.SliderFloat("Merged Region Size", ref regionMergeSize, 0, 400, "%.1f");
+            ImGui.NewLine();
+
+            ImGui.Text("Polygonization");
+            ImGui.Separator();
+            ImGui.SliderFloat("Max Edge Length", ref maxEdgeLen, 0f, 50f, "%.1f");
+            ImGui.SliderFloat("Max Edge Error", ref maxSimplificationError, 0.1f, 10f, "%.1f");
+            ImGui.SliderInt("Verts Per Poly", ref vertsPerPoly, 3, 12);
+            ImGui.NewLine();
+
+            ImGui.Text("Detail Mesh");
+            ImGui.Separator();
+            ImGui.Checkbox("Enable", ref buildDetailMesh);
+            ImGui.SliderFloat("Sample Distance", ref detailSampleDist, 0f, 16f, "%.1f");
+            ImGui.SliderFloat("Max Sample Error", ref detailSampleMaxError, 0f, 16f, "%.1f");
+            ImGui.NewLine();
+
+            if (ImGui.Button("Build"))
+            {
+                if (dynaMesh != null)
+                {
+                    buildDynaMesh();
+                    sample.setChanged(false);
+                }
+            }
+        }
+
+        if (mode == DynamicUpdateToolMode.COLLIDERS)
+        {
+            ImGui.Text("Colliders");
+            ImGui.Separator();
+            var prev = colliderShape;
+            ImGui.Checkbox("Show", ref showColliders);
+            ImGui.RadioButton("Sphere", ref colliderShapeIdx, (int)ColliderShape.SPHERE);
+            ImGui.RadioButton("Capsule", ref colliderShapeIdx, (int)ColliderShape.CAPSULE);
+            ImGui.RadioButton("Box", ref colliderShapeIdx, (int)ColliderShape.BOX);
+            ImGui.RadioButton("Cylinder", ref colliderShapeIdx, (int)ColliderShape.CYLINDER);
+            ImGui.RadioButton("Composite", ref colliderShapeIdx, (int)ColliderShape.COMPOSITE);
+            ImGui.RadioButton("Convex Trimesh", ref colliderShapeIdx, (int)ColliderShape.CONVEX);
+            ImGui.RadioButton("Trimesh Bridge", ref colliderShapeIdx, (int)ColliderShape.TRIMESH_BRIDGE);
+            ImGui.RadioButton("Trimesh House", ref colliderShapeIdx, (int)ColliderShape.TRIMESH_HOUSE);
+            ImGui.NewLine();
+
+            if ((int)prev != colliderShapeIdx)
+            {
+                colliderShape = (ColliderShape)colliderShapeIdx;
+            }
+        }
+
+        if (mode == DynamicUpdateToolMode.RAYCAST)
+        {
+            ImGui.Text($"Raycast Time: {raycastTime} ms");
+            ImGui.Separator();
+            if (sposSet)
+            {
+                ImGui.Text($"Start: {spos[0]}, {spos[1] + 1.3f}, {spos[2]}");
+            }
+
+            if (eposSet)
+            {
+                ImGui.Text($"End: {epos[0]}, {epos[1] + 1.3f}, {epos[2]}");
+            }
+
+            if (raycastHit)
+            {
+                ImGui.Text($"Hit: {raycastHitPos[0]}, {raycastHitPos[1]}, {raycastHitPos[2]}");
+            }
+            ImGui.NewLine();
+        }
+        else
+        {
+            ImGui.Text($"Build Time: {buildTime} ms");
+        }
     }
 
     private void load()
