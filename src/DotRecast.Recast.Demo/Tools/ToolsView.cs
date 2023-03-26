@@ -27,7 +27,7 @@ namespace DotRecast.Recast.Demo.Tools;
 public class ToolsView : IRcView
 {
     //private readonly NkColor white = NkColor.create();
-    private int _currentToolIdx = -1;
+    private int _currentToolIdx = 0;
     private Tool currentTool;
     private bool enabled;
     private readonly Tool[] tools;

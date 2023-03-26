@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Silk.NET.Windowing;
 using DotRecast.Core;
 using DotRecast.Detour;
 using DotRecast.Recast.Demo.Builder;
@@ -16,11 +15,11 @@ public class TestNavmeshTool : Tool
 {
     private const int MAX_POLYS = 256;
     private const int MAX_SMOOTH = 2048;
-    
+
     private Sample m_sample;
 
-    private int toolModeIdx = -1;
-    private TestNavmeshToolMode m_toolMode = TestNavmeshToolMode.PATHFIND_FOLLOW;
+    private int m_toolModeIdx = TestNavmeshToolMode.PATHFIND_FOLLOW.Idx;
+    private TestNavmeshToolMode m_toolMode => TestNavmeshToolMode.Values[m_toolModeIdx];
     private bool m_sposSet;
     private bool m_eposSet;
     private float[] m_spos;
@@ -45,6 +44,8 @@ public class TestNavmeshTool : Tool
     private readonly List<float[]> randomPoints = new();
     private bool constrainByCircle;
 
+    private int includeFlags = SampleAreaModifications.SAMPLE_POLYFLAGS_ALL;
+    private int excludeFlags = 0;
 
     public TestNavmeshTool()
     {
@@ -75,7 +76,7 @@ public class TestNavmeshTool : Tool
 
     public override void layout()
     {
-        TestNavmeshToolMode previousToolMode = m_toolMode;
+        var previousToolMode = m_toolMode;
         int previousStraightPathOptions = m_straightPathOptions;
         int previousIncludeFlags = m_filter.getIncludeFlags();
         int previousExcludeFlags = m_filter.getExcludeFlags();
@@ -83,104 +84,71 @@ public class TestNavmeshTool : Tool
 
         ImGui.Text("Mode");
         ImGui.Separator();
-        ImGui.RadioButton("Pathfind Follow", ref toolModeIdx, (int)TestNavmeshToolMode.PATHFIND_FOLLOW);
-        ImGui.RadioButton("Pathfind Straight", ref toolModeIdx, (int)TestNavmeshToolMode.PATHFIND_STRAIGHT);
-        ImGui.RadioButton("Pathfind Sliced", ref toolModeIdx, (int)TestNavmeshToolMode.PATHFIND_SLICED);
-        ImGui.RadioButton("Distance to Wall", ref toolModeIdx, (int)TestNavmeshToolMode.DISTANCE_TO_WALL);
-        ImGui.RadioButton("Raycast", ref toolModeIdx, (int)TestNavmeshToolMode.RAYCAST);
-        ImGui.RadioButton("Find Polys in Circle", ref toolModeIdx, (int)TestNavmeshToolMode.FIND_POLYS_IN_CIRCLE);
-        ImGui.RadioButton("Find Polys in Shape", ref toolModeIdx, (int)TestNavmeshToolMode.FIND_POLYS_IN_SHAPE);
-        ImGui.RadioButton("Find Local Neighbourhood", ref toolModeIdx, (int)TestNavmeshToolMode.FIND_LOCAL_NEIGHBOURHOOD);
-        ImGui.RadioButton("Random Points in Circle", ref toolModeIdx, (int)TestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE);
+        ImGui.RadioButton(TestNavmeshToolMode.PATHFIND_FOLLOW.Label, ref m_toolModeIdx, TestNavmeshToolMode.PATHFIND_FOLLOW.Idx);
+        ImGui.RadioButton(TestNavmeshToolMode.PATHFIND_STRAIGHT.Label, ref m_toolModeIdx, TestNavmeshToolMode.PATHFIND_STRAIGHT.Idx);
+        ImGui.RadioButton(TestNavmeshToolMode.PATHFIND_SLICED.Label, ref m_toolModeIdx, TestNavmeshToolMode.PATHFIND_SLICED.Idx);
+        ImGui.RadioButton(TestNavmeshToolMode.DISTANCE_TO_WALL.Label, ref m_toolModeIdx, TestNavmeshToolMode.DISTANCE_TO_WALL.Idx);
+        ImGui.RadioButton(TestNavmeshToolMode.RAYCAST.Label, ref m_toolModeIdx, TestNavmeshToolMode.RAYCAST.Idx);
+        ImGui.RadioButton(TestNavmeshToolMode.FIND_POLYS_IN_CIRCLE.Label, ref m_toolModeIdx, TestNavmeshToolMode.FIND_POLYS_IN_CIRCLE.Idx);
+        ImGui.RadioButton(TestNavmeshToolMode.FIND_POLYS_IN_SHAPE.Label, ref m_toolModeIdx, TestNavmeshToolMode.FIND_POLYS_IN_SHAPE.Idx);
+        ImGui.RadioButton(TestNavmeshToolMode.FIND_LOCAL_NEIGHBOURHOOD.Label, ref m_toolModeIdx, TestNavmeshToolMode.FIND_LOCAL_NEIGHBOURHOOD.Idx);
+        ImGui.RadioButton(TestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE.Label, ref m_toolModeIdx, TestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE.Idx);
+        ImGui.NewLine();
+        
+        // selecting mode
+        ImGui.Text(m_toolMode.Label);
+        ImGui.Separator();
         ImGui.NewLine();
 
-        if (toolModeIdx == (int)TestNavmeshToolMode.PATHFIND_FOLLOW)
+        if (m_toolMode == TestNavmeshToolMode.PATHFIND_FOLLOW)
         {
-            
         }
 
-        if (toolModeIdx == (int)TestNavmeshToolMode.PATHFIND_STRAIGHT)
+        if (m_toolMode == TestNavmeshToolMode.PATHFIND_STRAIGHT)
         {
-            //     m_toolMode = TestNavmeshToolMode.PATHFIND_STRAIGHT;
-            //     nk_layout_row_dynamic(ctx, 20, 1);
             ImGui.Text("Vertices at crossings");
-            //     nk_layout_row_dynamic(ctx, 20, 1);
-            //     if (nk_option_label(ctx, "None", m_straightPathOptions == 0)) {
-            //         m_straightPathOptions = 0;
-            //     }
-            //     nk_layout_row_dynamic(ctx, 20, 1);
-            //     if (nk_option_label(ctx, "Area", m_straightPathOptions == NavMeshQuery.DT_STRAIGHTPATH_AREA_CROSSINGS)) {
-            //         m_straightPathOptions = NavMeshQuery.DT_STRAIGHTPATH_AREA_CROSSINGS;
-            //     }
-            //     nk_layout_row_dynamic(ctx, 20, 1);
-            //     if (nk_option_label(ctx, "All", m_straightPathOptions == NavMeshQuery.DT_STRAIGHTPATH_ALL_CROSSINGS)) {
-            //         m_straightPathOptions = NavMeshQuery.DT_STRAIGHTPATH_ALL_CROSSINGS;
-            //     }
-            //     nk_layout_row_dynamic(ctx, 5, 1);
-            //     nk_spacing(ctx, 1);
+            ImGui.Separator();
+            ImGui.RadioButton("None", ref m_straightPathOptions, 0);
+            ImGui.RadioButton("Area", ref m_straightPathOptions, NavMeshQuery.DT_STRAIGHTPATH_AREA_CROSSINGS);
+            ImGui.RadioButton("All", ref m_straightPathOptions, NavMeshQuery.DT_STRAIGHTPATH_ALL_CROSSINGS);
         }
 
-        if (toolModeIdx == (int)TestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE)
+        if (m_toolMode == TestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE)
         {
-            //     constrainByCircle = nk_check_text(ctx, "Constrained", constrainByCircle);
+            ImGui.Checkbox("Constrained", ref constrainByCircle);
         }
-        // nk_layout_row_dynamic(ctx, 5, 1);
-        // nk_spacing(ctx, 1);
-        // nk_layout_row_dynamic(ctx, 20, 1);
+
+        ImGui.Text("Common");
+        ImGui.Separator();
+        
         ImGui.Text("Include Flags");
-        // nk_layout_row_dynamic(ctx, 20, 1);
-        // int includeFlags = 0;
-        // if (nk_option_label(ctx, "Walk",
-        //         (m_filter.getIncludeFlags() & SampleAreaModifications.SAMPLE_POLYFLAGS_WALK) != 0)) {
-        //     includeFlags |= SampleAreaModifications.SAMPLE_POLYFLAGS_WALK;
-        // }
-        // if (nk_option_label(ctx, "Swim",
-        //         (m_filter.getIncludeFlags() & SampleAreaModifications.SAMPLE_POLYFLAGS_SWIM) != 0)) {
-        //     includeFlags |= SampleAreaModifications.SAMPLE_POLYFLAGS_SWIM;
-        // }
-        // if (nk_option_label(ctx, "Door",
-        //         (m_filter.getIncludeFlags() & SampleAreaModifications.SAMPLE_POLYFLAGS_DOOR) != 0)) {
-        //     includeFlags |= SampleAreaModifications.SAMPLE_POLYFLAGS_DOOR;
-        // }
-        // if (nk_option_label(ctx, "Jump",
-        //         (m_filter.getIncludeFlags() & SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP) != 0)) {
-        //     includeFlags |= SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP;
-        // }
-        // m_filter.setIncludeFlags(includeFlags);
-        //
-        // nk_layout_row_dynamic(ctx, 5, 1);
-        // nk_spacing(ctx, 1);
-        // nk_layout_row_dynamic(ctx, 20, 1);
+        ImGui.Separator();
+        ImGui.CheckboxFlags("Walk", ref includeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_WALK);
+        ImGui.CheckboxFlags("Swim", ref includeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_SWIM);
+        ImGui.CheckboxFlags("Door", ref includeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_DOOR);
+        ImGui.CheckboxFlags("Jump", ref includeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP);
+        ImGui.NewLine();
+        
+        m_filter.setIncludeFlags(includeFlags);
+        
         ImGui.Text("Exclude Flags");
-        // nk_layout_row_dynamic(ctx, 20, 1);
-        // int excludeFlags = 0;
-        // if (nk_option_label(ctx, "Walk",
-        //         (m_filter.getExcludeFlags() & SampleAreaModifications.SAMPLE_POLYFLAGS_WALK) != 0)) {
-        //     excludeFlags |= SampleAreaModifications.SAMPLE_POLYFLAGS_WALK;
-        // }
-        // if (nk_option_label(ctx, "Swim",
-        //         (m_filter.getExcludeFlags() & SampleAreaModifications.SAMPLE_POLYFLAGS_SWIM) != 0)) {
-        //     excludeFlags |= SampleAreaModifications.SAMPLE_POLYFLAGS_SWIM;
-        // }
-        // if (nk_option_label(ctx, "Door",
-        //         (m_filter.getExcludeFlags() & SampleAreaModifications.SAMPLE_POLYFLAGS_DOOR) != 0)) {
-        //     excludeFlags |= SampleAreaModifications.SAMPLE_POLYFLAGS_DOOR;
-        // }
-        // if (nk_option_label(ctx, "Jump",
-        //         (m_filter.getExcludeFlags() & SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP) != 0)) {
-        //     excludeFlags |= SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP;
-        // }
-        // m_filter.setExcludeFlags(excludeFlags);
-        //
-        // nk_layout_row_dynamic(ctx, 30, 1);
-        // bool previousEnableRaycast = enableRaycast;
-        // enableRaycast = nk_check_label(ctx, "Raycast shortcuts", enableRaycast);
-        //
-        // if (previousToolMode != m_toolMode || m_straightPathOptions != previousStraightPathOptions
-        //         || previousIncludeFlags != includeFlags || previousExcludeFlags != excludeFlags
-        //         || previousEnableRaycast != enableRaycast || previousConstrainByCircle != constrainByCircle) {
-        //     recalc();
-        // }
+        ImGui.Separator();
+        ImGui.CheckboxFlags("Walk", ref excludeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_WALK);
+        ImGui.CheckboxFlags("Swim", ref excludeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_SWIM);
+        ImGui.CheckboxFlags("Door", ref excludeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_DOOR);
+        ImGui.CheckboxFlags("Jump", ref excludeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP);
+        ImGui.NewLine();
+        
+        m_filter.setExcludeFlags(excludeFlags);
+        
+        bool previousEnableRaycast = enableRaycast;
+        ImGui.Checkbox("Raycast shortcuts", ref enableRaycast);
+        
+        if (previousToolMode != m_toolMode || m_straightPathOptions != previousStraightPathOptions
+                || previousIncludeFlags != includeFlags || previousExcludeFlags != excludeFlags
+                || previousEnableRaycast != enableRaycast || previousConstrainByCircle != constrainByCircle) {
+            recalc();
+        }
     }
 
     public override string getName()
