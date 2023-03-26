@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using DotRecast.Core;
@@ -638,6 +639,7 @@ public class DynamicUpdateTool : Tool
             {
                 ImGui.Text($"Hit: {raycastHitPos[0]}, {raycastHitPos[1]}, {raycastHitPos[2]}");
             }
+
             ImGui.NewLine();
         }
         else
@@ -661,21 +663,24 @@ public class DynamicUpdateTool : Tool
 
     private void load(string filename)
     {
-        // File file = new File(filename);
-        // if (file.exists()) {
-        //     VoxelFileReader reader = new VoxelFileReader();
-        //     try (FileInputStream fis = new FileInputStream(file)) {
-        //         VoxelFile voxelFile = reader.read(fis);
-        //         dynaMesh = new DynamicNavMesh(voxelFile);
-        //         dynaMesh.config.keepIntermediateResults = true;
-        //         updateUI();
-        //         buildDynaMesh();
-        //         colliders.clear();
-        //     } catch (Exception e) {
-        //         Console.WriteLine(e);
-        //         dynaMesh = null;
-        //     }
-        // }
+        try
+        {
+            using var fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
+            using var br = new BinaryReader(fs);
+            VoxelFileReader reader = new VoxelFileReader();
+            VoxelFile voxelFile = reader.read(br);
+            dynaMesh = new DynamicNavMesh(voxelFile);
+            dynaMesh.config.keepIntermediateResults = true;
+            updateUI();
+            buildDynaMesh();
+            
+            colliders.Clear();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            dynaMesh = null;
+        }
     }
 
     private void save()
@@ -693,14 +698,11 @@ public class DynamicUpdateTool : Tool
 
     private void save(string filename)
     {
-        // File file = new File(filename);
-        // try (FileOutputStream fos = new FileOutputStream(file)) {
-        //     VoxelFile voxelFile = VoxelFile.from(dynaMesh);
-        //     VoxelFileWriter writer = new VoxelFileWriter();
-        //     writer.write(fos, voxelFile, compression);
-        // } catch (Exception e) {
-        //     Console.WriteLine(e);
-        // }
+        using var fs = new FileStream(filename, FileMode.CreateNew, FileAccess.Write);
+        using var bw = new BinaryWriter(fs);
+        VoxelFile voxelFile = VoxelFile.from(dynaMesh);
+        VoxelFileWriter writer = new VoxelFileWriter();
+        writer.write(bw, voxelFile, compression);
     }
 
     private void buildDynaMesh()
