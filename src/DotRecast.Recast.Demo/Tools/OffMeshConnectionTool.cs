@@ -24,6 +24,7 @@ using DotRecast.Core;
 using DotRecast.Recast.Demo.Builder;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Demo.Geom;
+using ImGuiNET;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 
 namespace DotRecast.Recast.Demo.Tools;
@@ -33,7 +34,7 @@ public class OffMeshConnectionTool : Tool
     private Sample sample;
     private bool hitPosSet;
     private float[] hitPos;
-    private bool bidir;
+    private int bidir;
 
     public override void setSample(Sample m_sample)
     {
@@ -81,7 +82,7 @@ public class OffMeshConnectionTool : Tool
             {
                 int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP;
                 int flags = SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP;
-                geom.addOffMeshConnection(hitPos, p, sample.getSettingsUI().getAgentRadius(), bidir, area, flags);
+                geom.addOffMeshConnection(hitPos, p, sample.getSettingsUI().getAgentRadius(), 0 == bidir, area, flags);
                 hitPosSet = false;
             }
         }
@@ -111,10 +112,8 @@ public class OffMeshConnectionTool : Tool
 
     public override void layout()
     {
-        // nk_layout_row_dynamic(ctx, 20, 1);
-        // bidir = !nk_option_label(ctx, "One Way", !bidir);
-        // nk_layout_row_dynamic(ctx, 20, 1);
-        // bidir = nk_option_label(ctx, "Bidirectional", bidir);
+        ImGui.RadioButton("One Way", ref bidir, 0);
+        ImGui.RadioButton("Bidirectional", ref bidir, 1);
     }
 
     public override string getName()
