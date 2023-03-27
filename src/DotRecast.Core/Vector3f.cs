@@ -16,6 +16,9 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
+using System.Numerics;
+
 namespace DotRecast.Core
 {
     public struct Vector3f
@@ -29,6 +32,46 @@ namespace DotRecast.Core
             this.x = x;
             this.y = y;
             this.z = z;
+        }
+
+        public float this[int index]
+        {
+            get => GetElement(index);
+            set => SetElement(index, value);
+        }
+
+        public float GetElement(int index)
+        {
+            switch (index)
+            {
+                case 0: return x;
+                case 1: return y;
+                case 2: return z;
+                default: throw new IndexOutOfRangeException($"{index}");
+            }
+        }
+
+        public void SetElement(int index, float value)
+        {
+            switch (index)
+            {
+                case 0:
+                    x = value;
+                    break;
+                case 1:
+                    y = value;
+                    break;
+                case 2:
+                    z = value;
+                    break;
+                
+                default: throw new IndexOutOfRangeException($"{index}-{value}");
+            }
+        }
+
+        public float[] ToArray()
+        {
+            return new float[] { x, y, z };
         }
     }
 }
