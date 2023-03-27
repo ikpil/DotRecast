@@ -7,7 +7,7 @@ namespace DotRecast.Core
         public static byte[] ToBytes(string filename)
         {
             var filepath = ToRPath(filename);
-            using var fs = new FileStream(filepath, FileMode.Open);
+            using var fs = new FileStream(filepath, FileMode.Open, FileAccess.Read);
             byte[] buffer = new byte[fs.Length];
             fs.Read(buffer, 0, buffer.Length);
 
