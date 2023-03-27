@@ -16,17 +16,13 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-namespace DotRecast.Detour.Extras
+namespace DotRecast.Core
 {
-    public class Vector3f
+    public struct Vector3f
     {
         public float x { get; set; }
         public float y { get; set; }
         public float z { get; set; }
-
-        public Vector3f()
-        {
-        }
 
         public Vector3f(float x, float y, float z)
         {
