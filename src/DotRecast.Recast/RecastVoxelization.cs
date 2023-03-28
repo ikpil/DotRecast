@@ -29,8 +29,7 @@ namespace DotRecast.Recast
             RecastConfig cfg = builderCfg.cfg;
 
             // Allocate voxel heightfield where we rasterize our input data to.
-            Heightfield solid = new Heightfield(builderCfg.width, builderCfg.height, builderCfg.bmin, builderCfg.bmax, cfg.cs,
-                cfg.ch, cfg.borderSize);
+            Heightfield solid = new Heightfield(builderCfg.width, builderCfg.height, builderCfg.bmin, builderCfg.bmax, cfg.cs, cfg.ch, cfg.borderSize);
 
             // Allocate array that can hold triangle area types.
             // If you have multiple meshes you need to process, allocate
@@ -58,8 +57,7 @@ namespace DotRecast.Recast
                     {
                         int[] tris = node.tris;
                         int ntris = tris.Length / 3;
-                        int[] m_triareas = Recast.markWalkableTriangles(ctx, cfg.walkableSlopeAngle, verts, tris, ntris,
-                            cfg.walkableAreaMod);
+                        int[] m_triareas = Recast.markWalkableTriangles(ctx, cfg.walkableSlopeAngle, verts, tris, ntris, cfg.walkableAreaMod);
                         RecastRasterization.rasterizeTriangles(solid, verts, tris, m_triareas, ntris, cfg.walkableClimb, ctx);
                     }
                 }
@@ -67,8 +65,7 @@ namespace DotRecast.Recast
                 {
                     int[] tris = geom.getTris();
                     int ntris = tris.Length / 3;
-                    int[] m_triareas = Recast.markWalkableTriangles(ctx, cfg.walkableSlopeAngle, verts, tris, ntris,
-                        cfg.walkableAreaMod);
+                    int[] m_triareas = Recast.markWalkableTriangles(ctx, cfg.walkableSlopeAngle, verts, tris, ntris, cfg.walkableAreaMod);
                     RecastRasterization.rasterizeTriangles(solid, verts, tris, m_triareas, ntris, cfg.walkableClimb, ctx);
                 }
             }

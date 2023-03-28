@@ -17,15 +17,14 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using System.Numerics;
 
 namespace DotRecast.Core
 {
     public struct Vector3f
     {
-        public float x { get; set; }
-        public float y { get; set; }
-        public float z { get; set; }
+        public float x;
+        public float y;
+        public float z;
 
         public Vector3f(float x, float y, float z)
         {
@@ -64,7 +63,7 @@ namespace DotRecast.Core
                 case 2:
                     z = value;
                     break;
-                
+
                 default: throw new IndexOutOfRangeException($"{index}-{value}");
             }
         }
