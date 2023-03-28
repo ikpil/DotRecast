@@ -60,7 +60,7 @@ namespace DotRecast.Detour
             m_openList.clear();
 
             Node startNode = m_nodePool.getNode(startRef);
-            vCopy(startNode.pos, startPos);
+            vCopy(ref startNode.pos, startPos);
             startNode.pidx = 0;
             startNode.cost = 0;
             startNode.total = vDist(startPos, endPos) * H_SCALE;
@@ -148,7 +148,7 @@ namespace DotRecast.Detour
                             neighbourTile);
                         if (!midpod.failed())
                         {
-                            neighbourNode.pos = midpod.result;
+                            neighbourNode.pos = Vector3f.Of(midpod.result);
                         }
                     }
 
@@ -160,9 +160,9 @@ namespace DotRecast.Detour
                     if (neighbourRef == endRef)
                     {
                         // Cost
-                        float curCost = filter.getCost(bestNode.pos, neighbourNode.pos, parentRef, parentTile, parentPoly,
+                        float curCost = filter.getCost(bestNode.pos.ToArray(), neighbourNode.pos.ToArray(), parentRef, parentTile, parentPoly,
                             bestRef, bestTile, bestPoly, neighbourRef, neighbourTile, neighbourPoly);
-                        float endCost = filter.getCost(neighbourNode.pos, endPos, bestRef, bestTile, bestPoly, neighbourRef,
+                        float endCost = filter.getCost(neighbourNode.pos.ToArray(), endPos, bestRef, bestTile, bestPoly, neighbourRef,
                             neighbourTile, neighbourPoly, 0L, null, null);
 
                         cost = bestNode.cost + curCost + endCost;
@@ -171,7 +171,7 @@ namespace DotRecast.Detour
                     else
                     {
                         // Cost
-                        float curCost = filter.getCost(bestNode.pos, neighbourNode.pos, parentRef, parentTile, parentPoly,
+                        float curCost = filter.getCost(bestNode.pos.ToArray(), neighbourNode.pos.ToArray(), parentRef, parentTile, parentPoly,
                             bestRef, bestTile, bestPoly, neighbourRef, neighbourTile, neighbourPoly);
                         cost = bestNode.cost + curCost;
                         heuristic = vDist(neighbourNode.pos, endPos) * H_SCALE;
@@ -365,7 +365,7 @@ namespace DotRecast.Detour
                             neighbourTile);
                         if (!midpod.failed())
                         {
-                            neighbourNode.pos = midpod.result;
+                            neighbourNode.pos = Vector3f.Of(midpod.result);
                         }
                     }
 
@@ -669,7 +669,7 @@ namespace DotRecast.Detour
             m_openList.push(startNode);
 
             float radiusSqr = sqr(maxRadius);
-            float[] hitPos = new float[3];
+            Vector3f hitPos = new Vector3f();
             VectorPtr bestvj = null;
             VectorPtr bestvi = null;
             while (!m_openList.isEmpty())
@@ -842,7 +842,7 @@ namespace DotRecast.Detour
             }
 
             // Calc hit normal.
-            float[] hitNormal = new float[3];
+            Vector3f hitNormal = new Vector3f();
             if (bestvi != null && bestvj != null)
             {
                 float[] tangent = vSub(bestvi, bestvj);

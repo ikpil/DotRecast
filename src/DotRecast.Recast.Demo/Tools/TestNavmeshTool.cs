@@ -949,7 +949,7 @@ public class TestNavmeshTool : Tool
 
     private float[] getPolyCenter(NavMesh navMesh, long refs)
     {
-        float[] center = new float[3];
+        Vector3f center = new Vector3f();
         center[0] = 0;
         center[1] = 0;
         center[2] = 0;
@@ -993,7 +993,7 @@ public class TestNavmeshTool : Tool
                 if (m_polys != null)
                 {
                     // In case of partial path, make sure the end point is clamped to the last polygon.
-                    float[] epos = new float[3];
+                    Vector3f epos = new Vector3f();
                     vCopy(epos, m_epos);
                     if (m_polys[m_polys.Count - 1] != m_endRef)
                     {

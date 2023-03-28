@@ -781,8 +781,8 @@ namespace DotRecast.Recast
             ContourSet cset = new ContourSet();
 
             ctx.startTimer("CONTOURS");
-            RecastVectors.copy(cset.bmin, chf.bmin, 0);
-            RecastVectors.copy(cset.bmax, chf.bmax, 0);
+            RecastVectors.copy(ref cset.bmin, chf.bmin, 0);
+            RecastVectors.copy(ref cset.bmax, chf.bmax, 0);
             if (borderSize > 0)
             {
                 // If the heightfield was build with bordersize, remove the offset.

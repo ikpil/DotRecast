@@ -55,7 +55,7 @@ namespace DotRecast.Detour
         private readonly NavMeshParams m_params;
 
         /// < Current initialization params. TODO: do not store this info twice.
-        private readonly float[] m_orig;
+        private readonly Vector3f m_orig;
 
         /// < Origin of the tile (0,0)
         // float m_orig[3]; ///< Origin of the tile (0,0)
@@ -324,7 +324,7 @@ namespace DotRecast.Detour
         private static NavMeshParams getNavMeshParams(MeshData data)
         {
             NavMeshParams option = new NavMeshParams();
-            vCopy(option.orig, data.header.bmin);
+            vCopy(ref option.orig, data.header.bmin);
             option.tileWidth = data.header.bmax[0] - data.header.bmin[0];
             option.tileHeight = data.header.bmax[2] - data.header.bmin[2];
             option.maxTiles = 1;
@@ -341,8 +341,8 @@ namespace DotRecast.Detour
             if (tile.data.bvTree != null)
             {
                 int nodeIndex = 0;
-                float[] tbmin = tile.data.header.bmin;
-                float[] tbmax = tile.data.header.bmax;
+                var tbmin = tile.data.header.bmin;
+                var tbmax = tile.data.header.bmax;
                 float qfac = tile.data.header.bvQuantFactor;
                 // Calculate quantized box
                 int[] bmin = new int[3];
@@ -391,8 +391,8 @@ namespace DotRecast.Detour
             }
             else
             {
-                float[] bmin = new float[3];
-                float[] bmax = new float[3];
+                Vector3f bmin = new Vector3f();
+                Vector3f bmax = new Vector3f();
                 long @base = getPolyRefBase(tile);
                 for (int i = 0; i < tile.data.header.polyCount; ++i)
                 {
@@ -405,13 +405,13 @@ namespace DotRecast.Detour
 
                     // Calc polygon bounds.
                     int v = p.verts[0] * 3;
-                    vCopy(bmin, tile.data.verts, v);
-                    vCopy(bmax, tile.data.verts, v);
+                    vCopy(ref bmin, tile.data.verts, v);
+                    vCopy(ref bmax, tile.data.verts, v);
                     for (int j = 1; j < p.vertCount; ++j)
                     {
                         v = p.verts[j] * 3;
-                        vMin(bmin, tile.data.verts, v);
-                        vMax(bmax, tile.data.verts, v);
+                        vMin(ref bmin, tile.data.verts, v);
+                        vMax(ref bmax, tile.data.verts, v);
                     }
 
                     if (overlapBounds(qmin, qmax, bmin, bmax))
@@ -836,7 +836,7 @@ namespace DotRecast.Detour
                 float[] ext = new float[] { targetCon.rad, target.data.header.walkableClimb, targetCon.rad };
 
                 // Find polygon to connect to.
-                float[] p = new float[3];
+                Vector3f p = new Vector3f();
                 p[0] = targetCon.pos[3];
                 p[1] = targetCon.pos[4];
                 p[2] = targetCon.pos[5];
@@ -1309,7 +1309,7 @@ namespace DotRecast.Detour
             Tuple<MeshTile, Poly> tileAndPoly = getTileAndPolyByRefUnsafe(refs);
             MeshTile tile = tileAndPoly.Item1;
             Poly poly = tileAndPoly.Item2;
-            float[] closest = new float[3];
+            Vector3f closest = new Vector3f();
             vCopy(closest, pos);
             float? h = getPolyHeight(tile, poly, pos);
             if (null != h)
@@ -1555,8 +1555,8 @@ namespace DotRecast.Detour
                 }
             }
 
-            float[] startPos = new float[3];
-            float[] endPos = new float[3];
+            Vector3f startPos = new Vector3f();
+            Vector3f endPos = new Vector3f();
             vCopy(startPos, tile.data.verts, poly.verts[idx0] * 3);
             vCopy(endPos, tile.data.verts, poly.verts[idx1] * 3);
             return Results.success(Tuple.Create(startPos, endPos));

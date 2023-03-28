@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
@@ -31,7 +32,7 @@ namespace DotRecast.Detour
         public float t;
 
         /** hitNormal The normal of the nearest wall hit. [(x, y, z)] */
-        public readonly float[] hitNormal = new float[3];
+        public readonly Vector3f hitNormal = new Vector3f();
 
         /** Visited polygons. */
         public readonly List<long> path = new List<long>();

@@ -38,7 +38,7 @@ namespace DotRecast.Detour.Crowd
             public float d;
         }
 
-        float[] m_center = new float[3];
+        Vector3f m_center = new Vector3f();
         List<Segment> m_segs = new List<Segment>();
         List<long> m_polys = new List<long>();
 

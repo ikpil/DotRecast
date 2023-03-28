@@ -1859,8 +1859,8 @@ namespace DotRecast.Detour.TileCache
         public void markCylinderArea(TileCacheLayer layer, float[] orig, float cs, float ch, float[] pos, float radius,
             float height, int areaId)
         {
-            float[] bmin = new float[3];
-            float[] bmax = new float[3];
+            Vector3f bmin = new Vector3f();
+            Vector3f bmax = new Vector3f();
             bmin[0] = pos[0] - radius;
             bmin[1] = pos[1];
             bmin[2] = pos[2] - radius;

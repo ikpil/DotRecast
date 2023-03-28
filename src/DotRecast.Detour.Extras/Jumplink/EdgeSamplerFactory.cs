@@ -28,7 +28,7 @@ namespace DotRecast.Detour.Extras.Jumplink
         {
             EdgeSampler es = new EdgeSampler(edge, new JumpTrajectory(acfg.jumpHeight));
             es.start.height = acfg.agentClimb * 2;
-            float[] offset = new float[3];
+            Vector3f offset = new Vector3f();
             trans2d(offset, es.az, es.ay, new float[] { acfg.startDistance, -acfg.agentClimb });
             vadd(es.start.p, edge.sp, offset);
             vadd(es.start.q, edge.sq, offset);
@@ -56,7 +56,7 @@ namespace DotRecast.Detour.Extras.Jumplink
         {
             EdgeSampler es = new EdgeSampler(edge, new ClimbTrajectory());
             es.start.height = acfg.agentClimb * 2;
-            float[] offset = new float[3];
+            Vector3f offset = new Vector3f();
             trans2d(offset, es.az, es.ay, new float[] { acfg.startDistance, -acfg.agentClimb });
             vadd(es.start.p, edge.sp, offset);
             vadd(es.start.q, edge.sq, offset);

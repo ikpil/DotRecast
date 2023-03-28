@@ -2,7 +2,7 @@ namespace DotRecast.Detour.Extras.Jumplink
 {
     public class Edge
     {
-        public readonly float[] sp = new float[3];
-        public readonly float[] sq = new float[3];
+        public readonly Vector3f sp = new Vector3f();
+        public readonly Vector3f sq = new Vector3f();
     }
 }

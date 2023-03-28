@@ -33,12 +33,12 @@ namespace DotRecast.Detour.TileCache
 
         public readonly int index;
         public TileCacheObstacleType type;
-        public readonly float[] pos = new float[3];
-        public readonly float[] bmin = new float[3];
-        public readonly float[] bmax = new float[3];
+        public readonly Vector3f pos = new Vector3f();
+        public readonly Vector3f bmin = new Vector3f();
+        public readonly Vector3f bmax = new Vector3f();
         public float radius, height;
-        public readonly float[] center = new float[3];
-        public readonly float[] extents = new float[3];
+        public readonly Vector3f center = new Vector3f();
+        public readonly Vector3f extents = new Vector3f();
         public readonly float[] rotAux = new float[2]; // { cos(0.5f*angle)*sin(-0.5f*angle); cos(0.5f*angle)*cos(0.5f*angle) - 0.5 }
         public List<long> touched = new List<long>();
         public readonly List<long> pending = new List<long>();

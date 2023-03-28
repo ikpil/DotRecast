@@ -175,8 +175,8 @@ public class GizmoHelper
 
     public static int getColorByNormal(float[] vertices, int v0, int v1, int v2)
     {
-        float[] e0 = new float[3], e1 = new float[3];
-        float[] normal = new float[3];
+        Vector3f e0 = new Vector3f(), e1 = new float[3];
+        Vector3f normal = new Vector3f();
         for (int j = 0; j < 3; ++j)
         {
             e0[j] = vertices[v1 + j] - vertices[v0 + j];

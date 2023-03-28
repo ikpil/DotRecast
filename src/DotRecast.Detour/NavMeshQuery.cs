@@ -263,7 +263,7 @@ namespace DotRecast.Detour
             m_openList.clear();
 
             Node startNode = m_nodePool.getNode(startRef);
-            vCopy(startNode.pos, centerPos);
+            vCopy(ref startNode.pos, centerPos);
             startNode.pidx = 0;
             startNode.cost = 0;
             startNode.total = 0;
@@ -382,7 +382,7 @@ namespace DotRecast.Detour
                     // Cost
                     if (neighbourNode.flags == 0)
                     {
-                        neighbourNode.pos = vLerp(va, vb, 0.5f);
+                        neighbourNode.pos = Vector3f.Of(vLerp(va, vb, 0.5f));
                     }
 
                     float total = bestNode.total + vDist(bestNode.pos, neighbourNode.pos);
@@ -650,8 +650,8 @@ namespace DotRecast.Detour
             }
             else
             {
-                float[] bmin = new float[3];
-                float[] bmax = new float[3];
+                Vector3f bmin = new Vector3f();
+                Vector3f bmax = new Vector3f();
                 long @base = m_nav.getPolyRefBase(tile);
                 for (int i = 0; i < tile.data.header.polyCount; ++i)
                 {
@@ -1843,7 +1843,7 @@ namespace DotRecast.Detour
             LinkedList<Node> stack = new LinkedList<Node>();
             stack.AddLast(startNode);
 
-            float[] bestPos = new float[3];
+            Vector3f bestPos = new Vector3f();
             float bestDist = float.MaxValue;
             Node bestNode = null;
             vCopy(bestPos, startPos);
@@ -2045,8 +2045,8 @@ namespace DotRecast.Detour
         protected Result<PortalResult> getPortalPoints(long from, Poly fromPoly, MeshTile fromTile, long to, Poly toPoly,
             MeshTile toTile, int fromType, int toType)
         {
-            float[] left = new float[3];
-            float[] right = new float[3];
+            Vector3f left = new Vector3f();
+            Vector3f right = new Vector3f();
             // Find the link that points to the 'to' polygon.
             Link link = null;
             for (int i = fromTile.polyLinks[fromPoly.index]; i != NavMesh.DT_NULL_LINK; i = fromTile.links[i].next)
@@ -2132,7 +2132,7 @@ namespace DotRecast.Detour
 
             float[] left = ppoints.result.left;
             float[] right = ppoints.result.right;
-            float[] mid = new float[3];
+            Vector3f mid = new Vector3f();
             mid[0] = (left[0] + right[0]) * 0.5f;
             mid[1] = (left[1] + right[1]) * 0.5f;
             mid[2] = (left[2] + right[2]) * 0.5f;
@@ -2230,9 +2230,9 @@ namespace DotRecast.Detour
 
             float[] verts = new float[m_nav.getMaxVertsPerPoly() * 3 + 3];
 
-            float[] curPos = new float[3], lastPos = new float[3];
+            Vector3f curPos = new Vector3f(), lastPos = new Vector3f();
 
-            vCopy(curPos, startPos);
+            vCopy(ref curPos, startPos);
             float[] dir = vSub(endPos, startPos);
 
             MeshTile prevTile, tile, nextTile;
@@ -3230,7 +3230,7 @@ namespace DotRecast.Detour
             m_openList.push(startNode);
 
             float radiusSqr = sqr(maxRadius);
-            float[] hitPos = new float[3];
+            Vector3f hitPos = new Vector3f();
             VectorPtr bestvj = null;
             VectorPtr bestvi = null;
             while (!m_openList.isEmpty())
@@ -3403,7 +3403,7 @@ namespace DotRecast.Detour
             }
 
             // Calc hit normal.
-            float[] hitNormal = new float[3];
+            Vector3f hitNormal = new Vector3f();
             if (bestvi != null && bestvj != null)
             {
                 float[] tangent = vSub(bestvi, bestvj);

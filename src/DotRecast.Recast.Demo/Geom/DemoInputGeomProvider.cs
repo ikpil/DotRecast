@@ -100,7 +100,7 @@ public class DemoInputGeomProvider : InputGeomProvider
             int v0 = faces[i] * 3;
             int v1 = faces[i + 1] * 3;
             int v2 = faces[i + 2] * 3;
-            float[] e0 = new float[3], e1 = new float[3];
+            Vector3f e0 = new Vector3f(), e1 = new float[3];
             for (int j = 0; j < 3; ++j)
             {
                 e0[j] = vertices[v1 + j] - vertices[v0 + j];

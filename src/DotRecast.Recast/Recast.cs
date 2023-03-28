@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using DotRecast.Core;
 
 namespace DotRecast.Recast
 {
@@ -49,6 +50,17 @@ namespace DotRecast.Recast
         {
             return new int[] { (int)((bmax[0] - bmin[0]) / cs + 0.5f), (int)((bmax[2] - bmin[2]) / cs + 0.5f) };
         }
+        
+        public static int[] calcGridSize(Vector3f bmin, float[] bmax, float cs)
+        {
+            return new int[] { (int)((bmax[0] - bmin[0]) / cs + 0.5f), (int)((bmax[2] - bmin[2]) / cs + 0.5f) };
+        }
+        
+        public static int[] calcGridSize(Vector3f bmin, Vector3f bmax, float cs)
+        {
+            return new int[] { (int)((bmax[0] - bmin[0]) / cs + 0.5f), (int)((bmax[2] - bmin[2]) / cs + 0.5f) };
+        }
+
 
         public static int[] calcTileCount(float[] bmin, float[] bmax, float cs, int tileSizeX, int tileSizeZ)
         {
@@ -72,11 +84,11 @@ namespace DotRecast.Recast
         {
             int[] areas = new int[nt];
             float walkableThr = (float)Math.Cos(walkableSlopeAngle / 180.0f * Math.PI);
-            float[] norm = new float[3];
+            Vector3f norm = new Vector3f();
             for (int i = 0; i < nt; ++i)
             {
                 int tri = i * 3;
-                calcTriNormal(verts, tris[tri], tris[tri + 1], tris[tri + 2], norm);
+                calcTriNormal(verts, tris[tri], tris[tri + 1], tris[tri + 2], ref norm);
                 // Check if the face is walkable.
                 if (norm[1] > walkableThr)
                     areas[i] = areaMod.apply(areas[i]);
@@ -87,13 +99,24 @@ namespace DotRecast.Recast
 
         static void calcTriNormal(float[] verts, int v0, int v1, int v2, float[] norm)
         {
-            float[] e0 = new float[3];
-            float[] e1 = new float[3];
-            RecastVectors.sub(e0, verts, v1 * 3, v0 * 3);
-            RecastVectors.sub(e1, verts, v2 * 3, v0 * 3);
+            Vector3f e0 = new Vector3f();
+            Vector3f e1 = new Vector3f();
+            RecastVectors.sub(ref e0, verts, v1 * 3, v0 * 3);
+            RecastVectors.sub(ref e1, verts, v2 * 3, v0 * 3);
             RecastVectors.cross(norm, e0, e1);
             RecastVectors.normalize(norm);
         }
+        
+        static void calcTriNormal(float[] verts, int v0, int v1, int v2, ref Vector3f norm)
+        {
+            Vector3f e0 = new Vector3f();
+            Vector3f e1 = new Vector3f();
+            RecastVectors.sub(ref e0, verts, v1 * 3, v0 * 3);
+            RecastVectors.sub(ref e1, verts, v2 * 3, v0 * 3);
+            RecastVectors.cross(ref norm, e0, e1);
+            RecastVectors.normalize(ref norm);
+        }
+
 
         /// @par
         ///
@@ -108,12 +131,12 @@ namespace DotRecast.Recast
         {
             float walkableThr = (float)Math.Cos(walkableSlopeAngle / 180.0f * Math.PI);
 
-            float[] norm = new float[3];
+            Vector3f norm = new Vector3f();
 
             for (int i = 0; i < nt; ++i)
             {
                 int tri = i * 3;
-                calcTriNormal(verts, tris[tri], tris[tri + 1], tris[tri + 2], norm);
+                calcTriNormal(verts, tris[tri], tris[tri + 1], tris[tri + 2], ref norm);
                 // Check if the face is walkable.
                 if (norm[1] <= walkableThr)
                     areas[i] = RC_NULL_AREA;

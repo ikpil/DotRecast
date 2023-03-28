@@ -102,7 +102,7 @@ namespace DotRecast.Detour.Crowd.Tracking
 
         public float[] getSampleVelocity(int i)
         {
-            float[] vel = new float[3];
+            Vector3f vel = new Vector3f();
             vel[0] = m_vel[i * 3];
             vel[1] = m_vel[i * 3 + 1];
             vel[2] = m_vel[i * 3 + 2];

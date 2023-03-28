@@ -253,12 +253,12 @@ public class DebugDraw
         float dy = y1 - y0;
         float dz = z1 - z0;
         float len = (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
-        float[] prev = new float[3];
+        Vector3f prev = new Vector3f();
         evalArc(x0, y0, z0, dx, dy, dz, len * h, PAD, prev);
         for (int i = 1; i <= NUM_ARC_PTS; ++i)
         {
             float u = PAD + i * ARC_PTS_SCALE;
-            float[] pt = new float[3];
+            Vector3f pt = new Vector3f();
             evalArc(x0, y0, z0, dx, dy, dz, len * h, u, pt);
             vertex(prev[0], prev[1], prev[2], col);
             vertex(pt[0], pt[1], pt[2], col);
@@ -270,7 +270,7 @@ public class DebugDraw
         // End arrows
         if (as0 > 0.001f)
         {
-            float[] p = new float[3], q = new float[3];
+            Vector3f p = new Vector3f(), q = new float[3];
             evalArc(x0, y0, z0, dx, dy, dz, len * h, PAD, p);
             evalArc(x0, y0, z0, dx, dy, dz, len * h, PAD + 0.05f, q);
             appendArrowHead(p, q, as0, col);
@@ -278,7 +278,7 @@ public class DebugDraw
 
         if (as1 > 0.001f)
         {
-            float[] p = new float[3], q = new float[3];
+            Vector3f p = new Vector3f(), q = new float[3];
             evalArc(x0, y0, z0, dx, dy, dz, len * h, 1 - PAD, p);
             evalArc(x0, y0, z0, dx, dy, dz, len * h, 1 - (PAD + 0.05f), q);
             appendArrowHead(p, q, as1, col);
@@ -392,7 +392,7 @@ public class DebugDraw
             return;
         }
 
-        float[] ax = new float[3], ay = { 0, 1, 0 }, az = new float[3];
+        Vector3f ax = new Vector3f(), ay = { 0, 1, 0 }, az = new float[3];
         vsub(az, q, p);
         vnormalize(az);
         vcross(ax, ay, az);

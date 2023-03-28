@@ -23,9 +23,9 @@ namespace DotRecast.Detour.Crowd
     public class PathQuery
     {
         /// Path find start and end location.
-        public float[] startPos = new float[3];
+        public Vector3f startPos = new Vector3f();
 
-        public float[] endPos = new float[3];
+        public Vector3f endPos = new Vector3f();
         public long startRef;
         public long endRef;
         public QueryFilter filter;

@@ -17,6 +17,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
+
 namespace DotRecast.Recast
 {
     /** Represents a polygon mesh suitable for use in building a navigation mesh. */
@@ -50,10 +52,10 @@ namespace DotRecast.Recast
         public int[] flags;
 
         /** The minimum bounds in world space. [(x, y, z)] */
-        public readonly float[] bmin = new float[3];
+        public Vector3f bmin = new Vector3f();
 
         /** The maximum bounds in world space. [(x, y, z)] */
-        public readonly float[] bmax = new float[3];
+        public Vector3f bmax = new Vector3f();
 
         /** The size of each cell. (On the xz-plane.) */
         public float cs;

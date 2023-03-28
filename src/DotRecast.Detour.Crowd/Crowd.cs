@@ -147,7 +147,7 @@ namespace DotRecast.Detour.Crowd
         private readonly ObstacleAvoidanceQuery.ObstacleAvoidanceParams[] m_obstacleQueryParams = new ObstacleAvoidanceQuery.ObstacleAvoidanceParams[DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS];
         private readonly ObstacleAvoidanceQuery m_obstacleQuery;
         private ProximityGrid m_grid;
-        private readonly float[] m_ext = new float[3];
+        private readonly Vector3f m_ext = new Vector3f();
         private readonly QueryFilter[] m_filters = new QueryFilter[DT_CROWD_MAX_QUERY_FILTER_TYPE];
         private NavMeshQuery navQuery;
         private NavMesh navMesh;
@@ -453,7 +453,7 @@ namespace DotRecast.Detour.Crowd
                 bool replan = false;
 
                 // First check that the current location is valid.
-                float[] agentPos = new float[3];
+                Vector3f agentPos = new Vector3f();
                 long agentRef = ag.corridor.getFirstPoly();
                 vCopy(agentPos, ag.npos);
                 if (!navQuery.isValidPolyRef(agentRef, m_filters[ag.option.queryFilterType]))
@@ -605,7 +605,7 @@ namespace DotRecast.Detour.Crowd
                     }
 
                     List<long> reqPath = pathFound.result;
-                    float[] reqPos = new float[3];
+                    Vector3f reqPos = new Vector3f();
                     if (pathFound.succeeded() && reqPath.Count > 0)
                     {
                         // In progress or succeed.
@@ -1047,7 +1047,7 @@ namespace DotRecast.Detour.Crowd
                     continue;
                 }
 
-                float[] dvel = new float[3];
+                Vector3f dvel = new Vector3f();
 
                 if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                 {
@@ -1082,7 +1082,7 @@ namespace DotRecast.Detour.Crowd
                     float separationWeight = ag.option.separationWeight;
 
                     float w = 0;
-                    float[] disp = new float[3];
+                    Vector3f disp = new Vector3f();
 
                     for (int j = 0; j < ag.neis.Count; ++j)
                     {
@@ -1156,7 +1156,7 @@ namespace DotRecast.Detour.Crowd
                     for (int j = 0; j < ag.boundary.getSegmentCount(); ++j)
                     {
                         float[] s = ag.boundary.getSegment(j);
-                        float[] s3 = new float[3];
+                        Vector3f s3 = new Vector3f();
                         Array.Copy(s, 3, s3, 0, 3);
                         if (triArea2D(ag.npos, s, s3) < 0.0f)
                         {

@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using DotRecast.Core;
 
 namespace DotRecast.Recast
 {
@@ -29,10 +30,10 @@ namespace DotRecast.Recast
         public List<Contour> conts = new List<Contour>();
 
         /** The minimum bounds in world space. [(x, y, z)] */
-        public float[] bmin = new float[3];
+        public Vector3f bmin = new Vector3f();
 
         /** The maximum bounds in world space. [(x, y, z)] */
-        public float[] bmax = new float[3];
+        public Vector3f bmax = new Vector3f();
 
         /** The size of each cell. (On the xz-plane.) */
         public float cs;

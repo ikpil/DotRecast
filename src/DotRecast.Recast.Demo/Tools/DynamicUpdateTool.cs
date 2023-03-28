@@ -340,8 +340,8 @@ public class DynamicUpdateTool : Tool
         float[] ry = GLU.build_4x4_rotation_matrix((float)random.NextDouble() * 360, 0, 1, 0);
         float[] m = GLU.mul(rx, ry);
         float[] verts = new float[geom.vertices.Length];
-        float[] v = new float[3];
-        float[] vr = new float[3];
+        Vector3f v = new Vector3f();
+        Vector3f vr = new Vector3f();
         for (int i = 0; i < geom.vertices.Length; i += 3)
         {
             v[0] = geom.vertices[i];

@@ -64,8 +64,8 @@ namespace DotRecast.Detour.Crowd
  */
     public class PathCorridor
     {
-        private readonly float[] m_pos = new float[3];
-        private readonly float[] m_target = new float[3];
+        private readonly Vector3f m_pos = new Vector3f();
+        private readonly Vector3f m_target = new Vector3f();
         private List<long> m_path;
 
         protected List<long> mergeCorridorStartMoved(List<long> path, List<long> visited)

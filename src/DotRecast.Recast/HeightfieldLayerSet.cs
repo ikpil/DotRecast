@@ -18,6 +18,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
+
 namespace DotRecast.Recast
 {
     /// Represents a set of heightfield layers.
@@ -29,10 +31,10 @@ namespace DotRecast.Recast
         /// @see rcHeightfieldLayerSet
         public class HeightfieldLayer
         {
-            public readonly float[] bmin = new float[3];
+            public Vector3f bmin = new Vector3f();
 
             /// < The minimum bounds in world space. [(x, y, z)]
-            public readonly float[] bmax = new float[3];
+            public Vector3f bmax = new Vector3f();
 
             /// < The maximum bounds in world space. [(x, y, z)]
             public float cs;

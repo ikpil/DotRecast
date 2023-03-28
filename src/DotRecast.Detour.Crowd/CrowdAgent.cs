@@ -77,23 +77,23 @@ namespace DotRecast.Detour.Crowd
         /// The desired speed.
         public float desiredSpeed;
 
-        public float[] npos = new float[3];
+        public Vector3f npos = new Vector3f();
 
         /// < The current agent position. [(x, y, z)]
-        public float[] disp = new float[3];
+        public Vector3f disp = new Vector3f();
 
         /// < A temporary value used to accumulate agent displacement during iterative
         /// collision resolution. [(x, y, z)]
-        public float[] dvel = new float[3];
+        public Vector3f dvel = new Vector3f();
 
         /// < The desired velocity of the agent. Based on the current path, calculated
         /// from
         /// scratch each frame. [(x, y, z)]
-        public float[] nvel = new float[3];
+        public Vector3f nvel = new Vector3f();
 
         /// < The desired velocity adjusted by obstacle avoidance, calculated from scratch each
         /// frame. [(x, y, z)]
-        public float[] vel = new float[3];
+        public Vector3f vel = new Vector3f();
 
         /// < The actual velocity of the agent. The change from nvel -> vel is
         /// constrained by max acceleration. [(x, y, z)]
@@ -109,7 +109,7 @@ namespace DotRecast.Detour.Crowd
         public long targetRef;
 
         /// < Target polyref of the movement request.
-        public float[] targetPos = new float[3];
+        public Vector3f targetPos = new Vector3f();
 
         /// < Target position of the movement request (or velocity in case of
         /// DT_CROWDAGENT_TARGET_VELOCITY).
@@ -184,7 +184,7 @@ namespace DotRecast.Detour.Crowd
 
         public float[] calcSmoothSteerDirection()
         {
-            float[] dir = new float[3];
+            Vector3f dir = new Vector3f();
             if (0 < corners.Count)
             {
                 int ip0 = 0;
@@ -214,7 +214,7 @@ namespace DotRecast.Detour.Crowd
 
         public float[] calcStraightSteerDirection()
         {
-            float[] dir = new float[3];
+            Vector3f dir = new Vector3f();
             if (0 < corners.Count)
             {
                 dir = vSub(corners[0].getPos(), npos);

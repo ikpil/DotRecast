@@ -190,15 +190,15 @@ namespace DotRecast.Detour
                 {
                     int vb = option.detailMeshes[i * 4 + 0];
                     int ndv = option.detailMeshes[i * 4 + 1];
-                    float[] bmin = new float[3];
-                    float[] bmax = new float[3];
+                    Vector3f bmin = new Vector3f();
+                    Vector3f bmax = new Vector3f();
                     int dv = vb * 3;
-                    vCopy(bmin, option.detailVerts, dv);
-                    vCopy(bmax, option.detailVerts, dv);
+                    vCopy(ref bmin, option.detailVerts, dv);
+                    vCopy(ref bmax, option.detailVerts, dv);
                     for (int j = 1; j < ndv; j++)
                     {
-                        vMin(bmin, option.detailVerts, dv + j * 3);
-                        vMax(bmax, option.detailVerts, dv + j * 3);
+                        vMin(ref bmin, option.detailVerts, dv + j * 3);
+                        vMax(ref bmax, option.detailVerts, dv + j * 3);
                     }
 
                     // BV-tree uses cs for all dimensions
@@ -341,8 +341,8 @@ namespace DotRecast.Detour
 
                 hmin -= option.walkableClimb;
                 hmax += option.walkableClimb;
-                float[] bmin = new float[3];
-                float[] bmax = new float[3];
+                Vector3f bmin = new Vector3f();
+                Vector3f bmax = new Vector3f();
                 vCopy(bmin, option.bmin);
                 vCopy(bmax, option.bmax);
                 bmin[1] = hmin;

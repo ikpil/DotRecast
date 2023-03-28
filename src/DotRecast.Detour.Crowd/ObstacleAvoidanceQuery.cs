@@ -36,31 +36,31 @@ namespace DotRecast.Detour.Crowd
         public class ObstacleCircle
         {
             /** Position of the obstacle */
-            public readonly float[] p = new float[3];
+            public readonly Vector3f p = new Vector3f();
 
             /** Velocity of the obstacle */
-            public readonly float[] vel = new float[3];
+            public readonly Vector3f vel = new Vector3f();
 
             /** Velocity of the obstacle */
-            public readonly float[] dvel = new float[3];
+            public readonly Vector3f dvel = new Vector3f();
 
             /** Radius of the obstacle */
             public float rad;
 
             /** Use for side selection during sampling. */
-            public readonly float[] dp = new float[3];
+            public readonly Vector3f dp = new Vector3f();
 
             /** Use for side selection during sampling. */
-            public readonly float[] np = new float[3];
+            public readonly Vector3f np = new Vector3f();
         }
 
         public class ObstacleSegment
         {
             /** End points of the obstacle segment */
-            public readonly float[] p = new float[3];
+            public readonly Vector3f p = new Vector3f();
 
             /** End points of the obstacle segment */
-            public readonly float[] q = new float[3];
+            public readonly Vector3f q = new Vector3f();
 
             public bool touch;
         }
@@ -205,7 +205,7 @@ namespace DotRecast.Detour.Crowd
                 float[] pb = cir.p;
 
                 float[] orig = { 0f, 0f, 0f };
-                float[] dv = new float[3];
+                Vector3f dv = new Vector3f();
                 vCopy(cir.dp, vSub(pb, pa));
                 vNormalize(cir.dp);
                 dv = vSub(cir.dvel, dvel);
@@ -346,7 +346,7 @@ namespace DotRecast.Detour.Crowd
                 {
                     // Special case when the agent is very close to the segment.
                     float[] sdir = vSub(seg.q, seg.p);
-                    float[] snorm = new float[3];
+                    Vector3f snorm = new Vector3f();
                     snorm[0] = -sdir[2];
                     snorm[2] = sdir[0];
                     // If the velocity is pointing towards the segment, no collision.
@@ -399,7 +399,7 @@ namespace DotRecast.Detour.Crowd
             m_vmax = vmax;
             m_invVmax = vmax > 0 ? 1.0f / vmax : float.MaxValue;
 
-            float[] nvel = new float[3];
+            Vector3f nvel = new Vector3f();
             vSet(nvel, 0f, 0f, 0f);
 
             if (debug != null)
@@ -417,7 +417,7 @@ namespace DotRecast.Detour.Crowd
             {
                 for (int x = 0; x < m_params.gridSize; ++x)
                 {
-                    float[] vcand = new float[3];
+                    Vector3f vcand = new Vector3f();
                     vSet(vcand, cvx + x * cs - half, 0f, cvz + y * cs - half);
 
                     if (sqr(vcand[0]) + sqr(vcand[2]) > sqr(vmax + cs / 2))
@@ -450,7 +450,7 @@ namespace DotRecast.Detour.Crowd
         // vector normalization that ignores the y-component.
         float[] dtRotate2D(float[] v, float ang)
         {
-            float[] dest = new float[3];
+            Vector3f dest = new Vector3f();
             float c = (float)Math.Cos(ang);
             float s = (float)Math.Sin(ang);
             dest[0] = v[0] * c - v[2] * s;
@@ -470,7 +470,7 @@ namespace DotRecast.Detour.Crowd
             m_vmax = vmax;
             m_invVmax = vmax > 0 ? 1.0f / vmax : float.MaxValue;
 
-            float[] nvel = new float[3];
+            Vector3f nvel = new Vector3f();
             vSet(nvel, 0f, 0f, 0f);
 
             if (debug != null)
@@ -537,18 +537,18 @@ namespace DotRecast.Detour.Crowd
 
             // Start sampling.
             float cr = vmax * (1.0f - m_params.velBias);
-            float[] res = new float[3];
+            Vector3f res = new Vector3f();
             vSet(res, dvel[0] * m_params.velBias, 0, dvel[2] * m_params.velBias);
             int ns = 0;
             for (int k = 0; k < depth; ++k)
             {
                 float minPenalty = float.MaxValue;
-                float[] bvel = new float[3];
+                Vector3f bvel = new Vector3f();
                 vSet(bvel, 0, 0, 0);
 
                 for (int i = 0; i < npat; ++i)
                 {
-                    float[] vcand = new float[3];
+                    Vector3f vcand = new Vector3f();
                     vSet(vcand, res[0] + pat[i * 2 + 0] * cr, 0f, res[2] + pat[i * 2 + 1] * cr);
                     if (sqr(vcand[0]) + sqr(vcand[2]) > sqr(vmax + 0.001f))
                         continue;

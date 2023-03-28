@@ -38,8 +38,8 @@ namespace DotRecast.Detour.Extras
                 NavMeshBuilder.BVItem it = new NavMeshBuilder.BVItem();
                 items[i] = it;
                 it.i = i;
-                float[] bmin = new float[3];
-                float[] bmax = new float[3];
+                Vector3f bmin = new Vector3f();
+                Vector3f bmax = new Vector3f();
                 vCopy(bmin, data.verts, data.polys[i].verts[0] * 3);
                 vCopy(bmax, data.verts, data.polys[i].verts[0] * 3);
                 for (int j = 1; j < data.polys[i].vertCount; j++)

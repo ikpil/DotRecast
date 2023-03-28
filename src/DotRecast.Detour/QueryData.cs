@@ -18,6 +18,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
+
 namespace DotRecast.Detour
 {
     public class QueryData
@@ -26,8 +28,8 @@ namespace DotRecast.Detour
         public Node lastBestNode;
         public float lastBestNodeCost;
         public long startRef, endRef;
-        public float[] startPos = new float[3];
-        public float[] endPos = new float[3];
+        public Vector3f startPos = new Vector3f();
+        public Vector3f endPos = new Vector3f();
         public QueryFilter filter;
         public int options;
         public float raycastLimitSqr;

@@ -101,11 +101,11 @@ namespace DotRecast.Detour.Dynamic.Io
                 int width = buf.getInt();
                 int depth = buf.getInt();
                 int borderSize = buf.getInt();
-                float[] boundsMin = new float[3];
+                Vector3f boundsMin = new Vector3f();
                 boundsMin[0] = buf.getFloat();
                 boundsMin[1] = buf.getFloat();
                 boundsMin[2] = buf.getFloat();
-                float[] boundsMax = new float[3];
+                Vector3f boundsMax = new Vector3f();
                 boundsMax[0] = buf.getFloat();
                 boundsMax[1] = buf.getFloat();
                 boundsMax[2] = buf.getFloat();

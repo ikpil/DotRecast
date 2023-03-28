@@ -91,13 +91,13 @@ public class RecastDemo
     private float scrollZoom;
     private readonly float[] origMousePos = new float[2];
     private readonly float[] origCameraEulers = new float[2];
-    private readonly float[] origCameraPos = new float[3];
+    private readonly Vector3f origCameraPos = new Vector3f();
 
     private readonly float[] cameraEulers = { 45, -45 };
     private readonly float[] cameraPos = { 0, 0, 0 };
 
-    private readonly float[] rayStart = new float[3];
-    private readonly float[] rayEnd = new float[3];
+    private readonly Vector3f rayStart = new Vector3f();
+    private readonly Vector3f rayEnd = new Vector3f();
 
     private float[] projectionMatrix = new float[16];
     private float[] modelviewMatrix = new float[16];
@@ -112,7 +112,7 @@ public class RecastDemo
 
     private int[] viewport;
     private bool markerPositionSet;
-    private readonly float[] markerPosition = new float[3];
+    private readonly Vector3f markerPosition = new Vector3f();
     private ToolsView toolsUI;
     private RcSettingsView settingsUI;
     private long prevFrameTime;
@@ -656,7 +656,7 @@ public class RecastDemo
                     }
                     else
                     {
-                        float[] pos = new float[3];
+                        Vector3f pos = new Vector3f();
                         pos[0] = rayStart[0] + (rayEnd[0] - rayStart[0]) * hitTime;
                         pos[1] = rayStart[1] + (rayEnd[1] - rayStart[1]) * hitTime;
                         pos[2] = rayStart[2] + (rayEnd[2] - rayStart[2]) * hitTime;

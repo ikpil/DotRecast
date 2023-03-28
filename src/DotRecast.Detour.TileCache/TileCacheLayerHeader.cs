@@ -35,8 +35,8 @@ namespace DotRecast.Detour.TileCache
         /// < Data version
         public int tx, ty, tlayer;
 
-        public float[] bmin = new float[3];
-        public float[] bmax = new float[3];
+        public Vector3f bmin = new Vector3f();
+        public Vector3f bmax = new Vector3f();
         public int hmin, hmax;
 
         /// < Height min/max range

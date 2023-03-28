@@ -117,7 +117,7 @@ public class AbstractCrowdTest
         {
             for (int j = 0; j < size; j++)
             {
-                float[] pos = new float[3];
+                Vector3f pos = new Vector3f();
                 pos[0] = startPos[0] + i * distance;
                 pos[1] = startPos[1];
                 pos[2] = startPos[2] + j * distance;

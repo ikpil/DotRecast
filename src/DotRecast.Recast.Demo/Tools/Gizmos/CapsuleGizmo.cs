@@ -35,7 +35,7 @@ public class CapsuleGizmo : ColliderGizmo
         float halfLength = 0.5f * vLen(axis);
         vertices = new float[spVertices.Length];
         gradient = new float[spVertices.Length / 3];
-        float[] v = new float[3];
+        Vector3f v = new Vector3f();
         for (int i = 0; i < spVertices.Length; i += 3)
         {
             float offset = (i >= spVertices.Length / 2) ? -halfLength : halfLength;
@@ -61,7 +61,7 @@ public class CapsuleGizmo : ColliderGizmo
             side = new float[] { 0, 0, 1 };
         }
 
-        float[] forward = new float[3];
+        Vector3f forward = new Vector3f();
         cross(forward, side, axis);
         cross(side, axis, forward);
         normalize(side);

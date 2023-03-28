@@ -976,8 +976,8 @@ namespace DotRecast.Recast
         {
             ctx.startTimer("POLYMESH");
             PolyMesh mesh = new PolyMesh();
-            RecastVectors.copy(mesh.bmin, cset.bmin, 0);
-            RecastVectors.copy(mesh.bmax, cset.bmax, 0);
+            RecastVectors.copy(ref mesh.bmin, cset.bmin, 0);
+            RecastVectors.copy(ref mesh.bmax, cset.bmax, 0);
             mesh.cs = cset.cs;
             mesh.ch = cset.ch;
             mesh.borderSize = cset.borderSize;
@@ -1231,16 +1231,16 @@ namespace DotRecast.Recast
             mesh.nvp = meshes[0].nvp;
             mesh.cs = meshes[0].cs;
             mesh.ch = meshes[0].ch;
-            RecastVectors.copy(mesh.bmin, meshes[0].bmin, 0);
-            RecastVectors.copy(mesh.bmax, meshes[0].bmax, 0);
+            RecastVectors.copy(ref mesh.bmin, meshes[0].bmin, 0);
+            RecastVectors.copy(ref mesh.bmax, meshes[0].bmax, 0);
 
             int maxVerts = 0;
             int maxPolys = 0;
             int maxVertsPerMesh = 0;
             for (int i = 0; i < nmeshes; ++i)
             {
-                RecastVectors.min(mesh.bmin, meshes[i].bmin, 0);
-                RecastVectors.max(mesh.bmax, meshes[i].bmax, 0);
+                RecastVectors.min(ref mesh.bmin, meshes[i].bmin, 0);
+                RecastVectors.max(ref mesh.bmax, meshes[i].bmax, 0);
                 maxVertsPerMesh = Math.Max(maxVertsPerMesh, meshes[i].nverts);
                 maxVerts += meshes[i].nverts;
                 maxPolys += meshes[i].npolys;
@@ -1361,8 +1361,8 @@ namespace DotRecast.Recast
             dst.npolys = src.npolys;
             dst.maxpolys = src.npolys;
             dst.nvp = src.nvp;
-            RecastVectors.copy(dst.bmin, src.bmin, 0);
-            RecastVectors.copy(dst.bmax, src.bmax, 0);
+            RecastVectors.copy(ref dst.bmin, src.bmin, 0);
+            RecastVectors.copy(ref dst.bmax, src.bmax, 0);
             dst.cs = src.cs;
             dst.ch = src.ch;
             dst.borderSize = src.borderSize;

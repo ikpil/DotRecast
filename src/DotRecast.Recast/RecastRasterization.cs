@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using DotRecast.Core;
 using static DotRecast.Core.RecastMath;
 using static DotRecast.Recast.RecastConstants;
 
@@ -48,6 +49,16 @@ namespace DotRecast.Recast
             overlap = (amin[2] > bmax[2] || amax[2] < bmin[2]) ? false : overlap;
             return overlap;
         }
+        
+        private static bool overlapBounds(float[] amin, float[] amax, Vector3f bmin, Vector3f bmax)
+        {
+            bool overlap = true;
+            overlap = (amin[0] > bmax[0] || amax[0] < bmin[0]) ? false : overlap;
+            overlap = (amin[1] > bmax[1] || amax[1] < bmin[1]) ? false : overlap;
+            overlap = (amin[2] > bmax[2] || amax[2] < bmin[2]) ? false : overlap;
+            return overlap;
+        }
+
 
         /**
      * Adds a span to the heightfield. If the new span overlaps existing spans, it will merge the new span with the
@@ -247,17 +258,17 @@ namespace DotRecast.Recast
         private static void rasterizeTri(float[] verts, int v0, int v1, int v2, int area, Heightfield hf, float[] hfBBMin,
             float[] hfBBMax, float cellSize, float inverseCellSize, float inverseCellHeight, int flagMergeThreshold)
         {
-            float[] tmin = new float[3];
-            float[] tmax = new float[3];
+            Vector3f tmin = new Vector3f();
+            Vector3f tmax = new Vector3f();
             float by = hfBBMax[1] - hfBBMin[1];
 
             // Calculate the bounding box of the triangle.
-            RecastVectors.copy(tmin, verts, v0 * 3);
-            RecastVectors.copy(tmax, verts, v0 * 3);
-            RecastVectors.min(tmin, verts, v1 * 3);
-            RecastVectors.min(tmin, verts, v2 * 3);
-            RecastVectors.max(tmax, verts, v1 * 3);
-            RecastVectors.max(tmax, verts, v2 * 3);
+            RecastVectors.copy(ref tmin, verts, v0 * 3);
+            RecastVectors.copy(ref tmax, verts, v0 * 3);
+            RecastVectors.min(ref tmin, verts, v1 * 3);
+            RecastVectors.min(ref tmin, verts, v2 * 3);
+            RecastVectors.max(ref tmax, verts, v1 * 3);
+            RecastVectors.max(ref tmax, verts, v2 * 3);
 
             // If the triangle does not touch the bbox of the heightfield, skip the triagle.
             if (!overlapBounds(hfBBMin, hfBBMax, tmin, tmax))

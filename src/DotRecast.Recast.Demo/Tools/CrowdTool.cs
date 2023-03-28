@@ -265,7 +265,7 @@ public class CrowdTool : Tool
 
         foreach (CrowdAgent ag in crowd.getActiveAgents())
         {
-            float[] bmin = new float[3], bmax = new float[3];
+            Vector3f bmin = new Vector3f(), bmax = new float[3];
             getAgentBounds(ag, bmin, bmax);
             float[] isect = Intersections.intersectSegmentAABB(s, p, bmin, bmax);
             if (null != isect)
@@ -432,7 +432,7 @@ public class CrowdTool : Tool
             float[] pos = ag.npos;
 
             dd.begin(LINES, 3.0f);
-            float[] prev = new float[3];
+            Vector3f prev = new Vector3f();
             float preva = 1;
             vCopy(prev, pos);
             for (int j = 0; j < AGENT_MAX_TRAIL - 1; ++j)

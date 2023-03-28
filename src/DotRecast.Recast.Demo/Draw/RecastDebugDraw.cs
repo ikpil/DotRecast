@@ -577,7 +577,7 @@ public class RecastDebugDraw : DebugDraw
 
     private float[] getContourCenter(Contour cont, float[] orig, float cs, float ch)
     {
-        float[] center = new float[3];
+        Vector3f center = new Vector3f();
         center[0] = 0;
         center[1] = 0;
         center[2] = 0;

@@ -51,6 +51,12 @@ namespace DotRecast.Recast
         {
             return a[0] * b[0] + a[2] * b[2];
         }
+        
+        private static float vdot2(Vector3f a, Vector3f b)
+        {
+            return a[0] * b[0] + a[2] * b[2];
+        }
+
 
         private static float vdistSq2(float[] verts, int p, int q)
         {
@@ -58,7 +64,7 @@ namespace DotRecast.Recast
             float dy = verts[q + 2] - verts[p + 2];
             return dx * dx + dy * dy;
         }
-
+        
         private static float vdist2(float[] verts, int p, int q)
         {
             return (float)Math.Sqrt(vdistSq2(verts, p, q));
@@ -70,11 +76,39 @@ namespace DotRecast.Recast
             float dy = q[2] - p[2];
             return dx * dx + dy * dy;
         }
+        
+        private static float vdistSq2(float[] p, Vector3f q)
+        {
+            float dx = q[0] - p[0];
+            float dy = q[2] - p[2];
+            return dx * dx + dy * dy;
+        }
+
+        
+        private static float vdistSq2(Vector3f p, Vector3f q)
+        {
+            float dx = q[0] - p[0];
+            float dy = q[2] - p[2];
+            return dx * dx + dy * dy;
+        }
+
 
         private static float vdist2(float[] p, float[] q)
         {
             return (float)Math.Sqrt(vdistSq2(p, q));
         }
+        
+        private static float vdist2(Vector3f p, Vector3f q)
+        {
+            return (float)Math.Sqrt(vdistSq2(p, q));
+        }
+        
+        private static float vdist2(float[] p, Vector3f q)
+        {
+            return (float)Math.Sqrt(vdistSq2(p, q));
+        }
+
+
 
         private static float vdistSq2(float[] p, float[] verts, int q)
         {
@@ -82,11 +116,25 @@ namespace DotRecast.Recast
             float dy = verts[q + 2] - p[2];
             return dx * dx + dy * dy;
         }
+        
+        private static float vdistSq2(Vector3f p, float[] verts, int q)
+        {
+            float dx = verts[q + 0] - p[0];
+            float dy = verts[q + 2] - p[2];
+            return dx * dx + dy * dy;
+        }
+
 
         private static float vdist2(float[] p, float[] verts, int q)
         {
             return (float)Math.Sqrt(vdistSq2(p, verts, q));
         }
+        
+        private static float vdist2(Vector3f p, float[] verts, int q)
+        {
+            return (float)Math.Sqrt(vdistSq2(p, verts, q));
+        }
+
 
         private static float vcross2(float[] verts, int p1, int p2, int p3)
         {
@@ -105,16 +153,26 @@ namespace DotRecast.Recast
             float v2 = p3[2] - p1[2];
             return u1 * v2 - v1 * u2;
         }
+        
+        private static float vcross2(Vector3f p1, Vector3f p2, Vector3f p3)
+        {
+            float u1 = p2[0] - p1[0];
+            float v1 = p2[2] - p1[2];
+            float u2 = p3[0] - p1[0];
+            float v2 = p3[2] - p1[2];
+            return u1 * v2 - v1 * u2;
+        }
 
-        private static bool circumCircle(float[] verts, int p1, int p2, int p3, float[] c, AtomicFloat r)
+
+        private static bool circumCircle(float[] verts, int p1, int p2, int p3, ref Vector3f c, AtomicFloat r)
         {
             float EPS = 1e-6f;
             // Calculate the circle relative to p1, to avoid some precision issues.
-            float[] v1 = new float[3];
-            float[] v2 = new float[3];
-            float[] v3 = new float[3];
-            RecastVectors.sub(v2, verts, p2, p1);
-            RecastVectors.sub(v3, verts, p3, p1);
+            Vector3f v1 = new Vector3f();
+            Vector3f v2 = new Vector3f();
+            Vector3f v3 = new Vector3f();
+            RecastVectors.sub(ref v2, verts, p2, p1);
+            RecastVectors.sub(ref v3, verts, p3, p1);
 
             float cp = vcross2(v1, v2, v3);
             if (Math.Abs(cp) > EPS)
@@ -126,23 +184,23 @@ namespace DotRecast.Recast
                 c[1] = 0;
                 c[2] = (v1Sq * (v3[0] - v2[0]) + v2Sq * (v1[0] - v3[0]) + v3Sq * (v2[0] - v1[0])) / (2 * cp);
                 r.Exchange(vdist2(c, v1));
-                RecastVectors.add(c, c, verts, p1);
+                RecastVectors.add(ref c, c, verts, p1);
                 return true;
             }
 
-            RecastVectors.copy(c, verts, p1);
+            RecastVectors.copy(ref c, verts, p1);
             r.Exchange(0f);
             return false;
         }
 
         private static float distPtTri(float[] p, float[] verts, int a, int b, int c)
         {
-            float[] v0 = new float[3];
-            float[] v1 = new float[3];
-            float[] v2 = new float[3];
-            RecastVectors.sub(v0, verts, c, a);
-            RecastVectors.sub(v1, verts, b, a);
-            RecastVectors.sub(v2, p, verts, a);
+            Vector3f v0 = new Vector3f();
+            Vector3f v1 = new Vector3f();
+            Vector3f v2 = new Vector3f();
+            RecastVectors.sub(ref v0, verts, c, a);
+            RecastVectors.sub(ref v1, verts, b, a);
+            RecastVectors.sub(ref v2, p, verts, a);
 
             float dot00 = vdot2(v0, v0);
             float dot01 = vdot2(v0, v1);
@@ -460,7 +518,7 @@ namespace DotRecast.Recast
 
             // Find best point on left of edge.
             int pt = npts;
-            float[] c = new float[3];
+            Vector3f c = new Vector3f();
             AtomicFloat r = new AtomicFloat(-1f);
             for (int u = 0; u < npts; ++u)
             {
@@ -475,7 +533,7 @@ namespace DotRecast.Recast
                     {
                         // The circle is not updated yet, do it now.
                         pt = u;
-                        circumCircle(pts, s * 3, t * 3, u * 3, c, r);
+                        circumCircle(pts, s * 3, t * 3, u * 3, ref c, r);
                         continue;
                     }
 
@@ -490,7 +548,7 @@ namespace DotRecast.Recast
                     {
                         // Inside safe circumcircle, update circle.
                         pt = u;
-                        circumCircle(pts, s * 3, t * 3, u * 3, c, r);
+                        circumCircle(pts, s * 3, t * 3, u * 3, ref c, r);
                     }
                     else
                     {
@@ -508,7 +566,7 @@ namespace DotRecast.Recast
 
                         // Edge is valid.
                         pt = u;
-                        circumCircle(pts, s * 3, t * 3, u * 3, c, r);
+                        circumCircle(pts, s * 3, t * 3, u * 3, ref c, r);
                     }
                 }
             }
@@ -927,14 +985,14 @@ namespace DotRecast.Recast
             if (sampleDist > 0)
             {
                 // Create sample locations in a grid.
-                float[] bmin = new float[3];
-                float[] bmax = new float[3];
-                RecastVectors.copy(bmin, @in, 0);
-                RecastVectors.copy(bmax, @in, 0);
+                Vector3f bmin = new Vector3f();
+                Vector3f bmax = new Vector3f();
+                RecastVectors.copy(ref bmin, @in, 0);
+                RecastVectors.copy(ref bmax, @in, 0);
                 for (int i = 1; i < nin; ++i)
                 {
-                    RecastVectors.min(bmin, @in, i * 3);
-                    RecastVectors.max(bmax, @in, i * 3);
+                    RecastVectors.min(ref bmin, @in, i * 3);
+                    RecastVectors.max(ref bmax, @in, i * 3);
                 }
 
                 int x0 = (int)Math.Floor(bmin[0] / sampleDist);
@@ -946,12 +1004,12 @@ namespace DotRecast.Recast
                 {
                     for (int x = x0; x < x1; ++x)
                     {
-                        float[] pt = new float[3];
+                        Vector3f pt = new Vector3f();
                         pt[0] = x * sampleDist;
                         pt[1] = (bmax[1] + bmin[1]) * 0.5f;
                         pt[2] = z * sampleDist;
                         // Make sure the samples are not too close to the edges.
-                        if (distToPoly(nin, @in, pt) > -sampleDist / 2)
+                        if (distToPoly(nin, @in, pt.ToArray()) > -sampleDist / 2)
                         {
                             continue;
                         }
@@ -975,7 +1033,7 @@ namespace DotRecast.Recast
                     }
 
                     // Find sample with most error.
-                    float[] bestpt = new float[3];
+                    Vector3f bestpt = new Vector3f();
                     float bestd = 0;
                     int besti = -1;
                     for (int i = 0; i < nsamples; ++i)
@@ -986,13 +1044,13 @@ namespace DotRecast.Recast
                             continue; // skip added.
                         }
 
-                        float[] pt = new float[3];
+                        Vector3f pt = new Vector3f();
                         // The sample location is jittered to get rid of some bad triangulations
                         // which are cause by symmetrical data from the grid structure.
                         pt[0] = samples[s + 0] * sampleDist + getJitterX(i) * cs * 0.1f;
                         pt[1] = samples[s + 1] * chf.ch;
                         pt[2] = samples[s + 2] * sampleDist + getJitterY(i) * cs * 0.1f;
-                        float d = distToTriMesh(pt, verts, nverts, tris, tris.Count / 4);
+                        float d = distToTriMesh(pt.ToArray(), verts, nverts, tris, tris.Count / 4);
                         if (d < 0)
                         {
                             continue; // did not hit the mesh.
@@ -1360,7 +1418,7 @@ namespace DotRecast.Recast
             int nvp = mesh.nvp;
             float cs = mesh.cs;
             float ch = mesh.ch;
-            float[] orig = mesh.bmin;
+            Vector3f orig = mesh.bmin;
             int borderSize = mesh.borderSize;
             int heightSearchRadius = (int)Math.Max(1, Math.Ceiling(mesh.maxEdgeError));
 

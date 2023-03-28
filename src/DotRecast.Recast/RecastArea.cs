@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using DotRecast.Core;
 
 namespace DotRecast.Recast
 {
@@ -331,7 +332,7 @@ namespace DotRecast.Recast
             ctx.stopTimer("MARK_BOX_AREA");
         }
 
-        static bool pointInPoly(float[] verts, float[] p)
+        static bool pointInPoly(float[] verts, Vector3f p)
         {
             bool c = false;
             int i, j;
@@ -361,14 +362,14 @@ namespace DotRecast.Recast
         {
             ctx.startTimer("MARK_CONVEXPOLY_AREA");
 
-            float[] bmin = new float[3];
-            float[] bmax = new float[3];
-            RecastVectors.copy(bmin, verts, 0);
-            RecastVectors.copy(bmax, verts, 0);
+            Vector3f bmin = new Vector3f();
+            Vector3f bmax = new Vector3f();
+            RecastVectors.copy(ref bmin, verts, 0);
+            RecastVectors.copy(ref bmax, verts, 0);
             for (int i = 3; i < verts.Length; i += 3)
             {
-                RecastVectors.min(bmin, verts, i);
-                RecastVectors.max(bmax, verts, i);
+                RecastVectors.min(ref bmin, verts, i);
+                RecastVectors.max(ref bmax, verts, i);
             }
 
             bmin[1] = hmin;
@@ -412,7 +413,7 @@ namespace DotRecast.Recast
                             continue;
                         if (s.y >= miny && s.y <= maxy)
                         {
-                            float[] p = new float[3];
+                            Vector3f p = new Vector3f();
                             p[0] = chf.bmin[0] + (x + 0.5f) * chf.cs;
                             p[1] = 0;
                             p[2] = chf.bmin[2] + (z + 0.5f) * chf.cs;
@@ -517,8 +518,8 @@ namespace DotRecast.Recast
         {
             ctx.startTimer("MARK_CYLINDER_AREA");
 
-            float[] bmin = new float[3];
-            float[] bmax = new float[3];
+            Vector3f bmin = new Vector3f();
+            Vector3f bmax = new Vector3f();
             bmin[0] = pos[0] - r;
             bmin[1] = pos[1];
             bmin[2] = pos[2] - r;

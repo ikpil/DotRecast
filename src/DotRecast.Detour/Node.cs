@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
@@ -33,7 +34,7 @@ namespace DotRecast.Detour
         public readonly int index;
 
         /** Position of the node. */
-        public float[] pos = new float[3];
+        public Vector3f pos = new Vector3f();
 
         /** Cost of reaching the given node. */
         public float cost;

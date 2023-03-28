@@ -23,9 +23,9 @@ namespace DotRecast.Detour.Crowd
     public class CrowdAgentAnimation
     {
         public bool active;
-        public float[] initPos = new float[3];
-        public float[] startPos = new float[3];
-        public float[] endPos = new float[3];
+        public Vector3f initPos = new Vector3f();
+        public Vector3f startPos = new Vector3f();
+        public Vector3f endPos = new Vector3f();
         public long polyRef;
         public float t, tmax;
     }

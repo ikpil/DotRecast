@@ -420,7 +420,7 @@ public class CrowdProfilingTool
     private class AgentData
     {
         public readonly AgentType type;
-        public readonly float[] home = new float[3];
+        public readonly Vector3f home = new Vector3f();
 
         public AgentData(AgentType type, float[] home)
         {

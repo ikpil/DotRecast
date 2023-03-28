@@ -18,6 +18,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
+
 namespace DotRecast.Detour
 {
     /**
@@ -29,7 +31,7 @@ namespace DotRecast.Detour
     public class NavMeshParams
     {
         /** The world space origin of the navigation mesh's tile space. [(x, y, z)] */
-        public readonly float[] orig = new float[3];
+        public Vector3f orig = new Vector3f();
 
         /** The width of each tile. (Along the x-axis.) */
         public float tileWidth;

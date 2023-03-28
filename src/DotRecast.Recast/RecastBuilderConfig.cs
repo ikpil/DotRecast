@@ -18,6 +18,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
+
 namespace DotRecast.Recast
 {
     using static RecastVectors;
@@ -36,10 +38,10 @@ namespace DotRecast.Recast
         public readonly int height;
 
         /** The minimum bounds of the field's AABB. [(x, y, z)] [Units: wu] **/
-        public readonly float[] bmin = new float[3];
+        public readonly Vector3f bmin = new Vector3f();
 
         /** The maximum bounds of the field's AABB. [(x, y, z)] [Units: wu] **/
-        public readonly float[] bmax = new float[3];
+        public readonly Vector3f bmax = new Vector3f();
 
         public RecastBuilderConfig(RecastConfig cfg, float[] bmin, float[] bmax) : this(cfg, bmin, bmax, 0, 0)
         {
@@ -50,8 +52,8 @@ namespace DotRecast.Recast
             this.tileX = tileX;
             this.tileZ = tileZ;
             this.cfg = cfg;
-            copy(this.bmin, bmin);
-            copy(this.bmax, bmax);
+            copy(ref this.bmin, bmin);
+            copy(ref this.bmax, bmax);
             if (cfg.useTiles)
             {
                 float tsx = cfg.tileSizeX * cfg.cs;

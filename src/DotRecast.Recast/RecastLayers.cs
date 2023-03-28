@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using DotRecast.Core;
 
 namespace DotRecast.Recast
 {
@@ -427,10 +428,10 @@ namespace DotRecast.Recast
             int lh = h - borderSize * 2;
 
             // Build contracted bbox for layers.
-            float[] bmin = new float[3];
-            float[] bmax = new float[3];
-            copy(bmin, chf.bmin);
-            copy(bmax, chf.bmax);
+            Vector3f bmin = new Vector3f();
+            Vector3f bmax = new Vector3f();
+            copy(ref bmin, chf.bmin);
+            copy(ref bmax, chf.bmax);
             bmin[0] += borderSize * chf.cs;
             bmin[2] += borderSize * chf.cs;
             bmax[0] -= borderSize * chf.cs;
@@ -474,8 +475,8 @@ namespace DotRecast.Recast
                 layer.ch = chf.ch;
 
                 // Adjust the bbox to fit the heightfield.
-                copy(layer.bmin, bmin);
-                copy(layer.bmax, bmax);
+                copy(ref layer.bmin, bmin);
+                copy(ref layer.bmax, bmax);
                 layer.bmin[1] = bmin[1] + hmin * chf.ch;
                 layer.bmax[1] = bmin[1] + hmax * chf.ch;
                 layer.hmin = hmin;

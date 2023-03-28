@@ -22,7 +22,7 @@ namespace DotRecast.Detour.TileCache
 {
     public class TileCacheParams
     {
-        public readonly float[] orig = new float[3];
+        public readonly Vector3f orig = new Vector3f();
         public float cs, ch;
         public int width, height;
         public float walkableHeight;

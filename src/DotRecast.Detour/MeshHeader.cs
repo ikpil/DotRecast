@@ -18,6 +18,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
+
 namespace DotRecast.Detour
 {
     /** Provides high level information related to a dtMeshTile object. */
@@ -95,10 +97,10 @@ namespace DotRecast.Detour
         public float walkableClimb;
 
         /** The minimum bounds of the tile's AABB. [(x, y, z)] */
-        public readonly float[] bmin = new float[3];
+        public Vector3f bmin = new Vector3f();
 
         /** The maximum bounds of the tile's AABB. [(x, y, z)] */
-        public readonly float[] bmax = new float[3];
+        public Vector3f bmax = new Vector3f();
 
         /** The bounding volume quantization factor. */
         public float bvQuantFactor;

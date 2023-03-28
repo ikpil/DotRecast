@@ -82,7 +82,7 @@ public class Intersections
     {
         float EPS = 1e-6f;
 
-        float[] d = new float[3];
+        Vector3f d = new Vector3f();
         d[0] = sq[0] - sp[0];
         d[1] = sq[1] - sp[1];
         d[2] = sq[2] - sp[2];

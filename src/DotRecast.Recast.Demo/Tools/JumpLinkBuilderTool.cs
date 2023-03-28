@@ -431,7 +431,7 @@ public class JumpLinkBuilderTool : Tool
     {
         int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP_AUTO;
         int flags = SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP;
-        float[] prev = new float[3];
+        Vector3f prev = new Vector3f();
         for (int i = 0; i < link.startSamples.Length; i++)
         {
             float[] p = link.startSamples[i].p;

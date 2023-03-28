@@ -26,6 +26,16 @@ namespace DotRecast.Core
         public float y;
         public float z;
 
+        public static Vector3f Of(float[] f)
+        {
+            return new Vector3f()
+            {
+                x = f[0],
+                y = f[1],
+                z = f[2],
+            };
+        }
+
         public Vector3f(float x, float y, float z)
         {
             this.x = x;

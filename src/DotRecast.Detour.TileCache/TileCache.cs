@@ -455,8 +455,8 @@ namespace DotRecast.Detour.TileCache
                     foreach (long i in tiles)
                     {
                         CompressedTile tile = m_tiles[decodeTileIdTile(i)];
-                        float[] tbmin = new float[3];
-                        float[] tbmax = new float[3];
+                        Vector3f tbmin = new Vector3f();
+                        Vector3f tbmax = new Vector3f();
                         calcTightTileBounds(tile.header, tbmin, tbmax);
                         if (overlapBounds(bmin, bmax, tbmin, tbmax))
                         {
@@ -499,8 +499,8 @@ namespace DotRecast.Detour.TileCache
                     if (req.action == ObstacleRequestAction.REQUEST_ADD)
                     {
                         // Find touched tiles.
-                        float[] bmin = new float[3];
-                        float[] bmax = new float[3];
+                        Vector3f bmin = new Vector3f();
+                        Vector3f bmax = new Vector3f();
                         getObstacleBounds(ob, bmin, bmax);
                         ob.touched = queryTiles(bmin, bmax);
                         // Add tiles to update list.

@@ -17,6 +17,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
@@ -50,10 +51,10 @@ namespace DotRecast.Detour
             float[] inters = new float[Math.Max(m, n) * 3 * 3];
             int ii = 0;
             /* Initialize variables. */
-            float[] a = new float[3];
-            float[] b = new float[3];
-            float[] a1 = new float[3];
-            float[] b1 = new float[3];
+            Vector3f a = new Vector3f();
+            Vector3f b = new Vector3f();
+            Vector3f a1 = new Vector3f();
+            Vector3f b1 = new Vector3f();
 
             int aa = 0;
             int ba = 0;
@@ -62,15 +63,15 @@ namespace DotRecast.Detour
 
             InFlag f = InFlag.Unknown;
             bool FirstPoint = true;
-            float[] ip = new float[3];
-            float[] iq = new float[3];
+            Vector3f ip = new Vector3f();
+            Vector3f iq = new Vector3f();
 
             do
             {
-                vCopy(a, p, 3 * (ai % n));
-                vCopy(b, q, 3 * (bi % m));
-                vCopy(a1, p, 3 * ((ai + n - 1) % n)); // prev a
-                vCopy(b1, q, 3 * ((bi + m - 1) % m)); // prev b
+                vCopy(ref a, p, 3 * (ai % n));
+                vCopy(ref b, q, 3 * (bi % m));
+                vCopy(ref a1, p, 3 * ((ai + n - 1) % n)); // prev a
+                vCopy(ref b1, q, 3 * ((bi + m - 1) % m)); // prev b
 
                 float[] A = vSub(a, a1);
                 float[] B = vSub(b, b1);
@@ -84,7 +85,7 @@ namespace DotRecast.Detour
                 }
 
                 bool parallel = cross == 0f;
-                Intersection code = parallel ? parallelInt(a1, a, b1, b, ip, iq) : segSegInt(a1, a, b1, b, ip, iq);
+                Intersection code = parallel ? parallelInt(a1, a, b1, b, ref ip, ref iq) : segSegInt(a1, a, b1, b, ref ip, ref iq);
 
                 if (code == Intersection.Single)
                 {
@@ -209,6 +210,28 @@ namespace DotRecast.Detour
             inters[ii + 2] = p[2];
             return ii + 3;
         }
+        
+        private static int addVertex(float[] inters, int ii, Vector3f p)
+        {
+            if (ii > 0)
+            {
+                if (inters[ii - 3] == p[0] && inters[ii - 2] == p[1] && inters[ii - 1] == p[2])
+                {
+                    return ii;
+                }
+
+                if (inters[0] == p[0] && inters[1] == p[1] && inters[2] == p[2])
+                {
+                    return ii;
+                }
+            }
+
+            inters[ii] = p[0];
+            inters[ii + 1] = p[1];
+            inters[ii + 2] = p[2];
+            return ii + 3;
+        }
+
 
         private static InFlag inOut(InFlag inflag, float aHB, float bHA)
         {
@@ -224,7 +247,7 @@ namespace DotRecast.Detour
             return inflag;
         }
 
-        private static Intersection segSegInt(float[] a, float[] b, float[] c, float[] d, float[] p, float[] q)
+        private static Intersection segSegInt(Vector3f a, Vector3f b, Vector3f c, Vector3f d, ref Vector3f p, ref Vector3f q)
         {
             var isec = intersectSegSeg2D(a, b, c, d);
             if (null != isec)
@@ -243,54 +266,54 @@ namespace DotRecast.Detour
             return Intersection.None;
         }
 
-        private static Intersection parallelInt(float[] a, float[] b, float[] c, float[] d, float[] p, float[] q)
+        private static Intersection parallelInt(Vector3f a, Vector3f b, Vector3f c, Vector3f d, ref Vector3f p, ref Vector3f q)
         {
             if (between(a, b, c) && between(a, b, d))
             {
-                vCopy(p, c);
-                vCopy(q, d);
+                vCopy(ref p, c);
+                vCopy(ref q, d);
                 return Intersection.Overlap;
             }
 
             if (between(c, d, a) && between(c, d, b))
             {
-                vCopy(p, a);
-                vCopy(q, b);
+                vCopy(ref p, a);
+                vCopy(ref q, b);
                 return Intersection.Overlap;
             }
 
             if (between(a, b, c) && between(c, d, b))
             {
-                vCopy(p, c);
-                vCopy(q, b);
+                vCopy(ref p, c);
+                vCopy(ref q, b);
                 return Intersection.Overlap;
             }
 
             if (between(a, b, c) && between(c, d, a))
             {
-                vCopy(p, c);
-                vCopy(q, a);
+                vCopy(ref p, c);
+                vCopy(ref q, a);
                 return Intersection.Overlap;
             }
 
             if (between(a, b, d) && between(c, d, b))
             {
-                vCopy(p, d);
-                vCopy(q, b);
+                vCopy(ref p, d);
+                vCopy(ref q, b);
                 return Intersection.Overlap;
             }
 
             if (between(a, b, d) && between(c, d, a))
             {
-                vCopy(p, d);
-                vCopy(q, a);
+                vCopy(ref p, d);
+                vCopy(ref q, a);
                 return Intersection.Overlap;
             }
 
             return Intersection.None;
         }
 
-        private static bool between(float[] a, float[] b, float[] c)
+        private static bool between(Vector3f a, Vector3f b, Vector3f c)
         {
             if (Math.Abs(a[0] - b[0]) > Math.Abs(a[2] - b[2]))
             {
