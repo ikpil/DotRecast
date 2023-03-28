@@ -18,6 +18,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
+
 namespace DotRecast.Recast
 {
     /** Represents a heightfield layer within a layer set. */
@@ -30,10 +32,10 @@ namespace DotRecast.Recast
         public readonly int height;
 
         /** The minimum bounds in world space. [(x, y, z)] */
-        public readonly float[] bmin;
+        public readonly Vector3f bmin;
 
         /** The maximum bounds in world space. [(x, y, z)] */
-        public readonly float[] bmax;
+        public Vector3f bmax;
 
         /** The size of each cell. (On the xz-plane.) */
         public readonly float cs;
@@ -47,7 +49,7 @@ namespace DotRecast.Recast
         /** Border size in cell units */
         public readonly int borderSize;
 
-        public Heightfield(int width, int height, float[] bmin, float[] bmax, float cs, float ch, int borderSize)
+        public Heightfield(int width, int height, Vector3f bmin, Vector3f bmax, float cs, float ch, int borderSize)
         {
             this.width = width;
             this.height = height;

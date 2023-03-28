@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
@@ -85,7 +86,7 @@ namespace DotRecast.Detour
             return (poly.flags & m_includeFlags) != 0 && (poly.flags & m_excludeFlags) == 0;
         }
 
-        public float getCost(float[] pa, float[] pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef,
+        public float getCost(Vector3f pa, Vector3f pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef,
             MeshTile curTile, Poly curPoly, long nextRef, MeshTile nextTile, Poly nextPoly)
         {
             return vDist(pa, pb) * m_areaCost[curPoly.getArea()];

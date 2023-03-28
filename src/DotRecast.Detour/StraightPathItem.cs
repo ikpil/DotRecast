@@ -18,6 +18,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
+
 namespace DotRecast.Detour
 {
     using static DotRecast.Core.RecastMath;
@@ -25,18 +27,18 @@ namespace DotRecast.Detour
 //TODO: (PP) Add comments
     public class StraightPathItem
     {
-        public float[] pos;
+        public Vector3f pos;
         public int flags;
         public long refs;
 
-        public StraightPathItem(float[] pos, int flags, long refs)
+        public StraightPathItem(Vector3f pos, int flags, long refs)
         {
-            this.pos = vCopy(pos);
+            this.pos = pos;
             this.flags = flags;
             this.refs = refs;
         }
 
-        public float[] getPos()
+        public Vector3f getPos()
         {
             return pos;
         }

@@ -18,14 +18,16 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
+
 namespace DotRecast.Detour
 {
     public class ClosestPointOnPolyResult
     {
         private readonly bool posOverPoly;
-        private readonly float[] closest;
+        private readonly Vector3f closest;
 
-        public ClosestPointOnPolyResult(bool posOverPoly, float[] closest)
+        public ClosestPointOnPolyResult(bool posOverPoly, Vector3f closest)
         {
             this.posOverPoly = posOverPoly;
             this.closest = closest;
@@ -38,7 +40,7 @@ namespace DotRecast.Detour
         }
 
         /** Returns the closest point on the polygon. [(x, y, z)] */
-        public float[] getClosest()
+        public Vector3f getClosest()
         {
             return closest;
         }

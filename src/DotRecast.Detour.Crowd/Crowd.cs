@@ -163,7 +163,7 @@ namespace DotRecast.Detour.Crowd
         public Crowd(CrowdConfig config, NavMesh nav, Func<int, QueryFilter> queryFilterFactory)
         {
             _config = config;
-            vSet(m_ext, config.maxAgentRadius * 2.0f, config.maxAgentRadius * 1.5f, config.maxAgentRadius * 2.0f);
+            vSet(ref m_ext, config.maxAgentRadius * 2.0f, config.maxAgentRadius * 1.5f, config.maxAgentRadius * 2.0f);
 
             m_obstacleQuery = new ObstacleAvoidanceQuery(config.maxObstacleAvoidanceCircles, config.maxObstacleAvoidanceSegments);
 
@@ -236,7 +236,7 @@ namespace DotRecast.Detour.Crowd
      *            The configutation of the agent.
      * @return The newly created agent object
      */
-        public CrowdAgent addAgent(float[] pos, CrowdAgentParams option)
+        public CrowdAgent addAgent(Vector3f pos, CrowdAgentParams option)
         {
             CrowdAgent ag = new CrowdAgent(agentId.GetAndIncrement());
             m_agents.Add(ag);
@@ -245,7 +245,7 @@ namespace DotRecast.Detour.Crowd
             // Find nearest position on navmesh and place the agent there.
             Result<FindNearestPolyResult> nearestPoly = navQuery.findNearestPoly(pos, m_ext, m_filters[ag.option.queryFilterType]);
 
-            float[] nearest = nearestPoly.succeeded() ? nearestPoly.result.getNearestPos() : pos;
+            var nearest = nearestPoly.succeeded() ? nearestPoly.result.getNearestPos() : pos;
             long refs = nearestPoly.succeeded() ? nearestPoly.result.getNearestRef() : 0L;
             ag.corridor.reset(refs, nearest);
             ag.boundary.reset();
@@ -254,10 +254,10 @@ namespace DotRecast.Detour.Crowd
             ag.topologyOptTime = 0;
             ag.targetReplanTime = 0;
 
-            vSet(ag.dvel, 0, 0, 0);
-            vSet(ag.nvel, 0, 0, 0);
-            vSet(ag.vel, 0, 0, 0);
-            vCopy(ag.npos, nearest);
+            vSet(ref ag.dvel, 0, 0, 0);
+            vSet(ref ag.nvel, 0, 0, 0);
+            vSet(ref ag.vel, 0, 0, 0);
+            vCopy(ref ag.npos, nearest);
 
             ag.desiredSpeed = 0;
 
@@ -286,7 +286,7 @@ namespace DotRecast.Detour.Crowd
             m_agents.Remove(agent);
         }
 
-        private bool requestMoveTargetReplan(CrowdAgent ag, long refs, float[] pos)
+        private bool requestMoveTargetReplan(CrowdAgent ag, long refs, Vector3f pos)
         {
             ag.setTarget(refs, pos);
             ag.targetReplan = true;
@@ -304,7 +304,7 @@ namespace DotRecast.Detour.Crowd
         /// The position will be constrained to the surface of the navigation mesh.
         ///
         /// The request will be processed during the next #update().
-        public bool requestMoveTarget(CrowdAgent agent, long refs, float[] pos)
+        public bool requestMoveTarget(CrowdAgent agent, long refs, Vector3f pos)
         {
             if (refs == 0)
             {
@@ -325,7 +325,7 @@ namespace DotRecast.Detour.Crowd
         {
             // Initialize request.
             agent.targetRef = 0;
-            vCopy(agent.targetPos, vel);
+            vCopy(ref agent.targetPos, vel);
             agent.targetPathQueryResult = null;
             agent.targetReplan = false;
             agent.targetState = CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY;
@@ -340,8 +340,8 @@ namespace DotRecast.Detour.Crowd
         {
             // Initialize request.
             agent.targetRef = 0;
-            vSet(agent.targetPos, 0, 0, 0);
-            vSet(agent.dvel, 0, 0, 0);
+            vSet(ref agent.targetPos, 0, 0, 0);
+            vSet(ref agent.dvel, 0, 0, 0);
             agent.targetPathQueryResult = null;
             agent.targetReplan = false;
             agent.targetState = CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_NONE;
@@ -358,7 +358,7 @@ namespace DotRecast.Detour.Crowd
             return new List<CrowdAgent>(m_agents);
         }
 
-        public float[] getQueryExtents()
+        public Vector3f getQueryExtents()
         {
             return m_ext;
         }
@@ -455,7 +455,7 @@ namespace DotRecast.Detour.Crowd
                 // First check that the current location is valid.
                 Vector3f agentPos = new Vector3f();
                 long agentRef = ag.corridor.getFirstPoly();
-                vCopy(agentPos, ag.npos);
+                vCopy(ref agentPos, ag.npos);
                 if (!navQuery.isValidPolyRef(agentRef, m_filters[ag.option.queryFilterType]))
                 {
                     // Current location is not valid, try to reposition.
@@ -465,7 +465,7 @@ namespace DotRecast.Detour.Crowd
                     agentRef = nearestPoly.succeeded() ? nearestPoly.result.getNearestRef() : 0L;
                     if (nearestPoly.succeeded())
                     {
-                        vCopy(agentPos, nearestPoly.result.getNearestPos());
+                        vCopy(ref agentPos, nearestPoly.result.getNearestPos());
                     }
 
                     if (agentRef == 0)
@@ -1008,10 +1008,10 @@ namespace DotRecast.Detour.Crowd
 
                     // Adjust the path over the off-mesh connection.
                     long[] refs = new long[2];
-                    if (ag.corridor.moveOverOffmeshConnection(ag.corners[ag.corners.Count - 1].getRef(), refs, anim.startPos,
-                            anim.endPos, navQuery))
+                    if (ag.corridor.moveOverOffmeshConnection(ag.corners[ag.corners.Count - 1].getRef(), refs, ref anim.startPos,
+                            ref anim.endPos, navQuery))
                     {
-                        vCopy(anim.initPos, ag.npos);
+                        vCopy(ref anim.initPos, ag.npos);
                         anim.polyRef = refs[1];
                         anim.active = true;
                         anim.t = 0.0f;

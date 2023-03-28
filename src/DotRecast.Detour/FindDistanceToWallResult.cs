@@ -18,16 +18,18 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
+
 namespace DotRecast.Detour
 {
 //TODO: (PP) Add comments
     public class FindDistanceToWallResult
     {
         private readonly float distance;
-        private readonly float[] position;
-        private readonly float[] normal;
+        private readonly Vector3f position;
+        private readonly Vector3f normal;
 
-        public FindDistanceToWallResult(float distance, float[] position, float[] normal)
+        public FindDistanceToWallResult(float distance, Vector3f position, Vector3f normal)
         {
             this.distance = distance;
             this.position = position;
@@ -39,12 +41,12 @@ namespace DotRecast.Detour
             return distance;
         }
 
-        public float[] getPosition()
+        public Vector3f getPosition()
         {
             return position;
         }
 
-        public float[] getNormal()
+        public Vector3f getNormal()
         {
             return normal;
         }

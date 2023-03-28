@@ -1,4 +1,5 @@
 using System;
+using DotRecast.Core;
 using DotRecast.Recast;
 using static DotRecast.Core.RecastMath;
 
@@ -7,7 +8,7 @@ namespace DotRecast.Detour.Extras.Jumplink
     public abstract class AbstractGroundSampler : GroundSampler
     {
         protected void sampleGround(JumpLinkBuilderConfig acfg, EdgeSampler es,
-            Func<float[], float, Tuple<bool, float>> heightFunc)
+            Func<Vector3f, float, Tuple<bool, float>> heightFunc)
         {
             float cs = acfg.cellSize;
             float dist = (float)Math.Sqrt(vDist2DSqr(es.start.p, es.start.q));
@@ -21,7 +22,7 @@ namespace DotRecast.Detour.Extras.Jumplink
 
         public abstract void sample(JumpLinkBuilderConfig acfg, RecastBuilderResult result, EdgeSampler es);
 
-        protected void sampleGroundSegment(Func<float[], float, Tuple<bool, float>> heightFunc, GroundSegment seg, int nsamples)
+        protected void sampleGroundSegment(Func<Vector3f, float, Tuple<bool, float>> heightFunc, GroundSegment seg, int nsamples)
         {
             seg.gsamples = new GroundSample[nsamples];
 
@@ -31,7 +32,7 @@ namespace DotRecast.Detour.Extras.Jumplink
 
                 GroundSample s = new GroundSample();
                 seg.gsamples[i] = s;
-                float[] pt = vLerp(seg.p, seg.q, u);
+                Vector3f pt = vLerp(seg.p, seg.q, u);
                 Tuple<bool, float> height = heightFunc.Invoke(pt, seg.height);
                 s.p[0] = pt[0];
                 s.p[1] = height.Item2;

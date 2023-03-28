@@ -17,6 +17,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
@@ -24,7 +25,7 @@ namespace DotRecast.Detour
 
     public interface PolygonByCircleConstraint
     {
-        float[] aply(float[] polyVerts, float[] circleCenter, float radius);
+        float[] aply(float[] polyVerts, Vector3f circleCenter, float radius);
 
         public static PolygonByCircleConstraint noop()
         {
@@ -38,7 +39,7 @@ namespace DotRecast.Detour
 
         public class NoOpPolygonByCircleConstraint : PolygonByCircleConstraint
         {
-            public float[] aply(float[] polyVerts, float[] circleCenter, float radius)
+            public float[] aply(float[] polyVerts, Vector3f circleCenter, float radius)
             {
                 return polyVerts;
             }
@@ -52,7 +53,7 @@ namespace DotRecast.Detour
             private const int CIRCLE_SEGMENTS = 12;
             private static float[] unitCircle;
 
-            public float[] aply(float[] verts, float[] center, float radius)
+            public float[] aply(float[] verts, Vector3f center, float radius)
             {
                 float radiusSqr = radius * radius;
                 int outsideVertex = -1;
@@ -82,7 +83,7 @@ namespace DotRecast.Detour
                 return intersection;
             }
 
-            private float[] circle(float[] center, float radius)
+            private float[] circle(Vector3f center, float radius)
             {
                 if (unitCircle == null)
                 {

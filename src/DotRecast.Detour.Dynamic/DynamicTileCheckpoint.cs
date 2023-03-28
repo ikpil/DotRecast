@@ -35,7 +35,7 @@ namespace DotRecast.Detour.Dynamic
 
         private Heightfield clone(Heightfield source)
         {
-            Heightfield clone = new Heightfield(source.width, source.height, vCopy(source.bmin), vCopy(source.bmax), source.cs,
+            Heightfield clone = new Heightfield(source.width, source.height, source.bmin, source.bmax, source.cs,
                 source.ch, source.borderSize);
             for (int z = 0, pz = 0; z < source.height; z++, pz += source.width)
             {

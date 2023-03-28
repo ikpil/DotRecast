@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using DotRecast.Core;
 using DotRecast.Detour.Crowd.Tracking;
 
 namespace DotRecast.Detour.Crowd
@@ -36,31 +37,31 @@ namespace DotRecast.Detour.Crowd
         public class ObstacleCircle
         {
             /** Position of the obstacle */
-            public readonly Vector3f p = new Vector3f();
+            public Vector3f p = new Vector3f();
 
             /** Velocity of the obstacle */
-            public readonly Vector3f vel = new Vector3f();
+            public Vector3f vel = new Vector3f();
 
             /** Velocity of the obstacle */
-            public readonly Vector3f dvel = new Vector3f();
+            public Vector3f dvel = new Vector3f();
 
             /** Radius of the obstacle */
             public float rad;
 
             /** Use for side selection during sampling. */
-            public readonly Vector3f dp = new Vector3f();
+            public Vector3f dp = new Vector3f();
 
             /** Use for side selection during sampling. */
-            public readonly Vector3f np = new Vector3f();
+            public Vector3f np = new Vector3f();
         }
 
         public class ObstacleSegment
         {
             /** End points of the obstacle segment */
-            public readonly Vector3f p = new Vector3f();
+            public Vector3f p = new Vector3f();
 
             /** End points of the obstacle segment */
-            public readonly Vector3f q = new Vector3f();
+            public Vector3f q = new Vector3f();
 
             public bool touch;
         }
@@ -152,25 +153,25 @@ namespace DotRecast.Detour.Crowd
             m_nsegments = 0;
         }
 
-        public void addCircle(float[] pos, float rad, float[] vel, float[] dvel)
+        public void addCircle(Vector3f pos, float rad, Vector3f vel, Vector3f dvel)
         {
             if (m_ncircles >= m_maxCircles)
                 return;
 
             ObstacleCircle cir = m_circles[m_ncircles++];
-            vCopy(cir.p, pos);
+            vCopy(ref cir.p, pos);
             cir.rad = rad;
-            vCopy(cir.vel, vel);
-            vCopy(cir.dvel, dvel);
+            vCopy(ref cir.vel, vel);
+            vCopy(ref cir.dvel, dvel);
         }
 
-        public void addSegment(float[] p, float[] q)
+        public void addSegment(Vector3f p, Vector3f q)
         {
             if (m_nsegments >= m_maxSegments)
                 return;
             ObstacleSegment seg = m_segments[m_nsegments++];
-            vCopy(seg.p, p);
-            vCopy(seg.q, q);
+            vCopy(ref seg.p, p);
+            vCopy(ref seg.q, q);
         }
 
         public int getObstacleCircleCount()
@@ -193,7 +194,7 @@ namespace DotRecast.Detour.Crowd
             return m_segments[i];
         }
 
-        private void prepare(float[] pos, float[] dvel)
+        private void prepare(Vector3f pos, float[] dvel)
         {
             // Prepare obstacles
             for (int i = 0; i < m_ncircles; ++i)
@@ -201,13 +202,13 @@ namespace DotRecast.Detour.Crowd
                 ObstacleCircle cir = m_circles[i];
 
                 // Side
-                float[] pa = pos;
-                float[] pb = cir.p;
+                Vector3f pa = pos;
+                Vector3f pb = cir.p;
 
-                float[] orig = { 0f, 0f, 0f };
+                Vector3f orig = new Vector3f();
                 Vector3f dv = new Vector3f();
-                vCopy(cir.dp, vSub(pb, pa));
-                vNormalize(cir.dp);
+                vCopy(ref cir.dp, vSub(pb, pa));
+                vNormalize(ref cir.dp);
                 dv = vSub(cir.dvel, dvel);
 
                 float a = triArea2D(orig, cir.dp, dv);

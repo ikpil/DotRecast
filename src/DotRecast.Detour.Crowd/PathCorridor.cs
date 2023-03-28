@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using DotRecast.Core;
 
 namespace DotRecast.Detour.Crowd
 {
@@ -64,8 +65,8 @@ namespace DotRecast.Detour.Crowd
  */
     public class PathCorridor
     {
-        private readonly Vector3f m_pos = new Vector3f();
-        private readonly Vector3f m_target = new Vector3f();
+        private Vector3f m_pos = new Vector3f();
+        private Vector3f m_target = new Vector3f();
         private List<long> m_path;
 
         protected List<long> mergeCorridorStartMoved(List<long> path, List<long> visited)
@@ -205,12 +206,12 @@ namespace DotRecast.Detour.Crowd
      * @param pos
      *            The new position in the corridor. [(x, y, z)]
      */
-        public void reset(long refs, float[] pos)
+        public void reset(long refs, Vector3f pos)
         {
             m_path.Clear();
             m_path.Add(refs);
-            vCopy(m_pos, pos);
-            vCopy(m_target, pos);
+            vCopy(ref m_pos, pos);
+            vCopy(ref m_target, pos);
         }
 
         private static readonly float MIN_TARGET_DIST = sqr(0.01f);
@@ -297,8 +298,7 @@ namespace DotRecast.Detour.Crowd
      * @param filter
      *            The filter to apply to the operation.
      */
-        public void optimizePathVisibility(float[] next, float pathOptimizationRange, NavMeshQuery navquery,
-            QueryFilter filter)
+        public void optimizePathVisibility(Vector3f next, float pathOptimizationRange, NavMeshQuery navquery, QueryFilter filter)
         {
             // Clamp the ray to max distance.
             float dist = vDist2D(m_pos, next);
@@ -314,8 +314,8 @@ namespace DotRecast.Detour.Crowd
             dist = Math.Min(dist + 0.01f, pathOptimizationRange);
 
             // Adjust ray length.
-            float[] delta = vSub(next, m_pos);
-            float[] goal = vMad(m_pos, delta, pathOptimizationRange / dist);
+            var delta = vSub(next, m_pos);
+            Vector3f goal = vMad(m_pos, delta, pathOptimizationRange / dist);
 
             Result<RaycastHit> rc = navquery.raycast(m_path[0], m_pos, goal, filter, 0, 0);
             if (rc.succeeded())
@@ -363,8 +363,7 @@ namespace DotRecast.Detour.Crowd
             return false;
         }
 
-        public bool moveOverOffmeshConnection(long offMeshConRef, long[] refs, float[] start, float[] end,
-            NavMeshQuery navquery)
+        public bool moveOverOffmeshConnection(long offMeshConRef, long[] refs, ref Vector3f start, ref Vector3f end, NavMeshQuery navquery)
         {
             // Advance the path up to and over the off-mesh connection.
             long prevRef = 0, polyRef = m_path[0];
@@ -388,12 +387,12 @@ namespace DotRecast.Detour.Crowd
             refs[1] = polyRef;
 
             NavMesh nav = navquery.getAttachedNavMesh();
-            Result<Tuple<float[], float[]>> startEnd = nav.getOffMeshConnectionPolyEndPoints(refs[0], refs[1]);
+            var startEnd = nav.getOffMeshConnectionPolyEndPoints(refs[0], refs[1]);
             if (startEnd.succeeded())
             {
-                vCopy(m_pos, startEnd.result.Item2);
-                vCopy(start, startEnd.result.Item1);
-                vCopy(end, startEnd.result.Item2);
+                vCopy(ref m_pos, startEnd.result.Item2);
+                vCopy(ref start, startEnd.result.Item1);
+                vCopy(ref end, startEnd.result.Item2);
                 return true;
             }
 
@@ -423,7 +422,7 @@ namespace DotRecast.Detour.Crowd
      * @param filter
      *            The filter to apply to the operation.
      */
-        public bool movePosition(float[] npos, NavMeshQuery navquery, QueryFilter filter)
+        public bool movePosition(Vector3f npos, NavMeshQuery navquery, QueryFilter filter)
         {
             // Move along navmesh and update new position.
             Result<MoveAlongSurfaceResult> masResult = navquery.moveAlongSurface(m_path[0], m_pos, npos, filter);
@@ -431,7 +430,7 @@ namespace DotRecast.Detour.Crowd
             {
                 m_path = mergeCorridorStartMoved(m_path, masResult.result.getVisited());
                 // Adjust the position to stay on top of the navmesh.
-                vCopy(m_pos, masResult.result.getResultPos());
+                vCopy(ref m_pos, masResult.result.getResultPos());
                 Result<float> hr = navquery.getPolyHeight(m_path[0], masResult.result.getResultPos());
                 if (hr.succeeded())
                 {
@@ -492,15 +491,15 @@ namespace DotRecast.Detour.Crowd
      * @param path
      *            The path corridor.
      */
-        public void setCorridor(float[] target, List<long> path)
+        public void setCorridor(Vector3f target, List<long> path)
         {
-            vCopy(m_target, target);
+            vCopy(ref m_target, target);
             m_path = new List<long>(path);
         }
 
-        public void fixPathStart(long safeRef, float[] safePos)
+        public void fixPathStart(long safeRef, Vector3f safePos)
         {
-            vCopy(m_pos, safePos);
+            vCopy(ref m_pos, safePos);
             if (m_path.Count < 3 && m_path.Count > 0)
             {
                 long p = m_path[m_path.Count - 1];

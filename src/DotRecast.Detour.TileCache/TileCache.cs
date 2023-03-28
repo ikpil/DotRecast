@@ -363,7 +363,7 @@ namespace DotRecast.Detour.TileCache
             TileCacheObstacle ob = allocObstacle();
             ob.type = TileCacheObstacle.TileCacheObstacleType.CYLINDER;
 
-            vCopy(ob.pos, pos);
+            vCopy(ref ob.pos, pos);
             ob.radius = radius;
             ob.height = height;
 
@@ -376,19 +376,19 @@ namespace DotRecast.Detour.TileCache
             TileCacheObstacle ob = allocObstacle();
             ob.type = TileCacheObstacle.TileCacheObstacleType.BOX;
 
-            vCopy(ob.bmin, bmin);
-            vCopy(ob.bmax, bmax);
+            vCopy(ref ob.bmin, bmin);
+            vCopy(ref ob.bmax, bmax);
 
             return addObstacleRequest(ob).refs;
         }
 
         // Box obstacle: can be rotated in Y
-        public long addBoxObstacle(float[] center, float[] extents, float yRadians)
+        public long addBoxObstacle(Vector3f center, Vector3f extents, float yRadians)
         {
             TileCacheObstacle ob = allocObstacle();
             ob.type = TileCacheObstacle.TileCacheObstacleType.ORIENTED_BOX;
-            vCopy(ob.center, center);
-            vCopy(ob.extents, extents);
+            vCopy(ref ob.center, center);
+            vCopy(ref ob.extents, extents);
             float coshalf = (float)Math.Cos(0.5f * yRadians);
             float sinhalf = (float)Math.Sin(-0.5f * yRadians);
             ob.rotAux[0] = coshalf * sinhalf;
@@ -438,7 +438,7 @@ namespace DotRecast.Detour.TileCache
             return o;
         }
 
-        List<long> queryTiles(float[] bmin, float[] bmax)
+        List<long> queryTiles(Vector3f bmin, Vector3f bmax)
         {
             List<long> results = new List<long>();
             float tw = m_params.width * m_params.cs;
@@ -616,8 +616,7 @@ namespace DotRecast.Detour.TileCache
                 {
                     if (ob.type == TileCacheObstacle.TileCacheObstacleType.CYLINDER)
                     {
-                        builder.markCylinderArea(layer, tile.header.bmin, m_params.cs, m_params.ch, ob.pos, ob.radius,
-                            ob.height, 0);
+                        builder.markCylinderArea(layer, tile.header.bmin, m_params.cs, m_params.ch, ob.pos, ob.radius, ob.height, 0);
                     }
                     else if (ob.type == TileCacheObstacle.TileCacheObstacleType.BOX)
                     {
@@ -625,8 +624,7 @@ namespace DotRecast.Detour.TileCache
                     }
                     else if (ob.type == TileCacheObstacle.TileCacheObstacleType.ORIENTED_BOX)
                     {
-                        builder.markBoxArea(layer, tile.header.bmin, m_params.cs, m_params.ch, ob.center, ob.extents,
-                            ob.rotAux, 0);
+                        builder.markBoxArea(layer, tile.header.bmin, m_params.cs, m_params.ch, ob.center, ob.extents, ob.rotAux, 0);
                     }
                 }
             }
@@ -684,7 +682,7 @@ namespace DotRecast.Detour.TileCache
             return layer;
         }
 
-        void calcTightTileBounds(TileCacheLayerHeader header, float[] bmin, float[] bmax)
+        void calcTightTileBounds(TileCacheLayerHeader header, Vector3f bmin, Vector3f bmax)
         {
             float cs = m_params.cs;
             bmin[0] = header.bmin[0] + header.minx * cs;
@@ -695,7 +693,7 @@ namespace DotRecast.Detour.TileCache
             bmax[2] = header.bmin[2] + (header.maxy + 1) * cs;
         }
 
-        void getObstacleBounds(TileCacheObstacle ob, float[] bmin, float[] bmax)
+        void getObstacleBounds(TileCacheObstacle ob, Vector3f bmin, Vector3f bmax)
         {
             if (ob.type == TileCacheObstacle.TileCacheObstacleType.CYLINDER)
             {
@@ -708,8 +706,8 @@ namespace DotRecast.Detour.TileCache
             }
             else if (ob.type == TileCacheObstacle.TileCacheObstacleType.BOX)
             {
-                vCopy(bmin, ob.bmin);
-                vCopy(bmax, ob.bmax);
+                vCopy(ref bmin, ob.bmin);
+                vCopy(ref bmax, ob.bmax);
             }
             else if (ob.type == TileCacheObstacle.TileCacheObstacleType.ORIENTED_BOX)
             {

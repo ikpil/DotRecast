@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using DotRecast.Core;
 
 namespace DotRecast.Detour.Crowd
 {
@@ -138,7 +139,7 @@ namespace DotRecast.Detour.Crowd
         {
             // Fake dynamic constraint.
             float maxDelta = option.maxAcceleration * dt;
-            float[] dv = vSub(nvel, vel);
+            Vector3f dv = vSub(nvel, vel);
             float ds = vLen(dv);
             if (ds > maxDelta)
                 dv = vScale(dv, maxDelta / ds);
@@ -148,7 +149,7 @@ namespace DotRecast.Detour.Crowd
             if (vLen(vel) > 0.0001f)
                 npos = vMad(npos, vel, dt);
             else
-                vSet(vel, 0, 0, 0);
+                vSet(ref vel, 0, 0, 0);
         }
 
         public bool overOffmeshConnection(float radius)
@@ -182,18 +183,18 @@ namespace DotRecast.Detour.Crowd
             return range;
         }
 
-        public float[] calcSmoothSteerDirection()
+        public Vector3f calcSmoothSteerDirection()
         {
             Vector3f dir = new Vector3f();
             if (0 < corners.Count)
             {
                 int ip0 = 0;
                 int ip1 = Math.Min(1, corners.Count - 1);
-                float[] p0 = corners[ip0].getPos();
-                float[] p1 = corners[ip1].getPos();
+                var p0 = corners[ip0].getPos();
+                var p1 = corners[ip1].getPos();
 
-                float[] dir0 = vSub(p0, npos);
-                float[] dir1 = vSub(p1, npos);
+                var dir0 = vSub(p0, npos);
+                var dir1 = vSub(p1, npos);
                 dir0[1] = 0;
                 dir1[1] = 0;
 
@@ -206,29 +207,29 @@ namespace DotRecast.Detour.Crowd
                 dir[1] = 0;
                 dir[2] = dir0[2] - dir1[2] * len0 * 0.5f;
 
-                vNormalize(dir);
+                vNormalize(ref dir);
             }
 
             return dir;
         }
 
-        public float[] calcStraightSteerDirection()
+        public Vector3f calcStraightSteerDirection()
         {
             Vector3f dir = new Vector3f();
             if (0 < corners.Count)
             {
                 dir = vSub(corners[0].getPos(), npos);
                 dir[1] = 0;
-                vNormalize(dir);
+                vNormalize(ref dir);
             }
 
             return dir;
         }
 
-        public void setTarget(long refs, float[] pos)
+        public void setTarget(long refs, Vector3f pos)
         {
             targetRef = refs;
-            vCopy(targetPos, pos);
+            vCopy(ref targetPos, pos);
             targetPathQueryResult = null;
             if (targetRef != 0)
             {

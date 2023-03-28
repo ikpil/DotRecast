@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DotRecast.Core;
 using static DotRecast.Core.RecastMath;
 
 namespace DotRecast.Detour.Extras.Jumplink
@@ -16,11 +17,11 @@ namespace DotRecast.Detour.Extras.Jumplink
         public EdgeSampler(Edge edge, Trajectory trajectory)
         {
             this.trajectory = trajectory;
-            vCopy(ax, vSub(edge.sq, edge.sp));
-            vNormalize(ax);
-            vSet(az, ax[2], 0, -ax[0]);
-            vNormalize(az);
-            vSet(ay, 0, 1, 0);
+            vCopy(ref ax, vSub(edge.sq, edge.sp));
+            vNormalize(ref ax);
+            vSet(ref az, ax[2], 0, -ax[0]);
+            vNormalize(ref az);
+            vSet(ref ay, 0, 1, 0);
         }
     }
 }

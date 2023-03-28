@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using DotRecast.Core;
 
 namespace DotRecast.Detour.TileCache
 {
@@ -33,12 +34,12 @@ namespace DotRecast.Detour.TileCache
 
         public readonly int index;
         public TileCacheObstacleType type;
-        public readonly Vector3f pos = new Vector3f();
-        public readonly Vector3f bmin = new Vector3f();
-        public readonly Vector3f bmax = new Vector3f();
+        public Vector3f pos = new Vector3f();
+        public Vector3f bmin = new Vector3f();
+        public Vector3f bmax = new Vector3f();
         public float radius, height;
-        public readonly Vector3f center = new Vector3f();
-        public readonly Vector3f extents = new Vector3f();
+        public Vector3f center = new Vector3f();
+        public Vector3f extents = new Vector3f();
         public readonly float[] rotAux = new float[2]; // { cos(0.5f*angle)*sin(-0.5f*angle); cos(0.5f*angle)*cos(0.5f*angle) - 0.5 }
         public List<long> touched = new List<long>();
         public readonly List<long> pending = new List<long>();

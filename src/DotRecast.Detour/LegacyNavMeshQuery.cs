@@ -33,18 +33,16 @@ namespace DotRecast.Detour
         {
         }
 
-        public override Result<List<long>> findPath(long startRef, long endRef, float[] startPos, float[] endPos, QueryFilter filter,
+        public override Result<List<long>> findPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, QueryFilter filter,
             int options, float raycastLimit)
         {
             return findPath(startRef, endRef, startPos, endPos, filter);
         }
 
-        public override Result<List<long>> findPath(long startRef, long endRef, float[] startPos, float[] endPos,
-            QueryFilter filter)
+        public override Result<List<long>> findPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, QueryFilter filter)
         {
             // Validate input
-            if (!m_nav.isValidPolyRef(startRef) || !m_nav.isValidPolyRef(endRef) || null == startPos
-                || !vIsFinite(startPos) || null == endPos || !vIsFinite(endPos) || null == filter)
+            if (!m_nav.isValidPolyRef(startRef) || !m_nav.isValidPolyRef(endRef) || !vIsFinite(startPos) || !vIsFinite(endPos) || null == filter)
             {
                 return Results.invalidParam<List<long>>();
             }
@@ -144,11 +142,11 @@ namespace DotRecast.Detour
                     // If the node is visited the first time, calculate node position.
                     if (neighbourNode.flags == 0)
                     {
-                        Result<float[]> midpod = getEdgeMidPoint(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly,
+                        var midpod = getEdgeMidPoint(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly,
                             neighbourTile);
                         if (!midpod.failed())
                         {
-                            neighbourNode.pos = Vector3f.Of(midpod.result);
+                            neighbourNode.pos = midpod.result;
                         }
                     }
 
@@ -160,9 +158,9 @@ namespace DotRecast.Detour
                     if (neighbourRef == endRef)
                     {
                         // Cost
-                        float curCost = filter.getCost(bestNode.pos.ToArray(), neighbourNode.pos.ToArray(), parentRef, parentTile, parentPoly,
+                        float curCost = filter.getCost(bestNode.pos, neighbourNode.pos, parentRef, parentTile, parentPoly,
                             bestRef, bestTile, bestPoly, neighbourRef, neighbourTile, neighbourPoly);
-                        float endCost = filter.getCost(neighbourNode.pos.ToArray(), endPos, bestRef, bestTile, bestPoly, neighbourRef,
+                        float endCost = filter.getCost(neighbourNode.pos, endPos, bestRef, bestTile, bestPoly, neighbourRef,
                             neighbourTile, neighbourPoly, 0L, null, null);
 
                         cost = bestNode.cost + curCost + endCost;
@@ -171,7 +169,7 @@ namespace DotRecast.Detour
                     else
                     {
                         // Cost
-                        float curCost = filter.getCost(bestNode.pos.ToArray(), neighbourNode.pos.ToArray(), parentRef, parentTile, parentPoly,
+                        float curCost = filter.getCost(bestNode.pos, neighbourNode.pos, parentRef, parentTile, parentPoly,
                             bestRef, bestTile, bestPoly, neighbourRef, neighbourTile, neighbourPoly);
                         cost = bestNode.cost + curCost;
                         heuristic = vDist(neighbourNode.pos, endPos) * H_SCALE;
@@ -361,11 +359,11 @@ namespace DotRecast.Detour
                     // position.
                     if (neighbourNode.flags == 0)
                     {
-                        Result<float[]> midpod = getEdgeMidPoint(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly,
+                        var midpod = getEdgeMidPoint(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly,
                             neighbourTile);
                         if (!midpod.failed())
                         {
-                            neighbourNode.pos = Vector3f.Of(midpod.result);
+                            neighbourNode.pos = midpod.result;
                         }
                     }
 
@@ -646,11 +644,10 @@ namespace DotRecast.Detour
             return Results.of(status, path);
         }
 
-        public override Result<FindDistanceToWallResult> findDistanceToWall(long startRef, float[] centerPos, float maxRadius,
-            QueryFilter filter)
+        public override Result<FindDistanceToWallResult> findDistanceToWall(long startRef, Vector3f centerPos, float maxRadius, QueryFilter filter)
         {
             // Validate input
-            if (!m_nav.isValidPolyRef(startRef) || null == centerPos || !vIsFinite(centerPos) || maxRadius < 0
+            if (!m_nav.isValidPolyRef(startRef) || !vIsFinite(centerPos) || maxRadius < 0
                 || !float.IsFinite(maxRadius) || null == filter)
             {
                 return Results.invalidParam<FindDistanceToWallResult>();
@@ -660,7 +657,7 @@ namespace DotRecast.Detour
             m_openList.clear();
 
             Node startNode = m_nodePool.getNode(startRef);
-            vCopy(startNode.pos, centerPos);
+            vCopy(ref startNode.pos, centerPos);
             startNode.pidx = 0;
             startNode.cost = 0;
             startNode.total = 0;
@@ -808,7 +805,7 @@ namespace DotRecast.Detour
                     // Cost
                     if (neighbourNode.flags == 0)
                     {
-                        Result<float[]> midPoint = getEdgeMidPoint(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly,
+                        var midPoint = getEdgeMidPoint(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly,
                             neighbourTile);
                         if (midPoint.succeeded())
                         {
@@ -845,11 +842,11 @@ namespace DotRecast.Detour
             Vector3f hitNormal = new Vector3f();
             if (bestvi != null && bestvj != null)
             {
-                float[] tangent = vSub(bestvi, bestvj);
+                var tangent = vSub(bestvi, bestvj);
                 hitNormal[0] = tangent[2];
                 hitNormal[1] = 0;
                 hitNormal[2] = -tangent[0];
-                vNormalize(hitNormal);
+                vNormalize(ref hitNormal);
             }
 
             return Results.success(new FindDistanceToWallResult((float)Math.Sqrt(radiusSqr), hitPos, hitNormal));

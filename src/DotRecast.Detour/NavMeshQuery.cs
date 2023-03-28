@@ -21,6 +21,7 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using DotRecast.Core;
 
 namespace DotRecast.Detour
@@ -193,7 +194,7 @@ namespace DotRecast.Detour
             float s = frand.frand();
             float t = frand.frand();
 
-            float[] pt = randomPointInConvexPoly(verts, poly.vertCount, areas, s, t);
+            var pt = randomPointInConvexPoly(verts, poly.vertCount, areas, s, t);
             ClosestPointOnPolyResult closest = closestPointOnPoly(polyRef, pt).result;
             return Results.success(new FindRandomPointResult(polyRef, closest.getClosest()));
         }
@@ -214,7 +215,7 @@ namespace DotRecast.Detour
      *            Function returning a random number [0..1).
      * @return Random location
      */
-        public Result<FindRandomPointResult> findRandomPointAroundCircle(long startRef, float[] centerPos, float maxRadius,
+        public Result<FindRandomPointResult> findRandomPointAroundCircle(long startRef, Vector3f centerPos, float maxRadius,
             QueryFilter filter, FRand frand)
         {
             return findRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, PolygonByCircleConstraint.noop());
@@ -235,17 +236,17 @@ namespace DotRecast.Detour
      *            Function returning a random number [0..1).
      * @return Random location
      */
-        public Result<FindRandomPointResult> findRandomPointWithinCircle(long startRef, float[] centerPos, float maxRadius,
+        public Result<FindRandomPointResult> findRandomPointWithinCircle(long startRef, Vector3f centerPos, float maxRadius,
             QueryFilter filter, FRand frand)
         {
             return findRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, PolygonByCircleConstraint.strict());
         }
 
-        public Result<FindRandomPointResult> findRandomPointAroundCircle(long startRef, float[] centerPos, float maxRadius,
+        public Result<FindRandomPointResult> findRandomPointAroundCircle(long startRef, Vector3f centerPos, float maxRadius,
             QueryFilter filter, FRand frand, PolygonByCircleConstraint constraint)
         {
             // Validate input
-            if (!m_nav.isValidPolyRef(startRef) || null == centerPos || !vIsFinite(centerPos) || maxRadius < 0
+            if (!m_nav.isValidPolyRef(startRef) || !vIsFinite(centerPos) || maxRadius < 0
                 || !float.IsFinite(maxRadius) || null == filter || null == frand)
             {
                 return Results.invalidParam<FindRandomPointResult>();
@@ -361,11 +362,11 @@ namespace DotRecast.Detour
                         continue;
                     }
 
-                    float[] va = portalpoints.result.left;
-                    float[] vb = portalpoints.result.right;
+                    var va = portalpoints.result.left;
+                    var vb = portalpoints.result.right;
 
                     // If the circle is not touching the next polygon, skip it.
-                    Tuple<float, float> distseg = distancePtSegSqr2D(centerPos, va, vb);
+                    var distseg = distancePtSegSqr2D(centerPos, va, vb);
                     float distSqr = distseg.Item1;
                     if (distSqr > radiusSqr)
                     {
@@ -382,7 +383,7 @@ namespace DotRecast.Detour
                     // Cost
                     if (neighbourNode.flags == 0)
                     {
-                        neighbourNode.pos = Vector3f.Of(vLerp(va, vb, 0.5f));
+                        neighbourNode.pos = vLerp(va, vb, 0.5f);
                     }
 
                     float total = bestNode.total + vDist(bestNode.pos, neighbourNode.pos);
@@ -420,7 +421,7 @@ namespace DotRecast.Detour
             float t = frand.frand();
 
             float[] areas = new float[randomPolyVerts.Length / 3];
-            float[] pt = randomPointInConvexPoly(randomPolyVerts, randomPolyVerts.Length / 3, areas, s, t);
+            Vector3f pt = randomPointInConvexPoly(randomPolyVerts, randomPolyVerts.Length / 3, areas, s, t);
             ClosestPointOnPolyResult closest = closestPointOnPoly(randomPolyRef, pt).result;
             return Results.success(new FindRandomPointResult(randomPolyRef, closest.getClosest()));
         }
@@ -440,9 +441,9 @@ namespace DotRecast.Detour
         /// @param[out] closest
         /// @param[out] posOverPoly
         /// @returns The status flags for the query.
-        public Result<ClosestPointOnPolyResult> closestPointOnPoly(long refs, float[] pos)
+        public Result<ClosestPointOnPolyResult> closestPointOnPoly(long refs, Vector3f pos)
         {
-            if (!m_nav.isValidPolyRef(refs) || null == pos || !vIsFinite(pos))
+            if (!m_nav.isValidPolyRef(refs) || !vIsFinite(pos))
             {
                 return Results.invalidParam<ClosestPointOnPolyResult>();
             }
@@ -467,24 +468,24 @@ namespace DotRecast.Detour
         /// @param[in] pos The position to check. [(x, y, z)]
         /// @param[out] closest The closest point. [(x, y, z)]
         /// @returns The status flags for the query.
-        public Result<float[]> closestPointOnPolyBoundary(long refs, float[] pos)
+        public Result<Vector3f> closestPointOnPolyBoundary(long refs, Vector3f pos)
         {
             Result<Tuple<MeshTile, Poly>> tileAndPoly = m_nav.getTileAndPolyByRef(refs);
             if (tileAndPoly.failed())
             {
-                return Results.of<float[]>(tileAndPoly.status, tileAndPoly.message);
+                return Results.of<Vector3f>(tileAndPoly.status, tileAndPoly.message);
             }
 
             MeshTile tile = tileAndPoly.result.Item1;
             Poly poly = tileAndPoly.result.Item2;
             if (tile == null)
             {
-                return Results.invalidParam<float[]>("Invalid tile");
+                return Results.invalidParam<Vector3f>("Invalid tile");
             }
 
-            if (null == pos || !vIsFinite(pos))
+            if (!vIsFinite(pos))
             {
-                return Results.invalidParam<float[]>();
+                return Results.invalidParam<Vector3f>();
             }
 
             // Collect vertices.
@@ -497,10 +498,10 @@ namespace DotRecast.Detour
                 Array.Copy(tile.data.verts, poly.verts[i] * 3, verts, i * 3, 3);
             }
 
-            float[] closest;
+            Vector3f closest;
             if (distancePtPolyEdgesSqr(pos, verts, nv, edged, edget))
             {
-                closest = vCopy(pos);
+                closest = pos;
             }
             else
             {
@@ -518,7 +519,7 @@ namespace DotRecast.Detour
 
                 int va = imin * 3;
                 int vb = ((imin + 1) % nv) * 3;
-                closest = vLerp(verts, va, vb, edget[imin]);
+                closest = Vector3f.Of(vLerp(verts, va, vb, edget[imin]));
             }
 
             return Results.success(closest);
@@ -534,7 +535,7 @@ namespace DotRecast.Detour
         /// @param[in] pos A position within the xz-bounds of the polygon. [(x, y, z)]
         /// @param[out] height The height at the surface of the polygon.
         /// @returns The status flags for the query.
-        public Result<float> getPolyHeight(long refs, float[] pos)
+        public Result<float> getPolyHeight(long refs, Vector3f pos)
         {
             Result<Tuple<MeshTile, Poly>> tileAndPoly = m_nav.getTileAndPolyByRef(refs);
             if (tileAndPoly.failed())
@@ -545,7 +546,7 @@ namespace DotRecast.Detour
             MeshTile tile = tileAndPoly.result.Item1;
             Poly poly = tileAndPoly.result.Item2;
 
-            if (null == pos || !vIsFinite2D(pos))
+            if (!vIsFinite2D(pos))
             {
                 return Results.invalidParam<float>();
             }
@@ -556,10 +557,10 @@ namespace DotRecast.Detour
             if (poly.getType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
                 int i = poly.verts[0] * 3;
-                float[] v0 = new float[] { tile.data.verts[i], tile.data.verts[i + 1], tile.data.verts[i + 2] };
+                var v0 = new Vector3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
                 i = poly.verts[1] * 3;
-                float[] v1 = new float[] { tile.data.verts[i], tile.data.verts[i + 1], tile.data.verts[i + 2] };
-                Tuple<float, float> dt = distancePtSegSqr2D(pos, v0, v1);
+                var v1 = new Vector3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
+                var dt = distancePtSegSqr2D(pos, v0, v1);
                 return Results.success(v0[1] + (v1[1] - v0[1]) * dt.Item2);
             }
 
@@ -579,7 +580,7 @@ namespace DotRecast.Detour
      *            The polygon filter to apply to the query.
      * @return FindNearestPolyResult containing nearestRef, nearestPt and overPoly
      */
-        public Result<FindNearestPolyResult> findNearestPoly(float[] center, float[] halfExtents, QueryFilter filter)
+        public Result<FindNearestPolyResult> findNearestPoly(Vector3f center, Vector3f halfExtents, QueryFilter filter)
         {
             // Get nearby polygons from proximity grid.
             FindNearestPolyQuery query = new FindNearestPolyQuery(this, center);
@@ -593,13 +594,13 @@ namespace DotRecast.Detour
         }
 
         // FIXME: (PP) duplicate?
-        protected void queryPolygonsInTile(MeshTile tile, float[] qmin, float[] qmax, QueryFilter filter, PolyQuery query)
+        protected void queryPolygonsInTile(MeshTile tile, Vector3f qmin, Vector3f qmax, QueryFilter filter, PolyQuery query)
         {
             if (tile.data.bvTree != null)
             {
                 int nodeIndex = 0;
-                float[] tbmin = tile.data.header.bmin;
-                float[] tbmax = tile.data.header.bmax;
+                var tbmin = tile.data.header.bmin;
+                var tbmax = tile.data.header.bmax;
                 float qfac = tile.data.header.bvQuantFactor;
                 // Calculate quantized box
                 int[] bmin = new int[3];
@@ -670,13 +671,13 @@ namespace DotRecast.Detour
 
                     // Calc polygon bounds.
                     int v = p.verts[0] * 3;
-                    vCopy(bmin, tile.data.verts, v);
-                    vCopy(bmax, tile.data.verts, v);
+                    vCopy(ref bmin, tile.data.verts, v);
+                    vCopy(ref bmax, tile.data.verts, v);
                     for (int j = 1; j < p.vertCount; ++j)
                     {
                         v = p.verts[j] * 3;
-                        vMin(bmin, tile.data.verts, v);
-                        vMax(bmax, tile.data.verts, v);
+                        vMin(ref bmin, tile.data.verts, v);
+                        vMax(ref bmax, tile.data.verts, v);
                     }
 
                     if (overlapBounds(qmin, qmax, bmin, bmax))
@@ -700,17 +701,16 @@ namespace DotRecast.Detour
      *            The polygon filter to apply to the query.
      * @return The reference ids of the polygons that overlap the query box.
      */
-        public Status queryPolygons(float[] center, float[] halfExtents, QueryFilter filter, PolyQuery query)
+        public Status queryPolygons(Vector3f center, Vector3f halfExtents, QueryFilter filter, PolyQuery query)
         {
-            if (null == center || !vIsFinite(center) || null == halfExtents || !vIsFinite(halfExtents)
-                || null == filter)
+            if (!vIsFinite(center) || !vIsFinite(halfExtents) || null == filter)
             {
                 return Status.FAILURE_INVALID_PARAM;
             }
 
             // Find tiles the query touches.
-            float[] bmin = vSub(center, halfExtents);
-            float[] bmax = vAdd(center, halfExtents);
+            Vector3f bmin = vSub(center, halfExtents);
+            Vector3f bmax = vAdd(center, halfExtents);
             foreach (var t in queryTiles(center, halfExtents))
             {
                 queryPolygonsInTile(t, bmin, bmax, filter, query);
@@ -722,15 +722,15 @@ namespace DotRecast.Detour
         /**
      * Finds tiles that overlap the search box.
      */
-        public IList<MeshTile> queryTiles(float[] center, float[] halfExtents)
+        public IList<MeshTile> queryTiles(Vector3f center, Vector3f halfExtents)
         {
-            if (null == center || !vIsFinite(center) || null == halfExtents || !vIsFinite(halfExtents))
+            if (!vIsFinite(center) || !vIsFinite(halfExtents))
             {
                 return ImmutableArray<MeshTile>.Empty;
             }
 
-            float[] bmin = vSub(center, halfExtents);
-            float[] bmax = vAdd(center, halfExtents);
+            Vector3f bmin = vSub(center, halfExtents);
+            Vector3f bmax = vAdd(center, halfExtents);
             int[] minxy = m_nav.calcTileLoc(bmin);
             int minx = minxy[0];
             int miny = minxy[1];
@@ -769,24 +769,22 @@ namespace DotRecast.Detour
      *            The polygon filter to apply to the query.
      * @return Found path
      */
-        public virtual Result<List<long>> findPath(long startRef, long endRef, float[] startPos, float[] endPos,
-            QueryFilter filter)
+        public virtual Result<List<long>> findPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, QueryFilter filter)
         {
             return findPath(startRef, endRef, startPos, endPos, filter, new DefaultQueryHeuristic(), 0, 0);
         }
 
-        public virtual Result<List<long>> findPath(long startRef, long endRef, float[] startPos, float[] endPos, QueryFilter filter,
+        public virtual Result<List<long>> findPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, QueryFilter filter,
             int options, float raycastLimit)
         {
             return findPath(startRef, endRef, startPos, endPos, filter, new DefaultQueryHeuristic(), options, raycastLimit);
         }
 
-        public Result<List<long>> findPath(long startRef, long endRef, float[] startPos, float[] endPos, QueryFilter filter,
+        public Result<List<long>> findPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, QueryFilter filter,
             QueryHeuristic heuristic, int options, float raycastLimit)
         {
             // Validate input
-            if (!m_nav.isValidPolyRef(startRef) || !m_nav.isValidPolyRef(endRef) || null == startPos
-                || !vIsFinite(startPos) || null == endPos || !vIsFinite(endPos) || null == filter)
+            if (!m_nav.isValidPolyRef(startRef) || !m_nav.isValidPolyRef(endRef) || !vIsFinite(startPos) || !vIsFinite(endPos) || null == filter)
             {
                 return Results.invalidParam<List<long>>();
             }
@@ -814,7 +812,7 @@ namespace DotRecast.Detour
             m_openList.clear();
 
             Node startNode = m_nodePool.getNode(startRef);
-            vCopy(startNode.pos, startPos);
+            vCopy(ref startNode.pos, startPos);
             startNode.pidx = 0;
             startNode.cost = 0;
             startNode.total = heuristic.getCost(startPos, endPos);
@@ -913,8 +911,8 @@ namespace DotRecast.Detour
                     }
 
                     // If the node is visited the first time, calculate node position.
-                    float[] neighbourPos = neighbourNode.pos;
-                    Result<float[]> midpod = neighbourRef == endRef
+                    var neighbourPos = neighbourNode.pos;
+                    var midpod = neighbourRef == endRef
                         ? getEdgeIntersectionPoint(bestNode.pos, bestRef, bestPoly, bestTile, endPos, neighbourRef,
                             neighbourPoly, neighbourTile)
                         : getEdgeMidPoint(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly, neighbourTile);
@@ -1043,19 +1041,19 @@ namespace DotRecast.Detour
      *            query options (see: #FindPathOptions)
      * @return
      */
-        public Status initSlicedFindPath(long startRef, long endRef, float[] startPos, float[] endPos, QueryFilter filter,
+        public Status initSlicedFindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, QueryFilter filter,
             int options)
         {
             return initSlicedFindPath(startRef, endRef, startPos, endPos, filter, options, new DefaultQueryHeuristic(), -1.0f);
         }
 
-        public Status initSlicedFindPath(long startRef, long endRef, float[] startPos, float[] endPos, QueryFilter filter,
+        public Status initSlicedFindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, QueryFilter filter,
             int options, float raycastLimit)
         {
             return initSlicedFindPath(startRef, endRef, startPos, endPos, filter, options, new DefaultQueryHeuristic(), raycastLimit);
         }
 
-        public Status initSlicedFindPath(long startRef, long endRef, float[] startPos, float[] endPos, QueryFilter filter,
+        public Status initSlicedFindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, QueryFilter filter,
             int options, QueryHeuristic heuristic, float raycastLimit)
         {
             // Init path state.
@@ -1063,16 +1061,15 @@ namespace DotRecast.Detour
             m_query.status = Status.FAILURE;
             m_query.startRef = startRef;
             m_query.endRef = endRef;
-            vCopy(m_query.startPos, startPos);
-            vCopy(m_query.endPos, endPos);
+            vCopy(ref m_query.startPos, startPos);
+            vCopy(ref m_query.endPos, endPos);
             m_query.filter = filter;
             m_query.options = options;
             m_query.heuristic = heuristic;
             m_query.raycastLimitSqr = sqr(raycastLimit);
 
             // Validate input
-            if (!m_nav.isValidPolyRef(startRef) || !m_nav.isValidPolyRef(endRef) || null == startPos
-                || !vIsFinite(startPos) || null == endPos || !vIsFinite(endPos) || null == filter)
+            if (!m_nav.isValidPolyRef(startRef) || !m_nav.isValidPolyRef(endRef) || !vIsFinite(startPos) || !vIsFinite(endPos) || null == filter)
             {
                 return Status.FAILURE_INVALID_PARAM;
             }
@@ -1097,7 +1094,7 @@ namespace DotRecast.Detour
             m_openList.clear();
 
             Node startNode = m_nodePool.getNode(startRef);
-            vCopy(startNode.pos, startPos);
+            vCopy(ref startNode.pos, startPos);
             startNode.pidx = 0;
             startNode.cost = 0;
             startNode.total = heuristic.getCost(startPos, endPos);
@@ -1243,8 +1240,8 @@ namespace DotRecast.Detour
 
                     // If the node is visited the first time, calculate node
                     // position.
-                    float[] neighbourPos = neighbourNode.pos;
-                    Result<float[]> midpod = neighbourRef == m_query.endRef
+                    var neighbourPos = neighbourNode.pos;
+                    var midpod = neighbourRef == m_query.endRef
                         ? getEdgeIntersectionPoint(bestNode.pos, bestRef, bestPoly, bestTile, m_query.endPos,
                             neighbourRef, neighbourPoly, neighbourTile)
                         : getEdgeMidPoint(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly, neighbourTile);
@@ -1448,7 +1445,7 @@ namespace DotRecast.Detour
             return Results.of(status, path);
         }
 
-        protected Status appendVertex(float[] pos, int flags, long refs, List<StraightPathItem> straightPath,
+        protected Status appendVertex(Vector3f pos, int flags, long refs, List<StraightPathItem> straightPath,
             int maxStraightPath)
         {
             if (straightPath.Count > 0 && vEqual(straightPath[straightPath.Count - 1].pos, pos))
@@ -1475,10 +1472,10 @@ namespace DotRecast.Detour
             return Status.IN_PROGRESS;
         }
 
-        protected Status appendPortals(int startIdx, int endIdx, float[] endPos, List<long> path,
+        protected Status appendPortals(int startIdx, int endIdx, Vector3f endPos, List<long> path,
             List<StraightPathItem> straightPath, int maxStraightPath, int options)
         {
-            float[] startPos = straightPath[straightPath.Count - 1].pos;
+            var startPos = straightPath[straightPath.Count - 1].pos;
             // Append or update last vertex
             Status stat;
             for (int i = startIdx; i < endIdx; i++)
@@ -1510,8 +1507,8 @@ namespace DotRecast.Detour
                     break;
                 }
 
-                float[] left = portals.result.left;
-                float[] right = portals.result.right;
+                var left = portals.result.left;
+                var right = portals.result.right;
 
                 if ((options & DT_STRAIGHTPATH_AREA_CROSSINGS) != 0)
                 {
@@ -1527,7 +1524,7 @@ namespace DotRecast.Detour
                 if (null != interect)
                 {
                     float t = interect.Item2;
-                    float[] pt = vLerp(left, right, t);
+                    var pt = vLerp(left, right, t);
                     stat = appendVertex(pt, 0, path[i + 1], straightPath, maxStraightPath);
                     if (!stat.isInProgress())
                     {
@@ -1564,31 +1561,31 @@ namespace DotRecast.Detour
         /// @param[in] maxStraightPath The maximum number of points the straight path arrays can hold. [Limit: > 0]
         /// @param[in] options Query options. (see: #dtStraightPathOptions)
         /// @returns The status flags for the query.
-        public virtual Result<List<StraightPathItem>> findStraightPath(float[] startPos, float[] endPos, List<long> path,
+        public virtual Result<List<StraightPathItem>> findStraightPath(Vector3f startPos, Vector3f endPos, List<long> path,
             int maxStraightPath, int options)
         {
             List<StraightPathItem> straightPath = new List<StraightPathItem>();
-            if (null == startPos || !vIsFinite(startPos) || null == endPos || !vIsFinite(endPos)
+            if (!vIsFinite(startPos) || !vIsFinite(endPos)
                 || null == path || 0 == path.Count || path[0] == 0 || maxStraightPath <= 0)
             {
                 return Results.invalidParam<List<StraightPathItem>>();
             }
 
             // TODO: Should this be callers responsibility?
-            Result<float[]> closestStartPosRes = closestPointOnPolyBoundary(path[0], startPos);
+            Result<Vector3f> closestStartPosRes = closestPointOnPolyBoundary(path[0], startPos);
             if (closestStartPosRes.failed())
             {
                 return Results.invalidParam<List<StraightPathItem>>("Cannot find start position");
             }
 
-            float[] closestStartPos = closestStartPosRes.result;
-            Result<float[]> closestEndPosRes = closestPointOnPolyBoundary(path[path.Count - 1], endPos);
+            var closestStartPos = closestStartPosRes.result;
+            var closestEndPosRes = closestPointOnPolyBoundary(path[path.Count - 1], endPos);
             if (closestEndPosRes.failed())
             {
                 return Results.invalidParam<List<StraightPathItem>>("Cannot find end position");
             }
 
-            float[] closestEndPos = closestEndPosRes.result;
+            var closestEndPos = closestEndPosRes.result;
             // Add start point.
             Status stat = appendVertex(closestStartPos, DT_STRAIGHTPATH_START, path[0], straightPath, maxStraightPath);
             if (!stat.isInProgress())
@@ -1598,9 +1595,9 @@ namespace DotRecast.Detour
 
             if (path.Count > 1)
             {
-                float[] portalApex = vCopy(closestStartPos);
-                float[] portalLeft = vCopy(portalApex);
-                float[] portalRight = vCopy(portalApex);
+                Vector3f portalApex = closestStartPos;
+                Vector3f portalLeft = portalApex;
+                Vector3f portalRight = portalApex;
                 int apexIndex = 0;
                 int leftIndex = 0;
                 int rightIndex = 0;
@@ -1613,8 +1610,8 @@ namespace DotRecast.Detour
 
                 for (int i = 0; i < path.Count; ++i)
                 {
-                    float[] left;
-                    float[] right;
+                    Vector3f left;
+                    Vector3f right;
                     int toType;
 
                     if (i + 1 < path.Count)
@@ -1659,8 +1656,8 @@ namespace DotRecast.Detour
                     else
                     {
                         // End of the path.
-                        left = vCopy(closestEndPos);
-                        right = vCopy(closestEndPos);
+                        left = closestEndPos;
+                        right = closestEndPos;
                         toType = Poly.DT_POLYTYPE_GROUND;
                     }
 
@@ -1669,7 +1666,7 @@ namespace DotRecast.Detour
                     {
                         if (vEqual(portalApex, portalRight) || triArea2D(portalApex, portalLeft, right) > 0.0f)
                         {
-                            portalRight = vCopy(right);
+                            portalRight = right;
                             rightPolyRef = (i + 1 < path.Count) ? path[i + 1] : 0;
                             rightPolyType = toType;
                             rightIndex = i;
@@ -1687,7 +1684,7 @@ namespace DotRecast.Detour
                                 }
                             }
 
-                            portalApex = vCopy(portalLeft);
+                            portalApex = portalLeft;
                             apexIndex = leftIndex;
 
                             int flags = 0;
@@ -1709,8 +1706,8 @@ namespace DotRecast.Detour
                                 return Results.success(straightPath);
                             }
 
-                            portalLeft = vCopy(portalApex);
-                            portalRight = vCopy(portalApex);
+                            portalLeft = portalApex;
+                            portalRight = portalApex;
                             leftIndex = apexIndex;
                             rightIndex = apexIndex;
 
@@ -1726,7 +1723,7 @@ namespace DotRecast.Detour
                     {
                         if (vEqual(portalApex, portalLeft) || triArea2D(portalApex, portalRight, left) < 0.0f)
                         {
-                            portalLeft = vCopy(left);
+                            portalLeft = left;
                             leftPolyRef = (i + 1 < path.Count) ? path[i + 1] : 0;
                             leftPolyType = toType;
                             leftIndex = i;
@@ -1744,7 +1741,7 @@ namespace DotRecast.Detour
                                 }
                             }
 
-                            portalApex = vCopy(portalRight);
+                            portalApex = portalRight;
                             apexIndex = rightIndex;
 
                             int flags = 0;
@@ -1766,8 +1763,8 @@ namespace DotRecast.Detour
                                 return Results.success(straightPath);
                             }
 
-                            portalLeft = vCopy(portalApex);
-                            portalRight = vCopy(portalApex);
+                            portalLeft = portalApex;
+                            portalRight = portalApex;
                             leftIndex = apexIndex;
                             rightIndex = apexIndex;
 
@@ -1822,12 +1819,11 @@ namespace DotRecast.Detour
         /// @param[in] endPos The desired end position of the mover. [(x, y, z)]
         /// @param[in] filter The polygon filter to apply to the query.
         /// @returns Path
-        public Result<MoveAlongSurfaceResult> moveAlongSurface(long startRef, float[] startPos, float[] endPos,
-            QueryFilter filter)
+        public Result<MoveAlongSurfaceResult> moveAlongSurface(long startRef, Vector3f startPos, Vector3f endPos, QueryFilter filter)
         {
             // Validate input
-            if (!m_nav.isValidPolyRef(startRef) || null == startPos || !vIsFinite(startPos)
-                || null == endPos || !vIsFinite(endPos) || null == filter)
+            if (!m_nav.isValidPolyRef(startRef) || !vIsFinite(startPos)
+                || !vIsFinite(endPos) || null == filter)
             {
                 return Results.invalidParam<MoveAlongSurfaceResult>();
             }
@@ -1846,10 +1842,10 @@ namespace DotRecast.Detour
             Vector3f bestPos = new Vector3f();
             float bestDist = float.MaxValue;
             Node bestNode = null;
-            vCopy(bestPos, startPos);
+            vCopy(ref bestPos, startPos);
 
             // Search constraints
-            float[] searchPos = vLerp(startPos, endPos, 0.5f);
+            var searchPos = vLerp(startPos, endPos, 0.5f);
             float searchRadSqr = sqr(vDist(startPos, endPos) / 2.0f + 0.001f);
 
             float[] verts = new float[m_nav.getMaxVertsPerPoly() * 3];
@@ -1878,7 +1874,7 @@ namespace DotRecast.Detour
                 if (pointInPolygon(endPos, verts, nverts))
                 {
                     bestNode = curNode;
-                    vCopy(bestPos, endPos);
+                    vCopy(ref bestPos, endPos);
                     break;
                 }
 
@@ -1936,7 +1932,7 @@ namespace DotRecast.Detour
                         if (distSqr < bestDist)
                         {
                             // Update nearest distance.
-                            bestPos = vLerp(verts, vj, vi, tseg);
+                            bestPos = Vector3f.Of(vLerp(verts, vj, vi, tseg));
                             bestDist = distSqr;
                             bestNode = curNode;
                         }
@@ -2000,12 +1996,12 @@ namespace DotRecast.Detour
 
         public class PortalResult
         {
-            public readonly float[] left;
-            public readonly float[] right;
+            public readonly Vector3f left;
+            public readonly Vector3f right;
             public readonly int fromType;
             public readonly int toType;
 
-            public PortalResult(float[] left, float[] right, int fromType, int toType)
+            public PortalResult(Vector3f left, Vector3f right, int fromType, int toType)
             {
                 this.left = left;
                 this.right = right;
@@ -2072,8 +2068,8 @@ namespace DotRecast.Detour
                     if (fromTile.links[i].refs == to)
                     {
                         int v = fromTile.links[i].edge;
-                        Array.Copy(fromTile.data.verts, fromPoly.verts[v] * 3, left, 0, 3);
-                        Array.Copy(fromTile.data.verts, fromPoly.verts[v] * 3, right, 0, 3);
+                        Array.Copy(fromTile.data.verts, fromPoly.verts[v] * 3, left.ToArray(), 0, 3);
+                        Array.Copy(fromTile.data.verts, fromPoly.verts[v] * 3, right.ToArray(), 0, 3);
                         return Results.success(new PortalResult(left, right, fromType, toType));
                     }
                 }
@@ -2088,8 +2084,8 @@ namespace DotRecast.Detour
                     if (toTile.links[i].refs == from)
                     {
                         int v = toTile.links[i].edge;
-                        Array.Copy(toTile.data.verts, toPoly.verts[v] * 3, left, 0, 3);
-                        Array.Copy(toTile.data.verts, toPoly.verts[v] * 3, right, 0, 3);
+                        Array.Copy(toTile.data.verts, toPoly.verts[v] * 3, left.ToArray(), 0, 3);
+                        Array.Copy(toTile.data.verts, toPoly.verts[v] * 3, right.ToArray(), 0, 3);
                         return Results.success(new PortalResult(left, right, fromType, toType));
                     }
                 }
@@ -2100,8 +2096,8 @@ namespace DotRecast.Detour
             // Find portal vertices.
             int v0 = fromPoly.verts[link.edge];
             int v1 = fromPoly.verts[(link.edge + 1) % fromPoly.vertCount];
-            Array.Copy(fromTile.data.verts, v0 * 3, left, 0, 3);
-            Array.Copy(fromTile.data.verts, v1 * 3, right, 0, 3);
+            Array.Copy(fromTile.data.verts, v0 * 3, left.ToArray(), 0, 3);
+            Array.Copy(fromTile.data.verts, v1 * 3, right.ToArray(), 0, 3);
 
             // If the link is at tile boundary, dtClamp the vertices to
             // the link width.
@@ -2113,25 +2109,25 @@ namespace DotRecast.Detour
                     float s = 1.0f / 255.0f;
                     float tmin = link.bmin * s;
                     float tmax = link.bmax * s;
-                    left = vLerp(fromTile.data.verts, v0 * 3, v1 * 3, tmin);
-                    right = vLerp(fromTile.data.verts, v0 * 3, v1 * 3, tmax);
+                    left = Vector3f.Of(vLerp(fromTile.data.verts, v0 * 3, v1 * 3, tmin));
+                    right = Vector3f.Of(vLerp(fromTile.data.verts, v0 * 3, v1 * 3, tmax));
                 }
             }
 
             return Results.success(new PortalResult(left, right, fromType, toType));
         }
 
-        protected Result<float[]> getEdgeMidPoint(long from, Poly fromPoly, MeshTile fromTile, long to,
+        protected Result<Vector3f> getEdgeMidPoint(long from, Poly fromPoly, MeshTile fromTile, long to,
             Poly toPoly, MeshTile toTile)
         {
             Result<PortalResult> ppoints = getPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, 0, 0);
             if (ppoints.failed())
             {
-                return Results.of<float[]>(ppoints.status, ppoints.message);
+                return Results.of<Vector3f>(ppoints.status, ppoints.message);
             }
 
-            float[] left = ppoints.result.left;
-            float[] right = ppoints.result.right;
+            var left = ppoints.result.left;
+            var right = ppoints.result.right;
             Vector3f mid = new Vector3f();
             mid[0] = (left[0] + right[0]) * 0.5f;
             mid[1] = (left[1] + right[1]) * 0.5f;
@@ -2139,17 +2135,17 @@ namespace DotRecast.Detour
             return Results.success(mid);
         }
 
-        protected Result<float[]> getEdgeIntersectionPoint(float[] fromPos, long from, Poly fromPoly, MeshTile fromTile,
-            float[] toPos, long to, Poly toPoly, MeshTile toTile)
+        protected Result<Vector3f> getEdgeIntersectionPoint(Vector3f fromPos, long from, Poly fromPoly, MeshTile fromTile,
+            Vector3f toPos, long to, Poly toPoly, MeshTile toTile)
         {
             Result<PortalResult> ppoints = getPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, 0, 0);
             if (ppoints.failed())
             {
-                return Results.of<float[]>(ppoints.status, ppoints.message);
+                return Results.of<Vector3f>(ppoints.status, ppoints.message);
             }
 
-            float[] left = ppoints.result.left;
-            float[] right = ppoints.result.right;
+            Vector3f left = ppoints.result.left;
+            Vector3f right = ppoints.result.right;
             float t = 0.5f;
             Tuple<float, float> interect = intersectSegSeg2D(fromPos, toPos, left, right);
             if (null != interect)
@@ -2157,7 +2153,7 @@ namespace DotRecast.Detour
                 t = clamp(interect.Item2, 0.1f, 0.9f);
             }
 
-            float[] pt = vLerp(left, right, t);
+            Vector3f pt = vLerp(left, right, t);
             return Results.success(pt);
         }
 
@@ -2215,12 +2211,11 @@ namespace DotRecast.Detour
         /// @param[out] pathCount The number of visited polygons. [opt]
         /// @param[in] maxPath The maximum number of polygons the @p path array can hold.
         /// @returns The status flags for the query.
-        public Result<RaycastHit> raycast(long startRef, float[] startPos, float[] endPos, QueryFilter filter, int options,
+        public Result<RaycastHit> raycast(long startRef, Vector3f startPos, Vector3f endPos, QueryFilter filter, int options,
             long prevRef)
         {
             // Validate input
-            if (!m_nav.isValidPolyRef(startRef) || null == startPos || !vIsFinite(startPos)
-                || null == endPos || !vIsFinite(endPos) || null == filter
+            if (!m_nav.isValidPolyRef(startRef) || !vIsFinite(startPos) || !vIsFinite(endPos) || null == filter
                 || (prevRef != 0 && !m_nav.isValidPolyRef(prevRef)))
             {
                 return Results.invalidParam<RaycastHit>();
@@ -2233,7 +2228,7 @@ namespace DotRecast.Detour
             Vector3f curPos = new Vector3f(), lastPos = new Vector3f();
 
             vCopy(ref curPos, startPos);
-            float[] dir = vSub(endPos, startPos);
+            var dir = vSub(endPos, startPos);
 
             MeshTile prevTile, tile, nextTile;
             Poly prevPoly, poly, nextPoly;
@@ -2400,12 +2395,12 @@ namespace DotRecast.Detour
                 {
                     // compute the intersection point at the furthest end of the polygon
                     // and correct the height (since the raycast moves in 2d)
-                    vCopy(lastPos, curPos);
+                    vCopy(ref lastPos, curPos);
                     curPos = vMad(startPos, dir, hit.t);
                     VectorPtr e1 = new VectorPtr(verts, iresult.segMax * 3);
                     VectorPtr e2 = new VectorPtr(verts, ((iresult.segMax + 1) % nv) * 3);
-                    float[] eDir = vSub(e2, e1);
-                    float[] diff = vSub(new VectorPtr(curPos), e1);
+                    Vector3f eDir = vSub(e2, e1);
+                    Vector3f diff = vSub(curPos, e1);
                     float s = sqr(eDir[0]) > sqr(eDir[2]) ? diff[0] / eDir[0] : diff[2] / eDir[2];
                     curPos[1] = e1.get(1) + eDir[1] * s;
 
@@ -2427,7 +2422,7 @@ namespace DotRecast.Detour
                     hit.hitNormal[0] = dz;
                     hit.hitNormal[1] = 0;
                     hit.hitNormal[2] = -dx;
-                    vNormalize(hit.hitNormal);
+                    vNormalize(ref hit.hitNormal);
                     return Results.success(hit);
                 }
 
@@ -2487,12 +2482,11 @@ namespace DotRecast.Detour
         /// @param[out] resultCount The number of polygons found. [opt]
         /// @param[in] maxResult The maximum number of polygons the result arrays can hold.
         /// @returns The status flags for the query.
-        public Result<FindPolysAroundResult> findPolysAroundCircle(long startRef, float[] centerPos, float radius,
-            QueryFilter filter)
+        public Result<FindPolysAroundResult> findPolysAroundCircle(long startRef, Vector3f centerPos, float radius, QueryFilter filter)
         {
             // Validate input
 
-            if (!m_nav.isValidPolyRef(startRef) || null == centerPos || !vIsFinite(centerPos) || radius < 0
+            if (!m_nav.isValidPolyRef(startRef) || !vIsFinite(centerPos) || radius < 0
                 || !float.IsFinite(radius) || null == filter)
             {
                 return Results.invalidParam<FindPolysAroundResult>();
@@ -2506,7 +2500,7 @@ namespace DotRecast.Detour
             m_openList.clear();
 
             Node startNode = m_nodePool.getNode(startRef);
-            vCopy(startNode.pos, centerPos);
+            vCopy(ref startNode.pos, centerPos);
             startNode.pidx = 0;
             startNode.cost = 0;
             startNode.total = 0;
@@ -2578,8 +2572,8 @@ namespace DotRecast.Detour
                         continue;
                     }
 
-                    float[] va = pp.result.left;
-                    float[] vb = pp.result.right;
+                    var va = pp.result.left;
+                    var vb = pp.result.right;
 
                     // If the circle is not touching the next polygon, skip it.
                     Tuple<float, float> distseg = distancePtSegSqr2D(centerPos, va, vb);
@@ -2696,7 +2690,7 @@ namespace DotRecast.Detour
             centerPos[2] *= scale;
 
             Node startNode = m_nodePool.getNode(startRef);
-            vCopy(startNode.pos, centerPos);
+            vCopy(ref startNode.pos, centerPos);
             startNode.pidx = 0;
             startNode.cost = 0;
             startNode.total = 0;
@@ -2766,8 +2760,8 @@ namespace DotRecast.Detour
                         continue;
                     }
 
-                    float[] va = pp.result.left;
-                    float[] vb = pp.result.right;
+                    var va = pp.result.left;
+                    var vb = pp.result.right;
 
                     // If the poly is not touching the edge to the next polygon, skip the connection it.
                     IntersectResult ir = intersectSegmentPoly2D(va, vb, verts, nverts);
@@ -2857,11 +2851,11 @@ namespace DotRecast.Detour
         /// @param[out] resultCount The number of polygons found.
         /// @param[in] maxResult The maximum number of polygons the result arrays can hold.
         /// @returns The status flags for the query.
-        public Result<FindLocalNeighbourhoodResult> findLocalNeighbourhood(long startRef, float[] centerPos, float radius,
+        public Result<FindLocalNeighbourhoodResult> findLocalNeighbourhood(long startRef, Vector3f centerPos, float radius,
             QueryFilter filter)
         {
             // Validate input
-            if (!m_nav.isValidPolyRef(startRef) || null == centerPos || !vIsFinite(centerPos) || radius < 0
+            if (!m_nav.isValidPolyRef(startRef) || !vIsFinite(centerPos) || radius < 0
                 || !float.IsFinite(radius) || null == filter)
             {
                 return Results.invalidParam<FindLocalNeighbourhoodResult>();
@@ -2942,8 +2936,8 @@ namespace DotRecast.Detour
                         continue;
                     }
 
-                    float[] va = pp.result.left;
-                    float[] vb = pp.result.right;
+                    var va = pp.result.left;
+                    var vb = pp.result.right;
 
                     // If the circle is not touching the next polygon, skip it.
                     Tuple<float, float> distseg = distancePtSegSqr2D(centerPos, va, vb);
@@ -3207,11 +3201,11 @@ namespace DotRecast.Detour
         /// @param[out] hitNormal The normalized ray formed from the wall point to the
         /// source point. [(x, y, z)]
         /// @returns The status flags for the query.
-        public virtual Result<FindDistanceToWallResult> findDistanceToWall(long startRef, float[] centerPos, float maxRadius,
+        public virtual Result<FindDistanceToWallResult> findDistanceToWall(long startRef, Vector3f centerPos, float maxRadius,
             QueryFilter filter)
         {
             // Validate input
-            if (!m_nav.isValidPolyRef(startRef) || null == centerPos || !vIsFinite(centerPos) || maxRadius < 0
+            if (!m_nav.isValidPolyRef(startRef) || !vIsFinite(centerPos) || maxRadius < 0
                 || !float.IsFinite(maxRadius) || null == filter)
             {
                 return Results.invalidParam<FindDistanceToWallResult>();
@@ -3221,7 +3215,7 @@ namespace DotRecast.Detour
             m_openList.clear();
 
             Node startNode = m_nodePool.getNode(startRef);
-            vCopy(startNode.pos, centerPos);
+            vCopy(ref startNode.pos, centerPos);
             startNode.pidx = 0;
             startNode.cost = 0;
             startNode.total = 0;
@@ -3369,7 +3363,7 @@ namespace DotRecast.Detour
                     // Cost
                     if (neighbourNode.flags == 0)
                     {
-                        Result<float[]> midPoint = getEdgeMidPoint(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly,
+                        var midPoint = getEdgeMidPoint(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly,
                             neighbourTile);
                         if (midPoint.succeeded())
                         {
@@ -3406,11 +3400,11 @@ namespace DotRecast.Detour
             Vector3f hitNormal = new Vector3f();
             if (bestvi != null && bestvj != null)
             {
-                float[] tangent = vSub(bestvi, bestvj);
+                var tangent = vSub(bestvi, bestvj);
                 hitNormal[0] = tangent[2];
                 hitNormal[1] = 0;
                 hitNormal[2] = -tangent[0];
-                vNormalize(hitNormal);
+                vNormalize(ref hitNormal);
             }
 
             return Results.success(new FindDistanceToWallResult((float)Math.Sqrt(radiusSqr), hitPos, hitNormal));

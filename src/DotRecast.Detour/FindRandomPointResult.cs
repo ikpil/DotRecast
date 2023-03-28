@@ -18,15 +18,17 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
+
 namespace DotRecast.Detour
 {
 //TODO: (PP) Add comments
     public class FindRandomPointResult
     {
         private readonly long randomRef;
-        private readonly float[] randomPt;
+        private readonly Vector3f randomPt;
 
-        public FindRandomPointResult(long randomRef, float[] randomPt)
+        public FindRandomPointResult(long randomRef, Vector3f randomPt)
         {
             this.randomRef = randomRef;
             this.randomPt = randomPt;
@@ -39,7 +41,7 @@ namespace DotRecast.Detour
         }
 
         /// @param[out] randomPt The random location.
-        public float[] getRandomPt()
+        public Vector3f getRandomPt()
         {
             return randomPt;
         }

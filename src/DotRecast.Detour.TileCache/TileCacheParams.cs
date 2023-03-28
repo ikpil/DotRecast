@@ -18,11 +18,13 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
+
 namespace DotRecast.Detour.TileCache
 {
     public class TileCacheParams
     {
-        public readonly Vector3f orig = new Vector3f();
+        public Vector3f orig = new Vector3f();
         public float cs, ch;
         public int width, height;
         public float walkableHeight;

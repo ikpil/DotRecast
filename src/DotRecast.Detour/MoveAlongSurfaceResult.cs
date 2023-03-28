@@ -19,24 +19,25 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
     public class MoveAlongSurfaceResult
     {
         /** The result position of the mover. [(x, y, z)] */
-        private readonly float[] resultPos;
+        private readonly Vector3f resultPos;
 
         /** The reference ids of the polygons visited during the move. */
         private readonly List<long> visited;
 
-        public MoveAlongSurfaceResult(float[] resultPos, List<long> visited)
+        public MoveAlongSurfaceResult(Vector3f resultPos, List<long> visited)
         {
             this.resultPos = resultPos;
             this.visited = visited;
         }
 
-        public float[] getResultPos()
+        public Vector3f getResultPos()
         {
             return resultPos;
         }

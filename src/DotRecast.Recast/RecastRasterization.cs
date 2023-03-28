@@ -50,7 +50,7 @@ namespace DotRecast.Recast
             return overlap;
         }
         
-        private static bool overlapBounds(float[] amin, float[] amax, Vector3f bmin, Vector3f bmax)
+        private static bool overlapBounds(Vector3f amin, Vector3f amax, Vector3f bmin, Vector3f bmax)
         {
             bool overlap = true;
             overlap = (amin[0] > bmax[0] || amax[0] < bmin[0]) ? false : overlap;
@@ -255,8 +255,8 @@ namespace DotRecast.Recast
      * @param flagMergeThreshold
      *            The threshold in which area flags will be merged
      */
-        private static void rasterizeTri(float[] verts, int v0, int v1, int v2, int area, Heightfield hf, float[] hfBBMin,
-            float[] hfBBMax, float cellSize, float inverseCellSize, float inverseCellHeight, int flagMergeThreshold)
+        private static void rasterizeTri(float[] verts, int v0, int v1, int v2, int area, Heightfield hf, Vector3f hfBBMin,
+            Vector3f hfBBMax, float cellSize, float inverseCellSize, float inverseCellHeight, int flagMergeThreshold)
         {
             Vector3f tmin = new Vector3f();
             Vector3f tmax = new Vector3f();

@@ -16,6 +16,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
 using static DotRecast.Core.RecastMath;
 
 namespace DotRecast.Detour.Extras
@@ -40,12 +41,12 @@ namespace DotRecast.Detour.Extras
                 it.i = i;
                 Vector3f bmin = new Vector3f();
                 Vector3f bmax = new Vector3f();
-                vCopy(bmin, data.verts, data.polys[i].verts[0] * 3);
-                vCopy(bmax, data.verts, data.polys[i].verts[0] * 3);
+                vCopy(ref bmin, data.verts, data.polys[i].verts[0] * 3);
+                vCopy(ref bmax, data.verts, data.polys[i].verts[0] * 3);
                 for (int j = 1; j < data.polys[i].vertCount; j++)
                 {
-                    vMin(bmin, data.verts, data.polys[i].verts[j] * 3);
-                    vMax(bmax, data.verts, data.polys[i].verts[j] * 3);
+                    vMin(ref bmin, data.verts, data.polys[i].verts[j] * 3);
+                    vMax(ref bmax, data.verts, data.polys[i].verts[j] * 3);
                 }
 
                 it.bmin[0] = clamp((int)((bmin[0] - data.header.bmin[0]) * quantFactor), 0, 0x7fffffff);

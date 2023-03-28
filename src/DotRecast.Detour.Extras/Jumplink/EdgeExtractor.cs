@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DotRecast.Core;
 using DotRecast.Recast;
 using static DotRecast.Recast.RecastConstants;
 
@@ -12,7 +13,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             List<Edge> edges = new List<Edge>();
             if (mesh != null)
             {
-                float[] orig = mesh.bmin;
+                Vector3f orig = mesh.bmin;
                 float cs = mesh.cs;
                 float ch = mesh.ch;
                 for (int i = 0; i < mesh.npolys; i++)

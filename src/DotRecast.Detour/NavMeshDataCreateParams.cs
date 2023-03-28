@@ -18,6 +18,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
+
 namespace DotRecast.Detour
 {
     /// Represents the source data used to build an navigation mesh tile.
@@ -113,10 +115,10 @@ namespace DotRecast.Detour
         public int tileLayer;
 
         /// < The tile's layer within the layered destination mesh. [Limit: >= 0] (Along the y-axis.)
-        public float[] bmin;
+        public Vector3f bmin;
 
         /// < The minimum bounds of the tile. [(x, y, z)] [Unit: wu]
-        public float[] bmax;
+        public Vector3f bmax;
 
         /// < The maximum bounds of the tile. [(x, y, z)] [Unit: wu]
         /// @}

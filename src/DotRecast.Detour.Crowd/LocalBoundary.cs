@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using DotRecast.Core;
 
 namespace DotRecast.Detour.Crowd
 {
@@ -94,7 +95,7 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        public void update(long refs, float[] pos, float collisionQueryRange, NavMeshQuery navquery, QueryFilter filter)
+        public void update(long refs, Vector3f pos, float collisionQueryRange, NavMeshQuery navquery, QueryFilter filter)
         {
             if (refs == 0)
             {
@@ -102,7 +103,7 @@ namespace DotRecast.Detour.Crowd
                 return;
             }
 
-            vCopy(m_center, pos);
+            vCopy(ref m_center, pos);
             // First query non-overlapping polygons.
             Result<FindLocalNeighbourhoodResult> res = navquery.findLocalNeighbourhood(refs, pos, collisionQueryRange,
                 filter);
@@ -153,7 +154,7 @@ namespace DotRecast.Detour.Crowd
             return true;
         }
 
-        public float[] getCenter()
+        public Vector3f getCenter()
         {
             return m_center;
         }

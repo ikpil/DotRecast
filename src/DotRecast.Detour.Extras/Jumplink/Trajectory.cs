@@ -1,4 +1,5 @@
 using System;
+using DotRecast.Core;
 
 namespace DotRecast.Detour.Extras.Jumplink
 {
@@ -9,7 +10,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             return u * g + (1f - u) * f;
         }
 
-        public virtual float[] apply(float[] start, float[] end, float u)
+        public virtual Vector3f apply(Vector3f start, Vector3f end, float u)
         {
             throw new NotImplementedException();
         }

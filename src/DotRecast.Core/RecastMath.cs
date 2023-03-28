@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using System.Numerics;
 
 namespace DotRecast.Core
 {
@@ -107,6 +108,16 @@ namespace DotRecast.Core
             dest[2] = v1[2] + v2[2] * s;
             return dest.ToArray();
         }
+        
+        public static Vector3f vMad(Vector3f v1, Vector3f v2, float s)
+        {
+            Vector3f dest = new Vector3f();
+            dest[0] = v1[0] + v2[0] * s;
+            dest[1] = v1[1] + v2[1] * s;
+            dest[2] = v1[2] + v2[2] * s;
+            return dest;
+        }
+
 
         /// Performs a linear interpolation between two vectors. (@p v1 toward @p
         /// v2)
@@ -132,13 +143,23 @@ namespace DotRecast.Core
             return dest.ToArray();
         }
         
-        public static float[] vSub(VectorPtr v1, VectorPtr v2)
+        public static Vector3f vLerp(Vector3f v1, Vector3f v2, float t)
+        {
+            Vector3f dest = new Vector3f();
+            dest[0] = v1[0] + (v2[0] - v1[0]) * t;
+            dest[1] = v1[1] + (v2[1] - v1[1]) * t;
+            dest[2] = v1[2] + (v2[2] - v1[2]) * t;
+            return dest;
+        }
+
+        
+        public static Vector3f vSub(VectorPtr v1, VectorPtr v2)
         {
             Vector3f dest = new Vector3f();
             dest[0] = v1.get(0) - v2.get(0);
             dest[1] = v1.get(1) - v2.get(1);
             dest[2] = v1.get(2) - v2.get(2);
-            return dest.ToArray();
+            return dest;
         }
 
         public static float[] vSub(float[] v1, float[] v2)
@@ -150,14 +171,34 @@ namespace DotRecast.Core
             return dest.ToArray();
         }
         
-        public static float[] vSub(Vector3f v1, Vector3f v2)
+        public static Vector3f vSub(Vector3f v1, Vector3f v2)
         {
             Vector3f dest = new Vector3f();
             dest[0] = v1[0] - v2[0];
             dest[1] = v1[1] - v2[1];
             dest[2] = v1[2] - v2[2];
-            return dest.ToArray();
+            return dest;
         }
+        
+        public static Vector3f vSub(Vector3f v1, VectorPtr v2)
+        {
+            Vector3f dest = new Vector3f();
+            dest[0] = v1[0] - v2.get(0);
+            dest[1] = v1[1] - v2.get(1);
+            dest[2] = v1[2] - v2.get(2);
+            return dest;
+        }
+
+        
+        public static Vector3f vSub(Vector3f v1, float[] v2)
+        {
+            Vector3f dest = new Vector3f();
+            dest[0] = v1[0] - v2[0];
+            dest[1] = v1[1] - v2[1];
+            dest[2] = v1[2] - v2[2];
+            return dest;
+        }
+
 
 
         public static float[] vAdd(float[] v1, float[] v2)
@@ -168,6 +209,16 @@ namespace DotRecast.Core
             dest[2] = v1[2] + v2[2];
             return dest.ToArray();
         }
+        
+        public static Vector3f vAdd(Vector3f v1, Vector3f v2)
+        {
+            Vector3f dest = new Vector3f();
+            dest[0] = v1[0] + v2[0];
+            dest[1] = v1[1] + v2[1];
+            dest[2] = v1[2] + v2[2];
+            return dest;
+        }
+
 
         public static float[] vCopy(float[] @in)
         {
@@ -300,6 +351,15 @@ namespace DotRecast.Core
             return dx * dx + dy * dy + dz * dz;
         }
         
+        public static float vDistSqr(Vector3f v1, float[] v2)
+        {
+            float dx = v2[0] - v1[0];
+            float dy = v2[1] - v1[1];
+            float dz = v2[2] - v1[2];
+            return dx * dx + dy * dy + dz * dz;
+        }
+
+        
         public static float vDistSqr(Vector3f v1, Vector3f v2)
         {
             float dx = v2[0] - v1[0];
@@ -316,11 +376,23 @@ namespace DotRecast.Core
         {
             return v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
         }
+        
+        public static float vLenSqr(Vector3f v)
+        {
+            return v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
+        }
+
 
         public static float vLen(float[] v)
         {
             return (float)Math.Sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
         }
+        
+        public static float vLen(Vector3f v)
+        {
+            return (float)Math.Sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+        }
+
 
         public static float vDist(float[] v1, float[] verts, int i)
         {
@@ -344,6 +416,14 @@ namespace DotRecast.Core
             float dz = v2[2] - v1[2];
             return (float)Math.Sqrt(dx * dx + dz * dz);
         }
+        
+        public static float vDist2D(Vector3f v1, Vector3f v2)
+        {
+            float dx = v2[0] - v1[0];
+            float dz = v2[2] - v1[2];
+            return (float)Math.Sqrt(dx * dx + dz * dz);
+        }
+
 
         public static float vDist2DSqr(float[] v1, float[] v2)
         {
@@ -351,8 +431,16 @@ namespace DotRecast.Core
             float dz = v2[2] - v1[2];
             return dx * dx + dz * dz;
         }
+        
+        public static float vDist2DSqr(Vector3f v1, Vector3f v2)
+        {
+            float dx = v2[0] - v1[0];
+            float dz = v2[2] - v1[2];
+            return dx * dx + dz * dz;
+        }
 
-        public static float vDist2DSqr(float[] p, float[] verts, int i)
+
+        public static float vDist2DSqr(Vector3f p, float[] verts, int i)
         {
             float dx = verts[i] - p[0];
             float dz = verts[i + 2] - p[2];
@@ -395,12 +483,25 @@ namespace DotRecast.Core
         {
             return vEqual(p0, p1, EQUAL_THRESHOLD);
         }
+        
+        public static bool vEqual(Vector3f p0, Vector3f p1)
+        {
+            return vEqual(p0, p1, EQUAL_THRESHOLD);
+        }
+
 
         public static bool vEqual(float[] p0, float[] p1, float thresholdSqr)
         {
             float d = vDistSqr(p0, p1);
             return d < thresholdSqr;
         }
+        
+        public static bool vEqual(Vector3f p0, Vector3f p1, float thresholdSqr)
+        {
+            float d = vDistSqr(p0, p1);
+            return d < thresholdSqr;
+        }
+
 
         /// Derives the dot product of two vectors on the xz-plane. (@p u . @p v)
         /// @param[in] u A vector [(x, y, z)]
@@ -413,6 +514,12 @@ namespace DotRecast.Core
         {
             return u[0] * v[0] + u[2] * v[2];
         }
+        
+        public static float vDot2D(Vector3f u, Vector3f v)
+        {
+            return u[0] * v[0] + u[2] * v[2];
+        }
+
 
         public static float vDot2D(float[] u, float[] v, int vi)
         {
@@ -430,6 +537,12 @@ namespace DotRecast.Core
         {
             return u[2] * v[0] - u[0] * v[2];
         }
+        
+        public static float vPerp2D(Vector3f u, Vector3f v)
+        {
+            return u[2] * v[0] - u[0] * v[2];
+        }
+        
 
         /// @}
         /// @name Computational geometry helper functions.
@@ -499,8 +612,17 @@ namespace DotRecast.Core
             overlap = (amin[2] > bmax[2] || amax[2] < bmin[2]) ? false : overlap;
             return overlap;
         }
+        
+        public static bool overlapBounds(Vector3f amin, Vector3f amax, Vector3f bmin, Vector3f bmax)
+        {
+            bool overlap = true;
+            overlap = (amin[0] > bmax[0] || amax[0] < bmin[0]) ? false : overlap;
+            overlap = (amin[1] > bmax[1] || amax[1] < bmin[1]) ? false : overlap;
+            overlap = (amin[2] > bmax[2] || amax[2] < bmin[2]) ? false : overlap;
+            return overlap;
+        }
 
-        public static Tuple<float, float> distancePtSegSqr2D(float[] pt, float[] p, float[] q)
+        public static Tuple<float, float> distancePtSegSqr2D(Vector3f pt, Vector3f p, Vector3f q)
         {
             float pqx = q[0] - p[0];
             float pqz = q[2] - p[2];
@@ -527,11 +649,11 @@ namespace DotRecast.Core
             return Tuple.Create(dx * dx + dz * dz, t);
         }
 
-        public static float? closestHeightPointTriangle(float[] p, float[] a, float[] b, float[] c)
+        public static float? closestHeightPointTriangle(Vector3f p, Vector3f a, Vector3f b, Vector3f c)
         {
-            float[] v0 = vSub(c, a);
-            float[] v1 = vSub(b, a);
-            float[] v2 = vSub(p, a);
+            Vector3f v0 = vSub(c, a);
+            Vector3f v1 = vSub(b, a);
+            Vector3f v2 = vSub(p, a);
 
             // Compute scaled barycentric coordinates
             float denom = v0[0] * v1[2] - v0[2] * v1[0];
@@ -563,7 +685,7 @@ namespace DotRecast.Core
         /// @par
         ///
         /// All points are projected onto the xz-plane, so the y-values are ignored.
-        public static bool pointInPolygon(float[] pt, float[] verts, int nverts)
+        public static bool pointInPolygon(Vector3f pt, float[] verts, int nverts)
         {
             // TODO: Replace pnpoly with triArea2D tests?
             int i, j;
@@ -582,7 +704,7 @@ namespace DotRecast.Core
             return c;
         }
 
-        public static bool distancePtPolyEdgesSqr(float[] pt, float[] verts, int nverts, float[] ed, float[] et)
+        public static bool distancePtPolyEdgesSqr(Vector3f pt, float[] verts, int nverts, float[] ed, float[] et)
         {
             // TODO: Replace pnpoly with triArea2D tests?
             int i, j;
@@ -668,7 +790,7 @@ namespace DotRecast.Core
 
         // Returns a random point in a convex polygon.
         // Adapted from Graphics Gems article.
-        public static float[] randomPointInConvexPoly(float[] pts, int npts, float[] areas, float s, float t)
+        public static Vector3f randomPointInConvexPoly(float[] pts, int npts, float[] areas, float s, float t)
         {
             // Calc triangle araes
             float areasum = 0.0f;
@@ -705,11 +827,11 @@ namespace DotRecast.Core
             int pb = (tri - 1) * 3;
             int pc = tri * 3;
 
-            return new float[]
+            return new Vector3f()
             {
-                a * pts[pa] + b * pts[pb] + c * pts[pc],
-                a * pts[pa + 1] + b * pts[pb + 1] + c * pts[pc + 1],
-                a * pts[pa + 2] + b * pts[pb + 2] + c * pts[pc + 2]
+                x = a * pts[pa] + b * pts[pb] + c * pts[pc],
+                y = a * pts[pa + 1] + b * pts[pb + 1] + c * pts[pc + 1],
+                z = a * pts[pa + 2] + b * pts[pb + 2] + c * pts[pc + 2]
             };
         }
 
@@ -753,18 +875,18 @@ namespace DotRecast.Core
             public int segMax = -1;
         }
 
-        public static IntersectResult intersectSegmentPoly2D(float[] p0, float[] p1, float[] verts, int nverts)
+        public static IntersectResult intersectSegmentPoly2D(Vector3f p0, Vector3f p1, float[] verts, int nverts)
         {
             IntersectResult result = new IntersectResult();
             float EPS = 0.000001f;
-            float[] dir = vSub(p1, p0);
+            var dir = vSub(p1, p0);
 
-            VectorPtr p0v = new VectorPtr(p0);
+            var p0v = p0;
             for (int i = 0, j = nverts - 1; i < nverts; j = i++)
             {
                 VectorPtr vpj = new VectorPtr(verts, j * 3);
-                float[] edge = vSub(new VectorPtr(verts, i * 3), vpj);
-                float[] diff = vSub(p0v, vpj);
+                var edge = vSub(new VectorPtr(verts, i * 3), vpj);
+                var diff = vSub(p0v, vpj);
                 float n = vPerp2D(edge, diff);
                 float d = vPerp2D(dir, edge);
                 if (Math.Abs(d) < EPS)
@@ -815,7 +937,7 @@ namespace DotRecast.Core
             return result;
         }
 
-        public static Tuple<float, float> distancePtSegSqr2D(float[] pt, float[] verts, int p, int q)
+        public static Tuple<float, float> distancePtSegSqr2D(Vector3f pt, float[] verts, int p, int q)
         {
             float pqx = verts[q + 0] - verts[p + 0];
             float pqz = verts[q + 2] - verts[p + 2];
@@ -851,6 +973,12 @@ namespace DotRecast.Core
         {
             return a[0] * b[2] - a[2] * b[0];
         }
+        
+        public static float vperpXZ(Vector3f a, Vector3f b)
+        {
+            return a[0] * b[2] - a[2] * b[0];
+        }
+
 
         public static Tuple<float, float>? intersectSegSeg2D(float[] ap, float[] aq, float[] bp, float[] bq)
         {
@@ -870,9 +998,9 @@ namespace DotRecast.Core
         
         public static Tuple<float, float>? intersectSegSeg2D(Vector3f ap, Vector3f aq, Vector3f bp, Vector3f bq)
         {
-            float[] u = vSub(aq, ap);
-            float[] v = vSub(bq, bp);
-            float[] w = vSub(ap, bp);
+            Vector3f u = vSub(aq, ap);
+            Vector3f v = vSub(bq, bp);
+            Vector3f w = vSub(ap, bp);
             float d = vperpXZ(u, v);
             if (Math.Abs(d) < 1e-6f)
             {
@@ -893,6 +1021,16 @@ namespace DotRecast.Core
             @out[2] = @in[2] * scale;
             return @out;
         }
+        
+        public static Vector3f vScale(Vector3f @in, float scale)
+        {
+            var @out = new Vector3f();
+            @out[0] = @in[0] * scale;
+            @out[1] = @in[1] * scale;
+            @out[2] = @in[2] * scale;
+            return @out;
+        }
+
 
         /// Checks that the specified vector's components are all finite.
         /// @param[in] v A point. [(x, y, z)]
@@ -902,10 +1040,20 @@ namespace DotRecast.Core
         {
             return float.IsFinite(v[0]) && float.IsFinite(v[1]) && float.IsFinite(v[2]);
         }
+        
+        public static bool vIsFinite(Vector3f v)
+        {
+            return float.IsFinite(v[0]) && float.IsFinite(v[1]) && float.IsFinite(v[2]);
+        }
 
         /// Checks that the specified vector's 2D components are finite.
         /// @param[in] v A point. [(x, y, z)]
         public static bool vIsFinite2D(float[] v)
+        {
+            return float.IsFinite(v[0]) && float.IsFinite(v[2]);
+        }
+
+        public static bool vIsFinite2D(Vector3f v)
         {
             return float.IsFinite(v[0]) && float.IsFinite(v[2]);
         }

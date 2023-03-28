@@ -73,8 +73,8 @@ namespace DotRecast.Detour
                 vCopy(ref a1, p, 3 * ((ai + n - 1) % n)); // prev a
                 vCopy(ref b1, q, 3 * ((bi + m - 1) % m)); // prev b
 
-                float[] A = vSub(a, a1);
-                float[] B = vSub(b, b1);
+                Vector3f A = vSub(a, a1);
+                Vector3f B = vSub(b, b1);
 
                 float cross = B[0] * A[2] - A[0] * B[2]; // triArea2D({0, 0}, A, B);
                 float aHB = triArea2D(b1, b, a);

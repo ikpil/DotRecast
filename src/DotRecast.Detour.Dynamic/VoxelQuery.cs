@@ -17,6 +17,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using DotRecast.Core;
 using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic
@@ -28,12 +29,12 @@ namespace DotRecast.Detour.Dynamic
  */
     public class VoxelQuery
     {
-        private readonly float[] origin;
+        private readonly Vector3f origin;
         private readonly float tileWidth;
         private readonly float tileDepth;
         private readonly Func<int, int, Heightfield> heightfieldProvider;
 
-        public VoxelQuery(float[] origin, float tileWidth, float tileDepth, Func<int, int, Heightfield> heightfieldProvider)
+        public VoxelQuery(Vector3f origin, float tileWidth, float tileDepth, Func<int, int, Heightfield> heightfieldProvider)
         {
             this.origin = origin;
             this.tileWidth = tileWidth;

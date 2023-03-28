@@ -15,7 +15,7 @@ namespace DotRecast.Detour.Extras.Jumplink
                 return true;
             }
 
-            public float getCost(float[] pa, float[] pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef,
+            public float getCost(Vector3f pa, Vector3f pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef,
                 MeshTile curTile, Poly curPoly, long nextRef, MeshTile nextTile, Poly nextPoly)
             {
                 return 0;
@@ -69,10 +69,9 @@ namespace DotRecast.Detour.Extras.Jumplink
             }
         }
 
-        private Tuple<bool, float> getNavMeshHeight(NavMeshQuery navMeshQuery, float[] pt, float cs,
-            float heightRange)
+        private Tuple<bool, float> getNavMeshHeight(NavMeshQuery navMeshQuery, Vector3f pt, float cs, float heightRange)
         {
-            float[] halfExtents = new float[] { cs, heightRange, cs };
+            Vector3f halfExtents = new Vector3f { x = cs, y = heightRange, z = cs };
             float maxHeight = pt[1] + heightRange;
             AtomicBoolean found = new AtomicBoolean();
             AtomicFloat minHeight = new AtomicFloat(pt[1]);

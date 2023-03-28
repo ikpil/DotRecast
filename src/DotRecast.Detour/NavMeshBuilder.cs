@@ -254,7 +254,7 @@ namespace DotRecast.Detour
         const int XM = 1 << 2;
         const int ZM = 1 << 3;
 
-        public static int classifyOffMeshPoint(VectorPtr pt, float[] bmin, float[] bmax)
+        public static int classifyOffMeshPoint(VectorPtr pt, Vector3f bmin, Vector3f bmax)
         {
             int outcode = 0;
             outcode |= (pt.get(0) >= bmax[0]) ? XP : 0;
@@ -343,8 +343,8 @@ namespace DotRecast.Detour
                 hmax += option.walkableClimb;
                 Vector3f bmin = new Vector3f();
                 Vector3f bmax = new Vector3f();
-                vCopy(bmin, option.bmin);
-                vCopy(bmax, option.bmax);
+                vCopy(ref bmin, option.bmin);
+                vCopy(ref bmax, option.bmax);
                 bmin[1] = hmin;
                 bmax[1] = hmax;
 
@@ -467,8 +467,8 @@ namespace DotRecast.Detour
             header.polyCount = totPolyCount;
             header.vertCount = totVertCount;
             header.maxLinkCount = maxLinkCount;
-            vCopy(header.bmin, option.bmin);
-            vCopy(header.bmax, option.bmax);
+            vCopy(ref header.bmin, option.bmin);
+            vCopy(ref header.bmax, option.bmax);
             header.detailMeshCount = option.polyCount;
             header.detailVertCount = uniqueDetailVertCount;
             header.detailTriCount = detailTriCount;

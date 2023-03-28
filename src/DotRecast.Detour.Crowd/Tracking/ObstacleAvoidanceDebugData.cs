@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using DotRecast.Core;
 
 namespace DotRecast.Detour.Crowd.Tracking
 {
@@ -100,7 +101,7 @@ namespace DotRecast.Detour.Crowd.Tracking
             return m_nsamples;
         }
 
-        public float[] getSampleVelocity(int i)
+        public Vector3f getSampleVelocity(int i)
         {
             Vector3f vel = new Vector3f();
             vel[0] = m_vel[i * 3];

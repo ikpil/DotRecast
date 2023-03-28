@@ -786,7 +786,7 @@ namespace DotRecast.Recast
             return dx * dx + dy * dy + dz * dz;
         }
 
-        private static bool overlapBounds(float[] amin, float[] amax, float[] bounds)
+        private static bool overlapBounds(Vector3f amin, Vector3f amax, float[] bounds)
         {
             bool overlap = true;
             overlap = (amin[0] > bounds[3] || amax[0] < bounds[0]) ? false : overlap;

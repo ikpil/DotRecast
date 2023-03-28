@@ -54,11 +54,11 @@ namespace DotRecast.Detour.Extras.Jumplink
             List<JumpLink> links = new List<JumpLink>();
             foreach (JumpSegment js in jumpSegments)
             {
-                float[] sp = es.start.gsamples[js.startSample].p;
-                float[] sq = es.start.gsamples[js.startSample + js.samples - 1].p;
+                Vector3f sp = es.start.gsamples[js.startSample].p;
+                Vector3f sq = es.start.gsamples[js.startSample + js.samples - 1].p;
                 GroundSegment end = es.end[js.groundSegment];
-                float[] ep = end.gsamples[js.startSample].p;
-                float[] eq = end.gsamples[js.startSample + js.samples - 1].p;
+                Vector3f ep = end.gsamples[js.startSample].p;
+                Vector3f eq = end.gsamples[js.startSample + js.samples - 1].p;
                 float d = Math.Min(vDist2DSqr(sp, sq), vDist2DSqr(ep, eq));
                 if (d >= 4 * acfg.agentRadius * acfg.agentRadius)
                 {
@@ -72,7 +72,7 @@ namespace DotRecast.Detour.Extras.Jumplink
                     for (int j = 0; j < link.nspine; ++j)
                     {
                         float u = ((float)j) / (link.nspine - 1);
-                        float[] p = es.trajectory.apply(sp, ep, u);
+                        Vector3f p = es.trajectory.apply(sp, ep, u);
                         link.spine0[j * 3] = p[0];
                         link.spine0[j * 3 + 1] = p[1];
                         link.spine0[j * 3 + 2] = p[2];

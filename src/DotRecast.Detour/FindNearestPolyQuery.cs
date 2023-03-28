@@ -1,4 +1,5 @@
 using System;
+using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
@@ -7,18 +8,18 @@ namespace DotRecast.Detour
     public class FindNearestPolyQuery : PolyQuery
     {
         private readonly NavMeshQuery query;
-        private readonly float[] center;
+        private readonly Vector3f center;
         private long nearestRef;
-        private float[] nearestPt;
+        private Vector3f nearestPt;
         private bool overPoly;
         private float nearestDistanceSqr;
 
-        public FindNearestPolyQuery(NavMeshQuery query, float[] center)
+        public FindNearestPolyQuery(NavMeshQuery query, Vector3f center)
         {
             this.query = query;
             this.center = center;
             nearestDistanceSqr = float.MaxValue;
-            nearestPt = new float[] { center[0], center[1], center[2] };
+            nearestPt = center;
         }
 
         public void process(MeshTile tile, Poly poly, long refs)
@@ -26,12 +27,12 @@ namespace DotRecast.Detour
             // Find nearest polygon amongst the nearby polygons.
             Result<ClosestPointOnPolyResult> closest = query.closestPointOnPoly(refs, center);
             bool posOverPoly = closest.result.isPosOverPoly();
-            float[] closestPtPoly = closest.result.getClosest();
+            var closestPtPoly = closest.result.getClosest();
 
             // If a point is directly over a polygon and closer than
             // climb height, favor that instead of straight line nearest point.
             float d = 0;
-            float[] diff = vSub(center, closestPtPoly);
+            Vector3f diff = vSub(center, closestPtPoly);
             if (posOverPoly)
             {
                 d = Math.Abs(diff[1]) - tile.data.header.walkableClimb;
