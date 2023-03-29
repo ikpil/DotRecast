@@ -24,6 +24,12 @@ public struct OpenGLVertex
         this(pos[0], pos[1], pos[2], 0f, 0f, color)
     {
     }
+    
+    public OpenGLVertex(Vector3f pos, int color) :
+        this(pos[0], pos[1], pos[2], 0f, 0f, color)
+    {
+    }
+
 
     public OpenGLVertex(float x, float y, float z, int color) :
         this(x, y, z, 0f, 0f, color)

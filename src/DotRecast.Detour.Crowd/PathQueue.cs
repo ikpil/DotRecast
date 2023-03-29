@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using DotRecast.Core;
 
 namespace DotRecast.Detour.Crowd
 {
@@ -76,7 +77,7 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        public PathQueryResult request(long startRef, long endRef, float[] startPos, float[] endPos, QueryFilter filter)
+        public PathQueryResult request(long startRef, long endRef, Vector3f startPos, Vector3f endPos, QueryFilter filter)
         {
             if (queue.Count >= config.pathQueueSize)
             {

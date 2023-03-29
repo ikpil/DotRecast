@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
 using DotRecast.Recast.Demo.Draw;
 using Silk.NET.Windowing;
 
@@ -27,7 +28,7 @@ public abstract class Tool
 {
     public abstract void setSample(Sample m_sample);
 
-    public abstract void handleClick(float[] s, float[] p, bool shift);
+    public abstract void handleClick(float[] s, Vector3f p, bool shift);
 
     public abstract void handleRender(NavMeshRenderer renderer);
 

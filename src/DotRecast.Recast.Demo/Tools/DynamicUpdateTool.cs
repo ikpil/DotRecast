@@ -134,7 +134,7 @@ public class DynamicUpdateTool : Tool
         this.sample = sample;
     }
 
-    public override void handleClick(float[] s, float[] p, bool shift)
+    public override void handleClick(float[] s, Vector3f p, bool shift)
     {
         if (mode == DynamicUpdateToolMode.COLLIDERS)
         {

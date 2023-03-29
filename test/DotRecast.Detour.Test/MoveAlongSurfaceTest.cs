@@ -16,6 +16,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
@@ -69,8 +70,8 @@ public class MoveAlongSurfaceTest : AbstractDetourTest
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
-            float[] startPos = startPoss[i];
-            float[] endPos = endPoss[i];
+            Vector3f startPos = startPoss[i];
+            Vector3f endPos = endPoss[i];
             Result<MoveAlongSurfaceResult> result = query.moveAlongSurface(startRef, startPos, endPos, filter);
             Assert.That(result.succeeded(), Is.True);
             MoveAlongSurfaceResult path = result.result;

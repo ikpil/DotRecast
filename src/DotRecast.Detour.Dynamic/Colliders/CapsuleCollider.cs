@@ -17,17 +17,18 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using DotRecast.Core;
 using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic.Colliders
 {
     public class CapsuleCollider : AbstractCollider
     {
-        private readonly float[] start;
-        private readonly float[] end;
+        private readonly Vector3f start;
+        private readonly Vector3f end;
         private readonly float radius;
 
-        public CapsuleCollider(float[] start, float[] end, float radius, int area, float flagMergeThreshold) :
+        public CapsuleCollider(Vector3f start, Vector3f end, float radius, int area, float flagMergeThreshold) :
             base(area, flagMergeThreshold, bounds(start, end, radius))
         {
             this.start = start;
@@ -41,7 +42,7 @@ namespace DotRecast.Detour.Dynamic.Colliders
                 telemetry);
         }
 
-        private static float[] bounds(float[] start, float[] end, float radius)
+        private static float[] bounds(Vector3f start, Vector3f end, float radius)
         {
             return new float[]
             {

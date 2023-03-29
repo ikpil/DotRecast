@@ -32,8 +32,8 @@ public class UnityAStarPathfindingImporterTest
     public void test_v4_0_6()
     {
         NavMesh mesh = loadNavMesh("graph.zip");
-        float[] startPos = new float[] { 8.200293f, 2.155071f, -26.176147f };
-        float[] endPos = new float[] { 11.971109f, 0.000000f, 8.663261f };
+        Vector3f startPos = Vector3f.Of(8.200293f, 2.155071f, -26.176147f);
+        Vector3f endPos = Vector3f.Of(11.971109f, 0.000000f, 8.663261f);
         Result<List<long>> path = findPath(mesh, startPos, endPos);
         Assert.That(path.status, Is.EqualTo(Status.SUCCSESS));
         Assert.That(path.result.Count, Is.EqualTo(57));
@@ -44,8 +44,8 @@ public class UnityAStarPathfindingImporterTest
     public void test_v4_1_16()
     {
         NavMesh mesh = loadNavMesh("graph_v4_1_16.zip");
-        float[] startPos = new float[] { 22.93f, -2.37f, -5.11f };
-        float[] endPos = new float[] { 16.81f, -2.37f, 25.52f };
+        Vector3f startPos = Vector3f.Of(22.93f, -2.37f, -5.11f);
+        Vector3f endPos = Vector3f.Of(16.81f, -2.37f, 25.52f);
         Result<List<long>> path = findPath(mesh, startPos, endPos);
         Assert.That(path.status.isSuccess(), Is.True);
         Assert.That(path.result.Count, Is.EqualTo(15));
@@ -56,7 +56,7 @@ public class UnityAStarPathfindingImporterTest
     public void testBoundsTree()
     {
         NavMesh mesh = loadNavMesh("test_boundstree.zip");
-        float[] position = { 387.52988f, 19.997f, 368.86282f };
+        Vector3f position = Vector3f.Of(387.52988f, 19.997f, 368.86282f);
 
         int[] tilePos = mesh.calcTileLoc(position);
         long tileRef = mesh.getTileRefAt(tilePos[0], tilePos[1], 0);
@@ -87,7 +87,7 @@ public class UnityAStarPathfindingImporterTest
         return meshes[0];
     }
 
-    private Result<List<long>> findPath(NavMesh mesh, float[] startPos, float[] endPos)
+    private Result<List<long>> findPath(NavMesh mesh, Vector3f startPos, Vector3f endPos)
     {
         // Perform a simple pathfinding
         NavMeshQuery query = new NavMeshQuery(mesh);
@@ -97,19 +97,19 @@ public class UnityAStarPathfindingImporterTest
         return query.findPath(polys[0].getNearestRef(), polys[1].getNearestRef(), startPos, endPos, filter);
     }
 
-    private FindNearestPolyResult[] getNearestPolys(NavMesh mesh, params float[][] positions)
+    private FindNearestPolyResult[] getNearestPolys(NavMesh mesh, params Vector3f[] positions)
     {
         NavMeshQuery query = new NavMeshQuery(mesh);
         QueryFilter filter = new DefaultQueryFilter();
-        float[] extents = new float[] { 0.1f, 0.1f, 0.1f };
+        Vector3f extents = Vector3f.Of(0.1f, 0.1f, 0.1f);
 
         FindNearestPolyResult[] results = new FindNearestPolyResult[positions.Length];
         for (int i = 0; i < results.Length; i++)
         {
-            float[] position = positions[i];
+            Vector3f position = positions[i];
             Result<FindNearestPolyResult> result = query.findNearestPoly(position, extents, filter);
             Assert.That(result.succeeded(), Is.True);
-            Assert.That(result.result.getNearestPos(), Is.Not.Null, "Nearest start position is null!");
+            Assert.That(result.result.getNearestPos(), Is.Not.EqualTo(Vector3f.Zero), "Nearest start position is null!");
             results[i] = result.result;
         }
 

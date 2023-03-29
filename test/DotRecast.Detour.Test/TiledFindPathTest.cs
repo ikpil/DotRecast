@@ -17,6 +17,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using DotRecast.Core;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
@@ -40,8 +41,8 @@ public class TiledFindPathTest
 
     protected static readonly long[] START_REFS = { 281475015507969L };
     protected static readonly long[] END_REFS = { 281474985099266L };
-    protected static readonly float[][] START_POS = { new[] { 39.447338f, 9.998177f, -0.784811f } };
-    protected static readonly float[][] END_POS = { new[] { 19.292645f, 11.611748f, -57.750366f } };
+    protected static readonly Vector3f[] START_POS = { Vector3f.Of(39.447338f, 9.998177f, -0.784811f) };
+    protected static readonly Vector3f[] END_POS = { Vector3f.Of(19.292645f, 11.611748f, -57.750366f) };
 
     protected NavMeshQuery query;
     protected NavMesh navmesh;
@@ -66,8 +67,8 @@ public class TiledFindPathTest
         {
             long startRef = START_REFS[i];
             long endRef = END_REFS[i];
-            float[] startPos = START_POS[i];
-            float[] endPos = END_POS[i];
+            Vector3f startPos = START_POS[i];
+            Vector3f endPos = END_POS[i];
             Result<List<long>> path = query.findPath(startRef, endRef, startPos, endPos, filter);
             Assert.That(path.status, Is.EqualTo(STATUSES[i]));
             Assert.That(path.result.Count, Is.EqualTo(RESULTS[i].Length));

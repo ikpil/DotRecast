@@ -16,6 +16,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
@@ -48,7 +49,7 @@ public class FindDistanceToWallTest : AbstractDetourTest
         QueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
-            float[] startPos = startPoss[i];
+            Vector3f startPos = startPoss[i];
             Result<FindDistanceToWallResult> result = query.findDistanceToWall(startRefs[i], startPos, 3.5f, filter);
             FindDistanceToWallResult hit = result.result;
             Assert.That(hit.getDistance(), Is.EqualTo(DISTANCES_TO_WALL[i]).Within(0.001f));

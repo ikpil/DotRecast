@@ -45,7 +45,7 @@ public class JumpLinkBuilderTool : Tool
         annotationBuilder = null;
     }
 
-    public override void handleClick(float[] s, float[] p, bool shift)
+    public override void handleClick(float[] s, Vector3f p, bool shift)
     {
     }
 

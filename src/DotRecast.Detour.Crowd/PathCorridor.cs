@@ -460,11 +460,10 @@ namespace DotRecast.Detour.Crowd
      * @param filter
      *            The filter to apply to the operation.
      */
-        public bool moveTargetPosition(float[] npos, NavMeshQuery navquery, QueryFilter filter)
+        public bool moveTargetPosition(Vector3f npos, NavMeshQuery navquery, QueryFilter filter)
         {
             // Move along navmesh and update new position.
-            Result<MoveAlongSurfaceResult> masResult = navquery.moveAlongSurface(m_path[m_path.Count - 1], m_target,
-                npos, filter);
+            Result<MoveAlongSurfaceResult> masResult = navquery.moveAlongSurface(m_path[m_path.Count - 1], m_target, npos, filter);
             if (masResult.succeeded())
             {
                 m_path = mergeCorridorEndMoved(m_path, masResult.result.getVisited());
@@ -474,7 +473,7 @@ namespace DotRecast.Detour.Crowd
                  * float h = m_target[1]; navquery->getPolyHeight(m_path[m_npath-1],
                  * result, &h); result[1] = h;
                  */
-                vCopy(m_target, masResult.result.getResultPos());
+                vCopy(ref m_target, masResult.result.getResultPos());
                 return true;
             }
 
@@ -528,7 +527,7 @@ namespace DotRecast.Detour.Crowd
             if (n == 0)
             {
                 // The first polyref is bad, use current safe values.
-                vCopy(m_pos, safePos);
+                vCopy(ref m_pos, safePos);
                 m_path.Clear();
                 m_path.Add(safeRef);
             }
@@ -539,10 +538,10 @@ namespace DotRecast.Detour.Crowd
             }
 
             // Clamp target pos to last poly
-            Result<float[]> result = navquery.closestPointOnPolyBoundary(m_path[m_path.Count - 1], m_target);
+            var result = navquery.closestPointOnPolyBoundary(m_path[m_path.Count - 1], m_target);
             if (result.succeeded())
             {
-                vCopy(m_target, result.result);
+                vCopy(ref m_target, result.result);
             }
         }
 
@@ -579,7 +578,7 @@ namespace DotRecast.Detour.Crowd
      *
      * @return The current position within the corridor.
      */
-        public float[] getPos()
+        public Vector3f getPos()
         {
             return m_pos;
         }
@@ -589,7 +588,7 @@ namespace DotRecast.Detour.Crowd
      *
      * @return The current target within the corridor.
      */
-        public float[] getTarget()
+        public Vector3f getTarget()
         {
             return m_target;
         }

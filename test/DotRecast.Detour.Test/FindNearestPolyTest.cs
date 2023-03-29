@@ -16,6 +16,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
@@ -35,10 +36,10 @@ public class FindNearestPolyTest : AbstractDetourTest
     public void testFindNearestPoly()
     {
         QueryFilter filter = new DefaultQueryFilter();
-        float[] extents = { 2, 4, 2 };
+        Vector3f extents = Vector3f.Of(2, 4, 2);
         for (int i = 0; i < startRefs.Length; i++)
         {
-            float[] startPos = startPoss[i];
+            Vector3f startPos = startPoss[i];
             Result<FindNearestPolyResult> poly = query.findNearestPoly(startPos, extents, filter);
             Assert.That(poly.succeeded(), Is.True);
             Assert.That(poly.result.getNearestRef(), Is.EqualTo(POLY_REFS[i]));
@@ -56,7 +57,7 @@ public class FindNearestPolyTest : AbstractDetourTest
             return false;
         }
 
-        public float getCost(float[] pa, float[] pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef, MeshTile curTile,
+        public float getCost(Vector3f pa, Vector3f pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef, MeshTile curTile,
             Poly curPoly, long nextRef, MeshTile nextTile, Poly nextPoly)
         {
             return 0;
@@ -67,10 +68,10 @@ public class FindNearestPolyTest : AbstractDetourTest
     public void shouldReturnStartPosWhenNoPolyIsValid()
     {
         var filter = new EmptyQueryFilter();
-        float[] extents = { 2, 4, 2 };
+        Vector3f extents = Vector3f.Of(2, 4, 2);
         for (int i = 0; i < startRefs.Length; i++)
         {
-            float[] startPos = startPoss[i];
+            Vector3f startPos = startPoss[i];
             Result<FindNearestPolyResult> poly = query.findNearestPoly(startPos, extents, filter);
             Assert.That(poly.succeeded(), Is.True);
             Assert.That(poly.result.getNearestRef(), Is.EqualTo(0L));

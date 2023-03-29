@@ -58,7 +58,7 @@ public class MeshSetReaderWriterTest
         NavMeshSetHeader header = new NavMeshSetHeader();
         header.magic = NavMeshSetHeader.NAVMESHSET_MAGIC;
         header.version = NavMeshSetHeader.NAVMESHSET_VERSION;
-        vCopy(header.option.orig, geom.getMeshBoundsMin());
+        vCopy(ref header.option.orig, geom.getMeshBoundsMin());
         header.option.tileWidth = m_tileSize * m_cellSize;
         header.option.tileHeight = m_tileSize * m_cellSize;
         header.option.maxTiles = m_maxTiles;

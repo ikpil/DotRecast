@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using DotRecast.Core;
 using DotRecast.Detour;
 using DotRecast.Recast.Demo.Builder;
 using Silk.NET.OpenGL;
@@ -529,7 +530,7 @@ public class RecastDebugDraw : DebugDraw
     {
         float alpha = 1f;
 
-        float[] orig = cset.bmin;
+        Vector3f orig = cset.bmin;
         float cs = cset.cs;
         float ch = cset.ch;
 
@@ -540,7 +541,7 @@ public class RecastDebugDraw : DebugDraw
         for (int i = 0; i < cset.conts.Count; ++i)
         {
             Contour cont = cset.conts[i];
-            float[] pos = getContourCenter(cont, orig, cs, ch);
+            Vector3f pos = getContourCenter(cont, orig, cs, ch);
             for (int j = 0; j < cont.nverts; ++j)
             {
                 int v = j * 4;
@@ -552,7 +553,7 @@ public class RecastDebugDraw : DebugDraw
                 Contour cont2 = findContourFromSet(cset, (short)cont.verts[v + 3]);
                 if (cont2 != null)
                 {
-                    float[] pos2 = getContourCenter(cont2, orig, cs, ch);
+                    Vector3f pos2 = getContourCenter(cont2, orig, cs, ch);
                     appendArc(pos[0], pos[1], pos[2], pos2[0], pos2[1], pos2[2], 0.25f, 0.6f, 0.6f, color);
                 }
             }
@@ -568,14 +569,14 @@ public class RecastDebugDraw : DebugDraw
         {
             Contour cont = cset.conts[i];
             int col = duDarkenCol(duIntToCol(cont.reg, a));
-            float[] pos = getContourCenter(cont, orig, cs, ch);
+            Vector3f pos = getContourCenter(cont, orig, cs, ch);
             vertex(pos, col);
         }
 
         end();
     }
 
-    private float[] getContourCenter(Contour cont, float[] orig, float cs, float ch)
+    private Vector3f getContourCenter(Contour cont, Vector3f orig, float cs, float ch)
     {
         Vector3f center = new Vector3f();
         center[0] = 0;
@@ -619,7 +620,7 @@ public class RecastDebugDraw : DebugDraw
 
     public void debugDrawRawContours(ContourSet cset, float alpha)
     {
-        float[] orig = cset.bmin;
+        Vector3f orig = cset.bmin;
         float cs = cset.cs;
         float ch = cset.ch;
 
@@ -695,7 +696,7 @@ public class RecastDebugDraw : DebugDraw
     public void debugDrawContours(ContourSet cset)
     {
         float alpha = 1f;
-        float[] orig = cset.bmin;
+        Vector3f orig = cset.bmin;
         float cs = cset.cs;
         float ch = cset.ch;
 
@@ -777,7 +778,7 @@ public class RecastDebugDraw : DebugDraw
             return;
         }
 
-        float[] orig = hf.bmin;
+        Vector3f orig = hf.bmin;
         float cs = hf.cs;
         float ch = hf.ch;
 
@@ -809,7 +810,7 @@ public class RecastDebugDraw : DebugDraw
 
     public void debugDrawHeightfieldWalkable(Heightfield hf)
     {
-        float[] orig = hf.bmin;
+        Vector3f orig = hf.bmin;
         float cs = hf.cs;
         float ch = hf.ch;
 
@@ -942,7 +943,7 @@ public class RecastDebugDraw : DebugDraw
         int nvp = mesh.nvp;
         float cs = mesh.cs;
         float ch = mesh.ch;
-        float[] orig = mesh.bmin;
+        Vector3f orig = mesh.bmin;
 
         begin(DebugDrawPrimitives.TRIS);
 

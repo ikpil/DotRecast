@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using DotRecast.Core;
 using DotRecast.Recast.Geom;
 
 namespace DotRecast.Recast.Demo.Geom;
@@ -31,8 +32,8 @@ public class DemoInputGeomProvider : InputGeomProvider
     public readonly float[] vertices;
     public readonly int[] faces;
     public readonly float[] normals;
-    private readonly float[] bmin;
-    private readonly float[] bmax;
+    private readonly Vector3f bmin;
+    private readonly Vector3f bmax;
     private readonly List<ConvexVolume> _convexVolumes = new();
     private readonly List<DemoOffMeshConnection> offMeshConnections = new();
     private readonly ChunkyTriMesh chunkyTriMesh;
@@ -100,7 +101,8 @@ public class DemoInputGeomProvider : InputGeomProvider
             int v0 = faces[i] * 3;
             int v1 = faces[i + 1] * 3;
             int v2 = faces[i + 2] * 3;
-            Vector3f e0 = new Vector3f(), e1 = new float[3];
+            Vector3f e0 = new Vector3f();
+            Vector3f e1 = new Vector3f();
             for (int j = 0; j < 3; ++j)
             {
                 e0[j] = vertices[v1 + j] - vertices[v0 + j];
@@ -147,7 +149,7 @@ public class DemoInputGeomProvider : InputGeomProvider
         offMeshConnections.RemoveAll(filter); // TODO : 확인 필요
     }
 
-    public float? raycastMesh(float[] src, float[] dst)
+    public float? raycastMesh(float[] src, Vector3f dst)
     {
         // Prune hit ray.
         float[] btminmax = Intersections.intersectSegmentAABB(src, dst, bmin, bmax);

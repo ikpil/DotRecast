@@ -28,8 +28,8 @@ namespace DotRecast.Detour.TileCache.Test;
 
 public class TileCacheFindPathTest : AbstractTileCacheTest
 {
-    private readonly float[] start = { 39.44734f, 9.998177f, -0.784811f };
-    private readonly float[] end = { 19.292645f, 11.611748f, -57.750366f };
+    private readonly Vector3f start = Vector3f.Of(39.44734f, 9.998177f, -0.784811f);
+    private readonly Vector3f end = Vector3f.Of(19.292645f, 11.611748f, -57.750366f);
     private readonly NavMesh navmesh;
     private readonly NavMeshQuery query;
 
@@ -46,18 +46,17 @@ public class TileCacheFindPathTest : AbstractTileCacheTest
     public void testFindPath()
     {
         QueryFilter filter = new DefaultQueryFilter();
-        float[] extents = new float[] { 2f, 4f, 2f };
+        Vector3f extents = Vector3f.Of(2f, 4f, 2f);
         Result<FindNearestPolyResult> findPolyStart = query.findNearestPoly(start, extents, filter);
         Result<FindNearestPolyResult> findPolyEnd = query.findNearestPoly(end, extents, filter);
         long startRef = findPolyStart.result.getNearestRef();
         long endRef = findPolyEnd.result.getNearestRef();
-        float[] startPos = findPolyStart.result.getNearestPos();
-        float[] endPos = findPolyEnd.result.getNearestPos();
+        Vector3f startPos = findPolyStart.result.getNearestPos();
+        Vector3f endPos = findPolyEnd.result.getNearestPos();
         Result<List<long>> path = query.findPath(startRef, endRef, startPos, endPos, filter);
         int maxStraightPath = 256;
         int options = 0;
-        Result<List<StraightPathItem>> pathStr = query.findStraightPath(startPos, endPos, path.result, maxStraightPath,
-            options);
+        Result<List<StraightPathItem>> pathStr = query.findStraightPath(startPos, endPos, path.result, maxStraightPath, options);
         Assert.That(pathStr.result.Count, Is.EqualTo(8));
     }
 }

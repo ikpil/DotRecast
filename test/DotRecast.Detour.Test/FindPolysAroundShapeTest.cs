@@ -16,6 +16,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
@@ -129,9 +130,8 @@ public class FindPolysAroundShapeTest : AbstractDetourTest
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
-            float[] startPos = startPoss[i];
-            Result<FindPolysAroundResult> polys = query.findPolysAroundShape(startRef,
-                getQueryPoly(startPos, endPoss[i]), filter);
+            Vector3f startPos = startPoss[i];
+            Result<FindPolysAroundResult> polys = query.findPolysAroundShape(startRef, getQueryPoly(startPos, endPoss[i]), filter);
             Assert.That(polys.result.getRefs().Count, Is.EqualTo(REFS[i].Length));
             for (int v = 0; v < REFS[i].Length; v++)
             {
@@ -151,7 +151,7 @@ public class FindPolysAroundShapeTest : AbstractDetourTest
         }
     }
 
-    private float[] getQueryPoly(float[] m_spos, float[] m_epos)
+    private float[] getQueryPoly(Vector3f m_spos, Vector3f m_epos)
     {
         float nx = (m_epos[2] - m_spos[2]) * 0.25f;
         float nz = -(m_epos[0] - m_spos[0]) * 0.25f;

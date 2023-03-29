@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using DotRecast.Core;
 using Silk.NET.OpenGL;
 
 namespace DotRecast.Recast.Demo.Draw;
@@ -323,6 +324,12 @@ public class ModernOpenGLDraw : OpenGLDraw
     {
         vertices.Add(new OpenGLVertex(pos, color));
     }
+    
+    public void vertex(Vector3f pos, int color)
+    {
+        vertices.Add(new OpenGLVertex(pos, color));
+    }
+
 
     public void vertex(float[] pos, int color, float[] uv)
     {

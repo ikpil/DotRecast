@@ -91,10 +91,10 @@ public class RecastDemo
     private float scrollZoom;
     private readonly float[] origMousePos = new float[2];
     private readonly float[] origCameraEulers = new float[2];
-    private readonly Vector3f origCameraPos = new Vector3f();
+    private Vector3f origCameraPos = new Vector3f();
 
     private readonly float[] cameraEulers = { 45, -45 };
-    private readonly float[] cameraPos = { 0, 0, 0 };
+    private Vector3f cameraPos = Vector3f.Of(0, 0, 0);
 
     private readonly Vector3f rayStart = new Vector3f();
     private readonly Vector3f rayEnd = new Vector3f();

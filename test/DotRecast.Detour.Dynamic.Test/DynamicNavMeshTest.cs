@@ -10,10 +10,10 @@ namespace DotRecast.Detour.Dynamic.Test;
 
 public class DynamicNavMeshTest
 {
-    private static readonly float[] START_POS = new float[] { 70.87453f, 0.0010070801f, 86.69021f };
-    private static readonly float[] END_POS = new float[] { -50.22061f, 0.0010070801f, -70.761444f };
-    private static readonly float[] EXTENT = new float[] { 0.1f, 0.1f, 0.1f };
-    private static readonly float[] SPHERE_POS = new float[] { 45.381645f, 0.0010070801f, 52.68981f };
+    private static readonly Vector3f START_POS = Vector3f.Of(70.87453f, 0.0010070801f, 86.69021f);
+    private static readonly Vector3f END_POS = Vector3f.Of(-50.22061f, 0.0010070801f, -70.761444f);
+    private static readonly Vector3f EXTENT = Vector3f.Of(0.1f, 0.1f, 0.1f);
+    private static readonly Vector3f SPHERE_POS = Vector3f.Of(45.381645f, 0.0010070801f, 52.68981f);
 
 
     [Test]

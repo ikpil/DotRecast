@@ -32,7 +32,7 @@ public class VoxelQueryTest
 {
     private const int TILE_WIDTH = 100;
     private const int TILE_DEPTH = 90;
-    private static readonly float[] ORIGIN = new float[] { 50, 10, 40 };
+    private static readonly Vector3f ORIGIN = Vector3f.Of(50, 10, 40);
 
 
     [Test]

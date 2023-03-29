@@ -30,7 +30,7 @@ namespace DotRecast.Recast
         private const float EPSILON = 0.00001f;
         private static readonly int[] BOX_EDGES = new[] { 0, 1, 0, 2, 0, 4, 1, 3, 1, 5, 2, 3, 2, 6, 3, 7, 4, 5, 4, 6, 5, 7, 6, 7 };
 
-        public static void rasterizeSphere(Heightfield hf, float[] center, float radius, int area, int flagMergeThr, Telemetry ctx)
+        public static void rasterizeSphere(Heightfield hf, Vector3f center, float radius, int area, int flagMergeThr, Telemetry ctx)
         {
             ctx.startTimer("RASTERIZE_SPHERE");
             float[] bounds =
@@ -43,7 +43,7 @@ namespace DotRecast.Recast
             ctx.stopTimer("RASTERIZE_SPHERE");
         }
 
-        public static void rasterizeCapsule(Heightfield hf, float[] start, float[] end, float radius, int area, int flagMergeThr,
+        public static void rasterizeCapsule(Heightfield hf, Vector3f start, Vector3f end, float radius, int area, int flagMergeThr,
             Telemetry ctx)
         {
             ctx.startTimer("RASTERIZE_CAPSULE");
@@ -53,13 +53,13 @@ namespace DotRecast.Recast
                 Math.Min(start[2], end[2]) - radius, Math.Max(start[0], end[0]) + radius, Math.Max(start[1], end[1]) + radius,
                 Math.Max(start[2], end[2]) + radius
             };
-            float[] axis = { end[0] - start[0], end[1] - start[1], end[2] - start[2] };
+            Vector3f axis = Vector3f.Of(end[0] - start[0], end[1] - start[1], end[2] - start[2]);
             rasterizationFilledShape(hf, bounds, area, flagMergeThr,
                 rectangle => intersectCapsule(rectangle, start, end, axis, radius * radius));
             ctx.stopTimer("RASTERIZE_CAPSULE");
         }
 
-        public static void rasterizeCylinder(Heightfield hf, float[] start, float[] end, float radius, int area, int flagMergeThr,
+        public static void rasterizeCylinder(Heightfield hf, Vector3f start, Vector3f end, float radius, int area, int flagMergeThr,
             Telemetry ctx)
         {
             ctx.startTimer("RASTERIZE_CYLINDER");
@@ -69,7 +69,7 @@ namespace DotRecast.Recast
                 Math.Min(start[2], end[2]) - radius, Math.Max(start[0], end[0]) + radius, Math.Max(start[1], end[1]) + radius,
                 Math.Max(start[2], end[2]) + radius
             };
-            float[] axis = { end[0] - start[0], end[1] - start[1], end[2] - start[2] };
+            Vector3f axis = Vector3f.Of(end[0] - start[0], end[1] - start[1], end[2] - start[2]);
             rasterizationFilledShape(hf, bounds, area, flagMergeThr,
                 rectangle => intersectCylinder(rectangle, start, end, axis, radius * radius));
             ctx.stopTimer("RASTERIZE_CYLINDER");
@@ -239,7 +239,7 @@ namespace DotRecast.Recast
             }
         }
 
-        private static float[] intersectSphere(float[] rectangle, float[] center, float radiusSqr)
+        private static float[] intersectSphere(float[] rectangle, Vector3f center, float radiusSqr)
         {
             float x = Math.Max(rectangle[0], Math.Min(center[0], rectangle[2]));
             float y = rectangle[4];
@@ -274,7 +274,7 @@ namespace DotRecast.Recast
             return new float[] { y + tmin, y + tmax };
         }
 
-        private static float[] intersectCapsule(float[] rectangle, float[] start, float[] end, float[] axis, float radiusSqr)
+        private static float[] intersectCapsule(float[] rectangle, Vector3f start, Vector3f end, Vector3f axis, float radiusSqr)
         {
             float[] s = mergeIntersections(intersectSphere(rectangle, start, radiusSqr), intersectSphere(rectangle, end, radiusSqr));
             float axisLen2dSqr = axis[0] * axis[0] + axis[2] * axis[2];
@@ -286,7 +286,7 @@ namespace DotRecast.Recast
             return s;
         }
 
-        private static float[] intersectCylinder(float[] rectangle, float[] start, float[] end, float[] axis, float radiusSqr)
+        private static float[] intersectCylinder(float[] rectangle, Vector3f start, Vector3f end, Vector3f axis, float radiusSqr)
         {
             float[] s = mergeIntersections(
                 rayCylinderIntersection(new float[]
@@ -315,7 +315,7 @@ namespace DotRecast.Recast
                 {
                     float x = rectangle[(i + 1) & 2];
                     float z = rectangle[(i & 2) + 1];
-                    float[] a = { x, rectangle[4], z };
+                    Vector3f a = Vector3f.Of(x, rectangle[4], z);
                     float dotAxisA = dot(axis, a);
                     float t = (ds - dotAxisA) / axis[1];
                     rectangleOnStartPlane[i][0] = x;
@@ -337,7 +337,7 @@ namespace DotRecast.Recast
             return s;
         }
 
-        private static float[] cylinderCapIntersection(float[] start, float radiusSqr, float[] s, int i, float[][] rectangleOnPlane)
+        private static float[] cylinderCapIntersection(Vector3f start, float radiusSqr, float[] s, int i, float[][] rectangleOnPlane)
         {
             int j = (i + 1) % 4;
             // Ray against sphere intersection
@@ -370,7 +370,7 @@ namespace DotRecast.Recast
             return s;
         }
 
-        private static float[] slabsCylinderIntersection(float[] rectangle, float[] start, float[] end, float[] axis, float radiusSqr,
+        private static float[] slabsCylinderIntersection(float[] rectangle, Vector3f start, Vector3f end, Vector3f axis, float radiusSqr,
             float[] s)
         {
             if (Math.Min(start[0], end[0]) < rectangle[0])
@@ -396,12 +396,12 @@ namespace DotRecast.Recast
             return s;
         }
 
-        private static float[] xSlabCylinderIntersection(float[] rectangle, float[] start, float[] axis, float radiusSqr, float x)
+        private static float[] xSlabCylinderIntersection(float[] rectangle, Vector3f start, Vector3f axis, float radiusSqr, float x)
         {
             return rayCylinderIntersection(xSlabRayIntersection(rectangle, start, axis, x), start, axis, radiusSqr);
         }
 
-        private static float[] xSlabRayIntersection(float[] rectangle, float[] start, float[] direction, float x)
+        private static float[] xSlabRayIntersection(float[] rectangle, Vector3f start, Vector3f direction, float x)
         {
             // 2d intersection of plane and segment
             float t = (x - start[0]) / direction[0];
@@ -409,12 +409,12 @@ namespace DotRecast.Recast
             return new float[] { x, rectangle[4], z };
         }
 
-        private static float[] zSlabCylinderIntersection(float[] rectangle, float[] start, float[] axis, float radiusSqr, float z)
+        private static float[] zSlabCylinderIntersection(float[] rectangle, Vector3f start, Vector3f axis, float radiusSqr, float z)
         {
             return rayCylinderIntersection(zSlabRayIntersection(rectangle, start, axis, z), start, axis, radiusSqr);
         }
 
-        private static float[] zSlabRayIntersection(float[] rectangle, float[] start, float[] direction, float z)
+        private static float[] zSlabRayIntersection(float[] rectangle, Vector3f start, Vector3f direction, float z)
         {
             // 2d intersection of plane and segment
             float t = (z - start[2]) / direction[2];
@@ -423,10 +423,10 @@ namespace DotRecast.Recast
         }
 
         // Based on Christer Ericsons's "Real-Time Collision Detection"
-        private static float[] rayCylinderIntersection(float[] point, float[] start, float[] axis, float radiusSqr)
+        private static float[] rayCylinderIntersection(float[] point, Vector3f start, Vector3f axis, float radiusSqr)
         {
-            float[] d = axis;
-            float[] m = { point[0] - start[0], point[1] - start[1], point[2] - start[2] };
+            Vector3f d = axis;
+            Vector3f m = Vector3f.Of(point[0] - start[0], point[1] - start[1], point[2] - start[2]);
             // float[] n = { 0, 1, 0 };
             float md = dot(m, d);
             // float nd = dot(n, d);

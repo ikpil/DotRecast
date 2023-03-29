@@ -47,7 +47,7 @@ public class ConvexVolumeTool : Tool
         sample = m_sample;
     }
 
-    public override void handleClick(float[] s, float[] p, bool shift)
+    public override void handleClick(float[] s, Vector3f p, bool shift)
     {
         DemoInputGeomProvider geom = sample.getInputGeom();
         if (geom == null)
@@ -80,9 +80,7 @@ public class ConvexVolumeTool : Tool
             // Create
 
             // If clicked on that last pt, create the shape.
-            if (pts.Count > 0 && RecastMath.vDistSqr(p,
-                    new float[] { pts[pts.Count - 3], pts[pts.Count - 2], pts[pts.Count - 1] },
-                    0) < 0.2f * 0.2f)
+            if (pts.Count > 0 && RecastMath.vDistSqr(p, Vector3f.Of(pts[pts.Count - 3], pts[pts.Count - 2], pts[pts.Count - 1]), 0) < 0.2f * 0.2f)
             {
                 if (hull.Count > 2)
                 {
@@ -218,7 +216,7 @@ public class ConvexVolumeTool : Tool
         {
             hull.Clear();
             pts.Clear();
-            
+
             DemoInputGeomProvider geom = sample.getInputGeom();
             if (geom != null)
             {

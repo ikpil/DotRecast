@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using DotRecast.Core;
 using Silk.NET.Windowing;
 using DotRecast.Detour;
 using DotRecast.Detour.Crowd;
@@ -79,7 +80,7 @@ public class CrowdTool : Tool
     };
 
     private readonly Dictionary<long, AgentTrail> m_trails = new();
-    private float[] m_targetPos;
+    private Vector3f m_targetPos;
     private long m_targetRef;
     private CrowdToolMode m_mode = CrowdToolMode.CREATE;
     private int m_modeIdx = CrowdToolMode.CREATE.Idx;
@@ -146,7 +147,7 @@ public class CrowdTool : Tool
         }
     }
 
-    public override void handleClick(float[] s, float[] p, bool shift)
+    public override void handleClick(float[] s, Vector3f p, bool shift)
     {
         if (m_mode == CrowdToolMode.PROFILING)
         {
@@ -192,7 +193,7 @@ public class CrowdTool : Tool
             if (nav != null && navquery != null)
             {
                 QueryFilter filter = new DefaultQueryFilter();
-                float[] halfExtents = crowd.getQueryExtents();
+                Vector3f halfExtents = crowd.getQueryExtents();
                 Result<FindNearestPolyResult> result = navquery.findNearestPoly(p, halfExtents, filter);
                 long refs = result.result.getNearestRef();
                 if (refs != 0)
@@ -216,7 +217,7 @@ public class CrowdTool : Tool
         }
     }
 
-    private void addAgent(float[] p)
+    private void addAgent(Vector3f p)
     {
         CrowdAgentParams ap = getAgentParams();
         CrowdAgent ag = crowd.addAgent(p, ap);
@@ -258,15 +259,16 @@ public class CrowdTool : Tool
         return ap;
     }
 
-    private CrowdAgent hitTestAgents(float[] s, float[] p)
+    private CrowdAgent hitTestAgents(float[] s, Vector3f p)
     {
         CrowdAgent isel = null;
         float tsel = float.MaxValue;
 
         foreach (CrowdAgent ag in crowd.getActiveAgents())
         {
-            Vector3f bmin = new Vector3f(), bmax = new float[3];
-            getAgentBounds(ag, bmin, bmax);
+            Vector3f bmin = new Vector3f();
+            Vector3f bmax = new Vector3f();
+            getAgentBounds(ag, ref bmin, ref bmax);
             float[] isect = Intersections.intersectSegmentAABB(s, p, bmin, bmax);
             if (null != isect)
             {
@@ -282,9 +284,9 @@ public class CrowdTool : Tool
         return isel;
     }
 
-    private void getAgentBounds(CrowdAgent ag, float[] bmin, float[] bmax)
+    private void getAgentBounds(CrowdAgent ag, ref Vector3f bmin, ref Vector3f bmax)
     {
-        float[] p = ag.npos;
+        Vector3f p = ag.npos;
         float r = ag.option.radius;
         float h = ag.option.height;
         bmin[0] = p[0] - r;
@@ -295,7 +297,7 @@ public class CrowdTool : Tool
         bmax[2] = p[2] + r;
     }
 
-    private void setMoveTarget(float[] p, bool adjust)
+    private void setMoveTarget(Vector3f p, bool adjust)
     {
         if (sample == null || crowd == null)
             return;
@@ -303,14 +305,14 @@ public class CrowdTool : Tool
         // Find nearest point on navmesh and set move request to that location.
         NavMeshQuery navquery = sample.getNavMeshQuery();
         QueryFilter filter = crowd.getFilter(0);
-        float[] halfExtents = crowd.getQueryExtents();
+        Vector3f halfExtents = crowd.getQueryExtents();
 
         if (adjust)
         {
             // Request velocity
             if (m_agentDebug.agent != null)
             {
-                float[] vel = calcVel(m_agentDebug.agent.npos, p, m_agentDebug.agent.option.maxSpeed);
+                float[] vel = calcVel(ref m_agentDebug.agent.npos, p, m_agentDebug.agent.option.maxSpeed);
                 crowd.requestMoveVelocity(m_agentDebug.agent, vel);
             }
             else
@@ -341,11 +343,11 @@ public class CrowdTool : Tool
         }
     }
 
-    private float[] calcVel(float[] pos, float[] tgt, float speed)
+    private Vector3f calcVel(Vector3f pos, Vector3f tgt, float speed)
     {
-        float[] vel = vSub(tgt, pos);
+        Vector3f vel = vSub(tgt, pos);
         vel[1] = 0.0f;
-        vNormalize(vel);
+        vNormalize(ref vel);
         return vScale(vel, speed);
     }
 
@@ -517,9 +519,9 @@ public class CrowdTool : Tool
                 for (int j = 0; j < ag.boundary.getSegmentCount(); ++j)
                 {
                     int col = duRGBA(192, 0, 128, 192);
-                    float[] s = ag.boundary.getSegment(j);
-                    float[] s0 = new float[] { s[0], s[1], s[2] };
-                    float[] s3 = new float[] { s[3], s[4], s[5] };
+                    Vector3f[] s = ag.boundary.getSegment(j);
+                    Vector3f s0 = s[0];
+                    Vector3f s3 = s[1];
                     if (triArea2D(pos, s0, s3) < 0.0f)
                         col = duDarkenCol(col);
 
@@ -562,7 +564,7 @@ public class CrowdTool : Tool
         foreach (CrowdAgent ag in crowd.getActiveAgents())
         {
             float radius = ag.option.radius;
-            float[] pos = ag.npos;
+            Vector3f pos = ag.npos;
 
             int col = duRGBA(0, 0, 0, 32);
             if (m_agentDebug.agent == ag)
@@ -575,7 +577,7 @@ public class CrowdTool : Tool
         {
             float height = ag.option.height;
             float radius = ag.option.radius;
-            float[] pos = ag.npos;
+            Vector3f pos = ag.npos;
 
             int col = duRGBA(220, 220, 220, 128);
             if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING
@@ -611,7 +613,7 @@ public class CrowdTool : Tool
                 dd.begin(QUADS);
                 for (int j = 0; j < vod.getSampleCount(); ++j)
                 {
-                    float[] p = vod.getSampleVelocity(j);
+                    Vector3f p = vod.getSampleVelocity(j);
                     float sr = vod.getSampleSize(j);
                     float pen = vod.getSamplePenalty(j);
                     float pen2 = vod.getSamplePreferredSidePenalty(j);
@@ -632,9 +634,9 @@ public class CrowdTool : Tool
         {
             float radius = ag.option.radius;
             float height = ag.option.height;
-            float[] pos = ag.npos;
-            float[] vel = ag.vel;
-            float[] dvel = ag.dvel;
+            Vector3f pos = ag.npos;
+            Vector3f vel = ag.vel;
+            Vector3f dvel = ag.dvel;
 
             int col = duRGBA(220, 220, 220, 192);
             if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING

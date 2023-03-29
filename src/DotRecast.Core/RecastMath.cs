@@ -35,6 +35,15 @@ namespace DotRecast.Core
             float dz = v2[i + 2] - v1[2];
             return dx * dx + dy * dy + dz * dz;
         }
+        
+        public static float vDistSqr(Vector3f v1, Vector3f v2, int i)
+        {
+            float dx = v2[i] - v1[0];
+            float dy = v2[i + 1] - v1[1];
+            float dz = v2[i + 2] - v1[2];
+            return dx * dx + dy * dy + dz * dz;
+        }
+
 
         public static float[] vCross(float[] v1, float[] v2)
         {
@@ -245,6 +254,13 @@ namespace DotRecast.Core
 
 
         public static void vCopy(float[] @out, float[] @in)
+        {
+            @out[0] = @in[0];
+            @out[1] = @in[1];
+            @out[2] = @in[2];
+        }
+        
+        public static void vCopy(float[] @out, Vector3f @in)
         {
             @out[0] = @in[0];
             @out[1] = @in[1];

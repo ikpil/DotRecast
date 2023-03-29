@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using DotRecast.Core;
 using DotRecast.Detour;
 
 namespace DotRecast.Recast.Demo.Tools;
@@ -29,7 +30,7 @@ public static class PathUtils
     private const int MAX_STEER_POINTS = 3;
 
 
-    public static SteerTarget getSteerTarget(NavMeshQuery navQuery, float[] startPos, float[] endPos,
+    public static SteerTarget getSteerTarget(NavMeshQuery navQuery, Vector3f startPos, Vector3f endPos,
         float minTargetDist, List<long> path)
     {
         // Find steer target.
@@ -75,7 +76,7 @@ public static class PathUtils
         return target;
     }
 
-    public static bool inRange(float[] v1, float[] v2, float r, float h)
+    public static bool inRange(Vector3f v1, Vector3f v2, float r, float h)
     {
         float dx = v2[0] - v1[0];
         float dy = v2[1] - v1[1];

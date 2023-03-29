@@ -16,6 +16,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
@@ -102,7 +103,7 @@ public class FindPolysAroundCircleTest : AbstractDetourTest
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
-            float[] startPos = startPoss[i];
+            Vector3f startPos = startPoss[i];
             Result<FindPolysAroundResult> result = query.findPolysAroundCircle(startRef, startPos, 7.5f, filter);
             Assert.That(result.succeeded(), Is.True);
             FindPolysAroundResult polys = result.result;

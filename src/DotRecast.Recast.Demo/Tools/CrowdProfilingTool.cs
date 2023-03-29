@@ -102,23 +102,23 @@ public class CrowdProfilingTool
                         }
                     }
 
-                    float[] pos = null;
+                    Vector3f? pos = null;
                     switch (type)
                     {
                         case AgentType.MOB:
-                            pos = getMobPosition(navquery, filter, pos);
+                            pos = getMobPosition(navquery, filter);
                             break;
                         case AgentType.VILLAGER:
-                            pos = getVillagerPosition(navquery, filter, pos);
+                            pos = getVillagerPosition(navquery, filter);
                             break;
                         case AgentType.TRAVELLER:
-                            pos = getVillagerPosition(navquery, filter, pos);
+                            pos = getVillagerPosition(navquery, filter);
                             break;
                     }
 
                     if (pos != null)
                     {
-                        addAgent(pos, type);
+                        addAgent(pos.Value, type);
                     }
                 }
             }
@@ -145,18 +145,18 @@ public class CrowdProfilingTool
         }
     }
 
-    private float[] getMobPosition(NavMeshQuery navquery, QueryFilter filter, float[] pos)
+    private Vector3f? getMobPosition(NavMeshQuery navquery, QueryFilter filter)
     {
         Result<FindRandomPointResult> result = navquery.findRandomPoint(filter, rnd);
         if (result.succeeded())
         {
-            pos = result.result.getRandomPt();
+            return result.result.getRandomPt();
         }
 
-        return pos;
+        return null;
     }
 
-    private float[] getVillagerPosition(NavMeshQuery navquery, QueryFilter filter, float[] pos)
+    private Vector3f? getVillagerPosition(NavMeshQuery navquery, QueryFilter filter)
     {
         if (0 < zones.Count)
         {
@@ -165,11 +165,11 @@ public class CrowdProfilingTool
                 zones[zone].getRandomPt(), zoneRadius, filter, rnd);
             if (result.succeeded())
             {
-                pos = result.result.getRandomPt();
+                return result.result.getRandomPt();
             }
         }
 
-        return pos;
+        return null;
     }
 
     private void createZones()
@@ -403,7 +403,7 @@ public class CrowdProfilingTool
         dd.depthMask(true);
     }
 
-    private CrowdAgent addAgent(float[] p, AgentType type)
+    private CrowdAgent addAgent(Vector3f p, AgentType type)
     {
         CrowdAgentParams ap = agentParamsSupplier.Invoke();
         ap.userData = new AgentData(type, p);
@@ -422,10 +422,10 @@ public class CrowdProfilingTool
         public readonly AgentType type;
         public readonly Vector3f home = new Vector3f();
 
-        public AgentData(AgentType type, float[] home)
+        public AgentData(AgentType type, Vector3f home)
         {
             this.type = type;
-            RecastVectors.copy(this.home, home);
+            RecastVectors.copy(ref this.home, home);
         }
     }
 

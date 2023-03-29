@@ -78,7 +78,7 @@ public class Intersections
         return t;
     }
 
-    public static float[] intersectSegmentAABB(float[] sp, float[] sq, float[] amin, float[] amax)
+    public static float[] intersectSegmentAABB(float[] sp, Vector3f sq, Vector3f amin, Vector3f amax)
     {
         float EPS = 1e-6f;
 

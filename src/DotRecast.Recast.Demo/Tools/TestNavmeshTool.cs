@@ -22,10 +22,10 @@ public class TestNavmeshTool : Tool
     private TestNavmeshToolMode m_toolMode => TestNavmeshToolMode.Values[m_toolModeIdx];
     private bool m_sposSet;
     private bool m_eposSet;
-    private float[] m_spos;
-    private float[] m_epos;
+    private Vector3f m_spos;
+    private Vector3f m_epos;
     private readonly DefaultQueryFilter m_filter;
-    private readonly float[] m_polyPickExt = new float[] { 2, 4, 2 };
+    private readonly Vector3f m_polyPickExt = Vector3f.Of(2, 4, 2);
     private long m_startRef;
     private long m_endRef;
     private float[] m_hitPos;
@@ -38,7 +38,7 @@ public class TestNavmeshTool : Tool
     private List<long> m_parent;
     private float m_neighbourhoodRadius;
     private readonly float[] m_queryPoly = new float[12];
-    private List<float[]> m_smoothPath;
+    private List<Vector3f> m_smoothPath;
     private Status m_pathFindStatus = Status.FAILURE;
     private bool enableRaycast = true;
     private readonly List<float[]> randomPoints = new();
@@ -58,17 +58,17 @@ public class TestNavmeshTool : Tool
         this.m_sample = m_sample;
     }
 
-    public override void handleClick(float[] s, float[] p, bool shift)
+    public override void handleClick(float[] s, Vector3f p, bool shift)
     {
         if (shift)
         {
             m_sposSet = true;
-            m_spos = ArrayUtils.CopyOf(p, p.Length);
+            m_spos = p;
         }
         else
         {
             m_eposSet = true;
-            m_epos = ArrayUtils.CopyOf(p, p.Length);
+            m_epos = p;
         }
 
         recalc();
@@ -94,7 +94,7 @@ public class TestNavmeshTool : Tool
         ImGui.RadioButton(TestNavmeshToolMode.FIND_LOCAL_NEIGHBOURHOOD.Label, ref m_toolModeIdx, TestNavmeshToolMode.FIND_LOCAL_NEIGHBOURHOOD.Idx);
         ImGui.RadioButton(TestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE.Label, ref m_toolModeIdx, TestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE.Idx);
         ImGui.NewLine();
-        
+
         // selecting mode
         ImGui.Text(m_toolMode.Label);
         ImGui.Separator();
@@ -120,7 +120,7 @@ public class TestNavmeshTool : Tool
 
         ImGui.Text("Common");
         ImGui.Separator();
-        
+
         ImGui.Text("Include Flags");
         ImGui.Separator();
         ImGui.CheckboxFlags("Walk", ref includeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_WALK);
@@ -128,9 +128,9 @@ public class TestNavmeshTool : Tool
         ImGui.CheckboxFlags("Door", ref includeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_DOOR);
         ImGui.CheckboxFlags("Jump", ref includeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP);
         ImGui.NewLine();
-        
+
         m_filter.setIncludeFlags(includeFlags);
-        
+
         ImGui.Text("Exclude Flags");
         ImGui.Separator();
         ImGui.CheckboxFlags("Walk", ref excludeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_WALK);
@@ -138,15 +138,16 @@ public class TestNavmeshTool : Tool
         ImGui.CheckboxFlags("Door", ref excludeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_DOOR);
         ImGui.CheckboxFlags("Jump", ref excludeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP);
         ImGui.NewLine();
-        
+
         m_filter.setExcludeFlags(excludeFlags);
-        
+
         bool previousEnableRaycast = enableRaycast;
         ImGui.Checkbox("Raycast shortcuts", ref enableRaycast);
-        
+
         if (previousToolMode != m_toolMode || m_straightPathOptions != previousStraightPathOptions
-                || previousIncludeFlags != includeFlags || previousExcludeFlags != excludeFlags
-                || previousEnableRaycast != enableRaycast || previousConstrainByCircle != constrainByCircle) {
+                                           || previousIncludeFlags != includeFlags || previousExcludeFlags != excludeFlags
+                                           || previousEnableRaycast != enableRaycast || previousConstrainByCircle != constrainByCircle)
+        {
             recalc();
         }
     }
@@ -193,9 +194,8 @@ public class TestNavmeshTool : Tool
                 {
                     List<long> polys = new(m_polys);
                     // Iterate over the path to find smooth path on the detail mesh surface.
-                    float[] iterPos = m_navQuery.closestPointOnPoly(m_startRef, m_spos).result.getClosest();
-                    float[] targetPos = m_navQuery.closestPointOnPoly(polys[polys.Count - 1], m_epos).result
-                        .getClosest();
+                    Vector3f iterPos = m_navQuery.closestPointOnPoly(m_startRef, m_spos).result.getClosest();
+                    Vector3f targetPos = m_navQuery.closestPointOnPoly(polys[polys.Count - 1], m_epos).result.getClosest();
 
                     float STEP_SIZE = 0.5f;
                     float SLOP = 0.01f;

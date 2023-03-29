@@ -17,6 +17,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using DotRecast.Core;
 using Moq;
 using NUnit.Framework;
 
@@ -30,22 +31,22 @@ public class PathCorridorTest
     [SetUp]
     public void setUp()
     {
-        corridor.reset(0, new float[] { 10, 20, 30 });
+        corridor.reset(0, Vector3f.Of(10, 20, 30));
     }
 
     [Test]
     public void shouldKeepOriginalPathInFindCornersWhenNothingCanBePruned()
     {
         List<StraightPathItem> straightPath = new();
-        straightPath.Add(new StraightPathItem(new float[] { 11, 20, 30.00001f }, 0, 0));
-        straightPath.Add(new StraightPathItem(new float[] { 12, 20, 30.00002f }, 0, 0));
-        straightPath.Add(new StraightPathItem(new float[] { 11f, 21, 32f }, 0, 0));
-        straightPath.Add(new StraightPathItem(new float[] { 11f, 21, 32f }, 0, 0));
+        straightPath.Add(new StraightPathItem(Vector3f.Of(11, 20, 30.00001f), 0, 0));
+        straightPath.Add(new StraightPathItem(Vector3f.Of(12, 20, 30.00002f), 0, 0));
+        straightPath.Add(new StraightPathItem(Vector3f.Of(11f, 21, 32f), 0, 0));
+        straightPath.Add(new StraightPathItem(Vector3f.Of(11f, 21, 32f), 0, 0));
         Result<List<StraightPathItem>> result = Results.success(straightPath);
         var mockQuery = new Mock<NavMeshQuery>(It.IsAny<NavMesh>());
         mockQuery.Setup(q => q.findStraightPath(
-            It.IsAny<float[]>(),
-            It.IsAny<float[]>(),
+            It.IsAny<Vector3f>(),
+            It.IsAny<Vector3f>(),
             It.IsAny<List<long>>(),
             It.IsAny<int>(),
             It.IsAny<int>())
@@ -59,17 +60,17 @@ public class PathCorridorTest
     public void shouldPrunePathInFindCorners()
     {
         List<StraightPathItem> straightPath = new();
-        straightPath.Add(new StraightPathItem(new float[] { 10, 20, 30.00001f }, 0, 0)); // too close
-        straightPath.Add(new StraightPathItem(new float[] { 10, 20, 30.00002f }, 0, 0)); // too close
-        straightPath.Add(new StraightPathItem(new float[] { 11f, 21, 32f }, 0, 0));
-        straightPath.Add(new StraightPathItem(new float[] { 12f, 22, 33f }, NavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION, 0)); // offmesh
-        straightPath.Add(new StraightPathItem(new float[] { 11f, 21, 32f }, NavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION, 0)); // offmesh
+        straightPath.Add(new StraightPathItem(Vector3f.Of(10, 20, 30.00001f), 0, 0)); // too close
+        straightPath.Add(new StraightPathItem(Vector3f.Of(10, 20, 30.00002f), 0, 0)); // too close
+        straightPath.Add(new StraightPathItem(Vector3f.Of(11f, 21, 32f), 0, 0));
+        straightPath.Add(new StraightPathItem(Vector3f.Of(12f, 22, 33f), NavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION, 0)); // offmesh
+        straightPath.Add(new StraightPathItem(Vector3f.Of(11f, 21, 32f), NavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION, 0)); // offmesh
         Result<List<StraightPathItem>> result = Results.success(straightPath);
 
         var mockQuery = new Mock<NavMeshQuery>(It.IsAny<NavMesh>());
         var s = mockQuery.Setup(q => q.findStraightPath(
-            It.IsAny<float[]>(),
-            It.IsAny<float[]>(),
+            It.IsAny<Vector3f>(),
+            It.IsAny<Vector3f>(),
             It.IsAny<List<long>>(),
             It.IsAny<int>(),
             It.IsAny<int>())

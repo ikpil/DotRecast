@@ -54,7 +54,7 @@ public class AbstractTileCacheTest
         int[] twh = Recast.Recast.calcTileCount(geom.getMeshBoundsMin(), geom.getMeshBoundsMax(), m_cellSize, m_tileSize, m_tileSize);
         option.ch = m_cellHeight;
         option.cs = m_cellSize;
-        vCopy(option.orig, geom.getMeshBoundsMin());
+        vCopy(ref option.orig, geom.getMeshBoundsMin());
         option.height = m_tileSize;
         option.width = m_tileSize;
         option.walkableHeight = m_agentHeight;
@@ -64,7 +64,7 @@ public class AbstractTileCacheTest
         option.maxTiles = twh[0] * twh[1] * EXPECTED_LAYERS_PER_TILE;
         option.maxObstacles = 128;
         NavMeshParams navMeshParams = new NavMeshParams();
-        copy(navMeshParams.orig, geom.getMeshBoundsMin());
+        copy(ref navMeshParams.orig, geom.getMeshBoundsMin());
         navMeshParams.tileWidth = m_tileSize * m_cellSize;
         navMeshParams.tileHeight = m_tileSize * m_cellSize;
         navMeshParams.maxTiles = 256;

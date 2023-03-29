@@ -80,7 +80,7 @@ namespace DotRecast.Detour.Crowd.Tracking
             normalizeArray(m_tpen, m_nsamples);
         }
 
-        public void addSample(float[] vel, float ssize, float pen, float vpen, float vcpen, float spen, float tpen)
+        public void addSample(Vector3f vel, float ssize, float pen, float vpen, float vcpen, float spen, float tpen)
         {
             if (m_nsamples >= m_maxSamples)
                 return;

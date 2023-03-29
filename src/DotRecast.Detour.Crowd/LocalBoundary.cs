@@ -33,7 +33,7 @@ namespace DotRecast.Detour.Crowd
         private class Segment
         {
             /** Segment start/end */
-            public float[] s = new float[6];
+            public Vector3f[] s = new Vector3f[2];
 
             /** Distance for pruning. */
             public float d;
@@ -59,7 +59,13 @@ namespace DotRecast.Detour.Crowd
         {
             // Insert neighbour based on the distance.
             Segment seg = new Segment();
-            Array.Copy(s, seg.s, 6);
+            seg.s[0].x = s[0];
+            seg.s[0].y = s[1];
+            seg.s[0].z = s[2];
+            seg.s[1].x = s[3];
+            seg.s[1].y = s[4];
+            seg.s[1].z = s[5];
+            //Array.Copy(s, seg.s, 6);
             seg.d = dist;
             if (0 == m_segs.Count)
             {
@@ -159,7 +165,7 @@ namespace DotRecast.Detour.Crowd
             return m_center;
         }
 
-        public float[] getSegment(int j)
+        public Vector3f[] getSegment(int j)
         {
             return m_segs[j].s;
         }

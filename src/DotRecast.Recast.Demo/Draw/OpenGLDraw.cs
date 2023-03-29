@@ -1,3 +1,4 @@
+using DotRecast.Core;
 using Silk.NET.OpenGL;
 
 namespace DotRecast.Recast.Demo.Draw;
@@ -15,6 +16,7 @@ public interface OpenGLDraw
     void vertex(float x, float y, float z, int color);
 
     void vertex(float[] pos, int color);
+    void vertex(Vector3f pos, int color);
     
     void vertex(float[] pos, int color, float[] uv);
 

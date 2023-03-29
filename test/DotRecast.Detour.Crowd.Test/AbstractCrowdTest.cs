@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using DotRecast.Core;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Crowd.Test;
@@ -36,22 +37,22 @@ public class AbstractCrowdTest
 
     protected readonly long[] endRefs = { 281474976710721L, 281474976710767L, 281474976710758L, 281474976710731L, 281474976710772L };
 
-    protected readonly float[][] startPoss =
+    protected readonly Vector3f[] startPoss =
     {
-        new[] { 22.60652f, 10.197294f, -45.918674f },
-        new[] { 22.331268f, 10.197294f, -1.0401875f },
-        new[] { 18.694363f, 15.803535f, -73.090416f },
-        new[] { 0.7453353f, 10.197294f, -5.94005f },
-        new[] { -20.651257f, 5.904126f, -13.712508f }
+        Vector3f.Of(22.60652f, 10.197294f, -45.918674f),
+        Vector3f.Of(22.331268f, 10.197294f, -1.0401875f),
+        Vector3f.Of(18.694363f, 15.803535f, -73.090416f),
+        Vector3f.Of(0.7453353f, 10.197294f, -5.94005f),
+        Vector3f.Of(-20.651257f, 5.904126f, -13.712508f),
     };
 
-    protected readonly float[][] endPoss =
+    protected readonly Vector3f[] endPoss =
     {
-        new[] { 6.4576626f, 10.197294f, -18.33406f },
-        new[] { -5.8023443f, 0.19729415f, 3.008419f },
-        new[] { 38.423977f, 10.197294f, -0.116066754f },
-        new[] { 0.8635526f, 10.197294f, -10.31032f },
-        new[] { 18.784092f, 10.197294f, 3.0543678f }
+        Vector3f.Of(6.4576626f, 10.197294f, -18.33406f),
+        Vector3f.Of(-5.8023443f, 0.19729415f, 3.008419f),
+        Vector3f.Of(38.423977f, 10.197294f, -0.116066754f),
+        Vector3f.Of(0.8635526f, 10.197294f, -10.31032f),
+        Vector3f.Of(18.784092f, 10.197294f, 3.0543678f),
     };
 
     protected MeshData nmd;
@@ -110,7 +111,7 @@ public class AbstractCrowdTest
         return ap;
     }
 
-    protected void addAgentGrid(int size, float distance, int updateFlags, int obstacleAvoidanceType, float[] startPos)
+    protected void addAgentGrid(int size, float distance, int updateFlags, int obstacleAvoidanceType, Vector3f startPos)
     {
         CrowdAgentParams ap = getAgentParams(updateFlags, obstacleAvoidanceType);
         for (int i = 0; i < size; i++)
@@ -126,15 +127,15 @@ public class AbstractCrowdTest
         }
     }
 
-    protected void setMoveTarget(float[] pos, bool adjust)
+    protected void setMoveTarget(Vector3f pos, bool adjust)
     {
-        float[] ext = crowd.getQueryExtents();
+        Vector3f ext = crowd.getQueryExtents();
         QueryFilter filter = crowd.getFilter(0);
         if (adjust)
         {
             foreach (CrowdAgent ag in crowd.getActiveAgents())
             {
-                float[] vel = calcVel(ag.npos, pos, ag.option.maxSpeed);
+                Vector3f vel = calcVel(ag.npos, pos, ag.option.maxSpeed);
                 crowd.requestMoveVelocity(ag, vel);
             }
         }
@@ -148,11 +149,11 @@ public class AbstractCrowdTest
         }
     }
 
-    protected float[] calcVel(float[] pos, float[] tgt, float speed)
+    protected Vector3f calcVel(Vector3f pos, Vector3f tgt, float speed)
     {
-        float[] vel = vSub(tgt, pos);
+        Vector3f vel = vSub(tgt, pos);
         vel[1] = 0.0f;
-        vNormalize(vel);
+        vNormalize(ref vel);
         vel = vScale(vel, speed);
         return vel;
     }

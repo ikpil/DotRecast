@@ -16,6 +16,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
@@ -54,7 +55,7 @@ public class FindLocalNeighbourhoodTest : AbstractDetourTest
         QueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
-            float[] startPos = startPoss[i];
+            Vector3f startPos = startPoss[i];
             Result<FindLocalNeighbourhoodResult> poly = query.findLocalNeighbourhood(startRefs[i], startPos, 3.5f,
                 filter);
             Assert.That(poly.result.getRefs().Count, Is.EqualTo(REFS[i].Length));

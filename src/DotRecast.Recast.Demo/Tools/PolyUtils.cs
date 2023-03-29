@@ -18,19 +18,20 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using DotRecast.Core;
 
 namespace DotRecast.Recast.Demo.Tools;
 
 public class PolyUtils
 {
-    public static bool pointInPoly(float[] verts, float[] p)
+    public static bool pointInPoly(float[] verts, Vector3f p)
     {
         int i, j;
         bool c = false;
         for (i = 0, j = verts.Length / 3 - 1; i < verts.Length / 3; j = i++)
         {
-            float[] vi = new float[] { verts[i * 3], verts[i * 3 + 1], verts[i * 3 + 2] };
-            float[] vj = new float[] { verts[j * 3], verts[j * 3 + 1], verts[j * 3 + 2] };
+            Vector3f vi = Vector3f.Of(verts[i * 3], verts[i * 3 + 1], verts[i * 3 + 2]);
+            Vector3f vj = Vector3f.Of(verts[j * 3], verts[j * 3 + 1], verts[j * 3 + 2]);
             if (((vi[2] > p[2]) != (vj[2] > p[2]))
                 && (p[0] < (vj[0] - vi[0]) * (p[2] - vi[2]) / (vj[2] - vi[2]) + vi[0]))
             {

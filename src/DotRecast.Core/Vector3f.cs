@@ -17,6 +17,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using System.Numerics;
 
 namespace DotRecast.Core
 {
@@ -26,14 +27,16 @@ namespace DotRecast.Core
         public float y;
         public float z;
 
+        public static Vector3f Zero { get; } = new Vector3f(0, 0, 0);
+
         public static Vector3f Of(float[] f)
         {
-            return new Vector3f()
-            {
-                x = f[0],
-                y = f[1],
-                z = f[2],
-            };
+            return new Vector3f(f[0], f[1], f[2]);
+        }
+
+        public static Vector3f Of(float x, float y, float z)
+        {
+            return new Vector3f(x, y, z);
         }
 
         public Vector3f(float x, float y, float z)

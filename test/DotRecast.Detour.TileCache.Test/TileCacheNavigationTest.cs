@@ -30,8 +30,8 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
 {
     protected readonly long[] startRefs = { 281475006070787L };
     protected readonly long[] endRefs = { 281474986147841L };
-    protected readonly float[][] startPoss = { new[] { 39.447338f, 9.998177f, -0.784811f } };
-    protected readonly float[][] endPoss = { new[] { 19.292645f, 11.611748f, -57.750366f } };
+    protected readonly Vector3f[] startPoss = { Vector3f.Of(39.447338f, 9.998177f, -0.784811f) };
+    protected readonly Vector3f[] endPoss = { Vector3f.Of(19.292645f, 11.611748f, -57.750366f) };
     private readonly Status[] statuses = { Status.SUCCSESS };
 
     private readonly long[][] results =
@@ -86,8 +86,8 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
         {
             long startRef = startRefs[i];
             long endRef = endRefs[i];
-            float[] startPos = startPoss[i];
-            float[] endPos = endPoss[i];
+            Vector3f startPos = startPoss[i];
+            Vector3f endPos = endPoss[i];
             Result<List<long>> path = query.findPath(startRef, endRef, startPos, endPos, filter);
             Assert.That(path.status, Is.EqualTo(statuses[i]));
             Assert.That(path.result.Count, Is.EqualTo(results[i].Length));
@@ -106,8 +106,8 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
         {
             long startRef = startRefs[i];
             long endRef = endRefs[i];
-            float[] startPos = startPoss[i];
-            float[] endPos = endPoss[i];
+            Vector3f startPos = startPoss[i];
+            Vector3f endPos = endPoss[i];
             Result<List<long>> path = query.findPath(startRef, endRef, startPos, endPos, filter, new DefaultQueryHeuristic(0.0f),
                 0, 0);
             Assert.That(path.status, Is.EqualTo(statuses[i]));

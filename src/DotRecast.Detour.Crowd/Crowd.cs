@@ -321,7 +321,7 @@ namespace DotRecast.Detour.Crowd
         /// @param[in] idx The agent index. [Limits: 0 <= value < #getAgentCount()]
         /// @param[in] vel The movement velocity. [(x, y, z)]
         /// @return True if the request was successfully submitted.
-        public bool requestMoveVelocity(CrowdAgent agent, float[] vel)
+        public bool requestMoveVelocity(CrowdAgent agent, Vector3f vel)
         {
             // Initialize request.
             agent.targetRef = 0;
@@ -485,7 +485,7 @@ namespace DotRecast.Detour.Crowd
                     // ag.corridor.trimInvalidPath(agentRef, agentPos, m_navquery,
                     // &m_filter);
                     ag.boundary.reset();
-                    vCopy(ag.npos, agentPos);
+                    vCopy(ref ag.npos, agentPos);
 
                     replan = true;
                 }
@@ -510,7 +510,7 @@ namespace DotRecast.Detour.Crowd
                         ag.targetRef = fnp.succeeded() ? fnp.result.getNearestRef() : 0L;
                         if (fnp.succeeded())
                         {
-                            vCopy(ag.targetPos, fnp.result.getNearestPos());
+                            vCopy(ref ag.targetPos, fnp.result.getNearestPos());
                         }
 
                         replan = true;
@@ -626,14 +626,14 @@ namespace DotRecast.Detour.Crowd
                         }
                         else
                         {
-                            vCopy(reqPos, ag.targetPos);
+                            vCopy(ref reqPos, ag.targetPos);
                         }
                     }
                     else
                     {
                         // Could not find path, start the request from current
                         // location.
-                        vCopy(reqPos, ag.npos);
+                        vCopy(ref reqPos, ag.npos);
                         reqPath = new List<long>();
                         reqPath.Add(path[0]);
                     }
@@ -722,7 +722,7 @@ namespace DotRecast.Detour.Crowd
                         }
 
                         // Apply results.
-                        float[] targetPos = ag.targetPos;
+                        var targetPos = ag.targetPos;
 
                         bool valid = true;
                         List<long> res = ag.targetPathQueryResult.path;
@@ -866,7 +866,7 @@ namespace DotRecast.Detour.Crowd
             m_grid = new ProximityGrid(_config.maxAgentRadius * 3);
             foreach (CrowdAgent ag in agents)
             {
-                float[] p = ag.npos;
+                Vector3f p = ag.npos;
                 float r = ag.option.radius;
                 m_grid.addItem(ag, p[0] - r, p[2] - r, p[0] + r, p[2] + r);
             }
@@ -901,7 +901,7 @@ namespace DotRecast.Detour.Crowd
             _telemetry.stop("buildNeighbours");
         }
 
-        private List<CrowdNeighbour> getNeighbours(float[] pos, float height, float range, CrowdAgent skip, ProximityGrid grid)
+        private List<CrowdNeighbour> getNeighbours(Vector3f pos, float height, float range, CrowdAgent skip, ProximityGrid grid)
         {
             List<CrowdNeighbour> result = new List<CrowdNeighbour>();
             HashSet<CrowdAgent> proxAgents = grid.queryItems(pos[0] - range, pos[2] - range, pos[0] + range, pos[2] + range);
@@ -914,7 +914,7 @@ namespace DotRecast.Detour.Crowd
                 }
 
                 // Check for overlap.
-                float[] diff = vSub(pos, ag.npos);
+                Vector3f diff = vSub(pos, ag.npos);
                 if (Math.Abs(diff[1]) >= (height + ag.option.height) / 2.0f)
                 {
                     continue;
@@ -958,15 +958,15 @@ namespace DotRecast.Detour.Crowd
                 // and short cut to there.
                 if ((ag.option.updateFlags & CrowdAgentParams.DT_CROWD_OPTIMIZE_VIS) != 0 && ag.corners.Count > 0)
                 {
-                    float[] target = ag.corners[Math.Min(1, ag.corners.Count - 1)].getPos();
+                    Vector3f target = ag.corners[Math.Min(1, ag.corners.Count - 1)].getPos();
                     ag.corridor.optimizePathVisibility(target, ag.option.pathOptimizationRange, navQuery,
                         m_filters[ag.option.queryFilterType]);
 
                     // Copy data for debug purposes.
                     if (debugAgent == ag)
                     {
-                        vCopy(debug.optStart, ag.corridor.getPos());
-                        vCopy(debug.optEnd, target);
+                        vCopy(ref debug.optStart, ag.corridor.getPos());
+                        vCopy(ref debug.optEnd, target);
                     }
                 }
                 else
@@ -974,8 +974,8 @@ namespace DotRecast.Detour.Crowd
                     // Copy data for debug purposes.
                     if (debugAgent == ag)
                     {
-                        vSet(debug.optStart, 0, 0, 0);
-                        vSet(debug.optEnd, 0, 0, 0);
+                        vSet(ref debug.optStart, 0, 0, 0);
+                        vSet(ref debug.optEnd, 0, 0, 0);
                     }
                 }
             }
@@ -1051,7 +1051,7 @@ namespace DotRecast.Detour.Crowd
 
                 if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                 {
-                    vCopy(dvel, ag.targetPos);
+                    vCopy(ref dvel, ag.targetPos);
                     ag.desiredSpeed = vLen(ag.targetPos);
                 }
                 else
@@ -1088,7 +1088,7 @@ namespace DotRecast.Detour.Crowd
                     {
                         CrowdAgent nei = ag.neis[j].agent;
 
-                        float[] diff = vSub(ag.npos, nei.npos);
+                        Vector3f diff = vSub(ag.npos, nei.npos);
                         diff[1] = 0;
 
                         float distSqr = vLenSqr(diff);
@@ -1124,7 +1124,7 @@ namespace DotRecast.Detour.Crowd
                 }
 
                 // Set the desired velocity.
-                vCopy(ag.dvel, dvel);
+                vCopy(ref ag.dvel, dvel);
             }
 
             _telemetry.stop("calculateSteering");
@@ -1155,15 +1155,15 @@ namespace DotRecast.Detour.Crowd
                     // Append neighbour segments as obstacles.
                     for (int j = 0; j < ag.boundary.getSegmentCount(); ++j)
                     {
-                        float[] s = ag.boundary.getSegment(j);
-                        Vector3f s3 = new Vector3f();
-                        Array.Copy(s, 3, s3, 0, 3);
-                        if (triArea2D(ag.npos, s, s3) < 0.0f)
+                        Vector3f[] s = ag.boundary.getSegment(j);
+                        Vector3f s3 = s[1];
+                        //Array.Copy(s, 3, s3, 0, 3);
+                        if (triArea2D(ag.npos, s[0], s3) < 0.0f)
                         {
                             continue;
                         }
 
-                        m_obstacleQuery.addSegment(s, s3);
+                        m_obstacleQuery.addSegment(s[0], s3);
                     }
 
                     ObstacleAvoidanceDebugData vod = null;
@@ -1180,14 +1180,14 @@ namespace DotRecast.Detour.Crowd
 
                     if (adaptive)
                     {
-                        Tuple<int, float[]> nsnvel = m_obstacleQuery.sampleVelocityAdaptive(ag.npos, ag.option.radius,
+                        var nsnvel = m_obstacleQuery.sampleVelocityAdaptive(ag.npos, ag.option.radius,
                             ag.desiredSpeed, ag.vel, ag.dvel, option, vod);
                         ns = nsnvel.Item1;
                         ag.nvel = nsnvel.Item2;
                     }
                     else
                     {
-                        Tuple<int, float[]> nsnvel = m_obstacleQuery.sampleVelocityGrid(ag.npos, ag.option.radius,
+                        var nsnvel = m_obstacleQuery.sampleVelocityGrid(ag.npos, ag.option.radius,
                             ag.desiredSpeed, ag.vel, ag.dvel, option, vod);
                         ns = nsnvel.Item1;
                         ag.nvel = nsnvel.Item2;
@@ -1198,7 +1198,7 @@ namespace DotRecast.Detour.Crowd
                 else
                 {
                     // If not using velocity planning, new velocity is directly the desired velocity.
-                    vCopy(ag.nvel, ag.dvel);
+                    vCopy(ref ag.nvel, ag.dvel);
                 }
             }
 
@@ -1234,7 +1234,7 @@ namespace DotRecast.Detour.Crowd
                         continue;
                     }
 
-                    vSet(ag.disp, 0, 0, 0);
+                    vSet(ref ag.disp, 0, 0, 0);
 
                     float w = 0;
 
@@ -1242,7 +1242,7 @@ namespace DotRecast.Detour.Crowd
                     {
                         CrowdAgent nei = ag.neis[j].agent;
                         long idx1 = nei.idx;
-                        float[] diff = vSub(ag.npos, nei.npos);
+                        Vector3f diff = vSub(ag.npos, nei.npos);
                         diff[1] = 0;
 
                         float dist = vLenSqr(diff);
@@ -1258,11 +1258,11 @@ namespace DotRecast.Detour.Crowd
                             // Agents on top of each other, try to choose diverging separation directions.
                             if (idx0 > idx1)
                             {
-                                vSet(diff, -ag.dvel[2], 0, ag.dvel[0]);
+                                vSet(ref diff, -ag.dvel[2], 0, ag.dvel[0]);
                             }
                             else
                             {
-                                vSet(diff, ag.dvel[2], 0, -ag.dvel[0]);
+                                vSet(ref diff, ag.dvel[2], 0, -ag.dvel[0]);
                             }
 
                             pen = 0.01f;
@@ -1311,7 +1311,7 @@ namespace DotRecast.Detour.Crowd
                 // Move along navmesh.
                 ag.corridor.movePosition(ag.npos, navQuery, m_filters[ag.option.queryFilterType]);
                 // Get valid constrained position back.
-                vCopy(ag.npos, ag.corridor.getPos());
+                vCopy(ref ag.npos, ag.corridor.getPos());
 
                 // If not using path, truncate the corridor to just one poly.
                 if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_NONE
@@ -1361,8 +1361,8 @@ namespace DotRecast.Detour.Crowd
                 }
 
                 // Update velocity.
-                vSet(ag.vel, 0, 0, 0);
-                vSet(ag.dvel, 0, 0, 0);
+                vSet(ref ag.vel, 0, 0, 0);
+                vSet(ref ag.dvel, 0, 0, 0);
             }
 
             _telemetry.stop("updateOffMeshConnections");
