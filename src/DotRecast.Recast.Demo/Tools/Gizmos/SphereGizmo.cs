@@ -1,4 +1,5 @@
-﻿using DotRecast.Recast.Demo.Draw;
+﻿using DotRecast.Core;
+using DotRecast.Recast.Demo.Draw;
 using static DotRecast.Core.RecastMath;
 using static DotRecast.Recast.Demo.Tools.Gizmos.GizmoHelper;
 
@@ -10,9 +11,9 @@ public class SphereGizmo : ColliderGizmo
     private readonly float[] vertices;
     private readonly int[] triangles;
     private readonly float radius;
-    private readonly float[] center;
+    private readonly Vector3f center;
 
-    public SphereGizmo(float[] center, float radius)
+    public SphereGizmo(Vector3f center, float radius)
     {
         this.center = center;
         this.radius = radius;

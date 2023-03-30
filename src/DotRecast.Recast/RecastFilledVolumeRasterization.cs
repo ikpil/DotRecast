@@ -75,7 +75,7 @@ namespace DotRecast.Recast
             ctx.stopTimer("RASTERIZE_CYLINDER");
         }
 
-        public static void rasterizeBox(Heightfield hf, float[] center, float[][] halfEdges, int area, int flagMergeThr,
+        public static void rasterizeBox(Heightfield hf, Vector3f center, float[][] halfEdges, int area, int flagMergeThr,
             Telemetry ctx)
         {
             ctx.startTimer("RASTERIZE_BOX");

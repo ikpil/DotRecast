@@ -64,11 +64,11 @@ public static class PathUtils
         if (ns >= straightPath.Count)
             return null;
 
-        float[] steerPos = new float[]
-        {
-            straightPath[ns].getPos()[0], startPos[1],
+        Vector3f steerPos = Vector3f.Of(
+            straightPath[ns].getPos()[0], 
+            startPos[1],
             straightPath[ns].getPos()[2]
-        };
+        );
         int steerPosFlag = straightPath[ns].getFlags();
         long steerPosRef = straightPath[ns].getRef();
 

@@ -66,8 +66,8 @@ public class MeshSetReaderWriterTest
         header.numTiles = 0;
         NavMesh mesh = new NavMesh(header.option, 6);
 
-        float[] bmin = geom.getMeshBoundsMin();
-        float[] bmax = geom.getMeshBoundsMax();
+        Vector3f bmin = geom.getMeshBoundsMin();
+        Vector3f bmax = geom.getMeshBoundsMax();
         int[] twh = DotRecast.Recast.Recast.calcTileCount(bmin, bmax, m_cellSize, m_tileSize, m_tileSize);
         int tw = twh[0];
         int th = twh[1];

@@ -1,4 +1,6 @@
-﻿namespace DotRecast.Recast.Demo.Tools.Gizmos;
+﻿using DotRecast.Core;
+
+namespace DotRecast.Recast.Demo.Tools.Gizmos;
 
 public static class GizmoFactory
 {
@@ -7,17 +9,17 @@ public static class GizmoFactory
         return new BoxGizmo(center, halfEdges);
     }
 
-    public static ColliderGizmo sphere(float[] center, float radius)
+    public static ColliderGizmo sphere(Vector3f center, float radius)
     {
         return new SphereGizmo(center, radius);
     }
 
-    public static ColliderGizmo capsule(float[] start, float[] end, float radius)
+    public static ColliderGizmo capsule(Vector3f start, Vector3f end, float radius)
     {
         return new CapsuleGizmo(start, end, radius);
     }
 
-    public static ColliderGizmo cylinder(float[] start, float[] end, float radius)
+    public static ColliderGizmo cylinder(Vector3f start, Vector3f end, float radius)
     {
         return new CylinderGizmo(start, end, radius);
     }

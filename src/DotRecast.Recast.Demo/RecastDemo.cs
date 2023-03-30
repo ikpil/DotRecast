@@ -96,8 +96,8 @@ public class RecastDemo
     private readonly float[] cameraEulers = { 45, -45 };
     private Vector3f cameraPos = Vector3f.Of(0, 0, 0);
 
-    private readonly Vector3f rayStart = new Vector3f();
-    private readonly Vector3f rayEnd = new Vector3f();
+    private Vector3f rayStart = new Vector3f();
+    private Vector3f rayEnd = new Vector3f();
 
     private float[] projectionMatrix = new float[16];
     private float[] modelviewMatrix = new float[16];
@@ -112,7 +112,7 @@ public class RecastDemo
 
     private int[] viewport;
     private bool markerPositionSet;
-    private readonly Vector3f markerPosition = new Vector3f();
+    private Vector3f markerPosition = new Vector3f();
     private ToolsView toolsUI;
     private RcSettingsView settingsUI;
     private long prevFrameTime;
@@ -479,8 +479,8 @@ public class RecastDemo
        */
         if (sample.getInputGeom() != null)
         {
-            float[] bmin = sample.getInputGeom().getMeshBoundsMin();
-            float[] bmax = sample.getInputGeom().getMeshBoundsMax();
+            Vector3f bmin = sample.getInputGeom().getMeshBoundsMin();
+            Vector3f bmax = sample.getInputGeom().getMeshBoundsMax();
             int[] voxels = Recast.calcGridSize(bmin, bmax, settingsUI.getCellSize());
             settingsUI.setVoxels(voxels);
             settingsUI.setTiles(tileNavMeshBuilder.getTiles(sample.getInputGeom(), settingsUI.getCellSize(), settingsUI.getTileSize()));
@@ -612,8 +612,8 @@ public class RecastDemo
 
         if (!_mouseOverMenu)
         {
-            GLU.glhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 0.0f, modelviewMatrix, projectionMatrix, viewport, rayStart);
-            GLU.glhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 1.0f, modelviewMatrix, projectionMatrix, viewport, rayEnd);
+            GLU.glhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 0.0f, modelviewMatrix, projectionMatrix, viewport, ref rayStart);
+            GLU.glhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 1.0f, modelviewMatrix, projectionMatrix, viewport, ref rayEnd);
 
             // Hit test mesh.
             DemoInputGeomProvider inputGeom = sample.getInputGeom();
@@ -681,18 +681,18 @@ public class RecastDemo
 
         if (sample.isChanged())
         {
-            float[] bmin = null;
-            float[] bmax = null;
+            Vector3f? bminN = null;
+            Vector3f? bmaxN = null;
             if (sample.getInputGeom() != null)
             {
-                bmin = sample.getInputGeom().getMeshBoundsMin();
-                bmax = sample.getInputGeom().getMeshBoundsMax();
+                bminN = sample.getInputGeom().getMeshBoundsMin();
+                bmaxN = sample.getInputGeom().getMeshBoundsMax();
             }
             else if (sample.getNavMesh() != null)
             {
-                float[][] bounds = NavMeshUtils.getNavMeshBounds(sample.getNavMesh());
-                bmin = bounds[0];
-                bmax = bounds[1];
+                Vector3f[] bounds = NavMeshUtils.getNavMeshBounds(sample.getNavMesh());
+                bminN = bounds[0];
+                bmaxN = bounds[1];
             }
             else if (0 < sample.getRecastResults().Count)
             {
@@ -700,23 +700,32 @@ public class RecastDemo
                 {
                     if (result.getSolidHeightfield() != null)
                     {
-                        if (bmin == null)
+                        if (bminN == null)
                         {
-                            bmin = new float[] { float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity };
-                            bmax = new float[] { float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity };
+                            bminN = Vector3f.Of(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
+                            bmaxN = Vector3f.Of(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
                         }
 
-                        for (int i = 0; i < 3; i++)
-                        {
-                            bmin[i] = Math.Min(bmin[i], result.getSolidHeightfield().bmin[i]);
-                            bmax[i] = Math.Max(bmax[i], result.getSolidHeightfield().bmax[i]);
-                        }
+                            bminN = Vector3f.Of(
+                                Math.Min(bminN.Value[0], result.getSolidHeightfield().bmin[0]),
+                                Math.Min(bminN.Value[1], result.getSolidHeightfield().bmin[1]),
+                                Math.Min(bminN.Value[2], result.getSolidHeightfield().bmin[2])
+                            );
+                            
+                            bmaxN = Vector3f.Of(
+                                Math.Max(bmaxN.Value[0], result.getSolidHeightfield().bmax[0]),
+                                Math.Max(bmaxN.Value[1], result.getSolidHeightfield().bmax[1]),
+                                Math.Max(bmaxN.Value[2], result.getSolidHeightfield().bmax[2])
+                            );
                     }
                 }
             }
 
-            if (bmin != null && bmax != null)
+            if (bminN != null && bmaxN != null)
             {
+                Vector3f bmin = bminN.Value;
+                Vector3f bmax = bmaxN.Value;
+
                 camr = (float)(Math.Sqrt(
                                    sqr(bmax[0] - bmin[0]) + sqr(bmax[1] - bmin[1]) + sqr(bmax[2] - bmin[2]))
                                / 2);

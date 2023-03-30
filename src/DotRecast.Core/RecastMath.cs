@@ -45,16 +45,16 @@ namespace DotRecast.Core
         }
 
 
-        public static float[] vCross(float[] v1, float[] v2)
+        public static Vector3f vCross(Vector3f v1, Vector3f v2)
         {
             Vector3f dest = new Vector3f();
             dest[0] = v1[1] * v2[2] - v1[2] * v2[1];
             dest[1] = v1[2] * v2[0] - v1[0] * v2[2];
             dest[2] = v1[0] * v2[1] - v1[1] * v2[0];
-            return dest.ToArray();
+            return dest;
         }
         
-        public static float vDot(float[] v1, float[] v2)
+        public static float vDot(Vector3f v1, Vector3f v2)
         {
             return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
         }

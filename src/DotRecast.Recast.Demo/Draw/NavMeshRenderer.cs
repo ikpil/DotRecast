@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 using System.Linq;
+using DotRecast.Core;
 using DotRecast.Detour;
 using DotRecast.Recast.Demo.Builder;
 using DotRecast.Recast.Demo.Geom;
@@ -200,8 +201,8 @@ public class NavMeshRenderer
     private void drawGeomBounds(DemoInputGeomProvider geom)
     {
         // Draw bounds
-        float[] bmin = geom.getMeshBoundsMin();
-        float[] bmax = geom.getMeshBoundsMax();
+        Vector3f bmin = geom.getMeshBoundsMin();
+        Vector3f bmax = geom.getMeshBoundsMax();
         debugDraw.debugDrawBoxWire(bmin[0], bmin[1], bmin[2], bmax[0], bmax[1], bmax[2],
             DebugDraw.duRGBA(255, 255, 255, 128), 1.0f);
         debugDraw.begin(DebugDrawPrimitives.POINTS, 5.0f);

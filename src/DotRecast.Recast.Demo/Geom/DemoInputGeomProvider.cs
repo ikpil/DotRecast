@@ -71,25 +71,25 @@ public class DemoInputGeomProvider : InputGeomProvider
         this.faces = faces;
         normals = new float[faces.Length];
         calculateNormals();
-        bmin = new float[3];
-        bmax = new float[3];
-        RecastVectors.copy(bmin, vertices, 0);
-        RecastVectors.copy(bmax, vertices, 0);
+        bmin = Vector3f.Zero;
+        bmax = Vector3f.Zero;
+        RecastVectors.copy(ref bmin, vertices, 0);
+        RecastVectors.copy(ref bmax, vertices, 0);
         for (int i = 1; i < vertices.Length / 3; i++)
         {
-            RecastVectors.min(bmin, vertices, i * 3);
-            RecastVectors.max(bmax, vertices, i * 3);
+            RecastVectors.min(ref bmin, vertices, i * 3);
+            RecastVectors.max(ref bmax, vertices, i * 3);
         }
 
         chunkyTriMesh = new ChunkyTriMesh(vertices, faces, faces.Length / 3, 256);
     }
 
-    public float[] getMeshBoundsMin()
+    public Vector3f getMeshBoundsMin()
     {
         return bmin;
     }
 
-    public float[] getMeshBoundsMax()
+    public Vector3f getMeshBoundsMax()
     {
         return bmax;
     }
@@ -138,7 +138,7 @@ public class DemoInputGeomProvider : InputGeomProvider
         return offMeshConnections;
     }
 
-    public void addOffMeshConnection(float[] start, float[] end, float radius, bool bidir, int area, int flags)
+    public void addOffMeshConnection(Vector3f start, Vector3f end, float radius, bool bidir, int area, int flags)
     {
         offMeshConnections.Add(new DemoOffMeshConnection(start, end, radius, bidir, area, flags));
     }
@@ -149,7 +149,7 @@ public class DemoInputGeomProvider : InputGeomProvider
         offMeshConnections.RemoveAll(filter); // TODO : 확인 필요
     }
 
-    public float? raycastMesh(float[] src, Vector3f dst)
+    public float? raycastMesh(Vector3f src, Vector3f dst)
     {
         // Prune hit ray.
         float[] btminmax = Intersections.intersectSegmentAABB(src, dst, bmin, bmax);
@@ -179,21 +179,21 @@ public class DemoInputGeomProvider : InputGeomProvider
             int[] tris = chunk.tris;
             for (int j = 0; j < chunk.tris.Length; j += 3)
             {
-                float[] v1 = new float[]
-                {
-                    vertices[tris[j] * 3], vertices[tris[j] * 3 + 1],
+                Vector3f v1 = Vector3f.Of(
+                    vertices[tris[j] * 3],
+                    vertices[tris[j] * 3 + 1],
                     vertices[tris[j] * 3 + 2]
-                };
-                float[] v2 = new float[]
-                {
-                    vertices[tris[j + 1] * 3], vertices[tris[j + 1] * 3 + 1],
+                );
+                Vector3f v2 = Vector3f.Of(
+                    vertices[tris[j + 1] * 3], 
+                    vertices[tris[j + 1] * 3 + 1],
                     vertices[tris[j + 1] * 3 + 2]
-                };
-                float[] v3 = new float[]
-                {
-                    vertices[tris[j + 2] * 3], vertices[tris[j + 2] * 3 + 1],
+                );
+                Vector3f v3 = Vector3f.Of(
+                    vertices[tris[j + 2] * 3], 
+                    vertices[tris[j + 2] * 3 + 1],
                     vertices[tris[j + 2] * 3 + 2]
-                };
+                );
                 float? t = Intersections.intersectSegmentTriangle(src, dst, v1, v2, v3);
                 if (null != t)
                 {

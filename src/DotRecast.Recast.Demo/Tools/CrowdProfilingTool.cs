@@ -362,7 +362,7 @@ public class CrowdProfilingTool
             foreach (CrowdAgent ag in crowd.getActiveAgents())
             {
                 float radius = ag.option.radius;
-                float[] pos = ag.npos;
+                Vector3f pos = ag.npos;
                 dd.debugDrawCircle(pos[0], pos[1], pos[2], radius, duRGBA(0, 0, 0, 32), 2.0f);
             }
 
@@ -372,7 +372,7 @@ public class CrowdProfilingTool
 
                 float height = ag.option.height;
                 float radius = ag.option.radius;
-                float[] pos = ag.npos;
+                Vector3f pos = ag.npos;
 
                 int col = duRGBA(220, 220, 220, 128);
                 if (agentData.type == AgentType.TRAVELLER)

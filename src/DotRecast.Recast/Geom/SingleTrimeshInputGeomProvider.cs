@@ -19,36 +19,37 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using DotRecast.Core;
 
 namespace DotRecast.Recast.Geom
 {
     public class SingleTrimeshInputGeomProvider : InputGeomProvider
     {
-        private readonly float[] bmin;
-        private readonly float[] bmax;
+        private readonly Vector3f bmin;
+        private readonly Vector3f bmax;
         private readonly TriMesh[] _meshes;
 
         public SingleTrimeshInputGeomProvider(float[] vertices, int[] faces)
         {
-            bmin = new float[3];
-            bmax = new float[3];
-            RecastVectors.copy(bmin, vertices, 0);
-            RecastVectors.copy(bmax, vertices, 0);
+            bmin = Vector3f.Zero;
+            bmax = Vector3f.Zero;
+            RecastVectors.copy(ref bmin, vertices, 0);
+            RecastVectors.copy(ref bmax, vertices, 0);
             for (int i = 1; i < vertices.Length / 3; i++)
             {
-                RecastVectors.min(bmin, vertices, i * 3);
-                RecastVectors.max(bmax, vertices, i * 3);
+                RecastVectors.min(ref bmin, vertices, i * 3);
+                RecastVectors.max(ref bmax, vertices, i * 3);
             }
 
             _meshes = new[] { new TriMesh(vertices, faces) };
         }
 
-        public float[] getMeshBoundsMin()
+        public Vector3f getMeshBoundsMin()
         {
             return bmin;
         }
 
-        public float[] getMeshBoundsMax()
+        public Vector3f getMeshBoundsMax()
         {
             return bmax;
         }

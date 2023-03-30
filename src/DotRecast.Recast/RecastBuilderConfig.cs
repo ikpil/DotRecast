@@ -43,11 +43,11 @@ namespace DotRecast.Recast
         /** The maximum bounds of the field's AABB. [(x, y, z)] [Units: wu] **/
         public readonly Vector3f bmax = new Vector3f();
 
-        public RecastBuilderConfig(RecastConfig cfg, float[] bmin, float[] bmax) : this(cfg, bmin, bmax, 0, 0)
+        public RecastBuilderConfig(RecastConfig cfg, Vector3f bmin, Vector3f bmax) : this(cfg, bmin, bmax, 0, 0)
         {
         }
 
-        public RecastBuilderConfig(RecastConfig cfg, float[] bmin, float[] bmax, int tileX, int tileZ)
+        public RecastBuilderConfig(RecastConfig cfg, Vector3f bmin, Vector3f bmax, int tileX, int tileZ)
         {
             this.tileX = tileX;
             this.tileZ = tileZ;

@@ -1,13 +1,15 @@
-﻿namespace DotRecast.Recast.Demo.Tools;
+﻿using DotRecast.Core;
+
+namespace DotRecast.Recast.Demo.Tools;
 
 public class SteerTarget
 {
-    public readonly float[] steerPos;
+    public readonly Vector3f steerPos;
     public readonly int steerPosFlag;
     public readonly long steerPosRef;
     public readonly float[] steerPoints;
 
-    public SteerTarget(float[] steerPos, int steerPosFlag, long steerPosRef, float[] steerPoints)
+    public SteerTarget(Vector3f steerPos, int steerPosFlag, long steerPosRef, float[] steerPoints)
     {
         this.steerPos = steerPos;
         this.steerPosFlag = steerPosFlag;

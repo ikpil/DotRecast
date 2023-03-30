@@ -19,14 +19,15 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using DotRecast.Core;
 
 namespace DotRecast.Recast.Geom
 {
     public interface InputGeomProvider : ConvexVolumeProvider
     {
-        float[] getMeshBoundsMin();
+        Vector3f getMeshBoundsMin();
 
-        float[] getMeshBoundsMax();
+        Vector3f getMeshBoundsMax();
 
         IEnumerable<TriMesh> meshes();
     }

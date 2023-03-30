@@ -24,20 +24,20 @@ namespace DotRecast.Recast.Demo.Geom;
 
 public class Intersections
 {
-    public static float? intersectSegmentTriangle(float[] sp, float[] sq, float[] a, float[] b, float[] c)
+    public static float? intersectSegmentTriangle(Vector3f sp, Vector3f sq, Vector3f a, Vector3f b, Vector3f c)
     {
         float v, w;
-        float[] ab = vSub(b, a);
-        float[] ac = vSub(c, a);
-        float[] qp = vSub(sp, sq);
+        Vector3f ab = vSub(b, a);
+        Vector3f ac = vSub(c, a);
+        Vector3f qp = vSub(sp, sq);
 
         // Compute triangle normal. Can be precalculated or cached if
         // intersecting multiple segments against the same triangle
-        float[] norm = RecastMath.vCross(ab, ac);
+        Vector3f norm = vCross(ab, ac);
 
         // Compute denominator d. If d <= 0, segment is parallel to or points
         // away from triangle, so exit early
-        float d = RecastMath.vDot(qp, norm);
+        float d = vDot(qp, norm);
         if (d <= 0.0f)
         {
             return null;
@@ -46,8 +46,8 @@ public class Intersections
         // Compute intersection t value of pq with plane of triangle. A ray
         // intersects iff 0 <= t. Segment intersects iff 0 <= t <= 1. Delay
         // dividing by d until intersection has been found to pierce triangle
-        float[] ap = vSub(sp, a);
-        float t = RecastMath.vDot(ap, norm);
+        Vector3f ap = vSub(sp, a);
+        float t = vDot(ap, norm);
         if (t < 0.0f)
         {
             return null;
@@ -59,14 +59,14 @@ public class Intersections
         }
 
         // Compute barycentric coordinate components and test if within bounds
-        float[] e = RecastMath.vCross(qp, ap);
-        v = RecastMath.vDot(ac, e);
+        Vector3f e = vCross(qp, ap);
+        v = vDot(ac, e);
         if (v < 0.0f || v > d)
         {
             return null;
         }
 
-        w = -RecastMath.vDot(ab, e);
+        w = -vDot(ab, e);
         if (w < 0.0f || v + w > d)
         {
             return null;
@@ -78,7 +78,7 @@ public class Intersections
         return t;
     }
 
-    public static float[] intersectSegmentAABB(float[] sp, Vector3f sq, Vector3f amin, Vector3f amax)
+    public static float[] intersectSegmentAABB(Vector3f sp, Vector3f sq, Vector3f amin, Vector3f amax)
     {
         float EPS = 1e-6f;
 

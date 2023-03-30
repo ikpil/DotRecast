@@ -17,23 +17,24 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using DotRecast.Core;
 using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic.Colliders
 {
     public class BoxCollider : AbstractCollider
     {
-        private readonly float[] center;
+        private readonly Vector3f center;
         private readonly float[][] halfEdges;
 
-        public BoxCollider(float[] center, float[][] halfEdges, int area, float flagMergeThreshold) :
+        public BoxCollider(Vector3f center, float[][] halfEdges, int area, float flagMergeThreshold) :
             base(area, flagMergeThreshold, bounds(center, halfEdges))
         {
             this.center = center;
             this.halfEdges = halfEdges;
         }
 
-        private static float[] bounds(float[] center, float[][] halfEdges)
+        private static float[] bounds(Vector3f center, float[][] halfEdges)
         {
             float[] bounds = new float[]
             {
@@ -65,14 +66,19 @@ namespace DotRecast.Detour.Dynamic.Colliders
                 telemetry);
         }
 
-        public static float[][] getHalfEdges(float[] up, float[] forward, float[] extent)
+        public static Vector3f[] getHalfEdges(Vector3f up, Vector3f forward, float[] extent)
         {
-            float[][] halfEdges = new float[][] { new float[3], new float[] { up[0], up[1], up[2] }, new float[3] };
-            RecastVectors.normalize(halfEdges[1]);
-            RecastVectors.cross(halfEdges[0], up, forward);
-            RecastVectors.normalize(halfEdges[0]);
-            RecastVectors.cross(halfEdges[2], halfEdges[0], up);
-            RecastVectors.normalize(halfEdges[2]);
+            Vector3f[] halfEdges =
+            {
+                Vector3f.Zero,
+                Vector3f.Of(up[0], up[1], up[2]),
+                Vector3f.Zero
+            };
+            RecastVectors.normalize(ref halfEdges[1]);
+            RecastVectors.cross(ref halfEdges[0], up, forward);
+            RecastVectors.normalize(ref halfEdges[0]);
+            RecastVectors.cross(ref halfEdges[2], halfEdges[0], up);
+            RecastVectors.normalize(ref halfEdges[2]);
             halfEdges[0][0] *= extent[0];
             halfEdges[0][1] *= extent[0];
             halfEdges[0][2] *= extent[0];

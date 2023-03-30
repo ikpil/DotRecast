@@ -67,7 +67,7 @@ public class GLU
         matrix[15] = 0.0f;
     }
 
-    public static int glhUnProjectf(float winx, float winy, float winz, float[] modelview, float[] projection, int[] viewport, float[] objectCoordinate)
+    public static int glhUnProjectf(float winx, float winy, float winz, float[] modelview, float[] projection, int[] viewport, ref Vector3f objectCoordinate)
     {
         // Transformation matrices
         float[] m = new float[16], A = new float[16];

@@ -28,9 +28,9 @@ public class TestNavmeshTool : Tool
     private readonly Vector3f m_polyPickExt = Vector3f.Of(2, 4, 2);
     private long m_startRef;
     private long m_endRef;
-    private float[] m_hitPos;
+    private Vector3f m_hitPos;
     private float m_distanceToWall;
-    private float[] m_hitNormal;
+    private Vector3f m_hitNormal;
     private List<StraightPathItem> m_straightPath;
     private int m_straightPathOptions;
     private List<long> m_polys;
@@ -41,7 +41,7 @@ public class TestNavmeshTool : Tool
     private List<Vector3f> m_smoothPath;
     private Status m_pathFindStatus = Status.FAILURE;
     private bool enableRaycast = true;
-    private readonly List<float[]> randomPoints = new();
+    private readonly List<Vector3f> randomPoints = new();
     private bool constrainByCircle;
 
     private int includeFlags = SampleAreaModifications.SAMPLE_POLYFLAGS_ALL;
@@ -58,7 +58,7 @@ public class TestNavmeshTool : Tool
         this.m_sample = m_sample;
     }
 
-    public override void handleClick(float[] s, Vector3f p, bool shift)
+    public override void handleClick(Vector3f s, Vector3f p, bool shift)
     {
         if (shift)
         {
@@ -224,8 +224,8 @@ public class TestNavmeshTool : Tool
                             : false;
 
                         // Find movement delta.
-                        float[] delta = vSub(steerTarget.steerPos, iterPos);
-                        float len = (float)Math.Sqrt(RecastMath.vDot(delta, delta));
+                        Vector3f delta = vSub(steerTarget.steerPos, iterPos);
+                        float len = (float)Math.Sqrt(vDot(delta, delta));
                         // If the steer target is end of path or off-mesh link, do not move past the location.
                         if ((endOfPath || offMeshConnection) && len < STEP_SIZE)
                         {
@@ -236,13 +236,12 @@ public class TestNavmeshTool : Tool
                             len = STEP_SIZE / len;
                         }
 
-                        float[] moveTgt = vMad(iterPos, delta, len);
+                        Vector3f moveTgt = vMad(iterPos, delta, len);
                         // Move
                         Result<MoveAlongSurfaceResult> result = m_navQuery.moveAlongSurface(polys[0], iterPos,
                             moveTgt, m_filter);
                         MoveAlongSurfaceResult moveAlongSurface = result.result;
 
-                        iterPos = new float[3];
                         iterPos[0] = moveAlongSurface.getResultPos()[0];
                         iterPos[1] = moveAlongSurface.getResultPos()[1];
                         iterPos[2] = moveAlongSurface.getResultPos()[2];
@@ -261,7 +260,7 @@ public class TestNavmeshTool : Tool
                         if (endOfPath && PathUtils.inRange(iterPos, steerTarget.steerPos, SLOP, 1.0f))
                         {
                             // Reached end of path.
-                            vCopy(iterPos, targetPos);
+                            vCopy(ref iterPos, targetPos);
                             if (m_smoothPath.Count < MAX_SMOOTH)
                             {
                                 m_smoothPath.Add(iterPos);
@@ -287,12 +286,11 @@ public class TestNavmeshTool : Tool
                             polys = polys.GetRange(npos, polys.Count - npos);
 
                             // Handle the connection.
-                            Result<Tuple<float[], float[]>> offMeshCon = m_navMesh
-                                .getOffMeshConnectionPolyEndPoints(prevRef, polyRef);
+                            var offMeshCon = m_navMesh.getOffMeshConnectionPolyEndPoints(prevRef, polyRef);
                             if (offMeshCon.succeeded())
                             {
-                                float[] startPos = offMeshCon.result.Item1;
-                                float[] endPos = offMeshCon.result.Item2;
+                                var startPos = offMeshCon.result.Item1;
+                                var endPos = offMeshCon.result.Item2;
                                 if (m_smoothPath.Count < MAX_SMOOTH)
                                 {
                                     m_smoothPath.Add(startPos);
@@ -304,7 +302,7 @@ public class TestNavmeshTool : Tool
                                 }
 
                                 // Move position at the other side of the off-mesh link.
-                                vCopy(iterPos, endPos);
+                                vCopy(ref iterPos, endPos);
                                 iterPos[1] = m_navQuery.getPolyHeight(polys[0], iterPos).result;
                             }
                         }
@@ -332,7 +330,7 @@ public class TestNavmeshTool : Tool
                 if (0 < m_polys.Count)
                 {
                     // In case of partial path, make sure the end point is clamped to the last polygon.
-                    float[] epos = new float[] { m_epos[0], m_epos[1], m_epos[2] };
+                    var epos = Vector3f.Of(m_epos[0], m_epos[1], m_epos[2]);
                     if (m_polys[m_polys.Count - 1] != m_endRef)
                     {
                         Result<ClosestPointOnPolyResult> result = m_navQuery
@@ -375,14 +373,14 @@ public class TestNavmeshTool : Tool
                         if (hit.result.t > 1)
                         {
                             // No hit
-                            m_hitPos = ArrayUtils.CopyOf(m_epos, m_epos.Length);
+                            m_hitPos = m_epos;
                             m_hitResult = false;
                         }
                         else
                         {
                             // Hit
                             m_hitPos = vLerp(m_spos, m_epos, hit.result.t);
-                            m_hitNormal = ArrayUtils.CopyOf(hit.result.hitNormal, hit.result.hitNormal.Length);
+                            m_hitNormal = hit.result.hitNormal;
                             m_hitResult = true;
                         }
 
@@ -926,7 +924,7 @@ public class TestNavmeshTool : Tool
         }
     }
 
-    private void drawAgent(RecastDebugDraw dd, float[] pos, int col)
+    private void drawAgent(RecastDebugDraw dd, Vector3f pos, int col)
     {
         float r = m_sample.getSettingsUI().getAgentRadius();
         float h = m_sample.getSettingsUI().getAgentHeight();

@@ -1,4 +1,5 @@
-﻿using DotRecast.Detour.Dynamic.Colliders;
+﻿using DotRecast.Core;
+using DotRecast.Detour.Dynamic.Colliders;
 using DotRecast.Recast.Demo.Draw;
 
 namespace DotRecast.Recast.Demo.Tools.Gizmos;
@@ -25,14 +26,14 @@ public class BoxGizmo : ColliderGizmo
 
     private readonly float[] vertices = new float[8 * 3];
     private readonly float[] center;
-    private readonly float[][] halfEdges;
+    private readonly Vector3f[] halfEdges;
 
-    public BoxGizmo(float[] center, float[] extent, float[] forward, float[] up) :
+    public BoxGizmo(float[] center, float[] extent, Vector3f forward, Vector3f up) :
         this(center, BoxCollider.getHalfEdges(up, forward, extent))
     {
     }
 
-    public BoxGizmo(float[] center, float[][] halfEdges)
+    public BoxGizmo(float[] center, Vector3f[] halfEdges)
     {
         this.center = center;
         this.halfEdges = halfEdges;

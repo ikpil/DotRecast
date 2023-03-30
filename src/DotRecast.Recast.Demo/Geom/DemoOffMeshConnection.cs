@@ -18,6 +18,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
+
 namespace DotRecast.Recast.Demo.Geom;
 
 public class DemoOffMeshConnection
@@ -28,7 +30,7 @@ public class DemoOffMeshConnection
     public readonly int area;
     public readonly int flags;
 
-    public DemoOffMeshConnection(float[] start, float[] end, float radius, bool bidir, int area, int flags)
+    public DemoOffMeshConnection(Vector3f start, Vector3f end, float radius, bool bidir, int area, int flags)
     {
         verts = new float[6];
         verts[0] = start[0];

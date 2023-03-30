@@ -23,7 +23,7 @@ namespace DotRecast.Recast.Demo.Geom;
 
 public class PolyMeshRaycast
 {
-    public static float? raycast(IList<RecastBuilderResult> results, float[] src, float[] dst)
+    public static float? raycast(IList<RecastBuilderResult> results, Vector3f src, Vector3f dst)
     {
         foreach (RecastBuilderResult result in results)
         {
@@ -40,7 +40,7 @@ public class PolyMeshRaycast
         return null;
     }
 
-    private static float? raycast(PolyMesh poly, PolyMeshDetail meshDetail, float[] sp, float[] sq)
+    private static float? raycast(PolyMesh poly, PolyMeshDetail meshDetail, Vector3f sp, Vector3f sq)
     {
         if (meshDetail != null)
         {
@@ -54,7 +54,7 @@ public class PolyMeshRaycast
                 int tris = btris * 4;
                 for (int j = 0; j < ntris; ++j)
                 {
-                    float[][] vs = ArrayUtils.Of<float>(3, 3);
+                    Vector3f[] vs = new Vector3f[3];
                     for (int k = 0; k < 3; ++k)
                     {
                         vs[k][0] = meshDetail.verts[verts + meshDetail.tris[tris + j * 4 + k] * 3];

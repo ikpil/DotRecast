@@ -17,16 +17,17 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using DotRecast.Core;
 using DotRecast.Detour;
 
 namespace DotRecast.Recast.Demo.Geom;
 
 public class NavMeshUtils
 {
-    public static float[][] getNavMeshBounds(NavMesh mesh)
+    public static Vector3f[] getNavMeshBounds(NavMesh mesh)
     {
-        float[] bmin = new float[] { float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity };
-        float[] bmax = new float[] { float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity };
+        Vector3f bmin = Vector3f.Of(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
+        Vector3f bmax = Vector3f.Of(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
         for (int t = 0; t < mesh.getMaxTiles(); ++t)
         {
             MeshTile tile = mesh.getTile(t);
@@ -44,6 +45,6 @@ public class NavMeshUtils
             }
         }
 
-        return new float[][] { bmin, bmax };
+        return new[] { bmin, bmax };
     }
 }

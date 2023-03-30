@@ -47,7 +47,7 @@ public class ConvexVolumeTool : Tool
         sample = m_sample;
     }
 
-    public override void handleClick(float[] s, Vector3f p, bool shift)
+    public override void handleClick(Vector3f s, Vector3f p, bool shift)
     {
         DemoInputGeomProvider geom = sample.getInputGeom();
         if (geom == null)

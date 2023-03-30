@@ -33,7 +33,7 @@ public class OffMeshConnectionTool : Tool
 {
     private Sample sample;
     private bool hitPosSet;
-    private float[] hitPos;
+    private Vector3f hitPos;
     private int bidir;
 
     public override void setSample(Sample m_sample)
@@ -41,7 +41,7 @@ public class OffMeshConnectionTool : Tool
         sample = m_sample;
     }
 
-    public override void handleClick(float[] s, Vector3f p, bool shift)
+    public override void handleClick(Vector3f s, Vector3f p, bool shift)
     {
         DemoInputGeomProvider geom = sample.getInputGeom();
         if (geom == null)
@@ -75,7 +75,7 @@ public class OffMeshConnectionTool : Tool
             // Create
             if (!hitPosSet)
             {
-                hitPos = ArrayUtils.CopyOf(p, p.Length);
+                hitPos = p;
                 hitPosSet = true;
             }
             else

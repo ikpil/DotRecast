@@ -134,7 +134,7 @@ public class DynamicUpdateTool : Tool
         this.sample = sample;
     }
 
-    public override void handleClick(float[] s, Vector3f p, bool shift)
+    public override void handleClick(Vector3f s, Vector3f p, bool shift)
     {
         if (mode == DynamicUpdateToolMode.COLLIDERS)
         {
@@ -215,7 +215,7 @@ public class DynamicUpdateTool : Tool
         }
     }
 
-    private Tuple<Collider, ColliderGizmo> sphereCollider(float[] p)
+    private Tuple<Collider, ColliderGizmo> sphereCollider(Vector3f p)
     {
         float radius = 1 + (float)random.NextDouble() * 10;
         return Tuple.Create<Collider, ColliderGizmo>(
@@ -223,22 +223,26 @@ public class DynamicUpdateTool : Tool
             GizmoFactory.sphere(p, radius));
     }
 
-    private Tuple<Collider, ColliderGizmo> capsuleCollider(float[] p)
+    private Tuple<Collider, ColliderGizmo> capsuleCollider(Vector3f p)
     {
         float radius = 0.4f + (float)random.NextDouble() * 4f;
-        float[] a = new float[] { (1f - 2 * (float)random.NextDouble()), 0.01f + (float)random.NextDouble(), (1f - 2 * (float)random.NextDouble()) };
-        vNormalize(a);
+        Vector3f a = Vector3f.Of(
+            (1f - 2 * (float)random.NextDouble()),
+            0.01f + (float)random.NextDouble(),
+            (1f - 2 * (float)random.NextDouble())
+        );
+        vNormalize(ref a);
         float len = 1f + (float)random.NextDouble() * 20f;
         a[0] *= len;
         a[1] *= len;
         a[2] *= len;
-        float[] start = new float[] { p[0], p[1], p[2] };
-        float[] end = new float[] { p[0] + a[0], p[1] + a[1], p[2] + a[2] };
-        return Tuple.Create<Collider, ColliderGizmo>(new CapsuleCollider(start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER,
-            dynaMesh.config.walkableClimb), GizmoFactory.capsule(start, end, radius));
+        Vector3f start = Vector3f.Of(p[0], p[1], p[2]);
+        Vector3f end = Vector3f.Of(p[0] + a[0], p[1] + a[1], p[2] + a[2]);
+        return Tuple.Create<Collider, ColliderGizmo>(new CapsuleCollider(
+            start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb), GizmoFactory.capsule(start, end, radius));
     }
 
-    private Tuple<Collider, ColliderGizmo> boxCollider(float[] p)
+    private Tuple<Collider, ColliderGizmo> boxCollider(Vector3f p)
     {
         float[] extent = new float[]
         {
@@ -253,7 +257,7 @@ public class DynamicUpdateTool : Tool
             GizmoFactory.box(p, halfEdges));
     }
 
-    private Tuple<Collider, ColliderGizmo> cylinderCollider(float[] p)
+    private Tuple<Collider, ColliderGizmo> cylinderCollider(Vector3f p)
     {
         float radius = 0.7f + (float)random.NextDouble() * 4f;
         float[] a = new float[] { (1f - 2 * (float)random.NextDouble()), 0.01f + (float)random.NextDouble(), (1f - 2 * (float)random.NextDouble()) };
@@ -262,20 +266,20 @@ public class DynamicUpdateTool : Tool
         a[0] *= len;
         a[1] *= len;
         a[2] *= len;
-        float[] start = new float[] { p[0], p[1], p[2] };
-        float[] end = new float[] { p[0] + a[0], p[1] + a[1], p[2] + a[2] };
+        Vector3f start = Vector3f.Of(p[0], p[1], p[2]);
+        Vector3f end = Vector3f.Of(p[0] + a[0], p[1] + a[1], p[2] + a[2]);
         return Tuple.Create<Collider, ColliderGizmo>(new CylinderCollider(start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER,
             dynaMesh.config.walkableClimb), GizmoFactory.cylinder(start, end, radius));
     }
 
-    private Tuple<Collider, ColliderGizmo> compositeCollider(float[] p)
+    private Tuple<Collider, ColliderGizmo> compositeCollider(Vector3f p)
     {
-        float[] baseExtent = new float[] { 5, 3, 8 };
-        float[] baseCenter = new float[] { p[0], p[1] + 3, p[2] };
-        float[] baseUp = new float[] { 0, 1, 0 };
-        float[] forward = new float[] { (1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()) };
-        vNormalize(forward);
-        float[] side = RecastMath.vCross(forward, baseUp);
+        Vector3f baseExtent = Vector3f.Of(5, 3, 8);
+        Vector3f baseCenter = Vector3f.Of(p[0], p[1] + 3, p[2]);
+        Vector3f baseUp = Vector3f.Of(0, 1, 0);
+        Vector3f forward = Vector3f.Of((1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()));
+        vNormalize(ref forward);
+        Vector3f side = vCross(forward, baseUp);
         BoxCollider @base = new BoxCollider(baseCenter, BoxCollider.getHalfEdges(baseUp, forward, baseExtent),
             SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, dynaMesh.config.walkableClimb);
         float[] roofExtent = new float[] { 4.5f, 4.5f, 8f };
@@ -308,7 +312,7 @@ public class DynamicUpdateTool : Tool
         return Tuple.Create<Collider, ColliderGizmo>(collider, gizmo);
     }
 
-    private Tuple<Collider, ColliderGizmo> trimeshBridge(float[] p)
+    private Tuple<Collider, ColliderGizmo> trimeshBridge(Vector3f p)
     {
         return trimeshCollider(p, bridgeGeom);
     }
@@ -326,7 +330,7 @@ public class DynamicUpdateTool : Tool
         return Tuple.Create<Collider, ColliderGizmo>(collider, GizmoFactory.trimesh(verts, convexGeom.faces));
     }
 
-    private Tuple<Collider, ColliderGizmo> trimeshCollider(float[] p, DemoInputGeomProvider geom)
+    private Tuple<Collider, ColliderGizmo> trimeshCollider(Vector3f p, DemoInputGeomProvider geom)
     {
         float[] verts = transformVertices(p, geom, 0);
         TrimeshCollider collider = new TrimeshCollider(verts, geom.faces, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD,
@@ -334,7 +338,7 @@ public class DynamicUpdateTool : Tool
         return Tuple.Create<Collider, ColliderGizmo>(collider, GizmoFactory.trimesh(verts, geom.faces));
     }
 
-    private float[] transformVertices(float[] p, DemoInputGeomProvider geom, float ax)
+    private float[] transformVertices(Vector3f p, DemoInputGeomProvider geom, float ax)
     {
         float[] rx = GLU.build_4x4_rotation_matrix((float)random.NextDouble() * ax, 1, 0, 0);
         float[] ry = GLU.build_4x4_rotation_matrix((float)random.NextDouble() * 360, 0, 1, 0);
@@ -366,8 +370,17 @@ public class DynamicUpdateTool : Tool
         resultvector[2] = matrix[2] * pvector[0] + matrix[6] * pvector[1] + matrix[10] * pvector[2];
         return resultvector;
     }
+    
+    private float[] mulMatrixVector(ref Vector3f resultvector, float[] matrix, float[] pvector)
+    {
+        resultvector[0] = matrix[0] * pvector[0] + matrix[4] * pvector[1] + matrix[8] * pvector[2];
+        resultvector[1] = matrix[1] * pvector[0] + matrix[5] * pvector[1] + matrix[9] * pvector[2];
+        resultvector[2] = matrix[2] * pvector[0] + matrix[6] * pvector[1] + matrix[10] * pvector[2];
+        return resultvector;
+    }
 
-    public override void handleClickRay(float[] start, float[] dir, bool shift)
+
+    public override void handleClickRay(Vector3f start, float[] dir, bool shift)
     {
         if (mode == DynamicUpdateToolMode.COLLIDERS)
         {
@@ -387,7 +400,7 @@ public class DynamicUpdateTool : Tool
         }
     }
 
-    private bool hit(float[] point, float[] dir, float[] bounds)
+    private bool hit(Vector3f point, float[] dir, float[] bounds)
     {
         float cx = 0.5f * (bounds[0] + bounds[3]);
         float cy = 0.5f * (bounds[1] + bounds[4]);
@@ -522,14 +535,14 @@ public class DynamicUpdateTool : Tool
         ImGui.Separator();
 
         if (mode == DynamicUpdateToolMode.BUILD)
-        { 
+        {
             var loadVoxelPopupStrId = "Load Voxels Popup";
             bool isLoadVoxelPopup = true;
             if (ImGui.Button("Load Voxels..."))
             {
                 ImGui.OpenPopup(loadVoxelPopupStrId);
             }
-            
+
             if (ImGui.BeginPopupModal(loadVoxelPopupStrId, ref isLoadVoxelPopup, ImGuiWindowFlags.NoTitleBar))
             {
                 var picker = ImFilePicker.GetFilePicker(loadVoxelPopupStrId, Path.Combine(Environment.CurrentDirectory), ".voxels");
@@ -538,6 +551,7 @@ public class DynamicUpdateTool : Tool
                     load(picker.SelectedFile);
                     ImFilePicker.RemoveFilePicker(loadVoxelPopupStrId);
                 }
+
                 ImGui.EndPopup();
             }
 
@@ -550,7 +564,7 @@ public class DynamicUpdateTool : Tool
                 {
                     ImGui.BeginPopup(saveVoxelPopupStrId);
                 }
-                
+
                 if (ImGui.BeginPopupModal(saveVoxelPopupStrId, ref isSaveVoxelPopup, ImGuiWindowFlags.NoTitleBar))
                 {
                     var picker = ImFilePicker.GetFilePicker(saveVoxelPopupStrId, Path.Combine(Environment.CurrentDirectory), ".voxels");
@@ -558,12 +572,12 @@ public class DynamicUpdateTool : Tool
                     {
                         if (string.IsNullOrEmpty(picker.SelectedFile))
                             save(picker.SelectedFile);
-                        
+
                         ImFilePicker.RemoveFilePicker(saveVoxelPopupStrId);
                     }
+
                     ImGui.EndPopup();
                 }
-
             }
 
             ImGui.NewLine();
@@ -690,7 +704,7 @@ public class DynamicUpdateTool : Tool
             dynaMesh.config.keepIntermediateResults = true;
             updateUI();
             buildDynaMesh();
-            
+
             colliders.Clear();
         }
         catch (Exception e)

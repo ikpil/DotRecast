@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using DotRecast.Core;
-using Silk.NET.Windowing;
 using DotRecast.Detour;
 using DotRecast.Detour.Crowd;
 using DotRecast.Detour.Crowd.Tracking;
@@ -147,7 +146,7 @@ public class CrowdTool : Tool
         }
     }
 
-    public override void handleClick(float[] s, Vector3f p, bool shift)
+    public override void handleClick(Vector3f s, Vector3f p, bool shift)
     {
         if (m_mode == CrowdToolMode.PROFILING)
         {
@@ -259,7 +258,7 @@ public class CrowdTool : Tool
         return ap;
     }
 
-    private CrowdAgent hitTestAgents(float[] s, Vector3f p)
+    private CrowdAgent hitTestAgents(Vector3f s, Vector3f p)
     {
         CrowdAgent isel = null;
         float tsel = float.MaxValue;
@@ -312,14 +311,14 @@ public class CrowdTool : Tool
             // Request velocity
             if (m_agentDebug.agent != null)
             {
-                float[] vel = calcVel(ref m_agentDebug.agent.npos, p, m_agentDebug.agent.option.maxSpeed);
+                Vector3f vel = calcVel(m_agentDebug.agent.npos, p, m_agentDebug.agent.option.maxSpeed);
                 crowd.requestMoveVelocity(m_agentDebug.agent, vel);
             }
             else
             {
                 foreach (CrowdAgent ag in crowd.getActiveAgents())
                 {
-                    float[] vel = calcVel(ag.npos, p, ag.option.maxSpeed);
+                    Vector3f vel = calcVel(ag.npos, p, ag.option.maxSpeed);
                     crowd.requestMoveVelocity(ag, vel);
                 }
             }

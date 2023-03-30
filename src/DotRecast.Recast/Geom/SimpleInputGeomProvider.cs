@@ -30,8 +30,8 @@ namespace DotRecast.Recast.Geom
         public readonly float[] vertices;
         public readonly int[] faces;
         public readonly float[] normals;
-        readonly float[] bmin;
-        readonly float[] bmax;
+        private Vector3f bmin;
+        private Vector3f bmax;
         readonly List<ConvexVolume> volumes = new List<ConvexVolume>();
 
         public SimpleInputGeomProvider(List<float> vertexPositions, List<int> meshFaces)
@@ -67,23 +67,23 @@ namespace DotRecast.Recast.Geom
             this.faces = faces;
             normals = new float[faces.Length];
             calculateNormals();
-            bmin = new float[3];
-            bmax = new float[3];
-            RecastVectors.copy(bmin, vertices, 0);
-            RecastVectors.copy(bmax, vertices, 0);
+            bmin = Vector3f.Zero;
+            bmax = Vector3f.Zero;
+            RecastVectors.copy(ref bmin, vertices, 0);
+            RecastVectors.copy(ref bmax, vertices, 0);
             for (int i = 1; i < vertices.Length / 3; i++)
             {
-                RecastVectors.min(bmin, vertices, i * 3);
-                RecastVectors.max(bmax, vertices, i * 3);
+                RecastVectors.min(ref bmin, vertices, i * 3);
+                RecastVectors.max(ref bmax, vertices, i * 3);
             }
         }
 
-        public float[] getMeshBoundsMin()
+        public Vector3f getMeshBoundsMin()
         {
             return bmin;
         }
 
-        public float[] getMeshBoundsMax()
+        public Vector3f getMeshBoundsMax()
         {
             return bmax;
         }

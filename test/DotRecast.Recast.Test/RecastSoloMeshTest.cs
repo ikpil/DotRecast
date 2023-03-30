@@ -97,8 +97,8 @@ public class RecastSoloMeshTest
         m_partitionType = partitionType;
         InputGeomProvider geomProvider = ObjImporter.load(Loader.ToBytes(filename));
         long time = Stopwatch.GetTimestamp();
-        float[] bmin = geomProvider.getMeshBoundsMin();
-        float[] bmax = geomProvider.getMeshBoundsMax();
+        Vector3f bmin = geomProvider.getMeshBoundsMin();
+        Vector3f bmax = geomProvider.getMeshBoundsMax();
         Telemetry m_ctx = new Telemetry();
         //
         // Step 1. Initialize build config.

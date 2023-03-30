@@ -26,7 +26,7 @@ namespace DotRecast.Recast.Demo.Geom;
  */
 public class NavMeshRaycast
 {
-    public static float? raycast(NavMesh mesh, float[] src, float[] dst)
+    public static float? raycast(NavMesh mesh, Vector3f src, Vector3f dst)
     {
         for (int t = 0; t < mesh.getMaxTiles(); ++t)
         {
@@ -44,7 +44,7 @@ public class NavMeshRaycast
         return null;
     }
 
-    private static float? raycast(MeshTile tile, float[] sp, float[] sq)
+    private static float? raycast(MeshTile tile, Vector3f sp, Vector3f sq)
     {
         for (int i = 0; i < tile.data.header.polyCount; ++i)
         {
@@ -58,7 +58,7 @@ public class NavMeshRaycast
 
             if (pd != null)
             {
-                float[][] verts = ArrayUtils.Of<float>(3, 3);
+                Vector3f[] verts = new Vector3f[3];
                 for (int j = 0; j < pd.triCount; ++j)
                 {
                     int t = (pd.triBase + j) * 4;
