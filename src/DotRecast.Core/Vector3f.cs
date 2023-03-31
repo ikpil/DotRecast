@@ -23,15 +23,15 @@ namespace DotRecast.Core
 {
     public struct Vector3f
     {
-        public float x;
-        public float y;
-        public float z;
+        public float x { get; set; }
+        public float y { get; set; }
+        public float z { get; set; }
 
         public static Vector3f Zero { get; } = new Vector3f(0, 0, 0);
 
         public static Vector3f Of(float[] f)
         {
-            return new Vector3f(f[0], f[1], f[2]);
+            return new Vector3f(f);
         }
 
         public static Vector3f Of(float x, float y, float z)
@@ -44,6 +44,13 @@ namespace DotRecast.Core
             this.x = x;
             this.y = y;
             this.z = z;
+        }
+
+        public Vector3f(float[] f)
+        {
+            x = f[0];
+            y = f[1];
+            z = f[2];
         }
 
         public float this[int index]
