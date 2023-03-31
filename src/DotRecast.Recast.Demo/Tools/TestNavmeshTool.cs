@@ -730,13 +730,13 @@ public class TestNavmeshTool : Tool
         {
             dd.debugDrawNavMeshPoly(m_navMesh, m_startRef, startCol);
             dd.depthMask(false);
-            if (m_spos != null)
+            if (m_spos != Vector3f.Zero)
             {
                 dd.debugDrawCircle(m_spos[0], m_spos[1] + agentHeight / 2, m_spos[2], m_distanceToWall,
                     duRGBA(64, 16, 0, 220), 2.0f);
             }
 
-            if (m_hitPos != null)
+            if (m_hitPos != Vector3f.Zero)
             {
                 dd.begin(LINES, 3.0f);
                 dd.vertex(m_hitPos[0], m_hitPos[1] + 0.02f, m_hitPos[2], duRGBA(0, 0, 0, 192));
@@ -757,8 +757,8 @@ public class TestNavmeshTool : Tool
                     if (m_parent[i] != 0)
                     {
                         dd.depthMask(false);
-                        float[] p0 = getPolyCenter(m_navMesh, m_parent[i]);
-                        float[] p1 = getPolyCenter(m_navMesh, m_polys[i]);
+                        Vector3f p0 = getPolyCenter(m_navMesh, m_parent[i]);
+                        Vector3f p1 = getPolyCenter(m_navMesh, m_polys[i]);
                         dd.debugDrawArc(p0[0], p0[1], p0[2], p1[0], p1[1], p1[2], 0.25f, 0.0f, 0.4f,
                             duRGBA(0, 0, 0, 128), 2.0f);
                         dd.depthMask(true);
@@ -790,8 +790,8 @@ public class TestNavmeshTool : Tool
                     if (m_parent[i] != 0)
                     {
                         dd.depthMask(false);
-                        float[] p0 = getPolyCenter(m_navMesh, m_parent[i]);
-                        float[] p1 = getPolyCenter(m_navMesh, m_polys[i]);
+                        Vector3f p0 = getPolyCenter(m_navMesh, m_parent[i]);
+                        Vector3f p1 = getPolyCenter(m_navMesh, m_polys[i]);
                         dd.debugDrawArc(p0[0], p0[1], p0[2], p1[0], p1[1], p1[2], 0.25f, 0.0f, 0.4f,
                             duRGBA(0, 0, 0, 128), 2.0f);
                         dd.depthMask(true);
@@ -827,8 +827,8 @@ public class TestNavmeshTool : Tool
                     if (m_parent[i] != 0)
                     {
                         dd.depthMask(false);
-                        float[] p0 = getPolyCenter(m_navMesh, m_parent[i]);
-                        float[] p1 = getPolyCenter(m_navMesh, m_polys[i]);
+                        Vector3f p0 = getPolyCenter(m_navMesh, m_parent[i]);
+                        Vector3f p1 = getPolyCenter(m_navMesh, m_polys[i]);
                         dd.debugDrawArc(p0[0], p0[1], p0[2], p1[0], p1[1], p1[2], 0.25f, 0.0f, 0.4f,
                             duRGBA(0, 0, 0, 128), 2.0f);
                         dd.depthMask(true);
@@ -846,7 +846,7 @@ public class TestNavmeshTool : Tool
                             for (int j = 0; j < wallSegments.getSegmentVerts().Count; ++j)
                             {
                                 float[] s = wallSegments.getSegmentVerts()[j];
-                                float[] s3 = new float[] { s[3], s[4], s[5] };
+                                Vector3f s3 = Vector3f.Of(s[3], s[4], s[5]);
                                 // Skip too distant segments.
                                 Tuple<float, float> distSqr = distancePtSegSqr2D(m_spos, s, 0, 3);
                                 if (distSqr.Item1 > RecastMath.sqr(m_neighbourhoodRadius))
@@ -854,11 +854,11 @@ public class TestNavmeshTool : Tool
                                     continue;
                                 }
 
-                                float[] delta = vSub(s3, s);
-                                float[] p0 = vMad(s, delta, 0.5f);
-                                float[] norm = new float[] { delta[2], 0, -delta[0] };
-                                vNormalize(norm);
-                                float[] p1 = vMad(p0, norm, agentRadius * 0.5f);
+                                Vector3f delta = vSub(s3, s);
+                                Vector3f p0 = vMad(s, delta, 0.5f);
+                                Vector3f norm = Vector3f.Of(delta[2], 0, -delta[0]);
+                                vNormalize(ref norm);
+                                Vector3f p1 = vMad(p0, norm, agentRadius * 0.5f);
                                 // Skip backfacing segments.
                                 if (wallSegments.getSegmentRefs()[j] != 0)
                                 {
@@ -903,7 +903,7 @@ public class TestNavmeshTool : Tool
             dd.depthMask(false);
             dd.begin(POINTS, 4.0f);
             int col = duRGBA(64, 16, 0, 220);
-            foreach (float[] point in randomPoints)
+            foreach (Vector3f point in randomPoints)
             {
                 dd.vertex(point[0], point[1] + 0.1f, point[2], col);
             }
@@ -945,12 +945,10 @@ public class TestNavmeshTool : Tool
         dd.depthMask(true);
     }
 
-    private float[] getPolyCenter(NavMesh navMesh, long refs)
+    private Vector3f getPolyCenter(NavMesh navMesh, long refs)
     {
-        Vector3f center = new Vector3f();
-        center[0] = 0;
-        center[1] = 0;
-        center[2] = 0;
+        Vector3f center = Vector3f.Zero;
+        
         Result<Tuple<MeshTile, Poly>> tileAndPoly = navMesh.getTileAndPolyByRef(refs);
         if (tileAndPoly.succeeded())
         {
@@ -992,7 +990,7 @@ public class TestNavmeshTool : Tool
                 {
                     // In case of partial path, make sure the end point is clamped to the last polygon.
                     Vector3f epos = new Vector3f();
-                    vCopy(epos, m_epos);
+                    vCopy(ref epos, m_epos);
                     if (m_polys[m_polys.Count - 1] != m_endRef)
                     {
                         Result<ClosestPointOnPolyResult> result = m_navQuery

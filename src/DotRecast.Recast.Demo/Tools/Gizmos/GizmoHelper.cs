@@ -1,4 +1,5 @@
 using System;
+using DotRecast.Core;
 using DotRecast.Recast.Demo.Draw;
 using static DotRecast.Core.RecastMath;
 
@@ -175,7 +176,8 @@ public class GizmoHelper
 
     public static int getColorByNormal(float[] vertices, int v0, int v1, int v2)
     {
-        Vector3f e0 = new Vector3f(), e1 = new float[3];
+        Vector3f e0 = new Vector3f();
+        Vector3f e1 = new Vector3f();
         Vector3f normal = new Vector3f();
         for (int j = 0; j < 3; ++j)
         {
@@ -186,7 +188,7 @@ public class GizmoHelper
         normal[0] = e0[1] * e1[2] - e0[2] * e1[1];
         normal[1] = e0[2] * e1[0] - e0[0] * e1[2];
         normal[2] = e0[0] * e1[1] - e0[1] * e1[0];
-        RecastVectors.normalize(normal);
+        RecastVectors.normalize(ref normal);
         float c = clamp(0.57735026f * (normal[0] + normal[1] + normal[2]), -1, 1);
         int col = DebugDraw.duLerpCol(DebugDraw.duRGBA(32, 32, 0, 160), DebugDraw.duRGBA(220, 220, 0, 160),
             (int)(127 * (1 + c)));

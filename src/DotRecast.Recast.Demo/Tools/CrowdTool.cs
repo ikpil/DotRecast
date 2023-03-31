@@ -399,7 +399,7 @@ public class CrowdTool : Tool
             float gridy = -float.MaxValue;
             foreach (CrowdAgent ag in crowd.getActiveAgents())
             {
-                float[] pos = ag.corridor.getPos();
+                Vector3f pos = ag.corridor.getPos();
                 gridy = Math.Max(gridy, pos[1]);
             }
 
@@ -430,12 +430,12 @@ public class CrowdTool : Tool
         foreach (CrowdAgent ag in crowd.getActiveAgents())
         {
             AgentTrail trail = m_trails[ag.idx];
-            float[] pos = ag.npos;
+            Vector3f pos = ag.npos;
 
             dd.begin(LINES, 3.0f);
             Vector3f prev = new Vector3f();
             float preva = 1;
-            vCopy(prev, pos);
+            vCopy(ref prev, pos);
             for (int j = 0; j < AGENT_MAX_TRAIL - 1; ++j)
             {
                 int idx = (trail.htrail + AGENT_MAX_TRAIL - j) % AGENT_MAX_TRAIL;
@@ -444,7 +444,7 @@ public class CrowdTool : Tool
                 dd.vertex(prev[0], prev[1] + 0.1f, prev[2], duRGBA(0, 0, 0, (int)(128 * preva)));
                 dd.vertex(trail.trail[v], trail.trail[v + 1] + 0.1f, trail.trail[v + 2], duRGBA(0, 0, 0, (int)(128 * a)));
                 preva = a;
-                vCopy(prev, trail.trail, v);
+                vCopy(ref prev, trail.trail, v);
             }
 
             dd.end();
@@ -457,7 +457,7 @@ public class CrowdTool : Tool
                 continue;
 
             float radius = ag.option.radius;
-            float[] pos = ag.npos;
+            Vector3f pos = ag.npos;
 
             if (toolParams.m_showCorners)
             {
@@ -466,8 +466,8 @@ public class CrowdTool : Tool
                     dd.begin(LINES, 2.0f);
                     for (int j = 0; j < ag.corners.Count; ++j)
                     {
-                        float[] va = j == 0 ? pos : ag.corners[j - 1].getPos();
-                        float[] vb = ag.corners[j].getPos();
+                        Vector3f va = j == 0 ? pos : ag.corners[j - 1].getPos();
+                        Vector3f vb = ag.corners[j].getPos();
                         dd.vertex(va[0], va[1] + radius, va[2], duRGBA(128, 0, 0, 192));
                         dd.vertex(vb[0], vb[1] + radius, vb[2], duRGBA(128, 0, 0, 192));
                     }
@@ -475,7 +475,7 @@ public class CrowdTool : Tool
                     if ((ag.corners[ag.corners.Count - 1].getFlags()
                          & NavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
                     {
-                        float[] v = ag.corners[ag.corners.Count - 1].getPos();
+                        Vector3f v = ag.corners[ag.corners.Count - 1].getPos();
                         dd.vertex(v[0], v[1], v[2], duRGBA(192, 0, 0, 192));
                         dd.vertex(v[0], v[1] + radius * 2, v[2], duRGBA(192, 0, 0, 192));
                     }
@@ -509,10 +509,9 @@ public class CrowdTool : Tool
 
             if (toolParams.m_showCollisionSegments)
             {
-                float[] center = ag.boundary.getCenter();
+                Vector3f center = ag.boundary.getCenter();
                 dd.debugDrawCross(center[0], center[1] + radius, center[2], 0.2f, duRGBA(192, 0, 128, 255), 2.0f);
-                dd.debugDrawCircle(center[0], center[1] + radius, center[2], ag.option.collisionQueryRange,
-                    duRGBA(192, 0, 128, 128), 2.0f);
+                dd.debugDrawCircle(center[0], center[1] + radius, center[2], ag.option.collisionQueryRange, duRGBA(192, 0, 128, 128), 2.0f);
 
                 dd.begin(LINES, 3.0f);
                 for (int j = 0; j < ag.boundary.getSegmentCount(); ++j)
@@ -524,7 +523,7 @@ public class CrowdTool : Tool
                     if (triArea2D(pos, s0, s3) < 0.0f)
                         col = duDarkenCol(col);
 
-                    dd.appendArrow(s[0], s[1] + 0.2f, s[2], s[3], s[4] + 0.2f, s[5], 0.0f, 0.3f, col);
+                    dd.appendArrow(s[0][0], s[0][1] + 0.2f, s[0][2], s[1][0], s[1][2] + 0.2f, s[1][2], 0.0f, 0.3f, col);
                 }
 
                 dd.end();

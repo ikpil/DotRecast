@@ -236,7 +236,7 @@ public class JumpLinkBuilderTool : Tool
                     {
                         GroundSample s = link.start.gsamples[i];
                         float u = i / (float)(link.start.gsamples.Length - 1);
-                        float[] spt = vLerp(link.start.p, link.start.q, u);
+                        Vector3f spt = vLerp(link.start.p, link.start.q, u);
                         int col = duRGBA(48, 16, 16, 255); // duRGBA(255,(s->flags & 4)?255:0,0,255);
                         float off = 0.1f;
                         if (!s.validHeight)
@@ -256,7 +256,7 @@ public class JumpLinkBuilderTool : Tool
                     {
                         GroundSample s = link.start.gsamples[i];
                         float u = i / (float)(link.start.gsamples.Length - 1);
-                        float[] spt = vLerp(link.start.p, link.start.q, u);
+                        Vector3f spt = vLerp(link.start.p, link.start.q, u);
                         int col = duRGBA(255, 255, 255, 255);
                         float off = 0;
                         if (s.validHeight)
@@ -276,7 +276,7 @@ public class JumpLinkBuilderTool : Tool
                         {
                             GroundSample s = end.gsamples[i];
                             float u = i / (float)(end.gsamples.Length - 1);
-                            float[] spt = vLerp(end.p, end.q, u);
+                            Vector3f spt = vLerp(end.p, end.q, u);
                             int col = duRGBA(48, 16, 16, 255); // duRGBA(255,(s->flags & 4)?255:0,0,255);
                             float off = 0.1f;
                             if (!s.validHeight)
@@ -295,7 +295,7 @@ public class JumpLinkBuilderTool : Tool
                         {
                             GroundSample s = end.gsamples[i];
                             float u = i / (float)(end.gsamples.Length - 1);
-                            float[] spt = vLerp(end.p, end.q, u);
+                            Vector3f spt = vLerp(end.p, end.q, u);
                             int col = duRGBA(255, 255, 255, 255);
                             float off = 0;
                             if (s.validHeight)
@@ -316,7 +316,7 @@ public class JumpLinkBuilderTool : Tool
         dd.depthMask(true);
     }
 
-    private void drawTrajectory(RecastDebugDraw dd, JumpLink link, float[] pa, float[] pb, Trajectory tra, int cola)
+    private void drawTrajectory(RecastDebugDraw dd, JumpLink link, Vector3f pa, Vector3f pb, Trajectory tra, int cola)
     {
     }
 
@@ -434,8 +434,8 @@ public class JumpLinkBuilderTool : Tool
         Vector3f prev = new Vector3f();
         for (int i = 0; i < link.startSamples.Length; i++)
         {
-            float[] p = link.startSamples[i].p;
-            float[] q = link.endSamples[i].p;
+            Vector3f p = link.startSamples[i].p;
+            Vector3f q = link.endSamples[i].p;
             if (i == 0 || vDist2D(prev, p) > agentRadius)
             {
                 geom.addOffMeshConnection(p, q, agentRadius, false, area, flags);

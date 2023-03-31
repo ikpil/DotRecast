@@ -25,16 +25,16 @@ namespace DotRecast.Detour.Dynamic.Colliders
     public class BoxCollider : AbstractCollider
     {
         private readonly Vector3f center;
-        private readonly float[][] halfEdges;
+        private readonly Vector3f[] halfEdges;
 
-        public BoxCollider(Vector3f center, float[][] halfEdges, int area, float flagMergeThreshold) :
+        public BoxCollider(Vector3f center, Vector3f[] halfEdges, int area, float flagMergeThreshold) :
             base(area, flagMergeThreshold, bounds(center, halfEdges))
         {
             this.center = center;
             this.halfEdges = halfEdges;
         }
 
-        private static float[] bounds(Vector3f center, float[][] halfEdges)
+        private static float[] bounds(Vector3f center, Vector3f[] halfEdges)
         {
             float[] bounds = new float[]
             {
@@ -62,11 +62,11 @@ namespace DotRecast.Detour.Dynamic.Colliders
 
         public void rasterize(Heightfield hf, Telemetry telemetry)
         {
-            RecastFilledVolumeRasterization.rasterizeBox(hf, center, halfEdges, area, (int)Math.Floor(flagMergeThreshold / hf.ch),
-                telemetry);
+            RecastFilledVolumeRasterization.rasterizeBox(
+                hf, center, halfEdges, area, (int)Math.Floor(flagMergeThreshold / hf.ch), telemetry);
         }
 
-        public static Vector3f[] getHalfEdges(Vector3f up, Vector3f forward, float[] extent)
+        public static Vector3f[] getHalfEdges(Vector3f up, Vector3f forward, Vector3f extent)
         {
             Vector3f[] halfEdges =
             {

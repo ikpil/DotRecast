@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
+using System.Numerics;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using DotRecast.Core;
@@ -116,10 +117,10 @@ public class DynamicUpdateTool : Tool
     private readonly DemoInputGeomProvider convexGeom;
     private bool sposSet;
     private bool eposSet;
-    private float[] spos;
-    private float[] epos;
+    private Vector3f spos;
+    private Vector3f epos;
     private bool raycastHit;
-    private float[] raycastHitPos;
+    private Vector3f raycastHitPos;
 
     public DynamicUpdateTool()
     {
@@ -191,25 +192,25 @@ public class DynamicUpdateTool : Tool
             if (shift)
             {
                 sposSet = true;
-                spos = ArrayUtils.CopyOf(p, p.Length);
+                spos = p;
             }
             else
             {
                 eposSet = true;
-                epos = ArrayUtils.CopyOf(p, p.Length);
+                epos = p;
             }
 
             if (sposSet && eposSet && dynaMesh != null)
             {
-                float[] sp = { spos[0], spos[1] + 1.3f, spos[2] };
-                float[] ep = { epos[0], epos[1] + 1.3f, epos[2] };
+                Vector3f sp = Vector3f.Of(spos[0], spos[1] + 1.3f, spos[2]);
+                Vector3f ep = Vector3f.Of(epos[0], epos[1] + 1.3f, epos[2]);
                 long t1 = Stopwatch.GetTimestamp();
                 float? hitPos = dynaMesh.voxelQuery().raycast(sp, ep);
                 long t2 = Stopwatch.GetTimestamp();
                 raycastTime = (t2 - t1) / TimeSpan.TicksPerMillisecond;
                 raycastHit = hitPos.HasValue;
                 raycastHitPos = hitPos.HasValue
-                    ? new float[] { sp[0] + hitPos.Value * (ep[0] - sp[0]), sp[1] + hitPos.Value * (ep[1] - sp[1]), sp[2] + hitPos.Value * (ep[2] - sp[2]) }
+                    ? Vector3f.Of(sp[0] + hitPos.Value * (ep[0] - sp[0]), sp[1] + hitPos.Value * (ep[1] - sp[1]), sp[2] + hitPos.Value * (ep[2] - sp[2]))
                     : ep;
             }
         }
@@ -244,17 +245,16 @@ public class DynamicUpdateTool : Tool
 
     private Tuple<Collider, ColliderGizmo> boxCollider(Vector3f p)
     {
-        float[] extent = new float[]
-        {
-            0.5f + (float)random.NextDouble() * 6f, 0.5f + (float)random.NextDouble() * 6f,
+        Vector3f extent = Vector3f.Of(
+            0.5f + (float)random.NextDouble() * 6f, 
+            0.5f + (float)random.NextDouble() * 6f,
             0.5f + (float)random.NextDouble() * 6f
-        };
-        float[] forward = new float[] { (1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()) };
-        float[] up = new float[] { (1f - 2 * (float)random.NextDouble()), 0.01f + (float)random.NextDouble(), (1f - 2 * (float)random.NextDouble()) };
-        float[][] halfEdges = BoxCollider.getHalfEdges(up, forward, extent);
+        );
+        Vector3f forward = Vector3f.Of((1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()));
+        Vector3f up = Vector3f.Of((1f - 2 * (float)random.NextDouble()), 0.01f + (float)random.NextDouble(), (1f - 2 * (float)random.NextDouble()));
+        Vector3f[] halfEdges = BoxCollider.getHalfEdges(up, forward, extent);
         return Tuple.Create<Collider, ColliderGizmo>(
-            new BoxCollider(p, halfEdges, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb),
-            GizmoFactory.box(p, halfEdges));
+            new BoxCollider(p, halfEdges, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb), GizmoFactory.box(p, halfEdges));
     }
 
     private Tuple<Collider, ColliderGizmo> cylinderCollider(Vector3f p)
@@ -282,25 +282,25 @@ public class DynamicUpdateTool : Tool
         Vector3f side = vCross(forward, baseUp);
         BoxCollider @base = new BoxCollider(baseCenter, BoxCollider.getHalfEdges(baseUp, forward, baseExtent),
             SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, dynaMesh.config.walkableClimb);
-        float[] roofExtent = new float[] { 4.5f, 4.5f, 8f };
+        var roofUp = Vector3f.Zero;
+        Vector3f roofExtent = Vector3f.Of(4.5f, 4.5f, 8f);
         float[] rx = GLU.build_4x4_rotation_matrix(45, forward[0], forward[1], forward[2]);
-        float[] roofUp = mulMatrixVector(new float[3], rx, baseUp);
-        float[] roofCenter = new float[] { p[0], p[1] + 6, p[2] };
+        roofUp = mulMatrixVector(ref roofUp, rx, baseUp);
+        Vector3f roofCenter = Vector3f.Of(p[0], p[1] + 6, p[2]);
         BoxCollider roof = new BoxCollider(roofCenter, BoxCollider.getHalfEdges(roofUp, forward, roofExtent),
             SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, dynaMesh.config.walkableClimb);
-        float[] trunkStart = new float[]
-        {
-            baseCenter[0] - forward[0] * 15 + side[0] * 6, p[1],
+        Vector3f trunkStart = Vector3f.Of(
+            baseCenter[0] - forward[0] * 15 + side[0] * 6,
+            p[1],
             baseCenter[2] - forward[2] * 15 + side[2] * 6
-        };
-        float[] trunkEnd = new float[] { trunkStart[0], trunkStart[1] + 10, trunkStart[2] };
+        );
+        Vector3f trunkEnd = Vector3f.Of(trunkStart[0], trunkStart[1] + 10, trunkStart[2]);
         CapsuleCollider trunk = new CapsuleCollider(trunkStart, trunkEnd, 0.5f, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD,
             dynaMesh.config.walkableClimb);
-        float[] crownCenter = new float[]
-        {
+        Vector3f crownCenter = Vector3f.Of(
             baseCenter[0] - forward[0] * 15 + side[0] * 6, p[1] + 10,
             baseCenter[2] - forward[2] * 15 + side[2] * 6
-        };
+        );
         SphereCollider crown = new SphereCollider(crownCenter, 4f, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GRASS,
             dynaMesh.config.walkableClimb);
         CompositeCollider collider = new CompositeCollider(@base, roof, trunk, crown);
@@ -317,12 +317,12 @@ public class DynamicUpdateTool : Tool
         return trimeshCollider(p, bridgeGeom);
     }
 
-    private Tuple<Collider, ColliderGizmo> trimeshHouse(float[] p)
+    private Tuple<Collider, ColliderGizmo> trimeshHouse(Vector3f p)
     {
         return trimeshCollider(p, houseGeom);
     }
 
-    private Tuple<Collider, ColliderGizmo> convexTrimesh(float[] p)
+    private Tuple<Collider, ColliderGizmo> convexTrimesh(Vector3f p)
     {
         float[] verts = transformVertices(p, convexGeom, 360);
         ConvexTrimeshCollider collider = new ConvexTrimeshCollider(verts, convexGeom.faces,
@@ -351,7 +351,7 @@ public class DynamicUpdateTool : Tool
             v[0] = geom.vertices[i];
             v[1] = geom.vertices[i + 1];
             v[2] = geom.vertices[i + 2];
-            mulMatrixVector(vr, m, v);
+            mulMatrixVector(ref vr, m, v);
             vr[0] += p[0];
             vr[1] += p[1] - 0.1f;
             vr[2] += p[2];
@@ -370,8 +370,8 @@ public class DynamicUpdateTool : Tool
         resultvector[2] = matrix[2] * pvector[0] + matrix[6] * pvector[1] + matrix[10] * pvector[2];
         return resultvector;
     }
-    
-    private float[] mulMatrixVector(ref Vector3f resultvector, float[] matrix, float[] pvector)
+
+    private Vector3f mulMatrixVector(ref Vector3f resultvector, float[] matrix, Vector3f pvector)
     {
         resultvector[0] = matrix[0] * pvector[0] + matrix[4] * pvector[1] + matrix[8] * pvector[2];
         resultvector[1] = matrix[1] * pvector[0] + matrix[5] * pvector[1] + matrix[9] * pvector[2];
@@ -454,7 +454,7 @@ public class DynamicUpdateTool : Tool
             }
 
             dd.depthMask(false);
-            if (raycastHitPos != null)
+            if (raycastHitPos != Vector3f.Zero)
             {
                 int spathCol = raycastHit ? duRGBA(128, 32, 16, 220) : duRGBA(64, 128, 240, 220);
                 dd.begin(LINES, 2.0f);
@@ -467,7 +467,7 @@ public class DynamicUpdateTool : Tool
         }
     }
 
-    private void drawAgent(RecastDebugDraw dd, float[] pos, int col)
+    private void drawAgent(RecastDebugDraw dd, Vector3f pos, int col)
     {
         float r = sample.getSettingsUI().getAgentRadius();
         float h = sample.getSettingsUI().getAgentHeight();

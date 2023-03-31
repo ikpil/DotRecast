@@ -19,7 +19,6 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using System.Numerics;
 
 namespace DotRecast.Core
 {
@@ -29,6 +28,14 @@ namespace DotRecast.Core
         private static readonly float EQUAL_THRESHOLD = sqr(1.0f / 16384.0f);
         
         public static float vDistSqr(float[] v1, float[] v2, int i)
+        {
+            float dx = v2[i] - v1[0];
+            float dy = v2[i + 1] - v1[1];
+            float dz = v2[i + 2] - v1[2];
+            return dx * dx + dy * dy + dz * dz;
+        }
+        
+        public static float vDistSqr(Vector3f v1, float[] v2, int i)
         {
             float dx = v2[i] - v1[0];
             float dy = v2[i + 1] - v1[1];
@@ -126,6 +133,16 @@ namespace DotRecast.Core
             dest[2] = v1[2] + v2[2] * s;
             return dest;
         }
+        
+        public static Vector3f vMad(float[] v1, Vector3f v2, float s)
+        {
+            Vector3f dest = new Vector3f();
+            dest[0] = v1[0] + v2[0] * s;
+            dest[1] = v1[1] + v2[1] * s;
+            dest[2] = v1[2] + v2[2] * s;
+            return dest;
+        }
+
 
 
         /// Performs a linear interpolation between two vectors. (@p v1 toward @p
@@ -595,6 +612,16 @@ namespace DotRecast.Core
             float acz = c[2] - a[2];
             return acx * abz - abx * acz;
         }
+        
+        public static float triArea2D(Vector3f a, float[] b, Vector3f c)
+        {
+            float abx = b[0] - a[0];
+            float abz = b[2] - a[2];
+            float acx = c[0] - a[0];
+            float acz = c[2] - a[2];
+            return acx * abz - abx * acz;
+        }
+
 
 
         /// Determines if two axis-aligned bounding boxes overlap.

@@ -18,7 +18,6 @@ freely, subject to the following restrictions:
 
 using System;
 using DotRecast.Core;
-
 using static DotRecast.Core.RecastMath;
 using static DotRecast.Recast.RecastConstants;
 using static DotRecast.Recast.RecastVectors;
@@ -75,19 +74,19 @@ namespace DotRecast.Recast
             ctx.stopTimer("RASTERIZE_CYLINDER");
         }
 
-        public static void rasterizeBox(Heightfield hf, Vector3f center, float[][] halfEdges, int area, int flagMergeThr,
+        public static void rasterizeBox(Heightfield hf, Vector3f center, Vector3f[] halfEdges, int area, int flagMergeThr,
             Telemetry ctx)
         {
             ctx.startTimer("RASTERIZE_BOX");
-            float[][] normals =
+            Vector3f[] normals =
             {
-                new[] { halfEdges[0][0], halfEdges[0][1], halfEdges[0][2] },
-                new[] { halfEdges[1][0], halfEdges[1][1], halfEdges[1][2] },
-                new[] { halfEdges[2][0], halfEdges[2][1], halfEdges[2][2] }
+                Vector3f.Of(halfEdges[0][0], halfEdges[0][1], halfEdges[0][2]),
+                Vector3f.Of(halfEdges[1][0], halfEdges[1][1], halfEdges[1][2]),
+                Vector3f.Of(halfEdges[2][0], halfEdges[2][1], halfEdges[2][2]),
             };
-            normalize(normals[0]);
-            normalize(normals[1]);
-            normalize(normals[2]);
+            normalize(ref normals[0]);
+            normalize(ref normals[1]);
+            normalize(ref normals[2]);
 
             float[] vertices = new float[8 * 3];
             float[] bounds = new float[]

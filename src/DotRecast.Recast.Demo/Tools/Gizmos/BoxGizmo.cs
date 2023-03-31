@@ -25,15 +25,15 @@ public class BoxGizmo : ColliderGizmo
     };
 
     private readonly float[] vertices = new float[8 * 3];
-    private readonly float[] center;
+    private readonly Vector3f center;
     private readonly Vector3f[] halfEdges;
 
-    public BoxGizmo(float[] center, float[] extent, Vector3f forward, Vector3f up) :
+    public BoxGizmo(Vector3f center, Vector3f extent, Vector3f forward, Vector3f up) :
         this(center, BoxCollider.getHalfEdges(up, forward, extent))
     {
     }
 
-    public BoxGizmo(float[] center, Vector3f[] halfEdges)
+    public BoxGizmo(Vector3f center, Vector3f[] halfEdges)
     {
         this.center = center;
         this.halfEdges = halfEdges;

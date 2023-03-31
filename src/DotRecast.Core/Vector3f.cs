@@ -85,5 +85,17 @@ namespace DotRecast.Core
         {
             return new float[] { x, y, z };
         }
+
+        public static bool operator ==(Vector3f left, Vector3f right)
+        {
+            return (left.x == right.x)
+                   && (left.y == right.y)
+                   && (left.z == right.z);
+        }
+
+        public static bool operator !=(Vector3f left, Vector3f right)
+        {
+            return !(left == right);
+        }
     }
 }

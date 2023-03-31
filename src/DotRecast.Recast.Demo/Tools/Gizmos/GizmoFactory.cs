@@ -4,7 +4,7 @@ namespace DotRecast.Recast.Demo.Tools.Gizmos;
 
 public static class GizmoFactory
 {
-    public static ColliderGizmo box(float[] center, float[][] halfEdges)
+    public static ColliderGizmo box(Vector3f center, Vector3f[] halfEdges)
     {
         return new BoxGizmo(center, halfEdges);
     }
