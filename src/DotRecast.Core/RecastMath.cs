@@ -116,15 +116,6 @@ namespace DotRecast.Core
         /// @param[in] v1 The base vector. [(x, y, z)]
         /// @param[in] v2 The vector to scale and add to @p v1. [(x, y, z)]
         /// @param[in] s The amount to scale @p v2 by before adding to @p v1.
-        public static float[] vMad(float[] v1, float[] v2, float s)
-        {
-            Vector3f dest = new Vector3f();
-            dest[0] = v1[0] + v2[0] * s;
-            dest[1] = v1[1] + v2[1] * s;
-            dest[2] = v1[2] + v2[2] * s;
-            return dest.ToArray();
-        }
-        
         public static Vector3f vMad(Vector3f v1, Vector3f v2, float s)
         {
             Vector3f dest = new Vector3f();
@@ -160,15 +151,6 @@ namespace DotRecast.Core
             return dest.ToArray();
         }
 
-        public static float[] vLerp(float[] v1, float[] v2, float t)
-        {
-            Vector3f dest = new Vector3f();
-            dest[0] = v1[0] + (v2[0] - v1[0]) * t;
-            dest[1] = v1[1] + (v2[1] - v1[1]) * t;
-            dest[2] = v1[2] + (v2[2] - v1[2]) * t;
-            return dest.ToArray();
-        }
-        
         public static Vector3f vLerp(Vector3f v1, Vector3f v2, float t)
         {
             Vector3f dest = new Vector3f();
@@ -225,17 +207,6 @@ namespace DotRecast.Core
             return dest;
         }
 
-
-
-        public static float[] vAdd(float[] v1, float[] v2)
-        {
-            Vector3f dest = new Vector3f();
-            dest[0] = v1[0] + v2[0];
-            dest[1] = v1[1] + v2[1];
-            dest[2] = v1[2] + v2[2];
-            return dest.ToArray();
-        }
-        
         public static Vector3f vAdd(Vector3f v1, Vector3f v2)
         {
             Vector3f dest = new Vector3f();
@@ -245,23 +216,6 @@ namespace DotRecast.Core
             return dest;
         }
 
-
-        public static float[] vCopy(float[] @in)
-        {
-            float[] @out = new float[3];
-            @out[0] = @in[0];
-            @out[1] = @in[1];
-            @out[2] = @in[2];
-            return @out;
-        }
-
-        public static void vSet(float[] @out, float a, float b, float c)
-        {
-            @out[0] = a;
-            @out[1] = b;
-            @out[2] = c;
-        }
-        
         public static void vSet(ref Vector3f @out, float a, float b, float c)
         {
             @out.x = a;
@@ -269,14 +223,6 @@ namespace DotRecast.Core
             @out.z = c;
         }
 
-
-        public static void vCopy(float[] @out, float[] @in)
-        {
-            @out[0] = @in[0];
-            @out[1] = @in[1];
-            @out[2] = @in[2];
-        }
-        
         public static void vCopy(float[] @out, Vector3f @in)
         {
             @out[0] = @in[0];

@@ -177,7 +177,7 @@ namespace DotRecast.Recast
             e0[2] = i[2] - verts[j + 2];
         }
         
-        public static void sub(ref Vector3f e0, float[] i, float[] verts, int j)
+        public static void sub(ref Vector3f e0, Vector3f i, float[] verts, int j)
         {
             e0[0] = i[0] - verts[j];
             e0[1] = i[1] - verts[j + 1];

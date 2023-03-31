@@ -2068,8 +2068,13 @@ namespace DotRecast.Detour
                     if (fromTile.links[i].refs == to)
                     {
                         int v = fromTile.links[i].edge;
-                        Array.Copy(fromTile.data.verts, fromPoly.verts[v] * 3, left.ToArray(), 0, 3);
-                        Array.Copy(fromTile.data.verts, fromPoly.verts[v] * 3, right.ToArray(), 0, 3);
+                        left[0] = fromTile.data.verts[fromPoly.verts[v] * 3];
+                        left[1] = fromTile.data.verts[fromPoly.verts[v] * 3 + 1];
+                        left[2] = fromTile.data.verts[fromPoly.verts[v] * 3 + 2];
+
+                        right[0] = fromTile.data.verts[fromPoly.verts[v] * 3];
+                        right[1] = fromTile.data.verts[fromPoly.verts[v] * 3 + 1];
+                        right[2] = fromTile.data.verts[fromPoly.verts[v] * 3 + 2];
                         return Results.success(new PortalResult(left, right, fromType, toType));
                     }
                 }
@@ -2084,8 +2089,14 @@ namespace DotRecast.Detour
                     if (toTile.links[i].refs == from)
                     {
                         int v = toTile.links[i].edge;
-                        Array.Copy(toTile.data.verts, toPoly.verts[v] * 3, left.ToArray(), 0, 3);
-                        Array.Copy(toTile.data.verts, toPoly.verts[v] * 3, right.ToArray(), 0, 3);
+                        left[0] = toTile.data.verts[toPoly.verts[v] * 3];
+                        left[1] = toTile.data.verts[toPoly.verts[v] * 3 + 1];
+                        left[2] = toTile.data.verts[toPoly.verts[v] * 3 + 2];
+
+                        right[0] = toTile.data.verts[toPoly.verts[v] * 3];
+                        right[1] = toTile.data.verts[toPoly.verts[v] * 3 + 1];
+                        right[2] = toTile.data.verts[toPoly.verts[v] * 3 + 2];
+
                         return Results.success(new PortalResult(left, right, fromType, toType));
                     }
                 }
@@ -2096,8 +2107,13 @@ namespace DotRecast.Detour
             // Find portal vertices.
             int v0 = fromPoly.verts[link.edge];
             int v1 = fromPoly.verts[(link.edge + 1) % fromPoly.vertCount];
-            Array.Copy(fromTile.data.verts, v0 * 3, left.ToArray(), 0, 3);
-            Array.Copy(fromTile.data.verts, v1 * 3, right.ToArray(), 0, 3);
+            left[0] = fromTile.data.verts[v0 * 3];
+            left[1] = fromTile.data.verts[v0 * 3 + 1];
+            left[2] = fromTile.data.verts[v0 * 3 + 2];
+
+            right[0] = fromTile.data.verts[v1 * 3];
+            right[1] = fromTile.data.verts[v1 * 3 + 1];
+            right[2] = fromTile.data.verts[v1 * 3 + 2];
 
             // If the link is at tile boundary, dtClamp the vertices to
             // the link width.

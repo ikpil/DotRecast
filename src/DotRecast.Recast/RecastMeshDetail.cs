@@ -27,7 +27,6 @@ using static DotRecast.Recast.RecastConstants;
 
 namespace DotRecast.Recast
 {
-
     public class RecastMeshDetail
     {
         public const int MAX_VERTS = 127;
@@ -51,7 +50,7 @@ namespace DotRecast.Recast
         {
             return a[0] * b[0] + a[2] * b[2];
         }
-        
+
         private static float vdot2(Vector3f a, Vector3f b)
         {
             return a[0] * b[0] + a[2] * b[2];
@@ -64,7 +63,7 @@ namespace DotRecast.Recast
             float dy = verts[q + 2] - verts[p + 2];
             return dx * dx + dy * dy;
         }
-        
+
         private static float vdist2(float[] verts, int p, int q)
         {
             return (float)Math.Sqrt(vdistSq2(verts, p, q));
@@ -76,7 +75,7 @@ namespace DotRecast.Recast
             float dy = q[2] - p[2];
             return dx * dx + dy * dy;
         }
-        
+
         private static float vdistSq2(float[] p, Vector3f q)
         {
             float dx = q[0] - p[0];
@@ -84,7 +83,7 @@ namespace DotRecast.Recast
             return dx * dx + dy * dy;
         }
 
-        
+
         private static float vdistSq2(Vector3f p, Vector3f q)
         {
             float dx = q[0] - p[0];
@@ -97,17 +96,16 @@ namespace DotRecast.Recast
         {
             return (float)Math.Sqrt(vdistSq2(p, q));
         }
-        
+
         private static float vdist2(Vector3f p, Vector3f q)
         {
             return (float)Math.Sqrt(vdistSq2(p, q));
         }
-        
+
         private static float vdist2(float[] p, Vector3f q)
         {
             return (float)Math.Sqrt(vdistSq2(p, q));
         }
-
 
 
         private static float vdistSq2(float[] p, float[] verts, int q)
@@ -116,7 +114,7 @@ namespace DotRecast.Recast
             float dy = verts[q + 2] - p[2];
             return dx * dx + dy * dy;
         }
-        
+
         private static float vdistSq2(Vector3f p, float[] verts, int q)
         {
             float dx = verts[q + 0] - p[0];
@@ -129,7 +127,7 @@ namespace DotRecast.Recast
         {
             return (float)Math.Sqrt(vdistSq2(p, verts, q));
         }
-        
+
         private static float vdist2(Vector3f p, float[] verts, int q)
         {
             return (float)Math.Sqrt(vdistSq2(p, verts, q));
@@ -153,7 +151,7 @@ namespace DotRecast.Recast
             float v2 = p3[2] - p1[2];
             return u1 * v2 - v1 * u2;
         }
-        
+
         private static float vcross2(Vector3f p1, Vector3f p2, Vector3f p3)
         {
             float u1 = p2[0] - p1[0];
@@ -193,7 +191,7 @@ namespace DotRecast.Recast
             return false;
         }
 
-        private static float distPtTri(float[] p, float[] verts, int a, int b, int c)
+        private static float distPtTri(Vector3f p, float[] verts, int a, int b, int c)
         {
             Vector3f v0 = new Vector3f();
             Vector3f v1 = new Vector3f();
@@ -255,6 +253,34 @@ namespace DotRecast.Recast
             return dx * dx + dy * dy + dz * dz;
         }
 
+        private static float distancePtSeg2d(Vector3f verts, float[] poly, int p, int q)
+        {
+            float pqx = poly[q + 0] - poly[p + 0];
+            float pqz = poly[q + 2] - poly[p + 2];
+            float dx = verts[0] - poly[p + 0];
+            float dz = verts[2] - poly[p + 2];
+            float d = pqx * pqx + pqz * pqz;
+            float t = pqx * dx + pqz * dz;
+            if (d > 0)
+            {
+                t /= d;
+            }
+
+            if (t < 0)
+            {
+                t = 0;
+            }
+            else if (t > 1)
+            {
+                t = 1;
+            }
+
+            dx = poly[p + 0] + t * pqx - verts[0];
+            dz = poly[p + 2] + t * pqz - verts[2];
+
+            return dx * dx + dz * dz;
+        }
+
         private static float distancePtSeg2d(float[] verts, int pt, float[] poly, int p, int q)
         {
             float pqx = poly[q + 0] - poly[p + 0];
@@ -283,7 +309,7 @@ namespace DotRecast.Recast
             return dx * dx + dz * dz;
         }
 
-        private static float distToTriMesh(float[] p, float[] verts, int nverts, List<int> tris, int ntris)
+        private static float distToTriMesh(Vector3f p, float[] verts, int nverts, List<int> tris, int ntris)
         {
             float dmin = float.MaxValue;
             for (int i = 0; i < ntris; ++i)
@@ -306,7 +332,7 @@ namespace DotRecast.Recast
             return dmin;
         }
 
-        private static float distToPoly(int nvert, float[] verts, float[] p)
+        private static float distToPoly(int nvert, float[] verts, Vector3f p)
         {
             float dmin = float.MaxValue;
             int i, j;
@@ -321,7 +347,7 @@ namespace DotRecast.Recast
                     c = !c;
                 }
 
-                dmin = Math.Min(dmin, distancePtSeg2d(p, 0, verts, vj, vi));
+                dmin = Math.Min(dmin, distancePtSeg2d(p, verts, vj, vi));
             }
 
             return c ? -dmin : dmin;
@@ -1009,7 +1035,7 @@ namespace DotRecast.Recast
                         pt[1] = (bmax[1] + bmin[1]) * 0.5f;
                         pt[2] = z * sampleDist;
                         // Make sure the samples are not too close to the edges.
-                        if (distToPoly(nin, @in, pt.ToArray()) > -sampleDist / 2)
+                        if (distToPoly(nin, @in, pt) > -sampleDist / 2)
                         {
                             continue;
                         }
@@ -1050,7 +1076,7 @@ namespace DotRecast.Recast
                         pt[0] = samples[s + 0] * sampleDist + getJitterX(i) * cs * 0.1f;
                         pt[1] = samples[s + 1] * chf.ch;
                         pt[2] = samples[s + 2] * sampleDist + getJitterY(i) * cs * 0.1f;
-                        float d = distToTriMesh(pt.ToArray(), verts, nverts, tris, tris.Count / 4);
+                        float d = distToTriMesh(pt, verts, nverts, tris, tris.Count / 4);
                         if (d < 0)
                         {
                             continue; // did not hit the mesh.
