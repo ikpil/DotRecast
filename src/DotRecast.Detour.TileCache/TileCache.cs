@@ -358,7 +358,7 @@ namespace DotRecast.Detour.TileCache
         }
 
         // Cylinder obstacle
-        public long addObstacle(float[] pos, float radius, float height)
+        public long addObstacle(Vector3f pos, float radius, float height)
         {
             TileCacheObstacle ob = allocObstacle();
             ob.type = TileCacheObstacle.TileCacheObstacleType.CYLINDER;
@@ -457,7 +457,7 @@ namespace DotRecast.Detour.TileCache
                         CompressedTile tile = m_tiles[decodeTileIdTile(i)];
                         Vector3f tbmin = new Vector3f();
                         Vector3f tbmax = new Vector3f();
-                        calcTightTileBounds(tile.header, tbmin, tbmax);
+                        calcTightTileBounds(tile.header, ref tbmin, ref tbmax);
                         if (overlapBounds(bmin, bmax, tbmin, tbmax))
                         {
                             results.Add(i);
@@ -501,7 +501,7 @@ namespace DotRecast.Detour.TileCache
                         // Find touched tiles.
                         Vector3f bmin = new Vector3f();
                         Vector3f bmax = new Vector3f();
-                        getObstacleBounds(ob, bmin, bmax);
+                        getObstacleBounds(ob, ref bmin, ref bmax);
                         ob.touched = queryTiles(bmin, bmax);
                         // Add tiles to update list.
                         ob.pending.Clear();
@@ -682,7 +682,7 @@ namespace DotRecast.Detour.TileCache
             return layer;
         }
 
-        void calcTightTileBounds(TileCacheLayerHeader header, Vector3f bmin, Vector3f bmax)
+        void calcTightTileBounds(TileCacheLayerHeader header, ref Vector3f bmin, ref Vector3f bmax)
         {
             float cs = m_params.cs;
             bmin[0] = header.bmin[0] + header.minx * cs;
@@ -693,7 +693,7 @@ namespace DotRecast.Detour.TileCache
             bmax[2] = header.bmin[2] + (header.maxy + 1) * cs;
         }
 
-        void getObstacleBounds(TileCacheObstacle ob, Vector3f bmin, Vector3f bmax)
+        void getObstacleBounds(TileCacheObstacle ob, ref Vector3f bmin, ref Vector3f bmax)
         {
             if (ob.type == TileCacheObstacle.TileCacheObstacleType.CYLINDER)
             {

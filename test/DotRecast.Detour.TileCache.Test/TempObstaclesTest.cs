@@ -46,7 +46,7 @@ public class TempObstaclesTest : AbstractTileCacheTest
         MeshTile tile = tiles[0];
         Assert.That(tile.data.header.vertCount, Is.EqualTo(16));
         Assert.That(tile.data.header.polyCount, Is.EqualTo(6));
-        long o = tc.addObstacle(new float[] { -1.815208f, 9.998184f, -20.307983f }, 1f, 2f);
+        long o = tc.addObstacle(Vector3f.Of(-1.815208f, 9.998184f, -20.307983f), 1f, 2f);
         bool upToDate = tc.update();
         Assert.That(upToDate, Is.True);
         tiles = tc.getNavMesh().getTilesAt(1, 4);
