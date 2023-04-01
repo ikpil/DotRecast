@@ -37,10 +37,5 @@ namespace DotRecast.Core
                 default: throw new IndexOutOfRangeException($"{index}-{value}");
             }
         }
-
-        public float[] ToArray()
-        {
-            return new float[] { x, y };
-        }
     }
 }
