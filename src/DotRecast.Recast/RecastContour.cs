@@ -493,8 +493,7 @@ namespace DotRecast.Recast
             return (area + 1) / 2;
         }
 
-        private static bool intersectSegCountour(int d0, int d1, int i, int n, int[] verts, int[] d0verts,
-            int[] d1verts)
+        private static bool intersectSegContour(int d0, int d1, int i, int n, int[] verts, int[] d0verts, int[] d1verts)
         {
             // For each edge (k,k+1) of P
             int[] pverts = new int[4 * 4];
@@ -730,10 +729,10 @@ namespace DotRecast.Recast
                     for (int j = 0; j < ndiags; j++)
                     {
                         int pt = diags[j].vert * 4;
-                        bool intersect = intersectSegCountour(pt, corner, diags[j].vert, outline.nverts, outline.verts,
+                        bool intersect = intersectSegContour(pt, corner, diags[j].vert, outline.nverts, outline.verts,
                             outline.verts, hole.verts);
                         for (int k = i; k < region.nholes && !intersect; k++)
-                            intersect |= intersectSegCountour(pt, corner, -1, region.holes[k].contour.nverts,
+                            intersect |= intersectSegContour(pt, corner, -1, region.holes[k].contour.nverts,
                                 region.holes[k].contour.verts, outline.verts, hole.verts);
                         if (!intersect)
                         {
