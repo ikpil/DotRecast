@@ -34,7 +34,7 @@ namespace DotRecast.Recast.Geom
 
         private class CompareItemX : IComparer<BoundsItem>
         {
-            public int Compare(BoundsItem? a, BoundsItem? b)
+            public int Compare(BoundsItem a, BoundsItem b)
             {
                 return a.bmin[0].CompareTo(b.bmin[0]);
             }
@@ -42,7 +42,7 @@ namespace DotRecast.Recast.Geom
 
         private class CompareItemY : IComparer<BoundsItem>
         {
-            public int Compare(BoundsItem? a, BoundsItem? b)
+            public int Compare(BoundsItem a, BoundsItem b)
             {
                 return a.bmin[1].CompareTo(b.bmin[1]);
             }
