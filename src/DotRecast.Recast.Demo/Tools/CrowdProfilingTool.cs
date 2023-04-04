@@ -188,7 +188,7 @@ public class CrowdProfilingTool
                     bool valid = true;
                     foreach (FindRandomPointResult zone in zones)
                     {
-                        if (RecastMath.vDistSqr(zone.getRandomPt(), result.result.getRandomPt(), 0) < zoneSeparation)
+                        if (RecastMath.vDistSqr(zone.getRandomPt(), result.result.getRandomPt()) < zoneSeparation)
                         {
                             valid = false;
                             break;
@@ -312,7 +312,7 @@ public class CrowdProfilingTool
         List<FindRandomPointResult> potentialTargets = new();
         foreach (FindRandomPointResult zone in zones)
         {
-            if (RecastMath.vDistSqr(zone.getRandomPt(), ag.npos, 0) > zoneRadius * zoneRadius)
+            if (RecastMath.vDistSqr(zone.getRandomPt(), ag.npos) > zoneRadius * zoneRadius)
             {
                 potentialTargets.Add(zone);
             }

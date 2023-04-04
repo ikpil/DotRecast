@@ -27,14 +27,6 @@ namespace DotRecast.Core
         public const float EPS = 1e-4f;
         private static readonly float EQUAL_THRESHOLD = sqr(1.0f / 16384.0f);
         
-        public static float vDistSqr(float[] v1, float[] v2, int i)
-        {
-            float dx = v2[i] - v1[0];
-            float dy = v2[i + 1] - v1[1];
-            float dz = v2[i + 2] - v1[2];
-            return dx * dx + dy * dy + dz * dz;
-        }
-        
         public static float vDistSqr(Vector3f v1, float[] v2, int i)
         {
             float dx = v2[i] - v1[0];
@@ -43,14 +35,21 @@ namespace DotRecast.Core
             return dx * dx + dy * dy + dz * dz;
         }
         
-        public static float vDistSqr(Vector3f v1, Vector3f v2, int i)
+        public static float vDistSqr(Vector3f v1, Vector3f v2)
         {
-            float dx = v2[i] - v1[0];
-            float dy = v2[i + 1] - v1[1];
-            float dz = v2[i + 2] - v1[2];
+            float dx = v2[0] - v1[0];
+            float dy = v2[1] - v1[1];
+            float dz = v2[2] - v1[2];
             return dx * dx + dy * dy + dz * dz;
         }
-
+        
+        public static float vDistSqr(float[] v, int i, int j)
+        {
+            float dx = v[i] - v[j];
+            float dy = v[i + 1] - v[j + 1];
+            float dz = v[i + 2] - v[j + 2];
+            return dx * dx + dy * dy + dz * dz;
+        }
 
         public static Vector3f vCross(Vector3f v1, Vector3f v2)
         {
@@ -82,13 +81,7 @@ namespace DotRecast.Core
             return totd;
         }
 
-        public static float vDistSqr(float[] v, int i, int j)
-        {
-            float dx = v[i] - v[j];
-            float dy = v[i + 1] - v[j + 1];
-            float dz = v[i + 2] - v[j + 2];
-            return dx * dx + dy * dy + dz * dz;
-        }
+
 
         public static float step(float threshold, float v)
         {
@@ -330,22 +323,6 @@ namespace DotRecast.Core
             return dx * dx + dy * dy + dz * dz;
         }
         
-        public static float vDistSqr(Vector3f v1, float[] v2)
-        {
-            float dx = v2[0] - v1[0];
-            float dy = v2[1] - v1[1];
-            float dz = v2[2] - v1[2];
-            return dx * dx + dy * dy + dz * dz;
-        }
-
-        
-        public static float vDistSqr(Vector3f v1, Vector3f v2)
-        {
-            float dx = v2[0] - v1[0];
-            float dy = v2[1] - v1[1];
-            float dz = v2[2] - v1[2];
-            return dx * dx + dy * dy + dz * dz;
-        }
 
 
         /// Derives the square of the scalar length of the vector. (len * len)
