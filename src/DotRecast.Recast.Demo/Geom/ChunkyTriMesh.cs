@@ -26,62 +26,39 @@ namespace DotRecast.Recast.Demo.Geom;
 
 public class ChunkyTriMesh
 {
-    private class BoundsItem
-    {
-        public readonly float[] bmin = new float[2];
-        public readonly float[] bmax = new float[2];
-        public int i;
-    }
-
-    private class CompareItemX : IComparer<BoundsItem>
-    {
-        public int Compare(BoundsItem a, BoundsItem b)
-        {
-            return a.bmin[0].CompareTo(b.bmin[0]);
-        }
-    }
-
-    private class CompareItemY : IComparer<BoundsItem>
-    {
-        public int Compare(BoundsItem a, BoundsItem b)
-        {
-            return a.bmin[1].CompareTo(b.bmin[1]);
-        }
-    }
-
     List<ChunkyTriMeshNode> nodes;
     int ntris;
     int maxTrisPerChunk;
 
     private void calcExtends(BoundsItem[] items, int imin, int imax, float[] bmin, float[] bmax)
     {
-        bmin[0] = items[imin].bmin[0];
-        bmin[1] = items[imin].bmin[1];
+        bmin[0] = items[imin].bmin.x;
+        bmin[1] = items[imin].bmin.y;
 
-        bmax[0] = items[imin].bmax[0];
-        bmax[1] = items[imin].bmax[1];
+        bmax[0] = items[imin].bmax.x;
+        bmax[1] = items[imin].bmax.y;
 
         for (int i = imin + 1; i < imax; ++i)
         {
             BoundsItem it = items[i];
-            if (it.bmin[0] < bmin[0])
+            if (it.bmin.x < bmin[0])
             {
-                bmin[0] = it.bmin[0];
+                bmin[0] = it.bmin.x;
             }
 
-            if (it.bmin[1] < bmin[1])
+            if (it.bmin.y < bmin[1])
             {
-                bmin[1] = it.bmin[1];
+                bmin[1] = it.bmin.y;
             }
 
-            if (it.bmax[0] > bmax[0])
+            if (it.bmax.x > bmax[0])
             {
-                bmax[0] = it.bmax[0];
+                bmax[0] = it.bmax.x;
             }
 
-            if (it.bmax[1] > bmax[1])
+            if (it.bmax.y > bmax[1])
             {
-                bmax[1] = it.bmax[1];
+                bmax[1] = it.bmax.y;
             }
         }
     }
@@ -168,22 +145,22 @@ public class ChunkyTriMesh
             for (int j = 1; j < 3; ++j)
             {
                 int v = tris[t + j] * 3;
-                if (verts[v] < it.bmin[0])
+                if (verts[v] < it.bmin.x)
                 {
                     it.bmin[0] = verts[v];
                 }
 
-                if (verts[v + 2] < it.bmin[1])
+                if (verts[v + 2] < it.bmin.y)
                 {
                     it.bmin[1] = verts[v + 2];
                 }
 
-                if (verts[v] > it.bmax[0])
+                if (verts[v] > it.bmax.x)
                 {
                     it.bmax[0] = verts[v];
                 }
 
-                if (verts[v + 2] > it.bmax[1])
+                if (verts[v + 2] > it.bmax.y)
                 {
                     it.bmax[1] = verts[v + 2];
                 }

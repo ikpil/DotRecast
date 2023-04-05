@@ -95,9 +95,9 @@ namespace DotRecast.Detour.Extras.Jumplink
         
         private void trans2d(ref Vector3f dst, Vector3f ax, Vector3f ay, Vector2f pt)
         {
-            dst[0] = ax[0] * pt[0] + ay[0] * pt[1];
-            dst[1] = ax[1] * pt[0] + ay[1] * pt[1];
-            dst[2] = ax[2] * pt[0] + ay[2] * pt[1];
+            dst[0] = ax[0] * pt.x + ay[0] * pt.y;
+            dst[1] = ax[1] * pt.x + ay[1] * pt.y;
+            dst[2] = ax[2] * pt.x + ay[2] * pt.y;
         }
 
     }
