@@ -126,7 +126,7 @@ public class ChunkyTriMesh
 
             if (axis == 0)
             {
-                Array.Sort(items, imin, imax - imax, new CompareItemX());
+                Array.Sort(items, imin, imax - imin, new CompareItemX());
                 // Sort along x-axis
             }
             else if (axis == 1)
