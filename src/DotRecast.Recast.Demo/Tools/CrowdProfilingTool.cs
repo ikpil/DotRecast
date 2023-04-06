@@ -239,7 +239,7 @@ public class CrowdProfilingTool
 
     public void update(float dt)
     {
-        long startTime = Stopwatch.GetTimestamp();
+        long startTime = TickWatch.Ticks;
         if (crowd != null)
         {
             crowd.config().pathQueueSize = pathQueueSize;
@@ -247,7 +247,7 @@ public class CrowdProfilingTool
             crowd.update(dt, null);
         }
 
-        long endTime = Stopwatch.GetTimestamp();
+        long endTime = TickWatch.Ticks;
         if (crowd != null)
         {
             NavMeshQuery navquery = new NavMeshQuery(navMesh);

@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using DotRecast.Core;
 
 namespace DotRecast.Detour.Crowd
 {
@@ -65,12 +66,12 @@ namespace DotRecast.Detour.Crowd
 
         public void start(string name)
         {
-            _executionTimings.Add(name, Stopwatch.GetTimestamp());
+            _executionTimings.Add(name, TickWatch.Ticks);
         }
 
         public void stop(string name)
         {
-            long duration = Stopwatch.GetTimestamp() - _executionTimings[name];
+            long duration = TickWatch.Ticks - _executionTimings[name];
             if (!_executionTimingSamples.TryGetValue(name, out var s))
             {
                 s = new List<long>();

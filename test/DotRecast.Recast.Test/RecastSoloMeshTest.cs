@@ -96,7 +96,7 @@ public class RecastSoloMeshTest
     {
         m_partitionType = partitionType;
         InputGeomProvider geomProvider = ObjImporter.load(Loader.ToBytes(filename));
-        long time = Stopwatch.GetTimestamp();
+        long time = TickWatch.Ticks;
         Vector3f bmin = geomProvider.getMeshBoundsMin();
         Vector3f bmax = geomProvider.getMeshBoundsMax();
         Telemetry m_ctx = new Telemetry();
@@ -204,7 +204,7 @@ public class RecastSoloMeshTest
         // you use tiles)
         // * good choice to use for tiled navmesh with medium and small sized
         // tiles
-        long time3 = Stopwatch.GetTimestamp();
+        long time3 = TickWatch.Ticks;
 
         if (m_partitionType == PartitionType.WATERSHED)
         {
@@ -256,7 +256,7 @@ public class RecastSoloMeshTest
         Assert.That(m_dmesh.nmeshes, Is.EqualTo(expDetMeshes), "Mesh Detail Meshes");
         Assert.That(m_dmesh.nverts, Is.EqualTo(expDetVerts), "Mesh Detail Verts");
         Assert.That(m_dmesh.ntris, Is.EqualTo(expDetTris), "Mesh Detail Tris");
-        long time2 = Stopwatch.GetTimestamp();
+        long time2 = TickWatch.Ticks;
         Console.WriteLine(filename + " : " + partitionType + "  " + (time2 - time) / TimeSpan.TicksPerMillisecond + " ms");
         Console.WriteLine("           " + (time3 - time) / TimeSpan.TicksPerMillisecond + " ms");
         saveObj(filename.Substring(0, filename.LastIndexOf('.')) + "_" + partitionType + "_detail.obj", m_dmesh);

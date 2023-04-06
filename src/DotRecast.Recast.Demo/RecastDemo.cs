@@ -470,7 +470,7 @@ public class RecastDemo
 
         cameraPos[1] += (float)((_moveUp - _moveDown) * keySpeed * dt);
 
-        long time = Stopwatch.GetTimestamp();
+        long time = TickWatch.Ticks;
         prevFrameTime = time;
 
         // Update sample simulation.
@@ -537,7 +537,7 @@ public class RecastDemo
                 float m_detailSampleDist = settingsUI.getDetailSampleDist();
                 float m_detailSampleMaxError = settingsUI.getDetailSampleMaxError();
                 int m_tileSize = settingsUI.getTileSize();
-                long t = Stopwatch.GetTimestamp();
+                long t = TickWatch.Ticks;
 
                 Tuple<IList<RecastBuilderResult>, NavMesh> buildResult;
                 if (settingsUI.isTiled())
@@ -559,7 +559,7 @@ public class RecastDemo
 
                 sample.update(sample.getInputGeom(), buildResult.Item1, buildResult.Item2);
                 sample.setChanged(false);
-                settingsUI.setBuildTime((Stopwatch.GetTimestamp() - t) / TimeSpan.TicksPerMillisecond);
+                settingsUI.setBuildTime((TickWatch.Ticks - t) / TimeSpan.TicksPerMillisecond);
                 settingsUI.setBuildTelemetry(buildResult.Item1.Select(x => x.getTelemetry()).ToList());
                 toolsUI.setSample(sample);
             }

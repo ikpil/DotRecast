@@ -33,14 +33,14 @@ namespace DotRecast.Recast
 
         public void startTimer(string name)
         {
-            timerStart.Value[name] = new AtomicLong(Stopwatch.GetTimestamp());
+            timerStart.Value[name] = new AtomicLong(TickWatch.Ticks);
         }
 
         public void stopTimer(string name)
         {
             timerAccum
                 .GetOrAdd(name, _ => new AtomicLong(0))
-                .AddAndGet(Stopwatch.GetTimestamp() - timerStart.Value?[name].Read() ?? 0);
+                .AddAndGet(TickWatch.Ticks - timerStart.Value?[name].Read() ?? 0);
         }
 
         public void warn(string @string)
