@@ -43,10 +43,7 @@ using DotRecast.Recast.Demo.Geom;
 using DotRecast.Recast.Demo.Settings;
 using DotRecast.Recast.Demo.Tools;
 using DotRecast.Recast.Demo.UI;
-using Silk.NET.SDL;
-using Silk.NET.Windowing.Sdl;
 using static DotRecast.Core.RecastMath;
-using Color = System.Drawing.Color;
 using Window = Silk.NET.Windowing.Window;
 
 namespace DotRecast.Recast.Demo;
@@ -60,7 +57,6 @@ public class RecastDemo
     private IInputContext _input;
     private ImGuiController _imgui;
     private GL _gl;
-    private Sdl _sdl;
     private int width = 1000;
     private int height = 900;
 
@@ -257,33 +253,6 @@ public class RecastDemo
 
     private IWindow CreateWindow()
     {
-        SdlWindowing.Use();
-        //var glfw = GlfwProvider.GLFW.Value;
-
-        // glfw.SetErrorCallback(ErrorCallback);
-        // if (!glfw.Init())
-        // {
-        //     throw new InvalidOperationException("Unable to initialize GLFW");
-        // }
-
-        // glfw.DefaultWindowHints();
-        // glfw.WindowHint(WindowHintBool.Visible, false);
-        // glfw.WindowHint(WindowHintBool.Resizable, false);
-        // glfw.WindowHint(WindowHintBool.SrgbCapable, true);
-        // glfw.WindowHint(WindowHintInt.RedBits, 8);
-        // glfw.WindowHint(WindowHintInt.GreenBits, 8);
-        // glfw.WindowHint(WindowHintInt.BlueBits, 8);
-        // glfw.WindowHint(WindowHintInt.Samples, 4);
-        // glfw.WindowHint(WindowHintBool.DoubleBuffer, true);
-        // glfw.WindowHint(WindowHintInt.DepthBits, 24);
-        //
-        // glfw.WindowHint(WindowHintInt.ContextVersionMajor, 3);
-        // glfw.WindowHint(WindowHintInt.ContextVersionMinor, 2);
-        // glfw.WindowHint(WindowHintBool.OpenGLForwardCompat, true);
-        // glfw.WindowHint(WindowHintOpenGlProfile.OpenGlProfile, OpenGlProfile.Core);
-        // glfw.WindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        // glfw.WindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-
         var monitor = Window.Platforms.First().GetMainMonitor();
         // // if (monitors.limit() > 1) {
         // // monitor = monitors[1];
@@ -294,11 +263,6 @@ public class RecastDemo
         width = Math.Min(resolution.X, (int)(resolution.Y * aspect)) - 100;
         height = resolution.Y - 100;
         viewport = new int[] { 0, 0, width, height };
-
-        // glfwWindowHint(GLFW_RED_BITS, mode.redBits());
-        // glfwWindowHint(GLFW_GREEN_BITS, mode.greenBits());
-        // glfwWindowHint(GLFW_BLUE_BITS, mode.blueBits());
-        // glfwWindowHint(GLFW_REFRESH_RATE, mode.refreshRate());
 
         var options = WindowOptions.Default;
         options.Title = title;
@@ -373,9 +337,6 @@ public class RecastDemo
     {
         width = size.X;
         height = size.Y;
-
-        //_gl.FramebufferParameter(GLEnum.Size);
-        //_graphicsDevice.ResizeMainWindow((uint)size.X, (uint)size.Y);
     }
 
     private void OnWindowFramebufferSizeChanged(Vector2D<int> size)
@@ -387,8 +348,6 @@ public class RecastDemo
 
     private void OnWindowOnLoad()
     {
-        _sdl = SdlWindowing.GetExistingApi(window);
-
         _input = window.CreateInput();
 
         // mouse input
@@ -706,17 +665,17 @@ public class RecastDemo
                             bmaxN = Vector3f.Of(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
                         }
 
-                            bminN = Vector3f.Of(
-                                Math.Min(bminN.Value[0], result.getSolidHeightfield().bmin[0]),
-                                Math.Min(bminN.Value[1], result.getSolidHeightfield().bmin[1]),
-                                Math.Min(bminN.Value[2], result.getSolidHeightfield().bmin[2])
-                            );
-                            
-                            bmaxN = Vector3f.Of(
-                                Math.Max(bmaxN.Value[0], result.getSolidHeightfield().bmax[0]),
-                                Math.Max(bmaxN.Value[1], result.getSolidHeightfield().bmax[1]),
-                                Math.Max(bmaxN.Value[2], result.getSolidHeightfield().bmax[2])
-                            );
+                        bminN = Vector3f.Of(
+                            Math.Min(bminN.Value[0], result.getSolidHeightfield().bmin[0]),
+                            Math.Min(bminN.Value[1], result.getSolidHeightfield().bmin[1]),
+                            Math.Min(bminN.Value[2], result.getSolidHeightfield().bmin[2])
+                        );
+
+                        bmaxN = Vector3f.Of(
+                            Math.Max(bmaxN.Value[0], result.getSolidHeightfield().bmax[0]),
+                            Math.Max(bmaxN.Value[1], result.getSolidHeightfield().bmax[1]),
+                            Math.Max(bmaxN.Value[2], result.getSolidHeightfield().bmax[2])
+                        );
                     }
                 }
             }

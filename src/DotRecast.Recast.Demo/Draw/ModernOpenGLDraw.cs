@@ -76,8 +76,8 @@ public class ModernOpenGLDraw : OpenGLDraw
 
     public unsafe void init()
     {
-        string NK_SHADER_VERSION = PlatformID.MacOSX == Environment.OSVersion.Platform ? "#version 150\n" : "#version 300 es\n";
-        string vertex_shader = NK_SHADER_VERSION + "uniform mat4 ProjMtx;\n" //
+        string SHADER_VERSION = "#version 330\n";
+        string vertex_shader = SHADER_VERSION + "uniform mat4 ProjMtx;\n" //
                                                  + "uniform mat4 ViewMtx;\n" //
                                                  + "in vec3 Position;\n" //
                                                  + "in vec2 TexCoord;\n" //
@@ -92,7 +92,7 @@ public class ModernOpenGLDraw : OpenGLDraw
                                                  + "   Frag_Depth = -VSPosition.z;\n" //
                                                  + "   gl_Position = ProjMtx * VSPosition;\n" //
                                                  + "}\n";
-        string fragment_shader = NK_SHADER_VERSION + "precision mediump float;\n" //
+        string fragment_shader = SHADER_VERSION + "precision mediump float;\n" //
                                                    + "uniform sampler2D Texture;\n" //
                                                    + "uniform float UseTexture;\n" //
                                                    + "uniform float EnableFog;\n" //
