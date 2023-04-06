@@ -19,10 +19,8 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -270,6 +268,7 @@ public class RecastDemo
         options.Position = new Vector2D<int>((resolution.X - width) / 2, (resolution.Y - height) / 2);
         options.VSync = false;
         options.ShouldSwapAutomatically = false;
+        options.PreferredDepthBufferBits = 24;
         window = Window.Create(options);
 
         if (window == null)
