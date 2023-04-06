@@ -26,7 +26,7 @@ namespace DotRecast.Recast.Geom
     {
         private readonly float[] vertices;
         private readonly int[] faces;
-        private readonly ChunkyTriMesh chunkyTriMesh;
+        public readonly ChunkyTriMesh chunkyTriMesh;
 
         public TriMesh(float[] vertices, int[] faces)
         {

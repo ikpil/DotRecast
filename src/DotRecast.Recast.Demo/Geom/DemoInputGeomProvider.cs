@@ -36,7 +36,7 @@ public class DemoInputGeomProvider : InputGeomProvider
     private readonly Vector3f bmax;
     private readonly List<ConvexVolume> _convexVolumes = new();
     private readonly List<DemoOffMeshConnection> offMeshConnections = new();
-    private readonly ChunkyTriMesh chunkyTriMesh;
+    private readonly TriMesh _mesh;
 
     public DemoInputGeomProvider(List<float> vertexPositions, List<int> meshFaces) :
         this(mapVertices(vertexPositions), mapFaces(meshFaces))
@@ -81,7 +81,7 @@ public class DemoInputGeomProvider : InputGeomProvider
             RecastVectors.max(ref bmax, vertices, i * 3);
         }
 
-        chunkyTriMesh = new ChunkyTriMesh(vertices, faces, faces.Length / 3, 256);
+        _mesh = new TriMesh(vertices, faces);
     }
 
     public Vector3f getMeshBoundsMin()
@@ -130,7 +130,7 @@ public class DemoInputGeomProvider : InputGeomProvider
 
     public IEnumerable<TriMesh> meshes()
     {
-        return ImmutableArray.Create(new TriMesh(vertices, faces));
+        return ImmutableArray.Create(_mesh);
     }
 
     public List<DemoOffMeshConnection> getOffMeshConnections()
@@ -166,7 +166,7 @@ public class DemoInputGeomProvider : InputGeomProvider
         q[0] = src[0] + (dst[0] - src[0]) * btmax;
         q[1] = src[2] + (dst[2] - src[2]) * btmax;
 
-        List<ChunkyTriMeshNode> chunks = chunkyTriMesh.getChunksOverlappingSegment(p, q);
+        List<ChunkyTriMeshNode> chunks = _mesh.chunkyTriMesh.getChunksOverlappingSegment(p, q);
         if (0 == chunks.Count)
         {
             return null;

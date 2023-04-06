@@ -27,7 +27,7 @@ namespace DotRecast.Recast.Geom
     {
         private readonly Vector3f bmin;
         private readonly Vector3f bmax;
-        private readonly TriMesh[] _meshes;
+        private readonly TriMesh _mesh;
 
         public SingleTrimeshInputGeomProvider(float[] vertices, int[] faces)
         {
@@ -41,7 +41,7 @@ namespace DotRecast.Recast.Geom
                 RecastVectors.max(ref bmax, vertices, i * 3);
             }
 
-            _meshes = new[] { new TriMesh(vertices, faces) };
+            _mesh = new TriMesh(vertices, faces);
         }
 
         public Vector3f getMeshBoundsMin()
@@ -56,7 +56,7 @@ namespace DotRecast.Recast.Geom
 
         public IEnumerable<TriMesh> meshes()
         {
-            return _meshes;
+            return ImmutableArray.Create(_mesh);
         }
 
         public IList<ConvexVolume> convexVolumes()

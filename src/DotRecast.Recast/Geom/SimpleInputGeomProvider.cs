@@ -32,7 +32,8 @@ namespace DotRecast.Recast.Geom
         public readonly float[] normals;
         private Vector3f bmin;
         private Vector3f bmax;
-        readonly List<ConvexVolume> volumes = new List<ConvexVolume>();
+        private readonly List<ConvexVolume> volumes = new List<ConvexVolume>();
+        private readonly TriMesh _mesh;
 
         public SimpleInputGeomProvider(List<float> vertexPositions, List<int> meshFaces)
             : this(mapVertices(vertexPositions), mapFaces(meshFaces))
@@ -76,6 +77,8 @@ namespace DotRecast.Recast.Geom
                 RecastVectors.min(ref bmin, vertices, i * 3);
                 RecastVectors.max(ref bmax, vertices, i * 3);
             }
+
+            _mesh = new TriMesh(vertices, faces);
         }
 
         public Vector3f getMeshBoundsMin()
@@ -105,7 +108,7 @@ namespace DotRecast.Recast.Geom
 
         public IEnumerable<TriMesh> meshes()
         {
-            return ImmutableArray.Create(new TriMesh(vertices, faces));
+            return ImmutableArray.Create(_mesh);
         }
 
         public void calculateNormals()
