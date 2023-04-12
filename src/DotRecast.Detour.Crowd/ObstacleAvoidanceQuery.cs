@@ -401,8 +401,7 @@ namespace DotRecast.Detour.Crowd
             m_vmax = vmax;
             m_invVmax = vmax > 0 ? 1.0f / vmax : float.MaxValue;
 
-            Vector3f nvel = new Vector3f();
-            vSet(ref nvel, 0f, 0f, 0f);
+            Vector3f nvel = Vector3f.Zero;
 
             if (debug != null)
                 debug.reset();
@@ -472,8 +471,7 @@ namespace DotRecast.Detour.Crowd
             m_vmax = vmax;
             m_invVmax = vmax > 0 ? 1.0f / vmax : float.MaxValue;
 
-            Vector3f nvel = new Vector3f();
-            vSet(ref nvel, 0f, 0f, 0f);
+            Vector3f nvel = Vector3f.Zero;
 
             if (debug != null)
                 debug.reset();
@@ -546,7 +544,7 @@ namespace DotRecast.Detour.Crowd
             {
                 float minPenalty = float.MaxValue;
                 Vector3f bvel = new Vector3f();
-                vSet(ref bvel, 0, 0, 0);
+                bvel = Vector3f.Zero;
 
                 for (int i = 0; i < npat; ++i)
                 {

@@ -28,6 +28,7 @@ namespace DotRecast.Core
         public float z { get; set; }
 
         public static Vector3f Zero { get; } = new Vector3f(0, 0, 0);
+        public static Vector3f Up { get; } = new Vector3f(0, 1, 0);
 
         public static Vector3f Of(float[] f)
         {

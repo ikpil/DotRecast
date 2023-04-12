@@ -149,7 +149,7 @@ namespace DotRecast.Detour.Crowd
             if (vLen(vel) > 0.0001f)
                 npos = vMad(npos, vel, dt);
             else
-                vSet(ref vel, 0, 0, 0);
+                vel = Vector3f.Zero;
         }
 
         public bool overOffmeshConnection(float radius)

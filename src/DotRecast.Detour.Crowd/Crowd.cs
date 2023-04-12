@@ -254,9 +254,9 @@ namespace DotRecast.Detour.Crowd
             ag.topologyOptTime = 0;
             ag.targetReplanTime = 0;
 
-            vSet(ref ag.dvel, 0, 0, 0);
-            vSet(ref ag.nvel, 0, 0, 0);
-            vSet(ref ag.vel, 0, 0, 0);
+            ag.dvel = Vector3f.Zero;
+            ag.nvel = Vector3f.Zero;
+            ag.vel = Vector3f.Zero;
             vCopy(ref ag.npos, nearest);
 
             ag.desiredSpeed = 0;
@@ -340,8 +340,8 @@ namespace DotRecast.Detour.Crowd
         {
             // Initialize request.
             agent.targetRef = 0;
-            vSet(ref agent.targetPos, 0, 0, 0);
-            vSet(ref agent.dvel, 0, 0, 0);
+            agent.targetPos = Vector3f.Zero;
+            agent.dvel = Vector3f.Zero;
             agent.targetPathQueryResult = null;
             agent.targetReplan = false;
             agent.targetState = CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_NONE;
@@ -974,8 +974,8 @@ namespace DotRecast.Detour.Crowd
                     // Copy data for debug purposes.
                     if (debugAgent == ag)
                     {
-                        vSet(ref debug.optStart, 0, 0, 0);
-                        vSet(ref debug.optEnd, 0, 0, 0);
+                        debug.optStart = Vector3f.Zero;
+                        debug.optEnd = Vector3f.Zero;
                     }
                 }
             }
@@ -1234,7 +1234,7 @@ namespace DotRecast.Detour.Crowd
                         continue;
                     }
 
-                    vSet(ref ag.disp, 0, 0, 0);
+                    ag.disp = Vector3f.Zero;
 
                     float w = 0;
 
@@ -1361,8 +1361,8 @@ namespace DotRecast.Detour.Crowd
                 }
 
                 // Update velocity.
-                vSet(ref ag.vel, 0, 0, 0);
-                vSet(ref ag.dvel, 0, 0, 0);
+                ag.vel = Vector3f.Zero;
+                ag.dvel = Vector3f.Zero;
             }
 
             _telemetry.stop("updateOffMeshConnections");

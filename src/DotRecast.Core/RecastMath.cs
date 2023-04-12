@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using System.Numerics;
 
 namespace DotRecast.Core
 {
@@ -226,13 +227,6 @@ namespace DotRecast.Core
             @out.x = @in[0];
             @out.y = @in[1];
             @out.z = @in[2];
-        }
-
-        public static void vCopy(float[] @out, float[] @in, int i)
-        {
-            @out[0] = @in[i];
-            @out[1] = @in[i + 1];
-            @out[2] = @in[i + 2];
         }
         
         public static void vCopy(ref Vector3f @out, float[] @in, int i)
