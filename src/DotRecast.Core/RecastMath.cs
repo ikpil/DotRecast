@@ -135,13 +135,13 @@ namespace DotRecast.Core
         /// @param[in] v1 The starting vector.
         /// @param[in] v2 The destination vector.
         /// @param[in] t The interpolation factor. [Limits: 0 <= value <= 1.0]
-        public static float[] vLerp(float[] verts, int v1, int v2, float t)
+        public static Vector3f vLerp(float[] verts, int v1, int v2, float t)
         {
             Vector3f dest = new Vector3f();
             dest[0] = verts[v1 + 0] + (verts[v2 + 0] - verts[v1 + 0]) * t;
             dest[1] = verts[v1 + 1] + (verts[v2 + 1] - verts[v1 + 1]) * t;
             dest[2] = verts[v1 + 2] + (verts[v2 + 2] - verts[v1 + 2]) * t;
-            return dest.ToArray();
+            return dest;
         }
 
         public static Vector3f vLerp(Vector3f v1, Vector3f v2, float t)

@@ -519,7 +519,7 @@ namespace DotRecast.Detour
 
                 int va = imin * 3;
                 int vb = ((imin + 1) % nv) * 3;
-                closest = Vector3f.Of(vLerp(verts, va, vb, edget[imin]));
+                closest = vLerp(verts, va, vb, edget[imin]);
             }
 
             return Results.success(closest);
@@ -1566,7 +1566,7 @@ namespace DotRecast.Detour
         {
             List<StraightPathItem> straightPath = new List<StraightPathItem>();
             if (!vIsFinite(startPos) || !vIsFinite(endPos)
-                || null == path || 0 == path.Count || path[0] == 0 || maxStraightPath <= 0)
+                                     || null == path || 0 == path.Count || path[0] == 0 || maxStraightPath <= 0)
             {
                 return Results.invalidParam<List<StraightPathItem>>();
             }
@@ -1823,7 +1823,7 @@ namespace DotRecast.Detour
         {
             // Validate input
             if (!m_nav.isValidPolyRef(startRef) || !vIsFinite(startPos)
-                || !vIsFinite(endPos) || null == filter)
+                                                || !vIsFinite(endPos) || null == filter)
             {
                 return Results.invalidParam<MoveAlongSurfaceResult>();
             }
@@ -1932,7 +1932,7 @@ namespace DotRecast.Detour
                         if (distSqr < bestDist)
                         {
                             // Update nearest distance.
-                            bestPos = Vector3f.Of(vLerp(verts, vj, vi, tseg));
+                            bestPos = vLerp(verts, vj, vi, tseg);
                             bestDist = distSqr;
                             bestNode = curNode;
                         }
@@ -2125,8 +2125,8 @@ namespace DotRecast.Detour
                     float s = 1.0f / 255.0f;
                     float tmin = link.bmin * s;
                     float tmax = link.bmax * s;
-                    left = Vector3f.Of(vLerp(fromTile.data.verts, v0 * 3, v1 * 3, tmin));
-                    right = Vector3f.Of(vLerp(fromTile.data.verts, v0 * 3, v1 * 3, tmax));
+                    left = vLerp(fromTile.data.verts, v0 * 3, v1 * 3, tmin);
+                    right = vLerp(fromTile.data.verts, v0 * 3, v1 * 3, tmax);
                 }
             }
 
@@ -3172,8 +3172,14 @@ namespace DotRecast.Detour
                         float tmin = ints[k].tmin / 255.0f;
                         float tmax = ints[k].tmax / 255.0f;
                         float[] seg = new float[6];
-                        Array.Copy(vLerp(tile.data.verts, vj, vi, tmin), 0, seg, 0, 3);
-                        Array.Copy(vLerp(tile.data.verts, vj, vi, tmax), 0, seg, 3, 3);
+                        var vmin = vLerp(tile.data.verts, vj, vi, tmin);
+                        var vmax = vLerp(tile.data.verts, vj, vi, tmax);
+                        seg[0] = vmin[0];
+                        seg[1] = vmin[1];
+                        seg[2] = vmin[2];
+                        seg[3] = vmax[0];
+                        seg[4] = vmax[1];
+                        seg[5] = vmax[2];
                         segmentVerts.Add(seg);
                         segmentRefs.Add(ints[k].refs);
                     }
@@ -3186,8 +3192,14 @@ namespace DotRecast.Detour
                         float tmin = imin / 255.0f;
                         float tmax = imax / 255.0f;
                         float[] seg = new float[6];
-                        Array.Copy(vLerp(tile.data.verts, vj, vi, tmin), 0, seg, 0, 3);
-                        Array.Copy(vLerp(tile.data.verts, vj, vi, tmax), 0, seg, 3, 3);
+                        var vmin = vLerp(tile.data.verts, vj, vi, tmin);
+                        var vmax = vLerp(tile.data.verts, vj, vi, tmax);
+                        seg[0] = vmin[0];
+                        seg[1] = vmin[1];
+                        seg[2] = vmin[2];
+                        seg[3] = vmax[0];
+                        seg[4] = vmax[1];
+                        seg[5] = vmax[2];
                         segmentVerts.Add(seg);
                         segmentRefs.Add(0L);
                     }
