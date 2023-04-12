@@ -11,16 +11,15 @@ public class CylinderGizmo : ColliderGizmo
 {
     private readonly float[] vertices;
     private readonly int[] triangles;
-    private readonly float[] center;
+    private readonly Vector3f center;
     private readonly float[] gradient;
 
     public CylinderGizmo(Vector3f start, Vector3f end, float radius)
     {
-        center = new float[]
-        {
+        center = Vector3f.Of(
             0.5f * (start[0] + end[0]), 0.5f * (start[1] + end[1]),
             0.5f * (start[2] + end[2])
-        };
+        );
         Vector3f axis = Vector3f.Of(end[0] - start[0], end[1] - start[1], end[2] - start[2]);
         Vector3f[] normals = new Vector3f[3];
         normals[1] = Vector3f.Of(end[0] - start[0], end[1] - start[1], end[2] - start[2]);
