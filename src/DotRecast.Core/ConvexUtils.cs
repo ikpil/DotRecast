@@ -33,8 +33,8 @@ namespace DotRecast.Core
             int hull = 0;
             for (int i = 1; i < npts; ++i)
             {
-                float[] a = new float[] { pts[i * 3], pts[i * 3 + 1], pts[i * 3 + 2] };
-                float[] b = new float[] { pts[hull * 3], pts[hull * 3 + 1], pts[hull * 3 + 2] };
+                Vector3f a = Vector3f.Of(pts[i * 3], pts[i * 3 + 1], pts[i * 3 + 2]);
+                Vector3f b = Vector3f.Of(pts[hull * 3], pts[hull * 3 + 1], pts[hull * 3 + 2]);
                 if (cmppt(a, b))
                 {
                     hull = i;
@@ -49,9 +49,9 @@ namespace DotRecast.Core
                 endpt = 0;
                 for (int j = 1; j < npts; ++j)
                 {
-                    float[] a = new float[] { pts[hull * 3], pts[hull * 3 + 1], pts[hull * 3 + 2] };
-                    float[] b = new float[] { pts[endpt * 3], pts[endpt * 3 + 1], pts[endpt * 3 + 2] };
-                    float[] c = new float[] { pts[j * 3], pts[j * 3 + 1], pts[j * 3 + 2] };
+                    Vector3f a = Vector3f.Of(pts[hull * 3], pts[hull * 3 + 1], pts[hull * 3 + 2]);
+                    Vector3f b = Vector3f.Of(pts[endpt * 3], pts[endpt * 3 + 1], pts[endpt * 3 + 2]);
+                    Vector3f c = Vector3f.Of(pts[j * 3], pts[j * 3 + 1], pts[j * 3 + 2]);
                     if (hull == endpt || left(a, b, c))
                     {
                         endpt = j;
@@ -65,7 +65,7 @@ namespace DotRecast.Core
         }
 
         // Returns true if 'a' is more lower-left than 'b'.
-        private static bool cmppt(float[] a, float[] b)
+        private static bool cmppt(Vector3f a, Vector3f b)
         {
             if (a[0] < b[0])
             {
@@ -91,7 +91,7 @@ namespace DotRecast.Core
         }
 
         // Returns true if 'c' is left of line 'a'-'b'.
-        private static bool left(float[] a, float[] b, float[] c)
+        private static bool left(Vector3f a, Vector3f b, Vector3f c)
         {
             float u1 = b[0] - a[0];
             float v1 = b[2] - a[2];

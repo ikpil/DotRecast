@@ -455,7 +455,7 @@ namespace DotRecast.Core
         }
 
 
-        public static float vDot2D(float[] u, float[] v, int vi)
+        public static float vDot2D(Vector3f u, float[] v, int vi)
         {
             return u[0] * v[vi] + u[2] * v[vi + 2];
         }
@@ -671,7 +671,7 @@ namespace DotRecast.Core
             return c;
         }
 
-        public static float[] projectPoly(float[] axis, float[] poly, int npoly)
+        public static float[] projectPoly(Vector3f axis, float[] poly, int npoly)
         {
             float rmin, rmax;
             rmin = rmax = vDot2D(axis, poly, 0);
@@ -702,7 +702,7 @@ namespace DotRecast.Core
                 int va = j * 3;
                 int vb = i * 3;
 
-                float[] n = new float[] { polya[vb + 2] - polya[va + 2], 0, -(polya[vb + 0] - polya[va + 0]) };
+                Vector3f n = Vector3f.Of(polya[vb + 2] - polya[va + 2], 0, -(polya[vb + 0] - polya[va + 0]));
 
                 float[] aminmax = projectPoly(n, polya, npolya);
                 float[] bminmax = projectPoly(n, polyb, npolyb);
@@ -718,7 +718,7 @@ namespace DotRecast.Core
                 int va = j * 3;
                 int vb = i * 3;
 
-                float[] n = new float[] { polyb[vb + 2] - polyb[va + 2], 0, -(polyb[vb + 0] - polyb[va + 0]) };
+                Vector3f n = Vector3f.Of(polyb[vb + 2] - polyb[va + 2], 0, -(polyb[vb + 0] - polyb[va + 0]));
 
                 float[] aminmax = projectPoly(n, polya, npolya);
                 float[] bminmax = projectPoly(n, polyb, npolyb);
