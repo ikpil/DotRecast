@@ -163,15 +163,6 @@ namespace DotRecast.Core
             return dest;
         }
 
-        public static float[] vSub(float[] v1, float[] v2)
-        {
-            Vector3f dest = new Vector3f();
-            dest[0] = v1[0] - v2[0];
-            dest[1] = v1[1] - v2[1];
-            dest[2] = v1[2] - v2[2];
-            return dest.ToArray();
-        }
-        
         public static Vector3f vSub(Vector3f v1, Vector3f v2)
         {
             Vector3f dest = new Vector3f();
@@ -945,23 +936,6 @@ namespace DotRecast.Core
             return a[0] * b[2] - a[2] * b[0];
         }
 
-
-        public static Tuple<float, float>? intersectSegSeg2D(float[] ap, float[] aq, float[] bp, float[] bq)
-        {
-            float[] u = vSub(aq, ap);
-            float[] v = vSub(bq, bp);
-            float[] w = vSub(ap, bp);
-            float d = vperpXZ(u, v);
-            if (Math.Abs(d) < 1e-6f)
-            {
-                return null;
-            }
-
-            float s = vperpXZ(v, w) / d;
-            float t = vperpXZ(u, w) / d;
-            return Tuple.Create(s, t);
-        }
-        
         public static Tuple<float, float>? intersectSegSeg2D(Vector3f ap, Vector3f aq, Vector3f bp, Vector3f bq)
         {
             Vector3f u = vSub(aq, ap);

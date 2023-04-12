@@ -88,11 +88,6 @@ namespace DotRecast.Core
             }
         }
 
-        public float[] ToArray()
-        {
-            return new float[] { x, y, z };
-        }
-
         public static bool operator ==(Vector3f left, Vector3f right)
         {
             return (left.x == right.x)
