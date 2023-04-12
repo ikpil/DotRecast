@@ -109,7 +109,7 @@ namespace DotRecast.Detour.Crowd
                 return;
             }
 
-            vCopy(ref m_center, pos);
+            m_center = pos;
             // First query non-overlapping polygons.
             Result<FindLocalNeighbourhoodResult> res = navquery.findLocalNeighbourhood(refs, pos, collisionQueryRange,
                 filter);

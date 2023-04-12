@@ -260,7 +260,7 @@ public class TestNavmeshTool : Tool
                         if (endOfPath && PathUtils.inRange(iterPos, steerTarget.steerPos, SLOP, 1.0f))
                         {
                             // Reached end of path.
-                            vCopy(ref iterPos, targetPos);
+                            iterPos = targetPos;
                             if (m_smoothPath.Count < MAX_SMOOTH)
                             {
                                 m_smoothPath.Add(iterPos);
@@ -302,7 +302,7 @@ public class TestNavmeshTool : Tool
                                 }
 
                                 // Move position at the other side of the off-mesh link.
-                                vCopy(ref iterPos, endPos);
+                                iterPos = endPos;
                                 iterPos[1] = m_navQuery.getPolyHeight(polys[0], iterPos).result;
                             }
                         }
@@ -990,7 +990,7 @@ public class TestNavmeshTool : Tool
                 {
                     // In case of partial path, make sure the end point is clamped to the last polygon.
                     Vector3f epos = new Vector3f();
-                    vCopy(ref epos, m_epos);
+                    epos = m_epos;
                     if (m_polys[m_polys.Count - 1] != m_endRef)
                     {
                         Result<ClosestPointOnPolyResult> result = m_navQuery

@@ -257,7 +257,7 @@ namespace DotRecast.Detour.Crowd
             ag.dvel = Vector3f.Zero;
             ag.nvel = Vector3f.Zero;
             ag.vel = Vector3f.Zero;
-            vCopy(ref ag.npos, nearest);
+            ag.npos = nearest;
 
             ag.desiredSpeed = 0;
 
@@ -325,7 +325,7 @@ namespace DotRecast.Detour.Crowd
         {
             // Initialize request.
             agent.targetRef = 0;
-            vCopy(ref agent.targetPos, vel);
+            agent.targetPos = vel;
             agent.targetPathQueryResult = null;
             agent.targetReplan = false;
             agent.targetState = CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY;
@@ -455,7 +455,7 @@ namespace DotRecast.Detour.Crowd
                 // First check that the current location is valid.
                 Vector3f agentPos = new Vector3f();
                 long agentRef = ag.corridor.getFirstPoly();
-                vCopy(ref agentPos, ag.npos);
+                agentPos = ag.npos;
                 if (!navQuery.isValidPolyRef(agentRef, m_filters[ag.option.queryFilterType]))
                 {
                     // Current location is not valid, try to reposition.
@@ -465,7 +465,7 @@ namespace DotRecast.Detour.Crowd
                     agentRef = nearestPoly.succeeded() ? nearestPoly.result.getNearestRef() : 0L;
                     if (nearestPoly.succeeded())
                     {
-                        vCopy(ref agentPos, nearestPoly.result.getNearestPos());
+                        agentPos = nearestPoly.result.getNearestPos();
                     }
 
                     if (agentRef == 0)
@@ -485,7 +485,7 @@ namespace DotRecast.Detour.Crowd
                     // ag.corridor.trimInvalidPath(agentRef, agentPos, m_navquery,
                     // &m_filter);
                     ag.boundary.reset();
-                    vCopy(ref ag.npos, agentPos);
+                    ag.npos = agentPos;
 
                     replan = true;
                 }
@@ -510,7 +510,7 @@ namespace DotRecast.Detour.Crowd
                         ag.targetRef = fnp.succeeded() ? fnp.result.getNearestRef() : 0L;
                         if (fnp.succeeded())
                         {
-                            vCopy(ref ag.targetPos, fnp.result.getNearestPos());
+                            ag.targetPos = fnp.result.getNearestPos();
                         }
 
                         replan = true;
@@ -626,14 +626,14 @@ namespace DotRecast.Detour.Crowd
                         }
                         else
                         {
-                            vCopy(ref reqPos, ag.targetPos);
+                            reqPos = ag.targetPos;
                         }
                     }
                     else
                     {
                         // Could not find path, start the request from current
                         // location.
-                        vCopy(ref reqPos, ag.npos);
+                        reqPos = ag.npos;
                         reqPath = new List<long>();
                         reqPath.Add(path[0]);
                     }
@@ -965,8 +965,8 @@ namespace DotRecast.Detour.Crowd
                     // Copy data for debug purposes.
                     if (debugAgent == ag)
                     {
-                        vCopy(ref debug.optStart, ag.corridor.getPos());
-                        vCopy(ref debug.optEnd, target);
+                        debug.optStart = ag.corridor.getPos();
+                        debug.optEnd = target;
                     }
                 }
                 else
@@ -1011,7 +1011,7 @@ namespace DotRecast.Detour.Crowd
                     if (ag.corridor.moveOverOffmeshConnection(ag.corners[ag.corners.Count - 1].getRef(), refs, ref anim.startPos,
                             ref anim.endPos, navQuery))
                     {
-                        vCopy(ref anim.initPos, ag.npos);
+                        anim.initPos = ag.npos;
                         anim.polyRef = refs[1];
                         anim.active = true;
                         anim.t = 0.0f;
@@ -1051,7 +1051,7 @@ namespace DotRecast.Detour.Crowd
 
                 if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                 {
-                    vCopy(ref dvel, ag.targetPos);
+                    dvel = ag.targetPos;
                     ag.desiredSpeed = vLen(ag.targetPos);
                 }
                 else
@@ -1124,7 +1124,7 @@ namespace DotRecast.Detour.Crowd
                 }
 
                 // Set the desired velocity.
-                vCopy(ref ag.dvel, dvel);
+                ag.dvel = dvel;
             }
 
             _telemetry.stop("calculateSteering");
@@ -1198,7 +1198,7 @@ namespace DotRecast.Detour.Crowd
                 else
                 {
                     // If not using velocity planning, new velocity is directly the desired velocity.
-                    vCopy(ref ag.nvel, ag.dvel);
+                    ag.nvel = ag.dvel;
                 }
             }
 
@@ -1311,7 +1311,7 @@ namespace DotRecast.Detour.Crowd
                 // Move along navmesh.
                 ag.corridor.movePosition(ag.npos, navQuery, m_filters[ag.option.queryFilterType]);
                 // Get valid constrained position back.
-                vCopy(ref ag.npos, ag.corridor.getPos());
+                ag.npos = ag.corridor.getPos();
 
                 // If not using path, truncate the corridor to just one poly.
                 if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_NONE

@@ -343,8 +343,8 @@ namespace DotRecast.Detour
                 hmax += option.walkableClimb;
                 Vector3f bmin = new Vector3f();
                 Vector3f bmax = new Vector3f();
-                vCopy(ref bmin, option.bmin);
-                vCopy(ref bmax, option.bmax);
+                bmin = option.bmin;
+                bmax = option.bmax;
                 bmin[1] = hmin;
                 bmax[1] = hmax;
 
@@ -467,8 +467,8 @@ namespace DotRecast.Detour
             header.polyCount = totPolyCount;
             header.vertCount = totVertCount;
             header.maxLinkCount = maxLinkCount;
-            vCopy(ref header.bmin, option.bmin);
-            vCopy(ref header.bmax, option.bmax);
+            header.bmin = option.bmin;
+            header.bmax = option.bmax;
             header.detailMeshCount = option.polyCount;
             header.detailVertCount = uniqueDetailVertCount;
             header.detailTriCount = detailTriCount;

@@ -270,43 +270,43 @@ namespace DotRecast.Detour
         {
             if (between(a, b, c) && between(a, b, d))
             {
-                vCopy(ref p, c);
-                vCopy(ref q, d);
+                p = c;
+                q = d;
                 return Intersection.Overlap;
             }
 
             if (between(c, d, a) && between(c, d, b))
             {
-                vCopy(ref p, a);
-                vCopy(ref q, b);
+                p = a;
+                q = b;
                 return Intersection.Overlap;
             }
 
             if (between(a, b, c) && between(c, d, b))
             {
-                vCopy(ref p, c);
-                vCopy(ref q, b);
+                p = c;
+                q = b;
                 return Intersection.Overlap;
             }
 
             if (between(a, b, c) && between(c, d, a))
             {
-                vCopy(ref p, c);
-                vCopy(ref q, a);
+                p = c;
+                q = a;
                 return Intersection.Overlap;
             }
 
             if (between(a, b, d) && between(c, d, b))
             {
-                vCopy(ref p, d);
-                vCopy(ref q, b);
+                p = d;
+                q = b;
                 return Intersection.Overlap;
             }
 
             if (between(a, b, d) && between(c, d, a))
             {
-                vCopy(ref p, d);
-                vCopy(ref q, a);
+                p = d;
+                q = a;
                 return Intersection.Overlap;
             }
 

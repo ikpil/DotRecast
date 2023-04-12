@@ -54,7 +54,7 @@ public class AbstractTileCacheTest
         int[] twh = Recast.Recast.calcTileCount(geom.getMeshBoundsMin(), geom.getMeshBoundsMax(), m_cellSize, m_tileSize, m_tileSize);
         option.ch = m_cellHeight;
         option.cs = m_cellSize;
-        vCopy(ref option.orig, geom.getMeshBoundsMin());
+        option.orig = geom.getMeshBoundsMin();
         option.height = m_tileSize;
         option.width = m_tileSize;
         option.walkableHeight = m_agentHeight;

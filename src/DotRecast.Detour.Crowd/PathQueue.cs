@@ -85,9 +85,9 @@ namespace DotRecast.Detour.Crowd
             }
 
             PathQuery q = new PathQuery();
-            vCopy(ref q.startPos, startPos);
+            q.startPos = startPos;
             q.startRef = startRef;
-            vCopy(ref q.endPos, endPos);
+            q.endPos = endPos;
             q.endRef = endRef;
             q.result.status = null;
             q.filter = filter;

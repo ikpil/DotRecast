@@ -159,10 +159,10 @@ namespace DotRecast.Detour.Crowd
                 return;
 
             ObstacleCircle cir = m_circles[m_ncircles++];
-            vCopy(ref cir.p, pos);
+            cir.p = pos;
             cir.rad = rad;
-            vCopy(ref cir.vel, vel);
-            vCopy(ref cir.dvel, dvel);
+            cir.vel = vel;
+            cir.dvel = dvel;
         }
 
         public void addSegment(Vector3f p, Vector3f q)
@@ -171,8 +171,8 @@ namespace DotRecast.Detour.Crowd
                 return;
             
             ObstacleSegment seg = m_segments[m_nsegments++];
-            vCopy(ref seg.p, p);
-            vCopy(ref seg.q, q);
+            seg.p = p;
+            seg.q = q;
         }
 
         public int getObstacleCircleCount()
@@ -208,7 +208,7 @@ namespace DotRecast.Detour.Crowd
 
                 Vector3f orig = new Vector3f();
                 Vector3f dv = new Vector3f();
-                vCopy(ref cir.dp, vSub(pb, pa));
+                cir.dp = vSub(pb, pa);
                 vNormalize(ref cir.dp);
                 dv = vSub(cir.dvel, dvel);
 
@@ -429,7 +429,7 @@ namespace DotRecast.Detour.Crowd
                     if (penalty < minPenalty)
                     {
                         minPenalty = penalty;
-                        vCopy(ref nvel, vcand);
+                        nvel = vcand;
                     }
                 }
             }
@@ -558,16 +558,16 @@ namespace DotRecast.Detour.Crowd
                     if (penalty < minPenalty)
                     {
                         minPenalty = penalty;
-                        vCopy(ref bvel, vcand);
+                        bvel = vcand;
                     }
                 }
 
-                vCopy(ref res, bvel);
+                res = bvel;
 
                 cr *= 0.5f;
             }
 
-            vCopy(ref nvel, res);
+            nvel = res;
 
             return Tuple.Create(ns, nvel);
         }

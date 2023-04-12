@@ -264,7 +264,7 @@ namespace DotRecast.Detour
             m_openList.clear();
 
             Node startNode = m_nodePool.getNode(startRef);
-            vCopy(ref startNode.pos, centerPos);
+            startNode.pos = centerPos;
             startNode.pidx = 0;
             startNode.cost = 0;
             startNode.total = 0;
@@ -812,7 +812,7 @@ namespace DotRecast.Detour
             m_openList.clear();
 
             Node startNode = m_nodePool.getNode(startRef);
-            vCopy(ref startNode.pos, startPos);
+            startNode.pos = startPos;
             startNode.pidx = 0;
             startNode.cost = 0;
             startNode.total = heuristic.getCost(startPos, endPos);
@@ -1061,8 +1061,8 @@ namespace DotRecast.Detour
             m_query.status = Status.FAILURE;
             m_query.startRef = startRef;
             m_query.endRef = endRef;
-            vCopy(ref m_query.startPos, startPos);
-            vCopy(ref m_query.endPos, endPos);
+            m_query.startPos = startPos;
+            m_query.endPos = endPos;
             m_query.filter = filter;
             m_query.options = options;
             m_query.heuristic = heuristic;
@@ -1094,7 +1094,7 @@ namespace DotRecast.Detour
             m_openList.clear();
 
             Node startNode = m_nodePool.getNode(startRef);
-            vCopy(ref startNode.pos, startPos);
+            startNode.pos = startPos;
             startNode.pidx = 0;
             startNode.cost = 0;
             startNode.total = heuristic.getCost(startPos, endPos);
@@ -1842,7 +1842,7 @@ namespace DotRecast.Detour
             Vector3f bestPos = new Vector3f();
             float bestDist = float.MaxValue;
             Node bestNode = null;
-            vCopy(ref bestPos, startPos);
+            bestPos = startPos;
 
             // Search constraints
             var searchPos = vLerp(startPos, endPos, 0.5f);
@@ -1874,7 +1874,7 @@ namespace DotRecast.Detour
                 if (pointInPolygon(endPos, verts, nverts))
                 {
                     bestNode = curNode;
-                    vCopy(ref bestPos, endPos);
+                    bestPos = endPos;
                     break;
                 }
 
@@ -2243,7 +2243,7 @@ namespace DotRecast.Detour
 
             Vector3f curPos = new Vector3f(), lastPos = new Vector3f();
 
-            vCopy(ref curPos, startPos);
+            curPos = startPos;
             var dir = vSub(endPos, startPos);
 
             MeshTile prevTile, tile, nextTile;
@@ -2411,7 +2411,7 @@ namespace DotRecast.Detour
                 {
                     // compute the intersection point at the furthest end of the polygon
                     // and correct the height (since the raycast moves in 2d)
-                    vCopy(ref lastPos, curPos);
+                    lastPos = curPos;
                     curPos = vMad(startPos, dir, hit.t);
                     VectorPtr e1 = new VectorPtr(verts, iresult.segMax * 3);
                     VectorPtr e2 = new VectorPtr(verts, ((iresult.segMax + 1) % nv) * 3);
@@ -2516,7 +2516,7 @@ namespace DotRecast.Detour
             m_openList.clear();
 
             Node startNode = m_nodePool.getNode(startRef);
-            vCopy(ref startNode.pos, centerPos);
+            startNode.pos = centerPos;
             startNode.pidx = 0;
             startNode.cost = 0;
             startNode.total = 0;
@@ -3243,7 +3243,7 @@ namespace DotRecast.Detour
             m_openList.clear();
 
             Node startNode = m_nodePool.getNode(startRef);
-            vCopy(ref startNode.pos, centerPos);
+            startNode.pos = centerPos;
             startNode.pidx = 0;
             startNode.cost = 0;
             startNode.total = 0;

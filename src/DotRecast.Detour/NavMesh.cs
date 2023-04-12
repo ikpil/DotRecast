@@ -325,7 +325,7 @@ namespace DotRecast.Detour
         private static NavMeshParams getNavMeshParams(MeshData data)
         {
             NavMeshParams option = new NavMeshParams();
-            vCopy(ref option.orig, data.header.bmin);
+            option.orig = data.header.bmin;
             option.tileWidth = data.header.bmax[0] - data.header.bmin[0];
             option.tileHeight = data.header.bmax[2] - data.header.bmin[2];
             option.maxTiles = 1;
@@ -1325,7 +1325,7 @@ namespace DotRecast.Detour
             MeshTile tile = tileAndPoly.Item1;
             Poly poly = tileAndPoly.Item2;
             Vector3f closest = new Vector3f();
-            vCopy(ref closest, pos);
+            closest = pos;
             float? h = getPolyHeight(tile, poly, pos);
             if (null != h)
             {

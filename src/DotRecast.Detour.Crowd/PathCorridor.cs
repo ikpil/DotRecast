@@ -210,8 +210,8 @@ namespace DotRecast.Detour.Crowd
         {
             m_path.Clear();
             m_path.Add(refs);
-            vCopy(ref m_pos, pos);
-            vCopy(ref m_target, pos);
+            m_pos = pos;
+            m_target = pos;
         }
 
         private static readonly float MIN_TARGET_DIST = sqr(0.01f);
@@ -390,9 +390,9 @@ namespace DotRecast.Detour.Crowd
             var startEnd = nav.getOffMeshConnectionPolyEndPoints(refs[0], refs[1]);
             if (startEnd.succeeded())
             {
-                vCopy(ref m_pos, startEnd.result.Item2);
-                vCopy(ref start, startEnd.result.Item1);
-                vCopy(ref end, startEnd.result.Item2);
+                m_pos = startEnd.result.Item2;
+                start = startEnd.result.Item1;
+                end = startEnd.result.Item2;
                 return true;
             }
 
@@ -430,7 +430,7 @@ namespace DotRecast.Detour.Crowd
             {
                 m_path = mergeCorridorStartMoved(m_path, masResult.result.getVisited());
                 // Adjust the position to stay on top of the navmesh.
-                vCopy(ref m_pos, masResult.result.getResultPos());
+                m_pos = masResult.result.getResultPos();
                 Result<float> hr = navquery.getPolyHeight(m_path[0], masResult.result.getResultPos());
                 if (hr.succeeded())
                 {
@@ -473,7 +473,7 @@ namespace DotRecast.Detour.Crowd
                  * float h = m_target[1]; navquery->getPolyHeight(m_path[m_npath-1],
                  * result, &h); result[1] = h;
                  */
-                vCopy(ref m_target, masResult.result.getResultPos());
+                m_target = masResult.result.getResultPos();
                 return true;
             }
 
@@ -492,13 +492,13 @@ namespace DotRecast.Detour.Crowd
      */
         public void setCorridor(Vector3f target, List<long> path)
         {
-            vCopy(ref m_target, target);
+            m_target = target;
             m_path = new List<long>(path);
         }
 
         public void fixPathStart(long safeRef, Vector3f safePos)
         {
-            vCopy(ref m_pos, safePos);
+            m_pos = safePos;
             if (m_path.Count < 3 && m_path.Count > 0)
             {
                 long p = m_path[m_path.Count - 1];
@@ -541,7 +541,7 @@ namespace DotRecast.Detour.Crowd
             var result = navquery.closestPointOnPolyBoundary(m_path[m_path.Count - 1], m_target);
             if (result.succeeded())
             {
-                vCopy(ref m_target, result.result);
+                m_target = result.result;
             }
         }
 

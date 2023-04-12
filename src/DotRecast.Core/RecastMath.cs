@@ -222,13 +222,6 @@ namespace DotRecast.Core
             @out.z = @in[2];
         }
         
-        public static void vCopy(ref Vector3f @out, Vector3f @in)
-        {
-            @out.x = @in[0];
-            @out.y = @in[1];
-            @out.z = @in[2];
-        }
-        
         public static void vCopy(ref Vector3f @out, float[] @in, int i)
         {
             @out.x = @in[i];

@@ -229,7 +229,7 @@ namespace DotRecast.Detour.Crowd
         public void setTarget(long refs, Vector3f pos)
         {
             targetRef = refs;
-            vCopy(ref targetPos, pos);
+            targetPos = pos;
             targetPathQueryResult = null;
             if (targetRef != 0)
             {

@@ -98,8 +98,8 @@ public class TestTileLayerBuilder : AbstractTileLayersBuilder
                 header.tx = tx;
                 header.ty = ty;
                 header.tlayer = i;
-                vCopy(ref header.bmin, layer.bmin);
-                vCopy(ref header.bmax, layer.bmax);
+                header.bmin = layer.bmin;
+                header.bmax = layer.bmax;
 
                 // Tile info.
                 header.width = layer.width;

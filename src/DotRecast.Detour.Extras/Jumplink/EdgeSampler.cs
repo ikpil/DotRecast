@@ -17,7 +17,7 @@ namespace DotRecast.Detour.Extras.Jumplink
         public EdgeSampler(Edge edge, Trajectory trajectory)
         {
             this.trajectory = trajectory;
-            vCopy(ref ax, vSub(edge.sq, edge.sp));
+            ax = vSub(edge.sq, edge.sp);
             vNormalize(ref ax);
             vSet(ref az, ax[2], 0, -ax[0]);
             vNormalize(ref az);

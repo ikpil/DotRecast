@@ -363,7 +363,7 @@ namespace DotRecast.Detour.TileCache
             TileCacheObstacle ob = allocObstacle();
             ob.type = TileCacheObstacle.TileCacheObstacleType.CYLINDER;
 
-            vCopy(ref ob.pos, pos);
+            ob.pos = pos;
             ob.radius = radius;
             ob.height = height;
 
@@ -387,8 +387,8 @@ namespace DotRecast.Detour.TileCache
         {
             TileCacheObstacle ob = allocObstacle();
             ob.type = TileCacheObstacle.TileCacheObstacleType.ORIENTED_BOX;
-            vCopy(ref ob.center, center);
-            vCopy(ref ob.extents, extents);
+            ob.center = center;
+            ob.extents = extents;
             float coshalf = (float)Math.Cos(0.5f * yRadians);
             float sinhalf = (float)Math.Sin(-0.5f * yRadians);
             ob.rotAux[0] = coshalf * sinhalf;
@@ -706,8 +706,8 @@ namespace DotRecast.Detour.TileCache
             }
             else if (ob.type == TileCacheObstacle.TileCacheObstacleType.BOX)
             {
-                vCopy(ref bmin, ob.bmin);
-                vCopy(ref bmax, ob.bmax);
+                bmin = ob.bmin;
+                bmax = ob.bmax;
             }
             else if (ob.type == TileCacheObstacle.TileCacheObstacleType.ORIENTED_BOX)
             {

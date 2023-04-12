@@ -435,7 +435,7 @@ public class CrowdTool : Tool
             dd.begin(LINES, 3.0f);
             Vector3f prev = new Vector3f();
             float preva = 1;
-            vCopy(ref prev, pos);
+            prev = pos;
             for (int j = 0; j < AGENT_MAX_TRAIL - 1; ++j)
             {
                 int idx = (trail.htrail + AGENT_MAX_TRAIL - j) % AGENT_MAX_TRAIL;

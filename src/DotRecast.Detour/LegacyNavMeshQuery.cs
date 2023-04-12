@@ -58,7 +58,7 @@ namespace DotRecast.Detour
             m_openList.clear();
 
             Node startNode = m_nodePool.getNode(startRef);
-            vCopy(ref startNode.pos, startPos);
+            startNode.pos = startPos;
             startNode.pidx = 0;
             startNode.cost = 0;
             startNode.total = vDist(startPos, endPos) * H_SCALE;
@@ -657,7 +657,7 @@ namespace DotRecast.Detour
             m_openList.clear();
 
             Node startNode = m_nodePool.getNode(startRef);
-            vCopy(ref startNode.pos, centerPos);
+            startNode.pos = centerPos;
             startNode.pidx = 0;
             startNode.cost = 0;
             startNode.total = 0;
