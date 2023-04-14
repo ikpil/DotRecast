@@ -28,21 +28,13 @@ namespace DotRecast.Recast.Demo.UI;
 public class RcViewSystem
 {
     private static readonly ILogger Logger = Log.ForContext<RecastDemo>();
-    // readonly NkAllocator allocator;
-    private readonly IWindow _window;
-
-    private readonly GL _gl;
-
-    // readonly NkColor background;
-    // readonly NkColor white;
+    
     private readonly IRcView[] _views;
     private bool _mouseOverUI;
     public bool IsMouseOverUI() => _mouseOverUI;
 
     public RcViewSystem(IWindow window, IInputContext input, params IRcView[] views)
     {
-        _window = window;
-        _gl = GL.GetApi(window);
         // setupClipboard(window);
         // glfwSetCharCallback(window, (w, codepoint) => nk_input_unicode(ctx, codepoint));
         // glContext = new NuklearGL(this);
