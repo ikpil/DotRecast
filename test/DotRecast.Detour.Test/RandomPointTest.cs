@@ -121,19 +121,19 @@ public class RandomPointTest : AbstractDetourTest
             query.findRandomPointWithinCircle(point.getRandomRef(), point.getRandomPt(), radius, filter, f);
         }
 
-        long t1 = TickWatch.Ticks;
+        long t1 = FrequencyWatch.Ticks;
         for (int i = 0; i < 10000; i++)
         {
             query.findRandomPointAroundCircle(point.getRandomRef(), point.getRandomPt(), radius, filter, f);
         }
 
-        long t2 = TickWatch.Ticks;
+        long t2 = FrequencyWatch.Ticks;
         for (int i = 0; i < 10000; i++)
         {
             query.findRandomPointWithinCircle(point.getRandomRef(), point.getRandomPt(), radius, filter, f);
         }
 
-        long t3 = TickWatch.Ticks;
+        long t3 = FrequencyWatch.Ticks;
         Console.WriteLine("Random point around circle: " + (t2 - t1) / TimeSpan.TicksPerMillisecond + "ms");
         Console.WriteLine("Random point within circle: " + (t3 - t2) / TimeSpan.TicksPerMillisecond + "ms");
     }

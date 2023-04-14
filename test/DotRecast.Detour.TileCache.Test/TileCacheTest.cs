@@ -188,20 +188,20 @@ public class TileCacheTest : AbstractTileCacheTest
             layerBuilder.build(order, cCompatibility, threads);
         }
 
-        long t1 = TickWatch.Ticks;
+        long t1 = FrequencyWatch.Ticks;
         List<byte[]> layers = null;
         for (int i = 0; i < 8; i++)
         {
             layers = layerBuilder.build(order, cCompatibility, 1);
         }
 
-        long t2 = TickWatch.Ticks;
+        long t2 = FrequencyWatch.Ticks;
         for (int i = 0; i < 8; i++)
         {
             layers = layerBuilder.build(order, cCompatibility, threads);
         }
 
-        long t3 = TickWatch.Ticks;
+        long t3 = FrequencyWatch.Ticks;
         Console.WriteLine(" Time ST : " + (t2 - t1) / TimeSpan.TicksPerMillisecond);
         Console.WriteLine(" Time MT : " + (t3 - t2) / TimeSpan.TicksPerMillisecond);
         TileCache tc = getTileCache(geom, order, cCompatibility);

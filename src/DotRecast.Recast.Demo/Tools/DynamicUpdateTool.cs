@@ -204,9 +204,9 @@ public class DynamicUpdateTool : Tool
             {
                 Vector3f sp = Vector3f.Of(spos[0], spos[1] + 1.3f, spos[2]);
                 Vector3f ep = Vector3f.Of(epos[0], epos[1] + 1.3f, epos[2]);
-                long t1 = TickWatch.Ticks;
+                long t1 = FrequencyWatch.Ticks;
                 float? hitPos = dynaMesh.voxelQuery().raycast(sp, ep);
-                long t2 = TickWatch.Ticks;
+                long t2 = FrequencyWatch.Ticks;
                 raycastTime = (t2 - t1) / TimeSpan.TicksPerMillisecond;
                 raycastHit = hitPos.HasValue;
                 raycastHitPos = hitPos.HasValue
@@ -498,13 +498,13 @@ public class DynamicUpdateTool : Tool
 
     private void updateDynaMesh()
     {
-        long t = TickWatch.Ticks;
+        long t = FrequencyWatch.Ticks;
         try
         {
             bool updated = dynaMesh.update(executor).Result;
             if (updated)
             {
-                buildTime = (TickWatch.Ticks - t) / TimeSpan.TicksPerMillisecond;
+                buildTime = (FrequencyWatch.Ticks - t) / TimeSpan.TicksPerMillisecond;
                 sample.update(null, dynaMesh.recastResults(), dynaMesh.navMesh());
                 sample.setChanged(false);
             }
@@ -727,7 +727,7 @@ public class DynamicUpdateTool : Tool
     private void buildDynaMesh()
     {
         configDynaMesh();
-        long t = TickWatch.Ticks;
+        long t = FrequencyWatch.Ticks;
         try
         {
             var _ = dynaMesh.build(executor).Result;
@@ -737,7 +737,7 @@ public class DynamicUpdateTool : Tool
             Console.WriteLine(e);
         }
 
-        buildTime = (TickWatch.Ticks - t) / TimeSpan.TicksPerMillisecond;
+        buildTime = (FrequencyWatch.Ticks - t) / TimeSpan.TicksPerMillisecond;
         sample.update(null, dynaMesh.recastResults(), dynaMesh.navMesh());
     }
 

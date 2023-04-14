@@ -678,9 +678,9 @@ public class CrowdTool : Tool
         if (nav == null)
             return;
 
-        long startTime = TickWatch.Ticks;
+        long startTime = FrequencyWatch.Ticks;
         crowd.update(dt, m_agentDebug);
-        long endTime = TickWatch.Ticks;
+        long endTime = FrequencyWatch.Ticks;
 
         // Update agent trails
         foreach (CrowdAgent ag in crowd.getActiveAgents())
