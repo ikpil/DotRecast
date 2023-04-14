@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Detour.TileCache.Io.Compress
 {
-    public class TileCacheCompressorFactory
+    public static class TileCacheCompressorFactory
     {
         public static TileCacheCompressor get(bool cCompatibility)
         {

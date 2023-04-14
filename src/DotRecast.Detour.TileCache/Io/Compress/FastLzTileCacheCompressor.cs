@@ -19,7 +19,6 @@ freely, subject to the following restrictions:
 */
 
 using DotRecast.Core;
-using K4os.Compression.LZ4;
 
 namespace DotRecast.Detour.TileCache.Io.Compress
 {
