@@ -36,60 +36,19 @@ public class RcViewSystem
     // readonly NkColor background;
     // readonly NkColor white;
     private readonly IRcView[] _views;
-    private readonly NuklearGL glContext;
     private bool _mouseOverUI;
     public bool IsMouseOverUI() => _mouseOverUI;
 
     public RcViewSystem(IWindow window, IInputContext input, params IRcView[] views)
     {
-        var mouse = new Mouse(input);
         _window = window;
         _gl = GL.GetApi(window);
-        setupMouse(mouse);
         // setupClipboard(window);
         // glfwSetCharCallback(window, (w, codepoint) => nk_input_unicode(ctx, codepoint));
         // glContext = new NuklearGL(this);
         _views = views;
     }
 
-    private void setupMouse(Mouse mouse)
-    {
-        // mouse.addListener(new MouseListener() {
-        //
-        //     @Override
-        //     public void scroll(double xoffset, double yoffset) {
-        //         if (mouseOverUI) {
-        //             try (MemoryStack stack = stackPush()) {
-        //                 NkVec2 scroll = NkVec2.mallocStack(stack).x((float) xoffset).y((float) yoffset);
-        //                 nk_input_scroll(ctx, scroll);
-        //             }
-        //         }
-        //     }
-        //
-        //     @Override
-        //     public void button(int button, int mods, bool down) {
-        //         try (MemoryStack stack = stackPush()) {
-        //             int nkButton;
-        //             switch (button) {
-        //             case GLFW_MOUSE_BUTTON_RIGHT:
-        //                 nkButton = NK_BUTTON_RIGHT;
-        //                 break;
-        //             case GLFW_MOUSE_BUTTON_MIDDLE:
-        //                 nkButton = NK_BUTTON_MIDDLE;
-        //                 break;
-        //             default:
-        //                 nkButton = NK_BUTTON_LEFT;
-        //             }
-        //             nk_input_button(ctx, nkButton, (int) mouse.getX(), (int) mouse.getY(), down);
-        //         }
-        //     }
-        //
-        //     @Override
-        //     public void position(double x, double y) {
-        //         nk_input_motion(ctx, (int) x, (int) y);
-        //     }
-        // });
-    }
 
     private void setupClipboard(long window)
     {
