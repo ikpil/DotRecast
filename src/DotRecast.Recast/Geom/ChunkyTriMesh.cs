@@ -53,35 +53,35 @@ namespace DotRecast.Recast.Geom
         int ntris;
         int maxTrisPerChunk;
 
-        private void calcExtends(BoundsItem[] items, int imin, int imax, float[] bmin, float[] bmax)
+        private void calcExtends(BoundsItem[] items, int imin, int imax, ref Vector2f bmin, ref Vector2f bmax)
         {
-            bmin[0] = items[imin].bmin.x;
-            bmin[1] = items[imin].bmin.y;
+            bmin.x = items[imin].bmin.x;
+            bmin.y = items[imin].bmin.y;
 
-            bmax[0] = items[imin].bmax.x;
-            bmax[1] = items[imin].bmax.y;
+            bmax.x = items[imin].bmax.x;
+            bmax.y = items[imin].bmax.y;
 
             for (int i = imin + 1; i < imax; ++i)
             {
                 BoundsItem it = items[i];
-                if (it.bmin.x < bmin[0])
+                if (it.bmin.x < bmin.x)
                 {
-                    bmin[0] = it.bmin.x;
+                    bmin.x = it.bmin.x;
                 }
 
-                if (it.bmin.y < bmin[1])
+                if (it.bmin.y < bmin.y)
                 {
-                    bmin[1] = it.bmin.y;
+                    bmin.y = it.bmin.y;
                 }
 
-                if (it.bmax.x > bmax[0])
+                if (it.bmax.x > bmax.x)
                 {
-                    bmax[0] = it.bmax.x;
+                    bmax.x = it.bmax.x;
                 }
 
-                if (it.bmax.y > bmax[1])
+                if (it.bmax.y > bmax.y)
                 {
-                    bmax[1] = it.bmax.y;
+                    bmax.y = it.bmax.y;
                 }
             }
         }
@@ -91,8 +91,7 @@ namespace DotRecast.Recast.Geom
             return y > x ? 1 : 0;
         }
 
-        private void subdivide(BoundsItem[] items, int imin, int imax, int trisPerChunk, List<ChunkyTriMeshNode> nodes,
-            int[] inTris)
+        private void subdivide(BoundsItem[] items, int imin, int imax, int trisPerChunk, List<ChunkyTriMeshNode> nodes, int[] inTris)
         {
             int inum = imax - imin;
 
@@ -102,7 +101,7 @@ namespace DotRecast.Recast.Geom
             if (inum <= trisPerChunk)
             {
                 // Leaf
-                calcExtends(items, imin, imax, node.bmin, node.bmax);
+                calcExtends(items, imin, imax, ref node.bmin, ref node.bmax);
 
                 // Copy triangles.
                 node.i = nodes.Count;
@@ -120,9 +119,9 @@ namespace DotRecast.Recast.Geom
             else
             {
                 // Split
-                calcExtends(items, imin, imax, node.bmin, node.bmax);
+                calcExtends(items, imin, imax, ref node.bmin, ref node.bmax);
 
-                int axis = longestAxis(node.bmax[0] - node.bmin[0], node.bmax[1] - node.bmin[1]);
+                int axis = longestAxis(node.bmax.x - node.bmin.x, node.bmax.y - node.bmin.y);
 
                 if (axis == 0)
                 {
@@ -209,11 +208,11 @@ namespace DotRecast.Recast.Geom
             }
         }
 
-        private bool checkOverlapRect(float[] amin, float[] amax, float[] bmin, float[] bmax)
+        private bool checkOverlapRect(float[] amin, float[] amax, Vector2f bmin, Vector2f bmax)
         {
             bool overlap = true;
-            overlap = (amin[0] > bmax[0] || amax[0] < bmin[0]) ? false : overlap;
-            overlap = (amin[1] > bmax[1] || amax[1] < bmin[1]) ? false : overlap;
+            overlap = (amin[0] > bmax.x || amax[0] < bmin.x) ? false : overlap;
+            overlap = (amin[1] > bmax.y || amax[1] < bmin.y) ? false : overlap;
             return overlap;
         }
 
@@ -275,7 +274,7 @@ namespace DotRecast.Recast.Geom
             return ids;
         }
 
-        private bool checkOverlapSegment(float[] p, float[] q, float[] bmin, float[] bmax)
+        private bool checkOverlapSegment(float[] p, float[] q, Vector2f bmin, Vector2f bmax)
         {
             float EPSILON = 1e-6f;
 
@@ -290,20 +289,18 @@ namespace DotRecast.Recast.Geom
                 if (Math.Abs(d[i]) < EPSILON)
                 {
                     // Ray is parallel to slab. No hit if origin not within slab
-                    if (p[i] < bmin[i] || p[i] > bmax[i])
+                    if (p[i] < bmin.Get(i) || p[i] > bmax.Get(i))
                         return false;
                 }
                 else
                 {
                     // Compute intersection t value of ray with near and far plane of slab
                     float ood = 1.0f / d[i];
-                    float t1 = (bmin[i] - p[i]) * ood;
-                    float t2 = (bmax[i] - p[i]) * ood;
+                    float t1 = (bmin.Get(i) - p[i]) * ood;
+                    float t2 = (bmax.Get(i) - p[i]) * ood;
                     if (t1 > t2)
                     {
-                        float tmp = t1;
-                        t1 = t2;
-                        t2 = tmp;
+                        (t1, t2) = (t2, t1);
                     }
 
                     if (t1 > tmin)

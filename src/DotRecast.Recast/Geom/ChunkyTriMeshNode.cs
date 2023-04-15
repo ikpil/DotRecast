@@ -1,9 +1,11 @@
-﻿namespace DotRecast.Recast.Geom
+﻿using DotRecast.Core;
+
+namespace DotRecast.Recast.Geom
 {
     public class ChunkyTriMeshNode
     {
-        public readonly float[] bmin = new float[2];
-        public readonly float[] bmax = new float[2];
+        public Vector2f bmin;
+        public Vector2f bmax;
         public int i;
         public int[] tris;
     }
