@@ -756,8 +756,7 @@ namespace DotRecast.Detour
                     // Create new links
                     int va = poly.verts[j] * 3;
                     int vb = poly.verts[(j + 1) % nv] * 3;
-                    IList<Tuple<long, float, float>> connectedPolys = findConnectingPolys(tile.data.verts, va, vb, target,
-                        oppositeTile(dir));
+                    IList<Tuple<long, float, float>> connectedPolys = findConnectingPolys(tile.data.verts, va, vb, target, oppositeTile(dir));
                     foreach (Tuple<long, float, float> connectedPoly in connectedPolys)
                     {
                         int idx = allocLink(tile);
@@ -904,14 +903,14 @@ namespace DotRecast.Detour
             }
 
             List<Tuple<long, float, float>> result = new List<Tuple<long, float, float>>();
-            float[] amin = new float[2];
-            float[] amax = new float[2];
-            calcSlabEndPoints(verts, va, vb, amin, amax, side);
+            Vector2f amin = Vector2f.Zero;
+            Vector2f amax = Vector2f.Zero;
+            calcSlabEndPoints(verts, va, vb, ref amin, ref amax, side);
             float apos = getSlabCoord(verts, va, side);
 
             // Remove links pointing to 'side' and compact the links array.
-            float[] bmin = new float[2];
-            float[] bmax = new float[2];
+            Vector2f bmin = Vector2f.Zero;
+            Vector2f bmax = Vector2f.Zero;
             int m = DT_EXT_LINK | side;
             long @base = getPolyRefBase(tile);
 
@@ -937,7 +936,7 @@ namespace DotRecast.Detour
                     }
 
                     // Check if the segments touch.
-                    calcSlabEndPoints(tile.data.verts, vc, vd, bmin, bmax, side);
+                    calcSlabEndPoints(tile.data.verts, vc, vd, ref bmin, ref bmax, side);
 
                     if (!overlapSlabs(amin, amax, bmin, bmax, 0.01f, tile.data.header.walkableClimb))
                     {
@@ -945,7 +944,10 @@ namespace DotRecast.Detour
                     }
 
                     // Add return value.
-                    result.Add(Tuple.Create(@base | i, Math.Max(amin[0], bmin[0]), Math.Min(amax[0], bmax[0])));
+                    long refs = @base | i;
+                    float tmin = Math.Max(amin.x, bmin.x);
+                    float tmax = Math.Min(amax.x, bmax.x);
+                    result.Add(Tuple.Create(refs, tmin, tmax));
                     break;
                 }
             }
@@ -967,61 +969,61 @@ namespace DotRecast.Detour
             return 0;
         }
 
-        static void calcSlabEndPoints(float[] verts, int va, int vb, float[] bmin, float[] bmax, int side)
+        static void calcSlabEndPoints(float[] verts, int va, int vb, ref Vector2f bmin, ref Vector2f bmax, int side)
         {
             if (side == 0 || side == 4)
             {
                 if (verts[va + 2] < verts[vb + 2])
                 {
-                    bmin[0] = verts[va + 2];
-                    bmin[1] = verts[va + 1];
-                    bmax[0] = verts[vb + 2];
-                    bmax[1] = verts[vb + 1];
+                    bmin.x = verts[va + 2];
+                    bmin.y = verts[va + 1];
+                    bmax.x = verts[vb + 2];
+                    bmax.y = verts[vb + 1];
                 }
                 else
                 {
-                    bmin[0] = verts[vb + 2];
-                    bmin[1] = verts[vb + 1];
-                    bmax[0] = verts[va + 2];
-                    bmax[1] = verts[va + 1];
+                    bmin.x = verts[vb + 2];
+                    bmin.y = verts[vb + 1];
+                    bmax.x = verts[va + 2];
+                    bmax.y = verts[va + 1];
                 }
             }
             else if (side == 2 || side == 6)
             {
                 if (verts[va + 0] < verts[vb + 0])
                 {
-                    bmin[0] = verts[va + 0];
-                    bmin[1] = verts[va + 1];
-                    bmax[0] = verts[vb + 0];
-                    bmax[1] = verts[vb + 1];
+                    bmin.x = verts[va + 0];
+                    bmin.y = verts[va + 1];
+                    bmax.x = verts[vb + 0];
+                    bmax.y = verts[vb + 1];
                 }
                 else
                 {
-                    bmin[0] = verts[vb + 0];
-                    bmin[1] = verts[vb + 1];
-                    bmax[0] = verts[va + 0];
-                    bmax[1] = verts[va + 1];
+                    bmin.x = verts[vb + 0];
+                    bmin.y = verts[vb + 1];
+                    bmax.x = verts[va + 0];
+                    bmax.y = verts[va + 1];
                 }
             }
         }
 
-        bool overlapSlabs(float[] amin, float[] amax, float[] bmin, float[] bmax, float px, float py)
+        bool overlapSlabs(Vector2f amin, Vector2f amax, Vector2f bmin, Vector2f bmax, float px, float py)
         {
             // Check for horizontal overlap.
             // The segment is shrunken a little so that slabs which touch
             // at end points are not connected.
-            float minx = Math.Max(amin[0] + px, bmin[0] + px);
-            float maxx = Math.Min(amax[0] - px, bmax[0] - px);
+            float minx = Math.Max(amin.x + px, bmin.x + px);
+            float maxx = Math.Min(amax.x - px, bmax.x - px);
             if (minx > maxx)
             {
                 return false;
             }
 
             // Check vertical overlap.
-            float ad = (amax[1] - amin[1]) / (amax[0] - amin[0]);
-            float ak = amin[1] - ad * amin[0];
-            float bd = (bmax[1] - bmin[1]) / (bmax[0] - bmin[0]);
-            float bk = bmin[1] - bd * bmin[0];
+            float ad = (amax.y - amin.y) / (amax.x - amin.x);
+            float ak = amin.y - ad * amin.x;
+            float bd = (bmax.y - bmin.y) / (bmax.x - bmin.x);
+            float bk = bmin.y - bd * bmin.x;
             float aminy = ad * minx + ak;
             float amaxy = ad * maxx + ak;
             float bminy = bd * minx + bk;
