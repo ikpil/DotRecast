@@ -27,7 +27,7 @@ Detour offers a simple static navmesh data representation which is suitable for 
 
 ## DotRecast.Recast.Demo
 
-You can find a comprehensive demo project in the `DotRecast.Recast.Demo` folder. It's a kitchen sink demo showcasing all the functionality of the library. If you are new to Recast & Detour, check out [Sample_SoloMesh.cpp](/RecastDemo/Source/Sample_SoloMesh.cpp) to get started with building navmeshes and [NavMeshTesterTool.cpp](/RecastDemo/Source/NavMeshTesterTool.cpp) to see how Detour can be used to find paths.
+You can find a comprehensive demo project in the `DotRecast.Recast.Demo` folder. It's a kitchen sink demo showcasing all the functionality of the library. If you are new to Recast & Detour, check out [SoloNavMeshBuilder.cs](/src/DotRecast.Recast.Demo/Builder/SoloNavMeshBuilder.cs) to get started with building navmeshes and [TestNavmeshTool.cs](/src/DotRecast.Recast.Demo/Tools/TestNavmeshTool.cs) to see how Detour can be used to find paths.
 
 ### Building DotRecast.Recast.Demo
 
