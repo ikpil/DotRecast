@@ -7,7 +7,7 @@ namespace DotRecast.Core
         public float x;
         public float y;
 
-        public static readonly Vector2f Zero = new Vector2f { x = 0, y = 0 };
+        public static Vector2f Zero { get; } = new Vector2f { x = 0, y = 0 };
 
         public float Get(int idx)
         {

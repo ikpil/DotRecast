@@ -2241,7 +2241,8 @@ namespace DotRecast.Detour
 
             float[] verts = new float[m_nav.getMaxVertsPerPoly() * 3 + 3];
 
-            Vector3f curPos = new Vector3f(), lastPos = new Vector3f();
+            Vector3f curPos = Vector3f.Zero;
+            Vector3f lastPos = Vector3f.Zero;
 
             curPos = startPos;
             var dir = vSub(endPos, startPos);
@@ -2369,9 +2370,7 @@ namespace DotRecast.Detour
                                      + (tile.data.verts[right + 2] - tile.data.verts[left + 2]) * (link.bmax * s);
                         if (lmin > lmax)
                         {
-                            float temp = lmin;
-                            lmin = lmax;
-                            lmax = temp;
+                            (lmin, lmax) = (lmax, lmin);
                         }
 
                         // Find Z intersection.
@@ -2391,9 +2390,7 @@ namespace DotRecast.Detour
                                      + (tile.data.verts[right] - tile.data.verts[left]) * (link.bmax * s);
                         if (lmin > lmax)
                         {
-                            float temp = lmin;
-                            lmin = lmax;
-                            lmax = temp;
+                            (lmin, lmax) = (lmax, lmin);
                         }
 
                         // Find X intersection.
@@ -2692,7 +2689,7 @@ namespace DotRecast.Detour
             m_nodePool.clear();
             m_openList.clear();
 
-            float[] centerPos = new float[] { 0, 0, 0 };
+            Vector3f centerPos = Vector3f.Zero;
             for (int i = 0; i < nverts; ++i)
             {
                 centerPos[0] += verts[i * 3];
@@ -2706,7 +2703,7 @@ namespace DotRecast.Detour
             centerPos[2] *= scale;
 
             Node startNode = m_nodePool.getNode(startRef);
-            vCopy(ref startNode.pos, centerPos);
+            startNode.pos = centerPos;
             startNode.pidx = 0;
             startNode.cost = 0;
             startNode.total = 0;

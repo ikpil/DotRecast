@@ -939,16 +939,6 @@ namespace DotRecast.Core
             return Tuple.Create(s, t);
         }
 
-
-        public static float[] vScale(float[] @in, float scale)
-        {
-            float[] @out = new float[3];
-            @out[0] = @in[0] * scale;
-            @out[1] = @in[1] * scale;
-            @out[2] = @in[2] * scale;
-            return @out;
-        }
-        
         public static Vector3f vScale(Vector3f @in, float scale)
         {
             var @out = new Vector3f();
