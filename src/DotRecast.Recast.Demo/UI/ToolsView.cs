@@ -17,12 +17,13 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System.Numerics;
 using DotRecast.Core;
+using DotRecast.Recast.Demo.Tools;
 using DotRecast.Recast.Demo.UI;
 using ImGuiNET;
-using Silk.NET.Windowing;
 
-namespace DotRecast.Recast.Demo.Tools;
+namespace DotRecast.Recast.Demo.UI;
 
 public class ToolsView : IRcView
 {
@@ -36,22 +37,38 @@ public class ToolsView : IRcView
     {
         this.tools = tools;
     }
-    
+
     private bool _mouseInside;
     public bool IsMouseInside() => _mouseInside;
 
-    public void Draw()
+    private RcCanvas _canvas;
+
+    public void Bind(RcCanvas canvas)
     {
-        ImGui.Begin("Tools");
-        _mouseInside = ImGui.IsWindowHovered();
+        _canvas = canvas;
+    }
+
+    public void Update(double dt)
+    {
         
+    }
+
+    public void Draw(double dt)
+    {
+        int width = 310;
+        ImGui.SetNextWindowPos(new Vector2(0, 0));
+        ImGui.SetNextWindowSize(new Vector2(width, _canvas.Size.Y));
+        ImGui.Begin("Tools", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize);
+        _mouseInside = ImGui.IsWindowHovered();
+
         for (int i = 0; i < tools.Length; ++i)
         {
             var tool = tools[i];
             ImGui.RadioButton(tool.getName(), ref _currentToolIdx, i);
         }
+
         ImGui.NewLine();
-        
+
         if (0 > _currentToolIdx || _currentToolIdx >= tools.Length)
         {
             ImGui.End();

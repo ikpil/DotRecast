@@ -16,12 +16,12 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using Silk.NET.Windowing;
-
 namespace DotRecast.Recast.Demo.UI;
 
 public interface IRcView
 {
+    void Bind(RcCanvas canvas);
     bool IsMouseInside();
-    void Draw();
+    void Update(double dt);
+    void Draw(double dt);
 }

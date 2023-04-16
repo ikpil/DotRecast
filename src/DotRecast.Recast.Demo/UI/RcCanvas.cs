@@ -16,29 +16,40 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System.Numerics;
 using ImGuiNET;
 using Serilog;
 using Serilog.Core;
 using Silk.NET.Input;
+using Silk.NET.Maths;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
 
 namespace DotRecast.Recast.Demo.UI;
 
-public class RcViewSystem
+public class RcCanvas
 {
     private static readonly ILogger Logger = Log.ForContext<RecastDemo>();
-    
+
+    private readonly IWindow _window;
     private readonly IRcView[] _views;
     private bool _mouseOverUI;
     public bool IsMouseOverUI() => _mouseOverUI;
 
-    public RcViewSystem(IWindow window, IInputContext input, params IRcView[] views)
+    public Vector2D<int> Size => _window.Size;
+
+    public RcCanvas(IWindow window, params IRcView[] views)
     {
+        _window = window;
+        _views = views;
+        foreach (var view in _views)
+        {
+            view.Bind(this);
+        }
+
         // setupClipboard(window);
         // glfwSetCharCallback(window, (w, codepoint) => nk_input_unicode(ctx, codepoint));
         // glContext = new NuklearGL(this);
-        _views = views;
     }
 
 
@@ -86,13 +97,21 @@ public class RcViewSystem
         // nk_input_end(ctx);
     }
 
-    public void Draw()
+    public void Update(double dt)
+    {
+        foreach (var view in _views)
+        {
+            view.Update(dt);
+        }
+    }
+
+    public void Draw(double dt)
     {
         _mouseOverUI = false;
-        foreach (IRcView m in _views)
+        foreach (var view in _views)
         {
-            m.Draw();
-            _mouseOverUI |= m.IsMouseInside();
+            view.Draw(dt);
+            _mouseOverUI |= view.IsMouseInside();
             // if (_mouseOverUI)
             // {
             //     Logger.Information("mouse hover!");

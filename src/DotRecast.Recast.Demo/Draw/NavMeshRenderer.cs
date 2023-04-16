@@ -19,12 +19,11 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
-using System.Linq;
 using DotRecast.Core;
 using DotRecast.Detour;
 using DotRecast.Recast.Demo.Builder;
 using DotRecast.Recast.Demo.Geom;
-using DotRecast.Recast.Demo.Settings;
+using DotRecast.Recast.Demo.UI;
 
 namespace DotRecast.Recast.Demo.Draw;
 

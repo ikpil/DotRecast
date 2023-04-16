@@ -19,7 +19,7 @@ public static class Program
             Directory.SetCurrentDirectory(workingDirectory);
         }
 
-        var format = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj} [{MemberName}()] [{ThreadName}:{ThreadId}] at {FilePath}:{LineNumber} {NewLine}{Exception}";
+        var format = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj} [{ThreadName}:{ThreadId}]{NewLine}{Exception}";
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Verbose()
             .Enrich.WithThreadId()

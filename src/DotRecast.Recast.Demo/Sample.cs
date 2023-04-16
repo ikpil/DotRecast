@@ -22,7 +22,8 @@ using System.Collections.Generic;
 using DotRecast.Detour;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Demo.Geom;
-using DotRecast.Recast.Demo.Settings;
+
+using DotRecast.Recast.Demo.UI;
 
 namespace DotRecast.Recast.Demo;
 

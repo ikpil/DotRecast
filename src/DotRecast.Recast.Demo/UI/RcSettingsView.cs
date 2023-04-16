@@ -20,13 +20,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using DotRecast.Core;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Demo.UI;
 using ImGuiNET;
 using Silk.NET.Windowing;
 
-namespace DotRecast.Recast.Demo.Settings;
+namespace DotRecast.Recast.Demo.UI;
 
 public class RcSettingsView : IRcView
 {
@@ -63,7 +64,6 @@ public class RcSettingsView : IRcView
     // public readonly NkColor transparent = NkColor.create();
     private bool buildTriggered;
     private long buildTime;
-    private Dictionary<string, long> telemetries = new();
     private readonly int[] voxels = new int[2];
     private readonly int[] tiles = new int[2];
     private int maxTiles;
@@ -77,14 +77,32 @@ public class RcSettingsView : IRcView
 
     private bool _mouseInside;
     public bool IsMouseInside() => _mouseInside;
-    public void Draw()
+
+    private RcCanvas _canvas;
+
+    public void Bind(RcCanvas canvas)
     {
-        ImGui.Begin("Properties");
-        _mouseInside = ImGui.IsWindowHovered();
+        _canvas = canvas;
+    }
+
+    public void Update(double dt)
+    {
         
+    }
+
+    public void Draw(double dt)
+    {
+        int width = 310;
+        var posX = _canvas.Size.X - width;
+        ImGui.SetNextWindowPos(new Vector2(posX, 0));
+        ImGui.SetNextWindowSize(new Vector2(width, _canvas.Size.Y));
+        ImGui.Begin("Properties", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize);
+
+        _mouseInside = ImGui.IsWindowHovered();
+
         ImGui.Text("Input Mesh");
         ImGui.Separator();
-        
+
         const string strLoadSourceGeom = "Load Source Geom...";
         if (ImGui.Button(strLoadSourceGeom))
         {
@@ -101,13 +119,14 @@ public class RcSettingsView : IRcView
                 meshInputFilePath = picker.SelectedFile;
                 ImFilePicker.RemoveFilePicker(strLoadSourceGeom);
             }
+
             ImGui.EndPopup();
         }
         else
         {
             meshInputTrigerred = false;
         }
-        
+
         ImGui.Text($"Verts: {voxels[0]} Tris: {voxels[1]}");
         ImGui.NewLine();
 
@@ -142,7 +161,7 @@ public class RcSettingsView : IRcView
             ImGui.RadioButton(label, ref partitioningIdx, partition.Idx);
         });
         ImGui.NewLine();
-        
+
         ImGui.Text("Filtering");
         ImGui.Separator();
         ImGui.Checkbox("Low Hanging Obstacles", ref filterLowHangingObstacles);
@@ -162,7 +181,7 @@ public class RcSettingsView : IRcView
         ImGui.SliderFloat("Sample Distance", ref detailSampleDist, 0f, 16f, "%.1f");
         ImGui.SliderFloat("Max Sample Error", ref detailSampleMaxError, 0f, 16f, "%.1f");
         ImGui.NewLine();
-        
+
         ImGui.Text("Tiling");
         ImGui.Separator();
         ImGui.Checkbox("Enable", ref tiled);
@@ -171,18 +190,16 @@ public class RcSettingsView : IRcView
             if (0 < (tileSize % 16))
                 tileSize = tileSize + (16 - (tileSize % 16));
             ImGui.SliderInt("Tile Size", ref tileSize, 16, 1024);
-            
+
             ImGui.Text($"Tiles {tiles[0]} x {tiles[1]}");
             ImGui.Text($"Max Tiles {maxTiles}");
             ImGui.Text($"Max Polys {maxPolys}");
         }
+
         ImGui.NewLine();
 
         ImGui.Text($"Build Time: {buildTime} ms");
-        foreach (var (key, millis) in telemetries)
-        {
-            ImGui.Text($"{key}: {millis} ms");
-        }
+
         ImGui.Separator();
         buildTriggered = ImGui.Button("Build");
         const string strLoadNavMesh = "Load Nav Mesh...";
@@ -200,20 +217,18 @@ public class RcSettingsView : IRcView
                 Console.WriteLine(picker.SelectedFile);
                 ImFilePicker.RemoveFilePicker(strLoadNavMesh);
             }
+
             ImGui.EndPopup();
         }
-        
+
         ImGui.NewLine();
-        
+
         ImGui.Text("Draw");
         ImGui.Separator();
-        
-        DrawMode.Values.forEach(dm =>
-        {
-            ImGui.RadioButton(dm.Text, ref drawMode, dm.Idx);
-        });
+
+        DrawMode.Values.forEach(dm => { ImGui.RadioButton(dm.Text, ref drawMode, dm.Idx); });
         ImGui.NewLine();
-        
+
         ImGui.End();
     }
 
@@ -286,16 +301,7 @@ public class RcSettingsView : IRcView
     {
         this.buildTime = buildTime;
     }
-
-    public void setBuildTelemetry(IList<Telemetry> telemetries)
-    {
-        this.telemetries = telemetries
-            .SelectMany(x => x.ToList())
-            .GroupBy(x => x.Item1)
-            .ToDictionary(x => x.Key, x => x.Sum(y => y.Item2));
-
-    }
-
+    
     public DrawMode getDrawMode()
     {
         return DrawMode.Values[drawMode];

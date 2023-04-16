@@ -38,7 +38,7 @@ using DotRecast.Detour.Io;
 using DotRecast.Recast.Demo.Builder;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Demo.Geom;
-using DotRecast.Recast.Demo.Settings;
+
 using DotRecast.Recast.Demo.Tools;
 using DotRecast.Recast.Demo.UI;
 using static DotRecast.Core.RecastMath;
@@ -50,7 +50,7 @@ public class RecastDemo
 {
     private static readonly ILogger Logger = Log.ForContext<RecastDemo>();
 
-    private RcViewSystem _viewSys;
+    private RcCanvas _canvas;
     private IWindow window;
     private IInputContext _input;
     private ImGuiController _imgui;
@@ -107,8 +107,11 @@ public class RecastDemo
     private int[] viewport;
     private bool markerPositionSet;
     private Vector3f markerPosition = new Vector3f();
+    
     private ToolsView toolsUI;
     private RcSettingsView settingsUI;
+    private RcLogView logUI;
+    
     private long prevFrameTime;
     private RecastDebugDraw dd;
 
@@ -252,9 +255,6 @@ public class RecastDemo
     private IWindow CreateWindow()
     {
         var monitor = Window.Platforms.First().GetMainMonitor();
-        // // if (monitors.limit() > 1) {
-        // // monitor = monitors[1];
-        // // }
         var resolution = monitor.VideoMode.Resolution.Value;
 
         float aspect = 16.0f / 9.0f;
@@ -358,7 +358,6 @@ public class RecastDemo
             mice.MouseMove += OnMouseMoved;
         }
 
-
         _gl = window.CreateOpenGL();
 
         dd = new RecastDebugDraw(_gl);
@@ -367,28 +366,7 @@ public class RecastDemo
         dd.init(camr);
 
         _imgui = new ImGuiController(_gl, window, _input);
-
-
-        // // if (capabilities.OpenGL43) {
-        // // GL43.glDebugMessageControl(GL43.GL_DEBUG_SOURCE_API, GL43.GL_DEBUG_TYPE_OTHER,
-        // // GL43.GL_DEBUG_SEVERITY_NOTIFICATION,
-        // // (int[]) null, false);
-        // // } else if (capabilities.GL_ARB_debug_output) {
-        // // ARBDebugOutput.glDebugMessageControlARB(ARBDebugOutput.GL_DEBUG_SOURCE_API_ARB,
-        // // ARBDebugOutput.GL_DEBUG_TYPE_OTHER_ARB, ARBDebugOutput.GL_DEBUG_SEVERITY_LOW_ARB, (int[]) null, false);
-        // // }
-        var vendor = _gl.GetStringS(GLEnum.Vendor);
-        Logger.Debug(vendor);
-
-        var version = _gl.GetStringS(GLEnum.Version);
-        Logger.Debug(version);
-
-        var renderGl = _gl.GetStringS(GLEnum.Renderer);
-        Logger.Debug(renderGl);
-
-        var glslString = _gl.GetStringS(GLEnum.ShadingLanguageVersion);
-        Logger.Debug(glslString);
-
+        
         settingsUI = new RcSettingsView();
         toolsUI = new ToolsView(
             new TestNavmeshTool(),
@@ -398,8 +376,20 @@ public class RecastDemo
             new JumpLinkBuilderTool(),
             new DynamicUpdateTool()
         );
+        logUI = new RcLogView();
 
-        _viewSys = new RcViewSystem(window, _input, settingsUI, toolsUI);
+        _canvas = new RcCanvas(window, settingsUI, toolsUI, logUI);
+        
+        var vendor = _gl.GetStringS(GLEnum.Vendor);
+        var version = _gl.GetStringS(GLEnum.Version);
+        var renderGl = _gl.GetStringS(GLEnum.Renderer);
+        var glslString = _gl.GetStringS(GLEnum.ShadingLanguageVersion);
+        
+        Logger.Debug(vendor);
+        Logger.Debug(version);
+        Logger.Debug(renderGl);
+        Logger.Debug(glslString);
+
 
         DemoInputGeomProvider geom = loadInputMesh(Loader.ToBytes("nav_test.obj"));
         sample = new Sample(geom, ImmutableArray<RecastBuilderResult>.Empty, null, settingsUI, dd);
@@ -537,6 +527,8 @@ public class RecastDemo
                 float m_detailSampleMaxError = settingsUI.getDetailSampleMaxError();
                 int m_tileSize = settingsUI.getTileSize();
                 long t = FrequencyWatch.Ticks;
+                
+                Logger.Information($"build");
 
                 Tuple<IList<RecastBuilderResult>, NavMesh> buildResult;
                 if (settingsUI.isTiled())
@@ -559,8 +551,22 @@ public class RecastDemo
                 sample.update(sample.getInputGeom(), buildResult.Item1, buildResult.Item2);
                 sample.setChanged(false);
                 settingsUI.setBuildTime((FrequencyWatch.Ticks - t) / TimeSpan.TicksPerMillisecond);
-                settingsUI.setBuildTelemetry(buildResult.Item1.Select(x => x.getTelemetry()).ToList());
+                //settingsUI.setBuildTelemetry(buildResult.Item1.Select(x => x.getTelemetry()).ToList());
                 toolsUI.setSample(sample);
+                
+                Logger.Information($"build times");
+                Logger.Information($"-----------------------------------------");
+                var telemetries = buildResult.Item1
+                    .Select(x => x.getTelemetry())
+                    .SelectMany(x => x.ToList())
+                    .GroupBy(x => x.Item1)
+                    .ToImmutableSortedDictionary(x => x.Key, x => x.Sum(y => y.Item2));
+                
+                foreach (var (key, millis) in telemetries)
+                {
+                    Logger.Information($"{key}: {millis} ms");
+                }
+
             }
         }
         else
@@ -706,7 +712,7 @@ public class RecastDemo
         io.DisplayFramebufferScale = Vector2.One;
         io.DeltaTime = (float)dt;
 
-        //window.DoEvents();
+        _canvas.Update(dt);
         _imgui.Update((float)dt);
     }
 
@@ -736,8 +742,8 @@ public class RecastDemo
 
         dd.fog(false);
 
-        _viewSys.Draw();
-        _mouseOverMenu = _viewSys.IsMouseOverUI();
+        _canvas.Draw(dt);
+        _mouseOverMenu = _canvas.IsMouseOverUI();
         _imgui.Render();
 
         window.SwapBuffers();
