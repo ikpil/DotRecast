@@ -15,7 +15,6 @@
         <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
         <PackageReference Include="Silk.NET" Version="2.17.1" />
         <PackageReference Include="Silk.NET.OpenGL.Extensions.ImGui" Version="2.17.1" />
-        <PackageReference Include="ImGui.NET" Version="1.89.4" />
     </ItemGroup>
 
     <ItemGroup>
