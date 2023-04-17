@@ -38,7 +38,6 @@ using DotRecast.Detour.Io;
 using DotRecast.Recast.Demo.Builder;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Demo.Geom;
-
 using DotRecast.Recast.Demo.Tools;
 using DotRecast.Recast.Demo.UI;
 using static DotRecast.Core.RecastMath;
@@ -50,11 +49,12 @@ public class RecastDemo
 {
     private static readonly ILogger Logger = Log.ForContext<RecastDemo>();
 
-    private RcCanvas _canvas;
     private IWindow window;
+    private GL _gl;
     private IInputContext _input;
     private ImGuiController _imgui;
-    private GL _gl;
+    private RecastDemoCanvas _canvas;
+    
     private int width = 1000;
     private int height = 900;
 
@@ -107,11 +107,11 @@ public class RecastDemo
     private int[] viewport;
     private bool markerPositionSet;
     private Vector3f markerPosition = new Vector3f();
-    
+
     private ToolsView toolsUI;
     private RcSettingsView settingsUI;
     private RcLogView logUI;
-    
+
     private long prevFrameTime;
     private RecastDebugDraw dd;
 
@@ -119,7 +119,7 @@ public class RecastDemo
     {
     }
 
-    public void start()
+    public void Run()
     {
         window = CreateWindow();
         window.Run();
@@ -266,7 +266,7 @@ public class RecastDemo
         options.Title = title;
         options.Size = new Vector2D<int>(width, height);
         options.Position = new Vector2D<int>((resolution.X - width) / 2, (resolution.Y - height) / 2);
-        options.VSync = false;
+        options.VSync = true;
         options.ShouldSwapAutomatically = false;
         options.PreferredDepthBufferBits = 24;
         window = Window.Create(options);
@@ -280,8 +280,8 @@ public class RecastDemo
         window.Load += OnWindowOnLoad;
         window.Resize += OnWindowResize;
         window.FramebufferResize += OnWindowFramebufferSizeChanged;
-        window.Update += OnWindowOnUpdate;
-        window.Render += OnWindowOnRender;
+        window.Update += OnWindowUpdate;
+        window.Render += OnWindowRender;
 
 
         // // -- move somewhere else:
@@ -366,7 +366,7 @@ public class RecastDemo
         dd.init(camr);
 
         _imgui = new ImGuiController(_gl, window, _input);
-        
+
         settingsUI = new RcSettingsView();
         toolsUI = new ToolsView(
             new TestNavmeshTool(),
@@ -378,13 +378,13 @@ public class RecastDemo
         );
         logUI = new RcLogView();
 
-        _canvas = new RcCanvas(window, settingsUI, toolsUI, logUI);
-        
+        _canvas = new RecastDemoCanvas(window, settingsUI, toolsUI, logUI);
+
         var vendor = _gl.GetStringS(GLEnum.Vendor);
         var version = _gl.GetStringS(GLEnum.Version);
         var renderGl = _gl.GetStringS(GLEnum.Renderer);
         var glslString = _gl.GetStringS(GLEnum.ShadingLanguageVersion);
-        
+
         Logger.Debug(vendor);
         Logger.Debug(version);
         Logger.Debug(renderGl);
@@ -419,7 +419,7 @@ public class RecastDemo
         }
     }
 
-    private void OnWindowOnUpdate(double dt)
+    private void OnWindowUpdate(double dt)
     {
         /*
           * try (MemoryStack stack = stackPush()) { int[] w = stack.mallocInt(1); int[] h =
@@ -483,9 +483,8 @@ public class RecastDemo
             var bytes = Loader.ToBytes(settingsUI.GetMeshInputFilePath());
             sample.update(loadInputMesh(bytes), null, null);
         }
-
-        // else if (settingsUI.isNavMeshInputTrigerred())
-        // {
+        else if (settingsUI.isNavMeshInputTrigerred())
+        {
         // try (MemoryStack stack = stackPush()) {
         //     PointerBuffer aFilterPatterns = stack.mallocPointer(4);
         //     aFilterPatterns.put(stack.UTF8("*.bin"));
@@ -507,7 +506,7 @@ public class RecastDemo
         //         }
         //     }
         // }
-        // }
+        }
         if (settingsUI.isBuildTriggered() && sample.getInputGeom() != null)
         {
             if (!building)
@@ -527,7 +526,7 @@ public class RecastDemo
                 float m_detailSampleMaxError = settingsUI.getDetailSampleMaxError();
                 int m_tileSize = settingsUI.getTileSize();
                 long t = FrequencyWatch.Ticks;
-                
+
                 Logger.Information($"build");
 
                 Tuple<IList<RecastBuilderResult>, NavMesh> buildResult;
@@ -553,7 +552,7 @@ public class RecastDemo
                 settingsUI.setBuildTime((FrequencyWatch.Ticks - t) / TimeSpan.TicksPerMillisecond);
                 //settingsUI.setBuildTelemetry(buildResult.Item1.Select(x => x.getTelemetry()).ToList());
                 toolsUI.setSample(sample);
-                
+
                 Logger.Information($"build times");
                 Logger.Information($"-----------------------------------------");
                 var telemetries = buildResult.Item1
@@ -561,12 +560,11 @@ public class RecastDemo
                     .SelectMany(x => x.ToList())
                     .GroupBy(x => x.Item1)
                     .ToImmutableSortedDictionary(x => x.Key, x => x.Sum(y => y.Item2));
-                
+
                 foreach (var (key, millis) in telemetries)
                 {
                     Logger.Information($"{key}: {millis} ms");
                 }
-
             }
         }
         else
@@ -716,7 +714,7 @@ public class RecastDemo
         _imgui.Update((float)dt);
     }
 
-    private unsafe void OnWindowOnRender(double dt)
+    private unsafe void OnWindowRender(double dt)
     {
         // _gl.ClearColor(Color.CadetBlue);
         // _gl.Clear(ClearBufferMask.ColorBufferBit);

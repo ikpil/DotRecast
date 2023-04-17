@@ -41,9 +41,9 @@ public class ToolsView : IRcView
     private bool _mouseInside;
     public bool IsMouseInside() => _mouseInside;
 
-    private RcCanvas _canvas;
+    private RecastDemoCanvas _canvas;
 
-    public void Bind(RcCanvas canvas)
+    public void Bind(RecastDemoCanvas canvas)
     {
         _canvas = canvas;
     }

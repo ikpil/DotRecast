@@ -20,7 +20,7 @@ namespace DotRecast.Recast.Demo.UI;
 
 public interface IRcView
 {
-    void Bind(RcCanvas canvas);
+    void Bind(RecastDemoCanvas canvas);
     bool IsMouseInside();
     void Update(double dt);
     void Draw(double dt);

@@ -10,7 +10,7 @@ namespace DotRecast.Recast.Demo.UI;
 
 public class RcLogView : IRcView
 {
-    private RcCanvas _canvas;
+    private RecastDemoCanvas _canvas;
     private bool _mouseInside;
 
     private List<string> _lines = new();
@@ -60,7 +60,7 @@ public class RcLogView : IRcView
     }
 
 
-    public void Bind(RcCanvas canvas)
+    public void Bind(RecastDemoCanvas canvas)
     {
         _canvas = canvas;
     }

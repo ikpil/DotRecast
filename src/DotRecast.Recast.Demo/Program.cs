@@ -33,7 +33,12 @@ public static class Program
                 outputTemplate: format)
             .CreateLogger();
 
+        Run();
+    }
+
+    public static void Run()
+    {
         var demo = new RecastDemo();
-        demo.start();
+        demo.Run();
     }
 }

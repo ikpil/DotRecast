@@ -27,7 +27,7 @@ using Silk.NET.Windowing;
 
 namespace DotRecast.Recast.Demo.UI;
 
-public class RcCanvas
+public class RecastDemoCanvas
 {
     private static readonly ILogger Logger = Log.ForContext<RecastDemo>();
 
@@ -38,7 +38,7 @@ public class RcCanvas
 
     public Vector2D<int> Size => _window.Size;
 
-    public RcCanvas(IWindow window, params IRcView[] views)
+    public RecastDemoCanvas(IWindow window, params IRcView[] views)
     {
         _window = window;
         _views = views;
@@ -112,10 +112,6 @@ public class RcCanvas
         {
             view.Draw(dt);
             _mouseOverUI |= view.IsMouseInside();
-            // if (_mouseOverUI)
-            // {
-            //     Logger.Information("mouse hover!");
-            // }
         }
     }
 }
