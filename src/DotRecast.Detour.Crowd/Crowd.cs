@@ -142,7 +142,7 @@ namespace DotRecast.Detour.Crowd
         public const int DT_CROWD_MAX_QUERY_FILTER_TYPE = 16;
 
         private readonly AtomicInteger agentId = new AtomicInteger();
-        private readonly HashSet<CrowdAgent> m_agents;
+        private readonly List<CrowdAgent> m_agents;
         private readonly PathQueue m_pathq;
         private readonly ObstacleAvoidanceQuery.ObstacleAvoidanceParams[] m_obstacleQueryParams = new ObstacleAvoidanceQuery.ObstacleAvoidanceParams[DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS];
         private readonly ObstacleAvoidanceQuery m_obstacleQuery;
@@ -180,7 +180,7 @@ namespace DotRecast.Detour.Crowd
 
             // Allocate temp buffer for merging paths.
             m_pathq = new PathQueue(config);
-            m_agents = new HashSet<CrowdAgent>();
+            m_agents = new List<CrowdAgent>();
 
             // The navQuery is mostly used for local searches, no need for large node pool.
             navMesh = nav;
@@ -353,9 +353,9 @@ namespace DotRecast.Detour.Crowd
      *
      * @return List of active agents
      */
-        public List<CrowdAgent> getActiveAgents()
+        public ICollection<CrowdAgent> getActiveAgents()
         {
-            return new List<CrowdAgent>(m_agents);
+            return m_agents;
         }
 
         public Vector3f getQueryExtents()
