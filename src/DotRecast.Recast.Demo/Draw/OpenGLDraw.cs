@@ -18,7 +18,7 @@ public interface OpenGLDraw
     void vertex(float[] pos, int color);
     void vertex(Vector3f pos, int color);
     
-    void vertex(float[] pos, int color, float[] uv);
+    void vertex(Vector3f pos, int color, Vector2f uv);
 
     void vertex(float x, float y, float z, int color, float u, float v);
 

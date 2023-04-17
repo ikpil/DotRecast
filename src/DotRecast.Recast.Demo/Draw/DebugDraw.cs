@@ -201,7 +201,7 @@ public class DebugDraw
         getOpenGlDraw().vertex(x, y, z, color);
     }
 
-    public void vertex(float[] pos, int color, float[] uv)
+    public void vertex(Vector3f pos, int color, Vector2f uv)
     {
         getOpenGlDraw().vertex(pos, color, uv);
     }

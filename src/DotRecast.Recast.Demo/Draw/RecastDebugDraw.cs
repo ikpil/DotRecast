@@ -42,9 +42,9 @@ public class RecastDebugDraw : DebugDraw
     {
         float walkableThr = (float)Math.Cos(walkableSlopeAngle / 180.0f * Math.PI);
 
-        float[] uva = new float[2];
-        float[] uvb = new float[2];
-        float[] uvc = new float[2];
+        Vector2f uva = Vector2f.Zero;
+        Vector2f uvb = Vector2f.Zero;
+        Vector2f uvc = Vector2f.Zero;
 
         texture(true);
 
@@ -52,7 +52,7 @@ public class RecastDebugDraw : DebugDraw
         begin(DebugDrawPrimitives.TRIS);
         for (int i = 0; i < tris.Length; i += 3)
         {
-            float[] norm = new float[] { normals[i], normals[i + 1], normals[i + 2] };
+            Vector3f norm = Vector3f.Of(normals[i], normals[i + 1], normals[i + 2]);
 
             int color;
             char a = (char)(220 * (2 + norm[0] + norm[1]) / 4);
@@ -65,9 +65,9 @@ public class RecastDebugDraw : DebugDraw
                 color = duRGBA(a, a, a, 255);
             }
 
-            float[] va = new float[] { verts[tris[i] * 3], verts[tris[i] * 3 + 1], verts[tris[i] * 3 + 2] };
-            float[] vb = new float[] { verts[tris[i + 1] * 3], verts[tris[i + 1] * 3 + 1], verts[tris[i + 1] * 3 + 2] };
-            float[] vc = new float[] { verts[tris[i + 2] * 3], verts[tris[i + 2] * 3 + 1], verts[tris[i + 2] * 3 + 2] };
+            Vector3f va = Vector3f.Of(verts[tris[i] * 3], verts[tris[i] * 3 + 1], verts[tris[i] * 3 + 2]);
+            Vector3f vb = Vector3f.Of(verts[tris[i + 1] * 3], verts[tris[i + 1] * 3 + 1], verts[tris[i + 1] * 3 + 2]);
+            Vector3f vc = Vector3f.Of(verts[tris[i + 2] * 3], verts[tris[i + 2] * 3 + 1], verts[tris[i + 2] * 3 + 2]);
 
             int ax = 0, ay = 0;
             if (Math.Abs(norm[1]) > Math.Abs(norm[ax]))
@@ -83,12 +83,12 @@ public class RecastDebugDraw : DebugDraw
             ax = (1 << ax) & 3; // +1 mod 3
             ay = (1 << ax) & 3; // +1 mod 3
 
-            uva[0] = va[ax] * texScale;
-            uva[1] = va[ay] * texScale;
-            uvb[0] = vb[ax] * texScale;
-            uvb[1] = vb[ay] * texScale;
-            uvc[0] = vc[ax] * texScale;
-            uvc[1] = vc[ay] * texScale;
+            uva.x = va[ax] * texScale;
+            uva.y = va[ay] * texScale;
+            uvb.x = vb[ax] * texScale;
+            uvb.y = vb[ay] * texScale;
+            uvc.x = vc[ax] * texScale;
+            uvc.y = vc[ay] * texScale;
 
             vertex(va, color, uva);
             vertex(vb, color, uvb);
