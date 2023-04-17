@@ -76,7 +76,7 @@ public class ModernOpenGLDraw : OpenGLDraw
 
     public unsafe void init()
     {
-        string SHADER_VERSION = PlatformID.MacOSX == Environment.OSVersion.Platform ? "#version 400\n" : "#version 460\n";
+        string SHADER_VERSION = "#version 400\n";
         string vertex_shader = SHADER_VERSION + "uniform mat4 ProjMtx;\n" //
                                                  + "uniform mat4 ViewMtx;\n" //
                                                  + "in vec3 Position;\n" //
