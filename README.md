@@ -1,3 +1,5 @@
+![dotnet workflow](https://github.com/ikpil/DotRecast/actions/workflows/dotnet.yml/badge.svg)
+
 # DotRecast
 C# Port of Recast & Detour navigation mesh toolset
 
