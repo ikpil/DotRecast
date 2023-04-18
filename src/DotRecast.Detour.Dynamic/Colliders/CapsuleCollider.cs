@@ -36,7 +36,7 @@ namespace DotRecast.Detour.Dynamic.Colliders
             this.radius = radius;
         }
 
-        public void rasterize(Heightfield hf, Telemetry telemetry)
+        public override void rasterize(Heightfield hf, Telemetry telemetry)
         {
             RecastFilledVolumeRasterization.rasterizeCapsule(hf, start, end, radius, area, (int)Math.Floor(flagMergeThreshold / hf.ch),
                 telemetry);
