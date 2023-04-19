@@ -327,13 +327,13 @@ public class CrowdProfilingTool
 
     private bool needsNewTarget(CrowdAgent ag)
     {
-        if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_NONE
-            || ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_FAILED)
+        if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_NONE
+            || ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_FAILED)
         {
             return true;
         }
 
-        if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_VALID)
+        if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_VALID)
         {
             float dx = ag.targetPos[0] - ag.npos[0];
             float dy = ag.targetPos[1] - ag.npos[1];
@@ -385,14 +385,14 @@ public class CrowdProfilingTool
                     col = duRGBA(120, 80, 160, 128);
                 }
 
-                if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING
-                    || ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE)
+                if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING
+                    || ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE)
                     col = duLerpCol(col, duRGBA(255, 255, 32, 128), 128);
-                else if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_PATH)
+                else if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_PATH)
                     col = duLerpCol(col, duRGBA(255, 64, 32, 128), 128);
-                else if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_FAILED)
+                else if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_FAILED)
                     col = duRGBA(255, 32, 16, 128);
-                else if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
+                else if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                     col = duLerpCol(col, duRGBA(64, 255, 0, 128), 128);
 
                 dd.debugDrawCylinder(pos[0] - radius, pos[1] + radius * 0.1f, pos[2] - radius, pos[0] + radius, pos[1] + height,

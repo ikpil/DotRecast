@@ -578,14 +578,14 @@ public class CrowdTool : Tool
             Vector3f pos = ag.npos;
 
             int col = duRGBA(220, 220, 220, 128);
-            if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING
-                || ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE)
+            if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING
+                || ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE)
                 col = duLerpCol(col, duRGBA(128, 0, 255, 128), 32);
-            else if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_PATH)
+            else if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_PATH)
                 col = duLerpCol(col, duRGBA(128, 0, 255, 128), 128);
-            else if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_FAILED)
+            else if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_FAILED)
                 col = duRGBA(255, 32, 16, 128);
-            else if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
+            else if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                 col = duLerpCol(col, duRGBA(64, 255, 0, 128), 128);
 
             dd.debugDrawCylinder(pos[0] - radius, pos[1] + radius * 0.1f, pos[2] - radius, pos[0] + radius, pos[1] + height,
@@ -637,14 +637,14 @@ public class CrowdTool : Tool
             Vector3f dvel = ag.dvel;
 
             int col = duRGBA(220, 220, 220, 192);
-            if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING
-                || ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE)
+            if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING
+                || ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE)
                 col = duLerpCol(col, duRGBA(128, 0, 255, 192), 48);
-            else if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_PATH)
+            else if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_PATH)
                 col = duLerpCol(col, duRGBA(128, 0, 255, 192), 128);
-            else if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_FAILED)
+            else if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_FAILED)
                 col = duRGBA(255, 32, 16, 192);
-            else if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
+            else if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                 col = duLerpCol(col, duRGBA(64, 255, 0, 192), 128);
 
             dd.debugDrawCircle(pos[0], pos[1] + height, pos[2], radius, col, 2.0f);

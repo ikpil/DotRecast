@@ -250,8 +250,8 @@ public class NavMeshRenderer
             int col = DebugDraw.duTransCol(DebugDraw.areaToCol(vol.areaMod.getMaskedValue()), 32);
             for (int j = 0, k = vol.verts.Length - 3; j < vol.verts.Length; k = j, j += 3)
             {
-                float[] va = new float[] { vol.verts[k], vol.verts[k + 1], vol.verts[k + 2] };
-                float[] vb = new float[] { vol.verts[j], vol.verts[j + 1], vol.verts[j + 2] };
+                var va = Vector3f.Of(vol.verts[k], vol.verts[k + 1], vol.verts[k + 2]);
+                var vb = Vector3f.Of(vol.verts[j], vol.verts[j + 1], vol.verts[j + 2]);
 
                 debugDraw.vertex(vol.verts[0], vol.hmax, vol.verts[2], col);
                 debugDraw.vertex(vb[0], vol.hmax, vb[2], col);
@@ -275,8 +275,8 @@ public class NavMeshRenderer
             int col = DebugDraw.duTransCol(DebugDraw.areaToCol(vol.areaMod.getMaskedValue()), 220);
             for (int j = 0, k = vol.verts.Length - 3; j < vol.verts.Length; k = j, j += 3)
             {
-                float[] va = new float[] { vol.verts[k], vol.verts[k + 1], vol.verts[k + 2] };
-                float[] vb = new float[] { vol.verts[j], vol.verts[j + 1], vol.verts[j + 2] };
+                var va = Vector3f.Of(vol.verts[k], vol.verts[k + 1], vol.verts[k + 2]);
+                var vb = Vector3f.Of(vol.verts[j], vol.verts[j + 1], vol.verts[j + 2]);
                 debugDraw.vertex(va[0], vol.hmin, va[2], DebugDraw.duDarkenCol(col));
                 debugDraw.vertex(vb[0], vol.hmin, vb[2], DebugDraw.duDarkenCol(col));
                 debugDraw.vertex(va[0], vol.hmax, va[2], col);

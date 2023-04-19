@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using DotRecast.Core;
 using DotRecast.Detour;
 using DotRecast.Recast.Demo.Builder;
@@ -187,16 +188,14 @@ public class RecastDebugDraw : DebugDraw
                 }
 
                 OffMeshConnection con = tile.data.offMeshCons[i - tile.data.header.offMeshBase];
-                float[] va = new float[]
-                {
+                Vector3f va = Vector3f.Of(
                     tile.data.verts[p.verts[0] * 3], tile.data.verts[p.verts[0] * 3 + 1],
                     tile.data.verts[p.verts[0] * 3 + 2]
-                };
-                float[] vb = new float[]
-                {
+                );
+                Vector3f vb = Vector3f.Of(
                     tile.data.verts[p.verts[1] * 3], tile.data.verts[p.verts[1] * 3 + 1],
                     tile.data.verts[p.verts[1] * 3 + 2]
-                };
+                );
 
                 // Check to see if start and end end-points have links.
                 bool startSet = false;
@@ -356,17 +355,15 @@ public class RecastDebugDraw : DebugDraw
                     }
                 }
 
-                float[] v0 = new float[]
-                {
+                var v0 = Vector3f.Of(
                     tile.data.verts[p.verts[j] * 3], tile.data.verts[p.verts[j] * 3 + 1],
                     tile.data.verts[p.verts[j] * 3 + 2]
-                };
-                float[] v1 = new float[]
-                {
+                );
+                var v1 = Vector3f.Of(
                     tile.data.verts[p.verts[(j + 1) % nj] * 3],
                     tile.data.verts[p.verts[(j + 1) % nj] * 3 + 1],
                     tile.data.verts[p.verts[(j + 1) % nj] * 3 + 2]
-                };
+                );
 
                 // Draw detail mesh edges which align with the actual poly edge.
                 // This is really slow.
@@ -376,26 +373,24 @@ public class RecastDebugDraw : DebugDraw
                     for (int k = 0; k < pd.triCount; ++k)
                     {
                         int t = (pd.triBase + k) * 4;
-                        float[][] tv = new float[3][];
+                        Vector3f[] tv = new Vector3f[3];
                         for (int m = 0; m < 3; ++m)
                         {
                             int v = tile.data.detailTris[t + m];
                             if (v < p.vertCount)
                             {
-                                tv[m] = new float[]
-                                {
+                                tv[m] = Vector3f.Of(
                                     tile.data.verts[p.verts[v] * 3], tile.data.verts[p.verts[v] * 3 + 1],
                                     tile.data.verts[p.verts[v] * 3 + 2]
-                                };
+                                );
                             }
                             else
                             {
-                                tv[m] = new float[]
-                                {
+                                tv[m] = Vector3f.Of(
                                     tile.data.detailVerts[(pd.vertBase + (v - p.vertCount)) * 3],
                                     tile.data.detailVerts[(pd.vertBase + (v - p.vertCount)) * 3 + 1],
                                     tile.data.detailVerts[(pd.vertBase + (v - p.vertCount)) * 3 + 2]
-                                };
+                                );
                             }
                         }
 
@@ -428,7 +423,7 @@ public class RecastDebugDraw : DebugDraw
         end();
     }
 
-    static float distancePtLine2d(float[] pt, float[] p, float[] q)
+    static float distancePtLine2d(Vector3f pt, Vector3f p, Vector3f q)
     {
         float pqx = q[0] - p[0];
         float pqz = q[2] - p[2];
@@ -1358,17 +1353,15 @@ public class RecastDebugDraw : DebugDraw
                         continue;
 
                     // Create new links
-                    float[] va = new float[]
-                    {
+                    var va = Vector3f.Of(
                         tile.data.verts[poly.verts[j] * 3],
                         tile.data.verts[poly.verts[j] * 3 + 1], tile.data.verts[poly.verts[j] * 3 + 2]
-                    };
-                    float[] vb = new float[]
-                    {
+                    );
+                    var vb = Vector3f.Of(
                         tile.data.verts[poly.verts[(j + 1) % nv] * 3],
                         tile.data.verts[poly.verts[(j + 1) % nv] * 3 + 1],
                         tile.data.verts[poly.verts[(j + 1) % nv] * 3 + 2]
-                    };
+                    );
 
                     if (side == 0 || side == 4)
                     {

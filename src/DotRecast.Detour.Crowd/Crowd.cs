@@ -263,14 +263,14 @@ namespace DotRecast.Detour.Crowd
 
             if (refs != 0)
             {
-                ag.state = CrowdAgent.CrowdAgentState.DT_CROWDAGENT_STATE_WALKING;
+                ag.state = CrowdAgentState.DT_CROWDAGENT_STATE_WALKING;
             }
             else
             {
-                ag.state = CrowdAgent.CrowdAgentState.DT_CROWDAGENT_STATE_INVALID;
+                ag.state = CrowdAgentState.DT_CROWDAGENT_STATE_INVALID;
             }
 
-            ag.targetState = CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_NONE;
+            ag.targetState = MoveRequestState.DT_CROWDAGENT_TARGET_NONE;
 
             return ag;
         }
@@ -328,7 +328,7 @@ namespace DotRecast.Detour.Crowd
             agent.targetPos = vel;
             agent.targetPathQueryResult = null;
             agent.targetReplan = false;
-            agent.targetState = CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY;
+            agent.targetState = MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY;
 
             return true;
         }
@@ -344,7 +344,7 @@ namespace DotRecast.Detour.Crowd
             agent.dvel = Vector3f.Zero;
             agent.targetPathQueryResult = null;
             agent.targetReplan = false;
-            agent.targetState = CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_NONE;
+            agent.targetState = MoveRequestState.DT_CROWDAGENT_TARGET_NONE;
             return true;
         }
 
@@ -443,7 +443,7 @@ namespace DotRecast.Detour.Crowd
 
             foreach (CrowdAgent ag in agents)
             {
-                if (ag.state != CrowdAgent.CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
+                if (ag.state != CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
                 {
                     continue;
                 }
@@ -474,7 +474,7 @@ namespace DotRecast.Detour.Crowd
                         ag.corridor.reset(0, agentPos);
                         ag.partial = false;
                         ag.boundary.reset();
-                        ag.state = CrowdAgent.CrowdAgentState.DT_CROWDAGENT_STATE_INVALID;
+                        ag.state = CrowdAgentState.DT_CROWDAGENT_STATE_INVALID;
                         continue;
                     }
 
@@ -492,15 +492,15 @@ namespace DotRecast.Detour.Crowd
 
                 // If the agent does not have move target or is controlled by
                 // velocity, no need to recover the target nor replan.
-                if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_NONE
-                    || ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
+                if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_NONE
+                    || ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                 {
                     continue;
                 }
 
                 // Try to recover move request position.
-                if (ag.targetState != CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_NONE
-                    && ag.targetState != CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_FAILED)
+                if (ag.targetState != MoveRequestState.DT_CROWDAGENT_TARGET_NONE
+                    && ag.targetState != MoveRequestState.DT_CROWDAGENT_TARGET_FAILED)
                 {
                     if (!navQuery.isValidPolyRef(ag.targetRef, m_filters[ag.option.queryFilterType]))
                     {
@@ -521,7 +521,7 @@ namespace DotRecast.Detour.Crowd
                         // Failed to reposition target, fail moverequest.
                         ag.corridor.reset(agentRef, agentPos);
                         ag.partial = false;
-                        ag.targetState = CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_NONE;
+                        ag.targetState = MoveRequestState.DT_CROWDAGENT_TARGET_NONE;
                     }
                 }
 
@@ -537,7 +537,7 @@ namespace DotRecast.Detour.Crowd
 
                 // If the end of the path is near and it is not the requested
                 // location, replan.
-                if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_VALID)
+                if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_VALID)
                 {
                     if (ag.targetReplanTime > _config.targetReplanDelay && ag.corridor.getPathCount() < _config.checkLookAhead
                                                                         && ag.corridor.getLastPoly() != ag.targetRef)
@@ -549,7 +549,7 @@ namespace DotRecast.Detour.Crowd
                 // Try to replan path to goal.
                 if (replan)
                 {
-                    if (ag.targetState != CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_NONE)
+                    if (ag.targetState != MoveRequestState.DT_CROWDAGENT_TARGET_NONE)
                     {
                         requestMoveTargetReplan(ag, ag.targetRef, ag.targetPos);
                     }
@@ -568,18 +568,18 @@ namespace DotRecast.Detour.Crowd
             // Fire off new requests.
             foreach (CrowdAgent ag in agents)
             {
-                if (ag.state == CrowdAgent.CrowdAgentState.DT_CROWDAGENT_STATE_INVALID)
+                if (ag.state == CrowdAgentState.DT_CROWDAGENT_STATE_INVALID)
                 {
                     continue;
                 }
 
-                if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_NONE
-                    || ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
+                if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_NONE
+                    || ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                 {
                     continue;
                 }
 
-                if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING)
+                if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING)
                 {
                     List<long> path = ag.corridor.getPath();
                     if (0 == path.Count)
@@ -644,19 +644,19 @@ namespace DotRecast.Detour.Crowd
 
                     if (reqPath[reqPath.Count - 1] == ag.targetRef)
                     {
-                        ag.targetState = CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_VALID;
+                        ag.targetState = MoveRequestState.DT_CROWDAGENT_TARGET_VALID;
                         ag.targetReplanTime = 0;
                     }
                     else
                     {
                         // The path is longer or potentially unreachable, full plan.
-                        ag.targetState = CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE;
+                        ag.targetState = MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE;
                     }
 
                     ag.targetReplanWaitTime = 0;
                 }
 
-                if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE)
+                if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE)
                 {
                     queue.Enqueue(ag);
                 }
@@ -669,7 +669,7 @@ namespace DotRecast.Detour.Crowd
                     ag.targetPos, m_filters[ag.option.queryFilterType]);
                 if (ag.targetPathQueryResult != null)
                 {
-                    ag.targetState = CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_PATH;
+                    ag.targetState = MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_PATH;
                 }
                 else
                 {
@@ -686,13 +686,13 @@ namespace DotRecast.Detour.Crowd
             // Process path results.
             foreach (CrowdAgent ag in agents)
             {
-                if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_NONE
-                    || ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
+                if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_NONE
+                    || ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                 {
                     continue;
                 }
 
-                if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_PATH)
+                if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_PATH)
                 {
                     // _telemetry.recordPathWaitTime(ag.targetReplanTime);
                     // Poll path queue.
@@ -704,11 +704,11 @@ namespace DotRecast.Detour.Crowd
                         ag.targetPathQueryResult = null;
                         if (ag.targetRef != 0)
                         {
-                            ag.targetState = CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING;
+                            ag.targetState = MoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING;
                         }
                         else
                         {
-                            ag.targetState = CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_FAILED;
+                            ag.targetState = MoveRequestState.DT_CROWDAGENT_TARGET_FAILED;
                         }
 
                         ag.targetReplanTime = 0;
@@ -800,12 +800,12 @@ namespace DotRecast.Detour.Crowd
                             ag.corridor.setCorridor(targetPos, res);
                             // Force to update boundary.
                             ag.boundary.reset();
-                            ag.targetState = CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_VALID;
+                            ag.targetState = MoveRequestState.DT_CROWDAGENT_TARGET_VALID;
                         }
                         else
                         {
                             // Something went wrong.
-                            ag.targetState = CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_FAILED;
+                            ag.targetState = MoveRequestState.DT_CROWDAGENT_TARGET_FAILED;
                         }
 
                         ag.targetReplanTime = 0;
@@ -827,13 +827,13 @@ namespace DotRecast.Detour.Crowd
 
             foreach (CrowdAgent ag in agents)
             {
-                if (ag.state != CrowdAgent.CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
+                if (ag.state != CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
                 {
                     continue;
                 }
 
-                if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_NONE
-                    || ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
+                if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_NONE
+                    || ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                 {
                     continue;
                 }
@@ -879,7 +879,7 @@ namespace DotRecast.Detour.Crowd
             _telemetry.start("buildNeighbours");
             foreach (CrowdAgent ag in agents)
             {
-                if (ag.state != CrowdAgent.CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
+                if (ag.state != CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
                 {
                     continue;
                 }
@@ -940,13 +940,13 @@ namespace DotRecast.Detour.Crowd
             CrowdAgent debugAgent = debug != null ? debug.agent : null;
             foreach (CrowdAgent ag in agents)
             {
-                if (ag.state != CrowdAgent.CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
+                if (ag.state != CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
                 {
                     continue;
                 }
 
-                if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_NONE
-                    || ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
+                if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_NONE
+                    || ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                 {
                     continue;
                 }
@@ -988,13 +988,13 @@ namespace DotRecast.Detour.Crowd
             _telemetry.start("triggerOffMeshConnections");
             foreach (CrowdAgent ag in agents)
             {
-                if (ag.state != CrowdAgent.CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
+                if (ag.state != CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
                 {
                     continue;
                 }
 
-                if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_NONE
-                    || ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
+                if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_NONE
+                    || ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                 {
                     continue;
                 }
@@ -1017,7 +1017,7 @@ namespace DotRecast.Detour.Crowd
                         anim.t = 0.0f;
                         anim.tmax = (vDist2D(anim.startPos, anim.endPos) / ag.option.maxSpeed) * 0.5f;
 
-                        ag.state = CrowdAgent.CrowdAgentState.DT_CROWDAGENT_STATE_OFFMESH;
+                        ag.state = CrowdAgentState.DT_CROWDAGENT_STATE_OFFMESH;
                         ag.corners.Clear();
                         ag.neis.Clear();
                         continue;
@@ -1037,19 +1037,19 @@ namespace DotRecast.Detour.Crowd
             _telemetry.start("calculateSteering");
             foreach (CrowdAgent ag in agents)
             {
-                if (ag.state != CrowdAgent.CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
+                if (ag.state != CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
                 {
                     continue;
                 }
 
-                if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_NONE)
+                if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_NONE)
                 {
                     continue;
                 }
 
                 Vector3f dvel = new Vector3f();
 
-                if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
+                if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                 {
                     dvel = ag.targetPos;
                     ag.desiredSpeed = vLen(ag.targetPos);
@@ -1136,7 +1136,7 @@ namespace DotRecast.Detour.Crowd
             CrowdAgent debugAgent = debug != null ? debug.agent : null;
             foreach (CrowdAgent ag in agents)
             {
-                if (ag.state != CrowdAgent.CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
+                if (ag.state != CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
                 {
                     continue;
                 }
@@ -1210,7 +1210,7 @@ namespace DotRecast.Detour.Crowd
             _telemetry.start("integrate");
             foreach (CrowdAgent ag in agents)
             {
-                if (ag.state != CrowdAgent.CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
+                if (ag.state != CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
                 {
                     continue;
                 }
@@ -1229,7 +1229,7 @@ namespace DotRecast.Detour.Crowd
                 foreach (CrowdAgent ag in agents)
                 {
                     long idx0 = ag.idx;
-                    if (ag.state != CrowdAgent.CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
+                    if (ag.state != CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
                     {
                         continue;
                     }
@@ -1286,7 +1286,7 @@ namespace DotRecast.Detour.Crowd
 
                 foreach (CrowdAgent ag in agents)
                 {
-                    if (ag.state != CrowdAgent.CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
+                    if (ag.state != CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
                     {
                         continue;
                     }
@@ -1303,7 +1303,7 @@ namespace DotRecast.Detour.Crowd
             _telemetry.start("moveAgents");
             foreach (CrowdAgent ag in agents)
             {
-                if (ag.state != CrowdAgent.CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
+                if (ag.state != CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
                 {
                     continue;
                 }
@@ -1314,8 +1314,8 @@ namespace DotRecast.Detour.Crowd
                 ag.npos = ag.corridor.getPos();
 
                 // If not using path, truncate the corridor to just one poly.
-                if (ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_NONE
-                    || ag.targetState == CrowdAgent.MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
+                if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_NONE
+                    || ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                 {
                     ag.corridor.reset(ag.corridor.getFirstPoly(), ag.npos);
                     ag.partial = false;
@@ -1342,7 +1342,7 @@ namespace DotRecast.Detour.Crowd
                     // Reset animation
                     anim.active = false;
                     // Prepare agent for walking.
-                    ag.state = CrowdAgent.CrowdAgentState.DT_CROWDAGENT_STATE_WALKING;
+                    ag.state = CrowdAgentState.DT_CROWDAGENT_STATE_WALKING;
                     continue;
                 }
 
