@@ -26,33 +26,40 @@ namespace DotRecast.Core
 
     public class OrderedQueue<T>
     {
+        private bool _dirty;
         private readonly List<T> _items;
         private readonly Comparison<T> _comparison;
 
         public OrderedQueue(Comparison<T> comparison)
         {
             _items = new List<T>();
-            _comparison = comparison;
+            _comparison = (x, y) => comparison.Invoke(x, y) * -1; // reverse
         }
 
-        public int count()
+        public int Count()
         {
             return _items.Count;
         }
 
-        public void clear()
+        public void Clear()
         {
             _items.Clear();
         }
 
-        public T top()
+        public T Top()
         {
-            return _items[0];
+            if (_dirty)
+            {
+                _items.Sort(_comparison); // reverse
+                _dirty = false;
+            }
+
+            return _items[_items.Count - 1];
         }
 
         public T Dequeue()
         {
-            var node = top();
+            var node = Top();
             _items.Remove(node);
             return node;
         }
@@ -60,15 +67,19 @@ namespace DotRecast.Core
         public void Enqueue(T item)
         {
             _items.Add(item);
-            _items.Sort(_comparison);
+            _dirty = true;
         }
 
         public void Remove(T item)
         {
-            _items.Remove(item);
+            int idx = _items.FindLastIndex(x => item.Equals(x));
+            if (0 > idx)
+                return;
+            
+            _items.RemoveAt(idx);
         }
 
-        public bool isEmpty()
+        public bool IsEmpty()
         {
             return 0 == _items.Count;
         }

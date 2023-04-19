@@ -662,7 +662,7 @@ namespace DotRecast.Detour.Crowd
                 }
             }
 
-            while (!queue.isEmpty())
+            while (!queue.IsEmpty())
             {
                 CrowdAgent ag = queue.Dequeue();
                 ag.targetPathQueryResult = m_pathq.request(ag.corridor.getLastPoly(), ag.targetRef, ag.corridor.getTarget(),
@@ -850,7 +850,7 @@ namespace DotRecast.Detour.Crowd
                 }
             }
 
-            while (!queue.isEmpty())
+            while (!queue.IsEmpty())
             {
                 CrowdAgent ag = queue.Dequeue();
                 ag.corridor.optimizePathTopology(navQuery, m_filters[ag.option.queryFilterType], _config.maxTopologyOptimizationIterations);

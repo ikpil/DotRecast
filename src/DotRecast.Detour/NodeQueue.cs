@@ -18,17 +18,19 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
+
 namespace DotRecast.Detour
 {
     using System.Collections.Generic;
 
     public class NodeQueue
     {
-        private readonly List<Node> m_heap = new List<Node>();
+        private readonly OrderedQueue<Node> m_heap = new OrderedQueue<Node>((n1, n2) => n1.total.CompareTo(n2.total));
 
         public int count()
         {
-            return m_heap.Count;
+            return m_heap.Count();
         }
 
         public void clear()
@@ -38,7 +40,7 @@ namespace DotRecast.Detour
 
         public Node top()
         {
-            return m_heap[0];
+            return m_heap.Top();
         }
 
         public Node pop()
@@ -50,8 +52,7 @@ namespace DotRecast.Detour
 
         public void push(Node node)
         {
-            m_heap.Add(node);
-            m_heap.Sort((x, y) => x.total.CompareTo(y.total));
+            m_heap.Enqueue(node);
         }
 
         public void modify(Node node)
@@ -62,7 +63,7 @@ namespace DotRecast.Detour
 
         public bool isEmpty()
         {
-            return 0 == m_heap.Count;
+            return 0 == m_heap.Count();
         }
     }
 }
