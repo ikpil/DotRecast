@@ -24,13 +24,13 @@ namespace DotRecast.Core
 {
     using System.Collections.Generic;
 
-    public class OrderedQueue<T>
+    public class SortedQueue<T>
     {
         private bool _dirty;
         private readonly List<T> _items;
         private readonly Comparison<T> _comparison;
 
-        public OrderedQueue(Comparison<T> comparison)
+        public SortedQueue(Comparison<T> comparison)
         {
             _items = new List<T>();
             _comparison = (x, y) => comparison.Invoke(x, y) * -1; // reverse

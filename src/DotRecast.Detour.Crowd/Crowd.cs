@@ -563,7 +563,7 @@ namespace DotRecast.Detour.Crowd
         {
             _telemetry.start("updateMoveRequest");
 
-            OrderedQueue<CrowdAgent> queue = new OrderedQueue<CrowdAgent>((a1, a2) => a2.targetReplanTime.CompareTo(a1.targetReplanTime));
+            SortedQueue<CrowdAgent> queue = new SortedQueue<CrowdAgent>((a1, a2) => a2.targetReplanTime.CompareTo(a1.targetReplanTime));
 
             // Fire off new requests.
             foreach (CrowdAgent ag in agents)
@@ -823,7 +823,7 @@ namespace DotRecast.Detour.Crowd
         {
             _telemetry.start("updateTopologyOptimization");
 
-            OrderedQueue<CrowdAgent> queue = new OrderedQueue<CrowdAgent>((a1, a2) => a2.topologyOptTime.CompareTo(a1.topologyOptTime));
+            SortedQueue<CrowdAgent> queue = new SortedQueue<CrowdAgent>((a1, a2) => a2.topologyOptTime.CompareTo(a1.topologyOptTime));
 
             foreach (CrowdAgent ag in agents)
             {

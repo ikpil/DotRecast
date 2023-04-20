@@ -47,6 +47,7 @@ namespace DotRecast.Detour.Crowd
                 {
                     break;
                 }
+                queue.RemoveFirst();
 
                 // Handle query start.
                 if (q.result.status == null)

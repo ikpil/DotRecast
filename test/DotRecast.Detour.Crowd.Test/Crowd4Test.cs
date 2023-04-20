@@ -356,26 +356,14 @@ public class Crowd4Test : AbstractCrowdTest
         setMoveTarget(endPoss[0], false);
         for (int i = 0; i < EXPECTED_A1Q2T.Length; i++)
         {
-            // if (i == 37)
-            // {
-            //     int a = 3;
-            // }
-
             crowd.update(1 / 5f, null);
             CrowdAgent ag = agents[2];
             Assert.That(ag.npos[0], Is.EqualTo(EXPECTED_A1Q2T[i][0]).Within(0.00001f), $"{i} - {ag.npos[0]} {EXPECTED_A1Q2T[i][0]}");
-            Console.WriteLine($"{i} - {ag.npos[0]} {EXPECTED_A1Q2T[i][0]}");
             Assert.That(ag.npos[1], Is.EqualTo(EXPECTED_A1Q2T[i][1]).Within(0.00001f), $"{i} - {ag.npos[1]} {EXPECTED_A1Q2T[i][1]}");
-            Console.WriteLine($"{i} - {ag.npos[1]} {EXPECTED_A1Q2T[i][1]}");
             Assert.That(ag.npos[2], Is.EqualTo(EXPECTED_A1Q2T[i][2]).Within(0.00001f), $"{i} - {ag.npos[2]} {EXPECTED_A1Q2T[i][2]}");
-            Console.WriteLine($"{i} - {ag.npos[2]} {EXPECTED_A1Q2T[i][2]}");
             Assert.That(ag.nvel[0], Is.EqualTo(EXPECTED_A1Q2T[i][3]).Within(0.00001f), $"{i} - {ag.nvel[0]} {EXPECTED_A1Q2T[i][3]}");
-            Console.WriteLine($"{i} - {ag.nvel[0]} {EXPECTED_A1Q2T[i][3]}");
             Assert.That(ag.nvel[1], Is.EqualTo(EXPECTED_A1Q2T[i][4]).Within(0.00001f), $"{i} - {ag.nvel[1]} {EXPECTED_A1Q2T[i][4]}");
-            Console.WriteLine($"{i} - {ag.nvel[1]} {EXPECTED_A1Q2T[i][4]}");
             Assert.That(ag.nvel[2], Is.EqualTo(EXPECTED_A1Q2T[i][5]).Within(0.00001f), $"{i} - {ag.nvel[2]} {EXPECTED_A1Q2T[i][5]}");
-            Console.WriteLine($"{i} - {ag.nvel[2]} {EXPECTED_A1Q2T[i][5]}");
-            Thread.Sleep(1);
         }
     }
 }

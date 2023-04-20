@@ -26,7 +26,7 @@ namespace DotRecast.Detour
 
     public class NodeQueue
     {
-        private readonly OrderedQueue<Node> m_heap = new OrderedQueue<Node>((n1, n2) => n1.total.CompareTo(n2.total));
+        private readonly SortedQueue<Node> m_heap = new SortedQueue<Node>((n1, n2) => n1.total.CompareTo(n2.total));
 
         public int count()
         {
