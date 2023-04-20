@@ -29,9 +29,9 @@ public class CapsuleGizmo : ColliderGizmo
         cross(ref normals[2], normals[0], normals[1]);
         normalize(ref normals[2]);
         triangles = generateSphericalTriangles();
-        float[] trX = new float[] { normals[0][0], normals[1][0], normals[2][0] };
-        float[] trY = new float[] { normals[0][1], normals[1][1], normals[2][1] };
-        float[] trZ = new float[] { normals[0][2], normals[1][2], normals[2][2] };
+        var trX = Vector3f.Of(normals[0][0], normals[1][0], normals[2][0]);
+        var trY = Vector3f.Of(normals[0][1], normals[1][1], normals[2][1]);
+        var trZ = Vector3f.Of(normals[0][2], normals[1][2], normals[2][2]);
         float[] spVertices = generateSphericalVertices();
         float halfLength = 0.5f * vLen(axis);
         vertices = new float[spVertices.Length];
