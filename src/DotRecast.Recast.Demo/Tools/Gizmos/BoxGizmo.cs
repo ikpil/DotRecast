@@ -12,16 +12,16 @@ public class BoxGizmo : ColliderGizmo
         2, 6, 7, 2, 7, 3, 4, 0, 3, 4, 3, 7
     };
 
-    private static readonly float[][] VERTS =
+    private static readonly Vector3f[] VERTS =
     {
-        new[] { -1f, -1f, -1f, },
-        new[] { 1f, -1f, -1f, },
-        new[] { 1f, -1f, 1f, },
-        new[] { -1f, -1f, 1f, },
-        new[] { -1f, 1f, -1f, },
-        new[] { 1f, 1f, -1f, },
-        new[] { 1f, 1f, 1f, },
-        new[] { -1f, 1f, 1f, },
+        Vector3f.Of( -1f, -1f, -1f),
+        Vector3f.Of( 1f, -1f, -1f),
+        Vector3f.Of( 1f, -1f, 1f),
+        Vector3f.Of( -1f, -1f, 1f),
+        Vector3f.Of( -1f, 1f, -1f),
+        Vector3f.Of( 1f, 1f, -1f),
+        Vector3f.Of( 1f, 1f, 1f),
+        Vector3f.Of( -1f, 1f, 1f),
     };
 
     private readonly float[] vertices = new float[8 * 3];
@@ -50,9 +50,9 @@ public class BoxGizmo : ColliderGizmo
 
     public void render(RecastDebugDraw debugDraw)
     {
-        float[] trX = new float[] { halfEdges[0][0], halfEdges[1][0], halfEdges[2][0] };
-        float[] trY = new float[] { halfEdges[0][1], halfEdges[1][1], halfEdges[2][1] };
-        float[] trZ = new float[] { halfEdges[0][2], halfEdges[1][2], halfEdges[2][2] };
+        var trX = Vector3f.Of(halfEdges[0][0], halfEdges[1][0], halfEdges[2][0]);
+        var trY = Vector3f.Of(halfEdges[0][1], halfEdges[1][1], halfEdges[2][1]);
+        var trZ = Vector3f.Of(halfEdges[0][2], halfEdges[1][2], halfEdges[2][2]);
         float[] vertices = new float[8 * 3];
         for (int i = 0; i < 8; i++)
         {
