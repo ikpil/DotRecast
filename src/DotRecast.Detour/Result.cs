@@ -68,7 +68,7 @@ namespace DotRecast.Detour
         }
     }
 
-    public class Result<T>
+    public readonly struct Result<T>
     {
         public readonly T result;
         public readonly Status status;
