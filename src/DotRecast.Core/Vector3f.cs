@@ -91,14 +91,14 @@ namespace DotRecast.Core
 
         public static bool operator ==(Vector3f left, Vector3f right)
         {
-            return (left.x == right.x)
-                   && (left.y == right.y)
-                   && (left.z == right.z);
+            return left.x.Equals(right.x)
+                   && left.y.Equals(right.y)
+                   && left.z.Equals(right.z);
         }
 
         public static bool operator !=(Vector3f left, Vector3f right)
         {
-            return !(left == right);
+            return !left.Equals(right);
         }
     }
 }
