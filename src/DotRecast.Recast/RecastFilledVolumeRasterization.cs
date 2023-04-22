@@ -288,16 +288,14 @@ namespace DotRecast.Recast
         private static float[] intersectCylinder(float[] rectangle, Vector3f start, Vector3f end, Vector3f axis, float radiusSqr)
         {
             float[] s = mergeIntersections(
-                rayCylinderIntersection(new float[]
-                {
+                rayCylinderIntersection(Vector3f.Of(
                     clamp(start[0], rectangle[0], rectangle[2]), rectangle[4],
                     clamp(start[2], rectangle[1], rectangle[3])
-                }, start, axis, radiusSqr),
-                rayCylinderIntersection(new float[]
-                {
+                ), start, axis, radiusSqr),
+                rayCylinderIntersection(Vector3f.Of(
                     clamp(end[0], rectangle[0], rectangle[2]), rectangle[4],
                     clamp(end[2], rectangle[1], rectangle[3])
-                }, start, axis, radiusSqr));
+                ), start, axis, radiusSqr));
             float axisLen2dSqr = axis[0] * axis[0] + axis[2] * axis[2];
             if (axisLen2dSqr > EPSILON)
             {
@@ -340,12 +338,16 @@ namespace DotRecast.Recast
         {
             int j = (i + 1) % 4;
             // Ray against sphere intersection
-            float[] m = { rectangleOnPlane[i][0] - start[0], rectangleOnPlane[i][1] - start[1], rectangleOnPlane[i][2] - start[2] };
-            float[] d =
-            {
-                rectangleOnPlane[j][0] - rectangleOnPlane[i][0], rectangleOnPlane[j][1] - rectangleOnPlane[i][1],
+            var m = Vector3f.Of(
+                rectangleOnPlane[i][0] - start[0],
+                rectangleOnPlane[i][1] - start[1],
+                rectangleOnPlane[i][2] - start[2]
+            );
+            var d = Vector3f.Of(
+                rectangleOnPlane[j][0] - rectangleOnPlane[i][0],
+                rectangleOnPlane[j][1] - rectangleOnPlane[i][1],
                 rectangleOnPlane[j][2] - rectangleOnPlane[i][2]
-            };
+            );
             float dl = dot(d, d);
             float b = dot(m, d) / dl;
             float c = (dot(m, m) - radiusSqr) / dl;
@@ -400,12 +402,12 @@ namespace DotRecast.Recast
             return rayCylinderIntersection(xSlabRayIntersection(rectangle, start, axis, x), start, axis, radiusSqr);
         }
 
-        private static float[] xSlabRayIntersection(float[] rectangle, Vector3f start, Vector3f direction, float x)
+        private static Vector3f xSlabRayIntersection(float[] rectangle, Vector3f start, Vector3f direction, float x)
         {
             // 2d intersection of plane and segment
             float t = (x - start[0]) / direction[0];
             float z = clamp(start[2] + t * direction[2], rectangle[1], rectangle[3]);
-            return new float[] { x, rectangle[4], z };
+            return Vector3f.Of(x, rectangle[4], z);
         }
 
         private static float[] zSlabCylinderIntersection(float[] rectangle, Vector3f start, Vector3f axis, float radiusSqr, float z)
@@ -413,16 +415,16 @@ namespace DotRecast.Recast
             return rayCylinderIntersection(zSlabRayIntersection(rectangle, start, axis, z), start, axis, radiusSqr);
         }
 
-        private static float[] zSlabRayIntersection(float[] rectangle, Vector3f start, Vector3f direction, float z)
+        private static Vector3f zSlabRayIntersection(float[] rectangle, Vector3f start, Vector3f direction, float z)
         {
             // 2d intersection of plane and segment
             float t = (z - start[2]) / direction[2];
             float x = clamp(start[0] + t * direction[0], rectangle[0], rectangle[2]);
-            return new float[] { x, rectangle[4], z };
+            return Vector3f.Of(x, rectangle[4], z);
         }
 
         // Based on Christer Ericsons's "Real-Time Collision Detection"
-        private static float[] rayCylinderIntersection(float[] point, Vector3f start, Vector3f axis, float radiusSqr)
+        private static float[] rayCylinderIntersection(Vector3f point, Vector3f start, Vector3f axis, float radiusSqr)
         {
             Vector3f d = axis;
             Vector3f m = Vector3f.Of(point[0] - start[0], point[1] - start[1], point[2] - start[2]);
