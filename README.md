@@ -2,7 +2,7 @@
 # DotRecast
 C# Port of Recast & Detour navigation mesh toolset
 
-![DotRecast of a navmesh baked with the sample program](/src/DotRecast.Recast.Demo/screenshot.png?raw=true)
+![DotRecast of a navmesh baked with the sample program](/resources/screenshot.png?raw=true)
 
 ## DotRecast.Recast
 
