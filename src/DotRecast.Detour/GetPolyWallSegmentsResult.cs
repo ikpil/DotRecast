@@ -19,21 +19,22 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
     public class GetPolyWallSegmentsResult
     {
-        private readonly List<float[]> segmentVerts;
+        private readonly List<SegmentVert> segmentVerts;
         private readonly List<long> segmentRefs;
 
-        public GetPolyWallSegmentsResult(List<float[]> segmentVerts, List<long> segmentRefs)
+        public GetPolyWallSegmentsResult(List<SegmentVert> segmentVerts, List<long> segmentRefs)
         {
             this.segmentVerts = segmentVerts;
             this.segmentRefs = segmentRefs;
         }
 
-        public List<float[]> getSegmentVerts()
+        public List<SegmentVert> getSegmentVerts()
         {
             return segmentVerts;
         }

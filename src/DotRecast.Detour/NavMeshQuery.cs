@@ -3096,7 +3096,7 @@ namespace DotRecast.Detour
             Poly poly = tileAndPoly.result.Item2;
 
             List<long> segmentRefs = new List<long>();
-            List<float[]> segmentVerts = new List<float[]>();
+            List<SegmentVert> segmentVerts = new List<SegmentVert>();
             List<SegInterval> ints = new List<SegInterval>(16);
 
             for (int i = 0, j = poly.vertCount - 1; i < poly.vertCount; j = i++)
@@ -3146,9 +3146,11 @@ namespace DotRecast.Detour
 
                     int ivj = poly.verts[j] * 3;
                     int ivi = poly.verts[i] * 3;
-                    float[] seg = new float[6];
-                    Array.Copy(tile.data.verts, ivj, seg, 0, 3);
-                    Array.Copy(tile.data.verts, ivi, seg, 3, 3);
+                    var seg = new SegmentVert();
+                    vCopy(ref seg.vmin, tile.data.verts, ivj);
+                    vCopy(ref seg.vmax, tile.data.verts, ivi);
+                    // Array.Copy(tile.data.verts, ivj, seg, 0, 3);
+                    // Array.Copy(tile.data.verts, ivi, seg, 3, 3);
                     segmentVerts.Add(seg);
                     segmentRefs.Add(neiRef);
                     continue;
@@ -3168,15 +3170,9 @@ namespace DotRecast.Detour
                     {
                         float tmin = ints[k].tmin / 255.0f;
                         float tmax = ints[k].tmax / 255.0f;
-                        float[] seg = new float[6];
-                        var vmin = vLerp(tile.data.verts, vj, vi, tmin);
-                        var vmax = vLerp(tile.data.verts, vj, vi, tmax);
-                        seg[0] = vmin[0];
-                        seg[1] = vmin[1];
-                        seg[2] = vmin[2];
-                        seg[3] = vmax[0];
-                        seg[4] = vmax[1];
-                        seg[5] = vmax[2];
+                        var seg = new SegmentVert();
+                        seg.vmin = vLerp(tile.data.verts, vj, vi, tmin);
+                        seg.vmax = vLerp(tile.data.verts, vj, vi, tmax);
                         segmentVerts.Add(seg);
                         segmentRefs.Add(ints[k].refs);
                     }
@@ -3188,15 +3184,9 @@ namespace DotRecast.Detour
                     {
                         float tmin = imin / 255.0f;
                         float tmax = imax / 255.0f;
-                        float[] seg = new float[6];
-                        var vmin = vLerp(tile.data.verts, vj, vi, tmin);
-                        var vmax = vLerp(tile.data.verts, vj, vi, tmax);
-                        seg[0] = vmin[0];
-                        seg[1] = vmin[1];
-                        seg[2] = vmin[2];
-                        seg[3] = vmax[0];
-                        seg[4] = vmax[1];
-                        seg[5] = vmax[2];
+                        var seg = new SegmentVert();
+                        seg.vmin = vLerp(tile.data.verts, vj, vi, tmin);
+                        seg.vmax = vLerp(tile.data.verts, vj, vi, tmax);
                         segmentVerts.Add(seg);
                         segmentRefs.Add(0L);
                     }

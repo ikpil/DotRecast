@@ -880,6 +880,34 @@ namespace DotRecast.Core
             result.intersects = true;
             return result;
         }
+        
+        public static Tuple<float, float> distancePtSegSqr2D(Vector3f pt, SegmentVert verts, int p, int q)
+        {
+            float pqx = verts[q + 0] - verts[p + 0];
+            float pqz = verts[q + 2] - verts[p + 2];
+            float dx = pt[0] - verts[p + 0];
+            float dz = pt[2] - verts[p + 2];
+            float d = pqx * pqx + pqz * pqz;
+            float t = pqx * dx + pqz * dz;
+            if (d > 0)
+            {
+                t /= d;
+            }
+
+            if (t < 0)
+            {
+                t = 0;
+            }
+            else if (t > 1)
+            {
+                t = 1;
+            }
+
+            dx = verts[p + 0] + t * pqx - pt[0];
+            dz = verts[p + 2] + t * pqz - pt[2];
+            return Tuple.Create(dx * dx + dz * dz, t);
+        }
+
 
         public static Tuple<float, float> distancePtSegSqr2D(Vector3f pt, float[] verts, int p, int q)
         {

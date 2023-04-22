@@ -55,16 +55,12 @@ namespace DotRecast.Detour.Crowd
             m_segs.Clear();
         }
 
-        protected void addSegment(float dist, float[] s)
+        protected void addSegment(float dist, SegmentVert s)
         {
             // Insert neighbour based on the distance.
             Segment seg = new Segment();
-            seg.s[0].x = s[0];
-            seg.s[0].y = s[1];
-            seg.s[0].z = s[2];
-            seg.s[1].x = s[3];
-            seg.s[1].y = s[4];
-            seg.s[1].z = s[5];
+            seg.s[0] = s.vmin;
+            seg.s[1] = s.vmax;
             //Array.Copy(s, seg.s, 6);
             seg.d = dist;
             if (0 == m_segs.Count)
@@ -126,7 +122,7 @@ namespace DotRecast.Detour.Crowd
                         GetPolyWallSegmentsResult gpws = result.result;
                         for (int k = 0; k < gpws.getSegmentRefs().Count; ++k)
                         {
-                            float[] s = gpws.getSegmentVerts()[k];
+                            SegmentVert s = gpws.getSegmentVerts()[k];
                             // Skip too distant segments.
                             Tuple<float, float> distseg = distancePtSegSqr2D(pos, s, 0, 3);
                             if (distseg.Item1 > sqr(collisionQueryRange))
