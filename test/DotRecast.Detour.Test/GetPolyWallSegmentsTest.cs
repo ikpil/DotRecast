@@ -80,19 +80,19 @@ public class GetPolyWallSegmentsTest : AbstractDetourTest
         {
             Result<GetPolyWallSegmentsResult> result = query.getPolyWallSegments(startRefs[i], true, filter);
             GetPolyWallSegmentsResult segments = result.result;
-            Assert.That(segments.getSegmentVerts().Count, Is.EqualTo(VERTICES[i].Length / 6));
-            Assert.That(segments.getSegmentRefs().Count, Is.EqualTo(REFS[i].Length));
+            Assert.That(segments.countSegmentVerts(), Is.EqualTo(VERTICES[i].Length / 6));
+            Assert.That(segments.countSegmentRefs(), Is.EqualTo(REFS[i].Length));
             for (int v = 0; v < VERTICES[i].Length / 6; v++)
             {
                 for (int n = 0; n < 6; n++)
                 {
-                    Assert.That(segments.getSegmentVerts()[v][n], Is.EqualTo(VERTICES[i][v * 6 + n]).Within(0.001f));
+                    Assert.That(segments.getSegmentVert(v)[n], Is.EqualTo(VERTICES[i][v * 6 + n]).Within(0.001f));
                 }
             }
 
             for (int v = 0; v < REFS[i].Length; v++)
             {
-                Assert.That(segments.getSegmentRefs()[v], Is.EqualTo(REFS[i][v]));
+                Assert.That(segments.getSegmentRef(v), Is.EqualTo(REFS[i][v]));
             }
         }
     }

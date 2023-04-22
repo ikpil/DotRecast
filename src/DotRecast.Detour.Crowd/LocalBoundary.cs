@@ -120,9 +120,9 @@ namespace DotRecast.Detour.Crowd
                     if (result.succeeded())
                     {
                         GetPolyWallSegmentsResult gpws = result.result;
-                        for (int k = 0; k < gpws.getSegmentRefs().Count; ++k)
+                        for (int k = 0; k < gpws.countSegmentRefs(); ++k)
                         {
-                            SegmentVert s = gpws.getSegmentVerts()[k];
+                            SegmentVert s = gpws.getSegmentVert(k);
                             // Skip too distant segments.
                             Tuple<float, float> distseg = distancePtSegSqr2D(pos, s, 0, 3);
                             if (distseg.Item1 > sqr(collisionQueryRange))

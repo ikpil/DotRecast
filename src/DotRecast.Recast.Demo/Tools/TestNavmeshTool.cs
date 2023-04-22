@@ -843,9 +843,9 @@ public class TestNavmeshTool : Tool
                         {
                             dd.begin(LINES, 2.0f);
                             GetPolyWallSegmentsResult wallSegments = result.result;
-                            for (int j = 0; j < wallSegments.getSegmentVerts().Count; ++j)
+                            for (int j = 0; j < wallSegments.countSegmentVerts(); ++j)
                             {
-                                SegmentVert s = wallSegments.getSegmentVerts()[j];
+                                SegmentVert s = wallSegments.getSegmentVert(j);
                                 Vector3f s3 = Vector3f.Of(s[3], s[4], s[5]);
                                 // Skip too distant segments.
                                 Tuple<float, float> distSqr = distancePtSegSqr2D(m_spos, s, 0, 3);
@@ -860,7 +860,7 @@ public class TestNavmeshTool : Tool
                                 vNormalize(ref norm);
                                 Vector3f p1 = vMad(p0, norm, agentRadius * 0.5f);
                                 // Skip backfacing segments.
-                                if (wallSegments.getSegmentRefs()[j] != 0)
+                                if (wallSegments.getSegmentRef(j) != 0)
                                 {
                                     int col = duRGBA(255, 255, 255, 32);
                                     dd.vertex(s[0], s[1] + agentClimb, s[2], col);

@@ -25,23 +25,34 @@ namespace DotRecast.Detour
 {
     public class GetPolyWallSegmentsResult
     {
-        private readonly List<SegmentVert> segmentVerts;
-        private readonly List<long> segmentRefs;
+        private readonly List<SegmentVert> _segmentVerts;
+        private readonly List<long> _segmentRefs;
 
         public GetPolyWallSegmentsResult(List<SegmentVert> segmentVerts, List<long> segmentRefs)
         {
-            this.segmentVerts = segmentVerts;
-            this.segmentRefs = segmentRefs;
+            _segmentVerts = segmentVerts;
+            _segmentRefs = segmentRefs;
         }
 
-        public List<SegmentVert> getSegmentVerts()
+        public int countSegmentVerts()
         {
-            return segmentVerts;
+            return _segmentVerts.Count;
+        }
+        
+        public int countSegmentRefs()
+        {
+            return _segmentRefs.Count;
         }
 
-        public List<long> getSegmentRefs()
+
+        public SegmentVert getSegmentVert(int idx)
         {
-            return segmentRefs;
+            return _segmentVerts[idx];
+        }
+
+        public long getSegmentRef(int idx)
+        {
+            return _segmentRefs[idx];
         }
     }
 }
