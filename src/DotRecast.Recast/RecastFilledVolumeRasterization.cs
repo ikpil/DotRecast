@@ -525,7 +525,7 @@ namespace DotRecast.Recast
             }
 
             // check intersection with rays starting in rectangle vertices
-            float[] point = new float[] { 0, rectangle[1], 0 };
+            var point = Vector3f.Of(0, rectangle[1], 0);
             for (int i = 0; i < 4; i++)
             {
                 point[0] = ((i & 1) == 0) ? rectangle[0] : rectangle[2];
