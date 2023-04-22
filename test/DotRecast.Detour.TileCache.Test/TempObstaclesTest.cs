@@ -80,8 +80,10 @@ public class TempObstaclesTest : AbstractTileCacheTest
         MeshTile tile = tiles[0];
         Assert.That(tile.data.header.vertCount, Is.EqualTo(16));
         Assert.That(tile.data.header.polyCount, Is.EqualTo(6));
-        long o = tc.addBoxObstacle(new float[] { -2.315208f, 9.998184f, -20.807983f },
-            new float[] { -1.315208f, 11.998184f, -19.807983f });
+        long o = tc.addBoxObstacle(
+            Vector3f.Of(-2.315208f, 9.998184f, -20.807983f),
+            Vector3f.Of(-1.315208f, 11.998184f, -19.807983f)
+        );
         bool upToDate = tc.update();
         Assert.That(upToDate, Is.True);
         tiles = tc.getNavMesh().getTilesAt(1, 4);

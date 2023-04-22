@@ -684,7 +684,7 @@ namespace DotRecast.Recast
                 }
 
                 // rectangle vertex
-                float[] point = new float[] { 0, rectangle[1], 0 };
+                var point = Vector3f.Of(0, rectangle[1], 0);
                 for (int i = 0; i < 4; i++)
                 {
                     point[0] = ((i & 1) == 0) ? rectangle[0] : rectangle[2];
@@ -740,7 +740,7 @@ namespace DotRecast.Recast
             return null;
         }
 
-        private static float? rayTriangleIntersection(float[] point, int plane, float[][] planes)
+        private static float? rayTriangleIntersection(Vector3f point, int plane, float[][] planes)
         {
             float t = (planes[plane][3] - dot(planes[plane], point)) / planes[plane][1];
             float[] s = { point[0], point[1] + t, point[2] };

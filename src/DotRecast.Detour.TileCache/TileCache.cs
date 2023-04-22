@@ -371,13 +371,13 @@ namespace DotRecast.Detour.TileCache
         }
 
         // Aabb obstacle
-        public long addBoxObstacle(float[] bmin, float[] bmax)
+        public long addBoxObstacle(Vector3f bmin, Vector3f bmax)
         {
             TileCacheObstacle ob = allocObstacle();
             ob.type = TileCacheObstacle.TileCacheObstacleType.BOX;
 
-            vCopy(ref ob.bmin, bmin);
-            vCopy(ref ob.bmax, bmax);
+            ob.bmin = bmin;
+            ob.bmax = bmax;
 
             return addObstacleRequest(ob).refs;
         }
