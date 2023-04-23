@@ -18,32 +18,41 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System.Collections.Generic;
 using DotRecast.Core;
 
-namespace DotRecast.Detour
+namespace DotRecast.Detour.QueryResults
 {
-//TODO: (PP) Add comments
-    public class FindRandomPointResult
+    public class GetPolyWallSegmentsResult
     {
-        private readonly long randomRef;
-        private readonly Vector3f randomPt;
+        private readonly List<SegmentVert> _segmentVerts;
+        private readonly List<long> _segmentRefs;
 
-        public FindRandomPointResult(long randomRef, Vector3f randomPt)
+        public GetPolyWallSegmentsResult(List<SegmentVert> segmentVerts, List<long> segmentRefs)
         {
-            this.randomRef = randomRef;
-            this.randomPt = randomPt;
+            _segmentVerts = segmentVerts;
+            _segmentRefs = segmentRefs;
         }
 
-        /// @param[out] randomRef The reference id of the random location.
-        public long getRandomRef()
+        public int countSegmentVerts()
         {
-            return randomRef;
+            return _segmentVerts.Count;
         }
 
-        /// @param[out] randomPt The random location.
-        public Vector3f getRandomPt()
+        public int countSegmentRefs()
         {
-            return randomPt;
+            return _segmentRefs.Count;
+        }
+
+
+        public SegmentVert getSegmentVert(int idx)
+        {
+            return _segmentVerts[idx];
+        }
+
+        public long getSegmentRef(int idx)
+        {
+            return _segmentRefs[idx];
         }
     }
 }

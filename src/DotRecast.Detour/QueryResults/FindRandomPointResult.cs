@@ -18,33 +18,32 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using System.Collections.Generic;
 using DotRecast.Core;
 
-namespace DotRecast.Detour
+namespace DotRecast.Detour.QueryResults
 {
-    public class MoveAlongSurfaceResult
+//TODO: (PP) Add comments
+    public class FindRandomPointResult
     {
-        /** The result position of the mover. [(x, y, z)] */
-        private readonly Vector3f resultPos;
+        private readonly long randomRef;
+        private readonly Vector3f randomPt;
 
-        /** The reference ids of the polygons visited during the move. */
-        private readonly List<long> visited;
-
-        public MoveAlongSurfaceResult(Vector3f resultPos, List<long> visited)
+        public FindRandomPointResult(long randomRef, Vector3f randomPt)
         {
-            this.resultPos = resultPos;
-            this.visited = visited;
+            this.randomRef = randomRef;
+            this.randomPt = randomPt;
         }
 
-        public Vector3f getResultPos()
+        /// @param[out] randomRef The reference id of the random location.
+        public long getRandomRef()
         {
-            return resultPos;
+            return randomRef;
         }
 
-        public List<long> getVisited()
+        /// @param[out] randomPt The random location.
+        public Vector3f getRandomPt()
         {
-            return visited;
+            return randomPt;
         }
     }
 }

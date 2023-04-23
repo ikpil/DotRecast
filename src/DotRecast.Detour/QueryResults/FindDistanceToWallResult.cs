@@ -18,41 +18,37 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using System.Collections.Generic;
 using DotRecast.Core;
 
-namespace DotRecast.Detour
+namespace DotRecast.Detour.QueryResults
 {
-    public class GetPolyWallSegmentsResult
+//TODO: (PP) Add comments
+    public class FindDistanceToWallResult
     {
-        private readonly List<SegmentVert> _segmentVerts;
-        private readonly List<long> _segmentRefs;
+        private readonly float distance;
+        private readonly Vector3f position;
+        private readonly Vector3f normal;
 
-        public GetPolyWallSegmentsResult(List<SegmentVert> segmentVerts, List<long> segmentRefs)
+        public FindDistanceToWallResult(float distance, Vector3f position, Vector3f normal)
         {
-            _segmentVerts = segmentVerts;
-            _segmentRefs = segmentRefs;
+            this.distance = distance;
+            this.position = position;
+            this.normal = normal;
         }
 
-        public int countSegmentVerts()
+        public float getDistance()
         {
-            return _segmentVerts.Count;
-        }
-        
-        public int countSegmentRefs()
-        {
-            return _segmentRefs.Count;
+            return distance;
         }
 
-
-        public SegmentVert getSegmentVert(int idx)
+        public Vector3f getPosition()
         {
-            return _segmentVerts[idx];
+            return position;
         }
 
-        public long getSegmentRef(int idx)
+        public Vector3f getNormal()
         {
-            return _segmentRefs[idx];
+            return normal;
         }
     }
 }

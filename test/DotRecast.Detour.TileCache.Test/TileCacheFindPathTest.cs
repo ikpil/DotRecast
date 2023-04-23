@@ -21,6 +21,7 @@ freely, subject to the following restrictions:
 using System.Collections.Generic;
 using System.IO;
 using DotRecast.Core;
+using DotRecast.Detour.QueryResults;
 using DotRecast.Detour.TileCache.Io;
 using NUnit.Framework;
 

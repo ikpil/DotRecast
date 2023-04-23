@@ -22,6 +22,7 @@ using System.Linq;
 using DotRecast.Core;
 using DotRecast.Detour.Extras.Unity.Astar;
 using DotRecast.Detour.Io;
+using DotRecast.Detour.QueryResults;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Extras.Test.Unity.Astar;

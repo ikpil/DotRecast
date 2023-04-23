@@ -18,38 +18,37 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using DotRecast.Core;
+using System.Collections.Generic;
 
-namespace DotRecast.Detour
+namespace DotRecast.Detour.QueryResults
 {
-    public class FindNearestPolyResult
+// TODO: (PP) Add comments
+    public class FindPolysAroundResult
     {
-        private readonly long nearestRef;
-        private readonly Vector3f nearestPos;
-        private readonly bool overPoly;
+        private readonly List<long> refs;
+        private readonly List<long> parentRefs;
+        private readonly List<float> costs;
 
-        public FindNearestPolyResult(long nearestRef, Vector3f nearestPos, bool overPoly)
+        public FindPolysAroundResult(List<long> refs, List<long> parentRefs, List<float> costs)
         {
-            this.nearestRef = nearestRef;
-            this.nearestPos = nearestPos;
-            this.overPoly = overPoly;
+            this.@refs = refs;
+            this.parentRefs = parentRefs;
+            this.costs = costs;
         }
 
-        /** Returns the reference id of the nearest polygon. 0 if no polygon is found. */
-        public long getNearestRef()
+        public List<long> getRefs()
         {
-            return nearestRef;
+            return refs;
         }
 
-        /** Returns the nearest point on the polygon. [opt] [(x, y, z)]. Unchanged if no polygon is found. */
-        public Vector3f getNearestPos()
+        public List<long> getParentRefs()
         {
-            return nearestPos;
+            return parentRefs;
         }
 
-        public bool isOverPoly()
+        public List<float> getCosts()
         {
-            return overPoly;
+            return costs;
         }
     }
 }

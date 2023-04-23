@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 
 using DotRecast.Core;
 
-namespace DotRecast.Detour
+namespace DotRecast.Detour.QueryResults
 {
     public class ClosestPointOnPolyResult
     {

@@ -19,29 +19,32 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using DotRecast.Core;
 
-namespace DotRecast.Detour
+namespace DotRecast.Detour.QueryResults
 {
-//TODO: (PP) Add comments
-    public class FindLocalNeighbourhoodResult
+    public class MoveAlongSurfaceResult
     {
-        private readonly List<long> refs;
-        private readonly List<long> parentRefs;
+        /** The result position of the mover. [(x, y, z)] */
+        private readonly Vector3f resultPos;
 
-        public FindLocalNeighbourhoodResult(List<long> refs, List<long> parentRefs)
+        /** The reference ids of the polygons visited during the move. */
+        private readonly List<long> visited;
+
+        public MoveAlongSurfaceResult(Vector3f resultPos, List<long> visited)
         {
-            this.@refs = refs;
-            this.parentRefs = parentRefs;
+            this.resultPos = resultPos;
+            this.visited = visited;
         }
 
-        public List<long> getRefs()
+        public Vector3f getResultPos()
         {
-            return refs;
+            return resultPos;
         }
 
-        public List<long> getParentRefs()
+        public List<long> getVisited()
         {
-            return parentRefs;
+            return visited;
         }
     }
 }

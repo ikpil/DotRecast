@@ -20,35 +20,36 @@ freely, subject to the following restrictions:
 
 using DotRecast.Core;
 
-namespace DotRecast.Detour
+namespace DotRecast.Detour.QueryResults
 {
-//TODO: (PP) Add comments
-    public class FindDistanceToWallResult
+    public class FindNearestPolyResult
     {
-        private readonly float distance;
-        private readonly Vector3f position;
-        private readonly Vector3f normal;
+        private readonly long nearestRef;
+        private readonly Vector3f nearestPos;
+        private readonly bool overPoly;
 
-        public FindDistanceToWallResult(float distance, Vector3f position, Vector3f normal)
+        public FindNearestPolyResult(long nearestRef, Vector3f nearestPos, bool overPoly)
         {
-            this.distance = distance;
-            this.position = position;
-            this.normal = normal;
+            this.nearestRef = nearestRef;
+            this.nearestPos = nearestPos;
+            this.overPoly = overPoly;
         }
 
-        public float getDistance()
+        /** Returns the reference id of the nearest polygon. 0 if no polygon is found. */
+        public long getNearestRef()
         {
-            return distance;
+            return nearestRef;
         }
 
-        public Vector3f getPosition()
+        /** Returns the nearest point on the polygon. [opt] [(x, y, z)]. Unchanged if no polygon is found. */
+        public Vector3f getNearestPos()
         {
-            return position;
+            return nearestPos;
         }
 
-        public Vector3f getNormal()
+        public bool isOverPoly()
         {
-            return normal;
+            return overPoly;
         }
     }
 }

@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 using System;
 using System.Diagnostics;
 using DotRecast.Core;
+using DotRecast.Detour.QueryResults;
 using NUnit.Framework;
 using static DotRecast.Core.RecastMath;
 

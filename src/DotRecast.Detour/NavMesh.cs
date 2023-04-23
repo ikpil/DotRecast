@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Numerics;
 using DotRecast.Core;
+using DotRecast.Detour.QueryResults;
 
 namespace DotRecast.Detour
 {

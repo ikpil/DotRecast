@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using DotRecast.Core;
 using DotRecast.Detour.Crowd.Tracking;
+using DotRecast.Detour.QueryResults;
 
 namespace DotRecast.Detour.Crowd
 {

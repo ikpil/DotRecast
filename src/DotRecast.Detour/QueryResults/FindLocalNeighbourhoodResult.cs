@@ -20,20 +20,18 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 
-namespace DotRecast.Detour
+namespace DotRecast.Detour.QueryResults
 {
-// TODO: (PP) Add comments
-    public class FindPolysAroundResult
+//TODO: (PP) Add comments
+    public class FindLocalNeighbourhoodResult
     {
         private readonly List<long> refs;
         private readonly List<long> parentRefs;
-        private readonly List<float> costs;
 
-        public FindPolysAroundResult(List<long> refs, List<long> parentRefs, List<float> costs)
+        public FindLocalNeighbourhoodResult(List<long> refs, List<long> parentRefs)
         {
             this.@refs = refs;
             this.parentRefs = parentRefs;
-            this.costs = costs;
         }
 
         public List<long> getRefs()
@@ -44,11 +42,6 @@ namespace DotRecast.Detour
         public List<long> getParentRefs()
         {
             return parentRefs;
-        }
-
-        public List<float> getCosts()
-        {
-            return costs;
         }
     }
 }
