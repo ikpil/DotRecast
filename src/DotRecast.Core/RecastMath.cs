@@ -507,10 +507,10 @@ namespace DotRecast.Core
         
         public static float triArea2D(Vector3f a, Vector3f b, Vector3f c)
         {
-            float abx = b[0] - a[0];
-            float abz = b[2] - a[2];
-            float acx = c[0] - a[0];
-            float acz = c[2] - a[2];
+            float abx = b.x - a.x;
+            float abz = b.z - a.z;
+            float acx = c.x - a.x;
+            float acz = c.z - a.z;
             return acx * abz - abx * acz;
         }
         
