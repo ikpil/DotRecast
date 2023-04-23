@@ -112,7 +112,7 @@ public class CrowdTool : Tool
 
             // Setup local avoidance option to different qualities.
             // Use mostly default settings, copy from dtCrowd.
-            ObstacleAvoidanceQuery.ObstacleAvoidanceParams option = new ObstacleAvoidanceQuery.ObstacleAvoidanceParams(crowd.getObstacleAvoidanceParams(0));
+            ObstacleAvoidanceParams option = new ObstacleAvoidanceParams(crowd.getObstacleAvoidanceParams(0));
 
             // Low (11)
             option.velBias = 0.5f;

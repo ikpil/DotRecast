@@ -145,7 +145,7 @@ namespace DotRecast.Detour.Crowd
         private readonly AtomicInteger agentId = new AtomicInteger();
         private readonly List<CrowdAgent> m_agents;
         private readonly PathQueue m_pathq;
-        private readonly ObstacleAvoidanceQuery.ObstacleAvoidanceParams[] m_obstacleQueryParams = new ObstacleAvoidanceQuery.ObstacleAvoidanceParams[DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS];
+        private readonly ObstacleAvoidanceParams[] m_obstacleQueryParams = new ObstacleAvoidanceParams[DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS];
         private readonly ObstacleAvoidanceQuery m_obstacleQuery;
         private ProximityGrid m_grid;
         private readonly Vector3f m_ext = new Vector3f();
@@ -176,7 +176,7 @@ namespace DotRecast.Detour.Crowd
             // Init obstacle query option.
             for (int i = 0; i < DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS; ++i)
             {
-                m_obstacleQueryParams[i] = new ObstacleAvoidanceQuery.ObstacleAvoidanceParams();
+                m_obstacleQueryParams[i] = new ObstacleAvoidanceParams();
             }
 
             // Allocate temp buffer for merging paths.
@@ -198,11 +198,11 @@ namespace DotRecast.Detour.Crowd
         /// @param[in] idx The index. [Limits: 0 <= value <
         /// #DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS]
         /// @param[in] option The new configuration.
-        public void setObstacleAvoidanceParams(int idx, ObstacleAvoidanceQuery.ObstacleAvoidanceParams option)
+        public void setObstacleAvoidanceParams(int idx, ObstacleAvoidanceParams option)
         {
             if (idx >= 0 && idx < DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS)
             {
-                m_obstacleQueryParams[idx] = new ObstacleAvoidanceQuery.ObstacleAvoidanceParams(option);
+                m_obstacleQueryParams[idx] = new ObstacleAvoidanceParams(option);
             }
         }
 
@@ -210,7 +210,7 @@ namespace DotRecast.Detour.Crowd
         /// @param[in] idx The index of the configuration to retreive.
         /// [Limits: 0 <= value < #DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS]
         /// @return The requested configuration.
-        public ObstacleAvoidanceQuery.ObstacleAvoidanceParams getObstacleAvoidanceParams(int idx)
+        public ObstacleAvoidanceParams getObstacleAvoidanceParams(int idx)
         {
             if (idx >= 0 && idx < DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS)
             {
@@ -1177,7 +1177,7 @@ namespace DotRecast.Detour.Crowd
                     bool adaptive = true;
                     int ns = 0;
 
-                    ObstacleAvoidanceQuery.ObstacleAvoidanceParams option = m_obstacleQueryParams[ag.option.obstacleAvoidanceType];
+                    ObstacleAvoidanceParams option = m_obstacleQueryParams[ag.option.obstacleAvoidanceType];
 
                     if (adaptive)
                     {

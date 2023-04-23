@@ -211,7 +211,7 @@ public class CrowdProfilingTool
         crowd = new Crowd(config, navMesh, __ => new DefaultQueryFilter(SampleAreaModifications.SAMPLE_POLYFLAGS_ALL,
             SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED, new float[] { 1f, 10f, 1f, 1f, 2f, 1.5f }));
 
-        ObstacleAvoidanceQuery.ObstacleAvoidanceParams option = new ObstacleAvoidanceQuery.ObstacleAvoidanceParams(crowd.getObstacleAvoidanceParams(0));
+        ObstacleAvoidanceParams option = new ObstacleAvoidanceParams(crowd.getObstacleAvoidanceParams(0));
         // Low (11)
         option.velBias = 0.5f;
         option.adaptiveDivs = 5;

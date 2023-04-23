@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\DotRecast.Detour\DotRecast.Detour.csproj"/>
+        <ProjectReference Include="..\DotRecast.Detour\DotRecast.Detour.csproj" />
     </ItemGroup>
 
 </Project>
