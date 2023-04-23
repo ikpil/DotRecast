@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Text;
+using DotRecast.Recast.Demo.Logging.Sinks;
 using DotRecast.Recast.Demo.Tools;
+using DotRecast.Recast.Demo.UI.ViewModels;
 using ImGuiNET;
 
 namespace DotRecast.Recast.Demo.UI;
@@ -13,52 +16,31 @@ public class RcLogView : IRcView
     private RecastDemoCanvas _canvas;
     private bool _mouseInside;
 
-    private List<string> _lines = new();
-    private readonly ConcurrentQueue<string> _output = new();
-    private readonly StringBuilder _outputStringBuilder = new();
-
-    private readonly ConcurrentQueue<string> _error = new();
-    private readonly StringBuilder _errorStringBuilder = new();
-
+    private readonly List<LogMessageItem> _lines;
+    private readonly ConcurrentQueue<LogMessageItem> _queues;
 
 
     public RcLogView()
     {
-        Console.SetOut(new ConsoleTextWriterHook(OnOut));
-        Console.SetError(new ConsoleTextWriterHook(OnError));
+        _lines = new();
+        _queues = new();
+
+        LogMessageBrokerSink.OnEmitted += OnOut;
     }
 
-    private void OnOut(string log)
+    private void OnOut(int level, string message)
     {
-        _output.Enqueue(log);
-    }
-
-    private void OnError(string log)
-    {
-        _error.Enqueue(log);
+        var lines = message
+            .Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+            .Select(x => new LogMessageItem { Level = level, Message = x });
+        
+        _lines.AddRange(lines);
     }
 
     public void Clear()
     {
         _lines.Clear();
     }
-
-    private void MergeLines(ConcurrentQueue<string> queue, StringBuilder builder)
-    {
-        while (queue.TryDequeue(out var s))
-        {
-            if (s != "\r\n")
-            {
-                builder.Append(s);
-            }
-            else
-            {
-                _lines.Add(builder.ToString());
-                builder.Clear();
-            }
-        }
-    }
-
 
     public void Bind(RecastDemoCanvas canvas)
     {
@@ -67,16 +49,16 @@ public class RcLogView : IRcView
 
     public void Update(double dt)
     {
-        MergeLines(_output, _outputStringBuilder);
-        MergeLines(_error, _errorStringBuilder);
-        
+        while (_queues.TryDequeue(out var item))
+            _lines.Add(item);
+
         // buffer
         if (10240 < _lines.Count)
         {
             _lines.RemoveRange(0, _lines.Count - 8196);
         }
     }
-    
+
     public bool IsMouseInside() => _mouseInside;
 
     public void Draw(double dt)
@@ -97,7 +79,7 @@ public class RcLogView : IRcView
         if (ImGui.BeginChild("scrolling", Vector2.Zero, false, ImGuiWindowFlags.HorizontalScrollbar))
         {
             _mouseInside = ImGui.IsWindowHovered();
-            
+
             ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, Vector2.Zero);
 
             unsafe
@@ -108,7 +90,7 @@ public class RcLogView : IRcView
                 {
                     for (int lineNo = clipper.DisplayStart; lineNo < clipper.DisplayEnd; lineNo++)
                     {
-                        ImGui.TextUnformatted(_lines[lineNo]);
+                        ImGui.TextUnformatted(_lines[lineNo].Message);
                     }
                 }
 

@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using DotRecast.Core;
+using DotRecast.Recast.Demo.Logging.Sinks;
 using Serilog;
 using Serilog.Enrichers;
 
@@ -9,7 +10,6 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        
         var path = Loader.ToRPath("dungeon.obj");
         path = Path.GetDirectoryName(path);
         if (!string.IsNullOrEmpty(path))
@@ -25,6 +25,7 @@ public static class Program
             .Enrich.WithThreadId()
             .Enrich.WithThreadName()
             .Enrich.WithProperty(ThreadNameEnricher.ThreadNamePropertyName, "main")
+            .WriteTo.LogMessageBroker(outputTemplate: format)
             .WriteTo.Console(outputTemplate: format)
             .WriteTo.File(
                 "logs/log.log",
