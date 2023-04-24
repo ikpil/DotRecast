@@ -25,13 +25,14 @@ public static class Program
             .Enrich.WithThreadId()
             .Enrich.WithThreadName()
             .Enrich.WithProperty(ThreadNameEnricher.ThreadNamePropertyName, "main")
-            .WriteTo.LogMessageBroker(outputTemplate: format)
-            .WriteTo.Console(outputTemplate: format)
-            .WriteTo.File(
+            .WriteTo.Async(c => c.LogMessageBroker(outputTemplate: format))
+            .WriteTo.Async(c => c.Console(outputTemplate: format))
+            .WriteTo.Async(c => c.File(
                 "logs/log.log",
                 rollingInterval: RollingInterval.Day,
                 rollOnFileSizeLimit: true,
                 outputTemplate: format)
+            )
             .CreateLogger();
 
         Run();
