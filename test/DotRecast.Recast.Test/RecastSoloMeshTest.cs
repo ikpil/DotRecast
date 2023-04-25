@@ -27,6 +27,7 @@ namespace DotRecast.Recast.Test;
 
 using static RecastConstants;
 
+[Parallelizable]
 public class RecastSoloMeshTest
 {
     private const float m_cellSize = 0.3f;

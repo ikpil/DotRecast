@@ -9,6 +9,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Dynamic.Test;
 
+[Parallelizable]
 public class DynamicNavMeshTest
 {
     private static readonly Vector3f START_POS = Vector3f.Of(70.87453f, 0.0010070801f, 86.69021f);

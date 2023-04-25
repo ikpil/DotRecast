@@ -21,6 +21,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
 
+[Parallelizable]
 public class PolygonByCircleConstraintTest
 {
     private readonly PolygonByCircleConstraint constraint = new PolygonByCircleConstraint.StrictPolygonByCircleConstraint();

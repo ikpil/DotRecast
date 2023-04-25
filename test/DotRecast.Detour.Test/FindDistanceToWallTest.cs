@@ -22,6 +22,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
 
+[Parallelizable]
 public class FindDistanceToWallTest : AbstractDetourTest
 {
     private static readonly float[] DISTANCES_TO_WALL = { 0.597511f, 3.201085f, 0.603713f, 2.791475f, 2.815544f };

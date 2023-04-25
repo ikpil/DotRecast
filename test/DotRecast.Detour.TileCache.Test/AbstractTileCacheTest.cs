@@ -21,11 +21,13 @@ freely, subject to the following restrictions:
 using DotRecast.Core;
 using DotRecast.Detour.TileCache.Io.Compress;
 using DotRecast.Recast.Geom;
+using NUnit.Framework;
 using static DotRecast.Core.RecastMath;
 using static DotRecast.Recast.RecastVectors;
 
 namespace DotRecast.Detour.TileCache.Test;
 
+[Parallelizable]
 public class AbstractTileCacheTest
 {
     private const int EXPECTED_LAYERS_PER_TILE = 4;

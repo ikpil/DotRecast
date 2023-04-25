@@ -22,6 +22,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
 
+[Parallelizable]
 public class MoveAlongSurfaceTest : AbstractDetourTest
 {
     private static readonly long[][] VISITED =

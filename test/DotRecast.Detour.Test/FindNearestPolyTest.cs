@@ -22,6 +22,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
 
+[Parallelizable]
 public class FindNearestPolyTest : AbstractDetourTest
 {
     private static readonly long[] POLY_REFS = { 281474976710696L, 281474976710773L, 281474976710680L, 281474976710753L, 281474976710733L };

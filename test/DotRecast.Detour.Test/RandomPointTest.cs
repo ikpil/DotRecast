@@ -25,6 +25,7 @@ using static DotRecast.Core.RecastMath;
 
 namespace DotRecast.Detour.Test;
 
+[Parallelizable]
 public class RandomPointTest : AbstractDetourTest
 {
     [Test]

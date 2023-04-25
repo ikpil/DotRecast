@@ -28,6 +28,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Dynamic.Test;
 
+[Parallelizable]
 public class VoxelQueryTest
 {
     private const int TILE_WIDTH = 100;

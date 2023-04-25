@@ -20,6 +20,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
 
+[Parallelizable]
 public class ConvexConvexIntersectionTest
 {
     [Test]

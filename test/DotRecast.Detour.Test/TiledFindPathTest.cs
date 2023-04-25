@@ -23,6 +23,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
 
+[Parallelizable]
 public class TiledFindPathTest
 {
     private static readonly Status[] STATUSES = { Status.SUCCSESS };

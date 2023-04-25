@@ -28,6 +28,7 @@ namespace DotRecast.Detour.Crowd.Test;
 
 using static DotRecast.Core.RecastMath;
 
+[Parallelizable]
 public class AbstractCrowdTest
 {
     protected readonly long[] startRefs =

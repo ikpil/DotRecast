@@ -24,6 +24,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Crowd.Test;
 
+[Parallelizable]
 public class PathCorridorTest
 {
     private readonly PathCorridor corridor = new PathCorridor();

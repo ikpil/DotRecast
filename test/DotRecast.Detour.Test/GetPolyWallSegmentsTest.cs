@@ -21,6 +21,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
 
+[Parallelizable]
 public class GetPolyWallSegmentsTest : AbstractDetourTest
 {
     private static readonly float[][] VERTICES =

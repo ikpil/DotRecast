@@ -27,6 +27,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.TileCache.Test;
 
+[Parallelizable]
 public class TileCacheFindPathTest : AbstractTileCacheTest
 {
     private readonly Vector3f start = Vector3f.Of(39.44734f, 9.998177f, -0.784811f);

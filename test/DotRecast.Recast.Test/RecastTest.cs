@@ -22,6 +22,7 @@ namespace DotRecast.Recast.Test;
 
 using static RecastConstants;
 
+[Parallelizable]
 public class RecastTest
 {
     [Test]

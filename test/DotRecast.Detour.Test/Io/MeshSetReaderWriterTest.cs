@@ -27,6 +27,7 @@ using static DotRecast.Core.RecastMath;
 
 namespace DotRecast.Detour.Test.Io;
 
+[Parallelizable]
 public class MeshSetReaderWriterTest
 {
     private readonly MeshSetWriter writer = new MeshSetWriter();
