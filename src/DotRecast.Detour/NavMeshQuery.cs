@@ -73,26 +73,6 @@ namespace DotRecast.Detour
             m_openList = new NodeQueue();
         }
 
-        public class FRand
-        {
-            private readonly Random r;
-
-            public FRand()
-            {
-                r = new Random();
-            }
-
-            public FRand(long seed)
-            {
-                r = new Random((int)seed); // TODO : 랜덤 시드 확인 필요
-            }
-
-            public float frand()
-            {
-                return (float)r.NextDouble();
-            }
-        }
-
         /**
      * Returns random location on navmesh. Polygons are chosen weighted by area. The search runs in linear related to
      * number of polygon.

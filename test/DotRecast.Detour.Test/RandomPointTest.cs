@@ -31,7 +31,7 @@ public class RandomPointTest : AbstractDetourTest
     [Test]
     public void testRandom()
     {
-        NavMeshQuery.FRand f = new NavMeshQuery.FRand(1);
+        FRand f = new FRand(1);
         QueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < 1000; i++)
         {
@@ -59,7 +59,7 @@ public class RandomPointTest : AbstractDetourTest
     [Test]
     public void testRandomAroundCircle()
     {
-        NavMeshQuery.FRand f = new NavMeshQuery.FRand(1);
+        FRand f = new FRand(1);
         QueryFilter filter = new DefaultQueryFilter();
         FindRandomPointResult point = query.findRandomPoint(filter, f).result;
         for (int i = 0; i < 1000; i++)
@@ -90,7 +90,7 @@ public class RandomPointTest : AbstractDetourTest
     [Test]
     public void testRandomWithinCircle()
     {
-        NavMeshQuery.FRand f = new NavMeshQuery.FRand(1);
+        FRand f = new FRand(1);
         QueryFilter filter = new DefaultQueryFilter();
         FindRandomPointResult point = query.findRandomPoint(filter, f).result;
         float radius = 5f;
@@ -108,7 +108,7 @@ public class RandomPointTest : AbstractDetourTest
     [Test]
     public void testPerformance()
     {
-        NavMeshQuery.FRand f = new NavMeshQuery.FRand(1);
+        FRand f = new FRand(1);
         QueryFilter filter = new DefaultQueryFilter();
         FindRandomPointResult point = query.findRandomPoint(filter, f).result;
         float radius = 5f;

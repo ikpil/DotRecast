@@ -48,7 +48,7 @@ public class CrowdProfilingTool
     private Crowd crowd;
     private NavMesh navMesh;
     private CrowdConfig config;
-    private NavMeshQuery.FRand rnd;
+    private FRand rnd;
     private readonly List<FindRandomPointResult> zones = new();
     private long crowdUpdateTime;
 
@@ -79,7 +79,7 @@ public class CrowdProfilingTool
         {
             if (navMesh != null)
             {
-                rnd = new NavMeshQuery.FRand(randomSeed);
+                rnd = new FRand(randomSeed);
                 createCrowd();
                 createZones();
                 NavMeshQuery navquery = new NavMeshQuery(navMesh);

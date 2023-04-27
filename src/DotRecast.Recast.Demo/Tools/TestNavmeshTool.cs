@@ -495,7 +495,7 @@ public class TestNavmeshTool : Tool
                 for (int i = 0; i < 200; i++)
                 {
                     Result<FindRandomPointResult> result = m_navQuery.findRandomPointAroundCircle(m_startRef, m_spos, dist,
-                        m_filter, new NavMeshQuery.FRand(), constraint);
+                        m_filter, new FRand(), constraint);
                     if (result.succeeded())
                     {
                         randomPoints.Add(result.result.getRandomPt());
