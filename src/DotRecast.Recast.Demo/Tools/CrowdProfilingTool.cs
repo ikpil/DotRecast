@@ -149,7 +149,7 @@ public class CrowdProfilingTool
     private Vector3f? getMobPosition(NavMeshQuery navquery, QueryFilter filter)
     {
         Result<FindRandomPointResult> result = navquery.findRandomPoint(filter, rnd);
-        if (result.succeeded())
+        if (result.Succeeded())
         {
             return result.result.getRandomPt();
         }
@@ -164,7 +164,7 @@ public class CrowdProfilingTool
             int zone = (int)(rnd.frand() * zones.Count);
             Result<FindRandomPointResult> result = navquery.findRandomPointWithinCircle(zones[zone].getRandomRef(),
                 zones[zone].getRandomPt(), zoneRadius, filter, rnd);
-            if (result.succeeded())
+            if (result.Succeeded())
             {
                 return result.result.getRandomPt();
             }
@@ -184,7 +184,7 @@ public class CrowdProfilingTool
             for (int k = 0; k < 100; k++)
             {
                 Result<FindRandomPointResult> result = navquery.findRandomPoint(filter, rnd);
-                if (result.succeeded())
+                if (result.Succeeded())
                 {
                     bool valid = true;
                     foreach (FindRandomPointResult zone in zones)
@@ -281,11 +281,11 @@ public class CrowdProfilingTool
     {
         // Move somewhere
         Result<FindNearestPolyResult> nearestPoly = navquery.findNearestPoly(ag.npos, crowd.getQueryExtents(), filter);
-        if (nearestPoly.succeeded())
+        if (nearestPoly.Succeeded())
         {
             Result<FindRandomPointResult> result = navquery.findRandomPointAroundCircle(nearestPoly.result.getNearestRef(),
                 agentData.home, zoneRadius * 2f, filter, rnd);
-            if (result.succeeded())
+            if (result.Succeeded())
             {
                 crowd.requestMoveTarget(ag, result.result.getRandomRef(), result.result.getRandomPt());
             }
@@ -296,11 +296,11 @@ public class CrowdProfilingTool
     {
         // Move somewhere close
         Result<FindNearestPolyResult> nearestPoly = navquery.findNearestPoly(ag.npos, crowd.getQueryExtents(), filter);
-        if (nearestPoly.succeeded())
+        if (nearestPoly.Succeeded())
         {
             Result<FindRandomPointResult> result = navquery.findRandomPointAroundCircle(nearestPoly.result.getNearestRef(),
                 agentData.home, zoneRadius * 0.2f, filter, rnd);
-            if (result.succeeded())
+            if (result.Succeeded())
             {
                 crowd.requestMoveTarget(ag, result.result.getRandomRef(), result.result.getRandomPt());
             }

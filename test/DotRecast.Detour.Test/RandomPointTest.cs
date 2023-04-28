@@ -36,7 +36,7 @@ public class RandomPointTest : AbstractDetourTest
         for (int i = 0; i < 1000; i++)
         {
             Result<FindRandomPointResult> point = query.findRandomPoint(filter, f);
-            Assert.That(point.succeeded(), Is.True);
+            Assert.That(point.Succeeded(), Is.True);
             Tuple<MeshTile, Poly> tileAndPoly = navmesh.getTileAndPolyByRef(point.result.getRandomRef()).result;
             float[] bmin = new float[2];
             float[] bmax = new float[2];
@@ -66,7 +66,7 @@ public class RandomPointTest : AbstractDetourTest
         {
             Result<FindRandomPointResult> result = query.findRandomPointAroundCircle(point.getRandomRef(), point.getRandomPt(),
                 5f, filter, f);
-            Assert.That(result.failed(), Is.False);
+            Assert.That(result.Failed(), Is.False);
             point = result.result;
             Tuple<MeshTile, Poly> tileAndPoly = navmesh.getTileAndPolyByRef(point.getRandomRef()).result;
             float[] bmin = new float[2];
@@ -98,7 +98,7 @@ public class RandomPointTest : AbstractDetourTest
         {
             Result<FindRandomPointResult> result = query.findRandomPointWithinCircle(point.getRandomRef(), point.getRandomPt(),
                 radius, filter, f);
-            Assert.That(result.failed(), Is.False);
+            Assert.That(result.Failed(), Is.False);
             float distance = vDist2D(point.getRandomPt(), result.result.getRandomPt());
             Assert.That(distance <= radius, Is.True);
             point = result.result;

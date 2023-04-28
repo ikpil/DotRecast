@@ -110,7 +110,7 @@ public class UnityAStarPathfindingImporterTest
         {
             Vector3f position = positions[i];
             Result<FindNearestPolyResult> result = query.findNearestPoly(position, extents, filter);
-            Assert.That(result.succeeded(), Is.True);
+            Assert.That(result.Succeeded(), Is.True);
             Assert.That(result.result.getNearestPos(), Is.Not.EqualTo(Vector3f.Zero), "Nearest start position is null!");
             results[i] = result.result;
         }

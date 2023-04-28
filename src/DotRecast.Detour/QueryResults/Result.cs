@@ -22,47 +22,47 @@ namespace DotRecast.Detour.QueryResults
 {
     public static class Results
     {
-        public static Result<T> success<T>(T result)
+        public static Result<T> Success<T>(T result)
         {
             return new Result<T>(result, Status.SUCCSESS, null);
         }
 
-        public static Result<T> failure<T>()
+        public static Result<T> Failure<T>()
         {
             return new Result<T>(default, Status.FAILURE, null);
         }
 
-        public static Result<T> invalidParam<T>()
+        public static Result<T> InvalidParam<T>()
         {
             return new Result<T>(default, Status.FAILURE_INVALID_PARAM, null);
         }
 
-        public static Result<T> failure<T>(string message)
+        public static Result<T> Failure<T>(string message)
         {
             return new Result<T>(default, Status.FAILURE, message);
         }
 
-        public static Result<T> invalidParam<T>(string message)
+        public static Result<T> InvalidParam<T>(string message)
         {
             return new Result<T>(default, Status.FAILURE_INVALID_PARAM, message);
         }
 
-        public static Result<T> failure<T>(T result)
+        public static Result<T> Failure<T>(T result)
         {
             return new Result<T>(result, Status.FAILURE, null);
         }
 
-        public static Result<T> partial<T>(T result)
+        public static Result<T> Partial<T>(T result)
         {
             return new Result<T>(default, Status.PARTIAL_RESULT, null);
         }
 
-        public static Result<T> of<T>(Status status, string message)
+        public static Result<T> Of<T>(Status status, string message)
         {
             return new Result<T>(default, status, message);
         }
 
-        public static Result<T> of<T>(Status status, T result)
+        public static Result<T> Of<T>(Status status, T result)
         {
             return new Result<T>(result, status, null);
         }
@@ -82,12 +82,12 @@ namespace DotRecast.Detour.QueryResults
         }
 
 
-        public bool failed()
+        public bool Failed()
         {
             return status.isFailed();
         }
 
-        public bool succeeded()
+        public bool Succeeded()
         {
             return status.isSuccess();
         }

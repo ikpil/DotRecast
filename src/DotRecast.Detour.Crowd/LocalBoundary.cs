@@ -110,7 +110,7 @@ namespace DotRecast.Detour.Crowd
             // First query non-overlapping polygons.
             Result<FindLocalNeighbourhoodResult> res = navquery.findLocalNeighbourhood(refs, pos, collisionQueryRange,
                 filter);
-            if (res.succeeded())
+            if (res.Succeeded())
             {
                 m_polys = res.result.getRefs();
                 m_segs.Clear();
@@ -118,7 +118,7 @@ namespace DotRecast.Detour.Crowd
                 for (int j = 0; j < m_polys.Count; ++j)
                 {
                     Result<GetPolyWallSegmentsResult> result = navquery.getPolyWallSegments(m_polys[j], false, filter);
-                    if (result.succeeded())
+                    if (result.Succeeded())
                     {
                         GetPolyWallSegmentsResult gpws = result.result;
                         for (int k = 0; k < gpws.countSegmentRefs(); ++k)

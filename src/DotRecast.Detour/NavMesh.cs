@@ -225,7 +225,7 @@ namespace DotRecast.Detour
         {
             if (refs == 0)
             {
-                return Results.invalidParam<Tuple<MeshTile, Poly>>("ref = 0");
+                return Results.InvalidParam<Tuple<MeshTile, Poly>>("ref = 0");
             }
 
             int[] saltitip = decodePolyId(refs);
@@ -234,20 +234,20 @@ namespace DotRecast.Detour
             int ip = saltitip[2];
             if (it >= m_maxTiles)
             {
-                return Results.invalidParam<Tuple<MeshTile, Poly>>("tile > m_maxTiles");
+                return Results.InvalidParam<Tuple<MeshTile, Poly>>("tile > m_maxTiles");
             }
 
             if (m_tiles[it].salt != salt || m_tiles[it].data.header == null)
             {
-                return Results.invalidParam<Tuple<MeshTile, Poly>>("Invalid salt or header");
+                return Results.InvalidParam<Tuple<MeshTile, Poly>>("Invalid salt or header");
             }
 
             if (ip >= m_tiles[it].data.header.polyCount)
             {
-                return Results.invalidParam<Tuple<MeshTile, Poly>>("poly > polyCount");
+                return Results.InvalidParam<Tuple<MeshTile, Poly>>("poly > polyCount");
             }
 
-            return Results.success(Tuple.Create(m_tiles[it], m_tiles[it].data.polys[ip]));
+            return Results.Success(Tuple.Create(m_tiles[it], m_tiles[it].data.polys[ip]));
         }
 
         /// @par
@@ -1523,7 +1523,7 @@ namespace DotRecast.Detour
         {
             if (polyRef == 0)
             {
-                return Results.invalidParam<Tuple<Vector3f, Vector3f>>("polyRef = 0");
+                return Results.InvalidParam<Tuple<Vector3f, Vector3f>>("polyRef = 0");
             }
 
             // Get current polygon
@@ -1533,18 +1533,18 @@ namespace DotRecast.Detour
             int ip = saltitip[2];
             if (it >= m_maxTiles)
             {
-                return Results.invalidParam<Tuple<Vector3f, Vector3f>>("Invalid tile ID > max tiles");
+                return Results.InvalidParam<Tuple<Vector3f, Vector3f>>("Invalid tile ID > max tiles");
             }
 
             if (m_tiles[it].salt != salt || m_tiles[it].data.header == null)
             {
-                return Results.invalidParam<Tuple<Vector3f, Vector3f>>("Invalid salt or missing tile header");
+                return Results.InvalidParam<Tuple<Vector3f, Vector3f>>("Invalid salt or missing tile header");
             }
 
             MeshTile tile = m_tiles[it];
             if (ip >= tile.data.header.polyCount)
             {
-                return Results.invalidParam<Tuple<Vector3f, Vector3f>>("Invalid poly ID > poly count");
+                return Results.InvalidParam<Tuple<Vector3f, Vector3f>>("Invalid poly ID > poly count");
             }
 
             Poly poly = tile.data.polys[ip];
@@ -1552,7 +1552,7 @@ namespace DotRecast.Detour
             // Make sure that the current poly is indeed off-mesh link.
             if (poly.getType() != Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
-                return Results.invalidParam<Tuple<Vector3f, Vector3f>>("Invalid poly type");
+                return Results.InvalidParam<Tuple<Vector3f, Vector3f>>("Invalid poly type");
             }
 
             // Figure out which way to hand out the vertices.
@@ -1577,7 +1577,7 @@ namespace DotRecast.Detour
             Vector3f endPos = new Vector3f();
             vCopy(ref startPos, tile.data.verts, poly.verts[idx0] * 3);
             vCopy(ref endPos, tile.data.verts, poly.verts[idx1] * 3);
-            return Results.success(Tuple.Create(startPos, endPos));
+            return Results.Success(Tuple.Create(startPos, endPos));
         }
 
         public int getMaxVertsPerPoly()
@@ -1628,7 +1628,7 @@ namespace DotRecast.Detour
         {
             if (refs == 0)
             {
-                return Results.failure<int>();
+                return Results.Failure<int>();
             }
 
             int[] saltTilePoly = decodePolyId(refs);
@@ -1637,23 +1637,23 @@ namespace DotRecast.Detour
             int ip = saltTilePoly[2];
             if (it >= m_maxTiles)
             {
-                return Results.invalidParam<int>();
+                return Results.InvalidParam<int>();
             }
 
             if (m_tiles[it].salt != salt || m_tiles[it].data == null || m_tiles[it].data.header == null)
             {
-                return Results.invalidParam<int>();
+                return Results.InvalidParam<int>();
             }
 
             MeshTile tile = m_tiles[it];
             if (ip >= tile.data.header.polyCount)
             {
-                return Results.invalidParam<int>();
+                return Results.InvalidParam<int>();
             }
 
             Poly poly = tile.data.polys[ip];
 
-            return Results.success(poly.flags);
+            return Results.Success(poly.flags);
         }
 
         public Status setPolyArea(long refs, char area)
@@ -1694,7 +1694,7 @@ namespace DotRecast.Detour
         {
             if (refs == 0)
             {
-                return Results.failure<int>();
+                return Results.Failure<int>();
             }
 
             int[] saltTilePoly = decodePolyId(refs);
@@ -1703,23 +1703,23 @@ namespace DotRecast.Detour
             int ip = saltTilePoly[2];
             if (it >= m_maxTiles)
             {
-                return Results.invalidParam<int>();
+                return Results.InvalidParam<int>();
             }
 
             if (m_tiles[it].salt != salt || m_tiles[it].data == null || m_tiles[it].data.header == null)
             {
-                return Results.invalidParam<int>();
+                return Results.InvalidParam<int>();
             }
 
             MeshTile tile = m_tiles[it];
             if (ip >= tile.data.header.polyCount)
             {
-                return Results.invalidParam<int>();
+                return Results.InvalidParam<int>();
             }
 
             Poly poly = tile.data.polys[ip];
 
-            return Results.success(poly.getArea());
+            return Results.Success(poly.getArea());
         }
 
         /**

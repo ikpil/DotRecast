@@ -88,7 +88,7 @@ namespace DotRecast.Detour
             // Randomly pick one tile. Assume that all tiles cover roughly the same area.
             if (null == filter || null == frand)
             {
-                return Results.invalidParam<FindRandomPointResult>();
+                return Results.InvalidParam<FindRandomPointResult>();
             }
 
             MeshTile tile = null;
@@ -113,7 +113,7 @@ namespace DotRecast.Detour
 
             if (tile == null)
             {
-                return Results.invalidParam<FindRandomPointResult>("Tile not found");
+                return Results.InvalidParam<FindRandomPointResult>("Tile not found");
             }
 
             // Randomly pick one polygon weighted by polygon area.
@@ -160,7 +160,7 @@ namespace DotRecast.Detour
 
             if (poly == null)
             {
-                return Results.invalidParam<FindRandomPointResult>("Poly not found");
+                return Results.InvalidParam<FindRandomPointResult>("Poly not found");
             }
 
             // Randomly pick point on polygon.
@@ -177,7 +177,7 @@ namespace DotRecast.Detour
 
             var pt = randomPointInConvexPoly(verts, poly.vertCount, areas, s, t);
             ClosestPointOnPolyResult closest = closestPointOnPoly(polyRef, pt).result;
-            return Results.success(new FindRandomPointResult(polyRef, closest.getClosest()));
+            return Results.Success(new FindRandomPointResult(polyRef, closest.getClosest()));
         }
 
         /**
@@ -230,7 +230,7 @@ namespace DotRecast.Detour
             if (!m_nav.isValidPolyRef(startRef) || !vIsFinite(centerPos) || maxRadius < 0
                 || !float.IsFinite(maxRadius) || null == filter || null == frand)
             {
-                return Results.invalidParam<FindRandomPointResult>();
+                return Results.InvalidParam<FindRandomPointResult>();
             }
 
             Tuple<MeshTile, Poly> tileAndPoly = m_nav.getTileAndPolyByRefUnsafe(startRef);
@@ -238,7 +238,7 @@ namespace DotRecast.Detour
             Poly startPoly = tileAndPoly.Item2;
             if (!filter.passFilter(startRef, startTile, startPoly))
             {
-                return Results.invalidParam<FindRandomPointResult>("Invalid start ref");
+                return Results.InvalidParam<FindRandomPointResult>("Invalid start ref");
             }
 
             m_nodePool.clear();
@@ -338,7 +338,7 @@ namespace DotRecast.Detour
                     // Find edge and calc distance to the edge.
                     Result<PortalResult> portalpoints = getPortalPoints(bestRef, bestPoly, bestTile, neighbourRef,
                         neighbourPoly, neighbourTile, 0, 0);
-                    if (portalpoints.failed())
+                    if (portalpoints.Failed())
                     {
                         continue;
                     }
@@ -394,7 +394,7 @@ namespace DotRecast.Detour
 
             if (randomPoly == null)
             {
-                return Results.failure<FindRandomPointResult>();
+                return Results.Failure<FindRandomPointResult>();
             }
 
             // Randomly pick point on polygon.
@@ -404,7 +404,7 @@ namespace DotRecast.Detour
             float[] areas = new float[randomPolyVerts.Length / 3];
             Vector3f pt = randomPointInConvexPoly(randomPolyVerts, randomPolyVerts.Length / 3, areas, s, t);
             ClosestPointOnPolyResult closest = closestPointOnPoly(randomPolyRef, pt).result;
-            return Results.success(new FindRandomPointResult(randomPolyRef, closest.getClosest()));
+            return Results.Success(new FindRandomPointResult(randomPolyRef, closest.getClosest()));
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////
@@ -426,10 +426,10 @@ namespace DotRecast.Detour
         {
             if (!m_nav.isValidPolyRef(refs) || !vIsFinite(pos))
             {
-                return Results.invalidParam<ClosestPointOnPolyResult>();
+                return Results.InvalidParam<ClosestPointOnPolyResult>();
             }
 
-            return Results.success(m_nav.closestPointOnPoly(refs, pos));
+            return Results.Success(m_nav.closestPointOnPoly(refs, pos));
         }
 
         /// @par
@@ -452,21 +452,21 @@ namespace DotRecast.Detour
         public Result<Vector3f> closestPointOnPolyBoundary(long refs, Vector3f pos)
         {
             Result<Tuple<MeshTile, Poly>> tileAndPoly = m_nav.getTileAndPolyByRef(refs);
-            if (tileAndPoly.failed())
+            if (tileAndPoly.Failed())
             {
-                return Results.of<Vector3f>(tileAndPoly.status, tileAndPoly.message);
+                return Results.Of<Vector3f>(tileAndPoly.status, tileAndPoly.message);
             }
 
             MeshTile tile = tileAndPoly.result.Item1;
             Poly poly = tileAndPoly.result.Item2;
             if (tile == null)
             {
-                return Results.invalidParam<Vector3f>("Invalid tile");
+                return Results.InvalidParam<Vector3f>("Invalid tile");
             }
 
             if (!vIsFinite(pos))
             {
-                return Results.invalidParam<Vector3f>();
+                return Results.InvalidParam<Vector3f>();
             }
 
             // Collect vertices.
@@ -503,7 +503,7 @@ namespace DotRecast.Detour
                 closest = vLerp(verts, va, vb, edget[imin]);
             }
 
-            return Results.success(closest);
+            return Results.Success(closest);
         }
 
         /// @par
@@ -519,9 +519,9 @@ namespace DotRecast.Detour
         public Result<float> getPolyHeight(long refs, Vector3f pos)
         {
             Result<Tuple<MeshTile, Poly>> tileAndPoly = m_nav.getTileAndPolyByRef(refs);
-            if (tileAndPoly.failed())
+            if (tileAndPoly.Failed())
             {
-                return Results.of<float>(tileAndPoly.status, tileAndPoly.message);
+                return Results.Of<float>(tileAndPoly.status, tileAndPoly.message);
             }
 
             MeshTile tile = tileAndPoly.result.Item1;
@@ -529,7 +529,7 @@ namespace DotRecast.Detour
 
             if (!vIsFinite2D(pos))
             {
-                return Results.invalidParam<float>();
+                return Results.InvalidParam<float>();
             }
 
             // We used to return success for offmesh connections, but the
@@ -542,11 +542,11 @@ namespace DotRecast.Detour
                 i = poly.verts[1] * 3;
                 var v1 = new Vector3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
                 var dt = distancePtSegSqr2D(pos, v0, v1);
-                return Results.success(v0[1] + (v1[1] - v0[1]) * dt.Item2);
+                return Results.Success(v0[1] + (v1[1] - v0[1]) * dt.Item2);
             }
 
             float? height = m_nav.getPolyHeight(tile, poly, pos);
-            return null != height ? Results.success(height.Value) : Results.invalidParam<float>();
+            return null != height ? Results.Success(height.Value) : Results.InvalidParam<float>();
         }
 
         /**
@@ -568,10 +568,10 @@ namespace DotRecast.Detour
             Status status = queryPolygons(center, halfExtents, filter, query);
             if (status.isFailed())
             {
-                return Results.of<FindNearestPolyResult>(status, "");
+                return Results.Of<FindNearestPolyResult>(status, "");
             }
 
-            return Results.success(query.result());
+            return Results.Success(query.result());
         }
 
         // FIXME: (PP) duplicate?
@@ -767,7 +767,7 @@ namespace DotRecast.Detour
             // Validate input
             if (!m_nav.isValidPolyRef(startRef) || !m_nav.isValidPolyRef(endRef) || !vIsFinite(startPos) || !vIsFinite(endPos) || null == filter)
             {
-                return Results.invalidParam<List<long>>();
+                return Results.InvalidParam<List<long>>();
             }
 
             float raycastLimitSqr = sqr(raycastLimit);
@@ -786,7 +786,7 @@ namespace DotRecast.Detour
             {
                 List<long> singlePath = new List<long>(1);
                 singlePath.Add(startRef);
-                return Results.success(singlePath);
+                return Results.Success(singlePath);
             }
 
             m_nodePool.clear();
@@ -897,7 +897,7 @@ namespace DotRecast.Detour
                         ? getEdgeIntersectionPoint(bestNode.pos, bestRef, bestPoly, bestTile, endPos, neighbourRef,
                             neighbourPoly, neighbourTile)
                         : getEdgeMidPoint(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly, neighbourTile);
-                    if (!midpod.failed())
+                    if (!midpod.Failed())
                     {
                         neighbourPos = midpod.result;
                     }
@@ -913,7 +913,7 @@ namespace DotRecast.Detour
                     {
                         Result<RaycastHit> rayHit = raycast(parentRef, parentNode.pos, neighbourPos, filter,
                             DT_RAYCAST_USE_COSTS, grandpaRef);
-                        if (rayHit.succeeded())
+                        if (rayHit.Succeeded())
                         {
                             foundShortCut = rayHit.result.t >= 1.0f;
                             if (foundShortCut)
@@ -999,7 +999,7 @@ namespace DotRecast.Detour
                 status = Status.PARTIAL_RESULT;
             }
 
-            return Results.of(status, path);
+            return Results.Of(status, path);
         }
 
         /**
@@ -1101,14 +1101,14 @@ namespace DotRecast.Detour
         {
             if (!m_query.status.isInProgress())
             {
-                return Results.of(m_query.status, 0);
+                return Results.Of(m_query.status, 0);
             }
 
             // Make sure the request is still valid.
             if (!m_nav.isValidPolyRef(m_query.startRef) || !m_nav.isValidPolyRef(m_query.endRef))
             {
                 m_query.status = Status.FAILURE;
-                return Results.of(m_query.status, 0);
+                return Results.Of(m_query.status, 0);
             }
 
             int iter = 0;
@@ -1126,7 +1126,7 @@ namespace DotRecast.Detour
                 {
                     m_query.lastBestNode = bestNode;
                     m_query.status = Status.SUCCSESS;
-                    return Results.of(m_query.status, iter);
+                    return Results.Of(m_query.status, iter);
                 }
 
                 // Get current poly and tile.
@@ -1134,11 +1134,11 @@ namespace DotRecast.Detour
                 // data.
                 long bestRef = bestNode.id;
                 Result<Tuple<MeshTile, Poly>> tileAndPoly = m_nav.getTileAndPolyByRef(bestRef);
-                if (tileAndPoly.failed())
+                if (tileAndPoly.Failed())
                 {
                     m_query.status = Status.FAILURE;
                     // The polygon has disappeared during the sliced query, fail.
-                    return Results.of(m_query.status, iter);
+                    return Results.Of(m_query.status, iter);
                 }
 
                 MeshTile bestTile = tileAndPoly.result.Item1;
@@ -1162,13 +1162,13 @@ namespace DotRecast.Detour
                 {
                     bool invalidParent = false;
                     tileAndPoly = m_nav.getTileAndPolyByRef(parentRef);
-                    invalidParent = tileAndPoly.failed();
+                    invalidParent = tileAndPoly.Failed();
                     if (invalidParent || (grandpaRef != 0 && !m_nav.isValidPolyRef(grandpaRef)))
                     {
                         // The polygon has disappeared during the sliced query,
                         // fail.
                         m_query.status = Status.FAILURE;
-                        return Results.of(m_query.status, iter);
+                        return Results.Of(m_query.status, iter);
                     }
 
                     parentTile = tileAndPoly.result.Item1;
@@ -1226,7 +1226,7 @@ namespace DotRecast.Detour
                         ? getEdgeIntersectionPoint(bestNode.pos, bestRef, bestPoly, bestTile, m_query.endPos,
                             neighbourRef, neighbourPoly, neighbourTile)
                         : getEdgeMidPoint(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly, neighbourTile);
-                    if (!midpod.failed())
+                    if (!midpod.Failed())
                     {
                         neighbourPos = midpod.result;
                     }
@@ -1242,7 +1242,7 @@ namespace DotRecast.Detour
                     {
                         Result<RaycastHit> rayHit = raycast(parentRef, parentNode.pos, neighbourPos, m_query.filter,
                             DT_RAYCAST_USE_COSTS, grandpaRef);
-                        if (rayHit.succeeded())
+                        if (rayHit.Succeeded())
                         {
                             foundShortCut = rayHit.result.t >= 1.0f;
                             if (foundShortCut)
@@ -1330,7 +1330,7 @@ namespace DotRecast.Detour
                 m_query.status = Status.PARTIAL_RESULT;
             }
 
-            return Results.of(m_query.status, iter);
+            return Results.Of(m_query.status, iter);
         }
 
         /// Finalizes and returns the results of a sliced path query.
@@ -1344,7 +1344,7 @@ namespace DotRecast.Detour
             {
                 // Reset query.
                 m_query = new QueryData();
-                return Results.failure(path);
+                return Results.Failure(path);
             }
 
             if (m_query.startRef == m_query.endRef)
@@ -1367,7 +1367,7 @@ namespace DotRecast.Detour
             // Reset query.
             m_query = new QueryData();
 
-            return Results.of(status, path);
+            return Results.Of(status, path);
         }
 
         /// Finalizes and returns the results of an incomplete sliced path query, returning the path to the furthest
@@ -1382,14 +1382,14 @@ namespace DotRecast.Detour
             List<long> path = new List<long>(64);
             if (null == existing || existing.Count <= 0)
             {
-                return Results.failure(path);
+                return Results.Failure(path);
             }
 
             if (m_query.status.isFailed())
             {
                 // Reset query.
                 m_query = new QueryData();
-                return Results.failure(path);
+                return Results.Failure(path);
             }
 
             if (m_query.startRef == m_query.endRef)
@@ -1423,7 +1423,7 @@ namespace DotRecast.Detour
             // Reset query.
             m_query = new QueryData();
 
-            return Results.of(status, path);
+            return Results.Of(status, path);
         }
 
         protected Status appendVertex(Vector3f pos, int flags, long refs, List<StraightPathItem> straightPath,
@@ -1464,7 +1464,7 @@ namespace DotRecast.Detour
                 // Calculate portal
                 long from = path[i];
                 Result<Tuple<MeshTile, Poly>> tileAndPoly = m_nav.getTileAndPolyByRef(from);
-                if (tileAndPoly.failed())
+                if (tileAndPoly.Failed())
                 {
                     return Status.FAILURE;
                 }
@@ -1474,7 +1474,7 @@ namespace DotRecast.Detour
 
                 long to = path[i + 1];
                 tileAndPoly = m_nav.getTileAndPolyByRef(to);
-                if (tileAndPoly.failed())
+                if (tileAndPoly.Failed())
                 {
                     return Status.FAILURE;
                 }
@@ -1483,7 +1483,7 @@ namespace DotRecast.Detour
                 Poly toPoly = tileAndPoly.result.Item2;
 
                 Result<PortalResult> portals = getPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, 0, 0);
-                if (portals.failed())
+                if (portals.Failed())
                 {
                     break;
                 }
@@ -1549,21 +1549,21 @@ namespace DotRecast.Detour
             if (!vIsFinite(startPos) || !vIsFinite(endPos)
                                      || null == path || 0 == path.Count || path[0] == 0 || maxStraightPath <= 0)
             {
-                return Results.invalidParam<List<StraightPathItem>>();
+                return Results.InvalidParam<List<StraightPathItem>>();
             }
 
             // TODO: Should this be callers responsibility?
             Result<Vector3f> closestStartPosRes = closestPointOnPolyBoundary(path[0], startPos);
-            if (closestStartPosRes.failed())
+            if (closestStartPosRes.Failed())
             {
-                return Results.invalidParam<List<StraightPathItem>>("Cannot find start position");
+                return Results.InvalidParam<List<StraightPathItem>>("Cannot find start position");
             }
 
             var closestStartPos = closestStartPosRes.result;
             var closestEndPosRes = closestPointOnPolyBoundary(path[path.Count - 1], endPos);
-            if (closestEndPosRes.failed())
+            if (closestEndPosRes.Failed())
             {
-                return Results.invalidParam<List<StraightPathItem>>("Cannot find end position");
+                return Results.InvalidParam<List<StraightPathItem>>("Cannot find end position");
             }
 
             var closestEndPos = closestEndPosRes.result;
@@ -1571,7 +1571,7 @@ namespace DotRecast.Detour
             Status stat = appendVertex(closestStartPos, DT_STRAIGHTPATH_START, path[0], straightPath, maxStraightPath);
             if (!stat.isInProgress())
             {
-                return Results.success(straightPath);
+                return Results.Success(straightPath);
             }
 
             if (path.Count > 1)
@@ -1599,12 +1599,12 @@ namespace DotRecast.Detour
                     {
                         // Next portal.
                         Result<PortalResult> portalPoints = getPortalPoints(path[i], path[i + 1]);
-                        if (portalPoints.failed())
+                        if (portalPoints.Failed())
                         {
                             closestEndPosRes = closestPointOnPolyBoundary(path[i], endPos);
-                            if (closestEndPosRes.failed())
+                            if (closestEndPosRes.Failed())
                             {
-                                return Results.invalidParam<List<StraightPathItem>>();
+                                return Results.InvalidParam<List<StraightPathItem>>();
                             }
 
                             closestEndPos = closestEndPosRes.result;
@@ -1617,7 +1617,7 @@ namespace DotRecast.Detour
 
                             // Ignore status return value as we're just about to return anyway.
                             appendVertex(closestEndPos, 0, path[i], straightPath, maxStraightPath);
-                            return Results.success(straightPath);
+                            return Results.Success(straightPath);
                         }
 
                         left = portalPoints.result.left;
@@ -1661,7 +1661,7 @@ namespace DotRecast.Detour
                                     options);
                                 if (!stat.isInProgress())
                                 {
-                                    return Results.success(straightPath);
+                                    return Results.Success(straightPath);
                                 }
                             }
 
@@ -1684,7 +1684,7 @@ namespace DotRecast.Detour
                             stat = appendVertex(portalApex, flags, refs, straightPath, maxStraightPath);
                             if (!stat.isInProgress())
                             {
-                                return Results.success(straightPath);
+                                return Results.Success(straightPath);
                             }
 
                             portalLeft = portalApex;
@@ -1718,7 +1718,7 @@ namespace DotRecast.Detour
                                     maxStraightPath, options);
                                 if (!stat.isInProgress())
                                 {
-                                    return Results.success(straightPath);
+                                    return Results.Success(straightPath);
                                 }
                             }
 
@@ -1741,7 +1741,7 @@ namespace DotRecast.Detour
                             stat = appendVertex(portalApex, flags, refs, straightPath, maxStraightPath);
                             if (!stat.isInProgress())
                             {
-                                return Results.success(straightPath);
+                                return Results.Success(straightPath);
                             }
 
                             portalLeft = portalApex;
@@ -1764,14 +1764,14 @@ namespace DotRecast.Detour
                         options);
                     if (!stat.isInProgress())
                     {
-                        return Results.success(straightPath);
+                        return Results.Success(straightPath);
                     }
                 }
             }
 
             // Ignore status return value as we're just about to return anyway.
             appendVertex(closestEndPos, DT_STRAIGHTPATH_END, 0, straightPath, maxStraightPath);
-            return Results.success(straightPath);
+            return Results.Success(straightPath);
         }
 
         /// @par
@@ -1806,7 +1806,7 @@ namespace DotRecast.Detour
             if (!m_nav.isValidPolyRef(startRef) || !vIsFinite(startPos)
                                                 || !vIsFinite(endPos) || null == filter)
             {
-                return Results.invalidParam<MoveAlongSurfaceResult>();
+                return Results.InvalidParam<MoveAlongSurfaceResult>();
             }
 
             NodePool tinyNodePool = new NodePool();
@@ -1972,7 +1972,7 @@ namespace DotRecast.Detour
                 } while (node != null);
             }
 
-            return Results.success(new MoveAlongSurfaceResult(bestPos, visited));
+            return Results.Success(new MoveAlongSurfaceResult(bestPos, visited));
         }
 
         public class PortalResult
@@ -1994,9 +1994,9 @@ namespace DotRecast.Detour
         protected Result<PortalResult> getPortalPoints(long from, long to)
         {
             Result<Tuple<MeshTile, Poly>> tileAndPolyResult = m_nav.getTileAndPolyByRef(from);
-            if (tileAndPolyResult.failed())
+            if (tileAndPolyResult.Failed())
             {
-                return Results.of<PortalResult>(tileAndPolyResult.status, tileAndPolyResult.message);
+                return Results.Of<PortalResult>(tileAndPolyResult.status, tileAndPolyResult.message);
             }
 
             Tuple<MeshTile, Poly> tileAndPoly = tileAndPolyResult.result;
@@ -2005,9 +2005,9 @@ namespace DotRecast.Detour
             int fromType = fromPoly.getType();
 
             tileAndPolyResult = m_nav.getTileAndPolyByRef(to);
-            if (tileAndPolyResult.failed())
+            if (tileAndPolyResult.Failed())
             {
-                return Results.of<PortalResult>(tileAndPolyResult.status, tileAndPolyResult.message);
+                return Results.Of<PortalResult>(tileAndPolyResult.status, tileAndPolyResult.message);
             }
 
             tileAndPoly = tileAndPolyResult.result;
@@ -2037,7 +2037,7 @@ namespace DotRecast.Detour
 
             if (link == null)
             {
-                return Results.invalidParam<PortalResult>("No link found");
+                return Results.InvalidParam<PortalResult>("No link found");
             }
 
             // Handle off-mesh connections.
@@ -2056,11 +2056,11 @@ namespace DotRecast.Detour
                         right[0] = fromTile.data.verts[fromPoly.verts[v] * 3];
                         right[1] = fromTile.data.verts[fromPoly.verts[v] * 3 + 1];
                         right[2] = fromTile.data.verts[fromPoly.verts[v] * 3 + 2];
-                        return Results.success(new PortalResult(left, right, fromType, toType));
+                        return Results.Success(new PortalResult(left, right, fromType, toType));
                     }
                 }
 
-                return Results.invalidParam<PortalResult>("Invalid offmesh from connection");
+                return Results.InvalidParam<PortalResult>("Invalid offmesh from connection");
             }
 
             if (toPoly.getType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
@@ -2078,11 +2078,11 @@ namespace DotRecast.Detour
                         right[1] = toTile.data.verts[toPoly.verts[v] * 3 + 1];
                         right[2] = toTile.data.verts[toPoly.verts[v] * 3 + 2];
 
-                        return Results.success(new PortalResult(left, right, fromType, toType));
+                        return Results.Success(new PortalResult(left, right, fromType, toType));
                     }
                 }
 
-                return Results.invalidParam<PortalResult>("Invalid offmesh to connection");
+                return Results.InvalidParam<PortalResult>("Invalid offmesh to connection");
             }
 
             // Find portal vertices.
@@ -2111,16 +2111,16 @@ namespace DotRecast.Detour
                 }
             }
 
-            return Results.success(new PortalResult(left, right, fromType, toType));
+            return Results.Success(new PortalResult(left, right, fromType, toType));
         }
 
         protected Result<Vector3f> getEdgeMidPoint(long from, Poly fromPoly, MeshTile fromTile, long to,
             Poly toPoly, MeshTile toTile)
         {
             Result<PortalResult> ppoints = getPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, 0, 0);
-            if (ppoints.failed())
+            if (ppoints.Failed())
             {
-                return Results.of<Vector3f>(ppoints.status, ppoints.message);
+                return Results.Of<Vector3f>(ppoints.status, ppoints.message);
             }
 
             var left = ppoints.result.left;
@@ -2129,16 +2129,16 @@ namespace DotRecast.Detour
             mid[0] = (left[0] + right[0]) * 0.5f;
             mid[1] = (left[1] + right[1]) * 0.5f;
             mid[2] = (left[2] + right[2]) * 0.5f;
-            return Results.success(mid);
+            return Results.Success(mid);
         }
 
         protected Result<Vector3f> getEdgeIntersectionPoint(Vector3f fromPos, long from, Poly fromPoly, MeshTile fromTile,
             Vector3f toPos, long to, Poly toPoly, MeshTile toTile)
         {
             Result<PortalResult> ppoints = getPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, 0, 0);
-            if (ppoints.failed())
+            if (ppoints.Failed())
             {
-                return Results.of<Vector3f>(ppoints.status, ppoints.message);
+                return Results.Of<Vector3f>(ppoints.status, ppoints.message);
             }
 
             Vector3f left = ppoints.result.left;
@@ -2151,7 +2151,7 @@ namespace DotRecast.Detour
             }
 
             Vector3f pt = vLerp(left, right, t);
-            return Results.success(pt);
+            return Results.Success(pt);
         }
 
         private static float s = 1.0f / 255.0f;
@@ -2215,7 +2215,7 @@ namespace DotRecast.Detour
             if (!m_nav.isValidPolyRef(startRef) || !vIsFinite(startPos) || !vIsFinite(endPos) || null == filter
                 || (prevRef != 0 && !m_nav.isValidPolyRef(prevRef)))
             {
-                return Results.invalidParam<RaycastHit>();
+                return Results.InvalidParam<RaycastHit>();
             }
 
             RaycastHit hit = new RaycastHit();
@@ -2261,7 +2261,7 @@ namespace DotRecast.Detour
                 if (!iresult.intersects)
                 {
                     // Could not hit the polygon, keep the old t and report hit.
-                    return Results.success(hit);
+                    return Results.Success(hit);
                 }
 
                 hit.hitEdgeIndex = iresult.segMax;
@@ -2287,7 +2287,7 @@ namespace DotRecast.Detour
                             curRef, tile, poly);
                     }
 
-                    return Results.success(hit);
+                    return Results.Success(hit);
                 }
 
                 // Follow neighbours.
@@ -2417,7 +2417,7 @@ namespace DotRecast.Detour
                     hit.hitNormal[1] = 0;
                     hit.hitNormal[2] = -dx;
                     vNormalize(ref hit.hitNormal);
-                    return Results.success(hit);
+                    return Results.Success(hit);
                 }
 
                 // No hit, advance to neighbour polygon.
@@ -2429,7 +2429,7 @@ namespace DotRecast.Detour
                 poly = nextPoly;
             }
 
-            return Results.success(hit);
+            return Results.Success(hit);
         }
 
         /// @par
@@ -2483,7 +2483,7 @@ namespace DotRecast.Detour
             if (!m_nav.isValidPolyRef(startRef) || !vIsFinite(centerPos) || radius < 0
                 || !float.IsFinite(radius) || null == filter)
             {
-                return Results.invalidParam<FindPolysAroundResult>();
+                return Results.InvalidParam<FindPolysAroundResult>();
             }
 
             List<long> resultRef = new List<long>();
@@ -2561,7 +2561,7 @@ namespace DotRecast.Detour
                     // Find edge and calc distance to the edge.
                     Result<PortalResult> pp = getPortalPoints(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly,
                         neighbourTile, 0, 0);
-                    if (pp.failed())
+                    if (pp.Failed())
                     {
                         continue;
                     }
@@ -2616,7 +2616,7 @@ namespace DotRecast.Detour
                 }
             }
 
-            return Results.success(new FindPolysAroundResult(resultRef, resultParent, resultCost));
+            return Results.Success(new FindPolysAroundResult(resultRef, resultParent, resultCost));
         }
 
         /// @par
@@ -2660,7 +2660,7 @@ namespace DotRecast.Detour
             int nverts = verts.Length / 3;
             if (!m_nav.isValidPolyRef(startRef) || null == verts || nverts < 3 || null == filter)
             {
-                return Results.invalidParam<FindPolysAroundResult>();
+                return Results.InvalidParam<FindPolysAroundResult>();
             }
 
             List<long> resultRef = new List<long>();
@@ -2749,7 +2749,7 @@ namespace DotRecast.Detour
                     // Find edge and calc distance to the edge.
                     Result<PortalResult> pp = getPortalPoints(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly,
                         neighbourTile, 0, 0);
-                    if (pp.failed())
+                    if (pp.Failed())
                     {
                         continue;
                     }
@@ -2809,7 +2809,7 @@ namespace DotRecast.Detour
                 }
             }
 
-            return Results.success(new FindPolysAroundResult(resultRef, resultParent, resultCost));
+            return Results.Success(new FindPolysAroundResult(resultRef, resultParent, resultCost));
         }
 
         /// @par
@@ -2852,7 +2852,7 @@ namespace DotRecast.Detour
             if (!m_nav.isValidPolyRef(startRef) || !vIsFinite(centerPos) || radius < 0
                 || !float.IsFinite(radius) || null == filter)
             {
-                return Results.invalidParam<FindLocalNeighbourhoodResult>();
+                return Results.InvalidParam<FindLocalNeighbourhoodResult>();
             }
 
             List<long> resultRef = new List<long>();
@@ -2925,7 +2925,7 @@ namespace DotRecast.Detour
                     // Find edge and calc distance to the edge.
                     Result<PortalResult> pp = getPortalPoints(curRef, curPoly, curTile, neighbourRef, neighbourPoly,
                         neighbourTile, 0, 0);
-                    if (pp.failed())
+                    if (pp.Failed())
                     {
                         continue;
                     }
@@ -3006,7 +3006,7 @@ namespace DotRecast.Detour
                 }
             }
 
-            return Results.success(new FindLocalNeighbourhoodResult(resultRef, resultParent));
+            return Results.Success(new FindLocalNeighbourhoodResult(resultRef, resultParent));
         }
 
         public class SegInterval
@@ -3063,14 +3063,14 @@ namespace DotRecast.Detour
         public Result<GetPolyWallSegmentsResult> getPolyWallSegments(long refs, bool storePortals, QueryFilter filter)
         {
             Result<Tuple<MeshTile, Poly>> tileAndPoly = m_nav.getTileAndPolyByRef(refs);
-            if (tileAndPoly.failed())
+            if (tileAndPoly.Failed())
             {
-                return Results.of<GetPolyWallSegmentsResult>(tileAndPoly.status, tileAndPoly.message);
+                return Results.Of<GetPolyWallSegmentsResult>(tileAndPoly.status, tileAndPoly.message);
             }
 
             if (null == filter)
             {
-                return Results.invalidParam<GetPolyWallSegmentsResult>();
+                return Results.InvalidParam<GetPolyWallSegmentsResult>();
             }
 
             MeshTile tile = tileAndPoly.result.Item1;
@@ -3174,7 +3174,7 @@ namespace DotRecast.Detour
                 }
             }
 
-            return Results.success(new GetPolyWallSegmentsResult(segmentVerts, segmentRefs));
+            return Results.Success(new GetPolyWallSegmentsResult(segmentVerts, segmentRefs));
         }
 
         /// @par
@@ -3204,7 +3204,7 @@ namespace DotRecast.Detour
             if (!m_nav.isValidPolyRef(startRef) || !vIsFinite(centerPos) || maxRadius < 0
                 || !float.IsFinite(maxRadius) || null == filter)
             {
-                return Results.invalidParam<FindDistanceToWallResult>();
+                return Results.InvalidParam<FindDistanceToWallResult>();
             }
 
             m_nodePool.clear();
@@ -3361,7 +3361,7 @@ namespace DotRecast.Detour
                     {
                         var midPoint = getEdgeMidPoint(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly,
                             neighbourTile);
-                        if (midPoint.succeeded())
+                        if (midPoint.Succeeded())
                         {
                             neighbourNode.pos = midPoint.result;
                         }
@@ -3403,7 +3403,7 @@ namespace DotRecast.Detour
                 vNormalize(ref hitNormal);
             }
 
-            return Results.success(new FindDistanceToWallResult((float)Math.Sqrt(radiusSqr), hitPos, hitNormal));
+            return Results.Success(new FindDistanceToWallResult((float)Math.Sqrt(radiusSqr), hitPos, hitNormal));
         }
 
         /// Returns true if the polygon reference is valid and passes the filter restrictions.
@@ -3412,7 +3412,7 @@ namespace DotRecast.Detour
         public bool isValidPolyRef(long refs, QueryFilter filter)
         {
             Result<Tuple<MeshTile, Poly>> tileAndPolyResult = m_nav.getTileAndPolyByRef(refs);
-            if (tileAndPolyResult.failed())
+            if (tileAndPolyResult.Failed())
             {
                 return false;
             }
@@ -3447,22 +3447,22 @@ namespace DotRecast.Detour
         {
             if (!m_nav.isValidPolyRef(endRef))
             {
-                return Results.invalidParam<List<long>>("Invalid end ref");
+                return Results.InvalidParam<List<long>>("Invalid end ref");
             }
 
             List<Node> nodes = m_nodePool.findNodes(endRef);
             if (nodes.Count != 1)
             {
-                return Results.invalidParam<List<long>>("Invalid end ref");
+                return Results.InvalidParam<List<long>>("Invalid end ref");
             }
 
             Node endNode = nodes[0];
             if ((endNode.flags & DT_NODE_CLOSED) == 0)
             {
-                return Results.invalidParam<List<long>>("Invalid end ref");
+                return Results.InvalidParam<List<long>>("Invalid end ref");
             }
 
-            return Results.success(getPathToNode(endNode));
+            return Results.Success(getPathToNode(endNode));
         }
 
         /**

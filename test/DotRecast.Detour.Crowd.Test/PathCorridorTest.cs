@@ -44,7 +44,7 @@ public class PathCorridorTest
         straightPath.Add(new StraightPathItem(Vector3f.Of(12, 20, 30.00002f), 0, 0));
         straightPath.Add(new StraightPathItem(Vector3f.Of(11f, 21, 32f), 0, 0));
         straightPath.Add(new StraightPathItem(Vector3f.Of(11f, 21, 32f), 0, 0));
-        Result<List<StraightPathItem>> result = Results.success(straightPath);
+        Result<List<StraightPathItem>> result = Results.Success(straightPath);
         var mockQuery = new Mock<NavMeshQuery>(It.IsAny<NavMesh>());
         mockQuery.Setup(q => q.findStraightPath(
             It.IsAny<Vector3f>(),
@@ -67,7 +67,7 @@ public class PathCorridorTest
         straightPath.Add(new StraightPathItem(Vector3f.Of(11f, 21, 32f), 0, 0));
         straightPath.Add(new StraightPathItem(Vector3f.Of(12f, 22, 33f), NavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION, 0)); // offmesh
         straightPath.Add(new StraightPathItem(Vector3f.Of(11f, 21, 32f), NavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION, 0)); // offmesh
-        Result<List<StraightPathItem>> result = Results.success(straightPath);
+        Result<List<StraightPathItem>> result = Results.Success(straightPath);
 
         var mockQuery = new Mock<NavMeshQuery>(It.IsAny<NavMesh>());
         var s = mockQuery.Setup(q => q.findStraightPath(

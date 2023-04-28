@@ -199,7 +199,7 @@ public class CrowdTool : Tool
                 if (refs != 0)
                 {
                     Result<int> flags = nav.getPolyFlags(refs);
-                    if (flags.succeeded())
+                    if (flags.Succeeded())
                     {
                         nav.setPolyFlags(refs, flags.result ^ SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED);
                     }

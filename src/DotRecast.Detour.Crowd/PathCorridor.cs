@@ -238,7 +238,7 @@ namespace DotRecast.Detour.Crowd
         {
             List<StraightPathItem> path = new List<StraightPathItem>();
             Result<List<StraightPathItem>> result = navquery.findStraightPath(m_pos, m_target, m_path, maxCorners, 0);
-            if (result.succeeded())
+            if (result.Succeeded())
             {
                 path = result.result;
                 // Prune points in the beginning of the path which are too close.
@@ -319,7 +319,7 @@ namespace DotRecast.Detour.Crowd
             Vector3f goal = vMad(m_pos, delta, pathOptimizationRange / dist);
 
             Result<RaycastHit> rc = navquery.raycast(m_path[0], m_pos, goal, filter, 0, 0);
-            if (rc.succeeded())
+            if (rc.Succeeded())
             {
                 if (rc.result.path.Count > 1 && rc.result.t > 0.99f)
                 {
@@ -355,7 +355,7 @@ namespace DotRecast.Detour.Crowd
             navquery.updateSlicedFindPath(maxIterations);
             Result<List<long>> fpr = navquery.finalizeSlicedFindPathPartial(m_path);
 
-            if (fpr.succeeded() && fpr.result.Count > 0)
+            if (fpr.Succeeded() && fpr.result.Count > 0)
             {
                 m_path = mergeCorridorStartShortcut(m_path, fpr.result);
                 return true;
@@ -389,7 +389,7 @@ namespace DotRecast.Detour.Crowd
 
             NavMesh nav = navquery.getAttachedNavMesh();
             var startEnd = nav.getOffMeshConnectionPolyEndPoints(refs[0], refs[1]);
-            if (startEnd.succeeded())
+            if (startEnd.Succeeded())
             {
                 m_pos = startEnd.result.Item2;
                 start = startEnd.result.Item1;
@@ -427,13 +427,13 @@ namespace DotRecast.Detour.Crowd
         {
             // Move along navmesh and update new position.
             Result<MoveAlongSurfaceResult> masResult = navquery.moveAlongSurface(m_path[0], m_pos, npos, filter);
-            if (masResult.succeeded())
+            if (masResult.Succeeded())
             {
                 m_path = mergeCorridorStartMoved(m_path, masResult.result.getVisited());
                 // Adjust the position to stay on top of the navmesh.
                 m_pos = masResult.result.getResultPos();
                 Result<float> hr = navquery.getPolyHeight(m_path[0], masResult.result.getResultPos());
-                if (hr.succeeded())
+                if (hr.Succeeded())
                 {
                     m_pos[1] = hr.result;
                 }
@@ -465,7 +465,7 @@ namespace DotRecast.Detour.Crowd
         {
             // Move along navmesh and update new position.
             Result<MoveAlongSurfaceResult> masResult = navquery.moveAlongSurface(m_path[m_path.Count - 1], m_target, npos, filter);
-            if (masResult.succeeded())
+            if (masResult.Succeeded())
             {
                 m_path = mergeCorridorEndMoved(m_path, masResult.result.getVisited());
                 // TODO: should we do that?
@@ -540,7 +540,7 @@ namespace DotRecast.Detour.Crowd
 
             // Clamp target pos to last poly
             var result = navquery.closestPointOnPolyBoundary(m_path[m_path.Count - 1], m_target);
-            if (result.succeeded())
+            if (result.Succeeded())
             {
                 m_target = result.result;
             }

@@ -1282,7 +1282,7 @@ public class RecastDebugDraw : DebugDraw
         }
 
         Result<Tuple<MeshTile, Poly>> tileAndPolyResult = mesh.getTileAndPolyByRef(refs);
-        if (tileAndPolyResult.failed())
+        if (tileAndPolyResult.Failed())
         {
             return;
         }

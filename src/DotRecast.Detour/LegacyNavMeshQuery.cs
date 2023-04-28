@@ -45,14 +45,14 @@ namespace DotRecast.Detour
             // Validate input
             if (!m_nav.isValidPolyRef(startRef) || !m_nav.isValidPolyRef(endRef) || !vIsFinite(startPos) || !vIsFinite(endPos) || null == filter)
             {
-                return Results.invalidParam<List<long>>();
+                return Results.InvalidParam<List<long>>();
             }
 
             if (startRef == endRef)
             {
                 List<long> singlePath = new List<long>(1);
                 singlePath.Add(startRef);
-                return Results.success(singlePath);
+                return Results.Success(singlePath);
             }
 
             m_nodePool.clear();
@@ -145,7 +145,7 @@ namespace DotRecast.Detour
                     {
                         var midpod = getEdgeMidPoint(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly,
                             neighbourTile);
-                        if (!midpod.failed())
+                        if (!midpod.Failed())
                         {
                             neighbourNode.pos = midpod.result;
                         }
@@ -225,7 +225,7 @@ namespace DotRecast.Detour
                 status = Status.PARTIAL_RESULT;
             }
 
-            return Results.of(status, path);
+            return Results.Of(status, path);
         }
 
         /**
@@ -239,14 +239,14 @@ namespace DotRecast.Detour
         {
             if (!m_query.status.isInProgress())
             {
-                return Results.of(m_query.status, 0);
+                return Results.Of(m_query.status, 0);
             }
 
             // Make sure the request is still valid.
             if (!m_nav.isValidPolyRef(m_query.startRef) || !m_nav.isValidPolyRef(m_query.endRef))
             {
                 m_query.status = Status.FAILURE;
-                return Results.of(m_query.status, 0);
+                return Results.Of(m_query.status, 0);
             }
 
             int iter = 0;
@@ -264,7 +264,7 @@ namespace DotRecast.Detour
                 {
                     m_query.lastBestNode = bestNode;
                     m_query.status = Status.SUCCSESS;
-                    return Results.of(m_query.status, iter);
+                    return Results.Of(m_query.status, iter);
                 }
 
                 // Get current poly and tile.
@@ -272,11 +272,11 @@ namespace DotRecast.Detour
                 // data.
                 long bestRef = bestNode.id;
                 Result<Tuple<MeshTile, Poly>> tileAndPoly = m_nav.getTileAndPolyByRef(bestRef);
-                if (tileAndPoly.failed())
+                if (tileAndPoly.Failed())
                 {
                     m_query.status = Status.FAILURE;
                     // The polygon has disappeared during the sliced query, fail.
-                    return Results.of(m_query.status, iter);
+                    return Results.Of(m_query.status, iter);
                 }
 
                 MeshTile bestTile = tileAndPoly.result.Item1;
@@ -300,13 +300,13 @@ namespace DotRecast.Detour
                 {
                     bool invalidParent = false;
                     tileAndPoly = m_nav.getTileAndPolyByRef(parentRef);
-                    invalidParent = tileAndPoly.failed();
+                    invalidParent = tileAndPoly.Failed();
                     if (invalidParent || (grandpaRef != 0 && !m_nav.isValidPolyRef(grandpaRef)))
                     {
                         // The polygon has disappeared during the sliced query,
                         // fail.
                         m_query.status = Status.FAILURE;
-                        return Results.of(m_query.status, iter);
+                        return Results.Of(m_query.status, iter);
                     }
 
                     parentTile = tileAndPoly.result.Item1;
@@ -362,7 +362,7 @@ namespace DotRecast.Detour
                     {
                         var midpod = getEdgeMidPoint(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly,
                             neighbourTile);
-                        if (!midpod.failed())
+                        if (!midpod.Failed())
                         {
                             neighbourNode.pos = midpod.result;
                         }
@@ -378,7 +378,7 @@ namespace DotRecast.Detour
                     {
                         Result<RaycastHit> rayHit = raycast(parentRef, parentNode.pos, neighbourNode.pos, m_query.filter,
                             DT_RAYCAST_USE_COSTS, grandpaRef);
-                        if (rayHit.succeeded())
+                        if (rayHit.Succeeded())
                         {
                             foundShortCut = rayHit.result.t >= 1.0f;
                             if (foundShortCut)
@@ -467,7 +467,7 @@ namespace DotRecast.Detour
                 m_query.status = Status.PARTIAL_RESULT;
             }
 
-            return Results.of(m_query.status, iter);
+            return Results.Of(m_query.status, iter);
         }
 
         /// Finalizes and returns the results of a sliced path query.
@@ -481,7 +481,7 @@ namespace DotRecast.Detour
             {
                 // Reset query.
                 m_query = new QueryData();
-                return Results.failure(path);
+                return Results.Failure(path);
             }
 
             if (m_query.startRef == m_query.endRef)
@@ -521,7 +521,7 @@ namespace DotRecast.Detour
                     if ((node.flags & Node.DT_NODE_PARENT_DETACHED) != 0)
                     {
                         Result<RaycastHit> iresult = raycast(node.id, node.pos, next.pos, m_query.filter, 0, 0);
-                        if (iresult.succeeded())
+                        if (iresult.Succeeded())
                         {
                             path.AddRange(iresult.result.path);
                         }
@@ -545,7 +545,7 @@ namespace DotRecast.Detour
             // Reset query.
             m_query = new QueryData();
 
-            return Results.of(status, path);
+            return Results.Of(status, path);
         }
 
         /// Finalizes and returns the results of an incomplete sliced path query, returning the path to the furthest
@@ -560,14 +560,14 @@ namespace DotRecast.Detour
             List<long> path = new List<long>(64);
             if (null == existing || existing.Count <= 0)
             {
-                return Results.failure(path);
+                return Results.Failure(path);
             }
 
             if (m_query.status.isFailed())
             {
                 // Reset query.
                 m_query = new QueryData();
-                return Results.failure(path);
+                return Results.Failure(path);
             }
 
             if (m_query.startRef == m_query.endRef)
@@ -618,7 +618,7 @@ namespace DotRecast.Detour
                     if ((node.flags & Node.DT_NODE_PARENT_DETACHED) != 0)
                     {
                         Result<RaycastHit> iresult = raycast(node.id, node.pos, next.pos, m_query.filter, 0, 0);
-                        if (iresult.succeeded())
+                        if (iresult.Succeeded())
                         {
                             path.AddRange(iresult.result.path);
                         }
@@ -642,7 +642,7 @@ namespace DotRecast.Detour
             // Reset query.
             m_query = new QueryData();
 
-            return Results.of(status, path);
+            return Results.Of(status, path);
         }
 
         public override Result<FindDistanceToWallResult> findDistanceToWall(long startRef, Vector3f centerPos, float maxRadius, QueryFilter filter)
@@ -651,7 +651,7 @@ namespace DotRecast.Detour
             if (!m_nav.isValidPolyRef(startRef) || !vIsFinite(centerPos) || maxRadius < 0
                 || !float.IsFinite(maxRadius) || null == filter)
             {
-                return Results.invalidParam<FindDistanceToWallResult>();
+                return Results.InvalidParam<FindDistanceToWallResult>();
             }
 
             m_nodePool.clear();
@@ -808,7 +808,7 @@ namespace DotRecast.Detour
                     {
                         var midPoint = getEdgeMidPoint(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly,
                             neighbourTile);
-                        if (midPoint.succeeded())
+                        if (midPoint.Succeeded())
                         {
                             neighbourNode.pos = midPoint.result;
                         }
@@ -850,7 +850,7 @@ namespace DotRecast.Detour
                 vNormalize(ref hitNormal);
             }
 
-            return Results.success(new FindDistanceToWallResult((float)Math.Sqrt(radiusSqr), hitPos, hitNormal));
+            return Results.Success(new FindDistanceToWallResult((float)Math.Sqrt(radiusSqr), hitPos, hitNormal));
         }
     }
 }

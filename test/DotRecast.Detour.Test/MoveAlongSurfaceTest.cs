@@ -75,7 +75,7 @@ public class MoveAlongSurfaceTest : AbstractDetourTest
             Vector3f startPos = startPoss[i];
             Vector3f endPos = endPoss[i];
             Result<MoveAlongSurfaceResult> result = query.moveAlongSurface(startRef, startPos, endPos, filter);
-            Assert.That(result.succeeded(), Is.True);
+            Assert.That(result.Succeeded(), Is.True);
             MoveAlongSurfaceResult path = result.result;
             for (int v = 0; v < 3; v++)
             {

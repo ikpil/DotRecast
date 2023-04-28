@@ -252,7 +252,7 @@ public class TestNavmeshTool : Tool
                         polys = PathUtils.fixupShortcuts(polys, m_navQuery);
 
                         Result<float> polyHeight = m_navQuery.getPolyHeight(polys[0], moveAlongSurface.getResultPos());
-                        if (polyHeight.succeeded())
+                        if (polyHeight.Succeeded())
                         {
                             iterPos[1] = polyHeight.result;
                         }
@@ -288,7 +288,7 @@ public class TestNavmeshTool : Tool
 
                             // Handle the connection.
                             var offMeshCon = m_navMesh.getOffMeshConnectionPolyEndPoints(prevRef, polyRef);
-                            if (offMeshCon.succeeded())
+                            if (offMeshCon.Succeeded())
                             {
                                 var startPos = offMeshCon.result.Item1;
                                 var endPos = offMeshCon.result.Item2;
@@ -336,7 +336,7 @@ public class TestNavmeshTool : Tool
                     {
                         Result<ClosestPointOnPolyResult> result = m_navQuery
                             .closestPointOnPoly(m_polys[m_polys.Count - 1], m_epos);
-                        if (result.succeeded())
+                        if (result.Succeeded())
                         {
                             epos = result.result.getClosest();
                         }
@@ -368,7 +368,7 @@ public class TestNavmeshTool : Tool
             {
                 {
                     Result<RaycastHit> hit = m_navQuery.raycast(m_startRef, m_spos, m_epos, m_filter, 0, 0);
-                    if (hit.succeeded())
+                    if (hit.Succeeded())
                     {
                         m_polys = hit.result.path;
                         if (hit.result.t > 1)
@@ -390,7 +390,7 @@ public class TestNavmeshTool : Tool
                         {
                             Result<float> result = m_navQuery
                                 .getPolyHeight(hit.result.path[hit.result.path.Count - 1], m_hitPos);
-                            if (result.succeeded())
+                            if (result.Succeeded())
                             {
                                 m_hitPos[1] = result.result;
                             }
@@ -411,7 +411,7 @@ public class TestNavmeshTool : Tool
                 m_distanceToWall = 0.0f;
                 Result<FindDistanceToWallResult> result = m_navQuery.findDistanceToWall(m_startRef, m_spos, 100.0f,
                     m_filter);
-                if (result.succeeded())
+                if (result.Succeeded())
                 {
                     m_distanceToWall = result.result.getDistance();
                     m_hitPos = result.result.getPosition();
@@ -428,7 +428,7 @@ public class TestNavmeshTool : Tool
                 float dist = (float)Math.Sqrt(dx * dx + dz * dz);
                 Result<FindPolysAroundResult> result = m_navQuery.findPolysAroundCircle(m_startRef, m_spos, dist,
                     m_filter);
-                if (result.succeeded())
+                if (result.Succeeded())
                 {
                     m_polys = result.result.getRefs();
                     m_parent = result.result.getParentRefs();
@@ -460,7 +460,7 @@ public class TestNavmeshTool : Tool
                 m_queryPoly[11] = m_epos[2] + nz;
 
                 Result<FindPolysAroundResult> result = m_navQuery.findPolysAroundShape(m_startRef, m_queryPoly, m_filter);
-                if (result.succeeded())
+                if (result.Succeeded())
                 {
                     m_polys = result.result.getRefs();
                     m_parent = result.result.getParentRefs();
@@ -474,7 +474,7 @@ public class TestNavmeshTool : Tool
                 m_neighbourhoodRadius = m_sample.getSettingsUI().getAgentRadius() * 20.0f;
                 Result<FindLocalNeighbourhoodResult> result = m_navQuery.findLocalNeighbourhood(m_startRef, m_spos,
                     m_neighbourhoodRadius, m_filter);
-                if (result.succeeded())
+                if (result.Succeeded())
                 {
                     m_polys = result.result.getRefs();
                     m_parent = result.result.getParentRefs();
@@ -496,7 +496,7 @@ public class TestNavmeshTool : Tool
                 {
                     Result<FindRandomPointResult> result = m_navQuery.findRandomPointAroundCircle(m_startRef, m_spos, dist,
                         m_filter, new FRand(), constraint);
-                    if (result.succeeded())
+                    if (result.Succeeded())
                     {
                         randomPoints.Add(result.result.getRandomPt());
                     }
@@ -840,7 +840,7 @@ public class TestNavmeshTool : Tool
                     {
                         Result<GetPolyWallSegmentsResult> result = m_sample.getNavMeshQuery()
                             .getPolyWallSegments(m_polys[i], false, m_filter);
-                        if (result.succeeded())
+                        if (result.Succeeded())
                         {
                             dd.begin(LINES, 2.0f);
                             GetPolyWallSegmentsResult wallSegments = result.result;
@@ -951,7 +951,7 @@ public class TestNavmeshTool : Tool
         Vector3f center = Vector3f.Zero;
         
         Result<Tuple<MeshTile, Poly>> tileAndPoly = navMesh.getTileAndPolyByRef(refs);
-        if (tileAndPoly.succeeded())
+        if (tileAndPoly.Succeeded())
         {
             MeshTile tile = tileAndPoly.result.Item1;
             Poly poly = tileAndPoly.result.Item2;
@@ -996,7 +996,7 @@ public class TestNavmeshTool : Tool
                     {
                         Result<ClosestPointOnPolyResult> result = m_navQuery
                             .closestPointOnPoly(m_polys[m_polys.Count - 1], m_epos);
-                        if (result.succeeded())
+                        if (result.Succeeded())
                         {
                             epos = result.result.getClosest();
                         }
@@ -1005,7 +1005,7 @@ public class TestNavmeshTool : Tool
                     {
                         Result<List<StraightPathItem>> result = m_navQuery.findStraightPath(m_spos, epos, m_polys,
                             MAX_POLYS, NavMeshQuery.DT_STRAIGHTPATH_ALL_CROSSINGS);
-                        if (result.succeeded())
+                        if (result.Succeeded())
                         {
                             m_straightPath = result.result;
                         }

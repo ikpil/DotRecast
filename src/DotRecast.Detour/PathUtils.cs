@@ -35,7 +35,7 @@ namespace DotRecast.Detour
         {
             // Find steer target.
             Result<List<StraightPathItem>> result = navQuery.findStraightPath(startPos, endPos, path, MAX_STEER_POINTS, 0);
-            if (result.failed())
+            if (result.Failed())
             {
                 return null;
             }
@@ -154,7 +154,7 @@ namespace DotRecast.Detour
             List<long> neis = new List<long>();
 
             Result<Tuple<MeshTile, Poly>> tileAndPoly = navQuery.getAttachedNavMesh().getTileAndPolyByRef(path[0]);
-            if (tileAndPoly.failed())
+            if (tileAndPoly.Failed())
             {
                 return path;
             }

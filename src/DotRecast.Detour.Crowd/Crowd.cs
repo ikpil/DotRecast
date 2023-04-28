@@ -246,8 +246,8 @@ namespace DotRecast.Detour.Crowd
             // Find nearest position on navmesh and place the agent there.
             Result<FindNearestPolyResult> nearestPoly = navQuery.findNearestPoly(pos, m_ext, m_filters[ag.option.queryFilterType]);
 
-            var nearest = nearestPoly.succeeded() ? nearestPoly.result.getNearestPos() : pos;
-            long refs = nearestPoly.succeeded() ? nearestPoly.result.getNearestRef() : 0L;
+            var nearest = nearestPoly.Succeeded() ? nearestPoly.result.getNearestPos() : pos;
+            long refs = nearestPoly.Succeeded() ? nearestPoly.result.getNearestRef() : 0L;
             ag.corridor.reset(refs, nearest);
             ag.boundary.reset();
             ag.partial = false;
@@ -463,8 +463,8 @@ namespace DotRecast.Detour.Crowd
                     // TODO: this can snap agents, how to handle that?
                     Result<FindNearestPolyResult> nearestPoly = navQuery.findNearestPoly(ag.npos, m_ext,
                         m_filters[ag.option.queryFilterType]);
-                    agentRef = nearestPoly.succeeded() ? nearestPoly.result.getNearestRef() : 0L;
-                    if (nearestPoly.succeeded())
+                    agentRef = nearestPoly.Succeeded() ? nearestPoly.result.getNearestRef() : 0L;
+                    if (nearestPoly.Succeeded())
                     {
                         agentPos = nearestPoly.result.getNearestPos();
                     }
@@ -508,8 +508,8 @@ namespace DotRecast.Detour.Crowd
                         // Current target is not valid, try to reposition.
                         Result<FindNearestPolyResult> fnp = navQuery.findNearestPoly(ag.targetPos, m_ext,
                             m_filters[ag.option.queryFilterType]);
-                        ag.targetRef = fnp.succeeded() ? fnp.result.getNearestRef() : 0L;
-                        if (fnp.succeeded())
+                        ag.targetRef = fnp.Succeeded() ? fnp.result.getNearestRef() : 0L;
+                        if (fnp.Succeeded())
                         {
                             ag.targetPos = fnp.result.getNearestPos();
                         }
@@ -607,7 +607,7 @@ namespace DotRecast.Detour.Crowd
 
                     List<long> reqPath = pathFound.result;
                     Vector3f reqPos = new Vector3f();
-                    if (pathFound.succeeded() && reqPath.Count > 0)
+                    if (pathFound.Succeeded() && reqPath.Count > 0)
                     {
                         // In progress or succeed.
                         if (reqPath[reqPath.Count - 1] != ag.targetRef)
@@ -616,7 +616,7 @@ namespace DotRecast.Detour.Crowd
                             // last polygon.
                             Result<ClosestPointOnPolyResult> cr = navQuery.closestPointOnPoly(reqPath[reqPath.Count - 1],
                                 ag.targetPos);
-                            if (cr.succeeded())
+                            if (cr.Succeeded())
                             {
                                 reqPos = cr.result.getClosest();
                             }
@@ -784,7 +784,7 @@ namespace DotRecast.Detour.Crowd
                                 // Partial path, constrain target position inside
                                 // the last polygon.
                                 Result<ClosestPointOnPolyResult> cr = navQuery.closestPointOnPoly(res[res.Count - 1], targetPos);
-                                if (cr.succeeded())
+                                if (cr.Succeeded())
                                 {
                                     targetPos = cr.result.getClosest();
                                 }

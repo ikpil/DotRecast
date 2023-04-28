@@ -79,7 +79,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             navMeshQuery.queryPolygons(pt, halfExtents, filter, new PolyQueryInvoker((tile, poly, refs) =>
             {
                 Result<float> h = navMeshQuery.getPolyHeight(refs, pt);
-                if (h.succeeded())
+                if (h.Succeeded())
                 {
                     float y = h.result;
                     if (y > minHeight.Get() && y < maxHeight)

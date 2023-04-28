@@ -43,7 +43,7 @@ public class FindNearestPolyTest : AbstractDetourTest
         {
             Vector3f startPos = startPoss[i];
             Result<FindNearestPolyResult> poly = query.findNearestPoly(startPos, extents, filter);
-            Assert.That(poly.succeeded(), Is.True);
+            Assert.That(poly.Succeeded(), Is.True);
             Assert.That(poly.result.getNearestRef(), Is.EqualTo(POLY_REFS[i]));
             for (int v = 0; v < POLY_POS[i].Length; v++)
             {
@@ -75,7 +75,7 @@ public class FindNearestPolyTest : AbstractDetourTest
         {
             Vector3f startPos = startPoss[i];
             Result<FindNearestPolyResult> poly = query.findNearestPoly(startPos, extents, filter);
-            Assert.That(poly.succeeded(), Is.True);
+            Assert.That(poly.Succeeded(), Is.True);
             Assert.That(poly.result.getNearestRef(), Is.EqualTo(0L));
             for (int v = 0; v < POLY_POS[i].Length; v++)
             {
