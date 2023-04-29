@@ -32,11 +32,11 @@ namespace DotRecast.Recast
             a.z = Math.Min(a.z, b[i + 2]);
         }
         
-        public static void min(ref Vector3f a, Vector3f b, int i)
+        public static void min(ref Vector3f a, Vector3f b)
         {
-            a.x = Math.Min(a.x, b[i + 0]);
-            a.y = Math.Min(a.y, b[i + 1]);
-            a.z = Math.Min(a.z, b[i + 2]);
+            a.x = Math.Min(a.x, b.x);
+            a.y = Math.Min(a.y, b.y);
+            a.z = Math.Min(a.z, b.z);
         }
         
         public static void max(ref Vector3f a, float[] b, int i)
@@ -46,11 +46,11 @@ namespace DotRecast.Recast
             a.z = Math.Max(a.z, b[i + 2]);
         }
         
-        public static void max(ref Vector3f a, Vector3f b, int i)
+        public static void max(ref Vector3f a, Vector3f b)
         {
-            a.x = Math.Max(a.x, b[i + 0]);
-            a.y = Math.Max(a.y, b[i + 1]);
-            a.z = Math.Max(a.z, b[i + 2]);
+            a.x = Math.Max(a.x, b.x);
+            a.y = Math.Max(a.y, b.y);
+            a.z = Math.Max(a.z, b.z);
         }
 
         public static void copy(ref Vector3f @out, float[] @in, int i)

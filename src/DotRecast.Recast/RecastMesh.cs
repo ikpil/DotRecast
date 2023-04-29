@@ -1239,8 +1239,8 @@ namespace DotRecast.Recast
             int maxVertsPerMesh = 0;
             for (int i = 0; i < nmeshes; ++i)
             {
-                RecastVectors.min(ref mesh.bmin, meshes[i].bmin, 0);
-                RecastVectors.max(ref mesh.bmax, meshes[i].bmax, 0);
+                RecastVectors.min(ref mesh.bmin, meshes[i].bmin);
+                RecastVectors.max(ref mesh.bmax, meshes[i].bmax);
                 maxVertsPerMesh = Math.Max(maxVertsPerMesh, meshes[i].nverts);
                 maxVerts += meshes[i].nverts;
                 maxPolys += meshes[i].npolys;

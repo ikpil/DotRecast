@@ -91,15 +91,14 @@ namespace DotRecast.Detour.Io
             header.walkableHeight = buf.getFloat();
             header.walkableRadius = buf.getFloat();
             header.walkableClimb = buf.getFloat();
-            for (int j = 0; j < 3; j++)
-            {
-                header.bmin[j] = buf.getFloat();
-            }
+            
+            header.bmin.x = buf.getFloat();
+            header.bmin.y = buf.getFloat();
+            header.bmin.z = buf.getFloat();
 
-            for (int j = 0; j < 3; j++)
-            {
-                header.bmax[j] = buf.getFloat();
-            }
+            header.bmax.x = buf.getFloat();
+            header.bmax.y = buf.getFloat();
+            header.bmax.z = buf.getFloat();
 
             header.bvQuantFactor = buf.getFloat();
             data.verts = readVerts(buf, header.vertCount);
