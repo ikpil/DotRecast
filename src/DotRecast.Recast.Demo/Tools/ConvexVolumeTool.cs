@@ -62,8 +62,8 @@ public class ConvexVolumeTool : Tool
             IList<ConvexVolume> vols = geom.convexVolumes();
             for (int i = 0; i < vols.Count; ++i)
             {
-                if (PolyUtils.pointInPoly(vols[i].verts, p) && p[1] >= vols[i].hmin
-                                                            && p[1] <= vols[i].hmax)
+                if (PolyUtils.pointInPoly(vols[i].verts, p) && p.y >= vols[i].hmin
+                                                            && p.y <= vols[i].hmax)
                 {
                     nearestIndex = i;
                 }
@@ -123,9 +123,9 @@ public class ConvexVolumeTool : Tool
             else
             {
                 // Add new point
-                pts.Add(p[0]);
-                pts.Add(p[1]);
-                pts.Add(p[2]);
+                pts.Add(p.x);
+                pts.Add(p.y);
+                pts.Add(p.z);
                 // Update hull.
                 if (pts.Count > 3)
                 {

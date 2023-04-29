@@ -16,7 +16,7 @@ public struct OpenGLVertex
     [FieldOffset(20)] private readonly int color;
 
     public OpenGLVertex(Vector3f pos, Vector2f uv, int color) :
-        this(pos[0], pos[1], pos[2], uv.x, uv.y, color)
+        this(pos.x, pos.y, pos.z, uv.x, uv.y, color)
     {
     }
 
@@ -26,7 +26,7 @@ public struct OpenGLVertex
     }
     
     public OpenGLVertex(Vector3f pos, int color) :
-        this(pos[0], pos[1], pos[2], 0f, 0f, color)
+        this(pos.x, pos.y, pos.z, 0f, 0f, color)
     {
     }
 

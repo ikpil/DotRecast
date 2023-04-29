@@ -185,11 +185,11 @@ public class GizmoHelper
             e1[j] = vertices[v2 + j] - vertices[v0 + j];
         }
 
-        normal[0] = e0[1] * e1[2] - e0[2] * e1[1];
-        normal[1] = e0[2] * e1[0] - e0[0] * e1[2];
-        normal[2] = e0[0] * e1[1] - e0[1] * e1[0];
+        normal.x = e0.y * e1.z - e0.z * e1.y;
+        normal.y = e0.z * e1.x - e0.x * e1.z;
+        normal.z = e0.x * e1.y - e0.y * e1.x;
         RecastVectors.normalize(ref normal);
-        float c = clamp(0.57735026f * (normal[0] + normal[1] + normal[2]), -1, 1);
+        float c = clamp(0.57735026f * (normal.x + normal.y + normal.z), -1, 1);
         int col = DebugDraw.duLerpCol(DebugDraw.duRGBA(32, 32, 0, 160), DebugDraw.duRGBA(220, 220, 0, 160),
             (int)(127 * (1 + c)));
         return col;

@@ -243,9 +243,9 @@ public class TestNavmeshTool : Tool
                             moveTgt, m_filter);
                         MoveAlongSurfaceResult moveAlongSurface = result.result;
 
-                        iterPos[0] = moveAlongSurface.getResultPos()[0];
-                        iterPos[1] = moveAlongSurface.getResultPos()[1];
-                        iterPos[2] = moveAlongSurface.getResultPos()[2];
+                        iterPos.x = moveAlongSurface.getResultPos().x;
+                        iterPos.y = moveAlongSurface.getResultPos().y;
+                        iterPos.z = moveAlongSurface.getResultPos().z;
 
                         List<long> visited = result.result.getVisited();
                         polys = PathUtils.fixupCorridor(polys, visited);
@@ -254,7 +254,7 @@ public class TestNavmeshTool : Tool
                         Result<float> polyHeight = m_navQuery.getPolyHeight(polys[0], moveAlongSurface.getResultPos());
                         if (polyHeight.Succeeded())
                         {
-                            iterPos[1] = polyHeight.result;
+                            iterPos.y = polyHeight.result;
                         }
 
                         // Handle end of path and off-mesh links when close enough.
@@ -304,7 +304,7 @@ public class TestNavmeshTool : Tool
 
                                 // Move position at the other side of the off-mesh link.
                                 iterPos = endPos;
-                                iterPos[1] = m_navQuery.getPolyHeight(polys[0], iterPos).result;
+                                iterPos.y = m_navQuery.getPolyHeight(polys[0], iterPos).result;
                             }
                         }
 
@@ -331,7 +331,7 @@ public class TestNavmeshTool : Tool
                 if (0 < m_polys.Count)
                 {
                     // In case of partial path, make sure the end point is clamped to the last polygon.
-                    var epos = Vector3f.Of(m_epos[0], m_epos[1], m_epos[2]);
+                    var epos = Vector3f.Of(m_epos.x, m_epos.y, m_epos.z);
                     if (m_polys[m_polys.Count - 1] != m_endRef)
                     {
                         Result<ClosestPointOnPolyResult> result = m_navQuery
@@ -392,7 +392,7 @@ public class TestNavmeshTool : Tool
                                 .getPolyHeight(hit.result.path[hit.result.path.Count - 1], m_hitPos);
                             if (result.Succeeded())
                             {
-                                m_hitPos[1] = result.result;
+                                m_hitPos.y = result.result;
                             }
                         }
                     }
@@ -423,8 +423,8 @@ public class TestNavmeshTool : Tool
         {
             if (m_sposSet && m_startRef != 0 && m_eposSet)
             {
-                float dx = m_epos[0] - m_spos[0];
-                float dz = m_epos[2] - m_spos[2];
+                float dx = m_epos.x - m_spos.x;
+                float dz = m_epos.z - m_spos.z;
                 float dist = (float)Math.Sqrt(dx * dx + dz * dz);
                 Result<FindPolysAroundResult> result = m_navQuery.findPolysAroundCircle(m_startRef, m_spos, dist,
                     m_filter);
@@ -439,25 +439,25 @@ public class TestNavmeshTool : Tool
         {
             if (m_sposSet && m_startRef != 0 && m_eposSet)
             {
-                float nx = (m_epos[2] - m_spos[2]) * 0.25f;
-                float nz = -(m_epos[0] - m_spos[0]) * 0.25f;
+                float nx = (m_epos.z - m_spos.z) * 0.25f;
+                float nz = -(m_epos.x - m_spos.x) * 0.25f;
                 float agentHeight = m_sample != null ? m_sample.getSettingsUI().getAgentHeight() : 0;
 
-                m_queryPoly[0] = m_spos[0] + nx * 1.2f;
-                m_queryPoly[1] = m_spos[1] + agentHeight / 2;
-                m_queryPoly[2] = m_spos[2] + nz * 1.2f;
+                m_queryPoly[0] = m_spos.x + nx * 1.2f;
+                m_queryPoly[1] = m_spos.y + agentHeight / 2;
+                m_queryPoly[2] = m_spos.z + nz * 1.2f;
 
-                m_queryPoly[3] = m_spos[0] - nx * 1.3f;
-                m_queryPoly[4] = m_spos[1] + agentHeight / 2;
-                m_queryPoly[5] = m_spos[2] - nz * 1.3f;
+                m_queryPoly[3] = m_spos.x - nx * 1.3f;
+                m_queryPoly[4] = m_spos.y + agentHeight / 2;
+                m_queryPoly[5] = m_spos.z - nz * 1.3f;
 
-                m_queryPoly[6] = m_epos[0] - nx * 0.8f;
-                m_queryPoly[7] = m_epos[1] + agentHeight / 2;
-                m_queryPoly[8] = m_epos[2] - nz * 0.8f;
+                m_queryPoly[6] = m_epos.x - nx * 0.8f;
+                m_queryPoly[7] = m_epos.y + agentHeight / 2;
+                m_queryPoly[8] = m_epos.z - nz * 0.8f;
 
-                m_queryPoly[9] = m_epos[0] + nx;
-                m_queryPoly[10] = m_epos[1] + agentHeight / 2;
-                m_queryPoly[11] = m_epos[2] + nz;
+                m_queryPoly[9] = m_epos.x + nx;
+                m_queryPoly[10] = m_epos.y + agentHeight / 2;
+                m_queryPoly[11] = m_epos.z + nz;
 
                 Result<FindPolysAroundResult> result = m_navQuery.findPolysAroundShape(m_startRef, m_queryPoly, m_filter);
                 if (result.Succeeded())
@@ -486,8 +486,8 @@ public class TestNavmeshTool : Tool
             randomPoints.Clear();
             if (m_sposSet && m_startRef != 0 && m_eposSet)
             {
-                float dx = m_epos[0] - m_spos[0];
-                float dz = m_epos[2] - m_spos[2];
+                float dx = m_epos.x - m_spos.x;
+                float dz = m_epos.z - m_spos.z;
                 float dist = (float)Math.Sqrt(dx * dx + dz * dz);
                 PolygonByCircleConstraint constraint = constrainByCircle
                     ? PolygonByCircleConstraint.strict()
@@ -564,7 +564,7 @@ public class TestNavmeshTool : Tool
                 dd.begin(LINES, 3.0f);
                 for (int i = 0; i < m_smoothPath.Count; ++i)
                 {
-                    dd.vertex(m_smoothPath[i][0], m_smoothPath[i][1] + 0.1f, m_smoothPath[i][2], spathCol);
+                    dd.vertex(m_smoothPath[i].x, m_smoothPath[i].y + 0.1f, m_smoothPath[i].z, spathCol);
                 }
 
                 dd.end();
@@ -573,7 +573,7 @@ public class TestNavmeshTool : Tool
             /*
             if (m_pathIterNum)
             {
-                duDebugDrawNavMeshPoly(&dd, *m_navMesh, m_pathIterPolys[0], DebugDraw.duRGBA(255,255,255,128));
+                duDebugDrawNavMeshPoly(&dd, *m_navMesh, m_pathIterPolys.x, DebugDraw.duRGBA(255,255,255,128));
 
                 dd.depthMask(false);
                 dd.begin(DebugDrawPrimitives.LINES, 1.0f);
@@ -582,17 +582,17 @@ public class TestNavmeshTool : Tool
                 int curCol = DebugDraw.duRGBA(255,255,255,220);
                 int steerCol = DebugDraw.duRGBA(0,192,255,220);
 
-                dd.vertex(m_prevIterPos[0],m_prevIterPos[1]-0.3f,m_prevIterPos[2], prevCol);
-                dd.vertex(m_prevIterPos[0],m_prevIterPos[1]+0.3f,m_prevIterPos[2], prevCol);
+                dd.vertex(m_prevIterPos.x,m_prevIterPos.y-0.3f,m_prevIterPos.z, prevCol);
+                dd.vertex(m_prevIterPos.x,m_prevIterPos.y+0.3f,m_prevIterPos.z, prevCol);
 
-                dd.vertex(m_iterPos[0],m_iterPos[1]-0.3f,m_iterPos[2], curCol);
-                dd.vertex(m_iterPos[0],m_iterPos[1]+0.3f,m_iterPos[2], curCol);
+                dd.vertex(m_iterPos.x,m_iterPos.y-0.3f,m_iterPos.z, curCol);
+                dd.vertex(m_iterPos.x,m_iterPos.y+0.3f,m_iterPos.z, curCol);
 
-                dd.vertex(m_prevIterPos[0],m_prevIterPos[1]+0.3f,m_prevIterPos[2], prevCol);
-                dd.vertex(m_iterPos[0],m_iterPos[1]+0.3f,m_iterPos[2], prevCol);
+                dd.vertex(m_prevIterPos.x,m_prevIterPos.y+0.3f,m_prevIterPos.z, prevCol);
+                dd.vertex(m_iterPos.x,m_iterPos.y+0.3f,m_iterPos.z, prevCol);
 
-                dd.vertex(m_prevIterPos[0],m_prevIterPos[1]+0.3f,m_prevIterPos[2], steerCol);
-                dd.vertex(m_steerPos[0],m_steerPos[1]+0.3f,m_steerPos[2], steerCol);
+                dd.vertex(m_prevIterPos.x,m_prevIterPos.y+0.3f,m_prevIterPos.z, steerCol);
+                dd.vertex(m_steerPos.x,m_steerPos.y+0.3f,m_steerPos.z, steerCol);
 
                 for (int i = 0; i < m_steerPointCount-1; ++i)
                 {
@@ -638,10 +638,10 @@ public class TestNavmeshTool : Tool
                         col = spathCol;
                     }
 
-                    dd.vertex(straightPathItem.getPos()[0], straightPathItem.getPos()[1] + 0.4f,
-                        straightPathItem.getPos()[2], col);
-                    dd.vertex(straightPathItem2.getPos()[0], straightPathItem2.getPos()[1] + 0.4f,
-                        straightPathItem2.getPos()[2], col);
+                    dd.vertex(straightPathItem.getPos().x, straightPathItem.getPos().y + 0.4f,
+                        straightPathItem.getPos().z, col);
+                    dd.vertex(straightPathItem2.getPos().x, straightPathItem2.getPos().y + 0.4f,
+                        straightPathItem2.getPos().z, col);
                 }
 
                 dd.end();
@@ -667,8 +667,8 @@ public class TestNavmeshTool : Tool
                         col = spathCol;
                     }
 
-                    dd.vertex(straightPathItem.getPos()[0], straightPathItem.getPos()[1] + 0.4f,
-                        straightPathItem.getPos()[2], col);
+                    dd.vertex(straightPathItem.getPos().x, straightPathItem.getPos().y + 0.4f,
+                        straightPathItem.getPos().z, col);
                 }
 
                 dd.end();
@@ -696,10 +696,10 @@ public class TestNavmeshTool : Tool
                 {
                     StraightPathItem straightPathItem = m_straightPath[i];
                     StraightPathItem straightPathItem2 = m_straightPath[i + 1];
-                    dd.vertex(straightPathItem.getPos()[0], straightPathItem.getPos()[1] + 0.4f,
-                        straightPathItem.getPos()[2], spathCol);
-                    dd.vertex(straightPathItem2.getPos()[0], straightPathItem2.getPos()[1] + 0.4f,
-                        straightPathItem2.getPos()[2], spathCol);
+                    dd.vertex(straightPathItem.getPos().x, straightPathItem.getPos().y + 0.4f,
+                        straightPathItem.getPos().z, spathCol);
+                    dd.vertex(straightPathItem2.getPos().x, straightPathItem2.getPos().y + 0.4f,
+                        straightPathItem2.getPos().z, spathCol);
                 }
 
                 dd.end();
@@ -707,8 +707,8 @@ public class TestNavmeshTool : Tool
                 for (int i = 0; i < m_straightPath.Count; ++i)
                 {
                     StraightPathItem straightPathItem = m_straightPath[i];
-                    dd.vertex(straightPathItem.getPos()[0], straightPathItem.getPos()[1] + 0.4f,
-                        straightPathItem.getPos()[2], spathCol);
+                    dd.vertex(straightPathItem.getPos().x, straightPathItem.getPos().y + 0.4f,
+                        straightPathItem.getPos().z, spathCol);
                 }
 
                 dd.end();
@@ -717,10 +717,10 @@ public class TestNavmeshTool : Tool
                 {
                     int hitCol = duRGBA(0, 0, 0, 128);
                     dd.begin(LINES, 2.0f);
-                    dd.vertex(m_hitPos[0], m_hitPos[1] + 0.4f, m_hitPos[2], hitCol);
-                    dd.vertex(m_hitPos[0] + m_hitNormal[0] * agentRadius,
-                        m_hitPos[1] + 0.4f + m_hitNormal[1] * agentRadius,
-                        m_hitPos[2] + m_hitNormal[2] * agentRadius, hitCol);
+                    dd.vertex(m_hitPos.x, m_hitPos.y + 0.4f, m_hitPos.z, hitCol);
+                    dd.vertex(m_hitPos.x + m_hitNormal.x * agentRadius,
+                        m_hitPos.y + 0.4f + m_hitNormal.y * agentRadius,
+                        m_hitPos.z + m_hitNormal.z * agentRadius, hitCol);
                     dd.end();
                 }
 
@@ -733,15 +733,15 @@ public class TestNavmeshTool : Tool
             dd.depthMask(false);
             if (m_spos != Vector3f.Zero)
             {
-                dd.debugDrawCircle(m_spos[0], m_spos[1] + agentHeight / 2, m_spos[2], m_distanceToWall,
+                dd.debugDrawCircle(m_spos.x, m_spos.y + agentHeight / 2, m_spos.z, m_distanceToWall,
                     duRGBA(64, 16, 0, 220), 2.0f);
             }
 
             if (m_hitPos != Vector3f.Zero)
             {
                 dd.begin(LINES, 3.0f);
-                dd.vertex(m_hitPos[0], m_hitPos[1] + 0.02f, m_hitPos[2], duRGBA(0, 0, 0, 192));
-                dd.vertex(m_hitPos[0], m_hitPos[1] + agentHeight, m_hitPos[2], duRGBA(0, 0, 0, 192));
+                dd.vertex(m_hitPos.x, m_hitPos.y + 0.02f, m_hitPos.z, duRGBA(0, 0, 0, 192));
+                dd.vertex(m_hitPos.x, m_hitPos.y + agentHeight, m_hitPos.z, duRGBA(0, 0, 0, 192));
                 dd.end();
             }
 
@@ -760,7 +760,7 @@ public class TestNavmeshTool : Tool
                         dd.depthMask(false);
                         Vector3f p0 = getPolyCenter(m_navMesh, m_parent[i]);
                         Vector3f p1 = getPolyCenter(m_navMesh, m_polys[i]);
-                        dd.debugDrawArc(p0[0], p0[1], p0[2], p1[0], p1[1], p1[2], 0.25f, 0.0f, 0.4f,
+                        dd.debugDrawArc(p0.x, p0.y, p0.z, p1.x, p1.y, p1.z, 0.25f, 0.0f, 0.4f,
                             duRGBA(0, 0, 0, 128), 2.0f);
                         dd.depthMask(true);
                     }
@@ -772,10 +772,10 @@ public class TestNavmeshTool : Tool
             if (m_sposSet && m_eposSet)
             {
                 dd.depthMask(false);
-                float dx = m_epos[0] - m_spos[0];
-                float dz = m_epos[2] - m_spos[2];
+                float dx = m_epos.x - m_spos.x;
+                float dz = m_epos.z - m_spos.z;
                 float dist = (float)Math.Sqrt(dx * dx + dz * dz);
-                dd.debugDrawCircle(m_spos[0], m_spos[1] + agentHeight / 2, m_spos[2], dist, duRGBA(64, 16, 0, 220),
+                dd.debugDrawCircle(m_spos.x, m_spos.y + agentHeight / 2, m_spos.z, dist, duRGBA(64, 16, 0, 220),
                     2.0f);
                 dd.depthMask(true);
             }
@@ -793,7 +793,7 @@ public class TestNavmeshTool : Tool
                         dd.depthMask(false);
                         Vector3f p0 = getPolyCenter(m_navMesh, m_parent[i]);
                         Vector3f p1 = getPolyCenter(m_navMesh, m_polys[i]);
-                        dd.debugDrawArc(p0[0], p0[1], p0[2], p1[0], p1[1], p1[2], 0.25f, 0.0f, 0.4f,
+                        dd.debugDrawArc(p0.x, p0.y, p0.z, p1.x, p1.y, p1.z, 0.25f, 0.0f, 0.4f,
                             duRGBA(0, 0, 0, 128), 2.0f);
                         dd.depthMask(true);
                     }
@@ -830,7 +830,7 @@ public class TestNavmeshTool : Tool
                         dd.depthMask(false);
                         Vector3f p0 = getPolyCenter(m_navMesh, m_parent[i]);
                         Vector3f p1 = getPolyCenter(m_navMesh, m_polys[i]);
-                        dd.debugDrawArc(p0[0], p0[1], p0[2], p1[0], p1[1], p1[2], 0.25f, 0.0f, 0.4f,
+                        dd.debugDrawArc(p0.x, p0.y, p0.z, p1.x, p1.y, p1.z, 0.25f, 0.0f, 0.4f,
                             duRGBA(0, 0, 0, 128), 2.0f);
                         dd.depthMask(true);
                     }
@@ -857,7 +857,7 @@ public class TestNavmeshTool : Tool
 
                                 Vector3f delta = vSub(s3, s.vmin);
                                 Vector3f p0 = vMad(s.vmin, delta, 0.5f);
-                                Vector3f norm = Vector3f.Of(delta[2], 0, -delta[0]);
+                                Vector3f norm = Vector3f.Of(delta.z, 0, -delta.x);
                                 vNormalize(ref norm);
                                 Vector3f p1 = vMad(p0, norm, agentRadius * 0.5f);
                                 // Skip backfacing segments.
@@ -875,8 +875,8 @@ public class TestNavmeshTool : Tool
                                         col = duRGBA(96, 32, 16, 192);
                                     }
 
-                                    dd.vertex(p0[0], p0[1] + agentClimb, p0[2], col);
-                                    dd.vertex(p1[0], p1[1] + agentClimb, p1[2], col);
+                                    dd.vertex(p0.x, p0.y + agentClimb, p0.z, col);
+                                    dd.vertex(p1.x, p1.y + agentClimb, p1.z, col);
 
                                     dd.vertex(s[0], s[1] + agentClimb, s[2], col);
                                     dd.vertex(s[3], s[4] + agentClimb, s[5], col);
@@ -893,7 +893,7 @@ public class TestNavmeshTool : Tool
                 if (m_sposSet)
                 {
                     dd.depthMask(false);
-                    dd.debugDrawCircle(m_spos[0], m_spos[1] + agentHeight / 2, m_spos[2], m_neighbourhoodRadius,
+                    dd.debugDrawCircle(m_spos.x, m_spos.y + agentHeight / 2, m_spos.z, m_neighbourhoodRadius,
                         duRGBA(64, 16, 0, 220), 2.0f);
                     dd.depthMask(true);
                 }
@@ -906,17 +906,17 @@ public class TestNavmeshTool : Tool
             int col = duRGBA(64, 16, 0, 220);
             foreach (Vector3f point in randomPoints)
             {
-                dd.vertex(point[0], point[1] + 0.1f, point[2], col);
+                dd.vertex(point.x, point.y + 0.1f, point.z, col);
             }
 
             dd.end();
             if (m_sposSet && m_eposSet)
             {
                 dd.depthMask(false);
-                float dx = m_epos[0] - m_spos[0];
-                float dz = m_epos[2] - m_spos[2];
+                float dx = m_epos.x - m_spos.x;
+                float dz = m_epos.z - m_spos.z;
                 float dist = (float)Math.Sqrt(dx * dx + dz * dz);
-                dd.debugDrawCircle(m_spos[0], m_spos[1] + agentHeight / 2, m_spos[2], dist, duRGBA(64, 16, 0, 220),
+                dd.debugDrawCircle(m_spos.x, m_spos.y + agentHeight / 2, m_spos.z, dist, duRGBA(64, 16, 0, 220),
                     2.0f);
                 dd.depthMask(true);
             }
@@ -932,16 +932,16 @@ public class TestNavmeshTool : Tool
         float c = m_sample.getSettingsUI().getAgentMaxClimb();
         dd.depthMask(false);
         // Agent dimensions.
-        dd.debugDrawCylinderWire(pos[0] - r, pos[1] + 0.02f, pos[2] - r, pos[0] + r, pos[1] + h, pos[2] + r, col, 2.0f);
-        dd.debugDrawCircle(pos[0], pos[1] + c, pos[2], r, duRGBA(0, 0, 0, 64), 1.0f);
+        dd.debugDrawCylinderWire(pos.x - r, pos.y + 0.02f, pos.z - r, pos.x + r, pos.y + h, pos.z + r, col, 2.0f);
+        dd.debugDrawCircle(pos.x, pos.y + c, pos.z, r, duRGBA(0, 0, 0, 64), 1.0f);
         int colb = duRGBA(0, 0, 0, 196);
         dd.begin(LINES);
-        dd.vertex(pos[0], pos[1] - c, pos[2], colb);
-        dd.vertex(pos[0], pos[1] + c, pos[2], colb);
-        dd.vertex(pos[0] - r / 2, pos[1] + 0.02f, pos[2], colb);
-        dd.vertex(pos[0] + r / 2, pos[1] + 0.02f, pos[2], colb);
-        dd.vertex(pos[0], pos[1] + 0.02f, pos[2] - r / 2, colb);
-        dd.vertex(pos[0], pos[1] + 0.02f, pos[2] + r / 2, colb);
+        dd.vertex(pos.x, pos.y - c, pos.z, colb);
+        dd.vertex(pos.x, pos.y + c, pos.z, colb);
+        dd.vertex(pos.x - r / 2, pos.y + 0.02f, pos.z, colb);
+        dd.vertex(pos.x + r / 2, pos.y + 0.02f, pos.z, colb);
+        dd.vertex(pos.x, pos.y + 0.02f, pos.z - r / 2, colb);
+        dd.vertex(pos.x, pos.y + 0.02f, pos.z + r / 2, colb);
         dd.end();
         dd.depthMask(true);
     }
@@ -958,15 +958,15 @@ public class TestNavmeshTool : Tool
             for (int i = 0; i < poly.vertCount; ++i)
             {
                 int v = poly.verts[i] * 3;
-                center[0] += tile.data.verts[v];
-                center[1] += tile.data.verts[v + 1];
-                center[2] += tile.data.verts[v + 2];
+                center.x += tile.data.verts[v];
+                center.y += tile.data.verts[v + 1];
+                center.z += tile.data.verts[v + 2];
             }
 
             float s = 1.0f / poly.vertCount;
-            center[0] *= s;
-            center[1] *= s;
-            center[2] *= s;
+            center.x *= s;
+            center.y *= s;
+            center.z *= s;
         }
 
         return center;

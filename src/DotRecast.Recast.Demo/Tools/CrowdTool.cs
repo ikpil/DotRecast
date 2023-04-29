@@ -235,9 +235,9 @@ public class CrowdTool : Tool
 
             for (int i = 0; i < AGENT_MAX_TRAIL; ++i)
             {
-                trail.trail[i * 3] = p[0];
-                trail.trail[i * 3 + 1] = p[1];
-                trail.trail[i * 3 + 2] = p[2];
+                trail.trail[i * 3] = p.x;
+                trail.trail[i * 3 + 1] = p.y;
+                trail.trail[i * 3 + 2] = p.z;
             }
 
             trail.htrail = 0;
@@ -289,12 +289,12 @@ public class CrowdTool : Tool
         Vector3f p = ag.npos;
         float r = ag.option.radius;
         float h = ag.option.height;
-        bmin[0] = p[0] - r;
-        bmin[1] = p[1];
-        bmin[2] = p[2] - r;
-        bmax[0] = p[0] + r;
-        bmax[1] = p[1] + h;
-        bmax[2] = p[2] + r;
+        bmin.x = p.x - r;
+        bmin.y = p.y;
+        bmin.z = p.z - r;
+        bmax.x = p.x + r;
+        bmax.y = p.y + h;
+        bmax.z = p.z + r;
     }
 
     private void setMoveTarget(Vector3f p, bool adjust)
@@ -346,7 +346,7 @@ public class CrowdTool : Tool
     private Vector3f calcVel(Vector3f pos, Vector3f tgt, float speed)
     {
         Vector3f vel = vSub(tgt, pos);
-        vel[1] = 0.0f;
+        vel.y = 0.0f;
         vNormalize(ref vel);
         return vScale(vel, speed);
     }
@@ -392,7 +392,7 @@ public class CrowdTool : Tool
         }
 
         if (m_targetRef != 0)
-            dd.debugDrawCross(m_targetPos[0], m_targetPos[1] + 0.1f, m_targetPos[2], rad, duRGBA(255, 255, 255, 192), 2.0f);
+            dd.debugDrawCross(m_targetPos.x, m_targetPos.y + 0.1f, m_targetPos.z, rad, duRGBA(255, 255, 255, 192), 2.0f);
 
         // Occupancy grid.
         if (toolParams.m_showGrid)
@@ -401,7 +401,7 @@ public class CrowdTool : Tool
             foreach (CrowdAgent ag in crowd.getActiveAgents())
             {
                 Vector3f pos = ag.corridor.getPos();
-                gridy = Math.Max(gridy, pos[1]);
+                gridy = Math.Max(gridy, pos.y);
             }
 
             gridy += 1.0f;
@@ -442,7 +442,7 @@ public class CrowdTool : Tool
                 int idx = (trail.htrail + AGENT_MAX_TRAIL - j) % AGENT_MAX_TRAIL;
                 int v = idx * 3;
                 float a = 1 - j / (float)AGENT_MAX_TRAIL;
-                dd.vertex(prev[0], prev[1] + 0.1f, prev[2], duRGBA(0, 0, 0, (int)(128 * preva)));
+                dd.vertex(prev.x, prev.y + 0.1f, prev.z, duRGBA(0, 0, 0, (int)(128 * preva)));
                 dd.vertex(trail.trail[v], trail.trail[v + 1] + 0.1f, trail.trail[v + 2], duRGBA(0, 0, 0, (int)(128 * a)));
                 preva = a;
                 vCopy(ref prev, trail.trail, v);
@@ -469,16 +469,16 @@ public class CrowdTool : Tool
                     {
                         Vector3f va = j == 0 ? pos : ag.corners[j - 1].getPos();
                         Vector3f vb = ag.corners[j].getPos();
-                        dd.vertex(va[0], va[1] + radius, va[2], duRGBA(128, 0, 0, 192));
-                        dd.vertex(vb[0], vb[1] + radius, vb[2], duRGBA(128, 0, 0, 192));
+                        dd.vertex(va.x, va.y + radius, va.z, duRGBA(128, 0, 0, 192));
+                        dd.vertex(vb.x, vb.y + radius, vb.z, duRGBA(128, 0, 0, 192));
                     }
 
                     if ((ag.corners[ag.corners.Count - 1].getFlags()
                          & NavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
                     {
                         Vector3f v = ag.corners[ag.corners.Count - 1].getPos();
-                        dd.vertex(v[0], v[1], v[2], duRGBA(192, 0, 0, 192));
-                        dd.vertex(v[0], v[1] + radius * 2, v[2], duRGBA(192, 0, 0, 192));
+                        dd.vertex(v.x, v.y, v.z, duRGBA(192, 0, 0, 192));
+                        dd.vertex(v.x, v.y + radius * 2, v.z, duRGBA(192, 0, 0, 192));
                     }
 
                     dd.end();
@@ -487,21 +487,21 @@ public class CrowdTool : Tool
                     {
                         /*                  float dvel[3], pos[3];
                          calcSmoothSteerDirection(ag.pos, ag.cornerVerts, ag.ncorners, dvel);
-                         pos[0] = ag.pos[0] + dvel[0];
-                         pos[1] = ag.pos[1] + dvel[1];
-                         pos[2] = ag.pos[2] + dvel[2];
+                         pos.x = ag.pos.x + dvel.x;
+                         pos.y = ag.pos.y + dvel.y;
+                         pos.z = ag.pos.z + dvel.z;
 
                          float off = ag.radius+0.1f;
-                         float[] tgt = &ag.cornerVerts[0];
-                         float y = ag.pos[1]+off;
+                         float[] tgt = &ag.cornerVerts.x;
+                         float y = ag.pos.y+off;
 
                          dd.begin(DU_DRAW_LINES, 2.0f);
 
-                         dd.vertex(ag.pos[0],y,ag.pos[2], duRGBA(255,0,0,192));
-                         dd.vertex(pos[0],y,pos[2], duRGBA(255,0,0,192));
+                         dd.vertex(ag.pos.x,y,ag.pos.z, duRGBA(255,0,0,192));
+                         dd.vertex(pos.x,y,pos.z, duRGBA(255,0,0,192));
 
-                         dd.vertex(pos[0],y,pos[2], duRGBA(255,0,0,192));
-                         dd.vertex(tgt[0],y,tgt[2], duRGBA(255,0,0,192));
+                         dd.vertex(pos.x,y,pos.z, duRGBA(255,0,0,192));
+                         dd.vertex(tgt.x,y,tgt.z, duRGBA(255,0,0,192));
 
                          dd.end();*/
                     }
@@ -511,8 +511,8 @@ public class CrowdTool : Tool
             if (toolParams.m_showCollisionSegments)
             {
                 Vector3f center = ag.boundary.getCenter();
-                dd.debugDrawCross(center[0], center[1] + radius, center[2], 0.2f, duRGBA(192, 0, 128, 255), 2.0f);
-                dd.debugDrawCircle(center[0], center[1] + radius, center[2], ag.option.collisionQueryRange, duRGBA(192, 0, 128, 128), 2.0f);
+                dd.debugDrawCross(center.x, center.y + radius, center.z, 0.2f, duRGBA(192, 0, 128, 255), 2.0f);
+                dd.debugDrawCircle(center.x, center.y + radius, center.z, ag.option.collisionQueryRange, duRGBA(192, 0, 128, 128), 2.0f);
 
                 dd.begin(LINES, 3.0f);
                 for (int j = 0; j < ag.boundary.getSegmentCount(); ++j)
@@ -524,7 +524,7 @@ public class CrowdTool : Tool
                     if (triArea2D(pos, s0, s3) < 0.0f)
                         col = duDarkenCol(col);
 
-                    dd.appendArrow(s[0][0], s[0][1] + 0.2f, s[0][2], s[1][0], s[1][2] + 0.2f, s[1][2], 0.0f, 0.3f, col);
+                    dd.appendArrow(s[0].x, s[0].y + 0.2f, s[0].z, s[1].x, s[1].z + 0.2f, s[1].z, 0.0f, 0.3f, col);
                 }
 
                 dd.end();
@@ -532,7 +532,7 @@ public class CrowdTool : Tool
 
             if (toolParams.m_showNeis)
             {
-                dd.debugDrawCircle(pos[0], pos[1] + radius, pos[2], ag.option.collisionQueryRange, duRGBA(0, 192, 128, 128),
+                dd.debugDrawCircle(pos.x, pos.y + radius, pos.z, ag.option.collisionQueryRange, duRGBA(0, 192, 128, 128),
                     2.0f);
 
                 dd.begin(LINES, 2.0f);
@@ -541,8 +541,8 @@ public class CrowdTool : Tool
                     CrowdAgent nei = ag.neis[j].agent;
                     if (nei != null)
                     {
-                        dd.vertex(pos[0], pos[1] + radius, pos[2], duRGBA(0, 192, 128, 128));
-                        dd.vertex(nei.npos[0], nei.npos[1] + radius, nei.npos[2], duRGBA(0, 192, 128, 128));
+                        dd.vertex(pos.x, pos.y + radius, pos.z, duRGBA(0, 192, 128, 128));
+                        dd.vertex(nei.npos.x, nei.npos.y + radius, nei.npos.z, duRGBA(0, 192, 128, 128));
                     }
                 }
 
@@ -552,9 +552,9 @@ public class CrowdTool : Tool
             if (toolParams.m_showOpt)
             {
                 dd.begin(LINES, 2.0f);
-                dd.vertex(m_agentDebug.optStart[0], m_agentDebug.optStart[1] + 0.3f, m_agentDebug.optStart[2],
+                dd.vertex(m_agentDebug.optStart.x, m_agentDebug.optStart.y + 0.3f, m_agentDebug.optStart.z,
                     duRGBA(0, 128, 0, 192));
-                dd.vertex(m_agentDebug.optEnd[0], m_agentDebug.optEnd[1] + 0.3f, m_agentDebug.optEnd[2], duRGBA(0, 128, 0, 192));
+                dd.vertex(m_agentDebug.optEnd.x, m_agentDebug.optEnd.y + 0.3f, m_agentDebug.optEnd.z, duRGBA(0, 128, 0, 192));
                 dd.end();
             }
         }
@@ -569,7 +569,7 @@ public class CrowdTool : Tool
             if (m_agentDebug.agent == ag)
                 col = duRGBA(255, 0, 0, 128);
 
-            dd.debugDrawCircle(pos[0], pos[1], pos[2], radius, col, 2.0f);
+            dd.debugDrawCircle(pos.x, pos.y, pos.z, radius, col, 2.0f);
         }
 
         foreach (CrowdAgent ag in crowd.getActiveAgents())
@@ -589,8 +589,8 @@ public class CrowdTool : Tool
             else if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                 col = duLerpCol(col, duRGBA(64, 255, 0, 128), 128);
 
-            dd.debugDrawCylinder(pos[0] - radius, pos[1] + radius * 0.1f, pos[2] - radius, pos[0] + radius, pos[1] + height,
-                pos[2] + radius, col);
+            dd.debugDrawCylinder(pos.x - radius, pos.y + radius * 0.1f, pos.z - radius, pos.x + radius, pos.y + height,
+                pos.z + radius, col);
         }
 
         if (toolParams.m_showVO)
@@ -603,9 +603,9 @@ public class CrowdTool : Tool
                 // Draw detail about agent sela
                 ObstacleAvoidanceDebugData vod = m_agentDebug.vod;
 
-                float dx = ag.npos[0];
-                float dy = ag.npos[1] + ag.option.height;
-                float dz = ag.npos[2];
+                float dx = ag.npos.x;
+                float dy = ag.npos.y + ag.option.height;
+                float dz = ag.npos.z;
 
                 dd.debugDrawCircle(dx, dy, dz, ag.option.maxSpeed, duRGBA(255, 255, 255, 64), 2.0f);
 
@@ -618,10 +618,10 @@ public class CrowdTool : Tool
                     float pen2 = vod.getSamplePreferredSidePenalty(j);
                     int col = duLerpCol(duRGBA(255, 255, 255, 220), duRGBA(128, 96, 0, 220), (int)(pen * 255));
                     col = duLerpCol(col, duRGBA(128, 0, 0, 220), (int)(pen2 * 128));
-                    dd.vertex(dx + p[0] - sr, dy, dz + p[2] - sr, col);
-                    dd.vertex(dx + p[0] - sr, dy, dz + p[2] + sr, col);
-                    dd.vertex(dx + p[0] + sr, dy, dz + p[2] + sr, col);
-                    dd.vertex(dx + p[0] + sr, dy, dz + p[2] - sr, col);
+                    dd.vertex(dx + p.x - sr, dy, dz + p.z - sr, col);
+                    dd.vertex(dx + p.x - sr, dy, dz + p.z + sr, col);
+                    dd.vertex(dx + p.x + sr, dy, dz + p.z + sr, col);
+                    dd.vertex(dx + p.x + sr, dy, dz + p.z - sr, col);
                 }
 
                 dd.end();
@@ -648,12 +648,12 @@ public class CrowdTool : Tool
             else if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                 col = duLerpCol(col, duRGBA(64, 255, 0, 192), 128);
 
-            dd.debugDrawCircle(pos[0], pos[1] + height, pos[2], radius, col, 2.0f);
+            dd.debugDrawCircle(pos.x, pos.y + height, pos.z, radius, col, 2.0f);
 
-            dd.debugDrawArrow(pos[0], pos[1] + height, pos[2], pos[0] + dvel[0], pos[1] + height + dvel[1], pos[2] + dvel[2],
+            dd.debugDrawArrow(pos.x, pos.y + height, pos.z, pos.x + dvel.x, pos.y + height + dvel.y, pos.z + dvel.z,
                 0.0f, 0.4f, duRGBA(0, 192, 255, 192), m_agentDebug.agent == ag ? 2.0f : 1.0f);
 
-            dd.debugDrawArrow(pos[0], pos[1] + height, pos[2], pos[0] + vel[0], pos[1] + height + vel[1], pos[2] + vel[2], 0.0f,
+            dd.debugDrawArrow(pos.x, pos.y + height, pos.z, pos.x + vel.x, pos.y + height + vel.y, pos.z + vel.z, 0.0f,
                 0.4f, duRGBA(0, 0, 0, 160), 2.0f);
         }
 
@@ -689,9 +689,9 @@ public class CrowdTool : Tool
             AgentTrail trail = m_trails[ag.idx];
             // Update agent movement trail.
             trail.htrail = (trail.htrail + 1) % AGENT_MAX_TRAIL;
-            trail.trail[trail.htrail * 3] = ag.npos[0];
-            trail.trail[trail.htrail * 3 + 1] = ag.npos[1];
-            trail.trail[trail.htrail * 3 + 2] = ag.npos[2];
+            trail.trail[trail.htrail * 3] = ag.npos.x;
+            trail.trail[trail.htrail * 3 + 1] = ag.npos.y;
+            trail.trail[trail.htrail * 3 + 2] = ag.npos.z;
         }
 
         m_agentDebug.vod.normalizeSamples();

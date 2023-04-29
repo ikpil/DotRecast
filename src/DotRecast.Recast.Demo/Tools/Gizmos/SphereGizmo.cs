@@ -32,8 +32,8 @@ public class SphereGizmo : ColliderGizmo
                 float c = clamp(0.57735026f * (vertices[v] + vertices[v + 1] + vertices[v + 2]), -1, 1);
                 int col = DebugDraw.duLerpCol(DebugDraw.duRGBA(32, 32, 0, 160), DebugDraw.duRGBA(220, 220, 0, 160),
                     (int)(127 * (1 + c)));
-                debugDraw.vertex(radius * vertices[v] + center[0], radius * vertices[v + 1] + center[1],
-                    radius * vertices[v + 2] + center[2], col);
+                debugDraw.vertex(radius * vertices[v] + center.x, radius * vertices[v + 1] + center.y,
+                    radius * vertices[v + 2] + center.z, col);
             }
         }
 

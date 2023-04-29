@@ -100,7 +100,7 @@ public class OffMeshConnectionTool : Tool
 
         if (hitPosSet)
         {
-            dd.debugDrawCross(hitPos[0], hitPos[1] + 0.1f, hitPos[2], s, duRGBA(0, 0, 0, 128), 2.0f);
+            dd.debugDrawCross(hitPos.x, hitPos.y + 0.1f, hitPos.z, s, duRGBA(0, 0, 0, 128), 2.0f);
         }
 
         DemoInputGeomProvider geom = sample.getInputGeom();

@@ -1,4 +1,4 @@
-﻿using DotRecast.Core;
+using DotRecast.Core;
 using DotRecast.Detour.Dynamic.Colliders;
 using DotRecast.Recast.Demo.Draw;
 
@@ -42,23 +42,23 @@ public class BoxGizmo : ColliderGizmo
             float s0 = (i & 1) != 0 ? 1f : -1f;
             float s1 = (i & 2) != 0 ? 1f : -1f;
             float s2 = (i & 4) != 0 ? 1f : -1f;
-            vertices[i * 3 + 0] = center[0] + s0 * halfEdges[0][0] + s1 * halfEdges[1][0] + s2 * halfEdges[2][0];
-            vertices[i * 3 + 1] = center[1] + s0 * halfEdges[0][1] + s1 * halfEdges[1][1] + s2 * halfEdges[2][1];
-            vertices[i * 3 + 2] = center[2] + s0 * halfEdges[0][2] + s1 * halfEdges[1][2] + s2 * halfEdges[2][2];
+            vertices[i * 3 + 0] = center.x + s0 * halfEdges[0].x + s1 * halfEdges[1].x + s2 * halfEdges[2].x;
+            vertices[i * 3 + 1] = center.y + s0 * halfEdges[0].y + s1 * halfEdges[1].y + s2 * halfEdges[2].y;
+            vertices[i * 3 + 2] = center.z + s0 * halfEdges[0].z + s1 * halfEdges[1].z + s2 * halfEdges[2].z;
         }
     }
 
     public void render(RecastDebugDraw debugDraw)
     {
-        var trX = Vector3f.Of(halfEdges[0][0], halfEdges[1][0], halfEdges[2][0]);
-        var trY = Vector3f.Of(halfEdges[0][1], halfEdges[1][1], halfEdges[2][1]);
-        var trZ = Vector3f.Of(halfEdges[0][2], halfEdges[1][2], halfEdges[2][2]);
+        var trX = Vector3f.Of(halfEdges[0].x, halfEdges[1].x, halfEdges[2].x);
+        var trY = Vector3f.Of(halfEdges[0].y, halfEdges[1].y, halfEdges[2].y);
+        var trZ = Vector3f.Of(halfEdges[0].z, halfEdges[1].z, halfEdges[2].z);
         float[] vertices = new float[8 * 3];
         for (int i = 0; i < 8; i++)
         {
-            vertices[i * 3 + 0] = RecastVectors.dot(VERTS[i], trX) + center[0];
-            vertices[i * 3 + 1] = RecastVectors.dot(VERTS[i], trY) + center[1];
-            vertices[i * 3 + 2] = RecastVectors.dot(VERTS[i], trZ) + center[2];
+            vertices[i * 3 + 0] = RecastVectors.dot(VERTS[i], trX) + center.x;
+            vertices[i * 3 + 1] = RecastVectors.dot(VERTS[i], trY) + center.y;
+            vertices[i * 3 + 2] = RecastVectors.dot(VERTS[i], trZ) + center.z;
         }
 
         debugDraw.begin(DebugDrawPrimitives.TRIS);

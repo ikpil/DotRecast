@@ -179,14 +179,14 @@ public class JumpLinkBuilderTool : Tool
                     dd.end();
 
                     dd.begin(LINES, 1.0f);
-                    dd.vertex(link.start.p[0], link.start.p[1], link.start.p[2], colb);
-                    dd.vertex(link.start.p[0], link.start.p[1] + r, link.start.p[2], colb);
-                    dd.vertex(link.start.p[0], link.start.p[1] + r, link.start.p[2], colb);
-                    dd.vertex(link.start.q[0], link.start.q[1] + r, link.start.q[2], colb);
-                    dd.vertex(link.start.q[0], link.start.q[1] + r, link.start.q[2], colb);
-                    dd.vertex(link.start.q[0], link.start.q[1], link.start.q[2], colb);
-                    dd.vertex(link.start.q[0], link.start.q[1], link.start.q[2], colb);
-                    dd.vertex(link.start.p[0], link.start.p[1], link.start.p[2], colb);
+                    dd.vertex(link.start.p.x, link.start.p.y, link.start.p.z, colb);
+                    dd.vertex(link.start.p.x, link.start.p.y + r, link.start.p.z, colb);
+                    dd.vertex(link.start.p.x, link.start.p.y + r, link.start.p.z, colb);
+                    dd.vertex(link.start.q.x, link.start.q.y + r, link.start.q.z, colb);
+                    dd.vertex(link.start.q.x, link.start.q.y + r, link.start.q.z, colb);
+                    dd.vertex(link.start.q.x, link.start.q.y, link.start.q.z, colb);
+                    dd.vertex(link.start.q.x, link.start.q.y, link.start.q.z, colb);
+                    dd.vertex(link.start.p.x, link.start.p.y, link.start.p.z, colb);
                     dd.end();
 
                     GroundSegment end = link.end;
@@ -198,14 +198,14 @@ public class JumpLinkBuilderTool : Tool
                     dd.end();
 
                     dd.begin(LINES, 1.0f);
-                    dd.vertex(end.p[0], end.p[1], end.p[2], colb);
-                    dd.vertex(end.p[0], end.p[1] + r, end.p[2], colb);
-                    dd.vertex(end.p[0], end.p[1] + r, end.p[2], colb);
-                    dd.vertex(end.q[0], end.q[1] + r, end.q[2], colb);
-                    dd.vertex(end.q[0], end.q[1] + r, end.q[2], colb);
-                    dd.vertex(end.q[0], end.q[1], end.q[2], colb);
-                    dd.vertex(end.q[0], end.q[1], end.q[2], colb);
-                    dd.vertex(end.p[0], end.p[1], end.p[2], colb);
+                    dd.vertex(end.p.x, end.p.y, end.p.z, colb);
+                    dd.vertex(end.p.x, end.p.y + r, end.p.z, colb);
+                    dd.vertex(end.p.x, end.p.y + r, end.p.z, colb);
+                    dd.vertex(end.q.x, end.q.y + r, end.q.z, colb);
+                    dd.vertex(end.q.x, end.q.y + r, end.q.z, colb);
+                    dd.vertex(end.q.x, end.q.y, end.q.z, colb);
+                    dd.vertex(end.q.x, end.q.y, end.q.z, colb);
+                    dd.vertex(end.p.x, end.p.y, end.p.z, colb);
                     dd.end();
 
                     dd.begin(LINES, 4.0f);
@@ -245,7 +245,7 @@ public class JumpLinkBuilderTool : Tool
                             col = duRGBA(220, 32, 32, 255);
                         }
 
-                        spt[1] = s.p[1] + off;
+                        spt.y = s.p.y + off;
                         dd.vertex(spt, col);
                     }
 
@@ -264,7 +264,7 @@ public class JumpLinkBuilderTool : Tool
                             off = 0.1f;
                         }
 
-                        spt[1] = s.p[1] + off;
+                        spt.y = s.p.y + off;
                         dd.vertex(spt, col);
                     }
 
@@ -285,7 +285,7 @@ public class JumpLinkBuilderTool : Tool
                                 col = duRGBA(220, 32, 32, 255);
                             }
 
-                            spt[1] = s.p[1] + off;
+                            spt.y = s.p.y + off;
                             dd.vertex(spt, col);
                         }
 
@@ -303,7 +303,7 @@ public class JumpLinkBuilderTool : Tool
                                 off = 0.1f;
                             }
 
-                            spt[1] = s.p[1] + off;
+                            spt.y = s.p.y + off;
                             dd.vertex(spt, col);
                         }
 

@@ -144,9 +144,9 @@ public class RecastDemo
         }
 
         float[] modelviewMatrix = dd.viewMatrix(cameraPos, cameraEulers);
-        cameraPos[0] += scrollZoom * 2.0f * modelviewMatrix[2];
-        cameraPos[1] += scrollZoom * 2.0f * modelviewMatrix[6];
-        cameraPos[2] += scrollZoom * 2.0f * modelviewMatrix[10];
+        cameraPos.x += scrollZoom * 2.0f * modelviewMatrix[2];
+        cameraPos.y += scrollZoom * 2.0f * modelviewMatrix[6];
+        cameraPos.z += scrollZoom * 2.0f * modelviewMatrix[10];
         scrollZoom = 0;
     }
 
@@ -169,17 +169,17 @@ public class RecastDemo
         if (pan)
         {
             float[] modelviewMatrix = dd.viewMatrix(cameraPos, cameraEulers);
-            cameraPos[0] = origCameraPos[0];
-            cameraPos[1] = origCameraPos[1];
-            cameraPos[2] = origCameraPos[2];
+            cameraPos.x = origCameraPos.x;
+            cameraPos.y = origCameraPos.y;
+            cameraPos.z = origCameraPos.z;
 
-            cameraPos[0] -= 0.1f * dx * modelviewMatrix[0];
-            cameraPos[1] -= 0.1f * dx * modelviewMatrix[4];
-            cameraPos[2] -= 0.1f * dx * modelviewMatrix[8];
+            cameraPos.x -= 0.1f * dx * modelviewMatrix[0];
+            cameraPos.y -= 0.1f * dx * modelviewMatrix[4];
+            cameraPos.z -= 0.1f * dx * modelviewMatrix[8];
 
-            cameraPos[0] += 0.1f * dy * modelviewMatrix[1];
-            cameraPos[1] += 0.1f * dy * modelviewMatrix[5];
-            cameraPos[2] += 0.1f * dy * modelviewMatrix[9];
+            cameraPos.x += 0.1f * dy * modelviewMatrix[1];
+            cameraPos.y += 0.1f * dy * modelviewMatrix[5];
+            cameraPos.z += 0.1f * dy * modelviewMatrix[9];
             if (dx * dx + dy * dy > 3 * 3)
             {
                 movedDuringPan = true;
@@ -214,9 +214,9 @@ public class RecastDemo
                     movedDuringPan = false;
                     origMousePos[0] = mousePos[0];
                     origMousePos[1] = mousePos[1];
-                    origCameraPos[0] = cameraPos[0];
-                    origCameraPos[1] = cameraPos[1];
-                    origCameraPos[2] = cameraPos[2];
+                    origCameraPos.x = cameraPos.x;
+                    origCameraPos.y = cameraPos.y;
+                    origCameraPos.z = cameraPos.z;
                 }
             }
         }
@@ -423,7 +423,7 @@ public class RecastDemo
     {
         /*
           * try (MemoryStack stack = stackPush()) { int[] w = stack.mallocInt(1); int[] h =
-          * stack.mallocInt(1); glfwGetWindowSize(win, w, h); width = w[0]; height = h[0]; }
+          * stack.mallocInt(1); glfwGetWindowSize(win, w, h); width = w.x; height = h.x; }
        */
         if (sample.getInputGeom() != null)
         {
@@ -449,15 +449,15 @@ public class RecastDemo
         double movey = (_moveBack - _moveFront) * keySpeed * dt + scrollZoom * 2.0f;
         scrollZoom = 0;
 
-        cameraPos[0] += (float)(movex * modelviewMatrix[0]);
-        cameraPos[1] += (float)(movex * modelviewMatrix[4]);
-        cameraPos[2] += (float)(movex * modelviewMatrix[8]);
+        cameraPos.x += (float)(movex * modelviewMatrix[0]);
+        cameraPos.y += (float)(movex * modelviewMatrix[4]);
+        cameraPos.z += (float)(movex * modelviewMatrix[8]);
 
-        cameraPos[0] += (float)(movey * modelviewMatrix[2]);
-        cameraPos[1] += (float)(movey * modelviewMatrix[6]);
-        cameraPos[2] += (float)(movey * modelviewMatrix[10]);
+        cameraPos.x += (float)(movey * modelviewMatrix[2]);
+        cameraPos.y += (float)(movey * modelviewMatrix[6]);
+        cameraPos.z += (float)(movey * modelviewMatrix[10]);
 
-        cameraPos[1] += (float)((_moveUp - _moveDown) * keySpeed * dt);
+        cameraPos.y += (float)((_moveUp - _moveDown) * keySpeed * dt);
 
         long time = FrequencyWatch.Ticks;
         prevFrameTime = time;
@@ -597,7 +597,7 @@ public class RecastDemo
                     hit = PolyMeshRaycast.raycast(sample.getRecastResults(), rayStart, rayEnd);
                 }
 
-                float[] rayDir = new float[] { rayEnd[0] - rayStart[0], rayEnd[1] - rayStart[1], rayEnd[2] - rayStart[2] };
+                float[] rayDir = new float[] { rayEnd.x - rayStart.x, rayEnd.y - rayStart.y, rayEnd.z - rayStart.z };
                 Tool rayTool = toolsUI.getTool();
                 vNormalize(rayDir);
                 if (rayTool != null)
@@ -612,16 +612,16 @@ public class RecastDemo
                     {
                         // Marker
                         markerPositionSet = true;
-                        markerPosition[0] = rayStart[0] + (rayEnd[0] - rayStart[0]) * hitTime;
-                        markerPosition[1] = rayStart[1] + (rayEnd[1] - rayStart[1]) * hitTime;
-                        markerPosition[2] = rayStart[2] + (rayEnd[2] - rayStart[2]) * hitTime;
+                        markerPosition.x = rayStart.x + (rayEnd.x - rayStart.x) * hitTime;
+                        markerPosition.y = rayStart.y + (rayEnd.y - rayStart.y) * hitTime;
+                        markerPosition.z = rayStart.z + (rayEnd.z - rayStart.z) * hitTime;
                     }
                     else
                     {
                         Vector3f pos = new Vector3f();
-                        pos[0] = rayStart[0] + (rayEnd[0] - rayStart[0]) * hitTime;
-                        pos[1] = rayStart[1] + (rayEnd[1] - rayStart[1]) * hitTime;
-                        pos[2] = rayStart[2] + (rayEnd[2] - rayStart[2]) * hitTime;
+                        pos.x = rayStart.x + (rayEnd.x - rayStart.x) * hitTime;
+                        pos.y = rayStart.y + (rayEnd.y - rayStart.y) * hitTime;
+                        pos.z = rayStart.z + (rayEnd.z - rayStart.z) * hitTime;
                         if (rayTool != null)
                         {
                             rayTool.handleClick(rayStart, pos, processHitTestShift);
@@ -669,15 +669,15 @@ public class RecastDemo
                         }
 
                         bminN = Vector3f.Of(
-                            Math.Min(bminN.Value[0], result.getSolidHeightfield().bmin[0]),
-                            Math.Min(bminN.Value[1], result.getSolidHeightfield().bmin[1]),
-                            Math.Min(bminN.Value[2], result.getSolidHeightfield().bmin[2])
+                            Math.Min(bminN.Value.x, result.getSolidHeightfield().bmin.x),
+                            Math.Min(bminN.Value.y, result.getSolidHeightfield().bmin.y),
+                            Math.Min(bminN.Value.z, result.getSolidHeightfield().bmin.z)
                         );
 
                         bmaxN = Vector3f.Of(
-                            Math.Max(bmaxN.Value[0], result.getSolidHeightfield().bmax[0]),
-                            Math.Max(bmaxN.Value[1], result.getSolidHeightfield().bmax[1]),
-                            Math.Max(bmaxN.Value[2], result.getSolidHeightfield().bmax[2])
+                            Math.Max(bmaxN.Value.x, result.getSolidHeightfield().bmax.x),
+                            Math.Max(bmaxN.Value.y, result.getSolidHeightfield().bmax.y),
+                            Math.Max(bmaxN.Value.z, result.getSolidHeightfield().bmax.z)
                         );
                     }
                 }
@@ -689,11 +689,11 @@ public class RecastDemo
                 Vector3f bmax = bmaxN.Value;
 
                 camr = (float)(Math.Sqrt(
-                                   sqr(bmax[0] - bmin[0]) + sqr(bmax[1] - bmin[1]) + sqr(bmax[2] - bmin[2]))
+                                   sqr(bmax.x - bmin.x) + sqr(bmax.y - bmin.y) + sqr(bmax.z - bmin.z))
                                / 2);
-                cameraPos[0] = (bmax[0] + bmin[0]) / 2 + camr;
-                cameraPos[1] = (bmax[1] + bmin[1]) / 2 + camr;
-                cameraPos[2] = (bmax[2] + bmin[2]) / 2 + camr;
+                cameraPos.x = (bmax.x + bmin.x) / 2 + camr;
+                cameraPos.y = (bmax.y + bmin.y) / 2 + camr;
+                cameraPos.z = (bmax.z + bmin.z) / 2 + camr;
                 camr *= 3;
                 cameraEulers[0] = 45;
                 cameraEulers[1] = -45;

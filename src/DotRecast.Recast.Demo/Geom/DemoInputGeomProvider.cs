@@ -109,9 +109,9 @@ public class DemoInputGeomProvider : InputGeomProvider
                 e1[j] = vertices[v2 + j] - vertices[v0 + j];
             }
 
-            normals[i] = e0[1] * e1[2] - e0[2] * e1[1];
-            normals[i + 1] = e0[2] * e1[0] - e0[0] * e1[2];
-            normals[i + 2] = e0[0] * e1[1] - e0[1] * e1[0];
+            normals[i] = e0.y * e1.z - e0.z * e1.y;
+            normals[i + 1] = e0.z * e1.x - e0.x * e1.z;
+            normals[i + 2] = e0.x * e1.y - e0.y * e1.x;
             float d = (float)Math.Sqrt(normals[i] * normals[i] + normals[i + 1] * normals[i + 1] + normals[i + 2] * normals[i + 2]);
             if (d > 0)
             {
@@ -161,10 +161,10 @@ public class DemoInputGeomProvider : InputGeomProvider
         float btmin = btminmax[0];
         float btmax = btminmax[1];
         float[] p = new float[2], q = new float[2];
-        p[0] = src[0] + (dst[0] - src[0]) * btmin;
-        p[1] = src[2] + (dst[2] - src[2]) * btmin;
-        q[0] = src[0] + (dst[0] - src[0]) * btmax;
-        q[1] = src[2] + (dst[2] - src[2]) * btmax;
+        p[0] = src.x + (dst.x - src.x) * btmin;
+        p[1] = src.z + (dst.z - src.z) * btmin;
+        q[0] = src.x + (dst.x - src.x) * btmax;
+        q[1] = src.z + (dst.z - src.z) * btmax;
 
         List<ChunkyTriMeshNode> chunks = _mesh.chunkyTriMesh.getChunksOverlappingSegment(p, q);
         if (0 == chunks.Count)

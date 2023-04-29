@@ -88,9 +88,9 @@ public class GLU
         if (@out[3] == 0.0)
             return 0;
         @out[3] = 1.0f / @out[3];
-        objectCoordinate[0] = @out[0] * @out[3];
-        objectCoordinate[1] = @out[1] * @out[3];
-        objectCoordinate[2] = @out[2] * @out[3];
+        objectCoordinate.x = @out[0] * @out[3];
+        objectCoordinate.y = @out[1] * @out[3];
+        objectCoordinate.z = @out[2] * @out[3];
         return 1;
     }
 

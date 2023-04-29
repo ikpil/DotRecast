@@ -33,12 +33,12 @@ public class DemoOffMeshConnection
     public DemoOffMeshConnection(Vector3f start, Vector3f end, float radius, bool bidir, int area, int flags)
     {
         verts = new float[6];
-        verts[0] = start[0];
-        verts[1] = start[1];
-        verts[2] = start[2];
-        verts[3] = end[0];
-        verts[4] = end[1];
-        verts[5] = end[2];
+        verts[0] = start.x;
+        verts[1] = start.y;
+        verts[2] = start.z;
+        verts[3] = end.x;
+        verts[4] = end.y;
+        verts[5] = end.z;
         this.radius = radius;
         this.bidir = bidir;
         this.area = area;

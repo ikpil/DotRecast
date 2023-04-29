@@ -336,9 +336,9 @@ public class CrowdProfilingTool
 
         if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_VALID)
         {
-            float dx = ag.targetPos[0] - ag.npos[0];
-            float dy = ag.targetPos[1] - ag.npos[1];
-            float dz = ag.targetPos[2] - ag.npos[2];
+            float dx = ag.targetPos.x - ag.npos.x;
+            float dy = ag.targetPos.y - ag.npos.y;
+            float dz = ag.targetPos.z - ag.npos.z;
             return dx * dx + dy * dy + dz * dz < 0.3f;
         }
 
@@ -364,7 +364,7 @@ public class CrowdProfilingTool
             {
                 float radius = ag.option.radius;
                 Vector3f pos = ag.npos;
-                dd.debugDrawCircle(pos[0], pos[1], pos[2], radius, duRGBA(0, 0, 0, 32), 2.0f);
+                dd.debugDrawCircle(pos.x, pos.y, pos.z, radius, duRGBA(0, 0, 0, 32), 2.0f);
             }
 
             foreach (CrowdAgent ag in crowd.getActiveAgents())
@@ -396,8 +396,8 @@ public class CrowdProfilingTool
                 else if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                     col = duLerpCol(col, duRGBA(64, 255, 0, 128), 128);
 
-                dd.debugDrawCylinder(pos[0] - radius, pos[1] + radius * 0.1f, pos[2] - radius, pos[0] + radius, pos[1] + height,
-                    pos[2] + radius, col);
+                dd.debugDrawCylinder(pos.x - radius, pos.y + radius * 0.1f, pos.z - radius, pos.x + radius, pos.y + height,
+                    pos.z + radius, col);
             }
         }
 

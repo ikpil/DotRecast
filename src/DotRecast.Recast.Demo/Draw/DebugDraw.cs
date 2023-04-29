@@ -266,11 +266,11 @@ public class DebugDraw
             float u = PAD + i * ARC_PTS_SCALE;
             Vector3f pt = new Vector3f();
             evalArc(x0, y0, z0, dx, dy, dz, len * h, u, ref pt);
-            vertex(prev[0], prev[1], prev[2], col);
-            vertex(pt[0], pt[1], pt[2], col);
-            prev[0] = pt[0];
-            prev[1] = pt[1];
-            prev[2] = pt[2];
+            vertex(prev.x, prev.y, prev.z, col);
+            vertex(pt.x, pt.y, pt.z, col);
+            prev.x = pt.x;
+            prev.y = pt.y;
+            prev.z = pt.z;
         }
 
         // End arrows
@@ -295,9 +295,9 @@ public class DebugDraw
 
     private void evalArc(float x0, float y0, float z0, float dx, float dy, float dz, float h, float u, ref Vector3f res)
     {
-        res[0] = x0 + dx * u;
-        res[1] = y0 + dy * u + h * (1 - (u * 2 - 1) * (u * 2 - 1));
-        res[2] = z0 + dz * u;
+        res.x = x0 + dx * u;
+        res.y = y0 + dy * u + h * (1 - (u * 2 - 1) * (u * 2 - 1));
+        res.z = z0 + dz * u;
     }
 
     public void debugDrawCross(float x, float y, float z, float size, int col, float lineWidth)
@@ -410,41 +410,41 @@ public class DebugDraw
         vnormalize(ref ay);
 
         vertex(p, col);
-        // vertex(p[0]+az[0]*s+ay[0]*s/2, p[1]+az[1]*s+ay[1]*s/2, p[2]+az[2]*s+ay[2]*s/2, col);
-        vertex(p[0] + az[0] * s + ax[0] * s / 3, p[1] + az[1] * s + ax[1] * s / 3, p[2] + az[2] * s + ax[2] * s / 3, col);
+        // vertex(p.x+az.x*s+ay.x*s/2, p.y+az.y*s+ay.y*s/2, p.z+az.z*s+ay.z*s/2, col);
+        vertex(p.x + az.x * s + ax.x * s / 3, p.y + az.y * s + ax.y * s / 3, p.z + az.z * s + ax.z * s / 3, col);
 
         vertex(p, col);
-        // vertex(p[0]+az[0]*s-ay[0]*s/2, p[1]+az[1]*s-ay[1]*s/2, p[2]+az[2]*s-ay[2]*s/2, col);
-        vertex(p[0] + az[0] * s - ax[0] * s / 3, p[1] + az[1] * s - ax[1] * s / 3, p[2] + az[2] * s - ax[2] * s / 3, col);
+        // vertex(p.x+az.x*s-ay.x*s/2, p.y+az.y*s-ay.y*s/2, p.z+az.z*s-ay.z*s/2, col);
+        vertex(p.x + az.x * s - ax.x * s / 3, p.y + az.y * s - ax.y * s / 3, p.z + az.z * s - ax.z * s / 3, col);
     }
 
     public void vcross(ref Vector3f dest, Vector3f v1, Vector3f v2)
     {
-        dest[0] = v1[1] * v2[2] - v1[2] * v2[1];
-        dest[1] = v1[2] * v2[0] - v1[0] * v2[2];
-        dest[2] = v1[0] * v2[1] - v1[1] * v2[0];
+        dest.x = v1.y * v2.z - v1.z * v2.y;
+        dest.y = v1.z * v2.x - v1.x * v2.z;
+        dest.z = v1.x * v2.y - v1.y * v2.x;
     }
 
     public void vnormalize(ref Vector3f v)
     {
-        float d = (float)(1.0f / Math.Sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]));
-        v[0] *= d;
-        v[1] *= d;
-        v[2] *= d;
+        float d = (float)(1.0f / Math.Sqrt(v.x * v.x + v.y * v.y + v.z * v.z));
+        v.x *= d;
+        v.y *= d;
+        v.z *= d;
     }
 
     public void vsub(ref Vector3f dest, Vector3f v1, Vector3f v2)
     {
-        dest[0] = v1[0] - v2[0];
-        dest[1] = v1[1] - v2[1];
-        dest[2] = v1[2] - v2[2];
+        dest.x = v1.x - v2.x;
+        dest.y = v1.y - v2.y;
+        dest.z = v1.z - v2.z;
     }
 
     public float vdistSqr(Vector3f v1, Vector3f v2)
     {
-        float x = v1[0] - v2[0];
-        float y = v1[1] - v2[1];
-        float z = v1[2] - v2[2];
+        float x = v1.x - v2.x;
+        float y = v1.y - v2.y;
+        float z = v1.z - v2.z;
         return x * x + y * y + z * z;
     }
 
@@ -595,9 +595,9 @@ public class DebugDraw
         float[] r = GLU.mul(rx, ry);
         float[] t = new float[16];
         t[0] = t[5] = t[10] = t[15] = 1;
-        t[12] = -cameraPos[0];
-        t[13] = -cameraPos[1];
-        t[14] = -cameraPos[2];
+        t[12] = -cameraPos.x;
+        t[13] = -cameraPos.y;
+        t[14] = -cameraPos.z;
         _viewMatrix = GLU.mul(r, t);
         getOpenGlDraw().viewMatrix(_viewMatrix);
         updateFrustum();
@@ -701,6 +701,6 @@ public class DebugDraw
 
     public bool frustumTest(Vector3f bmin, Vector3f bmax)
     {
-        return frustumTest(new float[] { bmin[0], bmin[1], bmin[2], bmax[0], bmax[1], bmax[2] });
+        return frustumTest(new float[] { bmin.x, bmin.y, bmin.z, bmax.x, bmax.y, bmax.z });
     }
 }

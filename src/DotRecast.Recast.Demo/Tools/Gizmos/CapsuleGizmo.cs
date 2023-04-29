@@ -1,4 +1,4 @@
-﻿using DotRecast.Core;
+using DotRecast.Core;
 using DotRecast.Recast.Demo.Draw;
 using static DotRecast.Recast.RecastVectors;
 using static DotRecast.Core.RecastMath;
@@ -17,21 +17,21 @@ public class CapsuleGizmo : ColliderGizmo
     {
         center = new float[]
         {
-            0.5f * (start[0] + end[0]), 0.5f * (start[1] + end[1]),
-            0.5f * (start[2] + end[2])
+            0.5f * (start.x + end.x), 0.5f * (start.y + end.y),
+            0.5f * (start.z + end.z)
         };
-        Vector3f axis = Vector3f.Of(end[0] - start[0], end[1] - start[1], end[2] - start[2]);
+        Vector3f axis = Vector3f.Of(end.x - start.x, end.y - start.y, end.z - start.z);
         Vector3f[] normals = new Vector3f[3];
-        normals[1] = Vector3f.Of(end[0] - start[0], end[1] - start[1], end[2] - start[2]);
+        normals[1] = Vector3f.Of(end.x - start.x, end.y - start.y, end.z - start.z);
         normalize(ref normals[1]);
         normals[0] = getSideVector(axis);
         normals[2] = Vector3f.Zero;
         cross(ref normals[2], normals[0], normals[1]);
         normalize(ref normals[2]);
         triangles = generateSphericalTriangles();
-        var trX = Vector3f.Of(normals[0][0], normals[1][0], normals[2][0]);
-        var trY = Vector3f.Of(normals[0][1], normals[1][1], normals[2][1]);
-        var trZ = Vector3f.Of(normals[0][2], normals[1][2], normals[2][2]);
+        var trX = Vector3f.Of(normals[0].x, normals[1].x, normals[2].x);
+        var trY = Vector3f.Of(normals[0].y, normals[1].y, normals[2].y);
+        var trZ = Vector3f.Of(normals[0].z, normals[1].z, normals[2].z);
         float[] spVertices = generateSphericalVertices();
         float halfLength = 0.5f * vLen(axis);
         vertices = new float[spVertices.Length];
@@ -43,21 +43,21 @@ public class CapsuleGizmo : ColliderGizmo
             float x = radius * spVertices[i];
             float y = radius * spVertices[i + 1] + offset;
             float z = radius * spVertices[i + 2];
-            vertices[i] = x * trX[0] + y * trX[1] + z * trX[2] + center[0];
-            vertices[i + 1] = x * trY[0] + y * trY[1] + z * trY[2] + center[1];
-            vertices[i + 2] = x * trZ[0] + y * trZ[1] + z * trZ[2] + center[2];
-            v[0] = vertices[i] - center[0];
-            v[1] = vertices[i + 1] - center[1];
-            v[2] = vertices[i + 2] - center[2];
+            vertices[i] = x * trX.x + y * trX.y + z * trX.z + center[0];
+            vertices[i + 1] = x * trY.x + y * trY.y + z * trY.z + center[1];
+            vertices[i + 2] = x * trZ.x + y * trZ.y + z * trZ.z + center[2];
+            v.x = vertices[i] - center[0];
+            v.y = vertices[i + 1] - center[1];
+            v.z = vertices[i + 2] - center[2];
             normalize(ref v);
-            gradient[i / 3] = clamp(0.57735026f * (v[0] + v[1] + v[2]), -1, 1);
+            gradient[i / 3] = clamp(0.57735026f * (v.x + v.y + v.z), -1, 1);
         }
     }
 
     private Vector3f getSideVector(Vector3f axis)
     {
         Vector3f side = Vector3f.Of(1, 0, 0);
-        if (axis[0] > 0.8)
+        if (axis.x > 0.8)
         {
             side = Vector3f.Of(0, 0, 1);
         }

@@ -202,15 +202,15 @@ public class DynamicUpdateTool : Tool
 
             if (sposSet && eposSet && dynaMesh != null)
             {
-                Vector3f sp = Vector3f.Of(spos[0], spos[1] + 1.3f, spos[2]);
-                Vector3f ep = Vector3f.Of(epos[0], epos[1] + 1.3f, epos[2]);
+                Vector3f sp = Vector3f.Of(spos.x, spos.y + 1.3f, spos.z);
+                Vector3f ep = Vector3f.Of(epos.x, epos.y + 1.3f, epos.z);
                 long t1 = FrequencyWatch.Ticks;
                 float? hitPos = dynaMesh.voxelQuery().raycast(sp, ep);
                 long t2 = FrequencyWatch.Ticks;
                 raycastTime = (t2 - t1) / TimeSpan.TicksPerMillisecond;
                 raycastHit = hitPos.HasValue;
                 raycastHitPos = hitPos.HasValue
-                    ? Vector3f.Of(sp[0] + hitPos.Value * (ep[0] - sp[0]), sp[1] + hitPos.Value * (ep[1] - sp[1]), sp[2] + hitPos.Value * (ep[2] - sp[2]))
+                    ? Vector3f.Of(sp.x + hitPos.Value * (ep.x - sp.x), sp.y + hitPos.Value * (ep.y - sp.y), sp.z + hitPos.Value * (ep.z - sp.z))
                     : ep;
             }
         }
@@ -234,11 +234,11 @@ public class DynamicUpdateTool : Tool
         );
         vNormalize(ref a);
         float len = 1f + (float)random.NextDouble() * 20f;
-        a[0] *= len;
-        a[1] *= len;
-        a[2] *= len;
-        Vector3f start = Vector3f.Of(p[0], p[1], p[2]);
-        Vector3f end = Vector3f.Of(p[0] + a[0], p[1] + a[1], p[2] + a[2]);
+        a.x *= len;
+        a.y *= len;
+        a.z *= len;
+        Vector3f start = Vector3f.Of(p.x, p.y, p.z);
+        Vector3f end = Vector3f.Of(p.x + a.x, p.y + a.y, p.z + a.z);
         return Tuple.Create<Collider, ColliderGizmo>(new CapsuleCollider(
             start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb), GizmoFactory.capsule(start, end, radius));
     }
@@ -266,8 +266,8 @@ public class DynamicUpdateTool : Tool
         a[0] *= len;
         a[1] *= len;
         a[2] *= len;
-        Vector3f start = Vector3f.Of(p[0], p[1], p[2]);
-        Vector3f end = Vector3f.Of(p[0] + a[0], p[1] + a[1], p[2] + a[2]);
+        Vector3f start = Vector3f.Of(p.x, p.y, p.z);
+        Vector3f end = Vector3f.Of(p.x + a[0], p.y + a[1], p.z + a[2]);
         return Tuple.Create<Collider, ColliderGizmo>(new CylinderCollider(start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER,
             dynaMesh.config.walkableClimb), GizmoFactory.cylinder(start, end, radius));
     }
@@ -275,7 +275,7 @@ public class DynamicUpdateTool : Tool
     private Tuple<Collider, ColliderGizmo> compositeCollider(Vector3f p)
     {
         Vector3f baseExtent = Vector3f.Of(5, 3, 8);
-        Vector3f baseCenter = Vector3f.Of(p[0], p[1] + 3, p[2]);
+        Vector3f baseCenter = Vector3f.Of(p.x, p.y + 3, p.z);
         Vector3f baseUp = Vector3f.Of(0, 1, 0);
         Vector3f forward = Vector3f.Of((1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()));
         vNormalize(ref forward);
@@ -284,22 +284,22 @@ public class DynamicUpdateTool : Tool
             SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, dynaMesh.config.walkableClimb);
         var roofUp = Vector3f.Zero;
         Vector3f roofExtent = Vector3f.Of(4.5f, 4.5f, 8f);
-        float[] rx = GLU.build_4x4_rotation_matrix(45, forward[0], forward[1], forward[2]);
+        float[] rx = GLU.build_4x4_rotation_matrix(45, forward.x, forward.y, forward.z);
         roofUp = mulMatrixVector(ref roofUp, rx, baseUp);
-        Vector3f roofCenter = Vector3f.Of(p[0], p[1] + 6, p[2]);
+        Vector3f roofCenter = Vector3f.Of(p.x, p.y + 6, p.z);
         BoxCollider roof = new BoxCollider(roofCenter, BoxCollider.getHalfEdges(roofUp, forward, roofExtent),
             SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, dynaMesh.config.walkableClimb);
         Vector3f trunkStart = Vector3f.Of(
-            baseCenter[0] - forward[0] * 15 + side[0] * 6,
-            p[1],
-            baseCenter[2] - forward[2] * 15 + side[2] * 6
+            baseCenter.x - forward.x * 15 + side.x * 6,
+            p.y,
+            baseCenter.z - forward.z * 15 + side.z * 6
         );
-        Vector3f trunkEnd = Vector3f.Of(trunkStart[0], trunkStart[1] + 10, trunkStart[2]);
+        Vector3f trunkEnd = Vector3f.Of(trunkStart.x, trunkStart.y + 10, trunkStart.z);
         CapsuleCollider trunk = new CapsuleCollider(trunkStart, trunkEnd, 0.5f, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD,
             dynaMesh.config.walkableClimb);
         Vector3f crownCenter = Vector3f.Of(
-            baseCenter[0] - forward[0] * 15 + side[0] * 6, p[1] + 10,
-            baseCenter[2] - forward[2] * 15 + side[2] * 6
+            baseCenter.x - forward.x * 15 + side.x * 6, p.y + 10,
+            baseCenter.z - forward.z * 15 + side.z * 6
         );
         SphereCollider crown = new SphereCollider(crownCenter, 4f, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GRASS,
             dynaMesh.config.walkableClimb);
@@ -348,16 +348,16 @@ public class DynamicUpdateTool : Tool
         Vector3f vr = new Vector3f();
         for (int i = 0; i < geom.vertices.Length; i += 3)
         {
-            v[0] = geom.vertices[i];
-            v[1] = geom.vertices[i + 1];
-            v[2] = geom.vertices[i + 2];
+            v.x = geom.vertices[i];
+            v.y = geom.vertices[i + 1];
+            v.z = geom.vertices[i + 2];
             mulMatrixVector(ref vr, m, v);
-            vr[0] += p[0];
-            vr[1] += p[1] - 0.1f;
-            vr[2] += p[2];
-            verts[i] = vr[0];
-            verts[i + 1] = vr[1];
-            verts[i + 2] = vr[2];
+            vr.x += p.x;
+            vr.y += p.y - 0.1f;
+            vr.z += p.z;
+            verts[i] = vr.x;
+            verts[i + 1] = vr.y;
+            verts[i + 2] = vr.z;
         }
 
         return verts;
@@ -373,9 +373,9 @@ public class DynamicUpdateTool : Tool
 
     private Vector3f mulMatrixVector(ref Vector3f resultvector, float[] matrix, Vector3f pvector)
     {
-        resultvector[0] = matrix[0] * pvector[0] + matrix[4] * pvector[1] + matrix[8] * pvector[2];
-        resultvector[1] = matrix[1] * pvector[0] + matrix[5] * pvector[1] + matrix[9] * pvector[2];
-        resultvector[2] = matrix[2] * pvector[0] + matrix[6] * pvector[1] + matrix[10] * pvector[2];
+        resultvector.x = matrix[0] * pvector.x + matrix[4] * pvector.y + matrix[8] * pvector.z;
+        resultvector.y = matrix[1] * pvector.x + matrix[5] * pvector.y + matrix[9] * pvector.z;
+        resultvector.z = matrix[2] * pvector.x + matrix[6] * pvector.y + matrix[10] * pvector.z;
         return resultvector;
     }
 
@@ -409,9 +409,9 @@ public class DynamicUpdateTool : Tool
         float dy = 0.5f * (bounds[4] - bounds[1]);
         float dz = 0.5f * (bounds[5] - bounds[2]);
         float rSqr = dx * dx + dy * dy + dz * dz;
-        float mx = point[0] - cx;
-        float my = point[1] - cy;
-        float mz = point[2] - cz;
+        float mx = point.x - cx;
+        float my = point.y - cy;
+        float mz = point.z - cz;
         float c = mx * mx + my * my + mz * mz - rSqr;
         if (c <= 0.0f)
         {
@@ -458,8 +458,8 @@ public class DynamicUpdateTool : Tool
             {
                 int spathCol = raycastHit ? duRGBA(128, 32, 16, 220) : duRGBA(64, 128, 240, 220);
                 dd.begin(LINES, 2.0f);
-                dd.vertex(spos[0], spos[1] + 1.3f, spos[2], spathCol);
-                dd.vertex(raycastHitPos[0], raycastHitPos[1], raycastHitPos[2], spathCol);
+                dd.vertex(spos.x, spos.y + 1.3f, spos.z, spathCol);
+                dd.vertex(raycastHitPos.x, raycastHitPos.y, raycastHitPos.z, spathCol);
                 dd.end();
             }
 
@@ -474,16 +474,16 @@ public class DynamicUpdateTool : Tool
         float c = sample.getSettingsUI().getAgentMaxClimb();
         dd.depthMask(false);
         // Agent dimensions.
-        dd.debugDrawCylinderWire(pos[0] - r, pos[1] + 0.02f, pos[2] - r, pos[0] + r, pos[1] + h, pos[2] + r, col, 2.0f);
-        dd.debugDrawCircle(pos[0], pos[1] + c, pos[2], r, duRGBA(0, 0, 0, 64), 1.0f);
+        dd.debugDrawCylinderWire(pos.x - r, pos.y + 0.02f, pos.z - r, pos.x + r, pos.y + h, pos.z + r, col, 2.0f);
+        dd.debugDrawCircle(pos.x, pos.y + c, pos.z, r, duRGBA(0, 0, 0, 64), 1.0f);
         int colb = duRGBA(0, 0, 0, 196);
         dd.begin(LINES);
-        dd.vertex(pos[0], pos[1] - c, pos[2], colb);
-        dd.vertex(pos[0], pos[1] + c, pos[2], colb);
-        dd.vertex(pos[0] - r / 2, pos[1] + 0.02f, pos[2], colb);
-        dd.vertex(pos[0] + r / 2, pos[1] + 0.02f, pos[2], colb);
-        dd.vertex(pos[0], pos[1] + 0.02f, pos[2] - r / 2, colb);
-        dd.vertex(pos[0], pos[1] + 0.02f, pos[2] + r / 2, colb);
+        dd.vertex(pos.x, pos.y - c, pos.z, colb);
+        dd.vertex(pos.x, pos.y + c, pos.z, colb);
+        dd.vertex(pos.x - r / 2, pos.y + 0.02f, pos.z, colb);
+        dd.vertex(pos.x + r / 2, pos.y + 0.02f, pos.z, colb);
+        dd.vertex(pos.x, pos.y + 0.02f, pos.z - r / 2, colb);
+        dd.vertex(pos.x, pos.y + 0.02f, pos.z + r / 2, colb);
         dd.end();
         dd.depthMask(true);
     }
@@ -670,17 +670,17 @@ public class DynamicUpdateTool : Tool
             ImGui.Separator();
             if (sposSet)
             {
-                ImGui.Text($"Start: {spos[0]}, {spos[1] + 1.3f}, {spos[2]}");
+                ImGui.Text($"Start: {spos.x}, {spos.y + 1.3f}, {spos.z}");
             }
 
             if (eposSet)
             {
-                ImGui.Text($"End: {epos[0]}, {epos[1] + 1.3f}, {epos[2]}");
+                ImGui.Text($"End: {epos.x}, {epos.y + 1.3f}, {epos.z}");
             }
 
             if (raycastHit)
             {
-                ImGui.Text($"Hit: {raycastHitPos[0]}, {raycastHitPos[1]}, {raycastHitPos[2]}");
+                ImGui.Text($"Hit: {raycastHitPos.x}, {raycastHitPos.y}, {raycastHitPos.z}");
             }
 
             ImGui.NewLine();

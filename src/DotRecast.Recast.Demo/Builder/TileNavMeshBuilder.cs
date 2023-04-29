@@ -68,9 +68,9 @@ public class TileNavMeshBuilder : AbstractNavMeshBuilder
         int vertsPerPoly)
     {
         NavMeshParams navMeshParams = new NavMeshParams();
-        navMeshParams.orig[0] = geom.getMeshBoundsMin()[0];
-        navMeshParams.orig[1] = geom.getMeshBoundsMin()[1];
-        navMeshParams.orig[2] = geom.getMeshBoundsMin()[2];
+        navMeshParams.orig.x = geom.getMeshBoundsMin().x;
+        navMeshParams.orig.y = geom.getMeshBoundsMin().y;
+        navMeshParams.orig.z = geom.getMeshBoundsMin().z;
         navMeshParams.tileWidth = tileSize * cellSize;
         navMeshParams.tileHeight = tileSize * cellSize;
 

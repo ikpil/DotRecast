@@ -202,10 +202,10 @@ public class NavMeshRenderer
         // Draw bounds
         Vector3f bmin = geom.getMeshBoundsMin();
         Vector3f bmax = geom.getMeshBoundsMax();
-        debugDraw.debugDrawBoxWire(bmin[0], bmin[1], bmin[2], bmax[0], bmax[1], bmax[2],
+        debugDraw.debugDrawBoxWire(bmin.x, bmin.y, bmin.z, bmax.x, bmax.y, bmax.z,
             DebugDraw.duRGBA(255, 255, 255, 128), 1.0f);
         debugDraw.begin(DebugDrawPrimitives.POINTS, 5.0f);
-        debugDraw.vertex(bmin[0], bmin[1], bmin[2], DebugDraw.duRGBA(255, 255, 255, 128));
+        debugDraw.vertex(bmin.x, bmin.y, bmin.z, DebugDraw.duRGBA(255, 255, 255, 128));
         debugDraw.end();
     }
 
@@ -254,16 +254,16 @@ public class NavMeshRenderer
                 var vb = Vector3f.Of(vol.verts[j], vol.verts[j + 1], vol.verts[j + 2]);
 
                 debugDraw.vertex(vol.verts[0], vol.hmax, vol.verts[2], col);
-                debugDraw.vertex(vb[0], vol.hmax, vb[2], col);
-                debugDraw.vertex(va[0], vol.hmax, va[2], col);
+                debugDraw.vertex(vb.x, vol.hmax, vb.z, col);
+                debugDraw.vertex(va.x, vol.hmax, va.z, col);
 
-                debugDraw.vertex(va[0], vol.hmin, va[2], DebugDraw.duDarkenCol(col));
-                debugDraw.vertex(va[0], vol.hmax, va[2], col);
-                debugDraw.vertex(vb[0], vol.hmax, vb[2], col);
+                debugDraw.vertex(va.x, vol.hmin, va.z, DebugDraw.duDarkenCol(col));
+                debugDraw.vertex(va.x, vol.hmax, va.z, col);
+                debugDraw.vertex(vb.x, vol.hmax, vb.z, col);
 
-                debugDraw.vertex(va[0], vol.hmin, va[2], DebugDraw.duDarkenCol(col));
-                debugDraw.vertex(vb[0], vol.hmax, vb[2], col);
-                debugDraw.vertex(vb[0], vol.hmin, vb[2], DebugDraw.duDarkenCol(col));
+                debugDraw.vertex(va.x, vol.hmin, va.z, DebugDraw.duDarkenCol(col));
+                debugDraw.vertex(vb.x, vol.hmax, vb.z, col);
+                debugDraw.vertex(vb.x, vol.hmin, vb.z, DebugDraw.duDarkenCol(col));
             }
         }
 
@@ -277,12 +277,12 @@ public class NavMeshRenderer
             {
                 var va = Vector3f.Of(vol.verts[k], vol.verts[k + 1], vol.verts[k + 2]);
                 var vb = Vector3f.Of(vol.verts[j], vol.verts[j + 1], vol.verts[j + 2]);
-                debugDraw.vertex(va[0], vol.hmin, va[2], DebugDraw.duDarkenCol(col));
-                debugDraw.vertex(vb[0], vol.hmin, vb[2], DebugDraw.duDarkenCol(col));
-                debugDraw.vertex(va[0], vol.hmax, va[2], col);
-                debugDraw.vertex(vb[0], vol.hmax, vb[2], col);
-                debugDraw.vertex(va[0], vol.hmin, va[2], DebugDraw.duDarkenCol(col));
-                debugDraw.vertex(va[0], vol.hmax, va[2], col);
+                debugDraw.vertex(va.x, vol.hmin, va.z, DebugDraw.duDarkenCol(col));
+                debugDraw.vertex(vb.x, vol.hmin, vb.z, DebugDraw.duDarkenCol(col));
+                debugDraw.vertex(va.x, vol.hmax, va.z, col);
+                debugDraw.vertex(vb.x, vol.hmax, vb.z, col);
+                debugDraw.vertex(va.x, vol.hmin, va.z, DebugDraw.duDarkenCol(col));
+                debugDraw.vertex(va.x, vol.hmax, va.z, col);
             }
         }
 
