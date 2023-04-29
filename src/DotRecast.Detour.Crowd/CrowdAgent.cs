@@ -195,17 +195,17 @@ namespace DotRecast.Detour.Crowd
 
                 var dir0 = vSub(p0, npos);
                 var dir1 = vSub(p1, npos);
-                dir0[1] = 0;
-                dir1[1] = 0;
+                dir0.y = 0;
+                dir1.y = 0;
 
                 float len0 = vLen(dir0);
                 float len1 = vLen(dir1);
                 if (len1 > 0.001f)
                     dir1 = vScale(dir1, 1.0f / len1);
 
-                dir[0] = dir0[0] - dir1[0] * len0 * 0.5f;
-                dir[1] = 0;
-                dir[2] = dir0[2] - dir1[2] * len0 * 0.5f;
+                dir.x = dir0.x - dir1.x * len0 * 0.5f;
+                dir.y = 0;
+                dir.z = dir0.z - dir1.z * len0 * 0.5f;
 
                 vNormalize(ref dir);
             }
@@ -219,7 +219,7 @@ namespace DotRecast.Detour.Crowd
             if (0 < corners.Count)
             {
                 dir = vSub(corners[0].getPos(), npos);
-                dir[1] = 0;
+                dir.y = 0;
                 vNormalize(ref dir);
             }
 

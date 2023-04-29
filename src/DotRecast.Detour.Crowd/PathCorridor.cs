@@ -435,7 +435,7 @@ namespace DotRecast.Detour.Crowd
                 Result<float> hr = navquery.getPolyHeight(m_path[0], masResult.result.getResultPos());
                 if (hr.Succeeded())
                 {
-                    m_pos[1] = hr.result;
+                    m_pos.y = hr.result;
                 }
 
                 return true;
@@ -471,8 +471,8 @@ namespace DotRecast.Detour.Crowd
                 // TODO: should we do that?
                 // Adjust the position to stay on top of the navmesh.
                 /*
-                 * float h = m_target[1]; navquery->getPolyHeight(m_path[m_npath-1],
-                 * result, &h); result[1] = h;
+                 * float h = m_target.y; navquery->getPolyHeight(m_path[m_npath-1],
+                 * result, &h); result.y = h;
                  */
                 m_target = masResult.result.getResultPos();
                 return true;

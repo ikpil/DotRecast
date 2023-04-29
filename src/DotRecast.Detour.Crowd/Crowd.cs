@@ -869,7 +869,7 @@ namespace DotRecast.Detour.Crowd
             {
                 Vector3f p = ag.npos;
                 float r = ag.option.radius;
-                m_grid.addItem(ag, p[0] - r, p[2] - r, p[0] + r, p[2] + r);
+                m_grid.addItem(ag, p.x - r, p.z - r, p.x + r, p.z + r);
             }
 
             _telemetry.stop("buildProximityGrid");
@@ -905,7 +905,7 @@ namespace DotRecast.Detour.Crowd
         private List<CrowdNeighbour> getNeighbours(Vector3f pos, float height, float range, CrowdAgent skip, ProximityGrid grid)
         {
             List<CrowdNeighbour> result = new List<CrowdNeighbour>();
-            HashSet<CrowdAgent> proxAgents = grid.queryItems(pos[0] - range, pos[2] - range, pos[0] + range, pos[2] + range);
+            HashSet<CrowdAgent> proxAgents = grid.queryItems(pos.x - range, pos.z - range, pos.x + range, pos.z + range);
 
             foreach (CrowdAgent ag in proxAgents)
             {
@@ -916,12 +916,12 @@ namespace DotRecast.Detour.Crowd
 
                 // Check for overlap.
                 Vector3f diff = vSub(pos, ag.npos);
-                if (Math.Abs(diff[1]) >= (height + ag.option.height) / 2.0f)
+                if (Math.Abs(diff.y) >= (height + ag.option.height) / 2.0f)
                 {
                     continue;
                 }
 
-                diff[1] = 0;
+                diff.y = 0;
                 float distSqr = vLenSqr(diff);
                 if (distSqr > sqr(range))
                 {
@@ -1090,7 +1090,7 @@ namespace DotRecast.Detour.Crowd
                         CrowdAgent nei = ag.neis[j].agent;
 
                         Vector3f diff = vSub(ag.npos, nei.npos);
-                        diff[1] = 0;
+                        diff.y = 0;
 
                         float distSqr = vLenSqr(diff);
                         if (distSqr < 0.00001f)
@@ -1244,7 +1244,7 @@ namespace DotRecast.Detour.Crowd
                         CrowdAgent nei = ag.neis[j].agent;
                         long idx1 = nei.idx;
                         Vector3f diff = vSub(ag.npos, nei.npos);
-                        diff[1] = 0;
+                        diff.y = 0;
 
                         float dist = vLenSqr(diff);
                         if (dist > sqr(ag.option.radius + nei.option.radius))
@@ -1259,11 +1259,11 @@ namespace DotRecast.Detour.Crowd
                             // Agents on top of each other, try to choose diverging separation directions.
                             if (idx0 > idx1)
                             {
-                                vSet(ref diff, -ag.dvel[2], 0, ag.dvel[0]);
+                                vSet(ref diff, -ag.dvel.z, 0, ag.dvel.x);
                             }
                             else
                             {
-                                vSet(ref diff, ag.dvel[2], 0, -ag.dvel[0]);
+                                vSet(ref diff, ag.dvel.z, 0, -ag.dvel.x);
                             }
 
                             pen = 0.01f;

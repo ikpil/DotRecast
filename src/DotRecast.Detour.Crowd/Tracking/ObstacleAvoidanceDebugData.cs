@@ -84,9 +84,9 @@ namespace DotRecast.Detour.Crowd.Tracking
         {
             if (m_nsamples >= m_maxSamples)
                 return;
-            m_vel[m_nsamples * 3] = vel[0];
-            m_vel[m_nsamples * 3 + 1] = vel[1];
-            m_vel[m_nsamples * 3 + 2] = vel[2];
+            m_vel[m_nsamples * 3] = vel.x;
+            m_vel[m_nsamples * 3 + 1] = vel.y;
+            m_vel[m_nsamples * 3 + 2] = vel.z;
             m_ssize[m_nsamples] = ssize;
             m_pen[m_nsamples] = pen;
             m_vpen[m_nsamples] = vpen;
@@ -104,9 +104,9 @@ namespace DotRecast.Detour.Crowd.Tracking
         public Vector3f getSampleVelocity(int i)
         {
             Vector3f vel = new Vector3f();
-            vel[0] = m_vel[i * 3];
-            vel[1] = m_vel[i * 3 + 1];
-            vel[2] = m_vel[i * 3 + 2];
+            vel.x = m_vel[i * 3];
+            vel.y = m_vel[i * 3 + 1];
+            vel.z = m_vel[i * 3 + 2];
             return vel;
         }
 

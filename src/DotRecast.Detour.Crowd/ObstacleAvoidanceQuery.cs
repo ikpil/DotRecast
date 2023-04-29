@@ -166,13 +166,13 @@ namespace DotRecast.Detour.Crowd
                 float a = triArea2D(orig, cir.dp, dv);
                 if (a < 0.01f)
                 {
-                    cir.np[0] = -cir.dp[2];
-                    cir.np[2] = cir.dp[0];
+                    cir.np.x = -cir.dp.z;
+                    cir.np.z = cir.dp.x;
                 }
                 else
                 {
-                    cir.np[0] = cir.dp[2];
-                    cir.np[2] = -cir.dp[0];
+                    cir.np.x = cir.dp.z;
+                    cir.np.z = -cir.dp.x;
                 }
             }
 
@@ -300,8 +300,8 @@ namespace DotRecast.Detour.Crowd
                     // Special case when the agent is very close to the segment.
                     Vector3f sdir = vSub(seg.q, seg.p);
                     Vector3f snorm = new Vector3f();
-                    snorm[0] = -sdir[2];
-                    snorm[2] = sdir[0];
+                    snorm.x = -sdir.z;
+                    snorm.z = sdir.x;
                     // If the velocity is pointing towards the segment, no collision.
                     if (vDot2D(snorm, vcand) < 0.0f)
                         continue;
@@ -357,8 +357,8 @@ namespace DotRecast.Detour.Crowd
             if (debug != null)
                 debug.reset();
 
-            float cvx = dvel[0] * m_params.velBias;
-            float cvz = dvel[2] * m_params.velBias;
+            float cvx = dvel.x * m_params.velBias;
+            float cvz = dvel.z * m_params.velBias;
             float cs = vmax * 2 * (1 - m_params.velBias) / (m_params.gridSize - 1);
             float half = (m_params.gridSize - 1) * cs * 0.5f;
 
@@ -372,7 +372,7 @@ namespace DotRecast.Detour.Crowd
                     Vector3f vcand = new Vector3f();
                     vSet(ref vcand, cvx + x * cs - half, 0f, cvz + y * cs - half);
 
-                    if (sqr(vcand[0]) + sqr(vcand[2]) > sqr(vmax + cs / 2))
+                    if (sqr(vcand.x) + sqr(vcand.z) > sqr(vmax + cs / 2))
                         continue;
 
                     float penalty = processSample(vcand, cs, pos, rad, vel, dvel, minPenalty, debug);
@@ -405,9 +405,9 @@ namespace DotRecast.Detour.Crowd
             Vector3f dest = new Vector3f();
             float c = (float)Math.Cos(ang);
             float s = (float)Math.Sin(ang);
-            dest[0] = v[0] * c - v[2] * s;
-            dest[2] = v[0] * s + v[2] * c;
-            dest[1] = v[1];
+            dest.x = v[0] * c - v[2] * s;
+            dest.z = v[0] * s + v[2] * c;
+            dest.y = v[1];
             return dest;
         }
 
@@ -446,9 +446,9 @@ namespace DotRecast.Detour.Crowd
             vCopy(ddir, dvel);
             dtNormalize2D(ddir);
             Vector3f rotated = dtRotate2D(ddir, da * 0.5f); // rotated by da/2
-            ddir[3] = rotated[0];
-            ddir[4] = rotated[1];
-            ddir[5] = rotated[2];
+            ddir[3] = rotated.x;
+            ddir[4] = rotated.y;
+            ddir[5] = rotated.z;
 
             // Always add sample at zero
             pat[npat * 2 + 0] = 0;
@@ -489,7 +489,7 @@ namespace DotRecast.Detour.Crowd
             // Start sampling.
             float cr = vmax * (1.0f - m_params.velBias);
             Vector3f res = new Vector3f();
-            vSet(ref res, dvel[0] * m_params.velBias, 0, dvel[2] * m_params.velBias);
+            vSet(ref res, dvel.x * m_params.velBias, 0, dvel.z * m_params.velBias);
             int ns = 0;
             for (int k = 0; k < depth; ++k)
             {
@@ -500,8 +500,8 @@ namespace DotRecast.Detour.Crowd
                 for (int i = 0; i < npat; ++i)
                 {
                     Vector3f vcand = new Vector3f();
-                    vSet(ref vcand, res[0] + pat[i * 2 + 0] * cr, 0f, res[2] + pat[i * 2 + 1] * cr);
-                    if (sqr(vcand[0]) + sqr(vcand[2]) > sqr(vmax + 0.001f))
+                    vSet(ref vcand, res.x + pat[i * 2 + 0] * cr, 0f, res.z + pat[i * 2 + 1] * cr);
+                    if (sqr(vcand.x) + sqr(vcand.z) > sqr(vmax + 0.001f))
                         continue;
 
                     float penalty = processSample(vcand, cr / 10, pos, rad, vel, dvel, minPenalty, debug);
