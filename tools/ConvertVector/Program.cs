@@ -20,7 +20,7 @@ public static class Program
         List<string> list = File.ReadAllLines(path)
             .Where(line => line.Contains("error CS1061: "))
             .ToList();
-        
+
         List<FileLocation> locations = new List<FileLocation>();
         foreach (string input in list)
         {
@@ -55,7 +55,15 @@ public static class Program
     private static void Change(FileLocation location)
     {
         string[] contents = File.ReadAllLines(location.Path);
-        List<string> list = ((IEnumerable<char>)contents[location.Line - 1].ToCharArray()).Select<char, string>((Func<char, string>)(x => x.ToString() ?? "")).ToList<string>();
+        var line = contents[location.Line - 1];
+        List<string> list = line.ToCharArray()
+            .Select((x => x.ToString() ?? ""))
+            .ToList();
+
+        // 다르면 하지 말것
+        if ("." != list[location.Column - 2] || location.Letter != list[location.Column - 1])
+            return;
+
         list[location.Column - 2] = "[";
         if (location.Letter == "x")
             list[location.Column - 1] = "0]";
@@ -71,8 +79,14 @@ public static class Program
 
     public static void Main(string[] args)
     {
-        var locations = Program.CreateLocations("../../../../../error.log");
-        foreach (FileLocation location in locations.DistinctBy(x => x.Path + x.Line))
+        var locations = CreateLocations("../../../../../error.log");
+        var distinctLocations = locations.DistinctBy(x => x.Path + x.Line).ToList();
+        if (0 >= distinctLocations.Count)
+        {
+            return;
+        }
+
+        foreach (FileLocation location in distinctLocations)
         {
             Change(location);
             Console.WriteLine($"{location.Path}({location.Line}:{location.Column})");
