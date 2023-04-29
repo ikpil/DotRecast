@@ -976,8 +976,8 @@ namespace DotRecast.Recast
         {
             ctx.startTimer("POLYMESH");
             PolyMesh mesh = new PolyMesh();
-            RecastVectors.copy(ref mesh.bmin, cset.bmin, 0);
-            RecastVectors.copy(ref mesh.bmax, cset.bmax, 0);
+            mesh.bmin = cset.bmin;
+            mesh.bmax = cset.bmax;
             mesh.cs = cset.cs;
             mesh.ch = cset.ch;
             mesh.borderSize = cset.borderSize;
@@ -1231,8 +1231,8 @@ namespace DotRecast.Recast
             mesh.nvp = meshes[0].nvp;
             mesh.cs = meshes[0].cs;
             mesh.ch = meshes[0].ch;
-            RecastVectors.copy(ref mesh.bmin, meshes[0].bmin, 0);
-            RecastVectors.copy(ref mesh.bmax, meshes[0].bmax, 0);
+            mesh.bmin = meshes[0].bmin;
+            mesh.bmax = meshes[0].bmax;
 
             int maxVerts = 0;
             int maxPolys = 0;
@@ -1361,8 +1361,8 @@ namespace DotRecast.Recast
             dst.npolys = src.npolys;
             dst.maxpolys = src.npolys;
             dst.nvp = src.nvp;
-            RecastVectors.copy(ref dst.bmin, src.bmin, 0);
-            RecastVectors.copy(ref dst.bmax, src.bmax, 0);
+            dst.bmin = src.bmin;
+            dst.bmax = src.bmax;
             dst.cs = src.cs;
             dst.ch = src.ch;
             dst.borderSize = src.borderSize;

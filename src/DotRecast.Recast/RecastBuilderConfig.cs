@@ -52,8 +52,8 @@ namespace DotRecast.Recast
             this.tileX = tileX;
             this.tileZ = tileZ;
             this.cfg = cfg;
-            copy(ref this.bmin, bmin);
-            copy(ref this.bmax, bmax);
+            this.bmin = bmin;
+            this.bmax = bmax;
             if (cfg.useTiles)
             {
                 float tsx = cfg.tileSizeX * cfg.cs;

@@ -428,10 +428,8 @@ namespace DotRecast.Recast
             int lh = h - borderSize * 2;
 
             // Build contracted bbox for layers.
-            Vector3f bmin = new Vector3f();
-            Vector3f bmax = new Vector3f();
-            copy(ref bmin, chf.bmin);
-            copy(ref bmax, chf.bmax);
+            Vector3f bmin = chf.bmin;
+            Vector3f bmax = chf.bmax;
             bmin.x += borderSize * chf.cs;
             bmin.z += borderSize * chf.cs;
             bmax.x -= borderSize * chf.cs;
@@ -475,8 +473,8 @@ namespace DotRecast.Recast
                 layer.ch = chf.ch;
 
                 // Adjust the bbox to fit the heightfield.
-                copy(ref layer.bmin, bmin);
-                copy(ref layer.bmax, bmax);
+                layer.bmin = bmin;
+                layer.bmax = bmax;
                 layer.bmin.y = bmin.y + hmin * chf.ch;
                 layer.bmax.y = bmin.y + hmax * chf.ch;
                 layer.hmin = hmin;

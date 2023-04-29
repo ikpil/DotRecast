@@ -59,7 +59,7 @@ public class TestTiledNavMeshBuilder
     {
         // Create empty nav mesh
         NavMeshParams navMeshParams = new NavMeshParams();
-        copy(ref navMeshParams.orig, m_geom.getMeshBoundsMin());
+        navMeshParams.orig = m_geom.getMeshBoundsMin();
         navMeshParams.tileWidth = m_tileSize * m_cellSize;
         navMeshParams.tileHeight = m_tileSize * m_cellSize;
         navMeshParams.maxTiles = 128;

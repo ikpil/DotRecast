@@ -58,18 +58,6 @@ namespace DotRecast.Recast
             copy(ref @out, 0, @in, i);
         }
         
-        public static void copy(ref Vector3f @out, Vector3f @in, int i)
-        {
-            copy(ref @out, 0, @in, i);
-        }
-
-
-        public static void copy(ref Vector3f @out, Vector3f @in)
-        {
-            @out = @in;
-        }
-
-
         public static void copy(float[] @out, int n, float[] @in, int m)
         {
             @out[n] = @in[m];
@@ -84,22 +72,12 @@ namespace DotRecast.Recast
             @out[n + 2] = @in[m + 2];
         }
 
-        
-        
         public static void copy(ref Vector3f @out, int n, float[] @in, int m)
         {
             @out[n] = @in[m];
             @out[n + 1] = @in[m + 1];
             @out[n + 2] = @in[m + 2];
         }
-        
-        public static void copy(ref Vector3f @out, int n, Vector3f @in, int m)
-        {
-            @out[n] = @in[m];
-            @out[n + 1] = @in[m + 1];
-            @out[n + 2] = @in[m + 2];
-        }
-
         
         public static void add(ref Vector3f e0, Vector3f a, float[] verts, int i)
         {

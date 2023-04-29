@@ -426,7 +426,7 @@ public class CrowdProfilingTool
         public AgentData(AgentType type, Vector3f home)
         {
             this.type = type;
-            RecastVectors.copy(ref this.home, home);
+            this.home = home;
         }
     }
 

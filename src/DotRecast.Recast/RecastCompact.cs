@@ -56,8 +56,8 @@ namespace DotRecast.Recast
             chf.walkableHeight = walkableHeight;
             chf.walkableClimb = walkableClimb;
             chf.maxRegions = 0;
-            copy(ref chf.bmin, hf.bmin);
-            copy(ref chf.bmax, hf.bmax);
+            chf.bmin = hf.bmin;
+            chf.bmax = hf.bmax;
             chf.bmax.y += walkableHeight * hf.ch;
             chf.cs = hf.cs;
             chf.ch = hf.ch;
