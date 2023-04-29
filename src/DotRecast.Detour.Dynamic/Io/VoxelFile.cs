@@ -103,12 +103,12 @@ namespace DotRecast.Detour.Dynamic.Io
             foreach (RecastBuilderResult r in results)
             {
                 f.tiles.Add(new VoxelTile(r.tileX, r.tileZ, r.getSolidHeightfield()));
-                f.bounds[0] = Math.Min(f.bounds[0], r.getSolidHeightfield().bmin[0]);
-                f.bounds[1] = Math.Min(f.bounds[1], r.getSolidHeightfield().bmin[1]);
-                f.bounds[2] = Math.Min(f.bounds[2], r.getSolidHeightfield().bmin[2]);
-                f.bounds[3] = Math.Max(f.bounds[3], r.getSolidHeightfield().bmax[0]);
-                f.bounds[4] = Math.Max(f.bounds[4], r.getSolidHeightfield().bmax[1]);
-                f.bounds[5] = Math.Max(f.bounds[5], r.getSolidHeightfield().bmax[2]);
+                f.bounds[0] = Math.Min(f.bounds[0], r.getSolidHeightfield().bmin.x);
+                f.bounds[1] = Math.Min(f.bounds[1], r.getSolidHeightfield().bmin.y);
+                f.bounds[2] = Math.Min(f.bounds[2], r.getSolidHeightfield().bmin.z);
+                f.bounds[3] = Math.Max(f.bounds[3], r.getSolidHeightfield().bmax.x);
+                f.bounds[4] = Math.Max(f.bounds[4], r.getSolidHeightfield().bmax.y);
+                f.bounds[5] = Math.Max(f.bounds[5], r.getSolidHeightfield().bmax.z);
             }
 
             return f;
@@ -148,12 +148,12 @@ namespace DotRecast.Detour.Dynamic.Io
             {
                 Heightfield heightfield = vt.heightfield();
                 f.tiles.Add(new VoxelTile(vt.tileX, vt.tileZ, heightfield));
-                f.bounds[0] = Math.Min(f.bounds[0], vt.boundsMin[0]);
-                f.bounds[1] = Math.Min(f.bounds[1], vt.boundsMin[1]);
-                f.bounds[2] = Math.Min(f.bounds[2], vt.boundsMin[2]);
-                f.bounds[3] = Math.Max(f.bounds[3], vt.boundsMax[0]);
-                f.bounds[4] = Math.Max(f.bounds[4], vt.boundsMax[1]);
-                f.bounds[5] = Math.Max(f.bounds[5], vt.boundsMax[2]);
+                f.bounds[0] = Math.Min(f.bounds[0], vt.boundsMin.x);
+                f.bounds[1] = Math.Min(f.bounds[1], vt.boundsMin.y);
+                f.bounds[2] = Math.Min(f.bounds[2], vt.boundsMin.z);
+                f.bounds[3] = Math.Max(f.bounds[3], vt.boundsMax.x);
+                f.bounds[4] = Math.Max(f.bounds[4], vt.boundsMax.y);
+                f.bounds[5] = Math.Max(f.bounds[5], vt.boundsMax.z);
             }
 
             return f;

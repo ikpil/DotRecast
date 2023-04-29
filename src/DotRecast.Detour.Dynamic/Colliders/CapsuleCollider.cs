@@ -46,9 +46,9 @@ namespace DotRecast.Detour.Dynamic.Colliders
         {
             return new float[]
             {
-                Math.Min(start[0], end[0]) - radius, Math.Min(start[1], end[1]) - radius,
-                Math.Min(start[2], end[2]) - radius, Math.Max(start[0], end[0]) + radius, Math.Max(start[1], end[1]) + radius,
-                Math.Max(start[2], end[2]) + radius
+                Math.Min(start.x, end.x) - radius, Math.Min(start.y, end.y) - radius,
+                Math.Min(start.z, end.z) - radius, Math.Max(start.x, end.x) + radius, Math.Max(start.y, end.y) + radius,
+                Math.Max(start.z, end.z) + radius
             };
         }
     }

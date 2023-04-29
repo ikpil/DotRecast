@@ -54,20 +54,20 @@ namespace DotRecast.Detour.Dynamic
 
         private float? traverseTiles(Vector3f start, Vector3f end)
         {
-            float relStartX = start[0] - origin[0];
-            float relStartZ = start[2] - origin[2];
+            float relStartX = start.x - origin.x;
+            float relStartZ = start.z - origin.z;
             int sx = (int)Math.Floor(relStartX / tileWidth);
             int sz = (int)Math.Floor(relStartZ / tileDepth);
-            int ex = (int)Math.Floor((end[0] - origin[0]) / tileWidth);
-            int ez = (int)Math.Floor((end[2] - origin[2]) / tileDepth);
+            int ex = (int)Math.Floor((end.x - origin.x) / tileWidth);
+            int ez = (int)Math.Floor((end.z - origin.z) / tileDepth);
             int dx = ex - sx;
             int dz = ez - sz;
             int stepX = dx < 0 ? -1 : 1;
             int stepZ = dz < 0 ? -1 : 1;
             float xRem = (tileWidth + (relStartX % tileWidth)) % tileWidth;
             float zRem = (tileDepth + (relStartZ % tileDepth)) % tileDepth;
-            float tx = end[0] - start[0];
-            float tz = end[2] - start[2];
+            float tx = end.x - start.x;
+            float tz = end.z - start.z;
             float xOffest = Math.Abs(tx < 0 ? xRem : tileWidth - xRem);
             float zOffest = Math.Abs(tz < 0 ? zRem : tileDepth - zRem);
             tx = Math.Abs(tx);
@@ -112,17 +112,17 @@ namespace DotRecast.Detour.Dynamic
             Heightfield hf = heightfieldProvider.Invoke(x, z);
             if (null != hf)
             {
-                float tx = end[0] - start[0];
-                float ty = end[1] - start[1];
-                float tz = end[2] - start[2];
-                float[] entry = { start[0] + tMin * tx, start[1] + tMin * ty, start[2] + tMin * tz };
-                float[] exit = { start[0] + tMax * tx, start[1] + tMax * ty, start[2] + tMax * tz };
-                float relStartX = entry[0] - hf.bmin[0];
-                float relStartZ = entry[2] - hf.bmin[2];
+                float tx = end.x - start.x;
+                float ty = end.y - start.y;
+                float tz = end.z - start.z;
+                float[] entry = { start.x + tMin * tx, start.y + tMin * ty, start.z + tMin * tz };
+                float[] exit = { start.x + tMax * tx, start.y + tMax * ty, start.z + tMax * tz };
+                float relStartX = entry[0] - hf.bmin.x;
+                float relStartZ = entry[2] - hf.bmin.z;
                 int sx = (int)Math.Floor(relStartX / hf.cs);
                 int sz = (int)Math.Floor(relStartZ / hf.cs);
-                int ex = (int)Math.Floor((exit[0] - hf.bmin[0]) / hf.cs);
-                int ez = (int)Math.Floor((exit[2] - hf.bmin[2]) / hf.cs);
+                int ex = (int)Math.Floor((exit[0] - hf.bmin.x) / hf.cs);
+                int ez = (int)Math.Floor((exit[2] - hf.bmin.z) / hf.cs);
                 int dx = ex - sx;
                 int dz = ez - sz;
                 int stepX = dx < 0 ? -1 : 1;
@@ -142,8 +142,8 @@ namespace DotRecast.Detour.Dynamic
                 {
                     if (sx >= 0 && sx < hf.width && sz >= 0 && sz < hf.height)
                     {
-                        float y1 = start[1] + ty * (tMin + t) - hf.bmin[1];
-                        float y2 = start[1] + ty * (tMin + Math.Min(tMaxX, tMaxZ)) - hf.bmin[1];
+                        float y1 = start.y + ty * (tMin + t) - hf.bmin.y;
+                        float y2 = start.y + ty * (tMin + Math.Min(tMaxX, tMaxZ)) - hf.bmin.y;
                         float ymin = Math.Min(y1, y2) / hf.ch;
                         float ymax = Math.Max(y1, y2) / hf.ch;
                         Span span = hf.spans[sx + sz * hf.width];

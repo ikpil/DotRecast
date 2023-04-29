@@ -73,9 +73,9 @@ namespace DotRecast.Detour.Dynamic.Io
             file.useTiles = buf.get() != 0;
             file.tileSizeX = buf.getInt();
             file.tileSizeZ = buf.getInt();
-            file.rotation[0] = buf.getFloat();
-            file.rotation[1] = buf.getFloat();
-            file.rotation[2] = buf.getFloat();
+            file.rotation.x = buf.getFloat();
+            file.rotation.y = buf.getFloat();
+            file.rotation.z = buf.getFloat();
             file.bounds[0] = buf.getFloat();
             file.bounds[1] = buf.getFloat();
             file.bounds[2] = buf.getFloat();
@@ -102,22 +102,22 @@ namespace DotRecast.Detour.Dynamic.Io
                 int depth = buf.getInt();
                 int borderSize = buf.getInt();
                 Vector3f boundsMin = new Vector3f();
-                boundsMin[0] = buf.getFloat();
-                boundsMin[1] = buf.getFloat();
-                boundsMin[2] = buf.getFloat();
+                boundsMin.x = buf.getFloat();
+                boundsMin.y = buf.getFloat();
+                boundsMin.z = buf.getFloat();
                 Vector3f boundsMax = new Vector3f();
-                boundsMax[0] = buf.getFloat();
-                boundsMax[1] = buf.getFloat();
-                boundsMax[2] = buf.getFloat();
+                boundsMax.x = buf.getFloat();
+                boundsMax.y = buf.getFloat();
+                boundsMax.z = buf.getFloat();
                 if (isExportedFromAstar)
                 {
                     // bounds are local
-                    boundsMin[0] += file.bounds[0];
-                    boundsMin[1] += file.bounds[1];
-                    boundsMin[2] += file.bounds[2];
-                    boundsMax[0] += file.bounds[0];
-                    boundsMax[1] += file.bounds[1];
-                    boundsMax[2] += file.bounds[2];
+                    boundsMin.x += file.bounds[0];
+                    boundsMin.y += file.bounds[1];
+                    boundsMin.z += file.bounds[2];
+                    boundsMax.x += file.bounds[0];
+                    boundsMax.y += file.bounds[1];
+                    boundsMax.z += file.bounds[2];
                 }
 
                 float cellSize = buf.getFloat();

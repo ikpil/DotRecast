@@ -65,7 +65,7 @@ namespace DotRecast.Detour.Dynamic
             {
                 if (!rasterizedColliders.Contains(cid))
                 {
-                    heightfield.bmax[1] = Math.Max(heightfield.bmax[1], c.bounds()[4] + heightfield.ch * 2);
+                    heightfield.bmax.y = Math.Max(heightfield.bmax.y, c.bounds()[4] + heightfield.ch * 2);
                     c.rasterize(heightfield, telemetry);
                 }
             }
