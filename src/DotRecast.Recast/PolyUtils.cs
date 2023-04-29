@@ -32,8 +32,8 @@ namespace DotRecast.Recast
             {
                 Vector3f vi = Vector3f.Of(verts[i * 3], verts[i * 3 + 1], verts[i * 3 + 2]);
                 Vector3f vj = Vector3f.Of(verts[j * 3], verts[j * 3 + 1], verts[j * 3 + 2]);
-                if (((vi[2] > p[2]) != (vj[2] > p[2]))
-                    && (p[0] < (vj[0] - vi[0]) * (p[2] - vi[2]) / (vj[2] - vi[2]) + vi[0]))
+                if (((vi.z > p.z) != (vj.z > p.z))
+                    && (p.x < (vj.x - vi.x) * (p.z - vi.z) / (vj.z - vi.z) + vi.x))
                 {
                     c = !c;
                 }

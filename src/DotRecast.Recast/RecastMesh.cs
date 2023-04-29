@@ -1268,13 +1268,13 @@ namespace DotRecast.Recast
             {
                 PolyMesh pmesh = meshes[i];
 
-                int ox = (int)Math.Floor((pmesh.bmin[0] - mesh.bmin[0]) / mesh.cs + 0.5f);
-                int oz = (int)Math.Floor((pmesh.bmin[2] - mesh.bmin[2]) / mesh.cs + 0.5f);
+                int ox = (int)Math.Floor((pmesh.bmin.x - mesh.bmin.x) / mesh.cs + 0.5f);
+                int oz = (int)Math.Floor((pmesh.bmin.z - mesh.bmin.z) / mesh.cs + 0.5f);
 
                 bool isMinX = (ox == 0);
                 bool isMinZ = (oz == 0);
-                bool isMaxX = (Math.Floor((mesh.bmax[0] - pmesh.bmax[0]) / mesh.cs + 0.5f)) == 0;
-                bool isMaxZ = (Math.Floor((mesh.bmax[2] - pmesh.bmax[2]) / mesh.cs + 0.5f)) == 0;
+                bool isMaxX = (Math.Floor((mesh.bmax.x - pmesh.bmax.x) / mesh.cs + 0.5f)) == 0;
+                bool isMaxZ = (Math.Floor((mesh.bmax.z - pmesh.bmax.z) / mesh.cs + 0.5f)) == 0;
                 bool isOnBorder = (isMinX || isMinZ || isMaxX || isMaxZ);
 
                 for (int j = 0; j < pmesh.nverts; ++j)

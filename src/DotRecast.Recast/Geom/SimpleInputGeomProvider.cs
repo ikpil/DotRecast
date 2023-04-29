@@ -129,9 +129,9 @@ namespace DotRecast.Recast.Geom
                 e1.y = vertices[v2 + 1] - vertices[v0 + 1];
                 e1.z = vertices[v2 + 2] - vertices[v0 + 2];
 
-                normals[i] = e0[1] * e1[2] - e0[2] * e1[1];
-                normals[i + 1] = e0[2] * e1[0] - e0[0] * e1[2];
-                normals[i + 2] = e0[0] * e1[1] - e0[1] * e1[0];
+                normals[i] = e0.y * e1.z - e0.z * e1.y;
+                normals[i + 1] = e0.z * e1.x - e0.x * e1.z;
+                normals[i + 2] = e0.x * e1.y - e0.y * e1.x;
                 float d = (float)Math.Sqrt(normals[i] * normals[i] + normals[i + 1] * normals[i + 1] + normals[i + 2] * normals[i + 2]);
                 if (d > 0)
                 {

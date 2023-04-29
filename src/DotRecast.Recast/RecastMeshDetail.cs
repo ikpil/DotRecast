@@ -53,7 +53,7 @@ namespace DotRecast.Recast
 
         private static float vdot2(Vector3f a, Vector3f b)
         {
-            return a[0] * b[0] + a[2] * b[2];
+            return a.x * b.x + a.z * b.z;
         }
 
 
@@ -78,16 +78,16 @@ namespace DotRecast.Recast
 
         private static float vdistSq2(float[] p, Vector3f q)
         {
-            float dx = q[0] - p[0];
-            float dy = q[2] - p[2];
+            float dx = q.x - p[0];
+            float dy = q.z - p[2];
             return dx * dx + dy * dy;
         }
 
 
         private static float vdistSq2(Vector3f p, Vector3f q)
         {
-            float dx = q[0] - p[0];
-            float dy = q[2] - p[2];
+            float dx = q.x - p.x;
+            float dy = q.z - p.z;
             return dx * dx + dy * dy;
         }
 
@@ -117,8 +117,8 @@ namespace DotRecast.Recast
 
         private static float vdistSq2(Vector3f p, float[] verts, int q)
         {
-            float dx = verts[q + 0] - p[0];
-            float dy = verts[q + 2] - p[2];
+            float dx = verts[q + 0] - p.x;
+            float dy = verts[q + 2] - p.z;
             return dx * dx + dy * dy;
         }
 
@@ -154,10 +154,10 @@ namespace DotRecast.Recast
 
         private static float vcross2(Vector3f p1, Vector3f p2, Vector3f p3)
         {
-            float u1 = p2[0] - p1[0];
-            float v1 = p2[2] - p1[2];
-            float u2 = p3[0] - p1[0];
-            float v2 = p3[2] - p1[2];
+            float u1 = p2.x - p1.x;
+            float v1 = p2.z - p1.z;
+            float u2 = p3.x - p1.x;
+            float v2 = p3.z - p1.z;
             return u1 * v2 - v1 * u2;
         }
 
@@ -178,9 +178,9 @@ namespace DotRecast.Recast
                 float v1Sq = vdot2(v1, v1);
                 float v2Sq = vdot2(v2, v2);
                 float v3Sq = vdot2(v3, v3);
-                c[0] = (v1Sq * (v2[2] - v3[2]) + v2Sq * (v3[2] - v1[2]) + v3Sq * (v1[2] - v2[2])) / (2 * cp);
-                c[1] = 0;
-                c[2] = (v1Sq * (v3[0] - v2[0]) + v2Sq * (v1[0] - v3[0]) + v3Sq * (v2[0] - v1[0])) / (2 * cp);
+                c.x = (v1Sq * (v2.z - v3.z) + v2Sq * (v3.z - v1.z) + v3Sq * (v1.z - v2.z)) / (2 * cp);
+                c.y = 0;
+                c.z = (v1Sq * (v3.x - v2.x) + v2Sq * (v1.x - v3.x) + v3Sq * (v2.x - v1.x)) / (2 * cp);
                 r.Exchange(vdist2(c, v1));
                 RecastVectors.add(ref c, c, verts, p1);
                 return true;
@@ -215,8 +215,8 @@ namespace DotRecast.Recast
             float EPS = 1e-4f;
             if (u >= -EPS && v >= -EPS && (u + v) <= 1 + EPS)
             {
-                float y = verts[a + 1] + v0[1] * u + v1[1] * v;
-                return Math.Abs(y - p[1]);
+                float y = verts[a + 1] + v0.y * u + v1.y * v;
+                return Math.Abs(y - p.y);
             }
 
             return float.MaxValue;
@@ -257,8 +257,8 @@ namespace DotRecast.Recast
         {
             float pqx = poly[q + 0] - poly[p + 0];
             float pqz = poly[q + 2] - poly[p + 2];
-            float dx = verts[0] - poly[p + 0];
-            float dz = verts[2] - poly[p + 2];
+            float dx = verts.x - poly[p + 0];
+            float dz = verts.z - poly[p + 2];
             float d = pqx * pqx + pqz * pqz;
             float t = pqx * dx + pqz * dz;
             if (d > 0)
@@ -275,8 +275,8 @@ namespace DotRecast.Recast
                 t = 1;
             }
 
-            dx = poly[p + 0] + t * pqx - verts[0];
-            dz = poly[p + 2] + t * pqz - verts[2];
+            dx = poly[p + 0] + t * pqx - verts.x;
+            dz = poly[p + 2] + t * pqz - verts.z;
 
             return dx * dx + dz * dz;
         }
@@ -341,8 +341,8 @@ namespace DotRecast.Recast
             {
                 int vi = i * 3;
                 int vj = j * 3;
-                if (((verts[vi + 2] > p[2]) != (verts[vj + 2] > p[2])) && (p[0] < (verts[vj + 0] - verts[vi + 0])
-                        * (p[2] - verts[vi + 2]) / (verts[vj + 2] - verts[vi + 2]) + verts[vi + 0]))
+                if (((verts[vi + 2] > p.z) != (verts[vj + 2] > p.z)) && (p.x < (verts[vj + 0] - verts[vi + 0])
+                        * (p.z - verts[vi + 2]) / (verts[vj + 2] - verts[vi + 2]) + verts[vi + 0]))
                 {
                     c = !c;
                 }
@@ -716,7 +716,7 @@ namespace DotRecast.Recast
                 if (tris[t + 0] == -1 || tris[t + 1] == -1 || tris[t + 2] == -1)
                 {
                     Console.Error.WriteLine("Dangling! " + tris[t] + " " + tris[t + 1] + "  " + tris[t + 2]);
-                    // ctx.log(RC_LOG_WARNING, "delaunayHull: Removing dangling face %d [%d,%d,%d].", i, t[0],t[1],t[2]);
+                    // ctx.log(RC_LOG_WARNING, "delaunayHull: Removing dangling face %d [%d,%d,%d].", i, t.x,t.y,t.z);
                     tris[t + 0] = tris[tris.Count - 4];
                     tris[t + 1] = tris[tris.Count - 3];
                     tris[t + 2] = tris[tris.Count - 2];
@@ -1021,19 +1021,19 @@ namespace DotRecast.Recast
                     RecastVectors.max(ref bmax, @in, i * 3);
                 }
 
-                int x0 = (int)Math.Floor(bmin[0] / sampleDist);
-                int x1 = (int)Math.Ceiling(bmax[0] / sampleDist);
-                int z0 = (int)Math.Floor(bmin[2] / sampleDist);
-                int z1 = (int)Math.Ceiling(bmax[2] / sampleDist);
+                int x0 = (int)Math.Floor(bmin.x / sampleDist);
+                int x1 = (int)Math.Ceiling(bmax.x / sampleDist);
+                int z0 = (int)Math.Floor(bmin.z / sampleDist);
+                int z1 = (int)Math.Ceiling(bmax.z / sampleDist);
                 samples.Clear();
                 for (int z = z0; z < z1; ++z)
                 {
                     for (int x = x0; x < x1; ++x)
                     {
                         Vector3f pt = new Vector3f();
-                        pt[0] = x * sampleDist;
-                        pt[1] = (bmax[1] + bmin[1]) * 0.5f;
-                        pt[2] = z * sampleDist;
+                        pt.x = x * sampleDist;
+                        pt.y = (bmax.y + bmin.y) * 0.5f;
+                        pt.z = z * sampleDist;
                         // Make sure the samples are not too close to the edges.
                         if (distToPoly(nin, @in, pt) > -sampleDist / 2)
                         {
@@ -1041,7 +1041,7 @@ namespace DotRecast.Recast
                         }
 
                         samples.Add(x);
-                        samples.Add(getHeight(pt[0], pt[1], pt[2], cs, ics, chf.ch, heightSearchRadius, hp));
+                        samples.Add(getHeight(pt.x, pt.y, pt.z, cs, ics, chf.ch, heightSearchRadius, hp));
                         samples.Add(z);
                         samples.Add(0); // Not added
                     }
@@ -1073,9 +1073,9 @@ namespace DotRecast.Recast
                         Vector3f pt = new Vector3f();
                         // The sample location is jittered to get rid of some bad triangulations
                         // which are cause by symmetrical data from the grid structure.
-                        pt[0] = samples[s + 0] * sampleDist + getJitterX(i) * cs * 0.1f;
-                        pt[1] = samples[s + 1] * chf.ch;
-                        pt[2] = samples[s + 2] * sampleDist + getJitterY(i) * cs * 0.1f;
+                        pt.x = samples[s + 0] * sampleDist + getJitterX(i) * cs * 0.1f;
+                        pt.y = samples[s + 1] * chf.ch;
+                        pt.z = samples[s + 2] * sampleDist + getJitterY(i) * cs * 0.1f;
                         float d = distToTriMesh(pt, verts, nverts, tris, tris.Count / 4);
                         if (d < 0)
                         {
@@ -1542,18 +1542,18 @@ namespace DotRecast.Recast
                 // Move detail verts to world space.
                 for (int j = 0; j < nverts; ++j)
                 {
-                    verts[j * 3 + 0] += orig[0];
-                    verts[j * 3 + 1] += orig[1] + chf.ch; // Is this offset necessary? See
+                    verts[j * 3 + 0] += orig.x;
+                    verts[j * 3 + 1] += orig.y + chf.ch; // Is this offset necessary? See
                     // https://groups.google.com/d/msg/recastnavigation/UQFN6BGCcV0/-1Ny4koOBpkJ
-                    verts[j * 3 + 2] += orig[2];
+                    verts[j * 3 + 2] += orig.z;
                 }
 
                 // Offset poly too, will be used to flag checking.
                 for (int j = 0; j < npoly; ++j)
                 {
-                    poly[j * 3 + 0] += orig[0];
-                    poly[j * 3 + 1] += orig[1];
-                    poly[j * 3 + 2] += orig[2];
+                    poly[j * 3 + 0] += orig.x;
+                    poly[j * 3 + 1] += orig.y;
+                    poly[j * 3 + 2] += orig.z;
                 }
 
                 // Store detail submesh.

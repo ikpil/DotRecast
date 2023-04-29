@@ -48,10 +48,10 @@ namespace DotRecast.Recast
                 {
                     float[] tbmin = new float[2];
                     float[] tbmax = new float[2];
-                    tbmin[0] = builderCfg.bmin[0];
-                    tbmin[1] = builderCfg.bmin[2];
-                    tbmax[0] = builderCfg.bmax[0];
-                    tbmax[1] = builderCfg.bmax[2];
+                    tbmin[0] = builderCfg.bmin.x;
+                    tbmin[1] = builderCfg.bmin.z;
+                    tbmax[0] = builderCfg.bmax.x;
+                    tbmax[1] = builderCfg.bmax.z;
                     List<ChunkyTriMeshNode> nodes = geom.getChunksOverlappingRect(tbmin, tbmax);
                     foreach (ChunkyTriMeshNode node in nodes)
                     {

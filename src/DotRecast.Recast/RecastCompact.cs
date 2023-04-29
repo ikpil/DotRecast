@@ -58,7 +58,7 @@ namespace DotRecast.Recast
             chf.maxRegions = 0;
             copy(ref chf.bmin, hf.bmin);
             copy(ref chf.bmax, hf.bmax);
-            chf.bmax[1] += walkableHeight * hf.ch;
+            chf.bmax.y += walkableHeight * hf.ch;
             chf.cs = hf.cs;
             chf.ch = hf.ch;
             chf.cells = new CompactCell[w * h];

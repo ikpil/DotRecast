@@ -60,8 +60,8 @@ namespace DotRecast.Recast
                 float tsz = cfg.tileSizeZ * cfg.cs;
                 this.bmin.x += tileX * tsx;
                 this.bmin.z += tileZ * tsz;
-                this.bmax.x = this.bmin[0] + tsx;
-                this.bmax.z = this.bmin[2] + tsz;
+                this.bmax.x = this.bmin.x + tsx;
+                this.bmax.z = this.bmin.z + tsz;
                 // Expand the heighfield bounding box by border size to find the extents of geometry we need to build this
                 // tile.
                 //

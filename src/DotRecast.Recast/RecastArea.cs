@@ -287,12 +287,12 @@ namespace DotRecast.Recast
         {
             ctx.startTimer("MARK_BOX_AREA");
 
-            int minx = (int)((bmin[0] - chf.bmin[0]) / chf.cs);
-            int miny = (int)((bmin[1] - chf.bmin[1]) / chf.ch);
-            int minz = (int)((bmin[2] - chf.bmin[2]) / chf.cs);
-            int maxx = (int)((bmax[0] - chf.bmin[0]) / chf.cs);
-            int maxy = (int)((bmax[1] - chf.bmin[1]) / chf.ch);
-            int maxz = (int)((bmax[2] - chf.bmin[2]) / chf.cs);
+            int minx = (int)((bmin[0] - chf.bmin.x) / chf.cs);
+            int miny = (int)((bmin[1] - chf.bmin.y) / chf.ch);
+            int minz = (int)((bmin[2] - chf.bmin.z) / chf.cs);
+            int maxx = (int)((bmax[0] - chf.bmin.x) / chf.cs);
+            int maxy = (int)((bmax[1] - chf.bmin.y) / chf.ch);
+            int maxz = (int)((bmax[2] - chf.bmin.z) / chf.cs);
 
             if (maxx < 0)
                 return;
@@ -340,8 +340,8 @@ namespace DotRecast.Recast
             {
                 int vi = i;
                 int vj = j;
-                if (((verts[vi + 2] > p[2]) != (verts[vj + 2] > p[2]))
-                    && (p[0] < (verts[vj] - verts[vi]) * (p[2] - verts[vi + 2]) / (verts[vj + 2] - verts[vi + 2])
+                if (((verts[vi + 2] > p.z) != (verts[vj + 2] > p.z))
+                    && (p.x < (verts[vj] - verts[vi]) * (p.z - verts[vi + 2]) / (verts[vj + 2] - verts[vi + 2])
                         + verts[vi]))
                     c = !c;
             }
@@ -372,15 +372,15 @@ namespace DotRecast.Recast
                 RecastVectors.max(ref bmax, verts, i);
             }
 
-            bmin[1] = hmin;
-            bmax[1] = hmax;
+            bmin.y = hmin;
+            bmax.y = hmax;
 
-            int minx = (int)((bmin[0] - chf.bmin[0]) / chf.cs);
-            int miny = (int)((bmin[1] - chf.bmin[1]) / chf.ch);
-            int minz = (int)((bmin[2] - chf.bmin[2]) / chf.cs);
-            int maxx = (int)((bmax[0] - chf.bmin[0]) / chf.cs);
-            int maxy = (int)((bmax[1] - chf.bmin[1]) / chf.ch);
-            int maxz = (int)((bmax[2] - chf.bmin[2]) / chf.cs);
+            int minx = (int)((bmin.x - chf.bmin.x) / chf.cs);
+            int miny = (int)((bmin.y - chf.bmin.y) / chf.ch);
+            int minz = (int)((bmin.z - chf.bmin.z) / chf.cs);
+            int maxx = (int)((bmax.x - chf.bmin.x) / chf.cs);
+            int maxy = (int)((bmax.y - chf.bmin.y) / chf.ch);
+            int maxz = (int)((bmax.z - chf.bmin.z) / chf.cs);
 
             if (maxx < 0)
                 return;
@@ -414,9 +414,9 @@ namespace DotRecast.Recast
                         if (s.y >= miny && s.y <= maxy)
                         {
                             Vector3f p = new Vector3f();
-                            p[0] = chf.bmin[0] + (x + 0.5f) * chf.cs;
-                            p[1] = 0;
-                            p[2] = chf.bmin[2] + (z + 0.5f) * chf.cs;
+                            p.x = chf.bmin.x + (x + 0.5f) * chf.cs;
+                            p.y = 0;
+                            p.z = chf.bmin.z + (z + 0.5f) * chf.cs;
 
                             if (pointInPoly(verts, p))
                             {
@@ -520,20 +520,20 @@ namespace DotRecast.Recast
 
             Vector3f bmin = new Vector3f();
             Vector3f bmax = new Vector3f();
-            bmin[0] = pos[0] - r;
-            bmin[1] = pos[1];
-            bmin[2] = pos[2] - r;
-            bmax[0] = pos[0] + r;
-            bmax[1] = pos[1] + h;
-            bmax[2] = pos[2] + r;
+            bmin.x = pos[0] - r;
+            bmin.y = pos[1];
+            bmin.z = pos[2] - r;
+            bmax.x = pos[0] + r;
+            bmax.y = pos[1] + h;
+            bmax.z = pos[2] + r;
             float r2 = r * r;
 
-            int minx = (int)((bmin[0] - chf.bmin[0]) / chf.cs);
-            int miny = (int)((bmin[1] - chf.bmin[1]) / chf.ch);
-            int minz = (int)((bmin[2] - chf.bmin[2]) / chf.cs);
-            int maxx = (int)((bmax[0] - chf.bmin[0]) / chf.cs);
-            int maxy = (int)((bmax[1] - chf.bmin[1]) / chf.ch);
-            int maxz = (int)((bmax[2] - chf.bmin[2]) / chf.cs);
+            int minx = (int)((bmin.x - chf.bmin.x) / chf.cs);
+            int miny = (int)((bmin.y - chf.bmin.y) / chf.ch);
+            int minz = (int)((bmin.z - chf.bmin.z) / chf.cs);
+            int maxx = (int)((bmax.x - chf.bmin.x) / chf.cs);
+            int maxy = (int)((bmax.y - chf.bmin.y) / chf.ch);
+            int maxz = (int)((bmax.z - chf.bmin.z) / chf.cs);
 
             if (maxx < 0)
                 return;
@@ -567,8 +567,8 @@ namespace DotRecast.Recast
 
                         if (s.y >= miny && s.y <= maxy)
                         {
-                            float sx = chf.bmin[0] + (x + 0.5f) * chf.cs;
-                            float sz = chf.bmin[2] + (z + 0.5f) * chf.cs;
+                            float sx = chf.bmin.x + (x + 0.5f) * chf.cs;
+                            float sz = chf.bmin.z + (z + 0.5f) * chf.cs;
                             float dx = sx - pos[0];
                             float dz = sz - pos[2];
 

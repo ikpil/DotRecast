@@ -27,30 +27,30 @@ namespace DotRecast.Recast
     {
         public static void min(ref Vector3f a, float[] b, int i)
         {
-            a.x = Math.Min(a[0], b[i + 0]);
-            a.y = Math.Min(a[1], b[i + 1]);
-            a.z = Math.Min(a[2], b[i + 2]);
+            a.x = Math.Min(a.x, b[i + 0]);
+            a.y = Math.Min(a.y, b[i + 1]);
+            a.z = Math.Min(a.z, b[i + 2]);
         }
         
         public static void min(ref Vector3f a, Vector3f b, int i)
         {
-            a.x = Math.Min(a[0], b[i + 0]);
-            a.y = Math.Min(a[1], b[i + 1]);
-            a.z = Math.Min(a[2], b[i + 2]);
+            a.x = Math.Min(a.x, b[i + 0]);
+            a.y = Math.Min(a.y, b[i + 1]);
+            a.z = Math.Min(a.z, b[i + 2]);
         }
         
         public static void max(ref Vector3f a, float[] b, int i)
         {
-            a.x = Math.Max(a[0], b[i + 0]);
-            a.y = Math.Max(a[1], b[i + 1]);
-            a.z = Math.Max(a[2], b[i + 2]);
+            a.x = Math.Max(a.x, b[i + 0]);
+            a.y = Math.Max(a.y, b[i + 1]);
+            a.z = Math.Max(a.z, b[i + 2]);
         }
         
         public static void max(ref Vector3f a, Vector3f b, int i)
         {
-            a.x = Math.Max(a[0], b[i + 0]);
-            a.y = Math.Max(a[1], b[i + 1]);
-            a.z = Math.Max(a[2], b[i + 2]);
+            a.x = Math.Max(a.x, b[i + 0]);
+            a.y = Math.Max(a.y, b[i + 1]);
+            a.z = Math.Max(a.z, b[i + 2]);
         }
 
         public static void copy(ref Vector3f @out, float[] @in, int i)
@@ -103,9 +103,9 @@ namespace DotRecast.Recast
         
         public static void add(ref Vector3f e0, Vector3f a, float[] verts, int i)
         {
-            e0.x = a[0] + verts[i];
-            e0.y = a[1] + verts[i + 1];
-            e0.z = a[2] + verts[i + 2];
+            e0.x = a.x + verts[i];
+            e0.y = a.y + verts[i + 1];
+            e0.z = a.z + verts[i + 2];
         }
 
         
@@ -119,9 +119,9 @@ namespace DotRecast.Recast
         
         public static void sub(ref Vector3f e0, Vector3f i, float[] verts, int j)
         {
-            e0.x = i[0] - verts[j];
-            e0.y = i[1] - verts[j + 1];
-            e0.z = i[2] - verts[j + 2];
+            e0.x = i.x - verts[j];
+            e0.y = i.y - verts[j + 1];
+            e0.z = i.z - verts[j + 2];
         }
 
 
@@ -134,16 +134,16 @@ namespace DotRecast.Recast
         
         public static void cross(float[] dest, Vector3f v1, Vector3f v2)
         {
-            dest[0] = v1[1] * v2[2] - v1[2] * v2[1];
-            dest[1] = v1[2] * v2[0] - v1[0] * v2[2];
-            dest[2] = v1[0] * v2[1] - v1[1] * v2[0];
+            dest[0] = v1.y * v2.z - v1.z * v2.y;
+            dest[1] = v1.z * v2.x - v1.x * v2.z;
+            dest[2] = v1.x * v2.y - v1.y * v2.x;
         }
         
         public static void cross(ref Vector3f dest, Vector3f v1, Vector3f v2)
         {
-            dest.x = v1[1] * v2[2] - v1[2] * v2[1];
-            dest.y = v1[2] * v2[0] - v1[0] * v2[2];
-            dest.z = v1[0] * v2[1] - v1[1] * v2[0];
+            dest.x = v1.y * v2.z - v1.z * v2.y;
+            dest.y = v1.z * v2.x - v1.x * v2.z;
+            dest.z = v1.x * v2.y - v1.y * v2.x;
         }
 
 
@@ -157,7 +157,7 @@ namespace DotRecast.Recast
         
         public static void normalize(ref Vector3f v)
         {
-            float d = (float)(1.0f / Math.Sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]));
+            float d = (float)(1.0f / Math.Sqrt(v.x * v.x + v.y * v.y + v.z * v.z));
             v.x *= d;
             v.y *= d;
             v.z *= d;
@@ -170,12 +170,12 @@ namespace DotRecast.Recast
         
         public static float dot(float[] v1, Vector3f v2)
         {
-            return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
+            return v1[0] * v2.x + v1[1] * v2.y + v1[2] * v2.z;
         }
         
         public static float dot(Vector3f v1, Vector3f v2)
         {
-            return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
+            return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
         }
 
     }

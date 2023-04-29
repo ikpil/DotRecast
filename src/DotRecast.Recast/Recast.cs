@@ -53,12 +53,12 @@ namespace DotRecast.Recast
         
         public static int[] calcGridSize(Vector3f bmin, float[] bmax, float cs)
         {
-            return new int[] { (int)((bmax[0] - bmin[0]) / cs + 0.5f), (int)((bmax[2] - bmin[2]) / cs + 0.5f) };
+            return new int[] { (int)((bmax[0] - bmin.x) / cs + 0.5f), (int)((bmax[2] - bmin.z) / cs + 0.5f) };
         }
         
         public static int[] calcGridSize(Vector3f bmin, Vector3f bmax, float cs)
         {
-            return new int[] { (int)((bmax[0] - bmin[0]) / cs + 0.5f), (int)((bmax[2] - bmin[2]) / cs + 0.5f) };
+            return new int[] { (int)((bmax.x - bmin.x) / cs + 0.5f), (int)((bmax.z - bmin.z) / cs + 0.5f) };
         }
 
 
@@ -90,7 +90,7 @@ namespace DotRecast.Recast
                 int tri = i * 3;
                 calcTriNormal(verts, tris[tri], tris[tri + 1], tris[tri + 2], ref norm);
                 // Check if the face is walkable.
-                if (norm[1] > walkableThr)
+                if (norm.y > walkableThr)
                     areas[i] = areaMod.apply(areas[i]);
             }
 
@@ -138,7 +138,7 @@ namespace DotRecast.Recast
                 int tri = i * 3;
                 calcTriNormal(verts, tris[tri], tris[tri + 1], tris[tri + 2], ref norm);
                 // Check if the face is walkable.
-                if (norm[1] <= walkableThr)
+                if (norm.y <= walkableThr)
                     areas[i] = RC_NULL_AREA;
             }
         }

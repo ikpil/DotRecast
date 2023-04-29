@@ -432,10 +432,10 @@ namespace DotRecast.Recast
             Vector3f bmax = new Vector3f();
             copy(ref bmin, chf.bmin);
             copy(ref bmax, chf.bmax);
-            bmin[0] += borderSize * chf.cs;
-            bmin[2] += borderSize * chf.cs;
-            bmax[0] -= borderSize * chf.cs;
-            bmax[2] -= borderSize * chf.cs;
+            bmin.x += borderSize * chf.cs;
+            bmin.z += borderSize * chf.cs;
+            bmax.x -= borderSize * chf.cs;
+            bmax.z -= borderSize * chf.cs;
 
             HeightfieldLayerSet lset = new HeightfieldLayerSet();
             lset.layers = new HeightfieldLayerSet.HeightfieldLayer[layerId];
@@ -477,8 +477,8 @@ namespace DotRecast.Recast
                 // Adjust the bbox to fit the heightfield.
                 copy(ref layer.bmin, bmin);
                 copy(ref layer.bmax, bmax);
-                layer.bmin[1] = bmin[1] + hmin * chf.ch;
-                layer.bmax[1] = bmin[1] + hmax * chf.ch;
+                layer.bmin.y = bmin.y + hmin * chf.ch;
+                layer.bmax.y = bmin.y + hmax * chf.ch;
                 layer.hmin = hmin;
                 layer.hmax = hmax;
 
