@@ -67,22 +67,22 @@ namespace DotRecast.Core
         // Returns true if 'a' is more lower-left than 'b'.
         private static bool cmppt(Vector3f a, Vector3f b)
         {
-            if (a[0] < b[0])
+            if (a.x < b.x)
             {
                 return true;
             }
 
-            if (a[0] > b[0])
+            if (a.x > b.x)
             {
                 return false;
             }
 
-            if (a[2] < b[2])
+            if (a.z < b.z)
             {
                 return true;
             }
 
-            if (a[2] > b[2])
+            if (a.z > b.z)
             {
                 return false;
             }
@@ -93,10 +93,10 @@ namespace DotRecast.Core
         // Returns true if 'c' is left of line 'a'-'b'.
         private static bool left(Vector3f a, Vector3f b, Vector3f c)
         {
-            float u1 = b[0] - a[0];
-            float v1 = b[2] - a[2];
-            float u2 = c[0] - a[0];
-            float v2 = c[2] - a[2];
+            float u1 = b.x - a.x;
+            float v1 = b.z - a.z;
+            float u2 = c.x - a.x;
+            float v2 = c.z - a.z;
             return u1 * v2 - v1 * u2 < 0;
         }
     }
