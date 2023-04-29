@@ -17,7 +17,10 @@ public static class Program
 {
     private static List<FileLocation> CreateLocations(string path)
     {
-        List<string> list = ((IEnumerable<string>)File.ReadAllLines(path)).Where<string>((Func<string, bool>)(line => line.Contains("error CS1061: "))).ToList<string>();
+        List<string> list = File.ReadAllLines(path)
+            .Where(line => line.Contains("error CS1061: "))
+            .ToList();
+        
         List<FileLocation> locations = new List<FileLocation>();
         foreach (string input in list)
         {
@@ -62,7 +65,7 @@ public static class Program
             list[location.Column - 1] = "2]";
         string str = string.Join("", (IEnumerable<string>)list);
         contents[location.Line - 1] = str;
-        
+
         File.WriteAllLines(location.Path, contents);
     }
 
@@ -70,6 +73,9 @@ public static class Program
     {
         var locations = Program.CreateLocations("../../../../../error.log");
         foreach (FileLocation location in locations.DistinctBy(x => x.Path + x.Line))
+        {
             Change(location);
+            Console.WriteLine($"{location.Path}({location.Line}:{location.Column})");
+        }
     }
 }
