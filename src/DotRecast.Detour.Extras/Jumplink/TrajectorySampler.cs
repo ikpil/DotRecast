@@ -35,13 +35,13 @@ namespace DotRecast.Detour.Extras.Jumplink
         private bool sampleTrajectory(JumpLinkBuilderConfig acfg, Heightfield solid, Vector3f pa, Vector3f pb, Trajectory tra)
         {
             float cs = Math.Min(acfg.cellSize, acfg.cellHeight);
-            float d = vDist2D(pa, pb) + Math.Abs(pa[1] - pb[1]);
+            float d = vDist2D(pa, pb) + Math.Abs(pa.y - pb.y);
             int nsamples = Math.Max(2, (int)Math.Ceiling(d / cs));
             for (int i = 0; i < nsamples; ++i)
             {
                 float u = (float)i / (float)(nsamples - 1);
                 Vector3f p = tra.apply(pa, pb, u);
-                if (checkHeightfieldCollision(solid, p[0], p[1] + acfg.groundTolerance, p[1] + acfg.agentHeight, p[2]))
+                if (checkHeightfieldCollision(solid, p.x, p.y + acfg.groundTolerance, p.y + acfg.agentHeight, p.z))
                 {
                     return false;
                 }
@@ -57,8 +57,8 @@ namespace DotRecast.Detour.Extras.Jumplink
             float cs = solid.cs;
             float ch = solid.ch;
             Vector3f orig = solid.bmin;
-            int ix = (int)Math.Floor((x - orig[0]) / cs);
-            int iz = (int)Math.Floor((z - orig[2]) / cs);
+            int ix = (int)Math.Floor((x - orig.x) / cs);
+            int iz = (int)Math.Floor((z - orig.z) / cs);
 
             if (ix < 0 || iz < 0 || ix > w || iz > h)
             {
@@ -73,8 +73,8 @@ namespace DotRecast.Detour.Extras.Jumplink
 
             while (s != null)
             {
-                float symin = orig[1] + s.smin * ch;
-                float symax = orig[1] + s.smax * ch;
+                float symin = orig.y + s.smin * ch;
+                float symax = orig.y + s.smax * ch;
                 if (overlapRange(ymin, ymax, symin, symax))
                 {
                     return true;

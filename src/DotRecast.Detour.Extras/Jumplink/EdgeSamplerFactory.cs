@@ -80,9 +80,9 @@ namespace DotRecast.Detour.Extras.Jumplink
         
         private void vadd(ref Vector3f dest, Vector3f v1, Vector3f v2)
         {
-            dest[0] = v1[0] + v2[0];
-            dest[1] = v1[1] + v2[1];
-            dest[2] = v1[2] + v2[2];
+            dest.x = v1.x + v2.x;
+            dest.y = v1.y + v2.y;
+            dest.z = v1.z + v2.z;
         }
 
 
@@ -95,9 +95,9 @@ namespace DotRecast.Detour.Extras.Jumplink
         
         private void trans2d(ref Vector3f dst, Vector3f ax, Vector3f ay, Vector2f pt)
         {
-            dst[0] = ax[0] * pt.x + ay[0] * pt.y;
-            dst[1] = ax[1] * pt.x + ay[1] * pt.y;
-            dst[2] = ax[2] * pt.x + ay[2] * pt.y;
+            dst.x = ax.x * pt.x + ay.x * pt.y;
+            dst.y = ax.y * pt.x + ay.y * pt.y;
+            dst.z = ax.z * pt.x + ay.z * pt.y;
         }
 
     }

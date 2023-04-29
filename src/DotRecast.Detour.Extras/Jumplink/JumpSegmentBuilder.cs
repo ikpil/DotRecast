@@ -94,7 +94,7 @@ namespace DotRecast.Detour.Extras.Jumplink
                 {
                     GroundSample p = es.end[j].gsamples[i];
                     sampleGrid[i][j] = region;
-                    float h = p.p[1];
+                    float h = p.p.y;
                     if (i < sampleGrid.Length - 1)
                     {
                         addNeighbour(es, queue, agentClimb, h, i + 1, j);
@@ -121,7 +121,7 @@ namespace DotRecast.Detour.Extras.Jumplink
         private void addNeighbour(EdgeSampler es, Queue<int[]> queue, float agentClimb, float h, int i, int j)
         {
             GroundSample q = es.end[j].gsamples[i];
-            if (q.validTrajectory && Math.Abs(q.p[1] - h) < agentClimb)
+            if (q.validTrajectory && Math.Abs(q.p.y - h) < agentClimb)
             {
                 queue.Enqueue(new int[] { i, j });
             }

@@ -63,21 +63,21 @@ namespace DotRecast.Detour.Extras.Unity.Astar
         // In case of external link to other tiles we must find the direction
         private void buildExternalLink(MeshData tile, Poly node, MeshData neighbourTile)
         {
-            if (neighbourTile.header.bmin[0] > tile.header.bmin[0])
+            if (neighbourTile.header.bmin.x > tile.header.bmin.x)
             {
-                node.neis[PolyUtils.findEdge(node, tile, neighbourTile.header.bmin[0], 0)] = NavMesh.DT_EXT_LINK;
+                node.neis[PolyUtils.findEdge(node, tile, neighbourTile.header.bmin.x, 0)] = NavMesh.DT_EXT_LINK;
             }
-            else if (neighbourTile.header.bmin[0] < tile.header.bmin[0])
+            else if (neighbourTile.header.bmin.x < tile.header.bmin.x)
             {
-                node.neis[PolyUtils.findEdge(node, tile, tile.header.bmin[0], 0)] = NavMesh.DT_EXT_LINK | 4;
+                node.neis[PolyUtils.findEdge(node, tile, tile.header.bmin.x, 0)] = NavMesh.DT_EXT_LINK | 4;
             }
-            else if (neighbourTile.header.bmin[2] > tile.header.bmin[2])
+            else if (neighbourTile.header.bmin.z > tile.header.bmin.z)
             {
-                node.neis[PolyUtils.findEdge(node, tile, neighbourTile.header.bmin[2], 2)] = NavMesh.DT_EXT_LINK | 2;
+                node.neis[PolyUtils.findEdge(node, tile, neighbourTile.header.bmin.z, 2)] = NavMesh.DT_EXT_LINK | 2;
             }
             else
             {
-                node.neis[PolyUtils.findEdge(node, tile, tile.header.bmin[2], 2)] = NavMesh.DT_EXT_LINK | 6;
+                node.neis[PolyUtils.findEdge(node, tile, tile.header.bmin.z, 2)] = NavMesh.DT_EXT_LINK | 6;
             }
         }
     }

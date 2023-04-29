@@ -49,12 +49,12 @@ namespace DotRecast.Detour.Extras
                     vMax(ref bmax, data.verts, data.polys[i].verts[j] * 3);
                 }
 
-                it.bmin[0] = clamp((int)((bmin[0] - data.header.bmin[0]) * quantFactor), 0, 0x7fffffff);
-                it.bmin[1] = clamp((int)((bmin[1] - data.header.bmin[1]) * quantFactor), 0, 0x7fffffff);
-                it.bmin[2] = clamp((int)((bmin[2] - data.header.bmin[2]) * quantFactor), 0, 0x7fffffff);
-                it.bmax[0] = clamp((int)((bmax[0] - data.header.bmin[0]) * quantFactor), 0, 0x7fffffff);
-                it.bmax[1] = clamp((int)((bmax[1] - data.header.bmin[1]) * quantFactor), 0, 0x7fffffff);
-                it.bmax[2] = clamp((int)((bmax[2] - data.header.bmin[2]) * quantFactor), 0, 0x7fffffff);
+                it.bmin[0] = clamp((int)((bmin.x - data.header.bmin.x) * quantFactor), 0, 0x7fffffff);
+                it.bmin[1] = clamp((int)((bmin.y - data.header.bmin.y) * quantFactor), 0, 0x7fffffff);
+                it.bmin[2] = clamp((int)((bmin.z - data.header.bmin.z) * quantFactor), 0, 0x7fffffff);
+                it.bmax[0] = clamp((int)((bmax.x - data.header.bmin.x) * quantFactor), 0, 0x7fffffff);
+                it.bmax[1] = clamp((int)((bmax.y - data.header.bmin.y) * quantFactor), 0, 0x7fffffff);
+                it.bmax[2] = clamp((int)((bmax.z - data.header.bmin.z) * quantFactor), 0, 0x7fffffff);
             }
 
             return NavMeshBuilder.subdivide(items, data.header.polyCount, 0, data.header.polyCount, 0, nodes);

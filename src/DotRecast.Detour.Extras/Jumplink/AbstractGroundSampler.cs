@@ -34,9 +34,9 @@ namespace DotRecast.Detour.Extras.Jumplink
                 seg.gsamples[i] = s;
                 Vector3f pt = vLerp(seg.p, seg.q, u);
                 Tuple<bool, float> height = heightFunc.Invoke(pt, seg.height);
-                s.p[0] = pt[0];
-                s.p[1] = height.Item2;
-                s.p[2] = pt[2];
+                s.p.x = pt.x;
+                s.p.y = height.Item2;
+                s.p.z = pt.z;
 
                 if (!height.Item1)
                 {

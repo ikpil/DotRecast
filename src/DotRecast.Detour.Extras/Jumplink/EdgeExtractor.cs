@@ -58,12 +58,12 @@ namespace DotRecast.Detour.Extras.Jumplink
                                 int va = mesh.polys[p + j] * 3;
                                 int vb = mesh.polys[p + nj] * 3;
                                 Edge e = new Edge();
-                                e.sp[0] = orig[0] + mesh.verts[vb] * cs;
-                                e.sp[1] = orig[1] + mesh.verts[vb + 1] * ch;
-                                e.sp[2] = orig[2] + mesh.verts[vb + 2] * cs;
-                                e.sq[0] = orig[0] + mesh.verts[va] * cs;
-                                e.sq[1] = orig[1] + mesh.verts[va + 1] * ch;
-                                e.sq[2] = orig[2] + mesh.verts[va + 2] * cs;
+                                e.sp.x = orig.x + mesh.verts[vb] * cs;
+                                e.sp.y = orig.y + mesh.verts[vb + 1] * ch;
+                                e.sp.z = orig.z + mesh.verts[vb + 2] * cs;
+                                e.sq.x = orig.x + mesh.verts[va] * cs;
+                                e.sq.y = orig.y + mesh.verts[va + 1] * ch;
+                                e.sq.z = orig.z + mesh.verts[va + 2] * cs;
                                 edges.Add(e);
                             }
                         }

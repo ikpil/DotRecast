@@ -73,14 +73,14 @@ namespace DotRecast.Detour.Extras.Jumplink
                     {
                         float u = ((float)j) / (link.nspine - 1);
                         Vector3f p = es.trajectory.apply(sp, ep, u);
-                        link.spine0[j * 3] = p[0];
-                        link.spine0[j * 3 + 1] = p[1];
-                        link.spine0[j * 3 + 2] = p[2];
+                        link.spine0[j * 3] = p.x;
+                        link.spine0[j * 3 + 1] = p.y;
+                        link.spine0[j * 3 + 2] = p.z;
 
                         p = es.trajectory.apply(sq, eq, u);
-                        link.spine1[j * 3] = p[0];
-                        link.spine1[j * 3 + 1] = p[1];
-                        link.spine1[j * 3 + 2] = p[2];
+                        link.spine1[j * 3] = p.x;
+                        link.spine1[j * 3 + 1] = p.y;
+                        link.spine1[j * 3 + 2] = p.z;
                     }
                 }
             }

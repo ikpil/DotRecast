@@ -73,9 +73,9 @@ namespace DotRecast.Detour.Extras.Jumplink
         private Tuple<bool, float> getNavMeshHeight(NavMeshQuery navMeshQuery, Vector3f pt, float cs, float heightRange)
         {
             Vector3f halfExtents = new Vector3f { x = cs, y = heightRange, z = cs };
-            float maxHeight = pt[1] + heightRange;
+            float maxHeight = pt.y + heightRange;
             AtomicBoolean found = new AtomicBoolean();
-            AtomicFloat minHeight = new AtomicFloat(pt[1]);
+            AtomicFloat minHeight = new AtomicFloat(pt.y);
             navMeshQuery.queryPolygons(pt, halfExtents, filter, new PolyQueryInvoker((tile, poly, refs) =>
             {
                 Result<float> h = navMeshQuery.getPolyHeight(refs, pt);
@@ -94,7 +94,7 @@ namespace DotRecast.Detour.Extras.Jumplink
                 return Tuple.Create(true, minHeight.Get());
             }
 
-            return Tuple.Create(false, pt[1]);
+            return Tuple.Create(false, pt.y);
         }
     }
 }

@@ -63,9 +63,9 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                 option.maxPolys = 32768;
                 option.tileWidth = graphMeta.tileSizeX * graphMeta.cellSize;
                 option.tileHeight = graphMeta.tileSizeZ * graphMeta.cellSize;
-                option.orig[0] = -0.5f * graphMeta.forcedBoundsSize.x + graphMeta.forcedBoundsCenter.x;
-                option.orig[1] = -0.5f * graphMeta.forcedBoundsSize.y + graphMeta.forcedBoundsCenter.y;
-                option.orig[2] = -0.5f * graphMeta.forcedBoundsSize.z + graphMeta.forcedBoundsCenter.z;
+                option.orig.x = -0.5f * graphMeta.forcedBoundsSize.x + graphMeta.forcedBoundsCenter.x;
+                option.orig.y = -0.5f * graphMeta.forcedBoundsSize.y + graphMeta.forcedBoundsCenter.y;
+                option.orig.z = -0.5f * graphMeta.forcedBoundsSize.z + graphMeta.forcedBoundsCenter.z;
                 NavMesh mesh = new NavMesh(option, 3);
                 foreach (MeshData t in graphMeshData.tiles)
                 {
