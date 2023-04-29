@@ -256,9 +256,9 @@ namespace DotRecast.Detour
                 float t = isec.Item2;
                 if (s >= 0.0f && s <= 1.0f && t >= 0.0f && t <= 1.0f)
                 {
-                    p[0] = a[0] + (b[0] - a[0]) * s;
-                    p[1] = a[1] + (b[1] - a[1]) * s;
-                    p[2] = a[2] + (b[2] - a[2]) * s;
+                    p.x = a[0] + (b[0] - a[0]) * s;
+                    p.y = a[1] + (b[1] - a[1]) * s;
+                    p.z = a[2] + (b[2] - a[2]) * s;
                     return Intersection.Single;
                 }
             }

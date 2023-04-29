@@ -83,9 +83,9 @@ namespace DotRecast.Core
             float EPS = 1e-6f;
 
             Vector3f d = new Vector3f();
-            d[0] = sq[0] - sp[0];
-            d[1] = sq[1] - sp[1];
-            d[2] = sq[2] - sp[2];
+            d.x = sq[0] - sp[0];
+            d.y = sq[1] - sp[1];
+            d.z = sq[2] - sp[2];
             float tmin = 0.0f;
             float tmax = 1.0f;
 

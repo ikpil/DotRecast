@@ -118,12 +118,16 @@ namespace DotRecast.Recast.Geom
                 int v0 = faces[i] * 3;
                 int v1 = faces[i + 1] * 3;
                 int v2 = faces[i + 2] * 3;
-                Vector3f e0 = new Vector3f(), e1 = new Vector3f();
-                for (int j = 0; j < 3; ++j)
-                {
-                    e0[j] = vertices[v1 + j] - vertices[v0 + j];
-                    e1[j] = vertices[v2 + j] - vertices[v0 + j];
-                }
+
+                var e0 = new Vector3f();
+                var e1 = new Vector3f();
+                e0.x = vertices[v1 + 0] - vertices[v0 + 0];
+                e0.y = vertices[v1 + 1] - vertices[v0 + 1];
+                e0.z = vertices[v1 + 2] - vertices[v0 + 2];
+
+                e1.x = vertices[v2 + 0] - vertices[v0 + 0];
+                e1.y = vertices[v2 + 1] - vertices[v0 + 1];
+                e1.z = vertices[v2 + 2] - vertices[v0 + 2];
 
                 normals[i] = e0[1] * e1[2] - e0[2] * e1[1];
                 normals[i + 1] = e0[2] * e1[0] - e0[0] * e1[2];

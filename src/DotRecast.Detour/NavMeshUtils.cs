@@ -35,12 +35,12 @@ namespace DotRecast.Detour
                 {
                     for (int i = 0; i < tile.data.verts.Length; i += 3)
                     {
-                        bmin[0] = Math.Min(bmin[0], tile.data.verts[i]);
-                        bmin[1] = Math.Min(bmin[1], tile.data.verts[i + 1]);
-                        bmin[2] = Math.Min(bmin[2], tile.data.verts[i + 2]);
-                        bmax[0] = Math.Max(bmax[0], tile.data.verts[i]);
-                        bmax[1] = Math.Max(bmax[1], tile.data.verts[i + 1]);
-                        bmax[2] = Math.Max(bmax[2], tile.data.verts[i + 2]);
+                        bmin.x = Math.Min(bmin[0], tile.data.verts[i]);
+                        bmin.y = Math.Min(bmin[1], tile.data.verts[i + 1]);
+                        bmin.z = Math.Min(bmin[2], tile.data.verts[i + 2]);
+                        bmax.x = Math.Max(bmax[0], tile.data.verts[i]);
+                        bmax.y = Math.Max(bmax[1], tile.data.verts[i + 1]);
+                        bmax.z = Math.Max(bmax[2], tile.data.verts[i + 2]);
                     }
                 }
             }

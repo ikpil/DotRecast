@@ -844,9 +844,9 @@ namespace DotRecast.Detour
             if (bestvi != null && bestvj != null)
             {
                 var tangent = vSub(bestvi, bestvj);
-                hitNormal[0] = tangent[2];
-                hitNormal[1] = 0;
-                hitNormal[2] = -tangent[0];
+                hitNormal.x = tangent[2];
+                hitNormal.y = 0;
+                hitNormal.z = -tangent[0];
                 vNormalize(ref hitNormal);
             }
 
