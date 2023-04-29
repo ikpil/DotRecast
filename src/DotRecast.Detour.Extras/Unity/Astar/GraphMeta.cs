@@ -20,6 +20,14 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour.Extras.Unity.Astar
 {
+    // for unity meta parsing
+    public struct UnityVector3f
+    {
+        public float x { get; set; }
+        public float y { get; set; }
+        public float z { get; set; }
+    }
+
     public class GraphMeta
     {
         public float characterRadius { get; set; }
@@ -38,8 +46,8 @@ namespace DotRecast.Detour.Extras.Unity.Astar
         public float tileSizeZ { get; set; }
 
         public bool useTiles { get; set; }
-        public Vector3f rotation { get; set; }
-        public Vector3f forcedBoundsCenter { get; set; }
-        public Vector3f forcedBoundsSize { get; set; }
+        public UnityVector3f rotation { get; set; }
+        public UnityVector3f forcedBoundsCenter { get; set; }
+        public UnityVector3f forcedBoundsSize { get; set; }
     }
 }

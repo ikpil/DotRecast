@@ -80,7 +80,7 @@ public class UnityAStarPathfindingImporterTest
     private NavMesh loadNavMesh(string filename)
     {
         var filepath = Loader.ToRPath(filename);
-        using var fs = new FileStream(filepath, FileMode.Open);
+        using var fs = new FileStream(filepath, FileMode.Open, FileAccess.Read);
 
         // Import the graphs
         UnityAStarPathfindingImporter importer = new UnityAStarPathfindingImporter();

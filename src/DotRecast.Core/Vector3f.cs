@@ -22,9 +22,9 @@ namespace DotRecast.Core
 {
     public struct Vector3f
     {
-        public float x { get; set; }
-        public float y { get; set; }
-        public float z { get; set; }
+        public float x;
+        public float y;
+        public float z;
 
         public static Vector3f Zero { get; } = new Vector3f(0, 0, 0);
         public static Vector3f Up { get; } = new Vector3f(0, 1, 0);
