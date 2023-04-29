@@ -121,9 +121,9 @@ public class AbstractCrowdTest
             for (int j = 0; j < size; j++)
             {
                 Vector3f pos = new Vector3f();
-                pos[0] = startPos[0] + i * distance;
-                pos[1] = startPos[1];
-                pos[2] = startPos[2] + j * distance;
+                pos.x = startPos.x + i * distance;
+                pos.y = startPos.y;
+                pos.z = startPos.z + j * distance;
                 agents.Add(crowd.addAgent(pos, ap));
             }
         }
@@ -154,7 +154,7 @@ public class AbstractCrowdTest
     protected Vector3f calcVel(Vector3f pos, Vector3f tgt, float speed)
     {
         Vector3f vel = vSub(tgt, pos);
-        vel[1] = 0.0f;
+        vel.y = 0.0f;
         vNormalize(ref vel);
         vel = vScale(vel, speed);
         return vel;
@@ -166,8 +166,8 @@ public class AbstractCrowdTest
         foreach (CrowdAgent ag in crowd.getActiveAgents())
         {
             Console.WriteLine(ag.state + ", " + ag.targetState);
-            Console.WriteLine(ag.npos[0] + ", " + ag.npos[1] + ", " + ag.npos[2]);
-            Console.WriteLine(ag.nvel[0] + ", " + ag.nvel[1] + ", " + ag.nvel[2]);
+            Console.WriteLine(ag.npos.x + ", " + ag.npos.y + ", " + ag.npos.z);
+            Console.WriteLine(ag.nvel.x + ", " + ag.nvel.y + ", " + ag.nvel.z);
         }
     }
 }

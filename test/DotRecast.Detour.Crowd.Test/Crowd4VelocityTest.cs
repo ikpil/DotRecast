@@ -113,12 +113,12 @@ public class Crowd4VelocityTest : AbstractCrowdTest
             }
 
             CrowdAgent ag = agents[1];
-            Assert.That(ag.npos[0], Is.EqualTo(EXPECTED_A1Q3TVTA[i][0]).Within(0.001f));
-            Assert.That(ag.npos[1], Is.EqualTo(EXPECTED_A1Q3TVTA[i][1]).Within(0.001f));
-            Assert.That(ag.npos[2], Is.EqualTo(EXPECTED_A1Q3TVTA[i][2]).Within(0.001f));
-            Assert.That(ag.nvel[0], Is.EqualTo(EXPECTED_A1Q3TVTA[i][3]).Within(0.001f));
-            Assert.That(ag.nvel[1], Is.EqualTo(EXPECTED_A1Q3TVTA[i][4]).Within(0.001f));
-            Assert.That(ag.nvel[2], Is.EqualTo(EXPECTED_A1Q3TVTA[i][5]).Within(0.001f));
+            Assert.That(ag.npos.x, Is.EqualTo(EXPECTED_A1Q3TVTA[i][0]).Within(0.001f));
+            Assert.That(ag.npos.y, Is.EqualTo(EXPECTED_A1Q3TVTA[i][1]).Within(0.001f));
+            Assert.That(ag.npos.z, Is.EqualTo(EXPECTED_A1Q3TVTA[i][2]).Within(0.001f));
+            Assert.That(ag.nvel.x, Is.EqualTo(EXPECTED_A1Q3TVTA[i][3]).Within(0.001f));
+            Assert.That(ag.nvel.y, Is.EqualTo(EXPECTED_A1Q3TVTA[i][4]).Within(0.001f));
+            Assert.That(ag.nvel.z, Is.EqualTo(EXPECTED_A1Q3TVTA[i][5]).Within(0.001f));
         }
     }
 }

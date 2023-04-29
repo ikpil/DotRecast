@@ -49,10 +49,10 @@ public class RandomPointTest : AbstractDetourTest
                 bmax[1] = j == 0 ? tileAndPoly.Item1.data.verts[v + 2] : Math.Max(bmax[1], tileAndPoly.Item1.data.verts[v + 2]);
             }
 
-            Assert.That(point.result.getRandomPt()[0] >= bmin[0], Is.True);
-            Assert.That(point.result.getRandomPt()[0] <= bmax[0], Is.True);
-            Assert.That(point.result.getRandomPt()[2] >= bmin[1], Is.True);
-            Assert.That(point.result.getRandomPt()[2] <= bmax[1], Is.True);
+            Assert.That(point.result.getRandomPt().x >= bmin[0], Is.True);
+            Assert.That(point.result.getRandomPt().x <= bmax[0], Is.True);
+            Assert.That(point.result.getRandomPt().z >= bmin[1], Is.True);
+            Assert.That(point.result.getRandomPt().z <= bmax[1], Is.True);
         }
     }
 
@@ -80,10 +80,10 @@ public class RandomPointTest : AbstractDetourTest
                 bmax[1] = j == 0 ? tileAndPoly.Item1.data.verts[v + 2] : Math.Max(bmax[1], tileAndPoly.Item1.data.verts[v + 2]);
             }
 
-            Assert.That(point.getRandomPt()[0] >= bmin[0], Is.True);
-            Assert.That(point.getRandomPt()[0] <= bmax[0], Is.True);
-            Assert.That(point.getRandomPt()[2] >= bmin[1], Is.True);
-            Assert.That(point.getRandomPt()[2] <= bmax[1], Is.True);
+            Assert.That(point.getRandomPt().x >= bmin[0], Is.True);
+            Assert.That(point.getRandomPt().x <= bmax[0], Is.True);
+            Assert.That(point.getRandomPt().z >= bmin[1], Is.True);
+            Assert.That(point.getRandomPt().z <= bmax[1], Is.True);
         }
     }
 
