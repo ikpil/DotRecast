@@ -63,10 +63,9 @@ namespace DotRecast.Detour.TileCache.Io
 
         private void writeCacheParams(BinaryWriter stream, TileCacheParams option, ByteOrder order)
         {
-            for (int i = 0; i < 3; i++)
-            {
-                write(stream, option.orig[i], order);
-            }
+            write(stream, option.orig.x, order);
+            write(stream, option.orig.y, order);
+            write(stream, option.orig.z, order);
 
             write(stream, option.cs, order);
             write(stream, option.ch, order);

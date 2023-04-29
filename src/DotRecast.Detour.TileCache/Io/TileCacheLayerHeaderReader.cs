@@ -39,15 +39,13 @@ namespace DotRecast.Detour.TileCache.Io
             header.tx = data.getInt();
             header.ty = data.getInt();
             header.tlayer = data.getInt();
-            for (int j = 0; j < 3; j++)
-            {
-                header.bmin[j] = data.getFloat();
-            }
-
-            for (int j = 0; j < 3; j++)
-            {
-                header.bmax[j] = data.getFloat();
-            }
+            
+            header.bmin.x = data.getFloat();
+            header.bmin.y = data.getFloat();
+            header.bmin.z = data.getFloat();
+            header.bmax.x = data.getFloat();
+            header.bmax.y = data.getFloat();
+            header.bmax.z = data.getFloat();
 
             header.hmin = data.getShort() & 0xFFFF;
             header.hmax = data.getShort() & 0xFFFF;

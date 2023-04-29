@@ -33,15 +33,13 @@ namespace DotRecast.Detour.TileCache.Io
             write(stream, header.tx, order);
             write(stream, header.ty, order);
             write(stream, header.tlayer, order);
-            for (int j = 0; j < 3; j++)
-            {
-                write(stream, header.bmin[j], order);
-            }
-
-            for (int j = 0; j < 3; j++)
-            {
-                write(stream, header.bmax[j], order);
-            }
+            
+            write(stream, header.bmin.x, order);
+            write(stream, header.bmin.y, order);
+            write(stream, header.bmin.z, order);
+            write(stream, header.bmax.x, order);
+            write(stream, header.bmax.y, order);
+            write(stream, header.bmax.z, order);
 
             write(stream, (short)header.hmin, order);
             write(stream, (short)header.hmax, order);

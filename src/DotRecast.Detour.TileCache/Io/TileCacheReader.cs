@@ -91,10 +91,10 @@ namespace DotRecast.Detour.TileCache.Io
         private TileCacheParams readCacheParams(ByteBuffer bb, bool cCompatibility)
         {
             TileCacheParams option = new TileCacheParams();
-            for (int i = 0; i < 3; i++)
-            {
-                option.orig[i] = bb.getFloat();
-            }
+            
+            option.orig.x = bb.getFloat();
+            option.orig.y = bb.getFloat();
+            option.orig.z = bb.getFloat();
 
             option.cs = bb.getFloat();
             option.ch = bb.getFloat();
