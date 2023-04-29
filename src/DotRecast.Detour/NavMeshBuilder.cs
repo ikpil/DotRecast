@@ -202,13 +202,13 @@ namespace DotRecast.Detour
                     }
 
                     // BV-tree uses cs for all dimensions
-                    it.bmin[0] = clamp((int)((bmin[0] - option.bmin[0]) * quantFactor), 0, int.MaxValue);
-                    it.bmin[1] = clamp((int)((bmin[1] - option.bmin[1]) * quantFactor), 0, int.MaxValue);
-                    it.bmin[2] = clamp((int)((bmin[2] - option.bmin[2]) * quantFactor), 0, int.MaxValue);
+                    it.bmin[0] = clamp((int)((bmin.x - option.bmin.x) * quantFactor), 0, int.MaxValue);
+                    it.bmin[1] = clamp((int)((bmin.y - option.bmin.y) * quantFactor), 0, int.MaxValue);
+                    it.bmin[2] = clamp((int)((bmin.z - option.bmin.z) * quantFactor), 0, int.MaxValue);
 
-                    it.bmax[0] = clamp((int)((bmax[0] - option.bmin[0]) * quantFactor), 0, int.MaxValue);
-                    it.bmax[1] = clamp((int)((bmax[1] - option.bmin[1]) * quantFactor), 0, int.MaxValue);
-                    it.bmax[2] = clamp((int)((bmax[2] - option.bmin[2]) * quantFactor), 0, int.MaxValue);
+                    it.bmax[0] = clamp((int)((bmax.x - option.bmin.x) * quantFactor), 0, int.MaxValue);
+                    it.bmax[1] = clamp((int)((bmax.y - option.bmin.y) * quantFactor), 0, int.MaxValue);
+                    it.bmax[2] = clamp((int)((bmax.z - option.bmin.z) * quantFactor), 0, int.MaxValue);
                 }
                 else
                 {
@@ -257,10 +257,10 @@ namespace DotRecast.Detour
         public static int classifyOffMeshPoint(VectorPtr pt, Vector3f bmin, Vector3f bmax)
         {
             int outcode = 0;
-            outcode |= (pt.get(0) >= bmax[0]) ? XP : 0;
-            outcode |= (pt.get(2) >= bmax[2]) ? ZP : 0;
-            outcode |= (pt.get(0) < bmin[0]) ? XM : 0;
-            outcode |= (pt.get(2) < bmin[2]) ? ZM : 0;
+            outcode |= (pt.get(0) >= bmax.x) ? XP : 0;
+            outcode |= (pt.get(2) >= bmax.z) ? ZP : 0;
+            outcode |= (pt.get(0) < bmin.x) ? XM : 0;
+            outcode |= (pt.get(2) < bmin.z) ? ZM : 0;
 
             switch (outcode)
             {
@@ -333,7 +333,7 @@ namespace DotRecast.Detour
                     for (int i = 0; i < option.vertCount; ++i)
                     {
                         int iv = i * 3;
-                        float h = option.bmin[1] + option.verts[iv + 1] * option.ch;
+                        float h = option.bmin.y + option.verts[iv + 1] * option.ch;
                         hmin = Math.Min(hmin, h);
                         hmax = Math.Max(hmax, h);
                     }
@@ -345,8 +345,8 @@ namespace DotRecast.Detour
                 Vector3f bmax = new Vector3f();
                 bmin = option.bmin;
                 bmax = option.bmax;
-                bmin[1] = hmin;
-                bmax[1] = hmax;
+                bmin.y = hmin;
+                bmax.y = hmax;
 
                 for (int i = 0; i < option.offMeshConCount; ++i)
                 {
@@ -360,7 +360,7 @@ namespace DotRecast.Detour
                     // potentially touching the mesh.
                     if (offMeshConClass[i * 2 + 0] == 0xff)
                     {
-                        if (p0.get(1) < bmin[1] || p0.get(1) > bmax[1])
+                        if (p0.get(1) < bmin.y || p0.get(1) > bmax.y)
                             offMeshConClass[i * 2 + 0] = 0;
                     }
 
@@ -489,9 +489,9 @@ namespace DotRecast.Detour
             {
                 int iv = i * 3;
                 int v = i * 3;
-                navVerts[v] = option.bmin[0] + option.verts[iv] * option.cs;
-                navVerts[v + 1] = option.bmin[1] + option.verts[iv + 1] * option.ch;
-                navVerts[v + 2] = option.bmin[2] + option.verts[iv + 2] * option.cs;
+                navVerts[v] = option.bmin.x + option.verts[iv] * option.cs;
+                navVerts[v + 1] = option.bmin.y + option.verts[iv + 1] * option.ch;
+                navVerts[v + 2] = option.bmin.z + option.verts[iv + 2] * option.cs;
             }
 
             // Off-mesh link vertices.

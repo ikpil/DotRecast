@@ -750,10 +750,10 @@ namespace DotRecast.Detour
                     // Hit wall, update radius.
                     radiusSqr = distSqr;
                     // Calculate hit pos.
-                    hitPos[0] = bestTile.data.verts[vj] + (bestTile.data.verts[vi] - bestTile.data.verts[vj]) * tseg;
-                    hitPos[1] = bestTile.data.verts[vj + 1]
+                    hitPos.x = bestTile.data.verts[vj] + (bestTile.data.verts[vi] - bestTile.data.verts[vj]) * tseg;
+                    hitPos.y = bestTile.data.verts[vj + 1]
                                 + (bestTile.data.verts[vi + 1] - bestTile.data.verts[vj + 1]) * tseg;
-                    hitPos[2] = bestTile.data.verts[vj + 2]
+                    hitPos.z = bestTile.data.verts[vj + 2]
                                 + (bestTile.data.verts[vi + 2] - bestTile.data.verts[vj + 2]) * tseg;
                     bestvj = new VectorPtr(bestTile.data.verts, vj);
                     bestvi = new VectorPtr(bestTile.data.verts, vi);
@@ -844,9 +844,9 @@ namespace DotRecast.Detour
             if (bestvi != null && bestvj != null)
             {
                 var tangent = vSub(bestvi, bestvj);
-                hitNormal.x = tangent[2];
+                hitNormal.x = tangent.z;
                 hitNormal.y = 0;
-                hitNormal.z = -tangent[0];
+                hitNormal.z = -tangent.x;
                 vNormalize(ref hitNormal);
             }
 

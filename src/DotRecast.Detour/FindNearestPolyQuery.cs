@@ -36,7 +36,7 @@ namespace DotRecast.Detour
             Vector3f diff = vSub(center, closestPtPoly);
             if (posOverPoly)
             {
-                d = Math.Abs(diff[1]) - tile.data.header.walkableClimb;
+                d = Math.Abs(diff.y) - tile.data.header.walkableClimb;
                 d = d > 0 ? d * d : 0;
             }
             else

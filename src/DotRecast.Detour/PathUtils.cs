@@ -44,9 +44,9 @@ namespace DotRecast.Detour
             float[] steerPoints = new float[straightPath.Count * 3];
             for (int i = 0; i < straightPath.Count; i++)
             {
-                steerPoints[i * 3] = straightPath[i].getPos()[0];
-                steerPoints[i * 3 + 1] = straightPath[i].getPos()[1];
-                steerPoints[i * 3 + 2] = straightPath[i].getPos()[2];
+                steerPoints[i * 3] = straightPath[i].getPos().x;
+                steerPoints[i * 3 + 1] = straightPath[i].getPos().y;
+                steerPoints[i * 3 + 2] = straightPath[i].getPos().z;
             }
 
             // Find vertex far enough to steer to.
@@ -65,9 +65,9 @@ namespace DotRecast.Detour
                 return null;
 
             Vector3f steerPos = Vector3f.Of(
-                straightPath[ns].getPos()[0],
-                startPos[1],
-                straightPath[ns].getPos()[2]
+                straightPath[ns].getPos().x,
+                startPos.y,
+                straightPath[ns].getPos().z
             );
             int steerPosFlag = straightPath[ns].getFlags();
             long steerPosRef = straightPath[ns].getRef();
@@ -78,9 +78,9 @@ namespace DotRecast.Detour
 
         public static bool inRange(Vector3f v1, Vector3f v2, float r, float h)
         {
-            float dx = v2[0] - v1[0];
-            float dy = v2[1] - v1[1];
-            float dz = v2[2] - v1[2];
+            float dx = v2.x - v1.x;
+            float dy = v2.y - v1.y;
+            float dz = v2.z - v1.z;
             return (dx * dx + dz * dz) < r * r && Math.Abs(dy) < h;
         }
 

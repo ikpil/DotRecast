@@ -100,9 +100,9 @@ namespace DotRecast.Detour
                 float[] circle = new float[12 * 3];
                 for (int i = 0; i < CIRCLE_SEGMENTS * 3; i += 3)
                 {
-                    circle[i] = unitCircle[i] * radius + center[0];
-                    circle[i + 1] = center[1];
-                    circle[i + 2] = unitCircle[i + 2] * radius + center[2];
+                    circle[i] = unitCircle[i] * radius + center.x;
+                    circle[i + 1] = center.y;
+                    circle[i + 2] = unitCircle[i + 2] * radius + center.z;
                 }
 
                 return circle;
