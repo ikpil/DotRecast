@@ -1860,12 +1860,12 @@ namespace DotRecast.Detour.TileCache
         {
             Vector3f bmin = new Vector3f();
             Vector3f bmax = new Vector3f();
-            bmin[0] = pos[0] - radius;
-            bmin[1] = pos[1];
-            bmin[2] = pos[2] - radius;
-            bmax[0] = pos[0] + radius;
-            bmax[1] = pos[1] + height;
-            bmax[2] = pos[2] + radius;
+            bmin.x = pos.x - radius;
+            bmin.y = pos.y;
+            bmin.z = pos.z - radius;
+            bmax.x = pos.x + radius;
+            bmax.y = pos.y + height;
+            bmax.z = pos.z + radius;
             float r2 = sqr(radius / cs + 0.5f);
 
             int w = layer.header.width;
@@ -1873,15 +1873,15 @@ namespace DotRecast.Detour.TileCache
             float ics = 1.0f / cs;
             float ich = 1.0f / ch;
 
-            float px = (pos[0] - orig[0]) * ics;
-            float pz = (pos[2] - orig[2]) * ics;
+            float px = (pos.x - orig.x) * ics;
+            float pz = (pos.z - orig.z) * ics;
 
-            int minx = (int)Math.Floor((bmin[0] - orig[0]) * ics);
-            int miny = (int)Math.Floor((bmin[1] - orig[1]) * ich);
-            int minz = (int)Math.Floor((bmin[2] - orig[2]) * ics);
-            int maxx = (int)Math.Floor((bmax[0] - orig[0]) * ics);
-            int maxy = (int)Math.Floor((bmax[1] - orig[1]) * ich);
-            int maxz = (int)Math.Floor((bmax[2] - orig[2]) * ics);
+            int minx = (int)Math.Floor((bmin.x - orig.x) * ics);
+            int miny = (int)Math.Floor((bmin.y - orig.y) * ich);
+            int minz = (int)Math.Floor((bmin.z - orig.z) * ics);
+            int maxx = (int)Math.Floor((bmax.x - orig.x) * ics);
+            int maxy = (int)Math.Floor((bmax.y - orig.y) * ich);
+            int maxz = (int)Math.Floor((bmax.z - orig.z) * ics);
 
             if (maxx < 0)
                 return;
@@ -1924,12 +1924,12 @@ namespace DotRecast.Detour.TileCache
             float ics = 1.0f / cs;
             float ich = 1.0f / ch;
 
-            int minx = (int)Math.Floor((bmin[0] - orig[0]) * ics);
-            int miny = (int)Math.Floor((bmin[1] - orig[1]) * ich);
-            int minz = (int)Math.Floor((bmin[2] - orig[2]) * ics);
-            int maxx = (int)Math.Floor((bmax[0] - orig[0]) * ics);
-            int maxy = (int)Math.Floor((bmax[1] - orig[1]) * ich);
-            int maxz = (int)Math.Floor((bmax[2] - orig[2]) * ics);
+            int minx = (int)Math.Floor((bmin.x - orig.x) * ics);
+            int miny = (int)Math.Floor((bmin.y - orig.y) * ich);
+            int minz = (int)Math.Floor((bmin.z - orig.z) * ics);
+            int maxx = (int)Math.Floor((bmax.x - orig.x) * ics);
+            int maxy = (int)Math.Floor((bmax.y - orig.y) * ich);
+            int maxz = (int)Math.Floor((bmax.z - orig.z) * ics);
 
             if (maxx < 0)
                 return;
@@ -2053,16 +2053,16 @@ namespace DotRecast.Detour.TileCache
             float ics = 1.0f / cs;
             float ich = 1.0f / ch;
 
-            float cx = (center[0] - orig[0]) * ics;
-            float cz = (center[2] - orig[2]) * ics;
+            float cx = (center.x - orig.x) * ics;
+            float cz = (center.z - orig.z) * ics;
 
-            float maxr = 1.41f * Math.Max(extents[0], extents[2]);
+            float maxr = 1.41f * Math.Max(extents.x, extents.z);
             int minx = (int)Math.Floor(cx - maxr * ics);
             int maxx = (int)Math.Floor(cx + maxr * ics);
             int minz = (int)Math.Floor(cz - maxr * ics);
             int maxz = (int)Math.Floor(cz + maxr * ics);
-            int miny = (int)Math.Floor((center[1] - extents[1] - orig[1]) * ich);
-            int maxy = (int)Math.Floor((center[1] + extents[1] - orig[1]) * ich);
+            int miny = (int)Math.Floor((center.y - extents.y - orig.y) * ich);
+            int maxy = (int)Math.Floor((center.y + extents.y - orig.y) * ich);
 
             if (maxx < 0)
                 return;
@@ -2082,8 +2082,8 @@ namespace DotRecast.Detour.TileCache
             if (maxz >= h)
                 maxz = h - 1;
 
-            float xhalf = extents[0] * ics + 0.5f;
-            float zhalf = extents[2] * ics + 0.5f;
+            float xhalf = extents.x * ics + 0.5f;
+            float zhalf = extents.z * ics + 0.5f;
             for (int z = minz; z <= maxz; ++z)
             {
                 for (int x = minx; x <= maxx; ++x)

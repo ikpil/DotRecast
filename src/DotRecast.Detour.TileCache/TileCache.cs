@@ -443,10 +443,10 @@ namespace DotRecast.Detour.TileCache
             List<long> results = new List<long>();
             float tw = m_params.width * m_params.cs;
             float th = m_params.height * m_params.cs;
-            int tx0 = (int)Math.Floor((bmin[0] - m_params.orig[0]) / tw);
-            int tx1 = (int)Math.Floor((bmax[0] - m_params.orig[0]) / tw);
-            int ty0 = (int)Math.Floor((bmin[2] - m_params.orig[2]) / th);
-            int ty1 = (int)Math.Floor((bmax[2] - m_params.orig[2]) / th);
+            int tx0 = (int)Math.Floor((bmin.x - m_params.orig.x) / tw);
+            int tx1 = (int)Math.Floor((bmax.x - m_params.orig.x) / tw);
+            int ty0 = (int)Math.Floor((bmin.z - m_params.orig.z) / th);
+            int ty1 = (int)Math.Floor((bmax.z - m_params.orig.z) / th);
             for (int ty = ty0; ty <= ty1; ++ty)
             {
                 for (int tx = tx0; tx <= tx1; ++tx)
@@ -685,24 +685,24 @@ namespace DotRecast.Detour.TileCache
         void calcTightTileBounds(TileCacheLayerHeader header, ref Vector3f bmin, ref Vector3f bmax)
         {
             float cs = m_params.cs;
-            bmin[0] = header.bmin[0] + header.minx * cs;
-            bmin[1] = header.bmin[1];
-            bmin[2] = header.bmin[2] + header.miny * cs;
-            bmax[0] = header.bmin[0] + (header.maxx + 1) * cs;
-            bmax[1] = header.bmax[1];
-            bmax[2] = header.bmin[2] + (header.maxy + 1) * cs;
+            bmin.x = header.bmin.x + header.minx * cs;
+            bmin.y = header.bmin.y;
+            bmin.z = header.bmin.z + header.miny * cs;
+            bmax.x = header.bmin.x + (header.maxx + 1) * cs;
+            bmax.y = header.bmax.y;
+            bmax.z = header.bmin.z + (header.maxy + 1) * cs;
         }
 
         void getObstacleBounds(TileCacheObstacle ob, ref Vector3f bmin, ref Vector3f bmax)
         {
             if (ob.type == TileCacheObstacle.TileCacheObstacleType.CYLINDER)
             {
-                bmin[0] = ob.pos[0] - ob.radius;
-                bmin[1] = ob.pos[1];
-                bmin[2] = ob.pos[2] - ob.radius;
-                bmax[0] = ob.pos[0] + ob.radius;
-                bmax[1] = ob.pos[1] + ob.height;
-                bmax[2] = ob.pos[2] + ob.radius;
+                bmin.x = ob.pos.x - ob.radius;
+                bmin.y = ob.pos.y;
+                bmin.z = ob.pos.z - ob.radius;
+                bmax.x = ob.pos.x + ob.radius;
+                bmax.y = ob.pos.y + ob.height;
+                bmax.z = ob.pos.z + ob.radius;
             }
             else if (ob.type == TileCacheObstacle.TileCacheObstacleType.BOX)
             {
@@ -711,13 +711,13 @@ namespace DotRecast.Detour.TileCache
             }
             else if (ob.type == TileCacheObstacle.TileCacheObstacleType.ORIENTED_BOX)
             {
-                float maxr = 1.41f * Math.Max(ob.extents[0], ob.extents[2]);
-                bmin[0] = ob.center[0] - maxr;
-                bmax[0] = ob.center[0] + maxr;
-                bmin[1] = ob.center[1] - ob.extents[1];
-                bmax[1] = ob.center[1] + ob.extents[1];
-                bmin[2] = ob.center[2] - maxr;
-                bmax[2] = ob.center[2] + maxr;
+                float maxr = 1.41f * Math.Max(ob.extents.x, ob.extents.z);
+                bmin.x = ob.center.x - maxr;
+                bmax.x = ob.center.x + maxr;
+                bmin.y = ob.center.y - ob.extents.y;
+                bmax.y = ob.center.y + ob.extents.y;
+                bmin.z = ob.center.z - maxr;
+                bmax.z = ob.center.z + maxr;
             }
         }
 
