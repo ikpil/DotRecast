@@ -10,15 +10,13 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        var path = Loader.ToRPath("dungeon.obj");
-        path = Path.GetDirectoryName(path);
-        if (!string.IsNullOrEmpty(path))
-        {
-            var workingDirectory = Path.Combine(path, "..");
-            workingDirectory = Path.GetFullPath(workingDirectory);
-            Directory.SetCurrentDirectory(workingDirectory);
-        }
+        InitializeLogger();
+        InitializeWorkingDirectory();
+        StartDemo();
+    }
 
+    private static void InitializeLogger()
+    {
         var format = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj} [{ThreadName}:{ThreadId}]{NewLine}{Exception}";
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Verbose()
@@ -34,11 +32,21 @@ public static class Program
                 outputTemplate: format)
             )
             .CreateLogger();
-
-        Run();
     }
 
-    public static void Run()
+    private static void InitializeWorkingDirectory()
+    {
+        var path = Loader.ToRPath("dungeon.obj");
+        path = Path.GetDirectoryName(path);
+        if (!string.IsNullOrEmpty(path))
+        {
+            var workingDirectory = Path.Combine(path, "..");
+            workingDirectory = Path.GetFullPath(workingDirectory);
+            Directory.SetCurrentDirectory(workingDirectory);
+        }
+    }
+
+    private static void StartDemo()
     {
         var demo = new RecastDemo();
         demo.Run();
