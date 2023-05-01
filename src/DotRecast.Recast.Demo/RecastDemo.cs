@@ -714,17 +714,8 @@ public class RecastDemo
         _imgui.Update((float)dt);
     }
 
-    private unsafe void OnWindowRender(double dt)
+    private void OnWindowRender(double dt)
     {
-        // _gl.ClearColor(Color.CadetBlue);
-        // _gl.Clear(ClearBufferMask.ColorBufferBit);
-
-        // Set the viewport.
-        // glViewport(0, 0, width, height);
-        //_gl.Viewport(0, 0, (uint)width, (uint)height);
-        //viewport = new int[] { 0, 0, width, height };
-        // glGetIntegerv(GL_VIEWPORT, viewport);
-
         // Clear the screen
         dd.clear();
         projectionMatrix = dd.projectionMatrix(50f, (float)width / (float)height, 1.0f, camr);
@@ -745,11 +736,5 @@ public class RecastDemo
         _imgui.Render();
 
         window.SwapBuffers();
-    }
-
-
-    private void ErrorCallback(Silk.NET.GLFW.ErrorCode code, string message)
-    {
-        Console.WriteLine($"GLFW error [{code}]: {message}");
     }
 }
