@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Detour.Crowd
 {
-    public class SweepCircleCircleResult
+    public struct SweepCircleCircleResult
     {
         public readonly bool intersection;
         public readonly float htmin;

@@ -65,7 +65,7 @@ namespace DotRecast.Detour.Crowd
 
             public bool touch;
         }
-        
+
         private ObstacleAvoidanceParams m_params;
         private float m_invHorizTime;
         private float m_vmax;
@@ -120,7 +120,7 @@ namespace DotRecast.Detour.Crowd
         {
             if (m_nsegments >= m_maxSegments)
                 return;
-            
+
             ObstacleSegment seg = m_segments[m_nsegments++];
             seg.p = p;
             seg.q = q;
@@ -207,21 +207,24 @@ namespace DotRecast.Detour.Crowd
             return new SweepCircleCircleResult(true, (b - rd) * a, (b + rd) * a);
         }
 
-        Tuple<bool, float> isectRaySeg(Vector3f ap, Vector3f u, Vector3f bp, Vector3f bq)
+        IsectRaySegResult isectRaySeg(Vector3f ap, Vector3f u, Vector3f bp, Vector3f bq)
         {
             Vector3f v = vSub(bq, bp);
             Vector3f w = vSub(ap, bp);
             float d = vPerp2D(u, v);
             if (Math.Abs(d) < 1e-6f)
-                return Tuple.Create(false, 0f);
+                return new IsectRaySegResult(false, 0f);
+            
             d = 1.0f / d;
             float t = vPerp2D(v, w) * d;
             if (t < 0 || t > 1)
-                return Tuple.Create(false, 0f);
+                return new IsectRaySegResult(false, 0f);
+            
             float s = vPerp2D(u, w) * d;
             if (s < 0 || s > 1)
-                return Tuple.Create(false, 0f);
-            return Tuple.Create(true, t);
+                return new IsectRaySegResult(false, 0f);
+            
+            return new IsectRaySegResult(true, t);
         }
 
         /**
@@ -310,10 +313,11 @@ namespace DotRecast.Detour.Crowd
                 }
                 else
                 {
-                    Tuple<bool, float> ires = isectRaySeg(pos, vcand, seg.p, seg.q);
-                    if (!ires.Item1)
+                    var ires = isectRaySeg(pos, vcand, seg.p, seg.q);
+                    if (!ires.result)
                         continue;
-                    htmin = ires.Item2;
+                    
+                    htmin = ires.htmin;
                 }
 
                 // Avoid less when facing walls.
