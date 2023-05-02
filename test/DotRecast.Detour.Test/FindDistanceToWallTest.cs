@@ -27,22 +27,22 @@ public class FindDistanceToWallTest : AbstractDetourTest
 {
     private static readonly float[] DISTANCES_TO_WALL = { 0.597511f, 3.201085f, 0.603713f, 2.791475f, 2.815544f };
 
-    private static readonly float[][] HIT_POSITION =
+    private static readonly Vector3f[] HIT_POSITION =
     {
-        new[] { 23.177608f, 10.197294f, -45.742954f },
-        new[] { 22.331268f, 10.197294f, -4.241272f },
-        new[] { 18.108675f, 15.743596f, -73.236839f },
-        new[] { 1.984785f, 10.197294f, -8.441269f },
-        new[] { -22.315216f, 4.997294f, -11.441269f }
+        Vector3f.Of(23.177608f, 10.197294f, -45.742954f),
+        Vector3f.Of(22.331268f, 10.197294f, -4.241272f),
+        Vector3f.Of(18.108675f, 15.743596f, -73.236839f),
+        Vector3f.Of(1.984785f, 10.197294f, -8.441269f),
+        Vector3f.Of(-22.315216f, 4.997294f, -11.441269f),
     };
 
-    private static readonly float[][] HIT_NORMAL =
+    private static readonly Vector3f[] HIT_NORMAL =
     {
-        new[] { -0.955779f, 0.0f, -0.29408592f },
-        new[] { 0.0f, 0.0f, 1.0f },
-        new[] { 0.97014254f, 0.0f, 0.24253564f },
-        new[] { -1.0f, 0.0f, 0.0f },
-        new[] { 1.0f, 0.0f, 0.0f }
+        Vector3f.Of(-0.955779f, 0.0f, -0.29408592f),
+        Vector3f.Of(0.0f, 0.0f, 1.0f),
+        Vector3f.Of(0.97014254f, 0.0f, 0.24253564f),
+        Vector3f.Of(-1.0f, 0.0f, 0.0f),
+        Vector3f.Of(1.0f, 0.0f, 0.0f),
     };
 
     [Test]
@@ -55,15 +55,14 @@ public class FindDistanceToWallTest : AbstractDetourTest
             Result<FindDistanceToWallResult> result = query.findDistanceToWall(startRefs[i], startPos, 3.5f, filter);
             FindDistanceToWallResult hit = result.result;
             Assert.That(hit.getDistance(), Is.EqualTo(DISTANCES_TO_WALL[i]).Within(0.001f));
-            for (int v = 0; v < 3; v++)
-            {
-                Assert.That(hit.getPosition()[v], Is.EqualTo(HIT_POSITION[i][v]).Within(0.001f));
-            }
+            
+            Assert.That(hit.getPosition().x, Is.EqualTo(HIT_POSITION[i].x).Within(0.001f));
+            Assert.That(hit.getPosition().y, Is.EqualTo(HIT_POSITION[i].y).Within(0.001f));
+            Assert.That(hit.getPosition().z, Is.EqualTo(HIT_POSITION[i].z).Within(0.001f));
 
-            for (int v = 0; v < 3; v++)
-            {
-                Assert.That(hit.getNormal()[v], Is.EqualTo(HIT_NORMAL[i][v]).Within(0.001f));
-            }
+            Assert.That(hit.getNormal().x, Is.EqualTo(HIT_NORMAL[i].x).Within(0.001f));
+            Assert.That(hit.getNormal().y, Is.EqualTo(HIT_NORMAL[i].y).Within(0.001f));
+            Assert.That(hit.getNormal().z, Is.EqualTo(HIT_NORMAL[i].z).Within(0.001f));
         }
     }
 }
