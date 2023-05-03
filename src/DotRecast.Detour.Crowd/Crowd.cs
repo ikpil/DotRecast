@@ -869,7 +869,7 @@ namespace DotRecast.Detour.Crowd
             {
                 Vector3f p = ag.npos;
                 float r = ag.option.radius;
-                m_grid.addItem(ag, p.x - r, p.z - r, p.x + r, p.z + r);
+                m_grid.AddItem(ag, p.x - r, p.z - r, p.x + r, p.z + r);
             }
 
             _telemetry.stop("buildProximityGrid");
@@ -901,12 +901,12 @@ namespace DotRecast.Detour.Crowd
 
             _telemetry.stop("buildNeighbours");
         }
+        
 
         private List<CrowdNeighbour> getNeighbours(Vector3f pos, float height, float range, CrowdAgent skip, ProximityGrid grid)
         {
             List<CrowdNeighbour> result = new List<CrowdNeighbour>();
-            HashSet<CrowdAgent> proxAgents = grid.queryItems(pos.x - range, pos.z - range, pos.x + range, pos.z + range);
-
+            HashSet<CrowdAgent> proxAgents = grid.QueryItems(pos.x - range, pos.z - range, pos.x + range, pos.z + range);
             foreach (CrowdAgent ag in proxAgents)
             {
                 if (ag == skip)

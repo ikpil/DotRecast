@@ -408,12 +408,10 @@ public class CrowdTool : Tool
 
             dd.begin(QUADS);
             ProximityGrid grid = crowd.getGrid();
-            float cs = grid.getCellSize();
-            foreach (int[] ic in grid.getItemCounts())
+            float cs = grid.GetCellSize();
+            foreach (var (combinedKey, count) in grid.GetItemCounts())
             {
-                int x = ic[0];
-                int y = ic[1];
-                int count = ic[2];
+                ProximityGrid.DecomposeKey(combinedKey, out var x, out var y);
                 if (count != 0)
                 {
                     int col = duRGBA(128, 0, 0, Math.Min(count * 40, 255));

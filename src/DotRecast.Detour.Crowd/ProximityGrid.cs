@@ -20,44 +20,60 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 
 namespace DotRecast.Detour.Crowd
 {
     public class ProximityGrid
     {
-        private readonly float m_cellSize;
-        private readonly float m_invCellSize;
-        private readonly Dictionary<ItemKey, List<CrowdAgent>> items;
+        private readonly float _cellSize;
+        private readonly float _invCellSize;
+        private readonly Dictionary<long, List<CrowdAgent>> _items;
 
-        public ProximityGrid(float m_cellSize)
+        public ProximityGrid(float cellSize)
         {
-            this.m_cellSize = m_cellSize;
-            m_invCellSize = 1.0f / m_cellSize;
-            items = new Dictionary<ItemKey, List<CrowdAgent>>();
+            _cellSize = cellSize;
+            _invCellSize = 1.0f / cellSize;
+            _items = new Dictionary<long, List<CrowdAgent>>();
         }
 
-        void clear()
+        public static long CombineKey(int x, int y)
         {
-            items.Clear();
+            uint ux = (uint)x;
+            uint uy = (uint)y;
+            return ((long)ux << 32) | uy;
         }
 
-        public void addItem(CrowdAgent agent, float minx, float miny, float maxx, float maxy)
+        public static void DecomposeKey(long key, out int x, out int y)
         {
-            int iminx = (int)Math.Floor(minx * m_invCellSize);
-            int iminy = (int)Math.Floor(miny * m_invCellSize);
-            int imaxx = (int)Math.Floor(maxx * m_invCellSize);
-            int imaxy = (int)Math.Floor(maxy * m_invCellSize);
+            uint ux = (uint)(key >> 32);
+            uint uy = (uint)key;
+            x = (int)ux;
+            y = (int)uy;
+        }
+
+        void Clear()
+        {
+            _items.Clear();
+        }
+
+        public void AddItem(CrowdAgent agent, float minx, float miny, float maxx, float maxy)
+        {
+            int iminx = (int)Math.Floor(minx * _invCellSize);
+            int iminy = (int)Math.Floor(miny * _invCellSize);
+            int imaxx = (int)Math.Floor(maxx * _invCellSize);
+            int imaxy = (int)Math.Floor(maxy * _invCellSize);
 
             for (int y = iminy; y <= imaxy; ++y)
             {
                 for (int x = iminx; x <= imaxx; ++x)
                 {
-                    ItemKey key = new ItemKey(x, y);
-                    if (!items.TryGetValue(key, out var ids))
+                    long key = CombineKey(x, y);
+                    if (!_items.TryGetValue(key, out var ids))
                     {
                         ids = new List<CrowdAgent>();
-                        items.Add(key, ids);
+                        _items.Add(key, ids);
                     }
 
                     ids.Add(agent);
@@ -65,20 +81,20 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        public HashSet<CrowdAgent> queryItems(float minx, float miny, float maxx, float maxy)
+        public HashSet<CrowdAgent> QueryItems(float minx, float miny, float maxx, float maxy)
         {
-            int iminx = (int)Math.Floor(minx * m_invCellSize);
-            int iminy = (int)Math.Floor(miny * m_invCellSize);
-            int imaxx = (int)Math.Floor(maxx * m_invCellSize);
-            int imaxy = (int)Math.Floor(maxy * m_invCellSize);
+            int iminx = (int)Math.Floor(minx * _invCellSize);
+            int iminy = (int)Math.Floor(miny * _invCellSize);
+            int imaxx = (int)Math.Floor(maxx * _invCellSize);
+            int imaxy = (int)Math.Floor(maxy * _invCellSize);
 
             HashSet<CrowdAgent> result = new HashSet<CrowdAgent>();
             for (int y = iminy; y <= imaxy; ++y)
             {
                 for (int x = iminx; x <= imaxx; ++x)
                 {
-                    ItemKey key = new ItemKey(x, y);
-                    if (items.TryGetValue(key, out var ids))
+                    long key = CombineKey(x, y);
+                    if (_items.TryGetValue(key, out var ids))
                     {
                         result.UnionWith(ids);
                     }
@@ -88,59 +104,16 @@ namespace DotRecast.Detour.Crowd
             return result;
         }
 
-        public List<int[]> getItemCounts()
+        public IEnumerable<(long, int)> GetItemCounts()
         {
-            return items
+            return _items
                 .Where(e => e.Value.Count > 0)
-                .Select(e => new int[] { e.Key.x, e.Key.y, e.Value.Count })
-                .ToList();
+                .Select(e => (e.Key, e.Value.Count));
         }
 
-        public float getCellSize()
+        public float GetCellSize()
         {
-            return m_cellSize;
+            return _cellSize;
         }
-
-        private class ItemKey
-        {
-            public readonly int x;
-            public readonly int y;
-
-            public ItemKey(int x, int y)
-            {
-                this.x = x;
-                this.y = y;
-            }
-
-            public override int GetHashCode()
-            {
-                int prime = 31;
-                int result = 1;
-                result = prime * result + x;
-                result = prime * result + y;
-                return result;
-            }
-
-            public override bool Equals(object? obj)
-            {
-                if (this == obj)
-                    return true;
-
-                if (obj == null)
-                    return false;
-
-                if (GetType() != obj.GetType())
-                    return false;
-
-                ItemKey other = (ItemKey)obj;
-                if (x != other.x)
-                    return false;
-
-                if (y != other.y)
-                    return false;
-
-                return true;
-            }
-        };
     }
 }
