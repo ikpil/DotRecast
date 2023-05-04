@@ -142,19 +142,19 @@ namespace DotRecast.Detour.Crowd
         /// dtCrowdAgentParams::queryFilterType
         public const int DT_CROWD_MAX_QUERY_FILTER_TYPE = 16;
 
-        private readonly AtomicInteger agentId = new AtomicInteger();
-        private readonly List<CrowdAgent> m_agents;
-        private readonly PathQueue m_pathq;
-        private readonly ObstacleAvoidanceParams[] m_obstacleQueryParams = new ObstacleAvoidanceParams[DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS];
-        private readonly ObstacleAvoidanceQuery m_obstacleQuery;
-        private ProximityGrid m_grid;
-        private readonly Vector3f m_ext = new Vector3f();
-        private readonly QueryFilter[] m_filters = new QueryFilter[DT_CROWD_MAX_QUERY_FILTER_TYPE];
-        private NavMeshQuery navQuery;
-        private NavMesh navMesh;
+        private readonly AtomicInteger _agentId = new AtomicInteger();
+        private readonly List<CrowdAgent> _agents;
+        private readonly PathQueue _pathQ;
+        private readonly ObstacleAvoidanceParams[] _obstacleQueryParams = new ObstacleAvoidanceParams[DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS];
+        private readonly ObstacleAvoidanceQuery _obstacleQuery;
+        private ProximityGrid _grid;
+        private readonly Vector3f _ext = new Vector3f();
+        private readonly QueryFilter[] _filters = new QueryFilter[DT_CROWD_MAX_QUERY_FILTER_TYPE];
+        private NavMeshQuery _navQuery;
+        private NavMesh _navMesh;
         private readonly CrowdConfig _config;
         private readonly CrowdTelemetry _telemetry = new CrowdTelemetry();
-        int m_velocitySampleCount;
+        private int _velocitySampleCount;
 
         public Crowd(CrowdConfig config, NavMesh nav) :
             this(config, nav, i => new DefaultQueryFilter())
@@ -164,34 +164,34 @@ namespace DotRecast.Detour.Crowd
         public Crowd(CrowdConfig config, NavMesh nav, Func<int, QueryFilter> queryFilterFactory)
         {
             _config = config;
-            vSet(ref m_ext, config.maxAgentRadius * 2.0f, config.maxAgentRadius * 1.5f, config.maxAgentRadius * 2.0f);
+            vSet(ref _ext, config.maxAgentRadius * 2.0f, config.maxAgentRadius * 1.5f, config.maxAgentRadius * 2.0f);
 
-            m_obstacleQuery = new ObstacleAvoidanceQuery(config.maxObstacleAvoidanceCircles, config.maxObstacleAvoidanceSegments);
+            _obstacleQuery = new ObstacleAvoidanceQuery(config.maxObstacleAvoidanceCircles, config.maxObstacleAvoidanceSegments);
 
             for (int i = 0; i < DT_CROWD_MAX_QUERY_FILTER_TYPE; i++)
             {
-                m_filters[i] = queryFilterFactory.Invoke(i);
+                _filters[i] = queryFilterFactory.Invoke(i);
             }
 
             // Init obstacle query option.
             for (int i = 0; i < DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS; ++i)
             {
-                m_obstacleQueryParams[i] = new ObstacleAvoidanceParams();
+                _obstacleQueryParams[i] = new ObstacleAvoidanceParams();
             }
 
             // Allocate temp buffer for merging paths.
-            m_pathq = new PathQueue(config);
-            m_agents = new List<CrowdAgent>();
+            _pathQ = new PathQueue(config);
+            _agents = new List<CrowdAgent>();
 
             // The navQuery is mostly used for local searches, no need for large node pool.
-            navMesh = nav;
-            navQuery = new NavMeshQuery(nav);
+            _navMesh = nav;
+            _navQuery = new NavMeshQuery(nav);
         }
 
         public void setNavMesh(NavMesh nav)
         {
-            navMesh = nav;
-            navQuery = new NavMeshQuery(nav);
+            _navMesh = nav;
+            _navQuery = new NavMeshQuery(nav);
         }
 
         /// Sets the shared avoidance configuration for the specified index.
@@ -202,7 +202,7 @@ namespace DotRecast.Detour.Crowd
         {
             if (idx >= 0 && idx < DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS)
             {
-                m_obstacleQueryParams[idx] = new ObstacleAvoidanceParams(option);
+                _obstacleQueryParams[idx] = new ObstacleAvoidanceParams(option);
             }
         }
 
@@ -214,7 +214,7 @@ namespace DotRecast.Detour.Crowd
         {
             if (idx >= 0 && idx < DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS)
             {
-                return m_obstacleQueryParams[idx];
+                return _obstacleQueryParams[idx];
             }
 
             return null;
@@ -239,12 +239,12 @@ namespace DotRecast.Detour.Crowd
      */
         public CrowdAgent addAgent(Vector3f pos, CrowdAgentParams option)
         {
-            CrowdAgent ag = new CrowdAgent(agentId.GetAndIncrement());
-            m_agents.Add(ag);
+            CrowdAgent ag = new CrowdAgent(_agentId.GetAndIncrement());
+            _agents.Add(ag);
             updateAgentParameters(ag, option);
 
             // Find nearest position on navmesh and place the agent there.
-            Result<FindNearestPolyResult> nearestPoly = navQuery.findNearestPoly(pos, m_ext, m_filters[ag.option.queryFilterType]);
+            Result<FindNearestPolyResult> nearestPoly = _navQuery.findNearestPoly(pos, _ext, _filters[ag.option.queryFilterType]);
 
             var nearest = nearestPoly.Succeeded() ? nearestPoly.result.getNearestPos() : pos;
             long refs = nearestPoly.Succeeded() ? nearestPoly.result.getNearestRef() : 0L;
@@ -284,7 +284,7 @@ namespace DotRecast.Detour.Crowd
      */
         public void removeAgent(CrowdAgent agent)
         {
-            m_agents.Remove(agent);
+            _agents.Remove(agent);
         }
 
         private bool requestMoveTargetReplan(CrowdAgent ag, long refs, Vector3f pos)
@@ -356,27 +356,27 @@ namespace DotRecast.Detour.Crowd
      */
         public ICollection<CrowdAgent> getActiveAgents()
         {
-            return m_agents;
+            return _agents;
         }
 
         public Vector3f getQueryExtents()
         {
-            return m_ext;
+            return _ext;
         }
 
         public QueryFilter getFilter(int i)
         {
-            return i >= 0 && i < DT_CROWD_MAX_QUERY_FILTER_TYPE ? m_filters[i] : null;
+            return i >= 0 && i < DT_CROWD_MAX_QUERY_FILTER_TYPE ? _filters[i] : null;
         }
 
         public ProximityGrid getGrid()
         {
-            return m_grid;
+            return _grid;
         }
 
         public PathQueue getPathQueue()
         {
-            return m_pathq;
+            return _pathQ;
         }
 
         public CrowdTelemetry telemetry()
@@ -391,7 +391,7 @@ namespace DotRecast.Detour.Crowd
 
         public CrowdTelemetry update(float dt, CrowdAgentDebugInfo debug)
         {
-            m_velocitySampleCount = 0;
+            _velocitySampleCount = 0;
 
             _telemetry.start();
 
@@ -457,12 +457,12 @@ namespace DotRecast.Detour.Crowd
                 Vector3f agentPos = new Vector3f();
                 long agentRef = ag.corridor.getFirstPoly();
                 agentPos = ag.npos;
-                if (!navQuery.isValidPolyRef(agentRef, m_filters[ag.option.queryFilterType]))
+                if (!_navQuery.isValidPolyRef(agentRef, _filters[ag.option.queryFilterType]))
                 {
                     // Current location is not valid, try to reposition.
                     // TODO: this can snap agents, how to handle that?
-                    Result<FindNearestPolyResult> nearestPoly = navQuery.findNearestPoly(ag.npos, m_ext,
-                        m_filters[ag.option.queryFilterType]);
+                    Result<FindNearestPolyResult> nearestPoly = _navQuery.findNearestPoly(ag.npos, _ext,
+                        _filters[ag.option.queryFilterType]);
                     agentRef = nearestPoly.Succeeded() ? nearestPoly.result.getNearestRef() : 0L;
                     if (nearestPoly.Succeeded())
                     {
@@ -503,11 +503,11 @@ namespace DotRecast.Detour.Crowd
                 if (ag.targetState != MoveRequestState.DT_CROWDAGENT_TARGET_NONE
                     && ag.targetState != MoveRequestState.DT_CROWDAGENT_TARGET_FAILED)
                 {
-                    if (!navQuery.isValidPolyRef(ag.targetRef, m_filters[ag.option.queryFilterType]))
+                    if (!_navQuery.isValidPolyRef(ag.targetRef, _filters[ag.option.queryFilterType]))
                     {
                         // Current target is not valid, try to reposition.
-                        Result<FindNearestPolyResult> fnp = navQuery.findNearestPoly(ag.targetPos, m_ext,
-                            m_filters[ag.option.queryFilterType]);
+                        Result<FindNearestPolyResult> fnp = _navQuery.findNearestPoly(ag.targetPos, _ext,
+                            _filters[ag.option.queryFilterType]);
                         ag.targetRef = fnp.Succeeded() ? fnp.result.getNearestRef() : 0L;
                         if (fnp.Succeeded())
                         {
@@ -527,7 +527,7 @@ namespace DotRecast.Detour.Crowd
                 }
 
                 // If nearby corridor is not valid, replan.
-                if (!ag.corridor.isValid(_config.checkLookAhead, navQuery, m_filters[ag.option.queryFilterType]))
+                if (!ag.corridor.isValid(_config.checkLookAhead, _navQuery, _filters[ag.option.queryFilterType]))
                 {
                     // Fix current path.
                     // ag.corridor.trimInvalidPath(agentRef, agentPos, m_navquery,
@@ -589,20 +589,20 @@ namespace DotRecast.Detour.Crowd
                     }
 
                     // Quick search towards the goal.
-                    navQuery.initSlicedFindPath(path[0], ag.targetRef, ag.npos, ag.targetPos,
-                        m_filters[ag.option.queryFilterType], 0);
-                    navQuery.updateSlicedFindPath(_config.maxTargetFindPathIterations);
+                    _navQuery.initSlicedFindPath(path[0], ag.targetRef, ag.npos, ag.targetPos,
+                        _filters[ag.option.queryFilterType], 0);
+                    _navQuery.updateSlicedFindPath(_config.maxTargetFindPathIterations);
                     Result<List<long>> pathFound;
                     if (ag.targetReplan) // && npath > 10)
                     {
                         // Try to use existing steady path during replan if
                         // possible.
-                        pathFound = navQuery.finalizeSlicedFindPathPartial(path);
+                        pathFound = _navQuery.finalizeSlicedFindPathPartial(path);
                     }
                     else
                     {
                         // Try to move towards target when goal changes.
-                        pathFound = navQuery.finalizeSlicedFindPath();
+                        pathFound = _navQuery.finalizeSlicedFindPath();
                     }
 
                     List<long> reqPath = pathFound.result;
@@ -614,7 +614,7 @@ namespace DotRecast.Detour.Crowd
                         {
                             // Partial path, constrain target position inside the
                             // last polygon.
-                            Result<ClosestPointOnPolyResult> cr = navQuery.closestPointOnPoly(reqPath[reqPath.Count - 1],
+                            Result<ClosestPointOnPolyResult> cr = _navQuery.closestPointOnPoly(reqPath[reqPath.Count - 1],
                                 ag.targetPos);
                             if (cr.Succeeded())
                             {
@@ -666,8 +666,8 @@ namespace DotRecast.Detour.Crowd
             while (!queue.IsEmpty())
             {
                 CrowdAgent ag = queue.Dequeue();
-                ag.targetPathQueryResult = m_pathq.request(ag.corridor.getLastPoly(), ag.targetRef, ag.corridor.getTarget(),
-                    ag.targetPos, m_filters[ag.option.queryFilterType]);
+                ag.targetPathQueryResult = _pathQ.request(ag.corridor.getLastPoly(), ag.targetRef, ag.corridor.getTarget(),
+                    ag.targetPos, _filters[ag.option.queryFilterType]);
                 if (ag.targetPathQueryResult != null)
                 {
                     ag.targetState = MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_PATH;
@@ -681,7 +681,7 @@ namespace DotRecast.Detour.Crowd
 
             // Update requests.
             _telemetry.start("pathQueueUpdate");
-            m_pathq.update(navMesh);
+            _pathQ.update(_navMesh);
             _telemetry.stop("pathQueueUpdate");
 
             // Process path results.
@@ -783,7 +783,7 @@ namespace DotRecast.Detour.Crowd
                             {
                                 // Partial path, constrain target position inside
                                 // the last polygon.
-                                Result<ClosestPointOnPolyResult> cr = navQuery.closestPointOnPoly(res[res.Count - 1], targetPos);
+                                Result<ClosestPointOnPolyResult> cr = _navQuery.closestPointOnPoly(res[res.Count - 1], targetPos);
                                 if (cr.Succeeded())
                                 {
                                     targetPos = cr.result.getClosest();
@@ -854,7 +854,7 @@ namespace DotRecast.Detour.Crowd
             while (!queue.IsEmpty())
             {
                 CrowdAgent ag = queue.Dequeue();
-                ag.corridor.optimizePathTopology(navQuery, m_filters[ag.option.queryFilterType], _config.maxTopologyOptimizationIterations);
+                ag.corridor.optimizePathTopology(_navQuery, _filters[ag.option.queryFilterType], _config.maxTopologyOptimizationIterations);
                 ag.topologyOptTime = 0;
             }
 
@@ -864,12 +864,12 @@ namespace DotRecast.Detour.Crowd
         private void buildProximityGrid(ICollection<CrowdAgent> agents)
         {
             _telemetry.start("buildProximityGrid");
-            m_grid = new ProximityGrid(_config.maxAgentRadius * 3);
+            _grid = new ProximityGrid(_config.maxAgentRadius * 3);
             foreach (CrowdAgent ag in agents)
             {
                 Vector3f p = ag.npos;
                 float r = ag.option.radius;
-                m_grid.AddItem(ag, p.x - r, p.z - r, p.x + r, p.z + r);
+                _grid.AddItem(ag, p.x - r, p.z - r, p.x + r, p.z + r);
             }
 
             _telemetry.stop("buildProximityGrid");
@@ -889,14 +889,14 @@ namespace DotRecast.Detour.Crowd
                 // if it has become invalid.
                 float updateThr = ag.option.collisionQueryRange * 0.25f;
                 if (vDist2DSqr(ag.npos, ag.boundary.getCenter()) > sqr(updateThr)
-                    || !ag.boundary.isValid(navQuery, m_filters[ag.option.queryFilterType]))
+                    || !ag.boundary.isValid(_navQuery, _filters[ag.option.queryFilterType]))
                 {
-                    ag.boundary.update(ag.corridor.getFirstPoly(), ag.npos, ag.option.collisionQueryRange, navQuery,
-                        m_filters[ag.option.queryFilterType]);
+                    ag.boundary.update(ag.corridor.getFirstPoly(), ag.npos, ag.option.collisionQueryRange, _navQuery,
+                        _filters[ag.option.queryFilterType]);
                 }
 
                 // Query neighbour agents
-                ag.neis = getNeighbours(ag.npos, ag.option.height, ag.option.collisionQueryRange, ag, m_grid);
+                ag.neis = getNeighbours(ag.npos, ag.option.height, ag.option.collisionQueryRange, ag, _grid);
             }
 
             _telemetry.stop("buildNeighbours");
@@ -953,15 +953,15 @@ namespace DotRecast.Detour.Crowd
                 }
 
                 // Find corners for steering
-                ag.corners = ag.corridor.findCorners(DT_CROWDAGENT_MAX_CORNERS, navQuery, m_filters[ag.option.queryFilterType]);
+                ag.corners = ag.corridor.findCorners(DT_CROWDAGENT_MAX_CORNERS, _navQuery, _filters[ag.option.queryFilterType]);
 
                 // Check to see if the corner after the next corner is directly visible,
                 // and short cut to there.
                 if ((ag.option.updateFlags & CrowdAgentParams.DT_CROWD_OPTIMIZE_VIS) != 0 && ag.corners.Count > 0)
                 {
                     Vector3f target = ag.corners[Math.Min(1, ag.corners.Count - 1)].getPos();
-                    ag.corridor.optimizePathVisibility(target, ag.option.pathOptimizationRange, navQuery,
-                        m_filters[ag.option.queryFilterType]);
+                    ag.corridor.optimizePathVisibility(target, ag.option.pathOptimizationRange, _navQuery,
+                        _filters[ag.option.queryFilterType]);
 
                     // Copy data for debug purposes.
                     if (debugAgent == ag)
@@ -1010,7 +1010,7 @@ namespace DotRecast.Detour.Crowd
                     // Adjust the path over the off-mesh connection.
                     long[] refs = new long[2];
                     if (ag.corridor.moveOverOffmeshConnection(ag.corners[ag.corners.Count - 1].getRef(), refs, ref anim.startPos,
-                            ref anim.endPos, navQuery))
+                            ref anim.endPos, _navQuery))
                     {
                         anim.initPos = ag.npos;
                         anim.polyRef = refs[1];
@@ -1144,13 +1144,13 @@ namespace DotRecast.Detour.Crowd
 
                 if ((ag.option.updateFlags & CrowdAgentParams.DT_CROWD_OBSTACLE_AVOIDANCE) != 0)
                 {
-                    m_obstacleQuery.reset();
+                    _obstacleQuery.reset();
 
                     // Add neighbours as obstacles.
                     for (int j = 0; j < ag.neis.Count; ++j)
                     {
                         CrowdAgent nei = ag.neis[j].agent;
-                        m_obstacleQuery.addCircle(nei.npos, nei.option.radius, nei.vel, nei.dvel);
+                        _obstacleQuery.addCircle(nei.npos, nei.option.radius, nei.vel, nei.dvel);
                     }
 
                     // Append neighbour segments as obstacles.
@@ -1164,7 +1164,7 @@ namespace DotRecast.Detour.Crowd
                             continue;
                         }
 
-                        m_obstacleQuery.addSegment(s[0], s3);
+                        _obstacleQuery.addSegment(s[0], s3);
                     }
 
                     ObstacleAvoidanceDebugData vod = null;
@@ -1177,24 +1177,24 @@ namespace DotRecast.Detour.Crowd
                     bool adaptive = true;
                     int ns = 0;
 
-                    ObstacleAvoidanceParams option = m_obstacleQueryParams[ag.option.obstacleAvoidanceType];
+                    ObstacleAvoidanceParams option = _obstacleQueryParams[ag.option.obstacleAvoidanceType];
 
                     if (adaptive)
                     {
-                        var nsnvel = m_obstacleQuery.sampleVelocityAdaptive(ag.npos, ag.option.radius,
+                        var nsnvel = _obstacleQuery.sampleVelocityAdaptive(ag.npos, ag.option.radius,
                             ag.desiredSpeed, ag.vel, ag.dvel, option, vod);
                         ns = nsnvel.Item1;
                         ag.nvel = nsnvel.Item2;
                     }
                     else
                     {
-                        var nsnvel = m_obstacleQuery.sampleVelocityGrid(ag.npos, ag.option.radius,
+                        var nsnvel = _obstacleQuery.sampleVelocityGrid(ag.npos, ag.option.radius,
                             ag.desiredSpeed, ag.vel, ag.dvel, option, vod);
                         ns = nsnvel.Item1;
                         ag.nvel = nsnvel.Item2;
                     }
 
-                    m_velocitySampleCount += ns;
+                    _velocitySampleCount += ns;
                 }
                 else
                 {
@@ -1310,7 +1310,7 @@ namespace DotRecast.Detour.Crowd
                 }
 
                 // Move along navmesh.
-                ag.corridor.movePosition(ag.npos, navQuery, m_filters[ag.option.queryFilterType]);
+                ag.corridor.movePosition(ag.npos, _navQuery, _filters[ag.option.queryFilterType]);
                 // Get valid constrained position back.
                 ag.npos = ag.corridor.getPos();
 
