@@ -8,7 +8,7 @@ namespace DotRecast.Detour.Extras.Jumplink
 {
     public class EdgeExtractor
     {
-        public Edge[] extractEdges(PolyMesh mesh)
+        public Edge[] ExtractEdges(PolyMesh mesh)
         {
             List<Edge> edges = new List<Edge>();
             if (mesh != null)

@@ -27,34 +27,34 @@ public class PolygonByCircleConstraintTest
     private readonly PolygonByCircleConstraint constraint = new PolygonByCircleConstraint.StrictPolygonByCircleConstraint();
 
     [Test]
-    public void shouldHandlePolygonFullyInsideCircle()
+    public void ShouldHandlePolygonFullyInsideCircle()
     {
         float[] polygon = { -2, 0, 2, 2, 0, 2, 2, 0, -2, -2, 0, -2 };
         Vector3f center = Vector3f.Of(1, 0, 1);
-        float[] constrained = constraint.aply(polygon, center, 6);
+        float[] constrained = constraint.Aply(polygon, center, 6);
 
         Assert.That(constrained, Is.EqualTo(polygon));
     }
 
     [Test]
-    public void shouldHandleVerticalSegment()
+    public void ShouldHandleVerticalSegment()
     {
         int expectedSize = 21;
         float[] polygon = { -2, 0, 2, 2, 0, 2, 2, 0, -2, -2, 0, -2 };
         Vector3f center = Vector3f.Of(2, 0, 0);
 
-        float[] constrained = constraint.aply(polygon, center, 3);
+        float[] constrained = constraint.Aply(polygon, center, 3);
         Assert.That(constrained.Length, Is.EqualTo(expectedSize));
         Assert.That(constrained, Is.SupersetOf(new[] { 2f, 0f, 2f, 2f, 0f, -2f }));
     }
 
     [Test]
-    public void shouldHandleCircleFullyInsidePolygon()
+    public void ShouldHandleCircleFullyInsidePolygon()
     {
         int expectedSize = 12 * 3;
         float[] polygon = { -4, 0, 0, -3, 0, 3, 2, 0, 3, 3, 0, -3, -2, 0, -4 };
         Vector3f center = Vector3f.Of(-1, 0, -1);
-        float[] constrained = constraint.aply(polygon, center, 2);
+        float[] constrained = constraint.Aply(polygon, center, 2);
 
         Assert.That(constrained.Length, Is.EqualTo(expectedSize));
 
@@ -67,24 +67,24 @@ public class PolygonByCircleConstraintTest
     }
 
     [Test]
-    public void shouldHandleCircleInsidePolygon()
+    public void ShouldHandleCircleInsidePolygon()
     {
         int expectedSize = 9 * 3;
         float[] polygon = { -4, 0, 0, -3, 0, 3, 2, 0, 3, 3, 0, -3, -2, 0, -4 };
         Vector3f center = Vector3f.Of(-2, 0, -1);
-        float[] constrained = constraint.aply(polygon, center, 3);
+        float[] constrained = constraint.Aply(polygon, center, 3);
 
         Assert.That(constrained.Length, Is.EqualTo(expectedSize));
         Assert.That(constrained, Is.SupersetOf(new[] { -2f, 0f, -4f, -4f, 0f, 0f, -3.4641016f, 0.0f, 1.6076951f, -2.0f, 0.0f, 2.0f }));
     }
 
     [Test]
-    public void shouldHandleCircleOutsidePolygon()
+    public void ShouldHandleCircleOutsidePolygon()
     {
         int expectedSize = 7 * 3;
         float[] polygon = { -4, 0, 0, -3, 0, 3, 2, 0, 3, 3, 0, -3, -2, 0, -4 };
         Vector3f center = Vector3f.Of(4, 0, 0);
-        float[] constrained = constraint.aply(polygon, center, 4);
+        float[] constrained = constraint.Aply(polygon, center, 4);
 
         Assert.That(constrained.Length, Is.EqualTo(expectedSize));
         Assert.That(constrained, Is.SupersetOf(new[] { 1.5358982f, 0f, 3f, 2f, 0f, 3f, 3f, 0f, -3f }));

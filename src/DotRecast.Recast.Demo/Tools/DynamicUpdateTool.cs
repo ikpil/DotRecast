@@ -16,6 +16,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -125,17 +126,17 @@ public class DynamicUpdateTool : Tool
     public DynamicUpdateTool()
     {
         executor = Task.Factory;
-        bridgeGeom = DemoObjImporter.load(Loader.ToBytes("bridge.obj"));
-        houseGeom = DemoObjImporter.load(Loader.ToBytes("house.obj"));
-        convexGeom = DemoObjImporter.load(Loader.ToBytes("convex.obj"));
+        bridgeGeom = DemoObjImporter.Load(Loader.ToBytes("bridge.obj"));
+        houseGeom = DemoObjImporter.Load(Loader.ToBytes("house.obj"));
+        convexGeom = DemoObjImporter.Load(Loader.ToBytes("convex.obj"));
     }
 
-    public override void setSample(Sample sample)
+    public override void SetSample(Sample sample)
     {
         this.sample = sample;
     }
 
-    public override void handleClick(Vector3f s, Vector3f p, bool shift)
+    public override void HandleClick(Vector3f s, Vector3f p, bool shift)
     {
         if (mode == DynamicUpdateToolMode.COLLIDERS)
         {
@@ -146,41 +147,41 @@ public class DynamicUpdateTool : Tool
                 {
                     if (colliderShape == ColliderShape.SPHERE)
                     {
-                        colliderWithGizmo = sphereCollider(p);
+                        colliderWithGizmo = SphereCollider(p);
                     }
                     else if (colliderShape == ColliderShape.CAPSULE)
                     {
-                        colliderWithGizmo = capsuleCollider(p);
+                        colliderWithGizmo = CapsuleCollider(p);
                     }
                     else if (colliderShape == ColliderShape.BOX)
                     {
-                        colliderWithGizmo = boxCollider(p);
+                        colliderWithGizmo = BoxCollider(p);
                     }
                     else if (colliderShape == ColliderShape.CYLINDER)
                     {
-                        colliderWithGizmo = cylinderCollider(p);
+                        colliderWithGizmo = CylinderCollider(p);
                     }
                     else if (colliderShape == ColliderShape.COMPOSITE)
                     {
-                        colliderWithGizmo = compositeCollider(p);
+                        colliderWithGizmo = CompositeCollider(p);
                     }
                     else if (colliderShape == ColliderShape.TRIMESH_BRIDGE)
                     {
-                        colliderWithGizmo = trimeshBridge(p);
+                        colliderWithGizmo = TrimeshBridge(p);
                     }
                     else if (colliderShape == ColliderShape.TRIMESH_HOUSE)
                     {
-                        colliderWithGizmo = trimeshHouse(p);
+                        colliderWithGizmo = TrimeshHouse(p);
                     }
                     else if (colliderShape == ColliderShape.CONVEX)
                     {
-                        colliderWithGizmo = convexTrimesh(p);
+                        colliderWithGizmo = ConvexTrimesh(p);
                     }
                 }
 
                 if (colliderWithGizmo != null)
                 {
-                    long id = dynaMesh.addCollider(colliderWithGizmo.Item1);
+                    long id = dynaMesh.AddCollider(colliderWithGizmo.Item1);
                     colliders.Add(id, colliderWithGizmo.Item1);
                     colliderGizmos.Add(id, colliderWithGizmo.Item2);
                 }
@@ -205,7 +206,7 @@ public class DynamicUpdateTool : Tool
                 Vector3f sp = Vector3f.Of(spos.x, spos.y + 1.3f, spos.z);
                 Vector3f ep = Vector3f.Of(epos.x, epos.y + 1.3f, epos.z);
                 long t1 = FrequencyWatch.Ticks;
-                float? hitPos = dynaMesh.voxelQuery().raycast(sp, ep);
+                float? hitPos = dynaMesh.VoxelQuery().Raycast(sp, ep);
                 long t2 = FrequencyWatch.Ticks;
                 raycastTime = (t2 - t1) / TimeSpan.TicksPerMillisecond;
                 raycastHit = hitPos.HasValue;
@@ -216,15 +217,15 @@ public class DynamicUpdateTool : Tool
         }
     }
 
-    private Tuple<Collider, ColliderGizmo> sphereCollider(Vector3f p)
+    private Tuple<Collider, ColliderGizmo> SphereCollider(Vector3f p)
     {
         float radius = 1 + (float)random.NextDouble() * 10;
         return Tuple.Create<Collider, ColliderGizmo>(
             new SphereCollider(p, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb),
-            GizmoFactory.sphere(p, radius));
+            GizmoFactory.Sphere(p, radius));
     }
 
-    private Tuple<Collider, ColliderGizmo> capsuleCollider(Vector3f p)
+    private Tuple<Collider, ColliderGizmo> CapsuleCollider(Vector3f p)
     {
         float radius = 0.4f + (float)random.NextDouble() * 4f;
         Vector3f a = Vector3f.Of(
@@ -232,7 +233,7 @@ public class DynamicUpdateTool : Tool
             0.01f + (float)random.NextDouble(),
             (1f - 2 * (float)random.NextDouble())
         );
-        vNormalize(ref a);
+        VNormalize(ref a);
         float len = 1f + (float)random.NextDouble() * 20f;
         a.x *= len;
         a.y *= len;
@@ -240,10 +241,10 @@ public class DynamicUpdateTool : Tool
         Vector3f start = Vector3f.Of(p.x, p.y, p.z);
         Vector3f end = Vector3f.Of(p.x + a.x, p.y + a.y, p.z + a.z);
         return Tuple.Create<Collider, ColliderGizmo>(new CapsuleCollider(
-            start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb), GizmoFactory.capsule(start, end, radius));
+            start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb), GizmoFactory.Capsule(start, end, radius));
     }
 
-    private Tuple<Collider, ColliderGizmo> boxCollider(Vector3f p)
+    private Tuple<Collider, ColliderGizmo> BoxCollider(Vector3f p)
     {
         Vector3f extent = Vector3f.Of(
             0.5f + (float)random.NextDouble() * 6f, 
@@ -252,16 +253,16 @@ public class DynamicUpdateTool : Tool
         );
         Vector3f forward = Vector3f.Of((1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()));
         Vector3f up = Vector3f.Of((1f - 2 * (float)random.NextDouble()), 0.01f + (float)random.NextDouble(), (1f - 2 * (float)random.NextDouble()));
-        Vector3f[] halfEdges = BoxCollider.getHalfEdges(up, forward, extent);
+        Vector3f[] halfEdges = Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(up, forward, extent);
         return Tuple.Create<Collider, ColliderGizmo>(
-            new BoxCollider(p, halfEdges, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb), GizmoFactory.box(p, halfEdges));
+            new BoxCollider(p, halfEdges, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb), GizmoFactory.Box(p, halfEdges));
     }
 
-    private Tuple<Collider, ColliderGizmo> cylinderCollider(Vector3f p)
+    private Tuple<Collider, ColliderGizmo> CylinderCollider(Vector3f p)
     {
         float radius = 0.7f + (float)random.NextDouble() * 4f;
         float[] a = new float[] { (1f - 2 * (float)random.NextDouble()), 0.01f + (float)random.NextDouble(), (1f - 2 * (float)random.NextDouble()) };
-        vNormalize(a);
+        VNormalize(a);
         float len = 2f + (float)random.NextDouble() * 20f;
         a[0] *= len;
         a[1] *= len;
@@ -269,25 +270,25 @@ public class DynamicUpdateTool : Tool
         Vector3f start = Vector3f.Of(p.x, p.y, p.z);
         Vector3f end = Vector3f.Of(p.x + a[0], p.y + a[1], p.z + a[2]);
         return Tuple.Create<Collider, ColliderGizmo>(new CylinderCollider(start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER,
-            dynaMesh.config.walkableClimb), GizmoFactory.cylinder(start, end, radius));
+            dynaMesh.config.walkableClimb), GizmoFactory.Cylinder(start, end, radius));
     }
 
-    private Tuple<Collider, ColliderGizmo> compositeCollider(Vector3f p)
+    private Tuple<Collider, ColliderGizmo> CompositeCollider(Vector3f p)
     {
         Vector3f baseExtent = Vector3f.Of(5, 3, 8);
         Vector3f baseCenter = Vector3f.Of(p.x, p.y + 3, p.z);
         Vector3f baseUp = Vector3f.Of(0, 1, 0);
         Vector3f forward = Vector3f.Of((1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()));
-        vNormalize(ref forward);
-        Vector3f side = vCross(forward, baseUp);
-        BoxCollider @base = new BoxCollider(baseCenter, BoxCollider.getHalfEdges(baseUp, forward, baseExtent),
+        VNormalize(ref forward);
+        Vector3f side = VCross(forward, baseUp);
+        BoxCollider @base = new BoxCollider(baseCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(baseUp, forward, baseExtent),
             SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, dynaMesh.config.walkableClimb);
         var roofUp = Vector3f.Zero;
         Vector3f roofExtent = Vector3f.Of(4.5f, 4.5f, 8f);
-        float[] rx = GLU.build_4x4_rotation_matrix(45, forward.x, forward.y, forward.z);
-        roofUp = mulMatrixVector(ref roofUp, rx, baseUp);
+        float[] rx = GLU.Build_4x4_rotation_matrix(45, forward.x, forward.y, forward.z);
+        roofUp = MulMatrixVector(ref roofUp, rx, baseUp);
         Vector3f roofCenter = Vector3f.Of(p.x, p.y + 6, p.z);
-        BoxCollider roof = new BoxCollider(roofCenter, BoxCollider.getHalfEdges(roofUp, forward, roofExtent),
+        BoxCollider roof = new BoxCollider(roofCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(roofUp, forward, roofExtent),
             SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, dynaMesh.config.walkableClimb);
         Vector3f trunkStart = Vector3f.Of(
             baseCenter.x - forward.x * 15 + side.x * 6,
@@ -304,45 +305,45 @@ public class DynamicUpdateTool : Tool
         SphereCollider crown = new SphereCollider(crownCenter, 4f, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GRASS,
             dynaMesh.config.walkableClimb);
         CompositeCollider collider = new CompositeCollider(@base, roof, trunk, crown);
-        ColliderGizmo baseGizmo = GizmoFactory.box(baseCenter, BoxCollider.getHalfEdges(baseUp, forward, baseExtent));
-        ColliderGizmo roofGizmo = GizmoFactory.box(roofCenter, BoxCollider.getHalfEdges(roofUp, forward, roofExtent));
-        ColliderGizmo trunkGizmo = GizmoFactory.capsule(trunkStart, trunkEnd, 0.5f);
-        ColliderGizmo crownGizmo = GizmoFactory.sphere(crownCenter, 4f);
-        ColliderGizmo gizmo = GizmoFactory.composite(baseGizmo, roofGizmo, trunkGizmo, crownGizmo);
+        ColliderGizmo baseGizmo = GizmoFactory.Box(baseCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(baseUp, forward, baseExtent));
+        ColliderGizmo roofGizmo = GizmoFactory.Box(roofCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(roofUp, forward, roofExtent));
+        ColliderGizmo trunkGizmo = GizmoFactory.Capsule(trunkStart, trunkEnd, 0.5f);
+        ColliderGizmo crownGizmo = GizmoFactory.Sphere(crownCenter, 4f);
+        ColliderGizmo gizmo = GizmoFactory.Composite(baseGizmo, roofGizmo, trunkGizmo, crownGizmo);
         return Tuple.Create<Collider, ColliderGizmo>(collider, gizmo);
     }
 
-    private Tuple<Collider, ColliderGizmo> trimeshBridge(Vector3f p)
+    private Tuple<Collider, ColliderGizmo> TrimeshBridge(Vector3f p)
     {
-        return trimeshCollider(p, bridgeGeom);
+        return TrimeshCollider(p, bridgeGeom);
     }
 
-    private Tuple<Collider, ColliderGizmo> trimeshHouse(Vector3f p)
+    private Tuple<Collider, ColliderGizmo> TrimeshHouse(Vector3f p)
     {
-        return trimeshCollider(p, houseGeom);
+        return TrimeshCollider(p, houseGeom);
     }
 
-    private Tuple<Collider, ColliderGizmo> convexTrimesh(Vector3f p)
+    private Tuple<Collider, ColliderGizmo> ConvexTrimesh(Vector3f p)
     {
-        float[] verts = transformVertices(p, convexGeom, 360);
+        float[] verts = TransformVertices(p, convexGeom, 360);
         ConvexTrimeshCollider collider = new ConvexTrimeshCollider(verts, convexGeom.faces,
             SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, dynaMesh.config.walkableClimb * 10);
-        return Tuple.Create<Collider, ColliderGizmo>(collider, GizmoFactory.trimesh(verts, convexGeom.faces));
+        return Tuple.Create<Collider, ColliderGizmo>(collider, GizmoFactory.Trimesh(verts, convexGeom.faces));
     }
 
-    private Tuple<Collider, ColliderGizmo> trimeshCollider(Vector3f p, DemoInputGeomProvider geom)
+    private Tuple<Collider, ColliderGizmo> TrimeshCollider(Vector3f p, DemoInputGeomProvider geom)
     {
-        float[] verts = transformVertices(p, geom, 0);
+        float[] verts = TransformVertices(p, geom, 0);
         TrimeshCollider collider = new TrimeshCollider(verts, geom.faces, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD,
             dynaMesh.config.walkableClimb * 10);
-        return Tuple.Create<Collider, ColliderGizmo>(collider, GizmoFactory.trimesh(verts, geom.faces));
+        return Tuple.Create<Collider, ColliderGizmo>(collider, GizmoFactory.Trimesh(verts, geom.faces));
     }
 
-    private float[] transformVertices(Vector3f p, DemoInputGeomProvider geom, float ax)
+    private float[] TransformVertices(Vector3f p, DemoInputGeomProvider geom, float ax)
     {
-        float[] rx = GLU.build_4x4_rotation_matrix((float)random.NextDouble() * ax, 1, 0, 0);
-        float[] ry = GLU.build_4x4_rotation_matrix((float)random.NextDouble() * 360, 0, 1, 0);
-        float[] m = GLU.mul(rx, ry);
+        float[] rx = GLU.Build_4x4_rotation_matrix((float)random.NextDouble() * ax, 1, 0, 0);
+        float[] ry = GLU.Build_4x4_rotation_matrix((float)random.NextDouble() * 360, 0, 1, 0);
+        float[] m = GLU.Mul(rx, ry);
         float[] verts = new float[geom.vertices.Length];
         Vector3f v = new Vector3f();
         Vector3f vr = new Vector3f();
@@ -351,7 +352,7 @@ public class DynamicUpdateTool : Tool
             v.x = geom.vertices[i];
             v.y = geom.vertices[i + 1];
             v.z = geom.vertices[i + 2];
-            mulMatrixVector(ref vr, m, v);
+            MulMatrixVector(ref vr, m, v);
             vr.x += p.x;
             vr.y += p.y - 0.1f;
             vr.z += p.z;
@@ -363,7 +364,7 @@ public class DynamicUpdateTool : Tool
         return verts;
     }
 
-    private float[] mulMatrixVector(float[] resultvector, float[] matrix, float[] pvector)
+    private float[] MulMatrixVector(float[] resultvector, float[] matrix, float[] pvector)
     {
         resultvector[0] = matrix[0] * pvector[0] + matrix[4] * pvector[1] + matrix[8] * pvector[2];
         resultvector[1] = matrix[1] * pvector[0] + matrix[5] * pvector[1] + matrix[9] * pvector[2];
@@ -371,7 +372,7 @@ public class DynamicUpdateTool : Tool
         return resultvector;
     }
 
-    private Vector3f mulMatrixVector(ref Vector3f resultvector, float[] matrix, Vector3f pvector)
+    private Vector3f MulMatrixVector(ref Vector3f resultvector, float[] matrix, Vector3f pvector)
     {
         resultvector.x = matrix[0] * pvector.x + matrix[4] * pvector.y + matrix[8] * pvector.z;
         resultvector.y = matrix[1] * pvector.x + matrix[5] * pvector.y + matrix[9] * pvector.z;
@@ -380,7 +381,7 @@ public class DynamicUpdateTool : Tool
     }
 
 
-    public override void handleClickRay(Vector3f start, float[] dir, bool shift)
+    public override void HandleClickRay(Vector3f start, float[] dir, bool shift)
     {
         if (mode == DynamicUpdateToolMode.COLLIDERS)
         {
@@ -388,9 +389,9 @@ public class DynamicUpdateTool : Tool
             {
                 foreach (var e in colliders)
                 {
-                    if (hit(start, dir, e.Value.bounds()))
+                    if (Hit(start, dir, e.Value.Bounds()))
                     {
-                        dynaMesh.removeCollider(e.Key);
+                        dynaMesh.RemoveCollider(e.Key);
                         colliders.Remove(e.Key);
                         colliderGizmos.Remove(e.Key);
                         break;
@@ -400,7 +401,7 @@ public class DynamicUpdateTool : Tool
         }
     }
 
-    private bool hit(Vector3f point, float[] dir, float[] bounds)
+    private bool Hit(Vector3f point, float[] dir, float[] bounds)
     {
         float cx = 0.5f * (bounds[0] + bounds[3]);
         float cy = 0.5f * (bounds[1] + bounds[4]);
@@ -428,85 +429,85 @@ public class DynamicUpdateTool : Tool
         return disc >= 0.0f;
     }
 
-    public override void handleRender(NavMeshRenderer renderer)
+    public override void HandleRender(NavMeshRenderer renderer)
     {
         if (mode == DynamicUpdateToolMode.COLLIDERS)
         {
             if (showColliders)
             {
-                colliderGizmos.Values.forEach(g => g.render(renderer.getDebugDraw()));
+                colliderGizmos.Values.ForEach(g => g.Render(renderer.GetDebugDraw()));
             }
         }
 
         if (mode == DynamicUpdateToolMode.RAYCAST)
         {
-            RecastDebugDraw dd = renderer.getDebugDraw();
-            int startCol = duRGBA(128, 25, 0, 192);
-            int endCol = duRGBA(51, 102, 0, 129);
+            RecastDebugDraw dd = renderer.GetDebugDraw();
+            int startCol = DuRGBA(128, 25, 0, 192);
+            int endCol = DuRGBA(51, 102, 0, 129);
             if (sposSet)
             {
-                drawAgent(dd, spos, startCol);
+                DrawAgent(dd, spos, startCol);
             }
 
             if (eposSet)
             {
-                drawAgent(dd, epos, endCol);
+                DrawAgent(dd, epos, endCol);
             }
 
-            dd.depthMask(false);
+            dd.DepthMask(false);
             if (raycastHitPos != Vector3f.Zero)
             {
-                int spathCol = raycastHit ? duRGBA(128, 32, 16, 220) : duRGBA(64, 128, 240, 220);
-                dd.begin(LINES, 2.0f);
-                dd.vertex(spos.x, spos.y + 1.3f, spos.z, spathCol);
-                dd.vertex(raycastHitPos.x, raycastHitPos.y, raycastHitPos.z, spathCol);
-                dd.end();
+                int spathCol = raycastHit ? DuRGBA(128, 32, 16, 220) : DuRGBA(64, 128, 240, 220);
+                dd.Begin(LINES, 2.0f);
+                dd.Vertex(spos.x, spos.y + 1.3f, spos.z, spathCol);
+                dd.Vertex(raycastHitPos.x, raycastHitPos.y, raycastHitPos.z, spathCol);
+                dd.End();
             }
 
-            dd.depthMask(true);
+            dd.DepthMask(true);
         }
     }
 
-    private void drawAgent(RecastDebugDraw dd, Vector3f pos, int col)
+    private void DrawAgent(RecastDebugDraw dd, Vector3f pos, int col)
     {
-        float r = sample.getSettingsUI().getAgentRadius();
-        float h = sample.getSettingsUI().getAgentHeight();
-        float c = sample.getSettingsUI().getAgentMaxClimb();
-        dd.depthMask(false);
+        float r = sample.GetSettingsUI().GetAgentRadius();
+        float h = sample.GetSettingsUI().GetAgentHeight();
+        float c = sample.GetSettingsUI().GetAgentMaxClimb();
+        dd.DepthMask(false);
         // Agent dimensions.
-        dd.debugDrawCylinderWire(pos.x - r, pos.y + 0.02f, pos.z - r, pos.x + r, pos.y + h, pos.z + r, col, 2.0f);
-        dd.debugDrawCircle(pos.x, pos.y + c, pos.z, r, duRGBA(0, 0, 0, 64), 1.0f);
-        int colb = duRGBA(0, 0, 0, 196);
-        dd.begin(LINES);
-        dd.vertex(pos.x, pos.y - c, pos.z, colb);
-        dd.vertex(pos.x, pos.y + c, pos.z, colb);
-        dd.vertex(pos.x - r / 2, pos.y + 0.02f, pos.z, colb);
-        dd.vertex(pos.x + r / 2, pos.y + 0.02f, pos.z, colb);
-        dd.vertex(pos.x, pos.y + 0.02f, pos.z - r / 2, colb);
-        dd.vertex(pos.x, pos.y + 0.02f, pos.z + r / 2, colb);
-        dd.end();
-        dd.depthMask(true);
+        dd.DebugDrawCylinderWire(pos.x - r, pos.y + 0.02f, pos.z - r, pos.x + r, pos.y + h, pos.z + r, col, 2.0f);
+        dd.DebugDrawCircle(pos.x, pos.y + c, pos.z, r, DuRGBA(0, 0, 0, 64), 1.0f);
+        int colb = DuRGBA(0, 0, 0, 196);
+        dd.Begin(LINES);
+        dd.Vertex(pos.x, pos.y - c, pos.z, colb);
+        dd.Vertex(pos.x, pos.y + c, pos.z, colb);
+        dd.Vertex(pos.x - r / 2, pos.y + 0.02f, pos.z, colb);
+        dd.Vertex(pos.x + r / 2, pos.y + 0.02f, pos.z, colb);
+        dd.Vertex(pos.x, pos.y + 0.02f, pos.z - r / 2, colb);
+        dd.Vertex(pos.x, pos.y + 0.02f, pos.z + r / 2, colb);
+        dd.End();
+        dd.DepthMask(true);
     }
 
-    public override void handleUpdate(float dt)
+    public override void HandleUpdate(float dt)
     {
         if (dynaMesh != null)
         {
-            updateDynaMesh();
+            UpdateDynaMesh();
         }
     }
 
-    private void updateDynaMesh()
+    private void UpdateDynaMesh()
     {
         long t = FrequencyWatch.Ticks;
         try
         {
-            bool updated = dynaMesh.update(executor).Result;
+            bool updated = dynaMesh.Update(executor).Result;
             if (updated)
             {
                 buildTime = (FrequencyWatch.Ticks - t) / TimeSpan.TicksPerMillisecond;
-                sample.update(null, dynaMesh.recastResults(), dynaMesh.navMesh());
-                sample.setChanged(false);
+                sample.Update(null, dynaMesh.RecastResults(), dynaMesh.NavMesh());
+                sample.SetChanged(false);
             }
         }
         catch (Exception e)
@@ -515,7 +516,7 @@ public class DynamicUpdateTool : Tool
         }
     }
 
-    public override void layout()
+    public override void Layout()
     {
         ImGui.Text($"Dynamic Update Tool Modes");
         ImGui.Separator();
@@ -548,7 +549,7 @@ public class DynamicUpdateTool : Tool
                 var picker = ImFilePicker.GetFilePicker(loadVoxelPopupStrId, Path.Combine(Environment.CurrentDirectory), ".voxels");
                 if (picker.Draw())
                 {
-                    load(picker.SelectedFile);
+                    Load(picker.SelectedFile);
                     ImFilePicker.RemoveFilePicker(loadVoxelPopupStrId);
                 }
 
@@ -571,7 +572,7 @@ public class DynamicUpdateTool : Tool
                     if (picker.Draw())
                     {
                         if (string.IsNullOrEmpty(picker.SelectedFile))
-                            save(picker.SelectedFile);
+                            Save(picker.SelectedFile);
 
                         ImFilePicker.RemoveFilePicker(saveVoxelPopupStrId);
                     }
@@ -597,7 +598,7 @@ public class DynamicUpdateTool : Tool
 
             ImGui.Text("Partitioning");
             ImGui.Separator();
-            PartitionType.Values.forEach(partition =>
+            PartitionType.Values.ForEach(partition =>
             {
                 var label = partition.Name.Substring(0, 1).ToUpper()
                             + partition.Name.Substring(1).ToLower();
@@ -636,8 +637,8 @@ public class DynamicUpdateTool : Tool
             {
                 if (dynaMesh != null)
                 {
-                    buildDynaMesh();
-                    sample.setChanged(false);
+                    BuildDynaMesh();
+                    sample.SetChanged(false);
                 }
             }
         }
@@ -692,18 +693,18 @@ public class DynamicUpdateTool : Tool
     }
 
 
-    private void load(string filename)
+    private void Load(string filename)
     {
         try
         {
             using var fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
             using var br = new BinaryReader(fs);
             VoxelFileReader reader = new VoxelFileReader();
-            VoxelFile voxelFile = reader.read(br);
+            VoxelFile voxelFile = reader.Read(br);
             dynaMesh = new DynamicNavMesh(voxelFile);
             dynaMesh.config.keepIntermediateResults = true;
-            updateUI();
-            buildDynaMesh();
+            UpdateUI();
+            BuildDynaMesh();
 
             colliders.Clear();
         }
@@ -715,22 +716,22 @@ public class DynamicUpdateTool : Tool
     }
 
 
-    private void save(string filename)
+    private void Save(string filename)
     {
         using var fs = new FileStream(filename, FileMode.CreateNew, FileAccess.Write);
         using var bw = new BinaryWriter(fs);
-        VoxelFile voxelFile = VoxelFile.from(dynaMesh);
+        VoxelFile voxelFile = VoxelFile.From(dynaMesh);
         VoxelFileWriter writer = new VoxelFileWriter();
-        writer.write(bw, voxelFile, compression);
+        writer.Write(bw, voxelFile, compression);
     }
 
-    private void buildDynaMesh()
+    private void BuildDynaMesh()
     {
-        configDynaMesh();
+        ConfigDynaMesh();
         long t = FrequencyWatch.Ticks;
         try
         {
-            var _ = dynaMesh.build(executor).Result;
+            var _ = dynaMesh.Build(executor).Result;
         }
         catch (Exception e)
         {
@@ -738,10 +739,10 @@ public class DynamicUpdateTool : Tool
         }
 
         buildTime = (FrequencyWatch.Ticks - t) / TimeSpan.TicksPerMillisecond;
-        sample.update(null, dynaMesh.recastResults(), dynaMesh.navMesh());
+        sample.Update(null, dynaMesh.RecastResults(), dynaMesh.NavMesh());
     }
 
-    private void configDynaMesh()
+    private void ConfigDynaMesh()
     {
         dynaMesh.config.partitionType = partitioning;
         dynaMesh.config.walkableHeight = walkableHeight;
@@ -761,7 +762,7 @@ public class DynamicUpdateTool : Tool
         dynaMesh.config.detailSampleMaxError = detailSampleMaxError;
     }
 
-    private void updateUI()
+    private void UpdateUI()
     {
         cellSize = dynaMesh.config.cellSize;
         partitioning = dynaMesh.config.partitionType;
@@ -782,7 +783,7 @@ public class DynamicUpdateTool : Tool
         filterWalkableLowHeightSpans = dynaMesh.config.filterWalkableLowHeightSpans;
     }
 
-    public override string getName()
+    public override string GetName()
     {
         return "Dynamic Updates";
     }

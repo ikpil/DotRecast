@@ -32,87 +32,87 @@ public class TileNavMeshBuilder : AbstractNavMeshBuilder
     {
     }
 
-    public Tuple<IList<RecastBuilderResult>, NavMesh> build(DemoInputGeomProvider m_geom, PartitionType m_partitionType,
+    public Tuple<IList<RecastBuilderResult>, NavMesh> Build(DemoInputGeomProvider m_geom, PartitionType m_partitionType,
         float m_cellSize, float m_cellHeight, float m_agentHeight, float m_agentRadius, float m_agentMaxClimb,
         float m_agentMaxSlope, int m_regionMinSize, int m_regionMergeSize, float m_edgeMaxLen, float m_edgeMaxError,
         int m_vertsPerPoly, float m_detailSampleDist, float m_detailSampleMaxError, bool filterLowHangingObstacles,
         bool filterLedgeSpans, bool filterWalkableLowHeightSpans, int tileSize)
     {
-        List<RecastBuilderResult> rcResult = buildRecastResult(m_geom, m_partitionType, m_cellSize, m_cellHeight, m_agentHeight,
+        List<RecastBuilderResult> rcResult = BuildRecastResult(m_geom, m_partitionType, m_cellSize, m_cellHeight, m_agentHeight,
             m_agentRadius, m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize, m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError,
             m_vertsPerPoly, m_detailSampleDist, m_detailSampleMaxError, filterLowHangingObstacles, filterLedgeSpans,
             filterWalkableLowHeightSpans, tileSize);
         return Tuple.Create((IList<RecastBuilderResult>)rcResult,
-            buildNavMesh(m_geom,
-                buildMeshData(m_geom, m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, rcResult),
+            BuildNavMesh(m_geom,
+                BuildMeshData(m_geom, m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, rcResult),
                 m_cellSize, tileSize, m_vertsPerPoly));
     }
 
-    private List<RecastBuilderResult> buildRecastResult(DemoInputGeomProvider m_geom, PartitionType m_partitionType,
+    private List<RecastBuilderResult> BuildRecastResult(DemoInputGeomProvider m_geom, PartitionType m_partitionType,
         float m_cellSize, float m_cellHeight, float m_agentHeight, float m_agentRadius, float m_agentMaxClimb,
         float m_agentMaxSlope, int m_regionMinSize, int m_regionMergeSize, float m_edgeMaxLen, float m_edgeMaxError,
         int m_vertsPerPoly, float m_detailSampleDist, float m_detailSampleMaxError, bool filterLowHangingObstacles,
         bool filterLedgeSpans, bool filterWalkableLowHeightSpans, int tileSize)
     {
-        RecastConfig cfg = new RecastConfig(true, tileSize, tileSize, RecastConfig.calcBorder(m_agentRadius, m_cellSize),
+        RecastConfig cfg = new RecastConfig(true, tileSize, tileSize, RecastConfig.CalcBorder(m_agentRadius, m_cellSize),
             m_partitionType, m_cellSize, m_cellHeight, m_agentMaxSlope, filterLowHangingObstacles, filterLedgeSpans,
             filterWalkableLowHeightSpans, m_agentHeight, m_agentRadius, m_agentMaxClimb,
             m_regionMinSize * m_regionMinSize * m_cellSize * m_cellSize,
             m_regionMergeSize * m_regionMergeSize * m_cellSize * m_cellSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly,
             true, m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_WALKABLE);
         RecastBuilder rcBuilder = new RecastBuilder();
-        return rcBuilder.buildTiles(m_geom, cfg, Task.Factory);
+        return rcBuilder.BuildTiles(m_geom, cfg, Task.Factory);
     }
 
-    private NavMesh buildNavMesh(DemoInputGeomProvider geom, List<MeshData> meshData, float cellSize, int tileSize,
+    private NavMesh BuildNavMesh(DemoInputGeomProvider geom, List<MeshData> meshData, float cellSize, int tileSize,
         int vertsPerPoly)
     {
         NavMeshParams navMeshParams = new NavMeshParams();
-        navMeshParams.orig.x = geom.getMeshBoundsMin().x;
-        navMeshParams.orig.y = geom.getMeshBoundsMin().y;
-        navMeshParams.orig.z = geom.getMeshBoundsMin().z;
+        navMeshParams.orig.x = geom.GetMeshBoundsMin().x;
+        navMeshParams.orig.y = geom.GetMeshBoundsMin().y;
+        navMeshParams.orig.z = geom.GetMeshBoundsMin().z;
         navMeshParams.tileWidth = tileSize * cellSize;
         navMeshParams.tileHeight = tileSize * cellSize;
 
-        // snprintf(text, 64, "Tiles %d x %d", tw, th);
+        // Snprintf(text, 64, "Tiles %d x %d", tw, th);
 
-        navMeshParams.maxTiles = getMaxTiles(geom, cellSize, tileSize);
-        navMeshParams.maxPolys = getMaxPolysPerTile(geom, cellSize, tileSize);
+        navMeshParams.maxTiles = GetMaxTiles(geom, cellSize, tileSize);
+        navMeshParams.maxPolys = GetMaxPolysPerTile(geom, cellSize, tileSize);
         NavMesh navMesh = new NavMesh(navMeshParams, vertsPerPoly);
-        meshData.forEach(md => navMesh.addTile(md, 0, 0));
+        meshData.ForEach(md => navMesh.AddTile(md, 0, 0));
         return navMesh;
     }
 
-    public int getMaxTiles(DemoInputGeomProvider geom, float cellSize, int tileSize)
+    public int GetMaxTiles(DemoInputGeomProvider geom, float cellSize, int tileSize)
     {
-        int tileBits = getTileBits(geom, cellSize, tileSize);
+        int tileBits = GetTileBits(geom, cellSize, tileSize);
         return 1 << tileBits;
     }
 
-    public int getMaxPolysPerTile(DemoInputGeomProvider geom, float cellSize, int tileSize)
+    public int GetMaxPolysPerTile(DemoInputGeomProvider geom, float cellSize, int tileSize)
     {
-        int polyBits = 22 - getTileBits(geom, cellSize, tileSize);
+        int polyBits = 22 - GetTileBits(geom, cellSize, tileSize);
         return 1 << polyBits;
     }
 
-    private int getTileBits(DemoInputGeomProvider geom, float cellSize, int tileSize)
+    private int GetTileBits(DemoInputGeomProvider geom, float cellSize, int tileSize)
     {
-        int[] wh = Recast.calcGridSize(geom.getMeshBoundsMin(), geom.getMeshBoundsMax(), cellSize);
+        int[] wh = Recast.CalcGridSize(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), cellSize);
         int tw = (wh[0] + tileSize - 1) / tileSize;
         int th = (wh[1] + tileSize - 1) / tileSize;
-        int tileBits = Math.Min(ilog2(nextPow2(tw * th)), 14);
+        int tileBits = Math.Min(Ilog2(NextPow2(tw * th)), 14);
         return tileBits;
     }
 
-    public int[] getTiles(DemoInputGeomProvider geom, float cellSize, int tileSize)
+    public int[] GetTiles(DemoInputGeomProvider geom, float cellSize, int tileSize)
     {
-        int[] wh = Recast.calcGridSize(geom.getMeshBoundsMin(), geom.getMeshBoundsMax(), cellSize);
+        int[] wh = Recast.CalcGridSize(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), cellSize);
         int tw = (wh[0] + tileSize - 1) / tileSize;
         int th = (wh[1] + tileSize - 1) / tileSize;
         return new int[] { tw, th };
     }
 
-    private List<MeshData> buildMeshData(DemoInputGeomProvider m_geom, float m_cellSize, float m_cellHeight, float m_agentHeight,
+    private List<MeshData> BuildMeshData(DemoInputGeomProvider m_geom, float m_cellSize, float m_cellHeight, float m_agentHeight,
         float m_agentRadius, float m_agentMaxClimb, List<RecastBuilderResult> rcResult)
     {
         // Add tiles to nav mesh
@@ -121,14 +121,14 @@ public class TileNavMeshBuilder : AbstractNavMeshBuilder
         {
             int x = result.tileX;
             int z = result.tileZ;
-            NavMeshDataCreateParams option = getNavMeshCreateParams(m_geom, m_cellSize, m_cellHeight, m_agentHeight,
+            NavMeshDataCreateParams option = GetNavMeshCreateParams(m_geom, m_cellSize, m_cellHeight, m_agentHeight,
                 m_agentRadius, m_agentMaxClimb, result);
             option.tileX = x;
             option.tileZ = z;
-            MeshData md = NavMeshBuilder.createNavMeshData(option);
+            MeshData md = NavMeshBuilder.CreateNavMeshData(option);
             if (md != null)
             {
-                meshData.Add(updateAreaAndFlags(md));
+                meshData.Add(UpdateAreaAndFlags(md));
             }
         }
 

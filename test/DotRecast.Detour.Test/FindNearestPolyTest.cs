@@ -35,31 +35,31 @@ public class FindNearestPolyTest : AbstractDetourTest
     };
 
     [Test]
-    public void testFindNearestPoly()
+    public void TestFindNearestPoly()
     {
         QueryFilter filter = new DefaultQueryFilter();
         Vector3f extents = Vector3f.Of(2, 4, 2);
         for (int i = 0; i < startRefs.Length; i++)
         {
             Vector3f startPos = startPoss[i];
-            Result<FindNearestPolyResult> poly = query.findNearestPoly(startPos, extents, filter);
+            Result<FindNearestPolyResult> poly = query.FindNearestPoly(startPos, extents, filter);
             Assert.That(poly.Succeeded(), Is.True);
-            Assert.That(poly.result.getNearestRef(), Is.EqualTo(POLY_REFS[i]));
+            Assert.That(poly.result.GetNearestRef(), Is.EqualTo(POLY_REFS[i]));
             for (int v = 0; v < POLY_POS[i].Length; v++)
             {
-                Assert.That(poly.result.getNearestPos()[v], Is.EqualTo(POLY_POS[i][v]).Within(0.001f));
+                Assert.That(poly.result.GetNearestPos()[v], Is.EqualTo(POLY_POS[i][v]).Within(0.001f));
             }
         }
     }
 
     public class EmptyQueryFilter : QueryFilter
     {
-        public bool passFilter(long refs, MeshTile tile, Poly poly)
+        public bool PassFilter(long refs, MeshTile tile, Poly poly)
         {
             return false;
         }
 
-        public float getCost(Vector3f pa, Vector3f pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef, MeshTile curTile,
+        public float GetCost(Vector3f pa, Vector3f pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef, MeshTile curTile,
             Poly curPoly, long nextRef, MeshTile nextTile, Poly nextPoly)
         {
             return 0;
@@ -67,19 +67,19 @@ public class FindNearestPolyTest : AbstractDetourTest
     }
 
     [Test]
-    public void shouldReturnStartPosWhenNoPolyIsValid()
+    public void ShouldReturnStartPosWhenNoPolyIsValid()
     {
         var filter = new EmptyQueryFilter();
         Vector3f extents = Vector3f.Of(2, 4, 2);
         for (int i = 0; i < startRefs.Length; i++)
         {
             Vector3f startPos = startPoss[i];
-            Result<FindNearestPolyResult> poly = query.findNearestPoly(startPos, extents, filter);
+            Result<FindNearestPolyResult> poly = query.FindNearestPoly(startPos, extents, filter);
             Assert.That(poly.Succeeded(), Is.True);
-            Assert.That(poly.result.getNearestRef(), Is.EqualTo(0L));
+            Assert.That(poly.result.GetNearestRef(), Is.EqualTo(0L));
             for (int v = 0; v < POLY_POS[i].Length; v++)
             {
-                Assert.That(poly.result.getNearestPos()[v], Is.EqualTo(startPos[v]).Within(0.001f));
+                Assert.That(poly.result.GetNearestPos()[v], Is.EqualTo(startPos[v]).Within(0.001f));
             }
         }
     }

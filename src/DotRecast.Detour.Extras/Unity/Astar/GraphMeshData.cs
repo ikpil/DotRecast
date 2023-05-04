@@ -31,7 +31,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
             this.tiles = tiles;
         }
 
-        public int countNodes()
+        public int CountNodes()
         {
             int polyCount = 0;
             foreach (MeshData t in tiles)
@@ -42,7 +42,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
             return polyCount;
         }
 
-        public Poly getNode(int node)
+        public Poly GetNode(int node)
         {
             int index = 0;
             foreach (MeshData t in tiles)
@@ -58,7 +58,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
             return null;
         }
 
-        public MeshData getTile(int node)
+        public MeshData GetTile(int node)
         {
             int index = 0;
             foreach (MeshData t in tiles)

@@ -24,7 +24,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
 {
     public class GraphMetaReader
     {
-        public GraphMeta read(ZipArchive file, string filename)
+        public GraphMeta Read(ZipArchive file, string filename)
         {
             ZipArchiveEntry entry = file.GetEntry(filename);
             using StreamReader reader = new StreamReader(entry.Open());

@@ -38,15 +38,15 @@ namespace DotRecast.Recast
         /// See the #rcConfig documentation for more information on the configuration parameters.
         ///
         /// @see rcAllocCompactHeightfield, rcHeightfield, rcCompactHeightfield, rcConfig
-        public static CompactHeightfield buildCompactHeightfield(Telemetry ctx, int walkableHeight, int walkableClimb,
+        public static CompactHeightfield BuildCompactHeightfield(Telemetry ctx, int walkableHeight, int walkableClimb,
             Heightfield hf)
         {
-            ctx.startTimer("BUILD_COMPACTHEIGHTFIELD");
+            ctx.StartTimer("BUILD_COMPACTHEIGHTFIELD");
 
             CompactHeightfield chf = new CompactHeightfield();
             int w = hf.width;
             int h = hf.height;
-            int spanCount = getHeightFieldSpanCount(hf);
+            int spanCount = GetHeightFieldSpanCount(hf);
 
             // Fill in header.
             chf.width = w;
@@ -93,8 +93,8 @@ namespace DotRecast.Recast
                         {
                             int bot = s.smax;
                             int top = s.next != null ? (int)s.next.smin : MAX_HEIGHT;
-                            chf.spans[idx].y = clamp(bot, 0, MAX_HEIGHT);
-                            chf.spans[idx].h = clamp(top - bot, 0, MAX_HEIGHT);
+                            chf.spans[idx].y = Clamp(bot, 0, MAX_HEIGHT);
+                            chf.spans[idx].h = Clamp(top - bot, 0, MAX_HEIGHT);
                             chf.areas[idx] = s.area;
                             idx++;
                             c.count++;
@@ -161,11 +161,11 @@ namespace DotRecast.Recast
                                                                                                   + " (max: " + MAX_LAYERS + ")");
             }
 
-            ctx.stopTimer("BUILD_COMPACTHEIGHTFIELD");
+            ctx.StopTimer("BUILD_COMPACTHEIGHTFIELD");
             return chf;
         }
 
-        private static int getHeightFieldSpanCount(Heightfield hf)
+        private static int GetHeightFieldSpanCount(Heightfield hf)
         {
             int w = hf.width;
             int h = hf.height;

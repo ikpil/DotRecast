@@ -4,5 +4,5 @@ namespace DotRecast.Recast.Demo.Tools.Gizmos;
 
 public interface ColliderGizmo
 {
-    void render(RecastDebugDraw debugDraw);
+    void Render(RecastDebugDraw debugDraw);
 }

@@ -32,44 +32,44 @@ namespace DotRecast.Detour.Crowd
         private readonly Dictionary<string, long> _executionTimings = new Dictionary<string, long>();
         private readonly Dictionary<string, List<long>> _executionTimingSamples = new Dictionary<string, List<long>>();
 
-        public float maxTimeToEnqueueRequest()
+        public float MaxTimeToEnqueueRequest()
         {
             return _maxTimeToEnqueueRequest;
         }
 
-        public float maxTimeToFindPath()
+        public float MaxTimeToFindPath()
         {
             return _maxTimeToFindPath;
         }
 
-        public Dictionary<string, long> executionTimings()
+        public Dictionary<string, long> ExecutionTimings()
         {
             return _executionTimings;
         }
 
-        public void start()
+        public void Start()
         {
             _maxTimeToEnqueueRequest = 0;
             _maxTimeToFindPath = 0;
             _executionTimings.Clear();
         }
 
-        public void recordMaxTimeToEnqueueRequest(float time)
+        public void RecordMaxTimeToEnqueueRequest(float time)
         {
             _maxTimeToEnqueueRequest = Math.Max(_maxTimeToEnqueueRequest, time);
         }
 
-        public void recordMaxTimeToFindPath(float time)
+        public void RecordMaxTimeToFindPath(float time)
         {
             _maxTimeToFindPath = Math.Max(_maxTimeToFindPath, time);
         }
 
-        public void start(string name)
+        public void Start(string name)
         {
             _executionTimings.Add(name, FrequencyWatch.Ticks);
         }
 
-        public void stop(string name)
+        public void Stop(string name)
         {
             long duration = FrequencyWatch.Ticks - _executionTimings[name];
             if (!_executionTimingSamples.TryGetValue(name, out var s))

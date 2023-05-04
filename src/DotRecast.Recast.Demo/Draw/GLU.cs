@@ -24,24 +24,24 @@ namespace DotRecast.Recast.Demo.Draw;
 
 public class GLU
 {
-    public static float[] gluPerspective(float fovy, float aspect, float near, float far)
+    public static float[] GluPerspective(float fovy, float aspect, float near, float far)
     {
         float[] projectionMatrix = new float[16];
-        glhPerspectivef2(projectionMatrix, fovy, aspect, near, far);
-        //glLoadMatrixf(projectionMatrix);
+        GlhPerspectivef2(projectionMatrix, fovy, aspect, near, far);
+        //GlLoadMatrixf(projectionMatrix);
         return projectionMatrix;
     }
 
-    public static void glhPerspectivef2(float[] matrix, float fovyInDegrees, float aspectRatio, float znear,
+    public static void GlhPerspectivef2(float[] matrix, float fovyInDegrees, float aspectRatio, float znear,
         float zfar)
     {
         float ymax, xmax;
         ymax = (float)(znear * Math.Tan(fovyInDegrees * Math.PI / 360.0));
         xmax = ymax * aspectRatio;
-        glhFrustumf2(matrix, -xmax, xmax, -ymax, ymax, znear, zfar);
+        GlhFrustumf2(matrix, -xmax, xmax, -ymax, ymax, znear, zfar);
     }
 
-    private static void glhFrustumf2(float[] matrix, float left, float right, float bottom, float top, float znear,
+    private static void GlhFrustumf2(float[] matrix, float left, float right, float bottom, float top, float znear,
         float zfar)
     {
         float temp, temp2, temp3, temp4;
@@ -67,7 +67,7 @@ public class GLU
         matrix[15] = 0.0f;
     }
 
-    public static int glhUnProjectf(float winx, float winy, float winz, float[] modelview, float[] projection, int[] viewport, ref Vector3f objectCoordinate)
+    public static int GlhUnProjectf(float winx, float winy, float winz, float[] modelview, float[] projection, int[] viewport, ref Vector3f objectCoordinate)
     {
         // Transformation matrices
         float[] m = new float[16], A = new float[16];
@@ -76,7 +76,7 @@ public class GLU
         // and store in A[16]
         MultiplyMatrices4by4OpenGL_FLOAT(A, projection, modelview);
         // Now compute the inverse of matrix A
-        if (glhInvertMatrixf2(A, m) == 0)
+        if (GlhInvertMatrixf2(A, m) == 0)
             return 0;
         // Transformation of normalized coordinates between -1 and 1
         @in[0] = (winx - viewport[0]) / viewport[2] * 2.0f - 1.0f;
@@ -126,7 +126,7 @@ public class GLU
     }
 
     // This code comes directly from GLU except that it is for float
-    static int glhInvertMatrixf2(float[] m, float[] @out)
+    static int GlhInvertMatrixf2(float[] m, float[] @out)
     {
         float[][] wtmp = ArrayUtils.Of<float>(4, 8);
         float m0, m1, m2, m3, s;
@@ -370,7 +370,7 @@ public class GLU
         m[(c) * 4 + (r)] = v;
     }
 
-    public static float[] build_4x4_rotation_matrix(float a, float x, float y, float z)
+    public static float[] Build_4x4_rotation_matrix(float a, float x, float y, float z)
     {
         float[] matrix = new float[16];
         a = (float)(a * Math.PI / 180.0); // convert to radians
@@ -408,7 +408,7 @@ public class GLU
         return matrix;
     }
 
-    public static float[] mul(float[] left, float[] right)
+    public static float[] Mul(float[] left, float[] right)
     {
         float m00 = left[0] * right[0] + left[4] * right[1] + left[8] * right[2] + left[12] * right[3];
         float m01 = left[1] * right[0] + left[5] * right[1] + left[9] * right[2] + left[13] * right[3];

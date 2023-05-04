@@ -26,19 +26,19 @@ namespace DotRecast.Recast.Demo.Tools;
 
 public abstract class Tool
 {
-    public abstract void setSample(Sample m_sample);
+    public abstract void SetSample(Sample m_sample);
 
-    public abstract void handleClick(Vector3f s, Vector3f p, bool shift);
+    public abstract void HandleClick(Vector3f s, Vector3f p, bool shift);
 
-    public abstract void handleRender(NavMeshRenderer renderer);
+    public abstract void HandleRender(NavMeshRenderer renderer);
 
-    public abstract void handleUpdate(float dt);
+    public abstract void HandleUpdate(float dt);
 
-    public abstract void layout();
+    public abstract void Layout();
 
-    public abstract string getName();
+    public abstract string GetName();
 
-    public virtual void handleClickRay(Vector3f start, float[] direction, bool shift)
+    public virtual void HandleClickRay(Vector3f start, float[] direction, bool shift)
     {
         // ...
     }

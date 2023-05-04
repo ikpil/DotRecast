@@ -25,21 +25,21 @@ namespace DotRecast.Detour
 
     public interface PolygonByCircleConstraint
     {
-        float[] aply(float[] polyVerts, Vector3f circleCenter, float radius);
+        float[] Aply(float[] polyVerts, Vector3f circleCenter, float radius);
 
-        public static PolygonByCircleConstraint noop()
+        public static PolygonByCircleConstraint Noop()
         {
             return new NoOpPolygonByCircleConstraint();
         }
 
-        public static PolygonByCircleConstraint strict()
+        public static PolygonByCircleConstraint Strict()
         {
             return new StrictPolygonByCircleConstraint();
         }
 
         public class NoOpPolygonByCircleConstraint : PolygonByCircleConstraint
         {
-            public float[] aply(float[] polyVerts, Vector3f circleCenter, float radius)
+            public float[] Aply(float[] polyVerts, Vector3f circleCenter, float radius)
             {
                 return polyVerts;
             }
@@ -53,13 +53,13 @@ namespace DotRecast.Detour
             private const int CIRCLE_SEGMENTS = 12;
             private static float[] unitCircle;
 
-            public float[] aply(float[] verts, Vector3f center, float radius)
+            public float[] Aply(float[] verts, Vector3f center, float radius)
             {
                 float radiusSqr = radius * radius;
                 int outsideVertex = -1;
                 for (int pv = 0; pv < verts.Length; pv += 3)
                 {
-                    if (vDist2DSqr(center, verts, pv) > radiusSqr)
+                    if (VDist2DSqr(center, verts, pv) > radiusSqr)
                     {
                         outsideVertex = pv;
                         break;
@@ -72,9 +72,9 @@ namespace DotRecast.Detour
                     return verts;
                 }
 
-                float[] qCircle = circle(center, radius);
-                float[] intersection = ConvexConvexIntersection.intersect(verts, qCircle);
-                if (intersection == null && pointInPolygon(center, verts, verts.Length / 3))
+                float[] qCircle = Circle(center, radius);
+                float[] intersection = ConvexConvexIntersection.Intersect(verts, qCircle);
+                if (intersection == null && PointInPolygon(center, verts, verts.Length / 3))
                 {
                     // circle inside polygon
                     return qCircle;
@@ -83,7 +83,7 @@ namespace DotRecast.Detour
                 return intersection;
             }
 
-            private float[] circle(Vector3f center, float radius)
+            private float[] Circle(Vector3f center, float radius)
             {
                 if (unitCircle == null)
                 {

@@ -34,23 +34,23 @@ namespace DotRecast.Detour.QueryResults
             _segmentRefs = segmentRefs;
         }
 
-        public int countSegmentVerts()
+        public int CountSegmentVerts()
         {
             return _segmentVerts.Count;
         }
 
-        public int countSegmentRefs()
+        public int CountSegmentRefs()
         {
             return _segmentRefs.Count;
         }
 
 
-        public SegmentVert getSegmentVert(int idx)
+        public SegmentVert GetSegmentVert(int idx)
         {
             return _segmentVerts[idx];
         }
 
-        public long getSegmentRef(int idx)
+        public long GetSegmentRef(int idx)
         {
             return _segmentRefs[idx];
         }

@@ -49,12 +49,12 @@ namespace DotRecast.Detour.Crowd.Tracking
             m_tpen = new float[m_maxSamples];
         }
 
-        public void reset()
+        public void Reset()
         {
             m_nsamples = 0;
         }
 
-        void normalizeArray(float[] arr, int n)
+        void NormalizeArray(float[] arr, int n)
         {
             // Normalize penaly range.
             float minPen = float.MaxValue;
@@ -68,19 +68,19 @@ namespace DotRecast.Detour.Crowd.Tracking
             float penRange = maxPen - minPen;
             float s = penRange > 0.001f ? (1.0f / penRange) : 1;
             for (int i = 0; i < n; ++i)
-                arr[i] = clamp((arr[i] - minPen) * s, 0.0f, 1.0f);
+                arr[i] = Clamp((arr[i] - minPen) * s, 0.0f, 1.0f);
         }
 
-        public void normalizeSamples()
+        public void NormalizeSamples()
         {
-            normalizeArray(m_pen, m_nsamples);
-            normalizeArray(m_vpen, m_nsamples);
-            normalizeArray(m_vcpen, m_nsamples);
-            normalizeArray(m_spen, m_nsamples);
-            normalizeArray(m_tpen, m_nsamples);
+            NormalizeArray(m_pen, m_nsamples);
+            NormalizeArray(m_vpen, m_nsamples);
+            NormalizeArray(m_vcpen, m_nsamples);
+            NormalizeArray(m_spen, m_nsamples);
+            NormalizeArray(m_tpen, m_nsamples);
         }
 
-        public void addSample(Vector3f vel, float ssize, float pen, float vpen, float vcpen, float spen, float tpen)
+        public void AddSample(Vector3f vel, float ssize, float pen, float vpen, float vcpen, float spen, float tpen)
         {
             if (m_nsamples >= m_maxSamples)
                 return;
@@ -96,12 +96,12 @@ namespace DotRecast.Detour.Crowd.Tracking
             m_nsamples++;
         }
 
-        public int getSampleCount()
+        public int GetSampleCount()
         {
             return m_nsamples;
         }
 
-        public Vector3f getSampleVelocity(int i)
+        public Vector3f GetSampleVelocity(int i)
         {
             Vector3f vel = new Vector3f();
             vel.x = m_vel[i * 3];
@@ -110,32 +110,32 @@ namespace DotRecast.Detour.Crowd.Tracking
             return vel;
         }
 
-        public float getSampleSize(int i)
+        public float GetSampleSize(int i)
         {
             return m_ssize[i];
         }
 
-        public float getSamplePenalty(int i)
+        public float GetSamplePenalty(int i)
         {
             return m_pen[i];
         }
 
-        public float getSampleDesiredVelocityPenalty(int i)
+        public float GetSampleDesiredVelocityPenalty(int i)
         {
             return m_vpen[i];
         }
 
-        public float getSampleCurrentVelocityPenalty(int i)
+        public float GetSampleCurrentVelocityPenalty(int i)
         {
             return m_vcpen[i];
         }
 
-        public float getSamplePreferredSidePenalty(int i)
+        public float GetSamplePreferredSidePenalty(int i)
         {
             return m_spen[i];
         }
 
-        public float getSampleCollisionTimePenalty(int i)
+        public float GetSampleCollisionTimePenalty(int i)
         {
             return m_tpen[i];
         }

@@ -5,12 +5,12 @@ namespace DotRecast.Recast.Demo.Builder;
 
 public abstract class AbstractNavMeshBuilder
 {
-    protected NavMeshDataCreateParams getNavMeshCreateParams(DemoInputGeomProvider m_geom, float m_cellSize,
+    protected NavMeshDataCreateParams GetNavMeshCreateParams(DemoInputGeomProvider m_geom, float m_cellSize,
         float m_cellHeight, float m_agentHeight, float m_agentRadius, float m_agentMaxClimb,
         RecastBuilderResult rcResult)
     {
-        PolyMesh m_pmesh = rcResult.getMesh();
-        PolyMeshDetail m_dmesh = rcResult.getMeshDetail();
+        PolyMesh m_pmesh = rcResult.GetMesh();
+        PolyMeshDetail m_dmesh = rcResult.GetMeshDetail();
         NavMeshDataCreateParams option = new NavMeshDataCreateParams();
         for (int i = 0; i < m_pmesh.npolys; ++i)
         {
@@ -42,7 +42,7 @@ public abstract class AbstractNavMeshBuilder
         option.ch = m_cellHeight;
         option.buildBvTree = true;
 
-        option.offMeshConCount = m_geom.getOffMeshConnections().Count;
+        option.offMeshConCount = m_geom.GetOffMeshConnections().Count;
         option.offMeshConVerts = new float[option.offMeshConCount * 6];
         option.offMeshConRad = new float[option.offMeshConCount];
         option.offMeshConDir = new int[option.offMeshConCount];
@@ -51,7 +51,7 @@ public abstract class AbstractNavMeshBuilder
         option.offMeshConUserID = new int[option.offMeshConCount];
         for (int i = 0; i < option.offMeshConCount; i++)
         {
-            DemoOffMeshConnection offMeshCon = m_geom.getOffMeshConnections()[i];
+            DemoOffMeshConnection offMeshCon = m_geom.GetOffMeshConnections()[i];
             for (int j = 0; j < 6; j++)
             {
                 option.offMeshConVerts[6 * i + j] = offMeshCon.verts[j];
@@ -66,27 +66,27 @@ public abstract class AbstractNavMeshBuilder
         return option;
     }
 
-    protected MeshData updateAreaAndFlags(MeshData meshData)
+    protected MeshData UpdateAreaAndFlags(MeshData meshData)
     {
         // Update poly flags from areas.
         for (int i = 0; i < meshData.polys.Length; ++i)
         {
-            if (meshData.polys[i].getArea() == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WALKABLE)
+            if (meshData.polys[i].GetArea() == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WALKABLE)
             {
-                meshData.polys[i].setArea(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GROUND);
+                meshData.polys[i].SetArea(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GROUND);
             }
 
-            if (meshData.polys[i].getArea() == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GROUND
-                || meshData.polys[i].getArea() == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GRASS
-                || meshData.polys[i].getArea() == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD)
+            if (meshData.polys[i].GetArea() == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GROUND
+                || meshData.polys[i].GetArea() == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GRASS
+                || meshData.polys[i].GetArea() == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD)
             {
                 meshData.polys[i].flags = SampleAreaModifications.SAMPLE_POLYFLAGS_WALK;
             }
-            else if (meshData.polys[i].getArea() == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER)
+            else if (meshData.polys[i].GetArea() == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER)
             {
                 meshData.polys[i].flags = SampleAreaModifications.SAMPLE_POLYFLAGS_SWIM;
             }
-            else if (meshData.polys[i].getArea() == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_DOOR)
+            else if (meshData.polys[i].GetArea() == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_DOOR)
             {
                 meshData.polys[i].flags = SampleAreaModifications.SAMPLE_POLYFLAGS_DOOR;
             }

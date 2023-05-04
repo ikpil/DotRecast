@@ -22,6 +22,6 @@ namespace DotRecast.Recast.Geom
 {
     public interface ConvexVolumeProvider
     {
-        IList<ConvexVolume> convexVolumes();
+        IList<ConvexVolume> ConvexVolumes();
     }
 }

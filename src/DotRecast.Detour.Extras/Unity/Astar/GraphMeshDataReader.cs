@@ -27,59 +27,59 @@ namespace DotRecast.Detour.Extras.Unity.Astar
     {
         public const float INT_PRECISION_FACTOR = 1000f;
 
-        public GraphMeshData read(ZipArchive file, string filename, GraphMeta meta, int maxVertPerPoly)
+        public GraphMeshData Read(ZipArchive file, string filename, GraphMeta meta, int maxVertPerPoly)
         {
-            ByteBuffer buffer = toByteBuffer(file, filename);
-            int tileXCount = buffer.getInt();
+            ByteBuffer buffer = ToByteBuffer(file, filename);
+            int tileXCount = buffer.GetInt();
             if (tileXCount < 0)
             {
                 return null;
             }
 
-            int tileZCount = buffer.getInt();
+            int tileZCount = buffer.GetInt();
             MeshData[] tiles = new MeshData[tileXCount * tileZCount];
             for (int z = 0; z < tileZCount; z++)
             {
                 for (int x = 0; x < tileXCount; x++)
                 {
                     int tileIndex = x + z * tileXCount;
-                    int tx = buffer.getInt();
-                    int tz = buffer.getInt();
+                    int tx = buffer.GetInt();
+                    int tz = buffer.GetInt();
                     if (tx != x || tz != z)
                     {
                         throw new ArgumentException("Inconsistent tile positions");
                     }
 
                     tiles[tileIndex] = new MeshData();
-                    int width = buffer.getInt();
-                    int depth = buffer.getInt();
+                    int width = buffer.GetInt();
+                    int depth = buffer.GetInt();
 
-                    int trisCount = buffer.getInt();
+                    int trisCount = buffer.GetInt();
                     int[] tris = new int[trisCount];
                     for (int i = 0; i < tris.Length; i++)
                     {
-                        tris[i] = buffer.getInt();
+                        tris[i] = buffer.GetInt();
                     }
 
-                    int vertsCount = buffer.getInt();
+                    int vertsCount = buffer.GetInt();
                     float[] verts = new float[3 * vertsCount];
                     for (int i = 0; i < verts.Length; i++)
                     {
-                        verts[i] = buffer.getInt() / INT_PRECISION_FACTOR;
+                        verts[i] = buffer.GetInt() / INT_PRECISION_FACTOR;
                     }
 
-                    int[] vertsInGraphSpace = new int[3 * buffer.getInt()];
+                    int[] vertsInGraphSpace = new int[3 * buffer.GetInt()];
                     for (int i = 0; i < vertsInGraphSpace.Length; i++)
                     {
-                        vertsInGraphSpace[i] = buffer.getInt();
+                        vertsInGraphSpace[i] = buffer.GetInt();
                     }
 
-                    int nodeCount = buffer.getInt();
+                    int nodeCount = buffer.GetInt();
                     Poly[] nodes = new Poly[nodeCount];
                     PolyDetail[] detailNodes = new PolyDetail[nodeCount];
                     float[] detailVerts = new float[0];
                     int[] detailTris = new int[4 * nodeCount];
-                    int vertMask = getVertMask(vertsCount);
+                    int vertMask = GetVertMask(vertsCount);
                     float ymin = float.PositiveInfinity;
                     float ymax = float.NegativeInfinity;
                     for (int i = 0; i < nodes.Length; i++)
@@ -87,11 +87,11 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                         nodes[i] = new Poly(i, maxVertPerPoly);
                         nodes[i].vertCount = 3;
                         // XXX: What can we do with the penalty?
-                        int penalty = buffer.getInt();
-                        nodes[i].flags = buffer.getInt();
-                        nodes[i].verts[0] = buffer.getInt() & vertMask;
-                        nodes[i].verts[1] = buffer.getInt() & vertMask;
-                        nodes[i].verts[2] = buffer.getInt() & vertMask;
+                        int penalty = buffer.GetInt();
+                        nodes[i].flags = buffer.GetInt();
+                        nodes[i].verts[0] = buffer.GetInt() & vertMask;
+                        nodes[i].verts[1] = buffer.GetInt() & vertMask;
+                        nodes[i].verts[2] = buffer.GetInt() & vertMask;
                         ymin = Math.Min(ymin, verts[nodes[i].verts[0] * 3 + 1]);
                         ymin = Math.Min(ymin, verts[nodes[i].verts[1] * 3 + 1]);
                         ymin = Math.Min(ymin, verts[nodes[i].verts[2] * 3 + 1]);
@@ -148,7 +148,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
             return new GraphMeshData(tileXCount, tileZCount, tiles);
         }
 
-        public static int highestOneBit(uint i)
+        public static int HighestOneBit(uint i)
         {
             i |= (i >> 1);
             i |= (i >> 2);
@@ -159,9 +159,9 @@ namespace DotRecast.Detour.Extras.Unity.Astar
         }
 
         // See NavmeshBase.cs: ASTAR_RECAST_LARGER_TILES
-        private int getVertMask(int vertsCount)
+        private int GetVertMask(int vertsCount)
         {
-            int vertMask = highestOneBit((uint)vertsCount);
+            int vertMask = HighestOneBit((uint)vertsCount);
             if (vertMask != vertsCount)
             {
                 vertMask *= 2;

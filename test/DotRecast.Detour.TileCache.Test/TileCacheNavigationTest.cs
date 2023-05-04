@@ -53,35 +53,35 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
     protected NavMeshQuery query;
 
     [SetUp]
-    public void setUp()
+    public void SetUp()
     {
         bool cCompatibility = true;
-        InputGeomProvider geom = ObjImporter.load(Loader.ToBytes("dungeon.obj"));
+        InputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("dungeon.obj"));
         TestTileLayerBuilder layerBuilder = new TestTileLayerBuilder(geom);
-        List<byte[]> layers = layerBuilder.build(ByteOrder.LITTLE_ENDIAN, cCompatibility, 1);
-        TileCache tc = getTileCache(geom, ByteOrder.LITTLE_ENDIAN, cCompatibility);
+        List<byte[]> layers = layerBuilder.Build(ByteOrder.LITTLE_ENDIAN, cCompatibility, 1);
+        TileCache tc = GetTileCache(geom, ByteOrder.LITTLE_ENDIAN, cCompatibility);
         foreach (byte[] data in layers)
         {
-            tc.addTile(data, 0);
+            tc.AddTile(data, 0);
         }
 
-        for (int y = 0; y < layerBuilder.getTh(); ++y)
+        for (int y = 0; y < layerBuilder.GetTh(); ++y)
         {
-            for (int x = 0; x < layerBuilder.getTw(); ++x)
+            for (int x = 0; x < layerBuilder.GetTw(); ++x)
             {
-                foreach (long refs in tc.getTilesAt(x, y))
+                foreach (long refs in tc.GetTilesAt(x, y))
                 {
-                    tc.buildNavMeshTile(refs);
+                    tc.BuildNavMeshTile(refs);
                 }
             }
         }
 
-        navmesh = tc.getNavMesh();
+        navmesh = tc.GetNavMesh();
         query = new NavMeshQuery(navmesh);
     }
 
     [Test]
-    public void testFindPathWithDefaultHeuristic()
+    public void TestFindPathWithDefaultHeuristic()
     {
         QueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < startRefs.Length; i++)
@@ -90,7 +90,7 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
             long endRef = endRefs[i];
             Vector3f startPos = startPoss[i];
             Vector3f endPos = endPoss[i];
-            Result<List<long>> path = query.findPath(startRef, endRef, startPos, endPos, filter);
+            Result<List<long>> path = query.FindPath(startRef, endRef, startPos, endPos, filter);
             Assert.That(path.status, Is.EqualTo(statuses[i]));
             Assert.That(path.result.Count, Is.EqualTo(results[i].Length));
             for (int j = 0; j < results[i].Length; j++)
@@ -101,7 +101,7 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
     }
 
     [Test]
-    public void testFindPathWithNoHeuristic()
+    public void TestFindPathWithNoHeuristic()
     {
         QueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < startRefs.Length; i++)
@@ -110,7 +110,7 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
             long endRef = endRefs[i];
             Vector3f startPos = startPoss[i];
             Vector3f endPos = endPoss[i];
-            Result<List<long>> path = query.findPath(startRef, endRef, startPos, endPos, filter, new DefaultQueryHeuristic(0.0f),
+            Result<List<long>> path = query.FindPath(startRef, endRef, startPos, endPos, filter, new DefaultQueryHeuristic(0.0f),
                 0, 0);
             Assert.That(path.status, Is.EqualTo(statuses[i]));
             Assert.That(path.result.Count, Is.EqualTo(results[i].Length));

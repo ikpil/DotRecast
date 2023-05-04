@@ -39,11 +39,11 @@ public class DemoInputGeomProvider : InputGeomProvider
     private readonly TriMesh _mesh;
 
     public DemoInputGeomProvider(List<float> vertexPositions, List<int> meshFaces) :
-        this(mapVertices(vertexPositions), mapFaces(meshFaces))
+        this(MapVertices(vertexPositions), MapFaces(meshFaces))
     {
     }
 
-    private static int[] mapFaces(List<int> meshFaces)
+    private static int[] MapFaces(List<int> meshFaces)
     {
         int[] faces = new int[meshFaces.Count];
         for (int i = 0; i < faces.Length; i++)
@@ -54,7 +54,7 @@ public class DemoInputGeomProvider : InputGeomProvider
         return faces;
     }
 
-    private static float[] mapVertices(List<float> vertexPositions)
+    private static float[] MapVertices(List<float> vertexPositions)
     {
         float[] vertices = new float[vertexPositions.Count];
         for (int i = 0; i < vertices.Length; i++)
@@ -70,31 +70,31 @@ public class DemoInputGeomProvider : InputGeomProvider
         this.vertices = vertices;
         this.faces = faces;
         normals = new float[faces.Length];
-        calculateNormals();
+        CalculateNormals();
         bmin = Vector3f.Zero;
         bmax = Vector3f.Zero;
-        RecastVectors.copy(ref bmin, vertices, 0);
-        RecastVectors.copy(ref bmax, vertices, 0);
+        RecastVectors.Copy(ref bmin, vertices, 0);
+        RecastVectors.Copy(ref bmax, vertices, 0);
         for (int i = 1; i < vertices.Length / 3; i++)
         {
-            RecastVectors.min(ref bmin, vertices, i * 3);
-            RecastVectors.max(ref bmax, vertices, i * 3);
+            RecastVectors.Min(ref bmin, vertices, i * 3);
+            RecastVectors.Max(ref bmax, vertices, i * 3);
         }
 
         _mesh = new TriMesh(vertices, faces);
     }
 
-    public Vector3f getMeshBoundsMin()
+    public Vector3f GetMeshBoundsMin()
     {
         return bmin;
     }
 
-    public Vector3f getMeshBoundsMax()
+    public Vector3f GetMeshBoundsMax()
     {
         return bmax;
     }
 
-    public void calculateNormals()
+    public void CalculateNormals()
     {
         for (int i = 0; i < faces.Length; i += 3)
         {
@@ -123,36 +123,36 @@ public class DemoInputGeomProvider : InputGeomProvider
         }
     }
 
-    public IList<ConvexVolume> convexVolumes()
+    public IList<ConvexVolume> ConvexVolumes()
     {
         return _convexVolumes;
     }
 
-    public IEnumerable<TriMesh> meshes()
+    public IEnumerable<TriMesh> Meshes()
     {
         return ImmutableArray.Create(_mesh);
     }
 
-    public List<DemoOffMeshConnection> getOffMeshConnections()
+    public List<DemoOffMeshConnection> GetOffMeshConnections()
     {
         return offMeshConnections;
     }
 
-    public void addOffMeshConnection(Vector3f start, Vector3f end, float radius, bool bidir, int area, int flags)
+    public void AddOffMeshConnection(Vector3f start, Vector3f end, float radius, bool bidir, int area, int flags)
     {
         offMeshConnections.Add(new DemoOffMeshConnection(start, end, radius, bidir, area, flags));
     }
 
-    public void removeOffMeshConnections(Predicate<DemoOffMeshConnection> filter)
+    public void RemoveOffMeshConnections(Predicate<DemoOffMeshConnection> filter)
     {
-        //offMeshConnections.retainAll(offMeshConnections.stream().filter(c -> !filter.test(c)).collect(toList()));
+        //offMeshConnections.RetainAll(offMeshConnections.Stream().Filter(c -> !filter.Test(c)).Collect(ToList()));
         offMeshConnections.RemoveAll(filter); // TODO : 확인 필요
     }
 
-    public float? raycastMesh(Vector3f src, Vector3f dst)
+    public float? RaycastMesh(Vector3f src, Vector3f dst)
     {
         // Prune hit ray.
-        float[] btminmax = Intersections.intersectSegmentAABB(src, dst, bmin, bmax);
+        float[] btminmax = Intersections.IntersectSegmentAABB(src, dst, bmin, bmax);
         if (null == btminmax)
         {
             return null;
@@ -166,7 +166,7 @@ public class DemoInputGeomProvider : InputGeomProvider
         q[0] = src.x + (dst.x - src.x) * btmax;
         q[1] = src.z + (dst.z - src.z) * btmax;
 
-        List<ChunkyTriMeshNode> chunks = _mesh.chunkyTriMesh.getChunksOverlappingSegment(p, q);
+        List<ChunkyTriMeshNode> chunks = _mesh.chunkyTriMesh.GetChunksOverlappingSegment(p, q);
         if (0 == chunks.Count)
         {
             return null;
@@ -194,7 +194,7 @@ public class DemoInputGeomProvider : InputGeomProvider
                     vertices[tris[j + 2] * 3 + 1],
                     vertices[tris[j + 2] * 3 + 2]
                 );
-                float? t = Intersections.intersectSegmentTriangle(src, dst, v1, v2, v3);
+                float? t = Intersections.IntersectSegmentTriangle(src, dst, v1, v2, v3);
                 if (null != t)
                 {
                     if (t.Value < tmin)
@@ -211,7 +211,7 @@ public class DemoInputGeomProvider : InputGeomProvider
     }
 
 
-    public void addConvexVolume(float[] verts, float minh, float maxh, AreaModification areaMod)
+    public void AddConvexVolume(float[] verts, float minh, float maxh, AreaModification areaMod)
     {
         ConvexVolume volume = new ConvexVolume();
         volume.verts = verts;
@@ -221,7 +221,7 @@ public class DemoInputGeomProvider : InputGeomProvider
         _convexVolumes.Add(volume);
     }
 
-    public void clearConvexVolumes()
+    public void ClearConvexVolumes()
     {
         _convexVolumes.Clear();
     }

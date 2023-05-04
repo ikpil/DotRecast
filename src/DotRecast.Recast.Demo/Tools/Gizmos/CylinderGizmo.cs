@@ -23,17 +23,17 @@ public class CylinderGizmo : ColliderGizmo
         Vector3f axis = Vector3f.Of(end.x - start.x, end.y - start.y, end.z - start.z);
         Vector3f[] normals = new Vector3f[3];
         normals[1] = Vector3f.Of(end.x - start.x, end.y - start.y, end.z - start.z);
-        normalize(ref normals[1]);
-        normals[0] = getSideVector(axis);
+        Normalize(ref normals[1]);
+        normals[0] = GetSideVector(axis);
         normals[2] = Vector3f.Zero;
-        cross(ref normals[2], normals[0], normals[1]);
-        normalize(ref normals[2]);
-        triangles = generateCylindricalTriangles();
+        Cross(ref normals[2], normals[0], normals[1]);
+        Normalize(ref normals[2]);
+        triangles = GenerateCylindricalTriangles();
         Vector3f trX = Vector3f.Of(normals[0].x, normals[1].x, normals[2].x);
         Vector3f trY = Vector3f.Of(normals[0].y, normals[1].y, normals[2].y);
         Vector3f trZ = Vector3f.Of(normals[0].z, normals[1].z, normals[2].z);
-        vertices = generateCylindricalVertices();
-        float halfLength = 0.5f * vLen(axis);
+        vertices = GenerateCylindricalVertices();
+        float halfLength = 0.5f * VLen(axis);
         gradient = new float[vertices.Length / 3];
         Vector3f v = new Vector3f();
         for (int i = 0; i < vertices.Length; i += 3)
@@ -54,13 +54,13 @@ public class CylinderGizmo : ColliderGizmo
                 v.x = vertices[i] - center.x;
                 v.y = vertices[i + 1] - center.y;
                 v.z = vertices[i + 2] - center.z;
-                normalize(ref v);
-                gradient[i / 3] = clamp(0.57735026f * (v.x + v.y + v.z), -1, 1);
+                Normalize(ref v);
+                gradient[i / 3] = Clamp(0.57735026f * (v.x + v.y + v.z), -1, 1);
             }
         }
     }
 
-    private Vector3f getSideVector(Vector3f axis)
+    private Vector3f GetSideVector(Vector3f axis)
     {
         Vector3f side = Vector3f.Of(1, 0, 0);
         if (axis.x > 0.8)
@@ -69,27 +69,27 @@ public class CylinderGizmo : ColliderGizmo
         }
 
         Vector3f forward = new Vector3f();
-        cross(ref forward, side, axis);
-        cross(ref side, axis, forward);
-        normalize(ref side);
+        Cross(ref forward, side, axis);
+        Cross(ref side, axis, forward);
+        Normalize(ref side);
         return side;
     }
 
-    public void render(RecastDebugDraw debugDraw)
+    public void Render(RecastDebugDraw debugDraw)
     {
-        debugDraw.begin(DebugDrawPrimitives.TRIS);
+        debugDraw.Begin(DebugDrawPrimitives.TRIS);
         for (int i = 0; i < triangles.Length; i += 3)
         {
             for (int j = 0; j < 3; j++)
             {
                 int v = triangles[i + j] * 3;
                 float c = gradient[triangles[i + j]];
-                int col = DebugDraw.duLerpCol(DebugDraw.duRGBA(32, 32, 0, 160), DebugDraw.duRGBA(220, 220, 0, 160),
+                int col = DebugDraw.DuLerpCol(DebugDraw.DuRGBA(32, 32, 0, 160), DebugDraw.DuRGBA(220, 220, 0, 160),
                     (int)(127 * (1 + c)));
-                debugDraw.vertex(vertices[v], vertices[v + 1], vertices[v + 2], col);
+                debugDraw.Vertex(vertices[v], vertices[v + 1], vertices[v + 2], col);
             }
         }
 
-        debugDraw.end();
+        debugDraw.End();
     }
 }

@@ -19,34 +19,34 @@ namespace DotRecast.Core
             _position = 0;
         }
 
-        public ByteOrder order()
+        public ByteOrder Order()
         {
             return _order;
         }
 
-        public void order(ByteOrder order)
+        public void Order(ByteOrder order)
         {
             _order = order;
         }
 
-        public int limit()
+        public int Limit()
         {
             return _bytes.Length - _position;
         }
 
-        public int remaining()
+        public int Remaining()
         {
-            int rem = limit();
+            int rem = Limit();
             return rem > 0 ? rem : 0;
         }
 
 
-        public void position(int pos)
+        public void Position(int pos)
         {
             _position = pos;
         }
 
-        public int position()
+        public int Position()
         {
             return _position;
         }
@@ -59,13 +59,13 @@ namespace DotRecast.Core
             return _bytes.AsSpan(nextPos, length);
         }
 
-        public byte get()
+        public byte Get()
         {
             var span = ReadBytes(1);
             return span[0];
         }
 
-        public short getShort()
+        public short GetShort()
         {
             var span = ReadBytes(2);
             if (_order == ByteOrder.BIG_ENDIAN)
@@ -79,7 +79,7 @@ namespace DotRecast.Core
         }
 
 
-        public int getInt()
+        public int GetInt()
         {
             var span = ReadBytes(4);
             if (_order == ByteOrder.BIG_ENDIAN)
@@ -92,7 +92,7 @@ namespace DotRecast.Core
             }
         }
 
-        public float getFloat()
+        public float GetFloat()
         {
             var span = ReadBytes(4);
             if (_order == ByteOrder.BIG_ENDIAN && BitConverter.IsLittleEndian)
@@ -107,7 +107,7 @@ namespace DotRecast.Core
             return BitConverter.ToSingle(span);
         }
 
-        public long getLong()
+        public long GetLong()
         {
             var span = ReadBytes(8);
             if (_order == ByteOrder.BIG_ENDIAN)
@@ -120,7 +120,7 @@ namespace DotRecast.Core
             }
         }
 
-        public void putFloat(float v)
+        public void PutFloat(float v)
         {
             // if (_order == ByteOrder.BIG_ENDIAN)
             // {
@@ -134,7 +134,7 @@ namespace DotRecast.Core
             // ?
         }
 
-        public void putInt(int v)
+        public void PutInt(int v)
         {
             // ?
         }

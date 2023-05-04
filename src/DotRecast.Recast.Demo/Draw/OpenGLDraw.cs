@@ -5,32 +5,32 @@ namespace DotRecast.Recast.Demo.Draw;
 
 public interface OpenGLDraw
 {
-    void init();
+    void Init();
 
-    void clear();
+    void Clear();
 
-    void begin(DebugDrawPrimitives prim, float size);
+    void Begin(DebugDrawPrimitives prim, float size);
 
-    void end();
+    void End();
 
-    void vertex(float x, float y, float z, int color);
+    void Vertex(float x, float y, float z, int color);
 
-    void vertex(float[] pos, int color);
-    void vertex(Vector3f pos, int color);
+    void Vertex(float[] pos, int color);
+    void Vertex(Vector3f pos, int color);
     
-    void vertex(Vector3f pos, int color, Vector2f uv);
+    void Vertex(Vector3f pos, int color, Vector2f uv);
 
-    void vertex(float x, float y, float z, int color, float u, float v);
+    void Vertex(float x, float y, float z, int color, float u, float v);
 
-    void fog(bool state);
+    void Fog(bool state);
 
-    void depthMask(bool state);
+    void DepthMask(bool state);
 
-    void texture(GLCheckerTexture g_tex, bool state);
+    void Texture(GLCheckerTexture g_tex, bool state);
 
-    void projectionMatrix(float[] projectionMatrix);
+    void ProjectionMatrix(float[] projectionMatrix);
 
-    void viewMatrix(float[] viewMatrix);
+    void ViewMatrix(float[] viewMatrix);
 
-    void fog(float start, float end);
+    void Fog(float start, float end);
 }

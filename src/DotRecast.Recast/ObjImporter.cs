@@ -31,13 +31,13 @@ namespace DotRecast.Recast
             public List<int> meshFaces = new List<int>();
         }
 
-        public static InputGeomProvider load(byte[] chunck)
+        public static InputGeomProvider Load(byte[] chunck)
         {
-            var context = loadContext(chunck);
+            var context = LoadContext(chunck);
             return new SimpleInputGeomProvider(context.vertexPositions, context.meshFaces);
         }
 
-        public static ObjImporterContext loadContext(byte[] chunck)
+        public static ObjImporterContext LoadContext(byte[] chunck)
         {
             ObjImporterContext context = new ObjImporterContext();
             try
@@ -47,7 +47,7 @@ namespace DotRecast.Recast
                 while ((line = reader.ReadLine()) != null)
                 {
                     line = line.Trim();
-                    readLine(line, context);
+                    ReadLine(line, context);
                 }
             }
             catch (Exception e)
@@ -59,23 +59,23 @@ namespace DotRecast.Recast
         }
 
 
-        public static void readLine(string line, ObjImporterContext context)
+        public static void ReadLine(string line, ObjImporterContext context)
         {
             if (line.StartsWith("v"))
             {
-                readVertex(line, context);
+                ReadVertex(line, context);
             }
             else if (line.StartsWith("f"))
             {
-                readFace(line, context);
+                ReadFace(line, context);
             }
         }
 
-        private static void readVertex(string line, ObjImporterContext context)
+        private static void ReadVertex(string line, ObjImporterContext context)
         {
             if (line.StartsWith("v "))
             {
-                float[] vert = readVector3f(line);
+                float[] vert = ReadVector3f(line);
                 foreach (float vp in vert)
                 {
                     context.vertexPositions.Add(vp);
@@ -83,7 +83,7 @@ namespace DotRecast.Recast
             }
         }
 
-        private static float[] readVector3f(string line)
+        private static float[] ReadVector3f(string line)
         {
             string[] v = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             if (v.Length < 4)
@@ -94,7 +94,7 @@ namespace DotRecast.Recast
             return new float[] { float.Parse(v[1]), float.Parse(v[2]), float.Parse(v[3]) };
         }
 
-        private static void readFace(string line, ObjImporterContext context)
+        private static void ReadFace(string line, ObjImporterContext context)
         {
             string[] v = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             if (v.Length < 4)
@@ -104,21 +104,21 @@ namespace DotRecast.Recast
 
             for (int j = 0; j < v.Length - 3; j++)
             {
-                context.meshFaces.Add(readFaceVertex(v[1], context));
+                context.meshFaces.Add(ReadFaceVertex(v[1], context));
                 for (int i = 0; i < 2; i++)
                 {
-                    context.meshFaces.Add(readFaceVertex(v[2 + j + i], context));
+                    context.meshFaces.Add(ReadFaceVertex(v[2 + j + i], context));
                 }
             }
         }
 
-        private static int readFaceVertex(string face, ObjImporterContext context)
+        private static int ReadFaceVertex(string face, ObjImporterContext context)
         {
             string[] v = face.Split("/");
-            return getIndex(int.Parse(v[0]), context.vertexPositions.Count);
+            return GetIndex(int.Parse(v[0]), context.vertexPositions.Count);
         }
 
-        private static int getIndex(int posi, int size)
+        private static int GetIndex(int posi, int size)
         {
             if (posi > 0)
             {

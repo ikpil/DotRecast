@@ -58,12 +58,12 @@ namespace DotRecast.Recast
             Mask = other.Mask;
         }
 
-        public int getMaskedValue()
+        public int GetMaskedValue()
         {
             return Value & Mask;
         }
 
-        public int apply(int area)
+        public int Apply(int area)
         {
             return ((Value & Mask) | (area & ~Mask));
         }

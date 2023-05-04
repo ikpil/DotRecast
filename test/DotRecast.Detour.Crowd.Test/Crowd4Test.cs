@@ -306,16 +306,16 @@ public class Crowd4Test : AbstractCrowdTest
     };
 
     [Test]
-    public void testAgent1Quality2TVTA()
+    public void TestAgent1Quality2TVTA()
     {
         int updateFlags = CrowdAgentParams.DT_CROWD_ANTICIPATE_TURNS | CrowdAgentParams.DT_CROWD_OPTIMIZE_VIS
                                                                      | CrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO | CrowdAgentParams.DT_CROWD_OBSTACLE_AVOIDANCE;
 
-        addAgentGrid(2, 0.3f, updateFlags, 2, startPoss[0]);
-        setMoveTarget(endPoss[0], false);
+        AddAgentGrid(2, 0.3f, updateFlags, 2, startPoss[0]);
+        SetMoveTarget(endPoss[0], false);
         for (int i = 0; i < EXPECTED_A1Q2TVTA.Length; i++)
         {
-            crowd.update(1 / 5f, null);
+            crowd.Update(1 / 5f, null);
             CrowdAgent ag = agents[2];
             Assert.That(ag.npos.x, Is.EqualTo(EXPECTED_A1Q2TVTA[i][0]).Within(0.001f), $"{i}");
             Assert.That(ag.npos.y, Is.EqualTo(EXPECTED_A1Q2TVTA[i][1]).Within(0.001f), $"{i}");
@@ -327,17 +327,17 @@ public class Crowd4Test : AbstractCrowdTest
     }
 
     [Test]
-    public void testAgent1Quality2TVTAS()
+    public void TestAgent1Quality2TVTAS()
     {
         int updateFlags = CrowdAgentParams.DT_CROWD_ANTICIPATE_TURNS | CrowdAgentParams.DT_CROWD_OPTIMIZE_VIS
                                                                      | CrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO | CrowdAgentParams.DT_CROWD_OBSTACLE_AVOIDANCE
                                                                      | CrowdAgentParams.DT_CROWD_SEPARATION;
 
-        addAgentGrid(2, 0.3f, updateFlags, 2, startPoss[0]);
-        setMoveTarget(endPoss[0], false);
+        AddAgentGrid(2, 0.3f, updateFlags, 2, startPoss[0]);
+        SetMoveTarget(endPoss[0], false);
         for (int i = 0; i < EXPECTED_A1Q2TVTAS.Length; i++)
         {
-            crowd.update(1 / 5f, null);
+            crowd.Update(1 / 5f, null);
             CrowdAgent ag = agents[2];
             Assert.That(ag.npos.x, Is.EqualTo(EXPECTED_A1Q2TVTAS[i][0]).Within(0.001f), $"{i}");
             Assert.That(ag.npos.y, Is.EqualTo(EXPECTED_A1Q2TVTAS[i][1]).Within(0.001f), $"{i}");
@@ -349,15 +349,15 @@ public class Crowd4Test : AbstractCrowdTest
     }
 
     [Test]
-    public void testAgent1Quality2T()
+    public void TestAgent1Quality2T()
     {
         int updateFlags = CrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO;
 
-        addAgentGrid(2, 0.3f, updateFlags, 2, startPoss[0]);
-        setMoveTarget(endPoss[0], false);
+        AddAgentGrid(2, 0.3f, updateFlags, 2, startPoss[0]);
+        SetMoveTarget(endPoss[0], false);
         for (int i = 0; i < EXPECTED_A1Q2T.Length; i++)
         {
-            crowd.update(1 / 5f, null);
+            crowd.Update(1 / 5f, null);
             CrowdAgent ag = agents[2];
             Assert.That(ag.npos.x, Is.EqualTo(EXPECTED_A1Q2T[i][0]).Within(0.00001f), $"{i} - {ag.npos.x} {EXPECTED_A1Q2T[i][0]}");
             Assert.That(ag.npos.y, Is.EqualTo(EXPECTED_A1Q2T[i][1]).Within(0.00001f), $"{i} - {ag.npos.y} {EXPECTED_A1Q2T[i][1]}");

@@ -24,17 +24,17 @@ namespace DotRecast.Detour.TileCache.Io.Compress
 {
     public class FastLzTileCacheCompressor : TileCacheCompressor
     {
-        public byte[] decompress(byte[] buf, int offset, int len, int outputlen)
+        public byte[] Decompress(byte[] buf, int offset, int len, int outputlen)
         {
             byte[] output = new byte[outputlen];
-            FastLz.decompress(buf, offset, len, output, 0, outputlen);
+            FastLz.Decompress(buf, offset, len, output, 0, outputlen);
             return output;
         }
 
-        public byte[] compress(byte[] buf)
+        public byte[] Compress(byte[] buf)
         {
-            byte[] output = new byte[FastLz.calculateOutputBufferLength(buf.Length)];
-            int len = FastLz.compress(buf, 0, buf.Length, output, 0, output.Length);
+            byte[] output = new byte[FastLz.CalculateOutputBufferLength(buf.Length)];
+            int len = FastLz.Compress(buf, 0, buf.Length, output, 0, output.Length);
             return ArrayUtils.CopyOf(output, len);
         }
     }

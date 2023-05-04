@@ -48,7 +48,7 @@ namespace DotRecast.Detour.Dynamic.Io
             this.cellSize = cellSize;
             this.cellHeight = cellHeight;
             this.borderSize = borderSize;
-            spanData = toByteArray(buffer, width, depth, VoxelFile.PREFERRED_BYTE_ORDER);
+            spanData = ToByteArray(buffer, width, depth, VoxelFile.PREFERRED_BYTE_ORDER);
         }
 
         public VoxelTile(int tileX, int tileZ, Heightfield heightfield)
@@ -62,15 +62,15 @@ namespace DotRecast.Detour.Dynamic.Io
             cellSize = heightfield.cs;
             cellHeight = heightfield.ch;
             borderSize = heightfield.borderSize;
-            spanData = serializeSpans(heightfield, VoxelFile.PREFERRED_BYTE_ORDER);
+            spanData = SerializeSpans(heightfield, VoxelFile.PREFERRED_BYTE_ORDER);
         }
 
-        public Heightfield heightfield()
+        public Heightfield Heightfield()
         {
-            return VoxelFile.PREFERRED_BYTE_ORDER == ByteOrder.BIG_ENDIAN ? heightfieldBE() : heightfieldLE();
+            return VoxelFile.PREFERRED_BYTE_ORDER == ByteOrder.BIG_ENDIAN ? HeightfieldBE() : HeightfieldLE();
         }
 
-        private Heightfield heightfieldBE()
+        private Heightfield HeightfieldBE()
         {
             Heightfield hf = new Heightfield(width, depth, boundsMin, boundsMax, cellSize, cellHeight, borderSize);
             int position = 0;
@@ -79,16 +79,16 @@ namespace DotRecast.Detour.Dynamic.Io
                 for (int x = 0; x < width; x++)
                 {
                     Span prev = null;
-                    int spanCount = ByteUtils.getShortBE(spanData, position);
+                    int spanCount = ByteUtils.GetShortBE(spanData, position);
                     position += 2;
                     for (int s = 0; s < spanCount; s++)
                     {
                         Span span = new Span();
-                        span.smin = ByteUtils.getIntBE(spanData, position);
+                        span.smin = ByteUtils.GetIntBE(spanData, position);
                         position += 4;
-                        span.smax = ByteUtils.getIntBE(spanData, position);
+                        span.smax = ByteUtils.GetIntBE(spanData, position);
                         position += 4;
-                        span.area = ByteUtils.getIntBE(spanData, position);
+                        span.area = ByteUtils.GetIntBE(spanData, position);
                         position += 4;
                         if (prev == null)
                         {
@@ -107,7 +107,7 @@ namespace DotRecast.Detour.Dynamic.Io
             return hf;
         }
 
-        private Heightfield heightfieldLE()
+        private Heightfield HeightfieldLE()
         {
             Heightfield hf = new Heightfield(width, depth, boundsMin, boundsMax, cellSize, cellHeight, borderSize);
             int position = 0;
@@ -116,16 +116,16 @@ namespace DotRecast.Detour.Dynamic.Io
                 for (int x = 0; x < width; x++)
                 {
                     Span prev = null;
-                    int spanCount = ByteUtils.getShortLE(spanData, position);
+                    int spanCount = ByteUtils.GetShortLE(spanData, position);
                     position += 2;
                     for (int s = 0; s < spanCount; s++)
                     {
                         Span span = new Span();
-                        span.smin = ByteUtils.getIntLE(spanData, position);
+                        span.smin = ByteUtils.GetIntLE(spanData, position);
                         position += 4;
-                        span.smax = ByteUtils.getIntLE(spanData, position);
+                        span.smax = ByteUtils.GetIntLE(spanData, position);
                         position += 4;
-                        span.area = ByteUtils.getIntLE(spanData, position);
+                        span.area = ByteUtils.GetIntLE(spanData, position);
                         position += 4;
                         if (prev == null)
                         {
@@ -144,7 +144,7 @@ namespace DotRecast.Detour.Dynamic.Io
             return hf;
         }
 
-        private byte[] serializeSpans(Heightfield heightfield, ByteOrder order)
+        private byte[] SerializeSpans(Heightfield heightfield, ByteOrder order)
         {
             int[] counts = new int[heightfield.width * heightfield.height];
             int totalCount = 0;
@@ -168,13 +168,13 @@ namespace DotRecast.Detour.Dynamic.Io
             {
                 for (int x = 0; x < heightfield.width; x++)
                 {
-                    position = ByteUtils.putShort(counts[pz + x], data, position, order);
+                    position = ByteUtils.PutShort(counts[pz + x], data, position, order);
                     Span span = heightfield.spans[pz + x];
                     while (span != null)
                     {
-                        position = ByteUtils.putInt(span.smin, data, position, order);
-                        position = ByteUtils.putInt(span.smax, data, position, order);
-                        position = ByteUtils.putInt(span.area, data, position, order);
+                        position = ByteUtils.PutInt(span.smin, data, position, order);
+                        position = ByteUtils.PutInt(span.smax, data, position, order);
+                        position = ByteUtils.PutInt(span.area, data, position, order);
                         span = span.next;
                     }
                 }
@@ -183,30 +183,30 @@ namespace DotRecast.Detour.Dynamic.Io
             return data;
         }
 
-        private byte[] toByteArray(ByteBuffer buf, int width, int height, ByteOrder order)
+        private byte[] ToByteArray(ByteBuffer buf, int width, int height, ByteOrder order)
         {
             byte[] data;
-            if (buf.order() == order)
+            if (buf.Order() == order)
             {
-                data = buf.ReadBytes(buf.limit()).ToArray();
+                data = buf.ReadBytes(buf.Limit()).ToArray();
             }
             else
             {
-                data = new byte[buf.limit()];
+                data = new byte[buf.Limit()];
                 int l = width * height;
                 int position = 0;
                 for (int i = 0; i < l; i++)
                 {
-                    int count = buf.getShort();
-                    ByteUtils.putShort(count, data, position, order);
+                    int count = buf.GetShort();
+                    ByteUtils.PutShort(count, data, position, order);
                     position += 2;
                     for (int j = 0; j < count; j++)
                     {
-                        ByteUtils.putInt(buf.getInt(), data, position, order);
+                        ByteUtils.PutInt(buf.GetInt(), data, position, order);
                         position += 4;
-                        ByteUtils.putInt(buf.getInt(), data, position, order);
+                        ByteUtils.PutInt(buf.GetInt(), data, position, order);
                         position += 4;
-                        ByteUtils.putInt(buf.getInt(), data, position, order);
+                        ByteUtils.PutInt(buf.GetInt(), data, position, order);
                         position += 4;
                     }
                 }

@@ -34,13 +34,13 @@ namespace DotRecast.Detour.QueryResults
         }
 
         /** Returns true if the position is over the polygon. */
-        public bool isPosOverPoly()
+        public bool IsPosOverPoly()
         {
             return posOverPoly;
         }
 
         /** Returns the closest point on the polygon. [(x, y, z)] */
-        public Vector3f getClosest()
+        public Vector3f GetClosest()
         {
             return closest;
         }

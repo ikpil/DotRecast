@@ -22,39 +22,39 @@ namespace DotRecast.Detour.Dynamic.Io
 {
     public static class ByteUtils
     {
-        public static int getInt(byte[] data, int position, ByteOrder order)
+        public static int GetInt(byte[] data, int position, ByteOrder order)
         {
-            return order == ByteOrder.BIG_ENDIAN ? getIntBE(data, position) : getIntLE(data, position);
+            return order == ByteOrder.BIG_ENDIAN ? GetIntBE(data, position) : GetIntLE(data, position);
         }
 
-        public static int getIntBE(byte[] data, int position)
+        public static int GetIntBE(byte[] data, int position)
         {
             return ((data[position] & 0xff) << 24) | ((data[position + 1] & 0xff) << 16) | ((data[position + 2] & 0xff) << 8)
                    | (data[position + 3] & 0xff);
         }
 
-        public static int getIntLE(byte[] data, int position)
+        public static int GetIntLE(byte[] data, int position)
         {
             return ((data[position + 3] & 0xff) << 24) | ((data[position + 2] & 0xff) << 16) | ((data[position + 1] & 0xff) << 8)
                    | (data[position] & 0xff);
         }
 
-        public static int getShort(byte[] data, int position, ByteOrder order)
+        public static int GetShort(byte[] data, int position, ByteOrder order)
         {
-            return order == ByteOrder.BIG_ENDIAN ? getShortBE(data, position) : getShortLE(data, position);
+            return order == ByteOrder.BIG_ENDIAN ? GetShortBE(data, position) : GetShortLE(data, position);
         }
 
-        public static int getShortBE(byte[] data, int position)
+        public static int GetShortBE(byte[] data, int position)
         {
             return ((data[position] & 0xff) << 8) | (data[position + 1] & 0xff);
         }
 
-        public static int getShortLE(byte[] data, int position)
+        public static int GetShortLE(byte[] data, int position)
         {
             return ((data[position + 1] & 0xff) << 8) | (data[position] & 0xff);
         }
 
-        public static int putInt(int value, byte[] data, int position, ByteOrder order)
+        public static int PutInt(int value, byte[] data, int position, ByteOrder order)
         {
             if (order == ByteOrder.BIG_ENDIAN)
             {
@@ -74,7 +74,7 @@ namespace DotRecast.Detour.Dynamic.Io
             return position + 4;
         }
 
-        public static int putShort(int value, byte[] data, int position, ByteOrder order)
+        public static int PutShort(int value, byte[] data, int position, ByteOrder order)
         {
             if (order == ByteOrder.BIG_ENDIAN)
             {

@@ -30,11 +30,11 @@ namespace DotRecast.Detour
         private const int MAX_STEER_POINTS = 3;
 
 
-        public static SteerTarget getSteerTarget(NavMeshQuery navQuery, Vector3f startPos, Vector3f endPos,
+        public static SteerTarget GetSteerTarget(NavMeshQuery navQuery, Vector3f startPos, Vector3f endPos,
             float minTargetDist, List<long> path)
         {
             // Find steer target.
-            Result<List<StraightPathItem>> result = navQuery.findStraightPath(startPos, endPos, path, MAX_STEER_POINTS, 0);
+            Result<List<StraightPathItem>> result = navQuery.FindStraightPath(startPos, endPos, path, MAX_STEER_POINTS, 0);
             if (result.Failed())
             {
                 return null;
@@ -44,9 +44,9 @@ namespace DotRecast.Detour
             float[] steerPoints = new float[straightPath.Count * 3];
             for (int i = 0; i < straightPath.Count; i++)
             {
-                steerPoints[i * 3] = straightPath[i].getPos().x;
-                steerPoints[i * 3 + 1] = straightPath[i].getPos().y;
-                steerPoints[i * 3 + 2] = straightPath[i].getPos().z;
+                steerPoints[i * 3] = straightPath[i].GetPos().x;
+                steerPoints[i * 3 + 1] = straightPath[i].GetPos().y;
+                steerPoints[i * 3 + 2] = straightPath[i].GetPos().z;
             }
 
             // Find vertex far enough to steer to.
@@ -54,8 +54,8 @@ namespace DotRecast.Detour
             while (ns < straightPath.Count)
             {
                 // Stop at Off-Mesh link or when point is further than slop away.
-                if (((straightPath[ns].getFlags() & NavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
-                    || !inRange(straightPath[ns].getPos(), startPos, minTargetDist, 1000.0f))
+                if (((straightPath[ns].GetFlags() & NavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
+                    || !InRange(straightPath[ns].GetPos(), startPos, minTargetDist, 1000.0f))
                     break;
                 ns++;
             }
@@ -65,18 +65,18 @@ namespace DotRecast.Detour
                 return null;
 
             Vector3f steerPos = Vector3f.Of(
-                straightPath[ns].getPos().x,
+                straightPath[ns].GetPos().x,
                 startPos.y,
-                straightPath[ns].getPos().z
+                straightPath[ns].GetPos().z
             );
-            int steerPosFlag = straightPath[ns].getFlags();
-            long steerPosRef = straightPath[ns].getRef();
+            int steerPosFlag = straightPath[ns].GetFlags();
+            long steerPosRef = straightPath[ns].GetRef();
 
             SteerTarget target = new SteerTarget(steerPos, steerPosFlag, steerPosRef, steerPoints);
             return target;
         }
 
-        public static bool inRange(Vector3f v1, Vector3f v2, float r, float h)
+        public static bool InRange(Vector3f v1, Vector3f v2, float r, float h)
         {
             float dx = v2.x - v1.x;
             float dy = v2.y - v1.y;
@@ -84,7 +84,7 @@ namespace DotRecast.Detour
             return (dx * dx + dz * dz) < r * r && Math.Abs(dy) < h;
         }
 
-        public static List<long> fixupCorridor(List<long> path, List<long> visited)
+        public static List<long> FixupCorridor(List<long> path, List<long> visited)
         {
             int furthestPath = -1;
             int furthestVisited = -1;
@@ -143,7 +143,7 @@ namespace DotRecast.Detour
         // +-S-+-T-+
         // |:::| | <-- the step can end up in here, resulting U-turn path.
         // +---+---+
-        public static List<long> fixupShortcuts(List<long> path, NavMeshQuery navQuery)
+        public static List<long> FixupShortcuts(List<long> path, NavMeshQuery navQuery)
         {
             if (path.Count < 3)
             {
@@ -153,7 +153,7 @@ namespace DotRecast.Detour
             // Get connected polygons
             List<long> neis = new List<long>();
 
-            Result<Tuple<MeshTile, Poly>> tileAndPoly = navQuery.getAttachedNavMesh().getTileAndPolyByRef(path[0]);
+            Result<Tuple<MeshTile, Poly>> tileAndPoly = navQuery.GetAttachedNavMesh().GetTileAndPolyByRef(path[0]);
             if (tileAndPoly.Failed())
             {
                 return path;

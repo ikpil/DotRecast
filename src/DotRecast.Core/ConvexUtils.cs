@@ -25,7 +25,7 @@ namespace DotRecast.Core
         // Calculates convex hull on xz-plane of points on 'pts',
         // stores the indices of the resulting hull in 'out' and
         // returns number of points on hull.
-        public static List<int> convexhull(List<float> pts)
+        public static List<int> Convexhull(List<float> pts)
         {
             int npts = pts.Count / 3;
             List<int> @out = new List<int>();
@@ -35,7 +35,7 @@ namespace DotRecast.Core
             {
                 Vector3f a = Vector3f.Of(pts[i * 3], pts[i * 3 + 1], pts[i * 3 + 2]);
                 Vector3f b = Vector3f.Of(pts[hull * 3], pts[hull * 3 + 1], pts[hull * 3 + 2]);
-                if (cmppt(a, b))
+                if (Cmppt(a, b))
                 {
                     hull = i;
                 }
@@ -52,7 +52,7 @@ namespace DotRecast.Core
                     Vector3f a = Vector3f.Of(pts[hull * 3], pts[hull * 3 + 1], pts[hull * 3 + 2]);
                     Vector3f b = Vector3f.Of(pts[endpt * 3], pts[endpt * 3 + 1], pts[endpt * 3 + 2]);
                     Vector3f c = Vector3f.Of(pts[j * 3], pts[j * 3 + 1], pts[j * 3 + 2]);
-                    if (hull == endpt || left(a, b, c))
+                    if (hull == endpt || Left(a, b, c))
                     {
                         endpt = j;
                     }
@@ -65,7 +65,7 @@ namespace DotRecast.Core
         }
 
         // Returns true if 'a' is more lower-left than 'b'.
-        private static bool cmppt(Vector3f a, Vector3f b)
+        private static bool Cmppt(Vector3f a, Vector3f b)
         {
             if (a.x < b.x)
             {
@@ -91,7 +91,7 @@ namespace DotRecast.Core
         }
 
         // Returns true if 'c' is left of line 'a'-'b'.
-        private static bool left(Vector3f a, Vector3f b, Vector3f c)
+        private static bool Left(Vector3f a, Vector3f b, Vector3f c)
         {
             float u1 = b.x - a.x;
             float v1 = b.z - a.z;

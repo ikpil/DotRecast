@@ -16,7 +16,7 @@ namespace DotRecast.Core
             r = new Random((int)seed); // TODO : 랜덤 시드 확인 필요
         }
 
-        public float frand()
+        public float Frand()
         {
             return (float)r.NextDouble();
         }

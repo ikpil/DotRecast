@@ -23,27 +23,27 @@ namespace DotRecast.Detour.Extras.Unity.Astar
 {
     public class NodeLink2Reader : ZipBinaryReader
     {
-        public NodeLink2[] read(ZipArchive file, string filename, int[] indexToNode)
+        public NodeLink2[] Read(ZipArchive file, string filename, int[] indexToNode)
         {
-            ByteBuffer buffer = toByteBuffer(file, filename);
-            int linkCount = buffer.getInt();
+            ByteBuffer buffer = ToByteBuffer(file, filename);
+            int linkCount = buffer.GetInt();
             NodeLink2[] links = new NodeLink2[linkCount];
             for (int i = 0; i < linkCount; i++)
             {
-                long linkID = buffer.getLong();
-                int startNode = indexToNode[buffer.getInt()];
-                int endNode = indexToNode[buffer.getInt()];
-                int connectedNode1 = buffer.getInt();
-                int connectedNode2 = buffer.getInt();
+                long linkID = buffer.GetLong();
+                int startNode = indexToNode[buffer.GetInt()];
+                int endNode = indexToNode[buffer.GetInt()];
+                int connectedNode1 = buffer.GetInt();
+                int connectedNode2 = buffer.GetInt();
                 Vector3f clamped1 = new Vector3f();
-                clamped1.x = buffer.getFloat();
-                clamped1.y = buffer.getFloat();
-                clamped1.z = buffer.getFloat();
+                clamped1.x = buffer.GetFloat();
+                clamped1.y = buffer.GetFloat();
+                clamped1.z = buffer.GetFloat();
                 Vector3f clamped2 = new Vector3f();
-                clamped2.x = buffer.getFloat();
-                clamped2.y = buffer.getFloat();
-                clamped2.z = buffer.getFloat();
-                bool postScanCalled = buffer.get() != 0;
+                clamped2.x = buffer.GetFloat();
+                clamped2.y = buffer.GetFloat();
+                clamped2.z = buffer.GetFloat();
+                bool postScanCalled = buffer.Get() != 0;
                 links[i] = new NodeLink2(linkID, startNode, endNode, clamped1, clamped2);
             }
 

@@ -24,7 +24,7 @@ namespace DotRecast.Recast
 {
     public static class PolyUtils
     {
-        public static bool pointInPoly(float[] verts, Vector3f p)
+        public static bool PointInPoly(float[] verts, Vector3f p)
         {
             int i, j;
             bool c = false;
@@ -42,7 +42,7 @@ namespace DotRecast.Recast
             return c;
         }
 
-        public static int offsetPoly(float[] verts, int nverts, float offset, float[] outVerts, int maxOutVerts)
+        public static int OffsetPoly(float[] verts, int nverts, float offset, float[] outVerts, int maxOutVerts)
         {
             float MITER_LIMIT = 1.20f;
 

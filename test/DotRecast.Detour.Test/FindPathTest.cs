@@ -129,7 +129,7 @@ public class FindPathTest : AbstractDetourTest
     };
 
     [Test]
-    public void testFindPath()
+    public void TestFindPath()
     {
         QueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < startRefs.Length; i++)
@@ -138,7 +138,7 @@ public class FindPathTest : AbstractDetourTest
             long endRef = endRefs[i];
             Vector3f startPos = startPoss[i];
             Vector3f endPos = endPoss[i];
-            Result<List<long>> path = query.findPath(startRef, endRef, startPos, endPos, filter);
+            Result<List<long>> path = query.FindPath(startRef, endRef, startPos, endPos, filter);
             Assert.That(path.status, Is.EqualTo(STATUSES[i]));
             Assert.That(path.result.Count, Is.EqualTo(RESULTS[i].Length));
             for (int j = 0; j < RESULTS[i].Length; j++)
@@ -149,7 +149,7 @@ public class FindPathTest : AbstractDetourTest
     }
 
     [Test]
-    public void testFindPathSliced()
+    public void TestFindPathSliced()
     {
         QueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < startRefs.Length; i++)
@@ -158,15 +158,15 @@ public class FindPathTest : AbstractDetourTest
             long endRef = endRefs[i];
             var startPos = startPoss[i];
             var endPos = endPoss[i];
-            query.initSlicedFindPath(startRef, endRef, startPos, endPos, filter, NavMeshQuery.DT_FINDPATH_ANY_ANGLE);
+            query.InitSlicedFindPath(startRef, endRef, startPos, endPos, filter, NavMeshQuery.DT_FINDPATH_ANY_ANGLE);
             Status status = Status.IN_PROGRESS;
             while (status == Status.IN_PROGRESS)
             {
-                Result<int> res = query.updateSlicedFindPath(10);
+                Result<int> res = query.UpdateSlicedFindPath(10);
                 status = res.status;
             }
 
-            Result<List<long>> path = query.finalizeSlicedFindPath();
+            Result<List<long>> path = query.FinalizeSlicedFindPath();
             Assert.That(path.status, Is.EqualTo(STATUSES[i]));
             Assert.That(path.result.Count, Is.EqualTo(RESULTS[i].Length));
             for (int j = 0; j < RESULTS[i].Length; j++)
@@ -177,7 +177,7 @@ public class FindPathTest : AbstractDetourTest
     }
 
     [Test]
-    public void testFindPathStraight()
+    public void TestFindPathStraight()
     {
         QueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < STRAIGHT_PATHS.Length; i++)
@@ -187,8 +187,8 @@ public class FindPathTest : AbstractDetourTest
             long endRef = endRefs[i];
             var startPos = startPoss[i];
             var endPos = endPoss[i];
-            Result<List<long>> path = query.findPath(startRef, endRef, startPos, endPos, filter);
-            Result<List<StraightPathItem>> result = query.findStraightPath(startPos, endPos, path.result,
+            Result<List<long>> path = query.FindPath(startRef, endRef, startPos, endPos, filter);
+            Result<List<StraightPathItem>> result = query.FindStraightPath(startPos, endPos, path.result,
                 int.MaxValue, 0);
             List<StraightPathItem> straightPath = result.result;
             Assert.That(straightPath.Count, Is.EqualTo(STRAIGHT_PATHS[i].Length));

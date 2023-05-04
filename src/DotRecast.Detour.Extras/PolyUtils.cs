@@ -23,7 +23,7 @@ namespace DotRecast.Detour.Extras
         /**
      * Find edge shared by 2 polygons within the same tile
      */
-        public static int findEdge(Poly node, Poly neighbour, MeshData tile, MeshData neighbourTile)
+        public static int FindEdge(Poly node, Poly neighbour, MeshData tile, MeshData neighbourTile)
         {
             // Compare indices first assuming there are no duplicate vertices
             for (int i = 0; i < node.vertCount; i++)
@@ -47,10 +47,10 @@ namespace DotRecast.Detour.Extras
                 for (int k = 0; k < neighbour.vertCount; k++)
                 {
                     int l = (k + 1) % neighbour.vertCount;
-                    if ((samePosition(tile.verts, node.verts[i], neighbourTile.verts, neighbour.verts[l])
-                         && samePosition(tile.verts, node.verts[j], neighbourTile.verts, neighbour.verts[k]))
-                        || (samePosition(tile.verts, node.verts[i], neighbourTile.verts, neighbour.verts[k])
-                            && samePosition(tile.verts, node.verts[j], neighbourTile.verts, neighbour.verts[l])))
+                    if ((SamePosition(tile.verts, node.verts[i], neighbourTile.verts, neighbour.verts[l])
+                         && SamePosition(tile.verts, node.verts[j], neighbourTile.verts, neighbour.verts[k]))
+                        || (SamePosition(tile.verts, node.verts[i], neighbourTile.verts, neighbour.verts[k])
+                            && SamePosition(tile.verts, node.verts[j], neighbourTile.verts, neighbour.verts[l])))
                     {
                         return i;
                     }
@@ -60,7 +60,7 @@ namespace DotRecast.Detour.Extras
             return -1;
         }
 
-        private static bool samePosition(float[] verts, int v, float[] verts2, int v2)
+        private static bool SamePosition(float[] verts, int v, float[] verts2, int v2)
         {
             for (int i = 0; i < 3; i++)
             {
@@ -76,7 +76,7 @@ namespace DotRecast.Detour.Extras
         /**
      * Find edge closest to the given coordinate
      */
-        public static int findEdge(Poly node, MeshData tile, float value, int comp)
+        public static int FindEdge(Poly node, MeshData tile, float value, int comp)
         {
             float error = float.MaxValue;
             int edge = 0;

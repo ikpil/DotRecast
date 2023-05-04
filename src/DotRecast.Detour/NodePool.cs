@@ -31,13 +31,13 @@ namespace DotRecast.Detour
         {
         }
 
-        public void clear()
+        public void Clear()
         {
             m_nodes.Clear();
             m_map.Clear();
         }
 
-        public List<Node> findNodes(long id)
+        public List<Node> FindNodes(long id)
         {
             var hasNode = m_map.TryGetValue(id, out var nodes);
             ;
@@ -49,7 +49,7 @@ namespace DotRecast.Detour
             return nodes;
         }
 
-        public Node findNode(long id)
+        public Node FindNode(long id)
         {
             var hasNode = m_map.TryGetValue(id, out var nodes);
             ;
@@ -61,7 +61,7 @@ namespace DotRecast.Detour
             return null;
         }
 
-        public Node getNode(long id, int state)
+        public Node GetNode(long id, int state)
         {
             var hasNode = m_map.TryGetValue(id, out var nodes);
             ;
@@ -76,10 +76,10 @@ namespace DotRecast.Detour
                 }
             }
 
-            return create(id, state);
+            return Create(id, state);
         }
 
-        protected Node create(long id, int state)
+        protected Node Create(long id, int state)
         {
             Node node = new Node(m_nodes.Count + 1);
             node.id = id;
@@ -97,22 +97,22 @@ namespace DotRecast.Detour
             return node;
         }
 
-        public int getNodeIdx(Node node)
+        public int GetNodeIdx(Node node)
         {
             return node != null ? node.index : 0;
         }
 
-        public Node getNodeAtIdx(int idx)
+        public Node GetNodeAtIdx(int idx)
         {
             return idx != 0 ? m_nodes[idx - 1] : null;
         }
 
-        public Node getNode(long refs)
+        public Node GetNode(long refs)
         {
-            return getNode(refs, 0);
+            return GetNode(refs, 0);
         }
 
-        public Dictionary<long, List<Node>> getNodeMap()
+        public Dictionary<long, List<Node>> GetNodeMap()
         {
             return m_map;
         }

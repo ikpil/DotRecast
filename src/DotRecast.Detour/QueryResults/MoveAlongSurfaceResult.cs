@@ -37,12 +37,12 @@ namespace DotRecast.Detour.QueryResults
             this.visited = visited;
         }
 
-        public Vector3f getResultPos()
+        public Vector3f GetResultPos()
         {
             return resultPos;
         }
 
-        public List<long> getVisited()
+        public List<long> GetVisited()
         {
             return visited;
         }

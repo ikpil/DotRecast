@@ -39,7 +39,7 @@ namespace DotRecast.Detour
  *
  * <b>Custom Implementations</b>
  *
- * Implement a custom query filter by overriding the virtual passFilter() and getCost() functions. If this is done, both
+ * Implement a custom query filter by overriding the virtual PassFilter() and GetCost() functions. If this is done, both
  * functions should be as fast as possible. Use cached local copies of data rather than accessing your own objects where
  * possible.
  *
@@ -81,33 +81,33 @@ namespace DotRecast.Detour
             }
         }
 
-        public bool passFilter(long refs, MeshTile tile, Poly poly)
+        public bool PassFilter(long refs, MeshTile tile, Poly poly)
         {
             return (poly.flags & m_includeFlags) != 0 && (poly.flags & m_excludeFlags) == 0;
         }
 
-        public float getCost(Vector3f pa, Vector3f pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef,
+        public float GetCost(Vector3f pa, Vector3f pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef,
             MeshTile curTile, Poly curPoly, long nextRef, MeshTile nextTile, Poly nextPoly)
         {
-            return vDist(pa, pb) * m_areaCost[curPoly.getArea()];
+            return VDist(pa, pb) * m_areaCost[curPoly.GetArea()];
         }
 
-        public int getIncludeFlags()
+        public int GetIncludeFlags()
         {
             return m_includeFlags;
         }
 
-        public void setIncludeFlags(int flags)
+        public void SetIncludeFlags(int flags)
         {
             m_includeFlags = flags;
         }
 
-        public int getExcludeFlags()
+        public int GetExcludeFlags()
         {
             return m_excludeFlags;
         }
 
-        public void setExcludeFlags(int flags)
+        public void SetExcludeFlags(int flags)
         {
             m_excludeFlags = flags;
         }

@@ -28,13 +28,13 @@ public class VoxelFileReaderWriterTest
 {
     [TestCase(false)]
     [TestCase(true)]
-    public void shouldReadSingleTileFile(bool compression)
+    public void ShouldReadSingleTileFile(bool compression)
     {
         byte[] bytes = Loader.ToBytes("test.voxels");
         using var ms = new MemoryStream(bytes);
         using var bis = new BinaryReader(ms);
 
-        VoxelFile f = readWriteRead(bis, compression);
+        VoxelFile f = ReadWriteRead(bis, compression);
         Assert.That(f.useTiles, Is.False);
         Assert.That(f.bounds, Is.EqualTo(new[] { -100.0f, 0f, -100f, 100f, 5f, 100f }));
         Assert.That(f.cellSize, Is.EqualTo(0.25f));
@@ -56,13 +56,13 @@ public class VoxelFileReaderWriterTest
 
     [TestCase(false)]
     [TestCase(true)]
-    public void shouldReadMultiTileFile(bool compression)
+    public void ShouldReadMultiTileFile(bool compression)
     {
         byte[] bytes = Loader.ToBytes("test_tiles.voxels");
         using var ms = new MemoryStream(bytes);
         using var bis = new BinaryReader(ms);
 
-        VoxelFile f = readWriteRead(bis, compression);
+        VoxelFile f = ReadWriteRead(bis, compression);
 
         Assert.That(f.useTiles, Is.True);
         Assert.That(f.bounds, Is.EqualTo(new[] { -100.0f, 0f, -100f, 100f, 5f, 100f }));
@@ -85,18 +85,18 @@ public class VoxelFileReaderWriterTest
         Assert.That(f.tiles[0].boundsMax, Is.EqualTo(Vector3f.Of(-78.75f, 5.0f, -78.75f)));
     }
 
-    private VoxelFile readWriteRead(BinaryReader bis, bool compression)
+    private VoxelFile ReadWriteRead(BinaryReader bis, bool compression)
     {
         VoxelFileReader reader = new VoxelFileReader();
-        VoxelFile f = reader.read(bis);
+        VoxelFile f = reader.Read(bis);
 
         using var msOut = new MemoryStream();
         using var bwOut = new BinaryWriter(msOut);
         VoxelFileWriter writer = new VoxelFileWriter();
-        writer.write(bwOut, f, compression);
+        writer.Write(bwOut, f, compression);
 
         using var msIn = new MemoryStream(msOut.ToArray());
         using var brIn = new BinaryReader(msIn);
-        return reader.read(brIn);
+        return reader.Read(brIn);
     }
 }

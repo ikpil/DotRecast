@@ -16,7 +16,7 @@ public class ConsoleTextWriterHook : TextWriter
 
     public override void Write(char[] buffer, int index, int count)
     {
-        var s = new string(new Span<char>(buffer, index, count));
+        var s = new String(new Span<char>(buffer, index, count));
         _event?.Invoke(s);
     }
 }

@@ -23,7 +23,7 @@ namespace DotRecast.Recast
 {
     public class RecastVoxelization
     {
-        public static Heightfield buildSolidHeightfield(InputGeomProvider geomProvider, RecastBuilderConfig builderCfg,
+        public static Heightfield BuildSolidHeightfield(InputGeomProvider geomProvider, RecastBuilderConfig builderCfg,
             Telemetry ctx)
         {
             RecastConfig cfg = builderCfg.cfg;
@@ -41,9 +41,9 @@ namespace DotRecast.Recast
             // If your input data is multiple meshes, you can transform them here,
             // calculate
             // the are type for each of the meshes and rasterize them.
-            foreach (TriMesh geom in geomProvider.meshes())
+            foreach (TriMesh geom in geomProvider.Meshes())
             {
-                float[] verts = geom.getVerts();
+                float[] verts = geom.GetVerts();
                 if (cfg.useTiles)
                 {
                     float[] tbmin = new float[2];
@@ -52,21 +52,21 @@ namespace DotRecast.Recast
                     tbmin[1] = builderCfg.bmin.z;
                     tbmax[0] = builderCfg.bmax.x;
                     tbmax[1] = builderCfg.bmax.z;
-                    List<ChunkyTriMeshNode> nodes = geom.getChunksOverlappingRect(tbmin, tbmax);
+                    List<ChunkyTriMeshNode> nodes = geom.GetChunksOverlappingRect(tbmin, tbmax);
                     foreach (ChunkyTriMeshNode node in nodes)
                     {
                         int[] tris = node.tris;
                         int ntris = tris.Length / 3;
-                        int[] m_triareas = Recast.markWalkableTriangles(ctx, cfg.walkableSlopeAngle, verts, tris, ntris, cfg.walkableAreaMod);
-                        RecastRasterization.rasterizeTriangles(solid, verts, tris, m_triareas, ntris, cfg.walkableClimb, ctx);
+                        int[] m_triareas = Recast.MarkWalkableTriangles(ctx, cfg.walkableSlopeAngle, verts, tris, ntris, cfg.walkableAreaMod);
+                        RecastRasterization.RasterizeTriangles(solid, verts, tris, m_triareas, ntris, cfg.walkableClimb, ctx);
                     }
                 }
                 else
                 {
-                    int[] tris = geom.getTris();
+                    int[] tris = geom.GetTris();
                     int ntris = tris.Length / 3;
-                    int[] m_triareas = Recast.markWalkableTriangles(ctx, cfg.walkableSlopeAngle, verts, tris, ntris, cfg.walkableAreaMod);
-                    RecastRasterization.rasterizeTriangles(solid, verts, tris, m_triareas, ntris, cfg.walkableClimb, ctx);
+                    int[] m_triareas = Recast.MarkWalkableTriangles(ctx, cfg.walkableSlopeAngle, verts, tris, ntris, cfg.walkableAreaMod);
+                    RecastRasterization.RasterizeTriangles(solid, verts, tris, m_triareas, ntris, cfg.walkableClimb, ctx);
                 }
             }
 

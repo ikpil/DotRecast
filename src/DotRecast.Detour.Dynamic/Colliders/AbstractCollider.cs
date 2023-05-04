@@ -33,11 +33,11 @@ namespace DotRecast.Detour.Dynamic.Colliders
             this._bounds = bounds;
         }
 
-        public float[] bounds()
+        public float[] Bounds()
         {
             return _bounds;
         }
 
-        public abstract void rasterize(Heightfield hf, Telemetry telemetry);
+        public abstract void Rasterize(Heightfield hf, Telemetry telemetry);
     }
 }

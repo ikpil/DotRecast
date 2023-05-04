@@ -35,54 +35,54 @@ public class TileCacheReaderWriterTest : AbstractTileCacheTest
     private readonly TileCacheWriter writer = new TileCacheWriter();
 
     [Test]
-    public void testFastLz()
+    public void TestFastLz()
     {
-        testDungeon(false);
-        testDungeon(true);
+        TestDungeon(false);
+        TestDungeon(true);
     }
 
     [Test]
-    public void testLZ4()
+    public void TestLZ4()
     {
-        testDungeon(true);
-        testDungeon(false);
+        TestDungeon(true);
+        TestDungeon(false);
     }
 
-    private void testDungeon(bool cCompatibility)
+    private void TestDungeon(bool cCompatibility)
     {
-        InputGeomProvider geom = ObjImporter.load(Loader.ToBytes("dungeon.obj"));
+        InputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("dungeon.obj"));
         TestTileLayerBuilder layerBuilder = new TestTileLayerBuilder(geom);
-        List<byte[]> layers = layerBuilder.build(ByteOrder.LITTLE_ENDIAN, cCompatibility, 1);
-        TileCache tc = getTileCache(geom, ByteOrder.LITTLE_ENDIAN, cCompatibility);
+        List<byte[]> layers = layerBuilder.Build(ByteOrder.LITTLE_ENDIAN, cCompatibility, 1);
+        TileCache tc = GetTileCache(geom, ByteOrder.LITTLE_ENDIAN, cCompatibility);
         foreach (byte[] layer in layers)
         {
-            long refs = tc.addTile(layer, 0);
-            tc.buildNavMeshTile(refs);
+            long refs = tc.AddTile(layer, 0);
+            tc.BuildNavMeshTile(refs);
         }
 
         using var msout = new MemoryStream();
         using var baos = new BinaryWriter(msout);
-        writer.write(baos, tc, ByteOrder.LITTLE_ENDIAN, cCompatibility);
+        writer.Write(baos, tc, ByteOrder.LITTLE_ENDIAN, cCompatibility);
 
         using var msis = new MemoryStream(msout.ToArray());
         using var bais = new BinaryReader(msis);
-        tc = reader.read(bais, 6, null);
-        Assert.That(tc.getNavMesh().getMaxTiles(), Is.EqualTo(256));
-        Assert.That(tc.getNavMesh().getParams().maxPolys, Is.EqualTo(16384));
-        Assert.That(tc.getNavMesh().getParams().tileWidth, Is.EqualTo(14.4f).Within(0.001f));
-        Assert.That(tc.getNavMesh().getParams().tileHeight, Is.EqualTo(14.4f).Within(0.001f));
-        Assert.That(tc.getNavMesh().getMaxVertsPerPoly(), Is.EqualTo(6));
-        Assert.That(tc.getParams().cs, Is.EqualTo(0.3f).Within(0.0f));
-        Assert.That(tc.getParams().ch, Is.EqualTo(0.2f).Within(0.0f));
-        Assert.That(tc.getParams().walkableClimb, Is.EqualTo(0.9f).Within(0.0f));
-        Assert.That(tc.getParams().walkableHeight, Is.EqualTo(2f).Within(0.0f));
-        Assert.That(tc.getParams().walkableRadius, Is.EqualTo(0.6f).Within(0.0f));
-        Assert.That(tc.getParams().width, Is.EqualTo(48));
-        Assert.That(tc.getParams().maxTiles, Is.EqualTo(6 * 7 * 4));
-        Assert.That(tc.getParams().maxObstacles, Is.EqualTo(128));
-        Assert.That(tc.getTileCount(), Is.EqualTo(168));
+        tc = reader.Read(bais, 6, null);
+        Assert.That(tc.GetNavMesh().GetMaxTiles(), Is.EqualTo(256));
+        Assert.That(tc.GetNavMesh().GetParams().maxPolys, Is.EqualTo(16384));
+        Assert.That(tc.GetNavMesh().GetParams().tileWidth, Is.EqualTo(14.4f).Within(0.001f));
+        Assert.That(tc.GetNavMesh().GetParams().tileHeight, Is.EqualTo(14.4f).Within(0.001f));
+        Assert.That(tc.GetNavMesh().GetMaxVertsPerPoly(), Is.EqualTo(6));
+        Assert.That(tc.GetParams().cs, Is.EqualTo(0.3f).Within(0.0f));
+        Assert.That(tc.GetParams().ch, Is.EqualTo(0.2f).Within(0.0f));
+        Assert.That(tc.GetParams().walkableClimb, Is.EqualTo(0.9f).Within(0.0f));
+        Assert.That(tc.GetParams().walkableHeight, Is.EqualTo(2f).Within(0.0f));
+        Assert.That(tc.GetParams().walkableRadius, Is.EqualTo(0.6f).Within(0.0f));
+        Assert.That(tc.GetParams().width, Is.EqualTo(48));
+        Assert.That(tc.GetParams().maxTiles, Is.EqualTo(6 * 7 * 4));
+        Assert.That(tc.GetParams().maxObstacles, Is.EqualTo(128));
+        Assert.That(tc.GetTileCount(), Is.EqualTo(168));
         // Tile0: Tris: 8, Verts: 18 Detail Meshed: 8 Detail Verts: 0 Detail Tris: 14
-        MeshTile tile = tc.getNavMesh().getTile(0);
+        MeshTile tile = tc.GetNavMesh().GetTile(0);
         MeshData data = tile.data;
         MeshHeader header = data.header;
         Assert.That(header.vertCount, Is.EqualTo(18));
@@ -96,7 +96,7 @@ public class TileCacheReaderWriterTest : AbstractTileCacheTest
         Assert.That(data.detailVerts.Length, Is.EqualTo(0));
         Assert.That(data.detailTris.Length, Is.EqualTo(4 * 14));
         // Tile8: Tris: 3, Verts: 8 Detail Meshed: 3 Detail Verts: 0 Detail Tris: 6
-        tile = tc.getNavMesh().getTile(8);
+        tile = tc.GetNavMesh().GetTile(8);
         data = tile.data;
         header = data.header;
         Assert.That(header.vertCount, Is.EqualTo(8));
@@ -110,7 +110,7 @@ public class TileCacheReaderWriterTest : AbstractTileCacheTest
         Assert.That(data.detailVerts.Length, Is.EqualTo(0));
         Assert.That(data.detailTris.Length, Is.EqualTo(4 * 6));
         // Tile16: Tris: 10, Verts: 20 Detail Meshed: 10 Detail Verts: 0 Detail Tris: 18
-        tile = tc.getNavMesh().getTile(16);
+        tile = tc.GetNavMesh().GetTile(16);
         data = tile.data;
         header = data.header;
         Assert.That(header.vertCount, Is.EqualTo(20));
@@ -124,7 +124,7 @@ public class TileCacheReaderWriterTest : AbstractTileCacheTest
         Assert.That(data.detailVerts.Length, Is.EqualTo(0));
         Assert.That(data.detailTris.Length, Is.EqualTo(4 * 18));
         // Tile29: Tris: 1, Verts: 5 Detail Meshed: 1 Detail Verts: 0 Detail Tris: 3
-        tile = tc.getNavMesh().getTile(29);
+        tile = tc.GetNavMesh().GetTile(29);
         data = tile.data;
         header = data.header;
         Assert.That(header.vertCount, Is.EqualTo(5));

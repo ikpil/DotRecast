@@ -64,9 +64,9 @@ public class AbstractCrowdTest
     protected List<CrowdAgent> agents;
 
     [SetUp]
-    public void setUp()
+    public void SetUp()
     {
-        nmd = new RecastTestMeshBuilder().getMeshData();
+        nmd = new RecastTestMeshBuilder().GetMeshData();
         navmesh = new NavMesh(nmd, 6, 0);
         query = new NavMeshQuery(navmesh);
         CrowdConfig config = new CrowdConfig(0.6f);
@@ -76,29 +76,29 @@ public class AbstractCrowdTest
         option.adaptiveDivs = 5;
         option.adaptiveRings = 2;
         option.adaptiveDepth = 1;
-        crowd.setObstacleAvoidanceParams(0, option);
+        crowd.SetObstacleAvoidanceParams(0, option);
         option = new ObstacleAvoidanceParams();
         option.velBias = 0.5f;
         option.adaptiveDivs = 5;
         option.adaptiveRings = 2;
         option.adaptiveDepth = 2;
-        crowd.setObstacleAvoidanceParams(1, option);
+        crowd.SetObstacleAvoidanceParams(1, option);
         option = new ObstacleAvoidanceParams();
         option.velBias = 0.5f;
         option.adaptiveDivs = 7;
         option.adaptiveRings = 2;
         option.adaptiveDepth = 3;
-        crowd.setObstacleAvoidanceParams(2, option);
+        crowd.SetObstacleAvoidanceParams(2, option);
         option = new ObstacleAvoidanceParams();
         option.velBias = 0.5f;
         option.adaptiveDivs = 7;
         option.adaptiveRings = 3;
         option.adaptiveDepth = 3;
-        crowd.setObstacleAvoidanceParams(3, option);
+        crowd.SetObstacleAvoidanceParams(3, option);
         agents = new();
     }
 
-    protected CrowdAgentParams getAgentParams(int updateFlags, int obstacleAvoidanceType)
+    protected CrowdAgentParams GetAgentParams(int updateFlags, int obstacleAvoidanceType)
     {
         CrowdAgentParams ap = new CrowdAgentParams();
         ap.radius = 0.6f;
@@ -113,9 +113,9 @@ public class AbstractCrowdTest
         return ap;
     }
 
-    protected void addAgentGrid(int size, float distance, int updateFlags, int obstacleAvoidanceType, Vector3f startPos)
+    protected void AddAgentGrid(int size, float distance, int updateFlags, int obstacleAvoidanceType, Vector3f startPos)
     {
-        CrowdAgentParams ap = getAgentParams(updateFlags, obstacleAvoidanceType);
+        CrowdAgentParams ap = GetAgentParams(updateFlags, obstacleAvoidanceType);
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
@@ -124,46 +124,46 @@ public class AbstractCrowdTest
                 pos.x = startPos.x + i * distance;
                 pos.y = startPos.y;
                 pos.z = startPos.z + j * distance;
-                agents.Add(crowd.addAgent(pos, ap));
+                agents.Add(crowd.AddAgent(pos, ap));
             }
         }
     }
 
-    protected void setMoveTarget(Vector3f pos, bool adjust)
+    protected void SetMoveTarget(Vector3f pos, bool adjust)
     {
-        Vector3f ext = crowd.getQueryExtents();
-        QueryFilter filter = crowd.getFilter(0);
+        Vector3f ext = crowd.GetQueryExtents();
+        QueryFilter filter = crowd.GetFilter(0);
         if (adjust)
         {
-            foreach (CrowdAgent ag in crowd.getActiveAgents())
+            foreach (CrowdAgent ag in crowd.GetActiveAgents())
             {
-                Vector3f vel = calcVel(ag.npos, pos, ag.option.maxSpeed);
-                crowd.requestMoveVelocity(ag, vel);
+                Vector3f vel = CalcVel(ag.npos, pos, ag.option.maxSpeed);
+                crowd.RequestMoveVelocity(ag, vel);
             }
         }
         else
         {
-            Result<FindNearestPolyResult> nearest = query.findNearestPoly(pos, ext, filter);
-            foreach (CrowdAgent ag in crowd.getActiveAgents())
+            Result<FindNearestPolyResult> nearest = query.FindNearestPoly(pos, ext, filter);
+            foreach (CrowdAgent ag in crowd.GetActiveAgents())
             {
-                crowd.requestMoveTarget(ag, nearest.result.getNearestRef(), nearest.result.getNearestPos());
+                crowd.RequestMoveTarget(ag, nearest.result.GetNearestRef(), nearest.result.GetNearestPos());
             }
         }
     }
 
-    protected Vector3f calcVel(Vector3f pos, Vector3f tgt, float speed)
+    protected Vector3f CalcVel(Vector3f pos, Vector3f tgt, float speed)
     {
-        Vector3f vel = vSub(tgt, pos);
+        Vector3f vel = VSub(tgt, pos);
         vel.y = 0.0f;
-        vNormalize(ref vel);
-        vel = vScale(vel, speed);
+        VNormalize(ref vel);
+        vel = VScale(vel, speed);
         return vel;
     }
 
-    protected void dumpActiveAgents(int i)
+    protected void DumpActiveAgents(int i)
     {
-        Console.WriteLine(crowd.getActiveAgents().Count);
-        foreach (CrowdAgent ag in crowd.getActiveAgents())
+        Console.WriteLine(crowd.GetActiveAgents().Count);
+        foreach (CrowdAgent ag in crowd.GetActiveAgents())
         {
             Console.WriteLine(ag.state + ", " + ag.targetState);
             Console.WriteLine(ag.npos.x + ", " + ag.npos.y + ", " + ag.npos.z);

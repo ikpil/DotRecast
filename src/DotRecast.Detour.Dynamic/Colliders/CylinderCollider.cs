@@ -29,20 +29,20 @@ namespace DotRecast.Detour.Dynamic.Colliders
         private readonly float radius;
 
         public CylinderCollider(Vector3f start, Vector3f end, float radius, int area, float flagMergeThreshold) :
-            base(area, flagMergeThreshold, bounds(start, end, radius))
+            base(area, flagMergeThreshold, Bounds(start, end, radius))
         {
             this.start = start;
             this.end = end;
             this.radius = radius;
         }
 
-        public override void rasterize(Heightfield hf, Telemetry telemetry)
+        public override void Rasterize(Heightfield hf, Telemetry telemetry)
         {
-            RecastFilledVolumeRasterization.rasterizeCylinder(hf, start, end, radius, area, (int)Math.Floor(flagMergeThreshold / hf.ch),
+            RecastFilledVolumeRasterization.RasterizeCylinder(hf, start, end, radius, area, (int)Math.Floor(flagMergeThreshold / hf.ch),
                 telemetry);
         }
 
-        private static float[] bounds(Vector3f start, Vector3f end, float radius)
+        private static float[] Bounds(Vector3f start, Vector3f end, float radius)
         {
             return new float[]
             {

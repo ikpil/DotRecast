@@ -42,14 +42,14 @@ public class ConvexVolumeTool : Tool
     private readonly List<float> pts = new();
     private readonly List<int> hull = new();
 
-    public override void setSample(Sample m_sample)
+    public override void SetSample(Sample m_sample)
     {
         sample = m_sample;
     }
 
-    public override void handleClick(Vector3f s, Vector3f p, bool shift)
+    public override void HandleClick(Vector3f s, Vector3f p, bool shift)
     {
-        DemoInputGeomProvider geom = sample.getInputGeom();
+        DemoInputGeomProvider geom = sample.GetInputGeom();
         if (geom == null)
         {
             return;
@@ -59,10 +59,10 @@ public class ConvexVolumeTool : Tool
         {
             // Delete
             int nearestIndex = -1;
-            IList<ConvexVolume> vols = geom.convexVolumes();
+            IList<ConvexVolume> vols = geom.ConvexVolumes();
             for (int i = 0; i < vols.Count; ++i)
             {
-                if (PolyUtils.pointInPoly(vols[i].verts, p) && p.y >= vols[i].hmin
+                if (PolyUtils.PointInPoly(vols[i].verts, p) && p.y >= vols[i].hmin
                                                             && p.y <= vols[i].hmax)
                 {
                     nearestIndex = i;
@@ -72,7 +72,7 @@ public class ConvexVolumeTool : Tool
             // If end point close enough, delete it.
             if (nearestIndex != -1)
             {
-                geom.convexVolumes().RemoveAt(nearestIndex);
+                geom.ConvexVolumes().RemoveAt(nearestIndex);
             }
         }
         else
@@ -80,7 +80,7 @@ public class ConvexVolumeTool : Tool
             // Create
 
             // If clicked on that last pt, create the shape.
-            if (pts.Count > 0 && RecastMath.vDistSqr(p, Vector3f.Of(pts[pts.Count - 3], pts[pts.Count - 2], pts[pts.Count - 1])) < 0.2f * 0.2f)
+            if (pts.Count > 0 && RecastMath.VDistSqr(p, Vector3f.Of(pts[pts.Count - 3], pts[pts.Count - 2], pts[pts.Count - 1])) < 0.2f * 0.2f)
             {
                 if (hull.Count > 2)
                 {
@@ -105,15 +105,15 @@ public class ConvexVolumeTool : Tool
                     if (polyOffset > 0.01f)
                     {
                         float[] offset = new float[verts.Length * 2];
-                        int noffset = PolyUtils.offsetPoly(verts, hull.Count, polyOffset, offset, offset.Length);
+                        int noffset = PolyUtils.OffsetPoly(verts, hull.Count, polyOffset, offset, offset.Length);
                         if (noffset > 0)
                         {
-                            geom.addConvexVolume(ArrayUtils.CopyOf(offset, 0, noffset * 3), minh, maxh, areaType);
+                            geom.AddConvexVolume(ArrayUtils.CopyOf(offset, 0, noffset * 3), minh, maxh, areaType);
                         }
                     }
                     else
                     {
-                        geom.addConvexVolume(verts, minh, maxh, areaType);
+                        geom.AddConvexVolume(verts, minh, maxh, areaType);
                     }
                 }
 
@@ -130,7 +130,7 @@ public class ConvexVolumeTool : Tool
                 if (pts.Count > 3)
                 {
                     hull.Clear();
-                    hull.AddRange(ConvexUtils.convexhull(pts));
+                    hull.AddRange(ConvexUtils.Convexhull(pts));
                 }
                 else
                 {
@@ -140,9 +140,9 @@ public class ConvexVolumeTool : Tool
         }
     }
 
-    public override void handleRender(NavMeshRenderer renderer)
+    public override void HandleRender(NavMeshRenderer renderer)
     {
-        RecastDebugDraw dd = renderer.getDebugDraw();
+        RecastDebugDraw dd = renderer.GetDebugDraw();
         // Find height extent of the shape.
         float minh = float.MaxValue, maxh = 0;
         for (int i = 0; i < pts.Count; i += 3)
@@ -153,37 +153,37 @@ public class ConvexVolumeTool : Tool
         minh -= boxDescent;
         maxh = minh + boxHeight;
 
-        dd.begin(POINTS, 4.0f);
+        dd.Begin(POINTS, 4.0f);
         for (int i = 0; i < pts.Count; i += 3)
         {
-            int col = duRGBA(255, 255, 255, 255);
+            int col = DuRGBA(255, 255, 255, 255);
             if (i == pts.Count - 3)
             {
-                col = duRGBA(240, 32, 16, 255);
+                col = DuRGBA(240, 32, 16, 255);
             }
 
-            dd.vertex(pts[i + 0], pts[i + 1] + 0.1f, pts[i + 2], col);
+            dd.Vertex(pts[i + 0], pts[i + 1] + 0.1f, pts[i + 2], col);
         }
 
-        dd.end();
+        dd.End();
 
-        dd.begin(LINES, 2.0f);
+        dd.Begin(LINES, 2.0f);
         for (int i = 0, j = hull.Count - 1; i < hull.Count; j = i++)
         {
             int vi = hull[j] * 3;
             int vj = hull[i] * 3;
-            dd.vertex(pts[vj + 0], minh, pts[vj + 2], duRGBA(255, 255, 255, 64));
-            dd.vertex(pts[vi + 0], minh, pts[vi + 2], duRGBA(255, 255, 255, 64));
-            dd.vertex(pts[vj + 0], maxh, pts[vj + 2], duRGBA(255, 255, 255, 64));
-            dd.vertex(pts[vi + 0], maxh, pts[vi + 2], duRGBA(255, 255, 255, 64));
-            dd.vertex(pts[vj + 0], minh, pts[vj + 2], duRGBA(255, 255, 255, 64));
-            dd.vertex(pts[vj + 0], maxh, pts[vj + 2], duRGBA(255, 255, 255, 64));
+            dd.Vertex(pts[vj + 0], minh, pts[vj + 2], DuRGBA(255, 255, 255, 64));
+            dd.Vertex(pts[vi + 0], minh, pts[vi + 2], DuRGBA(255, 255, 255, 64));
+            dd.Vertex(pts[vj + 0], maxh, pts[vj + 2], DuRGBA(255, 255, 255, 64));
+            dd.Vertex(pts[vi + 0], maxh, pts[vi + 2], DuRGBA(255, 255, 255, 64));
+            dd.Vertex(pts[vj + 0], minh, pts[vj + 2], DuRGBA(255, 255, 255, 64));
+            dd.Vertex(pts[vj + 0], maxh, pts[vj + 2], DuRGBA(255, 255, 255, 64));
         }
 
-        dd.end();
+        dd.End();
     }
 
-    public override void layout()
+    public override void Layout()
     {
         ImGui.SliderFloat("Shape Height", ref boxHeight, 0.1f, 20f, "%.1f");
         ImGui.SliderFloat("Shape Descent", ref boxDescent, 0.1f, 20f, "%.1f");
@@ -217,20 +217,20 @@ public class ConvexVolumeTool : Tool
             hull.Clear();
             pts.Clear();
 
-            DemoInputGeomProvider geom = sample.getInputGeom();
+            DemoInputGeomProvider geom = sample.GetInputGeom();
             if (geom != null)
             {
-                geom.clearConvexVolumes();
+                geom.ClearConvexVolumes();
             }
         }
     }
 
-    public override string getName()
+    public override string GetName()
     {
         return "Create Convex Volumes";
     }
 
-    public override void handleUpdate(float dt)
+    public override void HandleUpdate(float dt)
     {
         // TODO Auto-generated method stub
     }

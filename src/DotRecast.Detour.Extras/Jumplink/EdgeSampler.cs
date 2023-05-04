@@ -17,11 +17,11 @@ namespace DotRecast.Detour.Extras.Jumplink
         public EdgeSampler(Edge edge, Trajectory trajectory)
         {
             this.trajectory = trajectory;
-            ax = vSub(edge.sq, edge.sp);
-            vNormalize(ref ax);
-            vSet(ref az, ax.z, 0, -ax.x);
-            vNormalize(ref az);
-            vSet(ref ay, 0, 1, 0);
+            ax = VSub(edge.sq, edge.sp);
+            VNormalize(ref ax);
+            VSet(ref az, ax.z, 0, -ax.x);
+            VNormalize(ref az);
+            VSet(ref ay, 0, 1, 0);
         }
     }
 }

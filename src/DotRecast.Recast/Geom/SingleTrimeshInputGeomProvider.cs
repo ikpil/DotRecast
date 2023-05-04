@@ -33,33 +33,33 @@ namespace DotRecast.Recast.Geom
         {
             bmin = Vector3f.Zero;
             bmax = Vector3f.Zero;
-            RecastVectors.copy(ref bmin, vertices, 0);
-            RecastVectors.copy(ref bmax, vertices, 0);
+            RecastVectors.Copy(ref bmin, vertices, 0);
+            RecastVectors.Copy(ref bmax, vertices, 0);
             for (int i = 1; i < vertices.Length / 3; i++)
             {
-                RecastVectors.min(ref bmin, vertices, i * 3);
-                RecastVectors.max(ref bmax, vertices, i * 3);
+                RecastVectors.Min(ref bmin, vertices, i * 3);
+                RecastVectors.Max(ref bmax, vertices, i * 3);
             }
 
             _mesh = new TriMesh(vertices, faces);
         }
 
-        public Vector3f getMeshBoundsMin()
+        public Vector3f GetMeshBoundsMin()
         {
             return bmin;
         }
 
-        public Vector3f getMeshBoundsMax()
+        public Vector3f GetMeshBoundsMax()
         {
             return bmax;
         }
 
-        public IEnumerable<TriMesh> meshes()
+        public IEnumerable<TriMesh> Meshes()
         {
             return ImmutableArray.Create(_mesh);
         }
 
-        public IList<ConvexVolume> convexVolumes()
+        public IList<ConvexVolume> ConvexVolumes()
         {
             return ImmutableArray<ConvexVolume>.Empty;
         }

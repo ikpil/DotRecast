@@ -37,7 +37,7 @@ public class VoxelQueryTest
 
 
     [Test]
-    public void shouldTraverseTiles()
+    public void ShouldTraverseTiles()
     {
         var hfProvider = new Mock<Func<int, int, Heightfield>>();
 
@@ -59,7 +59,7 @@ public class VoxelQueryTest
         Vector3f end = Vector3f.Of(320, 10, 57);
 
         // When
-        query.raycast(start, end);
+        query.Raycast(start, end);
         // Then
         hfProvider.Verify(mock => mock.Invoke(It.IsAny<int>(), It.IsAny<int>()), Times.Exactly(6));
         Assert.That(captorX, Is.EqualTo(new[] { 0, 1, 1, 1, 2, 2 }));
@@ -67,29 +67,29 @@ public class VoxelQueryTest
     }
 
     [Test]
-    public void shouldHandleRaycastWithoutObstacles()
+    public void ShouldHandleRaycastWithoutObstacles()
     {
-        DynamicNavMesh mesh = createDynaMesh();
-        VoxelQuery query = mesh.voxelQuery();
+        DynamicNavMesh mesh = CreateDynaMesh();
+        VoxelQuery query = mesh.VoxelQuery();
         Vector3f start = Vector3f.Of(7.4f, 0.5f, -64.8f);
         Vector3f end = Vector3f.Of(31.2f, 0.5f, -75.3f);
-        float? hit = query.raycast(start, end);
+        float? hit = query.Raycast(start, end);
         Assert.That(hit, Is.Null);
     }
 
     [Test]
-    public void shouldHandleRaycastWithObstacles()
+    public void ShouldHandleRaycastWithObstacles()
     {
-        DynamicNavMesh mesh = createDynaMesh();
-        VoxelQuery query = mesh.voxelQuery();
+        DynamicNavMesh mesh = CreateDynaMesh();
+        VoxelQuery query = mesh.VoxelQuery();
         Vector3f start = Vector3f.Of(32.3f, 0.5f, 47.9f);
         Vector3f end = Vector3f.Of(-31.2f, 0.5f, -29.8f);
-        float? hit = query.raycast(start, end);
+        float? hit = query.Raycast(start, end);
         Assert.That(hit, Is.Not.Null);
         Assert.That(hit.Value, Is.EqualTo(0.5263836f).Within(1e-7f));
     }
 
-    private DynamicNavMesh createDynaMesh()
+    private DynamicNavMesh CreateDynaMesh()
     {
         var bytes = Loader.ToBytes("test_tiles.voxels");
         using var ms = new MemoryStream(bytes);
@@ -97,11 +97,11 @@ public class VoxelQueryTest
 
         // load voxels from file
         VoxelFileReader reader = new VoxelFileReader();
-        VoxelFile f = reader.read(bis);
+        VoxelFile f = reader.Read(bis);
         // create dynamic navmesh
         var mesh = new DynamicNavMesh(f);
         // build navmesh asynchronously using multiple threads
-        Task<bool> future = mesh.build(Task.Factory);
+        Task<bool> future = mesh.Build(Task.Factory);
         // wait for build to complete
         var _ = future.Result;
         return mesh;

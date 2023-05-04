@@ -41,7 +41,7 @@ namespace DotRecast.Recast
      *            Max axis extents of bounding box B
      * @returns true if the two bounding boxes overlap. False otherwise
      */
-        private static bool overlapBounds(float[] amin, float[] amax, float[] bmin, float[] bmax)
+        private static bool OverlapBounds(float[] amin, float[] amax, float[] bmin, float[] bmax)
         {
             bool overlap = true;
             overlap = (amin[0] > bmax[0] || amax[0] < bmin[0]) ? false : overlap;
@@ -50,7 +50,7 @@ namespace DotRecast.Recast
             return overlap;
         }
         
-        private static bool overlapBounds(Vector3f amin, Vector3f amax, Vector3f bmin, Vector3f bmax)
+        private static bool OverlapBounds(Vector3f amin, Vector3f amax, Vector3f bmin, Vector3f bmax)
         {
             bool overlap = true;
             overlap = (amin.x > bmax.x || amax.x < bmin.x) ? false : overlap;
@@ -81,7 +81,7 @@ namespace DotRecast.Recast
      *            The merge theshold. [Limit: >= 0] [Units: vx]
      * @see Heightfield, Span.
      */
-        public static void addSpan(Heightfield heightfield, int x, int y, int spanMin, int spanMax, int areaId,
+        public static void AddSpan(Heightfield heightfield, int x, int y, int spanMin, int spanMax, int areaId,
             int flagMergeThreshold)
         {
             int idx = x + y * heightfield.width;
@@ -170,7 +170,7 @@ namespace DotRecast.Recast
      *            The separating axis
      * @return The number of resulting polygon 1 and polygon 2 vertices
      */
-        private static int[] dividePoly(float[] inVerts, int inVertsOffset, int inVertsCount, int outVerts1, int outVerts2, float axisOffset,
+        private static int[] DividePoly(float[] inVerts, int inVertsOffset, int inVertsCount, int outVerts1, int outVerts2, float axisOffset,
             int axis)
         {
             float[] d = new float[12];
@@ -191,19 +191,19 @@ namespace DotRecast.Recast
                                                      + (inVerts[inVertsOffset + i * 3 + 1] - inVerts[inVertsOffset + j * 3 + 1]) * s;
                     inVerts[outVerts1 + m * 3 + 2] = inVerts[inVertsOffset + j * 3 + 2]
                                                      + (inVerts[inVertsOffset + i * 3 + 2] - inVerts[inVertsOffset + j * 3 + 2]) * s;
-                    RecastVectors.copy(inVerts, outVerts2 + n * 3, inVerts, outVerts1 + m * 3);
+                    RecastVectors.Copy(inVerts, outVerts2 + n * 3, inVerts, outVerts1 + m * 3);
                     m++;
                     n++;
                     // add the i'th point to the right polygon. Do NOT add points that are on the dividing line
                     // since these were already added above
                     if (d[i] > 0)
                     {
-                        RecastVectors.copy(inVerts, outVerts1 + m * 3, inVerts, inVertsOffset + i * 3);
+                        RecastVectors.Copy(inVerts, outVerts1 + m * 3, inVerts, inVertsOffset + i * 3);
                         m++;
                     }
                     else if (d[i] < 0)
                     {
-                        RecastVectors.copy(inVerts, outVerts2 + n * 3, inVerts, inVertsOffset + i * 3);
+                        RecastVectors.Copy(inVerts, outVerts2 + n * 3, inVerts, inVertsOffset + i * 3);
                         n++;
                     }
                 }
@@ -212,13 +212,13 @@ namespace DotRecast.Recast
                     // add the i'th point to the right polygon. Addition is done even for points on the dividing line
                     if (d[i] >= 0)
                     {
-                        RecastVectors.copy(inVerts, outVerts1 + m * 3, inVerts, inVertsOffset + i * 3);
+                        RecastVectors.Copy(inVerts, outVerts1 + m * 3, inVerts, inVertsOffset + i * 3);
                         m++;
                         if (d[i] != 0)
                             continue;
                     }
 
-                    RecastVectors.copy(inVerts, outVerts2 + n * 3, inVerts, inVertsOffset + i * 3);
+                    RecastVectors.Copy(inVerts, outVerts2 + n * 3, inVerts, inVertsOffset + i * 3);
                     n++;
                 }
             }
@@ -255,7 +255,7 @@ namespace DotRecast.Recast
      * @param flagMergeThreshold
      *            The threshold in which area flags will be merged
      */
-        private static void rasterizeTri(float[] verts, int v0, int v1, int v2, int area, Heightfield hf, Vector3f hfBBMin,
+        private static void RasterizeTri(float[] verts, int v0, int v1, int v2, int area, Heightfield hf, Vector3f hfBBMin,
             Vector3f hfBBMax, float cellSize, float inverseCellSize, float inverseCellHeight, int flagMergeThreshold)
         {
             Vector3f tmin = new Vector3f();
@@ -263,15 +263,15 @@ namespace DotRecast.Recast
             float by = hfBBMax.y - hfBBMin.y;
 
             // Calculate the bounding box of the triangle.
-            RecastVectors.copy(ref tmin, verts, v0 * 3);
-            RecastVectors.copy(ref tmax, verts, v0 * 3);
-            RecastVectors.min(ref tmin, verts, v1 * 3);
-            RecastVectors.min(ref tmin, verts, v2 * 3);
-            RecastVectors.max(ref tmax, verts, v1 * 3);
-            RecastVectors.max(ref tmax, verts, v2 * 3);
+            RecastVectors.Copy(ref tmin, verts, v0 * 3);
+            RecastVectors.Copy(ref tmax, verts, v0 * 3);
+            RecastVectors.Min(ref tmin, verts, v1 * 3);
+            RecastVectors.Min(ref tmin, verts, v2 * 3);
+            RecastVectors.Max(ref tmax, verts, v1 * 3);
+            RecastVectors.Max(ref tmax, verts, v2 * 3);
 
             // If the triangle does not touch the bbox of the heightfield, skip the triagle.
-            if (!overlapBounds(hfBBMin, hfBBMax, tmin, tmax))
+            if (!OverlapBounds(hfBBMin, hfBBMax, tmin, tmax))
                 return;
 
             // Calculate the footprint of the triangle on the grid's y-axis
@@ -281,8 +281,8 @@ namespace DotRecast.Recast
             int w = hf.width;
             int h = hf.height;
             // use -1 rather than 0 to cut the polygon properly at the start of the tile
-            z0 = clamp(z0, -1, h - 1);
-            z1 = clamp(z1, 0, h - 1);
+            z0 = Clamp(z0, -1, h - 1);
+            z1 = Clamp(z1, 0, h - 1);
 
             // Clip the triangle into all grid cells it touches.
             float[] buf = new float[7 * 3 * 4];
@@ -291,16 +291,16 @@ namespace DotRecast.Recast
             int p1 = inRow + 7 * 3;
             int p2 = p1 + 7 * 3;
 
-            RecastVectors.copy(buf, 0, verts, v0 * 3);
-            RecastVectors.copy(buf, 3, verts, v1 * 3);
-            RecastVectors.copy(buf, 6, verts, v2 * 3);
+            RecastVectors.Copy(buf, 0, verts, v0 * 3);
+            RecastVectors.Copy(buf, 3, verts, v1 * 3);
+            RecastVectors.Copy(buf, 6, verts, v2 * 3);
             int nvRow, nvIn = 3;
 
             for (int z = z0; z <= z1; ++z)
             {
                 // Clip polygon to row. Store the remaining polygon as well
                 float cellZ = hfBBMin.z + z * cellSize;
-                int[] nvrowin = dividePoly(buf, @in, nvIn, inRow, p1, cellZ + cellSize, 2);
+                int[] nvrowin = DividePoly(buf, @in, nvIn, inRow, p1, cellZ + cellSize, 2);
                 nvRow = nvrowin[0];
                 nvIn = nvrowin[1];
                 {
@@ -332,15 +332,15 @@ namespace DotRecast.Recast
                     continue;
                 }
 
-                x0 = clamp(x0, -1, w - 1);
-                x1 = clamp(x1, 0, w - 1);
+                x0 = Clamp(x0, -1, w - 1);
+                x1 = Clamp(x1, 0, w - 1);
 
                 int nv, nv2 = nvRow;
                 for (int x = x0; x <= x1; ++x)
                 {
                     // Clip polygon to column. store the remaining polygon as well
                     float cx = hfBBMin.x + x * cellSize;
-                    int[] nvnv2 = dividePoly(buf, inRow, nv2, p1, p2, cx + cellSize, 0);
+                    int[] nvnv2 = DividePoly(buf, inRow, nv2, p1, p2, cx + cellSize, 0);
                     nv = nvnv2[0];
                     nv2 = nvnv2[1];
                     {
@@ -378,10 +378,10 @@ namespace DotRecast.Recast
                         spanMax = by;
 
                     // Snap the span to the heightfield height grid.
-                    int spanMinCellIndex = clamp((int)Math.Floor(spanMin * inverseCellHeight), 0, SPAN_MAX_HEIGHT);
-                    int spanMaxCellIndex = clamp((int)Math.Ceiling(spanMax * inverseCellHeight), spanMinCellIndex + 1, SPAN_MAX_HEIGHT);
+                    int spanMinCellIndex = Clamp((int)Math.Floor(spanMin * inverseCellHeight), 0, SPAN_MAX_HEIGHT);
+                    int spanMaxCellIndex = Clamp((int)Math.Ceiling(spanMax * inverseCellHeight), spanMinCellIndex + 1, SPAN_MAX_HEIGHT);
 
-                    addSpan(hf, x, z, spanMinCellIndex, spanMaxCellIndex, area, flagMergeThreshold);
+                    AddSpan(hf, x, z, spanMinCellIndex, spanMaxCellIndex, area, flagMergeThreshold);
                 }
             }
         }
@@ -407,17 +407,17 @@ namespace DotRecast.Recast
      *            The distance where the walkable flag is favored over the non-walkable flag. [Limit: >= 0] [Units: vx]
      * @see Heightfield
      */
-        public static void rasterizeTriangle(Heightfield heightfield, float[] verts, int v0, int v1, int v2, int area,
+        public static void RasterizeTriangle(Heightfield heightfield, float[] verts, int v0, int v1, int v2, int area,
             int flagMergeThreshold, Telemetry ctx)
         {
-            ctx.startTimer("RASTERIZE_TRIANGLES");
+            ctx.StartTimer("RASTERIZE_TRIANGLES");
 
             float inverseCellSize = 1.0f / heightfield.cs;
             float inverseCellHeight = 1.0f / heightfield.ch;
-            rasterizeTri(verts, v0, v1, v2, area, heightfield, heightfield.bmin, heightfield.bmax, heightfield.cs, inverseCellSize,
+            RasterizeTri(verts, v0, v1, v2, area, heightfield, heightfield.bmin, heightfield.bmax, heightfield.cs, inverseCellSize,
                 inverseCellHeight, flagMergeThreshold);
 
-            ctx.stopTimer("RASTERIZE_TRIANGLES");
+            ctx.StopTimer("RASTERIZE_TRIANGLES");
         }
 
         /**
@@ -438,10 +438,10 @@ namespace DotRecast.Recast
      *            The distance where the walkable flag is favored over the non-walkable flag. [Limit: >= 0] [Units: vx]
      * @see Heightfield
      */
-        public static void rasterizeTriangles(Heightfield heightfield, float[] verts, int[] tris, int[] areaIds, int numTris,
+        public static void RasterizeTriangles(Heightfield heightfield, float[] verts, int[] tris, int[] areaIds, int numTris,
             int flagMergeThreshold, Telemetry ctx)
         {
-            ctx.startTimer("RASTERIZE_TRIANGLES");
+            ctx.StartTimer("RASTERIZE_TRIANGLES");
 
             float inverseCellSize = 1.0f / heightfield.cs;
             float inverseCellHeight = 1.0f / heightfield.ch;
@@ -450,11 +450,11 @@ namespace DotRecast.Recast
                 int v0 = tris[triIndex * 3 + 0];
                 int v1 = tris[triIndex * 3 + 1];
                 int v2 = tris[triIndex * 3 + 2];
-                rasterizeTri(verts, v0, v1, v2, areaIds[triIndex], heightfield, heightfield.bmin, heightfield.bmax, heightfield.cs,
+                RasterizeTri(verts, v0, v1, v2, areaIds[triIndex], heightfield, heightfield.bmin, heightfield.bmax, heightfield.cs,
                     inverseCellSize, inverseCellHeight, flagMergeThreshold);
             }
 
-            ctx.stopTimer("RASTERIZE_TRIANGLES");
+            ctx.StopTimer("RASTERIZE_TRIANGLES");
         }
 
         /**
@@ -475,10 +475,10 @@ namespace DotRecast.Recast
      *            The distance where the walkable flag is favored over the non-walkable flag. [Limit: >= 0] [Units: vx]
      * @see Heightfield
      */
-        public static void rasterizeTriangles(Heightfield heightfield, float[] verts, int[] areaIds, int numTris,
+        public static void RasterizeTriangles(Heightfield heightfield, float[] verts, int[] areaIds, int numTris,
             int flagMergeThreshold, Telemetry ctx)
         {
-            ctx.startTimer("RASTERIZE_TRIANGLES");
+            ctx.StartTimer("RASTERIZE_TRIANGLES");
 
             float inverseCellSize = 1.0f / heightfield.cs;
             float inverseCellHeight = 1.0f / heightfield.ch;
@@ -487,11 +487,11 @@ namespace DotRecast.Recast
                 int v0 = (triIndex * 3 + 0);
                 int v1 = (triIndex * 3 + 1);
                 int v2 = (triIndex * 3 + 2);
-                rasterizeTri(verts, v0, v1, v2, areaIds[triIndex], heightfield, heightfield.bmin, heightfield.bmax, heightfield.cs,
+                RasterizeTri(verts, v0, v1, v2, areaIds[triIndex], heightfield, heightfield.bmin, heightfield.bmax, heightfield.cs,
                     inverseCellSize, inverseCellHeight, flagMergeThreshold);
             }
 
-            ctx.stopTimer("RASTERIZE_TRIANGLES");
+            ctx.StopTimer("RASTERIZE_TRIANGLES");
         }
     }
 }

@@ -28,40 +28,40 @@ namespace DotRecast.Detour
     {
         private readonly SortedQueue<Node> m_heap = new SortedQueue<Node>((n1, n2) => n1.total.CompareTo(n2.total));
 
-        public int count()
+        public int Count()
         {
             return m_heap.Count();
         }
 
-        public void clear()
+        public void Clear()
         {
             m_heap.Clear();
         }
 
-        public Node top()
+        public Node Top()
         {
             return m_heap.Top();
         }
 
-        public Node pop()
+        public Node Pop()
         {
-            var node = top();
+            var node = Top();
             m_heap.Remove(node);
             return node;
         }
 
-        public void push(Node node)
+        public void Push(Node node)
         {
             m_heap.Enqueue(node);
         }
 
-        public void modify(Node node)
+        public void Modify(Node node)
         {
             m_heap.Remove(node);
-            push(node);
+            Push(node);
         }
 
-        public bool isEmpty()
+        public bool IsEmpty()
         {
             return 0 == m_heap.Count();
         }

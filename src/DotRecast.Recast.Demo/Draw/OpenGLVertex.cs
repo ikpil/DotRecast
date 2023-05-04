@@ -46,7 +46,7 @@ public struct OpenGLVertex
         this.color = color;
     }
 
-    public void store(BinaryWriter writer)
+    public void Store(BinaryWriter writer)
     {
         // writer.Write(BitConverter.GetBytes(x));
         // writer.Write(BitConverter.GetBytes(y));

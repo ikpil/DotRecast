@@ -36,18 +36,18 @@ namespace DotRecast.Detour.QueryResults
         }
 
         /** Returns the reference id of the nearest polygon. 0 if no polygon is found. */
-        public long getNearestRef()
+        public long GetNearestRef()
         {
             return nearestRef;
         }
 
         /** Returns the nearest point on the polygon. [opt] [(x, y, z)]. Unchanged if no polygon is found. */
-        public Vector3f getNearestPos()
+        public Vector3f GetNearestPos()
         {
             return nearestPos;
         }
 
-        public bool isOverPoly()
+        public bool IsOverPoly()
         {
             return overPoly;
         }

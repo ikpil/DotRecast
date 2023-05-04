@@ -32,7 +32,7 @@ public class GLCheckerTexture
         _gl = gl;
     }
     
-    public void release()
+    public void Release()
     {
         if (m_texId != 0)
         {
@@ -40,13 +40,13 @@ public class GLCheckerTexture
         }
     }
 
-    public void bind()
+    public void Bind()
     {
         if (m_texId == 0)
         {
             // Create checker pattern.
-            int col0 = DebugDraw.duRGBA(215, 215, 215, 255);
-            int col1 = DebugDraw.duRGBA(255, 255, 255, 255);
+            int col0 = DebugDraw.DuRGBA(215, 215, 215, 255);
+            int col1 = DebugDraw.DuRGBA(255, 255, 255, 255);
             uint TSIZE = 64;
             int[] data = new int[TSIZE * TSIZE];
 

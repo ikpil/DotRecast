@@ -24,13 +24,13 @@ namespace DotRecast.Recast
 
     public static class PolyMeshRaycast
     {
-        public static float? raycast(IList<RecastBuilderResult> results, Vector3f src, Vector3f dst)
+        public static float? Raycast(IList<RecastBuilderResult> results, Vector3f src, Vector3f dst)
         {
             foreach (RecastBuilderResult result in results)
             {
-                if (result.getMeshDetail() != null)
+                if (result.GetMeshDetail() != null)
                 {
-                    float? intersection = raycast(result.getMesh(), result.getMeshDetail(), src, dst);
+                    float? intersection = Raycast(result.GetMesh(), result.GetMeshDetail(), src, dst);
                     if (null != intersection)
                     {
                         return intersection;
@@ -41,7 +41,7 @@ namespace DotRecast.Recast
             return null;
         }
 
-        private static float? raycast(PolyMesh poly, PolyMeshDetail meshDetail, Vector3f sp, Vector3f sq)
+        private static float? Raycast(PolyMesh poly, PolyMeshDetail meshDetail, Vector3f sp, Vector3f sq)
         {
             if (meshDetail != null)
             {
@@ -63,7 +63,7 @@ namespace DotRecast.Recast
                             vs[k].z = meshDetail.verts[verts + meshDetail.tris[tris + j * 4 + k] * 3 + 2];
                         }
 
-                        float? intersection = Intersections.intersectSegmentTriangle(sp, sq, vs[0], vs[1], vs[2]);
+                        float? intersection = Intersections.IntersectSegmentTriangle(sp, sq, vs[0], vs[1], vs[2]);
                         if (null != intersection)
                         {
                             return intersection;

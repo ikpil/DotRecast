@@ -43,56 +43,56 @@ public class Sample
         this.recastResults = recastResults;
         this.navMesh = navMesh;
         _settingsView = settingsView;
-        setQuery(navMesh);
+        SetQuery(navMesh);
         changed = true;
     }
 
-    private void setQuery(NavMesh navMesh)
+    private void SetQuery(NavMesh navMesh)
     {
         navMeshQuery = navMesh != null ? new NavMeshQuery(navMesh) : null;
     }
 
-    public DemoInputGeomProvider getInputGeom()
+    public DemoInputGeomProvider GetInputGeom()
     {
         return inputGeom;
     }
 
-    public IList<RecastBuilderResult> getRecastResults()
+    public IList<RecastBuilderResult> GetRecastResults()
     {
         return recastResults;
     }
 
-    public NavMesh getNavMesh()
+    public NavMesh GetNavMesh()
     {
         return navMesh;
     }
 
-    public RcSettingsView getSettingsUI()
+    public RcSettingsView GetSettingsUI()
     {
         return _settingsView;
     }
 
-    public NavMeshQuery getNavMeshQuery()
+    public NavMeshQuery GetNavMeshQuery()
     {
         return navMeshQuery;
     }
 
-    public bool isChanged()
+    public bool IsChanged()
     {
         return changed;
     }
 
-    public void setChanged(bool changed)
+    public void SetChanged(bool changed)
     {
         this.changed = changed;
     }
 
-    public void update(DemoInputGeomProvider geom, IList<RecastBuilderResult> recastResults, NavMesh navMesh)
+    public void Update(DemoInputGeomProvider geom, IList<RecastBuilderResult> recastResults, NavMesh navMesh)
     {
         inputGeom = geom;
         this.recastResults = recastResults;
         this.navMesh = navMesh;
-        setQuery(navMesh);
+        SetQuery(navMesh);
         changed = true;
     }
 }

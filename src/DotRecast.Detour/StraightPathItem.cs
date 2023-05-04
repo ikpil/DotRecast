@@ -38,17 +38,17 @@ namespace DotRecast.Detour
             this.refs = refs;
         }
 
-        public Vector3f getPos()
+        public Vector3f GetPos()
         {
             return pos;
         }
 
-        public int getFlags()
+        public int GetFlags()
         {
             return flags;
         }
 
-        public long getRef()
+        public long GetRef()
         {
             return refs;
         }

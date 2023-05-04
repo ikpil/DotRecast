@@ -39,45 +39,45 @@ public class NavMeshRenderer
         this.debugDraw = debugDraw;
     }
 
-    public RecastDebugDraw getDebugDraw()
+    public RecastDebugDraw GetDebugDraw()
     {
         return debugDraw;
     }
 
-    public void render(Sample sample)
+    public void Render(Sample sample)
     {
         if (sample == null)
         {
             return;
         }
 
-        NavMeshQuery navQuery = sample.getNavMeshQuery();
-        DemoInputGeomProvider geom = sample.getInputGeom();
-        IList<RecastBuilderResult> rcBuilderResults = sample.getRecastResults();
-        NavMesh navMesh = sample.getNavMesh();
-        RcSettingsView rcSettingsView = sample.getSettingsUI();
-        debugDraw.fog(true);
-        debugDraw.depthMask(true);
-        var drawMode = rcSettingsView.getDrawMode();
+        NavMeshQuery navQuery = sample.GetNavMeshQuery();
+        DemoInputGeomProvider geom = sample.GetInputGeom();
+        IList<RecastBuilderResult> rcBuilderResults = sample.GetRecastResults();
+        NavMesh navMesh = sample.GetNavMesh();
+        RcSettingsView rcSettingsView = sample.GetSettingsUI();
+        debugDraw.Fog(true);
+        debugDraw.DepthMask(true);
+        var drawMode = rcSettingsView.GetDrawMode();
 
-        float texScale = 1.0f / (rcSettingsView.getCellSize() * 10.0f);
-        float m_agentMaxSlope = rcSettingsView.getAgentMaxSlope();
+        float texScale = 1.0f / (rcSettingsView.GetCellSize() * 10.0f);
+        float m_agentMaxSlope = rcSettingsView.GetAgentMaxSlope();
 
         if (drawMode != DrawMode.DRAWMODE_NAVMESH_TRANS)
         {
             // Draw mesh
             if (geom != null)
             {
-                debugDraw.debugDrawTriMeshSlope(geom.vertices, geom.faces, geom.normals, m_agentMaxSlope, texScale);
-                drawOffMeshConnections(geom, false);
+                debugDraw.DebugDrawTriMeshSlope(geom.vertices, geom.faces, geom.normals, m_agentMaxSlope, texScale);
+                DrawOffMeshConnections(geom, false);
             }
         }
 
-        debugDraw.fog(false);
-        debugDraw.depthMask(false);
+        debugDraw.Fog(false);
+        debugDraw.DepthMask(false);
         if (geom != null)
         {
-            drawGeomBounds(geom);
+            DrawGeomBounds(geom);
         }
 
         if (navMesh != null && navQuery != null
@@ -88,221 +88,221 @@ public class NavMeshRenderer
         {
             if (drawMode != DrawMode.DRAWMODE_NAVMESH_INVIS)
             {
-                debugDraw.debugDrawNavMeshWithClosedList(navMesh, navQuery, navMeshDrawFlags);
+                debugDraw.DebugDrawNavMeshWithClosedList(navMesh, navQuery, navMeshDrawFlags);
             }
 
             if (drawMode == DrawMode.DRAWMODE_NAVMESH_BVTREE)
             {
-                debugDraw.debugDrawNavMeshBVTree(navMesh);
+                debugDraw.DebugDrawNavMeshBVTree(navMesh);
             }
 
             if (drawMode == DrawMode.DRAWMODE_NAVMESH_PORTALS)
             {
-                debugDraw.debugDrawNavMeshPortals(navMesh);
+                debugDraw.DebugDrawNavMeshPortals(navMesh);
             }
 
             if (drawMode == DrawMode.DRAWMODE_NAVMESH_NODES)
             {
-                debugDraw.debugDrawNavMeshNodes(navQuery);
-                debugDraw.debugDrawNavMeshPolysWithFlags(navMesh, SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED,
-                    DebugDraw.duRGBA(0, 0, 0, 128));
+                debugDraw.DebugDrawNavMeshNodes(navQuery);
+                debugDraw.DebugDrawNavMeshPolysWithFlags(navMesh, SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED,
+                    DebugDraw.DuRGBA(0, 0, 0, 128));
             }
         }
 
-        debugDraw.depthMask(true);
+        debugDraw.DepthMask(true);
 
         foreach (RecastBuilderResult rcBuilderResult in rcBuilderResults)
         {
-            if (rcBuilderResult.getCompactHeightfield() != null && drawMode == DrawMode.DRAWMODE_COMPACT)
+            if (rcBuilderResult.GetCompactHeightfield() != null && drawMode == DrawMode.DRAWMODE_COMPACT)
             {
-                debugDraw.debugDrawCompactHeightfieldSolid(rcBuilderResult.getCompactHeightfield());
+                debugDraw.DebugDrawCompactHeightfieldSolid(rcBuilderResult.GetCompactHeightfield());
             }
 
-            if (rcBuilderResult.getCompactHeightfield() != null && drawMode == DrawMode.DRAWMODE_COMPACT_DISTANCE)
+            if (rcBuilderResult.GetCompactHeightfield() != null && drawMode == DrawMode.DRAWMODE_COMPACT_DISTANCE)
             {
-                debugDraw.debugDrawCompactHeightfieldDistance(rcBuilderResult.getCompactHeightfield());
+                debugDraw.DebugDrawCompactHeightfieldDistance(rcBuilderResult.GetCompactHeightfield());
             }
 
-            if (rcBuilderResult.getCompactHeightfield() != null && drawMode == DrawMode.DRAWMODE_COMPACT_REGIONS)
+            if (rcBuilderResult.GetCompactHeightfield() != null && drawMode == DrawMode.DRAWMODE_COMPACT_REGIONS)
             {
-                debugDraw.debugDrawCompactHeightfieldRegions(rcBuilderResult.getCompactHeightfield());
+                debugDraw.DebugDrawCompactHeightfieldRegions(rcBuilderResult.GetCompactHeightfield());
             }
 
-            if (rcBuilderResult.getSolidHeightfield() != null && drawMode == DrawMode.DRAWMODE_VOXELS)
+            if (rcBuilderResult.GetSolidHeightfield() != null && drawMode == DrawMode.DRAWMODE_VOXELS)
             {
-                debugDraw.fog(true);
-                debugDraw.debugDrawHeightfieldSolid(rcBuilderResult.getSolidHeightfield());
-                debugDraw.fog(false);
+                debugDraw.Fog(true);
+                debugDraw.DebugDrawHeightfieldSolid(rcBuilderResult.GetSolidHeightfield());
+                debugDraw.Fog(false);
             }
 
-            if (rcBuilderResult.getSolidHeightfield() != null && drawMode == DrawMode.DRAWMODE_VOXELS_WALKABLE)
+            if (rcBuilderResult.GetSolidHeightfield() != null && drawMode == DrawMode.DRAWMODE_VOXELS_WALKABLE)
             {
-                debugDraw.fog(true);
-                debugDraw.debugDrawHeightfieldWalkable(rcBuilderResult.getSolidHeightfield());
-                debugDraw.fog(false);
+                debugDraw.Fog(true);
+                debugDraw.DebugDrawHeightfieldWalkable(rcBuilderResult.GetSolidHeightfield());
+                debugDraw.Fog(false);
             }
 
-            if (rcBuilderResult.getContourSet() != null && drawMode == DrawMode.DRAWMODE_RAW_CONTOURS)
+            if (rcBuilderResult.GetContourSet() != null && drawMode == DrawMode.DRAWMODE_RAW_CONTOURS)
             {
-                debugDraw.depthMask(false);
-                debugDraw.debugDrawRawContours(rcBuilderResult.getContourSet(), 1f);
-                debugDraw.depthMask(true);
+                debugDraw.DepthMask(false);
+                debugDraw.DebugDrawRawContours(rcBuilderResult.GetContourSet(), 1f);
+                debugDraw.DepthMask(true);
             }
 
-            if (rcBuilderResult.getContourSet() != null && drawMode == DrawMode.DRAWMODE_BOTH_CONTOURS)
+            if (rcBuilderResult.GetContourSet() != null && drawMode == DrawMode.DRAWMODE_BOTH_CONTOURS)
             {
-                debugDraw.depthMask(false);
-                debugDraw.debugDrawRawContours(rcBuilderResult.getContourSet(), 0.5f);
-                debugDraw.debugDrawContours(rcBuilderResult.getContourSet());
-                debugDraw.depthMask(true);
+                debugDraw.DepthMask(false);
+                debugDraw.DebugDrawRawContours(rcBuilderResult.GetContourSet(), 0.5f);
+                debugDraw.DebugDrawContours(rcBuilderResult.GetContourSet());
+                debugDraw.DepthMask(true);
             }
 
-            if (rcBuilderResult.getContourSet() != null && drawMode == DrawMode.DRAWMODE_CONTOURS)
+            if (rcBuilderResult.GetContourSet() != null && drawMode == DrawMode.DRAWMODE_CONTOURS)
             {
-                debugDraw.depthMask(false);
-                debugDraw.debugDrawContours(rcBuilderResult.getContourSet());
-                debugDraw.depthMask(true);
+                debugDraw.DepthMask(false);
+                debugDraw.DebugDrawContours(rcBuilderResult.GetContourSet());
+                debugDraw.DepthMask(true);
             }
 
-            if (rcBuilderResult.getCompactHeightfield() != null && drawMode == DrawMode.DRAWMODE_REGION_CONNECTIONS)
+            if (rcBuilderResult.GetCompactHeightfield() != null && drawMode == DrawMode.DRAWMODE_REGION_CONNECTIONS)
             {
-                debugDraw.debugDrawCompactHeightfieldRegions(rcBuilderResult.getCompactHeightfield());
-                debugDraw.depthMask(false);
-                if (rcBuilderResult.getContourSet() != null)
+                debugDraw.DebugDrawCompactHeightfieldRegions(rcBuilderResult.GetCompactHeightfield());
+                debugDraw.DepthMask(false);
+                if (rcBuilderResult.GetContourSet() != null)
                 {
-                    debugDraw.debugDrawRegionConnections(rcBuilderResult.getContourSet());
+                    debugDraw.DebugDrawRegionConnections(rcBuilderResult.GetContourSet());
                 }
 
-                debugDraw.depthMask(true);
+                debugDraw.DepthMask(true);
             }
 
-            if (rcBuilderResult.getMesh() != null && drawMode == DrawMode.DRAWMODE_POLYMESH)
+            if (rcBuilderResult.GetMesh() != null && drawMode == DrawMode.DRAWMODE_POLYMESH)
             {
-                debugDraw.depthMask(false);
-                debugDraw.debugDrawPolyMesh(rcBuilderResult.getMesh());
-                debugDraw.depthMask(true);
+                debugDraw.DepthMask(false);
+                debugDraw.DebugDrawPolyMesh(rcBuilderResult.GetMesh());
+                debugDraw.DepthMask(true);
             }
 
-            if (rcBuilderResult.getMeshDetail() != null && drawMode == DrawMode.DRAWMODE_POLYMESH_DETAIL)
+            if (rcBuilderResult.GetMeshDetail() != null && drawMode == DrawMode.DRAWMODE_POLYMESH_DETAIL)
             {
-                debugDraw.depthMask(false);
-                debugDraw.debugDrawPolyMeshDetail(rcBuilderResult.getMeshDetail());
-                debugDraw.depthMask(true);
+                debugDraw.DepthMask(false);
+                debugDraw.DebugDrawPolyMeshDetail(rcBuilderResult.GetMeshDetail());
+                debugDraw.DepthMask(true);
             }
         }
 
         if (geom != null)
         {
-            drawConvexVolumes(geom);
+            DrawConvexVolumes(geom);
         }
     }
 
-    private void drawGeomBounds(DemoInputGeomProvider geom)
+    private void DrawGeomBounds(DemoInputGeomProvider geom)
     {
         // Draw bounds
-        Vector3f bmin = geom.getMeshBoundsMin();
-        Vector3f bmax = geom.getMeshBoundsMax();
-        debugDraw.debugDrawBoxWire(bmin.x, bmin.y, bmin.z, bmax.x, bmax.y, bmax.z,
-            DebugDraw.duRGBA(255, 255, 255, 128), 1.0f);
-        debugDraw.begin(DebugDrawPrimitives.POINTS, 5.0f);
-        debugDraw.vertex(bmin.x, bmin.y, bmin.z, DebugDraw.duRGBA(255, 255, 255, 128));
-        debugDraw.end();
+        Vector3f bmin = geom.GetMeshBoundsMin();
+        Vector3f bmax = geom.GetMeshBoundsMax();
+        debugDraw.DebugDrawBoxWire(bmin.x, bmin.y, bmin.z, bmax.x, bmax.y, bmax.z,
+            DebugDraw.DuRGBA(255, 255, 255, 128), 1.0f);
+        debugDraw.Begin(DebugDrawPrimitives.POINTS, 5.0f);
+        debugDraw.Vertex(bmin.x, bmin.y, bmin.z, DebugDraw.DuRGBA(255, 255, 255, 128));
+        debugDraw.End();
     }
 
-    public void drawOffMeshConnections(DemoInputGeomProvider geom, bool hilight)
+    public void DrawOffMeshConnections(DemoInputGeomProvider geom, bool hilight)
     {
-        int conColor = DebugDraw.duRGBA(192, 0, 128, 192);
-        int baseColor = DebugDraw.duRGBA(0, 0, 0, 64);
-        debugDraw.depthMask(false);
+        int conColor = DebugDraw.DuRGBA(192, 0, 128, 192);
+        int baseColor = DebugDraw.DuRGBA(0, 0, 0, 64);
+        debugDraw.DepthMask(false);
 
-        debugDraw.begin(DebugDrawPrimitives.LINES, 2.0f);
-        foreach (DemoOffMeshConnection con in geom.getOffMeshConnections())
+        debugDraw.Begin(DebugDrawPrimitives.LINES, 2.0f);
+        foreach (DemoOffMeshConnection con in geom.GetOffMeshConnections())
         {
             float[] v = con.verts;
-            debugDraw.vertex(v[0], v[1], v[2], baseColor);
-            debugDraw.vertex(v[0], v[1] + 0.2f, v[2], baseColor);
+            debugDraw.Vertex(v[0], v[1], v[2], baseColor);
+            debugDraw.Vertex(v[0], v[1] + 0.2f, v[2], baseColor);
 
-            debugDraw.vertex(v[3], v[4], v[5], baseColor);
-            debugDraw.vertex(v[3], v[4] + 0.2f, v[5], baseColor);
+            debugDraw.Vertex(v[3], v[4], v[5], baseColor);
+            debugDraw.Vertex(v[3], v[4] + 0.2f, v[5], baseColor);
 
-            debugDraw.appendCircle(v[0], v[1] + 0.1f, v[2], con.radius, baseColor);
-            debugDraw.appendCircle(v[3], v[4] + 0.1f, v[5], con.radius, baseColor);
+            debugDraw.AppendCircle(v[0], v[1] + 0.1f, v[2], con.radius, baseColor);
+            debugDraw.AppendCircle(v[3], v[4] + 0.1f, v[5], con.radius, baseColor);
 
             if (hilight)
             {
-                debugDraw.appendArc(v[0], v[1], v[2], v[3], v[4], v[5], 0.25f, con.bidir ? 0.6f : 0.0f, 0.6f, conColor);
+                debugDraw.AppendArc(v[0], v[1], v[2], v[3], v[4], v[5], 0.25f, con.bidir ? 0.6f : 0.0f, 0.6f, conColor);
             }
         }
 
-        debugDraw.end();
+        debugDraw.End();
 
-        debugDraw.depthMask(true);
+        debugDraw.DepthMask(true);
     }
 
-    void drawConvexVolumes(DemoInputGeomProvider geom)
+    void DrawConvexVolumes(DemoInputGeomProvider geom)
     {
-        debugDraw.depthMask(false);
+        debugDraw.DepthMask(false);
 
-        debugDraw.begin(DebugDrawPrimitives.TRIS);
+        debugDraw.Begin(DebugDrawPrimitives.TRIS);
 
-        foreach (ConvexVolume vol in geom.convexVolumes())
+        foreach (ConvexVolume vol in geom.ConvexVolumes())
         {
-            int col = DebugDraw.duTransCol(DebugDraw.areaToCol(vol.areaMod.getMaskedValue()), 32);
+            int col = DebugDraw.DuTransCol(DebugDraw.AreaToCol(vol.areaMod.GetMaskedValue()), 32);
             for (int j = 0, k = vol.verts.Length - 3; j < vol.verts.Length; k = j, j += 3)
             {
                 var va = Vector3f.Of(vol.verts[k], vol.verts[k + 1], vol.verts[k + 2]);
                 var vb = Vector3f.Of(vol.verts[j], vol.verts[j + 1], vol.verts[j + 2]);
 
-                debugDraw.vertex(vol.verts[0], vol.hmax, vol.verts[2], col);
-                debugDraw.vertex(vb.x, vol.hmax, vb.z, col);
-                debugDraw.vertex(va.x, vol.hmax, va.z, col);
+                debugDraw.Vertex(vol.verts[0], vol.hmax, vol.verts[2], col);
+                debugDraw.Vertex(vb.x, vol.hmax, vb.z, col);
+                debugDraw.Vertex(va.x, vol.hmax, va.z, col);
 
-                debugDraw.vertex(va.x, vol.hmin, va.z, DebugDraw.duDarkenCol(col));
-                debugDraw.vertex(va.x, vol.hmax, va.z, col);
-                debugDraw.vertex(vb.x, vol.hmax, vb.z, col);
+                debugDraw.Vertex(va.x, vol.hmin, va.z, DebugDraw.DuDarkenCol(col));
+                debugDraw.Vertex(va.x, vol.hmax, va.z, col);
+                debugDraw.Vertex(vb.x, vol.hmax, vb.z, col);
 
-                debugDraw.vertex(va.x, vol.hmin, va.z, DebugDraw.duDarkenCol(col));
-                debugDraw.vertex(vb.x, vol.hmax, vb.z, col);
-                debugDraw.vertex(vb.x, vol.hmin, vb.z, DebugDraw.duDarkenCol(col));
+                debugDraw.Vertex(va.x, vol.hmin, va.z, DebugDraw.DuDarkenCol(col));
+                debugDraw.Vertex(vb.x, vol.hmax, vb.z, col);
+                debugDraw.Vertex(vb.x, vol.hmin, vb.z, DebugDraw.DuDarkenCol(col));
             }
         }
 
-        debugDraw.end();
+        debugDraw.End();
 
-        debugDraw.begin(DebugDrawPrimitives.LINES, 2.0f);
-        foreach (ConvexVolume vol in geom.convexVolumes())
+        debugDraw.Begin(DebugDrawPrimitives.LINES, 2.0f);
+        foreach (ConvexVolume vol in geom.ConvexVolumes())
         {
-            int col = DebugDraw.duTransCol(DebugDraw.areaToCol(vol.areaMod.getMaskedValue()), 220);
+            int col = DebugDraw.DuTransCol(DebugDraw.AreaToCol(vol.areaMod.GetMaskedValue()), 220);
             for (int j = 0, k = vol.verts.Length - 3; j < vol.verts.Length; k = j, j += 3)
             {
                 var va = Vector3f.Of(vol.verts[k], vol.verts[k + 1], vol.verts[k + 2]);
                 var vb = Vector3f.Of(vol.verts[j], vol.verts[j + 1], vol.verts[j + 2]);
-                debugDraw.vertex(va.x, vol.hmin, va.z, DebugDraw.duDarkenCol(col));
-                debugDraw.vertex(vb.x, vol.hmin, vb.z, DebugDraw.duDarkenCol(col));
-                debugDraw.vertex(va.x, vol.hmax, va.z, col);
-                debugDraw.vertex(vb.x, vol.hmax, vb.z, col);
-                debugDraw.vertex(va.x, vol.hmin, va.z, DebugDraw.duDarkenCol(col));
-                debugDraw.vertex(va.x, vol.hmax, va.z, col);
+                debugDraw.Vertex(va.x, vol.hmin, va.z, DebugDraw.DuDarkenCol(col));
+                debugDraw.Vertex(vb.x, vol.hmin, vb.z, DebugDraw.DuDarkenCol(col));
+                debugDraw.Vertex(va.x, vol.hmax, va.z, col);
+                debugDraw.Vertex(vb.x, vol.hmax, vb.z, col);
+                debugDraw.Vertex(va.x, vol.hmin, va.z, DebugDraw.DuDarkenCol(col));
+                debugDraw.Vertex(va.x, vol.hmax, va.z, col);
             }
         }
 
-        debugDraw.end();
+        debugDraw.End();
 
-        debugDraw.begin(DebugDrawPrimitives.POINTS, 3.0f);
-        foreach (ConvexVolume vol in geom.convexVolumes())
+        debugDraw.Begin(DebugDrawPrimitives.POINTS, 3.0f);
+        foreach (ConvexVolume vol in geom.ConvexVolumes())
         {
             int col = DebugDraw
-                .duDarkenCol(DebugDraw.duTransCol(DebugDraw.areaToCol(vol.areaMod.getMaskedValue()), 220));
+                .DuDarkenCol(DebugDraw.DuTransCol(DebugDraw.AreaToCol(vol.areaMod.GetMaskedValue()), 220));
             for (int j = 0; j < vol.verts.Length; j += 3)
             {
-                debugDraw.vertex(vol.verts[j + 0], vol.verts[j + 1] + 0.1f, vol.verts[j + 2], col);
-                debugDraw.vertex(vol.verts[j + 0], vol.hmin, vol.verts[j + 2], col);
-                debugDraw.vertex(vol.verts[j + 0], vol.hmax, vol.verts[j + 2], col);
+                debugDraw.Vertex(vol.verts[j + 0], vol.verts[j + 1] + 0.1f, vol.verts[j + 2], col);
+                debugDraw.Vertex(vol.verts[j + 0], vol.hmin, vol.verts[j + 2], col);
+                debugDraw.Vertex(vol.verts[j + 0], vol.hmax, vol.verts[j + 2], col);
             }
         }
 
-        debugDraw.end();
+        debugDraw.End();
 
-        debugDraw.depthMask(true);
+        debugDraw.DepthMask(true);
     }
 }

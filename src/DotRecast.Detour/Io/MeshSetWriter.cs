@@ -26,20 +26,20 @@ namespace DotRecast.Detour.Io
         private readonly MeshDataWriter writer = new MeshDataWriter();
         private readonly NavMeshParamWriter paramWriter = new NavMeshParamWriter();
 
-        public void write(BinaryWriter stream, NavMesh mesh, ByteOrder order, bool cCompatibility)
+        public void Write(BinaryWriter stream, NavMesh mesh, ByteOrder order, bool cCompatibility)
         {
-            writeHeader(stream, mesh, order, cCompatibility);
-            writeTiles(stream, mesh, order, cCompatibility);
+            WriteHeader(stream, mesh, order, cCompatibility);
+            WriteTiles(stream, mesh, order, cCompatibility);
         }
 
-        private void writeHeader(BinaryWriter stream, NavMesh mesh, ByteOrder order, bool cCompatibility)
+        private void WriteHeader(BinaryWriter stream, NavMesh mesh, ByteOrder order, bool cCompatibility)
         {
-            write(stream, NavMeshSetHeader.NAVMESHSET_MAGIC, order);
-            write(stream, cCompatibility ? NavMeshSetHeader.NAVMESHSET_VERSION : NavMeshSetHeader.NAVMESHSET_VERSION_RECAST4J, order);
+            Write(stream, NavMeshSetHeader.NAVMESHSET_MAGIC, order);
+            Write(stream, cCompatibility ? NavMeshSetHeader.NAVMESHSET_VERSION : NavMeshSetHeader.NAVMESHSET_VERSION_RECAST4J, order);
             int numTiles = 0;
-            for (int i = 0; i < mesh.getMaxTiles(); ++i)
+            for (int i = 0; i < mesh.GetMaxTiles(); ++i)
             {
-                MeshTile tile = mesh.getTile(i);
+                MeshTile tile = mesh.GetTile(i);
                 if (tile == null || tile.data == null || tile.data.header == null)
                 {
                     continue;
@@ -48,39 +48,39 @@ namespace DotRecast.Detour.Io
                 numTiles++;
             }
 
-            write(stream, numTiles, order);
-            paramWriter.write(stream, mesh.getParams(), order);
+            Write(stream, numTiles, order);
+            paramWriter.Write(stream, mesh.GetParams(), order);
             if (!cCompatibility)
             {
-                write(stream, mesh.getMaxVertsPerPoly(), order);
+                Write(stream, mesh.GetMaxVertsPerPoly(), order);
             }
         }
 
-        private void writeTiles(BinaryWriter stream, NavMesh mesh, ByteOrder order, bool cCompatibility)
+        private void WriteTiles(BinaryWriter stream, NavMesh mesh, ByteOrder order, bool cCompatibility)
         {
-            for (int i = 0; i < mesh.getMaxTiles(); ++i)
+            for (int i = 0; i < mesh.GetMaxTiles(); ++i)
             {
-                MeshTile tile = mesh.getTile(i);
+                MeshTile tile = mesh.GetTile(i);
                 if (tile == null || tile.data == null || tile.data.header == null)
                 {
                     continue;
                 }
 
                 NavMeshTileHeader tileHeader = new NavMeshTileHeader();
-                tileHeader.tileRef = mesh.getTileRef(tile);
+                tileHeader.tileRef = mesh.GetTileRef(tile);
                 using MemoryStream bb = new MemoryStream();
                 using BinaryWriter baos = new BinaryWriter(bb);
-                writer.write(baos, tile.data, order, cCompatibility);
+                writer.Write(baos, tile.data, order, cCompatibility);
                 baos.Flush();
                 baos.Close();
 
                 byte[] ba = bb.ToArray();
                 tileHeader.dataSize = ba.Length;
-                write(stream, tileHeader.tileRef, order);
-                write(stream, tileHeader.dataSize, order);
+                Write(stream, tileHeader.tileRef, order);
+                Write(stream, tileHeader.dataSize, order);
                 if (cCompatibility)
                 {
-                    write(stream, 0, order); // C struct padding
+                    Write(stream, 0, order); // C struct padding
                 }
 
                 stream.Write(ba);

@@ -52,35 +52,35 @@ public class TestTileLayerBuilder : AbstractTileLayersBuilder
     public TestTileLayerBuilder(InputGeomProvider geom)
     {
         this.geom = geom;
-        rcConfig = new RecastConfig(true, m_tileSize, m_tileSize, RecastConfig.calcBorder(m_agentRadius, m_cellSize),
+        rcConfig = new RecastConfig(true, m_tileSize, m_tileSize, RecastConfig.CalcBorder(m_agentRadius, m_cellSize),
             PartitionType.WATERSHED, m_cellSize, m_cellHeight, m_agentMaxSlope, true, true, true, m_agentHeight,
             m_agentRadius, m_agentMaxClimb, m_regionMinArea, m_regionMergeArea, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly,
             true, m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
-        Vector3f bmin = geom.getMeshBoundsMin();
-        Vector3f bmax = geom.getMeshBoundsMax();
-        int[] twh = Recast.Recast.calcTileCount(bmin, bmax, m_cellSize, m_tileSize, m_tileSize);
+        Vector3f bmin = geom.GetMeshBoundsMin();
+        Vector3f bmax = geom.GetMeshBoundsMax();
+        int[] twh = Recast.Recast.CalcTileCount(bmin, bmax, m_cellSize, m_tileSize, m_tileSize);
         tw = twh[0];
         th = twh[1];
     }
 
-    public List<byte[]> build(ByteOrder order, bool cCompatibility, int threads)
+    public List<byte[]> Build(ByteOrder order, bool cCompatibility, int threads)
     {
-        return build(order, cCompatibility, threads, tw, th);
+        return Build(order, cCompatibility, threads, tw, th);
     }
 
-    public int getTw()
+    public int GetTw()
     {
         return tw;
     }
 
-    public int getTh()
+    public int GetTh()
     {
         return th;
     }
 
-    protected override List<byte[]> build(int tx, int ty, ByteOrder order, bool cCompatibility)
+    protected override List<byte[]> Build(int tx, int ty, ByteOrder order, bool cCompatibility)
     {
-        HeightfieldLayerSet lset = getHeightfieldSet(tx, ty);
+        HeightfieldLayerSet lset = GetHeightfieldSet(tx, ty);
         List<byte[]> result = new();
         if (lset != null)
         {
@@ -110,20 +110,20 @@ public class TestTileLayerBuilder : AbstractTileLayersBuilder
                 header.maxy = layer.maxy;
                 header.hmin = layer.hmin;
                 header.hmax = layer.hmax;
-                result.Add(builder.compressTileCacheLayer(header, layer.heights, layer.areas, layer.cons, order, cCompatibility));
+                result.Add(builder.CompressTileCacheLayer(header, layer.heights, layer.areas, layer.cons, order, cCompatibility));
             }
         }
 
         return result;
     }
 
-    protected HeightfieldLayerSet getHeightfieldSet(int tx, int ty)
+    protected HeightfieldLayerSet GetHeightfieldSet(int tx, int ty)
     {
         RecastBuilder rcBuilder = new RecastBuilder();
-        Vector3f bmin = geom.getMeshBoundsMin();
-        Vector3f bmax = geom.getMeshBoundsMax();
+        Vector3f bmin = geom.GetMeshBoundsMin();
+        Vector3f bmax = geom.GetMeshBoundsMax();
         RecastBuilderConfig cfg = new RecastBuilderConfig(rcConfig, bmin, bmax, tx, ty);
-        HeightfieldLayerSet lset = rcBuilder.buildLayers(geom, cfg);
+        HeightfieldLayerSet lset = rcBuilder.BuildLayers(geom, cfg);
         return lset;
     }
 }

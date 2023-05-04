@@ -24,9 +24,9 @@ namespace DotRecast.Detour.Io
 {
     public static class IOUtils
     {
-        public static ByteBuffer toByteBuffer(BinaryReader @is, bool direct)
+        public static ByteBuffer ToByteBuffer(BinaryReader @is, bool direct)
         {
-            byte[] data = toByteArray(@is);
+            byte[] data = ToByteArray(@is);
             if (direct)
             {
                 Array.Reverse(data);
@@ -35,7 +35,7 @@ namespace DotRecast.Detour.Io
             return new ByteBuffer(data);
         }
 
-        public static byte[] toByteArray(BinaryReader inputStream)
+        public static byte[] ToByteArray(BinaryReader inputStream)
         {
             using var baos = new MemoryStream();
             byte[] buffer = new byte[4096];
@@ -49,13 +49,13 @@ namespace DotRecast.Detour.Io
         }
 
 
-        public static ByteBuffer toByteBuffer(BinaryReader inputStream)
+        public static ByteBuffer ToByteBuffer(BinaryReader inputStream)
         {
-            var bytes = toByteArray(inputStream);
+            var bytes = ToByteArray(inputStream);
             return new ByteBuffer(bytes);
         }
 
-        public static int swapEndianness(int i)
+        public static int SwapEndianness(int i)
         {
             var s = (((uint)i >> 24) & 0xFF) | (((uint)i >> 8) & 0xFF00) | (((uint)i << 8) & 0xFF0000) | ((i << 24) & 0xFF000000);
             return (int)s;

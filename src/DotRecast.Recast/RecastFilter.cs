@@ -31,15 +31,15 @@ namespace DotRecast.Recast
         /// Allows the formation of walkable regions that will flow over low lying
         /// objects such as curbs, and up structures such as stairways.
         ///
-        /// Two neighboring spans are walkable if: <tt>rcAbs(currentSpan.smax - neighborSpan.smax) < waklableClimb</tt>
+        /// Two neighboring spans are walkable if: <tt>RcAbs(currentSpan.smax - neighborSpan.smax) < waklableClimb</tt>
         ///
         /// @warning Will override the effect of #rcFilterLedgeSpans. So if both filters are used, call
         /// #rcFilterLedgeSpans after calling this filter.
         ///
         /// @see rcHeightfield, rcConfig
-        public static void filterLowHangingWalkableObstacles(Telemetry ctx, int walkableClimb, Heightfield solid)
+        public static void FilterLowHangingWalkableObstacles(Telemetry ctx, int walkableClimb, Heightfield solid)
         {
-            ctx.startTimer("FILTER_LOW_OBSTACLES");
+            ctx.StartTimer("FILTER_LOW_OBSTACLES");
 
             int w = solid.width;
             int h = solid.height;
@@ -71,7 +71,7 @@ namespace DotRecast.Recast
                 }
             }
 
-            ctx.stopTimer("FILTER_LOW_OBSTACLES");
+            ctx.StopTimer("FILTER_LOW_OBSTACLES");
         }
 
         /// @par
@@ -81,12 +81,12 @@ namespace DotRecast.Recast
         /// This method removes the impact of the overestimation of conservative voxelization
         /// so the resulting mesh will not have regions hanging in the air over ledges.
         ///
-        /// A span is a ledge if: <tt>rcAbs(currentSpan.smax - neighborSpan.smax) > walkableClimb</tt>
+        /// A span is a ledge if: <tt>RcAbs(currentSpan.smax - neighborSpan.smax) > walkableClimb</tt>
         ///
         /// @see rcHeightfield, rcConfig
-        public static void filterLedgeSpans(Telemetry ctx, int walkableHeight, int walkableClimb, Heightfield solid)
+        public static void FilterLedgeSpans(Telemetry ctx, int walkableHeight, int walkableClimb, Heightfield solid)
         {
-            ctx.startTimer("FILTER_LEDGE");
+            ctx.StartTimer("FILTER_LEDGE");
 
             int w = solid.width;
             int h = solid.height;
@@ -168,7 +168,7 @@ namespace DotRecast.Recast
                 }
             }
 
-            ctx.stopTimer("FILTER_LEDGE");
+            ctx.StopTimer("FILTER_LEDGE");
         }
 
         /// @par
@@ -177,9 +177,9 @@ namespace DotRecast.Recast
         /// maximum to the next higher span's minimum. (Same grid column.)
         ///
         /// @see rcHeightfield, rcConfig
-        public static void filterWalkableLowHeightSpans(Telemetry ctx, int walkableHeight, Heightfield solid)
+        public static void FilterWalkableLowHeightSpans(Telemetry ctx, int walkableHeight, Heightfield solid)
         {
-            ctx.startTimer("FILTER_WALKABLE");
+            ctx.StartTimer("FILTER_WALKABLE");
 
             int w = solid.width;
             int h = solid.height;
@@ -200,7 +200,7 @@ namespace DotRecast.Recast
                 }
             }
 
-            ctx.stopTimer("FILTER_WALKABLE");
+            ctx.StopTimer("FILTER_WALKABLE");
         }
     }
 }

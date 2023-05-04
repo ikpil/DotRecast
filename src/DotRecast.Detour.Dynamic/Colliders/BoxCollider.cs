@@ -28,13 +28,13 @@ namespace DotRecast.Detour.Dynamic.Colliders
         private readonly Vector3f[] halfEdges;
 
         public BoxCollider(Vector3f center, Vector3f[] halfEdges, int area, float flagMergeThreshold) :
-            base(area, flagMergeThreshold, bounds(center, halfEdges))
+            base(area, flagMergeThreshold, Bounds(center, halfEdges))
         {
             this.center = center;
             this.halfEdges = halfEdges;
         }
 
-        private static float[] bounds(Vector3f center, Vector3f[] halfEdges)
+        private static float[] Bounds(Vector3f center, Vector3f[] halfEdges)
         {
             float[] bounds = new float[]
             {
@@ -60,13 +60,13 @@ namespace DotRecast.Detour.Dynamic.Colliders
             return bounds;
         }
 
-        public override void rasterize(Heightfield hf, Telemetry telemetry)
+        public override void Rasterize(Heightfield hf, Telemetry telemetry)
         {
-            RecastFilledVolumeRasterization.rasterizeBox(
+            RecastFilledVolumeRasterization.RasterizeBox(
                 hf, center, halfEdges, area, (int)Math.Floor(flagMergeThreshold / hf.ch), telemetry);
         }
 
-        public static Vector3f[] getHalfEdges(Vector3f up, Vector3f forward, Vector3f extent)
+        public static Vector3f[] GetHalfEdges(Vector3f up, Vector3f forward, Vector3f extent)
         {
             Vector3f[] halfEdges =
             {
@@ -74,11 +74,11 @@ namespace DotRecast.Detour.Dynamic.Colliders
                 Vector3f.Of(up.x, up.y, up.z),
                 Vector3f.Zero
             };
-            RecastVectors.normalize(ref halfEdges[1]);
-            RecastVectors.cross(ref halfEdges[0], up, forward);
-            RecastVectors.normalize(ref halfEdges[0]);
-            RecastVectors.cross(ref halfEdges[2], halfEdges[0], up);
-            RecastVectors.normalize(ref halfEdges[2]);
+            RecastVectors.Normalize(ref halfEdges[1]);
+            RecastVectors.Cross(ref halfEdges[0], up, forward);
+            RecastVectors.Normalize(ref halfEdges[0]);
+            RecastVectors.Cross(ref halfEdges[2], halfEdges[0], up);
+            RecastVectors.Normalize(ref halfEdges[2]);
             halfEdges[0].x *= extent.x;
             halfEdges[0].y *= extent.x;
             halfEdges[0].z *= extent.x;

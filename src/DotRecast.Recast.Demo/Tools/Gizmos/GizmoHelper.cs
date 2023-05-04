@@ -12,17 +12,17 @@ public class GizmoHelper
 
     private static float[] sphericalVertices;
 
-    public static float[] generateSphericalVertices()
+    public static float[] GenerateSphericalVertices()
     {
         if (sphericalVertices == null)
         {
-            sphericalVertices = generateSphericalVertices(SEGMENTS, RINGS);
+            sphericalVertices = GenerateSphericalVertices(SEGMENTS, RINGS);
         }
 
         return sphericalVertices;
     }
 
-    private static float[] generateSphericalVertices(int segments, int rings)
+    private static float[] GenerateSphericalVertices(int segments, int rings)
     {
         float[] vertices = new float[6 + 3 * (segments + 1) * (rings + 1)];
         // top
@@ -33,7 +33,7 @@ public class GizmoHelper
         for (int r = 0; r <= rings; r++)
         {
             double theta = Math.PI * (r + 1) / (rings + 2);
-            vi = generateRingVertices(segments, vertices, vi, theta);
+            vi = GenerateRingVertices(segments, vertices, vi, theta);
         }
 
         // bottom
@@ -43,24 +43,24 @@ public class GizmoHelper
         return vertices;
     }
 
-    public static float[] generateCylindricalVertices()
+    public static float[] GenerateCylindricalVertices()
     {
-        return generateCylindricalVertices(SEGMENTS);
+        return GenerateCylindricalVertices(SEGMENTS);
     }
 
-    private static float[] generateCylindricalVertices(int segments)
+    private static float[] GenerateCylindricalVertices(int segments)
     {
         float[] vertices = new float[3 * (segments + 1) * 4];
         int vi = 0;
         for (int r = 0; r < 4; r++)
         {
-            vi = generateRingVertices(segments, vertices, vi, Math.PI * 0.5);
+            vi = GenerateRingVertices(segments, vertices, vi, Math.PI * 0.5);
         }
 
         return vertices;
     }
 
-    private static int generateRingVertices(int segments, float[] vertices, int vi, double theta)
+    private static int GenerateRingVertices(int segments, float[] vertices, int vi, double theta)
     {
         double cosTheta = Math.Cos(theta);
         double sinTheta = Math.Sin(theta);
@@ -77,21 +77,21 @@ public class GizmoHelper
         return vi;
     }
 
-    public static int[] generateSphericalTriangles()
+    public static int[] GenerateSphericalTriangles()
     {
-        return generateSphericalTriangles(SEGMENTS, RINGS);
+        return GenerateSphericalTriangles(SEGMENTS, RINGS);
     }
 
-    private static int[] generateSphericalTriangles(int segments, int rings)
+    private static int[] GenerateSphericalTriangles(int segments, int rings)
     {
         int[] triangles = new int[6 * (segments + rings * (segments + 1))];
-        int ti = generateSphereUpperCapTriangles(segments, triangles, 0);
-        ti = generateRingTriangles(segments, rings, triangles, 1, ti);
-        generateSphereLowerCapTriangles(segments, rings, triangles, ti);
+        int ti = GenerateSphereUpperCapTriangles(segments, triangles, 0);
+        ti = GenerateRingTriangles(segments, rings, triangles, 1, ti);
+        GenerateSphereLowerCapTriangles(segments, rings, triangles, ti);
         return triangles;
     }
 
-    public static int generateRingTriangles(int segments, int rings, int[] triangles, int vertexOffset, int ti)
+    public static int GenerateRingTriangles(int segments, int rings, int[] triangles, int vertexOffset, int ti)
     {
         for (int r = 0; r < rings; r++)
         {
@@ -113,7 +113,7 @@ public class GizmoHelper
         return ti;
     }
 
-    private static int generateSphereUpperCapTriangles(int segments, int[] triangles, int ti)
+    private static int GenerateSphereUpperCapTriangles(int segments, int[] triangles, int ti)
     {
         for (int p = 0; p < segments; p++)
         {
@@ -125,7 +125,7 @@ public class GizmoHelper
         return ti;
     }
 
-    private static void generateSphereLowerCapTriangles(int segments, int rings, int[] triangles, int ti)
+    private static void GenerateSphereLowerCapTriangles(int segments, int rings, int[] triangles, int ti)
     {
         int lastVertex = 1 + (segments + 1) * (rings + 1);
         for (int p = 0; p < segments; p++)
@@ -136,24 +136,24 @@ public class GizmoHelper
         }
     }
 
-    public static int[] generateCylindricalTriangles()
+    public static int[] GenerateCylindricalTriangles()
     {
-        return generateCylindricalTriangles(SEGMENTS);
+        return GenerateCylindricalTriangles(SEGMENTS);
     }
 
-    private static int[] generateCylindricalTriangles(int segments)
+    private static int[] GenerateCylindricalTriangles(int segments)
     {
         int circleTriangles = segments - 2;
         int[] triangles = new int[6 * (circleTriangles + (segments + 1))];
         int vi = 0;
-        int ti = generateCircleTriangles(segments, triangles, vi, 0, false);
-        ti = generateRingTriangles(segments, 1, triangles, segments + 1, ti);
+        int ti = GenerateCircleTriangles(segments, triangles, vi, 0, false);
+        ti = GenerateRingTriangles(segments, 1, triangles, segments + 1, ti);
         int vertexCount = (segments + 1) * 4;
-        ti = generateCircleTriangles(segments, triangles, vertexCount - segments, ti, true);
+        ti = GenerateCircleTriangles(segments, triangles, vertexCount - segments, ti, true);
         return triangles;
     }
 
-    private static int generateCircleTriangles(int segments, int[] triangles, int vi, int ti, bool invert)
+    private static int GenerateCircleTriangles(int segments, int[] triangles, int vi, int ti, bool invert)
     {
         for (int p = 0; p < segments - 2; p++)
         {
@@ -174,7 +174,7 @@ public class GizmoHelper
         return ti;
     }
 
-    public static int getColorByNormal(float[] vertices, int v0, int v1, int v2)
+    public static int GetColorByNormal(float[] vertices, int v0, int v1, int v2)
     {
         Vector3f e0 = new Vector3f();
         Vector3f e1 = new Vector3f();
@@ -188,9 +188,9 @@ public class GizmoHelper
         normal.x = e0.y * e1.z - e0.z * e1.y;
         normal.y = e0.z * e1.x - e0.x * e1.z;
         normal.z = e0.x * e1.y - e0.y * e1.x;
-        RecastVectors.normalize(ref normal);
-        float c = clamp(0.57735026f * (normal.x + normal.y + normal.z), -1, 1);
-        int col = DebugDraw.duLerpCol(DebugDraw.duRGBA(32, 32, 0, 160), DebugDraw.duRGBA(220, 220, 0, 160),
+        RecastVectors.Normalize(ref normal);
+        float c = Clamp(0.57735026f * (normal.x + normal.y + normal.z), -1, 1);
+        int col = DebugDraw.DuLerpCol(DebugDraw.DuRGBA(32, 32, 0, 160), DebugDraw.DuRGBA(220, 220, 0, 160),
             (int)(127 * (1 + c)));
         return col;
     }

@@ -56,14 +56,14 @@ public abstract class AbstractDetourTest
     protected NavMesh navmesh;
 
     [SetUp]
-    public void setUp()
+    public void SetUp()
     {
-        navmesh = createNavMesh();
+        navmesh = CreateNavMesh();
         query = new NavMeshQuery(navmesh);
     }
 
-    protected NavMesh createNavMesh()
+    protected NavMesh CreateNavMesh()
     {
-        return new NavMesh(new RecastTestMeshBuilder().getMeshData(), 6, 0);
+        return new NavMesh(new RecastTestMeshBuilder().GetMeshData(), 6, 0);
     }
 }

@@ -94,7 +94,7 @@ namespace DotRecast.Recast
             }
             else
             {
-                int[] wh = Recast.calcGridSize(this.bmin, this.bmax, cfg.cs);
+                int[] wh = Recast.CalcGridSize(this.bmin, this.bmax, cfg.cs);
                 width = wh[0];
                 height = wh[1];
             }

@@ -48,15 +48,15 @@ public class RecastLayersTest
     private const int m_tileSize = 48;
 
     [Test]
-    public void testDungeon2()
+    public void TestDungeon2()
     {
     }
 
 
     [Test]
-    public void testDungeon()
+    public void TestDungeon()
     {
-        HeightfieldLayerSet lset = build("dungeon.obj", 3, 2);
+        HeightfieldLayerSet lset = Build("dungeon.obj", 3, 2);
         Assert.That(lset.layers.Length, Is.EqualTo(1));
         Assert.That(lset.layers[0].width, Is.EqualTo(48));
         Assert.That(lset.layers[0].hmin, Is.EqualTo(51));
@@ -72,9 +72,9 @@ public class RecastLayersTest
     }
 
     [Test]
-    public void test()
+    public void Test()
     {
-        HeightfieldLayerSet lset = build("nav_test.obj", 3, 2);
+        HeightfieldLayerSet lset = Build("nav_test.obj", 3, 2);
         Assert.That(lset.layers.Length, Is.EqualTo(3));
         Assert.That(lset.layers[0].width, Is.EqualTo(48));
         Assert.That(lset.layers[0].hmin, Is.EqualTo(13));
@@ -114,9 +114,9 @@ public class RecastLayersTest
     }
 
     [Test]
-    public void test2()
+    public void Test2()
     {
-        HeightfieldLayerSet lset = build("nav_test.obj", 2, 4);
+        HeightfieldLayerSet lset = Build("nav_test.obj", 2, 4);
         Assert.That(lset.layers.Length, Is.EqualTo(2));
         Assert.That(lset.layers[0].width, Is.EqualTo(48));
         Assert.That(lset.layers[0].hmin, Is.EqualTo(13));
@@ -143,16 +143,16 @@ public class RecastLayersTest
         Assert.That(lset.layers[1].cons[1600], Is.EqualTo(0));
     }
 
-    private HeightfieldLayerSet build(string filename, int x, int y)
+    private HeightfieldLayerSet Build(string filename, int x, int y)
     {
-        InputGeomProvider geom = ObjImporter.load(Loader.ToBytes(filename));
+        InputGeomProvider geom = ObjImporter.Load(Loader.ToBytes(filename));
         RecastBuilder builder = new RecastBuilder();
-        RecastConfig cfg = new RecastConfig(true, m_tileSize, m_tileSize, RecastConfig.calcBorder(m_agentRadius, m_cellSize),
+        RecastConfig cfg = new RecastConfig(true, m_tileSize, m_tileSize, RecastConfig.CalcBorder(m_agentRadius, m_cellSize),
             m_partitionType, m_cellSize, m_cellHeight, m_agentMaxSlope, true, true, true, m_agentHeight, m_agentRadius,
             m_agentMaxClimb, m_regionMinArea, m_regionMergeArea, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, true,
             m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
-        RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, geom.getMeshBoundsMin(), geom.getMeshBoundsMax(), x, y);
-        HeightfieldLayerSet lset = builder.buildLayers(geom, bcfg);
+        RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), x, y);
+        HeightfieldLayerSet lset = builder.BuildLayers(geom, bcfg);
         return lset;
     }
 }

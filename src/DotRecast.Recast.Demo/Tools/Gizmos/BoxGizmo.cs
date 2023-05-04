@@ -29,7 +29,7 @@ public class BoxGizmo : ColliderGizmo
     private readonly Vector3f[] halfEdges;
 
     public BoxGizmo(Vector3f center, Vector3f extent, Vector3f forward, Vector3f up) :
-        this(center, BoxCollider.getHalfEdges(up, forward, extent))
+        this(center, BoxCollider.GetHalfEdges(up, forward, extent))
     {
     }
 
@@ -48,7 +48,7 @@ public class BoxGizmo : ColliderGizmo
         }
     }
 
-    public void render(RecastDebugDraw debugDraw)
+    public void Render(RecastDebugDraw debugDraw)
     {
         var trX = Vector3f.Of(halfEdges[0].x, halfEdges[1].x, halfEdges[2].x);
         var trY = Vector3f.Of(halfEdges[0].y, halfEdges[1].y, halfEdges[2].y);
@@ -56,31 +56,31 @@ public class BoxGizmo : ColliderGizmo
         float[] vertices = new float[8 * 3];
         for (int i = 0; i < 8; i++)
         {
-            vertices[i * 3 + 0] = RecastVectors.dot(VERTS[i], trX) + center.x;
-            vertices[i * 3 + 1] = RecastVectors.dot(VERTS[i], trY) + center.y;
-            vertices[i * 3 + 2] = RecastVectors.dot(VERTS[i], trZ) + center.z;
+            vertices[i * 3 + 0] = RecastVectors.Dot(VERTS[i], trX) + center.x;
+            vertices[i * 3 + 1] = RecastVectors.Dot(VERTS[i], trY) + center.y;
+            vertices[i * 3 + 2] = RecastVectors.Dot(VERTS[i], trZ) + center.z;
         }
 
-        debugDraw.begin(DebugDrawPrimitives.TRIS);
+        debugDraw.Begin(DebugDrawPrimitives.TRIS);
         for (int i = 0; i < 12; i++)
         {
-            int col = DebugDraw.duRGBA(200, 200, 50, 160);
+            int col = DebugDraw.DuRGBA(200, 200, 50, 160);
             if (i == 4 || i == 5 || i == 8 || i == 9)
             {
-                col = DebugDraw.duRGBA(160, 160, 40, 160);
+                col = DebugDraw.DuRGBA(160, 160, 40, 160);
             }
             else if (i > 4)
             {
-                col = DebugDraw.duRGBA(120, 120, 30, 160);
+                col = DebugDraw.DuRGBA(120, 120, 30, 160);
             }
 
             for (int j = 0; j < 3; j++)
             {
                 int v = TRIANLGES[i * 3 + j] * 3;
-                debugDraw.vertex(vertices[v], vertices[v + 1], vertices[v + 2], col);
+                debugDraw.Vertex(vertices[v], vertices[v + 1], vertices[v + 2], col);
             }
         }
 
-        debugDraw.end();
+        debugDraw.End();
     }
 }

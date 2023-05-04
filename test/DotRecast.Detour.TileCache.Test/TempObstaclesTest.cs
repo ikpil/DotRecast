@@ -30,71 +30,71 @@ namespace DotRecast.Detour.TileCache.Test;
 public class TempObstaclesTest : AbstractTileCacheTest
 {
     [Test]
-    public void testDungeon()
+    public void TestDungeon()
     {
         bool cCompatibility = true;
-        InputGeomProvider geom = ObjImporter.load(Loader.ToBytes("dungeon.obj"));
+        InputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("dungeon.obj"));
         TestTileLayerBuilder layerBuilder = new TestTileLayerBuilder(geom);
-        List<byte[]> layers = layerBuilder.build(ByteOrder.LITTLE_ENDIAN, cCompatibility, 1);
-        TileCache tc = getTileCache(geom, ByteOrder.LITTLE_ENDIAN, cCompatibility);
+        List<byte[]> layers = layerBuilder.Build(ByteOrder.LITTLE_ENDIAN, cCompatibility, 1);
+        TileCache tc = GetTileCache(geom, ByteOrder.LITTLE_ENDIAN, cCompatibility);
         foreach (byte[] data in layers)
         {
-            long refs = tc.addTile(data, 0);
-            tc.buildNavMeshTile(refs);
+            long refs = tc.AddTile(data, 0);
+            tc.BuildNavMeshTile(refs);
         }
 
-        List<MeshTile> tiles = tc.getNavMesh().getTilesAt(1, 4);
+        List<MeshTile> tiles = tc.GetNavMesh().GetTilesAt(1, 4);
         MeshTile tile = tiles[0];
         Assert.That(tile.data.header.vertCount, Is.EqualTo(16));
         Assert.That(tile.data.header.polyCount, Is.EqualTo(6));
-        long o = tc.addObstacle(Vector3f.Of(-1.815208f, 9.998184f, -20.307983f), 1f, 2f);
-        bool upToDate = tc.update();
+        long o = tc.AddObstacle(Vector3f.Of(-1.815208f, 9.998184f, -20.307983f), 1f, 2f);
+        bool upToDate = tc.Update();
         Assert.That(upToDate, Is.True);
-        tiles = tc.getNavMesh().getTilesAt(1, 4);
+        tiles = tc.GetNavMesh().GetTilesAt(1, 4);
         tile = tiles[0];
         Assert.That(tile.data.header.vertCount, Is.EqualTo(22));
         Assert.That(tile.data.header.polyCount, Is.EqualTo(11));
-        tc.removeObstacle(o);
-        upToDate = tc.update();
+        tc.RemoveObstacle(o);
+        upToDate = tc.Update();
         Assert.That(upToDate, Is.True);
-        tiles = tc.getNavMesh().getTilesAt(1, 4);
+        tiles = tc.GetNavMesh().GetTilesAt(1, 4);
         tile = tiles[0];
         Assert.That(tile.data.header.vertCount, Is.EqualTo(16));
         Assert.That(tile.data.header.polyCount, Is.EqualTo(6));
     }
 
     [Test]
-    public void testDungeonBox()
+    public void TestDungeonBox()
     {
         bool cCompatibility = true;
-        InputGeomProvider geom = ObjImporter.load(Loader.ToBytes("dungeon.obj"));
+        InputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("dungeon.obj"));
         TestTileLayerBuilder layerBuilder = new TestTileLayerBuilder(geom);
-        List<byte[]> layers = layerBuilder.build(ByteOrder.LITTLE_ENDIAN, cCompatibility, 1);
-        TileCache tc = getTileCache(geom, ByteOrder.LITTLE_ENDIAN, cCompatibility);
+        List<byte[]> layers = layerBuilder.Build(ByteOrder.LITTLE_ENDIAN, cCompatibility, 1);
+        TileCache tc = GetTileCache(geom, ByteOrder.LITTLE_ENDIAN, cCompatibility);
         foreach (byte[] data in layers)
         {
-            long refs = tc.addTile(data, 0);
-            tc.buildNavMeshTile(refs);
+            long refs = tc.AddTile(data, 0);
+            tc.BuildNavMeshTile(refs);
         }
 
-        List<MeshTile> tiles = tc.getNavMesh().getTilesAt(1, 4);
+        List<MeshTile> tiles = tc.GetNavMesh().GetTilesAt(1, 4);
         MeshTile tile = tiles[0];
         Assert.That(tile.data.header.vertCount, Is.EqualTo(16));
         Assert.That(tile.data.header.polyCount, Is.EqualTo(6));
-        long o = tc.addBoxObstacle(
+        long o = tc.AddBoxObstacle(
             Vector3f.Of(-2.315208f, 9.998184f, -20.807983f),
             Vector3f.Of(-1.315208f, 11.998184f, -19.807983f)
         );
-        bool upToDate = tc.update();
+        bool upToDate = tc.Update();
         Assert.That(upToDate, Is.True);
-        tiles = tc.getNavMesh().getTilesAt(1, 4);
+        tiles = tc.GetNavMesh().GetTilesAt(1, 4);
         tile = tiles[0];
         Assert.That(tile.data.header.vertCount, Is.EqualTo(22));
         Assert.That(tile.data.header.polyCount, Is.EqualTo(11));
-        tc.removeObstacle(o);
-        upToDate = tc.update();
+        tc.RemoveObstacle(o);
+        upToDate = tc.Update();
         Assert.That(upToDate, Is.True);
-        tiles = tc.getNavMesh().getTilesAt(1, 4);
+        tiles = tc.GetNavMesh().GetTilesAt(1, 4);
         tile = tiles[0];
         Assert.That(tile.data.header.vertCount, Is.EqualTo(16));
         Assert.That(tile.data.header.polyCount, Is.EqualTo(6));

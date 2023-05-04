@@ -25,39 +25,39 @@ namespace DotRecast.Detour.TileCache.Io
 {
     public class TileCacheLayerHeaderReader
     {
-        public TileCacheLayerHeader read(ByteBuffer data, bool cCompatibility)
+        public TileCacheLayerHeader Read(ByteBuffer data, bool cCompatibility)
         {
             TileCacheLayerHeader header = new TileCacheLayerHeader();
-            header.magic = data.getInt();
-            header.version = data.getInt();
+            header.magic = data.GetInt();
+            header.version = data.GetInt();
 
             if (header.magic != TileCacheLayerHeader.DT_TILECACHE_MAGIC)
                 throw new IOException("Invalid magic");
             if (header.version != TileCacheLayerHeader.DT_TILECACHE_VERSION)
                 throw new IOException("Invalid version");
 
-            header.tx = data.getInt();
-            header.ty = data.getInt();
-            header.tlayer = data.getInt();
+            header.tx = data.GetInt();
+            header.ty = data.GetInt();
+            header.tlayer = data.GetInt();
             
-            header.bmin.x = data.getFloat();
-            header.bmin.y = data.getFloat();
-            header.bmin.z = data.getFloat();
-            header.bmax.x = data.getFloat();
-            header.bmax.y = data.getFloat();
-            header.bmax.z = data.getFloat();
+            header.bmin.x = data.GetFloat();
+            header.bmin.y = data.GetFloat();
+            header.bmin.z = data.GetFloat();
+            header.bmax.x = data.GetFloat();
+            header.bmax.y = data.GetFloat();
+            header.bmax.z = data.GetFloat();
 
-            header.hmin = data.getShort() & 0xFFFF;
-            header.hmax = data.getShort() & 0xFFFF;
-            header.width = data.get() & 0xFF;
-            header.height = data.get() & 0xFF;
-            header.minx = data.get() & 0xFF;
-            header.maxx = data.get() & 0xFF;
-            header.miny = data.get() & 0xFF;
-            header.maxy = data.get() & 0xFF;
+            header.hmin = data.GetShort() & 0xFFFF;
+            header.hmax = data.GetShort() & 0xFFFF;
+            header.width = data.Get() & 0xFF;
+            header.height = data.Get() & 0xFF;
+            header.minx = data.Get() & 0xFF;
+            header.maxx = data.Get() & 0xFF;
+            header.miny = data.Get() & 0xFF;
+            header.maxy = data.Get() & 0xFF;
             if (cCompatibility)
             {
-                data.getShort(); // C struct padding
+                data.GetShort(); // C struct padding
             }
 
             return header;

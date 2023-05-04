@@ -26,14 +26,14 @@ namespace DotRecast.Detour
  */
     public static class NavMeshRaycast
     {
-        public static float? raycast(NavMesh mesh, Vector3f src, Vector3f dst)
+        public static float? Raycast(NavMesh mesh, Vector3f src, Vector3f dst)
         {
-            for (int t = 0; t < mesh.getMaxTiles(); ++t)
+            for (int t = 0; t < mesh.GetMaxTiles(); ++t)
             {
-                MeshTile tile = mesh.getTile(t);
+                MeshTile tile = mesh.GetTile(t);
                 if (tile != null && tile.data != null)
                 {
-                    float? intersection = raycast(tile, src, dst);
+                    float? intersection = Raycast(tile, src, dst);
                     if (null != intersection)
                     {
                         return intersection;
@@ -44,12 +44,12 @@ namespace DotRecast.Detour
             return null;
         }
 
-        private static float? raycast(MeshTile tile, Vector3f sp, Vector3f sq)
+        private static float? Raycast(MeshTile tile, Vector3f sp, Vector3f sq)
         {
             for (int i = 0; i < tile.data.header.polyCount; ++i)
             {
                 Poly p = tile.data.polys[i];
-                if (p.getType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+                if (p.GetType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
                 {
                     continue;
                 }
@@ -79,7 +79,7 @@ namespace DotRecast.Detour
                             }
                         }
 
-                        float? intersection = Intersections.intersectSegmentTriangle(sp, sq, verts[0], verts[1], verts[2]);
+                        float? intersection = Intersections.IntersectSegmentTriangle(sp, sq, verts[0], verts[1], verts[2]);
                         if (null != intersection)
                         {
                             return intersection;

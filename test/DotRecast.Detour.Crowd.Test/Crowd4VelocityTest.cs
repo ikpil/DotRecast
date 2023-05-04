@@ -97,19 +97,19 @@ public class Crowd4VelocityTest : AbstractCrowdTest
     };
 
     [Test]
-    public void testAgent1Quality3TVTA()
+    public void TestAgent1Quality3TVTA()
     {
         int updateFlags = CrowdAgentParams.DT_CROWD_ANTICIPATE_TURNS | CrowdAgentParams.DT_CROWD_OPTIMIZE_VIS
                                                                      | CrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO | CrowdAgentParams.DT_CROWD_OBSTACLE_AVOIDANCE;
 
-        addAgentGrid(2, 0.3f, updateFlags, 3, endPoss[0]);
-        setMoveTarget(endPoss[4], false);
+        AddAgentGrid(2, 0.3f, updateFlags, 3, endPoss[0]);
+        SetMoveTarget(endPoss[4], false);
         for (int i = 0; i < EXPECTED_A1Q3TVTA.Length; i++)
         {
-            crowd.update(1 / 5f, null);
+            crowd.Update(1 / 5f, null);
             if (i == 20)
             {
-                setMoveTarget(startPoss[2], true);
+                SetMoveTarget(startPoss[2], true);
             }
 
             CrowdAgent ag = agents[1];

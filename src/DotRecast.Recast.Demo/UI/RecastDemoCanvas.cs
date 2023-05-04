@@ -47,54 +47,54 @@ public class RecastDemoCanvas
             view.Bind(this);
         }
 
-        // setupClipboard(window);
-        // glfwSetCharCallback(window, (w, codepoint) => nk_input_unicode(ctx, codepoint));
+        // SetupClipboard(window);
+        // GlfwSetCharCallback(window, (w, codepoint) => Nk_input_unicode(ctx, codepoint));
         // glContext = new NuklearGL(this);
     }
 
 
-    private void setupClipboard(long window)
+    private void SetupClipboard(long window)
     {
-        // ctx.clip().copy((handle, text, len) => {
+        // ctx.Clip().copy((handle, text, len) => {
         //     if (len == 0) {
         //         return;
         //     }
         //
-        //     try (MemoryStack stack = stackPush()) {
-        //         ByteBuffer str = stack.malloc(len + 1);
-        //         memCopy(text, memAddress(str), len);
-        //         str.put(len, (byte) 0);
-        //         glfwSetClipboardString(window, str);
+        //     try (MemoryStack stack = StackPush()) {
+        //         ByteBuffer str = stack.Malloc(len + 1);
+        //         MemCopy(text, MemAddress(str), len);
+        //         str.Put(len, (byte) 0);
+        //         GlfwSetClipboardString(window, str);
         //     }
         // });
-        // ctx.clip().paste((handle, edit) => {
-        //     long text = nglfwGetClipboardString(window);
+        // ctx.Clip().paste((handle, edit) => {
+        //     long text = NglfwGetClipboardString(window);
         //     if (text != NULL) {
-        //         nnk_textedit_paste(edit, text, nnk_strlen(text));
+        //         Nnk_textedit_paste(edit, text, Nnk_strlen(text));
         //     }
         // });
     }
 
-    public void inputBegin()
+    public void InputBegin()
     {
-        //nk_input_begin(ctx);
+        //Nk_input_begin(ctx);
     }
 
-    public void inputEnd(IWindow win)
+    public void InputEnd(IWindow win)
     {
-        // NkMouse mouse = ctx.input().mouse();
-        // if (mouse.grab()) {
-        //     glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-        // } else if (mouse.grabbed()) {
-        //     float prevX = mouse.prev().x();
-        //     float prevY = mouse.prev().y();
-        //     glfwSetCursorPos(win, prevX, prevY);
-        //     mouse.pos().x(prevX);
-        //     mouse.pos().y(prevY);
-        // } else if (mouse.ungrab()) {
-        //     glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        // NkMouse mouse = ctx.Input().Mouse();
+        // if (mouse.Grab()) {
+        //     GlfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        // } else if (mouse.Grabbed()) {
+        //     float prevX = mouse.Prev().x();
+        //     float prevY = mouse.Prev().y();
+        //     GlfwSetCursorPos(win, prevX, prevY);
+        //     mouse.Pos().x(prevX);
+        //     mouse.Pos().y(prevY);
+        // } else if (mouse.Ungrab()) {
+        //     GlfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         // }
-        // nk_input_end(ctx);
+        // Nk_input_end(ctx);
     }
 
     public void Update(double dt)

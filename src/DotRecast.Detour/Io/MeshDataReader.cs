@@ -25,46 +25,46 @@ namespace DotRecast.Detour.Io
     {
         public const int DT_POLY_DETAIL_SIZE = 10;
 
-        public MeshData read(BinaryReader stream, int maxVertPerPoly)
+        public MeshData Read(BinaryReader stream, int maxVertPerPoly)
         {
-            ByteBuffer buf = IOUtils.toByteBuffer(stream);
-            return read(buf, maxVertPerPoly, false);
+            ByteBuffer buf = IOUtils.ToByteBuffer(stream);
+            return Read(buf, maxVertPerPoly, false);
         }
 
-        public MeshData read(ByteBuffer buf, int maxVertPerPoly)
+        public MeshData Read(ByteBuffer buf, int maxVertPerPoly)
         {
-            return read(buf, maxVertPerPoly, false);
+            return Read(buf, maxVertPerPoly, false);
         }
 
-        public MeshData read32Bit(BinaryReader stream, int maxVertPerPoly)
+        public MeshData Read32Bit(BinaryReader stream, int maxVertPerPoly)
         {
-            ByteBuffer buf = IOUtils.toByteBuffer(stream);
-            return read(buf, maxVertPerPoly, true);
+            ByteBuffer buf = IOUtils.ToByteBuffer(stream);
+            return Read(buf, maxVertPerPoly, true);
         }
 
-        public MeshData read32Bit(ByteBuffer buf, int maxVertPerPoly)
+        public MeshData Read32Bit(ByteBuffer buf, int maxVertPerPoly)
         {
-            return read(buf, maxVertPerPoly, true);
+            return Read(buf, maxVertPerPoly, true);
         }
 
-        public MeshData read(ByteBuffer buf, int maxVertPerPoly, bool is32Bit)
+        public MeshData Read(ByteBuffer buf, int maxVertPerPoly, bool is32Bit)
         {
             MeshData data = new MeshData();
             MeshHeader header = new MeshHeader();
             data.header = header;
-            header.magic = buf.getInt();
+            header.magic = buf.GetInt();
             if (header.magic != MeshHeader.DT_NAVMESH_MAGIC)
             {
-                header.magic = IOUtils.swapEndianness(header.magic);
+                header.magic = IOUtils.SwapEndianness(header.magic);
                 if (header.magic != MeshHeader.DT_NAVMESH_MAGIC)
                 {
                     throw new IOException("Invalid magic");
                 }
 
-                buf.order(buf.order() == ByteOrder.BIG_ENDIAN ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN);
+                buf.Order(buf.Order() == ByteOrder.BIG_ENDIAN ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN);
             }
 
-            header.version = buf.getInt();
+            header.version = buf.GetInt();
             if (header.version != MeshHeader.DT_NAVMESH_VERSION)
             {
                 if (header.version < MeshHeader.DT_NAVMESH_VERSION_RECAST4J_FIRST
@@ -75,67 +75,67 @@ namespace DotRecast.Detour.Io
             }
 
             bool cCompatibility = header.version == MeshHeader.DT_NAVMESH_VERSION;
-            header.x = buf.getInt();
-            header.y = buf.getInt();
-            header.layer = buf.getInt();
-            header.userId = buf.getInt();
-            header.polyCount = buf.getInt();
-            header.vertCount = buf.getInt();
-            header.maxLinkCount = buf.getInt();
-            header.detailMeshCount = buf.getInt();
-            header.detailVertCount = buf.getInt();
-            header.detailTriCount = buf.getInt();
-            header.bvNodeCount = buf.getInt();
-            header.offMeshConCount = buf.getInt();
-            header.offMeshBase = buf.getInt();
-            header.walkableHeight = buf.getFloat();
-            header.walkableRadius = buf.getFloat();
-            header.walkableClimb = buf.getFloat();
+            header.x = buf.GetInt();
+            header.y = buf.GetInt();
+            header.layer = buf.GetInt();
+            header.userId = buf.GetInt();
+            header.polyCount = buf.GetInt();
+            header.vertCount = buf.GetInt();
+            header.maxLinkCount = buf.GetInt();
+            header.detailMeshCount = buf.GetInt();
+            header.detailVertCount = buf.GetInt();
+            header.detailTriCount = buf.GetInt();
+            header.bvNodeCount = buf.GetInt();
+            header.offMeshConCount = buf.GetInt();
+            header.offMeshBase = buf.GetInt();
+            header.walkableHeight = buf.GetFloat();
+            header.walkableRadius = buf.GetFloat();
+            header.walkableClimb = buf.GetFloat();
             
-            header.bmin.x = buf.getFloat();
-            header.bmin.y = buf.getFloat();
-            header.bmin.z = buf.getFloat();
+            header.bmin.x = buf.GetFloat();
+            header.bmin.y = buf.GetFloat();
+            header.bmin.z = buf.GetFloat();
 
-            header.bmax.x = buf.getFloat();
-            header.bmax.y = buf.getFloat();
-            header.bmax.z = buf.getFloat();
+            header.bmax.x = buf.GetFloat();
+            header.bmax.y = buf.GetFloat();
+            header.bmax.z = buf.GetFloat();
 
-            header.bvQuantFactor = buf.getFloat();
-            data.verts = readVerts(buf, header.vertCount);
-            data.polys = readPolys(buf, header, maxVertPerPoly);
+            header.bvQuantFactor = buf.GetFloat();
+            data.verts = ReadVerts(buf, header.vertCount);
+            data.polys = ReadPolys(buf, header, maxVertPerPoly);
             if (cCompatibility)
             {
-                buf.position(buf.position() + header.maxLinkCount * getSizeofLink(is32Bit));
+                buf.Position(buf.Position() + header.maxLinkCount * GetSizeofLink(is32Bit));
             }
 
-            data.detailMeshes = readPolyDetails(buf, header, cCompatibility);
-            data.detailVerts = readVerts(buf, header.detailVertCount);
-            data.detailTris = readDTris(buf, header);
-            data.bvTree = readBVTree(buf, header);
-            data.offMeshCons = readOffMeshCons(buf, header);
+            data.detailMeshes = ReadPolyDetails(buf, header, cCompatibility);
+            data.detailVerts = ReadVerts(buf, header.detailVertCount);
+            data.detailTris = ReadDTris(buf, header);
+            data.bvTree = ReadBVTree(buf, header);
+            data.offMeshCons = ReadOffMeshCons(buf, header);
             return data;
         }
 
         public const int LINK_SIZEOF = 16;
         public const int LINK_SIZEOF32BIT = 12;
 
-        public static int getSizeofLink(bool is32Bit)
+        public static int GetSizeofLink(bool is32Bit)
         {
             return is32Bit ? LINK_SIZEOF32BIT : LINK_SIZEOF;
         }
 
-        private float[] readVerts(ByteBuffer buf, int count)
+        private float[] ReadVerts(ByteBuffer buf, int count)
         {
             float[] verts = new float[count * 3];
             for (int i = 0; i < verts.Length; i++)
             {
-                verts[i] = buf.getFloat();
+                verts[i] = buf.GetFloat();
             }
 
             return verts;
         }
 
-        private Poly[] readPolys(ByteBuffer buf, MeshHeader header, int maxVertPerPoly)
+        private Poly[] ReadPolys(ByteBuffer buf, MeshHeader header, int maxVertPerPoly)
         {
             Poly[] polys = new Poly[header.polyCount];
             for (int i = 0; i < polys.Length; i++)
@@ -143,58 +143,58 @@ namespace DotRecast.Detour.Io
                 polys[i] = new Poly(i, maxVertPerPoly);
                 if (header.version < MeshHeader.DT_NAVMESH_VERSION_RECAST4J_NO_POLY_FIRSTLINK)
                 {
-                    buf.getInt(); // polys[i].firstLink
+                    buf.GetInt(); // polys[i].firstLink
                 }
 
                 for (int j = 0; j < polys[i].verts.Length; j++)
                 {
-                    polys[i].verts[j] = buf.getShort() & 0xFFFF;
+                    polys[i].verts[j] = buf.GetShort() & 0xFFFF;
                 }
 
                 for (int j = 0; j < polys[i].neis.Length; j++)
                 {
-                    polys[i].neis[j] = buf.getShort() & 0xFFFF;
+                    polys[i].neis[j] = buf.GetShort() & 0xFFFF;
                 }
 
-                polys[i].flags = buf.getShort() & 0xFFFF;
-                polys[i].vertCount = buf.get() & 0xFF;
-                polys[i].areaAndtype = buf.get() & 0xFF;
+                polys[i].flags = buf.GetShort() & 0xFFFF;
+                polys[i].vertCount = buf.Get() & 0xFF;
+                polys[i].areaAndtype = buf.Get() & 0xFF;
             }
 
             return polys;
         }
 
-        private PolyDetail[] readPolyDetails(ByteBuffer buf, MeshHeader header, bool cCompatibility)
+        private PolyDetail[] ReadPolyDetails(ByteBuffer buf, MeshHeader header, bool cCompatibility)
         {
             PolyDetail[] polys = new PolyDetail[header.detailMeshCount];
             for (int i = 0; i < polys.Length; i++)
             {
                 polys[i] = new PolyDetail();
-                polys[i].vertBase = buf.getInt();
-                polys[i].triBase = buf.getInt();
-                polys[i].vertCount = buf.get() & 0xFF;
-                polys[i].triCount = buf.get() & 0xFF;
+                polys[i].vertBase = buf.GetInt();
+                polys[i].triBase = buf.GetInt();
+                polys[i].vertCount = buf.Get() & 0xFF;
+                polys[i].triCount = buf.Get() & 0xFF;
                 if (cCompatibility)
                 {
-                    buf.getShort(); // C struct padding
+                    buf.GetShort(); // C struct padding
                 }
             }
 
             return polys;
         }
 
-        private int[] readDTris(ByteBuffer buf, MeshHeader header)
+        private int[] ReadDTris(ByteBuffer buf, MeshHeader header)
         {
             int[] tris = new int[4 * header.detailTriCount];
             for (int i = 0; i < tris.Length; i++)
             {
-                tris[i] = buf.get() & 0xFF;
+                tris[i] = buf.Get() & 0xFF;
             }
 
             return tris;
         }
 
-        private BVNode[] readBVTree(ByteBuffer buf, MeshHeader header)
+        private BVNode[] ReadBVTree(ByteBuffer buf, MeshHeader header)
         {
             BVNode[] nodes = new BVNode[header.bvNodeCount];
             for (int i = 0; i < nodes.Length; i++)
@@ -204,34 +204,34 @@ namespace DotRecast.Detour.Io
                 {
                     for (int j = 0; j < 3; j++)
                     {
-                        nodes[i].bmin[j] = buf.getShort() & 0xFFFF;
+                        nodes[i].bmin[j] = buf.GetShort() & 0xFFFF;
                     }
 
                     for (int j = 0; j < 3; j++)
                     {
-                        nodes[i].bmax[j] = buf.getShort() & 0xFFFF;
+                        nodes[i].bmax[j] = buf.GetShort() & 0xFFFF;
                     }
                 }
                 else
                 {
                     for (int j = 0; j < 3; j++)
                     {
-                        nodes[i].bmin[j] = buf.getInt();
+                        nodes[i].bmin[j] = buf.GetInt();
                     }
 
                     for (int j = 0; j < 3; j++)
                     {
-                        nodes[i].bmax[j] = buf.getInt();
+                        nodes[i].bmax[j] = buf.GetInt();
                     }
                 }
 
-                nodes[i].i = buf.getInt();
+                nodes[i].i = buf.GetInt();
             }
 
             return nodes;
         }
 
-        private OffMeshConnection[] readOffMeshCons(ByteBuffer buf, MeshHeader header)
+        private OffMeshConnection[] ReadOffMeshCons(ByteBuffer buf, MeshHeader header)
         {
             OffMeshConnection[] cons = new OffMeshConnection[header.offMeshConCount];
             for (int i = 0; i < cons.Length; i++)
@@ -239,14 +239,14 @@ namespace DotRecast.Detour.Io
                 cons[i] = new OffMeshConnection();
                 for (int j = 0; j < 6; j++)
                 {
-                    cons[i].pos[j] = buf.getFloat();
+                    cons[i].pos[j] = buf.GetFloat();
                 }
 
-                cons[i].rad = buf.getFloat();
-                cons[i].poly = buf.getShort() & 0xFFFF;
-                cons[i].flags = buf.get() & 0xFF;
-                cons[i].side = buf.get() & 0xFF;
-                cons[i].userId = buf.getInt();
+                cons[i].rad = buf.GetFloat();
+                cons[i].poly = buf.GetShort() & 0xFFFF;
+                cons[i].flags = buf.Get() & 0xFF;
+                cons[i].side = buf.Get() & 0xFF;
+                cons[i].userId = buf.GetInt();
             }
 
             return cons;

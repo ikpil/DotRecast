@@ -26,40 +26,40 @@ namespace DotRecast.Detour.Dynamic.Io
     {
         private readonly LZ4VoxelTileCompressor compressor = new LZ4VoxelTileCompressor();
 
-        public VoxelFile read(BinaryReader stream)
+        public VoxelFile Read(BinaryReader stream)
         {
-            ByteBuffer buf = IOUtils.toByteBuffer(stream);
+            ByteBuffer buf = IOUtils.ToByteBuffer(stream);
             VoxelFile file = new VoxelFile();
-            int magic = buf.getInt();
+            int magic = buf.GetInt();
             if (magic != VoxelFile.MAGIC)
             {
-                magic = IOUtils.swapEndianness(magic);
+                magic = IOUtils.SwapEndianness(magic);
                 if (magic != VoxelFile.MAGIC)
                 {
                     throw new IOException("Invalid magic");
                 }
 
-                buf.order(buf.order() == ByteOrder.BIG_ENDIAN ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN);
+                buf.Order(buf.Order() == ByteOrder.BIG_ENDIAN ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN);
             }
 
-            file.version = buf.getInt();
+            file.version = buf.GetInt();
             bool isExportedFromAstar = (file.version & VoxelFile.VERSION_EXPORTER_MASK) == 0;
             bool compression = (file.version & VoxelFile.VERSION_COMPRESSION_MASK) == VoxelFile.VERSION_COMPRESSION_LZ4;
-            file.walkableRadius = buf.getFloat();
-            file.walkableHeight = buf.getFloat();
-            file.walkableClimb = buf.getFloat();
-            file.walkableSlopeAngle = buf.getFloat();
-            file.cellSize = buf.getFloat();
-            file.maxSimplificationError = buf.getFloat();
-            file.maxEdgeLen = buf.getFloat();
-            file.minRegionArea = (int)buf.getFloat();
+            file.walkableRadius = buf.GetFloat();
+            file.walkableHeight = buf.GetFloat();
+            file.walkableClimb = buf.GetFloat();
+            file.walkableSlopeAngle = buf.GetFloat();
+            file.cellSize = buf.GetFloat();
+            file.maxSimplificationError = buf.GetFloat();
+            file.maxEdgeLen = buf.GetFloat();
+            file.minRegionArea = (int)buf.GetFloat();
             if (!isExportedFromAstar)
             {
-                file.regionMergeArea = buf.getFloat();
-                file.vertsPerPoly = buf.getInt();
-                file.buildMeshDetail = buf.get() != 0;
-                file.detailSampleDistance = buf.getFloat();
-                file.detailSampleMaxError = buf.getFloat();
+                file.regionMergeArea = buf.GetFloat();
+                file.vertsPerPoly = buf.GetInt();
+                file.buildMeshDetail = buf.Get() != 0;
+                file.detailSampleDistance = buf.GetFloat();
+                file.detailSampleMaxError = buf.GetFloat();
             }
             else
             {
@@ -70,18 +70,18 @@ namespace DotRecast.Detour.Dynamic.Io
                 file.detailSampleMaxError = file.maxSimplificationError * 0.8f;
             }
 
-            file.useTiles = buf.get() != 0;
-            file.tileSizeX = buf.getInt();
-            file.tileSizeZ = buf.getInt();
-            file.rotation.x = buf.getFloat();
-            file.rotation.y = buf.getFloat();
-            file.rotation.z = buf.getFloat();
-            file.bounds[0] = buf.getFloat();
-            file.bounds[1] = buf.getFloat();
-            file.bounds[2] = buf.getFloat();
-            file.bounds[3] = buf.getFloat();
-            file.bounds[4] = buf.getFloat();
-            file.bounds[5] = buf.getFloat();
+            file.useTiles = buf.Get() != 0;
+            file.tileSizeX = buf.GetInt();
+            file.tileSizeZ = buf.GetInt();
+            file.rotation.x = buf.GetFloat();
+            file.rotation.y = buf.GetFloat();
+            file.rotation.z = buf.GetFloat();
+            file.bounds[0] = buf.GetFloat();
+            file.bounds[1] = buf.GetFloat();
+            file.bounds[2] = buf.GetFloat();
+            file.bounds[3] = buf.GetFloat();
+            file.bounds[4] = buf.GetFloat();
+            file.bounds[5] = buf.GetFloat();
             if (isExportedFromAstar)
             {
                 // bounds are saved as center + size
@@ -93,22 +93,22 @@ namespace DotRecast.Detour.Dynamic.Io
                 file.bounds[5] += file.bounds[2];
             }
 
-            int tileCount = buf.getInt();
+            int tileCount = buf.GetInt();
             for (int tile = 0; tile < tileCount; tile++)
             {
-                int tileX = buf.getInt();
-                int tileZ = buf.getInt();
-                int width = buf.getInt();
-                int depth = buf.getInt();
-                int borderSize = buf.getInt();
+                int tileX = buf.GetInt();
+                int tileZ = buf.GetInt();
+                int width = buf.GetInt();
+                int depth = buf.GetInt();
+                int borderSize = buf.GetInt();
                 Vector3f boundsMin = new Vector3f();
-                boundsMin.x = buf.getFloat();
-                boundsMin.y = buf.getFloat();
-                boundsMin.z = buf.getFloat();
+                boundsMin.x = buf.GetFloat();
+                boundsMin.y = buf.GetFloat();
+                boundsMin.z = buf.GetFloat();
                 Vector3f boundsMax = new Vector3f();
-                boundsMax.x = buf.getFloat();
-                boundsMax.y = buf.getFloat();
-                boundsMax.z = buf.getFloat();
+                boundsMax.x = buf.GetFloat();
+                boundsMax.y = buf.GetFloat();
+                boundsMax.z = buf.GetFloat();
                 if (isExportedFromAstar)
                 {
                     // bounds are local
@@ -120,20 +120,20 @@ namespace DotRecast.Detour.Dynamic.Io
                     boundsMax.z += file.bounds[2];
                 }
 
-                float cellSize = buf.getFloat();
-                float cellHeight = buf.getFloat();
-                int voxelSize = buf.getInt();
-                int position = buf.position();
+                float cellSize = buf.GetFloat();
+                float cellHeight = buf.GetFloat();
+                int voxelSize = buf.GetInt();
+                int position = buf.Position();
                 byte[] bytes = buf.ReadBytes(voxelSize).ToArray();
                 if (compression)
                 {
-                    bytes = compressor.decompress(bytes);
+                    bytes = compressor.Decompress(bytes);
                 }
 
                 ByteBuffer data = new ByteBuffer(bytes);
-                data.order(buf.order());
-                file.addTile(new VoxelTile(tileX, tileZ, width, depth, boundsMin, boundsMax, cellSize, cellHeight, borderSize, data));
-                buf.position(position + voxelSize);
+                data.Order(buf.Order());
+                file.AddTile(new VoxelTile(tileX, tileZ, width, depth, boundsMin, boundsMax, cellSize, cellHeight, borderSize, data));
+                buf.Position(position + voxelSize);
             }
 
             return file;

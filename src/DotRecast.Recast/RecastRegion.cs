@@ -38,7 +38,7 @@ namespace DotRecast.Recast
             public int nei; // neighbour id
         }
 
-        public static int calculateDistanceField(CompactHeightfield chf, int[] src)
+        public static int CalculateDistanceField(CompactHeightfield chf, int[] src)
         {
             int maxDist;
             int w = chf.width;
@@ -219,7 +219,7 @@ namespace DotRecast.Recast
             return maxDist;
         }
 
-        private static int[] boxBlur(CompactHeightfield chf, int thr, int[] src)
+        private static int[] BoxBlur(CompactHeightfield chf, int thr, int[] src)
         {
             int w = chf.width;
             int h = chf.height;
@@ -280,7 +280,7 @@ namespace DotRecast.Recast
             return dst;
         }
 
-        private static bool floodRegion(int x, int y, int i, int level, int r, CompactHeightfield chf, int[] srcReg,
+        private static bool FloodRegion(int x, int y, int i, int level, int r, CompactHeightfield chf, int[] srcReg,
             int[] srcDist, List<int> stack)
         {
             int w = chf.width;
@@ -398,7 +398,7 @@ namespace DotRecast.Recast
             return count > 0;
         }
 
-        private static int[] expandRegions(int maxIter, int level, CompactHeightfield chf, int[] srcReg, int[] srcDist,
+        private static int[] ExpandRegions(int maxIter, int level, CompactHeightfield chf, int[] srcReg, int[] srcDist,
             List<int> stack, bool fillStack)
         {
             int w = chf.width;
@@ -524,7 +524,7 @@ namespace DotRecast.Recast
             return srcReg;
         }
 
-        private static void sortCellsByLevel(int startLevel, CompactHeightfield chf, int[] srcReg, int nbStacks,
+        private static void SortCellsByLevel(int startLevel, CompactHeightfield chf, int[] srcReg, int nbStacks,
             List<List<int>> stacks, int loglevelsPerStack) // the levels per stack (2 in our case) as a bit shift
         {
             int w = chf.width;
@@ -569,7 +569,7 @@ namespace DotRecast.Recast
             }
         }
 
-        private static void appendStacks(List<int> srcStack, List<int> dstStack, int[] srcReg)
+        private static void AppendStacks(List<int> srcStack, List<int> dstStack, int[] srcReg)
         {
             for (int j = 0; j < srcStack.Count; j += 3)
             {
@@ -607,7 +607,7 @@ namespace DotRecast.Recast
             }
         }
 
-        private static void removeAdjacentNeighbours(Region reg)
+        private static void RemoveAdjacentNeighbours(Region reg)
         {
             // Remove adjacent duplicates.
             for (int i = 0; i < reg.connections.Count && reg.connections.Count > 1;)
@@ -624,7 +624,7 @@ namespace DotRecast.Recast
             }
         }
 
-        private static void replaceNeighbour(Region reg, int oldId, int newId)
+        private static void ReplaceNeighbour(Region reg, int oldId, int newId)
         {
             bool neiChanged = false;
             for (int i = 0; i < reg.connections.Count; ++i)
@@ -646,11 +646,11 @@ namespace DotRecast.Recast
 
             if (neiChanged)
             {
-                removeAdjacentNeighbours(reg);
+                RemoveAdjacentNeighbours(reg);
             }
         }
 
-        private static bool canMergeWithRegion(Region rega, Region regb)
+        private static bool CanMergeWithRegion(Region rega, Region regb)
         {
             if (rega.areaType != regb.areaType)
             {
@@ -682,7 +682,7 @@ namespace DotRecast.Recast
             return true;
         }
 
-        private static void addUniqueFloorRegion(Region reg, int n)
+        private static void AddUniqueFloorRegion(Region reg, int n)
         {
             if (!reg.floors.Contains(n))
             {
@@ -690,7 +690,7 @@ namespace DotRecast.Recast
             }
         }
 
-        private static bool mergeRegions(Region rega, Region regb)
+        private static bool MergeRegions(Region rega, Region regb)
         {
             int aid = rega.id;
             int bid = regb.id;
@@ -743,11 +743,11 @@ namespace DotRecast.Recast
                 rega.connections.Add(bcon[(insb + 1 + i) % ni]);
             }
 
-            removeAdjacentNeighbours(rega);
+            RemoveAdjacentNeighbours(rega);
 
             for (int j = 0; j < regb.floors.Count; ++j)
             {
-                addUniqueFloorRegion(rega, regb.floors[j]);
+                AddUniqueFloorRegion(rega, regb.floors[j]);
             }
 
             rega.spanCount += regb.spanCount;
@@ -757,14 +757,14 @@ namespace DotRecast.Recast
             return true;
         }
 
-        private static bool isRegionConnectedToBorder(Region reg)
+        private static bool IsRegionConnectedToBorder(Region reg)
         {
             // Region is connected to border if
             // one of the neighbours is null id.
             return reg.connections.Contains(0);
         }
 
-        private static bool isSolidEdge(CompactHeightfield chf, int[] srcReg, int x, int y, int i, int dir)
+        private static bool IsSolidEdge(CompactHeightfield chf, int[] srcReg, int x, int y, int i, int dir)
         {
             CompactSpan s = chf.spans[i];
             int r = 0;
@@ -784,7 +784,7 @@ namespace DotRecast.Recast
             return true;
         }
 
-        private static void walkContour(int x, int y, int i, int dir, CompactHeightfield chf, int[] srcReg,
+        private static void WalkContour(int x, int y, int i, int dir, CompactHeightfield chf, int[] srcReg,
             List<int> cont)
         {
             int startDir = dir;
@@ -807,7 +807,7 @@ namespace DotRecast.Recast
             {
                 CompactSpan s = chf.spans[i];
 
-                if (isSolidEdge(chf, srcReg, x, y, i, dir))
+                if (IsSolidEdge(chf, srcReg, x, y, i, dir))
                 {
                     // Choose the edge corner
                     int r = 0;
@@ -874,7 +874,7 @@ namespace DotRecast.Recast
             }
         }
 
-        private static int mergeAndFilterRegions(Telemetry ctx, int minRegionArea, int mergeRegionSize, int maxRegionId,
+        private static int MergeAndFilterRegions(Telemetry ctx, int minRegionArea, int mergeRegionSize, int maxRegionId,
             CompactHeightfield chf, int[] srcReg, List<int> overlaps)
         {
             int w = chf.width;
@@ -925,7 +925,7 @@ namespace DotRecast.Recast
                                 reg.overlap = true;
                             }
 
-                            addUniqueFloorRegion(reg, floorId);
+                            AddUniqueFloorRegion(reg, floorId);
                         }
 
                         // Have found contour
@@ -940,7 +940,7 @@ namespace DotRecast.Recast
                         int ndir = -1;
                         for (int dir = 0; dir < 4; ++dir)
                         {
-                            if (isSolidEdge(chf, srcReg, x, y, i, dir))
+                            if (IsSolidEdge(chf, srcReg, x, y, i, dir))
                             {
                                 ndir = dir;
                                 break;
@@ -951,7 +951,7 @@ namespace DotRecast.Recast
                         {
                             // The cell is at border.
                             // Walk around the contour to find all the neighbours.
-                            walkContour(x, y, i, ndir, chf, srcReg, reg.connections);
+                            WalkContour(x, y, i, ndir, chf, srcReg, reg.connections);
                         }
                     }
                 }
@@ -1063,7 +1063,7 @@ namespace DotRecast.Recast
                     }
 
                     // Check to see if the region should be merged.
-                    if (reg.spanCount > mergeRegionSize && isRegionConnectedToBorder(reg))
+                    if (reg.spanCount > mergeRegionSize && IsRegionConnectedToBorder(reg))
                     {
                         continue;
                     }
@@ -1086,7 +1086,7 @@ namespace DotRecast.Recast
                             continue;
                         }
 
-                        if (mreg.spanCount < smallest && canMergeWithRegion(reg, mreg) && canMergeWithRegion(mreg, reg))
+                        if (mreg.spanCount < smallest && CanMergeWithRegion(reg, mreg) && CanMergeWithRegion(mreg, reg))
                         {
                             smallest = mreg.spanCount;
                             mergeId = mreg.id;
@@ -1100,7 +1100,7 @@ namespace DotRecast.Recast
                         Region target = regions[mergeId];
 
                         // Merge neighbours.
-                        if (mergeRegions(target, reg))
+                        if (MergeRegions(target, reg))
                         {
                             // Fixup regions pointing to current region.
                             for (int j = 0; j < nreg; ++j)
@@ -1119,7 +1119,7 @@ namespace DotRecast.Recast
 
                                 // Replace the current region with the new one if the
                                 // current regions is neighbour.
-                                replaceNeighbour(regions[j], oldId, mergeId);
+                                ReplaceNeighbour(regions[j], oldId, mergeId);
                             }
 
                             mergeCount++;
@@ -1188,7 +1188,7 @@ namespace DotRecast.Recast
             return maxRegionId;
         }
 
-        private static void addUniqueConnection(Region reg, int n)
+        private static void AddUniqueConnection(Region reg, int n)
         {
             if (!reg.connections.Contains(n))
             {
@@ -1196,7 +1196,7 @@ namespace DotRecast.Recast
             }
         }
 
-        private static int mergeAndFilterLayerRegions(Telemetry ctx, int minRegionArea, int maxRegionId,
+        private static int MergeAndFilterLayerRegions(Telemetry ctx, int minRegionArea, int maxRegionId,
             CompactHeightfield chf, int[] srcReg, List<int> overlaps)
         {
             int w = chf.width;
@@ -1250,7 +1250,7 @@ namespace DotRecast.Recast
                                 int rai = srcReg[ai];
                                 if (rai > 0 && rai < nreg && rai != ri)
                                 {
-                                    addUniqueConnection(reg, rai);
+                                    AddUniqueConnection(reg, rai);
                                 }
 
                                 if ((rai & RC_BORDER_REG) != 0)
@@ -1270,8 +1270,8 @@ namespace DotRecast.Recast
                             {
                                 Region ri = regions[lregs[i]];
                                 Region rj = regions[lregs[j]];
-                                addUniqueFloorRegion(ri, lregs[j]);
-                                addUniqueFloorRegion(rj, lregs[i]);
+                                AddUniqueFloorRegion(ri, lregs[j]);
+                                AddUniqueFloorRegion(rj, lregs[i]);
                             }
                         }
                     }
@@ -1351,7 +1351,7 @@ namespace DotRecast.Recast
                         // Merge current layers to root.
                         for (int k = 0; k < regn.floors.Count; ++k)
                         {
-                            addUniqueFloorRegion(root, regn.floors[k]);
+                            AddUniqueFloorRegion(root, regn.floors[k]);
                         }
 
                         root.ymin = Math.Min(root.ymin, regn.ymin);
@@ -1442,31 +1442,31 @@ namespace DotRecast.Recast
         /// and rcCompactHeightfield::dist fields.
         ///
         /// @see rcCompactHeightfield, rcBuildRegions, rcBuildRegionsMonotone
-        public static void buildDistanceField(Telemetry ctx, CompactHeightfield chf)
+        public static void BuildDistanceField(Telemetry ctx, CompactHeightfield chf)
         {
-            ctx.startTimer("DISTANCEFIELD");
+            ctx.StartTimer("DISTANCEFIELD");
             int[] src = new int[chf.spanCount];
-            ctx.startTimer("DISTANCEFIELD_DIST");
+            ctx.StartTimer("DISTANCEFIELD_DIST");
 
-            int maxDist = calculateDistanceField(chf, src);
+            int maxDist = CalculateDistanceField(chf, src);
             chf.maxDistance = maxDist;
 
-            ctx.stopTimer("DISTANCEFIELD_DIST");
+            ctx.StopTimer("DISTANCEFIELD_DIST");
 
-            ctx.startTimer("DISTANCEFIELD_BLUR");
+            ctx.StartTimer("DISTANCEFIELD_BLUR");
 
             // Blur
-            src = boxBlur(chf, 1, src);
+            src = BoxBlur(chf, 1, src);
 
             // Store distance.
             chf.dist = src;
 
-            ctx.stopTimer("DISTANCEFIELD_BLUR");
+            ctx.StopTimer("DISTANCEFIELD_BLUR");
 
-            ctx.stopTimer("DISTANCEFIELD");
+            ctx.StopTimer("DISTANCEFIELD");
         }
 
-        private static void paintRectRegion(int minx, int maxx, int miny, int maxy, int regId, CompactHeightfield chf,
+        private static void PaintRectRegion(int minx, int maxx, int miny, int maxy, int regId, CompactHeightfield chf,
             int[] srcReg)
         {
             int w = chf.width;
@@ -1505,10 +1505,10 @@ namespace DotRecast.Recast
         /// @warning The distance field must be created using #rcBuildDistanceField before attempting to build regions.
         ///
         /// @see rcCompactHeightfield, rcCompactSpan, rcBuildDistanceField, rcBuildRegionsMonotone, rcConfig
-        public static void buildRegionsMonotone(Telemetry ctx, CompactHeightfield chf, int minRegionArea,
+        public static void BuildRegionsMonotone(Telemetry ctx, CompactHeightfield chf, int minRegionArea,
             int mergeRegionArea)
         {
-            ctx.startTimer("REGIONS");
+            ctx.StartTimer("REGIONS");
 
             int w = chf.width;
             int h = chf.height;
@@ -1531,13 +1531,13 @@ namespace DotRecast.Recast
                 int bw = Math.Min(w, borderSize);
                 int bh = Math.Min(h, borderSize);
                 // Paint regions
-                paintRectRegion(0, bw, 0, h, id | RC_BORDER_REG, chf, srcReg);
+                PaintRectRegion(0, bw, 0, h, id | RC_BORDER_REG, chf, srcReg);
                 id++;
-                paintRectRegion(w - bw, w, 0, h, id | RC_BORDER_REG, chf, srcReg);
+                PaintRectRegion(w - bw, w, 0, h, id | RC_BORDER_REG, chf, srcReg);
                 id++;
-                paintRectRegion(0, w, 0, bh, id | RC_BORDER_REG, chf, srcReg);
+                PaintRectRegion(0, w, 0, bh, id | RC_BORDER_REG, chf, srcReg);
                 id++;
-                paintRectRegion(0, w, h - bh, h, id | RC_BORDER_REG, chf, srcReg);
+                PaintRectRegion(0, w, h - bh, h, id | RC_BORDER_REG, chf, srcReg);
                 id++;
             }
 
@@ -1650,15 +1650,15 @@ namespace DotRecast.Recast
                 }
             }
 
-            ctx.startTimer("REGIONS_FILTER");
+            ctx.StartTimer("REGIONS_FILTER");
 
             // Merge regions and filter out small regions.
             List<int> overlaps = new List<int>();
-            chf.maxRegions = mergeAndFilterRegions(ctx, minRegionArea, mergeRegionArea, id, chf, srcReg, overlaps);
+            chf.maxRegions = MergeAndFilterRegions(ctx, minRegionArea, mergeRegionArea, id, chf, srcReg, overlaps);
 
             // Monotone partitioning does not generate overlapping regions.
 
-            ctx.stopTimer("REGIONS_FILTER");
+            ctx.StopTimer("REGIONS_FILTER");
 
             // Store the result out.
             for (int i = 0; i < chf.spanCount; ++i)
@@ -1666,7 +1666,7 @@ namespace DotRecast.Recast
                 chf.spans[i].reg = srcReg[i];
             }
 
-            ctx.stopTimer("REGIONS");
+            ctx.StopTimer("REGIONS");
         }
 
         /// @par
@@ -1688,16 +1688,16 @@ namespace DotRecast.Recast
         /// @warning The distance field must be created using #rcBuildDistanceField before attempting to build regions.
         ///
         /// @see rcCompactHeightfield, rcCompactSpan, rcBuildDistanceField, rcBuildRegionsMonotone, rcConfig
-        public static void buildRegions(Telemetry ctx, CompactHeightfield chf, int minRegionArea,
+        public static void BuildRegions(Telemetry ctx, CompactHeightfield chf, int minRegionArea,
             int mergeRegionArea)
         {
-            ctx.startTimer("REGIONS");
+            ctx.StartTimer("REGIONS");
 
             int w = chf.width;
             int h = chf.height;
             int borderSize = chf.borderSize;
 
-            ctx.startTimer("REGIONS_WATERSHED");
+            ctx.StartTimer("REGIONS_WATERSHED");
 
             int LOG_NB_STACKS = 3;
             int NB_STACKS = 1 << LOG_NB_STACKS;
@@ -1727,13 +1727,13 @@ namespace DotRecast.Recast
                 int bw = Math.Min(w, borderSize);
                 int bh = Math.Min(h, borderSize);
                 // Paint regions
-                paintRectRegion(0, bw, 0, h, regionId | RC_BORDER_REG, chf, srcReg);
+                PaintRectRegion(0, bw, 0, h, regionId | RC_BORDER_REG, chf, srcReg);
                 regionId++;
-                paintRectRegion(w - bw, w, 0, h, regionId | RC_BORDER_REG, chf, srcReg);
+                PaintRectRegion(w - bw, w, 0, h, regionId | RC_BORDER_REG, chf, srcReg);
                 regionId++;
-                paintRectRegion(0, w, 0, bh, regionId | RC_BORDER_REG, chf, srcReg);
+                PaintRectRegion(0, w, 0, bh, regionId | RC_BORDER_REG, chf, srcReg);
                 regionId++;
-                paintRectRegion(0, w, h - bh, h, regionId | RC_BORDER_REG, chf, srcReg);
+                PaintRectRegion(0, w, h - bh, h, regionId | RC_BORDER_REG, chf, srcReg);
                 regionId++;
             }
 
@@ -1745,27 +1745,27 @@ namespace DotRecast.Recast
                 level = level >= 2 ? level - 2 : 0;
                 sId = (sId + 1) & (NB_STACKS - 1);
 
-                // ctx->startTimer(RC_TIMER_DIVIDE_TO_LEVELS);
+                // ctx->StartTimer(RC_TIMER_DIVIDE_TO_LEVELS);
 
                 if (sId == 0)
                 {
-                    sortCellsByLevel(level, chf, srcReg, NB_STACKS, lvlStacks, 1);
+                    SortCellsByLevel(level, chf, srcReg, NB_STACKS, lvlStacks, 1);
                 }
                 else
                 {
-                    appendStacks(lvlStacks[sId - 1], lvlStacks[sId], srcReg); // copy left overs from last level
+                    AppendStacks(lvlStacks[sId - 1], lvlStacks[sId], srcReg); // copy left overs from last level
                 }
 
-                // ctx->stopTimer(RC_TIMER_DIVIDE_TO_LEVELS);
+                // ctx->StopTimer(RC_TIMER_DIVIDE_TO_LEVELS);
 
-                ctx.startTimer("REGIONS_EXPAND");
+                ctx.StartTimer("REGIONS_EXPAND");
 
                 // Expand current regions until no empty connected cells found.
-                expandRegions(expandIters, level, chf, srcReg, srcDist, lvlStacks[sId], false);
+                ExpandRegions(expandIters, level, chf, srcReg, srcDist, lvlStacks[sId], false);
 
-                ctx.stopTimer("REGIONS_EXPAND");
+                ctx.StopTimer("REGIONS_EXPAND");
 
-                ctx.startTimer("REGIONS_FLOOD");
+                ctx.StartTimer("REGIONS_FLOOD");
 
                 // Mark new regions with IDs.
                 for (int j = 0; j < lvlStacks[sId].Count; j += 3)
@@ -1775,34 +1775,34 @@ namespace DotRecast.Recast
                     int i = lvlStacks[sId][j + 2];
                     if (i >= 0 && srcReg[i] == 0)
                     {
-                        if (floodRegion(x, y, i, level, regionId, chf, srcReg, srcDist, stack))
+                        if (FloodRegion(x, y, i, level, regionId, chf, srcReg, srcDist, stack))
                         {
                             regionId++;
                         }
                     }
                 }
 
-                ctx.stopTimer("REGIONS_FLOOD");
+                ctx.StopTimer("REGIONS_FLOOD");
             }
 
             // Expand current regions until no empty connected cells found.
-            expandRegions(expandIters * 8, 0, chf, srcReg, srcDist, stack, true);
+            ExpandRegions(expandIters * 8, 0, chf, srcReg, srcDist, stack, true);
 
-            ctx.stopTimer("REGIONS_WATERSHED");
+            ctx.StopTimer("REGIONS_WATERSHED");
 
-            ctx.startTimer("REGIONS_FILTER");
+            ctx.StartTimer("REGIONS_FILTER");
 
             // Merge regions and filter out smalle regions.
             List<int> overlaps = new List<int>();
-            chf.maxRegions = mergeAndFilterRegions(ctx, minRegionArea, mergeRegionArea, regionId, chf, srcReg, overlaps);
+            chf.maxRegions = MergeAndFilterRegions(ctx, minRegionArea, mergeRegionArea, regionId, chf, srcReg, overlaps);
 
             // If overlapping regions were found during merging, split those regions.
             if (overlaps.Count > 0)
             {
-                ctx.warn("rcBuildRegions: " + overlaps.Count + " overlapping regions.");
+                ctx.Warn("rcBuildRegions: " + overlaps.Count + " overlapping regions.");
             }
 
-            ctx.stopTimer("REGIONS_FILTER");
+            ctx.StopTimer("REGIONS_FILTER");
 
             // Write the result out.
             for (int i = 0; i < chf.spanCount; ++i)
@@ -1810,12 +1810,12 @@ namespace DotRecast.Recast
                 chf.spans[i].reg = srcReg[i];
             }
 
-            ctx.stopTimer("REGIONS");
+            ctx.StopTimer("REGIONS");
         }
 
-        public static void buildLayerRegions(Telemetry ctx, CompactHeightfield chf, int minRegionArea)
+        public static void BuildLayerRegions(Telemetry ctx, CompactHeightfield chf, int minRegionArea)
         {
-            ctx.startTimer("REGIONS");
+            ctx.StartTimer("REGIONS");
 
             int w = chf.width;
             int h = chf.height;
@@ -1837,13 +1837,13 @@ namespace DotRecast.Recast
                 int bw = Math.Min(w, borderSize);
                 int bh = Math.Min(h, borderSize);
                 // Paint regions
-                paintRectRegion(0, bw, 0, h, id | RC_BORDER_REG, chf, srcReg);
+                PaintRectRegion(0, bw, 0, h, id | RC_BORDER_REG, chf, srcReg);
                 id++;
-                paintRectRegion(w - bw, w, 0, h, id | RC_BORDER_REG, chf, srcReg);
+                PaintRectRegion(w - bw, w, 0, h, id | RC_BORDER_REG, chf, srcReg);
                 id++;
-                paintRectRegion(0, w, 0, bh, id | RC_BORDER_REG, chf, srcReg);
+                PaintRectRegion(0, w, 0, bh, id | RC_BORDER_REG, chf, srcReg);
                 id++;
-                paintRectRegion(0, w, h - bh, h, id | RC_BORDER_REG, chf, srcReg);
+                PaintRectRegion(0, w, h - bh, h, id | RC_BORDER_REG, chf, srcReg);
                 id++;
             }
 
@@ -1956,13 +1956,13 @@ namespace DotRecast.Recast
                 }
             }
 
-            ctx.startTimer("REGIONS_FILTER");
+            ctx.StartTimer("REGIONS_FILTER");
 
             // Merge monotone regions to layers and remove small regions.
             List<int> overlaps = new List<int>();
-            chf.maxRegions = mergeAndFilterLayerRegions(ctx, minRegionArea, id, chf, srcReg, overlaps);
+            chf.maxRegions = MergeAndFilterLayerRegions(ctx, minRegionArea, id, chf, srcReg, overlaps);
 
-            ctx.stopTimer("REGIONS_FILTER");
+            ctx.StopTimer("REGIONS_FILTER");
 
             // Store the result out.
             for (int i = 0; i < chf.spanCount; ++i)
@@ -1970,7 +1970,7 @@ namespace DotRecast.Recast
                 chf.spans[i].reg = srcReg[i];
             }
 
-            ctx.stopTimer("REGIONS");
+            ctx.StopTimer("REGIONS");
         }
     }
 }

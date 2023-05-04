@@ -17,26 +17,26 @@ public class SphereGizmo : ColliderGizmo
     {
         this.center = center;
         this.radius = radius;
-        vertices = generateSphericalVertices();
-        triangles = generateSphericalTriangles();
+        vertices = GenerateSphericalVertices();
+        triangles = GenerateSphericalTriangles();
     }
 
-    public void render(RecastDebugDraw debugDraw)
+    public void Render(RecastDebugDraw debugDraw)
     {
-        debugDraw.begin(DebugDrawPrimitives.TRIS);
+        debugDraw.Begin(DebugDrawPrimitives.TRIS);
         for (int i = 0; i < triangles.Length; i += 3)
         {
             for (int j = 0; j < 3; j++)
             {
                 int v = triangles[i + j] * 3;
-                float c = clamp(0.57735026f * (vertices[v] + vertices[v + 1] + vertices[v + 2]), -1, 1);
-                int col = DebugDraw.duLerpCol(DebugDraw.duRGBA(32, 32, 0, 160), DebugDraw.duRGBA(220, 220, 0, 160),
+                float c = Clamp(0.57735026f * (vertices[v] + vertices[v + 1] + vertices[v + 2]), -1, 1);
+                int col = DebugDraw.DuLerpCol(DebugDraw.DuRGBA(32, 32, 0, 160), DebugDraw.DuRGBA(220, 220, 0, 160),
                     (int)(127 * (1 + c)));
-                debugDraw.vertex(radius * vertices[v] + center.x, radius * vertices[v + 1] + center.y,
+                debugDraw.Vertex(radius * vertices[v] + center.x, radius * vertices[v + 1] + center.y,
                     radius * vertices[v + 2] + center.z, col);
             }
         }
 
-        debugDraw.end();
+        debugDraw.End();
     }
 }

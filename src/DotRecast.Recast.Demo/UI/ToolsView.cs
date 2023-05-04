@@ -17,17 +17,17 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
 using System.Numerics;
 using DotRecast.Core;
 using DotRecast.Recast.Demo.Tools;
-using DotRecast.Recast.Demo.UI;
 using ImGuiNET;
 
 namespace DotRecast.Recast.Demo.UI;
 
 public class ToolsView : IRcView
 {
-    //private readonly NkColor white = NkColor.create();
+    //private readonly NkColor white = NkColor.Create();
     private int _currentToolIdx = 0;
     private Tool currentTool;
     private bool enabled;
@@ -64,7 +64,7 @@ public class ToolsView : IRcView
         for (int i = 0; i < tools.Length; ++i)
         {
             var tool = tools[i];
-            ImGui.RadioButton(tool.getName(), ref _currentToolIdx, i);
+            ImGui.RadioButton(tool.GetName(), ref _currentToolIdx, i);
         }
 
         ImGui.NewLine();
@@ -76,30 +76,30 @@ public class ToolsView : IRcView
         }
 
         currentTool = tools[_currentToolIdx];
-        ImGui.Text(currentTool.getName());
+        ImGui.Text(currentTool.GetName());
         ImGui.Separator();
-        currentTool.layout();
+        currentTool.Layout();
 
         ImGui.End();
     }
 
-    public void setEnabled(bool enabled)
+    public void SetEnabled(bool enabled)
     {
         this.enabled = enabled;
     }
 
-    public Tool getTool()
+    public Tool GetTool()
     {
         return currentTool;
     }
 
-    public void setSample(Sample sample)
+    public void SetSample(Sample sample)
     {
-        tools.forEach(t => t.setSample(sample));
+        tools.ForEach(t => t.SetSample(sample));
     }
 
-    public void handleUpdate(float dt)
+    public void HandleUpdate(float dt)
     {
-        tools.forEach(t => t.handleUpdate(dt));
+        tools.ForEach(t => t.HandleUpdate(dt));
     }
 }

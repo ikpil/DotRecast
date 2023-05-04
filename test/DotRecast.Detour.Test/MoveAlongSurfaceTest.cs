@@ -66,7 +66,7 @@ public class MoveAlongSurfaceTest : AbstractDetourTest
     };
 
     [Test]
-    public void testMoveAlongSurface()
+    public void TestMoveAlongSurface()
     {
         QueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < startRefs.Length; i++)
@@ -74,18 +74,18 @@ public class MoveAlongSurfaceTest : AbstractDetourTest
             long startRef = startRefs[i];
             Vector3f startPos = startPoss[i];
             Vector3f endPos = endPoss[i];
-            Result<MoveAlongSurfaceResult> result = query.moveAlongSurface(startRef, startPos, endPos, filter);
+            Result<MoveAlongSurfaceResult> result = query.MoveAlongSurface(startRef, startPos, endPos, filter);
             Assert.That(result.Succeeded(), Is.True);
             MoveAlongSurfaceResult path = result.result;
             for (int v = 0; v < 3; v++)
             {
-                Assert.That(path.getResultPos()[v], Is.EqualTo(POSITION[i][v]).Within(0.01f));
+                Assert.That(path.GetResultPos()[v], Is.EqualTo(POSITION[i][v]).Within(0.01f));
             }
 
-            Assert.That(path.getVisited().Count, Is.EqualTo(VISITED[i].Length));
+            Assert.That(path.GetVisited().Count, Is.EqualTo(VISITED[i].Length));
             for (int j = 0; j < POSITION[i].Length; j++)
             {
-                Assert.That(path.getVisited()[j], Is.EqualTo(VISITED[i][j]));
+                Assert.That(path.GetVisited()[j], Is.EqualTo(VISITED[i][j]));
             }
         }
     }

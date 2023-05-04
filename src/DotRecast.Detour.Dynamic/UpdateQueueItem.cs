@@ -22,8 +22,8 @@ namespace DotRecast.Detour.Dynamic
 {
     public interface UpdateQueueItem
     {
-        ICollection<DynamicTile> affectedTiles();
+        ICollection<DynamicTile> AffectedTiles();
 
-        void process(DynamicTile tile);
+        void Process(DynamicTile tile);
     }
 }

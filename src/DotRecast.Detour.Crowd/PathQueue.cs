@@ -36,7 +36,7 @@ namespace DotRecast.Detour.Crowd
             this.config = config;
         }
 
-        public void update(NavMesh navMesh)
+        public void Update(NavMesh navMesh)
         {
             // Update path request until there is nothing to update or up to maxIters pathfinder iterations has been
             // consumed.
@@ -54,32 +54,32 @@ namespace DotRecast.Detour.Crowd
                 if (q.result.status == null)
                 {
                     q.navQuery = new NavMeshQuery(navMesh);
-                    q.result.status = q.navQuery.initSlicedFindPath(q.startRef, q.endRef, q.startPos, q.endPos, q.filter, 0);
+                    q.result.status = q.navQuery.InitSlicedFindPath(q.startRef, q.endRef, q.startPos, q.endPos, q.filter, 0);
                 }
 
                 // Handle query in progress.
-                if (q.result.status.isInProgress())
+                if (q.result.status.IsInProgress())
                 {
-                    Result<int> res = q.navQuery.updateSlicedFindPath(iterCount);
+                    Result<int> res = q.navQuery.UpdateSlicedFindPath(iterCount);
                     q.result.status = res.status;
                     iterCount -= res.result;
                 }
 
-                if (q.result.status.isSuccess())
+                if (q.result.status.IsSuccess())
                 {
-                    Result<List<long>> path = q.navQuery.finalizeSlicedFindPath();
+                    Result<List<long>> path = q.navQuery.FinalizeSlicedFindPath();
                     q.result.status = path.status;
                     q.result.path = path.result;
                 }
 
-                if (!(q.result.status.isFailed() || q.result.status.isSuccess()))
+                if (!(q.result.status.IsFailed() || q.result.status.IsSuccess()))
                 {
                     queue.AddFirst(q);
                 }
             }
         }
 
-        public PathQueryResult request(long startRef, long endRef, Vector3f startPos, Vector3f endPos, QueryFilter filter)
+        public PathQueryResult Request(long startRef, long endRef, Vector3f startPos, Vector3f endPos, QueryFilter filter)
         {
             if (queue.Count >= config.pathQueueSize)
             {

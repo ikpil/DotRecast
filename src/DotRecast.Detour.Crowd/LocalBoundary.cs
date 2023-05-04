@@ -49,14 +49,14 @@ namespace DotRecast.Detour.Crowd
             m_center.x = m_center.y = m_center.z = float.MaxValue;
         }
 
-        public void reset()
+        public void Reset()
         {
             m_center.x = m_center.y = m_center.z = float.MaxValue;
             m_polys.Clear();
             m_segs.Clear();
         }
 
-        protected void addSegment(float dist, SegmentVert s)
+        protected void AddSegment(float dist, SegmentVert s)
         {
             // Insert neighbour based on the distance.
             Segment seg = new Segment();
@@ -98,47 +98,47 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        public void update(long refs, Vector3f pos, float collisionQueryRange, NavMeshQuery navquery, QueryFilter filter)
+        public void Update(long refs, Vector3f pos, float collisionQueryRange, NavMeshQuery navquery, QueryFilter filter)
         {
             if (refs == 0)
             {
-                reset();
+                Reset();
                 return;
             }
 
             m_center = pos;
             // First query non-overlapping polygons.
-            Result<FindLocalNeighbourhoodResult> res = navquery.findLocalNeighbourhood(refs, pos, collisionQueryRange,
+            Result<FindLocalNeighbourhoodResult> res = navquery.FindLocalNeighbourhood(refs, pos, collisionQueryRange,
                 filter);
             if (res.Succeeded())
             {
-                m_polys = res.result.getRefs();
+                m_polys = res.result.GetRefs();
                 m_segs.Clear();
                 // Secondly, store all polygon edges.
                 for (int j = 0; j < m_polys.Count; ++j)
                 {
-                    Result<GetPolyWallSegmentsResult> result = navquery.getPolyWallSegments(m_polys[j], false, filter);
+                    Result<GetPolyWallSegmentsResult> result = navquery.GetPolyWallSegments(m_polys[j], false, filter);
                     if (result.Succeeded())
                     {
                         GetPolyWallSegmentsResult gpws = result.result;
-                        for (int k = 0; k < gpws.countSegmentRefs(); ++k)
+                        for (int k = 0; k < gpws.CountSegmentRefs(); ++k)
                         {
-                            SegmentVert s = gpws.getSegmentVert(k);
+                            SegmentVert s = gpws.GetSegmentVert(k);
                             // Skip too distant segments.
-                            Tuple<float, float> distseg = distancePtSegSqr2D(pos, s, 0, 3);
-                            if (distseg.Item1 > sqr(collisionQueryRange))
+                            Tuple<float, float> distseg = DistancePtSegSqr2D(pos, s, 0, 3);
+                            if (distseg.Item1 > Sqr(collisionQueryRange))
                             {
                                 continue;
                             }
 
-                            addSegment(distseg.Item1, s);
+                            AddSegment(distseg.Item1, s);
                         }
                     }
                 }
             }
         }
 
-        public bool isValid(NavMeshQuery navquery, QueryFilter filter)
+        public bool IsValid(NavMeshQuery navquery, QueryFilter filter)
         {
             if (m_polys.Count == 0)
             {
@@ -148,7 +148,7 @@ namespace DotRecast.Detour.Crowd
             // Check that all polygons still pass query filter.
             foreach (long refs in m_polys)
             {
-                if (!navquery.isValidPolyRef(refs, filter))
+                if (!navquery.IsValidPolyRef(refs, filter))
                 {
                     return false;
                 }
@@ -157,17 +157,17 @@ namespace DotRecast.Detour.Crowd
             return true;
         }
 
-        public Vector3f getCenter()
+        public Vector3f GetCenter()
         {
             return m_center;
         }
 
-        public Vector3f[] getSegment(int j)
+        public Vector3f[] GetSegment(int j)
         {
             return m_segs[j].s;
         }
 
-        public int getSegmentCount()
+        public int GetSegmentCount()
         {
             return m_segs.Count;
         }

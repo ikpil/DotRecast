@@ -23,12 +23,12 @@ namespace DotRecast.Detour.Test;
 
 public class TestDetourBuilder : DetourBuilder
 {
-    public MeshData build(InputGeomProvider geom, RecastBuilderConfig rcConfig, float agentHeight, float agentRadius,
+    public MeshData Build(InputGeomProvider geom, RecastBuilderConfig rcConfig, float agentHeight, float agentRadius,
         float agentMaxClimb, int x, int y, bool applyRecastDemoFlags)
     {
         RecastBuilder rcBuilder = new RecastBuilder();
-        RecastBuilderResult rcResult = rcBuilder.build(geom, rcConfig);
-        PolyMesh pmesh = rcResult.getMesh();
+        RecastBuilderResult rcResult = rcBuilder.Build(geom, rcConfig);
+        PolyMesh pmesh = rcResult.GetMesh();
 
         if (applyRecastDemoFlags)
         {
@@ -58,13 +58,13 @@ public class TestDetourBuilder : DetourBuilder
             }
         }
 
-        PolyMeshDetail dmesh = rcResult.getMeshDetail();
-        NavMeshDataCreateParams option = getNavMeshCreateParams(rcConfig.cfg, pmesh, dmesh, agentHeight, agentRadius,
+        PolyMeshDetail dmesh = rcResult.GetMeshDetail();
+        NavMeshDataCreateParams option = GetNavMeshCreateParams(rcConfig.cfg, pmesh, dmesh, agentHeight, agentRadius,
             agentMaxClimb);
-        return build(option, x, y);
+        return Build(option, x, y);
     }
 
-    public NavMeshDataCreateParams getNavMeshCreateParams(RecastConfig rcConfig, PolyMesh pmesh, PolyMeshDetail dmesh,
+    public NavMeshDataCreateParams GetNavMeshCreateParams(RecastConfig rcConfig, PolyMesh pmesh, PolyMeshDetail dmesh,
         float agentHeight, float agentRadius, float agentMaxClimb)
     {
         NavMeshDataCreateParams option = new NavMeshDataCreateParams();
@@ -93,11 +93,11 @@ public class TestDetourBuilder : DetourBuilder
         option.ch = rcConfig.ch;
         option.buildBvTree = true;
         /*
-         * option.offMeshConVerts = m_geom->getOffMeshConnectionVerts(); option.offMeshConRad =
-         * m_geom->getOffMeshConnectionRads(); option.offMeshConDir = m_geom->getOffMeshConnectionDirs();
-         * option.offMeshConAreas = m_geom->getOffMeshConnectionAreas(); option.offMeshConFlags =
-         * m_geom->getOffMeshConnectionFlags(); option.offMeshConUserID = m_geom->getOffMeshConnectionId();
-         * option.offMeshConCount = m_geom->getOffMeshConnectionCount();
+         * option.offMeshConVerts = m_geom->GetOffMeshConnectionVerts(); option.offMeshConRad =
+         * m_geom->GetOffMeshConnectionRads(); option.offMeshConDir = m_geom->GetOffMeshConnectionDirs();
+         * option.offMeshConAreas = m_geom->GetOffMeshConnectionAreas(); option.offMeshConFlags =
+         * m_geom->GetOffMeshConnectionFlags(); option.offMeshConUserID = m_geom->GetOffMeshConnectionId();
+         * option.offMeshConCount = m_geom->GetOffMeshConnectionCount();
          */
         return option;
     }

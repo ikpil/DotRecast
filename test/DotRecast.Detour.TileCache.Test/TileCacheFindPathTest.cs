@@ -39,26 +39,26 @@ public class TileCacheFindPathTest : AbstractTileCacheTest
     {
         using var msis = new MemoryStream(Loader.ToBytes("dungeon_all_tiles_tilecache.bin"));
         using var @is = new BinaryReader(msis);
-        TileCache tcC = new TileCacheReader().read(@is, 6, new TestTileCacheMeshProcess());
-        navmesh = tcC.getNavMesh();
+        TileCache tcC = new TileCacheReader().Read(@is, 6, new TestTileCacheMeshProcess());
+        navmesh = tcC.GetNavMesh();
         query = new NavMeshQuery(navmesh);
     }
 
     [Test]
-    public void testFindPath()
+    public void TestFindPath()
     {
         QueryFilter filter = new DefaultQueryFilter();
         Vector3f extents = Vector3f.Of(2f, 4f, 2f);
-        Result<FindNearestPolyResult> findPolyStart = query.findNearestPoly(start, extents, filter);
-        Result<FindNearestPolyResult> findPolyEnd = query.findNearestPoly(end, extents, filter);
-        long startRef = findPolyStart.result.getNearestRef();
-        long endRef = findPolyEnd.result.getNearestRef();
-        Vector3f startPos = findPolyStart.result.getNearestPos();
-        Vector3f endPos = findPolyEnd.result.getNearestPos();
-        Result<List<long>> path = query.findPath(startRef, endRef, startPos, endPos, filter);
+        Result<FindNearestPolyResult> findPolyStart = query.FindNearestPoly(start, extents, filter);
+        Result<FindNearestPolyResult> findPolyEnd = query.FindNearestPoly(end, extents, filter);
+        long startRef = findPolyStart.result.GetNearestRef();
+        long endRef = findPolyEnd.result.GetNearestRef();
+        Vector3f startPos = findPolyStart.result.GetNearestPos();
+        Vector3f endPos = findPolyEnd.result.GetNearestPos();
+        Result<List<long>> path = query.FindPath(startRef, endRef, startPos, endPos, filter);
         int maxStraightPath = 256;
         int options = 0;
-        Result<List<StraightPathItem>> pathStr = query.findStraightPath(startPos, endPos, path.result, maxStraightPath, options);
+        Result<List<StraightPathItem>> pathStr = query.FindStraightPath(startPos, endPos, path.result, maxStraightPath, options);
         Assert.That(pathStr.result.Count, Is.EqualTo(8));
     }
 }

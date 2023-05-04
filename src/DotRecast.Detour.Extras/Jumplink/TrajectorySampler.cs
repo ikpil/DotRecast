@@ -7,7 +7,7 @@ namespace DotRecast.Detour.Extras.Jumplink
 {
     class TrajectorySampler
     {
-        public void sample(JumpLinkBuilderConfig acfg, Heightfield heightfield, EdgeSampler es)
+        public void Sample(JumpLinkBuilderConfig acfg, Heightfield heightfield, EdgeSampler es)
         {
             int nsamples = es.start.gsamples.Length;
             for (int i = 0; i < nsamples; ++i)
@@ -21,7 +21,7 @@ namespace DotRecast.Detour.Extras.Jumplink
                         continue;
                     }
 
-                    if (!sampleTrajectory(acfg, heightfield, ssmp.p, esmp.p, es.trajectory))
+                    if (!SampleTrajectory(acfg, heightfield, ssmp.p, esmp.p, es.trajectory))
                     {
                         continue;
                     }
@@ -32,16 +32,16 @@ namespace DotRecast.Detour.Extras.Jumplink
             }
         }
 
-        private bool sampleTrajectory(JumpLinkBuilderConfig acfg, Heightfield solid, Vector3f pa, Vector3f pb, Trajectory tra)
+        private bool SampleTrajectory(JumpLinkBuilderConfig acfg, Heightfield solid, Vector3f pa, Vector3f pb, Trajectory tra)
         {
             float cs = Math.Min(acfg.cellSize, acfg.cellHeight);
-            float d = vDist2D(pa, pb) + Math.Abs(pa.y - pb.y);
+            float d = VDist2D(pa, pb) + Math.Abs(pa.y - pb.y);
             int nsamples = Math.Max(2, (int)Math.Ceiling(d / cs));
             for (int i = 0; i < nsamples; ++i)
             {
                 float u = (float)i / (float)(nsamples - 1);
-                Vector3f p = tra.apply(pa, pb, u);
-                if (checkHeightfieldCollision(solid, p.x, p.y + acfg.groundTolerance, p.y + acfg.agentHeight, p.z))
+                Vector3f p = tra.Apply(pa, pb, u);
+                if (CheckHeightfieldCollision(solid, p.x, p.y + acfg.groundTolerance, p.y + acfg.agentHeight, p.z))
                 {
                     return false;
                 }
@@ -50,7 +50,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             return true;
         }
 
-        private bool checkHeightfieldCollision(Heightfield solid, float x, float ymin, float ymax, float z)
+        private bool CheckHeightfieldCollision(Heightfield solid, float x, float ymin, float ymax, float z)
         {
             int w = solid.width;
             int h = solid.height;
@@ -75,7 +75,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             {
                 float symin = orig.y + s.smin * ch;
                 float symax = orig.y + s.smax * ch;
-                if (overlapRange(ymin, ymax, symin, symax))
+                if (OverlapRange(ymin, ymax, symin, symax))
                 {
                     return true;
                 }
@@ -86,7 +86,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             return false;
         }
 
-        private bool overlapRange(float amin, float amax, float bmin, float bmax)
+        private bool OverlapRange(float amin, float amax, float bmin, float bmax)
         {
             return (amin > bmax || amax < bmin) ? false : true;
         }

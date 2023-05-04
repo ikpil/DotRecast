@@ -40,7 +40,7 @@ namespace DotRecast.Core
             this.index = index;
         }
 
-        public float get(int offset)
+        public float Get(int offset)
         {
             return array[index + offset];
         }

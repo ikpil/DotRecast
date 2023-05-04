@@ -27,7 +27,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
 {
     public class MetaReader
     {
-        public Meta read(ZipArchive file, string filename)
+        public Meta Read(ZipArchive file, string filename)
         {
             ZipArchiveEntry entry = file.GetEntry(filename);
             using StreamReader reader = new StreamReader(entry.Open());
@@ -42,12 +42,12 @@ namespace DotRecast.Detour.Extras.Unity.Astar
             json = regex.Replace(json, replacement);
 
             var meta = JsonSerializer.Deserialize<Meta>(json);
-            if (!meta.isSupportedType())
+            if (!meta.IsSupportedType())
             {
                 throw new ArgumentException("Unsupported graph type " + string.Join(", ", meta.typeNames));
             }
 
-            if (!meta.isSupportedVersion())
+            if (!meta.IsSupportedVersion())
             {
                 throw new ArgumentException("Unsupported version " + meta.version);
             }

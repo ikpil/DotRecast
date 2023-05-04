@@ -31,21 +31,21 @@ namespace DotRecast.Detour.Dynamic.Colliders
         public CompositeCollider(List<Collider> colliders)
         {
             this.colliders = colliders;
-            _bounds = bounds(colliders);
+            _bounds = Bounds(colliders);
         }
 
         public CompositeCollider(params Collider[] colliders)
         {
             this.colliders = colliders.ToList();
-            _bounds = bounds(this.colliders);
+            _bounds = Bounds(this.colliders);
         }
 
-        public float[] bounds()
+        public float[] Bounds()
         {
             return _bounds;
         }
 
-        private static float[] bounds(List<Collider> colliders)
+        private static float[] Bounds(List<Collider> colliders)
         {
             float[] bounds = new float[]
             {
@@ -54,7 +54,7 @@ namespace DotRecast.Detour.Dynamic.Colliders
             };
             foreach (Collider collider in colliders)
             {
-                float[] b = collider.bounds();
+                float[] b = collider.Bounds();
                 bounds[0] = Math.Min(bounds[0], b[0]);
                 bounds[1] = Math.Min(bounds[1], b[1]);
                 bounds[2] = Math.Min(bounds[2], b[2]);
@@ -66,10 +66,10 @@ namespace DotRecast.Detour.Dynamic.Colliders
             return bounds;
         }
 
-        public void rasterize(Heightfield hf, Telemetry telemetry)
+        public void Rasterize(Heightfield hf, Telemetry telemetry)
         {
             foreach (var c in colliders)
-                c.rasterize(hf, telemetry);
+                c.Rasterize(hf, telemetry);
         }
     }
 }

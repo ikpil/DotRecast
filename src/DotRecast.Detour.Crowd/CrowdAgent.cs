@@ -135,35 +135,35 @@ namespace DotRecast.Detour.Crowd
             animation = new CrowdAgentAnimation();
         }
 
-        public void integrate(float dt)
+        public void Integrate(float dt)
         {
             // Fake dynamic constraint.
             float maxDelta = option.maxAcceleration * dt;
-            Vector3f dv = vSub(nvel, vel);
-            float ds = vLen(dv);
+            Vector3f dv = VSub(nvel, vel);
+            float ds = VLen(dv);
             if (ds > maxDelta)
-                dv = vScale(dv, maxDelta / ds);
-            vel = vAdd(vel, dv);
+                dv = VScale(dv, maxDelta / ds);
+            vel = VAdd(vel, dv);
 
             // Integrate
-            if (vLen(vel) > 0.0001f)
-                npos = vMad(npos, vel, dt);
+            if (VLen(vel) > 0.0001f)
+                npos = VMad(npos, vel, dt);
             else
                 vel = Vector3f.Zero;
         }
 
-        public bool overOffmeshConnection(float radius)
+        public bool OverOffmeshConnection(float radius)
         {
             if (0 == corners.Count)
                 return false;
 
-            bool offMeshConnection = ((corners[corners.Count - 1].getFlags()
+            bool offMeshConnection = ((corners[corners.Count - 1].GetFlags()
                                        & NavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
                 ? true
                 : false;
             if (offMeshConnection)
             {
-                float distSq = vDist2DSqr(npos, corners[corners.Count - 1].getPos());
+                float distSq = VDist2DSqr(npos, corners[corners.Count - 1].GetPos());
                 if (distSq < radius * radius)
                     return true;
             }
@@ -171,62 +171,62 @@ namespace DotRecast.Detour.Crowd
             return false;
         }
 
-        public float getDistanceToGoal(float range)
+        public float GetDistanceToGoal(float range)
         {
             if (0 == corners.Count)
                 return range;
 
-            bool endOfPath = ((corners[corners.Count - 1].getFlags() & NavMeshQuery.DT_STRAIGHTPATH_END) != 0) ? true : false;
+            bool endOfPath = ((corners[corners.Count - 1].GetFlags() & NavMeshQuery.DT_STRAIGHTPATH_END) != 0) ? true : false;
             if (endOfPath)
-                return Math.Min(vDist2D(npos, corners[corners.Count - 1].getPos()), range);
+                return Math.Min(VDist2D(npos, corners[corners.Count - 1].GetPos()), range);
 
             return range;
         }
 
-        public Vector3f calcSmoothSteerDirection()
+        public Vector3f CalcSmoothSteerDirection()
         {
             Vector3f dir = new Vector3f();
             if (0 < corners.Count)
             {
                 int ip0 = 0;
                 int ip1 = Math.Min(1, corners.Count - 1);
-                var p0 = corners[ip0].getPos();
-                var p1 = corners[ip1].getPos();
+                var p0 = corners[ip0].GetPos();
+                var p1 = corners[ip1].GetPos();
 
-                var dir0 = vSub(p0, npos);
-                var dir1 = vSub(p1, npos);
+                var dir0 = VSub(p0, npos);
+                var dir1 = VSub(p1, npos);
                 dir0.y = 0;
                 dir1.y = 0;
 
-                float len0 = vLen(dir0);
-                float len1 = vLen(dir1);
+                float len0 = VLen(dir0);
+                float len1 = VLen(dir1);
                 if (len1 > 0.001f)
-                    dir1 = vScale(dir1, 1.0f / len1);
+                    dir1 = VScale(dir1, 1.0f / len1);
 
                 dir.x = dir0.x - dir1.x * len0 * 0.5f;
                 dir.y = 0;
                 dir.z = dir0.z - dir1.z * len0 * 0.5f;
 
-                vNormalize(ref dir);
+                VNormalize(ref dir);
             }
 
             return dir;
         }
 
-        public Vector3f calcStraightSteerDirection()
+        public Vector3f CalcStraightSteerDirection()
         {
             Vector3f dir = new Vector3f();
             if (0 < corners.Count)
             {
-                dir = vSub(corners[0].getPos(), npos);
+                dir = VSub(corners[0].GetPos(), npos);
                 dir.y = 0;
-                vNormalize(ref dir);
+                VNormalize(ref dir);
             }
 
             return dir;
         }
 
-        public void setTarget(long refs, Vector3f pos)
+        public void SetTarget(long refs, Vector3f pos)
         {
             targetRef = refs;
             targetPos = pos;

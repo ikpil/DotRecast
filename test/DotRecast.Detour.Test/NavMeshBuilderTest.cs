@@ -26,13 +26,13 @@ public class NavMeshBuilderTest
     private MeshData nmd;
 
     [SetUp]
-    public void setUp()
+    public void SetUp()
     {
-        nmd = new RecastTestMeshBuilder().getMeshData();
+        nmd = new RecastTestMeshBuilder().GetMeshData();
     }
 
     [Test]
-    public void testBVTree()
+    public void TestBVTree()
     {
         Assert.That(nmd.verts.Length / 3, Is.EqualTo(225));
         Assert.That(nmd.polys.Length, Is.EqualTo(119));
@@ -63,7 +63,7 @@ public class NavMeshBuilderTest
         Assert.That(nmd.polys[118].verts[0], Is.EqualTo(223));
         Assert.That(nmd.polys[118].verts[1], Is.EqualTo(224));
         Assert.That(nmd.polys[118].flags, Is.EqualTo(12));
-        Assert.That(nmd.polys[118].getArea(), Is.EqualTo(2));
-        Assert.That(nmd.polys[118].getType(), Is.EqualTo(Poly.DT_POLYTYPE_OFFMESH_CONNECTION));
+        Assert.That(nmd.polys[118].GetArea(), Is.EqualTo(2));
+        Assert.That(nmd.polys[118].GetType(), Is.EqualTo(Poly.DT_POLYTYPE_OFFMESH_CONNECTION));
     }
 }

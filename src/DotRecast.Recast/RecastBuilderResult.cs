@@ -23,32 +23,32 @@
             telemetry = ctx;
         }
 
-        public PolyMesh getMesh()
+        public PolyMesh GetMesh()
         {
             return pmesh;
         }
 
-        public PolyMeshDetail getMeshDetail()
+        public PolyMeshDetail GetMeshDetail()
         {
             return dmesh;
         }
 
-        public CompactHeightfield getCompactHeightfield()
+        public CompactHeightfield GetCompactHeightfield()
         {
             return chf;
         }
 
-        public ContourSet getContourSet()
+        public ContourSet GetContourSet()
         {
             return cs;
         }
 
-        public Heightfield getSolidHeightfield()
+        public Heightfield GetSolidHeightfield()
         {
             return solid;
         }
 
-        public Telemetry getTelemetry()
+        public Telemetry GetTelemetry()
         {
             return telemetry;
         }

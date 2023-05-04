@@ -6,7 +6,7 @@ namespace DotRecast.Detour.Extras.Jumplink
 {
     class JumpSegmentBuilder
     {
-        public JumpSegment[] build(JumpLinkBuilderConfig acfg, EdgeSampler es)
+        public JumpSegment[] Build(JumpLinkBuilderConfig acfg, EdgeSampler es)
         {
             int n = es.end[0].gsamples.Length;
             int[][] sampleGrid = ArrayUtils.Of<int>(n, es.end.Count);
@@ -35,7 +35,7 @@ namespace DotRecast.Detour.Extras.Jumplink
                         {
                             var queue = new Queue<int[]>();
                             queue.Enqueue(new int[] { i, j });
-                            fill(es, sampleGrid, queue, acfg.agentClimb, region);
+                            Fill(es, sampleGrid, queue, acfg.agentClimb, region);
                             region++;
                         }
                     }
@@ -84,7 +84,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             return jumpSegments;
         }
 
-        private void fill(EdgeSampler es, int[][] sampleGrid, Queue<int[]> queue, float agentClimb, int region)
+        private void Fill(EdgeSampler es, int[][] sampleGrid, Queue<int[]> queue, float agentClimb, int region)
         {
             while (queue.TryDequeue(out var ij))
             {
@@ -97,28 +97,28 @@ namespace DotRecast.Detour.Extras.Jumplink
                     float h = p.p.y;
                     if (i < sampleGrid.Length - 1)
                     {
-                        addNeighbour(es, queue, agentClimb, h, i + 1, j);
+                        AddNeighbour(es, queue, agentClimb, h, i + 1, j);
                     }
 
                     if (i > 0)
                     {
-                        addNeighbour(es, queue, agentClimb, h, i - 1, j);
+                        AddNeighbour(es, queue, agentClimb, h, i - 1, j);
                     }
 
                     if (j < sampleGrid[0].Length - 1)
                     {
-                        addNeighbour(es, queue, agentClimb, h, i, j + 1);
+                        AddNeighbour(es, queue, agentClimb, h, i, j + 1);
                     }
 
                     if (j > 0)
                     {
-                        addNeighbour(es, queue, agentClimb, h, i, j - 1);
+                        AddNeighbour(es, queue, agentClimb, h, i, j - 1);
                     }
                 }
             }
         }
 
-        private void addNeighbour(EdgeSampler es, Queue<int[]> queue, float agentClimb, float h, int i, int j)
+        private void AddNeighbour(EdgeSampler es, Queue<int[]> queue, float agentClimb, float h, int i, int j)
         {
             GroundSample q = es.end[j].gsamples[i];
             if (q.validTrajectory && Math.Abs(q.p.y - h) < agentClimb)

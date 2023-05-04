@@ -36,7 +36,7 @@ namespace DotRecast.Recast
             public int[] poly = new int[2];
         }
 
-        private static void buildMeshAdjacency(int[] polys, int npolys, int nverts, int vertsPerPoly)
+        private static void BuildMeshAdjacency(int[] polys, int npolys, int nverts, int vertsPerPoly)
         {
             // Based on code by Eric Lengyel from:
             // http://www.terathon.com/code/edges.php
@@ -121,7 +121,7 @@ namespace DotRecast.Recast
             }
         }
 
-        private static int computeVertexHash(int x, int y, int z)
+        private static int ComputeVertexHash(int x, int y, int z)
         {
             uint h1 = 0x8da6b343; // Large multiplicative constants;
             uint h2 = 0xd8163841; // here arbitrarily chosen primes
@@ -131,9 +131,9 @@ namespace DotRecast.Recast
             return (int)(n & (VERTEX_BUCKET_COUNT - 1));
         }
 
-        private static int[] addVertex(int x, int y, int z, int[] verts, int[] firstVert, int[] nextVert, int nv)
+        private static int[] AddVertex(int x, int y, int z, int[] verts, int[] firstVert, int[] nextVert, int nv)
         {
-            int bucket = computeVertexHash(x, 0, z);
+            int bucket = ComputeVertexHash(x, 0, z);
             int i = firstVert[bucket];
 
             while (i != -1)
@@ -157,17 +157,17 @@ namespace DotRecast.Recast
             return new int[] { i, nv };
         }
 
-        public static int prev(int i, int n)
+        public static int Prev(int i, int n)
         {
             return i - 1 >= 0 ? i - 1 : n - 1;
         }
 
-        public static int next(int i, int n)
+        public static int Next(int i, int n)
         {
             return i + 1 < n ? i + 1 : 0;
         }
 
-        private static int area2(int[] verts, int a, int b, int c)
+        private static int Area2(int[] verts, int a, int b, int c)
         {
             return (verts[b + 0] - verts[a + 0]) * (verts[c + 2] - verts[a + 2])
                    - (verts[c + 0] - verts[a + 0]) * (verts[b + 2] - verts[a + 2]);
@@ -175,39 +175,39 @@ namespace DotRecast.Recast
 
         // Returns true iff c is strictly to the left of the directed
         // line through a to b.
-        public static bool left(int[] verts, int a, int b, int c)
+        public static bool Left(int[] verts, int a, int b, int c)
         {
-            return area2(verts, a, b, c) < 0;
+            return Area2(verts, a, b, c) < 0;
         }
 
-        public static bool leftOn(int[] verts, int a, int b, int c)
+        public static bool LeftOn(int[] verts, int a, int b, int c)
         {
-            return area2(verts, a, b, c) <= 0;
+            return Area2(verts, a, b, c) <= 0;
         }
 
-        private static bool collinear(int[] verts, int a, int b, int c)
+        private static bool Collinear(int[] verts, int a, int b, int c)
         {
-            return area2(verts, a, b, c) == 0;
+            return Area2(verts, a, b, c) == 0;
         }
 
         // Returns true iff ab properly intersects cd: they share
         // a point interior to both segments. The properness of the
         // intersection is ensured by using strict leftness.
-        private static bool intersectProp(int[] verts, int a, int b, int c, int d)
+        private static bool IntersectProp(int[] verts, int a, int b, int c, int d)
         {
             // Eliminate improper cases.
-            if (collinear(verts, a, b, c) || collinear(verts, a, b, d) || collinear(verts, c, d, a)
-                || collinear(verts, c, d, b))
+            if (Collinear(verts, a, b, c) || Collinear(verts, a, b, d) || Collinear(verts, c, d, a)
+                || Collinear(verts, c, d, b))
                 return false;
 
-            return (left(verts, a, b, c) ^ left(verts, a, b, d)) && (left(verts, c, d, a) ^ left(verts, c, d, b));
+            return (Left(verts, a, b, c) ^ Left(verts, a, b, d)) && (Left(verts, c, d, a) ^ Left(verts, c, d, b));
         }
 
         // Returns T iff (a,b,c) are collinear and point c lies
         // on the closed segement ab.
-        private static bool between(int[] verts, int a, int b, int c)
+        private static bool Between(int[] verts, int a, int b, int c)
         {
-            if (!collinear(verts, a, b, c))
+            if (!Collinear(verts, a, b, c))
                 return false;
             // If ab not vertical, check betweenness on x; else on y.
             if (verts[a + 0] != verts[b + 0])
@@ -219,25 +219,25 @@ namespace DotRecast.Recast
         }
 
         // Returns true iff segments ab and cd intersect, properly or improperly.
-        public static bool intersect(int[] verts, int a, int b, int c, int d)
+        public static bool Intersect(int[] verts, int a, int b, int c, int d)
         {
-            if (intersectProp(verts, a, b, c, d))
+            if (IntersectProp(verts, a, b, c, d))
                 return true;
-            else if (between(verts, a, b, c) || between(verts, a, b, d) || between(verts, c, d, a)
-                     || between(verts, c, d, b))
+            else if (Between(verts, a, b, c) || Between(verts, a, b, d) || Between(verts, c, d, a)
+                     || Between(verts, c, d, b))
                 return true;
             else
                 return false;
         }
 
-        public static bool vequal(int[] verts, int a, int b)
+        public static bool Vequal(int[] verts, int a, int b)
         {
             return verts[a + 0] == verts[b + 0] && verts[a + 2] == verts[b + 2];
         }
 
         // Returns T iff (v_i, v_j) is a proper internal *or* external
         // diagonal of P, *ignoring edges incident to v_i and v_j*.
-        private static bool diagonalie(int i, int j, int n, int[] verts, int[] indices)
+        private static bool Diagonalie(int i, int j, int n, int[] verts, int[] indices)
         {
             int d0 = (indices[i] & 0x0fffffff) * 4;
             int d1 = (indices[j] & 0x0fffffff) * 4;
@@ -245,17 +245,17 @@ namespace DotRecast.Recast
             // For each edge (k,k+1) of P
             for (int k = 0; k < n; k++)
             {
-                int k1 = next(k, n);
+                int k1 = Next(k, n);
                 // Skip edges incident to i or j
                 if (!((k == i) || (k1 == i) || (k == j) || (k1 == j)))
                 {
                     int p0 = (indices[k] & 0x0fffffff) * 4;
                     int p1 = (indices[k1] & 0x0fffffff) * 4;
 
-                    if (vequal(verts, d0, p0) || vequal(verts, d1, p0) || vequal(verts, d0, p1) || vequal(verts, d1, p1))
+                    if (Vequal(verts, d0, p0) || Vequal(verts, d1, p0) || Vequal(verts, d0, p1) || Vequal(verts, d1, p1))
                         continue;
 
-                    if (intersect(verts, d0, d1, p0, p1))
+                    if (Intersect(verts, d0, d1, p0, p1))
                         return false;
                 }
             }
@@ -265,31 +265,31 @@ namespace DotRecast.Recast
 
         // Returns true iff the diagonal (i,j) is strictly internal to the
         // polygon P in the neighborhood of the i endpoint.
-        private static bool inCone(int i, int j, int n, int[] verts, int[] indices)
+        private static bool InCone(int i, int j, int n, int[] verts, int[] indices)
         {
             int pi = (indices[i] & 0x0fffffff) * 4;
             int pj = (indices[j] & 0x0fffffff) * 4;
-            int pi1 = (indices[next(i, n)] & 0x0fffffff) * 4;
-            int pin1 = (indices[prev(i, n)] & 0x0fffffff) * 4;
+            int pi1 = (indices[Next(i, n)] & 0x0fffffff) * 4;
+            int pin1 = (indices[Prev(i, n)] & 0x0fffffff) * 4;
             // If P[i] is a convex vertex [ i+1 left or on (i-1,i) ].
-            if (leftOn(verts, pin1, pi, pi1))
+            if (LeftOn(verts, pin1, pi, pi1))
             {
-                return left(verts, pi, pj, pin1) && left(verts, pj, pi, pi1);
+                return Left(verts, pi, pj, pin1) && Left(verts, pj, pi, pi1);
             }
 
             // Assume (i-1,i,i+1) not collinear.
             // else P[i] is reflex.
-            return !(leftOn(verts, pi, pj, pi1) && leftOn(verts, pj, pi, pin1));
+            return !(LeftOn(verts, pi, pj, pi1) && LeftOn(verts, pj, pi, pin1));
         }
 
         // Returns T iff (v_i, v_j) is a proper internal
         // diagonal of P.
-        private static bool diagonal(int i, int j, int n, int[] verts, int[] indices)
+        private static bool Diagonal(int i, int j, int n, int[] verts, int[] indices)
         {
-            return inCone(i, j, n, verts, indices) && diagonalie(i, j, n, verts, indices);
+            return InCone(i, j, n, verts, indices) && Diagonalie(i, j, n, verts, indices);
         }
 
-        private static bool diagonalieLoose(int i, int j, int n, int[] verts, int[] indices)
+        private static bool DiagonalieLoose(int i, int j, int n, int[] verts, int[] indices)
         {
             int d0 = (indices[i] & 0x0fffffff) * 4;
             int d1 = (indices[j] & 0x0fffffff) * 4;
@@ -297,17 +297,17 @@ namespace DotRecast.Recast
             // For each edge (k,k+1) of P
             for (int k = 0; k < n; k++)
             {
-                int k1 = next(k, n);
+                int k1 = Next(k, n);
                 // Skip edges incident to i or j
                 if (!((k == i) || (k1 == i) || (k == j) || (k1 == j)))
                 {
                     int p0 = (indices[k] & 0x0fffffff) * 4;
                     int p1 = (indices[k1] & 0x0fffffff) * 4;
 
-                    if (vequal(verts, d0, p0) || vequal(verts, d1, p0) || vequal(verts, d0, p1) || vequal(verts, d1, p1))
+                    if (Vequal(verts, d0, p0) || Vequal(verts, d1, p0) || Vequal(verts, d0, p1) || Vequal(verts, d1, p1))
                         continue;
 
-                    if (intersectProp(verts, d0, d1, p0, p1))
+                    if (IntersectProp(verts, d0, d1, p0, p1))
                         return false;
                 }
             }
@@ -315,36 +315,36 @@ namespace DotRecast.Recast
             return true;
         }
 
-        private static bool inConeLoose(int i, int j, int n, int[] verts, int[] indices)
+        private static bool InConeLoose(int i, int j, int n, int[] verts, int[] indices)
         {
             int pi = (indices[i] & 0x0fffffff) * 4;
             int pj = (indices[j] & 0x0fffffff) * 4;
-            int pi1 = (indices[next(i, n)] & 0x0fffffff) * 4;
-            int pin1 = (indices[prev(i, n)] & 0x0fffffff) * 4;
+            int pi1 = (indices[Next(i, n)] & 0x0fffffff) * 4;
+            int pin1 = (indices[Prev(i, n)] & 0x0fffffff) * 4;
 
             // If P[i] is a convex vertex [ i+1 left or on (i-1,i) ].
-            if (leftOn(verts, pin1, pi, pi1))
-                return leftOn(verts, pi, pj, pin1) && leftOn(verts, pj, pi, pi1);
+            if (LeftOn(verts, pin1, pi, pi1))
+                return LeftOn(verts, pi, pj, pin1) && LeftOn(verts, pj, pi, pi1);
             // Assume (i-1,i,i+1) not collinear.
             // else P[i] is reflex.
-            return !(leftOn(verts, pi, pj, pi1) && leftOn(verts, pj, pi, pin1));
+            return !(LeftOn(verts, pi, pj, pi1) && LeftOn(verts, pj, pi, pin1));
         }
 
-        private static bool diagonalLoose(int i, int j, int n, int[] verts, int[] indices)
+        private static bool DiagonalLoose(int i, int j, int n, int[] verts, int[] indices)
         {
-            return inConeLoose(i, j, n, verts, indices) && diagonalieLoose(i, j, n, verts, indices);
+            return InConeLoose(i, j, n, verts, indices) && DiagonalieLoose(i, j, n, verts, indices);
         }
 
-        private static int triangulate(int n, int[] verts, int[] indices, int[] tris)
+        private static int Triangulate(int n, int[] verts, int[] indices, int[] tris)
         {
             int ntris = 0;
 
             // The last bit of the index is used to indicate if the vertex can be removed.
             for (int i = 0; i < n; i++)
             {
-                int i1 = next(i, n);
-                int i2 = next(i1, n);
-                if (diagonal(i, i2, n, verts, indices))
+                int i1 = Next(i, n);
+                int i2 = Next(i1, n);
+                if (Diagonal(i, i2, n, verts, indices))
                 {
                     indices[i1] |= int.MinValue; // TODO : 체크 필요
                 }
@@ -356,11 +356,11 @@ namespace DotRecast.Recast
                 int mini = -1;
                 for (int minIdx = 0; minIdx < n; minIdx++)
                 {
-                    int nextIdx1 = next(minIdx, n);
+                    int nextIdx1 = Next(minIdx, n);
                     if ((indices[nextIdx1] & 0x80000000) != 0)
                     {
                         int p0 = (indices[minIdx] & 0x0fffffff) * 4;
-                        int p2 = (indices[next(nextIdx1, n)] & 0x0fffffff) * 4;
+                        int p2 = (indices[Next(nextIdx1, n)] & 0x0fffffff) * 4;
 
                         int dx = verts[p2 + 0] - verts[p0 + 0];
                         int dy = verts[p2 + 2] - verts[p0 + 2];
@@ -388,12 +388,12 @@ namespace DotRecast.Recast
                     mini = -1;
                     for (int minIdx = 0; minIdx < n; minIdx++)
                     {
-                        int nextIdx1 = next(minIdx, n);
-                        int nextIdx2 = next(nextIdx1, n);
-                        if (diagonalLoose(minIdx, nextIdx2, n, verts, indices))
+                        int nextIdx1 = Next(minIdx, n);
+                        int nextIdx2 = Next(nextIdx1, n);
+                        if (DiagonalLoose(minIdx, nextIdx2, n, verts, indices))
                         {
                             int p0 = (indices[minIdx] & 0x0fffffff) * 4;
-                            int p2 = (indices[next(nextIdx2, n)] & 0x0fffffff) * 4;
+                            int p2 = (indices[Next(nextIdx2, n)] & 0x0fffffff) * 4;
                             int dx = verts[p2 + 0] - verts[p0 + 0];
                             int dy = verts[p2 + 2] - verts[p0 + 2];
                             int len = dx * dx + dy * dy;
@@ -415,8 +415,8 @@ namespace DotRecast.Recast
                 }
 
                 int i = mini;
-                int i1 = next(i, n);
-                int i2 = next(i1, n);
+                int i1 = Next(i, n);
+                int i2 = Next(i1, n);
 
                 tris[ntris * 3] = indices[i] & 0x0fffffff;
                 tris[ntris * 3 + 1] = indices[i1] & 0x0fffffff;
@@ -430,14 +430,14 @@ namespace DotRecast.Recast
 
                 if (i1 >= n)
                     i1 = 0;
-                i = prev(i1, n);
+                i = Prev(i1, n);
                 // Update diagonal flags.
-                if (diagonal(prev(i, n), i1, n, verts, indices))
+                if (Diagonal(Prev(i, n), i1, n, verts, indices))
                     indices[i] |= int.MinValue;
                 else
                     indices[i] &= 0x0fffffff;
 
-                if (diagonal(i, next(i1, n), n, verts, indices))
+                if (Diagonal(i, Next(i1, n), n, verts, indices))
                     indices[i1] |= int.MinValue;
                 else
                     indices[i1] &= 0x0fffffff;
@@ -452,7 +452,7 @@ namespace DotRecast.Recast
             return ntris;
         }
 
-        private static int countPolyVerts(int[] p, int j, int nvp)
+        private static int CountPolyVerts(int[] p, int j, int nvp)
         {
             for (int i = 0; i < nvp; ++i)
                 if (p[i + j] == RC_MESH_NULL_IDX)
@@ -460,18 +460,18 @@ namespace DotRecast.Recast
             return nvp;
         }
 
-        private static bool uleft(int[] verts, int a, int b, int c)
+        private static bool Uleft(int[] verts, int a, int b, int c)
         {
             return (verts[b + 0] - verts[a + 0]) * (verts[c + 2] - verts[a + 2])
                 - (verts[c + 0] - verts[a + 0]) * (verts[b + 2] - verts[a + 2]) < 0;
         }
 
-        private static int[] getPolyMergeValue(int[] polys, int pa, int pb, int[] verts, int nvp)
+        private static int[] GetPolyMergeValue(int[] polys, int pa, int pb, int[] verts, int nvp)
         {
             int ea = -1;
             int eb = -1;
-            int na = countPolyVerts(polys, pa, nvp);
-            int nb = countPolyVerts(polys, pb, nvp);
+            int na = CountPolyVerts(polys, pa, nvp);
+            int nb = CountPolyVerts(polys, pb, nvp);
 
             // If the merged polygon would be too big, do not merge.
             if (na + nb - 2 > nvp)
@@ -520,13 +520,13 @@ namespace DotRecast.Recast
             va = polys[pa + (ea + na - 1) % na];
             vb = polys[pa + ea];
             vc = polys[pb + (eb + 2) % nb];
-            if (!uleft(verts, va * 3, vb * 3, vc * 3))
+            if (!Uleft(verts, va * 3, vb * 3, vc * 3))
                 return new int[] { -1, ea, eb };
 
             va = polys[pb + (eb + nb - 1) % nb];
             vb = polys[pb + eb];
             vc = polys[pa + (ea + 2) % na];
-            if (!uleft(verts, va * 3, vb * 3, vc * 3))
+            if (!Uleft(verts, va * 3, vb * 3, vc * 3))
                 return new int[] { -1, ea, eb };
 
             va = polys[pa + ea];
@@ -538,10 +538,10 @@ namespace DotRecast.Recast
             return new int[] { dx * dx + dy * dy, ea, eb };
         }
 
-        private static void mergePolyVerts(int[] polys, int pa, int pb, int ea, int eb, int tmp, int nvp)
+        private static void MergePolyVerts(int[] polys, int pa, int pb, int ea, int eb, int tmp, int nvp)
         {
-            int na = countPolyVerts(polys, pa, nvp);
-            int nb = countPolyVerts(polys, pb, nvp);
+            int na = CountPolyVerts(polys, pa, nvp);
+            int nb = CountPolyVerts(polys, pb, nvp);
 
             // Merge polygons.
             Array.Fill(polys, RC_MESH_NULL_IDX, tmp, (tmp + nvp) - (tmp));
@@ -563,7 +563,7 @@ namespace DotRecast.Recast
             Array.Copy(polys, tmp, polys, pa, nvp);
         }
 
-        private static int pushFront(int v, int[] arr, int an)
+        private static int PushFront(int v, int[] arr, int an)
         {
             an++;
             for (int i = an - 1; i > 0; --i)
@@ -572,14 +572,14 @@ namespace DotRecast.Recast
             return an;
         }
 
-        private static int pushBack(int v, int[] arr, int an)
+        private static int PushBack(int v, int[] arr, int an)
         {
             arr[an] = v;
             an++;
             return an;
         }
 
-        private static bool canRemoveVertex(Telemetry ctx, PolyMesh mesh, int rem)
+        private static bool CanRemoveVertex(Telemetry ctx, PolyMesh mesh, int rem)
         {
             int nvp = mesh.nvp;
 
@@ -589,7 +589,7 @@ namespace DotRecast.Recast
             for (int i = 0; i < mesh.npolys; ++i)
             {
                 int p = i * nvp * 2;
-                int nv = countPolyVerts(mesh.polys, p, nvp);
+                int nv = CountPolyVerts(mesh.polys, p, nvp);
                 int numRemoved = 0;
                 int numVerts = 0;
                 for (int j = 0; j < nv; ++j)
@@ -624,7 +624,7 @@ namespace DotRecast.Recast
             for (int i = 0; i < mesh.npolys; ++i)
             {
                 int p = i * nvp * 2;
-                int nv = countPolyVerts(mesh.polys, p, nvp);
+                int nv = CountPolyVerts(mesh.polys, p, nvp);
 
                 // Collect edges which touches the removed vertex.
                 for (int j = 0, k = nv - 1; j < nv; k = j++)
@@ -682,7 +682,7 @@ namespace DotRecast.Recast
             return true;
         }
 
-        private static void removeVertex(Telemetry ctx, PolyMesh mesh, int rem, int maxTris)
+        private static void RemoveVertex(Telemetry ctx, PolyMesh mesh, int rem, int maxTris)
         {
             int nvp = mesh.nvp;
 
@@ -691,7 +691,7 @@ namespace DotRecast.Recast
             for (int i = 0; i < mesh.npolys; ++i)
             {
                 int p = i * nvp * 2;
-                int nv = countPolyVerts(mesh.polys, p, nvp);
+                int nv = CountPolyVerts(mesh.polys, p, nvp);
                 for (int j = 0; j < nv; ++j)
                 {
                     if (mesh.polys[p + j] == rem)
@@ -714,7 +714,7 @@ namespace DotRecast.Recast
             for (int i = 0; i < mesh.npolys; ++i)
             {
                 int p = i * nvp * 2;
-                int nv = countPolyVerts(mesh.polys, p, nvp);
+                int nv = CountPolyVerts(mesh.polys, p, nvp);
                 bool hasRem = false;
                 for (int j = 0; j < nv; ++j)
                     if (mesh.polys[p + j] == rem)
@@ -764,7 +764,7 @@ namespace DotRecast.Recast
             for (int i = 0; i < mesh.npolys; ++i)
             {
                 int p = i * nvp * 2;
-                int nv = countPolyVerts(mesh.polys, p, nvp);
+                int nv = CountPolyVerts(mesh.polys, p, nvp);
                 for (int j = 0; j < nv; ++j)
                     if (mesh.polys[p + j] > rem)
                         mesh.polys[p + j]--;
@@ -783,9 +783,9 @@ namespace DotRecast.Recast
 
             // Start with one vertex, keep appending connected
             // segments to the start and end of the hole.
-            nhole = pushBack(edges[0], hole, nhole);
-            nhreg = pushBack(edges[2], hreg, nhreg);
-            nharea = pushBack(edges[3], harea, nharea);
+            nhole = PushBack(edges[0], hole, nhole);
+            nhreg = PushBack(edges[2], hreg, nhreg);
+            nharea = PushBack(edges[3], harea, nharea);
 
             while (nedges != 0)
             {
@@ -801,17 +801,17 @@ namespace DotRecast.Recast
                     if (hole[0] == eb)
                     {
                         // The segment matches the beginning of the hole boundary.
-                        nhole = pushFront(ea, hole, nhole);
-                        nhreg = pushFront(r, hreg, nhreg);
-                        nharea = pushFront(a, harea, nharea);
+                        nhole = PushFront(ea, hole, nhole);
+                        nhreg = PushFront(r, hreg, nhreg);
+                        nharea = PushFront(a, harea, nharea);
                         add = true;
                     }
                     else if (hole[nhole - 1] == ea)
                     {
                         // The segment matches the end of the hole boundary.
-                        nhole = pushBack(eb, hole, nhole);
-                        nhreg = pushBack(r, hreg, nhreg);
-                        nharea = pushBack(a, harea, nharea);
+                        nhole = PushBack(eb, hole, nhole);
+                        nhreg = PushBack(r, hreg, nhreg);
+                        nharea = PushBack(a, harea, nharea);
                         add = true;
                     }
 
@@ -850,11 +850,11 @@ namespace DotRecast.Recast
             }
 
             // Triangulate the hole.
-            int ntris = triangulate(nhole, tverts, thole, tris);
+            int ntris = Triangulate(nhole, tverts, thole, tris);
             if (ntris < 0)
             {
                 ntris = -ntris;
-                ctx.warn("removeVertex: triangulate() returned bad results.");
+                ctx.Warn("removeVertex: Triangulate() returned bad results.");
             }
 
             // Merge the hole triangles back to polygons.
@@ -906,7 +906,7 @@ namespace DotRecast.Recast
                         for (int k = j + 1; k < npolys; ++k)
                         {
                             int pk = k * nvp;
-                            int[] veaeb = getPolyMergeValue(polys, pj, pk, mesh.verts, nvp);
+                            int[] veaeb = GetPolyMergeValue(polys, pj, pk, mesh.verts, nvp);
                             int v = veaeb[0];
                             int ea = veaeb[1];
                             int eb = veaeb[2];
@@ -926,7 +926,7 @@ namespace DotRecast.Recast
                         // Found best, merge.
                         int pa = bestPa * nvp;
                         int pb = bestPb * nvp;
-                        mergePolyVerts(polys, pa, pb, bestEa, bestEb, tmpPoly, nvp);
+                        MergePolyVerts(polys, pa, pb, bestEa, bestEb, tmpPoly, nvp);
                         if (pregs[bestPa] != pregs[bestPb])
                             pregs[bestPa] = RC_MULTIPLE_REGS;
                         int last = (npolys - 1) * nvp;
@@ -972,9 +972,9 @@ namespace DotRecast.Recast
         /// limit must be retricted to <= #DT_VERTS_PER_POLYGON.
         ///
         /// @see rcAllocPolyMesh, rcContourSet, rcPolyMesh, rcConfig
-        public static PolyMesh buildPolyMesh(Telemetry ctx, ContourSet cset, int nvp)
+        public static PolyMesh BuildPolyMesh(Telemetry ctx, ContourSet cset, int nvp)
         {
-            ctx.startTimer("POLYMESH");
+            ctx.StartTimer("POLYMESH");
             PolyMesh mesh = new PolyMesh();
             mesh.bmin = cset.bmin;
             mesh.bmax = cset.bmax;
@@ -1037,11 +1037,11 @@ namespace DotRecast.Recast
                 // Triangulate contour
                 for (int j = 0; j < cont.nverts; ++j)
                     indices[j] = j;
-                int ntris = triangulate(cont.nverts, cont.verts, indices, tris);
+                int ntris = Triangulate(cont.nverts, cont.verts, indices, tris);
                 if (ntris <= 0)
                 {
                     // Bad triangulation, should not happen.
-                    ctx.warn("buildPolyMesh: Bad triangulation Contour " + i + ".");
+                    ctx.Warn("buildPolyMesh: Bad triangulation Contour " + i + ".");
                     ntris = -ntris;
                 }
 
@@ -1049,7 +1049,7 @@ namespace DotRecast.Recast
                 for (int j = 0; j < cont.nverts; ++j)
                 {
                     int v = j * 4;
-                    int[] inv = addVertex(cont.verts[v + 0], cont.verts[v + 1], cont.verts[v + 2], mesh.verts, firstVert,
+                    int[] inv = AddVertex(cont.verts[v + 0], cont.verts[v + 1], cont.verts[v + 2], mesh.verts, firstVert,
                         nextVert, mesh.nverts);
                     indices[j] = inv[0];
                     mesh.nverts = inv[1];
@@ -1093,7 +1093,7 @@ namespace DotRecast.Recast
                             for (int k = j + 1; k < npolys; ++k)
                             {
                                 int pk = k * nvp;
-                                int[] veaeb = getPolyMergeValue(polys, pj, pk, mesh.verts, nvp);
+                                int[] veaeb = GetPolyMergeValue(polys, pj, pk, mesh.verts, nvp);
                                 int v = veaeb[0];
                                 int ea = veaeb[1];
                                 int eb = veaeb[2];
@@ -1113,7 +1113,7 @@ namespace DotRecast.Recast
                             // Found best, merge.
                             int pa = bestPa * nvp;
                             int pb = bestPb * nvp;
-                            mergePolyVerts(polys, pa, pb, bestEa, bestEb, tmpPoly, nvp);
+                            MergePolyVerts(polys, pa, pb, bestEa, bestEb, tmpPoly, nvp);
                             int lastPoly = (npolys - 1) * nvp;
                             if (pb != lastPoly)
                             {
@@ -1153,11 +1153,11 @@ namespace DotRecast.Recast
             {
                 if (vflags[i] != 0)
                 {
-                    if (!canRemoveVertex(ctx, mesh, i))
+                    if (!CanRemoveVertex(ctx, mesh, i))
                         continue;
-                    removeVertex(ctx, mesh, i, maxTris);
+                    RemoveVertex(ctx, mesh, i, maxTris);
                     // Remove vertex
-                    // Note: mesh.nverts is already decremented inside removeVertex()!
+                    // Note: mesh.nverts is already decremented inside RemoveVertex()!
                     // Fixup vertex flags
                     for (int j = i; j < mesh.nverts; ++j)
                         vflags[j] = vflags[j + 1];
@@ -1166,7 +1166,7 @@ namespace DotRecast.Recast
             }
 
             // Calculate adjacency.
-            buildMeshAdjacency(mesh.polys, mesh.npolys, mesh.nverts, nvp);
+            BuildMeshAdjacency(mesh.polys, mesh.npolys, mesh.nverts, nvp);
 
             // Find portal edges
             if (mesh.borderSize > 0)
@@ -1216,17 +1216,17 @@ namespace DotRecast.Recast
                                                                                                  + " (max " + MAX_MESH_VERTS_POLY + "). Data can be corrupted.");
             }
 
-            ctx.stopTimer("POLYMESH");
+            ctx.StopTimer("POLYMESH");
             return mesh;
         }
 
         /// @see rcAllocPolyMesh, rcPolyMesh
-        public static PolyMesh mergePolyMeshes(Telemetry ctx, PolyMesh[] meshes, int nmeshes)
+        public static PolyMesh MergePolyMeshes(Telemetry ctx, PolyMesh[] meshes, int nmeshes)
         {
             if (nmeshes == 0 || meshes == null)
                 return null;
 
-            ctx.startTimer("MERGE_POLYMESH");
+            ctx.StartTimer("MERGE_POLYMESH");
             PolyMesh mesh = new PolyMesh();
             mesh.nvp = meshes[0].nvp;
             mesh.cs = meshes[0].cs;
@@ -1239,8 +1239,8 @@ namespace DotRecast.Recast
             int maxVertsPerMesh = 0;
             for (int i = 0; i < nmeshes; ++i)
             {
-                RecastVectors.min(ref mesh.bmin, meshes[i].bmin);
-                RecastVectors.max(ref mesh.bmax, meshes[i].bmax);
+                RecastVectors.Min(ref mesh.bmin, meshes[i].bmin);
+                RecastVectors.Max(ref mesh.bmax, meshes[i].bmax);
                 maxVertsPerMesh = Math.Max(maxVertsPerMesh, meshes[i].nverts);
                 maxVerts += meshes[i].nverts;
                 maxPolys += meshes[i].npolys;
@@ -1280,7 +1280,7 @@ namespace DotRecast.Recast
                 for (int j = 0; j < pmesh.nverts; ++j)
                 {
                     int v = j * 3;
-                    int[] inv = addVertex(pmesh.verts[v + 0] + ox, pmesh.verts[v + 1], pmesh.verts[v + 2] + oz, mesh.verts,
+                    int[] inv = AddVertex(pmesh.verts[v + 0] + ox, pmesh.verts[v + 1], pmesh.verts[v + 2] + oz, mesh.verts,
                         firstVert, nextVert, mesh.nverts);
 
                     vremap[j] = inv[0];
@@ -1335,7 +1335,7 @@ namespace DotRecast.Recast
             }
 
             // Calculate adjacency.
-            buildMeshAdjacency(mesh.polys, mesh.npolys, mesh.nverts, mesh.nvp);
+            BuildMeshAdjacency(mesh.polys, mesh.npolys, mesh.nverts, mesh.nvp);
             if (mesh.nverts > MAX_MESH_VERTS_POLY)
             {
                 throw new Exception("rcBuildPolyMesh: The resulting mesh has too many vertices " + mesh.nverts
@@ -1348,12 +1348,12 @@ namespace DotRecast.Recast
                                                                                                  + " (max " + MAX_MESH_VERTS_POLY + "). Data can be corrupted.");
             }
 
-            ctx.stopTimer("MERGE_POLYMESH");
+            ctx.StopTimer("MERGE_POLYMESH");
 
             return mesh;
         }
 
-        public static PolyMesh copyPolyMesh(Telemetry ctx, PolyMesh src)
+        public static PolyMesh CopyPolyMesh(Telemetry ctx, PolyMesh src)
         {
             PolyMesh dst = new PolyMesh();
 

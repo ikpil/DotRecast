@@ -36,14 +36,14 @@ public class OffMeshConnectionTool : Tool
     private Vector3f hitPos;
     private int bidir;
 
-    public override void setSample(Sample m_sample)
+    public override void SetSample(Sample m_sample)
     {
         sample = m_sample;
     }
 
-    public override void handleClick(Vector3f s, Vector3f p, bool shift)
+    public override void HandleClick(Vector3f s, Vector3f p, bool shift)
     {
-        DemoInputGeomProvider geom = sample.getInputGeom();
+        DemoInputGeomProvider geom = sample.GetInputGeom();
         if (geom == null)
         {
             return;
@@ -55,10 +55,10 @@ public class OffMeshConnectionTool : Tool
             // Find nearest link end-point
             float nearestDist = float.MaxValue;
             DemoOffMeshConnection nearestConnection = null;
-            foreach (DemoOffMeshConnection offMeshCon in geom.getOffMeshConnections())
+            foreach (DemoOffMeshConnection offMeshCon in geom.GetOffMeshConnections())
             {
-                float d = Math.Min(RecastMath.vDistSqr(p, offMeshCon.verts, 0), RecastMath.vDistSqr(p, offMeshCon.verts, 3));
-                if (d < nearestDist && Math.Sqrt(d) < sample.getSettingsUI().getAgentRadius())
+                float d = Math.Min(RecastMath.VDistSqr(p, offMeshCon.verts, 0), RecastMath.VDistSqr(p, offMeshCon.verts, 3));
+                if (d < nearestDist && Math.Sqrt(d) < sample.GetSettingsUI().GetAgentRadius())
                 {
                     nearestDist = d;
                     nearestConnection = offMeshCon;
@@ -67,7 +67,7 @@ public class OffMeshConnectionTool : Tool
 
             if (nearestConnection != null)
             {
-                geom.getOffMeshConnections().Remove(nearestConnection);
+                geom.GetOffMeshConnections().Remove(nearestConnection);
             }
         }
         else
@@ -82,46 +82,46 @@ public class OffMeshConnectionTool : Tool
             {
                 int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP;
                 int flags = SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP;
-                geom.addOffMeshConnection(hitPos, p, sample.getSettingsUI().getAgentRadius(), 0 == bidir, area, flags);
+                geom.AddOffMeshConnection(hitPos, p, sample.GetSettingsUI().GetAgentRadius(), 0 == bidir, area, flags);
                 hitPosSet = false;
             }
         }
     }
 
-    public override void handleRender(NavMeshRenderer renderer)
+    public override void HandleRender(NavMeshRenderer renderer)
     {
         if (sample == null)
         {
             return;
         }
 
-        RecastDebugDraw dd = renderer.getDebugDraw();
-        float s = sample.getSettingsUI().getAgentRadius();
+        RecastDebugDraw dd = renderer.GetDebugDraw();
+        float s = sample.GetSettingsUI().GetAgentRadius();
 
         if (hitPosSet)
         {
-            dd.debugDrawCross(hitPos.x, hitPos.y + 0.1f, hitPos.z, s, duRGBA(0, 0, 0, 128), 2.0f);
+            dd.DebugDrawCross(hitPos.x, hitPos.y + 0.1f, hitPos.z, s, DuRGBA(0, 0, 0, 128), 2.0f);
         }
 
-        DemoInputGeomProvider geom = sample.getInputGeom();
+        DemoInputGeomProvider geom = sample.GetInputGeom();
         if (geom != null)
         {
-            renderer.drawOffMeshConnections(geom, true);
+            renderer.DrawOffMeshConnections(geom, true);
         }
     }
 
-    public override void layout()
+    public override void Layout()
     {
         ImGui.RadioButton("One Way", ref bidir, 0);
         ImGui.RadioButton("Bidirectional", ref bidir, 1);
     }
 
-    public override string getName()
+    public override string GetName()
     {
         return "Create Off-Mesh Links";
     }
 
-    public override void handleUpdate(float dt)
+    public override void HandleUpdate(float dt)
     {
         // TODO Auto-generated method stub
     }

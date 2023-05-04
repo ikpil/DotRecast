@@ -35,9 +35,9 @@ namespace DotRecast.Detour
             this.scale = scale;
         }
 
-        public float getCost(Vector3f neighbourPos, Vector3f endPos)
+        public float GetCost(Vector3f neighbourPos, Vector3f endPos)
         {
-            return vDist(neighbourPos, endPos) * scale;
+            return VDist(neighbourPos, endPos) * scale;
         }
     }
 }

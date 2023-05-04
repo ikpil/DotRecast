@@ -22,16 +22,16 @@ namespace DotRecast.Detour.Extras.Unity.Astar
 {
     public class OffMeshLinkCreator
     {
-        public void build(GraphMeshData graphData, NodeLink2[] links, int nodeOffset)
+        public void Build(GraphMeshData graphData, NodeLink2[] links, int nodeOffset)
         {
             if (links.Length > 0)
             {
                 foreach (NodeLink2 l in links)
                 {
-                    MeshData startTile = graphData.getTile(l.startNode - nodeOffset);
-                    Poly startNode = graphData.getNode(l.startNode - nodeOffset);
-                    MeshData endTile = graphData.getTile(l.endNode - nodeOffset);
-                    Poly endNode = graphData.getNode(l.endNode - nodeOffset);
+                    MeshData startTile = graphData.GetTile(l.startNode - nodeOffset);
+                    Poly startNode = graphData.GetNode(l.startNode - nodeOffset);
+                    MeshData endTile = graphData.GetTile(l.endNode - nodeOffset);
+                    Poly endNode = graphData.GetNode(l.endNode - nodeOffset);
                     if (startNode != null && endNode != null)
                     {
                         // FIXME: Optimise
@@ -40,7 +40,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                         startTile.polys[poly] = new Poly(poly, 2);
                         startTile.polys[poly].verts[0] = startTile.header.vertCount;
                         startTile.polys[poly].verts[1] = startTile.header.vertCount + 1;
-                        startTile.polys[poly].setType(Poly.DT_POLYTYPE_OFFMESH_CONNECTION);
+                        startTile.polys[poly].SetType(Poly.DT_POLYTYPE_OFFMESH_CONNECTION);
                         startTile.verts = ArrayUtils.CopyOf(startTile.verts, startTile.verts.Length + 6);
                         startTile.header.polyCount++;
                         startTile.header.vertCount += 2;
@@ -54,7 +54,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                         connection.rad = 0.1f;
                         connection.side = startTile == endTile
                             ? 0xFF
-                            : NavMeshBuilder.classifyOffMeshPoint(new VectorPtr(connection.pos, 3),
+                            : NavMeshBuilder.ClassifyOffMeshPoint(new VectorPtr(connection.pos, 3),
                                 startTile.header.bmin, startTile.header.bmax);
                         connection.userId = (int)l.linkID;
                         if (startTile.offMeshCons == null)

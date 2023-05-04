@@ -59,7 +59,7 @@ namespace DotRecast.Recast
         /// @param[in] x The x offset. [Limits: -1 <= value <= 1]
         /// @param[in] y The y offset. [Limits: -1 <= value <= 1]
         /// @return The direction that represents the offset.
-        public static int rcGetDirForOffset(int x, int y)
+        public static int RcGetDirForOffset(int x, int y)
         {
             int[] dirs = { 3, 0, -1, 2, 1 };
             return dirs[((y + 1) << 1) + x];

@@ -45,7 +45,7 @@ public class TestTiledNavMeshBuilder
     private const int m_tileSize = 32;
 
     public TestTiledNavMeshBuilder() :
-        this(ObjImporter.load(Loader.ToBytes("dungeon.obj")),
+        this(ObjImporter.Load(Loader.ToBytes("dungeon.obj")),
             PartitionType.WATERSHED, m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_agentMaxSlope,
             m_regionMinSize, m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, m_detailSampleDist,
             m_detailSampleMaxError, m_tileSize)
@@ -59,7 +59,7 @@ public class TestTiledNavMeshBuilder
     {
         // Create empty nav mesh
         NavMeshParams navMeshParams = new NavMeshParams();
-        navMeshParams.orig = m_geom.getMeshBoundsMin();
+        navMeshParams.orig = m_geom.GetMeshBoundsMin();
         navMeshParams.tileWidth = m_tileSize * m_cellSize;
         navMeshParams.tileHeight = m_tileSize * m_cellSize;
         navMeshParams.maxTiles = 128;
@@ -67,18 +67,18 @@ public class TestTiledNavMeshBuilder
         navMesh = new NavMesh(navMeshParams, 6);
 
         // Build all tiles
-        RecastConfig cfg = new RecastConfig(true, m_tileSize, m_tileSize, RecastConfig.calcBorder(m_agentRadius, m_cellSize),
+        RecastConfig cfg = new RecastConfig(true, m_tileSize, m_tileSize, RecastConfig.CalcBorder(m_agentRadius, m_cellSize),
             m_partitionType, m_cellSize, m_cellHeight, m_agentMaxSlope, true, true, true, m_agentHeight, m_agentRadius,
             m_agentMaxClimb, m_regionMinArea, m_regionMergeArea, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, true,
             m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
         RecastBuilder rcBuilder = new RecastBuilder();
-        List<RecastBuilderResult> rcResult = rcBuilder.buildTiles(m_geom, cfg, null);
+        List<RecastBuilderResult> rcResult = rcBuilder.BuildTiles(m_geom, cfg, null);
 
         // Add tiles to nav mesh
 
         foreach (RecastBuilderResult result in rcResult)
         {
-            PolyMesh pmesh = result.getMesh();
+            PolyMesh pmesh = result.GetMesh();
             if (pmesh.npolys == 0)
             {
                 continue;
@@ -97,7 +97,7 @@ public class TestTiledNavMeshBuilder
             option.polyFlags = pmesh.flags;
             option.polyCount = pmesh.npolys;
             option.nvp = pmesh.nvp;
-            PolyMeshDetail dmesh = result.getMeshDetail();
+            PolyMeshDetail dmesh = result.GetMeshDetail();
             option.detailMeshes = dmesh.meshes;
             option.detailVerts = dmesh.verts;
             option.detailVertsCount = dmesh.nverts;
@@ -113,11 +113,11 @@ public class TestTiledNavMeshBuilder
             option.tileX = result.tileX;
             option.tileZ = result.tileZ;
             option.buildBvTree = true;
-            navMesh.addTile(NavMeshBuilder.createNavMeshData(option), 0, 0);
+            navMesh.AddTile(NavMeshBuilder.CreateNavMeshData(option), 0, 0);
         }
     }
 
-    public NavMesh getNavMesh()
+    public NavMesh GetNavMesh()
     {
         return navMesh;
     }

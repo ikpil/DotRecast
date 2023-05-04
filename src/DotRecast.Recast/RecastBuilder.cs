@@ -31,7 +31,7 @@ namespace DotRecast.Recast
     {
         public interface RecastBuilderProgressListener
         {
-            void onProgress(int completed, int total);
+            void OnProgress(int completed, int total);
         }
 
         private readonly RecastBuilderProgressListener progressListener;
@@ -46,48 +46,48 @@ namespace DotRecast.Recast
             this.progressListener = progressListener;
         }
 
-        public List<RecastBuilderResult> buildTiles(InputGeomProvider geom, RecastConfig cfg, TaskFactory taskFactory)
+        public List<RecastBuilderResult> BuildTiles(InputGeomProvider geom, RecastConfig cfg, TaskFactory taskFactory)
         {
-            Vector3f bmin = geom.getMeshBoundsMin();
-            Vector3f bmax = geom.getMeshBoundsMax();
-            int[] twh = Recast.calcTileCount(bmin, bmax, cfg.cs, cfg.tileSizeX, cfg.tileSizeZ);
+            Vector3f bmin = geom.GetMeshBoundsMin();
+            Vector3f bmax = geom.GetMeshBoundsMax();
+            int[] twh = Recast.CalcTileCount(bmin, bmax, cfg.cs, cfg.tileSizeX, cfg.tileSizeZ);
             int tw = twh[0];
             int th = twh[1];
             List<RecastBuilderResult> results = new List<RecastBuilderResult>();
             if (null != taskFactory)
             {
-                buildMultiThreadAsync(geom, cfg, bmin, bmax, tw, th, results, taskFactory, default);
+                BuildMultiThreadAsync(geom, cfg, bmin, bmax, tw, th, results, taskFactory, default);
             }
             else
             {
-                buildSingleThreadAsync(geom, cfg, bmin, bmax, tw, th, results);
+                BuildSingleThreadAsync(geom, cfg, bmin, bmax, tw, th, results);
             }
 
             return results;
         }
 
 
-        public Task buildTilesAsync(InputGeomProvider geom, RecastConfig cfg, int threads, List<RecastBuilderResult> results, TaskFactory taskFactory, CancellationToken cancellationToken)
+        public Task BuildTilesAsync(InputGeomProvider geom, RecastConfig cfg, int threads, List<RecastBuilderResult> results, TaskFactory taskFactory, CancellationToken cancellationToken)
         {
-            Vector3f bmin = geom.getMeshBoundsMin();
-            Vector3f bmax = geom.getMeshBoundsMax();
-            int[] twh = Recast.calcTileCount(bmin, bmax, cfg.cs, cfg.tileSizeX, cfg.tileSizeZ);
+            Vector3f bmin = geom.GetMeshBoundsMin();
+            Vector3f bmax = geom.GetMeshBoundsMax();
+            int[] twh = Recast.CalcTileCount(bmin, bmax, cfg.cs, cfg.tileSizeX, cfg.tileSizeZ);
             int tw = twh[0];
             int th = twh[1];
             Task task;
             if (1 < threads)
             {
-                task = buildMultiThreadAsync(geom, cfg, bmin, bmax, tw, th, results, taskFactory, cancellationToken);
+                task = BuildMultiThreadAsync(geom, cfg, bmin, bmax, tw, th, results, taskFactory, cancellationToken);
             }
             else
             {
-                task = buildSingleThreadAsync(geom, cfg, bmin, bmax, tw, th, results);
+                task = BuildSingleThreadAsync(geom, cfg, bmin, bmax, tw, th, results);
             }
 
             return task;
         }
 
-        private Task buildSingleThreadAsync(InputGeomProvider geom, RecastConfig cfg, Vector3f bmin, Vector3f bmax,
+        private Task BuildSingleThreadAsync(InputGeomProvider geom, RecastConfig cfg, Vector3f bmin, Vector3f bmax,
             int tw, int th, List<RecastBuilderResult> results)
         {
             AtomicInteger counter = new AtomicInteger(0);
@@ -95,14 +95,14 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < tw; ++x)
                 {
-                    results.Add(buildTile(geom, cfg, bmin, bmax, x, y, counter, tw * th));
+                    results.Add(BuildTile(geom, cfg, bmin, bmax, x, y, counter, tw * th));
                 }
             }
 
             return Task.CompletedTask;
         }
 
-        private Task buildMultiThreadAsync(InputGeomProvider geom, RecastConfig cfg, Vector3f bmin, Vector3f bmax,
+        private Task BuildMultiThreadAsync(InputGeomProvider geom, RecastConfig cfg, Vector3f bmin, Vector3f bmax,
             int tw, int th, List<RecastBuilderResult> results, TaskFactory taskFactory, CancellationToken cancellationToken)
         {
             AtomicInteger counter = new AtomicInteger(0);
@@ -122,7 +122,7 @@ namespace DotRecast.Recast
 
                         try
                         {
-                            RecastBuilderResult tile = buildTile(geom, cfg, bmin, bmax, tx, ty, counter, tw * th);
+                            RecastBuilderResult tile = BuildTile(geom, cfg, bmin, bmax, tx, ty, counter, tw * th);
                             lock (results)
                             {
                                 results.Add(tile);
@@ -152,34 +152,34 @@ namespace DotRecast.Recast
             return Task.WhenAll(tasks.ToArray());
         }
 
-        private RecastBuilderResult buildTile(InputGeomProvider geom, RecastConfig cfg, Vector3f bmin, Vector3f bmax, int tx,
+        private RecastBuilderResult BuildTile(InputGeomProvider geom, RecastConfig cfg, Vector3f bmin, Vector3f bmax, int tx,
             int ty, AtomicInteger counter, int total)
         {
-            RecastBuilderResult result = build(geom, new RecastBuilderConfig(cfg, bmin, bmax, tx, ty));
+            RecastBuilderResult result = Build(geom, new RecastBuilderConfig(cfg, bmin, bmax, tx, ty));
             if (progressListener != null)
             {
-                progressListener.onProgress(counter.IncrementAndGet(), total);
+                progressListener.OnProgress(counter.IncrementAndGet(), total);
             }
 
             return result;
         }
 
-        public RecastBuilderResult build(InputGeomProvider geom, RecastBuilderConfig builderCfg)
+        public RecastBuilderResult Build(InputGeomProvider geom, RecastBuilderConfig builderCfg)
         {
             RecastConfig cfg = builderCfg.cfg;
             Telemetry ctx = new Telemetry();
             //
             // Step 1. Rasterize input polygon soup.
             //
-            Heightfield solid = RecastVoxelization.buildSolidHeightfield(geom, builderCfg, ctx);
-            return build(builderCfg.tileX, builderCfg.tileZ, geom, cfg, solid, ctx);
+            Heightfield solid = RecastVoxelization.BuildSolidHeightfield(geom, builderCfg, ctx);
+            return Build(builderCfg.tileX, builderCfg.tileZ, geom, cfg, solid, ctx);
         }
 
-        public RecastBuilderResult build(int tileX, int tileZ, ConvexVolumeProvider geom, RecastConfig cfg, Heightfield solid,
+        public RecastBuilderResult Build(int tileX, int tileZ, ConvexVolumeProvider geom, RecastConfig cfg, Heightfield solid,
             Telemetry ctx)
         {
-            filterHeightfield(solid, cfg, ctx);
-            CompactHeightfield chf = buildCompactHeightfield(geom, cfg, ctx, solid);
+            FilterHeightfield(solid, cfg, ctx);
+            CompactHeightfield chf = BuildCompactHeightfield(geom, cfg, ctx, solid);
 
             // Partition the heightfield so that we can use simple algorithm later
             // to triangulate the walkable areas.
@@ -223,20 +223,20 @@ namespace DotRecast.Recast
             {
                 // Prepare for region partitioning, by calculating distance field
                 // along the walkable surface.
-                RecastRegion.buildDistanceField(ctx, chf);
+                RecastRegion.BuildDistanceField(ctx, chf);
                 // Partition the walkable surface into simple regions without holes.
-                RecastRegion.buildRegions(ctx, chf, cfg.minRegionArea, cfg.mergeRegionArea);
+                RecastRegion.BuildRegions(ctx, chf, cfg.minRegionArea, cfg.mergeRegionArea);
             }
             else if (cfg.partitionType == PartitionType.MONOTONE)
             {
                 // Partition the walkable surface into simple regions without holes.
                 // Monotone partitioning does not need distancefield.
-                RecastRegion.buildRegionsMonotone(ctx, chf, cfg.minRegionArea, cfg.mergeRegionArea);
+                RecastRegion.BuildRegionsMonotone(ctx, chf, cfg.minRegionArea, cfg.mergeRegionArea);
             }
             else
             {
                 // Partition the walkable surface into simple regions without holes.
-                RecastRegion.buildLayerRegions(ctx, chf, cfg.minRegionArea);
+                RecastRegion.BuildLayerRegions(ctx, chf, cfg.minRegionArea);
             }
 
             //
@@ -244,21 +244,21 @@ namespace DotRecast.Recast
             //
 
             // Create contours.
-            ContourSet cset = RecastContour.buildContours(ctx, chf, cfg.maxSimplificationError, cfg.maxEdgeLen,
+            ContourSet cset = RecastContour.BuildContours(ctx, chf, cfg.maxSimplificationError, cfg.maxEdgeLen,
                 RecastConstants.RC_CONTOUR_TESS_WALL_EDGES);
 
             //
             // Step 6. Build polygons mesh from contours.
             //
 
-            PolyMesh pmesh = RecastMesh.buildPolyMesh(ctx, cset, cfg.maxVertsPerPoly);
+            PolyMesh pmesh = RecastMesh.BuildPolyMesh(ctx, cset, cfg.maxVertsPerPoly);
 
             //
             // Step 7. Create detail mesh which allows to access approximate height
             // on each polygon.
             //
             PolyMeshDetail dmesh = cfg.buildMeshDetail
-                ? RecastMeshDetail.buildPolyMeshDetail(ctx, pmesh, chf, cfg.detailSampleDist, cfg.detailSampleMaxError)
+                ? RecastMeshDetail.BuildPolyMeshDetail(ctx, pmesh, chf, cfg.detailSampleDist, cfg.detailSampleMaxError)
                 : null;
             return new RecastBuilderResult(tileX, tileZ, solid, chf, cset, pmesh, dmesh, ctx);
         }
@@ -266,59 +266,59 @@ namespace DotRecast.Recast
         /*
          * Step 2. Filter walkable surfaces.
          */
-        private void filterHeightfield(Heightfield solid, RecastConfig cfg, Telemetry ctx)
+        private void FilterHeightfield(Heightfield solid, RecastConfig cfg, Telemetry ctx)
         {
             // Once all geometry is rasterized, we do initial pass of filtering to
             // remove unwanted overhangs caused by the conservative rasterization
             // as well as filter spans where the character cannot possibly stand.
             if (cfg.filterLowHangingObstacles)
             {
-                RecastFilter.filterLowHangingWalkableObstacles(ctx, cfg.walkableClimb, solid);
+                RecastFilter.FilterLowHangingWalkableObstacles(ctx, cfg.walkableClimb, solid);
             }
 
             if (cfg.filterLedgeSpans)
             {
-                RecastFilter.filterLedgeSpans(ctx, cfg.walkableHeight, cfg.walkableClimb, solid);
+                RecastFilter.FilterLedgeSpans(ctx, cfg.walkableHeight, cfg.walkableClimb, solid);
             }
 
             if (cfg.filterWalkableLowHeightSpans)
             {
-                RecastFilter.filterWalkableLowHeightSpans(ctx, cfg.walkableHeight, solid);
+                RecastFilter.FilterWalkableLowHeightSpans(ctx, cfg.walkableHeight, solid);
             }
         }
 
         /*
          * Step 3. Partition walkable surface to simple regions.
          */
-        private CompactHeightfield buildCompactHeightfield(ConvexVolumeProvider volumeProvider, RecastConfig cfg, Telemetry ctx,
+        private CompactHeightfield BuildCompactHeightfield(ConvexVolumeProvider volumeProvider, RecastConfig cfg, Telemetry ctx,
             Heightfield solid)
         {
             // Compact the heightfield so that it is faster to handle from now on.
             // This will result more cache coherent data as well as the neighbours
             // between walkable cells will be calculated.
-            CompactHeightfield chf = RecastCompact.buildCompactHeightfield(ctx, cfg.walkableHeight, cfg.walkableClimb, solid);
+            CompactHeightfield chf = RecastCompact.BuildCompactHeightfield(ctx, cfg.walkableHeight, cfg.walkableClimb, solid);
 
             // Erode the walkable area by agent radius.
-            RecastArea.erodeWalkableArea(ctx, cfg.walkableRadius, chf);
+            RecastArea.ErodeWalkableArea(ctx, cfg.walkableRadius, chf);
             // (Optional) Mark areas.
             if (volumeProvider != null)
             {
-                foreach (ConvexVolume vol in volumeProvider.convexVolumes())
+                foreach (ConvexVolume vol in volumeProvider.ConvexVolumes())
                 {
-                    RecastArea.markConvexPolyArea(ctx, vol.verts, vol.hmin, vol.hmax, vol.areaMod, chf);
+                    RecastArea.MarkConvexPolyArea(ctx, vol.verts, vol.hmin, vol.hmax, vol.areaMod, chf);
                 }
             }
 
             return chf;
         }
 
-        public HeightfieldLayerSet buildLayers(InputGeomProvider geom, RecastBuilderConfig builderCfg)
+        public HeightfieldLayerSet BuildLayers(InputGeomProvider geom, RecastBuilderConfig builderCfg)
         {
             Telemetry ctx = new Telemetry();
-            Heightfield solid = RecastVoxelization.buildSolidHeightfield(geom, builderCfg, ctx);
-            filterHeightfield(solid, builderCfg.cfg, ctx);
-            CompactHeightfield chf = buildCompactHeightfield(geom, builderCfg.cfg, ctx, solid);
-            return RecastLayers.buildHeightfieldLayers(ctx, chf, builderCfg.cfg.walkableHeight);
+            Heightfield solid = RecastVoxelization.BuildSolidHeightfield(geom, builderCfg, ctx);
+            FilterHeightfield(solid, builderCfg.cfg, ctx);
+            CompactHeightfield chf = BuildCompactHeightfield(geom, builderCfg.cfg, ctx, solid);
+            return RecastLayers.BuildHeightfieldLayers(ctx, chf, builderCfg.cfg.walkableHeight);
         }
     }
 }

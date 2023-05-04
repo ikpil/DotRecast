@@ -179,7 +179,7 @@ namespace DotRecast.Recast
             this.buildMeshDetail = buildMeshDetail;
         }
 
-        public static int calcBorder(float agentRadius, float cs)
+        public static int CalcBorder(float agentRadius, float cs)
         {
             return 3 + (int)Math.Ceiling(agentRadius / cs);
         }

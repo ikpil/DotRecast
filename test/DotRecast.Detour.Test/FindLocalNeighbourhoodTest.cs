@@ -52,17 +52,17 @@ public class FindLocalNeighbourhoodTest : AbstractDetourTest
     };
 
     [Test]
-    public void testFindNearestPoly()
+    public void TestFindNearestPoly()
     {
         QueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
             Vector3f startPos = startPoss[i];
-            Result<FindLocalNeighbourhoodResult> poly = query.findLocalNeighbourhood(startRefs[i], startPos, 3.5f, filter);
-            Assert.That(poly.result.getRefs().Count, Is.EqualTo(REFS[i].Length));
+            Result<FindLocalNeighbourhoodResult> poly = query.FindLocalNeighbourhood(startRefs[i], startPos, 3.5f, filter);
+            Assert.That(poly.result.GetRefs().Count, Is.EqualTo(REFS[i].Length));
             for (int v = 0; v < REFS[i].Length; v++)
             {
-                Assert.That(poly.result.getRefs()[v], Is.EqualTo(REFS[i][v]));
+                Assert.That(poly.result.GetRefs()[v], Is.EqualTo(REFS[i][v]));
             }
         }
     }

@@ -58,25 +58,25 @@ namespace DotRecast.Detour
         }
 
         /** Sets the user defined area id. [Limit: &lt; {@link org.recast4j.detour.NavMesh#DT_MAX_AREAS}] */
-        public void setArea(int a)
+        public void SetArea(int a)
         {
             areaAndtype = (areaAndtype & 0xc0) | (a & 0x3f);
         }
 
         /** Sets the polygon type. (See: #dtPolyTypes.) */
-        public void setType(int t)
+        public void SetType(int t)
         {
             areaAndtype = (areaAndtype & 0x3f) | (t << 6);
         }
 
         /** Gets the user defined area id. */
-        public int getArea()
+        public int GetArea()
         {
             return areaAndtype & 0x3f;
         }
 
         /** Gets the polygon type. (See: #dtPolyTypes) */
-        public int getType()
+        public int GetType()
         {
             return areaAndtype >> 6;
         }

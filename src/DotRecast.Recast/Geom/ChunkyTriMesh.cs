@@ -53,7 +53,7 @@ namespace DotRecast.Recast.Geom
         int ntris;
         int maxTrisPerChunk;
 
-        private void calcExtends(BoundsItem[] items, int imin, int imax, ref Vector2f bmin, ref Vector2f bmax)
+        private void CalcExtends(BoundsItem[] items, int imin, int imax, ref Vector2f bmin, ref Vector2f bmax)
         {
             bmin.x = items[imin].bmin.x;
             bmin.y = items[imin].bmin.y;
@@ -86,12 +86,12 @@ namespace DotRecast.Recast.Geom
             }
         }
 
-        private int longestAxis(float x, float y)
+        private int LongestAxis(float x, float y)
         {
             return y > x ? 1 : 0;
         }
 
-        private void subdivide(BoundsItem[] items, int imin, int imax, int trisPerChunk, List<ChunkyTriMeshNode> nodes, int[] inTris)
+        private void Subdivide(BoundsItem[] items, int imin, int imax, int trisPerChunk, List<ChunkyTriMeshNode> nodes, int[] inTris)
         {
             int inum = imax - imin;
 
@@ -101,7 +101,7 @@ namespace DotRecast.Recast.Geom
             if (inum <= trisPerChunk)
             {
                 // Leaf
-                calcExtends(items, imin, imax, ref node.bmin, ref node.bmax);
+                CalcExtends(items, imin, imax, ref node.bmin, ref node.bmax);
 
                 // Copy triangles.
                 node.i = nodes.Count;
@@ -119,9 +119,9 @@ namespace DotRecast.Recast.Geom
             else
             {
                 // Split
-                calcExtends(items, imin, imax, ref node.bmin, ref node.bmax);
+                CalcExtends(items, imin, imax, ref node.bmin, ref node.bmax);
 
-                int axis = longestAxis(node.bmax.x - node.bmin.x, node.bmax.y - node.bmin.y);
+                int axis = LongestAxis(node.bmax.x - node.bmin.x, node.bmax.y - node.bmin.y);
 
                 if (axis == 0)
                 {
@@ -137,9 +137,9 @@ namespace DotRecast.Recast.Geom
                 int isplit = imin + inum / 2;
 
                 // Left
-                subdivide(items, imin, isplit, trisPerChunk, nodes, inTris);
+                Subdivide(items, imin, isplit, trisPerChunk, nodes, inTris);
                 // Right
-                subdivide(items, isplit, imax, trisPerChunk, nodes, inTris);
+                Subdivide(items, isplit, imax, trisPerChunk, nodes, inTris);
 
                 // Negative index means escape.
                 node.i = -nodes.Count;
@@ -189,7 +189,7 @@ namespace DotRecast.Recast.Geom
                 }
             }
 
-            subdivide(items, 0, ntris, trisPerChunk, nodes, tris);
+            Subdivide(items, 0, ntris, trisPerChunk, nodes, tris);
 
             // Calc max tris per node.
             maxTrisPerChunk = 0;
@@ -208,7 +208,7 @@ namespace DotRecast.Recast.Geom
             }
         }
 
-        private bool checkOverlapRect(float[] amin, float[] amax, Vector2f bmin, Vector2f bmax)
+        private bool CheckOverlapRect(float[] amin, float[] amax, Vector2f bmin, Vector2f bmax)
         {
             bool overlap = true;
             overlap = (amin[0] > bmax.x || amax[0] < bmin.x) ? false : overlap;
@@ -216,7 +216,7 @@ namespace DotRecast.Recast.Geom
             return overlap;
         }
 
-        public List<ChunkyTriMeshNode> getChunksOverlappingRect(float[] bmin, float[] bmax)
+        public List<ChunkyTriMeshNode> GetChunksOverlappingRect(float[] bmin, float[] bmax)
         {
             // Traverse tree
             List<ChunkyTriMeshNode> ids = new List<ChunkyTriMeshNode>();
@@ -224,7 +224,7 @@ namespace DotRecast.Recast.Geom
             while (i < nodes.Count)
             {
                 ChunkyTriMeshNode node = nodes[i];
-                bool overlap = checkOverlapRect(bmin, bmax, node.bmin, node.bmax);
+                bool overlap = CheckOverlapRect(bmin, bmax, node.bmin, node.bmax);
                 bool isLeafNode = node.i >= 0;
 
                 if (isLeafNode && overlap)
@@ -245,7 +245,7 @@ namespace DotRecast.Recast.Geom
             return ids;
         }
 
-        public List<ChunkyTriMeshNode> getChunksOverlappingSegment(float[] p, float[] q)
+        public List<ChunkyTriMeshNode> GetChunksOverlappingSegment(float[] p, float[] q)
         {
             // Traverse tree
             List<ChunkyTriMeshNode> ids = new List<ChunkyTriMeshNode>();
@@ -253,7 +253,7 @@ namespace DotRecast.Recast.Geom
             while (i < nodes.Count)
             {
                 ChunkyTriMeshNode node = nodes[i];
-                bool overlap = checkOverlapSegment(p, q, node.bmin, node.bmax);
+                bool overlap = CheckOverlapSegment(p, q, node.bmin, node.bmax);
                 bool isLeafNode = node.i >= 0;
 
                 if (isLeafNode && overlap)
@@ -274,7 +274,7 @@ namespace DotRecast.Recast.Geom
             return ids;
         }
 
-        private bool checkOverlapSegment(float[] p, float[] q, Vector2f bmin, Vector2f bmax)
+        private bool CheckOverlapSegment(float[] p, float[] q, Vector2f bmin, Vector2f bmax)
         {
             float EPSILON = 1e-6f;
 

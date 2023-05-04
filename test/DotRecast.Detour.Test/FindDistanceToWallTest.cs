@@ -46,23 +46,23 @@ public class FindDistanceToWallTest : AbstractDetourTest
     };
 
     [Test]
-    public void testFindDistanceToWall()
+    public void TestFindDistanceToWall()
     {
         QueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
             Vector3f startPos = startPoss[i];
-            Result<FindDistanceToWallResult> result = query.findDistanceToWall(startRefs[i], startPos, 3.5f, filter);
+            Result<FindDistanceToWallResult> result = query.FindDistanceToWall(startRefs[i], startPos, 3.5f, filter);
             FindDistanceToWallResult hit = result.result;
-            Assert.That(hit.getDistance(), Is.EqualTo(DISTANCES_TO_WALL[i]).Within(0.001f));
+            Assert.That(hit.GetDistance(), Is.EqualTo(DISTANCES_TO_WALL[i]).Within(0.001f));
             
-            Assert.That(hit.getPosition().x, Is.EqualTo(HIT_POSITION[i].x).Within(0.001f));
-            Assert.That(hit.getPosition().y, Is.EqualTo(HIT_POSITION[i].y).Within(0.001f));
-            Assert.That(hit.getPosition().z, Is.EqualTo(HIT_POSITION[i].z).Within(0.001f));
+            Assert.That(hit.GetPosition().x, Is.EqualTo(HIT_POSITION[i].x).Within(0.001f));
+            Assert.That(hit.GetPosition().y, Is.EqualTo(HIT_POSITION[i].y).Within(0.001f));
+            Assert.That(hit.GetPosition().z, Is.EqualTo(HIT_POSITION[i].z).Within(0.001f));
 
-            Assert.That(hit.getNormal().x, Is.EqualTo(HIT_NORMAL[i].x).Within(0.001f));
-            Assert.That(hit.getNormal().y, Is.EqualTo(HIT_NORMAL[i].y).Within(0.001f));
-            Assert.That(hit.getNormal().z, Is.EqualTo(HIT_NORMAL[i].z).Within(0.001f));
+            Assert.That(hit.GetNormal().x, Is.EqualTo(HIT_NORMAL[i].x).Within(0.001f));
+            Assert.That(hit.GetNormal().y, Is.EqualTo(HIT_NORMAL[i].y).Within(0.001f));
+            Assert.That(hit.GetNormal().z, Is.EqualTo(HIT_NORMAL[i].z).Within(0.001f));
         }
     }
 }

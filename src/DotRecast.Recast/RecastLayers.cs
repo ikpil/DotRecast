@@ -53,7 +53,7 @@ namespace DotRecast.Recast
             }
         };
 
-        private static void addUnique(List<int> a, int v)
+        private static void AddUnique(List<int> a, int v)
         {
             if (!a.Contains(v))
             {
@@ -61,19 +61,19 @@ namespace DotRecast.Recast
             }
         }
 
-        private static bool contains(List<int> a, int v)
+        private static bool Contains(List<int> a, int v)
         {
             return a.Contains(v);
         }
 
-        private static bool overlapRange(int amin, int amax, int bmin, int bmax)
+        private static bool OverlapRange(int amin, int amax, int bmin, int bmax)
         {
             return (amin > bmax || amax < bmin) ? false : true;
         }
 
-        public static HeightfieldLayerSet buildHeightfieldLayers(Telemetry ctx, CompactHeightfield chf, int walkableHeight)
+        public static HeightfieldLayerSet BuildHeightfieldLayers(Telemetry ctx, CompactHeightfield chf, int walkableHeight)
         {
-            ctx.startTimer("RC_TIMER_BUILD_LAYERS");
+            ctx.StartTimer("RC_TIMER_BUILD_LAYERS");
             int w = chf.width;
             int h = chf.height;
             int borderSize = chf.borderSize;
@@ -234,7 +234,7 @@ namespace DotRecast.Recast
                                 int ai = chf.cells[ax + ay * w].index + GetCon(s, dir);
                                 int rai = srcReg[ai];
                                 if (rai != 0xff && rai != ri)
-                                    addUnique(regs[ri].neis, rai);
+                                    AddUnique(regs[ri].neis, rai);
                             }
                         }
                     }
@@ -248,8 +248,8 @@ namespace DotRecast.Recast
                             {
                                 LayerRegion ri = regs[lregs[i]];
                                 LayerRegion rj = regs[lregs[j]];
-                                addUnique(ri.layers, lregs[j]);
-                                addUnique(rj.layers, lregs[i]);
+                                AddUnique(ri.layers, lregs[j]);
+                                AddUnique(rj.layers, lregs[i]);
                             }
                         }
                     }
@@ -288,7 +288,7 @@ namespace DotRecast.Recast
                         if (regn.layerId != 0xff)
                             continue;
                         // Skip if the neighbour is overlapping root region.
-                        if (contains(root.layers, nei))
+                        if (Contains(root.layers, nei))
                             continue;
                         // Skip if the height range would become too large.
                         int ymin = Math.Min(root.ymin, regn.ymin);
@@ -303,7 +303,7 @@ namespace DotRecast.Recast
                         regn.layerId = layerId;
                         // Merge current layers to root.
                         foreach (int layer in regn.layers)
-                            addUnique(root.layers, layer);
+                            AddUnique(root.layers, layer);
                         root.ymin = Math.Min(root.ymin, regn.ymin);
                         root.ymax = Math.Max(root.ymax, regn.ymax);
                     }
@@ -336,7 +336,7 @@ namespace DotRecast.Recast
                             continue;
 
                         // Skip if the regions are not close to each other.
-                        if (!overlapRange(ri.ymin, ri.ymax + mergeHeight, rj.ymin, rj.ymax + mergeHeight))
+                        if (!OverlapRange(ri.ymin, ri.ymax + mergeHeight, rj.ymin, rj.ymax + mergeHeight))
                             continue;
                         // Skip if the height range would become too large.
                         int ymin = Math.Min(ri.ymin, rj.ymin);
@@ -355,7 +355,7 @@ namespace DotRecast.Recast
                                 continue;
                             // Check if region 'k' is overlapping region 'ri'
                             // Index to 'regs' is the same as region id.
-                            if (contains(ri.layers, k))
+                            if (Contains(ri.layers, k))
                             {
                                 overlap = true;
                                 break;
@@ -386,7 +386,7 @@ namespace DotRecast.Recast
                             rj.layerId = newId;
                             // Add overlaid layers from 'rj' to 'ri'.
                             foreach (int layer in rj.layers)
-                                addUnique(ri.layers, layer);
+                                AddUnique(ri.layers, layer);
                             // Update height bounds.
                             ri.ymin = Math.Min(ri.ymin, rj.ymin);
                             ri.ymax = Math.Max(ri.ymax, rj.ymax);
@@ -417,12 +417,12 @@ namespace DotRecast.Recast
             // No layers, return empty.
             if (layerId == 0)
             {
-                // ctx.stopTimer(RC_TIMER_BUILD_LAYERS);
+                // ctx.StopTimer(RC_TIMER_BUILD_LAYERS);
                 return null;
             }
 
             // Create layers.
-            // rcAssert(lset.layers == 0);
+            // RcAssert(lset.layers == 0);
 
             int lw = w - borderSize * 2;
             int lh = h - borderSize * 2;
@@ -560,7 +560,7 @@ namespace DotRecast.Recast
                     layer.miny = layer.maxy = 0;
             }
 
-            // ctx->stopTimer(RC_TIMER_BUILD_LAYERS);
+            // ctx->StopTimer(RC_TIMER_BUILD_LAYERS);
             return lset;
         }
     }

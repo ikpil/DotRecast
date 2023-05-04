@@ -47,12 +47,12 @@ namespace DotRecast.Detour.Dynamic
      *
      * @return Optional with hit parameter (t) or empty if no hit found
      */
-        public float? raycast(Vector3f start, Vector3f end)
+        public float? Raycast(Vector3f start, Vector3f end)
         {
-            return traverseTiles(start, end);
+            return TraverseTiles(start, end);
         }
 
-        private float? traverseTiles(Vector3f start, Vector3f end)
+        private float? TraverseTiles(Vector3f start, Vector3f end)
         {
             float relStartX = start.x - origin.x;
             float relStartZ = start.z - origin.z;
@@ -79,7 +79,7 @@ namespace DotRecast.Detour.Dynamic
             float t = 0;
             while (true)
             {
-                float? hit = traversHeightfield(sx, sz, start, end, t, Math.Min(1, Math.Min(tMaxX, tMaxZ)));
+                float? hit = TraversHeightfield(sx, sz, start, end, t, Math.Min(1, Math.Min(tMaxX, tMaxZ)));
                 if (hit.HasValue)
                 {
                     return hit;
@@ -107,7 +107,7 @@ namespace DotRecast.Detour.Dynamic
             return null;
         }
 
-        private float? traversHeightfield(int x, int z, Vector3f start, Vector3f end, float tMin, float tMax)
+        private float? TraversHeightfield(int x, int z, Vector3f start, Vector3f end, float tMin, float tMax)
         {
             Heightfield hf = heightfieldProvider.Invoke(x, z);
             if (null != hf)

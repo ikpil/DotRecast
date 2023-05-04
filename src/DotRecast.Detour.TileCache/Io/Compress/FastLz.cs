@@ -54,13 +54,13 @@ namespace DotRecast.Detour.TileCache.Io.Compress
         static readonly int MAX_CHUNK_LENGTH = 0xFFFF;
 
         /**
-     * Do not call {@link #compress(byte[], int, int, byte[], int, int)} for input buffers
+     * Do not call {@link #Compress(byte[], int, int, byte[], int, int)} for input buffers
      * which length less than this value.
      */
         static readonly int MIN_LENGTH_TO_COMPRESSION = 32;
 
         /**
-     * In this case {@link #compress(byte[], int, int, byte[], int, int)} will choose level
+     * In this case {@link #Compress(byte[], int, int, byte[], int, int)} will choose level
      * automatically depending on the length of the input buffer. If length less than
      * {@link #MIN_RECOMENDED_LENGTH_FOR_LEVEL_2} {@link #LEVEL_1} will be choosen,
      * otherwise {@link #LEVEL_2}.
@@ -82,7 +82,7 @@ namespace DotRecast.Detour.TileCache.Io.Compress
      * @param inputLength length of input buffer
      * @return Maximum output buffer length
      */
-        public static int calculateOutputBufferLength(int inputLength)
+        public static int CalculateOutputBufferLength(int inputLength)
         {
             int tempOutputLength = (int)(inputLength * 1.06);
             return Math.Max(tempOutputLength, 66);
@@ -94,7 +94,7 @@ namespace DotRecast.Detour.TileCache.Io.Compress
      *
      * If the input is not compressible, the return value might be larger than length (input buffer size).
      */
-        public static int compress(byte[] input, int inOffset, int inLength,
+        public static int Compress(byte[] input, int inOffset, int inLength,
             byte[] output, int outOffset, int proposedLevel)
         {
             int level;
@@ -178,9 +178,9 @@ namespace DotRecast.Detour.TileCache.Io.Compress
                 /* check for a run */
                 if (level == LEVEL_2)
                 {
-                    //if(ip[0] == ip[-1] && FASTLZ_READU16(ip-1)==FASTLZ_READU16(ip+1))
+                    //If(ip[0] == ip[-1] && FASTLZ_READU16(ip-1)==FASTLZ_READU16(ip+1))
                     if (input[inOffset + ip] == input[inOffset + ip - 1] &&
-                        readU16(input, inOffset + ip - 1) == readU16(input, inOffset + ip + 1))
+                        ReadU16(input, inOffset + ip - 1) == ReadU16(input, inOffset + ip + 1))
                     {
                         distance = 1;
                         ip += 3;
@@ -197,7 +197,7 @@ namespace DotRecast.Detour.TileCache.Io.Compress
                 {
                     /* find potential match */
                     // HASH_FUNCTION(hval,ip);
-                    hval = hashFunction(input, inOffset + ip);
+                    hval = HashFunction(input, inOffset + ip);
                     // hslot = htab + hval;
                     hslot = hval;
                     // refs = htab[hval];
@@ -258,7 +258,7 @@ namespace DotRecast.Detour.TileCache.Io.Compress
                             len += 2;
                         }
                     }
-                } // end if(!matchLabel)
+                } // end If(!matchLabel)
 
                 /*
                  * match:
@@ -440,11 +440,11 @@ namespace DotRecast.Detour.TileCache.Io.Compress
 
                 /* update the hash at match boundary */
                 //HASH_FUNCTION(hval,ip);
-                hval = hashFunction(input, inOffset + ip);
+                hval = HashFunction(input, inOffset + ip);
                 htab[hval] = ip++;
 
                 //HASH_FUNCTION(hval,ip);
-                hval = hashFunction(input, inOffset + ip);
+                hval = HashFunction(input, inOffset + ip);
                 htab[hval] = ip++;
 
                 /* assuming literal copy */
@@ -459,7 +459,7 @@ namespace DotRecast.Detour.TileCache.Io.Compress
                   output[outOffset + op++] = input[inOffset + anchor++];
                   ip = anchor;
                   copy++;
-                  if(copy == MAX_COPY){
+                  If(copy == MAX_COPY){
                     copy = 0;
                     output[outOffset + op++] = MAX_COPY-1;
                   }
@@ -507,7 +507,7 @@ namespace DotRecast.Detour.TileCache.Io.Compress
      * Decompression is memory safe and guaranteed not to write the output buffer
      * more than what is specified in outLength.
      */
-        public static int decompress(byte[] input, int inOffset, int inLength,
+        public static int Decompress(byte[] input, int inOffset, int inLength,
             byte[] output, int outOffset, int outLength)
         {
             //int level = ((*(const flzuint8*)input) >> 5) + 1;
@@ -569,8 +569,8 @@ namespace DotRecast.Detour.TileCache.Io.Compress
                         refs -= code;
 
                         /* match from 16-bit distance */
-                        // if(FASTLZ_UNEXPECT_CONDITIONAL(code==255))
-                        // if(FASTLZ_EXPECT_CONDITIONAL(ofs==(31 << 8)))
+                        // If(FASTLZ_UNEXPECT_CONDITIONAL(code==255))
+                        // If(FASTLZ_EXPECT_CONDITIONAL(ofs==(31 << 8)))
                         if (code == 255 && ofs == 31 << 8)
                         {
                             ofs = (input[inOffset + ip++] & 0xFF) << 8;
@@ -580,7 +580,7 @@ namespace DotRecast.Detour.TileCache.Io.Compress
                         }
                     }
 
-                    // if the output index + length of block(?) + 3(?) is over the output limit?
+                    // if the output index + length of Block(?) + 3(?) is over the output limit?
                     if (op + len + 3 > outLength)
                     {
                         return 0;
@@ -665,22 +665,22 @@ namespace DotRecast.Detour.TileCache.Io.Compress
                     }
                 }
 
-                // while(FASTLZ_EXPECT_CONDITIONAL(loop));
+                // While(FASTLZ_EXPECT_CONDITIONAL(loop));
             } while (loop != 0);
 
             //  return op - (flzuint8*)output;
             return op;
         }
 
-        private static int hashFunction(byte[] p, int offset)
+        private static int HashFunction(byte[] p, int offset)
         {
-            int v = readU16(p, offset);
-            v ^= readU16(p, offset + 1) ^ v >> 16 - HASH_LOG;
+            int v = ReadU16(p, offset);
+            v ^= ReadU16(p, offset + 1) ^ v >> 16 - HASH_LOG;
             v &= HASH_MASK;
             return v;
         }
 
-        private static int readU16(byte[] data, int offset)
+        private static int ReadU16(byte[] data, int offset)
         {
             if (offset + 1 >= data.Length)
             {

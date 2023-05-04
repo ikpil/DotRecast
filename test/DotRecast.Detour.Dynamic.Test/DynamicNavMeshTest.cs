@@ -19,7 +19,7 @@ public class DynamicNavMeshTest
 
 
     [Test]
-    public void e2eTest()
+    public void E2eTest()
     {
         byte[] bytes = Loader.ToBytes("test_tiles.voxels");
         using var ms = new MemoryStream(bytes);
@@ -27,51 +27,51 @@ public class DynamicNavMeshTest
 
         // load voxels from file
         VoxelFileReader reader = new VoxelFileReader();
-        VoxelFile f = reader.read(bis);
+        VoxelFile f = reader.Read(bis);
         // create dynamic navmesh
         DynamicNavMesh mesh = new DynamicNavMesh(f);
         // build navmesh asynchronously using multiple threads
-        Task<bool> future = mesh.build(Task.Factory);
+        Task<bool> future = mesh.Build(Task.Factory);
         // wait for build to complete
         bool _ = future.Result;
         // create new query
-        NavMeshQuery query = new NavMeshQuery(mesh.navMesh());
+        NavMeshQuery query = new NavMeshQuery(mesh.NavMesh());
         QueryFilter filter = new DefaultQueryFilter();
         // find path
-        FindNearestPolyResult start = query.findNearestPoly(START_POS, EXTENT, filter).result;
-        FindNearestPolyResult end = query.findNearestPoly(END_POS, EXTENT, filter).result;
-        List<long> path = query.findPath(start.getNearestRef(), end.getNearestRef(), start.getNearestPos(),
-            end.getNearestPos(), filter, NavMeshQuery.DT_FINDPATH_ANY_ANGLE, float.MaxValue).result;
+        FindNearestPolyResult start = query.FindNearestPoly(START_POS, EXTENT, filter).result;
+        FindNearestPolyResult end = query.FindNearestPoly(END_POS, EXTENT, filter).result;
+        List<long> path = query.FindPath(start.GetNearestRef(), end.GetNearestRef(), start.GetNearestPos(),
+            end.GetNearestPos(), filter, NavMeshQuery.DT_FINDPATH_ANY_ANGLE, float.MaxValue).result;
         // check path length without any obstacles
         Assert.That(path.Count, Is.EqualTo(16));
         // place obstacle
         Collider colldier = new SphereCollider(SPHERE_POS, 20, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GROUND, 0.1f);
-        long colliderId = mesh.addCollider(colldier);
+        long colliderId = mesh.AddCollider(colldier);
         // update navmesh asynchronously
-        future = mesh.update(Task.Factory);
+        future = mesh.Update(Task.Factory);
         // wait for update to complete
         _ = future.Result;
         // create new query
-        query = new NavMeshQuery(mesh.navMesh());
+        query = new NavMeshQuery(mesh.NavMesh());
         // find path again
-        start = query.findNearestPoly(START_POS, EXTENT, filter).result;
-        end = query.findNearestPoly(END_POS, EXTENT, filter).result;
-        path = query.findPath(start.getNearestRef(), end.getNearestRef(), start.getNearestPos(), end.getNearestPos(), filter,
+        start = query.FindNearestPoly(START_POS, EXTENT, filter).result;
+        end = query.FindNearestPoly(END_POS, EXTENT, filter).result;
+        path = query.FindPath(start.GetNearestRef(), end.GetNearestRef(), start.GetNearestPos(), end.GetNearestPos(), filter,
             NavMeshQuery.DT_FINDPATH_ANY_ANGLE, float.MaxValue).result;
         // check path length with obstacles
         Assert.That(path.Count, Is.EqualTo(19));
         // remove obstacle
-        mesh.removeCollider(colliderId);
+        mesh.RemoveCollider(colliderId);
         // update navmesh asynchronously
-        future = mesh.update(Task.Factory);
+        future = mesh.Update(Task.Factory);
         // wait for update to complete
         _ = future.Result;
         // create new query
-        query = new NavMeshQuery(mesh.navMesh());
+        query = new NavMeshQuery(mesh.NavMesh());
         // find path one more time
-        start = query.findNearestPoly(START_POS, EXTENT, filter).result;
-        end = query.findNearestPoly(END_POS, EXTENT, filter).result;
-        path = query.findPath(start.getNearestRef(), end.getNearestRef(), start.getNearestPos(), end.getNearestPos(), filter,
+        start = query.FindNearestPoly(START_POS, EXTENT, filter).result;
+        end = query.FindNearestPoly(END_POS, EXTENT, filter).result;
+        path = query.FindPath(start.GetNearestRef(), end.GetNearestRef(), start.GetNearestPos(), end.GetNearestPos(), filter,
             NavMeshQuery.DT_FINDPATH_ANY_ANGLE, float.MaxValue).result;
         // path length should be back to the initial value
         Assert.That(path.Count, Is.EqualTo(16));

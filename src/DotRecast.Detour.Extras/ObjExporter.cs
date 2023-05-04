@@ -22,14 +22,14 @@ namespace DotRecast.Detour.Extras
 {
     public class ObjExporter
     {
-        public void export(NavMesh mesh)
+        public void Export(NavMesh mesh)
         {
             string filename = Path.Combine(Directory.GetCurrentDirectory(), "Demo", "astar.obj");
             using var fs = new FileStream(filename, FileMode.CreateNew);
             using var fw = new StreamWriter(fs);
-            for (int i = 0; i < mesh.getTileCount(); i++)
+            for (int i = 0; i < mesh.GetTileCount(); i++)
             {
-                MeshTile tile = mesh.getTile(i);
+                MeshTile tile = mesh.GetTile(i);
                 if (tile != null)
                 {
                     for (int v = 0; v < tile.data.header.vertCount; v++)
@@ -41,9 +41,9 @@ namespace DotRecast.Detour.Extras
             }
 
             int vertexOffset = 1;
-            for (int i = 0; i < mesh.getTileCount(); i++)
+            for (int i = 0; i < mesh.GetTileCount(); i++)
             {
-                MeshTile tile = mesh.getTile(i);
+                MeshTile tile = mesh.GetTile(i);
                 if (tile != null)
                 {
                     for (int p = 0; p < tile.data.header.polyCount; p++)
@@ -67,8 +67,8 @@ namespace DotRecast.Detour.Extras
          *
             MeshSetReader reader = new MeshSetReader();
             ObjExporter exporter = new ObjExporter();
-            exporter.export(mesh);
-            reader.read(new FileInputStream("/home/piotr/Downloads/graph/all_tiles_navmesh.bin"), 3);
+            exporter.Export(mesh);
+            reader.Read(new FileInputStream("/home/piotr/Downloads/graph/all_tiles_navmesh.bin"), 3);
     
     
          */

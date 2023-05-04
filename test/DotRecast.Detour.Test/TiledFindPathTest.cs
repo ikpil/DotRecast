@@ -50,19 +50,19 @@ public class TiledFindPathTest
     protected NavMesh navmesh;
 
     [SetUp]
-    public void setUp()
+    public void SetUp()
     {
-        navmesh = createNavMesh();
+        navmesh = CreateNavMesh();
         query = new NavMeshQuery(navmesh);
     }
 
-    protected NavMesh createNavMesh()
+    protected NavMesh CreateNavMesh()
     {
-        return new TestTiledNavMeshBuilder().getNavMesh();
+        return new TestTiledNavMeshBuilder().GetNavMesh();
     }
 
     [Test]
-    public void testFindPath()
+    public void TestFindPath()
     {
         QueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < START_REFS.Length; i++)
@@ -71,7 +71,7 @@ public class TiledFindPathTest
             long endRef = END_REFS[i];
             Vector3f startPos = START_POS[i];
             Vector3f endPos = END_POS[i];
-            Result<List<long>> path = query.findPath(startRef, endRef, startPos, endPos, filter);
+            Result<List<long>> path = query.FindPath(startRef, endRef, startPos, endPos, filter);
             Assert.That(path.status, Is.EqualTo(STATUSES[i]));
             Assert.That(path.result.Count, Is.EqualTo(RESULTS[i].Length));
             for (int j = 0; j < RESULTS[i].Length; j++)

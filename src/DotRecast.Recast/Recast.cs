@@ -27,7 +27,7 @@ namespace DotRecast.Recast
 
     public class Recast
     {
-        void calcBounds(float[] verts, int nv, float[] bmin, float[] bmax)
+        void CalcBounds(float[] verts, int nv, float[] bmin, float[] bmax)
         {
             for (int i = 0; i < 3; i++)
             {
@@ -46,25 +46,25 @@ namespace DotRecast.Recast
             // Calculate bounding box.
         }
 
-        public static int[] calcGridSize(float[] bmin, float[] bmax, float cs)
+        public static int[] CalcGridSize(float[] bmin, float[] bmax, float cs)
         {
             return new int[] { (int)((bmax[0] - bmin[0]) / cs + 0.5f), (int)((bmax[2] - bmin[2]) / cs + 0.5f) };
         }
         
-        public static int[] calcGridSize(Vector3f bmin, float[] bmax, float cs)
+        public static int[] CalcGridSize(Vector3f bmin, float[] bmax, float cs)
         {
             return new int[] { (int)((bmax[0] - bmin.x) / cs + 0.5f), (int)((bmax[2] - bmin.z) / cs + 0.5f) };
         }
         
-        public static int[] calcGridSize(Vector3f bmin, Vector3f bmax, float cs)
+        public static int[] CalcGridSize(Vector3f bmin, Vector3f bmax, float cs)
         {
             return new int[] { (int)((bmax.x - bmin.x) / cs + 0.5f), (int)((bmax.z - bmin.z) / cs + 0.5f) };
         }
 
 
-        public static int[] calcTileCount(Vector3f bmin, Vector3f bmax, float cs, int tileSizeX, int tileSizeZ)
+        public static int[] CalcTileCount(Vector3f bmin, Vector3f bmax, float cs, int tileSizeX, int tileSizeZ)
         {
-            int[] gwd = calcGridSize(bmin, bmax, cs);
+            int[] gwd = CalcGridSize(bmin, bmax, cs);
             int gw = gwd[0];
             int gd = gwd[1];
             int tw = (gw + tileSizeX - 1) / tileSizeX;
@@ -79,7 +79,7 @@ namespace DotRecast.Recast
         /// See the #rcConfig documentation for more information on the configuration parameters.
         ///
         /// @see rcHeightfield, rcClearUnwalkableTriangles, rcRasterizeTriangles
-        public static int[] markWalkableTriangles(Telemetry ctx, float walkableSlopeAngle, float[] verts, int[] tris, int nt,
+        public static int[] MarkWalkableTriangles(Telemetry ctx, float walkableSlopeAngle, float[] verts, int[] tris, int nt,
             AreaModification areaMod)
         {
             int[] areas = new int[nt];
@@ -88,33 +88,33 @@ namespace DotRecast.Recast
             for (int i = 0; i < nt; ++i)
             {
                 int tri = i * 3;
-                calcTriNormal(verts, tris[tri], tris[tri + 1], tris[tri + 2], ref norm);
+                CalcTriNormal(verts, tris[tri], tris[tri + 1], tris[tri + 2], ref norm);
                 // Check if the face is walkable.
                 if (norm.y > walkableThr)
-                    areas[i] = areaMod.apply(areas[i]);
+                    areas[i] = areaMod.Apply(areas[i]);
             }
 
             return areas;
         }
 
-        static void calcTriNormal(float[] verts, int v0, int v1, int v2, float[] norm)
+        static void CalcTriNormal(float[] verts, int v0, int v1, int v2, float[] norm)
         {
             Vector3f e0 = new Vector3f();
             Vector3f e1 = new Vector3f();
-            RecastVectors.sub(ref e0, verts, v1 * 3, v0 * 3);
-            RecastVectors.sub(ref e1, verts, v2 * 3, v0 * 3);
-            RecastVectors.cross(norm, e0, e1);
-            RecastVectors.normalize(norm);
+            RecastVectors.Sub(ref e0, verts, v1 * 3, v0 * 3);
+            RecastVectors.Sub(ref e1, verts, v2 * 3, v0 * 3);
+            RecastVectors.Cross(norm, e0, e1);
+            RecastVectors.Normalize(norm);
         }
         
-        static void calcTriNormal(float[] verts, int v0, int v1, int v2, ref Vector3f norm)
+        static void CalcTriNormal(float[] verts, int v0, int v1, int v2, ref Vector3f norm)
         {
             Vector3f e0 = new Vector3f();
             Vector3f e1 = new Vector3f();
-            RecastVectors.sub(ref e0, verts, v1 * 3, v0 * 3);
-            RecastVectors.sub(ref e1, verts, v2 * 3, v0 * 3);
-            RecastVectors.cross(ref norm, e0, e1);
-            RecastVectors.normalize(ref norm);
+            RecastVectors.Sub(ref e0, verts, v1 * 3, v0 * 3);
+            RecastVectors.Sub(ref e1, verts, v2 * 3, v0 * 3);
+            RecastVectors.Cross(ref norm, e0, e1);
+            RecastVectors.Normalize(ref norm);
         }
 
 
@@ -126,7 +126,7 @@ namespace DotRecast.Recast
         /// See the #rcConfig documentation for more information on the configuration parameters.
         ///
         /// @see rcHeightfield, rcClearUnwalkableTriangles, rcRasterizeTriangles
-        public static void clearUnwalkableTriangles(Telemetry ctx, float walkableSlopeAngle, float[] verts, int nv,
+        public static void ClearUnwalkableTriangles(Telemetry ctx, float walkableSlopeAngle, float[] verts, int nv,
             int[] tris, int nt, int[] areas)
         {
             float walkableThr = (float)Math.Cos(walkableSlopeAngle / 180.0f * Math.PI);
@@ -136,7 +136,7 @@ namespace DotRecast.Recast
             for (int i = 0; i < nt; ++i)
             {
                 int tri = i * 3;
-                calcTriNormal(verts, tris[tri], tris[tri + 1], tris[tri + 2], ref norm);
+                CalcTriNormal(verts, tris[tri], tris[tri + 1], tris[tri + 2], ref norm);
                 // Check if the face is walkable.
                 if (norm.y <= walkableThr)
                     areas[i] = RC_NULL_AREA;

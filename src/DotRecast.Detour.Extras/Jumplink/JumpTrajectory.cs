@@ -12,17 +12,17 @@ namespace DotRecast.Detour.Extras.Jumplink
             this.jumpHeight = jumpHeight;
         }
 
-        public override Vector3f apply(Vector3f start, Vector3f end, float u)
+        public override Vector3f Apply(Vector3f start, Vector3f end, float u)
         {
             return new Vector3f
             {
-                x = lerp(start.x, end.x, u), 
-                y = interpolateHeight(start.y, end.y, u),
-                z = lerp(start.z, end.z, u)
+                x = Lerp(start.x, end.x, u), 
+                y = InterpolateHeight(start.y, end.y, u),
+                z = Lerp(start.z, end.z, u)
             };
         }
 
-        private float interpolateHeight(float ys, float ye, float u)
+        private float InterpolateHeight(float ys, float ye, float u)
         {
             if (u == 0f)
             {

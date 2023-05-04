@@ -31,14 +31,14 @@ namespace DotRecast.Detour.Dynamic
             this._affectedTiles = affectedTiles;
         }
 
-        public ICollection<DynamicTile> affectedTiles()
+        public ICollection<DynamicTile> AffectedTiles()
         {
             return _affectedTiles;
         }
 
-        public void process(DynamicTile tile)
+        public void Process(DynamicTile tile)
         {
-            tile.removeCollider(colliderId);
+            tile.RemoveCollider(colliderId);
         }
     }
 }

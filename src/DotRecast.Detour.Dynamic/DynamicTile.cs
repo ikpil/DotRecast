@@ -42,31 +42,31 @@ namespace DotRecast.Detour.Dynamic
             this.voxelTile = voxelTile;
         }
 
-        public bool build(RecastBuilder builder, DynamicNavMeshConfig config, Telemetry telemetry)
+        public bool Build(RecastBuilder builder, DynamicNavMeshConfig config, Telemetry telemetry)
         {
             if (dirty)
             {
-                Heightfield heightfield = buildHeightfield(config, telemetry);
-                RecastBuilderResult r = buildRecast(builder, config, voxelTile, heightfield, telemetry);
-                NavMeshDataCreateParams option = navMeshCreateParams(voxelTile.tileX, voxelTile.tileZ, voxelTile.cellSize,
+                Heightfield heightfield = BuildHeightfield(config, telemetry);
+                RecastBuilderResult r = BuildRecast(builder, config, voxelTile, heightfield, telemetry);
+                NavMeshDataCreateParams option = NavMeshCreateParams(voxelTile.tileX, voxelTile.tileZ, voxelTile.cellSize,
                     voxelTile.cellHeight, config, r);
-                meshData = NavMeshBuilder.createNavMeshData(option);
+                meshData = NavMeshBuilder.CreateNavMeshData(option);
                 return true;
             }
 
             return false;
         }
 
-        private Heightfield buildHeightfield(DynamicNavMeshConfig config, Telemetry telemetry)
+        private Heightfield BuildHeightfield(DynamicNavMeshConfig config, Telemetry telemetry)
         {
             ICollection<long> rasterizedColliders = checkpoint != null ? checkpoint.colliders : ImmutableHashSet<long>.Empty;
-            Heightfield heightfield = checkpoint != null ? checkpoint.heightfield : voxelTile.heightfield();
+            Heightfield heightfield = checkpoint != null ? checkpoint.heightfield : voxelTile.Heightfield();
             foreach (var (cid, c) in colliders)
             {
                 if (!rasterizedColliders.Contains(cid))
                 {
-                    heightfield.bmax.y = Math.Max(heightfield.bmax.y, c.bounds()[4] + heightfield.ch * 2);
-                    c.rasterize(heightfield, telemetry);
+                    heightfield.bmax.y = Math.Max(heightfield.bmax.y, c.Bounds()[4] + heightfield.ch * 2);
+                    c.Rasterize(heightfield, telemetry);
                 }
             }
 
@@ -78,7 +78,7 @@ namespace DotRecast.Detour.Dynamic
             return heightfield;
         }
 
-        private RecastBuilderResult buildRecast(RecastBuilder builder, DynamicNavMeshConfig config, VoxelTile vt,
+        private RecastBuilderResult BuildRecast(RecastBuilder builder, DynamicNavMeshConfig config, VoxelTile vt,
             Heightfield heightfield, Telemetry telemetry)
         {
             RecastConfig rcConfig = new RecastConfig(config.useTiles, config.tileSizeX, config.tileSizeZ, vt.borderSize,
@@ -87,7 +87,7 @@ namespace DotRecast.Detour.Dynamic
                 config.maxEdgeLen, config.maxSimplificationError,
                 Math.Min(DynamicNavMesh.MAX_VERTS_PER_POLY, config.vertsPerPoly), true, config.detailSampleDistance,
                 config.detailSampleMaxError, null);
-            RecastBuilderResult r = builder.build(vt.tileX, vt.tileZ, null, rcConfig, heightfield, telemetry);
+            RecastBuilderResult r = builder.Build(vt.tileX, vt.tileZ, null, rcConfig, heightfield, telemetry);
             if (config.keepIntermediateResults)
             {
                 recastResult = r;
@@ -96,18 +96,18 @@ namespace DotRecast.Detour.Dynamic
             return r;
         }
 
-        public void addCollider(long cid, Collider collider)
+        public void AddCollider(long cid, Collider collider)
         {
             colliders[cid] = collider;
             dirty = true;
         }
 
-        public bool containsCollider(long cid)
+        public bool ContainsCollider(long cid)
         {
             return colliders.ContainsKey(cid);
         }
 
-        public void removeCollider(long colliderId)
+        public void RemoveCollider(long colliderId)
         {
             if (colliders.TryRemove(colliderId, out var collider))
             {
@@ -116,11 +116,11 @@ namespace DotRecast.Detour.Dynamic
             }
         }
 
-        private NavMeshDataCreateParams navMeshCreateParams(int tilex, int tileZ, float cellSize, float cellHeight,
+        private NavMeshDataCreateParams NavMeshCreateParams(int tilex, int tileZ, float cellSize, float cellHeight,
             DynamicNavMeshConfig config, RecastBuilderResult rcResult)
         {
-            PolyMesh m_pmesh = rcResult.getMesh();
-            PolyMeshDetail m_dmesh = rcResult.getMeshDetail();
+            PolyMesh m_pmesh = rcResult.GetMesh();
+            PolyMeshDetail m_dmesh = rcResult.GetMeshDetail();
             NavMeshDataCreateParams option = new NavMeshDataCreateParams();
             for (int i = 0; i < m_pmesh.npolys; ++i)
             {
@@ -164,15 +164,15 @@ namespace DotRecast.Detour.Dynamic
             return option;
         }
 
-        public void addTo(NavMesh navMesh)
+        public void AddTo(NavMesh navMesh)
         {
             if (meshData != null)
             {
-                id = navMesh.addTile(meshData, 0, 0);
+                id = navMesh.AddTile(meshData, 0, 0);
             }
             else
             {
-                navMesh.removeTile(id);
+                navMesh.RemoveTile(id);
                 id = 0;
             }
         }

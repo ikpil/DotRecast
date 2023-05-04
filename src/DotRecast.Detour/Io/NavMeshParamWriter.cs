@@ -5,15 +5,15 @@ namespace DotRecast.Detour.Io
 {
     public class NavMeshParamWriter : DetourWriter
     {
-        public void write(BinaryWriter stream, NavMeshParams option, ByteOrder order)
+        public void Write(BinaryWriter stream, NavMeshParams option, ByteOrder order)
         {
-            write(stream, option.orig.x, order);
-            write(stream, option.orig.y, order);
-            write(stream, option.orig.z, order);
-            write(stream, option.tileWidth, order);
-            write(stream, option.tileHeight, order);
-            write(stream, option.maxTiles, order);
-            write(stream, option.maxPolys, order);
+            Write(stream, option.orig.x, order);
+            Write(stream, option.orig.y, order);
+            Write(stream, option.orig.z, order);
+            Write(stream, option.tileWidth, order);
+            Write(stream, option.tileHeight, order);
+            Write(stream, option.maxTiles, order);
+            Write(stream, option.maxPolys, order);
         }
     }
 }

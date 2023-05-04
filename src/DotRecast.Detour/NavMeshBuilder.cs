@@ -61,7 +61,7 @@ namespace DotRecast.Detour
             }
         }
 
-        private static int[][] calcExtends(BVItem[] items, int nitems, int imin, int imax)
+        private static int[][] CalcExtends(BVItem[] items, int nitems, int imin, int imax)
         {
             int[] bmin = new int[3];
             int[] bmax = new int[3];
@@ -94,7 +94,7 @@ namespace DotRecast.Detour
             return new int[][] { bmin, bmax };
         }
 
-        private static int longestAxis(int x, int y, int z)
+        private static int LongestAxis(int x, int y, int z)
         {
             int axis = 0;
             int maxVal = x;
@@ -113,7 +113,7 @@ namespace DotRecast.Detour
             return axis;
         }
 
-        public static int subdivide(BVItem[] items, int nitems, int imin, int imax, int curNode, BVNode[] nodes)
+        public static int Subdivide(BVItem[] items, int nitems, int imin, int imax, int curNode, BVNode[] nodes)
         {
             int inum = imax - imin;
             int icur = curNode;
@@ -137,11 +137,11 @@ namespace DotRecast.Detour
             else
             {
                 // Split
-                int[][] minmax = calcExtends(items, nitems, imin, imax);
+                int[][] minmax = CalcExtends(items, nitems, imin, imax);
                 node.bmin = minmax[0];
                 node.bmax = minmax[1];
 
-                int axis = longestAxis(node.bmax[0] - node.bmin[0], node.bmax[1] - node.bmin[1],
+                int axis = LongestAxis(node.bmax[0] - node.bmin[0], node.bmax[1] - node.bmin[1],
                     node.bmax[2] - node.bmin[2]);
 
                 if (axis == 0)
@@ -163,9 +163,9 @@ namespace DotRecast.Detour
                 int isplit = imin + inum / 2;
 
                 // Left
-                curNode = subdivide(items, nitems, imin, isplit, curNode, nodes);
+                curNode = Subdivide(items, nitems, imin, isplit, curNode, nodes);
                 // Right
-                curNode = subdivide(items, nitems, isplit, imax, curNode, nodes);
+                curNode = Subdivide(items, nitems, isplit, imax, curNode, nodes);
 
                 int iescape = curNode - icur;
                 // Negative index means escape.
@@ -175,7 +175,7 @@ namespace DotRecast.Detour
             return curNode;
         }
 
-        private static int createBVTree(NavMeshDataCreateParams option, BVNode[] nodes)
+        private static int CreateBVTree(NavMeshDataCreateParams option, BVNode[] nodes)
         {
             // Build tree
             float quantFactor = 1 / option.cs;
@@ -193,22 +193,22 @@ namespace DotRecast.Detour
                     Vector3f bmin = new Vector3f();
                     Vector3f bmax = new Vector3f();
                     int dv = vb * 3;
-                    vCopy(ref bmin, option.detailVerts, dv);
-                    vCopy(ref bmax, option.detailVerts, dv);
+                    VCopy(ref bmin, option.detailVerts, dv);
+                    VCopy(ref bmax, option.detailVerts, dv);
                     for (int j = 1; j < ndv; j++)
                     {
-                        vMin(ref bmin, option.detailVerts, dv + j * 3);
-                        vMax(ref bmax, option.detailVerts, dv + j * 3);
+                        VMin(ref bmin, option.detailVerts, dv + j * 3);
+                        VMax(ref bmax, option.detailVerts, dv + j * 3);
                     }
 
                     // BV-tree uses cs for all dimensions
-                    it.bmin[0] = clamp((int)((bmin.x - option.bmin.x) * quantFactor), 0, int.MaxValue);
-                    it.bmin[1] = clamp((int)((bmin.y - option.bmin.y) * quantFactor), 0, int.MaxValue);
-                    it.bmin[2] = clamp((int)((bmin.z - option.bmin.z) * quantFactor), 0, int.MaxValue);
+                    it.bmin[0] = Clamp((int)((bmin.x - option.bmin.x) * quantFactor), 0, int.MaxValue);
+                    it.bmin[1] = Clamp((int)((bmin.y - option.bmin.y) * quantFactor), 0, int.MaxValue);
+                    it.bmin[2] = Clamp((int)((bmin.z - option.bmin.z) * quantFactor), 0, int.MaxValue);
 
-                    it.bmax[0] = clamp((int)((bmax.x - option.bmin.x) * quantFactor), 0, int.MaxValue);
-                    it.bmax[1] = clamp((int)((bmax.y - option.bmin.y) * quantFactor), 0, int.MaxValue);
-                    it.bmax[2] = clamp((int)((bmax.z - option.bmin.z) * quantFactor), 0, int.MaxValue);
+                    it.bmax[0] = Clamp((int)((bmax.x - option.bmin.x) * quantFactor), 0, int.MaxValue);
+                    it.bmax[1] = Clamp((int)((bmax.y - option.bmin.y) * quantFactor), 0, int.MaxValue);
+                    it.bmax[2] = Clamp((int)((bmax.z - option.bmin.z) * quantFactor), 0, int.MaxValue);
                 }
                 else
                 {
@@ -246,7 +246,7 @@ namespace DotRecast.Detour
                 }
             }
 
-            return subdivide(items, option.polyCount, 0, option.polyCount, 0, nodes);
+            return Subdivide(items, option.polyCount, 0, option.polyCount, 0, nodes);
         }
 
         const int XP = 1 << 0;
@@ -254,13 +254,13 @@ namespace DotRecast.Detour
         const int XM = 1 << 2;
         const int ZM = 1 << 3;
 
-        public static int classifyOffMeshPoint(VectorPtr pt, Vector3f bmin, Vector3f bmax)
+        public static int ClassifyOffMeshPoint(VectorPtr pt, Vector3f bmin, Vector3f bmax)
         {
             int outcode = 0;
-            outcode |= (pt.get(0) >= bmax.x) ? XP : 0;
-            outcode |= (pt.get(2) >= bmax.z) ? ZP : 0;
-            outcode |= (pt.get(0) < bmin.x) ? XM : 0;
-            outcode |= (pt.get(2) < bmin.z) ? ZM : 0;
+            outcode |= (pt.Get(0) >= bmax.x) ? XP : 0;
+            outcode |= (pt.Get(2) >= bmax.z) ? ZP : 0;
+            outcode |= (pt.Get(0) < bmin.x) ? XM : 0;
+            outcode |= (pt.Get(2) < bmin.z) ? ZM : 0;
 
             switch (outcode)
             {
@@ -293,7 +293,7 @@ namespace DotRecast.Detour
      *
      * @return created tile data
      */
-        public static MeshData createNavMeshData(NavMeshDataCreateParams option)
+        public static MeshData CreateNavMeshData(NavMeshDataCreateParams option)
         {
             if (option.vertCount >= 0xffff)
                 return null;
@@ -353,14 +353,14 @@ namespace DotRecast.Detour
                     VectorPtr p0 = new VectorPtr(option.offMeshConVerts, (i * 2 + 0) * 3);
                     VectorPtr p1 = new VectorPtr(option.offMeshConVerts, (i * 2 + 1) * 3);
 
-                    offMeshConClass[i * 2 + 0] = classifyOffMeshPoint(p0, bmin, bmax);
-                    offMeshConClass[i * 2 + 1] = classifyOffMeshPoint(p1, bmin, bmax);
+                    offMeshConClass[i * 2 + 0] = ClassifyOffMeshPoint(p0, bmin, bmax);
+                    offMeshConClass[i * 2 + 1] = ClassifyOffMeshPoint(p1, bmin, bmax);
 
                     // Zero out off-mesh start positions which are not even
                     // potentially touching the mesh.
                     if (offMeshConClass[i * 2 + 0] == 0xff)
                     {
-                        if (p0.get(1) < bmin.y || p0.get(1) > bmax.y)
+                        if (p0.Get(1) < bmin.y || p0.Get(1) > bmax.y)
                             offMeshConClass[i * 2 + 0] = 0;
                     }
 
@@ -517,8 +517,8 @@ namespace DotRecast.Detour
                 navPolys[i] = p;
                 p.vertCount = 0;
                 p.flags = option.polyFlags[i];
-                p.setArea(option.polyAreas[i]);
-                p.setType(Poly.DT_POLYTYPE_GROUND);
+                p.SetArea(option.polyAreas[i]);
+                p.SetType(Poly.DT_POLYTYPE_GROUND);
                 for (int j = 0; j < nvp; ++j)
                 {
                     if (option.polys[src + j] == MESH_NULL_IDX)
@@ -564,8 +564,8 @@ namespace DotRecast.Detour
                     p.verts[0] = offMeshVertsBase + n * 2;
                     p.verts[1] = offMeshVertsBase + n * 2 + 1;
                     p.flags = option.offMeshConFlags[i];
-                    p.setArea(option.offMeshConAreas[i]);
-                    p.setType(Poly.DT_POLYTYPE_OFFMESH_CONNECTION);
+                    p.SetArea(option.offMeshConAreas[i]);
+                    p.SetType(Poly.DT_POLYTYPE_OFFMESH_CONNECTION);
                     n++;
                 }
             }
@@ -637,7 +637,7 @@ namespace DotRecast.Detour
             if (option.buildBvTree)
             {
                 // Do not set header.bvNodeCount set to make it work look exactly the same as in original Detour
-                header.bvNodeCount = createBVTree(option, navBvtree);
+                header.bvNodeCount = CreateBVTree(option, navBvtree);
             }
 
             // Store Off-Mesh connections.

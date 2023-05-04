@@ -30,10 +30,10 @@ namespace DotRecast.Detour.Dynamic
         public DynamicTileCheckpoint(Heightfield heightfield, ISet<long> colliders)
         {
             this.colliders = colliders;
-            this.heightfield = clone(heightfield);
+            this.heightfield = Clone(heightfield);
         }
 
-        private Heightfield clone(Heightfield source)
+        private Heightfield Clone(Heightfield source)
         {
             Heightfield clone = new Heightfield(source.width, source.height, source.bmin, source.bmax, source.cs,
                 source.ch, source.borderSize);

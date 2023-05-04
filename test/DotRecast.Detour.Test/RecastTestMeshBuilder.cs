@@ -40,7 +40,7 @@ public class RecastTestMeshBuilder
     private const float m_detailSampleMaxError = 1.0f;
 
     public RecastTestMeshBuilder() :
-        this(ObjImporter.load(Loader.ToBytes("dungeon.obj")),
+        this(ObjImporter.Load(Loader.ToBytes("dungeon.obj")),
             PartitionType.WATERSHED, m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_agentMaxSlope,
             m_regionMinSize, m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, m_detailSampleDist,
             m_detailSampleMaxError)
@@ -55,16 +55,16 @@ public class RecastTestMeshBuilder
         RecastConfig cfg = new RecastConfig(m_partitionType, m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius,
             m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize, m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError,
             m_vertsPerPoly, m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
-        RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, m_geom.getMeshBoundsMin(), m_geom.getMeshBoundsMax());
+        RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, m_geom.GetMeshBoundsMin(), m_geom.GetMeshBoundsMax());
         RecastBuilder rcBuilder = new RecastBuilder();
-        RecastBuilderResult rcResult = rcBuilder.build(m_geom, bcfg);
-        PolyMesh m_pmesh = rcResult.getMesh();
+        RecastBuilderResult rcResult = rcBuilder.Build(m_geom, bcfg);
+        PolyMesh m_pmesh = rcResult.GetMesh();
         for (int i = 0; i < m_pmesh.npolys; ++i)
         {
             m_pmesh.flags[i] = 1;
         }
 
-        PolyMeshDetail m_dmesh = rcResult.getMeshDetail();
+        PolyMeshDetail m_dmesh = rcResult.GetMeshDetail();
         NavMeshDataCreateParams option = new NavMeshDataCreateParams();
         option.verts = m_pmesh.verts;
         option.vertCount = m_pmesh.nverts;
@@ -105,10 +105,10 @@ public class RecastTestMeshBuilder
         option.offMeshConUserID = new int[1];
         option.offMeshConUserID[0] = 0x4567;
         option.offMeshConCount = 1;
-        meshData = NavMeshBuilder.createNavMeshData(option);
+        meshData = NavMeshBuilder.CreateNavMeshData(option);
     }
 
-    public MeshData getMeshData()
+    public MeshData GetMeshData()
     {
         return meshData;
     }

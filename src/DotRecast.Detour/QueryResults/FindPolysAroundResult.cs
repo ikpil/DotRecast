@@ -36,17 +36,17 @@ namespace DotRecast.Detour.QueryResults
             this.costs = costs;
         }
 
-        public List<long> getRefs()
+        public List<long> GetRefs()
         {
             return refs;
         }
 
-        public List<long> getParentRefs()
+        public List<long> GetParentRefs()
         {
             return parentRefs;
         }
 
-        public List<float> getCosts()
+        public List<float> GetCosts()
         {
             return costs;
         }

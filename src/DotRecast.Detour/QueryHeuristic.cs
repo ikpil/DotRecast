@@ -22,6 +22,6 @@ namespace DotRecast.Detour
 {
     public interface QueryHeuristic
     {
-        float getCost(Vector3f neighbourPos, Vector3f endPos);
+        float GetCost(Vector3f neighbourPos, Vector3f endPos);
     }
 }

@@ -29,31 +29,31 @@ namespace DotRecast.Detour.TileCache
 {
     public abstract class AbstractTileLayersBuilder
     {
-        protected List<byte[]> build(ByteOrder order, bool cCompatibility, int threads, int tw, int th)
+        protected List<byte[]> Build(ByteOrder order, bool cCompatibility, int threads, int tw, int th)
         {
             if (threads == 1)
             {
-                return buildSingleThread(order, cCompatibility, tw, th);
+                return BuildSingleThread(order, cCompatibility, tw, th);
             }
 
-            return buildMultiThread(order, cCompatibility, tw, th, threads);
+            return BuildMultiThread(order, cCompatibility, tw, th, threads);
         }
 
-        private List<byte[]> buildSingleThread(ByteOrder order, bool cCompatibility, int tw, int th)
+        private List<byte[]> BuildSingleThread(ByteOrder order, bool cCompatibility, int tw, int th)
         {
             List<byte[]> layers = new List<byte[]>();
             for (int y = 0; y < th; ++y)
             {
                 for (int x = 0; x < tw; ++x)
                 {
-                    layers.AddRange(build(x, y, order, cCompatibility));
+                    layers.AddRange(Build(x, y, order, cCompatibility));
                 }
             }
 
             return layers;
         }
 
-        private List<byte[]> buildMultiThread(ByteOrder order, bool cCompatibility, int tw, int th, int threads)
+        private List<byte[]> BuildMultiThread(ByteOrder order, bool cCompatibility, int tw, int th, int threads)
         {
             var tasks = new ConcurrentQueue<Task<Tuple<int, int, List<byte[]>>>>();
             for (int y = 0; y < th; ++y)
@@ -64,7 +64,7 @@ namespace DotRecast.Detour.TileCache
                     int ty = y;
                     var task = Task.Run(() =>
                     {
-                        var partial = build(tx, ty, order, cCompatibility);
+                        var partial = Build(tx, ty, order, cCompatibility);
                         return Tuple.Create(tx, ty, partial);
                     });
                     tasks.Enqueue(task);
@@ -88,6 +88,6 @@ namespace DotRecast.Detour.TileCache
             return layers;
         }
 
-        protected abstract List<byte[]> build(int tx, int ty, ByteOrder order, bool cCompatibility);
+        protected abstract List<byte[]> Build(int tx, int ty, ByteOrder order, bool cCompatibility);
     }
 }

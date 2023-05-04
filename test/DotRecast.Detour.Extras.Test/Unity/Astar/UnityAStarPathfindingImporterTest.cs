@@ -31,53 +31,53 @@ namespace DotRecast.Detour.Extras.Test.Unity.Astar;
 public class UnityAStarPathfindingImporterTest
 {
     [Test]
-    public void test_v4_0_6()
+    public void Test_v4_0_6()
     {
-        NavMesh mesh = loadNavMesh("graph.zip");
+        NavMesh mesh = LoadNavMesh("graph.zip");
         Vector3f startPos = Vector3f.Of(8.200293f, 2.155071f, -26.176147f);
         Vector3f endPos = Vector3f.Of(11.971109f, 0.000000f, 8.663261f);
-        Result<List<long>> path = findPath(mesh, startPos, endPos);
+        Result<List<long>> path = FindPath(mesh, startPos, endPos);
         Assert.That(path.status, Is.EqualTo(Status.SUCCSESS));
         Assert.That(path.result.Count, Is.EqualTo(57));
-        saveMesh(mesh, "v4_0_6");
+        SaveMesh(mesh, "v4_0_6");
     }
 
     [Test]
-    public void test_v4_1_16()
+    public void Test_v4_1_16()
     {
-        NavMesh mesh = loadNavMesh("graph_v4_1_16.zip");
+        NavMesh mesh = LoadNavMesh("graph_v4_1_16.zip");
         Vector3f startPos = Vector3f.Of(22.93f, -2.37f, -5.11f);
         Vector3f endPos = Vector3f.Of(16.81f, -2.37f, 25.52f);
-        Result<List<long>> path = findPath(mesh, startPos, endPos);
-        Assert.That(path.status.isSuccess(), Is.True);
+        Result<List<long>> path = FindPath(mesh, startPos, endPos);
+        Assert.That(path.status.IsSuccess(), Is.True);
         Assert.That(path.result.Count, Is.EqualTo(15));
-        saveMesh(mesh, "v4_1_16");
+        SaveMesh(mesh, "v4_1_16");
     }
 
     [Test]
-    public void testBoundsTree()
+    public void TestBoundsTree()
     {
-        NavMesh mesh = loadNavMesh("test_boundstree.zip");
+        NavMesh mesh = LoadNavMesh("test_boundstree.zip");
         Vector3f position = Vector3f.Of(387.52988f, 19.997f, 368.86282f);
 
-        int[] tilePos = mesh.calcTileLoc(position);
-        long tileRef = mesh.getTileRefAt(tilePos[0], tilePos[1], 0);
-        MeshTile tile = mesh.getTileByRef(tileRef);
+        int[] tilePos = mesh.CalcTileLoc(position);
+        long tileRef = mesh.GetTileRefAt(tilePos[0], tilePos[1], 0);
+        MeshTile tile = mesh.GetTileByRef(tileRef);
         MeshData data = tile.data;
         BVNode[] bvNodes = data.bvTree;
         data.bvTree = null; // set BV-Tree empty to get 'clear' search poly without BV
-        FindNearestPolyResult clearResult = getNearestPolys(mesh, position)[0]; // check poly to exists
+        FindNearestPolyResult clearResult = GetNearestPolys(mesh, position)[0]; // check poly to exists
 
         // restore BV-Tree and try search again
         // important aspect in that test: BV result must equals result without BV
         // if poly not found or found other poly - tile bounds is wrong!
         data.bvTree = bvNodes;
-        FindNearestPolyResult bvResult = getNearestPolys(mesh, position)[0];
+        FindNearestPolyResult bvResult = GetNearestPolys(mesh, position)[0];
 
-        Assert.That(bvResult.getNearestRef(), Is.EqualTo(clearResult.getNearestRef()));
+        Assert.That(bvResult.GetNearestRef(), Is.EqualTo(clearResult.GetNearestRef()));
     }
 
-    private NavMesh loadNavMesh(string filename)
+    private NavMesh LoadNavMesh(string filename)
     {
         var filepath = Loader.ToRPath(filename);
         using var fs = new FileStream(filepath, FileMode.Open, FileAccess.Read);
@@ -85,21 +85,21 @@ public class UnityAStarPathfindingImporterTest
         // Import the graphs
         UnityAStarPathfindingImporter importer = new UnityAStarPathfindingImporter();
 
-        NavMesh[] meshes = importer.load(fs);
+        NavMesh[] meshes = importer.Load(fs);
         return meshes[0];
     }
 
-    private Result<List<long>> findPath(NavMesh mesh, Vector3f startPos, Vector3f endPos)
+    private Result<List<long>> FindPath(NavMesh mesh, Vector3f startPos, Vector3f endPos)
     {
         // Perform a simple pathfinding
         NavMeshQuery query = new NavMeshQuery(mesh);
         QueryFilter filter = new DefaultQueryFilter();
 
-        FindNearestPolyResult[] polys = getNearestPolys(mesh, startPos, endPos);
-        return query.findPath(polys[0].getNearestRef(), polys[1].getNearestRef(), startPos, endPos, filter);
+        FindNearestPolyResult[] polys = GetNearestPolys(mesh, startPos, endPos);
+        return query.FindPath(polys[0].GetNearestRef(), polys[1].GetNearestRef(), startPos, endPos, filter);
     }
 
-    private FindNearestPolyResult[] getNearestPolys(NavMesh mesh, params Vector3f[] positions)
+    private FindNearestPolyResult[] GetNearestPolys(NavMesh mesh, params Vector3f[] positions)
     {
         NavMeshQuery query = new NavMeshQuery(mesh);
         QueryFilter filter = new DefaultQueryFilter();
@@ -109,21 +109,21 @@ public class UnityAStarPathfindingImporterTest
         for (int i = 0; i < results.Length; i++)
         {
             Vector3f position = positions[i];
-            Result<FindNearestPolyResult> result = query.findNearestPoly(position, extents, filter);
+            Result<FindNearestPolyResult> result = query.FindNearestPoly(position, extents, filter);
             Assert.That(result.Succeeded(), Is.True);
-            Assert.That(result.result.getNearestPos(), Is.Not.EqualTo(Vector3f.Zero), "Nearest start position is null!");
+            Assert.That(result.result.GetNearestPos(), Is.Not.EqualTo(Vector3f.Zero), "Nearest start position is null!");
             results[i] = result.result;
         }
 
         return results;
     }
 
-    private void saveMesh(NavMesh mesh, string filePostfix)
+    private void SaveMesh(NavMesh mesh, string filePostfix)
     {
         // Set the flag to RecastDemo work properly
-        for (int i = 0; i < mesh.getTileCount(); i++)
+        for (int i = 0; i < mesh.GetTileCount(); i++)
         {
-            foreach (Poly p in mesh.getTile(i).data.polys)
+            foreach (Poly p in mesh.GetTile(i).data.polys)
             {
                 p.flags = 1;
             }
@@ -135,6 +135,6 @@ public class UnityAStarPathfindingImporterTest
         string filepath = Path.Combine("test-output", filename);
         using var fs = new FileStream(filename, FileMode.Create);
         using var os = new BinaryWriter(fs);
-        writer.write(os, mesh, ByteOrder.LITTLE_ENDIAN, true);
+        writer.Write(os, mesh, ByteOrder.LITTLE_ENDIAN, true);
     }
 }

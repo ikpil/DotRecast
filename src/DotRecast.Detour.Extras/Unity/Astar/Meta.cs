@@ -32,15 +32,15 @@ namespace DotRecast.Detour.Extras.Unity.Astar
         public string[] guids { get; set; }
         public string[] typeNames { get; set; }
 
-        public bool isSupportedVersion()
+        public bool IsSupportedVersion()
         {
-            return isVersionAtLeast(MIN_SUPPORTED_VERSION);
+            return IsVersionAtLeast(MIN_SUPPORTED_VERSION);
         }
 
-        public bool isVersionAtLeast(string minVersion)
+        public bool IsVersionAtLeast(string minVersion)
         {
-            int[] actual = parseVersion(version);
-            int[] minSupported = parseVersion(minVersion);
+            int[] actual = ParseVersion(version);
+            int[] minSupported = ParseVersion(minVersion);
             for (int i = 0; i < Math.Min(actual.Length, minSupported.Length); i++)
             {
                 if (actual[i] > minSupported[i])
@@ -56,7 +56,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
             return true;
         }
 
-        private int[] parseVersion(string version)
+        private int[] ParseVersion(string version)
         {
             Match m = VERSION_PATTERN.Match(version);
             if (m.Success)
@@ -73,7 +73,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
             throw new ArgumentException("Invalid version format: " + version);
         }
 
-        public bool isSupportedType()
+        public bool IsSupportedType()
         {
             foreach (string t in typeNames)
             {

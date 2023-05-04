@@ -27,7 +27,7 @@ namespace DotRecast.Detour.Dynamic.Colliders
         private readonly int[] triangles;
 
         public TrimeshCollider(float[] vertices, int[] triangles, int area, float flagMergeThreshold) :
-            base(area, flagMergeThreshold, computeBounds(vertices))
+            base(area, flagMergeThreshold, ComputeBounds(vertices))
         {
             this.vertices = vertices;
             this.triangles = triangles;
@@ -40,7 +40,7 @@ namespace DotRecast.Detour.Dynamic.Colliders
             this.triangles = triangles;
         }
 
-        public static float[] computeBounds(float[] vertices)
+        public static float[] ComputeBounds(float[] vertices)
         {
             float[] bounds = new float[] { vertices[0], vertices[1], vertices[2], vertices[0], vertices[1], vertices[2] };
             for (int i = 3; i < vertices.Length; i += 3)
@@ -56,11 +56,11 @@ namespace DotRecast.Detour.Dynamic.Colliders
             return bounds;
         }
 
-        public override void rasterize(Heightfield hf, Telemetry telemetry)
+        public override void Rasterize(Heightfield hf, Telemetry telemetry)
         {
             for (int i = 0; i < triangles.Length; i += 3)
             {
-                RecastRasterization.rasterizeTriangle(hf, vertices, triangles[i], triangles[i + 1], triangles[i + 2], area,
+                RecastRasterization.RasterizeTriangle(hf, vertices, triangles[i], triangles[i + 1], triangles[i + 2], area,
                     (int)Math.Floor(flagMergeThreshold / hf.ch), telemetry);
             }
         }

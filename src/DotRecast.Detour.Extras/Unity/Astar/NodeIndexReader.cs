@@ -23,15 +23,15 @@ namespace DotRecast.Detour.Extras.Unity.Astar
 {
     class NodeIndexReader : ZipBinaryReader
     {
-        public int[] read(ZipArchive file, string filename)
+        public int[] Read(ZipArchive file, string filename)
         {
-            ByteBuffer buffer = toByteBuffer(file, filename);
-            int maxNodeIndex = buffer.getInt();
+            ByteBuffer buffer = ToByteBuffer(file, filename);
+            int maxNodeIndex = buffer.GetInt();
             int[] int2Node = new int[maxNodeIndex + 1];
             int node = 0;
-            while (buffer.remaining() > 0)
+            while (buffer.Remaining() > 0)
             {
-                int index = buffer.getInt();
+                int index = buffer.GetInt();
                 int2Node[index] = node++;
             }
 

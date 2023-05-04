@@ -22,7 +22,7 @@ namespace DotRecast.Detour.TileCache.Io.Compress
 {
     public static class TileCacheCompressorFactory
     {
-        public static TileCacheCompressor get(bool cCompatibility)
+        public static TileCacheCompressor Get(bool cCompatibility)
         {
             if (cCompatibility)
                 return new FastLzTileCacheCompressor();

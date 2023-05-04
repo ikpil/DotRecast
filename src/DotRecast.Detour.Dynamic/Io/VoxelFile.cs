@@ -56,12 +56,12 @@ namespace DotRecast.Detour.Dynamic.Io
         public float[] bounds = new float[6];
         public readonly List<VoxelTile> tiles = new List<VoxelTile>();
 
-        public void addTile(VoxelTile tile)
+        public void AddTile(VoxelTile tile)
         {
             tiles.Add(tile);
         }
 
-        public RecastConfig getConfig(VoxelTile tile, PartitionType partitionType, int maxPolyVerts, int regionMergeSize,
+        public RecastConfig GetConfig(VoxelTile tile, PartitionType partitionType, int maxPolyVerts, int regionMergeSize,
             bool filterLowHangingObstacles, bool filterLedgeSpans, bool filterWalkableLowHeightSpans,
             AreaModification walkbableAreaMod, bool buildMeshDetail, float detailSampleDist, float detailSampleMaxError)
         {
@@ -71,7 +71,7 @@ namespace DotRecast.Detour.Dynamic.Io
                 buildMeshDetail, detailSampleDist, detailSampleMaxError, walkbableAreaMod);
         }
 
-        public static VoxelFile from(RecastConfig config, List<RecastBuilderResult> results)
+        public static VoxelFile From(RecastConfig config, List<RecastBuilderResult> results)
         {
             VoxelFile f = new VoxelFile();
             f.version = 1;
@@ -102,19 +102,19 @@ namespace DotRecast.Detour.Dynamic.Io
             };
             foreach (RecastBuilderResult r in results)
             {
-                f.tiles.Add(new VoxelTile(r.tileX, r.tileZ, r.getSolidHeightfield()));
-                f.bounds[0] = Math.Min(f.bounds[0], r.getSolidHeightfield().bmin.x);
-                f.bounds[1] = Math.Min(f.bounds[1], r.getSolidHeightfield().bmin.y);
-                f.bounds[2] = Math.Min(f.bounds[2], r.getSolidHeightfield().bmin.z);
-                f.bounds[3] = Math.Max(f.bounds[3], r.getSolidHeightfield().bmax.x);
-                f.bounds[4] = Math.Max(f.bounds[4], r.getSolidHeightfield().bmax.y);
-                f.bounds[5] = Math.Max(f.bounds[5], r.getSolidHeightfield().bmax.z);
+                f.tiles.Add(new VoxelTile(r.tileX, r.tileZ, r.GetSolidHeightfield()));
+                f.bounds[0] = Math.Min(f.bounds[0], r.GetSolidHeightfield().bmin.x);
+                f.bounds[1] = Math.Min(f.bounds[1], r.GetSolidHeightfield().bmin.y);
+                f.bounds[2] = Math.Min(f.bounds[2], r.GetSolidHeightfield().bmin.z);
+                f.bounds[3] = Math.Max(f.bounds[3], r.GetSolidHeightfield().bmax.x);
+                f.bounds[4] = Math.Max(f.bounds[4], r.GetSolidHeightfield().bmax.y);
+                f.bounds[5] = Math.Max(f.bounds[5], r.GetSolidHeightfield().bmax.z);
             }
 
             return f;
         }
 
-        public static VoxelFile from(DynamicNavMesh mesh)
+        public static VoxelFile From(DynamicNavMesh mesh)
         {
             VoxelFile f = new VoxelFile();
             f.version = 1;
@@ -144,9 +144,9 @@ namespace DotRecast.Detour.Dynamic.Io
                 float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity,
                 float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity
             };
-            foreach (VoxelTile vt in mesh.voxelTiles())
+            foreach (VoxelTile vt in mesh.VoxelTiles())
             {
-                Heightfield heightfield = vt.heightfield();
+                Heightfield heightfield = vt.Heightfield();
                 f.tiles.Add(new VoxelTile(vt.tileX, vt.tileZ, heightfield));
                 f.bounds[0] = Math.Min(f.bounds[0], vt.boundsMin.x);
                 f.bounds[1] = Math.Min(f.bounds[1], vt.boundsMin.y);

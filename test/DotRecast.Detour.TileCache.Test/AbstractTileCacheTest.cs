@@ -41,7 +41,7 @@ public class AbstractTileCacheTest
 
     protected class TestTileCacheMeshProcess : TileCacheMeshProcess
     {
-        public void process(NavMeshDataCreateParams option)
+        public void Process(NavMeshDataCreateParams option)
         {
             for (int i = 0; i < option.polyCount; ++i)
             {
@@ -50,13 +50,13 @@ public class AbstractTileCacheTest
         }
     }
 
-    public TileCache getTileCache(InputGeomProvider geom, ByteOrder order, bool cCompatibility)
+    public TileCache GetTileCache(InputGeomProvider geom, ByteOrder order, bool cCompatibility)
     {
         TileCacheParams option = new TileCacheParams();
-        int[] twh = Recast.Recast.calcTileCount(geom.getMeshBoundsMin(), geom.getMeshBoundsMax(), m_cellSize, m_tileSize, m_tileSize);
+        int[] twh = Recast.Recast.CalcTileCount(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), m_cellSize, m_tileSize, m_tileSize);
         option.ch = m_cellHeight;
         option.cs = m_cellSize;
-        option.orig = geom.getMeshBoundsMin();
+        option.orig = geom.GetMeshBoundsMin();
         option.height = m_tileSize;
         option.width = m_tileSize;
         option.walkableHeight = m_agentHeight;
@@ -66,14 +66,14 @@ public class AbstractTileCacheTest
         option.maxTiles = twh[0] * twh[1] * EXPECTED_LAYERS_PER_TILE;
         option.maxObstacles = 128;
         NavMeshParams navMeshParams = new NavMeshParams();
-        navMeshParams.orig = geom.getMeshBoundsMin();
+        navMeshParams.orig = geom.GetMeshBoundsMin();
         navMeshParams.tileWidth = m_tileSize * m_cellSize;
         navMeshParams.tileHeight = m_tileSize * m_cellSize;
         navMeshParams.maxTiles = 256;
         navMeshParams.maxPolys = 16384;
         NavMesh navMesh = new NavMesh(navMeshParams, 6);
         TileCache tc = new TileCache(option, new TileCacheStorageParams(order, cCompatibility), navMesh,
-            TileCacheCompressorFactory.get(cCompatibility), new TestTileCacheMeshProcess());
+            TileCacheCompressorFactory.Get(cCompatibility), new TestTileCacheMeshProcess());
         return tc;
     }
 }

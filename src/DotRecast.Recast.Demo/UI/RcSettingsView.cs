@@ -59,9 +59,9 @@ public class RcSettingsView : IRcView
     private bool tiled = false;
     private int tileSize = 32;
 
-    // public readonly NkColor white = NkColor.create();
-    // public readonly NkColor background = NkColor.create();
-    // public readonly NkColor transparent = NkColor.create();
+    // public readonly NkColor white = NkColor.Create();
+    // public readonly NkColor background = NkColor.Create();
+    // public readonly NkColor transparent = NkColor.Create();
     private bool buildTriggered;
     private long buildTime;
     private readonly int[] voxels = new int[2];
@@ -154,7 +154,7 @@ public class RcSettingsView : IRcView
 
         ImGui.Text("Partitioning");
         ImGui.Separator();
-        PartitionType.Values.forEach(partition =>
+        PartitionType.Values.ForEach(partition =>
         {
             var label = partition.Name.Substring(0, 1).ToUpper()
                         + partition.Name.Substring(1).ToLower();
@@ -226,145 +226,145 @@ public class RcSettingsView : IRcView
         ImGui.Text("Draw");
         ImGui.Separator();
 
-        DrawMode.Values.forEach(dm => { ImGui.RadioButton(dm.Text, ref drawMode, dm.Idx); });
+        DrawMode.Values.ForEach(dm => { ImGui.RadioButton(dm.Text, ref drawMode, dm.Idx); });
         ImGui.NewLine();
 
         ImGui.End();
     }
 
-    public float getCellSize()
+    public float GetCellSize()
     {
         return cellSize;
     }
 
-    public float getCellHeight()
+    public float GetCellHeight()
     {
         return cellHeight;
     }
 
-    public float getAgentHeight()
+    public float GetAgentHeight()
     {
         return agentHeight;
     }
 
-    public float getAgentRadius()
+    public float GetAgentRadius()
     {
         return agentRadius;
     }
 
-    public float getAgentMaxClimb()
+    public float GetAgentMaxClimb()
     {
         return agentMaxClimb;
     }
 
-    public float getAgentMaxSlope()
+    public float GetAgentMaxSlope()
     {
         return agentMaxSlope;
     }
 
-    public int getMinRegionSize()
+    public int GetMinRegionSize()
     {
         return minRegionSize;
     }
 
-    public int getMergedRegionSize()
+    public int GetMergedRegionSize()
     {
         return mergedRegionSize;
     }
 
-    public PartitionType getPartitioning()
+    public PartitionType GetPartitioning()
     {
         return partitioning;
     }
 
-    public bool isBuildTriggered()
+    public bool IsBuildTriggered()
     {
         return buildTriggered;
     }
 
-    public bool isFilterLowHangingObstacles()
+    public bool IsFilterLowHangingObstacles()
     {
         return filterLowHangingObstacles;
     }
 
-    public bool isFilterLedgeSpans()
+    public bool IsFilterLedgeSpans()
     {
         return filterLedgeSpans;
     }
 
-    public bool isFilterWalkableLowHeightSpans()
+    public bool IsFilterWalkableLowHeightSpans()
     {
         return filterWalkableLowHeightSpans;
     }
 
-    public void setBuildTime(long buildTime)
+    public void SetBuildTime(long buildTime)
     {
         this.buildTime = buildTime;
     }
     
-    public DrawMode getDrawMode()
+    public DrawMode GetDrawMode()
     {
         return DrawMode.Values[drawMode];
     }
 
-    public float getEdgeMaxLen()
+    public float GetEdgeMaxLen()
     {
         return edgeMaxLen;
     }
 
-    public float getEdgeMaxError()
+    public float GetEdgeMaxError()
     {
         return edgeMaxError;
     }
 
-    public int getVertsPerPoly()
+    public int GetVertsPerPoly()
     {
         return vertsPerPoly;
     }
 
-    public float getDetailSampleDist()
+    public float GetDetailSampleDist()
     {
         return detailSampleDist;
     }
 
-    public float getDetailSampleMaxError()
+    public float GetDetailSampleMaxError()
     {
         return detailSampleMaxError;
     }
 
-    public void setVoxels(int[] voxels)
+    public void SetVoxels(int[] voxels)
     {
         this.voxels[0] = voxels[0];
         this.voxels[1] = voxels[1];
     }
 
-    public bool isTiled()
+    public bool IsTiled()
     {
         return tiled;
     }
 
-    public int getTileSize()
+    public int GetTileSize()
     {
         return tileSize;
     }
 
-    public void setTiles(int[] tiles)
+    public void SetTiles(int[] tiles)
     {
         this.tiles[0] = tiles[0];
         this.tiles[1] = tiles[1];
     }
 
-    public void setMaxTiles(int maxTiles)
+    public void SetMaxTiles(int maxTiles)
     {
         this.maxTiles = maxTiles;
     }
 
-    public void setMaxPolys(int maxPolys)
+    public void SetMaxPolys(int maxPolys)
     {
         this.maxPolys = maxPolys;
     }
 
-    public bool isMeshInputTrigerred()
+    public bool IsMeshInputTrigerred()
     {
         return meshInputTrigerred;
     }
@@ -374,7 +374,7 @@ public class RcSettingsView : IRcView
         return meshInputFilePath;
     }
 
-    public bool isNavMeshInputTrigerred()
+    public bool IsNavMeshInputTrigerred()
     {
         return navMeshInputTrigerred;
     }

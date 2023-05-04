@@ -22,5 +22,5 @@ namespace DotRecast.Recast.Demo.Tools;
 
 public interface ToolUIModule
 {
-    void layout(IWindow ctx);
+    void Layout(IWindow ctx);
 }

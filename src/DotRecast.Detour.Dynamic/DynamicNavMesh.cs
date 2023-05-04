@@ -68,14 +68,14 @@ namespace DotRecast.Detour.Dynamic
             navMeshParams.maxPolys = 0x8000;
             foreach (var t in voxelFile.tiles)
             {
-                _tiles.Add(lookupKey(t.tileX, t.tileZ), new DynamicTile(t));
+                _tiles.Add(LookupKey(t.tileX, t.tileZ), new DynamicTile(t));
             }
 
             ;
             telemetry = new Telemetry();
         }
 
-        public NavMesh navMesh()
+        public NavMesh NavMesh()
         {
             return _navMesh;
         }
@@ -83,64 +83,64 @@ namespace DotRecast.Detour.Dynamic
         /**
      * Voxel queries require checkpoints to be enabled in {@link DynamicNavMeshConfig}
      */
-        public VoxelQuery voxelQuery()
+        public VoxelQuery VoxelQuery()
         {
-            return new VoxelQuery(navMeshParams.orig, navMeshParams.tileWidth, navMeshParams.tileHeight, lookupHeightfield);
+            return new VoxelQuery(navMeshParams.orig, navMeshParams.tileWidth, navMeshParams.tileHeight, LookupHeightfield);
         }
 
-        private Heightfield lookupHeightfield(int x, int z)
+        private Heightfield LookupHeightfield(int x, int z)
         {
-            return getTileAt(x, z)?.checkpoint.heightfield;
+            return GetTileAt(x, z)?.checkpoint.heightfield;
         }
 
-        public long addCollider(Collider collider)
+        public long AddCollider(Collider collider)
         {
             long cid = currentColliderId.IncrementAndGet();
-            updateQueue.Add(new AddColliderQueueItem(cid, collider, getTiles(collider.bounds())));
+            updateQueue.Add(new AddColliderQueueItem(cid, collider, GetTiles(collider.Bounds())));
             return cid;
         }
 
-        public void removeCollider(long colliderId)
+        public void RemoveCollider(long colliderId)
         {
-            updateQueue.Add(new RemoveColliderQueueItem(colliderId, getTilesByCollider(colliderId)));
+            updateQueue.Add(new RemoveColliderQueueItem(colliderId, GetTilesByCollider(colliderId)));
         }
 
         /**
      * Perform full build of the nav mesh
      */
-        public void build()
+        public void Build()
         {
-            processQueue();
-            rebuild(_tiles.Values);
+            ProcessQueue();
+            Rebuild(_tiles.Values);
         }
 
         /**
      * Perform incremental update of the nav mesh
      */
-        public bool update()
+        public bool Update()
         {
-            return rebuild(processQueue());
+            return Rebuild(ProcessQueue());
         }
 
-        private bool rebuild(ICollection<DynamicTile> stream)
+        private bool Rebuild(ICollection<DynamicTile> stream)
         {
             foreach (var dynamicTile in stream)
-                rebuild(dynamicTile);
-            return updateNavMesh();
+                Rebuild(dynamicTile);
+            return UpdateNavMesh();
         }
 
-        private HashSet<DynamicTile> processQueue()
+        private HashSet<DynamicTile> ProcessQueue()
         {
-            var items = consumeQueue();
+            var items = ConsumeQueue();
             foreach (var item in items)
             {
-                process(item);
+                Process(item);
             }
 
-            return items.SelectMany(i => i.affectedTiles()).ToHashSet();
+            return items.SelectMany(i => i.AffectedTiles()).ToHashSet();
         }
 
-        private List<UpdateQueueItem> consumeQueue()
+        private List<UpdateQueueItem> ConsumeQueue()
         {
             List<UpdateQueueItem> items = new List<UpdateQueueItem>();
             while (updateQueue.TryTake(out var item))
@@ -151,38 +151,38 @@ namespace DotRecast.Detour.Dynamic
             return items;
         }
 
-        private void process(UpdateQueueItem item)
+        private void Process(UpdateQueueItem item)
         {
-            foreach (var tile in item.affectedTiles())
+            foreach (var tile in item.AffectedTiles())
             {
-                item.process(tile);
+                item.Process(tile);
             }
         }
 
         /**
      * Perform full build concurrently using the given {@link ExecutorService}
      */
-        public Task<bool> build(TaskFactory executor)
+        public Task<bool> Build(TaskFactory executor)
         {
-            processQueue();
-            return rebuild(_tiles.Values, executor);
+            ProcessQueue();
+            return Rebuild(_tiles.Values, executor);
         }
 
         /**
      * Perform incremental update concurrently using the given {@link ExecutorService}
      */
-        public Task<bool> update(TaskFactory executor)
+        public Task<bool> Update(TaskFactory executor)
         {
-            return rebuild(processQueue(), executor);
+            return Rebuild(ProcessQueue(), executor);
         }
 
-        private Task<bool> rebuild(ICollection<DynamicTile> tiles, TaskFactory executor)
+        private Task<bool> Rebuild(ICollection<DynamicTile> tiles, TaskFactory executor)
         {
-            var tasks = tiles.Select(tile => executor.StartNew(() => rebuild(tile))).ToArray();
-            return Task.WhenAll(tasks).ContinueWith(k => updateNavMesh());
+            var tasks = tiles.Select(tile => executor.StartNew(() => Rebuild(tile))).ToArray();
+            return Task.WhenAll(tasks).ContinueWith(k => UpdateNavMesh());
         }
 
-        private ICollection<DynamicTile> getTiles(float[] bounds)
+        private ICollection<DynamicTile> GetTiles(float[] bounds)
         {
             if (bounds == null)
             {
@@ -198,7 +198,7 @@ namespace DotRecast.Detour.Dynamic
             {
                 for (int x = minx; x <= maxx; ++x)
                 {
-                    DynamicTile tile = getTileAt(x, z);
+                    DynamicTile tile = GetTileAt(x, z);
                     if (tile != null)
                     {
                         tiles.Add(tile);
@@ -209,25 +209,25 @@ namespace DotRecast.Detour.Dynamic
             return tiles;
         }
 
-        private List<DynamicTile> getTilesByCollider(long cid)
+        private List<DynamicTile> GetTilesByCollider(long cid)
         {
-            return _tiles.Values.Where(t => t.containsCollider(cid)).ToList();
+            return _tiles.Values.Where(t => t.ContainsCollider(cid)).ToList();
         }
 
-        private void rebuild(DynamicTile tile)
+        private void Rebuild(DynamicTile tile)
         {
             NavMeshDataCreateParams option = new NavMeshDataCreateParams();
             option.walkableHeight = config.walkableHeight;
-            dirty = dirty | tile.build(builder, config, telemetry);
+            dirty = dirty | tile.Build(builder, config, telemetry);
         }
 
-        private bool updateNavMesh()
+        private bool UpdateNavMesh()
         {
             if (dirty)
             {
                 NavMesh navMesh = new NavMesh(navMeshParams, MAX_VERTS_PER_POLY);
                 foreach (var t in _tiles.Values)
-                    t.addTo(navMesh);
+                    t.AddTo(navMesh);
 
                 this._navMesh = navMesh;
                 dirty = false;
@@ -237,24 +237,24 @@ namespace DotRecast.Detour.Dynamic
             return false;
         }
 
-        private DynamicTile getTileAt(int x, int z)
+        private DynamicTile GetTileAt(int x, int z)
         {
-            return _tiles.TryGetValue(lookupKey(x, z), out var tile)
+            return _tiles.TryGetValue(LookupKey(x, z), out var tile)
                 ? tile
                 : null;
         }
 
-        private long lookupKey(long x, long z)
+        private long LookupKey(long x, long z)
         {
             return (z << 32) | x;
         }
 
-        public List<VoxelTile> voxelTiles()
+        public List<VoxelTile> VoxelTiles()
         {
             return _tiles.Values.Select(t => t.voxelTile).ToList();
         }
 
-        public List<RecastBuilderResult> recastResults()
+        public List<RecastBuilderResult> RecastResults()
         {
             return _tiles.Values.Select(t => t.recastResult).ToList();
         }

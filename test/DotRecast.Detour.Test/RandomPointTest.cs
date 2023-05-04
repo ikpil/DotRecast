@@ -29,15 +29,15 @@ namespace DotRecast.Detour.Test;
 public class RandomPointTest : AbstractDetourTest
 {
     [Test]
-    public void testRandom()
+    public void TestRandom()
     {
         FRand f = new FRand(1);
         QueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < 1000; i++)
         {
-            Result<FindRandomPointResult> point = query.findRandomPoint(filter, f);
+            Result<FindRandomPointResult> point = query.FindRandomPoint(filter, f);
             Assert.That(point.Succeeded(), Is.True);
-            Tuple<MeshTile, Poly> tileAndPoly = navmesh.getTileAndPolyByRef(point.result.getRandomRef()).result;
+            Tuple<MeshTile, Poly> tileAndPoly = navmesh.GetTileAndPolyByRef(point.result.GetRandomRef()).result;
             float[] bmin = new float[2];
             float[] bmax = new float[2];
             for (int j = 0; j < tileAndPoly.Item2.vertCount; j++)
@@ -49,26 +49,26 @@ public class RandomPointTest : AbstractDetourTest
                 bmax[1] = j == 0 ? tileAndPoly.Item1.data.verts[v + 2] : Math.Max(bmax[1], tileAndPoly.Item1.data.verts[v + 2]);
             }
 
-            Assert.That(point.result.getRandomPt().x >= bmin[0], Is.True);
-            Assert.That(point.result.getRandomPt().x <= bmax[0], Is.True);
-            Assert.That(point.result.getRandomPt().z >= bmin[1], Is.True);
-            Assert.That(point.result.getRandomPt().z <= bmax[1], Is.True);
+            Assert.That(point.result.GetRandomPt().x >= bmin[0], Is.True);
+            Assert.That(point.result.GetRandomPt().x <= bmax[0], Is.True);
+            Assert.That(point.result.GetRandomPt().z >= bmin[1], Is.True);
+            Assert.That(point.result.GetRandomPt().z <= bmax[1], Is.True);
         }
     }
 
     [Test]
-    public void testRandomAroundCircle()
+    public void TestRandomAroundCircle()
     {
         FRand f = new FRand(1);
         QueryFilter filter = new DefaultQueryFilter();
-        FindRandomPointResult point = query.findRandomPoint(filter, f).result;
+        FindRandomPointResult point = query.FindRandomPoint(filter, f).result;
         for (int i = 0; i < 1000; i++)
         {
-            Result<FindRandomPointResult> result = query.findRandomPointAroundCircle(point.getRandomRef(), point.getRandomPt(),
+            Result<FindRandomPointResult> result = query.FindRandomPointAroundCircle(point.GetRandomRef(), point.GetRandomPt(),
                 5f, filter, f);
             Assert.That(result.Failed(), Is.False);
             point = result.result;
-            Tuple<MeshTile, Poly> tileAndPoly = navmesh.getTileAndPolyByRef(point.getRandomRef()).result;
+            Tuple<MeshTile, Poly> tileAndPoly = navmesh.GetTileAndPolyByRef(point.GetRandomRef()).result;
             float[] bmin = new float[2];
             float[] bmax = new float[2];
             for (int j = 0; j < tileAndPoly.Item2.vertCount; j++)
@@ -80,59 +80,59 @@ public class RandomPointTest : AbstractDetourTest
                 bmax[1] = j == 0 ? tileAndPoly.Item1.data.verts[v + 2] : Math.Max(bmax[1], tileAndPoly.Item1.data.verts[v + 2]);
             }
 
-            Assert.That(point.getRandomPt().x >= bmin[0], Is.True);
-            Assert.That(point.getRandomPt().x <= bmax[0], Is.True);
-            Assert.That(point.getRandomPt().z >= bmin[1], Is.True);
-            Assert.That(point.getRandomPt().z <= bmax[1], Is.True);
+            Assert.That(point.GetRandomPt().x >= bmin[0], Is.True);
+            Assert.That(point.GetRandomPt().x <= bmax[0], Is.True);
+            Assert.That(point.GetRandomPt().z >= bmin[1], Is.True);
+            Assert.That(point.GetRandomPt().z <= bmax[1], Is.True);
         }
     }
 
     [Test]
-    public void testRandomWithinCircle()
+    public void TestRandomWithinCircle()
     {
         FRand f = new FRand(1);
         QueryFilter filter = new DefaultQueryFilter();
-        FindRandomPointResult point = query.findRandomPoint(filter, f).result;
+        FindRandomPointResult point = query.FindRandomPoint(filter, f).result;
         float radius = 5f;
         for (int i = 0; i < 1000; i++)
         {
-            Result<FindRandomPointResult> result = query.findRandomPointWithinCircle(point.getRandomRef(), point.getRandomPt(),
+            Result<FindRandomPointResult> result = query.FindRandomPointWithinCircle(point.GetRandomRef(), point.GetRandomPt(),
                 radius, filter, f);
             Assert.That(result.Failed(), Is.False);
-            float distance = vDist2D(point.getRandomPt(), result.result.getRandomPt());
+            float distance = VDist2D(point.GetRandomPt(), result.result.GetRandomPt());
             Assert.That(distance <= radius, Is.True);
             point = result.result;
         }
     }
 
     [Test]
-    public void testPerformance()
+    public void TestPerformance()
     {
         FRand f = new FRand(1);
         QueryFilter filter = new DefaultQueryFilter();
-        FindRandomPointResult point = query.findRandomPoint(filter, f).result;
+        FindRandomPointResult point = query.FindRandomPoint(filter, f).result;
         float radius = 5f;
         // jvm warmup
         for (int i = 0; i < 1000; i++)
         {
-            query.findRandomPointAroundCircle(point.getRandomRef(), point.getRandomPt(), radius, filter, f);
+            query.FindRandomPointAroundCircle(point.GetRandomRef(), point.GetRandomPt(), radius, filter, f);
         }
 
         for (int i = 0; i < 1000; i++)
         {
-            query.findRandomPointWithinCircle(point.getRandomRef(), point.getRandomPt(), radius, filter, f);
+            query.FindRandomPointWithinCircle(point.GetRandomRef(), point.GetRandomPt(), radius, filter, f);
         }
 
         long t1 = FrequencyWatch.Ticks;
         for (int i = 0; i < 10000; i++)
         {
-            query.findRandomPointAroundCircle(point.getRandomRef(), point.getRandomPt(), radius, filter, f);
+            query.FindRandomPointAroundCircle(point.GetRandomRef(), point.GetRandomPt(), radius, filter, f);
         }
 
         long t2 = FrequencyWatch.Ticks;
         for (int i = 0; i < 10000; i++)
         {
-            query.findRandomPointWithinCircle(point.getRandomRef(), point.getRandomPt(), radius, filter, f);
+            query.FindRandomPointWithinCircle(point.GetRandomRef(), point.GetRandomPt(), radius, filter, f);
         }
 
         long t3 = FrequencyWatch.Ticks;

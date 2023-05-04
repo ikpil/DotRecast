@@ -27,14 +27,14 @@ namespace DotRecast.Detour.Dynamic.Test.Io;
 public class VoxelFileReaderTest
 {
     [Test]
-    public void shouldReadSingleTileFile()
+    public void ShouldReadSingleTileFile()
     {
         byte[] bytes = Loader.ToBytes("test.voxels");
         using var ms = new MemoryStream(bytes);
         using var bis = new BinaryReader(ms);
 
         VoxelFileReader reader = new VoxelFileReader();
-        VoxelFile f = reader.read(bis);
+        VoxelFile f = reader.Read(bis);
         Assert.That(f.useTiles, Is.False);
         Assert.That(f.bounds, Is.EqualTo(new float[] { -100.0f, 0f, -100f, 100f, 5f, 100f }));
         Assert.That(f.cellSize, Is.EqualTo(0.25f));
@@ -53,14 +53,14 @@ public class VoxelFileReaderTest
     }
 
     [Test]
-    public void shouldReadMultiTileFile()
+    public void ShouldReadMultiTileFile()
     {
         byte[] bytes = Loader.ToBytes("test_tiles.voxels");
         using var ms = new MemoryStream(bytes);
         using var bis = new BinaryReader(ms);
 
         VoxelFileReader reader = new VoxelFileReader();
-        VoxelFile f = reader.read(bis);
+        VoxelFile f = reader.Read(bis);
 
         Assert.That(f.useTiles, Is.True);
         Assert.That(f.bounds, Is.EqualTo(new float[] { -100.0f, 0f, -100f, 100f, 5f, 100f }));

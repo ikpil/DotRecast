@@ -22,8 +22,8 @@ namespace DotRecast.Detour.TileCache
 {
     public interface TileCacheCompressor
     {
-        byte[] decompress(byte[] buf, int offset, int len, int outputlen);
+        byte[] Decompress(byte[] buf, int offset, int len, int outputlen);
 
-        byte[] compress(byte[] buf);
+        byte[] Compress(byte[] buf);
     }
 }

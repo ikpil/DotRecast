@@ -44,7 +44,7 @@ namespace DotRecast.Detour
             Overlap,
         }
 
-        public static float[] intersect(float[] p, float[] q)
+        public static float[] Intersect(float[] p, float[] q)
         {
             int n = p.Length / 3;
             int m = q.Length / 3;
@@ -68,24 +68,24 @@ namespace DotRecast.Detour
 
             do
             {
-                vCopy(ref a, p, 3 * (ai % n));
-                vCopy(ref b, q, 3 * (bi % m));
-                vCopy(ref a1, p, 3 * ((ai + n - 1) % n)); // prev a
-                vCopy(ref b1, q, 3 * ((bi + m - 1) % m)); // prev b
+                VCopy(ref a, p, 3 * (ai % n));
+                VCopy(ref b, q, 3 * (bi % m));
+                VCopy(ref a1, p, 3 * ((ai + n - 1) % n)); // prev a
+                VCopy(ref b1, q, 3 * ((bi + m - 1) % m)); // prev b
 
-                Vector3f A = vSub(a, a1);
-                Vector3f B = vSub(b, b1);
+                Vector3f A = VSub(a, a1);
+                Vector3f B = VSub(b, b1);
 
-                float cross = B.x * A.z - A.x * B.z; // triArea2D({0, 0}, A, B);
-                float aHB = triArea2D(b1, b, a);
-                float bHA = triArea2D(a1, a, b);
+                float cross = B.x * A.z - A.x * B.z; // TriArea2D({0, 0}, A, B);
+                float aHB = TriArea2D(b1, b, a);
+                float bHA = TriArea2D(a1, a, b);
                 if (Math.Abs(cross) < EPSILON)
                 {
                     cross = 0f;
                 }
 
                 bool parallel = cross == 0f;
-                Intersection code = parallel ? parallelInt(a1, a, b1, b, ref ip, ref iq) : segSegInt(a1, a, b1, b, ref ip, ref iq);
+                Intersection code = parallel ? ParallelInt(a1, a, b1, b, ref ip, ref iq) : SegSegInt(a1, a, b1, b, ref ip, ref iq);
 
                 if (code == Intersection.Single)
                 {
@@ -95,17 +95,17 @@ namespace DotRecast.Detour
                         aa = ba = 0;
                     }
 
-                    ii = addVertex(inters, ii, ip);
-                    f = inOut(f, aHB, bHA);
+                    ii = AddVertex(inters, ii, ip);
+                    f = InOut(f, aHB, bHA);
                 }
 
                 /*-----Advance rules-----*/
 
                 /* Special case: A & B overlap and oppositely oriented. */
-                if (code == Intersection.Overlap && vDot2D(A, B) < 0)
+                if (code == Intersection.Overlap && VDot2D(A, B) < 0)
                 {
-                    ii = addVertex(inters, ii, ip);
-                    ii = addVertex(inters, ii, iq);
+                    ii = AddVertex(inters, ii, ip);
+                    ii = AddVertex(inters, ii, iq);
                     break;
                 }
 
@@ -136,7 +136,7 @@ namespace DotRecast.Detour
                     {
                         if (f == InFlag.Pin)
                         {
-                            ii = addVertex(inters, ii, a);
+                            ii = AddVertex(inters, ii, a);
                         }
 
                         aa++;
@@ -146,7 +146,7 @@ namespace DotRecast.Detour
                     {
                         if (f == InFlag.Qin)
                         {
-                            ii = addVertex(inters, ii, b);
+                            ii = AddVertex(inters, ii, b);
                         }
 
                         ba++;
@@ -159,7 +159,7 @@ namespace DotRecast.Detour
                     {
                         if (f == InFlag.Qin)
                         {
-                            ii = addVertex(inters, ii, b);
+                            ii = AddVertex(inters, ii, b);
                         }
 
                         ba++;
@@ -169,7 +169,7 @@ namespace DotRecast.Detour
                     {
                         if (f == InFlag.Pin)
                         {
-                            ii = addVertex(inters, ii, a);
+                            ii = AddVertex(inters, ii, a);
                         }
 
                         aa++;
@@ -190,7 +190,7 @@ namespace DotRecast.Detour
             return copied;
         }
 
-        private static int addVertex(float[] inters, int ii, float[] p)
+        private static int AddVertex(float[] inters, int ii, float[] p)
         {
             if (ii > 0)
             {
@@ -211,7 +211,7 @@ namespace DotRecast.Detour
             return ii + 3;
         }
         
-        private static int addVertex(float[] inters, int ii, Vector3f p)
+        private static int AddVertex(float[] inters, int ii, Vector3f p)
         {
             if (ii > 0)
             {
@@ -233,7 +233,7 @@ namespace DotRecast.Detour
         }
 
 
-        private static InFlag inOut(InFlag inflag, float aHB, float bHA)
+        private static InFlag InOut(InFlag inflag, float aHB, float bHA)
         {
             if (aHB > 0)
             {
@@ -247,9 +247,9 @@ namespace DotRecast.Detour
             return inflag;
         }
 
-        private static Intersection segSegInt(Vector3f a, Vector3f b, Vector3f c, Vector3f d, ref Vector3f p, ref Vector3f q)
+        private static Intersection SegSegInt(Vector3f a, Vector3f b, Vector3f c, Vector3f d, ref Vector3f p, ref Vector3f q)
         {
-            var isec = intersectSegSeg2D(a, b, c, d);
+            var isec = IntersectSegSeg2D(a, b, c, d);
             if (null != isec)
             {
                 float s = isec.Item1;
@@ -266,44 +266,44 @@ namespace DotRecast.Detour
             return Intersection.None;
         }
 
-        private static Intersection parallelInt(Vector3f a, Vector3f b, Vector3f c, Vector3f d, ref Vector3f p, ref Vector3f q)
+        private static Intersection ParallelInt(Vector3f a, Vector3f b, Vector3f c, Vector3f d, ref Vector3f p, ref Vector3f q)
         {
-            if (between(a, b, c) && between(a, b, d))
+            if (Between(a, b, c) && Between(a, b, d))
             {
                 p = c;
                 q = d;
                 return Intersection.Overlap;
             }
 
-            if (between(c, d, a) && between(c, d, b))
+            if (Between(c, d, a) && Between(c, d, b))
             {
                 p = a;
                 q = b;
                 return Intersection.Overlap;
             }
 
-            if (between(a, b, c) && between(c, d, b))
+            if (Between(a, b, c) && Between(c, d, b))
             {
                 p = c;
                 q = b;
                 return Intersection.Overlap;
             }
 
-            if (between(a, b, c) && between(c, d, a))
+            if (Between(a, b, c) && Between(c, d, a))
             {
                 p = c;
                 q = a;
                 return Intersection.Overlap;
             }
 
-            if (between(a, b, d) && between(c, d, b))
+            if (Between(a, b, d) && Between(c, d, b))
             {
                 p = d;
                 q = b;
                 return Intersection.Overlap;
             }
 
-            if (between(a, b, d) && between(c, d, a))
+            if (Between(a, b, d) && Between(c, d, a))
             {
                 p = d;
                 q = a;
@@ -313,7 +313,7 @@ namespace DotRecast.Detour
             return Intersection.None;
         }
 
-        private static bool between(Vector3f a, Vector3f b, Vector3f c)
+        private static bool Between(Vector3f a, Vector3f b, Vector3f c)
         {
             if (Math.Abs(a.x - b.x) > Math.Abs(a.z - b.z))
             {

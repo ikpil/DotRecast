@@ -52,14 +52,14 @@ public class MeshSetReaderWriterTest
     private const int m_maxPolysPerTile = 0x8000;
 
     [Test]
-    public void test()
+    public void Test()
     {
-        InputGeomProvider geom = ObjImporter.load(Loader.ToBytes("dungeon.obj"));
+        InputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("dungeon.obj"));
 
         NavMeshSetHeader header = new NavMeshSetHeader();
         header.magic = NavMeshSetHeader.NAVMESHSET_MAGIC;
         header.version = NavMeshSetHeader.NAVMESHSET_VERSION;
-        header.option.orig = geom.getMeshBoundsMin();
+        header.option.orig = geom.GetMeshBoundsMin();
         header.option.tileWidth = m_tileSize * m_cellSize;
         header.option.tileHeight = m_tileSize * m_cellSize;
         header.option.maxTiles = m_maxTiles;
@@ -67,9 +67,9 @@ public class MeshSetReaderWriterTest
         header.numTiles = 0;
         NavMesh mesh = new NavMesh(header.option, 6);
 
-        Vector3f bmin = geom.getMeshBoundsMin();
-        Vector3f bmax = geom.getMeshBoundsMax();
-        int[] twh = DotRecast.Recast.Recast.calcTileCount(bmin, bmax, m_cellSize, m_tileSize, m_tileSize);
+        Vector3f bmin = geom.GetMeshBoundsMin();
+        Vector3f bmax = geom.GetMeshBoundsMax();
+        int[] twh = DotRecast.Recast.Recast.CalcTileCount(bmin, bmax, m_cellSize, m_tileSize, m_tileSize);
         int tw = twh[0];
         int th = twh[1];
         for (int y = 0; y < th; ++y)
@@ -77,44 +77,44 @@ public class MeshSetReaderWriterTest
             for (int x = 0; x < tw; ++x)
             {
                 RecastConfig cfg = new RecastConfig(true, m_tileSize, m_tileSize,
-                    RecastConfig.calcBorder(m_agentRadius, m_cellSize), PartitionType.WATERSHED, m_cellSize, m_cellHeight,
+                    RecastConfig.CalcBorder(m_agentRadius, m_cellSize), PartitionType.WATERSHED, m_cellSize, m_cellHeight,
                     m_agentMaxSlope, true, true, true, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_regionMinArea,
                     m_regionMergeArea, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, true, m_detailSampleDist,
                     m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
                 RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, bmin, bmax, x, y);
                 TestDetourBuilder db = new TestDetourBuilder();
-                MeshData data = db.build(geom, bcfg, m_agentHeight, m_agentRadius, m_agentMaxClimb, x, y, true);
+                MeshData data = db.Build(geom, bcfg, m_agentHeight, m_agentRadius, m_agentMaxClimb, x, y, true);
                 if (data != null)
                 {
-                    mesh.removeTile(mesh.getTileRefAt(x, y, 0));
-                    mesh.addTile(data, 0, 0);
+                    mesh.RemoveTile(mesh.GetTileRefAt(x, y, 0));
+                    mesh.AddTile(data, 0, 0);
                 }
             }
         }
 
         using var ms = new MemoryStream();
         using var os = new BinaryWriter(ms);
-        writer.write(os, mesh, ByteOrder.LITTLE_ENDIAN, true);
+        writer.Write(os, mesh, ByteOrder.LITTLE_ENDIAN, true);
         ms.Seek(0, SeekOrigin.Begin);
 
         using var @is = new BinaryReader(ms);
-        mesh = reader.read(@is, 6);
-        Assert.That(mesh.getMaxTiles(), Is.EqualTo(128));
-        Assert.That(mesh.getParams().maxPolys, Is.EqualTo(0x8000));
-        Assert.That(mesh.getParams().tileWidth, Is.EqualTo(9.6f).Within(0.001f));
-        List<MeshTile> tiles = mesh.getTilesAt(6, 9);
+        mesh = reader.Read(@is, 6);
+        Assert.That(mesh.GetMaxTiles(), Is.EqualTo(128));
+        Assert.That(mesh.GetParams().maxPolys, Is.EqualTo(0x8000));
+        Assert.That(mesh.GetParams().tileWidth, Is.EqualTo(9.6f).Within(0.001f));
+        List<MeshTile> tiles = mesh.GetTilesAt(6, 9);
         Assert.That(tiles.Count, Is.EqualTo(1));
         Assert.That(tiles[0].data.polys.Length, Is.EqualTo(2));
         Assert.That(tiles[0].data.verts.Length, Is.EqualTo(7 * 3));
-        tiles = mesh.getTilesAt(2, 9);
+        tiles = mesh.GetTilesAt(2, 9);
         Assert.That(tiles.Count, Is.EqualTo(1));
         Assert.That(tiles[0].data.polys.Length, Is.EqualTo(2));
         Assert.That(tiles[0].data.verts.Length, Is.EqualTo(9 * 3));
-        tiles = mesh.getTilesAt(4, 3);
+        tiles = mesh.GetTilesAt(4, 3);
         Assert.That(tiles.Count, Is.EqualTo(1));
         Assert.That(tiles[0].data.polys.Length, Is.EqualTo(3));
         Assert.That(tiles[0].data.verts.Length, Is.EqualTo(6 * 3));
-        tiles = mesh.getTilesAt(2, 8);
+        tiles = mesh.GetTilesAt(2, 8);
         Assert.That(tiles.Count, Is.EqualTo(1));
         Assert.That(tiles[0].data.polys.Length, Is.EqualTo(5));
         Assert.That(tiles[0].data.verts.Length, Is.EqualTo(17 * 3));

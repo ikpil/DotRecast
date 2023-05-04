@@ -46,60 +46,60 @@ public class RecastSoloMeshTest
     private PartitionType m_partitionType = PartitionType.WATERSHED;
 
     [Test]
-    public void testPerformance()
+    public void TestPerformance()
     {
         for (int i = 0; i < 10; i++)
         {
-            testBuild("dungeon.obj", PartitionType.WATERSHED, 52, 16, 15, 223, 118, 118, 513, 291);
-            testBuild("dungeon.obj", PartitionType.MONOTONE, 0, 17, 16, 210, 100, 100, 453, 264);
-            testBuild("dungeon.obj", PartitionType.LAYERS, 0, 5, 5, 203, 97, 97, 446, 266);
+            TestBuild("dungeon.obj", PartitionType.WATERSHED, 52, 16, 15, 223, 118, 118, 513, 291);
+            TestBuild("dungeon.obj", PartitionType.MONOTONE, 0, 17, 16, 210, 100, 100, 453, 264);
+            TestBuild("dungeon.obj", PartitionType.LAYERS, 0, 5, 5, 203, 97, 97, 446, 266);
         }
     }
 
     [Test]
-    public void testDungeonWatershed()
+    public void TestDungeonWatershed()
     {
-        testBuild("dungeon.obj", PartitionType.WATERSHED, 52, 16, 15, 223, 118, 118, 513, 291);
+        TestBuild("dungeon.obj", PartitionType.WATERSHED, 52, 16, 15, 223, 118, 118, 513, 291);
     }
 
     [Test]
-    public void testDungeonMonotone()
+    public void TestDungeonMonotone()
     {
-        testBuild("dungeon.obj", PartitionType.MONOTONE, 0, 17, 16, 210, 100, 100, 453, 264);
+        TestBuild("dungeon.obj", PartitionType.MONOTONE, 0, 17, 16, 210, 100, 100, 453, 264);
     }
 
     [Test]
-    public void testDungeonLayers()
+    public void TestDungeonLayers()
     {
-        testBuild("dungeon.obj", PartitionType.LAYERS, 0, 5, 5, 203, 97, 97, 446, 266);
+        TestBuild("dungeon.obj", PartitionType.LAYERS, 0, 5, 5, 203, 97, 97, 446, 266);
     }
 
     [Test]
-    public void testWatershed()
+    public void TestWatershed()
     {
-        testBuild("nav_test.obj", PartitionType.WATERSHED, 60, 48, 47, 349, 153, 153, 802, 558);
+        TestBuild("nav_test.obj", PartitionType.WATERSHED, 60, 48, 47, 349, 153, 153, 802, 558);
     }
 
     [Test]
-    public void testMonotone()
+    public void TestMonotone()
     {
-        testBuild("nav_test.obj", PartitionType.MONOTONE, 0, 50, 49, 340, 185, 185, 871, 557);
+        TestBuild("nav_test.obj", PartitionType.MONOTONE, 0, 50, 49, 340, 185, 185, 871, 557);
     }
 
     [Test]
-    public void testLayers()
+    public void TestLayers()
     {
-        testBuild("nav_test.obj", PartitionType.LAYERS, 0, 19, 32, 312, 150, 150, 764, 521);
+        TestBuild("nav_test.obj", PartitionType.LAYERS, 0, 19, 32, 312, 150, 150, 764, 521);
     }
 
-    public void testBuild(string filename, PartitionType partitionType, int expDistance, int expRegions,
+    public void TestBuild(string filename, PartitionType partitionType, int expDistance, int expRegions,
         int expContours, int expVerts, int expPolys, int expDetMeshes, int expDetVerts, int expDetTris)
     {
         m_partitionType = partitionType;
-        InputGeomProvider geomProvider = ObjImporter.load(Loader.ToBytes(filename));
+        InputGeomProvider geomProvider = ObjImporter.Load(Loader.ToBytes(filename));
         long time = FrequencyWatch.Ticks;
-        Vector3f bmin = geomProvider.getMeshBoundsMin();
-        Vector3f bmax = geomProvider.getMeshBoundsMax();
+        Vector3f bmin = geomProvider.GetMeshBoundsMin();
+        Vector3f bmax = geomProvider.GetMeshBoundsMax();
         Telemetry m_ctx = new Telemetry();
         //
         // Step 1. Initialize build config.
@@ -117,10 +117,10 @@ public class RecastSoloMeshTest
         // Allocate voxel heightfield where we rasterize our input data to.
         Heightfield m_solid = new Heightfield(bcfg.width, bcfg.height, bcfg.bmin, bcfg.bmax, cfg.cs, cfg.ch, cfg.borderSize);
 
-        foreach (TriMesh geom in geomProvider.meshes())
+        foreach (TriMesh geom in geomProvider.Meshes())
         {
-            float[] verts = geom.getVerts();
-            int[] tris = geom.getTris();
+            float[] verts = geom.GetVerts();
+            int[] tris = geom.GetTris();
             int ntris = tris.Length / 3;
 
             // Allocate array that can hold triangle area types.
@@ -133,9 +133,9 @@ public class RecastSoloMeshTest
             // If your input data is multiple meshes, you can transform them here,
             // calculate
             // the are type for each of the meshes and rasterize them.
-            int[] m_triareas = Recast.markWalkableTriangles(m_ctx, cfg.walkableSlopeAngle, verts, tris, ntris,
+            int[] m_triareas = Recast.MarkWalkableTriangles(m_ctx, cfg.walkableSlopeAngle, verts, tris, ntris,
                 cfg.walkableAreaMod);
-            RecastRasterization.rasterizeTriangles(m_solid, verts, tris, m_triareas, ntris, cfg.walkableClimb, m_ctx);
+            RecastRasterization.RasterizeTriangles(m_solid, verts, tris, m_triareas, ntris, cfg.walkableClimb, m_ctx);
             //
             // Step 3. Filter walkables surfaces.
             //
@@ -144,9 +144,9 @@ public class RecastSoloMeshTest
         // Once all geometry is rasterized, we do initial pass of filtering to
         // remove unwanted overhangs caused by the conservative rasterization
         // as well as filter spans where the character cannot possibly stand.
-        RecastFilter.filterLowHangingWalkableObstacles(m_ctx, cfg.walkableClimb, m_solid);
-        RecastFilter.filterLedgeSpans(m_ctx, cfg.walkableHeight, cfg.walkableClimb, m_solid);
-        RecastFilter.filterWalkableLowHeightSpans(m_ctx, cfg.walkableHeight, m_solid);
+        RecastFilter.FilterLowHangingWalkableObstacles(m_ctx, cfg.walkableClimb, m_solid);
+        RecastFilter.FilterLedgeSpans(m_ctx, cfg.walkableHeight, cfg.walkableClimb, m_solid);
+        RecastFilter.FilterWalkableLowHeightSpans(m_ctx, cfg.walkableHeight, m_solid);
 
         //
         // Step 4. Partition walkable surface to simple regions.
@@ -155,16 +155,16 @@ public class RecastSoloMeshTest
         // Compact the heightfield so that it is faster to handle from now on.
         // This will result more cache coherent data as well as the neighbours
         // between walkable cells will be calculated.
-        CompactHeightfield m_chf = RecastCompact.buildCompactHeightfield(m_ctx, cfg.walkableHeight, cfg.walkableClimb,
+        CompactHeightfield m_chf = RecastCompact.BuildCompactHeightfield(m_ctx, cfg.walkableHeight, cfg.walkableClimb,
             m_solid);
 
         // Erode the walkable area by agent radius.
-        RecastArea.erodeWalkableArea(m_ctx, cfg.walkableRadius, m_chf);
+        RecastArea.ErodeWalkableArea(m_ctx, cfg.walkableRadius, m_chf);
 
         // (Optional) Mark areas.
         /*
-         * ConvexVolume vols = m_geom->getConvexVolumes(); for (int i = 0; i < m_geom->getConvexVolumeCount(); ++i)
-         * rcMarkConvexPolyArea(m_ctx, vols[i].verts, vols[i].nverts, vols[i].hmin, vols[i].hmax, (unsigned
+         * ConvexVolume vols = m_geom->GetConvexVolumes(); for (int i = 0; i < m_geom->GetConvexVolumeCount(); ++i)
+         * RcMarkConvexPolyArea(m_ctx, vols[i].verts, vols[i].nverts, vols[i].hmin, vols[i].hmax, (unsigned
          * char)vols[i].area, *m_chf);
          */
 
@@ -211,20 +211,20 @@ public class RecastSoloMeshTest
         {
             // Prepare for region partitioning, by calculating distance field
             // along the walkable surface.
-            RecastRegion.buildDistanceField(m_ctx, m_chf);
+            RecastRegion.BuildDistanceField(m_ctx, m_chf);
             // Partition the walkable surface into simple regions without holes.
-            RecastRegion.buildRegions(m_ctx, m_chf, cfg.minRegionArea, cfg.mergeRegionArea);
+            RecastRegion.BuildRegions(m_ctx, m_chf, cfg.minRegionArea, cfg.mergeRegionArea);
         }
         else if (m_partitionType == PartitionType.MONOTONE)
         {
             // Partition the walkable surface into simple regions without holes.
             // Monotone partitioning does not need distancefield.
-            RecastRegion.buildRegionsMonotone(m_ctx, m_chf, cfg.minRegionArea, cfg.mergeRegionArea);
+            RecastRegion.BuildRegionsMonotone(m_ctx, m_chf, cfg.minRegionArea, cfg.mergeRegionArea);
         }
         else
         {
             // Partition the walkable surface into simple regions without holes.
-            RecastRegion.buildLayerRegions(m_ctx, m_chf, cfg.minRegionArea);
+            RecastRegion.BuildLayerRegions(m_ctx, m_chf, cfg.minRegionArea);
         }
 
         Assert.That(m_chf.maxDistance, Is.EqualTo(expDistance), "maxDistance");
@@ -234,7 +234,7 @@ public class RecastSoloMeshTest
         //
 
         // Create contours.
-        ContourSet m_cset = RecastContour.buildContours(m_ctx, m_chf, cfg.maxSimplificationError, cfg.maxEdgeLen,
+        ContourSet m_cset = RecastContour.BuildContours(m_ctx, m_chf, cfg.maxSimplificationError, cfg.maxEdgeLen,
             RecastConstants.RC_CONTOUR_TESS_WALL_EDGES);
 
         Assert.That(m_cset.conts.Count, Is.EqualTo(expContours), "Contours");
@@ -243,7 +243,7 @@ public class RecastSoloMeshTest
         //
 
         // Build polygon navmesh from the contours.
-        PolyMesh m_pmesh = RecastMesh.buildPolyMesh(m_ctx, m_cset, cfg.maxVertsPerPoly);
+        PolyMesh m_pmesh = RecastMesh.BuildPolyMesh(m_ctx, m_cset, cfg.maxVertsPerPoly);
         Assert.That(m_pmesh.nverts, Is.EqualTo(expVerts), "Mesh Verts");
         Assert.That(m_pmesh.npolys, Is.EqualTo(expPolys), "Mesh Polys");
 
@@ -252,7 +252,7 @@ public class RecastSoloMeshTest
         // on each polygon.
         //
 
-        PolyMeshDetail m_dmesh = RecastMeshDetail.buildPolyMeshDetail(m_ctx, m_pmesh, m_chf, cfg.detailSampleDist,
+        PolyMeshDetail m_dmesh = RecastMeshDetail.BuildPolyMeshDetail(m_ctx, m_pmesh, m_chf, cfg.detailSampleDist,
             cfg.detailSampleMaxError);
         Assert.That(m_dmesh.nmeshes, Is.EqualTo(expDetMeshes), "Mesh Detail Meshes");
         Assert.That(m_dmesh.nverts, Is.EqualTo(expDetVerts), "Mesh Detail Verts");
@@ -260,15 +260,15 @@ public class RecastSoloMeshTest
         long time2 = FrequencyWatch.Ticks;
         Console.WriteLine(filename + " : " + partitionType + "  " + (time2 - time) / TimeSpan.TicksPerMillisecond + " ms");
         Console.WriteLine("           " + (time3 - time) / TimeSpan.TicksPerMillisecond + " ms");
-        saveObj(filename.Substring(0, filename.LastIndexOf('.')) + "_" + partitionType + "_detail.obj", m_dmesh);
-        saveObj(filename.Substring(0, filename.LastIndexOf('.')) + "_" + partitionType + ".obj", m_pmesh);
+        SaveObj(filename.Substring(0, filename.LastIndexOf('.')) + "_" + partitionType + "_detail.obj", m_dmesh);
+        SaveObj(filename.Substring(0, filename.LastIndexOf('.')) + "_" + partitionType + ".obj", m_pmesh);
         foreach (var (key, millis) in m_ctx.ToList())
         {
             Console.WriteLine($"{key} : {millis} ms");
         }
     }
 
-    private void saveObj(string filename, PolyMesh mesh)
+    private void SaveObj(string filename, PolyMesh mesh)
     {
         try
         {
@@ -308,7 +308,7 @@ public class RecastSoloMeshTest
         }
     }
 
-    private void saveObj(string filename, PolyMeshDetail dmesh)
+    private void SaveObj(string filename, PolyMeshDetail dmesh)
     {
         try
         {

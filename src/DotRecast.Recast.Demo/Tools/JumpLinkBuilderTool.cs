@@ -39,124 +39,124 @@ public class JumpLinkBuilderTool : Tool
     private readonly int selEdge = -1;
     private readonly JumpLinkBuilderToolParams option = new JumpLinkBuilderToolParams();
 
-    public override void setSample(Sample sample)
+    public override void SetSample(Sample sample)
     {
         this.sample = sample;
         annotationBuilder = null;
     }
 
-    public override void handleClick(Vector3f s, Vector3f p, bool shift)
+    public override void HandleClick(Vector3f s, Vector3f p, bool shift)
     {
     }
 
-    public override void handleRender(NavMeshRenderer renderer)
+    public override void HandleRender(NavMeshRenderer renderer)
     {
-        int col0 = duLerpCol(duRGBA(32, 255, 96, 255), duRGBA(255, 255, 255, 255), 200);
-        int col1 = duRGBA(32, 255, 96, 255);
-        RecastDebugDraw dd = renderer.getDebugDraw();
-        dd.depthMask(false);
+        int col0 = DuLerpCol(DuRGBA(32, 255, 96, 255), DuRGBA(255, 255, 255, 255), 200);
+        int col1 = DuRGBA(32, 255, 96, 255);
+        RecastDebugDraw dd = renderer.GetDebugDraw();
+        dd.DepthMask(false);
 
         if ((option.flags & JumpLinkBuilderToolParams.DRAW_WALKABLE_BORDER) != 0)
         {
             if (annotationBuilder != null)
             {
-                foreach (Edge[] edges in annotationBuilder.getEdges())
+                foreach (Edge[] edges in annotationBuilder.GetEdges())
                 {
-                    dd.begin(LINES, 3.0f);
+                    dd.Begin(LINES, 3.0f);
                     for (int i = 0; i < edges.Length; ++i)
                     {
-                        int col = duRGBA(0, 96, 128, 255);
+                        int col = DuRGBA(0, 96, 128, 255);
                         if (i == selEdge)
                             continue;
-                        dd.vertex(edges[i].sp, col);
-                        dd.vertex(edges[i].sq, col);
+                        dd.Vertex(edges[i].sp, col);
+                        dd.Vertex(edges[i].sq, col);
                     }
 
-                    dd.end();
+                    dd.End();
 
-                    dd.begin(POINTS, 8.0f);
+                    dd.Begin(POINTS, 8.0f);
                     for (int i = 0; i < edges.Length; ++i)
                     {
-                        int col = duRGBA(0, 96, 128, 255);
+                        int col = DuRGBA(0, 96, 128, 255);
                         if (i == selEdge)
                             continue;
-                        dd.vertex(edges[i].sp, col);
-                        dd.vertex(edges[i].sq, col);
+                        dd.Vertex(edges[i].sp, col);
+                        dd.Vertex(edges[i].sq, col);
                     }
 
-                    dd.end();
+                    dd.End();
 
                     if (selEdge >= 0 && selEdge < edges.Length)
                     {
-                        int col = duRGBA(48, 16, 16, 255); // duRGBA(255,192,0,255);
-                        dd.begin(LINES, 3.0f);
-                        dd.vertex(edges[selEdge].sp, col);
-                        dd.vertex(edges[selEdge].sq, col);
-                        dd.end();
-                        dd.begin(POINTS, 8.0f);
-                        dd.vertex(edges[selEdge].sp, col);
-                        dd.vertex(edges[selEdge].sq, col);
-                        dd.end();
+                        int col = DuRGBA(48, 16, 16, 255); // DuRGBA(255,192,0,255);
+                        dd.Begin(LINES, 3.0f);
+                        dd.Vertex(edges[selEdge].sp, col);
+                        dd.Vertex(edges[selEdge].sq, col);
+                        dd.End();
+                        dd.Begin(POINTS, 8.0f);
+                        dd.Vertex(edges[selEdge].sp, col);
+                        dd.Vertex(edges[selEdge].sq, col);
+                        dd.End();
                     }
 
-                    dd.begin(POINTS, 4.0f);
+                    dd.Begin(POINTS, 4.0f);
                     for (int i = 0; i < edges.Length; ++i)
                     {
-                        int col = duRGBA(190, 190, 190, 255);
-                        dd.vertex(edges[i].sp, col);
-                        dd.vertex(edges[i].sq, col);
+                        int col = DuRGBA(190, 190, 190, 255);
+                        dd.Vertex(edges[i].sp, col);
+                        dd.Vertex(edges[i].sq, col);
                     }
 
-                    dd.end();
+                    dd.End();
                 }
             }
         }
 
         if ((option.flags & JumpLinkBuilderToolParams.DRAW_ANNOTATIONS) != 0)
         {
-            dd.begin(QUADS);
+            dd.Begin(QUADS);
             foreach (JumpLink link in links)
             {
                 for (int j = 0; j < link.nspine - 1; ++j)
                 {
                     int u = (j * 255) / link.nspine;
-                    int col = duTransCol(duLerpCol(col0, col1, u), 128);
-                    dd.vertex(link.spine1[j * 3], link.spine1[j * 3 + 1], link.spine1[j * 3 + 2], col);
-                    dd.vertex(link.spine1[(j + 1) * 3], link.spine1[(j + 1) * 3 + 1], link.spine1[(j + 1) * 3 + 2],
+                    int col = DuTransCol(DuLerpCol(col0, col1, u), 128);
+                    dd.Vertex(link.spine1[j * 3], link.spine1[j * 3 + 1], link.spine1[j * 3 + 2], col);
+                    dd.Vertex(link.spine1[(j + 1) * 3], link.spine1[(j + 1) * 3 + 1], link.spine1[(j + 1) * 3 + 2],
                         col);
-                    dd.vertex(link.spine0[(j + 1) * 3], link.spine0[(j + 1) * 3 + 1], link.spine0[(j + 1) * 3 + 2],
+                    dd.Vertex(link.spine0[(j + 1) * 3], link.spine0[(j + 1) * 3 + 1], link.spine0[(j + 1) * 3 + 2],
                         col);
-                    dd.vertex(link.spine0[j * 3], link.spine0[j * 3 + 1], link.spine0[j * 3 + 2], col);
+                    dd.Vertex(link.spine0[j * 3], link.spine0[j * 3 + 1], link.spine0[j * 3 + 2], col);
                 }
             }
 
-            dd.end();
-            dd.begin(LINES, 3.0f);
+            dd.End();
+            dd.Begin(LINES, 3.0f);
             foreach (JumpLink link in links)
             {
                 for (int j = 0; j < link.nspine - 1; ++j)
                 {
                     // int u = (j*255)/link.nspine;
-                    int col = duTransCol(duDarkenCol(col1) /*duDarkenCol(duLerpCol(col0,col1,u))*/, 128);
+                    int col = DuTransCol(DuDarkenCol(col1) /*DuDarkenCol(DuLerpCol(col0,col1,u))*/, 128);
 
-                    dd.vertex(link.spine0[j * 3], link.spine0[j * 3 + 1], link.spine0[j * 3 + 2], col);
-                    dd.vertex(link.spine0[(j + 1) * 3], link.spine0[(j + 1) * 3 + 1], link.spine0[(j + 1) * 3 + 2],
+                    dd.Vertex(link.spine0[j * 3], link.spine0[j * 3 + 1], link.spine0[j * 3 + 2], col);
+                    dd.Vertex(link.spine0[(j + 1) * 3], link.spine0[(j + 1) * 3 + 1], link.spine0[(j + 1) * 3 + 2],
                         col);
-                    dd.vertex(link.spine1[j * 3], link.spine1[j * 3 + 1], link.spine1[j * 3 + 2], col);
-                    dd.vertex(link.spine1[(j + 1) * 3], link.spine1[(j + 1) * 3 + 1], link.spine1[(j + 1) * 3 + 2],
+                    dd.Vertex(link.spine1[j * 3], link.spine1[j * 3 + 1], link.spine1[j * 3 + 2], col);
+                    dd.Vertex(link.spine1[(j + 1) * 3], link.spine1[(j + 1) * 3 + 1], link.spine1[(j + 1) * 3 + 2],
                         col);
                 }
 
-                dd.vertex(link.spine0[0], link.spine0[1], link.spine0[2], duDarkenCol(col1));
-                dd.vertex(link.spine1[0], link.spine1[1], link.spine1[2], duDarkenCol(col1));
+                dd.Vertex(link.spine0[0], link.spine0[1], link.spine0[2], DuDarkenCol(col1));
+                dd.Vertex(link.spine1[0], link.spine1[1], link.spine1[2], DuDarkenCol(col1));
 
-                dd.vertex(link.spine0[(link.nspine - 1) * 3], link.spine0[(link.nspine - 1) * 3 + 1],
-                    link.spine0[(link.nspine - 1) * 3 + 2], duDarkenCol(col1));
-                dd.vertex(link.spine1[(link.nspine - 1) * 3], link.spine1[(link.nspine - 1) * 3 + 1],
-                    link.spine1[(link.nspine - 1) * 3 + 2], duDarkenCol(col1));
+                dd.Vertex(link.spine0[(link.nspine - 1) * 3], link.spine0[(link.nspine - 1) * 3 + 1],
+                    link.spine0[(link.nspine - 1) * 3 + 2], DuDarkenCol(col1));
+                dd.Vertex(link.spine1[(link.nspine - 1) * 3], link.spine1[(link.nspine - 1) * 3 + 1],
+                    link.spine1[(link.nspine - 1) * 3 + 2], DuDarkenCol(col1));
             }
 
-            dd.end();
+            dd.End();
         }
 
         if (annotationBuilder != null)
@@ -167,97 +167,97 @@ public class JumpLinkBuilderTool : Tool
                 {
                     float r = link.start.height;
 
-                    int col = duLerpCol(duRGBA(255, 192, 0, 255),
-                        duRGBA(255, 255, 255, 255), 64);
-                    int cola = duTransCol(col, 192);
-                    int colb = duRGBA(255, 255, 255, 255);
+                    int col = DuLerpCol(DuRGBA(255, 192, 0, 255),
+                        DuRGBA(255, 255, 255, 255), 64);
+                    int cola = DuTransCol(col, 192);
+                    int colb = DuRGBA(255, 255, 255, 255);
 
                     // Start segment.
-                    dd.begin(LINES, 3.0f);
-                    dd.vertex(link.start.p, col);
-                    dd.vertex(link.start.q, col);
-                    dd.end();
+                    dd.Begin(LINES, 3.0f);
+                    dd.Vertex(link.start.p, col);
+                    dd.Vertex(link.start.q, col);
+                    dd.End();
 
-                    dd.begin(LINES, 1.0f);
-                    dd.vertex(link.start.p.x, link.start.p.y, link.start.p.z, colb);
-                    dd.vertex(link.start.p.x, link.start.p.y + r, link.start.p.z, colb);
-                    dd.vertex(link.start.p.x, link.start.p.y + r, link.start.p.z, colb);
-                    dd.vertex(link.start.q.x, link.start.q.y + r, link.start.q.z, colb);
-                    dd.vertex(link.start.q.x, link.start.q.y + r, link.start.q.z, colb);
-                    dd.vertex(link.start.q.x, link.start.q.y, link.start.q.z, colb);
-                    dd.vertex(link.start.q.x, link.start.q.y, link.start.q.z, colb);
-                    dd.vertex(link.start.p.x, link.start.p.y, link.start.p.z, colb);
-                    dd.end();
+                    dd.Begin(LINES, 1.0f);
+                    dd.Vertex(link.start.p.x, link.start.p.y, link.start.p.z, colb);
+                    dd.Vertex(link.start.p.x, link.start.p.y + r, link.start.p.z, colb);
+                    dd.Vertex(link.start.p.x, link.start.p.y + r, link.start.p.z, colb);
+                    dd.Vertex(link.start.q.x, link.start.q.y + r, link.start.q.z, colb);
+                    dd.Vertex(link.start.q.x, link.start.q.y + r, link.start.q.z, colb);
+                    dd.Vertex(link.start.q.x, link.start.q.y, link.start.q.z, colb);
+                    dd.Vertex(link.start.q.x, link.start.q.y, link.start.q.z, colb);
+                    dd.Vertex(link.start.p.x, link.start.p.y, link.start.p.z, colb);
+                    dd.End();
 
                     GroundSegment end = link.end;
                     r = end.height;
                     // End segment.
-                    dd.begin(LINES, 3.0f);
-                    dd.vertex(end.p, col);
-                    dd.vertex(end.q, col);
-                    dd.end();
+                    dd.Begin(LINES, 3.0f);
+                    dd.Vertex(end.p, col);
+                    dd.Vertex(end.q, col);
+                    dd.End();
 
-                    dd.begin(LINES, 1.0f);
-                    dd.vertex(end.p.x, end.p.y, end.p.z, colb);
-                    dd.vertex(end.p.x, end.p.y + r, end.p.z, colb);
-                    dd.vertex(end.p.x, end.p.y + r, end.p.z, colb);
-                    dd.vertex(end.q.x, end.q.y + r, end.q.z, colb);
-                    dd.vertex(end.q.x, end.q.y + r, end.q.z, colb);
-                    dd.vertex(end.q.x, end.q.y, end.q.z, colb);
-                    dd.vertex(end.q.x, end.q.y, end.q.z, colb);
-                    dd.vertex(end.p.x, end.p.y, end.p.z, colb);
-                    dd.end();
+                    dd.Begin(LINES, 1.0f);
+                    dd.Vertex(end.p.x, end.p.y, end.p.z, colb);
+                    dd.Vertex(end.p.x, end.p.y + r, end.p.z, colb);
+                    dd.Vertex(end.p.x, end.p.y + r, end.p.z, colb);
+                    dd.Vertex(end.q.x, end.q.y + r, end.q.z, colb);
+                    dd.Vertex(end.q.x, end.q.y + r, end.q.z, colb);
+                    dd.Vertex(end.q.x, end.q.y, end.q.z, colb);
+                    dd.Vertex(end.q.x, end.q.y, end.q.z, colb);
+                    dd.Vertex(end.p.x, end.p.y, end.p.z, colb);
+                    dd.End();
 
-                    dd.begin(LINES, 4.0f);
-                    drawTrajectory(dd, link, link.start.p, end.p, link.trajectory, cola);
-                    drawTrajectory(dd, link, link.start.q, end.q, link.trajectory, cola);
-                    dd.end();
+                    dd.Begin(LINES, 4.0f);
+                    DrawTrajectory(dd, link, link.start.p, end.p, link.trajectory, cola);
+                    DrawTrajectory(dd, link, link.start.q, end.q, link.trajectory, cola);
+                    dd.End();
 
-                    dd.begin(LINES, 8.0f);
-                    dd.vertex(link.start.p, duDarkenCol(col));
-                    dd.vertex(link.start.q, duDarkenCol(col));
-                    dd.vertex(end.p, duDarkenCol(col));
-                    dd.vertex(end.q, duDarkenCol(col));
-                    dd.end();
+                    dd.Begin(LINES, 8.0f);
+                    dd.Vertex(link.start.p, DuDarkenCol(col));
+                    dd.Vertex(link.start.q, DuDarkenCol(col));
+                    dd.Vertex(end.p, DuDarkenCol(col));
+                    dd.Vertex(end.q, DuDarkenCol(col));
+                    dd.End();
 
-                    int colm = duRGBA(255, 255, 255, 255);
-                    dd.begin(LINES, 3.0f);
-                    dd.vertex(link.start.p, colm);
-                    dd.vertex(link.start.q, colm);
-                    dd.vertex(end.p, colm);
-                    dd.vertex(end.q, colm);
-                    dd.end();
+                    int colm = DuRGBA(255, 255, 255, 255);
+                    dd.Begin(LINES, 3.0f);
+                    dd.Vertex(link.start.p, colm);
+                    dd.Vertex(link.start.q, colm);
+                    dd.Vertex(end.p, colm);
+                    dd.Vertex(end.q, colm);
+                    dd.End();
                 }
 
                 if ((option.flags & JumpLinkBuilderToolParams.DRAW_LAND_SAMPLES) != 0)
                 {
-                    dd.begin(POINTS, 8.0f);
+                    dd.Begin(POINTS, 8.0f);
                     for (int i = 0; i < link.start.gsamples.Length; ++i)
                     {
                         GroundSample s = link.start.gsamples[i];
                         float u = i / (float)(link.start.gsamples.Length - 1);
-                        Vector3f spt = vLerp(link.start.p, link.start.q, u);
-                        int col = duRGBA(48, 16, 16, 255); // duRGBA(255,(s->flags & 4)?255:0,0,255);
+                        Vector3f spt = VLerp(link.start.p, link.start.q, u);
+                        int col = DuRGBA(48, 16, 16, 255); // DuRGBA(255,(s->flags & 4)?255:0,0,255);
                         float off = 0.1f;
                         if (!s.validHeight)
                         {
                             off = 0;
-                            col = duRGBA(220, 32, 32, 255);
+                            col = DuRGBA(220, 32, 32, 255);
                         }
 
                         spt.y = s.p.y + off;
-                        dd.vertex(spt, col);
+                        dd.Vertex(spt, col);
                     }
 
-                    dd.end();
+                    dd.End();
 
-                    dd.begin(POINTS, 4.0f);
+                    dd.Begin(POINTS, 4.0f);
                     for (int i = 0; i < link.start.gsamples.Length; ++i)
                     {
                         GroundSample s = link.start.gsamples[i];
                         float u = i / (float)(link.start.gsamples.Length - 1);
-                        Vector3f spt = vLerp(link.start.p, link.start.q, u);
-                        int col = duRGBA(255, 255, 255, 255);
+                        Vector3f spt = VLerp(link.start.p, link.start.q, u);
+                        int col = DuRGBA(255, 255, 255, 255);
                         float off = 0;
                         if (s.validHeight)
                         {
@@ -265,38 +265,38 @@ public class JumpLinkBuilderTool : Tool
                         }
 
                         spt.y = s.p.y + off;
-                        dd.vertex(spt, col);
+                        dd.Vertex(spt, col);
                     }
 
-                    dd.end();
+                    dd.End();
                     {
                         GroundSegment end = link.end;
-                        dd.begin(POINTS, 8.0f);
+                        dd.Begin(POINTS, 8.0f);
                         for (int i = 0; i < end.gsamples.Length; ++i)
                         {
                             GroundSample s = end.gsamples[i];
                             float u = i / (float)(end.gsamples.Length - 1);
-                            Vector3f spt = vLerp(end.p, end.q, u);
-                            int col = duRGBA(48, 16, 16, 255); // duRGBA(255,(s->flags & 4)?255:0,0,255);
+                            Vector3f spt = VLerp(end.p, end.q, u);
+                            int col = DuRGBA(48, 16, 16, 255); // DuRGBA(255,(s->flags & 4)?255:0,0,255);
                             float off = 0.1f;
                             if (!s.validHeight)
                             {
                                 off = 0;
-                                col = duRGBA(220, 32, 32, 255);
+                                col = DuRGBA(220, 32, 32, 255);
                             }
 
                             spt.y = s.p.y + off;
-                            dd.vertex(spt, col);
+                            dd.Vertex(spt, col);
                         }
 
-                        dd.end();
-                        dd.begin(POINTS, 4.0f);
+                        dd.End();
+                        dd.Begin(POINTS, 4.0f);
                         for (int i = 0; i < end.gsamples.Length; ++i)
                         {
                             GroundSample s = end.gsamples[i];
                             float u = i / (float)(end.gsamples.Length - 1);
-                            Vector3f spt = vLerp(end.p, end.q, u);
-                            int col = duRGBA(255, 255, 255, 255);
+                            Vector3f spt = VLerp(end.p, end.q, u);
+                            int col = DuRGBA(255, 255, 255, 255);
                             float off = 0;
                             if (s.validHeight)
                             {
@@ -304,29 +304,29 @@ public class JumpLinkBuilderTool : Tool
                             }
 
                             spt.y = s.p.y + off;
-                            dd.vertex(spt, col);
+                            dd.Vertex(spt, col);
                         }
 
-                        dd.end();
+                        dd.End();
                     }
                 }
             }
         }
 
-        dd.depthMask(true);
+        dd.DepthMask(true);
     }
 
-    private void drawTrajectory(RecastDebugDraw dd, JumpLink link, Vector3f pa, Vector3f pb, Trajectory tra, int cola)
+    private void DrawTrajectory(RecastDebugDraw dd, JumpLink link, Vector3f pa, Vector3f pb, Trajectory tra, int cola)
     {
     }
 
-    public override void handleUpdate(float dt)
+    public override void HandleUpdate(float dt)
     {
     }
 
-    public override void layout()
+    public override void Layout()
     {
-        if (0 >= sample.getRecastResults().Count)
+        if (0 >= sample.GetRecastResults().Count)
             return;
 
         ImGui.Text("Options");
@@ -371,27 +371,27 @@ public class JumpLinkBuilderTool : Tool
         {
             if (annotationBuilder == null)
             {
-                if (sample != null && 0 < sample.getRecastResults().Count)
+                if (sample != null && 0 < sample.GetRecastResults().Count)
                 {
-                    annotationBuilder = new JumpLinkBuilder(sample.getRecastResults());
+                    annotationBuilder = new JumpLinkBuilder(sample.GetRecastResults());
                 }
             }
 
             links.Clear();
             if (annotationBuilder != null)
             {
-                float cellSize = sample.getSettingsUI().getCellSize();
-                float agentHeight = sample.getSettingsUI().getAgentHeight();
-                float agentRadius = sample.getSettingsUI().getAgentRadius();
-                float agentClimb = sample.getSettingsUI().getAgentMaxClimb();
-                float cellHeight = sample.getSettingsUI().getCellHeight();
+                float cellSize = sample.GetSettingsUI().GetCellSize();
+                float agentHeight = sample.GetSettingsUI().GetAgentHeight();
+                float agentRadius = sample.GetSettingsUI().GetAgentRadius();
+                float agentClimb = sample.GetSettingsUI().GetAgentMaxClimb();
+                float cellHeight = sample.GetSettingsUI().GetCellHeight();
                 if ((option.buildTypes & JumpLinkType.EDGE_CLIMB_DOWN.Bit) != 0)
                 {
                     JumpLinkBuilderConfig config = new JumpLinkBuilderConfig(cellSize, cellHeight, agentRadius,
                         agentHeight, agentClimb, option.groundTolerance, -agentRadius * 0.2f,
                         cellSize + 2 * agentRadius + option.climbDownDistance,
                         -option.climbDownMaxHeight, -option.climbDownMinHeight, 0);
-                    links.AddRange(annotationBuilder.build(config, JumpLinkType.EDGE_CLIMB_DOWN));
+                    links.AddRange(annotationBuilder.Build(config, JumpLinkType.EDGE_CLIMB_DOWN));
                 }
 
                 if ((option.buildTypes & JumpLinkType.EDGE_JUMP.Bit) != 0)
@@ -400,17 +400,17 @@ public class JumpLinkBuilderTool : Tool
                         agentHeight, agentClimb, option.groundTolerance, -agentRadius * 0.2f,
                         option.edgeJumpEndDistance, -option.edgeJumpDownMaxHeight,
                         option.edgeJumpUpMaxHeight, option.edgeJumpHeight);
-                    links.AddRange(annotationBuilder.build(config, JumpLinkType.EDGE_JUMP));
+                    links.AddRange(annotationBuilder.Build(config, JumpLinkType.EDGE_JUMP));
                 }
 
                 if (buildOffMeshConnections)
                 {
-                    DemoInputGeomProvider geom = sample.getInputGeom();
+                    DemoInputGeomProvider geom = sample.GetInputGeom();
                     if (geom != null)
                     {
                         int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP_AUTO;
-                        geom.removeOffMeshConnections(c => c.area == area);
-                        links.forEach(l => addOffMeshLink(l, geom, agentRadius));
+                        geom.RemoveOffMeshConnections(c => c.area == area);
+                        links.ForEach(l => AddOffMeshLink(l, geom, agentRadius));
                     }
                 }
             }
@@ -427,7 +427,7 @@ public class JumpLinkBuilderTool : Tool
         //option.flags = newFlags;
     }
 
-    private void addOffMeshLink(JumpLink link, DemoInputGeomProvider geom, float agentRadius)
+    private void AddOffMeshLink(JumpLink link, DemoInputGeomProvider geom, float agentRadius)
     {
         int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP_AUTO;
         int flags = SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP;
@@ -436,15 +436,15 @@ public class JumpLinkBuilderTool : Tool
         {
             Vector3f p = link.startSamples[i].p;
             Vector3f q = link.endSamples[i].p;
-            if (i == 0 || vDist2D(prev, p) > agentRadius)
+            if (i == 0 || VDist2D(prev, p) > agentRadius)
             {
-                geom.addOffMeshConnection(p, q, agentRadius, false, area, flags);
+                geom.AddOffMeshConnection(p, q, agentRadius, false, area, flags);
                 prev = p;
             }
         }
     }
 
-    public override string getName()
+    public override string GetName()
     {
         return "Annotation Builder";
     }

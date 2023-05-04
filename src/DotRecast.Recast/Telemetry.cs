@@ -31,19 +31,19 @@ namespace DotRecast.Recast
         private readonly ThreadLocal<Dictionary<string, AtomicLong>> timerStart = new ThreadLocal<Dictionary<string, AtomicLong>>(() => new Dictionary<string, AtomicLong>());
         private readonly ConcurrentDictionary<string, AtomicLong> timerAccum = new ConcurrentDictionary<string, AtomicLong>();
 
-        public void startTimer(string name)
+        public void StartTimer(string name)
         {
             timerStart.Value[name] = new AtomicLong(FrequencyWatch.Ticks);
         }
 
-        public void stopTimer(string name)
+        public void StopTimer(string name)
         {
             timerAccum
                 .GetOrAdd(name, _ => new AtomicLong(0))
                 .AddAndGet(FrequencyWatch.Ticks - timerStart.Value?[name].Read() ?? 0);
         }
 
-        public void warn(string @string)
+        public void Warn(string @string)
         {
             Console.WriteLine(@string);
         }

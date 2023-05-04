@@ -23,106 +23,106 @@ namespace DotRecast.Detour.Io
 {
     public class MeshDataWriter : DetourWriter
     {
-        public void write(BinaryWriter stream, MeshData data, ByteOrder order, bool cCompatibility)
+        public void Write(BinaryWriter stream, MeshData data, ByteOrder order, bool cCompatibility)
         {
             MeshHeader header = data.header;
-            write(stream, header.magic, order);
-            write(stream, cCompatibility ? MeshHeader.DT_NAVMESH_VERSION : MeshHeader.DT_NAVMESH_VERSION_RECAST4J_LAST, order);
-            write(stream, header.x, order);
-            write(stream, header.y, order);
-            write(stream, header.layer, order);
-            write(stream, header.userId, order);
-            write(stream, header.polyCount, order);
-            write(stream, header.vertCount, order);
-            write(stream, header.maxLinkCount, order);
-            write(stream, header.detailMeshCount, order);
-            write(stream, header.detailVertCount, order);
-            write(stream, header.detailTriCount, order);
-            write(stream, header.bvNodeCount, order);
-            write(stream, header.offMeshConCount, order);
-            write(stream, header.offMeshBase, order);
-            write(stream, header.walkableHeight, order);
-            write(stream, header.walkableRadius, order);
-            write(stream, header.walkableClimb, order);
-            write(stream, header.bmin.x, order);
-            write(stream, header.bmin.y, order);
-            write(stream, header.bmin.z, order);
-            write(stream, header.bmax.x, order);
-            write(stream, header.bmax.y, order);
-            write(stream, header.bmax.z, order);
-            write(stream, header.bvQuantFactor, order);
-            writeVerts(stream, data.verts, header.vertCount, order);
-            writePolys(stream, data, order, cCompatibility);
+            Write(stream, header.magic, order);
+            Write(stream, cCompatibility ? MeshHeader.DT_NAVMESH_VERSION : MeshHeader.DT_NAVMESH_VERSION_RECAST4J_LAST, order);
+            Write(stream, header.x, order);
+            Write(stream, header.y, order);
+            Write(stream, header.layer, order);
+            Write(stream, header.userId, order);
+            Write(stream, header.polyCount, order);
+            Write(stream, header.vertCount, order);
+            Write(stream, header.maxLinkCount, order);
+            Write(stream, header.detailMeshCount, order);
+            Write(stream, header.detailVertCount, order);
+            Write(stream, header.detailTriCount, order);
+            Write(stream, header.bvNodeCount, order);
+            Write(stream, header.offMeshConCount, order);
+            Write(stream, header.offMeshBase, order);
+            Write(stream, header.walkableHeight, order);
+            Write(stream, header.walkableRadius, order);
+            Write(stream, header.walkableClimb, order);
+            Write(stream, header.bmin.x, order);
+            Write(stream, header.bmin.y, order);
+            Write(stream, header.bmin.z, order);
+            Write(stream, header.bmax.x, order);
+            Write(stream, header.bmax.y, order);
+            Write(stream, header.bmax.z, order);
+            Write(stream, header.bvQuantFactor, order);
+            WriteVerts(stream, data.verts, header.vertCount, order);
+            WritePolys(stream, data, order, cCompatibility);
             if (cCompatibility)
             {
-                byte[] linkPlaceholder = new byte[header.maxLinkCount * MeshDataReader.getSizeofLink(false)];
+                byte[] linkPlaceholder = new byte[header.maxLinkCount * MeshDataReader.GetSizeofLink(false)];
                 stream.Write(linkPlaceholder);
             }
 
-            writePolyDetails(stream, data, order, cCompatibility);
-            writeVerts(stream, data.detailVerts, header.detailVertCount, order);
-            writeDTris(stream, data);
-            writeBVTree(stream, data, order, cCompatibility);
-            writeOffMeshCons(stream, data, order);
+            WritePolyDetails(stream, data, order, cCompatibility);
+            WriteVerts(stream, data.detailVerts, header.detailVertCount, order);
+            WriteDTris(stream, data);
+            WriteBVTree(stream, data, order, cCompatibility);
+            WriteOffMeshCons(stream, data, order);
         }
 
-        private void writeVerts(BinaryWriter stream, float[] verts, int count, ByteOrder order)
+        private void WriteVerts(BinaryWriter stream, float[] verts, int count, ByteOrder order)
         {
             for (int i = 0; i < count * 3; i++)
             {
-                write(stream, verts[i], order);
+                Write(stream, verts[i], order);
             }
         }
 
-        private void writePolys(BinaryWriter stream, MeshData data, ByteOrder order, bool cCompatibility)
+        private void WritePolys(BinaryWriter stream, MeshData data, ByteOrder order, bool cCompatibility)
         {
             for (int i = 0; i < data.header.polyCount; i++)
             {
                 if (cCompatibility)
                 {
-                    write(stream, 0xFFFF, order);
+                    Write(stream, 0xFFFF, order);
                 }
 
                 for (int j = 0; j < data.polys[i].verts.Length; j++)
                 {
-                    write(stream, (short)data.polys[i].verts[j], order);
+                    Write(stream, (short)data.polys[i].verts[j], order);
                 }
 
                 for (int j = 0; j < data.polys[i].neis.Length; j++)
                 {
-                    write(stream, (short)data.polys[i].neis[j], order);
+                    Write(stream, (short)data.polys[i].neis[j], order);
                 }
 
-                write(stream, (short)data.polys[i].flags, order);
-                write(stream, (byte)data.polys[i].vertCount);
-                write(stream, (byte)data.polys[i].areaAndtype);
+                Write(stream, (short)data.polys[i].flags, order);
+                Write(stream, (byte)data.polys[i].vertCount);
+                Write(stream, (byte)data.polys[i].areaAndtype);
             }
         }
 
-        private void writePolyDetails(BinaryWriter stream, MeshData data, ByteOrder order, bool cCompatibility)
+        private void WritePolyDetails(BinaryWriter stream, MeshData data, ByteOrder order, bool cCompatibility)
         {
             for (int i = 0; i < data.header.detailMeshCount; i++)
             {
-                write(stream, data.detailMeshes[i].vertBase, order);
-                write(stream, data.detailMeshes[i].triBase, order);
-                write(stream, (byte)data.detailMeshes[i].vertCount);
-                write(stream, (byte)data.detailMeshes[i].triCount);
+                Write(stream, data.detailMeshes[i].vertBase, order);
+                Write(stream, data.detailMeshes[i].triBase, order);
+                Write(stream, (byte)data.detailMeshes[i].vertCount);
+                Write(stream, (byte)data.detailMeshes[i].triCount);
                 if (cCompatibility)
                 {
-                    write(stream, (short)0, order);
+                    Write(stream, (short)0, order);
                 }
             }
         }
 
-        private void writeDTris(BinaryWriter stream, MeshData data)
+        private void WriteDTris(BinaryWriter stream, MeshData data)
         {
             for (int i = 0; i < data.header.detailTriCount * 4; i++)
             {
-                write(stream, (byte)data.detailTris[i]);
+                Write(stream, (byte)data.detailTris[i]);
             }
         }
 
-        private void writeBVTree(BinaryWriter stream, MeshData data, ByteOrder order, bool cCompatibility)
+        private void WriteBVTree(BinaryWriter stream, MeshData data, ByteOrder order, bool cCompatibility)
         {
             for (int i = 0; i < data.header.bvNodeCount; i++)
             {
@@ -130,45 +130,45 @@ namespace DotRecast.Detour.Io
                 {
                     for (int j = 0; j < 3; j++)
                     {
-                        write(stream, (short)data.bvTree[i].bmin[j], order);
+                        Write(stream, (short)data.bvTree[i].bmin[j], order);
                     }
 
                     for (int j = 0; j < 3; j++)
                     {
-                        write(stream, (short)data.bvTree[i].bmax[j], order);
+                        Write(stream, (short)data.bvTree[i].bmax[j], order);
                     }
                 }
                 else
                 {
                     for (int j = 0; j < 3; j++)
                     {
-                        write(stream, data.bvTree[i].bmin[j], order);
+                        Write(stream, data.bvTree[i].bmin[j], order);
                     }
 
                     for (int j = 0; j < 3; j++)
                     {
-                        write(stream, data.bvTree[i].bmax[j], order);
+                        Write(stream, data.bvTree[i].bmax[j], order);
                     }
                 }
 
-                write(stream, data.bvTree[i].i, order);
+                Write(stream, data.bvTree[i].i, order);
             }
         }
 
-        private void writeOffMeshCons(BinaryWriter stream, MeshData data, ByteOrder order)
+        private void WriteOffMeshCons(BinaryWriter stream, MeshData data, ByteOrder order)
         {
             for (int i = 0; i < data.header.offMeshConCount; i++)
             {
                 for (int j = 0; j < 6; j++)
                 {
-                    write(stream, data.offMeshCons[i].pos[j], order);
+                    Write(stream, data.offMeshCons[i].pos[j], order);
                 }
 
-                write(stream, data.offMeshCons[i].rad, order);
-                write(stream, (short)data.offMeshCons[i].poly, order);
-                write(stream, (byte)data.offMeshCons[i].flags);
-                write(stream, (byte)data.offMeshCons[i].side);
-                write(stream, data.offMeshCons[i].userId, order);
+                Write(stream, data.offMeshCons[i].rad, order);
+                Write(stream, (short)data.offMeshCons[i].poly, order);
+                Write(stream, (byte)data.offMeshCons[i].flags);
+                Write(stream, (byte)data.offMeshCons[i].side);
+                Write(stream, data.offMeshCons[i].userId, order);
             }
         }
     }

@@ -5,12 +5,12 @@ namespace DotRecast.Detour.Extras.Jumplink
 {
     public class Trajectory
     {
-        public float lerp(float f, float g, float u)
+        public float Lerp(float f, float g, float u)
         {
             return u * g + (1f - u) * f;
         }
 
-        public virtual Vector3f apply(Vector3f start, Vector3f end, float u)
+        public virtual Vector3f Apply(Vector3f start, Vector3f end, float u)
         {
             throw new NotImplementedException();
         }

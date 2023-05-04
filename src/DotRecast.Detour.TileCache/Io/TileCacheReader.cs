@@ -29,28 +29,28 @@ namespace DotRecast.Detour.TileCache.Io
     {
         private readonly NavMeshParamReader paramReader = new NavMeshParamReader();
 
-        public TileCache read(BinaryReader @is, int maxVertPerPoly, TileCacheMeshProcess meshProcessor)
+        public TileCache Read(BinaryReader @is, int maxVertPerPoly, TileCacheMeshProcess meshProcessor)
         {
-            ByteBuffer bb = IOUtils.toByteBuffer(@is);
-            return read(bb, maxVertPerPoly, meshProcessor);
+            ByteBuffer bb = IOUtils.ToByteBuffer(@is);
+            return Read(bb, maxVertPerPoly, meshProcessor);
         }
 
-        public TileCache read(ByteBuffer bb, int maxVertPerPoly, TileCacheMeshProcess meshProcessor)
+        public TileCache Read(ByteBuffer bb, int maxVertPerPoly, TileCacheMeshProcess meshProcessor)
         {
             TileCacheSetHeader header = new TileCacheSetHeader();
-            header.magic = bb.getInt();
+            header.magic = bb.GetInt();
             if (header.magic != TileCacheSetHeader.TILECACHESET_MAGIC)
             {
-                header.magic = IOUtils.swapEndianness(header.magic);
+                header.magic = IOUtils.SwapEndianness(header.magic);
                 if (header.magic != TileCacheSetHeader.TILECACHESET_MAGIC)
                 {
                     throw new IOException("Invalid magic");
                 }
 
-                bb.order(bb.order() == ByteOrder.BIG_ENDIAN ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN);
+                bb.Order(bb.Order() == ByteOrder.BIG_ENDIAN ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN);
             }
 
-            header.version = bb.getInt();
+            header.version = bb.GetInt();
             if (header.version != TileCacheSetHeader.TILECACHESET_VERSION)
             {
                 if (header.version != TileCacheSetHeader.TILECACHESET_VERSION_RECAST4J)
@@ -60,52 +60,52 @@ namespace DotRecast.Detour.TileCache.Io
             }
 
             bool cCompatibility = header.version == TileCacheSetHeader.TILECACHESET_VERSION;
-            header.numTiles = bb.getInt();
-            header.meshParams = paramReader.read(bb);
-            header.cacheParams = readCacheParams(bb, cCompatibility);
+            header.numTiles = bb.GetInt();
+            header.meshParams = paramReader.Read(bb);
+            header.cacheParams = ReadCacheParams(bb, cCompatibility);
             NavMesh mesh = new NavMesh(header.meshParams, maxVertPerPoly);
-            TileCacheCompressor compressor = TileCacheCompressorFactory.get(cCompatibility);
-            TileCache tc = new TileCache(header.cacheParams, new TileCacheStorageParams(bb.order(), cCompatibility), mesh,
+            TileCacheCompressor compressor = TileCacheCompressorFactory.Get(cCompatibility);
+            TileCache tc = new TileCache(header.cacheParams, new TileCacheStorageParams(bb.Order(), cCompatibility), mesh,
                 compressor, meshProcessor);
             // Read tiles.
             for (int i = 0; i < header.numTiles; ++i)
             {
-                long tileRef = bb.getInt();
-                int dataSize = bb.getInt();
+                long tileRef = bb.GetInt();
+                int dataSize = bb.GetInt();
                 if (tileRef == 0 || dataSize == 0)
                 {
                     break;
                 }
 
                 byte[] data = bb.ReadBytes(dataSize).ToArray();
-                long tile = tc.addTile(data, 0);
+                long tile = tc.AddTile(data, 0);
                 if (tile != 0)
                 {
-                    tc.buildNavMeshTile(tile);
+                    tc.BuildNavMeshTile(tile);
                 }
             }
 
             return tc;
         }
 
-        private TileCacheParams readCacheParams(ByteBuffer bb, bool cCompatibility)
+        private TileCacheParams ReadCacheParams(ByteBuffer bb, bool cCompatibility)
         {
             TileCacheParams option = new TileCacheParams();
             
-            option.orig.x = bb.getFloat();
-            option.orig.y = bb.getFloat();
-            option.orig.z = bb.getFloat();
+            option.orig.x = bb.GetFloat();
+            option.orig.y = bb.GetFloat();
+            option.orig.z = bb.GetFloat();
 
-            option.cs = bb.getFloat();
-            option.ch = bb.getFloat();
-            option.width = bb.getInt();
-            option.height = bb.getInt();
-            option.walkableHeight = bb.getFloat();
-            option.walkableRadius = bb.getFloat();
-            option.walkableClimb = bb.getFloat();
-            option.maxSimplificationError = bb.getFloat();
-            option.maxTiles = bb.getInt();
-            option.maxObstacles = bb.getInt();
+            option.cs = bb.GetFloat();
+            option.ch = bb.GetFloat();
+            option.width = bb.GetInt();
+            option.height = bb.GetInt();
+            option.walkableHeight = bb.GetFloat();
+            option.walkableRadius = bb.GetFloat();
+            option.walkableClimb = bb.GetFloat();
+            option.maxSimplificationError = bb.GetFloat();
+            option.maxTiles = bb.GetInt();
+            option.maxObstacles = bb.GetInt();
             return option;
         }
     }

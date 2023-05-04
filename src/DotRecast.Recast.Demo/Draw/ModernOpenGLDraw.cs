@@ -35,7 +35,7 @@ public class ModernOpenGLDraw : OpenGLDraw
         _gl = gl;
     }
 
-    public unsafe void init()
+    public unsafe void Init()
     {
         string SHADER_VERSION = "#version 400\n";
         string vertex_shader = SHADER_VERSION + "uniform mat4 ProjMtx;\n" //
@@ -153,7 +153,7 @@ public class ModernOpenGLDraw : OpenGLDraw
         _gl.BindBuffer(GLEnum.ElementArrayBuffer, 0);
     }
 
-    public void clear()
+    public void Clear()
     {
         _gl.ClearColor(0.3f, 0.3f, 0.32f, 1.0f);
         _gl.Clear((uint)GLEnum.ColorBufferBit | (uint)GLEnum.DepthBufferBit);
@@ -164,7 +164,7 @@ public class ModernOpenGLDraw : OpenGLDraw
         _gl.Enable(GLEnum.CullFace);
     }
 
-    public void begin(DebugDrawPrimitives prim, float size)
+    public void Begin(DebugDrawPrimitives prim, float size)
     {
         currentPrim = prim;
         vertices.Clear();
@@ -172,7 +172,7 @@ public class ModernOpenGLDraw : OpenGLDraw
         _gl.PointSize(size);
     }
 
-    public unsafe void end()
+    public unsafe void End()
     {
         if (0 >= vertices.Count)
         {
@@ -189,8 +189,8 @@ public class ModernOpenGLDraw : OpenGLDraw
         _gl.BindVertexArray(vao);
         _gl.BindBuffer(GLEnum.ArrayBuffer, vbo);
         _gl.BindBuffer(GLEnum.ElementArrayBuffer, ebo);
-        // glBufferData(GL_ARRAY_BUFFER, MAX_VERTEX_BUFFER, GL_STREAM_DRAW);
-        // glBufferData(GL_ELEMENT_ARRAY_BUFFER, MAX_ELEMENT_BUFFER, GL_STREAM_DRAW);
+        // GlBufferData(GL_ARRAY_BUFFER, MAX_VERTEX_BUFFER, GL_STREAM_DRAW);
+        // GlBufferData(GL_ELEMENT_ARRAY_BUFFER, MAX_ELEMENT_BUFFER, GL_STREAM_DRAW);
 
         uint vboSize = (uint)vertices.Count * 24;
         uint eboSize = currentPrim == DebugDrawPrimitives.QUADS ? (uint)vertices.Count * 6 : (uint)vertices.Count * 4;
@@ -203,7 +203,7 @@ public class ModernOpenGLDraw : OpenGLDraw
             byte* pVerts = (byte*)_gl.MapBuffer(GLEnum.ArrayBuffer, GLEnum.WriteOnly);
             byte* pElems = (byte*)_gl.MapBuffer(GLEnum.ElementArrayBuffer, GLEnum.WriteOnly);
 
-            //vertices.forEach(v => v.store(verts));
+            //vertices.ForEach(v => v.Store(verts));
             fixed (void* v = vertices.AsArray())
             {
                 System.Buffer.MemoryCopy(v, pVerts, vboSize, vboSize);
@@ -241,7 +241,7 @@ public class ModernOpenGLDraw : OpenGLDraw
         }
         if (_texture != null)
         {
-            _texture.bind();
+            _texture.Bind();
             _gl.Uniform1(uniformUseTexture, 1.0f);
         }
         else
@@ -276,63 +276,63 @@ public class ModernOpenGLDraw : OpenGLDraw
         _gl.PointSize(1.0f);
     }
 
-    public void vertex(float x, float y, float z, int color)
+    public void Vertex(float x, float y, float z, int color)
     {
         vertices.Add(new OpenGLVertex(x, y, z, color));
     }
 
-    public void vertex(float[] pos, int color)
+    public void Vertex(float[] pos, int color)
     {
         vertices.Add(new OpenGLVertex(pos, color));
     }
     
-    public void vertex(Vector3f pos, int color)
+    public void Vertex(Vector3f pos, int color)
     {
         vertices.Add(new OpenGLVertex(pos, color));
     }
 
 
-    public void vertex(Vector3f pos, int color, Vector2f uv)
+    public void Vertex(Vector3f pos, int color, Vector2f uv)
     {
         vertices.Add(new OpenGLVertex(pos, uv, color));
     }
 
-    public void vertex(float x, float y, float z, int color, float u, float v)
+    public void Vertex(float x, float y, float z, int color, float u, float v)
     {
         vertices.Add(new OpenGLVertex(x, y, z, u, v, color));
     }
 
-    public void depthMask(bool state)
+    public void DepthMask(bool state)
     {
         _gl.DepthMask(state);
     }
 
-    public void texture(GLCheckerTexture g_tex, bool state)
+    public void Texture(GLCheckerTexture g_tex, bool state)
     {
         _texture = state ? g_tex : null;
         if (_texture != null)
         {
-            _texture.bind();
+            _texture.Bind();
         }
     }
 
-    public void projectionMatrix(float[] projectionMatrix)
+    public void ProjectionMatrix(float[] projectionMatrix)
     {
         this._projectionMatrix = projectionMatrix;
     }
 
-    public void viewMatrix(float[] viewMatrix)
+    public void ViewMatrix(float[] viewMatrix)
     {
         this._viewMatrix = viewMatrix;
     }
 
-    public void fog(float start, float end)
+    public void Fog(float start, float end)
     {
         fogStart = start;
         fogEnd = end;
     }
 
-    public void fog(bool state)
+    public void Fog(bool state)
     {
         fogEnabled = state;
     }

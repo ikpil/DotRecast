@@ -60,7 +60,7 @@ namespace DotRecast.Recast
             }
         }
 
-        private static CornerHeight getCornerHeight(int x, int y, int i, int dir, CompactHeightfield chf)
+        private static CornerHeight GetCornerHeight(int x, int y, int i, int dir, CompactHeightfield chf)
         {
             bool isBorderVertex = false;
             CompactSpan s = chf.spans[i];
@@ -138,7 +138,7 @@ namespace DotRecast.Recast
             return new CornerHeight(ch, isBorderVertex);
         }
 
-        private static void walkContour(int x, int y, int i, CompactHeightfield chf, int[] flags, List<int> points)
+        private static void WalkContour(int x, int y, int i, CompactHeightfield chf, int[] flags, List<int> points)
         {
             // Choose the first non-connected edge
             int dir = 0;
@@ -157,7 +157,7 @@ namespace DotRecast.Recast
                 {
                     // Choose the edge corner
                     bool isAreaBorder = false;
-                    CornerHeight cornerHeight = getCornerHeight(x, y, i, dir, chf);
+                    CornerHeight cornerHeight = GetCornerHeight(x, y, i, dir, chf);
                     bool isBorderVertex = cornerHeight.borderVertex;
                     int px = x;
                     int py = cornerHeight.height;
@@ -231,7 +231,7 @@ namespace DotRecast.Recast
             }
         }
 
-        private static float distancePtSeg(int x, int z, int px, int pz, int qx, int qz)
+        private static float DistancePtSeg(int x, int z, int px, int pz, int qx, int qz)
         {
             float pqx = qx - px;
             float pqz = qz - pz;
@@ -252,7 +252,7 @@ namespace DotRecast.Recast
             return dx * dx + dz * dz;
         }
 
-        private static void simplifyContour(List<int> points, List<int> simplified, float maxError, int maxEdgeLen, int buildFlags)
+        private static void SimplifyContour(List<int> points, List<int> simplified, float maxError, int maxEdgeLen, int buildFlags)
         {
             // Add initial points.
             bool hasConnections = false;
@@ -377,7 +377,7 @@ namespace DotRecast.Recast
                 {
                     while (ci != endi)
                     {
-                        float d = distancePtSeg(points[ci * 4 + 0], points[ci * 4 + 2], ax, az, bx, bz);
+                        float d = DistancePtSeg(points[ci * 4 + 0], points[ci * 4 + 2], ax, az, bx, bz);
                         if (d > maxd)
                         {
                             maxd = d;
@@ -480,7 +480,7 @@ namespace DotRecast.Recast
             }
         }
 
-        private static int calcAreaOfPolygon2D(int[] verts, int nverts)
+        private static int CalcAreaOfPolygon2D(int[] verts, int nverts)
         {
             int area = 0;
             for (int i = 0, j = nverts - 1; i < nverts; j = i++)
@@ -493,7 +493,7 @@ namespace DotRecast.Recast
             return (area + 1) / 2;
         }
 
-        private static bool intersectSegContour(int d0, int d1, int i, int n, int[] verts, int[] d0verts, int[] d1verts)
+        private static bool IntersectSegContour(int d0, int d1, int i, int n, int[] verts, int[] d0verts, int[] d1verts)
         {
             // For each edge (k,k+1) of P
             int[] pverts = new int[4 * 4];
@@ -507,7 +507,7 @@ namespace DotRecast.Recast
             d1 = 4;
             for (int k = 0; k < n; k++)
             {
-                int k1 = RecastMesh.next(k, n);
+                int k1 = RecastMesh.Next(k, n);
                 // Skip edges incident to i.
                 if (i == k || i == k1)
                     continue;
@@ -521,22 +521,22 @@ namespace DotRecast.Recast
 
                 p0 = 8;
                 p1 = 12;
-                if (RecastMesh.vequal(pverts, d0, p0) || RecastMesh.vequal(pverts, d1, p0)
-                                                      || RecastMesh.vequal(pverts, d0, p1) || RecastMesh.vequal(pverts, d1, p1))
+                if (RecastMesh.Vequal(pverts, d0, p0) || RecastMesh.Vequal(pverts, d1, p0)
+                                                      || RecastMesh.Vequal(pverts, d0, p1) || RecastMesh.Vequal(pverts, d1, p1))
                     continue;
 
-                if (RecastMesh.intersect(pverts, d0, d1, p0, p1))
+                if (RecastMesh.Intersect(pverts, d0, d1, p0, p1))
                     return true;
             }
 
             return false;
         }
 
-        private static bool inCone(int i, int n, int[] verts, int pj, int[] vertpj)
+        private static bool InCone(int i, int n, int[] verts, int pj, int[] vertpj)
         {
             int pi = i * 4;
-            int pi1 = RecastMesh.next(i, n) * 4;
-            int pin1 = RecastMesh.prev(i, n) * 4;
+            int pi1 = RecastMesh.Next(i, n) * 4;
+            int pin1 = RecastMesh.Prev(i, n) * 4;
             int[] pverts = new int[4 * 4];
             for (int g = 0; g < 4; g++)
             {
@@ -551,23 +551,23 @@ namespace DotRecast.Recast
             pin1 = 8;
             pj = 12;
             // If P[i] is a convex vertex [ i+1 left or on (i-1,i) ].
-            if (RecastMesh.leftOn(pverts, pin1, pi, pi1))
-                return RecastMesh.left(pverts, pi, pj, pin1) && RecastMesh.left(pverts, pj, pi, pi1);
+            if (RecastMesh.LeftOn(pverts, pin1, pi, pi1))
+                return RecastMesh.Left(pverts, pi, pj, pin1) && RecastMesh.Left(pverts, pj, pi, pi1);
             // Assume (i-1,i,i+1) not collinear.
             // else P[i] is reflex.
-            return !(RecastMesh.leftOn(pverts, pi, pj, pi1) && RecastMesh.leftOn(pverts, pj, pi, pin1));
+            return !(RecastMesh.LeftOn(pverts, pi, pj, pi1) && RecastMesh.LeftOn(pverts, pj, pi, pin1));
         }
 
-        private static void removeDegenerateSegments(List<int> simplified)
+        private static void RemoveDegenerateSegments(List<int> simplified)
         {
             // Remove adjacent vertices which are equal on xz-plane,
             // or else the triangulator will get confused.
             int npts = simplified.Count / 4;
             for (int i = 0; i < npts; ++i)
             {
-                int ni = RecastMesh.next(i, npts);
+                int ni = RecastMesh.Next(i, npts);
 
-                // if (vequal(&simplified[i*4], &simplified[ni*4]))
+                // if (Vequal(&simplified[i*4], &simplified[ni*4]))
                 if (simplified[i * 4] == simplified[ni * 4]
                     && simplified[i * 4 + 2] == simplified[ni * 4 + 2])
                 {
@@ -581,7 +581,7 @@ namespace DotRecast.Recast
             }
         }
 
-        private static void mergeContours(Contour ca, Contour cb, int ia, int ib)
+        private static void MergeContours(Contour ca, Contour cb, int ia, int ib)
         {
             int maxVerts = ca.nverts + cb.nverts + 2;
             int[] verts = new int[maxVerts * 4];
@@ -620,7 +620,7 @@ namespace DotRecast.Recast
         }
 
         // Finds the lowest leftmost vertex of a contour.
-        private static int[] findLeftMostVertex(Contour contour)
+        private static int[] FindLeftMostVertex(Contour contour)
         {
             int minx = contour.verts[0];
             int minz = contour.verts[2];
@@ -665,12 +665,12 @@ namespace DotRecast.Recast
             }
         }
 
-        private static void mergeRegionHoles(Telemetry ctx, ContourRegion region)
+        private static void MergeRegionHoles(Telemetry ctx, ContourRegion region)
         {
             // Sort holes from left to right.
             for (int i = 0; i < region.nholes; i++)
             {
-                int[] minleft = findLeftMostVertex(region.holes[i].contour);
+                int[] minleft = FindLeftMostVertex(region.holes[i].contour);
                 region.holes[i].minx = minleft[0];
                 region.holes[i].minz = minleft[1];
                 region.holes[i].leftmost = minleft[2];
@@ -711,7 +711,7 @@ namespace DotRecast.Recast
                     int corner = bestVertex * 4;
                     for (int j = 0; j < outline.nverts; j++)
                     {
-                        if (inCone(j, outline.nverts, outline.verts, corner, hole.verts))
+                        if (InCone(j, outline.nverts, outline.verts, corner, hole.verts))
                         {
                             int dx = outline.verts[j * 4 + 0] - hole.verts[corner + 0];
                             int dz = outline.verts[j * 4 + 2] - hole.verts[corner + 2];
@@ -729,10 +729,10 @@ namespace DotRecast.Recast
                     for (int j = 0; j < ndiags; j++)
                     {
                         int pt = diags[j].vert * 4;
-                        bool intersect = intersectSegContour(pt, corner, diags[j].vert, outline.nverts, outline.verts,
+                        bool intersect = IntersectSegContour(pt, corner, diags[j].vert, outline.nverts, outline.verts,
                             outline.verts, hole.verts);
                         for (int k = i; k < region.nholes && !intersect; k++)
-                            intersect |= intersectSegContour(pt, corner, -1, region.holes[k].contour.nverts,
+                            intersect |= IntersectSegContour(pt, corner, -1, region.holes[k].contour.nverts,
                                 region.holes[k].contour.verts, outline.verts, hole.verts);
                         if (!intersect)
                         {
@@ -750,11 +750,11 @@ namespace DotRecast.Recast
 
                 if (index == -1)
                 {
-                    ctx.warn("mergeHoles: Failed to find merge points for");
+                    ctx.Warn("mergeHoles: Failed to find merge points for");
                     continue;
                 }
 
-                mergeContours(region.outline, hole, index, bestVertex);
+                MergeContours(region.outline, hole, index, bestVertex);
             }
         }
 
@@ -771,7 +771,7 @@ namespace DotRecast.Recast
         /// See the #rcConfig documentation for more information on the configuration parameters.
         ///
         /// @see rcAllocContourSet, rcCompactHeightfield, rcContourSet, rcConfig
-        public static ContourSet buildContours(Telemetry ctx, CompactHeightfield chf, float maxError, int maxEdgeLen,
+        public static ContourSet BuildContours(Telemetry ctx, CompactHeightfield chf, float maxError, int maxEdgeLen,
             int buildFlags)
         {
             int w = chf.width;
@@ -779,7 +779,7 @@ namespace DotRecast.Recast
             int borderSize = chf.borderSize;
             ContourSet cset = new ContourSet();
 
-            ctx.startTimer("CONTOURS");
+            ctx.StartTimer("CONTOURS");
             cset.bmin = chf.bmin;
             cset.bmax = chf.bmax;
             if (borderSize > 0)
@@ -801,7 +801,7 @@ namespace DotRecast.Recast
 
             int[] flags = new int[chf.spanCount];
 
-            ctx.startTimer("CONTOURS_TRACE");
+            ctx.StartTimer("CONTOURS_TRACE");
 
             // Mark boundaries.
             for (int y = 0; y < h; ++y)
@@ -839,7 +839,7 @@ namespace DotRecast.Recast
                 }
             }
 
-            ctx.stopTimer("CONTOURS_TRACE");
+            ctx.StopTimer("CONTOURS_TRACE");
 
             List<int> verts = new List<int>(256);
             List<int> simplified = new List<int>(64);
@@ -865,14 +865,14 @@ namespace DotRecast.Recast
                         verts.Clear();
                         simplified.Clear();
 
-                        ctx.startTimer("CONTOURS_WALK");
-                        walkContour(x, y, i, chf, flags, verts);
-                        ctx.stopTimer("CONTOURS_WALK");
+                        ctx.StartTimer("CONTOURS_WALK");
+                        WalkContour(x, y, i, chf, flags, verts);
+                        ctx.StopTimer("CONTOURS_WALK");
 
-                        ctx.startTimer("CONTOURS_SIMPLIFY");
-                        simplifyContour(verts, simplified, maxError, maxEdgeLen, buildFlags);
-                        removeDegenerateSegments(simplified);
-                        ctx.stopTimer("CONTOURS_SIMPLIFY");
+                        ctx.StartTimer("CONTOURS_SIMPLIFY");
+                        SimplifyContour(verts, simplified, maxError, maxEdgeLen, buildFlags);
+                        RemoveDegenerateSegments(simplified);
+                        ctx.StopTimer("CONTOURS_SIMPLIFY");
 
                         // Store region->contour remap info.
                         // Create contour.
@@ -932,7 +932,7 @@ namespace DotRecast.Recast
                 {
                     Contour cont = cset.conts[i];
                     // If the contour is wound backwards, it is a hole.
-                    winding[i] = calcAreaOfPolygon2D(cont.verts, cont.nverts) < 0 ? -1 : 1;
+                    winding[i] = CalcAreaOfPolygon2D(cont.verts, cont.nverts) < 0 ? -1 : 1;
                     if (winding[i] < 0)
                         nholes++;
                 }
@@ -999,7 +999,7 @@ namespace DotRecast.Recast
 
                         if (reg.outline != null)
                         {
-                            mergeRegionHoles(ctx, reg);
+                            MergeRegionHoles(ctx, reg);
                         }
                         else
                         {
@@ -1013,7 +1013,7 @@ namespace DotRecast.Recast
                 }
             }
 
-            ctx.stopTimer("CONTOURS");
+            ctx.StopTimer("CONTOURS");
             return cset;
         }
     }

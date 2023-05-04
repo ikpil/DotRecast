@@ -66,46 +66,46 @@ namespace DotRecast.Detour.TileCache
         private readonly TileCacheBuilder builder = new TileCacheBuilder();
         private readonly TileCacheLayerHeaderReader tileReader = new TileCacheLayerHeaderReader();
 
-        private bool contains(List<long> a, long v)
+        private bool Contains(List<long> a, long v)
         {
             return a.Contains(v);
         }
 
         /// Encodes a tile id.
-        private long encodeTileId(int salt, int it)
+        private long EncodeTileId(int salt, int it)
         {
             return ((long)salt << m_tileBits) | it;
         }
 
         /// Decodes a tile salt.
-        private int decodeTileIdSalt(long refs)
+        private int DecodeTileIdSalt(long refs)
         {
             long saltMask = (1L << m_saltBits) - 1;
             return (int)((refs >> m_tileBits) & saltMask);
         }
 
         /// Decodes a tile id.
-        private int decodeTileIdTile(long refs)
+        private int DecodeTileIdTile(long refs)
         {
             long tileMask = (1L << m_tileBits) - 1;
             return (int)(refs & tileMask);
         }
 
         /// Encodes an obstacle id.
-        private long encodeObstacleId(int salt, int it)
+        private long EncodeObstacleId(int salt, int it)
         {
             return ((long)salt << 16) | it;
         }
 
         /// Decodes an obstacle salt.
-        private int decodeObstacleIdSalt(long refs)
+        private int DecodeObstacleIdSalt(long refs)
         {
             long saltMask = ((long)1 << 16) - 1;
             return (int)((refs >> 16) & saltMask);
         }
 
         /// Decodes an obstacle id.
-        private int decodeObstacleIdObstacle(long refs)
+        private int DecodeObstacleIdObstacle(long refs)
         {
             long tileMask = ((long)1 << 16) - 1;
             return (int)(refs & tileMask);
@@ -120,7 +120,7 @@ namespace DotRecast.Detour.TileCache
             m_tcomp = tcomp;
             m_tmproc = tmprocs;
 
-            m_tileLutSize = nextPow2(m_params.maxTiles / 4);
+            m_tileLutSize = NextPow2(m_params.maxTiles / 4);
             if (m_tileLutSize == 0)
             {
                 m_tileLutSize = 1;
@@ -136,7 +136,7 @@ namespace DotRecast.Detour.TileCache
                 m_nextFreeTile = m_tiles[i];
             }
 
-            m_tileBits = ilog2(nextPow2(m_params.maxTiles));
+            m_tileBits = Ilog2(NextPow2(m_params.maxTiles));
             m_saltBits = Math.Min(31, 32 - m_tileBits);
             if (m_saltBits < 10)
             {
@@ -144,15 +144,15 @@ namespace DotRecast.Detour.TileCache
             }
         }
 
-        public CompressedTile getTileByRef(long refs)
+        public CompressedTile GetTileByRef(long refs)
         {
             if (refs == 0)
             {
                 return null;
             }
 
-            int tileIndex = decodeTileIdTile(refs);
-            int tileSalt = decodeTileIdSalt(refs);
+            int tileIndex = DecodeTileIdTile(refs);
+            int tileSalt = DecodeTileIdSalt(refs);
             if (tileIndex >= m_params.maxTiles)
             {
                 return null;
@@ -167,18 +167,18 @@ namespace DotRecast.Detour.TileCache
             return tile;
         }
 
-        public List<long> getTilesAt(int tx, int ty)
+        public List<long> GetTilesAt(int tx, int ty)
         {
             List<long> tiles = new List<long>();
 
             // Find tile based on hash.
-            int h = NavMesh.computeTileHash(tx, ty, m_tileLutMask);
+            int h = NavMesh.ComputeTileHash(tx, ty, m_tileLutMask);
             CompressedTile tile = m_posLookup[h];
             while (tile != null)
             {
                 if (tile.header != null && tile.header.tx == tx && tile.header.ty == ty)
                 {
-                    tiles.Add(getTileRef(tile));
+                    tiles.Add(GetTileRef(tile));
                 }
 
                 tile = tile.next;
@@ -187,10 +187,10 @@ namespace DotRecast.Detour.TileCache
             return tiles;
         }
 
-        CompressedTile getTileAt(int tx, int ty, int tlayer)
+        CompressedTile GetTileAt(int tx, int ty, int tlayer)
         {
             // Find tile based on hash.
-            int h = NavMesh.computeTileHash(tx, ty, m_tileLutMask);
+            int h = NavMesh.ComputeTileHash(tx, ty, m_tileLutMask);
             CompressedTile tile = m_posLookup[h];
             while (tile != null)
             {
@@ -205,7 +205,7 @@ namespace DotRecast.Detour.TileCache
             return null;
         }
 
-        public long getTileRef(CompressedTile tile)
+        public long GetTileRef(CompressedTile tile)
         {
             if (tile == null)
             {
@@ -213,10 +213,10 @@ namespace DotRecast.Detour.TileCache
             }
 
             int it = tile.index;
-            return encodeTileId(tile.salt, it);
+            return EncodeTileId(tile.salt, it);
         }
 
-        public long getObstacleRef(TileCacheObstacle ob)
+        public long GetObstacleRef(TileCacheObstacle ob)
         {
             if (ob == null)
             {
@@ -224,24 +224,24 @@ namespace DotRecast.Detour.TileCache
             }
 
             int idx = ob.index;
-            return encodeObstacleId(ob.salt, idx);
+            return EncodeObstacleId(ob.salt, idx);
         }
 
-        public TileCacheObstacle getObstacleByRef(long refs)
+        public TileCacheObstacle GetObstacleByRef(long refs)
         {
             if (refs == 0)
             {
                 return null;
             }
 
-            int idx = decodeObstacleIdObstacle(refs);
+            int idx = DecodeObstacleIdObstacle(refs);
             if (idx >= m_obstacles.Count)
             {
                 return null;
             }
 
             TileCacheObstacle ob = m_obstacles[idx];
-            int salt = decodeObstacleIdSalt(refs);
+            int salt = DecodeObstacleIdSalt(refs);
             if (ob.salt != salt)
             {
                 return null;
@@ -250,14 +250,14 @@ namespace DotRecast.Detour.TileCache
             return ob;
         }
 
-        public long addTile(byte[] data, int flags)
+        public long AddTile(byte[] data, int flags)
         {
             // Make sure the data is in right format.
             ByteBuffer buf = new ByteBuffer(data);
-            buf.order(m_storageParams.byteOrder);
-            TileCacheLayerHeader header = tileReader.read(buf, m_storageParams.cCompatibility);
+            buf.Order(m_storageParams.byteOrder);
+            TileCacheLayerHeader header = tileReader.Read(buf, m_storageParams.cCompatibility);
             // Make sure the location is free.
-            if (getTileAt(header.tx, header.ty, header.tlayer) != null)
+            if (GetTileAt(header.tx, header.ty, header.tlayer) != null)
             {
                 return 0;
             }
@@ -278,33 +278,33 @@ namespace DotRecast.Detour.TileCache
             }
 
             // Insert tile into the position lut.
-            int h = NavMesh.computeTileHash(header.tx, header.ty, m_tileLutMask);
+            int h = NavMesh.ComputeTileHash(header.tx, header.ty, m_tileLutMask);
             tile.next = m_posLookup[h];
             m_posLookup[h] = tile;
 
             // Init tile.
             tile.header = header;
             tile.data = data;
-            tile.compressed = align4(buf.position());
+            tile.compressed = Align4(buf.Position());
             tile.flags = flags;
 
-            return getTileRef(tile);
+            return GetTileRef(tile);
         }
 
-        private int align4(int i)
+        private int Align4(int i)
         {
             return (i + 3) & (~3);
         }
 
-        public void removeTile(long refs)
+        public void RemoveTile(long refs)
         {
             if (refs == 0)
             {
                 throw new Exception("Invalid tile ref");
             }
 
-            int tileIndex = decodeTileIdTile(refs);
-            int tileSalt = decodeTileIdSalt(refs);
+            int tileIndex = DecodeTileIdTile(refs);
+            int tileSalt = DecodeTileIdSalt(refs);
             if (tileIndex >= m_params.maxTiles)
             {
                 throw new Exception("Invalid tile index");
@@ -317,7 +317,7 @@ namespace DotRecast.Detour.TileCache
             }
 
             // Remove tile from hash lookup.
-            int h = NavMesh.computeTileHash(tile.header.tx, tile.header.ty, m_tileLutMask);
+            int h = NavMesh.ComputeTileHash(tile.header.tx, tile.header.ty, m_tileLutMask);
             CompressedTile prev = null;
             CompressedTile cur = m_posLookup[h];
             while (cur != null)
@@ -358,34 +358,34 @@ namespace DotRecast.Detour.TileCache
         }
 
         // Cylinder obstacle
-        public long addObstacle(Vector3f pos, float radius, float height)
+        public long AddObstacle(Vector3f pos, float radius, float height)
         {
-            TileCacheObstacle ob = allocObstacle();
+            TileCacheObstacle ob = AllocObstacle();
             ob.type = TileCacheObstacle.TileCacheObstacleType.CYLINDER;
 
             ob.pos = pos;
             ob.radius = radius;
             ob.height = height;
 
-            return addObstacleRequest(ob).refs;
+            return AddObstacleRequest(ob).refs;
         }
 
         // Aabb obstacle
-        public long addBoxObstacle(Vector3f bmin, Vector3f bmax)
+        public long AddBoxObstacle(Vector3f bmin, Vector3f bmax)
         {
-            TileCacheObstacle ob = allocObstacle();
+            TileCacheObstacle ob = AllocObstacle();
             ob.type = TileCacheObstacle.TileCacheObstacleType.BOX;
 
             ob.bmin = bmin;
             ob.bmax = bmax;
 
-            return addObstacleRequest(ob).refs;
+            return AddObstacleRequest(ob).refs;
         }
 
         // Box obstacle: can be rotated in Y
-        public long addBoxObstacle(Vector3f center, Vector3f extents, float yRadians)
+        public long AddBoxObstacle(Vector3f center, Vector3f extents, float yRadians)
         {
-            TileCacheObstacle ob = allocObstacle();
+            TileCacheObstacle ob = AllocObstacle();
             ob.type = TileCacheObstacle.TileCacheObstacleType.ORIENTED_BOX;
             ob.center = center;
             ob.extents = extents;
@@ -393,19 +393,19 @@ namespace DotRecast.Detour.TileCache
             float sinhalf = (float)Math.Sin(-0.5f * yRadians);
             ob.rotAux[0] = coshalf * sinhalf;
             ob.rotAux[1] = coshalf * coshalf - 0.5f;
-            return addObstacleRequest(ob).refs;
+            return AddObstacleRequest(ob).refs;
         }
 
-        private ObstacleRequest addObstacleRequest(TileCacheObstacle ob)
+        private ObstacleRequest AddObstacleRequest(TileCacheObstacle ob)
         {
             ObstacleRequest req = new ObstacleRequest();
             req.action = ObstacleRequestAction.REQUEST_ADD;
-            req.refs = getObstacleRef(ob);
+            req.refs = GetObstacleRef(ob);
             m_reqs.Add(req);
             return req;
         }
 
-        public void removeObstacle(long refs)
+        public void RemoveObstacle(long refs)
         {
             if (refs == 0)
             {
@@ -418,7 +418,7 @@ namespace DotRecast.Detour.TileCache
             m_reqs.Add(req);
         }
 
-        private TileCacheObstacle allocObstacle()
+        private TileCacheObstacle AllocObstacle()
         {
             TileCacheObstacle o = m_nextFreeObstacle;
             if (o == null)
@@ -438,7 +438,7 @@ namespace DotRecast.Detour.TileCache
             return o;
         }
 
-        List<long> queryTiles(Vector3f bmin, Vector3f bmax)
+        List<long> QueryTiles(Vector3f bmin, Vector3f bmax)
         {
             List<long> results = new List<long>();
             float tw = m_params.width * m_params.cs;
@@ -451,14 +451,14 @@ namespace DotRecast.Detour.TileCache
             {
                 for (int tx = tx0; tx <= tx1; ++tx)
                 {
-                    List<long> tiles = getTilesAt(tx, ty);
+                    List<long> tiles = GetTilesAt(tx, ty);
                     foreach (long i in tiles)
                     {
-                        CompressedTile tile = m_tiles[decodeTileIdTile(i)];
+                        CompressedTile tile = m_tiles[DecodeTileIdTile(i)];
                         Vector3f tbmin = new Vector3f();
                         Vector3f tbmax = new Vector3f();
-                        calcTightTileBounds(tile.header, ref tbmin, ref tbmax);
-                        if (overlapBounds(bmin, bmax, tbmin, tbmax))
+                        CalcTightTileBounds(tile.header, ref tbmin, ref tbmax);
+                        if (OverlapBounds(bmin, bmax, tbmin, tbmax))
                         {
                             results.Add(i);
                         }
@@ -476,21 +476,21 @@ namespace DotRecast.Detour.TileCache
      *         cache is up to date another (immediate) call to update will have no effect; otherwise another call will
      *         continue processing obstacle requests and tile rebuilds.
      */
-        public bool update()
+        public bool Update()
         {
             if (0 == m_update.Count)
             {
                 // Process requests.
                 foreach (ObstacleRequest req in m_reqs)
                 {
-                    int idx = decodeObstacleIdObstacle(req.refs);
+                    int idx = DecodeObstacleIdObstacle(req.refs);
                     if (idx >= m_obstacles.Count)
                     {
                         continue;
                     }
 
                     TileCacheObstacle ob = m_obstacles[idx];
-                    int salt = decodeObstacleIdSalt(req.refs);
+                    int salt = DecodeObstacleIdSalt(req.refs);
                     if (ob.salt != salt)
                     {
                         continue;
@@ -501,13 +501,13 @@ namespace DotRecast.Detour.TileCache
                         // Find touched tiles.
                         Vector3f bmin = new Vector3f();
                         Vector3f bmax = new Vector3f();
-                        getObstacleBounds(ob, ref bmin, ref bmax);
-                        ob.touched = queryTiles(bmin, bmax);
+                        GetObstacleBounds(ob, ref bmin, ref bmax);
+                        ob.touched = QueryTiles(bmin, bmax);
                         // Add tiles to update list.
                         ob.pending.Clear();
                         foreach (long j in ob.touched)
                         {
-                            if (!contains(m_update, j))
+                            if (!Contains(m_update, j))
                             {
                                 m_update.Add(j);
                             }
@@ -523,7 +523,7 @@ namespace DotRecast.Detour.TileCache
                         ob.pending.Clear();
                         foreach (long j in ob.touched)
                         {
-                            if (!contains(m_update, j))
+                            if (!Contains(m_update, j))
                             {
                                 m_update.Add(j);
                             }
@@ -542,7 +542,7 @@ namespace DotRecast.Detour.TileCache
                 long refs = m_update[0];
                 m_update.RemoveAt(0);
                 // Build mesh
-                buildNavMeshTile(refs);
+                BuildNavMeshTile(refs);
 
                 // Update obstacle states.
                 for (int i = 0; i < m_obstacles.Count; ++i)
@@ -583,16 +583,16 @@ namespace DotRecast.Detour.TileCache
             return 0 == m_update.Count && 0 == m_reqs.Count;
         }
 
-        public void buildNavMeshTile(long refs)
+        public void BuildNavMeshTile(long refs)
         {
-            int idx = decodeTileIdTile(refs);
+            int idx = DecodeTileIdTile(refs);
             if (idx > m_params.maxTiles)
             {
                 throw new Exception("Invalid tile index");
             }
 
             CompressedTile tile = m_tiles[idx];
-            int salt = decodeTileIdSalt(refs);
+            int salt = DecodeTileIdSalt(refs);
             if (tile.salt != salt)
             {
                 throw new Exception("Invalid tile salt");
@@ -601,7 +601,7 @@ namespace DotRecast.Detour.TileCache
             int walkableClimbVx = (int)(m_params.walkableClimb / m_params.ch);
 
             // Decompress tile layer data.
-            TileCacheLayer layer = decompressTile(tile);
+            TileCacheLayer layer = DecompressTile(tile);
 
             // Rasterize obstacles.
             for (int i = 0; i < m_obstacles.Count; ++i)
@@ -612,32 +612,32 @@ namespace DotRecast.Detour.TileCache
                     continue;
                 }
 
-                if (contains(ob.touched, refs))
+                if (Contains(ob.touched, refs))
                 {
                     if (ob.type == TileCacheObstacle.TileCacheObstacleType.CYLINDER)
                     {
-                        builder.markCylinderArea(layer, tile.header.bmin, m_params.cs, m_params.ch, ob.pos, ob.radius, ob.height, 0);
+                        builder.MarkCylinderArea(layer, tile.header.bmin, m_params.cs, m_params.ch, ob.pos, ob.radius, ob.height, 0);
                     }
                     else if (ob.type == TileCacheObstacle.TileCacheObstacleType.BOX)
                     {
-                        builder.markBoxArea(layer, tile.header.bmin, m_params.cs, m_params.ch, ob.bmin, ob.bmax, 0);
+                        builder.MarkBoxArea(layer, tile.header.bmin, m_params.cs, m_params.ch, ob.bmin, ob.bmax, 0);
                     }
                     else if (ob.type == TileCacheObstacle.TileCacheObstacleType.ORIENTED_BOX)
                     {
-                        builder.markBoxArea(layer, tile.header.bmin, m_params.cs, m_params.ch, ob.center, ob.extents, ob.rotAux, 0);
+                        builder.MarkBoxArea(layer, tile.header.bmin, m_params.cs, m_params.ch, ob.center, ob.extents, ob.rotAux, 0);
                     }
                 }
             }
 
             // Build navmesh
-            builder.buildTileCacheRegions(layer, walkableClimbVx);
-            TileCacheContourSet lcset = builder.buildTileCacheContours(layer, walkableClimbVx,
+            builder.BuildTileCacheRegions(layer, walkableClimbVx);
+            TileCacheContourSet lcset = builder.BuildTileCacheContours(layer, walkableClimbVx,
                 m_params.maxSimplificationError);
-            TileCachePolyMesh polyMesh = builder.buildTileCachePolyMesh(lcset, m_navmesh.getMaxVertsPerPoly());
+            TileCachePolyMesh polyMesh = builder.BuildTileCachePolyMesh(lcset, m_navmesh.GetMaxVertsPerPoly());
             // Early out if the mesh tile is empty.
             if (polyMesh.npolys == 0)
             {
-                m_navmesh.removeTile(m_navmesh.getTileRefAt(tile.header.tx, tile.header.ty, tile.header.tlayer));
+                m_navmesh.RemoveTile(m_navmesh.GetTileRefAt(tile.header.tx, tile.header.ty, tile.header.tlayer));
                 return;
             }
 
@@ -648,7 +648,7 @@ namespace DotRecast.Detour.TileCache
             option.polyAreas = polyMesh.areas;
             option.polyFlags = polyMesh.flags;
             option.polyCount = polyMesh.npolys;
-            option.nvp = m_navmesh.getMaxVertsPerPoly();
+            option.nvp = m_navmesh.GetMaxVertsPerPoly();
             option.walkableHeight = m_params.walkableHeight;
             option.walkableRadius = m_params.walkableRadius;
             option.walkableClimb = m_params.walkableClimb;
@@ -662,27 +662,27 @@ namespace DotRecast.Detour.TileCache
             option.bmax = tile.header.bmax;
             if (m_tmproc != null)
             {
-                m_tmproc.process(option);
+                m_tmproc.Process(option);
             }
 
-            MeshData meshData = NavMeshBuilder.createNavMeshData(option);
+            MeshData meshData = NavMeshBuilder.CreateNavMeshData(option);
             // Remove existing tile.
-            m_navmesh.removeTile(m_navmesh.getTileRefAt(tile.header.tx, tile.header.ty, tile.header.tlayer));
+            m_navmesh.RemoveTile(m_navmesh.GetTileRefAt(tile.header.tx, tile.header.ty, tile.header.tlayer));
             // Add new tile, or leave the location empty. if (navData) { // Let the
             if (meshData != null)
             {
-                m_navmesh.addTile(meshData, 0, 0);
+                m_navmesh.AddTile(meshData, 0, 0);
             }
         }
 
-        public TileCacheLayer decompressTile(CompressedTile tile)
+        public TileCacheLayer DecompressTile(CompressedTile tile)
         {
-            TileCacheLayer layer = builder.decompressTileCacheLayer(m_tcomp, tile.data, m_storageParams.byteOrder,
+            TileCacheLayer layer = builder.DecompressTileCacheLayer(m_tcomp, tile.data, m_storageParams.byteOrder,
                 m_storageParams.cCompatibility);
             return layer;
         }
 
-        void calcTightTileBounds(TileCacheLayerHeader header, ref Vector3f bmin, ref Vector3f bmax)
+        void CalcTightTileBounds(TileCacheLayerHeader header, ref Vector3f bmin, ref Vector3f bmax)
         {
             float cs = m_params.cs;
             bmin.x = header.bmin.x + header.minx * cs;
@@ -693,7 +693,7 @@ namespace DotRecast.Detour.TileCache
             bmax.z = header.bmin.z + (header.maxy + 1) * cs;
         }
 
-        void getObstacleBounds(TileCacheObstacle ob, ref Vector3f bmin, ref Vector3f bmax)
+        void GetObstacleBounds(TileCacheObstacle ob, ref Vector3f bmin, ref Vector3f bmax)
         {
             if (ob.type == TileCacheObstacle.TileCacheObstacleType.CYLINDER)
             {
@@ -721,27 +721,27 @@ namespace DotRecast.Detour.TileCache
             }
         }
 
-        public TileCacheParams getParams()
+        public TileCacheParams GetParams()
         {
             return m_params;
         }
 
-        public TileCacheCompressor getCompressor()
+        public TileCacheCompressor GetCompressor()
         {
             return m_tcomp;
         }
 
-        public int getTileCount()
+        public int GetTileCount()
         {
             return m_params.maxTiles;
         }
 
-        public CompressedTile getTile(int i)
+        public CompressedTile GetTile(int i)
         {
             return m_tiles[i];
         }
 
-        public NavMesh getNavMesh()
+        public NavMesh GetNavMesh()
         {
             return m_navmesh;
         }

@@ -35,13 +35,13 @@ namespace DotRecast.Detour.QueryResults
         }
 
         /// @param[out] randomRef The reference id of the random location.
-        public long getRandomRef()
+        public long GetRandomRef()
         {
             return randomRef;
         }
 
         /// @param[out] randomPt The random location.
-        public Vector3f getRandomPt()
+        public Vector3f GetRandomPt()
         {
             return randomPt;
         }

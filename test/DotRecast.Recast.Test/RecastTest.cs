@@ -26,7 +26,7 @@ using static RecastConstants;
 public class RecastTest
 {
     [Test]
-    public void testClearUnwalkableTriangles()
+    public void TestClearUnwalkableTriangles()
     {
         float walkableSlopeAngle = 45;
         float[] verts = { 0, 0, 0, 1, 0, 0, 0, 0, -1 };
@@ -38,18 +38,18 @@ public class RecastTest
         Telemetry ctx = new Telemetry();
         {
             int[] areas = { 42 };
-            Recast.clearUnwalkableTriangles(ctx, walkableSlopeAngle, verts, nv, unwalkable_tri, nt, areas);
+            Recast.ClearUnwalkableTriangles(ctx, walkableSlopeAngle, verts, nv, unwalkable_tri, nt, areas);
             Assert.That(areas[0], Is.EqualTo(RC_NULL_AREA), "Sets area ID of unwalkable triangle to RC_NULL_AREA");
         }
         {
             int[] areas = { 42 };
-            Recast.clearUnwalkableTriangles(ctx, walkableSlopeAngle, verts, nv, walkable_tri, nt, areas);
+            Recast.ClearUnwalkableTriangles(ctx, walkableSlopeAngle, verts, nv, walkable_tri, nt, areas);
             Assert.That(areas[0], Is.EqualTo(42), "Does not modify walkable triangle aread ID's");
         }
         {
             int[] areas = { 42 };
             walkableSlopeAngle = 0;
-            Recast.clearUnwalkableTriangles(ctx, walkableSlopeAngle, verts, nv, walkable_tri, nt, areas);
+            Recast.ClearUnwalkableTriangles(ctx, walkableSlopeAngle, verts, nv, walkable_tri, nt, areas);
             Assert.That(areas[0], Is.EqualTo(RC_NULL_AREA), "Slopes equal to the max slope are considered unwalkable.");
         }
     }

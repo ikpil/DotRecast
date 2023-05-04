@@ -21,10 +21,10 @@ namespace DotRecast.Detour.Extras.Jumplink
         public JumpLinkBuilder(IList<RecastBuilderResult> results)
         {
             this.results = results;
-            edges = results.Select(r => edgeExtractor.extractEdges(r.getMesh())).ToList();
+            edges = results.Select(r => edgeExtractor.ExtractEdges(r.GetMesh())).ToList();
         }
 
-        public List<JumpLink> build(JumpLinkBuilderConfig acfg, JumpLinkType type)
+        public List<JumpLink> Build(JumpLinkBuilderConfig acfg, JumpLinkType type)
         {
             List<JumpLink> links = new List<JumpLink>();
             for (int tile = 0; tile < results.Count; tile++)
@@ -32,24 +32,24 @@ namespace DotRecast.Detour.Extras.Jumplink
                 Edge[] edges = this.edges[tile];
                 foreach (Edge edge in edges)
                 {
-                    links.AddRange(processEdge(acfg, results[tile], type, edge));
+                    links.AddRange(ProcessEdge(acfg, results[tile], type, edge));
                 }
             }
 
             return links;
         }
 
-        private List<JumpLink> processEdge(JumpLinkBuilderConfig acfg, RecastBuilderResult result, JumpLinkType type, Edge edge)
+        private List<JumpLink> ProcessEdge(JumpLinkBuilderConfig acfg, RecastBuilderResult result, JumpLinkType type, Edge edge)
         {
-            EdgeSampler es = edgeSamplerFactory.get(acfg, type, edge);
-            groundSampler.sample(acfg, result, es);
-            trajectorySampler.sample(acfg, result.getSolidHeightfield(), es);
-            JumpSegment[] jumpSegments = jumpSegmentBuilder.build(acfg, es);
-            return buildJumpLinks(acfg, es, jumpSegments);
+            EdgeSampler es = edgeSamplerFactory.Get(acfg, type, edge);
+            groundSampler.Sample(acfg, result, es);
+            trajectorySampler.Sample(acfg, result.GetSolidHeightfield(), es);
+            JumpSegment[] jumpSegments = jumpSegmentBuilder.Build(acfg, es);
+            return BuildJumpLinks(acfg, es, jumpSegments);
         }
 
 
-        private List<JumpLink> buildJumpLinks(JumpLinkBuilderConfig acfg, EdgeSampler es, JumpSegment[] jumpSegments)
+        private List<JumpLink> BuildJumpLinks(JumpLinkBuilderConfig acfg, EdgeSampler es, JumpSegment[] jumpSegments)
         {
             List<JumpLink> links = new List<JumpLink>();
             foreach (JumpSegment js in jumpSegments)
@@ -59,7 +59,7 @@ namespace DotRecast.Detour.Extras.Jumplink
                 GroundSegment end = es.end[js.groundSegment];
                 Vector3f ep = end.gsamples[js.startSample].p;
                 Vector3f eq = end.gsamples[js.startSample + js.samples - 1].p;
-                float d = Math.Min(vDist2DSqr(sp, sq), vDist2DSqr(ep, eq));
+                float d = Math.Min(VDist2DSqr(sp, sq), VDist2DSqr(ep, eq));
                 if (d >= 4 * acfg.agentRadius * acfg.agentRadius)
                 {
                     JumpLink link = new JumpLink();
@@ -72,12 +72,12 @@ namespace DotRecast.Detour.Extras.Jumplink
                     for (int j = 0; j < link.nspine; ++j)
                     {
                         float u = ((float)j) / (link.nspine - 1);
-                        Vector3f p = es.trajectory.apply(sp, ep, u);
+                        Vector3f p = es.trajectory.Apply(sp, ep, u);
                         link.spine0[j * 3] = p.x;
                         link.spine0[j * 3 + 1] = p.y;
                         link.spine0[j * 3 + 2] = p.z;
 
-                        p = es.trajectory.apply(sq, eq, u);
+                        p = es.trajectory.Apply(sq, eq, u);
                         link.spine1[j * 3] = p.x;
                         link.spine1[j * 3 + 1] = p.y;
                         link.spine1[j * 3 + 2] = p.z;
@@ -88,7 +88,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             return links;
         }
 
-        public List<Edge[]> getEdges()
+        public List<Edge[]> GetEdges()
         {
             return edges;
         }

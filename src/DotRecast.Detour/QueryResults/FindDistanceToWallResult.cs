@@ -36,17 +36,17 @@ namespace DotRecast.Detour.QueryResults
             this.normal = normal;
         }
 
-        public float getDistance()
+        public float GetDistance()
         {
             return distance;
         }
 
-        public Vector3f getPosition()
+        public Vector3f GetPosition()
         {
             return position;
         }
 
-        public Vector3f getNormal()
+        public Vector3f GetNormal()
         {
             return normal;
         }

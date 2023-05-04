@@ -22,11 +22,11 @@ namespace DotRecast.Detour.Extras.Unity.Astar
     {
         private readonly BVTreeBuilder builder = new BVTreeBuilder();
 
-        public void build(GraphMeshData graphData)
+        public void Build(GraphMeshData graphData)
         {
             foreach (MeshData d in graphData.tiles)
             {
-                builder.build(d);
+                builder.Build(d);
             }
         }
     }

@@ -34,12 +34,12 @@ namespace DotRecast.Detour.QueryResults
             this.parentRefs = parentRefs;
         }
 
-        public List<long> getRefs()
+        public List<long> GetRefs()
         {
             return refs;
         }
 
-        public List<long> getParentRefs()
+        public List<long> GetParentRefs()
         {
             return parentRefs;
         }

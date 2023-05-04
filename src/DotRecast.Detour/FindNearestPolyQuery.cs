@@ -23,17 +23,17 @@ namespace DotRecast.Detour
             nearestPt = center;
         }
 
-        public void process(MeshTile tile, Poly poly, long refs)
+        public void Process(MeshTile tile, Poly poly, long refs)
         {
             // Find nearest polygon amongst the nearby polygons.
-            Result<ClosestPointOnPolyResult> closest = query.closestPointOnPoly(refs, center);
-            bool posOverPoly = closest.result.isPosOverPoly();
-            var closestPtPoly = closest.result.getClosest();
+            Result<ClosestPointOnPolyResult> closest = query.ClosestPointOnPoly(refs, center);
+            bool posOverPoly = closest.result.IsPosOverPoly();
+            var closestPtPoly = closest.result.GetClosest();
 
             // If a point is directly over a polygon and closer than
             // climb height, favor that instead of straight line nearest point.
             float d = 0;
-            Vector3f diff = vSub(center, closestPtPoly);
+            Vector3f diff = VSub(center, closestPtPoly);
             if (posOverPoly)
             {
                 d = Math.Abs(diff.y) - tile.data.header.walkableClimb;
@@ -41,7 +41,7 @@ namespace DotRecast.Detour
             }
             else
             {
-                d = vLenSqr(diff);
+                d = VLenSqr(diff);
             }
 
             if (d < nearestDistanceSqr)
@@ -53,7 +53,7 @@ namespace DotRecast.Detour
             }
         }
 
-        public FindNearestPolyResult result()
+        public FindNearestPolyResult Result()
         {
             return new FindNearestPolyResult(nearestRef, nearestPt, overPoly);
         }

@@ -32,28 +32,28 @@ public class TileCacheReaderTest
     private readonly TileCacheReader reader = new TileCacheReader();
 
     [Test]
-    public void testNavmesh()
+    public void TestNavmesh()
     {
         using var ms = new MemoryStream(Loader.ToBytes("all_tiles_tilecache.bin"));
         using var @is = new BinaryReader(ms);
-        TileCache tc = reader.read(@is, 6, null);
-        Assert.That(tc.getNavMesh().getMaxTiles(), Is.EqualTo(256));
-        Assert.That(tc.getNavMesh().getParams().maxPolys, Is.EqualTo(16384));
-        Assert.That(tc.getNavMesh().getParams().tileWidth, Is.EqualTo(14.4f).Within(0.001f));
-        Assert.That(tc.getNavMesh().getParams().tileHeight, Is.EqualTo(14.4f).Within(0.001f));
-        Assert.That(tc.getNavMesh().getMaxVertsPerPoly(), Is.EqualTo(6));
-        Assert.That(tc.getParams().cs, Is.EqualTo(0.3f).Within(0.0f));
-        Assert.That(tc.getParams().ch, Is.EqualTo(0.2f).Within(0.0f));
-        Assert.That(tc.getParams().walkableClimb, Is.EqualTo(0.9f).Within(0.0f));
-        Assert.That(tc.getParams().walkableHeight, Is.EqualTo(2f).Within(0.0f));
-        Assert.That(tc.getParams().walkableRadius, Is.EqualTo(0.6f).Within(0.0f));
-        Assert.That(tc.getParams().width, Is.EqualTo(48));
-        Assert.That(tc.getParams().maxTiles, Is.EqualTo(6 * 7 * 4));
-        Assert.That(tc.getParams().maxObstacles, Is.EqualTo(128));
-        Assert.That(tc.getTileCount(), Is.EqualTo(168));
+        TileCache tc = reader.Read(@is, 6, null);
+        Assert.That(tc.GetNavMesh().GetMaxTiles(), Is.EqualTo(256));
+        Assert.That(tc.GetNavMesh().GetParams().maxPolys, Is.EqualTo(16384));
+        Assert.That(tc.GetNavMesh().GetParams().tileWidth, Is.EqualTo(14.4f).Within(0.001f));
+        Assert.That(tc.GetNavMesh().GetParams().tileHeight, Is.EqualTo(14.4f).Within(0.001f));
+        Assert.That(tc.GetNavMesh().GetMaxVertsPerPoly(), Is.EqualTo(6));
+        Assert.That(tc.GetParams().cs, Is.EqualTo(0.3f).Within(0.0f));
+        Assert.That(tc.GetParams().ch, Is.EqualTo(0.2f).Within(0.0f));
+        Assert.That(tc.GetParams().walkableClimb, Is.EqualTo(0.9f).Within(0.0f));
+        Assert.That(tc.GetParams().walkableHeight, Is.EqualTo(2f).Within(0.0f));
+        Assert.That(tc.GetParams().walkableRadius, Is.EqualTo(0.6f).Within(0.0f));
+        Assert.That(tc.GetParams().width, Is.EqualTo(48));
+        Assert.That(tc.GetParams().maxTiles, Is.EqualTo(6 * 7 * 4));
+        Assert.That(tc.GetParams().maxObstacles, Is.EqualTo(128));
+        Assert.That(tc.GetTileCount(), Is.EqualTo(168));
         // Tile0: Tris: 1, Verts: 4 Detail Meshed: 1 Detail Verts: 0 Detail Tris: 2
         // Verts: -2.269517, 28.710686, 28.710686
-        MeshTile tile = tc.getNavMesh().getTile(0);
+        MeshTile tile = tc.GetNavMesh().GetTile(0);
         MeshData data = tile.data;
         MeshHeader header = data.header;
         Assert.That(header.vertCount, Is.EqualTo(4));
@@ -71,7 +71,7 @@ public class TileCacheReaderTest
         Assert.That(data.verts[9], Is.EqualTo(28.710686f).Within(0.0001f));
         // Tile8: Tris: 7, Verts: 10 Detail Meshed: 7 Detail Verts: 0 Detail Tris: 10
         // Verts: 0.330483, 43.110687, 43.110687
-        tile = tc.getNavMesh().getTile(8);
+        tile = tc.GetNavMesh().GetTile(8);
         data = tile.data;
         header = data.header;
         Console.WriteLine(data.header.x + "  " + data.header.y + "  " + data.header.layer);
@@ -93,7 +93,7 @@ public class TileCacheReaderTest
         Assert.That(data.verts[9], Is.EqualTo(43.110687f).Within(0.0001f));
         // Tile16: Tris: 13, Verts: 33 Detail Meshed: 13 Detail Verts: 0 Detail Tris: 25
         // Verts: 1.130483, 5.610685, 6.510685
-        tile = tc.getNavMesh().getTile(16);
+        tile = tc.GetNavMesh().GetTile(16);
         data = tile.data;
         header = data.header;
         Assert.That(header.vertCount, Is.EqualTo(33));
@@ -111,7 +111,7 @@ public class TileCacheReaderTest
         Assert.That(data.verts[9], Is.EqualTo(6.510685f).Within(0.0001f));
         // Tile29: Tris: 5, Verts: 15 Detail Meshed: 5 Detail Verts: 0 Detail Tris: 11
         // Verts: 10.330483, 10.110685, 10.110685
-        tile = tc.getNavMesh().getTile(29);
+        tile = tc.GetNavMesh().GetTile(29);
         data = tile.data;
         header = data.header;
         Assert.That(header.vertCount, Is.EqualTo(15));
@@ -130,28 +130,28 @@ public class TileCacheReaderTest
     }
 
     [Test]
-    public void testDungeon()
+    public void TestDungeon()
     {
         using var ms = new MemoryStream(Loader.ToBytes("dungeon_all_tiles_tilecache.bin"));
         using var @is = new BinaryReader(ms);
-        TileCache tc = reader.read(@is, 6, null);
-        Assert.That(tc.getNavMesh().getMaxTiles(), Is.EqualTo(256));
-        Assert.That(tc.getNavMesh().getParams().maxPolys, Is.EqualTo(16384));
-        Assert.That(tc.getNavMesh().getParams().tileWidth, Is.EqualTo(14.4f).Within(0.001f));
-        Assert.That(tc.getNavMesh().getParams().tileHeight, Is.EqualTo(14.4f).Within(0.001f));
-        Assert.That(tc.getNavMesh().getMaxVertsPerPoly(), Is.EqualTo(6));
-        Assert.That(tc.getParams().cs, Is.EqualTo(0.3f).Within(0.0f));
-        Assert.That(tc.getParams().ch, Is.EqualTo(0.2f).Within(0.0f));
-        Assert.That(tc.getParams().walkableClimb, Is.EqualTo(0.9f).Within(0.0f));
-        Assert.That(tc.getParams().walkableHeight, Is.EqualTo(2f).Within(0.0f));
-        Assert.That(tc.getParams().walkableRadius, Is.EqualTo(0.6f).Within(0.0f));
-        Assert.That(tc.getParams().width, Is.EqualTo(48));
-        Assert.That(tc.getParams().maxTiles, Is.EqualTo(6 * 7 * 4));
-        Assert.That(tc.getParams().maxObstacles, Is.EqualTo(128));
-        Assert.That(tc.getTileCount(), Is.EqualTo(168));
+        TileCache tc = reader.Read(@is, 6, null);
+        Assert.That(tc.GetNavMesh().GetMaxTiles(), Is.EqualTo(256));
+        Assert.That(tc.GetNavMesh().GetParams().maxPolys, Is.EqualTo(16384));
+        Assert.That(tc.GetNavMesh().GetParams().tileWidth, Is.EqualTo(14.4f).Within(0.001f));
+        Assert.That(tc.GetNavMesh().GetParams().tileHeight, Is.EqualTo(14.4f).Within(0.001f));
+        Assert.That(tc.GetNavMesh().GetMaxVertsPerPoly(), Is.EqualTo(6));
+        Assert.That(tc.GetParams().cs, Is.EqualTo(0.3f).Within(0.0f));
+        Assert.That(tc.GetParams().ch, Is.EqualTo(0.2f).Within(0.0f));
+        Assert.That(tc.GetParams().walkableClimb, Is.EqualTo(0.9f).Within(0.0f));
+        Assert.That(tc.GetParams().walkableHeight, Is.EqualTo(2f).Within(0.0f));
+        Assert.That(tc.GetParams().walkableRadius, Is.EqualTo(0.6f).Within(0.0f));
+        Assert.That(tc.GetParams().width, Is.EqualTo(48));
+        Assert.That(tc.GetParams().maxTiles, Is.EqualTo(6 * 7 * 4));
+        Assert.That(tc.GetParams().maxObstacles, Is.EqualTo(128));
+        Assert.That(tc.GetTileCount(), Is.EqualTo(168));
         // Tile0: Tris: 8, Verts: 18 Detail Meshed: 8 Detail Verts: 0 Detail Tris: 14
         // Verts: 14.997294, 15.484785, 15.484785
-        MeshTile tile = tc.getNavMesh().getTile(0);
+        MeshTile tile = tc.GetNavMesh().GetTile(0);
         MeshData data = tile.data;
         MeshHeader header = data.header;
         Assert.That(header.vertCount, Is.EqualTo(18));
@@ -169,7 +169,7 @@ public class TileCacheReaderTest
         Assert.That(data.verts[9], Is.EqualTo(15.484785f).Within(0.0001f));
         // Tile8: Tris: 3, Verts: 8 Detail Meshed: 3 Detail Verts: 0 Detail Tris: 6
         // Verts: 13.597294, 17.584785, 17.584785
-        tile = tc.getNavMesh().getTile(8);
+        tile = tc.GetNavMesh().GetTile(8);
         data = tile.data;
         header = data.header;
         Assert.That(header.vertCount, Is.EqualTo(8));
@@ -187,7 +187,7 @@ public class TileCacheReaderTest
         Assert.That(data.verts[9], Is.EqualTo(17.584785f).Within(0.0001f));
         // Tile16: Tris: 10, Verts: 20 Detail Meshed: 10 Detail Verts: 0 Detail Tris: 18
         // Verts: 6.197294, -22.315216, -22.315216
-        tile = tc.getNavMesh().getTile(16);
+        tile = tc.GetNavMesh().GetTile(16);
         data = tile.data;
         header = data.header;
         Assert.That(header.vertCount, Is.EqualTo(20));
@@ -205,7 +205,7 @@ public class TileCacheReaderTest
         Assert.That(data.verts[9], Is.EqualTo(-22.315216f).Within(0.0001f));
         // Tile29: Tris: 1, Verts: 5 Detail Meshed: 1 Detail Verts: 0 Detail Tris: 3
         // Verts: 10.197294, 48.484783, 48.484783
-        tile = tc.getNavMesh().getTile(29);
+        tile = tc.GetNavMesh().GetTile(29);
         data = tile.data;
         header = data.header;
         Assert.That(header.vertCount, Is.EqualTo(5));

@@ -35,11 +35,11 @@ namespace DotRecast.Recast
         /// This method is usually called immediately after the heightfield has been built.
         ///
         /// @see rcCompactHeightfield, rcBuildCompactHeightfield, rcConfig::walkableRadius
-        public static void erodeWalkableArea(Telemetry ctx, int radius, CompactHeightfield chf)
+        public static void ErodeWalkableArea(Telemetry ctx, int radius, CompactHeightfield chf)
         {
             int w = chf.width;
             int h = chf.height;
-            ctx.startTimer("ERODE_AREA");
+            ctx.StartTimer("ERODE_AREA");
 
             int[] dist = new int[chf.spanCount];
             Array.Fill(dist, 255);
@@ -206,7 +206,7 @@ namespace DotRecast.Recast
                 if (dist[i] < thr)
                     chf.areas[i] = RC_NULL_AREA;
 
-            ctx.stopTimer("ERODE_AREA");
+            ctx.StopTimer("ERODE_AREA");
         }
 
         /// @par
@@ -215,12 +215,12 @@ namespace DotRecast.Recast
         /// such as #rcMarkBoxArea, #rcMarkConvexPolyArea, and #rcMarkCylinderArea.
         ///
         /// @see rcCompactHeightfield
-        public bool medianFilterWalkableArea(Telemetry ctx, CompactHeightfield chf)
+        public bool MedianFilterWalkableArea(Telemetry ctx, CompactHeightfield chf)
         {
             int w = chf.width;
             int h = chf.height;
 
-            ctx.startTimer("MEDIAN_AREA");
+            ctx.StartTimer("MEDIAN_AREA");
 
             int[] areas = new int[chf.spanCount];
 
@@ -273,7 +273,7 @@ namespace DotRecast.Recast
 
             chf.areas = areas;
 
-            ctx.stopTimer("MEDIAN_AREA");
+            ctx.StopTimer("MEDIAN_AREA");
 
             return true;
         }
@@ -283,9 +283,9 @@ namespace DotRecast.Recast
         /// The value of spacial parameters are in world units.
         ///
         /// @see rcCompactHeightfield, rcMedianFilterWalkableArea
-        public void markBoxArea(Telemetry ctx, float[] bmin, float[] bmax, AreaModification areaMod, CompactHeightfield chf)
+        public void MarkBoxArea(Telemetry ctx, float[] bmin, float[] bmax, AreaModification areaMod, CompactHeightfield chf)
         {
-            ctx.startTimer("MARK_BOX_AREA");
+            ctx.StartTimer("MARK_BOX_AREA");
 
             int minx = (int)((bmin[0] - chf.bmin.x) / chf.cs);
             int miny = (int)((bmin[1] - chf.bmin.y) / chf.ch);
@@ -323,16 +323,16 @@ namespace DotRecast.Recast
                         if (s.y >= miny && s.y <= maxy)
                         {
                             if (chf.areas[i] != RC_NULL_AREA)
-                                chf.areas[i] = areaMod.apply(chf.areas[i]);
+                                chf.areas[i] = areaMod.Apply(chf.areas[i]);
                         }
                     }
                 }
             }
 
-            ctx.stopTimer("MARK_BOX_AREA");
+            ctx.StopTimer("MARK_BOX_AREA");
         }
 
-        static bool pointInPoly(float[] verts, Vector3f p)
+        static bool PointInPoly(float[] verts, Vector3f p)
         {
             bool c = false;
             int i, j;
@@ -357,19 +357,19 @@ namespace DotRecast.Recast
         /// projected onto the xz-plane at @p hmin, then extruded to @p hmax.
         ///
         /// @see rcCompactHeightfield, rcMedianFilterWalkableArea
-        public static void markConvexPolyArea(Telemetry ctx, float[] verts, float hmin, float hmax, AreaModification areaMod,
+        public static void MarkConvexPolyArea(Telemetry ctx, float[] verts, float hmin, float hmax, AreaModification areaMod,
             CompactHeightfield chf)
         {
-            ctx.startTimer("MARK_CONVEXPOLY_AREA");
+            ctx.StartTimer("MARK_CONVEXPOLY_AREA");
 
             Vector3f bmin = new Vector3f();
             Vector3f bmax = new Vector3f();
-            RecastVectors.copy(ref bmin, verts, 0);
-            RecastVectors.copy(ref bmax, verts, 0);
+            RecastVectors.Copy(ref bmin, verts, 0);
+            RecastVectors.Copy(ref bmax, verts, 0);
             for (int i = 3; i < verts.Length; i += 3)
             {
-                RecastVectors.min(ref bmin, verts, i);
-                RecastVectors.max(ref bmax, verts, i);
+                RecastVectors.Min(ref bmin, verts, i);
+                RecastVectors.Max(ref bmax, verts, i);
             }
 
             bmin.y = hmin;
@@ -418,19 +418,19 @@ namespace DotRecast.Recast
                             p.y = 0;
                             p.z = chf.bmin.z + (z + 0.5f) * chf.cs;
 
-                            if (pointInPoly(verts, p))
+                            if (PointInPoly(verts, p))
                             {
-                                chf.areas[i] = areaMod.apply(chf.areas[i]);
+                                chf.areas[i] = areaMod.Apply(chf.areas[i]);
                             }
                         }
                     }
                 }
             }
 
-            ctx.stopTimer("MARK_CONVEXPOLY_AREA");
+            ctx.StopTimer("MARK_CONVEXPOLY_AREA");
         }
 
-        int offsetPoly(float[] verts, int nverts, float offset, float[] outVerts, int maxOutVerts)
+        int OffsetPoly(float[] verts, int nverts, float offset, float[] outVerts, int maxOutVerts)
         {
             float MITER_LIMIT = 1.20f;
 
@@ -513,10 +513,10 @@ namespace DotRecast.Recast
         /// The value of spacial parameters are in world units.
         ///
         /// @see rcCompactHeightfield, rcMedianFilterWalkableArea
-        public void markCylinderArea(Telemetry ctx, float[] pos, float r, float h, AreaModification areaMod,
+        public void MarkCylinderArea(Telemetry ctx, float[] pos, float r, float h, AreaModification areaMod,
             CompactHeightfield chf)
         {
-            ctx.startTimer("MARK_CYLINDER_AREA");
+            ctx.StartTimer("MARK_CYLINDER_AREA");
 
             Vector3f bmin = new Vector3f();
             Vector3f bmax = new Vector3f();
@@ -574,14 +574,14 @@ namespace DotRecast.Recast
 
                             if (dx * dx + dz * dz < r2)
                             {
-                                chf.areas[i] = areaMod.apply(chf.areas[i]);
+                                chf.areas[i] = areaMod.Apply(chf.areas[i]);
                             }
                         }
                     }
                 }
             }
 
-            ctx.stopTimer("MARK_CYLINDER_AREA");
+            ctx.StopTimer("MARK_CYLINDER_AREA");
         }
     }
 }

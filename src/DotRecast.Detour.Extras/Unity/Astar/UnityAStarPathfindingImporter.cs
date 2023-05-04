@@ -33,9 +33,9 @@ namespace DotRecast.Detour.Extras.Unity.Astar
         private readonly LinkBuilder linkCreator = new LinkBuilder();
         private readonly OffMeshLinkCreator offMeshLinkCreator = new OffMeshLinkCreator();
 
-        public NavMesh[] load(FileStream zipFile)
+        public NavMesh[] Load(FileStream zipFile)
         {
-            GraphData graphData = reader.read(zipFile);
+            GraphData graphData = reader.Read(zipFile);
             Meta meta = graphData.meta;
             NodeLink2[] nodeLinks2 = graphData.nodeLinks2;
             NavMesh[] meshes = new NavMesh[meta.graphs];
@@ -45,7 +45,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                 GraphMeta graphMeta = graphData.graphMeta[graphIndex];
                 GraphMeshData graphMeshData = graphData.graphMeshData[graphIndex];
                 List<int[]> connections = graphData.graphConnections[graphIndex];
-                int nodeCount = graphMeshData.countNodes();
+                int nodeCount = graphMeshData.CountNodes();
                 if (connections.Count != nodeCount)
                 {
                     throw new ArgumentException("Inconsistent number of nodes in data file: " + nodeCount
@@ -53,11 +53,11 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                 }
 
                 // Build BV tree
-                bvTreeCreator.build(graphMeshData);
+                bvTreeCreator.Build(graphMeshData);
                 // Create links between nodes (both internal and portals between tiles)
-                linkCreator.build(nodeOffset, graphMeshData, connections);
+                linkCreator.Build(nodeOffset, graphMeshData, connections);
                 // Finally, process all the off-mesh links that can be actually converted to detour data
-                offMeshLinkCreator.build(graphMeshData, nodeLinks2, nodeOffset);
+                offMeshLinkCreator.Build(graphMeshData, nodeLinks2, nodeOffset);
                 NavMeshParams option = new NavMeshParams();
                 option.maxTiles = graphMeshData.tiles.Length;
                 option.maxPolys = 32768;
@@ -69,11 +69,11 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                 NavMesh mesh = new NavMesh(option, 3);
                 foreach (MeshData t in graphMeshData.tiles)
                 {
-                    mesh.addTile(t, 0, 0);
+                    mesh.AddTile(t, 0, 0);
                 }
 
                 meshes[graphIndex] = mesh;
-                nodeOffset += graphMeshData.countNodes();
+                nodeOffset += graphMeshData.CountNodes();
             }
 
             return meshes;

@@ -99,26 +99,26 @@ public class FindPolysAroundCircleTest : AbstractDetourTest
     };
 
     [Test]
-    public void testFindPolysAroundCircle()
+    public void TestFindPolysAroundCircle()
     {
         QueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
             Vector3f startPos = startPoss[i];
-            Result<FindPolysAroundResult> result = query.findPolysAroundCircle(startRef, startPos, 7.5f, filter);
+            Result<FindPolysAroundResult> result = query.FindPolysAroundCircle(startRef, startPos, 7.5f, filter);
             Assert.That(result.Succeeded(), Is.True);
             FindPolysAroundResult polys = result.result;
-            Assert.That(polys.getRefs().Count, Is.EqualTo(REFS[i].Length));
+            Assert.That(polys.GetRefs().Count, Is.EqualTo(REFS[i].Length));
             for (int v = 0; v < REFS[i].Length; v++)
             {
                 bool found = false;
                 for (int w = 0; w < REFS[i].Length; w++)
                 {
-                    if (REFS[i][v] == polys.getRefs()[w])
+                    if (REFS[i][v] == polys.GetRefs()[w])
                     {
-                        Assert.That(polys.getParentRefs()[w], Is.EqualTo(PARENT_REFS[i][v]));
-                        Assert.That(polys.getCosts()[w], Is.EqualTo(COSTS[i][v]).Within(0.01f));
+                        Assert.That(polys.GetParentRefs()[w], Is.EqualTo(PARENT_REFS[i][v]));
+                        Assert.That(polys.GetCosts()[w], Is.EqualTo(COSTS[i][v]).Within(0.01f));
                         found = true;
                     }
                 }

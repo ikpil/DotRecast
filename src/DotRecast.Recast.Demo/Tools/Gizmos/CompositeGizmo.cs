@@ -1,4 +1,5 @@
-﻿using DotRecast.Core;
+﻿using System;
+using DotRecast.Core;
 using DotRecast.Recast.Demo.Draw;
 
 namespace DotRecast.Recast.Demo.Tools.Gizmos;
@@ -12,8 +13,8 @@ public class CompositeGizmo : ColliderGizmo
         this.gizmos = gizmos;
     }
 
-    public void render(RecastDebugDraw debugDraw)
+    public void Render(RecastDebugDraw debugDraw)
     {
-        gizmos.forEach(g => g.render(debugDraw));
+        gizmos.ForEach(g => g.Render(debugDraw));
     }
 }

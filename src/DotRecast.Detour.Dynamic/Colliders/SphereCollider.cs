@@ -28,19 +28,19 @@ namespace DotRecast.Detour.Dynamic.Colliders
         private readonly float radius;
 
         public SphereCollider(Vector3f center, float radius, int area, float flagMergeThreshold) :
-            base(area, flagMergeThreshold, bounds(center, radius))
+            base(area, flagMergeThreshold, Bounds(center, radius))
         {
             this.center = center;
             this.radius = radius;
         }
 
-        public override void rasterize(Heightfield hf, Telemetry telemetry)
+        public override void Rasterize(Heightfield hf, Telemetry telemetry)
         {
-            RecastFilledVolumeRasterization.rasterizeSphere(hf, center, radius, area, (int)Math.Floor(flagMergeThreshold / hf.ch),
+            RecastFilledVolumeRasterization.RasterizeSphere(hf, center, radius, area, (int)Math.Floor(flagMergeThreshold / hf.ch),
                 telemetry);
         }
 
-        private static float[] bounds(Vector3f center, float radius)
+        private static float[] Bounds(Vector3f center, float radius)
         {
             return new float[]
             {

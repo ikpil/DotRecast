@@ -39,7 +39,7 @@ public class RecastDebugDraw : DebugDraw
     {
     }
 
-    public void debugDrawTriMeshSlope(float[] verts, int[] tris, float[] normals, float walkableSlopeAngle,
+    public void DebugDrawTriMeshSlope(float[] verts, int[] tris, float[] normals, float walkableSlopeAngle,
         float texScale)
     {
         float walkableThr = (float)Math.Cos(walkableSlopeAngle / 180.0f * Math.PI);
@@ -48,10 +48,10 @@ public class RecastDebugDraw : DebugDraw
         Vector2f uvb = Vector2f.Zero;
         Vector2f uvc = Vector2f.Zero;
 
-        texture(true);
+        Texture(true);
 
-        int unwalkable = duRGBA(192, 128, 0, 255);
-        begin(DebugDrawPrimitives.TRIS);
+        int unwalkable = DuRGBA(192, 128, 0, 255);
+        Begin(DebugDrawPrimitives.TRIS);
         for (int i = 0; i < tris.Length; i += 3)
         {
             Vector3f norm = Vector3f.Of(normals[i], normals[i + 1], normals[i + 2]);
@@ -60,11 +60,11 @@ public class RecastDebugDraw : DebugDraw
             char a = (char)(220 * (2 + norm.x + norm.y) / 4);
             if (norm.y < walkableThr)
             {
-                color = duLerpCol(duRGBA(a, a, a, 255), unwalkable, 64);
+                color = DuLerpCol(DuRGBA(a, a, a, 255), unwalkable, 64);
             }
             else
             {
-                color = duRGBA(a, a, a, 255);
+                color = DuRGBA(a, a, a, 255);
             }
 
             Vector3f va = Vector3f.Of(verts[tris[i] * 3], verts[tris[i] * 3 + 1], verts[tris[i] * 3 + 2]);
@@ -92,49 +92,49 @@ public class RecastDebugDraw : DebugDraw
             uvc.x = vc[ax] * texScale;
             uvc.y = vc[ay] * texScale;
 
-            vertex(va, color, uva);
-            vertex(vb, color, uvb);
-            vertex(vc, color, uvc);
+            Vertex(va, color, uva);
+            Vertex(vb, color, uvb);
+            Vertex(vc, color, uvc);
         }
 
-        end();
+        End();
 
-        texture(false);
+        Texture(false);
     }
 
-    public void debugDrawNavMeshWithClosedList(NavMesh mesh, NavMeshQuery query, int flags)
+    public void DebugDrawNavMeshWithClosedList(NavMesh mesh, NavMeshQuery query, int flags)
     {
         NavMeshQuery q = (flags & DRAWNAVMESH_CLOSEDLIST) != 0 ? query : null;
-        for (int i = 0; i < mesh.getMaxTiles(); ++i)
+        for (int i = 0; i < mesh.GetMaxTiles(); ++i)
         {
-            MeshTile tile = mesh.getTile(i);
+            MeshTile tile = mesh.GetTile(i);
             if (tile != null && tile.data != null)
             {
-                drawMeshTile(mesh, q, tile, flags);
+                DrawMeshTile(mesh, q, tile, flags);
             }
         }
     }
 
-    private void drawMeshTile(NavMesh mesh, NavMeshQuery query, MeshTile tile, int flags)
+    private void DrawMeshTile(NavMesh mesh, NavMeshQuery query, MeshTile tile, int flags)
     {
-        long @base = mesh.getPolyRefBase(tile);
+        long @base = mesh.GetPolyRefBase(tile);
 
-        int tileNum = NavMesh.decodePolyIdTile(@base);
-        int tileColor = duIntToCol(tileNum, 128);
-        depthMask(false);
-        begin(DebugDrawPrimitives.TRIS);
+        int tileNum = NavMesh.DecodePolyIdTile(@base);
+        int tileColor = DuIntToCol(tileNum, 128);
+        DepthMask(false);
+        Begin(DebugDrawPrimitives.TRIS);
         for (int i = 0; i < tile.data.header.polyCount; ++i)
         {
             Poly p = tile.data.polys[i];
-            if (p.getType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+            if (p.GetType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
                 continue;
             }
 
             int col;
-            if (query != null && query.isInClosedList(@base | i))
+            if (query != null && query.IsInClosedList(@base | i))
             {
-                col = duRGBA(255, 196, 0, 64);
+                col = DuRGBA(255, 196, 0, 64);
             }
             else
             {
@@ -146,46 +146,46 @@ public class RecastDebugDraw : DebugDraw
                 {
                     if ((p.flags & SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED) != 0)
                     {
-                        col = duRGBA(64, 64, 64, 64);
+                        col = DuRGBA(64, 64, 64, 64);
                     }
                     else
                     {
-                        col = duTransCol(areaToCol(p.getArea()), 64);
+                        col = DuTransCol(AreaToCol(p.GetArea()), 64);
                     }
                 }
             }
 
-            drawPoly(tile, i, col);
+            DrawPoly(tile, i, col);
         }
 
-        end();
+        End();
 
         // Draw inter poly boundaries
-        drawPolyBoundaries(tile, duRGBA(0, 48, 64, 32), 1.5f, true);
+        DrawPolyBoundaries(tile, DuRGBA(0, 48, 64, 32), 1.5f, true);
 
         // Draw outer poly boundaries
-        drawPolyBoundaries(tile, duRGBA(0, 48, 64, 220), 2.5f, false);
+        DrawPolyBoundaries(tile, DuRGBA(0, 48, 64, 220), 2.5f, false);
 
         if ((flags & DRAWNAVMESH_OFFMESHCONS) != 0)
         {
-            begin(DebugDrawPrimitives.LINES, 2.0f);
+            Begin(DebugDrawPrimitives.LINES, 2.0f);
             for (int i = 0; i < tile.data.header.polyCount; ++i)
             {
                 Poly p = tile.data.polys[i];
 
-                if (p.getType() != Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+                if (p.GetType() != Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
                 {
                     continue;
                 }
 
                 int col, col2;
-                if (query != null && query.isInClosedList(@base | i))
+                if (query != null && query.IsInClosedList(@base | i))
                 {
-                    col = duRGBA(255, 196, 0, 220);
+                    col = DuRGBA(255, 196, 0, 220);
                 }
                 else
                 {
-                    col = duDarkenCol(duTransCol(areaToCol(p.getArea()), 220));
+                    col = DuDarkenCol(DuTransCol(AreaToCol(p.GetArea()), 220));
                 }
 
                 OffMeshConnection con = tile.data.offMeshCons[i - tile.data.header.offMeshBase];
@@ -215,45 +215,45 @@ public class RecastDebugDraw : DebugDraw
                 }
 
                 // End points and their on-mesh locations.
-                vertex(va.x, va.y, va.z, col);
-                vertex(con.pos[0], con.pos[1], con.pos[2], col);
-                col2 = startSet ? col : duRGBA(220, 32, 16, 196);
-                appendCircle(con.pos[0], con.pos[1] + 0.1f, con.pos[2], con.rad, col2);
+                Vertex(va.x, va.y, va.z, col);
+                Vertex(con.pos[0], con.pos[1], con.pos[2], col);
+                col2 = startSet ? col : DuRGBA(220, 32, 16, 196);
+                AppendCircle(con.pos[0], con.pos[1] + 0.1f, con.pos[2], con.rad, col2);
 
-                vertex(vb.x, vb.y, vb.z, col);
-                vertex(con.pos[3], con.pos[4], con.pos[5], col);
-                col2 = endSet ? col : duRGBA(220, 32, 16, 196);
-                appendCircle(con.pos[3], con.pos[4] + 0.1f, con.pos[5], con.rad, col2);
+                Vertex(vb.x, vb.y, vb.z, col);
+                Vertex(con.pos[3], con.pos[4], con.pos[5], col);
+                col2 = endSet ? col : DuRGBA(220, 32, 16, 196);
+                AppendCircle(con.pos[3], con.pos[4] + 0.1f, con.pos[5], con.rad, col2);
 
                 // End point vertices.
-                vertex(con.pos[0], con.pos[1], con.pos[2], duRGBA(0, 48, 64, 196));
-                vertex(con.pos[0], con.pos[1] + 0.2f, con.pos[2], duRGBA(0, 48, 64, 196));
+                Vertex(con.pos[0], con.pos[1], con.pos[2], DuRGBA(0, 48, 64, 196));
+                Vertex(con.pos[0], con.pos[1] + 0.2f, con.pos[2], DuRGBA(0, 48, 64, 196));
 
-                vertex(con.pos[3], con.pos[4], con.pos[5], duRGBA(0, 48, 64, 196));
-                vertex(con.pos[3], con.pos[4] + 0.2f, con.pos[5], duRGBA(0, 48, 64, 196));
+                Vertex(con.pos[3], con.pos[4], con.pos[5], DuRGBA(0, 48, 64, 196));
+                Vertex(con.pos[3], con.pos[4] + 0.2f, con.pos[5], DuRGBA(0, 48, 64, 196));
 
                 // Connection arc.
-                appendArc(con.pos[0], con.pos[1], con.pos[2], con.pos[3], con.pos[4], con.pos[5], 0.25f,
+                AppendArc(con.pos[0], con.pos[1], con.pos[2], con.pos[3], con.pos[4], con.pos[5], 0.25f,
                     (con.flags & 1) != 0 ? 0.6f : 0, 0.6f, col);
             }
 
-            end();
+            End();
         }
 
-        int vcol = duRGBA(0, 0, 0, 196);
-        begin(DebugDrawPrimitives.POINTS, 3.0f);
+        int vcol = DuRGBA(0, 0, 0, 196);
+        Begin(DebugDrawPrimitives.POINTS, 3.0f);
         for (int i = 0; i < tile.data.header.vertCount; i++)
         {
             int v = i * 3;
-            vertex(tile.data.verts[v], tile.data.verts[v + 1], tile.data.verts[v + 2], vcol);
+            Vertex(tile.data.verts[v], tile.data.verts[v + 1], tile.data.verts[v + 2], vcol);
         }
 
-        end();
+        End();
 
-        depthMask(true);
+        DepthMask(true);
     }
 
-    private void drawPoly(MeshTile tile, int index, int col)
+    private void DrawPoly(MeshTile tile, int index, int col)
     {
         Poly p = tile.data.polys[index];
         if (tile.data.detailMeshes != null)
@@ -269,12 +269,12 @@ public class RecastDebugDraw : DebugDraw
                         int v = tile.data.detailTris[t + k];
                         if (v < p.vertCount)
                         {
-                            vertex(tile.data.verts[p.verts[v] * 3], tile.data.verts[p.verts[v] * 3 + 1],
+                            Vertex(tile.data.verts[p.verts[v] * 3], tile.data.verts[p.verts[v] * 3 + 1],
                                 tile.data.verts[p.verts[v] * 3 + 2], col);
                         }
                         else
                         {
-                            vertex(tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3],
+                            Vertex(tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3],
                                 tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3 + 1],
                                 tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3 + 2], col);
                         }
@@ -286,28 +286,28 @@ public class RecastDebugDraw : DebugDraw
         {
             for (int j = 1; j < p.vertCount - 1; ++j)
             {
-                vertex(tile.data.verts[p.verts[0] * 3], tile.data.verts[p.verts[0] * 3 + 1],
+                Vertex(tile.data.verts[p.verts[0] * 3], tile.data.verts[p.verts[0] * 3 + 1],
                     tile.data.verts[p.verts[0] * 3 + 2], col);
                 for (int k = 0; k < 2; ++k)
                 {
-                    vertex(tile.data.verts[p.verts[j + k] * 3], tile.data.verts[p.verts[j + k] * 3 + 1],
+                    Vertex(tile.data.verts[p.verts[j + k] * 3], tile.data.verts[p.verts[j + k] * 3 + 1],
                         tile.data.verts[p.verts[j + k] * 3 + 2], col);
                 }
             }
         }
     }
 
-    void drawPolyBoundaries(MeshTile tile, int col, float linew, bool inner)
+    void DrawPolyBoundaries(MeshTile tile, int col, float linew, bool inner)
     {
         float thr = 0.01f * 0.01f;
 
-        begin(DebugDrawPrimitives.LINES, linew);
+        Begin(DebugDrawPrimitives.LINES, linew);
 
         for (int i = 0; i < tile.data.header.polyCount; ++i)
         {
             Poly p = tile.data.polys[i];
 
-            if (p.getType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+            if (p.GetType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
                 continue;
             }
@@ -336,16 +336,16 @@ public class RecastDebugDraw : DebugDraw
 
                         if (con)
                         {
-                            c = duRGBA(255, 255, 255, 48);
+                            c = DuRGBA(255, 255, 255, 48);
                         }
                         else
                         {
-                            c = duRGBA(0, 0, 0, 48);
+                            c = DuRGBA(0, 0, 0, 48);
                         }
                     }
                     else
                     {
-                        c = duRGBA(0, 48, 64, 32);
+                        c = DuRGBA(0, 48, 64, 32);
                     }
                 }
                 else
@@ -397,7 +397,7 @@ public class RecastDebugDraw : DebugDraw
 
                         for (int m = 0, n = 2; m < 3; n = m++)
                         {
-                            if ((NavMesh.getDetailTriEdgeFlags(tile.data.detailTris[t + 3], n) & NavMesh.DT_DETAIL_EDGE_BOUNDARY) == 0)
+                            if ((NavMesh.GetDetailTriEdgeFlags(tile.data.detailTris[t + 3], n) & NavMesh.DT_DETAIL_EDGE_BOUNDARY) == 0)
                                 continue;
 
                             if (((tile.data.detailTris[t + 3] >> (n * 2)) & 0x3) == 0)
@@ -405,26 +405,26 @@ public class RecastDebugDraw : DebugDraw
                                 continue; // Skip inner detail edges.
                             }
 
-                            if (distancePtLine2d(tv[n], v0, v1) < thr && distancePtLine2d(tv[m], v0, v1) < thr)
+                            if (DistancePtLine2d(tv[n], v0, v1) < thr && DistancePtLine2d(tv[m], v0, v1) < thr)
                             {
-                                vertex(tv[n], c);
-                                vertex(tv[m], c);
+                                Vertex(tv[n], c);
+                                Vertex(tv[m], c);
                             }
                         }
                     }
                 }
                 else
                 {
-                    vertex(v0, c);
-                    vertex(v1, c);
+                    Vertex(v0, c);
+                    Vertex(v1, c);
                 }
             }
         }
 
-        end();
+        End();
     }
 
-    static float distancePtLine2d(Vector3f pt, Vector3f p, Vector3f q)
+    static float DistancePtLine2d(Vector3f pt, Vector3f p, Vector3f q)
     {
         float pqx = q.x - p.x;
         float pqz = q.z - p.z;
@@ -442,23 +442,23 @@ public class RecastDebugDraw : DebugDraw
         return dx * dx + dz * dz;
     }
 
-    public void debugDrawNavMeshBVTree(NavMesh mesh)
+    public void DebugDrawNavMeshBVTree(NavMesh mesh)
     {
-        for (int i = 0; i < mesh.getMaxTiles(); ++i)
+        for (int i = 0; i < mesh.GetMaxTiles(); ++i)
         {
-            MeshTile tile = mesh.getTile(i);
+            MeshTile tile = mesh.GetTile(i);
             if (tile != null && tile.data != null && tile.data.header != null)
             {
-                drawMeshTileBVTree(tile);
+                DrawMeshTileBVTree(tile);
             }
         }
     }
 
-    private void drawMeshTileBVTree(MeshTile tile)
+    private void DrawMeshTileBVTree(MeshTile tile)
     {
         // Draw BV nodes.
         float cs = 1.0f / tile.data.header.bvQuantFactor;
-        begin(DebugDrawPrimitives.LINES, 1.0f);
+        Begin(DebugDrawPrimitives.LINES, 1.0f);
         for (int i = 0; i < tile.data.header.bvNodeCount; ++i)
         {
             BVNode n = tile.data.bvTree[i];
@@ -467,21 +467,21 @@ public class RecastDebugDraw : DebugDraw
                 continue;
             }
 
-            appendBoxWire(tile.data.header.bmin.x + n.bmin[0] * cs, tile.data.header.bmin.y + n.bmin[1] * cs,
+            AppendBoxWire(tile.data.header.bmin.x + n.bmin[0] * cs, tile.data.header.bmin.y + n.bmin[1] * cs,
                 tile.data.header.bmin.z + n.bmin[2] * cs, tile.data.header.bmin.x + n.bmax[0] * cs,
                 tile.data.header.bmin.y + n.bmax[1] * cs, tile.data.header.bmin.z + n.bmax[2] * cs,
-                duRGBA(255, 255, 255, 128));
+                DuRGBA(255, 255, 255, 128));
         }
 
-        end();
+        End();
     }
 
-    public void debugDrawCompactHeightfieldSolid(CompactHeightfield chf)
+    public void DebugDrawCompactHeightfieldSolid(CompactHeightfield chf)
     {
         float cs = chf.cs;
         float ch = chf.ch;
 
-        begin(DebugDrawPrimitives.QUADS);
+        Begin(DebugDrawPrimitives.QUADS);
 
         for (int y = 0; y < chf.height; ++y)
         {
@@ -499,30 +499,30 @@ public class RecastDebugDraw : DebugDraw
                     int color;
                     if (area == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WALKABLE)
                     {
-                        color = duRGBA(0, 192, 255, 64);
+                        color = DuRGBA(0, 192, 255, 64);
                     }
                     else if (area == RecastConstants.RC_NULL_AREA)
                     {
-                        color = duRGBA(0, 0, 0, 64);
+                        color = DuRGBA(0, 0, 0, 64);
                     }
                     else
                     {
-                        color = areaToCol(area);
+                        color = AreaToCol(area);
                     }
 
                     float fy = chf.bmin.y + (s.y + 1) * ch;
-                    vertex(fx, fy, fz, color);
-                    vertex(fx, fy, fz + cs, color);
-                    vertex(fx + cs, fy, fz + cs, color);
-                    vertex(fx + cs, fy, fz, color);
+                    Vertex(fx, fy, fz, color);
+                    Vertex(fx, fy, fz + cs, color);
+                    Vertex(fx + cs, fy, fz + cs, color);
+                    Vertex(fx + cs, fy, fz, color);
                 }
             }
         }
 
-        end();
+        End();
     }
 
-    public void debugDrawRegionConnections(ContourSet cset)
+    public void DebugDrawRegionConnections(ContourSet cset)
     {
         float alpha = 1f;
 
@@ -530,14 +530,14 @@ public class RecastDebugDraw : DebugDraw
         float cs = cset.cs;
         float ch = cset.ch;
 
-        int color = duRGBA(0, 0, 0, 196);
+        int color = DuRGBA(0, 0, 0, 196);
 
-        begin(DebugDrawPrimitives.LINES, 2.0f);
+        Begin(DebugDrawPrimitives.LINES, 2.0f);
 
         for (int i = 0; i < cset.conts.Count; ++i)
         {
             Contour cont = cset.conts[i];
-            Vector3f pos = getContourCenter(cont, orig, cs, ch);
+            Vector3f pos = GetContourCenter(cont, orig, cs, ch);
             for (int j = 0; j < cont.nverts; ++j)
             {
                 int v = j * 4;
@@ -546,33 +546,33 @@ public class RecastDebugDraw : DebugDraw
                     continue;
                 }
 
-                Contour cont2 = findContourFromSet(cset, (short)cont.verts[v + 3]);
+                Contour cont2 = FindContourFromSet(cset, (short)cont.verts[v + 3]);
                 if (cont2 != null)
                 {
-                    Vector3f pos2 = getContourCenter(cont2, orig, cs, ch);
-                    appendArc(pos.x, pos.y, pos.z, pos2.x, pos2.y, pos2.z, 0.25f, 0.6f, 0.6f, color);
+                    Vector3f pos2 = GetContourCenter(cont2, orig, cs, ch);
+                    AppendArc(pos.x, pos.y, pos.z, pos2.x, pos2.y, pos2.z, 0.25f, 0.6f, 0.6f, color);
                 }
             }
         }
 
-        end();
+        End();
 
         char a = (char)(alpha * 255.0f);
 
-        begin(DebugDrawPrimitives.POINTS, 7.0f);
+        Begin(DebugDrawPrimitives.POINTS, 7.0f);
 
         for (int i = 0; i < cset.conts.Count; ++i)
         {
             Contour cont = cset.conts[i];
-            int col = duDarkenCol(duIntToCol(cont.reg, a));
-            Vector3f pos = getContourCenter(cont, orig, cs, ch);
-            vertex(pos, col);
+            int col = DuDarkenCol(DuIntToCol(cont.reg, a));
+            Vector3f pos = GetContourCenter(cont, orig, cs, ch);
+            Vertex(pos, col);
         }
 
-        end();
+        End();
     }
 
-    private Vector3f getContourCenter(Contour cont, Vector3f orig, float cs, float ch)
+    private Vector3f GetContourCenter(Contour cont, Vector3f orig, float cs, float ch)
     {
         Vector3f center = new Vector3f();
         center.x = 0;
@@ -601,7 +601,7 @@ public class RecastDebugDraw : DebugDraw
         return center;
     }
 
-    private Contour findContourFromSet(ContourSet cset, int reg)
+    private Contour FindContourFromSet(ContourSet cset, int reg)
     {
         for (int i = 0; i < cset.conts.Count; ++i)
         {
@@ -614,7 +614,7 @@ public class RecastDebugDraw : DebugDraw
         return null;
     }
 
-    public void debugDrawRawContours(ContourSet cset, float alpha)
+    public void DebugDrawRawContours(ContourSet cset, float alpha)
     {
         Vector3f orig = cset.bmin;
         float cs = cset.cs;
@@ -622,12 +622,12 @@ public class RecastDebugDraw : DebugDraw
 
         char a = (char)(alpha * 255.0f);
 
-        begin(DebugDrawPrimitives.LINES, 2.0f);
+        Begin(DebugDrawPrimitives.LINES, 2.0f);
 
         for (int i = 0; i < cset.conts.Count; ++i)
         {
             Contour c = cset.conts[i];
-            int color = duIntToCol(c.reg, a);
+            int color = DuIntToCol(c.reg, a);
 
             for (int j = 0; j < c.nrverts; ++j)
             {
@@ -637,10 +637,10 @@ public class RecastDebugDraw : DebugDraw
                 float fx = orig.x + v0 * cs;
                 float fy = orig.y + (v1 + 1 + (i & 1)) * ch;
                 float fz = orig.z + v2 * cs;
-                vertex(fx, fy, fz, color);
+                Vertex(fx, fy, fz, color);
                 if (j > 0)
                 {
-                    vertex(fx, fy, fz, color);
+                    Vertex(fx, fy, fz, color);
                 }
             }
 
@@ -652,18 +652,18 @@ public class RecastDebugDraw : DebugDraw
                 float fx = orig.x + v0 * cs;
                 float fy = orig.y + (v1 + 1 + (i & 1)) * ch;
                 float fz = orig.z + v2 * cs;
-                vertex(fx, fy, fz, color);
+                Vertex(fx, fy, fz, color);
             }
         }
 
-        end();
+        End();
 
-        begin(DebugDrawPrimitives.POINTS, 2.0f);
+        Begin(DebugDrawPrimitives.POINTS, 2.0f);
 
         for (int i = 0; i < cset.conts.Count; ++i)
         {
             Contour c = cset.conts[i];
-            int color = duDarkenCol(duIntToCol(c.reg, a));
+            int color = DuDarkenCol(DuIntToCol(c.reg, a));
 
             for (int j = 0; j < c.nrverts; ++j)
             {
@@ -675,21 +675,21 @@ public class RecastDebugDraw : DebugDraw
                 int colv = color;
                 if ((v3 & RecastConstants.RC_BORDER_VERTEX) != 0)
                 {
-                    colv = duRGBA(255, 255, 255, a);
+                    colv = DuRGBA(255, 255, 255, a);
                     off = ch * 2;
                 }
 
                 float fx = orig.x + v0 * cs;
                 float fy = orig.y + (v1 + 1 + (i & 1)) * ch + off;
                 float fz = orig.z + v2 * cs;
-                vertex(fx, fy, fz, colv);
+                Vertex(fx, fy, fz, colv);
             }
         }
 
-        end();
+        End();
     }
 
-    public void debugDrawContours(ContourSet cset)
+    public void DebugDrawContours(ContourSet cset)
     {
         float alpha = 1f;
         Vector3f orig = cset.bmin;
@@ -698,7 +698,7 @@ public class RecastDebugDraw : DebugDraw
 
         char a = (char)(alpha * 255.0f);
 
-        begin(DebugDrawPrimitives.LINES, 2.5f);
+        Begin(DebugDrawPrimitives.LINES, 2.5f);
 
         for (int i = 0; i < cset.conts.Count; ++i)
         {
@@ -708,8 +708,8 @@ public class RecastDebugDraw : DebugDraw
                 continue;
             }
 
-            int color = duIntToCol(c.reg, a);
-            int bcolor = duLerpCol(color, duRGBA(255, 255, 255, a), 128);
+            int color = DuIntToCol(c.reg, a);
+            int bcolor = DuLerpCol(color, DuRGBA(255, 255, 255, a), 128);
 
             for (int j = 0, k = c.nverts - 1; j < c.nverts; k = j++)
             {
@@ -725,23 +725,23 @@ public class RecastDebugDraw : DebugDraw
                 float fx = orig.x + va0 * cs;
                 float fy = orig.y + (va1 + 1 + (i & 1)) * ch;
                 float fz = orig.z + va2 * cs;
-                vertex(fx, fy, fz, col);
+                Vertex(fx, fy, fz, col);
 
                 fx = orig.x + vb0 * cs;
                 fy = orig.y + (vb1 + 1 + (i & 1)) * ch;
                 fz = orig.z + vb2 * cs;
-                vertex(fx, fy, fz, col);
+                Vertex(fx, fy, fz, col);
             }
         }
 
-        end();
+        End();
 
-        begin(DebugDrawPrimitives.POINTS, 3.0f);
+        Begin(DebugDrawPrimitives.POINTS, 3.0f);
 
         for (int i = 0; i < cset.conts.Count; ++i)
         {
             Contour c = cset.conts[i];
-            int color = duDarkenCol(duIntToCol(c.reg, a));
+            int color = DuDarkenCol(DuIntToCol(c.reg, a));
 
             for (int j = 0; j < c.nverts; ++j)
             {
@@ -753,23 +753,23 @@ public class RecastDebugDraw : DebugDraw
                 int colv = color;
                 if ((v3 & RecastConstants.RC_BORDER_VERTEX) != 0)
                 {
-                    colv = duRGBA(255, 255, 255, a);
+                    colv = DuRGBA(255, 255, 255, a);
                     off = ch * 2;
                 }
 
                 float fx = orig.x + v0 * cs;
                 float fy = orig.y + (v1 + 1 + (i & 1)) * ch + off;
                 float fz = orig.z + v2 * cs;
-                vertex(fx, fy, fz, colv);
+                Vertex(fx, fy, fz, colv);
             }
         }
 
-        end();
+        End();
     }
 
-    public void debugDrawHeightfieldSolid(Heightfield hf)
+    public void DebugDrawHeightfieldSolid(Heightfield hf)
     {
-        if (!frustumTest(hf.bmin, hf.bmax))
+        if (!FrustumTest(hf.bmin, hf.bmax))
         {
             return;
         }
@@ -782,9 +782,9 @@ public class RecastDebugDraw : DebugDraw
         int h = hf.height;
 
         int[] fcol = new int[6];
-        duCalcBoxColors(fcol, duRGBA(255, 255, 255, 255), duRGBA(255, 255, 255, 255));
+        DuCalcBoxColors(fcol, DuRGBA(255, 255, 255, 255), DuRGBA(255, 255, 255, 255));
 
-        begin(DebugDrawPrimitives.QUADS);
+        Begin(DebugDrawPrimitives.QUADS);
 
         for (int y = 0; y < h; ++y)
         {
@@ -795,16 +795,16 @@ public class RecastDebugDraw : DebugDraw
                 Span s = hf.spans[x + y * w];
                 while (s != null)
                 {
-                    appendBox(fx, orig.y + s.smin * ch, fz, fx + cs, orig.y + s.smax * ch, fz + cs, fcol);
+                    AppendBox(fx, orig.y + s.smin * ch, fz, fx + cs, orig.y + s.smax * ch, fz + cs, fcol);
                     s = s.next;
                 }
             }
         }
 
-        end();
+        End();
     }
 
-    public void debugDrawHeightfieldWalkable(Heightfield hf)
+    public void DebugDrawHeightfieldWalkable(Heightfield hf)
     {
         Vector3f orig = hf.bmin;
         float cs = hf.cs;
@@ -814,9 +814,9 @@ public class RecastDebugDraw : DebugDraw
         int h = hf.height;
 
         int[] fcol = new int[6];
-        duCalcBoxColors(fcol, duRGBA(255, 255, 255, 255), duRGBA(217, 217, 217, 255));
+        DuCalcBoxColors(fcol, DuRGBA(255, 255, 255, 255), DuRGBA(217, 217, 217, 255));
 
-        begin(DebugDrawPrimitives.QUADS);
+        Begin(DebugDrawPrimitives.QUADS);
 
         for (int y = 0; y < h; ++y)
         {
@@ -829,32 +829,32 @@ public class RecastDebugDraw : DebugDraw
                 {
                     if (s.area == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WALKABLE)
                     {
-                        fcol[0] = duRGBA(64, 128, 160, 255);
+                        fcol[0] = DuRGBA(64, 128, 160, 255);
                     }
                     else if (s.area == RecastConstants.RC_NULL_AREA)
                     {
-                        fcol[0] = duRGBA(64, 64, 64, 255);
+                        fcol[0] = DuRGBA(64, 64, 64, 255);
                     }
                     else
                     {
-                        fcol[0] = duMultCol(areaToCol(s.area), 200);
+                        fcol[0] = DuMultCol(AreaToCol(s.area), 200);
                     }
 
-                    appendBox(fx, orig.y + s.smin * ch, fz, fx + cs, orig.y + s.smax * ch, fz + cs, fcol);
+                    AppendBox(fx, orig.y + s.smin * ch, fz, fx + cs, orig.y + s.smax * ch, fz + cs, fcol);
                     s = s.next;
                 }
             }
         }
 
-        end();
+        End();
     }
 
-    public void debugDrawCompactHeightfieldRegions(CompactHeightfield chf)
+    public void DebugDrawCompactHeightfieldRegions(CompactHeightfield chf)
     {
         float cs = chf.cs;
         float ch = chf.ch;
 
-        begin(DebugDrawPrimitives.QUADS);
+        Begin(DebugDrawPrimitives.QUADS);
 
         for (int y = 0; y < chf.height; ++y)
         {
@@ -871,25 +871,25 @@ public class RecastDebugDraw : DebugDraw
                     int color;
                     if (s.reg != 0)
                     {
-                        color = duIntToCol(s.reg, 192);
+                        color = DuIntToCol(s.reg, 192);
                     }
                     else
                     {
-                        color = duRGBA(0, 0, 0, 64);
+                        color = DuRGBA(0, 0, 0, 64);
                     }
 
-                    vertex(fx, fy, fz, color);
-                    vertex(fx, fy, fz + cs, color);
-                    vertex(fx + cs, fy, fz + cs, color);
-                    vertex(fx + cs, fy, fz, color);
+                    Vertex(fx, fy, fz, color);
+                    Vertex(fx, fy, fz + cs, color);
+                    Vertex(fx + cs, fy, fz + cs, color);
+                    Vertex(fx + cs, fy, fz, color);
                 }
             }
         }
 
-        end();
+        End();
     }
 
-    public void debugDrawCompactHeightfieldDistance(CompactHeightfield chf)
+    public void DebugDrawCompactHeightfieldDistance(CompactHeightfield chf)
     {
         if (chf.dist == null)
         {
@@ -907,7 +907,7 @@ public class RecastDebugDraw : DebugDraw
 
         float dscale = 255.0f / maxd;
 
-        begin(DebugDrawPrimitives.QUADS);
+        Begin(DebugDrawPrimitives.QUADS);
 
         for (int y = 0; y < chf.height; ++y)
         {
@@ -922,26 +922,26 @@ public class RecastDebugDraw : DebugDraw
                     CompactSpan s = chf.spans[i];
                     float fy = chf.bmin.y + (s.y + 1) * ch;
                     char cd = (char)(chf.dist[i] * dscale);
-                    int color = duRGBA(cd, cd, cd, 255);
-                    vertex(fx, fy, fz, color);
-                    vertex(fx, fy, fz + cs, color);
-                    vertex(fx + cs, fy, fz + cs, color);
-                    vertex(fx + cs, fy, fz, color);
+                    int color = DuRGBA(cd, cd, cd, 255);
+                    Vertex(fx, fy, fz, color);
+                    Vertex(fx, fy, fz + cs, color);
+                    Vertex(fx + cs, fy, fz + cs, color);
+                    Vertex(fx + cs, fy, fz, color);
                 }
             }
         }
 
-        end();
+        End();
     }
 
-    public void debugDrawPolyMesh(PolyMesh mesh)
+    public void DebugDrawPolyMesh(PolyMesh mesh)
     {
         int nvp = mesh.nvp;
         float cs = mesh.cs;
         float ch = mesh.ch;
         Vector3f orig = mesh.bmin;
 
-        begin(DebugDrawPrimitives.TRIS);
+        Begin(DebugDrawPrimitives.TRIS);
 
         for (int i = 0; i < mesh.npolys; ++i)
         {
@@ -951,15 +951,15 @@ public class RecastDebugDraw : DebugDraw
             int color;
             if (area == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WALKABLE)
             {
-                color = duRGBA(0, 192, 255, 64);
+                color = DuRGBA(0, 192, 255, 64);
             }
             else if (area == RecastConstants.RC_NULL_AREA)
             {
-                color = duRGBA(0, 0, 0, 64);
+                color = DuRGBA(0, 0, 0, 64);
             }
             else
             {
-                color = areaToCol(area);
+                color = AreaToCol(area);
             }
 
             int[] vi = new int[3];
@@ -981,16 +981,16 @@ public class RecastDebugDraw : DebugDraw
                     float x = orig.x + v0 * cs;
                     float y = orig.y + (v1 + 1) * ch;
                     float z = orig.z + v2 * cs;
-                    vertex(x, y, z, color);
+                    Vertex(x, y, z, color);
                 }
             }
         }
 
-        end();
+        End();
 
         // Draw neighbours edges
-        int coln = duRGBA(0, 48, 64, 32);
-        begin(DebugDrawPrimitives.LINES, 1.5f);
+        int coln = DuRGBA(0, 48, 64, 32);
+        Begin(DebugDrawPrimitives.LINES, 1.5f);
         for (int i = 0; i < mesh.npolys; ++i)
         {
             int p = i * nvp * 2;
@@ -1015,16 +1015,16 @@ public class RecastDebugDraw : DebugDraw
                     float x = orig.x + mesh.verts[v] * cs;
                     float y = orig.y + (mesh.verts[v + 1] + 1) * ch + 0.1f;
                     float z = orig.z + mesh.verts[v + 2] * cs;
-                    vertex(x, y, z, coln);
+                    Vertex(x, y, z, coln);
                 }
             }
         }
 
-        end();
+        End();
 
         // Draw boundary edges
-        int colb = duRGBA(0, 48, 64, 220);
-        begin(DebugDrawPrimitives.LINES, 2.5f);
+        int colb = DuRGBA(0, 48, 64, 220);
+        Begin(DebugDrawPrimitives.LINES, 2.5f);
         for (int i = 0; i < mesh.npolys; ++i)
         {
             int p = i * nvp * 2;
@@ -1046,7 +1046,7 @@ public class RecastDebugDraw : DebugDraw
                 int col = colb;
                 if ((mesh.polys[p + nvp + j] & 0xf) != 0xf)
                 {
-                    col = duRGBA(255, 255, 255, 128);
+                    col = DuRGBA(255, 255, 255, 128);
                 }
 
                 for (int k = 0; k < 2; ++k)
@@ -1055,30 +1055,30 @@ public class RecastDebugDraw : DebugDraw
                     float x = orig.x + mesh.verts[v] * cs;
                     float y = orig.y + (mesh.verts[v + 1] + 1) * ch + 0.1f;
                     float z = orig.z + mesh.verts[v + 2] * cs;
-                    vertex(x, y, z, col);
+                    Vertex(x, y, z, col);
                 }
             }
         }
 
-        end();
+        End();
 
-        begin(DebugDrawPrimitives.POINTS, 3.0f);
-        int colv = duRGBA(0, 0, 0, 220);
+        Begin(DebugDrawPrimitives.POINTS, 3.0f);
+        int colv = DuRGBA(0, 0, 0, 220);
         for (int i = 0; i < mesh.nverts; ++i)
         {
             int v = i * 3;
             float x = orig.x + mesh.verts[v] * cs;
             float y = orig.y + (mesh.verts[v + 1] + 1) * ch + 0.1f;
             float z = orig.z + mesh.verts[v + 2] * cs;
-            vertex(x, y, z, colv);
+            Vertex(x, y, z, colv);
         }
 
-        end();
+        End();
     }
 
-    public void debugDrawPolyMeshDetail(PolyMeshDetail dmesh)
+    public void DebugDrawPolyMeshDetail(PolyMeshDetail dmesh)
     {
-        begin(DebugDrawPrimitives.TRIS);
+        Begin(DebugDrawPrimitives.TRIS);
 
         for (int i = 0; i < dmesh.nmeshes; ++i)
         {
@@ -1089,27 +1089,27 @@ public class RecastDebugDraw : DebugDraw
             int verts = bverts * 3;
             int tris = btris * 4;
 
-            int color = duIntToCol(i, 192);
+            int color = DuIntToCol(i, 192);
 
             for (int j = 0; j < ntris; ++j)
             {
-                vertex(dmesh.verts[verts + dmesh.tris[tris + j * 4 + 0] * 3],
+                Vertex(dmesh.verts[verts + dmesh.tris[tris + j * 4 + 0] * 3],
                     dmesh.verts[verts + dmesh.tris[tris + j * 4 + 0] * 3 + 1],
                     dmesh.verts[verts + dmesh.tris[tris + j * 4 + 0] * 3 + 2], color);
-                vertex(dmesh.verts[verts + dmesh.tris[tris + j * 4 + 1] * 3],
+                Vertex(dmesh.verts[verts + dmesh.tris[tris + j * 4 + 1] * 3],
                     dmesh.verts[verts + dmesh.tris[tris + j * 4 + 1] * 3 + 1],
                     dmesh.verts[verts + dmesh.tris[tris + j * 4 + 1] * 3 + 2], color);
-                vertex(dmesh.verts[verts + dmesh.tris[tris + j * 4 + 2] * 3],
+                Vertex(dmesh.verts[verts + dmesh.tris[tris + j * 4 + 2] * 3],
                     dmesh.verts[verts + dmesh.tris[tris + j * 4 + 2] * 3 + 1],
                     dmesh.verts[verts + dmesh.tris[tris + j * 4 + 2] * 3 + 2], color);
             }
         }
 
-        end();
+        End();
 
         // Internal edges.
-        begin(DebugDrawPrimitives.LINES, 1.0f);
-        int coli = duRGBA(0, 0, 0, 64);
+        Begin(DebugDrawPrimitives.LINES, 1.0f);
+        int coli = DuRGBA(0, 0, 0, 64);
         for (int i = 0; i < dmesh.nmeshes; ++i)
         {
             int m = i * 4;
@@ -1130,10 +1130,10 @@ public class RecastDebugDraw : DebugDraw
                         // Internal edge
                         if (dmesh.tris[t + kp] < dmesh.tris[t + k])
                         {
-                            vertex(dmesh.verts[verts + dmesh.tris[t + kp] * 3],
+                            Vertex(dmesh.verts[verts + dmesh.tris[t + kp] * 3],
                                 dmesh.verts[verts + dmesh.tris[t + kp] * 3 + 1],
                                 dmesh.verts[verts + dmesh.tris[t + kp] * 3 + 2], coli);
-                            vertex(dmesh.verts[verts + dmesh.tris[t + k] * 3],
+                            Vertex(dmesh.verts[verts + dmesh.tris[t + k] * 3],
                                 dmesh.verts[verts + dmesh.tris[t + k] * 3 + 1],
                                 dmesh.verts[verts + dmesh.tris[t + k] * 3 + 2], coli);
                         }
@@ -1142,11 +1142,11 @@ public class RecastDebugDraw : DebugDraw
             }
         }
 
-        end();
+        End();
 
         // External edges.
-        begin(DebugDrawPrimitives.LINES, 2.0f);
-        int cole = duRGBA(0, 0, 0, 64);
+        Begin(DebugDrawPrimitives.LINES, 2.0f);
+        int cole = DuRGBA(0, 0, 0, 64);
         for (int i = 0; i < dmesh.nmeshes; ++i)
         {
             int m = i * 4;
@@ -1165,10 +1165,10 @@ public class RecastDebugDraw : DebugDraw
                     if (ef != 0)
                     {
                         // Ext edge
-                        vertex(dmesh.verts[verts + dmesh.tris[t + kp] * 3],
+                        Vertex(dmesh.verts[verts + dmesh.tris[t + kp] * 3],
                             dmesh.verts[verts + dmesh.tris[t + kp] * 3 + 1],
                             dmesh.verts[verts + dmesh.tris[t + kp] * 3 + 2], cole);
-                        vertex(dmesh.verts[verts + dmesh.tris[t + k] * 3],
+                        Vertex(dmesh.verts[verts + dmesh.tris[t + k] * 3],
                             dmesh.verts[verts + dmesh.tris[t + k] * 3 + 1],
                             dmesh.verts[verts + dmesh.tris[t + k] * 3 + 2], cole);
                     }
@@ -1176,10 +1176,10 @@ public class RecastDebugDraw : DebugDraw
             }
         }
 
-        end();
+        End();
 
-        begin(DebugDrawPrimitives.POINTS, 3.0f);
-        int colv = duRGBA(0, 0, 0, 64);
+        Begin(DebugDrawPrimitives.POINTS, 3.0f);
+        int colv = DuRGBA(0, 0, 0, 64);
         for (int i = 0; i < dmesh.nmeshes; ++i)
         {
             int m = i * 4;
@@ -1188,23 +1188,23 @@ public class RecastDebugDraw : DebugDraw
             int verts = bverts * 3;
             for (int j = 0; j < nverts; ++j)
             {
-                vertex(dmesh.verts[verts + j * 3], dmesh.verts[verts + j * 3 + 1], dmesh.verts[verts + j * 3 + 2],
+                Vertex(dmesh.verts[verts + j * 3], dmesh.verts[verts + j * 3 + 1], dmesh.verts[verts + j * 3 + 2],
                     colv);
             }
         }
 
-        end();
+        End();
     }
 
-    public void debugDrawNavMeshNodes(NavMeshQuery query)
+    public void DebugDrawNavMeshNodes(NavMeshQuery query)
     {
-        NodePool pool = query.getNodePool();
+        NodePool pool = query.GetNodePool();
         if (pool != null)
         {
             float off = 0.5f;
-            begin(DebugDrawPrimitives.POINTS, 4.0f);
+            Begin(DebugDrawPrimitives.POINTS, 4.0f);
 
-            foreach (List<Node> nodes in pool.getNodeMap().Values)
+            foreach (List<Node> nodes in pool.GetNodeMap().Values)
             {
                 foreach (Node node in nodes)
                 {
@@ -1213,14 +1213,14 @@ public class RecastDebugDraw : DebugDraw
                         continue;
                     }
 
-                    vertex(node.pos.x, node.pos.y + off, node.pos.z, duRGBA(255, 192, 0, 255));
+                    Vertex(node.pos.x, node.pos.y + off, node.pos.z, DuRGBA(255, 192, 0, 255));
                 }
             }
 
-            end();
+            End();
 
-            begin(DebugDrawPrimitives.LINES, 2.0f);
-            foreach (List<Node> nodes in pool.getNodeMap().Values)
+            Begin(DebugDrawPrimitives.LINES, 2.0f);
+            foreach (List<Node> nodes in pool.GetNodeMap().Values)
             {
                 foreach (Node node in nodes)
                 {
@@ -1234,32 +1234,32 @@ public class RecastDebugDraw : DebugDraw
                         continue;
                     }
 
-                    Node parent = pool.getNodeAtIdx(node.pidx);
+                    Node parent = pool.GetNodeAtIdx(node.pidx);
                     if (parent == null)
                     {
                         continue;
                     }
 
-                    vertex(node.pos.x, node.pos.y + off, node.pos.z, duRGBA(255, 192, 0, 128));
-                    vertex(parent.pos.x, parent.pos.y + off, parent.pos.z, duRGBA(255, 192, 0, 128));
+                    Vertex(node.pos.x, node.pos.y + off, node.pos.z, DuRGBA(255, 192, 0, 128));
+                    Vertex(parent.pos.x, parent.pos.y + off, parent.pos.z, DuRGBA(255, 192, 0, 128));
                 }
             }
 
-            end();
+            End();
         }
     }
 
-    public void debugDrawNavMeshPolysWithFlags(NavMesh mesh, int polyFlags, int col)
+    public void DebugDrawNavMeshPolysWithFlags(NavMesh mesh, int polyFlags, int col)
     {
-        for (int i = 0; i < mesh.getMaxTiles(); ++i)
+        for (int i = 0; i < mesh.GetMaxTiles(); ++i)
         {
-            MeshTile tile = mesh.getTile(i);
+            MeshTile tile = mesh.GetTile(i);
             if (tile == null || tile.data == null || tile.data.header == null)
             {
                 continue;
             }
 
-            long @base = mesh.getPolyRefBase(tile);
+            long @base = mesh.GetPolyRefBase(tile);
 
             for (int j = 0; j < tile.data.header.polyCount; ++j)
             {
@@ -1269,19 +1269,19 @@ public class RecastDebugDraw : DebugDraw
                     continue;
                 }
 
-                debugDrawNavMeshPoly(mesh, @base | j, col);
+                DebugDrawNavMeshPoly(mesh, @base | j, col);
             }
         }
     }
 
-    public void debugDrawNavMeshPoly(NavMesh mesh, long refs, int col)
+    public void DebugDrawNavMeshPoly(NavMesh mesh, long refs, int col)
     {
         if (refs == 0)
         {
             return;
         }
 
-        Result<Tuple<MeshTile, Poly>> tileAndPolyResult = mesh.getTileAndPolyByRef(refs);
+        Result<Tuple<MeshTile, Poly>> tileAndPolyResult = mesh.GetTileAndPolyByRef(refs);
         if (tileAndPolyResult.Failed())
         {
             return;
@@ -1291,51 +1291,51 @@ public class RecastDebugDraw : DebugDraw
         MeshTile tile = tileAndPoly.Item1;
         Poly poly = tileAndPoly.Item2;
 
-        depthMask(false);
+        DepthMask(false);
 
-        int c = duTransCol(col, 64);
+        int c = DuTransCol(col, 64);
         int ip = poly.index;
 
-        if (poly.getType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+        if (poly.GetType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
         {
             OffMeshConnection con = tile.data.offMeshCons[ip - tile.data.header.offMeshBase];
 
-            begin(DebugDrawPrimitives.LINES, 2.0f);
+            Begin(DebugDrawPrimitives.LINES, 2.0f);
 
             // Connection arc.
-            appendArc(con.pos[0], con.pos[1], con.pos[2], con.pos[3], con.pos[4], con.pos[5], 0.25f,
+            AppendArc(con.pos[0], con.pos[1], con.pos[2], con.pos[3], con.pos[4], con.pos[5], 0.25f,
                 (con.flags & 1) != 0 ? 0.6f : 0.0f, 0.6f, c);
 
-            end();
+            End();
         }
         else
         {
-            begin(DebugDrawPrimitives.TRIS);
-            drawPoly(tile, ip, col);
-            end();
+            Begin(DebugDrawPrimitives.TRIS);
+            DrawPoly(tile, ip, col);
+            End();
         }
 
-        depthMask(true);
+        DepthMask(true);
     }
 
-    public void debugDrawNavMeshPortals(NavMesh mesh)
+    public void DebugDrawNavMeshPortals(NavMesh mesh)
     {
-        for (int i = 0; i < mesh.getMaxTiles(); ++i)
+        for (int i = 0; i < mesh.GetMaxTiles(); ++i)
         {
-            MeshTile tile = mesh.getTile(i);
+            MeshTile tile = mesh.GetTile(i);
             if (tile.data != null && tile.data.header != null)
             {
-                drawMeshTilePortal(tile);
+                DrawMeshTilePortal(tile);
             }
         }
     }
 
-    private void drawMeshTilePortal(MeshTile tile)
+    private void DrawMeshTilePortal(MeshTile tile)
     {
         float padx = 0.04f;
         float pady = tile.data.header.walkableClimb;
 
-        begin(DebugDrawPrimitives.LINES, 2.0f);
+        Begin(DebugDrawPrimitives.LINES, 2.0f);
 
         for (int side = 0; side < 8; ++side)
         {
@@ -1366,44 +1366,44 @@ public class RecastDebugDraw : DebugDraw
 
                     if (side == 0 || side == 4)
                     {
-                        int col = side == 0 ? duRGBA(128, 0, 0, 128) : duRGBA(128, 0, 128, 128);
+                        int col = side == 0 ? DuRGBA(128, 0, 0, 128) : DuRGBA(128, 0, 128, 128);
 
                         float x = va.x + ((side == 0) ? -padx : padx);
 
-                        vertex(x, va.y - pady, va.z, col);
-                        vertex(x, va.y + pady, va.z, col);
+                        Vertex(x, va.y - pady, va.z, col);
+                        Vertex(x, va.y + pady, va.z, col);
 
-                        vertex(x, va.y + pady, va.z, col);
-                        vertex(x, vb.y + pady, vb.z, col);
+                        Vertex(x, va.y + pady, va.z, col);
+                        Vertex(x, vb.y + pady, vb.z, col);
 
-                        vertex(x, vb.y + pady, vb.z, col);
-                        vertex(x, vb.y - pady, vb.z, col);
+                        Vertex(x, vb.y + pady, vb.z, col);
+                        Vertex(x, vb.y - pady, vb.z, col);
 
-                        vertex(x, vb.y - pady, vb.z, col);
-                        vertex(x, va.y - pady, va.z, col);
+                        Vertex(x, vb.y - pady, vb.z, col);
+                        Vertex(x, va.y - pady, va.z, col);
                     }
                     else if (side == 2 || side == 6)
                     {
-                        int col = side == 2 ? duRGBA(0, 128, 0, 128) : duRGBA(0, 128, 128, 128);
+                        int col = side == 2 ? DuRGBA(0, 128, 0, 128) : DuRGBA(0, 128, 128, 128);
 
                         float z = va.z + ((side == 2) ? -padx : padx);
 
-                        vertex(va.x, va.y - pady, z, col);
-                        vertex(va.x, va.y + pady, z, col);
+                        Vertex(va.x, va.y - pady, z, col);
+                        Vertex(va.x, va.y + pady, z, col);
 
-                        vertex(va.x, va.y + pady, z, col);
-                        vertex(vb.x, vb.y + pady, z, col);
+                        Vertex(va.x, va.y + pady, z, col);
+                        Vertex(vb.x, vb.y + pady, z, col);
 
-                        vertex(vb.x, vb.y + pady, z, col);
-                        vertex(vb.x, vb.y - pady, z, col);
+                        Vertex(vb.x, vb.y + pady, z, col);
+                        Vertex(vb.x, vb.y - pady, z, col);
 
-                        vertex(vb.x, vb.y - pady, z, col);
-                        vertex(va.x, va.y - pady, z, col);
+                        Vertex(vb.x, vb.y - pady, z, col);
+                        Vertex(va.x, va.y - pady, z, col);
                     }
                 }
             }
         }
 
-        end();
+        End();
     }
 }

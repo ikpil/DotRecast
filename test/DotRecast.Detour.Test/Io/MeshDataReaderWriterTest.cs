@@ -30,48 +30,48 @@ public class MeshDataReaderWriterTest
     private MeshData meshData;
 
     [SetUp]
-    public void setUp()
+    public void SetUp()
     {
         RecastTestMeshBuilder rcBuilder = new RecastTestMeshBuilder();
-        meshData = rcBuilder.getMeshData();
+        meshData = rcBuilder.GetMeshData();
     }
 
     [Test]
-    public void testCCompatibility()
+    public void TestCCompatibility()
     {
-        test(true, ByteOrder.BIG_ENDIAN);
+        Test(true, ByteOrder.BIG_ENDIAN);
     }
 
     [Test]
-    public void testCompact()
+    public void TestCompact()
     {
-        test(false, ByteOrder.BIG_ENDIAN);
+        Test(false, ByteOrder.BIG_ENDIAN);
     }
 
     [Test]
-    public void testCCompatibilityLE()
+    public void TestCCompatibilityLE()
     {
-        test(true, ByteOrder.LITTLE_ENDIAN);
+        Test(true, ByteOrder.LITTLE_ENDIAN);
     }
 
     [Test]
-    public void testCompactLE()
+    public void TestCompactLE()
     {
-        test(false, ByteOrder.LITTLE_ENDIAN);
+        Test(false, ByteOrder.LITTLE_ENDIAN);
     }
 
-    public void test(bool cCompatibility, ByteOrder order)
+    public void Test(bool cCompatibility, ByteOrder order)
     {
         using var ms = new MemoryStream();
         using var bwos = new BinaryWriter(ms);
 
         MeshDataWriter writer = new MeshDataWriter();
-        writer.write(bwos, meshData, order, cCompatibility);
+        writer.Write(bwos, meshData, order, cCompatibility);
         ms.Seek(0, SeekOrigin.Begin);
 
         using var bris = new BinaryReader(ms);
         MeshDataReader reader = new MeshDataReader();
-        MeshData readData = reader.read(bris, VERTS_PER_POLYGON);
+        MeshData readData = reader.Read(bris, VERTS_PER_POLYGON);
 
         Assert.That(readData.header.vertCount, Is.EqualTo(meshData.header.vertCount));
         Assert.That(readData.header.polyCount, Is.EqualTo(meshData.header.polyCount));

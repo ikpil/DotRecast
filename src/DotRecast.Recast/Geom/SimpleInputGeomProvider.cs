@@ -36,11 +36,11 @@ namespace DotRecast.Recast.Geom
         private readonly TriMesh _mesh;
 
         public SimpleInputGeomProvider(List<float> vertexPositions, List<int> meshFaces)
-            : this(mapVertices(vertexPositions), mapFaces(meshFaces))
+            : this(MapVertices(vertexPositions), MapFaces(meshFaces))
         {
         }
 
-        private static int[] mapFaces(List<int> meshFaces)
+        private static int[] MapFaces(List<int> meshFaces)
         {
             int[] faces = new int[meshFaces.Count];
             for (int i = 0; i < faces.Length; i++)
@@ -51,7 +51,7 @@ namespace DotRecast.Recast.Geom
             return faces;
         }
 
-        private static float[] mapVertices(List<float> vertexPositions)
+        private static float[] MapVertices(List<float> vertexPositions)
         {
             float[] vertices = new float[vertexPositions.Count];
             for (int i = 0; i < vertices.Length; i++)
@@ -67,36 +67,36 @@ namespace DotRecast.Recast.Geom
             this.vertices = vertices;
             this.faces = faces;
             normals = new float[faces.Length];
-            calculateNormals();
+            CalculateNormals();
             bmin = Vector3f.Zero;
             bmax = Vector3f.Zero;
-            RecastVectors.copy(ref bmin, vertices, 0);
-            RecastVectors.copy(ref bmax, vertices, 0);
+            RecastVectors.Copy(ref bmin, vertices, 0);
+            RecastVectors.Copy(ref bmax, vertices, 0);
             for (int i = 1; i < vertices.Length / 3; i++)
             {
-                RecastVectors.min(ref bmin, vertices, i * 3);
-                RecastVectors.max(ref bmax, vertices, i * 3);
+                RecastVectors.Min(ref bmin, vertices, i * 3);
+                RecastVectors.Max(ref bmax, vertices, i * 3);
             }
 
             _mesh = new TriMesh(vertices, faces);
         }
 
-        public Vector3f getMeshBoundsMin()
+        public Vector3f GetMeshBoundsMin()
         {
             return bmin;
         }
 
-        public Vector3f getMeshBoundsMax()
+        public Vector3f GetMeshBoundsMax()
         {
             return bmax;
         }
 
-        public IList<ConvexVolume> convexVolumes()
+        public IList<ConvexVolume> ConvexVolumes()
         {
             return volumes;
         }
 
-        public void addConvexVolume(float[] verts, float minh, float maxh, AreaModification areaMod)
+        public void AddConvexVolume(float[] verts, float minh, float maxh, AreaModification areaMod)
         {
             ConvexVolume vol = new ConvexVolume();
             vol.hmin = minh;
@@ -106,12 +106,12 @@ namespace DotRecast.Recast.Geom
             volumes.Add(vol);
         }
 
-        public IEnumerable<TriMesh> meshes()
+        public IEnumerable<TriMesh> Meshes()
         {
             return ImmutableArray.Create(_mesh);
         }
 
-        public void calculateNormals()
+        public void CalculateNormals()
         {
             for (int i = 0; i < faces.Length; i += 3)
             {
