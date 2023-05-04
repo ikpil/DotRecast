@@ -1975,22 +1975,6 @@ namespace DotRecast.Detour
             return Results.Success(new MoveAlongSurfaceResult(bestPos, visited));
         }
 
-        public class PortalResult
-        {
-            public readonly Vector3f left;
-            public readonly Vector3f right;
-            public readonly int fromType;
-            public readonly int toType;
-
-            public PortalResult(Vector3f left, Vector3f right, int fromType, int toType)
-            {
-                this.left = left;
-                this.right = right;
-                this.fromType = fromType;
-                this.toType = toType;
-            }
-        }
-
         protected Result<PortalResult> getPortalPoints(long from, long to)
         {
             Result<Tuple<MeshTile, Poly>> tileAndPolyResult = m_nav.getTileAndPolyByRef(from);
@@ -3305,9 +3289,9 @@ namespace DotRecast.Detour
                     // Calculate hit pos.
                     hitPos.x = bestTile.data.verts[vj] + (bestTile.data.verts[vi] - bestTile.data.verts[vj]) * tseg;
                     hitPos.y = bestTile.data.verts[vj + 1]
-                                + (bestTile.data.verts[vi + 1] - bestTile.data.verts[vj + 1]) * tseg;
+                               + (bestTile.data.verts[vi + 1] - bestTile.data.verts[vj + 1]) * tseg;
                     hitPos.z = bestTile.data.verts[vj + 2]
-                                + (bestTile.data.verts[vi + 2] - bestTile.data.verts[vj + 2]) * tseg;
+                               + (bestTile.data.verts[vi + 2] - bestTile.data.verts[vj + 2]) * tseg;
                     bestvj = new VectorPtr(bestTile.data.verts, vj);
                     bestvi = new VectorPtr(bestTile.data.verts, vi);
                 }
