@@ -4,11 +4,11 @@ using DotRecast.Recast.Demo.Draw;
 
 namespace DotRecast.Recast.Demo.Tools.Gizmos;
 
-public class CompositeGizmo : ColliderGizmo
+public class CompositeGizmo : IColliderGizmo
 {
-    private readonly ColliderGizmo[] gizmos;
+    private readonly IColliderGizmo[] gizmos;
 
-    public CompositeGizmo(params ColliderGizmo[] gizmos)
+    public CompositeGizmo(params IColliderGizmo[] gizmos)
     {
         this.gizmos = gizmos;
     }

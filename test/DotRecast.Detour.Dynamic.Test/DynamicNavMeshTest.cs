@@ -36,7 +36,7 @@ public class DynamicNavMeshTest
         bool _ = future.Result;
         // create new query
         NavMeshQuery query = new NavMeshQuery(mesh.NavMesh());
-        QueryFilter filter = new DefaultQueryFilter();
+        IQueryFilter filter = new DefaultQueryFilter();
         // find path
         FindNearestPolyResult start = query.FindNearestPoly(START_POS, EXTENT, filter).result;
         FindNearestPolyResult end = query.FindNearestPoly(END_POS, EXTENT, filter).result;
@@ -45,7 +45,7 @@ public class DynamicNavMeshTest
         // check path length without any obstacles
         Assert.That(path.Count, Is.EqualTo(16));
         // place obstacle
-        Collider colldier = new SphereCollider(SPHERE_POS, 20, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GROUND, 0.1f);
+        ICollider colldier = new SphereCollider(SPHERE_POS, 20, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GROUND, 0.1f);
         long colliderId = mesh.AddCollider(colldier);
         // update navmesh asynchronously
         future = mesh.Update(Task.Factory);

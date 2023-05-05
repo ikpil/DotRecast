@@ -18,15 +18,17 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System.Collections.Generic;
 using DotRecast.Core;
 
-namespace DotRecast.Detour
+namespace DotRecast.Recast.Geom
 {
-    public interface QueryFilter
+    public interface IInputGeomProvider : IConvexVolumeProvider
     {
-        bool PassFilter(long refs, MeshTile tile, Poly poly);
+        Vector3f GetMeshBoundsMin();
 
-        float GetCost(Vector3f pa, Vector3f pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef, MeshTile curTile,
-            Poly curPoly, long nextRef, MeshTile nextTile, Poly nextPoly);
+        Vector3f GetMeshBoundsMax();
+
+        IEnumerable<TriMesh> Meshes();
     }
 }

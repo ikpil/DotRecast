@@ -48,7 +48,7 @@ public class FindDistanceToWallTest : AbstractDetourTest
     [Test]
     public void TestFindDistanceToWall()
     {
-        QueryFilter filter = new DefaultQueryFilter();
+        IQueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
             Vector3f startPos = startPoss[i];

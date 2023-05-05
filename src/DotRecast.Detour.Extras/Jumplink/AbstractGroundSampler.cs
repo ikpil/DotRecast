@@ -5,7 +5,7 @@ using static DotRecast.Core.RecastMath;
 
 namespace DotRecast.Detour.Extras.Jumplink
 {
-    public abstract class AbstractGroundSampler : GroundSampler
+    public abstract class AbstractGroundSampler : IGroundSampler
     {
         protected void SampleGround(JumpLinkBuilderConfig acfg, EdgeSampler es,
             Func<Vector3f, float, Tuple<bool, float>> heightFunc)

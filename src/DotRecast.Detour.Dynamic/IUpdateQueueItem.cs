@@ -18,10 +18,12 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 
-namespace DotRecast.Recast.Geom
+namespace DotRecast.Detour.Dynamic
 {
-    public interface ConvexVolumeProvider
+    public interface IUpdateQueueItem
     {
-        IList<ConvexVolume> ConvexVolumes();
+        ICollection<DynamicTile> AffectedTiles();
+
+        void Process(DynamicTile tile);
     }
 }

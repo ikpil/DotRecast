@@ -30,9 +30,9 @@ namespace DotRecast.Detour
         public long startRef, endRef;
         public Vector3f startPos = new Vector3f();
         public Vector3f endPos = new Vector3f();
-        public QueryFilter filter;
+        public IQueryFilter filter;
         public int options;
         public float raycastLimitSqr;
-        public QueryHeuristic heuristic;
+        public IQueryHeuristic heuristic;
     }
 }

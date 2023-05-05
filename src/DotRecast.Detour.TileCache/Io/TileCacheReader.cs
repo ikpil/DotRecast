@@ -29,13 +29,13 @@ namespace DotRecast.Detour.TileCache.Io
     {
         private readonly NavMeshParamReader paramReader = new NavMeshParamReader();
 
-        public TileCache Read(BinaryReader @is, int maxVertPerPoly, TileCacheMeshProcess meshProcessor)
+        public TileCache Read(BinaryReader @is, int maxVertPerPoly, ITileCacheMeshProcess meshProcessor)
         {
             ByteBuffer bb = IOUtils.ToByteBuffer(@is);
             return Read(bb, maxVertPerPoly, meshProcessor);
         }
 
-        public TileCache Read(ByteBuffer bb, int maxVertPerPoly, TileCacheMeshProcess meshProcessor)
+        public TileCache Read(ByteBuffer bb, int maxVertPerPoly, ITileCacheMeshProcess meshProcessor)
         {
             TileCacheSetHeader header = new TileCacheSetHeader();
             header.magic = bb.GetInt();
@@ -64,7 +64,7 @@ namespace DotRecast.Detour.TileCache.Io
             header.meshParams = paramReader.Read(bb);
             header.cacheParams = ReadCacheParams(bb, cCompatibility);
             NavMesh mesh = new NavMesh(header.meshParams, maxVertPerPoly);
-            TileCacheCompressor compressor = TileCacheCompressorFactory.Get(cCompatibility);
+            ITileCacheCompressor compressor = TileCacheCompressorFactory.Get(cCompatibility);
             TileCache tc = new TileCache(header.cacheParams, new TileCacheStorageParams(bb.Order(), cCompatibility), mesh,
                 compressor, meshProcessor);
             // Read tiles.

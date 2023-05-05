@@ -22,7 +22,7 @@ using K4os.Compression.LZ4;
 
 namespace DotRecast.Detour.TileCache.Io.Compress
 {
-    public class LZ4TileCacheCompressor : TileCacheCompressor
+    public class LZ4TileCacheCompressor : ITileCacheCompressor
     {
         public byte[] Decompress(byte[] buf, int offset, int len, int outputlen)
         {

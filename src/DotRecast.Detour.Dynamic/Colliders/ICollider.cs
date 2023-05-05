@@ -20,7 +20,7 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic.Colliders
 {
-    public interface Collider
+    public interface ICollider
     {
         float[] Bounds();
         void Rasterize(Heightfield hf, Telemetry telemetry);

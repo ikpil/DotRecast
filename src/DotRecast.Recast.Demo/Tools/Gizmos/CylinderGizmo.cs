@@ -7,7 +7,7 @@ using static DotRecast.Recast.Demo.Tools.Gizmos.GizmoHelper;
 
 namespace DotRecast.Recast.Demo.Tools.Gizmos;
 
-public class CylinderGizmo : ColliderGizmo
+public class CylinderGizmo : IColliderGizmo
 {
     private readonly float[] vertices;
     private readonly int[] triangles;

@@ -3,7 +3,7 @@ using Silk.NET.OpenGL;
 
 namespace DotRecast.Recast.Demo.Draw;
 
-public interface OpenGLDraw
+public interface IOpenGLDraw
 {
     void Init();
 

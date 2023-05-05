@@ -83,7 +83,7 @@ public class CrowdProfilingTool
                 CreateCrowd();
                 CreateZones();
                 NavMeshQuery navquery = new NavMeshQuery(navMesh);
-                QueryFilter filter = new DefaultQueryFilter();
+                IQueryFilter filter = new DefaultQueryFilter();
                 for (int i = 0; i < agents; i++)
                 {
                     float tr = rnd.Frand();
@@ -146,7 +146,7 @@ public class CrowdProfilingTool
         }
     }
 
-    private Vector3f? GetMobPosition(NavMeshQuery navquery, QueryFilter filter)
+    private Vector3f? GetMobPosition(NavMeshQuery navquery, IQueryFilter filter)
     {
         Result<FindRandomPointResult> result = navquery.FindRandomPoint(filter, rnd);
         if (result.Succeeded())
@@ -157,7 +157,7 @@ public class CrowdProfilingTool
         return null;
     }
 
-    private Vector3f? GetVillagerPosition(NavMeshQuery navquery, QueryFilter filter)
+    private Vector3f? GetVillagerPosition(NavMeshQuery navquery, IQueryFilter filter)
     {
         if (0 < zones.Count)
         {
@@ -176,7 +176,7 @@ public class CrowdProfilingTool
     private void CreateZones()
     {
         zones.Clear();
-        QueryFilter filter = new DefaultQueryFilter();
+        IQueryFilter filter = new DefaultQueryFilter();
         NavMeshQuery navquery = new NavMeshQuery(navMesh);
         for (int i = 0; i < numberOfZones; i++)
         {
@@ -252,7 +252,7 @@ public class CrowdProfilingTool
         if (crowd != null)
         {
             NavMeshQuery navquery = new NavMeshQuery(navMesh);
-            QueryFilter filter = new DefaultQueryFilter();
+            IQueryFilter filter = new DefaultQueryFilter();
             foreach (CrowdAgent ag in crowd.GetActiveAgents())
             {
                 if (NeedsNewTarget(ag))
@@ -277,7 +277,7 @@ public class CrowdProfilingTool
         crowdUpdateTime = (endTime - startTime) / TimeSpan.TicksPerMillisecond;
     }
 
-    private void MoveMob(NavMeshQuery navquery, QueryFilter filter, CrowdAgent ag, AgentData agentData)
+    private void MoveMob(NavMeshQuery navquery, IQueryFilter filter, CrowdAgent ag, AgentData agentData)
     {
         // Move somewhere
         Result<FindNearestPolyResult> nearestPoly = navquery.FindNearestPoly(ag.npos, crowd.GetQueryExtents(), filter);
@@ -292,7 +292,7 @@ public class CrowdProfilingTool
         }
     }
 
-    private void MoveVillager(NavMeshQuery navquery, QueryFilter filter, CrowdAgent ag, AgentData agentData)
+    private void MoveVillager(NavMeshQuery navquery, IQueryFilter filter, CrowdAgent ag, AgentData agentData)
     {
         // Move somewhere close
         Result<FindNearestPolyResult> nearestPoly = navquery.FindNearestPoly(ag.npos, crowd.GetQueryExtents(), filter);
@@ -307,7 +307,7 @@ public class CrowdProfilingTool
         }
     }
 
-    private void MoveTraveller(NavMeshQuery navquery, QueryFilter filter, CrowdAgent ag, AgentData agentData)
+    private void MoveTraveller(NavMeshQuery navquery, IQueryFilter filter, CrowdAgent ag, AgentData agentData)
     {
         // Move to another zone
         List<FindRandomPointResult> potentialTargets = new();

@@ -2014,7 +2014,7 @@ namespace DotRecast.Detour.TileCache
             }
         }
 
-        public TileCacheLayer DecompressTileCacheLayer(TileCacheCompressor comp, byte[] compressed, ByteOrder order,
+        public TileCacheLayer DecompressTileCacheLayer(ITileCacheCompressor comp, byte[] compressed, ByteOrder order,
             bool cCompatibility)
         {
             ByteBuffer buf = new ByteBuffer(compressed);

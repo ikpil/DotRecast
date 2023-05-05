@@ -110,8 +110,8 @@ public class DynamicUpdateTool : Tool
 
     private DynamicNavMesh dynaMesh;
     private readonly TaskFactory executor;
-    private readonly Dictionary<long, Collider> colliders = new();
-    private readonly Dictionary<long, ColliderGizmo> colliderGizmos = new();
+    private readonly Dictionary<long, ICollider> colliders = new();
+    private readonly Dictionary<long, IColliderGizmo> colliderGizmos = new();
     private readonly Random random = Random.Shared;
     private readonly DemoInputGeomProvider bridgeGeom;
     private readonly DemoInputGeomProvider houseGeom;
@@ -142,7 +142,7 @@ public class DynamicUpdateTool : Tool
         {
             if (!shift)
             {
-                Tuple<Collider, ColliderGizmo> colliderWithGizmo = null;
+                Tuple<ICollider, IColliderGizmo> colliderWithGizmo = null;
                 if (dynaMesh != null)
                 {
                     if (colliderShape == ColliderShape.SPHERE)
@@ -217,15 +217,15 @@ public class DynamicUpdateTool : Tool
         }
     }
 
-    private Tuple<Collider, ColliderGizmo> SphereCollider(Vector3f p)
+    private Tuple<ICollider, IColliderGizmo> SphereCollider(Vector3f p)
     {
         float radius = 1 + (float)random.NextDouble() * 10;
-        return Tuple.Create<Collider, ColliderGizmo>(
+        return Tuple.Create<ICollider, IColliderGizmo>(
             new SphereCollider(p, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb),
             GizmoFactory.Sphere(p, radius));
     }
 
-    private Tuple<Collider, ColliderGizmo> CapsuleCollider(Vector3f p)
+    private Tuple<ICollider, IColliderGizmo> CapsuleCollider(Vector3f p)
     {
         float radius = 0.4f + (float)random.NextDouble() * 4f;
         Vector3f a = Vector3f.Of(
@@ -240,11 +240,11 @@ public class DynamicUpdateTool : Tool
         a.z *= len;
         Vector3f start = Vector3f.Of(p.x, p.y, p.z);
         Vector3f end = Vector3f.Of(p.x + a.x, p.y + a.y, p.z + a.z);
-        return Tuple.Create<Collider, ColliderGizmo>(new CapsuleCollider(
+        return Tuple.Create<ICollider, IColliderGizmo>(new CapsuleCollider(
             start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb), GizmoFactory.Capsule(start, end, radius));
     }
 
-    private Tuple<Collider, ColliderGizmo> BoxCollider(Vector3f p)
+    private Tuple<ICollider, IColliderGizmo> BoxCollider(Vector3f p)
     {
         Vector3f extent = Vector3f.Of(
             0.5f + (float)random.NextDouble() * 6f, 
@@ -254,11 +254,11 @@ public class DynamicUpdateTool : Tool
         Vector3f forward = Vector3f.Of((1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()));
         Vector3f up = Vector3f.Of((1f - 2 * (float)random.NextDouble()), 0.01f + (float)random.NextDouble(), (1f - 2 * (float)random.NextDouble()));
         Vector3f[] halfEdges = Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(up, forward, extent);
-        return Tuple.Create<Collider, ColliderGizmo>(
+        return Tuple.Create<ICollider, IColliderGizmo>(
             new BoxCollider(p, halfEdges, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb), GizmoFactory.Box(p, halfEdges));
     }
 
-    private Tuple<Collider, ColliderGizmo> CylinderCollider(Vector3f p)
+    private Tuple<ICollider, IColliderGizmo> CylinderCollider(Vector3f p)
     {
         float radius = 0.7f + (float)random.NextDouble() * 4f;
         float[] a = new float[] { (1f - 2 * (float)random.NextDouble()), 0.01f + (float)random.NextDouble(), (1f - 2 * (float)random.NextDouble()) };
@@ -269,11 +269,11 @@ public class DynamicUpdateTool : Tool
         a[2] *= len;
         Vector3f start = Vector3f.Of(p.x, p.y, p.z);
         Vector3f end = Vector3f.Of(p.x + a[0], p.y + a[1], p.z + a[2]);
-        return Tuple.Create<Collider, ColliderGizmo>(new CylinderCollider(start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER,
+        return Tuple.Create<ICollider, IColliderGizmo>(new CylinderCollider(start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER,
             dynaMesh.config.walkableClimb), GizmoFactory.Cylinder(start, end, radius));
     }
 
-    private Tuple<Collider, ColliderGizmo> CompositeCollider(Vector3f p)
+    private Tuple<ICollider, IColliderGizmo> CompositeCollider(Vector3f p)
     {
         Vector3f baseExtent = Vector3f.Of(5, 3, 8);
         Vector3f baseCenter = Vector3f.Of(p.x, p.y + 3, p.z);
@@ -305,38 +305,38 @@ public class DynamicUpdateTool : Tool
         SphereCollider crown = new SphereCollider(crownCenter, 4f, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GRASS,
             dynaMesh.config.walkableClimb);
         CompositeCollider collider = new CompositeCollider(@base, roof, trunk, crown);
-        ColliderGizmo baseGizmo = GizmoFactory.Box(baseCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(baseUp, forward, baseExtent));
-        ColliderGizmo roofGizmo = GizmoFactory.Box(roofCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(roofUp, forward, roofExtent));
-        ColliderGizmo trunkGizmo = GizmoFactory.Capsule(trunkStart, trunkEnd, 0.5f);
-        ColliderGizmo crownGizmo = GizmoFactory.Sphere(crownCenter, 4f);
-        ColliderGizmo gizmo = GizmoFactory.Composite(baseGizmo, roofGizmo, trunkGizmo, crownGizmo);
-        return Tuple.Create<Collider, ColliderGizmo>(collider, gizmo);
+        IColliderGizmo baseGizmo = GizmoFactory.Box(baseCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(baseUp, forward, baseExtent));
+        IColliderGizmo roofGizmo = GizmoFactory.Box(roofCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(roofUp, forward, roofExtent));
+        IColliderGizmo trunkGizmo = GizmoFactory.Capsule(trunkStart, trunkEnd, 0.5f);
+        IColliderGizmo crownGizmo = GizmoFactory.Sphere(crownCenter, 4f);
+        IColliderGizmo gizmo = GizmoFactory.Composite(baseGizmo, roofGizmo, trunkGizmo, crownGizmo);
+        return Tuple.Create<ICollider, IColliderGizmo>(collider, gizmo);
     }
 
-    private Tuple<Collider, ColliderGizmo> TrimeshBridge(Vector3f p)
+    private Tuple<ICollider, IColliderGizmo> TrimeshBridge(Vector3f p)
     {
         return TrimeshCollider(p, bridgeGeom);
     }
 
-    private Tuple<Collider, ColliderGizmo> TrimeshHouse(Vector3f p)
+    private Tuple<ICollider, IColliderGizmo> TrimeshHouse(Vector3f p)
     {
         return TrimeshCollider(p, houseGeom);
     }
 
-    private Tuple<Collider, ColliderGizmo> ConvexTrimesh(Vector3f p)
+    private Tuple<ICollider, IColliderGizmo> ConvexTrimesh(Vector3f p)
     {
         float[] verts = TransformVertices(p, convexGeom, 360);
         ConvexTrimeshCollider collider = new ConvexTrimeshCollider(verts, convexGeom.faces,
             SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, dynaMesh.config.walkableClimb * 10);
-        return Tuple.Create<Collider, ColliderGizmo>(collider, GizmoFactory.Trimesh(verts, convexGeom.faces));
+        return Tuple.Create<ICollider, IColliderGizmo>(collider, GizmoFactory.Trimesh(verts, convexGeom.faces));
     }
 
-    private Tuple<Collider, ColliderGizmo> TrimeshCollider(Vector3f p, DemoInputGeomProvider geom)
+    private Tuple<ICollider, IColliderGizmo> TrimeshCollider(Vector3f p, DemoInputGeomProvider geom)
     {
         float[] verts = TransformVertices(p, geom, 0);
         TrimeshCollider collider = new TrimeshCollider(verts, geom.faces, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD,
             dynaMesh.config.walkableClimb * 10);
-        return Tuple.Create<Collider, ColliderGizmo>(collider, GizmoFactory.Trimesh(verts, geom.faces));
+        return Tuple.Create<ICollider, IColliderGizmo>(collider, GizmoFactory.Trimesh(verts, geom.faces));
     }
 
     private float[] TransformVertices(Vector3f p, DemoInputGeomProvider geom, float ax)

@@ -37,7 +37,7 @@ public class FindNearestPolyTest : AbstractDetourTest
     [Test]
     public void TestFindNearestPoly()
     {
-        QueryFilter filter = new DefaultQueryFilter();
+        IQueryFilter filter = new DefaultQueryFilter();
         Vector3f extents = Vector3f.Of(2, 4, 2);
         for (int i = 0; i < startRefs.Length; i++)
         {
@@ -52,7 +52,7 @@ public class FindNearestPolyTest : AbstractDetourTest
         }
     }
 
-    public class EmptyQueryFilter : QueryFilter
+    public class EmptyQueryFilter : IQueryFilter
     {
         public bool PassFilter(long refs, MeshTile tile, Poly poly)
         {

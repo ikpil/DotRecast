@@ -4,7 +4,7 @@ using DotRecast.Recast.Demo.Draw;
 
 namespace DotRecast.Recast.Demo.Tools.Gizmos;
 
-public class BoxGizmo : ColliderGizmo
+public class BoxGizmo : IColliderGizmo
 {
     private static readonly int[] TRIANLGES =
     {

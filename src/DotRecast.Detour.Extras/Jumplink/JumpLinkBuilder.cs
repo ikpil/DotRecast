@@ -11,7 +11,7 @@ namespace DotRecast.Detour.Extras.Jumplink
     {
         private readonly EdgeExtractor edgeExtractor = new EdgeExtractor();
         private readonly EdgeSamplerFactory edgeSamplerFactory = new EdgeSamplerFactory();
-        private readonly GroundSampler groundSampler = new NavMeshGroundSampler();
+        private readonly IGroundSampler groundSampler = new NavMeshGroundSampler();
         private readonly TrajectorySampler trajectorySampler = new TrajectorySampler();
         private readonly JumpSegmentBuilder jumpSegmentBuilder = new JumpSegmentBuilder();
 

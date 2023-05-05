@@ -145,7 +145,7 @@ public class RecastLayersTest
 
     private HeightfieldLayerSet Build(string filename, int x, int y)
     {
-        InputGeomProvider geom = ObjImporter.Load(Loader.ToBytes(filename));
+        IInputGeomProvider geom = ObjImporter.Load(Loader.ToBytes(filename));
         RecastBuilder builder = new RecastBuilder();
         RecastConfig cfg = new RecastConfig(true, m_tileSize, m_tileSize, RecastConfig.CalcBorder(m_agentRadius, m_cellSize),
             m_partitionType, m_cellSize, m_cellHeight, m_agentMaxSlope, true, true, true, m_agentHeight, m_agentRadius,

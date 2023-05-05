@@ -23,7 +23,7 @@ namespace DotRecast.Detour.Test;
 
 public class TestDetourBuilder : DetourBuilder
 {
-    public MeshData Build(InputGeomProvider geom, RecastBuilderConfig rcConfig, float agentHeight, float agentRadius,
+    public MeshData Build(IInputGeomProvider geom, RecastBuilderConfig rcConfig, float agentHeight, float agentRadius,
         float agentMaxClimb, int x, int y, bool applyRecastDemoFlags)
     {
         RecastBuilder rcBuilder = new RecastBuilder();

@@ -149,7 +149,7 @@ namespace DotRecast.Detour.Crowd
         private readonly ObstacleAvoidanceQuery _obstacleQuery;
         private ProximityGrid _grid;
         private readonly Vector3f _ext = new Vector3f();
-        private readonly QueryFilter[] _filters = new QueryFilter[DT_CROWD_MAX_QUERY_FILTER_TYPE];
+        private readonly IQueryFilter[] _filters = new IQueryFilter[DT_CROWD_MAX_QUERY_FILTER_TYPE];
         private NavMeshQuery _navQuery;
         private NavMesh _navMesh;
         private readonly CrowdConfig _config;
@@ -161,7 +161,7 @@ namespace DotRecast.Detour.Crowd
         {
         }
 
-        public Crowd(CrowdConfig config, NavMesh nav, Func<int, QueryFilter> queryFilterFactory)
+        public Crowd(CrowdConfig config, NavMesh nav, Func<int, IQueryFilter> queryFilterFactory)
         {
             _config = config;
             VSet(ref _ext, config.maxAgentRadius * 2.0f, config.maxAgentRadius * 1.5f, config.maxAgentRadius * 2.0f);
@@ -364,7 +364,7 @@ namespace DotRecast.Detour.Crowd
             return _ext;
         }
 
-        public QueryFilter GetFilter(int i)
+        public IQueryFilter GetFilter(int i)
         {
             return i >= 0 && i < DT_CROWD_MAX_QUERY_FILTER_TYPE ? _filters[i] : null;
         }

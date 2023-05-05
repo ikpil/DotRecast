@@ -33,7 +33,7 @@ namespace DotRecast.Detour.Dynamic
         public DynamicTileCheckpoint checkpoint;
         public RecastBuilderResult recastResult;
         MeshData meshData;
-        private readonly ConcurrentDictionary<long, Collider> colliders = new ConcurrentDictionary<long, Collider>();
+        private readonly ConcurrentDictionary<long, ICollider> colliders = new ConcurrentDictionary<long, ICollider>();
         private bool dirty = true;
         private long id;
 
@@ -96,7 +96,7 @@ namespace DotRecast.Detour.Dynamic
             return r;
         }
 
-        public void AddCollider(long cid, Collider collider)
+        public void AddCollider(long cid, ICollider collider)
         {
             colliders[cid] = collider;
             dirty = true;

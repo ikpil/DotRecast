@@ -25,7 +25,7 @@ using DotRecast.Core;
 
 namespace DotRecast.Recast.Geom
 {
-    public class SimpleInputGeomProvider : InputGeomProvider
+    public class SimpleInputGeomProvider : IInputGeomProvider
     {
         public readonly float[] vertices;
         public readonly int[] faces;

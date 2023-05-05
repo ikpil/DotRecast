@@ -234,7 +234,7 @@ namespace DotRecast.Detour.Crowd
      * @param[in] navquery The query object used to build the corridor.
      * @return Corners
      */
-        public List<StraightPathItem> FindCorners(int maxCorners, NavMeshQuery navquery, QueryFilter filter)
+        public List<StraightPathItem> FindCorners(int maxCorners, NavMeshQuery navquery, IQueryFilter filter)
         {
             List<StraightPathItem> path = new List<StraightPathItem>();
             Result<List<StraightPathItem>> result = navquery.FindStraightPath(m_pos, m_target, m_path, maxCorners, 0);
@@ -299,7 +299,7 @@ namespace DotRecast.Detour.Crowd
      * @param filter
      *            The filter to apply to the operation.
      */
-        public void OptimizePathVisibility(Vector3f next, float pathOptimizationRange, NavMeshQuery navquery, QueryFilter filter)
+        public void OptimizePathVisibility(Vector3f next, float pathOptimizationRange, NavMeshQuery navquery, IQueryFilter filter)
         {
             // Clamp the ray to max distance.
             float dist = VDist2D(m_pos, next);
@@ -344,7 +344,7 @@ namespace DotRecast.Detour.Crowd
      *            The filter to apply to the operation.
      *
      */
-        public bool OptimizePathTopology(NavMeshQuery navquery, QueryFilter filter, int maxIterations)
+        public bool OptimizePathTopology(NavMeshQuery navquery, IQueryFilter filter, int maxIterations)
         {
             if (m_path.Count < 3)
             {
@@ -423,7 +423,7 @@ namespace DotRecast.Detour.Crowd
      * @param filter
      *            The filter to apply to the operation.
      */
-        public bool MovePosition(Vector3f npos, NavMeshQuery navquery, QueryFilter filter)
+        public bool MovePosition(Vector3f npos, NavMeshQuery navquery, IQueryFilter filter)
         {
             // Move along navmesh and update new position.
             Result<MoveAlongSurfaceResult> masResult = navquery.MoveAlongSurface(m_path[0], m_pos, npos, filter);
@@ -461,7 +461,7 @@ namespace DotRecast.Detour.Crowd
      * @param filter
      *            The filter to apply to the operation.
      */
-        public bool MoveTargetPosition(Vector3f npos, NavMeshQuery navquery, QueryFilter filter)
+        public bool MoveTargetPosition(Vector3f npos, NavMeshQuery navquery, IQueryFilter filter)
         {
             // Move along navmesh and update new position.
             Result<MoveAlongSurfaceResult> masResult = navquery.MoveAlongSurface(m_path[m_path.Count - 1], m_target, npos, filter);
@@ -516,7 +516,7 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        public void TrimInvalidPath(long safeRef, float[] safePos, NavMeshQuery navquery, QueryFilter filter)
+        public void TrimInvalidPath(long safeRef, float[] safePos, NavMeshQuery navquery, IQueryFilter filter)
         {
             // Keep valid path as far as possible.
             int n = 0;
@@ -559,7 +559,7 @@ namespace DotRecast.Detour.Crowd
      *            The filter to apply to the operation.
      * @return
      */
-        public bool IsValid(int maxLookAhead, NavMeshQuery navquery, QueryFilter filter)
+        public bool IsValid(int maxLookAhead, NavMeshQuery navquery, IQueryFilter filter)
         {
             // Check that all polygons still pass query filter.
             int n = Math.Min(m_path.Count, maxLookAhead);

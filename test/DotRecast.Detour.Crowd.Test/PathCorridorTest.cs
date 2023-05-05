@@ -28,7 +28,7 @@ namespace DotRecast.Detour.Crowd.Test;
 public class PathCorridorTest
 {
     private readonly PathCorridor corridor = new PathCorridor();
-    private readonly QueryFilter filter = new DefaultQueryFilter();
+    private readonly IQueryFilter filter = new DefaultQueryFilter();
 
     [SetUp]
     public void SetUp()

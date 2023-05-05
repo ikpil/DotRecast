@@ -60,7 +60,7 @@ public class RecastTileMeshTest
 
     public void TestBuild(string filename)
     {
-        InputGeomProvider geom = ObjImporter.Load(Loader.ToBytes(filename));
+        IInputGeomProvider geom = ObjImporter.Load(Loader.ToBytes(filename));
         RecastBuilder builder = new RecastBuilder();
         RecastConfig cfg = new RecastConfig(true, m_tileSize, m_tileSize, RecastConfig.CalcBorder(m_agentRadius, m_cellSize),
             m_partitionType, m_cellSize, m_cellHeight, m_agentMaxSlope, true, true, true, m_agentHeight, m_agentRadius,
@@ -95,7 +95,7 @@ public class RecastTileMeshTest
     [Test]
     public void TestPerformance()
     {
-        InputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("dungeon.obj"));
+        IInputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("dungeon.obj"));
         RecastBuilder builder = new RecastBuilder();
         RecastConfig cfg = new RecastConfig(true, m_tileSize, m_tileSize, RecastConfig.CalcBorder(m_agentRadius, m_cellSize),
             m_partitionType, m_cellSize, m_cellHeight, m_agentMaxSlope, true, true, true, m_agentHeight, m_agentRadius,
@@ -124,7 +124,7 @@ public class RecastTileMeshTest
         Console.WriteLine(" Time MT : " + (t3 - t2) / TimeSpan.TicksPerMillisecond);
     }
 
-    private void Build(InputGeomProvider geom, RecastBuilder builder, RecastConfig cfg, int threads, bool validate)
+    private void Build(IInputGeomProvider geom, RecastBuilder builder, RecastConfig cfg, int threads, bool validate)
     {
         CancellationTokenSource cts = new CancellationTokenSource();
         List<RecastBuilderResult> tiles = new();

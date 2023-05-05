@@ -192,7 +192,7 @@ public class CrowdTool : Tool
             NavMeshQuery navquery = sample.GetNavMeshQuery();
             if (nav != null && navquery != null)
             {
-                QueryFilter filter = new DefaultQueryFilter();
+                IQueryFilter filter = new DefaultQueryFilter();
                 Vector3f halfExtents = crowd.GetQueryExtents();
                 Result<FindNearestPolyResult> result = navquery.FindNearestPoly(p, halfExtents, filter);
                 long refs = result.result.GetNearestRef();
@@ -304,7 +304,7 @@ public class CrowdTool : Tool
 
         // Find nearest point on navmesh and set move request to that location.
         NavMeshQuery navquery = sample.GetNavMeshQuery();
-        QueryFilter filter = crowd.GetFilter(0);
+        IQueryFilter filter = crowd.GetFilter(0);
         Vector3f halfExtents = crowd.GetQueryExtents();
 
         if (adjust)

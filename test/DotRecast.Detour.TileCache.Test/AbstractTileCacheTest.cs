@@ -39,7 +39,7 @@ public class AbstractTileCacheTest
     private readonly float m_edgeMaxError = 1.3f;
     private readonly int m_tileSize = 48;
 
-    protected class TestTileCacheMeshProcess : TileCacheMeshProcess
+    protected class TestTileCacheMeshProcess : ITileCacheMeshProcess
     {
         public void Process(NavMeshDataCreateParams option)
         {
@@ -50,7 +50,7 @@ public class AbstractTileCacheTest
         }
     }
 
-    public TileCache GetTileCache(InputGeomProvider geom, ByteOrder order, bool cCompatibility)
+    public TileCache GetTileCache(IInputGeomProvider geom, ByteOrder order, bool cCompatibility)
     {
         TileCacheParams option = new TileCacheParams();
         int[] twh = Recast.Recast.CalcTileCount(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), m_cellSize, m_tileSize, m_tileSize);

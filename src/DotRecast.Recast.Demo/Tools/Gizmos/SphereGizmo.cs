@@ -6,7 +6,7 @@ using static DotRecast.Recast.Demo.Tools.Gizmos.GizmoHelper;
 
 namespace DotRecast.Recast.Demo.Tools.Gizmos;
 
-public class SphereGizmo : ColliderGizmo
+public class SphereGizmo : IColliderGizmo
 {
     private readonly float[] vertices;
     private readonly int[] triangles;

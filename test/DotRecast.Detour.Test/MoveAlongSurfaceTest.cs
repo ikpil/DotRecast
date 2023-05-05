@@ -68,7 +68,7 @@ public class MoveAlongSurfaceTest : AbstractDetourTest
     [Test]
     public void TestMoveAlongSurface()
     {
-        QueryFilter filter = new DefaultQueryFilter();
+        IQueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];

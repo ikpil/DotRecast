@@ -56,7 +56,7 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
     public void SetUp()
     {
         bool cCompatibility = true;
-        InputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("dungeon.obj"));
+        IInputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("dungeon.obj"));
         TestTileLayerBuilder layerBuilder = new TestTileLayerBuilder(geom);
         List<byte[]> layers = layerBuilder.Build(ByteOrder.LITTLE_ENDIAN, cCompatibility, 1);
         TileCache tc = GetTileCache(geom, ByteOrder.LITTLE_ENDIAN, cCompatibility);
@@ -83,7 +83,7 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
     [Test]
     public void TestFindPathWithDefaultHeuristic()
     {
-        QueryFilter filter = new DefaultQueryFilter();
+        IQueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
@@ -103,7 +103,7 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
     [Test]
     public void TestFindPathWithNoHeuristic()
     {
-        QueryFilter filter = new DefaultQueryFilter();
+        IQueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];

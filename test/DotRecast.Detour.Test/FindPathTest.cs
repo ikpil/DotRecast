@@ -131,7 +131,7 @@ public class FindPathTest : AbstractDetourTest
     [Test]
     public void TestFindPath()
     {
-        QueryFilter filter = new DefaultQueryFilter();
+        IQueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
@@ -151,7 +151,7 @@ public class FindPathTest : AbstractDetourTest
     [Test]
     public void TestFindPathSliced()
     {
-        QueryFilter filter = new DefaultQueryFilter();
+        IQueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
@@ -179,7 +179,7 @@ public class FindPathTest : AbstractDetourTest
     [Test]
     public void TestFindPathStraight()
     {
-        QueryFilter filter = new DefaultQueryFilter();
+        IQueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < STRAIGHT_PATHS.Length; i++)
         {
             // startRefs.Length; i++) {

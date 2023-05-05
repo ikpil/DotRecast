@@ -83,7 +83,7 @@ namespace DotRecast.Detour
      *            Function returning a random number [0..1).
      * @return Random location
      */
-        public Result<FindRandomPointResult> FindRandomPoint(QueryFilter filter, FRand frand)
+        public Result<FindRandomPointResult> FindRandomPoint(IQueryFilter filter, FRand frand)
         {
             // Randomly pick one tile. Assume that all tiles cover roughly the same area.
             if (null == filter || null == frand)
@@ -197,9 +197,9 @@ namespace DotRecast.Detour
      * @return Random location
      */
         public Result<FindRandomPointResult> FindRandomPointAroundCircle(long startRef, Vector3f centerPos, float maxRadius,
-            QueryFilter filter, FRand frand)
+            IQueryFilter filter, FRand frand)
         {
-            return FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, PolygonByCircleConstraint.Noop());
+            return FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, IPolygonByCircleConstraint.Noop());
         }
 
         /**
@@ -218,13 +218,13 @@ namespace DotRecast.Detour
      * @return Random location
      */
         public Result<FindRandomPointResult> FindRandomPointWithinCircle(long startRef, Vector3f centerPos, float maxRadius,
-            QueryFilter filter, FRand frand)
+            IQueryFilter filter, FRand frand)
         {
-            return FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, PolygonByCircleConstraint.Strict());
+            return FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, IPolygonByCircleConstraint.Strict());
         }
 
         public Result<FindRandomPointResult> FindRandomPointAroundCircle(long startRef, Vector3f centerPos, float maxRadius,
-            QueryFilter filter, FRand frand, PolygonByCircleConstraint constraint)
+            IQueryFilter filter, FRand frand, IPolygonByCircleConstraint constraint)
         {
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !VIsFinite(centerPos) || maxRadius < 0
@@ -561,7 +561,7 @@ namespace DotRecast.Detour
      *            The polygon filter to apply to the query.
      * @return FindNearestPolyResult containing nearestRef, nearestPt and overPoly
      */
-        public Result<FindNearestPolyResult> FindNearestPoly(Vector3f center, Vector3f halfExtents, QueryFilter filter)
+        public Result<FindNearestPolyResult> FindNearestPoly(Vector3f center, Vector3f halfExtents, IQueryFilter filter)
         {
             // Get nearby polygons from proximity grid.
             FindNearestPolyQuery query = new FindNearestPolyQuery(this, center);
@@ -575,7 +575,7 @@ namespace DotRecast.Detour
         }
 
         // FIXME: (PP) duplicate?
-        protected void QueryPolygonsInTile(MeshTile tile, Vector3f qmin, Vector3f qmax, QueryFilter filter, PolyQuery query)
+        protected void QueryPolygonsInTile(MeshTile tile, Vector3f qmin, Vector3f qmax, IQueryFilter filter, IPolyQuery query)
         {
             if (tile.data.bvTree != null)
             {
@@ -682,7 +682,7 @@ namespace DotRecast.Detour
      *            The polygon filter to apply to the query.
      * @return The reference ids of the polygons that overlap the query box.
      */
-        public Status QueryPolygons(Vector3f center, Vector3f halfExtents, QueryFilter filter, PolyQuery query)
+        public Status QueryPolygons(Vector3f center, Vector3f halfExtents, IQueryFilter filter, IPolyQuery query)
         {
             if (!VIsFinite(center) || !VIsFinite(halfExtents) || null == filter)
             {
@@ -750,19 +750,19 @@ namespace DotRecast.Detour
      *            The polygon filter to apply to the query.
      * @return Found path
      */
-        public virtual Result<List<long>> FindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, QueryFilter filter)
+        public virtual Result<List<long>> FindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, IQueryFilter filter)
         {
             return FindPath(startRef, endRef, startPos, endPos, filter, new DefaultQueryHeuristic(), 0, 0);
         }
 
-        public virtual Result<List<long>> FindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, QueryFilter filter,
+        public virtual Result<List<long>> FindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, IQueryFilter filter,
             int options, float raycastLimit)
         {
             return FindPath(startRef, endRef, startPos, endPos, filter, new DefaultQueryHeuristic(), options, raycastLimit);
         }
 
-        public Result<List<long>> FindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, QueryFilter filter,
-            QueryHeuristic heuristic, int options, float raycastLimit)
+        public Result<List<long>> FindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, IQueryFilter filter,
+            IQueryHeuristic heuristic, int options, float raycastLimit)
         {
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !VIsFinite(startPos) || !VIsFinite(endPos) || null == filter)
@@ -1022,20 +1022,20 @@ namespace DotRecast.Detour
      *            query options (see: #FindPathOptions)
      * @return
      */
-        public Status InitSlicedFindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, QueryFilter filter,
+        public Status InitSlicedFindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, IQueryFilter filter,
             int options)
         {
             return InitSlicedFindPath(startRef, endRef, startPos, endPos, filter, options, new DefaultQueryHeuristic(), -1.0f);
         }
 
-        public Status InitSlicedFindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, QueryFilter filter,
+        public Status InitSlicedFindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, IQueryFilter filter,
             int options, float raycastLimit)
         {
             return InitSlicedFindPath(startRef, endRef, startPos, endPos, filter, options, new DefaultQueryHeuristic(), raycastLimit);
         }
 
-        public Status InitSlicedFindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, QueryFilter filter,
-            int options, QueryHeuristic heuristic, float raycastLimit)
+        public Status InitSlicedFindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, IQueryFilter filter,
+            int options, IQueryHeuristic heuristic, float raycastLimit)
         {
             // Init path state.
             m_query = new QueryData();
@@ -1800,7 +1800,7 @@ namespace DotRecast.Detour
         /// @param[in] endPos The desired end position of the mover. [(x, y, z)]
         /// @param[in] filter The polygon filter to apply to the query.
         /// @returns Path
-        public Result<MoveAlongSurfaceResult> MoveAlongSurface(long startRef, Vector3f startPos, Vector3f endPos, QueryFilter filter)
+        public Result<MoveAlongSurfaceResult> MoveAlongSurface(long startRef, Vector3f startPos, Vector3f endPos, IQueryFilter filter)
         {
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !VIsFinite(startPos)
@@ -2192,7 +2192,7 @@ namespace DotRecast.Detour
         /// @param[out] pathCount The number of visited polygons. [opt]
         /// @param[in] maxPath The maximum number of polygons the @p path array can hold.
         /// @returns The status flags for the query.
-        public Result<RaycastHit> Raycast(long startRef, Vector3f startPos, Vector3f endPos, QueryFilter filter, int options,
+        public Result<RaycastHit> Raycast(long startRef, Vector3f startPos, Vector3f endPos, IQueryFilter filter, int options,
             long prevRef)
         {
             // Validate input
@@ -2460,7 +2460,7 @@ namespace DotRecast.Detour
         /// @param[out] resultCount The number of polygons found. [opt]
         /// @param[in] maxResult The maximum number of polygons the result arrays can hold.
         /// @returns The status flags for the query.
-        public Result<FindPolysAroundResult> FindPolysAroundCircle(long startRef, Vector3f centerPos, float radius, QueryFilter filter)
+        public Result<FindPolysAroundResult> FindPolysAroundCircle(long startRef, Vector3f centerPos, float radius, IQueryFilter filter)
         {
             // Validate input
 
@@ -2638,7 +2638,7 @@ namespace DotRecast.Detour
         /// @param[out] resultCount The number of polygons found.
         /// @param[in] maxResult The maximum number of polygons the result arrays can hold.
         /// @returns The status flags for the query.
-        public Result<FindPolysAroundResult> FindPolysAroundShape(long startRef, float[] verts, QueryFilter filter)
+        public Result<FindPolysAroundResult> FindPolysAroundShape(long startRef, float[] verts, IQueryFilter filter)
         {
             // Validate input
             int nverts = verts.Length / 3;
@@ -2830,7 +2830,7 @@ namespace DotRecast.Detour
         /// @param[in] maxResult The maximum number of polygons the result arrays can hold.
         /// @returns The status flags for the query.
         public Result<FindLocalNeighbourhoodResult> FindLocalNeighbourhood(long startRef, Vector3f centerPos, float radius,
-            QueryFilter filter)
+            IQueryFilter filter)
         {
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !VIsFinite(centerPos) || radius < 0
@@ -3044,7 +3044,7 @@ namespace DotRecast.Detour
         /// @param[out] segmentCount The number of segments returned.
         /// @param[in] maxSegments The maximum number of segments the result arrays can hold.
         /// @returns The status flags for the query.
-        public Result<GetPolyWallSegmentsResult> GetPolyWallSegments(long refs, bool storePortals, QueryFilter filter)
+        public Result<GetPolyWallSegmentsResult> GetPolyWallSegments(long refs, bool storePortals, IQueryFilter filter)
         {
             Result<Tuple<MeshTile, Poly>> tileAndPoly = m_nav.GetTileAndPolyByRef(refs);
             if (tileAndPoly.Failed())
@@ -3182,7 +3182,7 @@ namespace DotRecast.Detour
         /// source point. [(x, y, z)]
         /// @returns The status flags for the query.
         public virtual Result<FindDistanceToWallResult> FindDistanceToWall(long startRef, Vector3f centerPos, float maxRadius,
-            QueryFilter filter)
+            IQueryFilter filter)
         {
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !VIsFinite(centerPos) || maxRadius < 0
@@ -3393,7 +3393,7 @@ namespace DotRecast.Detour
         /// Returns true if the polygon reference is valid and passes the filter restrictions.
         /// @param[in] ref The polygon reference to check.
         /// @param[in] filter The filter to apply.
-        public bool IsValidPolyRef(long refs, QueryFilter filter)
+        public bool IsValidPolyRef(long refs, IQueryFilter filter)
         {
             Result<Tuple<MeshTile, Poly>> tileAndPolyResult = m_nav.GetTileAndPolyByRef(refs);
             if (tileAndPolyResult.Failed())

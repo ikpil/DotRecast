@@ -22,7 +22,7 @@ using static DotRecast.Core.RecastMath;
 namespace DotRecast.Detour
 {
 
-    public class DefaultQueryHeuristic : QueryHeuristic
+    public class DefaultQueryHeuristic : IQueryHeuristic
     {
         private readonly float scale;
 

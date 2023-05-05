@@ -6,7 +6,7 @@ namespace DotRecast.Detour
 {
     using static DotRecast.Core.RecastMath;
 
-    public class FindNearestPolyQuery : PolyQuery
+    public class FindNearestPolyQuery : IPolyQuery
     {
         private readonly NavMeshQuery query;
         private readonly Vector3f center;

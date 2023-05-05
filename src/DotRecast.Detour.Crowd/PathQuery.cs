@@ -30,7 +30,7 @@ namespace DotRecast.Detour.Crowd
         public Vector3f endPos = new Vector3f();
         public long startRef;
         public long endRef;
-        public QueryFilter filter;
+        public IQueryFilter filter;
 
         /// < TODO: This is potentially dangerous!
         public readonly PathQueryResult result = new PathQueryResult();

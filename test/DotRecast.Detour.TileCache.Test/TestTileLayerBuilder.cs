@@ -45,11 +45,11 @@ public class TestTileLayerBuilder : AbstractTileLayersBuilder
     private const float m_detailSampleMaxError = 1.0f;
     private readonly RecastConfig rcConfig;
     private const int m_tileSize = 48;
-    protected readonly InputGeomProvider geom;
+    protected readonly IInputGeomProvider geom;
     private readonly int tw;
     private readonly int th;
 
-    public TestTileLayerBuilder(InputGeomProvider geom)
+    public TestTileLayerBuilder(IInputGeomProvider geom)
     {
         this.geom = geom;
         rcConfig = new RecastConfig(true, m_tileSize, m_tileSize, RecastConfig.CalcBorder(m_agentRadius, m_cellSize),

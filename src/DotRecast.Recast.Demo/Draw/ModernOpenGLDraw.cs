@@ -6,7 +6,7 @@ using Silk.NET.OpenGL;
 
 namespace DotRecast.Recast.Demo.Draw;
 
-public class ModernOpenGLDraw : OpenGLDraw
+public class ModernOpenGLDraw : IOpenGLDraw
 {
     private GL _gl;
     private uint program;

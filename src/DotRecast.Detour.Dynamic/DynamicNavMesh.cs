@@ -37,7 +37,7 @@ namespace DotRecast.Detour.Dynamic
         private readonly Dictionary<long, DynamicTile> _tiles = new Dictionary<long, DynamicTile>();
         private readonly Telemetry telemetry;
         private readonly NavMeshParams navMeshParams;
-        private readonly BlockingCollection<UpdateQueueItem> updateQueue = new BlockingCollection<UpdateQueueItem>();
+        private readonly BlockingCollection<IUpdateQueueItem> updateQueue = new BlockingCollection<IUpdateQueueItem>();
         private readonly AtomicLong currentColliderId = new AtomicLong(0);
         private NavMesh _navMesh;
         private bool dirty = true;
@@ -93,7 +93,7 @@ namespace DotRecast.Detour.Dynamic
             return GetTileAt(x, z)?.checkpoint.heightfield;
         }
 
-        public long AddCollider(Collider collider)
+        public long AddCollider(ICollider collider)
         {
             long cid = currentColliderId.IncrementAndGet();
             updateQueue.Add(new AddColliderQueueItem(cid, collider, GetTiles(collider.Bounds())));
@@ -140,9 +140,9 @@ namespace DotRecast.Detour.Dynamic
             return items.SelectMany(i => i.AffectedTiles()).ToHashSet();
         }
 
-        private List<UpdateQueueItem> ConsumeQueue()
+        private List<IUpdateQueueItem> ConsumeQueue()
         {
-            List<UpdateQueueItem> items = new List<UpdateQueueItem>();
+            List<IUpdateQueueItem> items = new List<IUpdateQueueItem>();
             while (updateQueue.TryTake(out var item))
             {
                 items.Add(item);
@@ -151,7 +151,7 @@ namespace DotRecast.Detour.Dynamic
             return items;
         }
 
-        private void Process(UpdateQueueItem item)
+        private void Process(IUpdateQueueItem item)
         {
             foreach (var tile in item.AffectedTiles())
             {

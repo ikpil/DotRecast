@@ -18,17 +18,10 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using System.Collections.Generic;
-using DotRecast.Core;
-
-namespace DotRecast.Recast.Geom
+namespace DotRecast.Detour.TileCache
 {
-    public interface InputGeomProvider : ConvexVolumeProvider
+    public interface ITileCacheMeshProcess
     {
-        Vector3f GetMeshBoundsMin();
-
-        Vector3f GetMeshBoundsMax();
-
-        IEnumerable<TriMesh> Meshes();
+        void Process(NavMeshDataCreateParams option);
     }
 }

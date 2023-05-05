@@ -98,7 +98,7 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        public void Update(long refs, Vector3f pos, float collisionQueryRange, NavMeshQuery navquery, QueryFilter filter)
+        public void Update(long refs, Vector3f pos, float collisionQueryRange, NavMeshQuery navquery, IQueryFilter filter)
         {
             if (refs == 0)
             {
@@ -138,7 +138,7 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        public bool IsValid(NavMeshQuery navquery, QueryFilter filter)
+        public bool IsValid(NavMeshQuery navquery, IQueryFilter filter)
         {
             if (m_polys.Count == 0)
             {

@@ -29,24 +29,24 @@ namespace DotRecast.Recast
 {
     public class RecastBuilder
     {
-        public interface RecastBuilderProgressListener
+        public interface IRecastBuilderProgressListener
         {
             void OnProgress(int completed, int total);
         }
 
-        private readonly RecastBuilderProgressListener progressListener;
+        private readonly IRecastBuilderProgressListener progressListener;
 
         public RecastBuilder()
         {
             progressListener = null;
         }
 
-        public RecastBuilder(RecastBuilderProgressListener progressListener)
+        public RecastBuilder(IRecastBuilderProgressListener progressListener)
         {
             this.progressListener = progressListener;
         }
 
-        public List<RecastBuilderResult> BuildTiles(InputGeomProvider geom, RecastConfig cfg, TaskFactory taskFactory)
+        public List<RecastBuilderResult> BuildTiles(IInputGeomProvider geom, RecastConfig cfg, TaskFactory taskFactory)
         {
             Vector3f bmin = geom.GetMeshBoundsMin();
             Vector3f bmax = geom.GetMeshBoundsMax();
@@ -67,7 +67,7 @@ namespace DotRecast.Recast
         }
 
 
-        public Task BuildTilesAsync(InputGeomProvider geom, RecastConfig cfg, int threads, List<RecastBuilderResult> results, TaskFactory taskFactory, CancellationToken cancellationToken)
+        public Task BuildTilesAsync(IInputGeomProvider geom, RecastConfig cfg, int threads, List<RecastBuilderResult> results, TaskFactory taskFactory, CancellationToken cancellationToken)
         {
             Vector3f bmin = geom.GetMeshBoundsMin();
             Vector3f bmax = geom.GetMeshBoundsMax();
@@ -87,7 +87,7 @@ namespace DotRecast.Recast
             return task;
         }
 
-        private Task BuildSingleThreadAsync(InputGeomProvider geom, RecastConfig cfg, Vector3f bmin, Vector3f bmax,
+        private Task BuildSingleThreadAsync(IInputGeomProvider geom, RecastConfig cfg, Vector3f bmin, Vector3f bmax,
             int tw, int th, List<RecastBuilderResult> results)
         {
             AtomicInteger counter = new AtomicInteger(0);
@@ -102,7 +102,7 @@ namespace DotRecast.Recast
             return Task.CompletedTask;
         }
 
-        private Task BuildMultiThreadAsync(InputGeomProvider geom, RecastConfig cfg, Vector3f bmin, Vector3f bmax,
+        private Task BuildMultiThreadAsync(IInputGeomProvider geom, RecastConfig cfg, Vector3f bmin, Vector3f bmax,
             int tw, int th, List<RecastBuilderResult> results, TaskFactory taskFactory, CancellationToken cancellationToken)
         {
             AtomicInteger counter = new AtomicInteger(0);
@@ -152,7 +152,7 @@ namespace DotRecast.Recast
             return Task.WhenAll(tasks.ToArray());
         }
 
-        private RecastBuilderResult BuildTile(InputGeomProvider geom, RecastConfig cfg, Vector3f bmin, Vector3f bmax, int tx,
+        private RecastBuilderResult BuildTile(IInputGeomProvider geom, RecastConfig cfg, Vector3f bmin, Vector3f bmax, int tx,
             int ty, AtomicInteger counter, int total)
         {
             RecastBuilderResult result = Build(geom, new RecastBuilderConfig(cfg, bmin, bmax, tx, ty));
@@ -164,7 +164,7 @@ namespace DotRecast.Recast
             return result;
         }
 
-        public RecastBuilderResult Build(InputGeomProvider geom, RecastBuilderConfig builderCfg)
+        public RecastBuilderResult Build(IInputGeomProvider geom, RecastBuilderConfig builderCfg)
         {
             RecastConfig cfg = builderCfg.cfg;
             Telemetry ctx = new Telemetry();
@@ -175,7 +175,7 @@ namespace DotRecast.Recast
             return Build(builderCfg.tileX, builderCfg.tileZ, geom, cfg, solid, ctx);
         }
 
-        public RecastBuilderResult Build(int tileX, int tileZ, ConvexVolumeProvider geom, RecastConfig cfg, Heightfield solid,
+        public RecastBuilderResult Build(int tileX, int tileZ, IConvexVolumeProvider geom, RecastConfig cfg, Heightfield solid,
             Telemetry ctx)
         {
             FilterHeightfield(solid, cfg, ctx);
@@ -290,7 +290,7 @@ namespace DotRecast.Recast
         /*
          * Step 3. Partition walkable surface to simple regions.
          */
-        private CompactHeightfield BuildCompactHeightfield(ConvexVolumeProvider volumeProvider, RecastConfig cfg, Telemetry ctx,
+        private CompactHeightfield BuildCompactHeightfield(IConvexVolumeProvider volumeProvider, RecastConfig cfg, Telemetry ctx,
             Heightfield solid)
         {
             // Compact the heightfield so that it is faster to handle from now on.
@@ -312,7 +312,7 @@ namespace DotRecast.Recast
             return chf;
         }
 
-        public HeightfieldLayerSet BuildLayers(InputGeomProvider geom, RecastBuilderConfig builderCfg)
+        public HeightfieldLayerSet BuildLayers(IInputGeomProvider geom, RecastBuilderConfig builderCfg)
         {
             Telemetry ctx = new Telemetry();
             Heightfield solid = RecastVoxelization.BuildSolidHeightfield(geom, builderCfg, ctx);

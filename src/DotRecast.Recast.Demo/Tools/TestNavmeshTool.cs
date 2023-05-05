@@ -489,9 +489,9 @@ public class TestNavmeshTool : Tool
                 float dx = m_epos.x - m_spos.x;
                 float dz = m_epos.z - m_spos.z;
                 float dist = (float)Math.Sqrt(dx * dx + dz * dz);
-                PolygonByCircleConstraint constraint = constrainByCircle
-                    ? PolygonByCircleConstraint.Strict()
-                    : PolygonByCircleConstraint.Noop();
+                IPolygonByCircleConstraint constraint = constrainByCircle
+                    ? IPolygonByCircleConstraint.Strict()
+                    : IPolygonByCircleConstraint.Noop();
                 for (int i = 0; i < 200; i++)
                 {
                     Result<FindRandomPointResult> result = m_navQuery.FindRandomPointAroundCircle(m_startRef, m_spos, dist,

@@ -23,21 +23,21 @@ namespace DotRecast.Detour
 {
     using static DotRecast.Core.RecastMath;
 
-    public interface PolygonByCircleConstraint
+    public interface IPolygonByCircleConstraint
     {
         float[] Aply(float[] polyVerts, Vector3f circleCenter, float radius);
 
-        public static PolygonByCircleConstraint Noop()
+        public static IPolygonByCircleConstraint Noop()
         {
             return new NoOpPolygonByCircleConstraint();
         }
 
-        public static PolygonByCircleConstraint Strict()
+        public static IPolygonByCircleConstraint Strict()
         {
             return new StrictPolygonByCircleConstraint();
         }
 
-        public class NoOpPolygonByCircleConstraint : PolygonByCircleConstraint
+        public class NoOpPolygonByCircleConstraint : IPolygonByCircleConstraint
         {
             public float[] Aply(float[] polyVerts, Vector3f circleCenter, float radius)
             {
@@ -48,7 +48,7 @@ namespace DotRecast.Detour
         /**
      * Calculate the intersection between a polygon and a circle. A dodecagon is used as an approximation of the circle.
      */
-        public class StrictPolygonByCircleConstraint : PolygonByCircleConstraint
+        public class StrictPolygonByCircleConstraint : IPolygonByCircleConstraint
         {
             private const int CIRCLE_SEGMENTS = 12;
             private static float[] unitCircle;

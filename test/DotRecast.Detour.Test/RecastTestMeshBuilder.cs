@@ -47,7 +47,7 @@ public class RecastTestMeshBuilder
     {
     }
 
-    public RecastTestMeshBuilder(InputGeomProvider m_geom, PartitionType m_partitionType, float m_cellSize,
+    public RecastTestMeshBuilder(IInputGeomProvider m_geom, PartitionType m_partitionType, float m_cellSize,
         float m_cellHeight, float m_agentHeight, float m_agentRadius, float m_agentMaxClimb, float m_agentMaxSlope,
         int m_regionMinSize, int m_regionMergeSize, float m_edgeMaxLen, float m_edgeMaxError, int m_vertsPerPoly,
         float m_detailSampleDist, float m_detailSampleMaxError)

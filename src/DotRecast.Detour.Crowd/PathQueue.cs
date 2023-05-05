@@ -79,7 +79,7 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        public PathQueryResult Request(long startRef, long endRef, Vector3f startPos, Vector3f endPos, QueryFilter filter)
+        public PathQueryResult Request(long startRef, long endRef, Vector3f startPos, Vector3f endPos, IQueryFilter filter)
         {
             if (queue.Count >= config.pathQueueSize)
             {

@@ -52,7 +52,7 @@ public class TestTiledNavMeshBuilder
     {
     }
 
-    public TestTiledNavMeshBuilder(InputGeomProvider m_geom, PartitionType m_partitionType, float m_cellSize, float m_cellHeight,
+    public TestTiledNavMeshBuilder(IInputGeomProvider m_geom, PartitionType m_partitionType, float m_cellSize, float m_cellHeight,
         float m_agentHeight, float m_agentRadius, float m_agentMaxClimb, float m_agentMaxSlope, int m_regionMinSize,
         int m_regionMergeSize, float m_edgeMaxLen, float m_edgeMaxError, int m_vertsPerPoly, float m_detailSampleDist,
         float m_detailSampleMaxError, int m_tileSize)

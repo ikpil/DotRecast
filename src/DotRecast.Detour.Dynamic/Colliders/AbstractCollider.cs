@@ -20,7 +20,7 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic.Colliders
 {
-    public abstract class AbstractCollider : Collider
+    public abstract class AbstractCollider : ICollider
     {
         protected readonly int area;
         protected readonly float flagMergeThreshold;

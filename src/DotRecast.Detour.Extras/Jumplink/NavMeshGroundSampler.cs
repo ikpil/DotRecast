@@ -7,9 +7,9 @@ namespace DotRecast.Detour.Extras.Jumplink
 {
     class NavMeshGroundSampler : AbstractGroundSampler
     {
-        private readonly QueryFilter filter = new NoOpFilter();
+        private readonly IQueryFilter filter = new NoOpFilter();
 
-        private class NoOpFilter : QueryFilter
+        private class NoOpFilter : IQueryFilter
         {
             public bool PassFilter(long refs, MeshTile tile, Poly poly)
             {
@@ -55,7 +55,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             return new NavMeshQuery(new NavMesh(NavMeshBuilder.CreateNavMeshData(option), option.nvp, 0));
         }
 
-        public class PolyQueryInvoker : PolyQuery
+        public class PolyQueryInvoker : IPolyQuery
         {
             public readonly Action<MeshTile, Poly, long> _callback;
 

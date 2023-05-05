@@ -16,11 +16,12 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using Silk.NET.Windowing;
+using DotRecast.Core;
 
-namespace DotRecast.Recast.Demo.Tools;
-
-public interface ToolUIModule
+namespace DotRecast.Detour
 {
-    void Layout(IWindow ctx);
+    public interface IQueryHeuristic
+    {
+        float GetCost(Vector3f neighbourPos, Vector3f endPos);
+    }
 }

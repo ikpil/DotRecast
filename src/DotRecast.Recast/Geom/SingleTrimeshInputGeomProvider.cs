@@ -23,7 +23,7 @@ using DotRecast.Core;
 
 namespace DotRecast.Recast.Geom
 {
-    public class SingleTrimeshInputGeomProvider : InputGeomProvider
+    public class SingleTrimeshInputGeomProvider : IInputGeomProvider
     {
         private readonly Vector3f bmin;
         private readonly Vector3f bmax;

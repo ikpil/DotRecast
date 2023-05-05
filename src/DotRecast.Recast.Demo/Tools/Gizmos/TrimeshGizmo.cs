@@ -2,7 +2,7 @@
 
 namespace DotRecast.Recast.Demo.Tools.Gizmos;
 
-public class TrimeshGizmo : ColliderGizmo
+public class TrimeshGizmo : IColliderGizmo
 {
     private readonly float[] vertices;
     private readonly int[] triangles;

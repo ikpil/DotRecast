@@ -54,7 +54,7 @@ public class FindLocalNeighbourhoodTest : AbstractDetourTest
     [Test]
     public void TestFindNearestPoly()
     {
-        QueryFilter filter = new DefaultQueryFilter();
+        IQueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
             Vector3f startPos = startPoss[i];

@@ -93,7 +93,7 @@ public class UnityAStarPathfindingImporterTest
     {
         // Perform a simple pathfinding
         NavMeshQuery query = new NavMeshQuery(mesh);
-        QueryFilter filter = new DefaultQueryFilter();
+        IQueryFilter filter = new DefaultQueryFilter();
 
         FindNearestPolyResult[] polys = GetNearestPolys(mesh, startPos, endPos);
         return query.FindPath(polys[0].GetNearestRef(), polys[1].GetNearestRef(), startPos, endPos, filter);
@@ -102,7 +102,7 @@ public class UnityAStarPathfindingImporterTest
     private FindNearestPolyResult[] GetNearestPolys(NavMesh mesh, params Vector3f[] positions)
     {
         NavMeshQuery query = new NavMeshQuery(mesh);
-        QueryFilter filter = new DefaultQueryFilter();
+        IQueryFilter filter = new DefaultQueryFilter();
         Vector3f extents = Vector3f.Of(0.1f, 0.1f, 0.1f);
 
         FindNearestPolyResult[] results = new FindNearestPolyResult[positions.Length];

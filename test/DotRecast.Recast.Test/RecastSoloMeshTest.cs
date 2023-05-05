@@ -96,7 +96,7 @@ public class RecastSoloMeshTest
         int expContours, int expVerts, int expPolys, int expDetMeshes, int expDetVerts, int expDetTris)
     {
         m_partitionType = partitionType;
-        InputGeomProvider geomProvider = ObjImporter.Load(Loader.ToBytes(filename));
+        IInputGeomProvider geomProvider = ObjImporter.Load(Loader.ToBytes(filename));
         long time = FrequencyWatch.Ticks;
         Vector3f bmin = geomProvider.GetMeshBoundsMin();
         Vector3f bmax = geomProvider.GetMeshBoundsMax();

@@ -132,7 +132,7 @@ public class AbstractCrowdTest
     protected void SetMoveTarget(Vector3f pos, bool adjust)
     {
         Vector3f ext = crowd.GetQueryExtents();
-        QueryFilter filter = crowd.GetFilter(0);
+        IQueryFilter filter = crowd.GetFilter(0);
         if (adjust)
         {
             foreach (CrowdAgent ag in crowd.GetActiveAgents())

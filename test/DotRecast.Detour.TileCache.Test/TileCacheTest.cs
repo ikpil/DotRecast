@@ -59,7 +59,7 @@ public class TileCacheTest : AbstractTileCacheTest
 
     private void TestDungeon(ByteOrder order, bool cCompatibility)
     {
-        InputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("dungeon.obj"));
+        IInputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("dungeon.obj"));
         TileCache tc = GetTileCache(geom, order, cCompatibility);
         TestTileLayerBuilder layerBuilder = new TestTileLayerBuilder(geom);
         List<byte[]> layers = layerBuilder.Build(order, cCompatibility, 1);
@@ -155,7 +155,7 @@ public class TileCacheTest : AbstractTileCacheTest
 
     private void Test(ByteOrder order, bool cCompatibility)
     {
-        InputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("nav_test.obj"));
+        IInputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("nav_test.obj"));
         TileCache tc = GetTileCache(geom, order, cCompatibility);
         TestTileLayerBuilder layerBuilder = new TestTileLayerBuilder(geom);
         List<byte[]> layers = layerBuilder.Build(order, cCompatibility, 1);
@@ -181,7 +181,7 @@ public class TileCacheTest : AbstractTileCacheTest
         int threads = 4;
         ByteOrder order = ByteOrder.LITTLE_ENDIAN;
         bool cCompatibility = false;
-        InputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("dungeon.obj"));
+        IInputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("dungeon.obj"));
         TestTileLayerBuilder layerBuilder = new TestTileLayerBuilder(geom);
         for (int i = 0; i < 4; i++)
         {

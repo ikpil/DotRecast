@@ -32,7 +32,7 @@ public class RandomPointTest : AbstractDetourTest
     public void TestRandom()
     {
         FRand f = new FRand(1);
-        QueryFilter filter = new DefaultQueryFilter();
+        IQueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < 1000; i++)
         {
             Result<FindRandomPointResult> point = query.FindRandomPoint(filter, f);
@@ -60,7 +60,7 @@ public class RandomPointTest : AbstractDetourTest
     public void TestRandomAroundCircle()
     {
         FRand f = new FRand(1);
-        QueryFilter filter = new DefaultQueryFilter();
+        IQueryFilter filter = new DefaultQueryFilter();
         FindRandomPointResult point = query.FindRandomPoint(filter, f).result;
         for (int i = 0; i < 1000; i++)
         {
@@ -91,7 +91,7 @@ public class RandomPointTest : AbstractDetourTest
     public void TestRandomWithinCircle()
     {
         FRand f = new FRand(1);
-        QueryFilter filter = new DefaultQueryFilter();
+        IQueryFilter filter = new DefaultQueryFilter();
         FindRandomPointResult point = query.FindRandomPoint(filter, f).result;
         float radius = 5f;
         for (int i = 0; i < 1000; i++)
@@ -109,7 +109,7 @@ public class RandomPointTest : AbstractDetourTest
     public void TestPerformance()
     {
         FRand f = new FRand(1);
-        QueryFilter filter = new DefaultQueryFilter();
+        IQueryFilter filter = new DefaultQueryFilter();
         FindRandomPointResult point = query.FindRandomPoint(filter, f).result;
         float radius = 5f;
         // jvm warmup

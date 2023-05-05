@@ -28,7 +28,7 @@ namespace DotRecast.Recast.Demo.Draw;
 public class DebugDraw
 {
     private readonly GLCheckerTexture g_tex;
-    private readonly OpenGLDraw openGlDraw;
+    private readonly IOpenGLDraw openGlDraw;
     private readonly int[] boxIndices = { 7, 6, 5, 4, 0, 1, 2, 3, 1, 5, 6, 2, 3, 7, 4, 0, 2, 6, 7, 3, 0, 4, 5, 1, };
 
     private readonly float[][] frustumPlanes = ArrayUtils.Of<float>(6, 4);
@@ -604,7 +604,7 @@ public class DebugDraw
         return _viewMatrix;
     }
 
-    private OpenGLDraw GetOpenGlDraw()
+    private IOpenGLDraw GetOpenGlDraw()
     {
         return openGlDraw;
     }

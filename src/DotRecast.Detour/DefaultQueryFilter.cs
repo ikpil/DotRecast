@@ -50,7 +50,7 @@ namespace DotRecast.Detour
  *
  * @see NavMeshQuery
  */
-    public class DefaultQueryFilter : QueryFilter
+    public class DefaultQueryFilter : IQueryFilter
     {
         private int m_excludeFlags;
         private int m_includeFlags;

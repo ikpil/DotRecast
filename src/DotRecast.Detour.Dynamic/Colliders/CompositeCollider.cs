@@ -23,18 +23,18 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic.Colliders
 {
-    public class CompositeCollider : Collider
+    public class CompositeCollider : ICollider
     {
-        private readonly List<Collider> colliders;
+        private readonly List<ICollider> colliders;
         private readonly float[] _bounds;
 
-        public CompositeCollider(List<Collider> colliders)
+        public CompositeCollider(List<ICollider> colliders)
         {
             this.colliders = colliders;
             _bounds = Bounds(colliders);
         }
 
-        public CompositeCollider(params Collider[] colliders)
+        public CompositeCollider(params ICollider[] colliders)
         {
             this.colliders = colliders.ToList();
             _bounds = Bounds(this.colliders);
@@ -45,14 +45,14 @@ namespace DotRecast.Detour.Dynamic.Colliders
             return _bounds;
         }
 
-        private static float[] Bounds(List<Collider> colliders)
+        private static float[] Bounds(List<ICollider> colliders)
         {
             float[] bounds = new float[]
             {
                 float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity,
                 float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity
             };
-            foreach (Collider collider in colliders)
+            foreach (ICollider collider in colliders)
             {
                 float[] b = collider.Bounds();
                 bounds[0] = Math.Min(bounds[0], b[0]);

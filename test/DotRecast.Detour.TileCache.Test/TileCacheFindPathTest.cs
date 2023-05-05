@@ -47,7 +47,7 @@ public class TileCacheFindPathTest : AbstractTileCacheTest
     [Test]
     public void TestFindPath()
     {
-        QueryFilter filter = new DefaultQueryFilter();
+        IQueryFilter filter = new DefaultQueryFilter();
         Vector3f extents = Vector3f.Of(2f, 4f, 2f);
         Result<FindNearestPolyResult> findPolyStart = query.FindNearestPoly(start, extents, filter);
         Result<FindNearestPolyResult> findPolyEnd = query.FindNearestPoly(end, extents, filter);

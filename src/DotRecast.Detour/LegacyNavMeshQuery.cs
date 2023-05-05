@@ -34,13 +34,13 @@ namespace DotRecast.Detour
         {
         }
 
-        public override Result<List<long>> FindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, QueryFilter filter,
+        public override Result<List<long>> FindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, IQueryFilter filter,
             int options, float raycastLimit)
         {
             return FindPath(startRef, endRef, startPos, endPos, filter);
         }
 
-        public override Result<List<long>> FindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, QueryFilter filter)
+        public override Result<List<long>> FindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, IQueryFilter filter)
         {
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !VIsFinite(startPos) || !VIsFinite(endPos) || null == filter)
@@ -645,7 +645,7 @@ namespace DotRecast.Detour
             return Results.Of(status, path);
         }
 
-        public override Result<FindDistanceToWallResult> FindDistanceToWall(long startRef, Vector3f centerPos, float maxRadius, QueryFilter filter)
+        public override Result<FindDistanceToWallResult> FindDistanceToWall(long startRef, Vector3f centerPos, float maxRadius, IQueryFilter filter)
         {
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !VIsFinite(centerPos) || maxRadius < 0

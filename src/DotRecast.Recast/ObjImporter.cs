@@ -31,7 +31,7 @@ namespace DotRecast.Recast
             public List<int> meshFaces = new List<int>();
         }
 
-        public static InputGeomProvider Load(byte[] chunck)
+        public static IInputGeomProvider Load(byte[] chunck)
         {
             var context = LoadContext(chunck);
             return new SimpleInputGeomProvider(context.vertexPositions, context.meshFaces);

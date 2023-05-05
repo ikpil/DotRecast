@@ -64,7 +64,7 @@ public class TiledFindPathTest
     [Test]
     public void TestFindPath()
     {
-        QueryFilter filter = new DefaultQueryFilter();
+        IQueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < START_REFS.Length; i++)
         {
             long startRef = START_REFS[i];

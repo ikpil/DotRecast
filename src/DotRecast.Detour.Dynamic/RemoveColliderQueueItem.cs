@@ -20,7 +20,7 @@ using System.Collections.Generic;
 
 namespace DotRecast.Detour.Dynamic
 {
-    public class RemoveColliderQueueItem : UpdateQueueItem
+    public class RemoveColliderQueueItem : IUpdateQueueItem
     {
         private readonly long colliderId;
         private readonly ICollection<DynamicTile> _affectedTiles;

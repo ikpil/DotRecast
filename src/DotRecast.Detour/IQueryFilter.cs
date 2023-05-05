@@ -18,12 +18,15 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-namespace DotRecast.Detour.TileCache
-{
-    public interface TileCacheCompressor
-    {
-        byte[] Decompress(byte[] buf, int offset, int len, int outputlen);
+using DotRecast.Core;
 
-        byte[] Compress(byte[] buf);
+namespace DotRecast.Detour
+{
+    public interface IQueryFilter
+    {
+        bool PassFilter(long refs, MeshTile tile, Poly poly);
+
+        float GetCost(Vector3f pa, Vector3f pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef, MeshTile curTile,
+            Poly curPoly, long nextRef, MeshTile nextTile, Poly nextPoly);
     }
 }
