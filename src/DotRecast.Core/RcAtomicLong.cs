@@ -2,15 +2,15 @@
 
 namespace DotRecast.Core
 {
-    public class AtomicLong
+    public class RcAtomicLong
     {
         private long _location;
 
-        public AtomicLong() : this(0)
+        public RcAtomicLong() : this(0)
         {
         }
 
-        public AtomicLong(long location)
+        public RcAtomicLong(long location)
         {
             _location = location;
         }

@@ -162,7 +162,7 @@ namespace DotRecast.Recast
         }
 
 
-        private static bool CircumCircle(float[] verts, int p1, int p2, int p3, ref Vector3f c, AtomicFloat r)
+        private static bool CircumCircle(float[] verts, int p1, int p2, int p3, ref Vector3f c, RcAtomicFloat r)
         {
             float EPS = 1e-6f;
             // Calculate the circle relative to p1, to avoid some precision issues.
@@ -545,7 +545,7 @@ namespace DotRecast.Recast
             // Find best point on left of edge.
             int pt = npts;
             Vector3f c = new Vector3f();
-            AtomicFloat r = new AtomicFloat(-1f);
+            RcAtomicFloat r = new RcAtomicFloat(-1f);
             for (int u = 0; u < npts; ++u)
             {
                 if (u == s || u == t)

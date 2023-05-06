@@ -123,19 +123,19 @@ public class RandomPointTest : AbstractDetourTest
             query.FindRandomPointWithinCircle(point.GetRandomRef(), point.GetRandomPt(), radius, filter, f);
         }
 
-        long t1 = FrequencyWatch.Ticks;
+        long t1 = RcFrequency.Ticks;
         for (int i = 0; i < 10000; i++)
         {
             query.FindRandomPointAroundCircle(point.GetRandomRef(), point.GetRandomPt(), radius, filter, f);
         }
 
-        long t2 = FrequencyWatch.Ticks;
+        long t2 = RcFrequency.Ticks;
         for (int i = 0; i < 10000; i++)
         {
             query.FindRandomPointWithinCircle(point.GetRandomRef(), point.GetRandomPt(), radius, filter, f);
         }
 
-        long t3 = FrequencyWatch.Ticks;
+        long t3 = RcFrequency.Ticks;
         Console.WriteLine("Random point around circle: " + (t2 - t1) / TimeSpan.TicksPerMillisecond + "ms");
         Console.WriteLine("Random point within circle: " + (t3 - t2) / TimeSpan.TicksPerMillisecond + "ms");
     }

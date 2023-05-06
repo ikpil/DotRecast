@@ -104,7 +104,7 @@ namespace DotRecast.Detour
                 // Choose random tile using reservoi sampling.
                 float area = 1.0f; // Could be tile area too.
                 tsum += area;
-                float u = frand.Frand();
+                float u = frand.Next();
                 if (u * tsum <= area)
                 {
                     tile = mt;
@@ -150,7 +150,7 @@ namespace DotRecast.Detour
 
                 // Choose random polygon weighted by area, using reservoi sampling.
                 areaSum += polyArea;
-                float u = frand.Frand();
+                float u = frand.Next();
                 if (u * areaSum <= polyArea)
                 {
                     poly = p;
@@ -172,8 +172,8 @@ namespace DotRecast.Detour
                 Array.Copy(tile.data.verts, poly.verts[j] * 3, verts, j * 3, 3);
             }
 
-            float s = frand.Frand();
-            float t = frand.Frand();
+            float s = frand.Next();
+            float t = frand.Next();
 
             var pt = RandomPointInConvexPoly(verts, poly.vertCount, areas, s, t);
             ClosestPointOnPolyResult closest = ClosestPointOnPoly(polyRef, pt).result;
@@ -297,7 +297,7 @@ namespace DotRecast.Detour
 
                         // Choose random polygon weighted by area, using reservoi sampling.
                         areaSum += polyArea;
-                        float u = frand.Frand();
+                        float u = frand.Next();
                         if (u * areaSum <= polyArea)
                         {
                             randomPoly = bestPoly;
@@ -398,8 +398,8 @@ namespace DotRecast.Detour
             }
 
             // Randomly pick point on polygon.
-            float s = frand.Frand();
-            float t = frand.Frand();
+            float s = frand.Next();
+            float t = frand.Next();
 
             float[] areas = new float[randomPolyVerts.Length / 3];
             Vector3f pt = RandomPointInConvexPoly(randomPolyVerts, randomPolyVerts.Length / 3, areas, s, t);

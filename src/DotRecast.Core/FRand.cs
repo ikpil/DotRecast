@@ -4,21 +4,21 @@ namespace DotRecast.Core
 {
     public class FRand
     {
-        private readonly Random r;
+        private readonly Random _r;
 
         public FRand()
         {
-            r = new Random();
+            _r = new Random();
         }
 
         public FRand(long seed)
         {
-            r = new Random((int)seed); // TODO : 랜덤 시드 확인 필요
+            _r = new Random((int)seed); // TODO : 랜덤 시드 확인 필요
         }
 
-        public float Frand()
+        public float Next()
         {
-            return (float)r.NextDouble();
+            return (float)_r.NextDouble();
         }
     }
 }

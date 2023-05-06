@@ -142,7 +142,7 @@ namespace DotRecast.Detour.Crowd
         /// dtCrowdAgentParams::queryFilterType
         public const int DT_CROWD_MAX_QUERY_FILTER_TYPE = 16;
 
-        private readonly AtomicInteger _agentId = new AtomicInteger();
+        private readonly RcAtomicInteger _agentId = new RcAtomicInteger();
         private readonly List<CrowdAgent> _agents;
         private readonly PathQueue _pathQ;
         private readonly ObstacleAvoidanceParams[] _obstacleQueryParams = new ObstacleAvoidanceParams[DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS];

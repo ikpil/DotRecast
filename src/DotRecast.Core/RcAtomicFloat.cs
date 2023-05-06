@@ -2,11 +2,11 @@
 
 namespace DotRecast.Core
 {
-    public class AtomicFloat
+    public class RcAtomicFloat
     {
         private volatile float _location;
 
-        public AtomicFloat(float location)
+        public RcAtomicFloat(float location)
         {
             _location = location;
         }

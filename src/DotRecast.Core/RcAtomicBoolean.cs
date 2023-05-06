@@ -2,7 +2,7 @@
 
 namespace DotRecast.Core
 {
-    public class AtomicBoolean
+    public class RcAtomicBoolean
     {
         private volatile int _location;
 

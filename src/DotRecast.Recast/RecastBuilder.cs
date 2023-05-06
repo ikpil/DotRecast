@@ -90,7 +90,7 @@ namespace DotRecast.Recast
         private Task BuildSingleThreadAsync(IInputGeomProvider geom, RecastConfig cfg, Vector3f bmin, Vector3f bmax,
             int tw, int th, List<RecastBuilderResult> results)
         {
-            AtomicInteger counter = new AtomicInteger(0);
+            RcAtomicInteger counter = new RcAtomicInteger(0);
             for (int y = 0; y < th; ++y)
             {
                 for (int x = 0; x < tw; ++x)
@@ -105,7 +105,7 @@ namespace DotRecast.Recast
         private Task BuildMultiThreadAsync(IInputGeomProvider geom, RecastConfig cfg, Vector3f bmin, Vector3f bmax,
             int tw, int th, List<RecastBuilderResult> results, TaskFactory taskFactory, CancellationToken cancellationToken)
         {
-            AtomicInteger counter = new AtomicInteger(0);
+            RcAtomicInteger counter = new RcAtomicInteger(0);
             CountdownEvent latch = new CountdownEvent(tw * th);
             List<Task> tasks = new List<Task>();
 
@@ -153,7 +153,7 @@ namespace DotRecast.Recast
         }
 
         private RecastBuilderResult BuildTile(IInputGeomProvider geom, RecastConfig cfg, Vector3f bmin, Vector3f bmax, int tx,
-            int ty, AtomicInteger counter, int total)
+            int ty, RcAtomicInteger counter, int total)
         {
             RecastBuilderResult result = Build(geom, new RecastBuilderConfig(cfg, bmin, bmax, tx, ty));
             if (progressListener != null)

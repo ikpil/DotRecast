@@ -2,15 +2,15 @@
 
 namespace DotRecast.Core
 {
-    public class AtomicInteger
+    public class RcAtomicInteger
     {
         private volatile int _location;
 
-        public AtomicInteger() : this(0)
+        public RcAtomicInteger() : this(0)
         {
         }
 
-        public AtomicInteger(int location)
+        public RcAtomicInteger(int location)
         {
             _location = location;
         }

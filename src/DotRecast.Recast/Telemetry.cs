@@ -28,19 +28,19 @@ namespace DotRecast.Recast
 {
     public class Telemetry
     {
-        private readonly ThreadLocal<Dictionary<string, AtomicLong>> timerStart = new ThreadLocal<Dictionary<string, AtomicLong>>(() => new Dictionary<string, AtomicLong>());
-        private readonly ConcurrentDictionary<string, AtomicLong> timerAccum = new ConcurrentDictionary<string, AtomicLong>();
+        private readonly ThreadLocal<Dictionary<string, RcAtomicLong>> timerStart = new ThreadLocal<Dictionary<string, RcAtomicLong>>(() => new Dictionary<string, RcAtomicLong>());
+        private readonly ConcurrentDictionary<string, RcAtomicLong> timerAccum = new ConcurrentDictionary<string, RcAtomicLong>();
 
         public void StartTimer(string name)
         {
-            timerStart.Value[name] = new AtomicLong(FrequencyWatch.Ticks);
+            timerStart.Value[name] = new RcAtomicLong(RcFrequency.Ticks);
         }
 
         public void StopTimer(string name)
         {
             timerAccum
-                .GetOrAdd(name, _ => new AtomicLong(0))
-                .AddAndGet(FrequencyWatch.Ticks - timerStart.Value?[name].Read() ?? 0);
+                .GetOrAdd(name, _ => new RcAtomicLong(0))
+                .AddAndGet(RcFrequency.Ticks - timerStart.Value?[name].Read() ?? 0);
         }
 
         public void Warn(string @string)

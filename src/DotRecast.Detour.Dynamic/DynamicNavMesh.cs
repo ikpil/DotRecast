@@ -38,7 +38,7 @@ namespace DotRecast.Detour.Dynamic
         private readonly Telemetry telemetry;
         private readonly NavMeshParams navMeshParams;
         private readonly BlockingCollection<IUpdateQueueItem> updateQueue = new BlockingCollection<IUpdateQueueItem>();
-        private readonly AtomicLong currentColliderId = new AtomicLong(0);
+        private readonly RcAtomicLong currentColliderId = new RcAtomicLong(0);
         private NavMesh _navMesh;
         private bool dirty = true;
 

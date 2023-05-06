@@ -66,12 +66,12 @@ namespace DotRecast.Detour.Crowd
 
         public void Start(string name)
         {
-            _executionTimings.Add(name, FrequencyWatch.Ticks);
+            _executionTimings.Add(name, RcFrequency.Ticks);
         }
 
         public void Stop(string name)
         {
-            long duration = FrequencyWatch.Ticks - _executionTimings[name];
+            long duration = RcFrequency.Ticks - _executionTimings[name];
             if (!_executionTimingSamples.TryGetValue(name, out var s))
             {
                 s = new List<long>();

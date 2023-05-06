@@ -107,19 +107,19 @@ public class RecastTileMeshTest
             Build(geom, builder, cfg, 4, true);
         }
 
-        long t1 = FrequencyWatch.Ticks;
+        long t1 = RcFrequency.Ticks;
         for (int i = 0; i < 4; i++)
         {
             Build(geom, builder, cfg, 1, false);
         }
 
-        long t2 = FrequencyWatch.Ticks;
+        long t2 = RcFrequency.Ticks;
         for (int i = 0; i < 4; i++)
         {
             Build(geom, builder, cfg, 4, false);
         }
 
-        long t3 = FrequencyWatch.Ticks;
+        long t3 = RcFrequency.Ticks;
         Console.WriteLine(" Time ST : " + (t2 - t1) / TimeSpan.TicksPerMillisecond);
         Console.WriteLine(" Time MT : " + (t3 - t2) / TimeSpan.TicksPerMillisecond);
     }

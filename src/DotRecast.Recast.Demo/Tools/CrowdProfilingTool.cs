@@ -86,12 +86,12 @@ public class CrowdProfilingTool
                 IQueryFilter filter = new DefaultQueryFilter();
                 for (int i = 0; i < agents; i++)
                 {
-                    float tr = rnd.Frand();
+                    float tr = rnd.Next();
                     AgentType type = AgentType.MOB;
                     float mobsPcnt = percentMobs / 100f;
                     if (tr > mobsPcnt)
                     {
-                        tr = rnd.Frand();
+                        tr = rnd.Next();
                         float travellerPcnt = percentTravellers / 100f;
                         if (tr > travellerPcnt)
                         {
@@ -161,7 +161,7 @@ public class CrowdProfilingTool
     {
         if (0 < zones.Count)
         {
-            int zone = (int)(rnd.Frand() * zones.Count);
+            int zone = (int)(rnd.Next() * zones.Count);
             Result<FindRandomPointResult> result = navquery.FindRandomPointWithinCircle(zones[zone].GetRandomRef(),
                 zones[zone].GetRandomPt(), zoneRadius, filter, rnd);
             if (result.Succeeded())
@@ -240,7 +240,7 @@ public class CrowdProfilingTool
 
     public void Update(float dt)
     {
-        long startTime = FrequencyWatch.Ticks;
+        long startTime = RcFrequency.Ticks;
         if (crowd != null)
         {
             crowd.Config().pathQueueSize = pathQueueSize;
@@ -248,7 +248,7 @@ public class CrowdProfilingTool
             crowd.Update(dt, null);
         }
 
-        long endTime = FrequencyWatch.Ticks;
+        long endTime = RcFrequency.Ticks;
         if (crowd != null)
         {
             NavMeshQuery navquery = new NavMeshQuery(navMesh);

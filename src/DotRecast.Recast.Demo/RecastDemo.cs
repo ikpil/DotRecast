@@ -459,7 +459,7 @@ public class RecastDemo
 
         cameraPos.y += (float)((_moveUp - _moveDown) * keySpeed * dt);
 
-        long time = FrequencyWatch.Ticks;
+        long time = RcFrequency.Ticks;
         prevFrameTime = time;
 
         // Update sample simulation.
@@ -525,7 +525,7 @@ public class RecastDemo
                 float m_detailSampleDist = settingsUI.GetDetailSampleDist();
                 float m_detailSampleMaxError = settingsUI.GetDetailSampleMaxError();
                 int m_tileSize = settingsUI.GetTileSize();
-                long t = FrequencyWatch.Ticks;
+                long t = RcFrequency.Ticks;
 
                 Logger.Information($"build");
 
@@ -549,7 +549,7 @@ public class RecastDemo
 
                 sample.Update(sample.GetInputGeom(), buildResult.Item1, buildResult.Item2);
                 sample.SetChanged(false);
-                settingsUI.SetBuildTime((FrequencyWatch.Ticks - t) / TimeSpan.TicksPerMillisecond);
+                settingsUI.SetBuildTime((RcFrequency.Ticks - t) / TimeSpan.TicksPerMillisecond);
                 //settingsUI.SetBuildTelemetry(buildResult.Item1.Select(x => x.GetTelemetry()).ToList());
                 toolsUI.SetSample(sample);
 

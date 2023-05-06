@@ -74,8 +74,8 @@ namespace DotRecast.Detour.Extras.Jumplink
         {
             Vector3f halfExtents = new Vector3f { x = cs, y = heightRange, z = cs };
             float maxHeight = pt.y + heightRange;
-            AtomicBoolean found = new AtomicBoolean();
-            AtomicFloat minHeight = new AtomicFloat(pt.y);
+            RcAtomicBoolean found = new RcAtomicBoolean();
+            RcAtomicFloat minHeight = new RcAtomicFloat(pt.y);
             navMeshQuery.QueryPolygons(pt, halfExtents, filter, new PolyQueryInvoker((tile, poly, refs) =>
             {
                 Result<float> h = navMeshQuery.GetPolyHeight(refs, pt);
