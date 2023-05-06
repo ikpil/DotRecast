@@ -304,8 +304,8 @@ namespace DotRecast.Recast
 
             if (axis.y * axis.y > EPSILON)
             {
-                float[][] rectangleOnStartPlane = ArrayUtils.Of<float>(4, 3);
-                float[][] rectangleOnEndPlane = ArrayUtils.Of<float>(4, 3);
+                Vector3f[] rectangleOnStartPlane = new Vector3f[4];
+                Vector3f[] rectangleOnEndPlane = new Vector3f[4];
                 float ds = Dot(axis, start);
                 float de = Dot(axis, end);
                 for (int i = 0; i < 4; i++)
@@ -315,13 +315,13 @@ namespace DotRecast.Recast
                     Vector3f a = Vector3f.Of(x, rectangle[4], z);
                     float dotAxisA = Dot(axis, a);
                     float t = (ds - dotAxisA) / axis.y;
-                    rectangleOnStartPlane[i][0] = x;
-                    rectangleOnStartPlane[i][1] = rectangle[4] + t;
-                    rectangleOnStartPlane[i][2] = z;
+                    rectangleOnStartPlane[i].x = x;
+                    rectangleOnStartPlane[i].y = rectangle[4] + t;
+                    rectangleOnStartPlane[i].z = z;
                     t = (de - dotAxisA) / axis.y;
-                    rectangleOnEndPlane[i][0] = x;
-                    rectangleOnEndPlane[i][1] = rectangle[4] + t;
-                    rectangleOnEndPlane[i][2] = z;
+                    rectangleOnEndPlane[i].x = x;
+                    rectangleOnEndPlane[i].y = rectangle[4] + t;
+                    rectangleOnEndPlane[i].z = z;
                 }
 
                 for (int i = 0; i < 4; i++)
@@ -334,19 +334,19 @@ namespace DotRecast.Recast
             return s;
         }
 
-        private static float[] CylinderCapIntersection(Vector3f start, float radiusSqr, float[] s, int i, float[][] rectangleOnPlane)
+        private static float[] CylinderCapIntersection(Vector3f start, float radiusSqr, float[] s, int i, Vector3f[] rectangleOnPlane)
         {
             int j = (i + 1) % 4;
             // Ray against sphere intersection
             var m = Vector3f.Of(
-                rectangleOnPlane[i][0] - start.x,
-                rectangleOnPlane[i][1] - start.y,
-                rectangleOnPlane[i][2] - start.z
+                rectangleOnPlane[i].x - start.x,
+                rectangleOnPlane[i].y - start.y,
+                rectangleOnPlane[i].z - start.z
             );
             var d = Vector3f.Of(
-                rectangleOnPlane[j][0] - rectangleOnPlane[i][0],
-                rectangleOnPlane[j][1] - rectangleOnPlane[i][1],
-                rectangleOnPlane[j][2] - rectangleOnPlane[i][2]
+                rectangleOnPlane[j].x - rectangleOnPlane[i].x,
+                rectangleOnPlane[j].y - rectangleOnPlane[i].y,
+                rectangleOnPlane[j].z - rectangleOnPlane[i].z
             );
             float dl = Dot(d, d);
             float b = Dot(m, d) / dl;
@@ -361,8 +361,8 @@ namespace DotRecast.Recast
                 {
                     t1 = Math.Max(0, t1);
                     t2 = Math.Min(1, t2);
-                    float y1 = rectangleOnPlane[i][1] + t1 * d.y;
-                    float y2 = rectangleOnPlane[i][1] + t2 * d.y;
+                    float y1 = rectangleOnPlane[i].y + t1 * d.y;
+                    float y2 = rectangleOnPlane[i].y + t2 * d.y;
                     float[] y = { Math.Min(y1, y2), Math.Max(y1, y2) };
                     s = MergeIntersections(s, y);
                 }
