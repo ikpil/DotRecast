@@ -5,7 +5,7 @@ namespace DotRecast.Detour.Extras.Jumplink
 {
     class EdgeSamplerFactory
     {
-        public EdgeSampler Get(JumpLinkBuilderConfig acfg, JumpLinkType type, Edge edge)
+        public EdgeSampler Get(JumpLinkBuilderConfig acfg, JumpLinkType type, JumpEdge edge)
         {
             EdgeSampler es = null;
             switch (type.Bit)
@@ -25,7 +25,7 @@ namespace DotRecast.Detour.Extras.Jumplink
         }
 
 
-        private EdgeSampler InitEdgeJumpSampler(JumpLinkBuilderConfig acfg, Edge edge)
+        private EdgeSampler InitEdgeJumpSampler(JumpLinkBuilderConfig acfg, JumpEdge edge)
         {
             EdgeSampler es = new EdgeSampler(edge, new JumpTrajectory(acfg.jumpHeight));
             es.start.height = acfg.agentClimb * 2;
@@ -53,7 +53,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             return es;
         }
 
-        private EdgeSampler InitClimbDownSampler(JumpLinkBuilderConfig acfg, Edge edge)
+        private EdgeSampler InitClimbDownSampler(JumpLinkBuilderConfig acfg, JumpEdge edge)
         {
             EdgeSampler es = new EdgeSampler(edge, new ClimbTrajectory());
             es.start.height = acfg.agentClimb * 2;

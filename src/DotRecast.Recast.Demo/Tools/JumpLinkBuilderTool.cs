@@ -60,7 +60,7 @@ public class JumpLinkBuilderTool : Tool
         {
             if (annotationBuilder != null)
             {
-                foreach (Edge[] edges in annotationBuilder.GetEdges())
+                foreach (JumpEdge[] edges in annotationBuilder.GetEdges())
                 {
                     dd.Begin(LINES, 3.0f);
                     for (int i = 0; i < edges.Length; ++i)

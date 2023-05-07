@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using DotRecast.Core;
 
 namespace DotRecast.Recast
 {
@@ -29,12 +30,6 @@ namespace DotRecast.Recast
         public const int MAX_MESH_VERTS_POLY = 0xffff;
         public const int VERTEX_BUCKET_COUNT = (1 << 12);
 
-        private class Edge
-        {
-            public int[] vert = new int[2];
-            public int[] polyEdge = new int[2];
-            public int[] poly = new int[2];
-        }
 
         private static void BuildMeshAdjacency(int[] polys, int npolys, int nverts, int vertsPerPoly)
         {

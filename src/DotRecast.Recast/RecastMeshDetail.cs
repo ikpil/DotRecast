@@ -37,14 +37,6 @@ namespace DotRecast.Recast
         public const int EV_UNDEF = -1;
         public const int EV_HULL = -2;
 
-        private class HeightPatch
-        {
-            public int xmin;
-            public int ymin;
-            public int width;
-            public int height;
-            public int[] data;
-        }
 
         private static float Vdot2(float[] a, float[] b)
         {

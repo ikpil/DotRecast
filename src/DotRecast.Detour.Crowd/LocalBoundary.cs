@@ -31,14 +31,6 @@ namespace DotRecast.Detour.Crowd
     {
         public const int MAX_LOCAL_SEGS = 8;
 
-        private class Segment
-        {
-            /** Segment start/end */
-            public Vector3f[] s = new Vector3f[2];
-
-            /** Distance for pruning. */
-            public float d;
-        }
 
         Vector3f m_center = new Vector3f();
         List<Segment> m_segs = new List<Segment>();

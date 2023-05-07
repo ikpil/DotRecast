@@ -8,9 +8,9 @@ namespace DotRecast.Detour.Extras.Jumplink
 {
     public class EdgeExtractor
     {
-        public Edge[] ExtractEdges(PolyMesh mesh)
+        public JumpEdge[] ExtractEdges(PolyMesh mesh)
         {
-            List<Edge> edges = new List<Edge>();
+            List<JumpEdge> edges = new List<JumpEdge>();
             if (mesh != null)
             {
                 Vector3f orig = mesh.bmin;
@@ -57,7 +57,7 @@ namespace DotRecast.Detour.Extras.Jumplink
 
                                 int va = mesh.polys[p + j] * 3;
                                 int vb = mesh.polys[p + nj] * 3;
-                                Edge e = new Edge();
+                                JumpEdge e = new JumpEdge();
                                 e.sp.x = orig.x + mesh.verts[vb] * cs;
                                 e.sp.y = orig.y + mesh.verts[vb + 1] * ch;
                                 e.sp.z = orig.z + mesh.verts[vb + 2] * cs;

@@ -30,13 +30,6 @@ namespace DotRecast.Recast
     {
         const int RC_NULL_NEI = 0xffff;
 
-        public class SweepSpan
-        {
-            public int rid; // row id
-            public int id; // region id
-            public int ns; // number samples
-            public int nei; // neighbour id
-        }
 
         public static int CalculateDistanceField(CompactHeightfield chf, int[] src)
         {

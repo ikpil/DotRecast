@@ -71,14 +71,7 @@ public class CrowdTool : Tool
     private readonly CrowdProfilingTool profilingTool;
     private readonly CrowdAgentDebugInfo m_agentDebug = new CrowdAgentDebugInfo();
 
-    private static readonly int AGENT_MAX_TRAIL = 64;
-
-    private class AgentTrail
-    {
-        public float[] trail = new float[AGENT_MAX_TRAIL * 3];
-        public int htrail;
-    };
-
+    public static readonly int AGENT_MAX_TRAIL = 64;
     private readonly Dictionary<long, AgentTrail> m_trails = new();
     private Vector3f m_targetPos;
     private long m_targetRef;

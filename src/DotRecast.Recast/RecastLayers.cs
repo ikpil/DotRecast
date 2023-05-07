@@ -34,24 +34,6 @@ namespace DotRecast.Recast
         const int RC_MAX_LAYERS = RecastConstants.RC_NOT_CONNECTED;
         const int RC_MAX_NEIS = 16;
 
-        private class LayerRegion
-        {
-            public int id;
-            public int layerId;
-            public bool @base;
-            public int ymin, ymax;
-            public List<int> layers;
-            public List<int> neis;
-
-            public LayerRegion(int i)
-            {
-                id = i;
-                ymin = 0xFFFF;
-                layerId = 0xff;
-                layers = new List<int>();
-                neis = new List<int>();
-            }
-        };
 
         private static void AddUnique(List<int> a, int v)
         {

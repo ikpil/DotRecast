@@ -15,7 +15,7 @@ namespace DotRecast.Detour.Extras.Jumplink
         private readonly TrajectorySampler trajectorySampler = new TrajectorySampler();
         private readonly JumpSegmentBuilder jumpSegmentBuilder = new JumpSegmentBuilder();
 
-        private readonly List<Edge[]> edges;
+        private readonly List<JumpEdge[]> edges;
         private readonly IList<RecastBuilderResult> results;
 
         public JumpLinkBuilder(IList<RecastBuilderResult> results)
@@ -29,8 +29,8 @@ namespace DotRecast.Detour.Extras.Jumplink
             List<JumpLink> links = new List<JumpLink>();
             for (int tile = 0; tile < results.Count; tile++)
             {
-                Edge[] edges = this.edges[tile];
-                foreach (Edge edge in edges)
+                JumpEdge[] edges = this.edges[tile];
+                foreach (JumpEdge edge in edges)
                 {
                     links.AddRange(ProcessEdge(acfg, results[tile], type, edge));
                 }
@@ -39,7 +39,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             return links;
         }
 
-        private List<JumpLink> ProcessEdge(JumpLinkBuilderConfig acfg, RecastBuilderResult result, JumpLinkType type, Edge edge)
+        private List<JumpLink> ProcessEdge(JumpLinkBuilderConfig acfg, RecastBuilderResult result, JumpLinkType type, JumpEdge edge)
         {
             EdgeSampler es = edgeSamplerFactory.Get(acfg, type, edge);
             groundSampler.Sample(acfg, result, es);
@@ -88,7 +88,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             return links;
         }
 
-        public List<Edge[]> GetEdges()
+        public List<JumpEdge[]> GetEdges()
         {
             return edges;
         }

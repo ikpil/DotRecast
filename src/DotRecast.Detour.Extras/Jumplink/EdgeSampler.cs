@@ -14,7 +14,7 @@ namespace DotRecast.Detour.Extras.Jumplink
         public readonly Vector3f ay = new Vector3f();
         public readonly Vector3f az = new Vector3f();
 
-        public EdgeSampler(Edge edge, Trajectory trajectory)
+        public EdgeSampler(JumpEdge edge, Trajectory trajectory)
         {
             this.trajectory = trajectory;
             ax = VSub(edge.sq, edge.sp);

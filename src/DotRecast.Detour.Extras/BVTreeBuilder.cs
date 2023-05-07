@@ -33,10 +33,10 @@ namespace DotRecast.Detour.Extras
 
         private static int CreateBVTree(MeshData data, BVNode[] nodes, float quantFactor)
         {
-            NavMeshBuilder.BVItem[] items = new NavMeshBuilder.BVItem[data.header.polyCount];
+            BVItem[] items = new BVItem[data.header.polyCount];
             for (int i = 0; i < data.header.polyCount; i++)
             {
-                NavMeshBuilder.BVItem it = new NavMeshBuilder.BVItem();
+                BVItem it = new BVItem();
                 items[i] = it;
                 it.i = i;
                 Vector3f bmin = new Vector3f();

@@ -73,14 +73,7 @@ namespace DotRecast.Detour.TileCache
                 verts.Clear();
             }
         };
-
-        public class Edge
-        {
-            public int[] vert = new int[2];
-            public int[] polyEdge = new int[2];
-            public int[] poly = new int[2];
-        };
-
+        
         private readonly TileCacheLayerHeaderReader reader = new TileCacheLayerHeaderReader();
 
         public void BuildTileCacheRegions(TileCacheLayer layer, int walkableClimb)

@@ -30,13 +30,6 @@ namespace DotRecast.Detour
     {
         const int MESH_NULL_IDX = 0xffff;
 
-        public class BVItem
-        {
-            public readonly int[] bmin = new int[3];
-            public readonly int[] bmax = new int[3];
-            public int i;
-        };
-
         private class CompareItemX : IComparer<BVItem>
         {
             public int Compare(BVItem a, BVItem b)
