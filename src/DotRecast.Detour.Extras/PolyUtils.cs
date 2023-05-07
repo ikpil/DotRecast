@@ -18,7 +18,7 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Detour.Extras
 {
-    public class PolyUtils
+    public static class PolyUtils
     {
         /**
      * Find edge shared by 2 polygons within the same tile

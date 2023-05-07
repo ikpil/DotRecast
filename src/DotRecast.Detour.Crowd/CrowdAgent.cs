@@ -26,30 +26,6 @@ namespace DotRecast.Detour.Crowd
 {
     using static DotRecast.Core.RecastMath;
 
-    /// The type of navigation mesh polygon the agent is currently traversing.
-    /// @ingroup crowd
-    public enum CrowdAgentState
-    {
-        DT_CROWDAGENT_STATE_INVALID,
-
-        /// < The agent is not in a valid state.
-        DT_CROWDAGENT_STATE_WALKING,
-
-        /// < The agent is traversing a normal navigation mesh polygon.
-        DT_CROWDAGENT_STATE_OFFMESH, /// < The agent is traversing an off-mesh connection.
-    };
-
-    public enum MoveRequestState
-    {
-        DT_CROWDAGENT_TARGET_NONE,
-        DT_CROWDAGENT_TARGET_FAILED,
-        DT_CROWDAGENT_TARGET_VALID,
-        DT_CROWDAGENT_TARGET_REQUESTING,
-        DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE,
-        DT_CROWDAGENT_TARGET_WAITING_FOR_PATH,
-        DT_CROWDAGENT_TARGET_VELOCITY,
-    };
-
     /// Represents an agent managed by a #dtCrowd object.
     /// @ingroup crowd
     public class CrowdAgent
