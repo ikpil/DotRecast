@@ -9,20 +9,6 @@ namespace DotRecast.Detour.Extras.Jumplink
     {
         private readonly IQueryFilter filter = new NoOpFilter();
 
-        private class NoOpFilter : IQueryFilter
-        {
-            public bool PassFilter(long refs, MeshTile tile, Poly poly)
-            {
-                return true;
-            }
-
-            public float GetCost(Vector3f pa, Vector3f pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef,
-                MeshTile curTile, Poly curPoly, long nextRef, MeshTile nextTile, Poly nextPoly)
-            {
-                return 0;
-            }
-        }
-
         public override void Sample(JumpLinkBuilderConfig acfg, RecastBuilderResult result, EdgeSampler es)
         {
             NavMeshQuery navMeshQuery = CreateNavMesh(result, acfg.agentRadius, acfg.agentHeight, acfg.agentClimb);
@@ -55,20 +41,6 @@ namespace DotRecast.Detour.Extras.Jumplink
             return new NavMeshQuery(new NavMesh(NavMeshBuilder.CreateNavMeshData(option), option.nvp, 0));
         }
 
-        public class PolyQueryInvoker : IPolyQuery
-        {
-            public readonly Action<MeshTile, Poly, long> _callback;
-
-            public PolyQueryInvoker(Action<MeshTile, Poly, long> callback)
-            {
-                _callback = callback;
-            }
-
-            public void Process(MeshTile tile, Poly poly, long refs)
-            {
-                _callback?.Invoke(tile, poly, refs);
-            }
-        }
 
         private Tuple<bool, float> GetNavMeshHeight(NavMeshQuery navMeshQuery, Vector3f pt, float cs, float heightRange)
         {

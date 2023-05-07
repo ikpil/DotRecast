@@ -25,13 +25,6 @@ namespace DotRecast.Detour.TileCache
 {
     public class TileCacheObstacle
     {
-        public enum TileCacheObstacleType
-        {
-            CYLINDER,
-            BOX,
-            ORIENTED_BOX
-        };
-
         public readonly int index;
         public TileCacheObstacleType type;
         public Vector3f pos = new Vector3f();

@@ -19,7 +19,6 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using System.Collections.Generic;
 using DotRecast.Core;
 
 namespace DotRecast.Detour
@@ -30,29 +29,6 @@ namespace DotRecast.Detour
     {
         const int MESH_NULL_IDX = 0xffff;
 
-        private class CompareItemX : IComparer<BVItem>
-        {
-            public int Compare(BVItem a, BVItem b)
-            {
-                return a.bmin[0].CompareTo(b.bmin[0]);
-            }
-        }
-
-        private class CompareItemY : IComparer<BVItem>
-        {
-            public int Compare(BVItem a, BVItem b)
-            {
-                return a.bmin[1].CompareTo(b.bmin[1]);
-            }
-        }
-
-        private class CompareItemZ : IComparer<BVItem>
-        {
-            public int Compare(BVItem a, BVItem b)
-            {
-                return a.bmin[2].CompareTo(b.bmin[2]);
-            }
-        }
 
         private static int[][] CalcExtends(BVItem[] items, int nitems, int imin, int imax)
         {

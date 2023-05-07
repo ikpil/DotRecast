@@ -25,41 +25,8 @@ namespace DotRecast.Recast
 {
     using static RecastConstants;
 
-    public class RecastContour
+    public static class RecastContour
     {
-        private class ContourRegion
-        {
-            public Contour outline;
-            public ContourHole[] holes;
-            public int nholes;
-        }
-
-        private class ContourHole
-        {
-            public int leftmost;
-            public int minx;
-            public int minz;
-            public Contour contour;
-        }
-
-        private class PotentialDiagonal
-        {
-            public int dist;
-            public int vert;
-        }
-
-        private class CornerHeight
-        {
-            public readonly int height;
-            public readonly bool borderVertex;
-
-            public CornerHeight(int height, bool borderVertex)
-            {
-                this.height = height;
-                this.borderVertex = borderVertex;
-            }
-        }
-
         private static CornerHeight GetCornerHeight(int x, int y, int i, int dir, CompactHeightfield chf)
         {
             bool isBorderVertex = false;
@@ -638,31 +605,6 @@ namespace DotRecast.Recast
             }
 
             return new int[] { minx, minz, leftmost };
-        }
-
-        private class CompareHoles : IComparer<ContourHole>
-        {
-            public int Compare(ContourHole a, ContourHole b)
-            {
-                if (a.minx == b.minx)
-                {
-                    return a.minz.CompareTo(b.minz);
-                }
-                else
-                {
-                    return a.minx.CompareTo(b.minx);
-                }
-            }
-        }
-
-        private class CompareDiagDist : IComparer<PotentialDiagonal>
-        {
-            public int Compare(PotentialDiagonal va, PotentialDiagonal vb)
-            {
-                PotentialDiagonal a = va;
-                PotentialDiagonal b = vb;
-                return a.dist.CompareTo(b.dist);
-            }
         }
 
         private static void MergeRegionHoles(Telemetry ctx, ContourRegion region)

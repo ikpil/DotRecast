@@ -411,25 +411,6 @@ public class CrowdProfilingTool
         return crowd.AddAgent(p, ap);
     }
 
-    public enum AgentType
-    {
-        VILLAGER,
-        TRAVELLER,
-        MOB,
-    }
-
-    private class AgentData
-    {
-        public readonly AgentType type;
-        public readonly Vector3f home = new Vector3f();
-
-        public AgentData(AgentType type, Vector3f home)
-        {
-            this.type = type;
-            this.home = home;
-        }
-    }
-
     public void UpdateAgentParams(int updateFlags, int obstacleAvoidanceType, float separationWeight)
     {
         if (crowd != null)

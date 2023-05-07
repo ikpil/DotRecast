@@ -30,20 +30,6 @@ namespace DotRecast.Detour
     {
         private static readonly float EPSILON = 0.0001f;
 
-        private enum InFlag
-        {
-            Pin,
-            Qin,
-            Unknown,
-        }
-
-        private enum Intersection
-        {
-            None,
-            Single,
-            Overlap,
-        }
-
         public static float[] Intersect(float[] p, float[] q)
         {
             int n = p.Length / 3;
@@ -210,7 +196,7 @@ namespace DotRecast.Detour
             inters[ii + 2] = p[2];
             return ii + 3;
         }
-        
+
         private static int AddVertex(float[] inters, int ii, Vector3f p)
         {
             if (ii > 0)

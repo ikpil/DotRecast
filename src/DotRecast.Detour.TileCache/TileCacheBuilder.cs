@@ -34,45 +34,11 @@ namespace DotRecast.Detour.TileCache
         const int DT_TILECACHE_WALKABLE_AREA = 63;
         const int DT_TILECACHE_NULL_IDX = 0xffff;
 
-        public class LayerSweepSpan
-        {
-            public int ns; // number samples
-            public int id; // region id
-            public int nei; // neighbour id
-        };
 
-        public class LayerMonotoneRegion
-        {
-            public int area;
-            public List<int> neis = new List<int>(16);
-            public int regId;
-            public int areaId;
-        };
 
-        public class TempContour
-        {
-            public List<int> verts;
-            public int nverts;
-            public List<int> poly;
 
-            public TempContour()
-            {
-                verts = new List<int>();
-                nverts = 0;
-                poly = new List<int>();
-            }
 
-            public int Npoly()
-            {
-                return poly.Count;
-            }
 
-            public void Clear()
-            {
-                nverts = 0;
-                verts.Clear();
-            }
-        };
         
         private readonly TileCacheLayerHeaderReader reader = new TileCacheLayerHeaderReader();
 
