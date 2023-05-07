@@ -418,10 +418,10 @@ namespace DotRecast.Recast
             bmax.z -= borderSize * chf.cs;
 
             HeightfieldLayerSet lset = new HeightfieldLayerSet();
-            lset.layers = new HeightfieldLayerSet.HeightfieldLayer[layerId];
+            lset.layers = new HeightfieldLayer[layerId];
             for (int i = 0; i < lset.layers.Length; i++)
             {
-                lset.layers[i] = new HeightfieldLayerSet.HeightfieldLayer();
+                lset.layers[i] = new HeightfieldLayer();
             }
 
             // Store layers.
@@ -429,7 +429,7 @@ namespace DotRecast.Recast
             {
                 int curId = i;
 
-                HeightfieldLayerSet.HeightfieldLayer layer = lset.layers[i];
+                HeightfieldLayer layer = lset.layers[i];
 
                 int gridSize = lw * lh;
 

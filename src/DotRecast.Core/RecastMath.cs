@@ -810,14 +810,7 @@ namespace DotRecast.Core
             return r;
         }
 
-        public class IntersectResult
-        {
-            public bool intersects;
-            public float tmin;
-            public float tmax = 1f;
-            public int segMin = -1;
-            public int segMax = -1;
-        }
+
 
         public static IntersectResult IntersectSegmentPoly2D(Vector3f p0, Vector3f p1, float[] verts, int nverts)
         {

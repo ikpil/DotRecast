@@ -33,38 +33,6 @@ namespace DotRecast.Detour.Crowd
         /// < Max numver of adaptive divs.
         public const int DT_MAX_PATTERN_RINGS = 4;
 
-        /// < Max number of adaptive rings.
-        public class ObstacleCircle
-        {
-            /** Position of the obstacle */
-            public Vector3f p = new Vector3f();
-
-            /** Velocity of the obstacle */
-            public Vector3f vel = new Vector3f();
-
-            /** Velocity of the obstacle */
-            public Vector3f dvel = new Vector3f();
-
-            /** Radius of the obstacle */
-            public float rad;
-
-            /** Use for side selection during sampling. */
-            public Vector3f dp = new Vector3f();
-
-            /** Use for side selection during sampling. */
-            public Vector3f np = new Vector3f();
-        }
-
-        public class ObstacleSegment
-        {
-            /** End points of the obstacle segment */
-            public Vector3f p = new Vector3f();
-
-            /** End points of the obstacle segment */
-            public Vector3f q = new Vector3f();
-
-            public bool touch;
-        }
 
         private ObstacleAvoidanceParams m_params;
         private float m_invHorizTime;
@@ -214,16 +182,16 @@ namespace DotRecast.Detour.Crowd
             float d = VPerp2D(u, v);
             if (Math.Abs(d) < 1e-6f)
                 return new IsectRaySegResult(false, 0f);
-            
+
             d = 1.0f / d;
             float t = VPerp2D(v, w) * d;
             if (t < 0 || t > 1)
                 return new IsectRaySegResult(false, 0f);
-            
+
             float s = VPerp2D(u, w) * d;
             if (s < 0 || s > 1)
                 return new IsectRaySegResult(false, 0f);
-            
+
             return new IsectRaySegResult(true, t);
         }
 
@@ -316,7 +284,7 @@ namespace DotRecast.Detour.Crowd
                     var ires = IsectRaySeg(pos, vcand, seg.p, seg.q);
                     if (!ires.result)
                         continue;
-                    
+
                     htmin = ires.htmin;
                 }
 

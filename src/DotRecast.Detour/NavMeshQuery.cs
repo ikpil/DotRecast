@@ -2993,18 +2993,6 @@ namespace DotRecast.Detour
             return Results.Success(new FindLocalNeighbourhoodResult(resultRef, resultParent));
         }
 
-        public class SegInterval
-        {
-            public long refs;
-            public int tmin, tmax;
-
-            public SegInterval(long refs, int tmin, int tmax)
-            {
-                this.refs = refs;
-                this.tmin = tmin;
-                this.tmax = tmax;
-            }
-        }
 
         protected void InsertInterval(List<SegInterval> ints, int tmin, int tmax, long refs)
         {

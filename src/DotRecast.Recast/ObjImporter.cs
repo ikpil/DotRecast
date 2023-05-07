@@ -25,12 +25,6 @@ namespace DotRecast.Recast
 {
     public static class ObjImporter
     {
-        public class ObjImporterContext
-        {
-            public List<float> vertexPositions = new List<float>();
-            public List<int> meshFaces = new List<int>();
-        }
-
         public static IInputGeomProvider Load(byte[] chunck)
         {
             var context = LoadContext(chunck);

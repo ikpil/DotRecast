@@ -901,7 +901,7 @@ namespace DotRecast.Detour.Crowd
 
             _telemetry.Stop("buildNeighbours");
         }
-        
+
 
         private List<CrowdNeighbour> GetNeighbours(Vector3f pos, float height, float range, CrowdAgent skip, ProximityGrid grid)
         {
@@ -1373,23 +1373,5 @@ namespace DotRecast.Detour.Crowd
         {
             return Clamp((t - t0) / (t1 - t0), 0.0f, 1.0f);
         }
-
-        /// Provides neighbor data for agents managed by the crowd.
-        /// @ingroup crowd
-        /// @see dtCrowdAgent::neis, dtCrowd
-        public class CrowdNeighbour
-        {
-            public readonly CrowdAgent agent;
-
-            /// < The index of the neighbor in the crowd.
-            public readonly float dist;
-
-            /// < The distance between the current agent and the neighbor.
-            public CrowdNeighbour(CrowdAgent agent, float dist)
-            {
-                this.agent = agent;
-                this.dist = dist;
-            }
-        };
     }
 }

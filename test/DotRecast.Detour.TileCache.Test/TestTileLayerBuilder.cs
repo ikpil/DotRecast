@@ -87,7 +87,7 @@ public class TestTileLayerBuilder : AbstractTileLayersBuilder
             TileCacheBuilder builder = new TileCacheBuilder();
             for (int i = 0; i < lset.layers.Length; ++i)
             {
-                HeightfieldLayerSet.HeightfieldLayer layer = lset.layers[i];
+                HeightfieldLayer layer = lset.layers[i];
 
                 // Store header
                 TileCacheLayerHeader header = new TileCacheLayerHeader();
