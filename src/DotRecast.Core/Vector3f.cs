@@ -88,11 +88,33 @@ namespace DotRecast.Core
             }
         }
 
+        public override bool Equals(object obj)
+        {
+            if (!(obj is Vector3f))
+                return false;
+
+            return Equals((Vector3f)obj);
+        }
+        
+        public bool Equals(Vector3f other)
+        {
+            return x.Equals(other.x) &&
+                   y.Equals(other.y) &&
+                   z.Equals(other.z);
+        }
+
+
+        public override int GetHashCode()
+        {
+            int hash = x.GetHashCode();
+            hash = RcHashCodes.CombineHashCodes(hash, y.GetHashCode());
+            hash = RcHashCodes.CombineHashCodes(hash, z.GetHashCode());
+            return hash;
+        }
+
         public static bool operator ==(Vector3f left, Vector3f right)
         {
-            return left.x.Equals(right.x)
-                   && left.y.Equals(right.y)
-                   && left.z.Equals(right.z);
+            return left.Equals(right);
         }
 
         public static bool operator !=(Vector3f left, Vector3f right)
