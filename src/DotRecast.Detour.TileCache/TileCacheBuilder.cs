@@ -35,11 +35,6 @@ namespace DotRecast.Detour.TileCache
         const int DT_TILECACHE_NULL_IDX = 0xffff;
 
 
-
-
-
-
-        
         private readonly TileCacheLayerHeaderReader reader = new TileCacheLayerHeaderReader();
 
         public void BuildTileCacheRegions(TileCacheLayer layer, int walkableClimb)

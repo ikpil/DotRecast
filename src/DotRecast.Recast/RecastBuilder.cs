@@ -29,11 +29,6 @@ namespace DotRecast.Recast
 {
     public class RecastBuilder
     {
-        public interface IRecastBuilderProgressListener
-        {
-            void OnProgress(int completed, int total);
-        }
-
         private readonly IRecastBuilderProgressListener progressListener;
 
         public RecastBuilder()

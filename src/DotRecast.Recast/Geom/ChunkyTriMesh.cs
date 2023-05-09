@@ -24,29 +24,6 @@ using DotRecast.Core;
 
 namespace DotRecast.Recast.Geom
 {
-    public class BoundsItem
-    {
-        public Vector2f bmin;
-        public Vector2f bmax;
-        public int i;
-    }
-
-    public class CompareItemX : IComparer<BoundsItem>
-    {
-        public int Compare(BoundsItem a, BoundsItem b)
-        {
-            return a.bmin.x.CompareTo(b.bmin.x);
-        }
-    }
-
-    public class CompareItemY : IComparer<BoundsItem>
-    {
-        public int Compare(BoundsItem a, BoundsItem b)
-        {
-            return a.bmin.y.CompareTo(b.bmin.y);
-        }
-    }
-
     public class ChunkyTriMesh
     {
         List<ChunkyTriMeshNode> nodes;
