@@ -27,15 +27,15 @@ namespace DotRecast.Detour.Crowd.Tracking
 
     public class ObstacleAvoidanceDebugData
     {
-        int m_nsamples;
-        int m_maxSamples;
-        float[] m_vel;
-        float[] m_ssize;
-        float[] m_pen;
-        float[] m_vpen;
-        float[] m_vcpen;
-        float[] m_spen;
-        float[] m_tpen;
+        private int m_nsamples;
+        private int m_maxSamples;
+        private float[] m_vel;
+        private float[] m_ssize;
+        private float[] m_pen;
+        private float[] m_vpen;
+        private float[] m_vcpen;
+        private float[] m_spen;
+        private float[] m_tpen;
 
         public ObstacleAvoidanceDebugData(int maxSamples)
         {

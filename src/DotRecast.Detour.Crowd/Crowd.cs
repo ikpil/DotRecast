@@ -22,6 +22,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using DotRecast.Core;
 using DotRecast.Detour.Crowd.Tracking;
 using DotRecast.Detour.QueryResults;
@@ -354,7 +355,7 @@ namespace DotRecast.Detour.Crowd
      *
      * @return List of active agents
      */
-        public ICollection<CrowdAgent> GetActiveAgents()
+        public IList<CrowdAgent> GetActiveAgents()
         {
             return _agents;
         }
@@ -395,7 +396,7 @@ namespace DotRecast.Detour.Crowd
 
             _telemetry.Start();
 
-            ICollection<CrowdAgent> agents = GetActiveAgents();
+            IList<CrowdAgent> agents = GetActiveAgents();
 
             // Check that all agents still have valid paths.
             CheckPathValidity(agents, dt);
@@ -438,7 +439,7 @@ namespace DotRecast.Detour.Crowd
         }
 
 
-        private void CheckPathValidity(ICollection<CrowdAgent> agents, float dt)
+        private void CheckPathValidity(IList<CrowdAgent> agents, float dt)
         {
             _telemetry.Start("checkPathValidity");
 
@@ -560,7 +561,7 @@ namespace DotRecast.Detour.Crowd
             _telemetry.Stop("checkPathValidity");
         }
 
-        private void UpdateMoveRequest(ICollection<CrowdAgent> agents, float dt)
+        private void UpdateMoveRequest(IList<CrowdAgent> agents, float dt)
         {
             _telemetry.Start("updateMoveRequest");
 
@@ -820,7 +821,7 @@ namespace DotRecast.Detour.Crowd
             _telemetry.Stop("updateMoveRequest");
         }
 
-        private void UpdateTopologyOptimization(ICollection<CrowdAgent> agents, float dt)
+        private void UpdateTopologyOptimization(IList<CrowdAgent> agents, float dt)
         {
             _telemetry.Start("updateTopologyOptimization");
 
@@ -861,10 +862,11 @@ namespace DotRecast.Detour.Crowd
             _telemetry.Stop("updateTopologyOptimization");
         }
 
-        private void BuildProximityGrid(ICollection<CrowdAgent> agents)
+        private void BuildProximityGrid(IList<CrowdAgent> agents)
         {
             _telemetry.Start("buildProximityGrid");
             _grid = new ProximityGrid(_config.maxAgentRadius * 3);
+
             foreach (CrowdAgent ag in agents)
             {
                 Vector3f p = ag.npos;
@@ -875,7 +877,7 @@ namespace DotRecast.Detour.Crowd
             _telemetry.Stop("buildProximityGrid");
         }
 
-        private void BuildNeighbours(ICollection<CrowdAgent> agents)
+        private void BuildNeighbours(IList<CrowdAgent> agents)
         {
             _telemetry.Start("buildNeighbours");
             foreach (CrowdAgent ag in agents)
@@ -935,7 +937,7 @@ namespace DotRecast.Detour.Crowd
             return result;
         }
 
-        private void FindCorners(ICollection<CrowdAgent> agents, CrowdAgentDebugInfo debug)
+        private void FindCorners(IList<CrowdAgent> agents, CrowdAgentDebugInfo debug)
         {
             _telemetry.Start("findCorners");
             CrowdAgent debugAgent = debug != null ? debug.agent : null;
@@ -984,7 +986,7 @@ namespace DotRecast.Detour.Crowd
             _telemetry.Stop("findCorners");
         }
 
-        private void TriggerOffMeshConnections(ICollection<CrowdAgent> agents)
+        private void TriggerOffMeshConnections(IList<CrowdAgent> agents)
         {
             _telemetry.Start("triggerOffMeshConnections");
             foreach (CrowdAgent ag in agents)
@@ -1033,7 +1035,7 @@ namespace DotRecast.Detour.Crowd
             _telemetry.Stop("triggerOffMeshConnections");
         }
 
-        private void CalculateSteering(ICollection<CrowdAgent> agents)
+        private void CalculateSteering(IList<CrowdAgent> agents)
         {
             _telemetry.Start("calculateSteering");
             foreach (CrowdAgent ag in agents)
@@ -1131,7 +1133,7 @@ namespace DotRecast.Detour.Crowd
             _telemetry.Stop("calculateSteering");
         }
 
-        private void PlanVelocity(CrowdAgentDebugInfo debug, ICollection<CrowdAgent> agents)
+        private void PlanVelocity(CrowdAgentDebugInfo debug, IList<CrowdAgent> agents)
         {
             _telemetry.Start("planVelocity");
             CrowdAgent debugAgent = debug != null ? debug.agent : null;
@@ -1206,7 +1208,7 @@ namespace DotRecast.Detour.Crowd
             _telemetry.Stop("planVelocity");
         }
 
-        private void Integrate(float dt, ICollection<CrowdAgent> agents)
+        private void Integrate(float dt, IList<CrowdAgent> agents)
         {
             _telemetry.Start("integrate");
             foreach (CrowdAgent ag in agents)
@@ -1222,7 +1224,7 @@ namespace DotRecast.Detour.Crowd
             _telemetry.Stop("integrate");
         }
 
-        private void HandleCollisions(ICollection<CrowdAgent> agents)
+        private void HandleCollisions(IList<CrowdAgent> agents)
         {
             _telemetry.Start("handleCollisions");
             for (int iter = 0; iter < 4; ++iter)
@@ -1299,7 +1301,7 @@ namespace DotRecast.Detour.Crowd
             _telemetry.Stop("handleCollisions");
         }
 
-        private void MoveAgents(ICollection<CrowdAgent> agents)
+        private void MoveAgents(IList<CrowdAgent> agents)
         {
             _telemetry.Start("moveAgents");
             foreach (CrowdAgent ag in agents)
@@ -1326,7 +1328,7 @@ namespace DotRecast.Detour.Crowd
             _telemetry.Stop("moveAgents");
         }
 
-        private void UpdateOffMeshConnections(ICollection<CrowdAgent> agents, float dt)
+        private void UpdateOffMeshConnections(IList<CrowdAgent> agents, float dt)
         {
             _telemetry.Start("updateOffMeshConnections");
             foreach (CrowdAgent ag in agents)
