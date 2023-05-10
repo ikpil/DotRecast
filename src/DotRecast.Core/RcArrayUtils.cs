@@ -2,7 +2,7 @@
 
 namespace DotRecast.Core
 {
-    public static class ArrayUtils
+    public static class RcArrayUtils
     {
         public static T[] CopyOf<T>(T[] source, int startIdx, int length)
         {

@@ -24,10 +24,10 @@ namespace DotRecast.Detour.TileCache
 {
     public class TileCacheStorageParams
     {
-        public readonly ByteOrder byteOrder;
+        public readonly RcByteOrder byteOrder;
         public readonly bool cCompatibility;
 
-        public TileCacheStorageParams(ByteOrder byteOrder, bool cCompatibility)
+        public TileCacheStorageParams(RcByteOrder byteOrder, bool cCompatibility)
         {
             this.byteOrder = byteOrder;
             this.cCompatibility = cCompatibility;

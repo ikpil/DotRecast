@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using DotRecast.Core;
-using static DotRecast.Core.RecastMath;
+using static DotRecast.Core.RcMath;
 
 namespace DotRecast.Detour.Extras.Jumplink
 {

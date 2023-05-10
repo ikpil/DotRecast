@@ -135,6 +135,6 @@ public class UnityAStarPathfindingImporterTest
         string filepath = Path.Combine("test-output", filename);
         using var fs = new FileStream(filename, FileMode.Create);
         using var os = new BinaryWriter(fs);
-        writer.Write(os, mesh, ByteOrder.LITTLE_ENDIAN, true);
+        writer.Write(os, mesh, RcByteOrder.LITTLE_ENDIAN, true);
     }
 }

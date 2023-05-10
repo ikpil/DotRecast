@@ -31,11 +31,11 @@ namespace DotRecast.Detour.TileCache.Io
 
         public TileCache Read(BinaryReader @is, int maxVertPerPoly, ITileCacheMeshProcess meshProcessor)
         {
-            ByteBuffer bb = IOUtils.ToByteBuffer(@is);
+            RcByteBuffer bb = IOUtils.ToByteBuffer(@is);
             return Read(bb, maxVertPerPoly, meshProcessor);
         }
 
-        public TileCache Read(ByteBuffer bb, int maxVertPerPoly, ITileCacheMeshProcess meshProcessor)
+        public TileCache Read(RcByteBuffer bb, int maxVertPerPoly, ITileCacheMeshProcess meshProcessor)
         {
             TileCacheSetHeader header = new TileCacheSetHeader();
             header.magic = bb.GetInt();
@@ -47,7 +47,7 @@ namespace DotRecast.Detour.TileCache.Io
                     throw new IOException("Invalid magic");
                 }
 
-                bb.Order(bb.Order() == ByteOrder.BIG_ENDIAN ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN);
+                bb.Order(bb.Order() == RcByteOrder.BIG_ENDIAN ? RcByteOrder.LITTLE_ENDIAN : RcByteOrder.BIG_ENDIAN);
             }
 
             header.version = bb.GetInt();
@@ -88,7 +88,7 @@ namespace DotRecast.Detour.TileCache.Io
             return tc;
         }
 
-        private TileCacheParams ReadCacheParams(ByteBuffer bb, bool cCompatibility)
+        private TileCacheParams ReadCacheParams(RcByteBuffer bb, bool cCompatibility)
         {
             TileCacheParams option = new TileCacheParams();
             

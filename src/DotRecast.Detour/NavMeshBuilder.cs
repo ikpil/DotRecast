@@ -23,7 +23,7 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
-    using static DotRecast.Core.RecastMath;
+    using static DotRecast.Core.RcMath;
 
     public class NavMeshBuilder
     {

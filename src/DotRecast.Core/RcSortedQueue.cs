@@ -19,18 +19,17 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using System.Collections.Generic;
 
 namespace DotRecast.Core
 {
-    using System.Collections.Generic;
-
-    public class SortedQueue<T>
+    public class RcSortedQueue<T>
     {
         private bool _dirty;
         private readonly List<T> _items;
         private readonly Comparison<T> _comparison;
 
-        public SortedQueue(Comparison<T> comparison)
+        public RcSortedQueue(Comparison<T> comparison)
         {
             _items = new List<T>();
             _comparison = (x, y) => comparison.Invoke(x, y) * -1; // reverse
@@ -75,7 +74,7 @@ namespace DotRecast.Core
             int idx = _items.FindLastIndex(x => item.Equals(x));
             if (0 > idx)
                 return;
-            
+
             _items.RemoveAt(idx);
         }
 

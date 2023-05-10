@@ -28,7 +28,7 @@ using DotRecast.Detour.QueryResults;
 
 namespace DotRecast.Detour.Crowd
 {
-    using static DotRecast.Core.RecastMath;
+    using static DotRecast.Core.RcMath;
 
     /**
  * Members in this module implement local steering and dynamic avoidance features.
@@ -564,7 +564,7 @@ namespace DotRecast.Detour.Crowd
         {
             _telemetry.Start("updateMoveRequest");
 
-            SortedQueue<CrowdAgent> queue = new SortedQueue<CrowdAgent>((a1, a2) => a2.targetReplanTime.CompareTo(a1.targetReplanTime));
+            RcSortedQueue<CrowdAgent> queue = new RcSortedQueue<CrowdAgent>((a1, a2) => a2.targetReplanTime.CompareTo(a1.targetReplanTime));
 
             // Fire off new requests.
             foreach (CrowdAgent ag in agents)
@@ -824,7 +824,7 @@ namespace DotRecast.Detour.Crowd
         {
             _telemetry.Start("updateTopologyOptimization");
 
-            SortedQueue<CrowdAgent> queue = new SortedQueue<CrowdAgent>((a1, a2) => a2.topologyOptTime.CompareTo(a1.topologyOptTime));
+            RcSortedQueue<CrowdAgent> queue = new RcSortedQueue<CrowdAgent>((a1, a2) => a2.topologyOptTime.CompareTo(a1.topologyOptTime));
 
             foreach (CrowdAgent ag in agents)
             {

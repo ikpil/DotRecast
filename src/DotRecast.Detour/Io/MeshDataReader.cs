@@ -27,27 +27,27 @@ namespace DotRecast.Detour.Io
 
         public MeshData Read(BinaryReader stream, int maxVertPerPoly)
         {
-            ByteBuffer buf = IOUtils.ToByteBuffer(stream);
+            RcByteBuffer buf = IOUtils.ToByteBuffer(stream);
             return Read(buf, maxVertPerPoly, false);
         }
 
-        public MeshData Read(ByteBuffer buf, int maxVertPerPoly)
+        public MeshData Read(RcByteBuffer buf, int maxVertPerPoly)
         {
             return Read(buf, maxVertPerPoly, false);
         }
 
         public MeshData Read32Bit(BinaryReader stream, int maxVertPerPoly)
         {
-            ByteBuffer buf = IOUtils.ToByteBuffer(stream);
+            RcByteBuffer buf = IOUtils.ToByteBuffer(stream);
             return Read(buf, maxVertPerPoly, true);
         }
 
-        public MeshData Read32Bit(ByteBuffer buf, int maxVertPerPoly)
+        public MeshData Read32Bit(RcByteBuffer buf, int maxVertPerPoly)
         {
             return Read(buf, maxVertPerPoly, true);
         }
 
-        public MeshData Read(ByteBuffer buf, int maxVertPerPoly, bool is32Bit)
+        public MeshData Read(RcByteBuffer buf, int maxVertPerPoly, bool is32Bit)
         {
             MeshData data = new MeshData();
             MeshHeader header = new MeshHeader();
@@ -61,7 +61,7 @@ namespace DotRecast.Detour.Io
                     throw new IOException("Invalid magic");
                 }
 
-                buf.Order(buf.Order() == ByteOrder.BIG_ENDIAN ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN);
+                buf.Order(buf.Order() == RcByteOrder.BIG_ENDIAN ? RcByteOrder.LITTLE_ENDIAN : RcByteOrder.BIG_ENDIAN);
             }
 
             header.version = buf.GetInt();
@@ -124,7 +124,7 @@ namespace DotRecast.Detour.Io
             return is32Bit ? LINK_SIZEOF32BIT : LINK_SIZEOF;
         }
 
-        private float[] ReadVerts(ByteBuffer buf, int count)
+        private float[] ReadVerts(RcByteBuffer buf, int count)
         {
             float[] verts = new float[count * 3];
             for (int i = 0; i < verts.Length; i++)
@@ -135,7 +135,7 @@ namespace DotRecast.Detour.Io
             return verts;
         }
 
-        private Poly[] ReadPolys(ByteBuffer buf, MeshHeader header, int maxVertPerPoly)
+        private Poly[] ReadPolys(RcByteBuffer buf, MeshHeader header, int maxVertPerPoly)
         {
             Poly[] polys = new Poly[header.polyCount];
             for (int i = 0; i < polys.Length; i++)
@@ -164,7 +164,7 @@ namespace DotRecast.Detour.Io
             return polys;
         }
 
-        private PolyDetail[] ReadPolyDetails(ByteBuffer buf, MeshHeader header, bool cCompatibility)
+        private PolyDetail[] ReadPolyDetails(RcByteBuffer buf, MeshHeader header, bool cCompatibility)
         {
             PolyDetail[] polys = new PolyDetail[header.detailMeshCount];
             for (int i = 0; i < polys.Length; i++)
@@ -183,7 +183,7 @@ namespace DotRecast.Detour.Io
             return polys;
         }
 
-        private int[] ReadDTris(ByteBuffer buf, MeshHeader header)
+        private int[] ReadDTris(RcByteBuffer buf, MeshHeader header)
         {
             int[] tris = new int[4 * header.detailTriCount];
             for (int i = 0; i < tris.Length; i++)
@@ -194,7 +194,7 @@ namespace DotRecast.Detour.Io
             return tris;
         }
 
-        private BVNode[] ReadBVTree(ByteBuffer buf, MeshHeader header)
+        private BVNode[] ReadBVTree(RcByteBuffer buf, MeshHeader header)
         {
             BVNode[] nodes = new BVNode[header.bvNodeCount];
             for (int i = 0; i < nodes.Length; i++)
@@ -231,7 +231,7 @@ namespace DotRecast.Detour.Io
             return nodes;
         }
 
-        private OffMeshConnection[] ReadOffMeshCons(ByteBuffer buf, MeshHeader header)
+        private OffMeshConnection[] ReadOffMeshCons(RcByteBuffer buf, MeshHeader header)
         {
             OffMeshConnection[] cons = new OffMeshConnection[header.offMeshConCount];
             for (int i = 0; i < cons.Length; i++)

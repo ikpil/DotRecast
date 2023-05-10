@@ -34,30 +34,30 @@ public class TileCacheTest : AbstractTileCacheTest
     [Test]
     public void TestFastLz()
     {
-        TestDungeon(ByteOrder.LITTLE_ENDIAN, false);
-        TestDungeon(ByteOrder.LITTLE_ENDIAN, true);
-        TestDungeon(ByteOrder.BIG_ENDIAN, false);
-        TestDungeon(ByteOrder.BIG_ENDIAN, true);
-        Test(ByteOrder.LITTLE_ENDIAN, false);
-        Test(ByteOrder.LITTLE_ENDIAN, true);
-        Test(ByteOrder.BIG_ENDIAN, false);
-        Test(ByteOrder.BIG_ENDIAN, true);
+        TestDungeon(RcByteOrder.LITTLE_ENDIAN, false);
+        TestDungeon(RcByteOrder.LITTLE_ENDIAN, true);
+        TestDungeon(RcByteOrder.BIG_ENDIAN, false);
+        TestDungeon(RcByteOrder.BIG_ENDIAN, true);
+        Test(RcByteOrder.LITTLE_ENDIAN, false);
+        Test(RcByteOrder.LITTLE_ENDIAN, true);
+        Test(RcByteOrder.BIG_ENDIAN, false);
+        Test(RcByteOrder.BIG_ENDIAN, true);
     }
 
     [Test]
     public void TestLZ4()
     {
-        TestDungeon(ByteOrder.LITTLE_ENDIAN, false);
-        TestDungeon(ByteOrder.LITTLE_ENDIAN, true);
-        TestDungeon(ByteOrder.BIG_ENDIAN, false);
-        TestDungeon(ByteOrder.BIG_ENDIAN, true);
-        Test(ByteOrder.LITTLE_ENDIAN, false);
-        Test(ByteOrder.LITTLE_ENDIAN, true);
-        Test(ByteOrder.BIG_ENDIAN, false);
-        Test(ByteOrder.BIG_ENDIAN, true);
+        TestDungeon(RcByteOrder.LITTLE_ENDIAN, false);
+        TestDungeon(RcByteOrder.LITTLE_ENDIAN, true);
+        TestDungeon(RcByteOrder.BIG_ENDIAN, false);
+        TestDungeon(RcByteOrder.BIG_ENDIAN, true);
+        Test(RcByteOrder.LITTLE_ENDIAN, false);
+        Test(RcByteOrder.LITTLE_ENDIAN, true);
+        Test(RcByteOrder.BIG_ENDIAN, false);
+        Test(RcByteOrder.BIG_ENDIAN, true);
     }
 
-    private void TestDungeon(ByteOrder order, bool cCompatibility)
+    private void TestDungeon(RcByteOrder order, bool cCompatibility)
     {
         IInputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("dungeon.obj"));
         TileCache tc = GetTileCache(geom, order, cCompatibility);
@@ -153,7 +153,7 @@ public class TileCacheTest : AbstractTileCacheTest
         Assert.That(data.detailTris.Length, Is.EqualTo(4 * 3));
     }
 
-    private void Test(ByteOrder order, bool cCompatibility)
+    private void Test(RcByteOrder order, bool cCompatibility)
     {
         IInputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("nav_test.obj"));
         TileCache tc = GetTileCache(geom, order, cCompatibility);
@@ -179,7 +179,7 @@ public class TileCacheTest : AbstractTileCacheTest
     public void TestPerformance()
     {
         int threads = 4;
-        ByteOrder order = ByteOrder.LITTLE_ENDIAN;
+        RcByteOrder order = RcByteOrder.LITTLE_ENDIAN;
         bool cCompatibility = false;
         IInputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("dungeon.obj"));
         TestTileLayerBuilder layerBuilder = new TestTileLayerBuilder(geom);

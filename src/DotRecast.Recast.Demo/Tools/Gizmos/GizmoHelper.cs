@@ -1,7 +1,7 @@
 using System;
 using DotRecast.Core;
 using DotRecast.Recast.Demo.Draw;
-using static DotRecast.Core.RecastMath;
+using static DotRecast.Core.RcMath;
 
 namespace DotRecast.Recast.Demo.Tools.Gizmos;
 

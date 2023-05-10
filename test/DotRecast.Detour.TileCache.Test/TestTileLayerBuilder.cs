@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using DotRecast.Core;
 using DotRecast.Recast;
 using DotRecast.Recast.Geom;
-using static DotRecast.Core.RecastMath;
+using static DotRecast.Core.RcMath;
 
 namespace DotRecast.Detour.TileCache.Test;
 
@@ -63,7 +63,7 @@ public class TestTileLayerBuilder : AbstractTileLayersBuilder
         th = twh[1];
     }
 
-    public List<byte[]> Build(ByteOrder order, bool cCompatibility, int threads)
+    public List<byte[]> Build(RcByteOrder order, bool cCompatibility, int threads)
     {
         return Build(order, cCompatibility, threads, tw, th);
     }
@@ -78,7 +78,7 @@ public class TestTileLayerBuilder : AbstractTileLayersBuilder
         return th;
     }
 
-    protected override List<byte[]> Build(int tx, int ty, ByteOrder order, bool cCompatibility)
+    protected override List<byte[]> Build(int tx, int ty, RcByteOrder order, bool cCompatibility)
     {
         HeightfieldLayerSet lset = GetHeightfieldSet(tx, ty);
         List<byte[]> result = new();

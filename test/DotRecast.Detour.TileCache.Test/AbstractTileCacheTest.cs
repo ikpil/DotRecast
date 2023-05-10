@@ -22,7 +22,7 @@ using DotRecast.Core;
 using DotRecast.Detour.TileCache.Io.Compress;
 using DotRecast.Recast.Geom;
 using NUnit.Framework;
-using static DotRecast.Core.RecastMath;
+using static DotRecast.Core.RcMath;
 using static DotRecast.Recast.RecastVectors;
 
 namespace DotRecast.Detour.TileCache.Test;
@@ -50,7 +50,7 @@ public class AbstractTileCacheTest
         }
     }
 
-    public TileCache GetTileCache(IInputGeomProvider geom, ByteOrder order, bool cCompatibility)
+    public TileCache GetTileCache(IInputGeomProvider geom, RcByteOrder order, bool cCompatibility)
     {
         TileCacheParams option = new TileCacheParams();
         int[] twh = Recast.Recast.CalcTileCount(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), m_cellSize, m_tileSize, m_tileSize);

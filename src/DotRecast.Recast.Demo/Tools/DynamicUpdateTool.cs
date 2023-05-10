@@ -40,7 +40,7 @@ using Silk.NET.OpenAL;
 using Silk.NET.Windowing;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
-using static DotRecast.Core.RecastMath;
+using static DotRecast.Core.RcMath;
 
 namespace DotRecast.Recast.Demo.Tools;
 

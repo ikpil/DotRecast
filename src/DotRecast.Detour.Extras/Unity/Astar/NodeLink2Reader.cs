@@ -25,7 +25,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
     {
         public NodeLink2[] Read(ZipArchive file, string filename, int[] indexToNode)
         {
-            ByteBuffer buffer = ToByteBuffer(file, filename);
+            RcByteBuffer buffer = ToByteBuffer(file, filename);
             int linkCount = buffer.GetInt();
             NodeLink2[] links = new NodeLink2[linkCount];
             for (int i = 0; i < linkCount; i++)

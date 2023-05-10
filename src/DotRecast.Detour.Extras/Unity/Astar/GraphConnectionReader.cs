@@ -27,7 +27,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
         public List<int[]> Read(ZipArchive file, string filename, Meta meta, int[] indexToNode)
         {
             List<int[]> connections = new List<int[]>();
-            ByteBuffer buffer = ToByteBuffer(file, filename);
+            RcByteBuffer buffer = ToByteBuffer(file, filename);
             while (buffer.Remaining() > 0)
             {
                 int count = buffer.GetInt();

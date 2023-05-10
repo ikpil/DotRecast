@@ -23,7 +23,7 @@ namespace DotRecast.Detour.Io
 {
     public class MeshDataWriter : DetourWriter
     {
-        public void Write(BinaryWriter stream, MeshData data, ByteOrder order, bool cCompatibility)
+        public void Write(BinaryWriter stream, MeshData data, RcByteOrder order, bool cCompatibility)
         {
             MeshHeader header = data.header;
             Write(stream, header.magic, order);
@@ -66,7 +66,7 @@ namespace DotRecast.Detour.Io
             WriteOffMeshCons(stream, data, order);
         }
 
-        private void WriteVerts(BinaryWriter stream, float[] verts, int count, ByteOrder order)
+        private void WriteVerts(BinaryWriter stream, float[] verts, int count, RcByteOrder order)
         {
             for (int i = 0; i < count * 3; i++)
             {
@@ -74,7 +74,7 @@ namespace DotRecast.Detour.Io
             }
         }
 
-        private void WritePolys(BinaryWriter stream, MeshData data, ByteOrder order, bool cCompatibility)
+        private void WritePolys(BinaryWriter stream, MeshData data, RcByteOrder order, bool cCompatibility)
         {
             for (int i = 0; i < data.header.polyCount; i++)
             {
@@ -99,7 +99,7 @@ namespace DotRecast.Detour.Io
             }
         }
 
-        private void WritePolyDetails(BinaryWriter stream, MeshData data, ByteOrder order, bool cCompatibility)
+        private void WritePolyDetails(BinaryWriter stream, MeshData data, RcByteOrder order, bool cCompatibility)
         {
             for (int i = 0; i < data.header.detailMeshCount; i++)
             {
@@ -122,7 +122,7 @@ namespace DotRecast.Detour.Io
             }
         }
 
-        private void WriteBVTree(BinaryWriter stream, MeshData data, ByteOrder order, bool cCompatibility)
+        private void WriteBVTree(BinaryWriter stream, MeshData data, RcByteOrder order, bool cCompatibility)
         {
             for (int i = 0; i < data.header.bvNodeCount; i++)
             {
@@ -155,7 +155,7 @@ namespace DotRecast.Detour.Io
             }
         }
 
-        private void WriteOffMeshCons(BinaryWriter stream, MeshData data, ByteOrder order)
+        private void WriteOffMeshCons(BinaryWriter stream, MeshData data, RcByteOrder order)
         {
             for (int i = 0; i < data.header.offMeshConCount; i++)
             {

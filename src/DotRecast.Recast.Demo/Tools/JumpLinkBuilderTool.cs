@@ -25,7 +25,7 @@ using DotRecast.Recast.Demo.Builder;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Demo.Geom;
 using ImGuiNET;
-using static DotRecast.Core.RecastMath;
+using static DotRecast.Core.RcMath;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DotRecast.Core;
 using DotRecast.Recast;
-using static DotRecast.Core.RecastMath;
+using static DotRecast.Core.RcMath;
 
 namespace DotRecast.Detour.Extras.Jumplink
 {
@@ -64,8 +64,8 @@ namespace DotRecast.Detour.Extras.Jumplink
                 {
                     JumpLink link = new JumpLink();
                     links.Add(link);
-                    link.startSamples = ArrayUtils.CopyOf(es.start.gsamples, js.startSample, js.samples);
-                    link.endSamples = ArrayUtils.CopyOf(end.gsamples, js.startSample, js.samples);
+                    link.startSamples = RcArrayUtils.CopyOf(es.start.gsamples, js.startSample, js.samples);
+                    link.endSamples = RcArrayUtils.CopyOf(end.gsamples, js.startSample, js.samples);
                     link.start = es.start;
                     link.end = end;
                     link.trajectory = es.trajectory;

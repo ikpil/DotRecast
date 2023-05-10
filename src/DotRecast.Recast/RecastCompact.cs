@@ -18,7 +18,7 @@ freely, subject to the following restrictions:
 
 using System;
 
-using static DotRecast.Core.RecastMath;
+using static DotRecast.Core.RcMath;
 using static DotRecast.Recast.RecastConstants;
 using static DotRecast.Recast.RecastVectors;
 

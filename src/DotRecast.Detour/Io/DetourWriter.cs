@@ -24,16 +24,16 @@ namespace DotRecast.Detour.Io
 {
     public abstract class DetourWriter
     {
-        protected void Write(BinaryWriter stream, float value, ByteOrder order)
+        protected void Write(BinaryWriter stream, float value, RcByteOrder order)
         {
             byte[] bytes = BitConverter.GetBytes(value);
             int i = BitConverter.ToInt32(bytes, 0);
             Write(stream, i, order);
         }
 
-        protected void Write(BinaryWriter stream, short value, ByteOrder order)
+        protected void Write(BinaryWriter stream, short value, RcByteOrder order)
         {
-            if (order == ByteOrder.BIG_ENDIAN)
+            if (order == RcByteOrder.BIG_ENDIAN)
             {
                 stream.Write((byte)((value >> 8) & 0xFF));
                 stream.Write((byte)(value & 0xFF));
@@ -45,9 +45,9 @@ namespace DotRecast.Detour.Io
             }
         }
 
-        protected void Write(BinaryWriter stream, long value, ByteOrder order)
+        protected void Write(BinaryWriter stream, long value, RcByteOrder order)
         {
-            if (order == ByteOrder.BIG_ENDIAN)
+            if (order == RcByteOrder.BIG_ENDIAN)
             {
                 Write(stream, (int)((ulong)value >> 32), order);
                 Write(stream, (int)(value & 0xFFFFFFFF), order);
@@ -59,9 +59,9 @@ namespace DotRecast.Detour.Io
             }
         }
 
-        protected void Write(BinaryWriter stream, int value, ByteOrder order)
+        protected void Write(BinaryWriter stream, int value, RcByteOrder order)
         {
-            if (order == ByteOrder.BIG_ENDIAN)
+            if (order == RcByteOrder.BIG_ENDIAN)
             {
                 stream.Write((byte)((value >> 24) & 0xFF));
                 stream.Write((byte)((value >> 16) & 0xFF));

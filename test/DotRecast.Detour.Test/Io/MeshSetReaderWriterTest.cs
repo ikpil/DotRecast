@@ -23,7 +23,7 @@ using DotRecast.Detour.Io;
 using DotRecast.Recast;
 using DotRecast.Recast.Geom;
 using NUnit.Framework;
-using static DotRecast.Core.RecastMath;
+using static DotRecast.Core.RcMath;
 
 namespace DotRecast.Detour.Test.Io;
 
@@ -94,7 +94,7 @@ public class MeshSetReaderWriterTest
 
         using var ms = new MemoryStream();
         using var os = new BinaryWriter(ms);
-        writer.Write(os, mesh, ByteOrder.LITTLE_ENDIAN, true);
+        writer.Write(os, mesh, RcByteOrder.LITTLE_ENDIAN, true);
         ms.Seek(0, SeekOrigin.Begin);
 
         using var @is = new BinaryReader(ms);

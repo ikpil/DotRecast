@@ -29,7 +29,7 @@ namespace DotRecast.Detour.TileCache.Io
         private readonly NavMeshParamWriter paramWriter = new NavMeshParamWriter();
         private readonly TileCacheBuilder builder = new TileCacheBuilder();
 
-        public void Write(BinaryWriter stream, TileCache cache, ByteOrder order, bool cCompatibility)
+        public void Write(BinaryWriter stream, TileCache cache, RcByteOrder order, bool cCompatibility)
         {
             Write(stream, TileCacheSetHeader.TILECACHESET_MAGIC, order);
             Write(stream, cCompatibility
@@ -61,7 +61,7 @@ namespace DotRecast.Detour.TileCache.Io
             }
         }
 
-        private void WriteCacheParams(BinaryWriter stream, TileCacheParams option, ByteOrder order)
+        private void WriteCacheParams(BinaryWriter stream, TileCacheParams option, RcByteOrder order)
         {
             Write(stream, option.orig.x, order);
             Write(stream, option.orig.y, order);

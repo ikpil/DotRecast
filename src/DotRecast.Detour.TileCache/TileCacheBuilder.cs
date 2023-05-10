@@ -24,7 +24,7 @@ using System.IO;
 using DotRecast.Core;
 using DotRecast.Detour.TileCache.Io;
 using DotRecast.Detour.TileCache.Io.Compress;
-using static DotRecast.Core.RecastMath;
+using static DotRecast.Core.RcMath;
 
 namespace DotRecast.Detour.TileCache
 {
@@ -1915,7 +1915,7 @@ namespace DotRecast.Detour.TileCache
             }
         }
 
-        public byte[] CompressTileCacheLayer(TileCacheLayer layer, ByteOrder order, bool cCompatibility)
+        public byte[] CompressTileCacheLayer(TileCacheLayer layer, RcByteOrder order, bool cCompatibility)
         {
             using var ms = new MemoryStream();
             using var baos = new BinaryWriter(ms);
@@ -1942,7 +1942,7 @@ namespace DotRecast.Detour.TileCache
         }
 
         public byte[] CompressTileCacheLayer(TileCacheLayerHeader header, int[] heights, int[] areas, int[] cons,
-            ByteOrder order, bool cCompatibility)
+            RcByteOrder order, bool cCompatibility)
         {
             using var ms = new MemoryStream();
             using var baos = new BinaryWriter(ms);
@@ -1968,10 +1968,10 @@ namespace DotRecast.Detour.TileCache
             }
         }
 
-        public TileCacheLayer DecompressTileCacheLayer(ITileCacheCompressor comp, byte[] compressed, ByteOrder order,
+        public TileCacheLayer DecompressTileCacheLayer(ITileCacheCompressor comp, byte[] compressed, RcByteOrder order,
             bool cCompatibility)
         {
-            ByteBuffer buf = new ByteBuffer(compressed);
+            RcByteBuffer buf = new RcByteBuffer(compressed);
             buf.Order(order);
             TileCacheLayer layer = new TileCacheLayer();
             try

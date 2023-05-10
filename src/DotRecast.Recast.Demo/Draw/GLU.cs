@@ -128,7 +128,7 @@ public class GLU
     // This code comes directly from GLU except that it is for float
     static int GlhInvertMatrixf2(float[] m, float[] @out)
     {
-        float[][] wtmp = ArrayUtils.Of<float>(4, 8);
+        float[][] wtmp = RcArrayUtils.Of<float>(4, 8);
         float m0, m1, m2, m3, s;
         float[] r0, r1, r2, r3;
         r0 = wtmp[0];

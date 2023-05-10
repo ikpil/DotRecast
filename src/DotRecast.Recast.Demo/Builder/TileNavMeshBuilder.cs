@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 using DotRecast.Core;
 using DotRecast.Detour;
 using DotRecast.Recast.Demo.Geom;
-using static DotRecast.Core.RecastMath;
+using static DotRecast.Core.RcMath;
 
 namespace DotRecast.Recast.Demo.Builder;
 

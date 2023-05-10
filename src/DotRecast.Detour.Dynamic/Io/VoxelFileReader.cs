@@ -28,7 +28,7 @@ namespace DotRecast.Detour.Dynamic.Io
 
         public VoxelFile Read(BinaryReader stream)
         {
-            ByteBuffer buf = IOUtils.ToByteBuffer(stream);
+            RcByteBuffer buf = IOUtils.ToByteBuffer(stream);
             VoxelFile file = new VoxelFile();
             int magic = buf.GetInt();
             if (magic != VoxelFile.MAGIC)
@@ -39,7 +39,7 @@ namespace DotRecast.Detour.Dynamic.Io
                     throw new IOException("Invalid magic");
                 }
 
-                buf.Order(buf.Order() == ByteOrder.BIG_ENDIAN ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN);
+                buf.Order(buf.Order() == RcByteOrder.BIG_ENDIAN ? RcByteOrder.LITTLE_ENDIAN : RcByteOrder.BIG_ENDIAN);
             }
 
             file.version = buf.GetInt();
@@ -130,7 +130,7 @@ namespace DotRecast.Detour.Dynamic.Io
                     bytes = compressor.Decompress(bytes);
                 }
 
-                ByteBuffer data = new ByteBuffer(bytes);
+                RcByteBuffer data = new RcByteBuffer(bytes);
                 data.Order(buf.Order());
                 file.AddTile(new VoxelTile(tileX, tileZ, width, depth, boundsMin, boundsMax, cellSize, cellHeight, borderSize, data));
                 buf.Position(position + voxelSize);

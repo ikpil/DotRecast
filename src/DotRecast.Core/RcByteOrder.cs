@@ -1,6 +1,6 @@
 ﻿namespace DotRecast.Core
 {
-    public enum ByteOrder
+    public enum RcByteOrder
     {
         /// <summary>Default on most Windows systems</summary>
         LITTLE_ENDIAN,

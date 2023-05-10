@@ -39,28 +39,28 @@ public class MeshDataReaderWriterTest
     [Test]
     public void TestCCompatibility()
     {
-        Test(true, ByteOrder.BIG_ENDIAN);
+        Test(true, RcByteOrder.BIG_ENDIAN);
     }
 
     [Test]
     public void TestCompact()
     {
-        Test(false, ByteOrder.BIG_ENDIAN);
+        Test(false, RcByteOrder.BIG_ENDIAN);
     }
 
     [Test]
     public void TestCCompatibilityLE()
     {
-        Test(true, ByteOrder.LITTLE_ENDIAN);
+        Test(true, RcByteOrder.LITTLE_ENDIAN);
     }
 
     [Test]
     public void TestCompactLE()
     {
-        Test(false, ByteOrder.LITTLE_ENDIAN);
+        Test(false, RcByteOrder.LITTLE_ENDIAN);
     }
 
-    public void Test(bool cCompatibility, ByteOrder order)
+    public void Test(bool cCompatibility, RcByteOrder order)
     {
         using var ms = new MemoryStream();
         using var bwos = new BinaryWriter(ms);

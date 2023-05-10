@@ -22,7 +22,7 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour.Io
 {
-    using static DotRecast.Core.RecastMath;
+    using static DotRecast.Core.RcMath;
 
 
     public class MeshSetReader
@@ -35,7 +35,7 @@ namespace DotRecast.Detour.Io
             return Read(IOUtils.ToByteBuffer(@is), maxVertPerPoly, false);
         }
 
-        public NavMesh Read(ByteBuffer bb, int maxVertPerPoly)
+        public NavMesh Read(RcByteBuffer bb, int maxVertPerPoly)
         {
             return Read(bb, maxVertPerPoly, false);
         }
@@ -45,7 +45,7 @@ namespace DotRecast.Detour.Io
             return Read(IOUtils.ToByteBuffer(@is), maxVertPerPoly, true);
         }
 
-        public NavMesh Read32Bit(ByteBuffer bb, int maxVertPerPoly)
+        public NavMesh Read32Bit(RcByteBuffer bb, int maxVertPerPoly)
         {
             return Read(bb, maxVertPerPoly, true);
         }
@@ -55,12 +55,12 @@ namespace DotRecast.Detour.Io
             return Read(IOUtils.ToByteBuffer(@is));
         }
 
-        public NavMesh Read(ByteBuffer bb)
+        public NavMesh Read(RcByteBuffer bb)
         {
             return Read(bb, -1, false);
         }
 
-        NavMesh Read(ByteBuffer bb, int maxVertPerPoly, bool is32Bit)
+        NavMesh Read(RcByteBuffer bb, int maxVertPerPoly, bool is32Bit)
         {
             NavMeshSetHeader header = ReadHeader(bb, maxVertPerPoly);
             if (header.maxVertsPerPoly <= 0)
@@ -74,7 +74,7 @@ namespace DotRecast.Detour.Io
             return mesh;
         }
 
-        private NavMeshSetHeader ReadHeader(ByteBuffer bb, int maxVertsPerPoly)
+        private NavMeshSetHeader ReadHeader(RcByteBuffer bb, int maxVertsPerPoly)
         {
             NavMeshSetHeader header = new NavMeshSetHeader();
             header.magic = bb.GetInt();
@@ -86,7 +86,7 @@ namespace DotRecast.Detour.Io
                     throw new IOException("Invalid magic " + header.magic);
                 }
 
-                bb.Order(bb.Order() == ByteOrder.BIG_ENDIAN ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN);
+                bb.Order(bb.Order() == RcByteOrder.BIG_ENDIAN ? RcByteOrder.LITTLE_ENDIAN : RcByteOrder.BIG_ENDIAN);
             }
 
             header.version = bb.GetInt();
@@ -107,7 +107,7 @@ namespace DotRecast.Detour.Io
             return header;
         }
 
-        private void ReadTiles(ByteBuffer bb, bool is32Bit, NavMeshSetHeader header, bool cCompatibility, NavMesh mesh)
+        private void ReadTiles(RcByteBuffer bb, bool is32Bit, NavMeshSetHeader header, bool cCompatibility, NavMesh mesh)
         {
             // Read tiles.
             for (int i = 0; i < header.numTiles; ++i)

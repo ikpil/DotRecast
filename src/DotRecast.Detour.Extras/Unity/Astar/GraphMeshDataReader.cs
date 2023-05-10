@@ -29,7 +29,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
 
         public GraphMeshData Read(ZipArchive file, string filename, GraphMeta meta, int maxVertPerPoly)
         {
-            ByteBuffer buffer = ToByteBuffer(file, filename);
+            RcByteBuffer buffer = ToByteBuffer(file, filename);
             int tileXCount = buffer.GetInt();
             if (tileXCount < 0)
             {

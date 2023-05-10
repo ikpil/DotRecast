@@ -3,28 +3,28 @@ using System.Buffers.Binary;
 
 namespace DotRecast.Core
 {
-    public class ByteBuffer
+    public class RcByteBuffer
     {
-        private ByteOrder _order;
+        private RcByteOrder _order;
         private byte[] _bytes;
         private int _position;
 
-        public ByteBuffer(byte[] bytes)
+        public RcByteBuffer(byte[] bytes)
         {
             _order = BitConverter.IsLittleEndian
-                ? ByteOrder.LITTLE_ENDIAN
-                : ByteOrder.BIG_ENDIAN;
+                ? RcByteOrder.LITTLE_ENDIAN
+                : RcByteOrder.BIG_ENDIAN;
 
             _bytes = bytes;
             _position = 0;
         }
 
-        public ByteOrder Order()
+        public RcByteOrder Order()
         {
             return _order;
         }
 
-        public void Order(ByteOrder order)
+        public void Order(RcByteOrder order)
         {
             _order = order;
         }
@@ -68,7 +68,7 @@ namespace DotRecast.Core
         public short GetShort()
         {
             var span = ReadBytes(2);
-            if (_order == ByteOrder.BIG_ENDIAN)
+            if (_order == RcByteOrder.BIG_ENDIAN)
             {
                 return BinaryPrimitives.ReadInt16BigEndian(span);
             }
@@ -82,7 +82,7 @@ namespace DotRecast.Core
         public int GetInt()
         {
             var span = ReadBytes(4);
-            if (_order == ByteOrder.BIG_ENDIAN)
+            if (_order == RcByteOrder.BIG_ENDIAN)
             {
                 return BinaryPrimitives.ReadInt32BigEndian(span);
             }
@@ -95,11 +95,11 @@ namespace DotRecast.Core
         public float GetFloat()
         {
             var span = ReadBytes(4);
-            if (_order == ByteOrder.BIG_ENDIAN && BitConverter.IsLittleEndian)
+            if (_order == RcByteOrder.BIG_ENDIAN && BitConverter.IsLittleEndian)
             {
                 span.Reverse();
             }
-            else if (_order == ByteOrder.LITTLE_ENDIAN && !BitConverter.IsLittleEndian)
+            else if (_order == RcByteOrder.LITTLE_ENDIAN && !BitConverter.IsLittleEndian)
             {
                 span.Reverse();
             }
@@ -110,7 +110,7 @@ namespace DotRecast.Core
         public long GetLong()
         {
             var span = ReadBytes(8);
-            if (_order == ByteOrder.BIG_ENDIAN)
+            if (_order == RcByteOrder.BIG_ENDIAN)
             {
                 return BinaryPrimitives.ReadInt64BigEndian(span);
             }

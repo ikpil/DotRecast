@@ -23,7 +23,7 @@ using DotRecast.Detour.QueryResults;
 
 namespace DotRecast.Detour
 {
-    using static DotRecast.Core.RecastMath;
+    using static DotRecast.Core.RcMath;
 
 
     public class LegacyNavMeshQuery : NavMeshQuery

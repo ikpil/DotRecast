@@ -31,7 +31,7 @@ namespace DotRecast.Detour.Dynamic.Io
             Write(stream, f, VoxelFile.PREFERRED_BYTE_ORDER, compression);
         }
 
-        public void Write(BinaryWriter stream, VoxelFile f, ByteOrder byteOrder, bool compression)
+        public void Write(BinaryWriter stream, VoxelFile f, RcByteOrder byteOrder, bool compression)
         {
             Write(stream, VoxelFile.MAGIC, byteOrder);
             Write(stream, VoxelFile.VERSION_EXPORTER_RECAST4J | (compression ? VoxelFile.VERSION_COMPRESSION_LZ4 : 0), byteOrder);
@@ -67,7 +67,7 @@ namespace DotRecast.Detour.Dynamic.Io
             }
         }
 
-        public void WriteTile(BinaryWriter stream, VoxelTile tile, ByteOrder byteOrder, bool compression)
+        public void WriteTile(BinaryWriter stream, VoxelTile tile, RcByteOrder byteOrder, bool compression)
         {
             Write(stream, tile.tileX, byteOrder);
             Write(stream, tile.tileZ, byteOrder);

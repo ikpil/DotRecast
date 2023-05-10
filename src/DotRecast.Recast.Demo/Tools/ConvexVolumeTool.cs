@@ -80,7 +80,7 @@ public class ConvexVolumeTool : Tool
             // Create
 
             // If clicked on that last pt, create the shape.
-            if (pts.Count > 0 && RecastMath.VDistSqr(p, Vector3f.Of(pts[pts.Count - 3], pts[pts.Count - 2], pts[pts.Count - 1])) < 0.2f * 0.2f)
+            if (pts.Count > 0 && RcMath.VDistSqr(p, Vector3f.Of(pts[pts.Count - 3], pts[pts.Count - 2], pts[pts.Count - 1])) < 0.2f * 0.2f)
             {
                 if (hull.Count > 2)
                 {
@@ -108,7 +108,7 @@ public class ConvexVolumeTool : Tool
                         int noffset = PolyUtils.OffsetPoly(verts, hull.Count, polyOffset, offset, offset.Length);
                         if (noffset > 0)
                         {
-                            geom.AddConvexVolume(ArrayUtils.CopyOf(offset, 0, noffset * 3), minh, maxh, areaType);
+                            geom.AddConvexVolume(RcArrayUtils.CopyOf(offset, 0, noffset * 3), minh, maxh, areaType);
                         }
                     }
                     else

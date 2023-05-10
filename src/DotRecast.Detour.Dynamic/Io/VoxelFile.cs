@@ -25,7 +25,7 @@ namespace DotRecast.Detour.Dynamic.Io
 {
     public class VoxelFile
     {
-        public static readonly ByteOrder PREFERRED_BYTE_ORDER = ByteOrder.BIG_ENDIAN;
+        public static readonly RcByteOrder PREFERRED_BYTE_ORDER = RcByteOrder.BIG_ENDIAN;
         public const int MAGIC = 'V' << 24 | 'O' << 16 | 'X' << 8 | 'L';
         public const int VERSION_EXPORTER_MASK = 0xF000;
         public const int VERSION_COMPRESSION_MASK = 0x0F00;

@@ -22,9 +22,9 @@ namespace DotRecast.Detour.Dynamic.Io
 {
     public static class ByteUtils
     {
-        public static int GetInt(byte[] data, int position, ByteOrder order)
+        public static int GetInt(byte[] data, int position, RcByteOrder order)
         {
-            return order == ByteOrder.BIG_ENDIAN ? GetIntBE(data, position) : GetIntLE(data, position);
+            return order == RcByteOrder.BIG_ENDIAN ? GetIntBE(data, position) : GetIntLE(data, position);
         }
 
         public static int GetIntBE(byte[] data, int position)
@@ -39,9 +39,9 @@ namespace DotRecast.Detour.Dynamic.Io
                    | (data[position] & 0xff);
         }
 
-        public static int GetShort(byte[] data, int position, ByteOrder order)
+        public static int GetShort(byte[] data, int position, RcByteOrder order)
         {
-            return order == ByteOrder.BIG_ENDIAN ? GetShortBE(data, position) : GetShortLE(data, position);
+            return order == RcByteOrder.BIG_ENDIAN ? GetShortBE(data, position) : GetShortLE(data, position);
         }
 
         public static int GetShortBE(byte[] data, int position)
@@ -54,9 +54,9 @@ namespace DotRecast.Detour.Dynamic.Io
             return ((data[position + 1] & 0xff) << 8) | (data[position] & 0xff);
         }
 
-        public static int PutInt(int value, byte[] data, int position, ByteOrder order)
+        public static int PutInt(int value, byte[] data, int position, RcByteOrder order)
         {
-            if (order == ByteOrder.BIG_ENDIAN)
+            if (order == RcByteOrder.BIG_ENDIAN)
             {
                 data[position] = (byte)((uint)value >> 24);
                 data[position + 1] = (byte)((uint)value >> 16);
@@ -74,9 +74,9 @@ namespace DotRecast.Detour.Dynamic.Io
             return position + 4;
         }
 
-        public static int PutShort(int value, byte[] data, int position, ByteOrder order)
+        public static int PutShort(int value, byte[] data, int position, RcByteOrder order)
         {
-            if (order == ByteOrder.BIG_ENDIAN)
+            if (order == RcByteOrder.BIG_ENDIAN)
             {
                 data[position] = (byte)((uint)value >> 8);
                 data[position + 1] = (byte)(value & 0xFF);

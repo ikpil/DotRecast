@@ -26,7 +26,7 @@ namespace DotRecast.Detour.TileCache.Io
 {
     public class TileCacheLayerHeaderWriter : DetourWriter
     {
-        public void Write(BinaryWriter stream, TileCacheLayerHeader header, ByteOrder order, bool cCompatibility)
+        public void Write(BinaryWriter stream, TileCacheLayerHeader header, RcByteOrder order, bool cCompatibility)
         {
             Write(stream, header.magic, order);
             Write(stream, header.version, order);

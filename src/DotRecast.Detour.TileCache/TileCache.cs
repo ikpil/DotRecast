@@ -22,7 +22,7 @@ using System;
 using System.Collections.Generic;
 using DotRecast.Core;
 using DotRecast.Detour.TileCache.Io;
-using static DotRecast.Core.RecastMath;
+using static DotRecast.Core.RcMath;
 
 namespace DotRecast.Detour.TileCache
 {
@@ -253,7 +253,7 @@ namespace DotRecast.Detour.TileCache
         public long AddTile(byte[] data, int flags)
         {
             // Make sure the data is in right format.
-            ByteBuffer buf = new ByteBuffer(data);
+            RcByteBuffer buf = new RcByteBuffer(data);
             buf.Order(m_storageParams.byteOrder);
             TileCacheLayerHeader header = tileReader.Read(buf, m_storageParams.cCompatibility);
             // Make sure the location is free.

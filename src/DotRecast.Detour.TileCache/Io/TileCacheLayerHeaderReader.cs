@@ -25,7 +25,7 @@ namespace DotRecast.Detour.TileCache.Io
 {
     public class TileCacheLayerHeaderReader
     {
-        public TileCacheLayerHeader Read(ByteBuffer data, bool cCompatibility)
+        public TileCacheLayerHeader Read(RcByteBuffer data, bool cCompatibility)
         {
             TileCacheLayerHeader header = new TileCacheLayerHeader();
             header.magic = data.GetInt();

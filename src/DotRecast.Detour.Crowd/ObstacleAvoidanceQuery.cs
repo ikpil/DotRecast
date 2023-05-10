@@ -24,7 +24,7 @@ using DotRecast.Detour.Crowd.Tracking;
 
 namespace DotRecast.Detour.Crowd
 {
-    using static DotRecast.Core.RecastMath;
+    using static DotRecast.Core.RcMath;
 
     public class ObstacleAvoidanceQuery
     {

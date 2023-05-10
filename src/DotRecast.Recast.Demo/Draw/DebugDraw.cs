@@ -31,7 +31,7 @@ public class DebugDraw
     private readonly IOpenGLDraw openGlDraw;
     private readonly int[] boxIndices = { 7, 6, 5, 4, 0, 1, 2, 3, 1, 5, 6, 2, 3, 7, 4, 0, 2, 6, 7, 3, 0, 4, 5, 1, };
 
-    private readonly float[][] frustumPlanes = ArrayUtils.Of<float>(6, 4);
+    private readonly float[][] frustumPlanes = RcArrayUtils.Of<float>(6, 4);
     // {
     //     new[] { 0f, 0f, 0f, 0f },
     //     new[] { 0f, 0f, 0f, 0f },

@@ -6,7 +6,7 @@ using DotRecast.Detour.QueryResults;
 using DotRecast.Recast.Demo.Builder;
 using DotRecast.Recast.Demo.Draw;
 using ImGuiNET;
-using static DotRecast.Core.RecastMath;
+using static DotRecast.Core.RcMath;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
@@ -168,7 +168,7 @@ public class TestNavmeshTool : Tool
         NavMeshQuery m_navQuery = m_sample.GetNavMeshQuery();
         if (m_sposSet)
         {
-            m_startRef = m_navQuery.FindNearestPoly(m_spos, m_polyPickExt, m_filter).result.GetNearestRef();
+            m_startRef = m_navQuery.FindNearestPoly(m_spos, m_polyPickExt, m_filter).result?.GetNearestRef() ?? 0;
         }
         else
         {
@@ -177,7 +177,7 @@ public class TestNavmeshTool : Tool
 
         if (m_eposSet)
         {
-            m_endRef = m_navQuery.FindNearestPoly(m_epos, m_polyPickExt, m_filter).result.GetNearestRef();
+            m_endRef = m_navQuery.FindNearestPoly(m_epos, m_polyPickExt, m_filter).result?.GetNearestRef() ?? 0;
         }
         else
         {
@@ -850,7 +850,7 @@ public class TestNavmeshTool : Tool
                                 Vector3f s3 = Vector3f.Of(s[3], s[4], s[5]);
                                 // Skip too distant segments.
                                 Tuple<float, float> distSqr = DistancePtSegSqr2D(m_spos, s, 0, 3);
-                                if (distSqr.Item1 > RecastMath.Sqr(m_neighbourhoodRadius))
+                                if (distSqr.Item1 > RcMath.Sqr(m_neighbourhoodRadius))
                                 {
                                     continue;
                                 }

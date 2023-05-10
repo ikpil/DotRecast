@@ -37,7 +37,7 @@ namespace DotRecast.Detour.Dynamic.Io
         public readonly byte[] spanData;
 
         public VoxelTile(int tileX, int tileZ, int width, int depth, Vector3f boundsMin, Vector3f boundsMax, float cellSize,
-            float cellHeight, int borderSize, ByteBuffer buffer)
+            float cellHeight, int borderSize, RcByteBuffer buffer)
         {
             this.tileX = tileX;
             this.tileZ = tileZ;
@@ -67,7 +67,7 @@ namespace DotRecast.Detour.Dynamic.Io
 
         public Heightfield Heightfield()
         {
-            return VoxelFile.PREFERRED_BYTE_ORDER == ByteOrder.BIG_ENDIAN ? HeightfieldBE() : HeightfieldLE();
+            return VoxelFile.PREFERRED_BYTE_ORDER == RcByteOrder.BIG_ENDIAN ? HeightfieldBE() : HeightfieldLE();
         }
 
         private Heightfield HeightfieldBE()
@@ -144,7 +144,7 @@ namespace DotRecast.Detour.Dynamic.Io
             return hf;
         }
 
-        private byte[] SerializeSpans(Heightfield heightfield, ByteOrder order)
+        private byte[] SerializeSpans(Heightfield heightfield, RcByteOrder order)
         {
             int[] counts = new int[heightfield.width * heightfield.height];
             int totalCount = 0;
@@ -183,7 +183,7 @@ namespace DotRecast.Detour.Dynamic.Io
             return data;
         }
 
-        private byte[] ToByteArray(ByteBuffer buf, int width, int height, ByteOrder order)
+        private byte[] ToByteArray(RcByteBuffer buf, int width, int height, RcByteOrder order)
         {
             byte[] data;
             if (buf.Order() == order)

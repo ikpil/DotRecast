@@ -52,8 +52,8 @@ public class TileCacheReaderWriterTest : AbstractTileCacheTest
     {
         IInputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("dungeon.obj"));
         TestTileLayerBuilder layerBuilder = new TestTileLayerBuilder(geom);
-        List<byte[]> layers = layerBuilder.Build(ByteOrder.LITTLE_ENDIAN, cCompatibility, 1);
-        TileCache tc = GetTileCache(geom, ByteOrder.LITTLE_ENDIAN, cCompatibility);
+        List<byte[]> layers = layerBuilder.Build(RcByteOrder.LITTLE_ENDIAN, cCompatibility, 1);
+        TileCache tc = GetTileCache(geom, RcByteOrder.LITTLE_ENDIAN, cCompatibility);
         foreach (byte[] layer in layers)
         {
             long refs = tc.AddTile(layer, 0);
@@ -62,7 +62,7 @@ public class TileCacheReaderWriterTest : AbstractTileCacheTest
 
         using var msout = new MemoryStream();
         using var baos = new BinaryWriter(msout);
-        writer.Write(baos, tc, ByteOrder.LITTLE_ENDIAN, cCompatibility);
+        writer.Write(baos, tc, RcByteOrder.LITTLE_ENDIAN, cCompatibility);
 
         using var msis = new MemoryStream(msout.ToArray());
         using var bais = new BinaryReader(msis);

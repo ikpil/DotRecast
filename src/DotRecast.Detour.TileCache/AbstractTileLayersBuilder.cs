@@ -29,7 +29,7 @@ namespace DotRecast.Detour.TileCache
 {
     public abstract class AbstractTileLayersBuilder
     {
-        protected List<byte[]> Build(ByteOrder order, bool cCompatibility, int threads, int tw, int th)
+        protected List<byte[]> Build(RcByteOrder order, bool cCompatibility, int threads, int tw, int th)
         {
             if (threads == 1)
             {
@@ -39,7 +39,7 @@ namespace DotRecast.Detour.TileCache
             return BuildMultiThread(order, cCompatibility, tw, th, threads);
         }
 
-        private List<byte[]> BuildSingleThread(ByteOrder order, bool cCompatibility, int tw, int th)
+        private List<byte[]> BuildSingleThread(RcByteOrder order, bool cCompatibility, int tw, int th)
         {
             List<byte[]> layers = new List<byte[]>();
             for (int y = 0; y < th; ++y)
@@ -53,7 +53,7 @@ namespace DotRecast.Detour.TileCache
             return layers;
         }
 
-        private List<byte[]> BuildMultiThread(ByteOrder order, bool cCompatibility, int tw, int th, int threads)
+        private List<byte[]> BuildMultiThread(RcByteOrder order, bool cCompatibility, int tw, int th, int threads)
         {
             var tasks = new ConcurrentQueue<Task<Tuple<int, int, List<byte[]>>>>();
             for (int y = 0; y < th; ++y)
@@ -88,6 +88,6 @@ namespace DotRecast.Detour.TileCache
             return layers;
         }
 
-        protected abstract List<byte[]> Build(int tx, int ty, ByteOrder order, bool cCompatibility);
+        protected abstract List<byte[]> Build(int tx, int ty, RcByteOrder order, bool cCompatibility);
     }
 }

@@ -26,13 +26,13 @@ namespace DotRecast.Detour.Io
         private readonly MeshDataWriter writer = new MeshDataWriter();
         private readonly NavMeshParamWriter paramWriter = new NavMeshParamWriter();
 
-        public void Write(BinaryWriter stream, NavMesh mesh, ByteOrder order, bool cCompatibility)
+        public void Write(BinaryWriter stream, NavMesh mesh, RcByteOrder order, bool cCompatibility)
         {
             WriteHeader(stream, mesh, order, cCompatibility);
             WriteTiles(stream, mesh, order, cCompatibility);
         }
 
-        private void WriteHeader(BinaryWriter stream, NavMesh mesh, ByteOrder order, bool cCompatibility)
+        private void WriteHeader(BinaryWriter stream, NavMesh mesh, RcByteOrder order, bool cCompatibility)
         {
             Write(stream, NavMeshSetHeader.NAVMESHSET_MAGIC, order);
             Write(stream, cCompatibility ? NavMeshSetHeader.NAVMESHSET_VERSION : NavMeshSetHeader.NAVMESHSET_VERSION_RECAST4J, order);
@@ -56,7 +56,7 @@ namespace DotRecast.Detour.Io
             }
         }
 
-        private void WriteTiles(BinaryWriter stream, NavMesh mesh, ByteOrder order, bool cCompatibility)
+        private void WriteTiles(BinaryWriter stream, NavMesh mesh, RcByteOrder order, bool cCompatibility)
         {
             for (int i = 0; i < mesh.GetMaxTiles(); ++i)
             {

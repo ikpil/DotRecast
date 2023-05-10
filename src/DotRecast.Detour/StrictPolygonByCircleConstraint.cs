@@ -3,7 +3,7 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
-    using static DotRecast.Core.RecastMath;
+    using static DotRecast.Core.RcMath;
 
     /**
      * Calculate the intersection between a polygon and a circle. A dodecagon is used as an approximation of the circle.

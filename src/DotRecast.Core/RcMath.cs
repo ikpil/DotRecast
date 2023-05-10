@@ -23,7 +23,7 @@ using System.Numerics;
 
 namespace DotRecast.Core
 {
-    public static class RecastMath
+    public static class RcMath
     {
         public const float EPS = 1e-4f;
         private static readonly float EQUAL_THRESHOLD = Sqr(1.0f / 16384.0f);

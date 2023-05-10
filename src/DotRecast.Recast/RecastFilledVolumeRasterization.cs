@@ -18,7 +18,7 @@ freely, subject to the following restrictions:
 
 using System;
 using DotRecast.Core;
-using static DotRecast.Core.RecastMath;
+using static DotRecast.Core.RcMath;
 using static DotRecast.Recast.RecastConstants;
 using static DotRecast.Recast.RecastVectors;
 
@@ -110,7 +110,7 @@ namespace DotRecast.Recast
                 bounds[5] = Math.Max(bounds[5], vertices[i * 3 + 2]);
             }
 
-            float[][] planes = ArrayUtils.Of<float>(6, 4);
+            float[][] planes = RcArrayUtils.Of<float>(6, 4);
             for (int i = 0; i < 6; i++)
             {
                 float m = i < 3 ? -1 : 1;
@@ -142,8 +142,8 @@ namespace DotRecast.Recast
             }
 
 
-            float[][] planes = ArrayUtils.Of<float>(triangles.Length, 4);
-            float[][] triBounds = ArrayUtils.Of<float>(triangles.Length / 3, 4);
+            float[][] planes = RcArrayUtils.Of<float>(triangles.Length, 4);
+            float[][] triBounds = RcArrayUtils.Of<float>(triangles.Length / 3, 4);
             for (int i = 0, j = 0; i < triangles.Length; i += 3, j++)
             {
                 int a = triangles[i] * 3;

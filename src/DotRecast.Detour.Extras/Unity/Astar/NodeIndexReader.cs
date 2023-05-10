@@ -25,7 +25,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
     {
         public int[] Read(ZipArchive file, string filename)
         {
-            ByteBuffer buffer = ToByteBuffer(file, filename);
+            RcByteBuffer buffer = ToByteBuffer(file, filename);
             int maxNodeIndex = buffer.GetInt();
             int[] int2Node = new int[maxNodeIndex + 1];
             int node = 0;
