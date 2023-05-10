@@ -139,7 +139,7 @@ public class CrowdProfilingTool
 
             foreach (Tuple<string, long> e in timings)
             {
-                ImGui.Text($"{e.Item1}: {e.Item2 / 1_000} us");
+                ImGui.Text($"{e.Item1}: {e.Item2 / TimeSpan.TicksPerMicrosecond} us");
             }
 
             ImGui.Text($"Update Time: {crowdUpdateTime} ms");
