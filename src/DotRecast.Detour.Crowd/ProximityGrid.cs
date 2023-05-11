@@ -95,7 +95,10 @@ namespace DotRecast.Detour.Crowd
                     long key = CombineKey(x, y);
                     if (_items.TryGetValue(key, out var ids))
                     {
-                        result.UnionWith(ids);
+                        for (int i = 0; i < ids.Count; ++i)
+                        {
+                            result.Add(ids[i]);
+                        }
                     }
                 }
             }
