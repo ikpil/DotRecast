@@ -32,36 +32,36 @@ public class TileNavMeshBuilder : AbstractNavMeshBuilder
     {
     }
 
-    public Tuple<IList<RecastBuilderResult>, NavMesh> Build(DemoInputGeomProvider m_geom, PartitionType m_partitionType,
-        float m_cellSize, float m_cellHeight, float m_agentHeight, float m_agentRadius, float m_agentMaxClimb,
-        float m_agentMaxSlope, int m_regionMinSize, int m_regionMergeSize, float m_edgeMaxLen, float m_edgeMaxError,
-        int m_vertsPerPoly, float m_detailSampleDist, float m_detailSampleMaxError, bool filterLowHangingObstacles,
+    public Tuple<IList<RecastBuilderResult>, NavMesh> Build(DemoInputGeomProvider geom, PartitionType partitionType,
+        float cellSize, float cellHeight, float agentHeight, float agentRadius, float agentMaxClimb,
+        float agentMaxSlope, int regionMinSize, int regionMergeSize, float edgeMaxLen, float edgeMaxError,
+        int vertsPerPoly, float detailSampleDist, float detailSampleMaxError, bool filterLowHangingObstacles,
         bool filterLedgeSpans, bool filterWalkableLowHeightSpans, int tileSize)
     {
-        List<RecastBuilderResult> rcResult = BuildRecastResult(m_geom, m_partitionType, m_cellSize, m_cellHeight, m_agentHeight,
-            m_agentRadius, m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize, m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError,
-            m_vertsPerPoly, m_detailSampleDist, m_detailSampleMaxError, filterLowHangingObstacles, filterLedgeSpans,
+        List<RecastBuilderResult> rcResult = BuildRecastResult(geom, partitionType, cellSize, cellHeight, agentHeight,
+            agentRadius, agentMaxClimb, agentMaxSlope, regionMinSize, regionMergeSize, edgeMaxLen, edgeMaxError,
+            vertsPerPoly, detailSampleDist, detailSampleMaxError, filterLowHangingObstacles, filterLedgeSpans,
             filterWalkableLowHeightSpans, tileSize);
         return Tuple.Create((IList<RecastBuilderResult>)rcResult,
-            BuildNavMesh(m_geom,
-                BuildMeshData(m_geom, m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, rcResult),
-                m_cellSize, tileSize, m_vertsPerPoly));
+            BuildNavMesh(geom,
+                BuildMeshData(geom, cellSize, cellHeight, agentHeight, agentRadius, agentMaxClimb, rcResult),
+                cellSize, tileSize, vertsPerPoly));
     }
 
-    private List<RecastBuilderResult> BuildRecastResult(DemoInputGeomProvider m_geom, PartitionType m_partitionType,
-        float m_cellSize, float m_cellHeight, float m_agentHeight, float m_agentRadius, float m_agentMaxClimb,
-        float m_agentMaxSlope, int m_regionMinSize, int m_regionMergeSize, float m_edgeMaxLen, float m_edgeMaxError,
-        int m_vertsPerPoly, float m_detailSampleDist, float m_detailSampleMaxError, bool filterLowHangingObstacles,
+    private List<RecastBuilderResult> BuildRecastResult(DemoInputGeomProvider geom, PartitionType partitionType,
+        float cellSize, float cellHeight, float agentHeight, float agentRadius, float agentMaxClimb,
+        float agentMaxSlope, int regionMinSize, int regionMergeSize, float edgeMaxLen, float edgeMaxError,
+        int vertsPerPoly, float detailSampleDist, float detailSampleMaxError, bool filterLowHangingObstacles,
         bool filterLedgeSpans, bool filterWalkableLowHeightSpans, int tileSize)
     {
-        RecastConfig cfg = new RecastConfig(true, tileSize, tileSize, RecastConfig.CalcBorder(m_agentRadius, m_cellSize),
-            m_partitionType, m_cellSize, m_cellHeight, m_agentMaxSlope, filterLowHangingObstacles, filterLedgeSpans,
-            filterWalkableLowHeightSpans, m_agentHeight, m_agentRadius, m_agentMaxClimb,
-            m_regionMinSize * m_regionMinSize * m_cellSize * m_cellSize,
-            m_regionMergeSize * m_regionMergeSize * m_cellSize * m_cellSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly,
-            true, m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_WALKABLE);
+        RecastConfig cfg = new RecastConfig(true, tileSize, tileSize, RecastConfig.CalcBorder(agentRadius, cellSize),
+            partitionType, cellSize, cellHeight, agentMaxSlope, filterLowHangingObstacles, filterLedgeSpans,
+            filterWalkableLowHeightSpans, agentHeight, agentRadius, agentMaxClimb,
+            regionMinSize * regionMinSize * cellSize * cellSize,
+            regionMergeSize * regionMergeSize * cellSize * cellSize, edgeMaxLen, edgeMaxError, vertsPerPoly,
+            true, detailSampleDist, detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_WALKABLE);
         RecastBuilder rcBuilder = new RecastBuilder();
-        return rcBuilder.BuildTiles(m_geom, cfg, Task.Factory);
+        return rcBuilder.BuildTiles(geom, cfg, Task.Factory);
     }
 
     private NavMesh BuildNavMesh(DemoInputGeomProvider geom, List<MeshData> meshData, float cellSize, int tileSize,
@@ -112,17 +112,17 @@ public class TileNavMeshBuilder : AbstractNavMeshBuilder
         return new int[] { tw, th };
     }
 
-    private List<MeshData> BuildMeshData(DemoInputGeomProvider m_geom, float m_cellSize, float m_cellHeight, float m_agentHeight,
-        float m_agentRadius, float m_agentMaxClimb, List<RecastBuilderResult> rcResult)
+    private List<MeshData> BuildMeshData(DemoInputGeomProvider geom, float cellSize, float cellHeight, float agentHeight,
+        float agentRadius, float agentMaxClimb, List<RecastBuilderResult> results)
     {
         // Add tiles to nav mesh
         List<MeshData> meshData = new();
-        foreach (RecastBuilderResult result in rcResult)
+        foreach (RecastBuilderResult result in results)
         {
             int x = result.tileX;
             int z = result.tileZ;
-            NavMeshDataCreateParams option = GetNavMeshCreateParams(m_geom, m_cellSize, m_cellHeight, m_agentHeight,
-                m_agentRadius, m_agentMaxClimb, result);
+            NavMeshDataCreateParams option = GetNavMeshCreateParams(geom, cellSize, cellHeight, agentHeight,
+                agentRadius, agentMaxClimb, result);
             option.tileX = x;
             option.tileZ = z;
             MeshData md = NavMeshBuilder.CreateNavMeshData(option);

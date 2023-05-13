@@ -26,47 +26,47 @@ namespace DotRecast.Recast.Demo.Builder;
 
 public class SoloNavMeshBuilder : AbstractNavMeshBuilder
 {
-    public Tuple<IList<RecastBuilderResult>, NavMesh> Build(DemoInputGeomProvider m_geom, PartitionType m_partitionType,
-        float m_cellSize, float m_cellHeight, float m_agentHeight, float m_agentRadius, float m_agentMaxClimb,
-        float m_agentMaxSlope, int m_regionMinSize, int m_regionMergeSize, float m_edgeMaxLen, float m_edgeMaxError,
-        int m_vertsPerPoly, float m_detailSampleDist, float m_detailSampleMaxError, bool filterLowHangingObstacles,
+    public Tuple<IList<RecastBuilderResult>, NavMesh> Build(DemoInputGeomProvider geom, PartitionType partitionType,
+        float cellSize, float cellHeight, float agentHeight, float agentRadius, float agentMaxClimb,
+        float agentMaxSlope, int regionMinSize, int regionMergeSize, float edgeMaxLen, float edgeMaxError,
+        int vertsPerPoly, float detailSampleDist, float detailSampleMaxError, bool filterLowHangingObstacles,
         bool filterLedgeSpans, bool filterWalkableLowHeightSpans)
     {
-        RecastBuilderResult rcResult = BuildRecastResult(m_geom, m_partitionType, m_cellSize, m_cellHeight, m_agentHeight,
-            m_agentRadius, m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize, m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError,
-            m_vertsPerPoly, m_detailSampleDist, m_detailSampleMaxError, filterLowHangingObstacles, filterLedgeSpans,
+        RecastBuilderResult rcResult = BuildRecastResult(geom, partitionType, cellSize, cellHeight, agentHeight,
+            agentRadius, agentMaxClimb, agentMaxSlope, regionMinSize, regionMergeSize, edgeMaxLen, edgeMaxError,
+            vertsPerPoly, detailSampleDist, detailSampleMaxError, filterLowHangingObstacles, filterLedgeSpans,
             filterWalkableLowHeightSpans);
         return Tuple.Create(ImmutableArray.Create(rcResult) as IList<RecastBuilderResult>,
             BuildNavMesh(
-                BuildMeshData(m_geom, m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, rcResult),
-                m_vertsPerPoly));
+                BuildMeshData(geom, cellSize, cellHeight, agentHeight, agentRadius, agentMaxClimb, rcResult),
+                vertsPerPoly));
     }
 
-    private NavMesh BuildNavMesh(MeshData meshData, int m_vertsPerPoly)
+    private NavMesh BuildNavMesh(MeshData meshData, int vertsPerPoly)
     {
-        return new NavMesh(meshData, m_vertsPerPoly, 0);
+        return new NavMesh(meshData, vertsPerPoly, 0);
     }
 
-    private RecastBuilderResult BuildRecastResult(DemoInputGeomProvider m_geom, PartitionType m_partitionType, float m_cellSize,
-        float m_cellHeight, float m_agentHeight, float m_agentRadius, float m_agentMaxClimb, float m_agentMaxSlope,
-        int m_regionMinSize, int m_regionMergeSize, float m_edgeMaxLen, float m_edgeMaxError, int m_vertsPerPoly,
-        float m_detailSampleDist, float m_detailSampleMaxError, bool filterLowHangingObstacles, bool filterLedgeSpans,
+    private RecastBuilderResult BuildRecastResult(DemoInputGeomProvider geom, PartitionType partitionType, float cellSize,
+        float cellHeight, float agentHeight, float agentRadius, float agentMaxClimb, float agentMaxSlope,
+        int regionMinSize, int regionMergeSize, float edgeMaxLen, float edgeMaxError, int vertsPerPoly,
+        float detailSampleDist, float detailSampleMaxError, bool filterLowHangingObstacles, bool filterLedgeSpans,
         bool filterWalkableLowHeightSpans)
     {
-        RecastConfig cfg = new RecastConfig(m_partitionType, m_cellSize, m_cellHeight, m_agentMaxSlope, filterLowHangingObstacles,
-            filterLedgeSpans, filterWalkableLowHeightSpans, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_regionMinSize,
-            m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, m_detailSampleDist, m_detailSampleMaxError,
+        RecastConfig cfg = new RecastConfig(partitionType, cellSize, cellHeight, agentMaxSlope, filterLowHangingObstacles,
+            filterLedgeSpans, filterWalkableLowHeightSpans, agentHeight, agentRadius, agentMaxClimb, regionMinSize,
+            regionMergeSize, edgeMaxLen, edgeMaxError, vertsPerPoly, detailSampleDist, detailSampleMaxError,
             SampleAreaModifications.SAMPLE_AREAMOD_WALKABLE, true);
-        RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, m_geom.GetMeshBoundsMin(), m_geom.GetMeshBoundsMax());
+        RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax());
         RecastBuilder rcBuilder = new RecastBuilder();
-        return rcBuilder.Build(m_geom, bcfg);
+        return rcBuilder.Build(geom, bcfg);
     }
 
-    private MeshData BuildMeshData(DemoInputGeomProvider m_geom, float m_cellSize, float m_cellHeight, float m_agentHeight,
-        float m_agentRadius, float m_agentMaxClimb, RecastBuilderResult rcResult)
+    private MeshData BuildMeshData(DemoInputGeomProvider geom, float cellSize, float cellHeight, float agentHeight,
+        float agentRadius, float agentMaxClimb, RecastBuilderResult result)
     {
-        NavMeshDataCreateParams option = GetNavMeshCreateParams(m_geom, m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius,
-            m_agentMaxClimb, rcResult);
+        NavMeshDataCreateParams option = GetNavMeshCreateParams(geom, cellSize, cellHeight, agentHeight, agentRadius,
+            agentMaxClimb, result);
         return UpdateAreaAndFlags(NavMeshBuilder.CreateNavMeshData(option));
     }
 }
