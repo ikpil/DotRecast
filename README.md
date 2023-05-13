@@ -1,6 +1,6 @@
 [![.NET](https://github.com/ikpil/DotRecast/actions/workflows/dotnet.yml/badge.svg)](https://github.com/ikpil/DotRecast/actions/workflows/dotnet.yml)
 # DotRecast
-C# Port of Recast & Detour navigation mesh toolset
+C# Recast & Detour is a navigation mesh toolkit for games, Unity3D and servers.
 
 ![DotRecast of a navmesh baked with the sample program](/resources/screenshot.png?raw=true)
 
