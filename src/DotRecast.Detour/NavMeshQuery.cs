@@ -2375,12 +2375,12 @@ namespace DotRecast.Detour
                     // and correct the height (since the raycast moves in 2d)
                     lastPos = curPos;
                     curPos = VMad(startPos, dir, hit.t);
-                    VectorPtr e1 = new VectorPtr(verts, iresult.segMax * 3);
-                    VectorPtr e2 = new VectorPtr(verts, ((iresult.segMax + 1) % nv) * 3);
-                    Vector3f eDir = VSub(e2, e1);
-                    Vector3f diff = VSub(curPos, e1);
+                    var e1 = Vector3f.Of(verts, iresult.segMax * 3);
+                    var e2 = Vector3f.Of(verts, ((iresult.segMax + 1) % nv) * 3);
+                    var eDir = VSub(e2, e1);
+                    var diff = VSub(curPos, e1);
                     float s = Sqr(eDir.x) > Sqr(eDir.z) ? diff.x / eDir.x : diff.z / eDir.z;
-                    curPos.y = e1.Get(1) + eDir.y * s;
+                    curPos.y = e1.y + eDir.y * s;
 
                     hit.pathCost += filter.GetCost(lastPos, curPos, prevRef, prevTile, prevPoly, curRef, tile, poly,
                         nextRef, nextTile, nextPoly);
@@ -3193,8 +3193,8 @@ namespace DotRecast.Detour
 
             float radiusSqr = Sqr(maxRadius);
             Vector3f hitPos = new Vector3f();
-            VectorPtr bestvj = null;
-            VectorPtr bestvi = null;
+            Vector3f? bestvj = null;
+            Vector3f? bestvi = null;
             while (!m_openList.IsEmpty())
             {
                 Node bestNode = m_openList.Pop();
@@ -3280,8 +3280,8 @@ namespace DotRecast.Detour
                                + (bestTile.data.verts[vi + 1] - bestTile.data.verts[vj + 1]) * tseg;
                     hitPos.z = bestTile.data.verts[vj + 2]
                                + (bestTile.data.verts[vi + 2] - bestTile.data.verts[vj + 2]) * tseg;
-                    bestvj = new VectorPtr(bestTile.data.verts, vj);
-                    bestvi = new VectorPtr(bestTile.data.verts, vi);
+                    bestvj = Vector3f.Of(bestTile.data.verts, vj);
+                    bestvi = Vector3f.Of(bestTile.data.verts, vi);
                 }
 
                 for (int i = bestTile.polyLinks[bestPoly.index]; i != NavMesh.DT_NULL_LINK; i = bestTile.links[i].next)
@@ -3368,7 +3368,7 @@ namespace DotRecast.Detour
             Vector3f hitNormal = new Vector3f();
             if (bestvi != null && bestvj != null)
             {
-                var tangent = VSub(bestvi, bestvj);
+                var tangent = VSub(bestvi.Value, bestvj.Value);
                 hitNormal.x = tangent.z;
                 hitNormal.y = 0;
                 hitNormal.z = -tangent.x;

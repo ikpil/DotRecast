@@ -155,15 +155,6 @@ namespace DotRecast.Core
         }
 
         
-        public static Vector3f VSub(VectorPtr v1, VectorPtr v2)
-        {
-            Vector3f dest = new Vector3f();
-            dest.x = v1.Get(0) - v2.Get(0);
-            dest.y = v1.Get(1) - v2.Get(1);
-            dest.z = v1.Get(2) - v2.Get(2);
-            return dest;
-        }
-
         public static Vector3f VSub(Vector3f v1, Vector3f v2)
         {
             Vector3f dest = new Vector3f();
@@ -172,16 +163,6 @@ namespace DotRecast.Core
             dest.z = v1.z - v2.z;
             return dest;
         }
-        
-        public static Vector3f VSub(Vector3f v1, VectorPtr v2)
-        {
-            Vector3f dest = new Vector3f();
-            dest.x = v1.x - v2.Get(0);
-            dest.y = v1.y - v2.Get(1);
-            dest.z = v1.z - v2.Get(2);
-            return dest;
-        }
-
         
         public static Vector3f VSub(Vector3f v1, float[] v2)
         {
@@ -821,8 +802,9 @@ namespace DotRecast.Core
             var p0v = p0;
             for (int i = 0, j = nverts - 1; i < nverts; j = i++)
             {
-                VectorPtr vpj = new VectorPtr(verts, j * 3);
-                var edge = VSub(new VectorPtr(verts, i * 3), vpj);
+                Vector3f vpj = Vector3f.Of(verts, j * 3);
+                Vector3f vpi = Vector3f.Of(verts, i * 3);
+                var edge = VSub(vpi, vpj);
                 var diff = VSub(p0v, vpj);
                 float n = VPerp2D(edge, diff);
                 float d = VPerp2D(dir, edge);

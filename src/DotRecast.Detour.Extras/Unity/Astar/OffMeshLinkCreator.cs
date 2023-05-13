@@ -48,14 +48,13 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                         connection.poly = poly;
                         connection.pos = new float[]
                         {
-                            l.clamped1.x, l.clamped1.y, l.clamped1.z, 
+                            l.clamped1.x, l.clamped1.y, l.clamped1.z,
                             l.clamped2.x, l.clamped2.y, l.clamped2.z
                         };
                         connection.rad = 0.1f;
                         connection.side = startTile == endTile
                             ? 0xFF
-                            : NavMeshBuilder.ClassifyOffMeshPoint(new VectorPtr(connection.pos, 3),
-                                startTile.header.bmin, startTile.header.bmax);
+                            : NavMeshBuilder.ClassifyOffMeshPoint(Vector3f.Of(connection.pos, 3), startTile.header.bmin, startTile.header.bmax);
                         connection.userId = (int)l.linkID;
                         if (startTile.offMeshCons == null)
                         {

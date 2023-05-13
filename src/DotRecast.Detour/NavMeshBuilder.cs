@@ -223,13 +223,13 @@ namespace DotRecast.Detour
         const int XM = 1 << 2;
         const int ZM = 1 << 3;
 
-        public static int ClassifyOffMeshPoint(VectorPtr pt, Vector3f bmin, Vector3f bmax)
+        public static int ClassifyOffMeshPoint(Vector3f pt, Vector3f bmin, Vector3f bmax)
         {
             int outcode = 0;
-            outcode |= (pt.Get(0) >= bmax.x) ? XP : 0;
-            outcode |= (pt.Get(2) >= bmax.z) ? ZP : 0;
-            outcode |= (pt.Get(0) < bmin.x) ? XM : 0;
-            outcode |= (pt.Get(2) < bmin.z) ? ZM : 0;
+            outcode |= (pt.x >= bmax.x) ? XP : 0;
+            outcode |= (pt.z >= bmax.z) ? ZP : 0;
+            outcode |= (pt.x < bmin.x) ? XM : 0;
+            outcode |= (pt.z < bmin.z) ? ZM : 0;
 
             switch (outcode)
             {
@@ -319,8 +319,8 @@ namespace DotRecast.Detour
 
                 for (int i = 0; i < option.offMeshConCount; ++i)
                 {
-                    VectorPtr p0 = new VectorPtr(option.offMeshConVerts, (i * 2 + 0) * 3);
-                    VectorPtr p1 = new VectorPtr(option.offMeshConVerts, (i * 2 + 1) * 3);
+                    var p0 = Vector3f.Of(option.offMeshConVerts, (i * 2 + 0) * 3);
+                    var p1 = Vector3f.Of(option.offMeshConVerts, (i * 2 + 1) * 3);
 
                     offMeshConClass[i * 2 + 0] = ClassifyOffMeshPoint(p0, bmin, bmax);
                     offMeshConClass[i * 2 + 1] = ClassifyOffMeshPoint(p1, bmin, bmax);
@@ -329,7 +329,7 @@ namespace DotRecast.Detour
                     // potentially touching the mesh.
                     if (offMeshConClass[i * 2 + 0] == 0xff)
                     {
-                        if (p0.Get(1) < bmin.y || p0.Get(1) > bmax.y)
+                        if (p0.y < bmin.y || p0.y > bmax.y)
                             offMeshConClass[i * 2 + 0] = 0;
                     }
 

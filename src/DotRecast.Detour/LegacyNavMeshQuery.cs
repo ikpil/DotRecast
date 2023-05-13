@@ -667,9 +667,10 @@ namespace DotRecast.Detour
             m_openList.Push(startNode);
 
             float radiusSqr = Sqr(maxRadius);
-            Vector3f hitPos = new Vector3f();
-            VectorPtr bestvj = null;
-            VectorPtr bestvi = null;
+            Vector3f hitPos = Vector3f.Zero;
+            Vector3f? bestvj = null;
+            Vector3f? bestvi = null;
+
             while (!m_openList.IsEmpty())
             {
                 Node bestNode = m_openList.Pop();
@@ -752,11 +753,11 @@ namespace DotRecast.Detour
                     // Calculate hit pos.
                     hitPos.x = bestTile.data.verts[vj] + (bestTile.data.verts[vi] - bestTile.data.verts[vj]) * tseg;
                     hitPos.y = bestTile.data.verts[vj + 1]
-                                + (bestTile.data.verts[vi + 1] - bestTile.data.verts[vj + 1]) * tseg;
+                               + (bestTile.data.verts[vi + 1] - bestTile.data.verts[vj + 1]) * tseg;
                     hitPos.z = bestTile.data.verts[vj + 2]
-                                + (bestTile.data.verts[vi + 2] - bestTile.data.verts[vj + 2]) * tseg;
-                    bestvj = new VectorPtr(bestTile.data.verts, vj);
-                    bestvi = new VectorPtr(bestTile.data.verts, vi);
+                               + (bestTile.data.verts[vi + 2] - bestTile.data.verts[vj + 2]) * tseg;
+                    bestvj = Vector3f.Of(bestTile.data.verts, vj);
+                    bestvi = Vector3f.Of(bestTile.data.verts, vi);
                 }
 
                 for (int i = bestTile.polyLinks[bestPoly.index]; i != NavMesh.DT_NULL_LINK; i = bestTile.links[i].next)
@@ -843,7 +844,7 @@ namespace DotRecast.Detour
             Vector3f hitNormal = new Vector3f();
             if (bestvi != null && bestvj != null)
             {
-                var tangent = VSub(bestvi, bestvj);
+                var tangent = VSub(bestvi.Value, bestvj.Value);
                 hitNormal.x = tangent.z;
                 hitNormal.y = 0;
                 hitNormal.z = -tangent.x;

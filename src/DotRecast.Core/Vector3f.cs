@@ -31,7 +31,12 @@ namespace DotRecast.Core
 
         public static Vector3f Of(float[] f)
         {
-            return new Vector3f(f);
+            return Of(f, 0);
+        }
+
+        public static Vector3f Of(float[] f, int idx)
+        {
+            return Of(f[idx + 0], f[idx + 1], f[idx + 2]);
         }
 
         public static Vector3f Of(float x, float y, float z)
@@ -95,7 +100,7 @@ namespace DotRecast.Core
 
             return Equals((Vector3f)obj);
         }
-        
+
         public bool Equals(Vector3f other)
         {
             return x.Equals(other.x) &&
