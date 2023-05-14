@@ -27,7 +27,7 @@ namespace DotRecast.Core
     {
         public const float EPS = 1e-4f;
         private static readonly float EQUAL_THRESHOLD = Sqr(1.0f / 16384.0f);
-        
+
         public static float VDistSqr(Vector3f v1, float[] v2, int i)
         {
             float dx = v2[i] - v1.x;
@@ -35,7 +35,7 @@ namespace DotRecast.Core
             float dz = v2[i + 2] - v1.z;
             return dx * dx + dy * dy + dz * dz;
         }
-        
+
         public static float VDistSqr(Vector3f v1, Vector3f v2)
         {
             float dx = v2.x - v1.x;
@@ -43,7 +43,7 @@ namespace DotRecast.Core
             float dz = v2.z - v1.z;
             return dx * dx + dy * dy + dz * dz;
         }
-        
+
         public static float VDistSqr(float[] v, int i, int j)
         {
             float dx = v[i] - v[j];
@@ -60,7 +60,7 @@ namespace DotRecast.Core
             dest.z = v1.x * v2.y - v1.y * v2.x;
             return dest;
         }
-        
+
         public static float VDot(Vector3f v1, Vector3f v2)
         {
             return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
@@ -83,7 +83,6 @@ namespace DotRecast.Core
         }
 
 
-
         public static float Step(float threshold, float v)
         {
             return v < threshold ? 0.0f : 1.0f;
@@ -103,7 +102,7 @@ namespace DotRecast.Core
         {
             return u * g + (1f - u) * f;
         }
-        
+
 
         /// Performs a scaled vector addition. (@p v1 + (@p v2 * @p s))
         /// @param[out] dest The result vector. [(x, y, z)]
@@ -127,39 +126,39 @@ namespace DotRecast.Core
         /// @param[in] t The interpolation factor. [Limits: 0 <= value <= 1.0]
         public static Vector3f VLerp(float[] verts, int v1, int v2, float t)
         {
-            Vector3f dest = new Vector3f();
-            dest.x = verts[v1 + 0] + (verts[v2 + 0] - verts[v1 + 0]) * t;
-            dest.y = verts[v1 + 1] + (verts[v2 + 1] - verts[v1 + 1]) * t;
-            dest.z = verts[v1 + 2] + (verts[v2 + 2] - verts[v1 + 2]) * t;
-            return dest;
+            return new Vector3f(
+                verts[v1 + 0] + (verts[v2 + 0] - verts[v1 + 0]) * t,
+                verts[v1 + 1] + (verts[v2 + 1] - verts[v1 + 1]) * t,
+                verts[v1 + 2] + (verts[v2 + 2] - verts[v1 + 2]) * t
+            );
         }
 
         public static Vector3f VLerp(Vector3f v1, Vector3f v2, float t)
         {
-            Vector3f dest = new Vector3f();
-            dest.x = v1.x + (v2.x - v1.x) * t;
-            dest.y = v1.y + (v2.y - v1.y) * t;
-            dest.z = v1.z + (v2.z - v1.z) * t;
-            return dest;
+            return new Vector3f(
+                v1.x + (v2.x - v1.x) * t,
+                v1.y + (v2.y - v1.y) * t,
+                v1.z + (v2.z - v1.z) * t
+            );
         }
 
-        
+
         public static Vector3f VSub(Vector3f v1, Vector3f v2)
         {
-            Vector3f dest = new Vector3f();
-            dest.x = v1.x - v2.x;
-            dest.y = v1.y - v2.y;
-            dest.z = v1.z - v2.z;
-            return dest;
+            return new Vector3f(
+                v1.x - v2.x,
+                v1.y - v2.y,
+                v1.z - v2.z
+            );
         }
-        
+
         public static Vector3f VAdd(Vector3f v1, Vector3f v2)
         {
-            Vector3f dest = new Vector3f();
-            dest.x = v1.x + v2.x;
-            dest.y = v1.y + v2.y;
-            dest.z = v1.z + v2.z;
-            return dest;
+            return new Vector3f(
+                v1.x + v2.x,
+                v1.y + v2.y,
+                v1.z + v2.z
+            );
         }
 
         public static void VSet(ref Vector3f @out, float a, float b, float c)
@@ -175,14 +174,14 @@ namespace DotRecast.Core
             @out[1] = @in.y;
             @out[2] = @in.z;
         }
-        
+
         public static void VCopy(ref Vector3f @out, float[] @in)
         {
             @out.x = @in[0];
             @out.y = @in[1];
             @out.z = @in[2];
         }
-        
+
         public static void VCopy(ref Vector3f @out, float[] @in, int i)
         {
             @out.x = @in[i];
@@ -219,7 +218,6 @@ namespace DotRecast.Core
         }
 
 
-
         /// Returns the distance between two points.
         /// @param[in] v1 A point. [(x, y, z)]
         /// @param[in] v2 A point. [(x, y, z)]
@@ -231,7 +229,6 @@ namespace DotRecast.Core
             float dz = v2[2] - v1[2];
             return dx * dx + dy * dy + dz * dz;
         }
-        
 
 
         /// Derives the square of the scalar length of the vector. (len * len)
@@ -241,7 +238,7 @@ namespace DotRecast.Core
         {
             return v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
         }
-        
+
         public static float VLenSqr(Vector3f v)
         {
             return v.x * v.x + v.y * v.y + v.z * v.z;
@@ -252,7 +249,7 @@ namespace DotRecast.Core
         {
             return (float)Math.Sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
         }
-        
+
         public static float VLen(Vector3f v)
         {
             return (float)Math.Sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
@@ -281,7 +278,7 @@ namespace DotRecast.Core
             float dz = v2[2] - v1[2];
             return (float)Math.Sqrt(dx * dx + dz * dz);
         }
-        
+
         public static float VDist2D(Vector3f v1, Vector3f v2)
         {
             float dx = v2.x - v1.x;
@@ -296,7 +293,7 @@ namespace DotRecast.Core
             float dz = v2[2] - v1[2];
             return dx * dx + dz * dz;
         }
-        
+
         public static float VDist2DSqr(Vector3f v1, Vector3f v2)
         {
             float dx = v2.x - v1.x;
@@ -324,7 +321,7 @@ namespace DotRecast.Core
                 v[2] *= d;
             }
         }
-        
+
         public static void VNormalize(ref Vector3f v)
         {
             float d = (float)(1.0f / Math.Sqrt(Sqr(v.x) + Sqr(v.y) + Sqr(v.z)));
@@ -355,7 +352,7 @@ namespace DotRecast.Core
             float d = VDistSqr(p0, p1);
             return d < thresholdSqr;
         }
-        
+
         public static bool VEqual(Vector3f p0, Vector3f p1, float thresholdSqr)
         {
             float d = VDistSqr(p0, p1);
@@ -374,7 +371,7 @@ namespace DotRecast.Core
         {
             return u[0] * v[0] + u[2] * v[2];
         }
-        
+
         public static float VDot2D(Vector3f u, Vector3f v)
         {
             return u.x * v.x + u.z * v.z;
@@ -397,12 +394,12 @@ namespace DotRecast.Core
         {
             return u[2] * v[0] - u[0] * v[2];
         }
-        
+
         public static float VPerp2D(Vector3f u, Vector3f v)
         {
             return u.z * v.x - u.x * v.z;
         }
-        
+
 
         /// @}
         /// @name Computational geometry helper functions.
@@ -430,7 +427,7 @@ namespace DotRecast.Core
             float acz = c[2] - a[2];
             return acx * abz - abx * acz;
         }
-        
+
         public static float TriArea2D(Vector3f a, Vector3f b, Vector3f c)
         {
             float abx = b.x - a.x;
@@ -439,7 +436,7 @@ namespace DotRecast.Core
             float acz = c.z - a.z;
             return acx * abz - abx * acz;
         }
-        
+
         public static float TriArea2D(Vector3f a, float[] b, Vector3f c)
         {
             float abx = b[0] - a.x;
@@ -448,7 +445,6 @@ namespace DotRecast.Core
             float acz = c.z - a.z;
             return acx * abz - abx * acz;
         }
-
 
 
         /// Determines if two axis-aligned bounding boxes overlap.
@@ -477,12 +473,12 @@ namespace DotRecast.Core
         public static bool OverlapBounds(float[] amin, float[] amax, float[] bmin, float[] bmax)
         {
             bool overlap = true;
-            overlap = (amin[0]> bmax[0] || amax[0] < bmin[0]) ? false : overlap;
+            overlap = (amin[0] > bmax[0] || amax[0] < bmin[0]) ? false : overlap;
             overlap = (amin[1] > bmax[1] || amax[1] < bmin[1]) ? false : overlap;
             overlap = (amin[2] > bmax[2] || amax[2] < bmin[2]) ? false : overlap;
             return overlap;
         }
-        
+
         public static bool OverlapBounds(Vector3f amin, Vector3f amax, Vector3f bmin, Vector3f bmax)
         {
             bool overlap = true;
@@ -737,7 +733,6 @@ namespace DotRecast.Core
         }
 
 
-
         public static IntersectResult IntersectSegmentPoly2D(Vector3f p0, Vector3f p1, float[] verts, int nverts)
         {
             IntersectResult result = new IntersectResult();
@@ -800,7 +795,7 @@ namespace DotRecast.Core
             result.intersects = true;
             return result;
         }
-        
+
         public static Tuple<float, float> DistancePtSegSqr2D(Vector3f pt, SegmentVert verts, int p, int q)
         {
             float pqx = verts[q + 0] - verts[p + 0];
@@ -865,7 +860,7 @@ namespace DotRecast.Core
         {
             return a[0] * b[2] - a[2] * b[0];
         }
-        
+
         public static float VperpXZ(Vector3f a, Vector3f b)
         {
             return a.x * b.z - a.z * b.x;
@@ -905,7 +900,7 @@ namespace DotRecast.Core
         {
             return float.IsFinite(v[0]) && float.IsFinite(v[1]) && float.IsFinite(v[2]);
         }
-        
+
         public static bool VIsFinite(Vector3f v)
         {
             return float.IsFinite(v.x) && float.IsFinite(v.y) && float.IsFinite(v.z);
