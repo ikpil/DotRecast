@@ -690,7 +690,7 @@ namespace DotRecast.Detour
             }
 
             // Find tiles the query touches.
-            Vector3f bmin = VSub(center, halfExtents);
+            Vector3f bmin = center.Subtract(halfExtents);
             Vector3f bmax = VAdd(center, halfExtents);
             foreach (var t in QueryTiles(center, halfExtents))
             {
@@ -710,7 +710,7 @@ namespace DotRecast.Detour
                 return ImmutableArray<MeshTile>.Empty;
             }
 
-            Vector3f bmin = VSub(center, halfExtents);
+            Vector3f bmin = center.Subtract(halfExtents);
             Vector3f bmax = VAdd(center, halfExtents);
             int[] minxy = m_nav.CalcTileLoc(bmin);
             int minx = minxy[0];
@@ -2210,7 +2210,7 @@ namespace DotRecast.Detour
             Vector3f lastPos = Vector3f.Zero;
 
             curPos = startPos;
-            var dir = VSub(endPos, startPos);
+            var dir = endPos.Subtract(startPos);
 
             MeshTile prevTile, tile, nextTile;
             Poly prevPoly, poly, nextPoly;
@@ -2377,8 +2377,8 @@ namespace DotRecast.Detour
                     curPos = VMad(startPos, dir, hit.t);
                     var e1 = Vector3f.Of(verts, iresult.segMax * 3);
                     var e2 = Vector3f.Of(verts, ((iresult.segMax + 1) % nv) * 3);
-                    var eDir = VSub(e2, e1);
-                    var diff = VSub(curPos, e1);
+                    var eDir = e2.Subtract(e1);
+                    var diff = curPos.Subtract(e1);
                     float s = Sqr(eDir.x) > Sqr(eDir.z) ? diff.x / eDir.x : diff.z / eDir.z;
                     curPos.y = e1.y + eDir.y * s;
 
@@ -3368,7 +3368,7 @@ namespace DotRecast.Detour
             Vector3f hitNormal = new Vector3f();
             if (bestvi != null && bestvj != null)
             {
-                var tangent = VSub(bestvi.Value, bestvj.Value);
+                var tangent = bestvi.Value.Subtract(bestvj.Value);
                 hitNormal.x = tangent.z;
                 hitNormal.y = 0;
                 hitNormal.z = -tangent.x;

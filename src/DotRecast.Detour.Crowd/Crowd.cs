@@ -917,7 +917,7 @@ namespace DotRecast.Detour.Crowd
                 }
 
                 // Check for overlap.
-                Vector3f diff = VSub(pos, ag.npos);
+                Vector3f diff = pos.Subtract(ag.npos);
                 if (Math.Abs(diff.y) >= (height + ag.option.height) / 2.0f)
                 {
                     continue;
@@ -1091,7 +1091,7 @@ namespace DotRecast.Detour.Crowd
                     {
                         CrowdAgent nei = ag.neis[j].agent;
 
-                        Vector3f diff = VSub(ag.npos, nei.npos);
+                        Vector3f diff = ag.npos.Subtract(nei.npos);
                         diff.y = 0;
 
                         float distSqr = VLenSqr(diff);
@@ -1245,7 +1245,7 @@ namespace DotRecast.Detour.Crowd
                     {
                         CrowdAgent nei = ag.neis[j].agent;
                         long idx1 = nei.idx;
-                        Vector3f diff = VSub(ag.npos, nei.npos);
+                        Vector3f diff = ag.npos.Subtract(nei.npos);
                         diff.y = 0;
 
                         float dist = VLenSqr(diff);

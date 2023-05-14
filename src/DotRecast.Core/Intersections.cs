@@ -27,9 +27,9 @@ namespace DotRecast.Core
         public static float? IntersectSegmentTriangle(Vector3f sp, Vector3f sq, Vector3f a, Vector3f b, Vector3f c)
         {
             float v, w;
-            Vector3f ab = VSub(b, a);
-            Vector3f ac = VSub(c, a);
-            Vector3f qp = VSub(sp, sq);
+            Vector3f ab = b.Subtract(a);
+            Vector3f ac = c.Subtract(a);
+            Vector3f qp = sp.Subtract(sq);
 
             // Compute triangle normal. Can be precalculated or cached if
             // intersecting multiple segments against the same triangle
@@ -46,7 +46,7 @@ namespace DotRecast.Core
             // Compute intersection t value of pq with plane of triangle. A ray
             // intersects iff 0 <= t. Segment intersects iff 0 <= t <= 1. Delay
             // dividing by d until intersection has been found to pierce triangle
-            Vector3f ap = VSub(sp, a);
+            Vector3f ap = sp.Subtract(a);
             float t = VDot(ap, norm);
             if (t < 0.0f)
             {

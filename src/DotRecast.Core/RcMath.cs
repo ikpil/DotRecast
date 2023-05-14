@@ -142,16 +142,6 @@ namespace DotRecast.Core
             );
         }
 
-
-        public static Vector3f VSub(Vector3f v1, Vector3f v2)
-        {
-            return new Vector3f(
-                v1.x - v2.x,
-                v1.y - v2.y,
-                v1.z - v2.z
-            );
-        }
-
         public static Vector3f VAdd(Vector3f v1, Vector3f v2)
         {
             return new Vector3f(
@@ -517,9 +507,9 @@ namespace DotRecast.Core
 
         public static float? ClosestHeightPointTriangle(Vector3f p, Vector3f a, Vector3f b, Vector3f c)
         {
-            Vector3f v0 = VSub(c, a);
-            Vector3f v1 = VSub(b, a);
-            Vector3f v2 = VSub(p, a);
+            Vector3f v0 = c.Subtract(a);
+            Vector3f v1 = b.Subtract(a);
+            Vector3f v2 = p.Subtract(a);
 
             // Compute scaled barycentric coordinates
             float denom = v0.x * v1.z - v0.z * v1.x;
@@ -737,15 +727,15 @@ namespace DotRecast.Core
         {
             IntersectResult result = new IntersectResult();
             float EPS = 0.000001f;
-            var dir = VSub(p1, p0);
+            var dir = p1.Subtract(p0);
 
             var p0v = p0;
             for (int i = 0, j = nverts - 1; i < nverts; j = i++)
             {
                 Vector3f vpj = Vector3f.Of(verts, j * 3);
                 Vector3f vpi = Vector3f.Of(verts, i * 3);
-                var edge = VSub(vpi, vpj);
-                var diff = VSub(p0v, vpj);
+                var edge = vpi.Subtract(vpj);
+                var diff = p0v.Subtract(vpj);
                 float n = VPerp2D(edge, diff);
                 float d = VPerp2D(dir, edge);
                 if (Math.Abs(d) < EPS)
@@ -868,9 +858,9 @@ namespace DotRecast.Core
 
         public static Tuple<float, float>? IntersectSegSeg2D(Vector3f ap, Vector3f aq, Vector3f bp, Vector3f bq)
         {
-            Vector3f u = VSub(aq, ap);
-            Vector3f v = VSub(bq, bp);
-            Vector3f w = VSub(ap, bp);
+            Vector3f u = aq.Subtract(ap);
+            Vector3f v = bq.Subtract(bp);
+            Vector3f w = ap.Subtract(bp);
             float d = VperpXZ(u, v);
             if (Math.Abs(d) < 1e-6f)
             {

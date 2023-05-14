@@ -844,7 +844,7 @@ namespace DotRecast.Detour
             Vector3f hitNormal = new Vector3f();
             if (bestvi != null && bestvj != null)
             {
-                var tangent = VSub(bestvi.Value, bestvj.Value);
+                var tangent = bestvi.Value.Subtract(bestvj.Value);
                 hitNormal.x = tangent.z;
                 hitNormal.y = 0;
                 hitNormal.z = -tangent.x;

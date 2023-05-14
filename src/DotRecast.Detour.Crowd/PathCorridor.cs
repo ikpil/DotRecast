@@ -315,7 +315,7 @@ namespace DotRecast.Detour.Crowd
             dist = Math.Min(dist + 0.01f, pathOptimizationRange);
 
             // Adjust ray length.
-            var delta = VSub(next, m_pos);
+            var delta = next.Subtract(m_pos);
             Vector3f goal = VMad(m_pos, delta, pathOptimizationRange / dist);
 
             Result<RaycastHit> rc = navquery.Raycast(m_path[0], m_pos, goal, filter, 0, 0);

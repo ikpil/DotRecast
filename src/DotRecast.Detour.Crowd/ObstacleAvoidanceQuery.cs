@@ -127,9 +127,9 @@ namespace DotRecast.Detour.Crowd
 
                 Vector3f orig = new Vector3f();
                 Vector3f dv = new Vector3f();
-                cir.dp = VSub(pb, pa);
+                cir.dp = pb.Subtract(pa);
                 VNormalize(ref cir.dp);
-                dv = VSub(cir.dvel, dvel);
+                dv = cir.dvel.Subtract(dvel);
 
                 float a = TriArea2D(orig, cir.dp, dv);
                 if (a < 0.01f)
@@ -158,7 +158,7 @@ namespace DotRecast.Detour.Crowd
         SweepCircleCircleResult SweepCircleCircle(Vector3f c0, float r0, Vector3f v, Vector3f c1, float r1)
         {
             const float EPS = 0.0001f;
-            Vector3f s = VSub(c1, c0);
+            Vector3f s = c1.Subtract(c0);
             float r = r0 + r1;
             float c = VDot2D(s, s) - r * r;
             float a = VDot2D(v, v);
@@ -177,8 +177,8 @@ namespace DotRecast.Detour.Crowd
 
         IsectRaySegResult IsectRaySeg(Vector3f ap, Vector3f u, Vector3f bp, Vector3f bq)
         {
-            Vector3f v = VSub(bq, bp);
-            Vector3f w = VSub(ap, bp);
+            Vector3f v = bq.Subtract(bp);
+            Vector3f w = ap.Subtract(bp);
             float d = VPerp2D(u, v);
             if (Math.Abs(d) < 1e-6f)
                 return new IsectRaySegResult(false, 0f);
@@ -230,8 +230,8 @@ namespace DotRecast.Detour.Crowd
 
                 // RVO
                 Vector3f vab = VScale(vcand, 2);
-                vab = VSub(vab, vel);
-                vab = VSub(vab, cir.vel);
+                vab = vab.Subtract(vel);
+                vab = vab.Subtract(cir.vel);
 
                 // Side
                 side += Clamp(Math.Min(VDot2D(cir.dp, vab) * 0.5f + 0.5f, VDot2D(cir.np, vab) * 2), 0.0f, 1.0f);
@@ -269,7 +269,7 @@ namespace DotRecast.Detour.Crowd
                 if (seg.touch)
                 {
                     // Special case when the agent is very close to the segment.
-                    Vector3f sdir = VSub(seg.q, seg.p);
+                    Vector3f sdir = seg.q.Subtract(seg.p);
                     Vector3f snorm = new Vector3f();
                     snorm.x = -sdir.z;
                     snorm.z = sdir.x;

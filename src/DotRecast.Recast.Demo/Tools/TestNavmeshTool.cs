@@ -225,7 +225,7 @@ public class TestNavmeshTool : Tool
                             : false;
 
                         // Find movement delta.
-                        Vector3f delta = VSub(steerTarget.steerPos, iterPos);
+                        Vector3f delta = steerTarget.steerPos.Subtract(iterPos);
                         float len = (float)Math.Sqrt(VDot(delta, delta));
                         // If the steer target is end of path or off-mesh link, do not move past the location.
                         if ((endOfPath || offMeshConnection) && len < STEP_SIZE)
@@ -855,7 +855,7 @@ public class TestNavmeshTool : Tool
                                     continue;
                                 }
 
-                                Vector3f delta = VSub(s3, s.vmin);
+                                Vector3f delta = s3.Subtract(s.vmin);
                                 Vector3f p0 = VMad(s.vmin, delta, 0.5f);
                                 Vector3f norm = Vector3f.Of(delta.z, 0, -delta.x);
                                 VNormalize(ref norm);

@@ -153,7 +153,7 @@ public class AbstractCrowdTest
 
     protected Vector3f CalcVel(Vector3f pos, Vector3f tgt, float speed)
     {
-        Vector3f vel = VSub(tgt, pos);
+        Vector3f vel = tgt.Subtract(pos);
         vel.y = 0.0f;
         VNormalize(ref vel);
         vel = VScale(vel, speed);

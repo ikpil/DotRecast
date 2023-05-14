@@ -115,7 +115,7 @@ namespace DotRecast.Detour.Crowd
         {
             // Fake dynamic constraint.
             float maxDelta = option.maxAcceleration * dt;
-            Vector3f dv = VSub(nvel, vel);
+            Vector3f dv = nvel.Subtract(vel);
             float ds = VLen(dv);
             if (ds > maxDelta)
                 dv = VScale(dv, maxDelta / ds);
@@ -169,8 +169,8 @@ namespace DotRecast.Detour.Crowd
                 var p0 = corners[ip0].GetPos();
                 var p1 = corners[ip1].GetPos();
 
-                var dir0 = VSub(p0, npos);
-                var dir1 = VSub(p1, npos);
+                var dir0 = p0.Subtract(npos);
+                var dir1 = p1.Subtract(npos);
                 dir0.y = 0;
                 dir1.y = 0;
 
@@ -194,7 +194,7 @@ namespace DotRecast.Detour.Crowd
             Vector3f dir = new Vector3f();
             if (0 < corners.Count)
             {
-                dir = VSub(corners[0].GetPos(), npos);
+                dir = corners[0].GetPos().Subtract(npos);
                 dir.y = 0;
                 VNormalize(ref dir);
             }

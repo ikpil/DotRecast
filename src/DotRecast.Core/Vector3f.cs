@@ -17,6 +17,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace DotRecast.Core
 {
@@ -93,6 +94,16 @@ namespace DotRecast.Core
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Vector3f Subtract(Vector3f right)
+        {
+            return new Vector3f(
+                x - right.x,
+                y - right.y,
+                z - right.z
+            );
+        }
+
         public override bool Equals(object obj)
         {
             if (!(obj is Vector3f))
@@ -126,6 +137,11 @@ namespace DotRecast.Core
         {
             return !left.Equals(right);
         }
-        
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3f operator -(Vector3f left, Vector3f right)
+        {
+            return left.Subtract(right);
+        }
     }
 }

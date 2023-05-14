@@ -1355,7 +1355,7 @@ namespace DotRecast.Detour
         {
             Vector3f nearestPt = new Vector3f();
             bool overPoly = false;
-            Vector3f bmin = VSub(center, extents);
+            Vector3f bmin = center.Subtract(extents);
             Vector3f bmax = VAdd(center, extents);
 
             // Get nearby polygons from proximity grid.
@@ -1374,7 +1374,7 @@ namespace DotRecast.Detour
 
                 // If a point is directly over a polygon and closer than
                 // climb height, favor that instead of straight line nearest point.
-                Vector3f diff = VSub(center, closestPtPoly);
+                Vector3f diff = center.Subtract(closestPtPoly);
                 if (posOverPoly)
                 {
                     d = Math.Abs(diff.y) - tile.data.header.walkableClimb;
