@@ -52,7 +52,7 @@ namespace DotRecast.Detour.Crowd
             y = (int)uy;
         }
 
-        void Clear()
+        public void Clear()
         {
             _items.Clear();
         }
@@ -80,6 +80,7 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
+        // 해당 셀 사이즈의 크기로 x ~ y 영역을 찾아, 군집 에이전트를 가져오는 코드
         public HashSet<CrowdAgent> QueryItems(float minx, float miny, float maxx, float maxy)
         {
             int iminx = (int)Math.Floor(minx * _invCellSize);

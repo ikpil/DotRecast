@@ -907,8 +907,8 @@ namespace DotRecast.Detour.Crowd
 
         private List<CrowdNeighbour> GetNeighbours(Vector3f pos, float height, float range, CrowdAgent skip, ProximityGrid grid)
         {
-            List<CrowdNeighbour> result = new List<CrowdNeighbour>();
             HashSet<CrowdAgent> proxAgents = grid.QueryItems(pos.x - range, pos.z - range, pos.x + range, pos.z + range);
+            List<CrowdNeighbour> result = new List<CrowdNeighbour>(proxAgents.Count);
             foreach (CrowdAgent ag in proxAgents)
             {
                 if (ag == skip)

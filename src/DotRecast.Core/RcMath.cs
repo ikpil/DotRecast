@@ -118,17 +118,6 @@ namespace DotRecast.Core
             dest.z = v1.z + v2.z * s;
             return dest;
         }
-        
-        public static Vector3f VMad(float[] v1, Vector3f v2, float s)
-        {
-            Vector3f dest = new Vector3f();
-            dest.x = v1[0] + v2.x * s;
-            dest.y = v1[1] + v2.y * s;
-            dest.z = v1[2] + v2.z * s;
-            return dest;
-        }
-
-
 
         /// Performs a linear interpolation between two vectors. (@p v1 toward @p
         /// v2)
@@ -164,15 +153,6 @@ namespace DotRecast.Core
             return dest;
         }
         
-        public static Vector3f VSub(Vector3f v1, float[] v2)
-        {
-            Vector3f dest = new Vector3f();
-            dest.x = v1.x - v2[0];
-            dest.y = v1.y - v2[1];
-            dest.z = v1.z - v2[2];
-            return dest;
-        }
-
         public static Vector3f VAdd(Vector3f v1, Vector3f v2)
         {
             Vector3f dest = new Vector3f();
@@ -210,13 +190,6 @@ namespace DotRecast.Core
             @out.z = @in[i + 2];
         }
 
-        public static void VMin(float[] @out, float[] @in, int i)
-        {
-            @out[0] = Math.Min(@out[0], @in[i]);
-            @out[1] = Math.Min(@out[1], @in[i + 1]);
-            @out[2] = Math.Min(@out[2], @in[i + 2]);
-        }
-        
         public static void VMin(ref Vector3f @out, float[] @in, int i)
         {
             @out.x = Math.Min(@out.x, @in[i]);
@@ -225,13 +198,6 @@ namespace DotRecast.Core
         }
 
 
-        public static void VMax(float[] @out, float[] @in, int i)
-        {
-            @out[0] = Math.Max(@out[0], @in[i]);
-            @out[1] = Math.Max(@out[1], @in[i + 1]);
-            @out[2] = Math.Max(@out[2], @in[i + 2]);
-        }
-        
         public static void VMax(ref Vector3f @out, float[] @in, int i)
         {
             @out.x = Math.Max(@out.x, @in[i]);
@@ -244,22 +210,6 @@ namespace DotRecast.Core
         /// @param[in] v1 A point. [(x, y, z)]
         /// @param[in] v2 A point. [(x, y, z)]
         /// @return The distance between the two points.
-        public static float VDist(float[] v1, float[] v2)
-        {
-            float dx = v2[0] - v1[0];
-            float dy = v2[1] - v1[1];
-            float dz = v2[2] - v1[2];
-            return (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
-        }
-        
-        public static float VDist(Vector3f v1, float[] v2)
-        {
-            float dx = v2[0] - v1.x;
-            float dy = v2[1] - v1.y;
-            float dz = v2[2] - v1.z;
-            return (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
-        }
-        
         public static float VDist(Vector3f v1, Vector3f v2)
         {
             float dx = v2.x - v1.x;
@@ -394,11 +344,6 @@ namespace DotRecast.Core
         ///
         /// Basically, this function will return true if the specified points are
         /// close enough to eachother to be considered colocated.
-        public static bool VEqual(float[] p0, float[] p1)
-        {
-            return VEqual(p0, p1, EQUAL_THRESHOLD);
-        }
-        
         public static bool VEqual(Vector3f p0, Vector3f p1)
         {
             return VEqual(p0, p1, EQUAL_THRESHOLD);
