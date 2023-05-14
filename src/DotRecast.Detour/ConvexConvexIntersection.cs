@@ -88,7 +88,7 @@ namespace DotRecast.Detour
                 /*-----Advance rules-----*/
 
                 /* Special case: A & B overlap and oppositely oriented. */
-                if (code == Intersection.Overlap && VDot2D(A, B) < 0)
+                if (code == Intersection.Overlap && A.Dot2D(B) < 0)
                 {
                     ii = AddVertex(inters, ii, ip);
                     ii = AddVertex(inters, ii, iq);

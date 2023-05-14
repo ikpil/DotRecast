@@ -349,30 +349,7 @@ namespace DotRecast.Core
             return d < thresholdSqr;
         }
 
-
-        /// Derives the dot product of two vectors on the xz-plane. (@p u . @p v)
-        /// @param[in] u A vector [(x, y, z)]
-        /// @param[in] v A vector [(x, y, z)]
-        /// @return The dot product on the xz-plane.
-        ///
-        /// The vectors are projected onto the xz-plane, so the y-values are
-        /// ignored.
-        public static float VDot2D(float[] u, float[] v)
-        {
-            return u[0] * v[0] + u[2] * v[2];
-        }
-
-        public static float VDot2D(Vector3f u, Vector3f v)
-        {
-            return u.x * v.x + u.z * v.z;
-        }
-
-
-        public static float VDot2D(Vector3f u, float[] v, int vi)
-        {
-            return u.x * v[vi] + u.z * v[vi + 2];
-        }
-
+        
         /// Derives the xz-plane 2D perp product of the two vectors. (uz*vx - ux*vz)
         /// @param[in] u The LHV vector [(x, y, z)]
         /// @param[in] v The RHV vector [(x, y, z)]
@@ -586,10 +563,10 @@ namespace DotRecast.Core
         public static float[] ProjectPoly(Vector3f axis, float[] poly, int npoly)
         {
             float rmin, rmax;
-            rmin = rmax = VDot2D(axis, poly, 0);
+            rmin = rmax = axis.Dot2D(poly, 0);
             for (int i = 1; i < npoly; ++i)
             {
-                float d = VDot2D(axis, poly, i * 3);
+                float d = axis.Dot2D(poly, i * 3);
                 rmin = Math.Min(rmin, d);
                 rmax = Math.Max(rmax, d);
             }

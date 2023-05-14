@@ -160,13 +160,13 @@ namespace DotRecast.Detour.Crowd
             const float EPS = 0.0001f;
             Vector3f s = c1.Subtract(c0);
             float r = r0 + r1;
-            float c = VDot2D(s, s) - r * r;
-            float a = VDot2D(v, v);
+            float c = s.Dot2D(s) - r * r;
+            float a = v.Dot2D(v);
             if (a < EPS)
                 return new SweepCircleCircleResult(false, 0f, 0f); // not moving
 
             // Overlap, calc time to exit.
-            float b = VDot2D(v, s);
+            float b = v.Dot2D(s);
             float d = b * b - a * c;
             if (d < 0.0f)
                 return new SweepCircleCircleResult(false, 0f, 0f); // no intersection.
@@ -234,7 +234,7 @@ namespace DotRecast.Detour.Crowd
                 vab = vab.Subtract(cir.vel);
 
                 // Side
-                side += Clamp(Math.Min(VDot2D(cir.dp, vab) * 0.5f + 0.5f, VDot2D(cir.np, vab) * 2), 0.0f, 1.0f);
+                side += Clamp(Math.Min(cir.dp.Dot2D(vab) * 0.5f + 0.5f, cir.np.Dot2D(vab) * 2), 0.0f, 1.0f);
                 nside++;
 
                 SweepCircleCircleResult sres = SweepCircleCircle(pos, rad, vab, cir.p, cir.rad);
@@ -274,7 +274,7 @@ namespace DotRecast.Detour.Crowd
                     snorm.x = -sdir.z;
                     snorm.z = sdir.x;
                     // If the velocity is pointing towards the segment, no collision.
-                    if (VDot2D(snorm, vcand) < 0.0f)
+                    if (snorm.Dot2D(vcand) < 0.0f)
                         continue;
                     // Else immediate collision.
                     htmin = 0.0f;
