@@ -201,7 +201,7 @@ public class DynamicUpdateTool : Tool
             0.01f + (float)random.NextDouble(),
             (1f - 2 * (float)random.NextDouble())
         );
-        VNormalize(ref a);
+        a.Normalize();
         float len = 1f + (float)random.NextDouble() * 20f;
         a.x *= len;
         a.y *= len;
@@ -247,7 +247,7 @@ public class DynamicUpdateTool : Tool
         Vector3f baseCenter = Vector3f.Of(p.x, p.y + 3, p.z);
         Vector3f baseUp = Vector3f.Of(0, 1, 0);
         Vector3f forward = Vector3f.Of((1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()));
-        VNormalize(ref forward);
+        forward.Normalize();
         Vector3f side = Vector3f.Cross(forward, baseUp);
         BoxCollider @base = new BoxCollider(baseCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(baseUp, forward, baseExtent),
             SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, dynaMesh.config.walkableClimb);

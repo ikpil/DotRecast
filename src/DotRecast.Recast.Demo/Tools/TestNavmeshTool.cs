@@ -858,7 +858,7 @@ public class TestNavmeshTool : Tool
                                 Vector3f delta = s3.Subtract(s.vmin);
                                 Vector3f p0 = VMad(s.vmin, delta, 0.5f);
                                 Vector3f norm = Vector3f.Of(delta.z, 0, -delta.x);
-                                VNormalize(ref norm);
+                                norm.Normalize();
                                 Vector3f p1 = VMad(p0, norm, agentRadius * 0.5f);
                                 // Skip backfacing segments.
                                 if (wallSegments.GetSegmentRef(j) != 0)

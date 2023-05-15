@@ -18,9 +18,9 @@ namespace DotRecast.Detour.Extras.Jumplink
         {
             this.trajectory = trajectory;
             ax = edge.sq.Subtract(edge.sp);
-            VNormalize(ref ax);
+            ax.Normalize();
             VSet(ref az, ax.z, 0, -ax.x);
-            VNormalize(ref az);
+            az.Normalize();
             VSet(ref ay, 0, 1, 0);
         }
     }

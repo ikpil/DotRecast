@@ -848,7 +848,7 @@ namespace DotRecast.Detour
                 hitNormal.x = tangent.z;
                 hitNormal.y = 0;
                 hitNormal.z = -tangent.x;
-                VNormalize(ref hitNormal);
+                hitNormal.Normalize();
             }
 
             return Results.Success(new FindDistanceToWallResult((float)Math.Sqrt(radiusSqr), hitPos, hitNormal));

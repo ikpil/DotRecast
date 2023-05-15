@@ -2400,7 +2400,7 @@ namespace DotRecast.Detour
                     hit.hitNormal.x = dz;
                     hit.hitNormal.y = 0;
                     hit.hitNormal.z = -dx;
-                    VNormalize(ref hit.hitNormal);
+                    hit.hitNormal.Normalize();
                     return Results.Success(hit);
                 }
 
@@ -3372,7 +3372,7 @@ namespace DotRecast.Detour
                 hitNormal.x = tangent.z;
                 hitNormal.y = 0;
                 hitNormal.z = -tangent.x;
-                VNormalize(ref hitNormal);
+                hitNormal.Normalize();
             }
 
             return Results.Success(new FindDistanceToWallResult((float)Math.Sqrt(radiusSqr), hitPos, hitNormal));

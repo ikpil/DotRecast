@@ -304,17 +304,6 @@ namespace DotRecast.Core
             }
         }
 
-        public static void VNormalize(ref Vector3f v)
-        {
-            float d = (float)(1.0f / Math.Sqrt(Sqr(v.x) + Sqr(v.y) + Sqr(v.z)));
-            if (d != 0)
-            {
-                v.x *= d;
-                v.y *= d;
-                v.z *= d;
-            }
-        }
-
 
         /// Performs a 'sloppy' colocation check of the specified points.
         /// @param[in] p0 A point. [(x, y, z)]

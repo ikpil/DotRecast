@@ -172,5 +172,17 @@ namespace DotRecast.Core
                 (v1.x * v2.y) - (v1.y * v2.x)
             );
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Normalize()
+        {
+            float d = (float)(1.0f / Math.Sqrt(RcMath.Sqr(x) + RcMath.Sqr(y) + RcMath.Sqr(z)));
+            if (d != 0)
+            {
+                x *= d;
+                y *= d;
+                z *= d;
+            }
+        }
     }
 }
