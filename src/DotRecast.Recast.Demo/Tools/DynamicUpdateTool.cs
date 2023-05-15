@@ -248,7 +248,7 @@ public class DynamicUpdateTool : Tool
         Vector3f baseUp = Vector3f.Of(0, 1, 0);
         Vector3f forward = Vector3f.Of((1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()));
         VNormalize(ref forward);
-        Vector3f side = VCross(forward, baseUp);
+        Vector3f side = Vector3f.Cross(forward, baseUp);
         BoxCollider @base = new BoxCollider(baseCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(baseUp, forward, baseExtent),
             SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, dynaMesh.config.walkableClimb);
         var roofUp = Vector3f.Zero;

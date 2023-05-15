@@ -33,7 +33,7 @@ namespace DotRecast.Core
 
             // Compute triangle normal. Can be precalculated or cached if
             // intersecting multiple segments against the same triangle
-            Vector3f norm = VCross(ab, ac);
+            Vector3f norm = Vector3f.Cross(ab, ac);
 
             // Compute denominator d. If d <= 0, segment is parallel to or points
             // away from triangle, so exit early
@@ -59,7 +59,7 @@ namespace DotRecast.Core
             }
 
             // Compute barycentric coordinate components and test if within bounds
-            Vector3f e = VCross(qp, ap);
+            Vector3f e = Vector3f.Cross(qp, ap);
             v = VDot(ac, e);
             if (v < 0.0f || v > d)
             {

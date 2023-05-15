@@ -52,14 +52,6 @@ namespace DotRecast.Core
             return dx * dx + dy * dy + dz * dz;
         }
 
-        public static Vector3f VCross(Vector3f v1, Vector3f v2)
-        {
-            Vector3f dest = new Vector3f();
-            dest.x = v1.y * v2.z - v1.z * v2.y;
-            dest.y = v1.z * v2.x - v1.x * v2.z;
-            dest.z = v1.x * v2.y - v1.y * v2.x;
-            return dest;
-        }
 
         public static float VDot(Vector3f v1, Vector3f v2)
         {
@@ -334,13 +326,6 @@ namespace DotRecast.Core
         public static bool VEqual(Vector3f p0, Vector3f p1)
         {
             return VEqual(p0, p1, EQUAL_THRESHOLD);
-        }
-
-
-        public static bool VEqual(float[] p0, float[] p1, float thresholdSqr)
-        {
-            float d = VDistSqr(p0, p1);
-            return d < thresholdSqr;
         }
 
         public static bool VEqual(Vector3f p0, Vector3f p1, float thresholdSqr)
