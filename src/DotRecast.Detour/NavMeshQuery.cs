@@ -21,13 +21,12 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using DotRecast.Core;
 using DotRecast.Detour.QueryResults;
 
 namespace DotRecast.Detour
 {
-    using static DotRecast.Core.RcMath;
+    using static RcMath;
     using static Node;
 
     public class NavMeshQuery

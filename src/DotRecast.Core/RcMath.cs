@@ -19,7 +19,6 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using System.Numerics;
 
 namespace DotRecast.Core
 {
@@ -754,7 +753,7 @@ namespace DotRecast.Core
             return a.x * b.z - a.z * b.x;
         }
 
-        public static Tuple<float, float>? IntersectSegSeg2D(Vector3f ap, Vector3f aq, Vector3f bp, Vector3f bq)
+        public static Tuple<float, float> IntersectSegSeg2D(Vector3f ap, Vector3f aq, Vector3f bp, Vector3f bq)
         {
             Vector3f u = aq.Subtract(ap);
             Vector3f v = bq.Subtract(bp);
