@@ -116,13 +116,13 @@ namespace DotRecast.Detour.Crowd
             // Fake dynamic constraint.
             float maxDelta = option.maxAcceleration * dt;
             Vector3f dv = nvel.Subtract(vel);
-            float ds = VLen(dv);
+            float ds = dv.Length();
             if (ds > maxDelta)
                 dv = VScale(dv, maxDelta / ds);
             vel = vel.Add(dv);
 
             // Integrate
-            if (VLen(vel) > 0.0001f)
+            if (vel.Length() > 0.0001f)
                 npos = VMad(npos, vel, dt);
             else
                 vel = Vector3f.Zero;
@@ -174,8 +174,8 @@ namespace DotRecast.Detour.Crowd
                 dir0.y = 0;
                 dir1.y = 0;
 
-                float len0 = VLen(dir0);
-                float len1 = VLen(dir1);
+                float len0 = dir0.Length();
+                float len1 = dir1.Length();
                 if (len1 > 0.001f)
                     dir1 = VScale(dir1, 1.0f / len1);
 

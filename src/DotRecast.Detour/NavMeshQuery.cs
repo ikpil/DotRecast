@@ -367,7 +367,7 @@ namespace DotRecast.Detour
                         neighbourNode.pos = Vector3f.Lerp(va, vb, 0.5f);
                     }
 
-                    float total = bestNode.total + VDist(bestNode.pos, neighbourNode.pos);
+                    float total = bestNode.total + Vector3f.Distance(bestNode.pos, neighbourNode.pos);
 
                     // The node is already in open list and the new result is worse, skip.
                     if ((neighbourNode.flags & Node.DT_NODE_OPEN) != 0 && total >= neighbourNode.total)
@@ -1827,7 +1827,7 @@ namespace DotRecast.Detour
 
             // Search constraints
             var searchPos = Vector3f.Lerp(startPos, endPos, 0.5f);
-            float searchRadSqr = Sqr(VDist(startPos, endPos) / 2.0f + 0.001f);
+            float searchRadSqr = Sqr(Vector3f.Distance(startPos, endPos) / 2.0f + 0.001f);
 
             float[] verts = new float[m_nav.GetMaxVertsPerPoly() * 3];
 
@@ -3339,7 +3339,7 @@ namespace DotRecast.Detour
                         }
                     }
 
-                    float total = bestNode.total + VDist(bestNode.pos, neighbourNode.pos);
+                    float total = bestNode.total + Vector3f.Distance(bestNode.pos, neighbourNode.pos);
 
                     // The node is already in open list and the new result is worse, skip.
                     if ((neighbourNode.flags & Node.DT_NODE_OPEN) != 0 && total >= neighbourNode.total)

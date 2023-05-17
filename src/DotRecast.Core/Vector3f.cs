@@ -93,9 +93,15 @@ namespace DotRecast.Core
                 default: throw new IndexOutOfRangeException($"{index}-{value}");
             }
         }
-
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector3f Subtract(Vector3f right)
+        public readonly float Length()
+        {
+            return (float)Math.Sqrt(x * x + y * y + z * z);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Vector3f Subtract(Vector3f right)
         {
             return new Vector3f(
                 x - right.x,
@@ -105,7 +111,7 @@ namespace DotRecast.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector3f Add(Vector3f v2)
+        public readonly Vector3f Add(Vector3f v2)
         {
             return new Vector3f(
                 x + v2.x,
@@ -122,13 +128,13 @@ namespace DotRecast.Core
         /// The vectors are projected onto the xz-plane, so the y-values are
         /// ignored.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float Dot2D(Vector3f v)
+        public readonly float Dot2D(Vector3f v)
         {
             return x * v.x + z * v.z;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float Dot2D(float[] v, int vi)
+        public readonly float Dot2D(float[] v, int vi)
         {
             return x * v[vi] + z * v[vi + 2];
         }
@@ -210,5 +216,20 @@ namespace DotRecast.Core
                 v1.z + (v2.z - v1.z) * t
             );
         }
+
+        /// Returns the distance between two points.
+        /// @param[in] v1 A point. [(x, y, z)]
+        /// @param[in] v2 A point. [(x, y, z)]
+        /// @return The distance between the two points.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Distance(Vector3f v1, Vector3f v2)
+        {
+            float dx = v2.x - v1.x;
+            float dy = v2.y - v1.y;
+            float dz = v2.z - v1.z;
+            return (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
+        }
+
+
     }
 }

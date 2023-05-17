@@ -33,7 +33,7 @@ public class CapsuleGizmo : IColliderGizmo
         var trY = Vector3f.Of(normals[0].y, normals[1].y, normals[2].y);
         var trZ = Vector3f.Of(normals[0].z, normals[1].z, normals[2].z);
         float[] spVertices = GenerateSphericalVertices();
-        float halfLength = 0.5f * VLen(axis);
+        float halfLength = 0.5f * axis.Length();
         vertices = new float[spVertices.Length];
         gradient = new float[spVertices.Length / 3];
         Vector3f v = new Vector3f();

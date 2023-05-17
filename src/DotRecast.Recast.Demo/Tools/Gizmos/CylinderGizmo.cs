@@ -33,7 +33,7 @@ public class CylinderGizmo : IColliderGizmo
         Vector3f trY = Vector3f.Of(normals[0].y, normals[1].y, normals[2].y);
         Vector3f trZ = Vector3f.Of(normals[0].z, normals[1].z, normals[2].z);
         vertices = GenerateCylindricalVertices();
-        float halfLength = 0.5f * VLen(axis);
+        float halfLength = 0.5f * axis.Length();
         gradient = new float[vertices.Length / 3];
         Vector3f v = new Vector3f();
         for (int i = 0; i < vertices.Length; i += 3)

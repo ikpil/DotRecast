@@ -89,7 +89,7 @@ namespace DotRecast.Detour
         public float GetCost(Vector3f pa, Vector3f pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef,
             MeshTile curTile, Poly curPoly, long nextRef, MeshTile nextTile, Poly nextPoly)
         {
-            return VDist(pa, pb) * m_areaCost[curPoly.GetArea()];
+            return Vector3f.Distance(pa, pb) * m_areaCost[curPoly.GetArea()];
         }
 
         public int GetIncludeFlags()

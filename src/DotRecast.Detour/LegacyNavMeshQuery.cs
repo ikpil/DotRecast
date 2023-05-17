@@ -62,7 +62,7 @@ namespace DotRecast.Detour
             startNode.pos = startPos;
             startNode.pidx = 0;
             startNode.cost = 0;
-            startNode.total = VDist(startPos, endPos) * H_SCALE;
+            startNode.total = Vector3f.Distance(startPos, endPos) * H_SCALE;
             startNode.id = startRef;
             startNode.flags = Node.DT_NODE_OPEN;
             m_openList.Push(startNode);
@@ -173,7 +173,7 @@ namespace DotRecast.Detour
                         float curCost = filter.GetCost(bestNode.pos, neighbourNode.pos, parentRef, parentTile, parentPoly,
                             bestRef, bestTile, bestPoly, neighbourRef, neighbourTile, neighbourPoly);
                         cost = bestNode.cost + curCost;
-                        heuristic = VDist(neighbourNode.pos, endPos) * H_SCALE;
+                        heuristic = Vector3f.Distance(neighbourNode.pos, endPos) * H_SCALE;
                     }
 
                     float total = cost + heuristic;
@@ -410,7 +410,7 @@ namespace DotRecast.Detour
                     }
                     else
                     {
-                        heuristic = VDist(neighbourNode.pos, m_query.endPos) * H_SCALE;
+                        heuristic = Vector3f.Distance(neighbourNode.pos, m_query.endPos) * H_SCALE;
                     }
 
                     float total = cost + heuristic;
@@ -815,7 +815,7 @@ namespace DotRecast.Detour
                         }
                     }
 
-                    float total = bestNode.total + VDist(bestNode.pos, neighbourNode.pos);
+                    float total = bestNode.total + Vector3f.Distance(bestNode.pos, neighbourNode.pos);
 
                     // The node is already in open list and the new result is worse, skip.
                     if ((neighbourNode.flags & Node.DT_NODE_OPEN) != 0 && total >= neighbourNode.total)

@@ -1055,7 +1055,7 @@ namespace DotRecast.Detour.Crowd
                 if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                 {
                     dvel = ag.targetPos;
-                    ag.desiredSpeed = VLen(ag.targetPos);
+                    ag.desiredSpeed = ag.targetPos.Length();
                 }
                 else
                 {

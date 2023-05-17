@@ -176,19 +176,6 @@ namespace DotRecast.Core
         /// @param[in] v1 A point. [(x, y, z)]
         /// @param[in] v2 A point. [(x, y, z)]
         /// @return The distance between the two points.
-        public static float VDist(Vector3f v1, Vector3f v2)
-        {
-            float dx = v2.x - v1.x;
-            float dy = v2.y - v1.y;
-            float dz = v2.z - v1.z;
-            return (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
-        }
-
-
-        /// Returns the distance between two points.
-        /// @param[in] v1 A point. [(x, y, z)]
-        /// @param[in] v2 A point. [(x, y, z)]
-        /// @return The distance between the two points.
         public static float VDistSqr(float[] v1, float[] v2)
         {
             float dx = v2[0] - v1[0];
@@ -201,34 +188,9 @@ namespace DotRecast.Core
         /// Derives the square of the scalar length of the vector. (len * len)
         /// @param[in] v The vector. [(x, y, z)]
         /// @return The square of the scalar length of the vector.
-        public static float VLenSqr(float[] v)
-        {
-            return v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
-        }
-
         public static float VLenSqr(Vector3f v)
         {
             return v.x * v.x + v.y * v.y + v.z * v.z;
-        }
-
-
-        public static float VLen(float[] v)
-        {
-            return (float)Math.Sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
-        }
-
-        public static float VLen(Vector3f v)
-        {
-            return (float)Math.Sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
-        }
-
-
-        public static float VDist(float[] v1, float[] verts, int i)
-        {
-            float dx = verts[i] - v1[0];
-            float dy = verts[i + 1] - v1[1];
-            float dz = verts[i + 2] - v1[2];
-            return (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
         }
 
 
