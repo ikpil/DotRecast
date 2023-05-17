@@ -1294,7 +1294,7 @@ namespace DotRecast.Detour.Crowd
                         continue;
                     }
 
-                    ag.npos = VAdd(ag.npos, ag.disp);
+                    ag.npos = ag.npos.Add(ag.disp);
                 }
             }
 

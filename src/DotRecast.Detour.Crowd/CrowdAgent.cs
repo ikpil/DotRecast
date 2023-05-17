@@ -119,7 +119,7 @@ namespace DotRecast.Detour.Crowd
             float ds = VLen(dv);
             if (ds > maxDelta)
                 dv = VScale(dv, maxDelta / ds);
-            vel = VAdd(vel, dv);
+            vel = vel.Add(dv);
 
             // Integrate
             if (VLen(vel) > 0.0001f)

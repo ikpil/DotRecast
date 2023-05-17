@@ -104,6 +104,16 @@ namespace DotRecast.Core
             );
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Vector3f Add(Vector3f v2)
+        {
+            return new Vector3f(
+                x + v2.x,
+                y + v2.y,
+                z + v2.z
+            );
+        }
+
         /// Derives the dot product of two vectors on the xz-plane. (@p u . @p v)
         /// @param[in] u A vector [(x, y, z)]
         /// @param[in] v A vector [(x, y, z)]
@@ -173,6 +183,12 @@ namespace DotRecast.Core
         public static Vector3f operator -(Vector3f left, Vector3f right)
         {
             return left.Subtract(right);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3f operator +(Vector3f left, Vector3f right)
+        {
+            return left.Add(right);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

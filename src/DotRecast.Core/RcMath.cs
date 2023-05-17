@@ -126,14 +126,7 @@ namespace DotRecast.Core
         }
 
 
-        public static Vector3f VAdd(Vector3f v1, Vector3f v2)
-        {
-            return new Vector3f(
-                v1.x + v2.x,
-                v1.y + v2.y,
-                v1.z + v2.z
-            );
-        }
+
 
         public static void VSet(ref Vector3f @out, float a, float b, float c)
         {
