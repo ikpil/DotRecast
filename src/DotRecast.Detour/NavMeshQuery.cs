@@ -364,7 +364,7 @@ namespace DotRecast.Detour
                     // Cost
                     if (neighbourNode.flags == 0)
                     {
-                        neighbourNode.pos = VLerp(va, vb, 0.5f);
+                        neighbourNode.pos = Vector3f.Lerp(va, vb, 0.5f);
                     }
 
                     float total = bestNode.total + VDist(bestNode.pos, neighbourNode.pos);
@@ -1505,7 +1505,7 @@ namespace DotRecast.Detour
                 if (null != interect)
                 {
                     float t = interect.Item2;
-                    var pt = VLerp(left, right, t);
+                    var pt = Vector3f.Lerp(left, right, t);
                     stat = AppendVertex(pt, 0, path[i + 1], straightPath, maxStraightPath);
                     if (!stat.IsInProgress())
                     {
@@ -1826,7 +1826,7 @@ namespace DotRecast.Detour
             bestPos = startPos;
 
             // Search constraints
-            var searchPos = VLerp(startPos, endPos, 0.5f);
+            var searchPos = Vector3f.Lerp(startPos, endPos, 0.5f);
             float searchRadSqr = Sqr(VDist(startPos, endPos) / 2.0f + 0.001f);
 
             float[] verts = new float[m_nav.GetMaxVertsPerPoly() * 3];
@@ -2134,7 +2134,7 @@ namespace DotRecast.Detour
                 t = Clamp(interect.Item2, 0.1f, 0.9f);
             }
 
-            Vector3f pt = VLerp(left, right, t);
+            Vector3f pt = Vector3f.Lerp(left, right, t);
             return Results.Success(pt);
         }
 
@@ -2571,7 +2571,7 @@ namespace DotRecast.Detour
                     // Cost
                     if (neighbourNode.flags == 0)
                     {
-                        neighbourNode.pos = VLerp(va, vb, 0.5f);
+                        neighbourNode.pos = Vector3f.Lerp(va, vb, 0.5f);
                     }
 
                     float cost = filter.GetCost(bestNode.pos, neighbourNode.pos, parentRef, parentTile, parentPoly, bestRef,
@@ -2763,7 +2763,7 @@ namespace DotRecast.Detour
                     // Cost
                     if (neighbourNode.flags == 0)
                     {
-                        neighbourNode.pos = VLerp(va, vb, 0.5f);
+                        neighbourNode.pos = Vector3f.Lerp(va, vb, 0.5f);
                     }
 
                     float cost = filter.GetCost(bestNode.pos, neighbourNode.pos, parentRef, parentTile, parentPoly, bestRef,

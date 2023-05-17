@@ -1355,12 +1355,12 @@ namespace DotRecast.Detour.Crowd
                 if (anim.t < ta)
                 {
                     float u = Tween(anim.t, 0.0f, ta);
-                    ag.npos = VLerp(anim.initPos, anim.startPos, u);
+                    ag.npos = Vector3f.Lerp(anim.initPos, anim.startPos, u);
                 }
                 else
                 {
                     float u = Tween(anim.t, ta, tb);
-                    ag.npos = VLerp(anim.startPos, anim.endPos, u);
+                    ag.npos = Vector3f.Lerp(anim.startPos, anim.endPos, u);
                 }
 
                 // Update velocity.

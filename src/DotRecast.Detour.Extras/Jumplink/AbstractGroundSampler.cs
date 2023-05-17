@@ -32,7 +32,7 @@ namespace DotRecast.Detour.Extras.Jumplink
 
                 GroundSample s = new GroundSample();
                 seg.gsamples[i] = s;
-                Vector3f pt = VLerp(seg.p, seg.q, u);
+                Vector3f pt = Vector3f.Lerp(seg.p, seg.q, u);
                 Tuple<bool, float> height = heightFunc.Invoke(pt, seg.height);
                 s.p.x = pt.x;
                 s.p.y = height.Item2;

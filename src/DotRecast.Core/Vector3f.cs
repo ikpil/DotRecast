@@ -147,6 +147,18 @@ namespace DotRecast.Core
             return hash;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Normalize()
+        {
+            float d = (float)(1.0f / Math.Sqrt(RcMath.Sqr(x) + RcMath.Sqr(y) + RcMath.Sqr(z)));
+            if (d != 0)
+            {
+                x *= d;
+                y *= d;
+                z *= d;
+            }
+        }
+
         public static bool operator ==(Vector3f left, Vector3f right)
         {
             return left.Equals(right);
@@ -174,15 +186,13 @@ namespace DotRecast.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Normalize()
+        public static Vector3f Lerp(Vector3f v1, Vector3f v2, float t)
         {
-            float d = (float)(1.0f / Math.Sqrt(RcMath.Sqr(x) + RcMath.Sqr(y) + RcMath.Sqr(z)));
-            if (d != 0)
-            {
-                x *= d;
-                y *= d;
-                z *= d;
-            }
+            return new Vector3f(
+                v1.x + (v2.x - v1.x) * t,
+                v1.y + (v2.y - v1.y) * t,
+                v1.z + (v2.z - v1.z) * t
+            );
         }
     }
 }

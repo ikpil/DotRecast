@@ -125,14 +125,6 @@ namespace DotRecast.Core
             );
         }
 
-        public static Vector3f VLerp(Vector3f v1, Vector3f v2, float t)
-        {
-            return new Vector3f(
-                v1.x + (v2.x - v1.x) * t,
-                v1.y + (v2.y - v1.y) * t,
-                v1.z + (v2.z - v1.z) * t
-            );
-        }
 
         public static Vector3f VAdd(Vector3f v1, Vector3f v2)
         {
@@ -323,7 +315,7 @@ namespace DotRecast.Core
             return d < thresholdSqr;
         }
 
-        
+
         /// Derives the xz-plane 2D perp product of the two vectors. (uz*vx - ux*vz)
         /// @param[in] u The LHV vector [(x, y, z)]
         /// @param[in] v The RHV vector [(x, y, z)]

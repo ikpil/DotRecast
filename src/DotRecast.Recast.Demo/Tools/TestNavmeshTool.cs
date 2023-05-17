@@ -380,7 +380,7 @@ public class TestNavmeshTool : Tool
                         else
                         {
                             // Hit
-                            m_hitPos = VLerp(m_spos, m_epos, hit.result.t);
+                            m_hitPos = Vector3f.Lerp(m_spos, m_epos, hit.result.t);
                             m_hitNormal = hit.result.hitNormal;
                             m_hitResult = true;
                         }
@@ -949,7 +949,7 @@ public class TestNavmeshTool : Tool
     private Vector3f GetPolyCenter(NavMesh navMesh, long refs)
     {
         Vector3f center = Vector3f.Zero;
-        
+
         Result<Tuple<MeshTile, Poly>> tileAndPoly = navMesh.GetTileAndPolyByRef(refs);
         if (tileAndPoly.Succeeded())
         {

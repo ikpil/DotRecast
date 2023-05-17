@@ -836,8 +836,8 @@ namespace DotRecast.Detour
 
                 var ext = new Vector3f()
                 {
-                    x = targetCon.rad, 
-                    y = target.data.header.walkableClimb, 
+                    x = targetCon.rad,
+                    y = target.data.header.walkableClimb,
                     z = targetCon.rad
                 };
 
@@ -1070,8 +1070,8 @@ namespace DotRecast.Detour
 
                 var ext = new Vector3f()
                 {
-                    x = con.rad, 
-                    y = tile.data.header.walkableClimb, 
+                    x = con.rad,
+                    y = tile.data.header.walkableClimb,
                     z = con.rad,
                 };
 
@@ -1160,7 +1160,7 @@ namespace DotRecast.Detour
                             int index = poly.verts[tris[ti + j]] * 3;
                             v[j] = new Vector3f
                             {
-                                x = tile.data.verts[index], 
+                                x = tile.data.verts[index],
                                 y = tile.data.verts[index + 1],
                                 z = tile.data.verts[index + 2]
                             };
@@ -1170,7 +1170,7 @@ namespace DotRecast.Detour
                             int index = (pd.vertBase + (tris[ti + j] - poly.vertCount)) * 3;
                             v[j] = new Vector3f
                             {
-                                x = tile.data.detailVerts[index], 
+                                x = tile.data.detailVerts[index],
                                 y = tile.data.detailVerts[index + 1],
                                 z = tile.data.detailVerts[index + 2]
                             };
@@ -1226,7 +1226,7 @@ namespace DotRecast.Detour
                 }
             }
 
-            return VLerp(pmin, pmax, tmin);
+            return Vector3f.Lerp(pmin, pmax, tmin);
         }
 
         public float? GetPolyHeight(MeshTile tile, Poly poly, Vector3f pos)
@@ -1267,7 +1267,7 @@ namespace DotRecast.Detour
                             int index = poly.verts[tile.data.detailTris[t + k]] * 3;
                             v[k] = new Vector3f
                             {
-                                x = tile.data.verts[index], 
+                                x = tile.data.verts[index],
                                 y = tile.data.verts[index + 1],
                                 z = tile.data.verts[index + 2]
                             };
@@ -1277,7 +1277,7 @@ namespace DotRecast.Detour
                             int index = (pd.vertBase + (tile.data.detailTris[t + k] - poly.vertCount)) * 3;
                             v[k] = new Vector3f
                             {
-                                x = tile.data.detailVerts[index], 
+                                x = tile.data.detailVerts[index],
                                 y = tile.data.detailVerts[index + 1],
                                 z = tile.data.detailVerts[index + 2]
                             };
@@ -1344,7 +1344,7 @@ namespace DotRecast.Detour
                 i = poly.verts[1] * 3;
                 var v1 = new Vector3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
                 Tuple<float, float> dt = DistancePtSegSqr2D(pos, v0, v1);
-                return new ClosestPointOnPolyResult(false, VLerp(v0, v1, dt.Item2));
+                return new ClosestPointOnPolyResult(false, Vector3f.Lerp(v0, v1, dt.Item2));
             }
 
             // Outside poly that is not an offmesh connection.

@@ -236,7 +236,7 @@ public class JumpLinkBuilderTool : Tool
                     {
                         GroundSample s = link.start.gsamples[i];
                         float u = i / (float)(link.start.gsamples.Length - 1);
-                        Vector3f spt = VLerp(link.start.p, link.start.q, u);
+                        Vector3f spt = Vector3f.Lerp(link.start.p, link.start.q, u);
                         int col = DuRGBA(48, 16, 16, 255); // DuRGBA(255,(s->flags & 4)?255:0,0,255);
                         float off = 0.1f;
                         if (!s.validHeight)
@@ -256,7 +256,7 @@ public class JumpLinkBuilderTool : Tool
                     {
                         GroundSample s = link.start.gsamples[i];
                         float u = i / (float)(link.start.gsamples.Length - 1);
-                        Vector3f spt = VLerp(link.start.p, link.start.q, u);
+                        Vector3f spt = Vector3f.Lerp(link.start.p, link.start.q, u);
                         int col = DuRGBA(255, 255, 255, 255);
                         float off = 0;
                         if (s.validHeight)
@@ -276,7 +276,7 @@ public class JumpLinkBuilderTool : Tool
                         {
                             GroundSample s = end.gsamples[i];
                             float u = i / (float)(end.gsamples.Length - 1);
-                            Vector3f spt = VLerp(end.p, end.q, u);
+                            Vector3f spt = Vector3f.Lerp(end.p, end.q, u);
                             int col = DuRGBA(48, 16, 16, 255); // DuRGBA(255,(s->flags & 4)?255:0,0,255);
                             float off = 0.1f;
                             if (!s.validHeight)
@@ -295,7 +295,7 @@ public class JumpLinkBuilderTool : Tool
                         {
                             GroundSample s = end.gsamples[i];
                             float u = i / (float)(end.gsamples.Length - 1);
-                            Vector3f spt = VLerp(end.p, end.q, u);
+                            Vector3f spt = Vector3f.Lerp(end.p, end.q, u);
                             int col = DuRGBA(255, 255, 255, 255);
                             float off = 0;
                             if (s.validHeight)
