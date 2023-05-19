@@ -52,10 +52,6 @@ namespace DotRecast.Core
         }
 
 
-        public static float VDot(Vector3f v1, Vector3f v2)
-        {
-            return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
-        }
 
         public static float Sqr(float f)
         {
@@ -123,8 +119,6 @@ namespace DotRecast.Core
                 verts[v1 + 2] + (verts[v2 + 2] - verts[v1 + 2]) * t
             );
         }
-
-
 
 
         public static void VSet(ref Vector3f @out, float a, float b, float c)

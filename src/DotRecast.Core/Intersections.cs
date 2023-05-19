@@ -37,7 +37,7 @@ namespace DotRecast.Core
 
             // Compute denominator d. If d <= 0, segment is parallel to or points
             // away from triangle, so exit early
-            float d = VDot(qp, norm);
+            float d = Vector3f.Dot(qp, norm);
             if (d <= 0.0f)
             {
                 return null;
@@ -47,7 +47,7 @@ namespace DotRecast.Core
             // intersects iff 0 <= t. Segment intersects iff 0 <= t <= 1. Delay
             // dividing by d until intersection has been found to pierce triangle
             Vector3f ap = sp.Subtract(a);
-            float t = VDot(ap, norm);
+            float t = Vector3f.Dot(ap, norm);
             if (t < 0.0f)
             {
                 return null;
@@ -60,13 +60,13 @@ namespace DotRecast.Core
 
             // Compute barycentric coordinate components and test if within bounds
             Vector3f e = Vector3f.Cross(qp, ap);
-            v = VDot(ac, e);
+            v = Vector3f.Dot(ac, e);
             if (v < 0.0f || v > d)
             {
                 return null;
             }
 
-            w = -VDot(ab, e);
+            w = -Vector3f.Dot(ab, e);
             if (w < 0.0f || v + w > d)
             {
                 return null;

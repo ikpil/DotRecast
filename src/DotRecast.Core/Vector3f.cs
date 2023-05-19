@@ -93,13 +93,13 @@ namespace DotRecast.Core
                 default: throw new IndexOutOfRangeException($"{index}-{value}");
             }
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly float Length()
         {
             return (float)Math.Sqrt(x * x + y * y + z * z);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Vector3f Subtract(Vector3f right)
         {
@@ -230,6 +230,11 @@ namespace DotRecast.Core
             return (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
         }
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Dot(Vector3f v1, Vector3f v2)
+        {
+            return (v1.x * v2.x) + (v1.y * v2.y)
+                                 + (v1.z * v2.z);
+        }
     }
 }
