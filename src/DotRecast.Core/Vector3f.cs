@@ -104,6 +104,14 @@ namespace DotRecast.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Set(float a, float b, float c)
+        {
+            x = a;
+            y = b;
+            z = c;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly float Length()
         {
             return (float)Math.Sqrt(x * x + y * y + z * z);

@@ -341,9 +341,7 @@ namespace DotRecast.Detour.Crowd
             {
                 for (int x = 0; x < m_params.gridSize; ++x)
                 {
-                    Vector3f vcand = new Vector3f();
-                    VSet(ref vcand, cvx + x * cs - half, 0f, cvz + y * cs - half);
-
+                    Vector3f vcand = Vector3f.Of(cvx + x * cs - half, 0f, cvz + y * cs - half);
                     if (Sqr(vcand.x) + Sqr(vcand.z) > Sqr(vmax + cs / 2))
                         continue;
 
@@ -462,8 +460,7 @@ namespace DotRecast.Detour.Crowd
 
             // Start sampling.
             float cr = vmax * (1.0f - m_params.velBias);
-            Vector3f res = new Vector3f();
-            VSet(ref res, dvel.x * m_params.velBias, 0, dvel.z * m_params.velBias);
+            Vector3f res = Vector3f.Of(dvel.x * m_params.velBias, 0, dvel.z * m_params.velBias);
             int ns = 0;
             for (int k = 0; k < depth; ++k)
             {
@@ -473,8 +470,7 @@ namespace DotRecast.Detour.Crowd
 
                 for (int i = 0; i < npat; ++i)
                 {
-                    Vector3f vcand = new Vector3f();
-                    VSet(ref vcand, res.x + pat[i * 2 + 0] * cr, 0f, res.z + pat[i * 2 + 1] * cr);
+                    Vector3f vcand = Vector3f.Of(res.x + pat[i * 2 + 0] * cr, 0f, res.z + pat[i * 2 + 1] * cr);
                     if (Sqr(vcand.x) + Sqr(vcand.z) > Sqr(vmax + 0.001f))
                         continue;
 

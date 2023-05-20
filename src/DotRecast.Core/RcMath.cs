@@ -121,12 +121,6 @@ namespace DotRecast.Core
         }
 
 
-        public static void VSet(ref Vector3f @out, float a, float b, float c)
-        {
-            @out.x = a;
-            @out.y = b;
-            @out.z = c;
-        }
 
         public static void VCopy(ref Vector3f @out, float[] @in)
         {
