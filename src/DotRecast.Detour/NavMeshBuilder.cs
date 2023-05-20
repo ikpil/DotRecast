@@ -162,8 +162,8 @@ namespace DotRecast.Detour
                     Vector3f bmin = new Vector3f();
                     Vector3f bmax = new Vector3f();
                     int dv = vb * 3;
-                    VCopy(ref bmin, option.detailVerts, dv);
-                    VCopy(ref bmax, option.detailVerts, dv);
+                    bmin.Set(option.detailVerts, dv);
+                    bmax.Set(option.detailVerts, dv);
                     for (int j = 1; j < ndv; j++)
                     {
                         VMin(ref bmin, option.detailVerts, dv + j * 3);

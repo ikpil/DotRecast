@@ -410,7 +410,7 @@ public class CrowdTool : Tool
                 dd.Vertex(prev.x, prev.y + 0.1f, prev.z, DuRGBA(0, 0, 0, (int)(128 * preva)));
                 dd.Vertex(trail.trail[v], trail.trail[v + 1] + 0.1f, trail.trail[v + 2], DuRGBA(0, 0, 0, (int)(128 * a)));
                 preva = a;
-                VCopy(ref prev, trail.trail, v);
+                prev.Set(trail.trail, v);
             }
 
             dd.End();

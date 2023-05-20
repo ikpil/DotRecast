@@ -119,23 +119,7 @@ namespace DotRecast.Core
                 verts[v1 + 2] + (verts[v2 + 2] - verts[v1 + 2]) * t
             );
         }
-
-
-
-        public static void VCopy(ref Vector3f @out, float[] @in)
-        {
-            @out.x = @in[0];
-            @out.y = @in[1];
-            @out.z = @in[2];
-        }
-
-        public static void VCopy(ref Vector3f @out, float[] @in, int i)
-        {
-            @out.x = @in[i];
-            @out.y = @in[i + 1];
-            @out.z = @in[i + 2];
-        }
-
+        
         public static void VMin(ref Vector3f @out, float[] @in, int i)
         {
             @out.x = Math.Min(@out.x, @in[i]);

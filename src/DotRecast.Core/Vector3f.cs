@@ -110,6 +110,21 @@ namespace DotRecast.Core
             y = b;
             z = c;
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Set(float[] @in)
+        {
+            Set(@in, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Set(float[] @in, int i)
+        {
+            x = @in[i];
+            y = @in[i + 1];
+            z = @in[i + 2];
+        }
+
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly float Length()

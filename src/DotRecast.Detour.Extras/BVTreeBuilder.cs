@@ -41,8 +41,8 @@ namespace DotRecast.Detour.Extras
                 it.i = i;
                 Vector3f bmin = new Vector3f();
                 Vector3f bmax = new Vector3f();
-                VCopy(ref bmin, data.verts, data.polys[i].verts[0] * 3);
-                VCopy(ref bmax, data.verts, data.polys[i].verts[0] * 3);
+                bmin.Set(data.verts, data.polys[i].verts[0] * 3);
+                bmax.Set(data.verts, data.polys[i].verts[0] * 3);
                 for (int j = 1; j < data.polys[i].vertCount; j++)
                 {
                     VMin(ref bmin, data.verts, data.polys[i].verts[j] * 3);

@@ -54,10 +54,10 @@ namespace DotRecast.Detour
 
             do
             {
-                VCopy(ref a, p, 3 * (ai % n));
-                VCopy(ref b, q, 3 * (bi % m));
-                VCopy(ref a1, p, 3 * ((ai + n - 1) % n)); // prev a
-                VCopy(ref b1, q, 3 * ((bi + m - 1) % m)); // prev b
+                a.Set(p, 3 * (ai % n));
+                b.Set(q, 3 * (bi % m));
+                a1.Set(p, 3 * ((ai + n - 1) % n)); // prev a
+                b1.Set(q, 3 * ((bi + m - 1) % m)); // prev b
 
                 Vector3f A = a.Subtract(a1);
                 Vector3f B = b.Subtract(b1);

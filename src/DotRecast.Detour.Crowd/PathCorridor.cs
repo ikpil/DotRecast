@@ -528,7 +528,7 @@ namespace DotRecast.Detour.Crowd
             if (n == 0)
             {
                 // The first polyref is bad, use current safe values.
-                VCopy(ref m_pos, safePos);
+                m_pos.Set(safePos);
                 m_path.Clear();
                 m_path.Add(safeRef);
             }

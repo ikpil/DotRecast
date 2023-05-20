@@ -407,8 +407,8 @@ namespace DotRecast.Detour
 
                     // Calc polygon bounds.
                     int v = p.verts[0] * 3;
-                    VCopy(ref bmin, tile.data.verts, v);
-                    VCopy(ref bmax, tile.data.verts, v);
+                    bmin.Set(tile.data.verts, v);
+                    bmax.Set(tile.data.verts, v);
                     for (int j = 1; j < p.vertCount; ++j)
                     {
                         v = p.verts[j] * 3;
@@ -1575,8 +1575,8 @@ namespace DotRecast.Detour
 
             Vector3f startPos = new Vector3f();
             Vector3f endPos = new Vector3f();
-            VCopy(ref startPos, tile.data.verts, poly.verts[idx0] * 3);
-            VCopy(ref endPos, tile.data.verts, poly.verts[idx1] * 3);
+            startPos.Set(tile.data.verts, poly.verts[idx0] * 3);
+            endPos.Set(tile.data.verts, poly.verts[idx1] * 3);
             return Results.Success(Tuple.Create(startPos, endPos));
         }
 
