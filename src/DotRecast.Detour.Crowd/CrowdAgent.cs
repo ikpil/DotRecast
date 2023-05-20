@@ -118,7 +118,7 @@ namespace DotRecast.Detour.Crowd
             Vector3f dv = nvel.Subtract(vel);
             float ds = dv.Length();
             if (ds > maxDelta)
-                dv = VScale(dv, maxDelta / ds);
+                dv = dv.Scale(maxDelta / ds);
             vel = vel.Add(dv);
 
             // Integrate
@@ -177,7 +177,7 @@ namespace DotRecast.Detour.Crowd
                 float len0 = dir0.Length();
                 float len1 = dir1.Length();
                 if (len1 > 0.001f)
-                    dir1 = VScale(dir1, 1.0f / len1);
+                    dir1 = dir1.Scale(1.0f / len1);
 
                 dir.x = dir0.x - dir1.x * len0 * 0.5f;
                 dir.y = 0;

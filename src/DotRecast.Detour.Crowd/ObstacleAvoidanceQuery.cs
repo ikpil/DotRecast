@@ -229,7 +229,7 @@ namespace DotRecast.Detour.Crowd
                 ObstacleCircle cir = m_circles[i];
 
                 // RVO
-                Vector3f vab = VScale(vcand, 2);
+                Vector3f vab = vcand.Scale(2);
                 vab = vab.Subtract(vel);
                 vab = vab.Subtract(cir.vel);
 

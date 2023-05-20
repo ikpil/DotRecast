@@ -737,42 +737,23 @@ namespace DotRecast.Core
             return (side + 4) & 0x7;
         }
 
-        public static float VperpXZ(float[] a, float[] b)
-        {
-            return a[0] * b[2] - a[2] * b[0];
-        }
-
-        public static float VperpXZ(Vector3f a, Vector3f b)
-        {
-            return a.x * b.z - a.z * b.x;
-        }
 
         public static Tuple<float, float> IntersectSegSeg2D(Vector3f ap, Vector3f aq, Vector3f bp, Vector3f bq)
         {
             Vector3f u = aq.Subtract(ap);
             Vector3f v = bq.Subtract(bp);
             Vector3f w = ap.Subtract(bp);
-            float d = VperpXZ(u, v);
+            float d = Vector3f.PerpXZ(u, v);
             if (Math.Abs(d) < 1e-6f)
             {
                 return null;
             }
 
-            float s = VperpXZ(v, w) / d;
-            float t = VperpXZ(u, w) / d;
+            float s = Vector3f.PerpXZ(v, w) / d;
+            float t = Vector3f.PerpXZ(u, w) / d;
             return Tuple.Create(s, t);
         }
-
-        public static Vector3f VScale(Vector3f @in, float scale)
-        {
-            var @out = new Vector3f();
-            @out.x = @in.x * scale;
-            @out.y = @in.y * scale;
-            @out.z = @in.z * scale;
-            return @out;
-        }
-
-
+        
         /// Checks that the specified vector's components are all finite.
         /// @param[in] v A point. [(x, y, z)]
         /// @return True if all of the point's components are finite, i.e. not NaN

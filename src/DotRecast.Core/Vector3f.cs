@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Runtime.CompilerServices;
+using System.Security.Permissions;
 
 namespace DotRecast.Core
 {
@@ -51,6 +52,14 @@ namespace DotRecast.Core
             this.y = y;
             this.z = z;
         }
+
+        public Vector3f(float f)
+        {
+            x = f;
+            y = f;
+            z = f;
+        }
+
 
         public Vector3f(float[] f)
         {
@@ -120,6 +129,17 @@ namespace DotRecast.Core
             );
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Vector3f Scale(float scale)
+        {
+            return new Vector3f(
+                x * scale,
+                y * scale,
+                z * scale
+            );
+        }
+
+
         /// Derives the dot product of two vectors on the xz-plane. (@p u . @p v)
         /// @param[in] u A vector [(x, y, z)]
         /// @param[in] v A vector [(x, y, z)]
@@ -175,11 +195,13 @@ namespace DotRecast.Core
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Vector3f left, Vector3f right)
         {
             return left.Equals(right);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(Vector3f left, Vector3f right)
         {
             return !left.Equals(right);
@@ -195,6 +217,28 @@ namespace DotRecast.Core
         public static Vector3f operator +(Vector3f left, Vector3f right)
         {
             return left.Add(right);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3f operator *(Vector3f left, Vector3f right)
+        {
+            return new Vector3f(
+                left.x * right.x,
+                left.y * right.y,
+                left.z * right.z
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3f operator *(Vector3f left, float right)
+        {
+            return left * new Vector3f(right);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3f operator *(float left, Vector3f right)
+        {
+            return right * left;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -235,6 +279,12 @@ namespace DotRecast.Core
         {
             return (v1.x * v2.x) + (v1.y * v2.y)
                                  + (v1.z * v2.z);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float PerpXZ(Vector3f a, Vector3f b)
+        {
+            return (a.x * b.z) - (a.z * b.x);
         }
     }
 }

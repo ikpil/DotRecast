@@ -315,7 +315,7 @@ public class CrowdTool : Tool
         Vector3f vel = tgt.Subtract(pos);
         vel.y = 0.0f;
         vel.Normalize();
-        return VScale(vel, speed);
+        return vel.Scale(speed);
     }
 
     public override void HandleRender(NavMeshRenderer renderer)

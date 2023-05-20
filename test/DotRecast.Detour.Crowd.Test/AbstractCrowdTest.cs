@@ -156,7 +156,7 @@ public class AbstractCrowdTest
         Vector3f vel = tgt.Subtract(pos);
         vel.y = 0.0f;
         vel.Normalize();
-        vel = VScale(vel, speed);
+        vel = vel.Scale(speed);
         return vel;
     }
 

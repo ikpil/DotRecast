@@ -1074,7 +1074,7 @@ namespace DotRecast.Detour.Crowd
                     float speedScale = ag.GetDistanceToGoal(slowDownRadius) / slowDownRadius;
 
                     ag.desiredSpeed = ag.option.maxSpeed;
-                    dvel = VScale(dvel, ag.desiredSpeed * speedScale);
+                    dvel = dvel.Scale(ag.desiredSpeed * speedScale);
                 }
 
                 // Separation
@@ -1121,7 +1121,7 @@ namespace DotRecast.Detour.Crowd
                         float desiredSqr = Sqr(ag.desiredSpeed);
                         if (speedSqr > desiredSqr)
                         {
-                            dvel = VScale(dvel, desiredSqr / speedSqr);
+                            dvel = dvel.Scale(desiredSqr / speedSqr);
                         }
                     }
                 }
@@ -1283,7 +1283,7 @@ namespace DotRecast.Detour.Crowd
                     if (w > 0.0001f)
                     {
                         float iw = 1.0f / w;
-                        ag.disp = VScale(ag.disp, iw);
+                        ag.disp = ag.disp.Scale(iw);
                     }
                 }
 
