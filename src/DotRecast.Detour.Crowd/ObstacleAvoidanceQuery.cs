@@ -415,7 +415,9 @@ namespace DotRecast.Detour.Crowd
 
             // desired direction
             float[] ddir = new float[6];
-            VCopy(ddir, dvel);
+            ddir[0] = dvel.x;
+            ddir[1] = dvel.y;
+            ddir[2] = dvel.z;
             DtNormalize2D(ddir);
             Vector3f rotated = DtRotate2D(ddir, da * 0.5f); // rotated by da/2
             ddir[3] = rotated.x;

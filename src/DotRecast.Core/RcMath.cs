@@ -128,13 +128,6 @@ namespace DotRecast.Core
             @out.z = c;
         }
 
-        public static void VCopy(float[] @out, Vector3f @in)
-        {
-            @out[0] = @in.x;
-            @out[1] = @in.y;
-            @out[2] = @in.z;
-        }
-
         public static void VCopy(ref Vector3f @out, float[] @in)
         {
             @out.x = @in[0];
