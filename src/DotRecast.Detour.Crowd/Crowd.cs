@@ -1108,14 +1108,14 @@ namespace DotRecast.Detour.Crowd
                         float dist = (float)Math.Sqrt(distSqr);
                         float weight = separationWeight * (1.0f - Sqr(dist * invSeparationDist));
 
-                        disp = VMad(disp, diff, weight / dist);
+                        disp = Vector3f.Mad(disp, diff, weight / dist);
                         w += 1.0f;
                     }
 
                     if (w > 0.0001f)
                     {
                         // Adjust desired velocity.
-                        dvel = VMad(dvel, disp, 1.0f / w);
+                        dvel = Vector3f.Mad(dvel, disp, 1.0f / w);
                         // Clamp desired velocity to desired speed.
                         float speedSqr = VLenSqr(dvel);
                         float desiredSqr = Sqr(ag.desiredSpeed);
@@ -1275,7 +1275,7 @@ namespace DotRecast.Detour.Crowd
                             pen = (1.0f / dist) * (pen * 0.5f) * _config.collisionResolveFactor;
                         }
 
-                        ag.disp = VMad(ag.disp, diff, pen);
+                        ag.disp = Vector3f.Mad(ag.disp, diff, pen);
 
                         w += 1.0f;
                     }

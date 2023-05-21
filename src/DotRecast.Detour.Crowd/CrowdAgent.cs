@@ -123,7 +123,7 @@ namespace DotRecast.Detour.Crowd
 
             // Integrate
             if (vel.Length() > 0.0001f)
-                npos = VMad(npos, vel, dt);
+                npos = Vector3f.Mad(npos, vel, dt);
             else
                 vel = Vector3f.Zero;
         }

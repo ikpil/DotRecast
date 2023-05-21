@@ -237,7 +237,7 @@ public class TestNavmeshTool : Tool
                             len = STEP_SIZE / len;
                         }
 
-                        Vector3f moveTgt = VMad(iterPos, delta, len);
+                        Vector3f moveTgt = Vector3f.Mad(iterPos, delta, len);
                         // Move
                         Result<MoveAlongSurfaceResult> result = m_navQuery.MoveAlongSurface(polys[0], iterPos,
                             moveTgt, m_filter);
@@ -856,10 +856,10 @@ public class TestNavmeshTool : Tool
                                 }
 
                                 Vector3f delta = s3.Subtract(s.vmin);
-                                Vector3f p0 = VMad(s.vmin, delta, 0.5f);
+                                Vector3f p0 = Vector3f.Mad(s.vmin, delta, 0.5f);
                                 Vector3f norm = Vector3f.Of(delta.z, 0, -delta.x);
                                 norm.Normalize();
-                                Vector3f p1 = VMad(p0, norm, agentRadius * 0.5f);
+                                Vector3f p1 = Vector3f.Mad(p0, norm, agentRadius * 0.5f);
                                 // Skip backfacing segments.
                                 if (wallSegments.GetSegmentRef(j) != 0)
                                 {

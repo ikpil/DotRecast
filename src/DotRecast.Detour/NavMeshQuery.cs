@@ -2373,7 +2373,7 @@ namespace DotRecast.Detour
                     // compute the intersection point at the furthest end of the polygon
                     // and correct the height (since the raycast moves in 2d)
                     lastPos = curPos;
-                    curPos = VMad(startPos, dir, hit.t);
+                    curPos = Vector3f.Mad(startPos, dir, hit.t);
                     var e1 = Vector3f.Of(verts, iresult.segMax * 3);
                     var e2 = Vector3f.Of(verts, ((iresult.segMax + 1) % nv) * 3);
                     var eDir = e2.Subtract(e1);

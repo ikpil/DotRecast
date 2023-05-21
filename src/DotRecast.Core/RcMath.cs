@@ -91,19 +91,6 @@ namespace DotRecast.Core
         }
 
 
-        /// Performs a scaled vector addition. (@p v1 + (@p v2 * @p s))
-        /// @param[out] dest The result vector. [(x, y, z)]
-        /// @param[in] v1 The base vector. [(x, y, z)]
-        /// @param[in] v2 The vector to scale and add to @p v1. [(x, y, z)]
-        /// @param[in] s The amount to scale @p v2 by before adding to @p v1.
-        public static Vector3f VMad(Vector3f v1, Vector3f v2, float s)
-        {
-            Vector3f dest = new Vector3f();
-            dest.x = v1.x + v2.x * s;
-            dest.y = v1.y + v2.y * s;
-            dest.z = v1.z + v2.z * s;
-            return dest;
-        }
 
         /// Performs a linear interpolation between two vectors. (@p v1 toward @p
         /// v2)
