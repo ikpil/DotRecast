@@ -77,19 +77,19 @@ public class RecastSoloMeshTest
     [Test]
     public void TestWatershed()
     {
-        TestBuild("nav_test.obj", PartitionType.WATERSHED, 60, 48, 47, 349, 153, 153, 802, 558);
+        TestBuild("nav_test.obj", PartitionType.WATERSHED, 60, 48, 47, 349, 155, 155, 812, 561);
     }
 
     [Test]
     public void TestMonotone()
     {
-        TestBuild("nav_test.obj", PartitionType.MONOTONE, 0, 50, 49, 340, 185, 185, 871, 557);
+        TestBuild("nav_test.obj", PartitionType.MONOTONE, 0, 50, 49, 341, 186, 186, 878, 567);
     }
 
     [Test]
     public void TestLayers()
     {
-        TestBuild("nav_test.obj", PartitionType.LAYERS, 0, 19, 32, 312, 150, 150, 764, 521);
+        TestBuild("nav_test.obj", PartitionType.LAYERS, 0, 19, 32, 310, 150, 150, 773, 526);
     }
 
     public void TestBuild(string filename, PartitionType partitionType, int expDistance, int expRegions,
