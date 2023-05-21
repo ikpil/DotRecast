@@ -194,7 +194,7 @@ namespace DotRecast.Recast
                     {
                         int bot = (s.smax);
                         int top = s.next != null ? s.next.smin : SPAN_MAX_HEIGHT;
-                        if ((top - bot) <= walkableHeight)
+                        if ((top - bot) < walkableHeight)
                             s.area = RC_NULL_AREA;
                     }
                 }
