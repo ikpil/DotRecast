@@ -217,6 +217,22 @@ namespace DotRecast.Core
                 z *= d;
             }
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Min(float[] @in, int i)
+        {
+            x = Math.Min(x, @in[i]);
+            y = Math.Min(y, @in[i + 1]);
+            z = Math.Min(z, @in[i + 2]);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Max(float[] @in, int i)
+        {
+            x = Math.Max(x, @in[i]);
+            y = Math.Max(y, @in[i + 1]);
+            z = Math.Max(z, @in[i + 2]);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Vector3f left, Vector3f right)
@@ -324,6 +340,22 @@ namespace DotRecast.Core
                 y = v1.y + (v2.y * s),
                 z = v1.z + (v2.z * s),
             };
+        }
+
+        /// Performs a linear interpolation between two vectors. (@p v1 toward @p
+        /// v2)
+        /// @param[out] dest The result vector. [(x, y, x)]
+        /// @param[in] v1 The starting vector.
+        /// @param[in] v2 The destination vector.
+        /// @param[in] t The interpolation factor. [Limits: 0 <= value <= 1.0]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3f Lerp(float[] verts, int v1, int v2, float t)
+        {
+            return new Vector3f(
+                verts[v1 + 0] + (verts[v2 + 0] - verts[v1 + 0]) * t,
+                verts[v1 + 1] + (verts[v2 + 1] - verts[v1 + 1]) * t,
+                verts[v1 + 2] + (verts[v2 + 2] - verts[v1 + 2]) * t
+            );
         }
     }
 }

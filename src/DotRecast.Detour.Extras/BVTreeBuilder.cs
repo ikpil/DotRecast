@@ -45,8 +45,8 @@ namespace DotRecast.Detour.Extras
                 bmax.Set(data.verts, data.polys[i].verts[0] * 3);
                 for (int j = 1; j < data.polys[i].vertCount; j++)
                 {
-                    VMin(ref bmin, data.verts, data.polys[i].verts[j] * 3);
-                    VMax(ref bmax, data.verts, data.polys[i].verts[j] * 3);
+                    bmin.Min(data.verts, data.polys[i].verts[j] * 3);
+                    bmax.Max(data.verts, data.polys[i].verts[j] * 3);
                 }
 
                 it.bmin[0] = Clamp((int)((bmin.x - data.header.bmin.x) * quantFactor), 0, 0x7fffffff);

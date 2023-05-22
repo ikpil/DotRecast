@@ -499,7 +499,7 @@ namespace DotRecast.Detour
 
                 int va = imin * 3;
                 int vb = ((imin + 1) % nv) * 3;
-                closest = VLerp(verts, va, vb, edget[imin]);
+                closest = Vector3f.Lerp(verts, va, vb, edget[imin]);
             }
 
             return Results.Success(closest);
@@ -656,8 +656,8 @@ namespace DotRecast.Detour
                     for (int j = 1; j < p.vertCount; ++j)
                     {
                         v = p.verts[j] * 3;
-                        VMin(ref bmin, tile.data.verts, v);
-                        VMax(ref bmax, tile.data.verts, v);
+                        bmin.Min(tile.data.verts, v);
+                        bmax.Max(tile.data.verts, v);
                     }
 
                     if (OverlapBounds(qmin, qmax, bmin, bmax))
@@ -1912,7 +1912,7 @@ namespace DotRecast.Detour
                         if (distSqr < bestDist)
                         {
                             // Update nearest distance.
-                            bestPos = VLerp(verts, vj, vi, tseg);
+                            bestPos = Vector3f.Lerp(verts, vj, vi, tseg);
                             bestDist = distSqr;
                             bestNode = curNode;
                         }
@@ -2089,8 +2089,8 @@ namespace DotRecast.Detour
                     float s = 1.0f / 255.0f;
                     float tmin = link.bmin * s;
                     float tmax = link.bmax * s;
-                    left = VLerp(fromTile.data.verts, v0 * 3, v1 * 3, tmin);
-                    right = VLerp(fromTile.data.verts, v0 * 3, v1 * 3, tmax);
+                    left = Vector3f.Lerp(fromTile.data.verts, v0 * 3, v1 * 3, tmin);
+                    right = Vector3f.Lerp(fromTile.data.verts, v0 * 3, v1 * 3, tmax);
                 }
             }
 
@@ -3123,8 +3123,8 @@ namespace DotRecast.Detour
                         float tmin = ints[k].tmin / 255.0f;
                         float tmax = ints[k].tmax / 255.0f;
                         var seg = new SegmentVert();
-                        seg.vmin = VLerp(tile.data.verts, vj, vi, tmin);
-                        seg.vmax = VLerp(tile.data.verts, vj, vi, tmax);
+                        seg.vmin = Vector3f.Lerp(tile.data.verts, vj, vi, tmin);
+                        seg.vmax = Vector3f.Lerp(tile.data.verts, vj, vi, tmax);
                         segmentVerts.Add(seg);
                         segmentRefs.Add(ints[k].refs);
                     }
@@ -3137,8 +3137,8 @@ namespace DotRecast.Detour
                         float tmin = imin / 255.0f;
                         float tmax = imax / 255.0f;
                         var seg = new SegmentVert();
-                        seg.vmin = VLerp(tile.data.verts, vj, vi, tmin);
-                        seg.vmax = VLerp(tile.data.verts, vj, vi, tmax);
+                        seg.vmin = Vector3f.Lerp(tile.data.verts, vj, vi, tmin);
+                        seg.vmax = Vector3f.Lerp(tile.data.verts, vj, vi, tmax);
                         segmentVerts.Add(seg);
                         segmentRefs.Add(0L);
                     }

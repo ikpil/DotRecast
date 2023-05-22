@@ -412,8 +412,8 @@ namespace DotRecast.Detour
                     for (int j = 1; j < p.vertCount; ++j)
                     {
                         v = p.verts[j] * 3;
-                        VMin(ref bmin, tile.data.verts, v);
-                        VMax(ref bmax, tile.data.verts, v);
+                        bmin.Min(tile.data.verts, v);
+                        bmax.Max(tile.data.verts, v);
                     }
 
                     if (OverlapBounds(qmin, qmax, bmin, bmax))

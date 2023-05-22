@@ -27,32 +27,6 @@ namespace DotRecast.Core
         public const float EPS = 1e-4f;
         private static readonly float EQUAL_THRESHOLD = Sqr(1.0f / 16384.0f);
 
-        public static float VDistSqr(Vector3f v1, float[] v2, int i)
-        {
-            float dx = v2[i] - v1.x;
-            float dy = v2[i + 1] - v1.y;
-            float dz = v2[i + 2] - v1.z;
-            return dx * dx + dy * dy + dz * dz;
-        }
-
-        public static float VDistSqr(Vector3f v1, Vector3f v2)
-        {
-            float dx = v2.x - v1.x;
-            float dy = v2.y - v1.y;
-            float dz = v2.z - v1.z;
-            return dx * dx + dy * dy + dz * dz;
-        }
-
-        public static float VDistSqr(float[] v, int i, int j)
-        {
-            float dx = v[i] - v[j];
-            float dy = v[i + 1] - v[j + 1];
-            float dz = v[i + 2] - v[j + 2];
-            return dx * dx + dy * dy + dz * dz;
-        }
-
-
-
         public static float Sqr(float f)
         {
             return f * f;
@@ -91,37 +65,29 @@ namespace DotRecast.Core
         }
 
 
-
-        /// Performs a linear interpolation between two vectors. (@p v1 toward @p
-        /// v2)
-        /// @param[out] dest The result vector. [(x, y, x)]
-        /// @param[in] v1 The starting vector.
-        /// @param[in] v2 The destination vector.
-        /// @param[in] t The interpolation factor. [Limits: 0 <= value <= 1.0]
-        public static Vector3f VLerp(float[] verts, int v1, int v2, float t)
+        public static float VDistSqr(Vector3f v1, float[] v2, int i)
         {
-            return new Vector3f(
-                verts[v1 + 0] + (verts[v2 + 0] - verts[v1 + 0]) * t,
-                verts[v1 + 1] + (verts[v2 + 1] - verts[v1 + 1]) * t,
-                verts[v1 + 2] + (verts[v2 + 2] - verts[v1 + 2]) * t
-            );
-        }
-        
-        public static void VMin(ref Vector3f @out, float[] @in, int i)
-        {
-            @out.x = Math.Min(@out.x, @in[i]);
-            @out.y = Math.Min(@out.y, @in[i + 1]);
-            @out.z = Math.Min(@out.z, @in[i + 2]);
+            float dx = v2[i] - v1.x;
+            float dy = v2[i + 1] - v1.y;
+            float dz = v2[i + 2] - v1.z;
+            return dx * dx + dy * dy + dz * dz;
         }
 
-
-        public static void VMax(ref Vector3f @out, float[] @in, int i)
+        public static float VDistSqr(Vector3f v1, Vector3f v2)
         {
-            @out.x = Math.Max(@out.x, @in[i]);
-            @out.y = Math.Max(@out.y, @in[i + 1]);
-            @out.z = Math.Max(@out.z, @in[i + 2]);
+            float dx = v2.x - v1.x;
+            float dy = v2.y - v1.y;
+            float dz = v2.z - v1.z;
+            return dx * dx + dy * dy + dz * dz;
         }
 
+        public static float VDistSqr(float[] v, int i, int j)
+        {
+            float dx = v[i] - v[j];
+            float dy = v[i + 1] - v[j + 1];
+            float dz = v[i + 2] - v[j + 2];
+            return dx * dx + dy * dy + dz * dz;
+        }
 
         /// Returns the distance between two points.
         /// @param[in] v1 A point. [(x, y, z)]
