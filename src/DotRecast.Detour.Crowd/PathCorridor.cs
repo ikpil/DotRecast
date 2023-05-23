@@ -246,7 +246,7 @@ namespace DotRecast.Detour.Crowd
                 foreach (StraightPathItem spi in path)
                 {
                     if ((spi.GetFlags() & NavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0
-                        || VDist2DSqr(spi.GetPos(), m_pos) > MIN_TARGET_DIST)
+                        || Vector3f.Dist2DSqr(spi.GetPos(), m_pos) > MIN_TARGET_DIST)
                     {
                         break;
                     }
@@ -302,7 +302,7 @@ namespace DotRecast.Detour.Crowd
         public void OptimizePathVisibility(Vector3f next, float pathOptimizationRange, NavMeshQuery navquery, IQueryFilter filter)
         {
             // Clamp the ray to max distance.
-            float dist = VDist2D(m_pos, next);
+            float dist = Vector3f.Dist2D(m_pos, next);
 
             // If too close to the goal, do not try to optimize.
             if (dist < 0.01f)

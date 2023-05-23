@@ -853,7 +853,7 @@ namespace DotRecast.Detour
                 if ((options & DT_FINDPATH_ANY_ANGLE) != 0)
                 {
                     if ((parentRef != 0) && (raycastLimitSqr >= float.MaxValue
-                                             || VDistSqr(parentNode.pos, bestNode.pos) < raycastLimitSqr))
+                                             || Vector3f.DistSqr(parentNode.pos, bestNode.pos) < raycastLimitSqr))
                     {
                         tryLOS = true;
                     }
@@ -1179,7 +1179,7 @@ namespace DotRecast.Detour
                 if ((m_query.options & DT_FINDPATH_ANY_ANGLE) != 0)
                 {
                     if ((parentRef != 0) && (m_query.raycastLimitSqr >= float.MaxValue
-                                             || VDistSqr(parentNode.pos, bestNode.pos) < m_query.raycastLimitSqr))
+                                             || Vector3f.DistSqr(parentNode.pos, bestNode.pos) < m_query.raycastLimitSqr))
                     {
                         tryLOS = true;
                     }

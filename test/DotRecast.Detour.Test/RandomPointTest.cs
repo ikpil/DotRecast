@@ -99,7 +99,7 @@ public class RandomPointTest : AbstractDetourTest
             Result<FindRandomPointResult> result = query.FindRandomPointWithinCircle(point.GetRandomRef(), point.GetRandomPt(),
                 radius, filter, f);
             Assert.That(result.Failed(), Is.False);
-            float distance = VDist2D(point.GetRandomPt(), result.result.GetRandomPt());
+            float distance = Vector3f.Dist2D(point.GetRandomPt(), result.result.GetRandomPt());
             Assert.That(distance <= radius, Is.True);
             point = result.result;
         }

@@ -217,7 +217,7 @@ namespace DotRecast.Core
                 z *= d;
             }
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Min(float[] @in, int i)
         {
@@ -356,6 +356,95 @@ namespace DotRecast.Core
                 verts[v1 + 1] + (verts[v2 + 1] - verts[v1 + 1]) * t,
                 verts[v1 + 2] + (verts[v2 + 2] - verts[v1 + 2]) * t
             );
+        }
+
+
+        /// Returns the distance between two points.
+        /// @param[in] v1 A point. [(x, y, z)]
+        /// @param[in] v2 A point. [(x, y, z)]
+        /// @return The distance between the two points.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float DistSqr(Vector3f v1, float[] v2, int i)
+        {
+            float dx = v2[i] - v1.x;
+            float dy = v2[i + 1] - v1.y;
+            float dz = v2[i + 2] - v1.z;
+            return dx * dx + dy * dy + dz * dz;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float DistSqr(Vector3f v1, Vector3f v2)
+        {
+            float dx = v2.x - v1.x;
+            float dy = v2.y - v1.y;
+            float dz = v2.z - v1.z;
+            return dx * dx + dy * dy + dz * dz;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float DistSqr(float[] v, int i, int j)
+        {
+            float dx = v[i] - v[j];
+            float dy = v[i + 1] - v[j + 1];
+            float dz = v[i + 2] - v[j + 2];
+            return dx * dx + dy * dy + dz * dz;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float DistSqr(float[] v1, float[] v2)
+        {
+            float dx = v2[0] - v1[0];
+            float dy = v2[1] - v1[1];
+            float dz = v2[2] - v1[2];
+            return dx * dx + dy * dy + dz * dz;
+        }
+
+        /// Derives the distance between the specified points on the xz-plane.
+        /// @param[in] v1 A point. [(x, y, z)]
+        /// @param[in] v2 A point. [(x, y, z)]
+        /// @return The distance between the point on the xz-plane.
+        ///
+        /// The vectors are projected onto the xz-plane, so the y-values are
+        /// ignored.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Dist2D(float[] v1, float[] v2)
+        {
+            float dx = v2[0] - v1[0];
+            float dz = v2[2] - v1[2];
+            return (float)Math.Sqrt(dx * dx + dz * dz);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Dist2D(Vector3f v1, Vector3f v2)
+        {
+            float dx = v2.x - v1.x;
+            float dz = v2.z - v1.z;
+            return (float)Math.Sqrt(dx * dx + dz * dz);
+        }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Dist2DSqr(float[] v1, float[] v2)
+        {
+            float dx = v2[0] - v1[0];
+            float dz = v2[2] - v1[2];
+            return dx * dx + dz * dz;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Dist2DSqr(Vector3f v1, Vector3f v2)
+        {
+            float dx = v2.x - v1.x;
+            float dz = v2.z - v1.z;
+            return dx * dx + dz * dz;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Dist2DSqr(Vector3f p, float[] verts, int i)
+        {
+            float dx = verts[i] - p.x;
+            float dz = verts[i + 2] - p.z;
+            return dx * dx + dz * dz;
         }
     }
 }

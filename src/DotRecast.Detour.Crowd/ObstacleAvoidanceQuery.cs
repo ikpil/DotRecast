@@ -209,8 +209,8 @@ namespace DotRecast.Detour.Crowd
             float minPenalty, ObstacleAvoidanceDebugData debug)
         {
             // penalty for straying away from the desired and current velocities
-            float vpen = m_params.weightDesVel * (VDist2D(vcand, dvel) * m_invVmax);
-            float vcpen = m_params.weightCurVel * (VDist2D(vcand, vel) * m_invVmax);
+            float vpen = m_params.weightDesVel * (Vector3f.Dist2D(vcand, dvel) * m_invVmax);
+            float vcpen = m_params.weightCurVel * (Vector3f.Dist2D(vcand, vel) * m_invVmax);
 
             // find the threshold hit time to bail out based on the early out penalty
             // (see how the penalty is calculated below to understnad)

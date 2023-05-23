@@ -59,7 +59,7 @@ namespace DotRecast.Detour.Extras.Jumplink
                 GroundSegment end = es.end[js.groundSegment];
                 Vector3f ep = end.gsamples[js.startSample].p;
                 Vector3f eq = end.gsamples[js.startSample + js.samples - 1].p;
-                float d = Math.Min(VDist2DSqr(sp, sq), VDist2DSqr(ep, eq));
+                float d = Math.Min(Vector3f.Dist2DSqr(sp, sq), Vector3f.Dist2DSqr(ep, eq));
                 if (d >= 4 * acfg.agentRadius * acfg.agentRadius)
                 {
                     JumpLink link = new JumpLink();

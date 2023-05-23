@@ -35,7 +35,7 @@ namespace DotRecast.Detour.Extras.Jumplink
         private bool SampleTrajectory(JumpLinkBuilderConfig acfg, Heightfield solid, Vector3f pa, Vector3f pb, Trajectory tra)
         {
             float cs = Math.Min(acfg.cellSize, acfg.cellHeight);
-            float d = VDist2D(pa, pb) + Math.Abs(pa.y - pb.y);
+            float d = Vector3f.Dist2D(pa, pb) + Math.Abs(pa.y - pb.y);
             int nsamples = Math.Max(2, (int)Math.Ceiling(d / cs));
             for (int i = 0; i < nsamples; ++i)
             {

@@ -19,7 +19,7 @@ namespace DotRecast.Detour
             int outsideVertex = -1;
             for (int pv = 0; pv < verts.Length; pv += 3)
             {
-                if (VDist2DSqr(center, verts, pv) > radiusSqr)
+                if (Vector3f.Dist2DSqr(center, verts, pv) > radiusSqr)
                 {
                     outsideVertex = pv;
                     break;

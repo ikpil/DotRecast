@@ -37,7 +37,7 @@ namespace DotRecast.Core
             float totd = 0;
             for (int i = 0; i < npath - 1; ++i)
             {
-                totd += (float)Math.Sqrt(VDistSqr(path, i * 3, (i + 1) * 3));
+                totd += (float)Math.Sqrt(Vector3f.DistSqr(path, i * 3, (i + 1) * 3));
             }
 
             return totd;
@@ -65,41 +65,6 @@ namespace DotRecast.Core
         }
 
 
-        public static float VDistSqr(Vector3f v1, float[] v2, int i)
-        {
-            float dx = v2[i] - v1.x;
-            float dy = v2[i + 1] - v1.y;
-            float dz = v2[i + 2] - v1.z;
-            return dx * dx + dy * dy + dz * dz;
-        }
-
-        public static float VDistSqr(Vector3f v1, Vector3f v2)
-        {
-            float dx = v2.x - v1.x;
-            float dy = v2.y - v1.y;
-            float dz = v2.z - v1.z;
-            return dx * dx + dy * dy + dz * dz;
-        }
-
-        public static float VDistSqr(float[] v, int i, int j)
-        {
-            float dx = v[i] - v[j];
-            float dy = v[i + 1] - v[j + 1];
-            float dz = v[i + 2] - v[j + 2];
-            return dx * dx + dy * dy + dz * dz;
-        }
-
-        /// Returns the distance between two points.
-        /// @param[in] v1 A point. [(x, y, z)]
-        /// @param[in] v2 A point. [(x, y, z)]
-        /// @return The distance between the two points.
-        public static float VDistSqr(float[] v1, float[] v2)
-        {
-            float dx = v2[0] - v1[0];
-            float dy = v2[1] - v1[1];
-            float dz = v2[2] - v1[2];
-            return dx * dx + dy * dy + dz * dz;
-        }
 
 
         /// Derives the square of the scalar length of the vector. (len * len)
@@ -111,49 +76,7 @@ namespace DotRecast.Core
         }
 
 
-        /// Derives the distance between the specified points on the xz-plane.
-        /// @param[in] v1 A point. [(x, y, z)]
-        /// @param[in] v2 A point. [(x, y, z)]
-        /// @return The distance between the point on the xz-plane.
-        ///
-        /// The vectors are projected onto the xz-plane, so the y-values are
-        /// ignored.
-        public static float VDist2D(float[] v1, float[] v2)
-        {
-            float dx = v2[0] - v1[0];
-            float dz = v2[2] - v1[2];
-            return (float)Math.Sqrt(dx * dx + dz * dz);
-        }
 
-        public static float VDist2D(Vector3f v1, Vector3f v2)
-        {
-            float dx = v2.x - v1.x;
-            float dz = v2.z - v1.z;
-            return (float)Math.Sqrt(dx * dx + dz * dz);
-        }
-
-
-        public static float VDist2DSqr(float[] v1, float[] v2)
-        {
-            float dx = v2[0] - v1[0];
-            float dz = v2[2] - v1[2];
-            return dx * dx + dz * dz;
-        }
-
-        public static float VDist2DSqr(Vector3f v1, Vector3f v2)
-        {
-            float dx = v2.x - v1.x;
-            float dz = v2.z - v1.z;
-            return dx * dx + dz * dz;
-        }
-
-
-        public static float VDist2DSqr(Vector3f p, float[] verts, int i)
-        {
-            float dx = verts[i] - p.x;
-            float dz = verts[i + 2] - p.z;
-            return dx * dx + dz * dz;
-        }
 
         /// Normalizes the vector.
         /// @param[in,out] v The vector to normalize. [(x, y, z)]
@@ -183,7 +106,7 @@ namespace DotRecast.Core
 
         public static bool VEqual(Vector3f p0, Vector3f p1, float thresholdSqr)
         {
-            float d = VDistSqr(p0, p1);
+            float d = Vector3f.DistSqr(p0, p1);
             return d < thresholdSqr;
         }
 

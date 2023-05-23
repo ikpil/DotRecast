@@ -436,7 +436,7 @@ public class JumpLinkBuilderTool : Tool
         {
             Vector3f p = link.startSamples[i].p;
             Vector3f q = link.endSamples[i].p;
-            if (i == 0 || VDist2D(prev, p) > agentRadius)
+            if (i == 0 || Vector3f.Dist2D(prev, p) > agentRadius)
             {
                 geom.AddOffMeshConnection(p, q, agentRadius, false, area, flags);
                 prev = p;

@@ -11,7 +11,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             Func<Vector3f, float, Tuple<bool, float>> heightFunc)
         {
             float cs = acfg.cellSize;
-            float dist = (float)Math.Sqrt(VDist2DSqr(es.start.p, es.start.q));
+            float dist = (float)Math.Sqrt(Vector3f.Dist2DSqr(es.start.p, es.start.q));
             int ngsamples = Math.Max(2, (int)Math.Ceiling(dist / cs));
             SampleGroundSegment(heightFunc, es.start, ngsamples);
             foreach (GroundSegment end in es.end)

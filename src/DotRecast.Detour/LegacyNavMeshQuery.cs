@@ -317,7 +317,7 @@ namespace DotRecast.Detour
                 bool tryLOS = false;
                 if ((m_query.options & DT_FINDPATH_ANY_ANGLE) != 0)
                 {
-                    if ((parentRef != 0) && (VDistSqr(parentNode.pos, bestNode.pos) < m_query.raycastLimitSqr))
+                    if ((parentRef != 0) && (Vector3f.DistSqr(parentNode.pos, bestNode.pos) < m_query.raycastLimitSqr))
                     {
                         tryLOS = true;
                     }

@@ -139,7 +139,7 @@ namespace DotRecast.Detour.Crowd
                 : false;
             if (offMeshConnection)
             {
-                float distSq = VDist2DSqr(npos, corners[corners.Count - 1].GetPos());
+                float distSq = Vector3f.Dist2DSqr(npos, corners[corners.Count - 1].GetPos());
                 if (distSq < radius * radius)
                     return true;
             }
@@ -154,7 +154,7 @@ namespace DotRecast.Detour.Crowd
 
             bool endOfPath = ((corners[corners.Count - 1].GetFlags() & NavMeshQuery.DT_STRAIGHTPATH_END) != 0) ? true : false;
             if (endOfPath)
-                return Math.Min(VDist2D(npos, corners[corners.Count - 1].GetPos()), range);
+                return Math.Min(Vector3f.Dist2D(npos, corners[corners.Count - 1].GetPos()), range);
 
             return range;
         }

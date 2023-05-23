@@ -189,7 +189,7 @@ public class CrowdProfilingTool
                     bool valid = true;
                     foreach (FindRandomPointResult zone in zones)
                     {
-                        if (RcMath.VDistSqr(zone.GetRandomPt(), result.result.GetRandomPt()) < zoneSeparation)
+                        if (Vector3f.DistSqr(zone.GetRandomPt(), result.result.GetRandomPt()) < zoneSeparation)
                         {
                             valid = false;
                             break;
@@ -313,7 +313,7 @@ public class CrowdProfilingTool
         List<FindRandomPointResult> potentialTargets = new();
         foreach (FindRandomPointResult zone in zones)
         {
-            if (RcMath.VDistSqr(zone.GetRandomPt(), ag.npos) > zoneRadius * zoneRadius)
+            if (Vector3f.DistSqr(zone.GetRandomPt(), ag.npos) > zoneRadius * zoneRadius)
             {
                 potentialTargets.Add(zone);
             }
