@@ -64,6 +64,6 @@ public class NavMeshBuilderTest
         Assert.That(nmd.polys[118].verts[1], Is.EqualTo(224));
         Assert.That(nmd.polys[118].flags, Is.EqualTo(12));
         Assert.That(nmd.polys[118].GetArea(), Is.EqualTo(2));
-        Assert.That(nmd.polys[118].GetType(), Is.EqualTo(Poly.DT_POLYTYPE_OFFMESH_CONNECTION));
+        Assert.That(nmd.polys[118].GetPolyType(), Is.EqualTo(Poly.DT_POLYTYPE_OFFMESH_CONNECTION));
     }
 }

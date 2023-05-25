@@ -471,6 +471,23 @@ namespace DotRecast.Core
             return v.x * v.x + v.y * v.y + v.z * v.z;
         }
 
+        /// Checks that the specified vector's components are all finite.
+        /// @param[in] v A point. [(x, y, z)]
+        /// @return True if all of the point's components are finite, i.e. not NaN
+        /// or any of the infinities.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(Vector3f v)
+        {
+            return float.IsFinite(v.x) && float.IsFinite(v.y) && float.IsFinite(v.z);
+        }
+
+        /// Checks that the specified vector's 2D components are finite.
+        /// @param[in] v A point. [(x, y, z)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite2D(Vector3f v)
+        {
+            return float.IsFinite(v.x) && float.IsFinite(v.z);
+        }
     }
     
 }

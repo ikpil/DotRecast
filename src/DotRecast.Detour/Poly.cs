@@ -76,7 +76,7 @@ namespace DotRecast.Detour
         }
 
         /** Gets the polygon type. (See: #dtPolyTypes) */
-        public int GetType()
+        public int GetPolyType()
         {
             return areaAndtype >> 6;
         }

@@ -49,7 +49,7 @@ namespace DotRecast.Detour
             for (int i = 0; i < tile.data.header.polyCount; ++i)
             {
                 Poly p = tile.data.polys[i];
-                if (p.GetType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+                if (p.GetPolyType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
                 {
                     continue;
                 }

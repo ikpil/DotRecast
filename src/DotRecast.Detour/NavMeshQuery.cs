@@ -125,7 +125,7 @@ namespace DotRecast.Detour
             {
                 Poly p = tile.data.polys[i];
                 // Do not return off-mesh connection polygons.
-                if (p.GetType() != Poly.DT_POLYTYPE_GROUND)
+                if (p.GetPolyType() != Poly.DT_POLYTYPE_GROUND)
                 {
                     continue;
                 }
@@ -226,7 +226,7 @@ namespace DotRecast.Detour
             IQueryFilter filter, FRand frand, IPolygonByCircleConstraint constraint)
         {
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !VIsFinite(centerPos) || maxRadius < 0
+            if (!m_nav.IsValidPolyRef(startRef) || !Vector3f.IsFinite(centerPos) || maxRadius < 0
                 || !float.IsFinite(maxRadius) || null == filter || null == frand)
             {
                 return Results.InvalidParam<FindRandomPointResult>();
@@ -272,7 +272,7 @@ namespace DotRecast.Detour
                 Poly bestPoly = bestTilePoly.Item2;
 
                 // Place random locations on on ground.
-                if (bestPoly.GetType() == Poly.DT_POLYTYPE_GROUND)
+                if (bestPoly.GetPolyType() == Poly.DT_POLYTYPE_GROUND)
                 {
                     // Calc area of the polygon.
                     float polyArea = 0.0f;
@@ -423,7 +423,7 @@ namespace DotRecast.Detour
         /// @returns The status flags for the query.
         public Result<ClosestPointOnPolyResult> ClosestPointOnPoly(long refs, Vector3f pos)
         {
-            if (!m_nav.IsValidPolyRef(refs) || !VIsFinite(pos))
+            if (!m_nav.IsValidPolyRef(refs) || !Vector3f.IsFinite(pos))
             {
                 return Results.InvalidParam<ClosestPointOnPolyResult>();
             }
@@ -463,7 +463,7 @@ namespace DotRecast.Detour
                 return Results.InvalidParam<Vector3f>("Invalid tile");
             }
 
-            if (!VIsFinite(pos))
+            if (!Vector3f.IsFinite(pos))
             {
                 return Results.InvalidParam<Vector3f>();
             }
@@ -526,7 +526,7 @@ namespace DotRecast.Detour
             MeshTile tile = tileAndPoly.result.Item1;
             Poly poly = tileAndPoly.result.Item2;
 
-            if (!VIsFinite2D(pos))
+            if (!Vector3f.IsFinite2D(pos))
             {
                 return Results.InvalidParam<float>();
             }
@@ -534,7 +534,7 @@ namespace DotRecast.Detour
             // We used to return success for offmesh connections, but the
             // getPolyHeight in DetourNavMesh does not do this, so special
             // case it here.
-            if (poly.GetType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+            if (poly.GetPolyType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
                 int i = poly.verts[0] * 3;
                 var v0 = new Vector3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
@@ -638,7 +638,7 @@ namespace DotRecast.Detour
                 {
                     Poly p = tile.data.polys[i];
                     // Do not return off-mesh connection polygons.
-                    if (p.GetType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+                    if (p.GetPolyType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
                     {
                         continue;
                     }
@@ -683,7 +683,7 @@ namespace DotRecast.Detour
      */
         public Status QueryPolygons(Vector3f center, Vector3f halfExtents, IQueryFilter filter, IPolyQuery query)
         {
-            if (!VIsFinite(center) || !VIsFinite(halfExtents) || null == filter)
+            if (!Vector3f.IsFinite(center) || !Vector3f.IsFinite(halfExtents) || null == filter)
             {
                 return Status.FAILURE_INVALID_PARAM;
             }
@@ -704,7 +704,7 @@ namespace DotRecast.Detour
      */
         public IList<MeshTile> QueryTiles(Vector3f center, Vector3f halfExtents)
         {
-            if (!VIsFinite(center) || !VIsFinite(halfExtents))
+            if (!Vector3f.IsFinite(center) || !Vector3f.IsFinite(halfExtents))
             {
                 return ImmutableArray<MeshTile>.Empty;
             }
@@ -764,7 +764,7 @@ namespace DotRecast.Detour
             IQueryHeuristic heuristic, int options, float raycastLimit)
         {
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !VIsFinite(startPos) || !VIsFinite(endPos) || null == filter)
+            if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !Vector3f.IsFinite(startPos) || !Vector3f.IsFinite(endPos) || null == filter)
             {
                 return Results.InvalidParam<List<long>>();
             }
@@ -1049,7 +1049,7 @@ namespace DotRecast.Detour
             m_query.raycastLimitSqr = Sqr(raycastLimit);
 
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !VIsFinite(startPos) || !VIsFinite(endPos) || null == filter)
+            if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !Vector3f.IsFinite(startPos) || !Vector3f.IsFinite(endPos) || null == filter)
             {
                 return Status.FAILURE_INVALID_PARAM;
             }
@@ -1545,8 +1545,8 @@ namespace DotRecast.Detour
             int maxStraightPath, int options)
         {
             List<StraightPathItem> straightPath = new List<StraightPathItem>();
-            if (!VIsFinite(startPos) || !VIsFinite(endPos)
-                                     || null == path || 0 == path.Count || path[0] == 0 || maxStraightPath <= 0)
+            if (!Vector3f.IsFinite(startPos) || !Vector3f.IsFinite(endPos)
+                                             || null == path || 0 == path.Count || path[0] == 0 || maxStraightPath <= 0)
             {
                 return Results.InvalidParam<List<StraightPathItem>>();
             }
@@ -1802,8 +1802,8 @@ namespace DotRecast.Detour
         public Result<MoveAlongSurfaceResult> MoveAlongSurface(long startRef, Vector3f startPos, Vector3f endPos, IQueryFilter filter)
         {
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !VIsFinite(startPos)
-                                                || !VIsFinite(endPos) || null == filter)
+            if (!m_nav.IsValidPolyRef(startRef) || !Vector3f.IsFinite(startPos)
+                                                || !Vector3f.IsFinite(endPos) || null == filter)
             {
                 return Results.InvalidParam<MoveAlongSurfaceResult>();
             }
@@ -1985,7 +1985,7 @@ namespace DotRecast.Detour
             Tuple<MeshTile, Poly> tileAndPoly = tileAndPolyResult.result;
             MeshTile fromTile = tileAndPoly.Item1;
             Poly fromPoly = tileAndPoly.Item2;
-            int fromType = fromPoly.GetType();
+            int fromType = fromPoly.GetPolyType();
 
             tileAndPolyResult = m_nav.GetTileAndPolyByRef(to);
             if (tileAndPolyResult.Failed())
@@ -1996,7 +1996,7 @@ namespace DotRecast.Detour
             tileAndPoly = tileAndPolyResult.result;
             MeshTile toTile = tileAndPoly.Item1;
             Poly toPoly = tileAndPoly.Item2;
-            int toType = toPoly.GetType();
+            int toType = toPoly.GetPolyType();
 
             return GetPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, fromType, toType);
         }
@@ -2024,7 +2024,7 @@ namespace DotRecast.Detour
             }
 
             // Handle off-mesh connections.
-            if (fromPoly.GetType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+            if (fromPoly.GetPolyType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
                 // Find link that points to first vertex.
                 for (int i = fromTile.polyLinks[fromPoly.index]; i != NavMesh.DT_NULL_LINK; i = fromTile.links[i].next)
@@ -2046,7 +2046,7 @@ namespace DotRecast.Detour
                 return Results.InvalidParam<PortalResult>("Invalid offmesh from connection");
             }
 
-            if (toPoly.GetType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+            if (toPoly.GetPolyType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
                 for (int i = toTile.polyLinks[toPoly.index]; i != NavMesh.DT_NULL_LINK; i = toTile.links[i].next)
                 {
@@ -2195,7 +2195,7 @@ namespace DotRecast.Detour
             long prevRef)
         {
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !VIsFinite(startPos) || !VIsFinite(endPos) || null == filter
+            if (!m_nav.IsValidPolyRef(startRef) || !Vector3f.IsFinite(startPos) || !Vector3f.IsFinite(endPos) || null == filter
                 || (prevRef != 0 && !m_nav.IsValidPolyRef(prevRef)))
             {
                 return Results.InvalidParam<RaycastHit>();
@@ -2291,7 +2291,7 @@ namespace DotRecast.Detour
                     nextTile = tileAndPolyUns.Item1;
                     nextPoly = tileAndPolyUns.Item2;
                     // Skip off-mesh connections.
-                    if (nextPoly.GetType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+                    if (nextPoly.GetPolyType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
                     {
                         continue;
                     }
@@ -2463,7 +2463,7 @@ namespace DotRecast.Detour
         {
             // Validate input
 
-            if (!m_nav.IsValidPolyRef(startRef) || !VIsFinite(centerPos) || radius < 0
+            if (!m_nav.IsValidPolyRef(startRef) || !Vector3f.IsFinite(centerPos) || radius < 0
                 || !float.IsFinite(radius) || null == filter)
             {
                 return Results.InvalidParam<FindPolysAroundResult>();
@@ -2832,7 +2832,7 @@ namespace DotRecast.Detour
             IQueryFilter filter)
         {
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !VIsFinite(centerPos) || radius < 0
+            if (!m_nav.IsValidPolyRef(startRef) || !Vector3f.IsFinite(centerPos) || radius < 0
                 || !float.IsFinite(radius) || null == filter)
             {
                 return Results.InvalidParam<FindLocalNeighbourhoodResult>();
@@ -2894,7 +2894,7 @@ namespace DotRecast.Detour
                     Poly neighbourPoly = tileAndPoly.Item2;
 
                     // Skip off-mesh connections.
-                    if (neighbourPoly.GetType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+                    if (neighbourPoly.GetPolyType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
                     {
                         continue;
                     }
@@ -3172,7 +3172,7 @@ namespace DotRecast.Detour
             IQueryFilter filter)
         {
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !VIsFinite(centerPos) || maxRadius < 0
+            if (!m_nav.IsValidPolyRef(startRef) || !Vector3f.IsFinite(centerPos) || maxRadius < 0
                 || !float.IsFinite(maxRadius) || null == filter)
             {
                 return Results.InvalidParam<FindDistanceToWallResult>();
@@ -3299,7 +3299,7 @@ namespace DotRecast.Detour
                     Poly neighbourPoly = neighbourTileAndPoly.Item2;
 
                     // Skip off-mesh connections.
-                    if (neighbourPoly.GetType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+                    if (neighbourPoly.GetPolyType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
                     {
                         continue;
                     }

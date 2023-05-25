@@ -400,7 +400,7 @@ namespace DotRecast.Detour
                 {
                     Poly p = tile.data.polys[i];
                     // Do not return off-mesh connection polygons.
-                    if (p.GetType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+                    if (p.GetPolyType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
                     {
                         continue;
                     }
@@ -654,7 +654,7 @@ namespace DotRecast.Detour
                 Poly poly = tile.data.polys[i];
                 tile.polyLinks[poly.index] = DT_NULL_LINK;
 
-                if (poly.GetType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+                if (poly.GetPolyType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
                 {
                     continue;
                 }
@@ -1233,7 +1233,7 @@ namespace DotRecast.Detour
         {
             // Off-mesh connections do not have detail polys and getting height
             // over them does not make sense.
-            if (poly.GetType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+            if (poly.GetPolyType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
                 return null;
             }
@@ -1337,7 +1337,7 @@ namespace DotRecast.Detour
             }
 
             // Off-mesh connections don't have detail polygons.
-            if (poly.GetType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+            if (poly.GetPolyType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
                 int i = poly.verts[0] * 3;
                 var v0 = new Vector3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
@@ -1550,7 +1550,7 @@ namespace DotRecast.Detour
             Poly poly = tile.data.polys[ip];
 
             // Make sure that the current poly is indeed off-mesh link.
-            if (poly.GetType() != Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+            if (poly.GetPolyType() != Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
                 return Results.InvalidParam<Tuple<Vector3f, Vector3f>>("Invalid poly type");
             }

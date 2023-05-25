@@ -43,7 +43,7 @@ namespace DotRecast.Detour
         public override Result<List<long>> FindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, IQueryFilter filter)
         {
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !VIsFinite(startPos) || !VIsFinite(endPos) || null == filter)
+            if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !Vector3f.IsFinite(startPos) || !Vector3f.IsFinite(endPos) || null == filter)
             {
                 return Results.InvalidParam<List<long>>();
             }
@@ -648,7 +648,7 @@ namespace DotRecast.Detour
         public override Result<FindDistanceToWallResult> FindDistanceToWall(long startRef, Vector3f centerPos, float maxRadius, IQueryFilter filter)
         {
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !VIsFinite(centerPos) || maxRadius < 0
+            if (!m_nav.IsValidPolyRef(startRef) || !Vector3f.IsFinite(centerPos) || maxRadius < 0
                 || !float.IsFinite(maxRadius) || null == filter)
             {
                 return Results.InvalidParam<FindDistanceToWallResult>();
@@ -776,7 +776,7 @@ namespace DotRecast.Detour
                     Poly neighbourPoly = neighbourTileAndPoly.Item2;
 
                     // Skip off-mesh connections.
-                    if (neighbourPoly.GetType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+                    if (neighbourPoly.GetPolyType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
                     {
                         continue;
                     }

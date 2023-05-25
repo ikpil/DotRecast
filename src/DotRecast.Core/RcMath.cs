@@ -83,9 +83,6 @@ namespace DotRecast.Core
         }
 
 
-
-
-
         /// @}
         /// @name Computational geometry helper functions.
         /// @{
@@ -104,15 +101,6 @@ namespace DotRecast.Core
             return acx * abz - abx * acz;
         }
 
-        public static float TriArea2D(float[] a, float[] b, float[] c)
-        {
-            float abx = b[0] - a[0];
-            float abz = b[2] - a[2];
-            float acx = c[0] - a[0];
-            float acz = c[2] - a[2];
-            return acx * abz - abx * acz;
-        }
-
         public static float TriArea2D(Vector3f a, Vector3f b, Vector3f c)
         {
             float abx = b.x - a.x;
@@ -121,16 +109,6 @@ namespace DotRecast.Core
             float acz = c.z - a.z;
             return acx * abz - abx * acz;
         }
-
-        public static float TriArea2D(Vector3f a, float[] b, Vector3f c)
-        {
-            float abx = b[0] - a.x;
-            float abz = b[2] - a.z;
-            float acx = c.x - a.x;
-            float acz = c.z - a.z;
-            return acx * abz - abx * acz;
-        }
-
 
         /// Determines if two axis-aligned bounding boxes overlap.
         /// @param[in] amin Minimum bounds of box A. [(x, y, z)]
@@ -155,15 +133,6 @@ namespace DotRecast.Core
         /// @param[in] bmax Maximum bounds of box B. [(x, y, z)]
         /// @return True if the two AABB's overlap.
         /// @see dtOverlapQuantBounds
-        public static bool OverlapBounds(float[] amin, float[] amax, float[] bmin, float[] bmax)
-        {
-            bool overlap = true;
-            overlap = (amin[0] > bmax[0] || amax[0] < bmin[0]) ? false : overlap;
-            overlap = (amin[1] > bmax[1] || amax[1] < bmin[1]) ? false : overlap;
-            overlap = (amin[2] > bmax[2] || amax[2] < bmin[2]) ? false : overlap;
-            return overlap;
-        }
-
         public static bool OverlapBounds(Vector3f amin, Vector3f amax, Vector3f bmin, Vector3f bmax)
         {
             bool overlap = true;
@@ -278,7 +247,7 @@ namespace DotRecast.Core
             return c;
         }
 
-        public static float[] ProjectPoly(Vector3f axis, float[] poly, int npoly)
+        public static Vector2f ProjectPoly(Vector3f axis, float[] poly, int npoly)
         {
             float rmin, rmax;
             rmin = rmax = axis.Dot2D(poly, 0);
@@ -289,7 +258,11 @@ namespace DotRecast.Core
                 rmax = Math.Max(rmax, d);
             }
 
-            return new float[] { rmin, rmax };
+            return new Vector2f
+            {
+                x = rmin,
+                y = rmax,
+            };
         }
 
         public static bool OverlapRange(float amin, float amax, float bmin, float bmax, float eps)
@@ -311,9 +284,9 @@ namespace DotRecast.Core
 
                 Vector3f n = Vector3f.Of(polya[vb + 2] - polya[va + 2], 0, -(polya[vb + 0] - polya[va + 0]));
 
-                float[] aminmax = ProjectPoly(n, polya, npolya);
-                float[] bminmax = ProjectPoly(n, polyb, npolyb);
-                if (!OverlapRange(aminmax[0], aminmax[1], bminmax[0], bminmax[1], eps))
+                Vector2f aminmax = ProjectPoly(n, polya, npolya);
+                Vector2f bminmax = ProjectPoly(n, polyb, npolyb);
+                if (!OverlapRange(aminmax.x, aminmax.y, bminmax.x, bminmax.y, eps))
                 {
                     // Found separating axis
                     return false;
@@ -327,9 +300,9 @@ namespace DotRecast.Core
 
                 Vector3f n = Vector3f.Of(polyb[vb + 2] - polyb[va + 2], 0, -(polyb[vb + 0] - polyb[va + 0]));
 
-                float[] aminmax = ProjectPoly(n, polya, npolya);
-                float[] bminmax = ProjectPoly(n, polyb, npolyb);
-                if (!OverlapRange(aminmax[0], aminmax[1], bminmax[0], bminmax[1], eps))
+                Vector2f aminmax = ProjectPoly(n, polya, npolya);
+                Vector2f bminmax = ProjectPoly(n, polyb, npolyb);
+                if (!OverlapRange(aminmax.x, aminmax.y, bminmax.x, bminmax.y, eps))
                 {
                     // Found separating axis
                     return false;
@@ -556,32 +529,6 @@ namespace DotRecast.Core
             float s = Vector3f.PerpXZ(v, w) / d;
             float t = Vector3f.PerpXZ(u, w) / d;
             return Tuple.Create(s, t);
-        }
-        
-        /// Checks that the specified vector's components are all finite.
-        /// @param[in] v A point. [(x, y, z)]
-        /// @return True if all of the point's components are finite, i.e. not NaN
-        /// or any of the infinities.
-        public static bool VIsFinite(float[] v)
-        {
-            return float.IsFinite(v[0]) && float.IsFinite(v[1]) && float.IsFinite(v[2]);
-        }
-
-        public static bool VIsFinite(Vector3f v)
-        {
-            return float.IsFinite(v.x) && float.IsFinite(v.y) && float.IsFinite(v.z);
-        }
-
-        /// Checks that the specified vector's 2D components are finite.
-        /// @param[in] v A point. [(x, y, z)]
-        public static bool VIsFinite2D(float[] v)
-        {
-            return float.IsFinite(v[0]) && float.IsFinite(v[2]);
-        }
-
-        public static bool VIsFinite2D(Vector3f v)
-        {
-            return float.IsFinite(v.x) && float.IsFinite(v.z);
         }
     }
 }
