@@ -38,7 +38,7 @@ public abstract class Tool
 
     public abstract string GetName();
 
-    public virtual void HandleClickRay(Vector3f start, float[] direction, bool shift)
+    public virtual void HandleClickRay(Vector3f start, Vector3f direction, bool shift)
     {
         // ...
     }

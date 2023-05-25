@@ -179,16 +179,16 @@ namespace DotRecast.Detour.Crowd
         {
             Vector3f v = bq.Subtract(bp);
             Vector3f w = ap.Subtract(bp);
-            float d = VPerp2D(u, v);
+            float d = Vector3f.Perp2D(u, v);
             if (Math.Abs(d) < 1e-6f)
                 return new IsectRaySegResult(false, 0f);
 
             d = 1.0f / d;
-            float t = VPerp2D(v, w) * d;
+            float t = Vector3f.Perp2D(v, w) * d;
             if (t < 0 || t > 1)
                 return new IsectRaySegResult(false, 0f);
 
-            float s = VPerp2D(u, w) * d;
+            float s = Vector3f.Perp2D(u, w) * d;
             if (s < 0 || s > 1)
                 return new IsectRaySegResult(false, 0f);
 

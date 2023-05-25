@@ -229,14 +229,14 @@ public class DynamicUpdateTool : Tool
     private Tuple<ICollider, IColliderGizmo> CylinderCollider(Vector3f p)
     {
         float radius = 0.7f + (float)random.NextDouble() * 4f;
-        float[] a = new float[] { (1f - 2 * (float)random.NextDouble()), 0.01f + (float)random.NextDouble(), (1f - 2 * (float)random.NextDouble()) };
-        VNormalize(a);
+        Vector3f a = Vector3f.Of(1f - 2 * (float)random.NextDouble(), 0.01f + (float)random.NextDouble(), 1f - 2 * (float)random.NextDouble());
+        a.Normalize();
         float len = 2f + (float)random.NextDouble() * 20f;
         a[0] *= len;
         a[1] *= len;
         a[2] *= len;
         Vector3f start = Vector3f.Of(p.x, p.y, p.z);
-        Vector3f end = Vector3f.Of(p.x + a[0], p.y + a[1], p.z + a[2]);
+        Vector3f end = Vector3f.Of(p.x + a.x, p.y + a.y, p.z + a.z);
         return Tuple.Create<ICollider, IColliderGizmo>(new CylinderCollider(start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER,
             dynaMesh.config.walkableClimb), GizmoFactory.Cylinder(start, end, radius));
     }
@@ -349,7 +349,7 @@ public class DynamicUpdateTool : Tool
     }
 
 
-    public override void HandleClickRay(Vector3f start, float[] dir, bool shift)
+    public override void HandleClickRay(Vector3f start, Vector3f dir, bool shift)
     {
         if (mode == DynamicUpdateToolMode.COLLIDERS)
         {
@@ -369,7 +369,7 @@ public class DynamicUpdateTool : Tool
         }
     }
 
-    private bool Hit(Vector3f point, float[] dir, float[] bounds)
+    private bool Hit(Vector3f point, Vector3f dir, float[] bounds)
     {
         float cx = 0.5f * (bounds[0] + bounds[3]);
         float cy = 0.5f * (bounds[1] + bounds[4]);
@@ -387,7 +387,7 @@ public class DynamicUpdateTool : Tool
             return true;
         }
 
-        float b = mx * dir[0] + my * dir[1] + mz * dir[2];
+        float b = mx * dir.x + my * dir.y + mz * dir.z;
         if (b > 0.0f)
         {
             return false;

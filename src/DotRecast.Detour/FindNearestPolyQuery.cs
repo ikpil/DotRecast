@@ -41,7 +41,7 @@ namespace DotRecast.Detour
             }
             else
             {
-                d = VLenSqr(diff);
+                d = Vector3f.LenSqr(diff);
             }
 
             if (d < nearestDistanceSqr)

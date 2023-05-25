@@ -64,34 +64,6 @@ namespace DotRecast.Core
             return u * g + (1f - u) * f;
         }
 
-
-
-
-        /// Derives the square of the scalar length of the vector. (len * len)
-        /// @param[in] v The vector. [(x, y, z)]
-        /// @return The square of the scalar length of the vector.
-        public static float VLenSqr(Vector3f v)
-        {
-            return v.x * v.x + v.y * v.y + v.z * v.z;
-        }
-
-
-
-
-        /// Normalizes the vector.
-        /// @param[in,out] v The vector to normalize. [(x, y, z)]
-        public static void VNormalize(float[] v)
-        {
-            float d = (float)(1.0f / Math.Sqrt(Sqr(v[0]) + Sqr(v[1]) + Sqr(v[2])));
-            if (d != 0)
-            {
-                v[0] *= d;
-                v[1] *= d;
-                v[2] *= d;
-            }
-        }
-
-
         /// Performs a 'sloppy' colocation check of the specified points.
         /// @param[in] p0 A point. [(x, y, z)]
         /// @param[in] p1 A point. [(x, y, z)]
@@ -111,22 +83,7 @@ namespace DotRecast.Core
         }
 
 
-        /// Derives the xz-plane 2D perp product of the two vectors. (uz*vx - ux*vz)
-        /// @param[in] u The LHV vector [(x, y, z)]
-        /// @param[in] v The RHV vector [(x, y, z)]
-        /// @return The dot product on the xz-plane.
-        ///
-        /// The vectors are projected onto the xz-plane, so the y-values are
-        /// ignored.
-        public static float VPerp2D(float[] u, float[] v)
-        {
-            return u[2] * v[0] - u[0] * v[2];
-        }
 
-        public static float VPerp2D(Vector3f u, Vector3f v)
-        {
-            return u.z * v.x - u.x * v.z;
-        }
 
 
         /// @}
@@ -474,8 +431,8 @@ namespace DotRecast.Core
                 Vector3f vpi = Vector3f.Of(verts, i * 3);
                 var edge = vpi.Subtract(vpj);
                 var diff = p0v.Subtract(vpj);
-                float n = VPerp2D(edge, diff);
-                float d = VPerp2D(dir, edge);
+                float n = Vector3f.Perp2D(edge, diff);
+                float d = Vector3f.Perp2D(dir, edge);
                 if (Math.Abs(d) < EPS)
                 {
                     // S is nearly parallel to this edge

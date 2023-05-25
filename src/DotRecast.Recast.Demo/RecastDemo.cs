@@ -54,7 +54,7 @@ public class RecastDemo
     private IInputContext _input;
     private ImGuiController _imgui;
     private RecastDemoCanvas _canvas;
-    
+
     private int width = 1000;
     private int height = 900;
 
@@ -485,28 +485,29 @@ public class RecastDemo
         }
         else if (settingsUI.IsNavMeshInputTrigerred())
         {
-        // try (MemoryStack stack = StackPush()) {
-        //     PointerBuffer aFilterPatterns = stack.MallocPointer(4);
-        //     aFilterPatterns.Put(stack.UTF8("*.bin"));
-        //     aFilterPatterns.Put(stack.UTF8("*.zip"));
-        //     aFilterPatterns.Put(stack.UTF8("*.bytes"));
-        //     aFilterPatterns.Put(stack.UTF8("*.navmesh"));
-        //     aFilterPatterns.Flip();
-        //     string filename = TinyFileDialogs.Tinyfd_openFileDialog("Open Nav Mesh File", "", aFilterPatterns,
-        //         "Nav Mesh File", false);
-        //     if (filename != null) {
-        //         File file = new File(filename);
-        //         if (file.Exists()) {
-        //             try {
-        //                 LoadNavMesh(file, filename);
-        //                 geom = null;
-        //             } catch (Exception e) {
-        //                 Console.WriteLine(e);
-        //             }
-        //         }
-        //     }
-        // }
+            // try (MemoryStack stack = StackPush()) {
+            //     PointerBuffer aFilterPatterns = stack.MallocPointer(4);
+            //     aFilterPatterns.Put(stack.UTF8("*.bin"));
+            //     aFilterPatterns.Put(stack.UTF8("*.zip"));
+            //     aFilterPatterns.Put(stack.UTF8("*.bytes"));
+            //     aFilterPatterns.Put(stack.UTF8("*.navmesh"));
+            //     aFilterPatterns.Flip();
+            //     string filename = TinyFileDialogs.Tinyfd_openFileDialog("Open Nav Mesh File", "", aFilterPatterns,
+            //         "Nav Mesh File", false);
+            //     if (filename != null) {
+            //         File file = new File(filename);
+            //         if (file.Exists()) {
+            //             try {
+            //                 LoadNavMesh(file, filename);
+            //                 geom = null;
+            //             } catch (Exception e) {
+            //                 Console.WriteLine(e);
+            //             }
+            //         }
+            //     }
+            // }
         }
+
         if (settingsUI.IsBuildTriggered() && sample.GetInputGeom() != null)
         {
             if (!building)
@@ -597,9 +598,9 @@ public class RecastDemo
                     hit = PolyMeshRaycast.Raycast(sample.GetRecastResults(), rayStart, rayEnd);
                 }
 
-                float[] rayDir = new float[] { rayEnd.x - rayStart.x, rayEnd.y - rayStart.y, rayEnd.z - rayStart.z };
+                Vector3f rayDir = Vector3f.Of(rayEnd.x - rayStart.x, rayEnd.y - rayStart.y, rayEnd.z - rayStart.z);
                 Tool rayTool = toolsUI.GetTool();
-                VNormalize(rayDir);
+                rayDir.Normalize();
                 if (rayTool != null)
                 {
                     rayTool.HandleClickRay(rayStart, rayDir, processHitTestShift);

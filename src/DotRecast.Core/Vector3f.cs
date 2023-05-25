@@ -206,6 +206,8 @@ namespace DotRecast.Core
             return hash;
         }
 
+        /// Normalizes the vector.
+        /// @param[in,out] v The vector to normalize. [(x, y, z)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Normalize()
         {
@@ -446,5 +448,29 @@ namespace DotRecast.Core
             float dz = verts[i + 2] - p.z;
             return dx * dx + dz * dz;
         }
+        
+        /// Derives the xz-plane 2D perp product of the two vectors. (uz*vx - ux*vz)
+        /// @param[in] u The LHV vector [(x, y, z)]
+        /// @param[in] v The RHV vector [(x, y, z)]
+        /// @return The dot product on the xz-plane.
+        ///
+        /// The vectors are projected onto the xz-plane, so the y-values are
+        /// ignored.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Perp2D(Vector3f u, Vector3f v)
+        {
+            return u.z * v.x - u.x * v.z;
+        }
+        
+        /// Derives the square of the scalar length of the vector. (len * len)
+        /// @param[in] v The vector. [(x, y, z)]
+        /// @return The square of the scalar length of the vector.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float LenSqr(Vector3f v)
+        {
+            return v.x * v.x + v.y * v.y + v.z * v.z;
+        }
+
     }
+    
 }
