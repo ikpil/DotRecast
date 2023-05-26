@@ -161,8 +161,8 @@ namespace DotRecast.Recast
             Vector3f v1 = new Vector3f();
             Vector3f v2 = new Vector3f();
             Vector3f v3 = new Vector3f();
-            RecastVectors.Sub(ref v2, verts, p2, p1);
-            RecastVectors.Sub(ref v3, verts, p3, p1);
+            Vector3f.Sub(ref v2, verts, p2, p1);
+            Vector3f.Sub(ref v3, verts, p3, p1);
 
             float cp = Vcross2(v1, v2, v3);
             if (Math.Abs(cp) > EPS)
@@ -174,11 +174,11 @@ namespace DotRecast.Recast
                 c.y = 0;
                 c.z = (v1Sq * (v3.x - v2.x) + v2Sq * (v1.x - v3.x) + v3Sq * (v2.x - v1.x)) / (2 * cp);
                 r.Exchange(Vdist2(c, v1));
-                RecastVectors.Add(ref c, c, verts, p1);
+                Vector3f.Add(ref c, c, verts, p1);
                 return true;
             }
 
-            RecastVectors.Copy(ref c, verts, p1);
+            Vector3f.Copy(ref c, verts, p1);
             r.Exchange(0f);
             return false;
         }
@@ -188,9 +188,9 @@ namespace DotRecast.Recast
             Vector3f v0 = new Vector3f();
             Vector3f v1 = new Vector3f();
             Vector3f v2 = new Vector3f();
-            RecastVectors.Sub(ref v0, verts, c, a);
-            RecastVectors.Sub(ref v1, verts, b, a);
-            RecastVectors.Sub(ref v2, p, verts, a);
+            Vector3f.Sub(ref v0, verts, c, a);
+            Vector3f.Sub(ref v1, verts, b, a);
+            Vector3f.Sub(ref v2, p, verts, a);
 
             float dot00 = Vdot2(v0, v0);
             float dot01 = Vdot2(v0, v1);
@@ -845,7 +845,7 @@ namespace DotRecast.Recast
 
             for (int i = 0; i < nin; ++i)
             {
-                RecastVectors.Copy(verts, i * 3, @in, i * 3);
+                Vector3f.Copy(verts, i * 3, @in, i * 3);
             }
 
             tris.Clear();
@@ -964,7 +964,7 @@ namespace DotRecast.Recast
                     {
                         for (int k = nidx - 2; k > 0; --k)
                         {
-                            RecastVectors.Copy(verts, nverts * 3, edge, idx[k] * 3);
+                            Vector3f.Copy(verts, nverts * 3, edge, idx[k] * 3);
                             hull[nhull++] = nverts;
                             nverts++;
                         }
@@ -973,7 +973,7 @@ namespace DotRecast.Recast
                     {
                         for (int k = 1; k < nidx - 1; ++k)
                         {
-                            RecastVectors.Copy(verts, nverts * 3, edge, idx[k] * 3);
+                            Vector3f.Copy(verts, nverts * 3, edge, idx[k] * 3);
                             hull[nhull++] = nverts;
                             nverts++;
                         }
@@ -1005,12 +1005,12 @@ namespace DotRecast.Recast
                 // Create sample locations in a grid.
                 Vector3f bmin = new Vector3f();
                 Vector3f bmax = new Vector3f();
-                RecastVectors.Copy(ref bmin, @in, 0);
-                RecastVectors.Copy(ref bmax, @in, 0);
+                Vector3f.Copy(ref bmin, @in, 0);
+                Vector3f.Copy(ref bmax, @in, 0);
                 for (int i = 1; i < nin; ++i)
                 {
-                    RecastVectors.Min(ref bmin, @in, i * 3);
-                    RecastVectors.Max(ref bmax, @in, i * 3);
+                    Vector3f.Min(ref bmin, @in, i * 3);
+                    Vector3f.Max(ref bmax, @in, i * 3);
                 }
 
                 int x0 = (int)Math.Floor(bmin.x / sampleDist);
@@ -1091,7 +1091,7 @@ namespace DotRecast.Recast
                     // Mark sample as added.
                     samples[besti * 4 + 3] = 1;
                     // Add the new sample point.
-                    RecastVectors.Copy(verts, nverts * 3, bestpt, 0);
+                    Vector3f.Copy(verts, nverts * 3, bestpt, 0);
                     nverts++;
 
                     // Create new triangulation.
@@ -1666,7 +1666,7 @@ namespace DotRecast.Recast
 
                 for (int k = 0; k < dm.nverts; ++k)
                 {
-                    RecastVectors.Copy(mesh.verts, mesh.nverts * 3, dm.verts, k * 3);
+                    Vector3f.Copy(mesh.verts, mesh.nverts * 3, dm.verts, k * 3);
                     mesh.nverts++;
                 }
 

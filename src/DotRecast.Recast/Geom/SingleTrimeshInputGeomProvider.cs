@@ -33,12 +33,12 @@ namespace DotRecast.Recast.Geom
         {
             bmin = Vector3f.Zero;
             bmax = Vector3f.Zero;
-            RecastVectors.Copy(ref bmin, vertices, 0);
-            RecastVectors.Copy(ref bmax, vertices, 0);
+            Vector3f.Copy(ref bmin, vertices, 0);
+            Vector3f.Copy(ref bmax, vertices, 0);
             for (int i = 1; i < vertices.Length / 3; i++)
             {
-                RecastVectors.Min(ref bmin, vertices, i * 3);
-                RecastVectors.Max(ref bmax, vertices, i * 3);
+                Vector3f.Min(ref bmin, vertices, i * 3);
+                Vector3f.Max(ref bmax, vertices, i * 3);
             }
 
             _mesh = new TriMesh(vertices, faces);

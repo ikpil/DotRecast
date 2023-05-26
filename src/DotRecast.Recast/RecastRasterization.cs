@@ -191,19 +191,19 @@ namespace DotRecast.Recast
                                                      + (inVerts[inVertsOffset + i * 3 + 1] - inVerts[inVertsOffset + j * 3 + 1]) * s;
                     inVerts[outVerts1 + m * 3 + 2] = inVerts[inVertsOffset + j * 3 + 2]
                                                      + (inVerts[inVertsOffset + i * 3 + 2] - inVerts[inVertsOffset + j * 3 + 2]) * s;
-                    RecastVectors.Copy(inVerts, outVerts2 + n * 3, inVerts, outVerts1 + m * 3);
+                    Vector3f.Copy(inVerts, outVerts2 + n * 3, inVerts, outVerts1 + m * 3);
                     m++;
                     n++;
                     // add the i'th point to the right polygon. Do NOT add points that are on the dividing line
                     // since these were already added above
                     if (d[i] > 0)
                     {
-                        RecastVectors.Copy(inVerts, outVerts1 + m * 3, inVerts, inVertsOffset + i * 3);
+                        Vector3f.Copy(inVerts, outVerts1 + m * 3, inVerts, inVertsOffset + i * 3);
                         m++;
                     }
                     else if (d[i] < 0)
                     {
-                        RecastVectors.Copy(inVerts, outVerts2 + n * 3, inVerts, inVertsOffset + i * 3);
+                        Vector3f.Copy(inVerts, outVerts2 + n * 3, inVerts, inVertsOffset + i * 3);
                         n++;
                     }
                 }
@@ -212,13 +212,13 @@ namespace DotRecast.Recast
                     // add the i'th point to the right polygon. Addition is done even for points on the dividing line
                     if (d[i] >= 0)
                     {
-                        RecastVectors.Copy(inVerts, outVerts1 + m * 3, inVerts, inVertsOffset + i * 3);
+                        Vector3f.Copy(inVerts, outVerts1 + m * 3, inVerts, inVertsOffset + i * 3);
                         m++;
                         if (d[i] != 0)
                             continue;
                     }
 
-                    RecastVectors.Copy(inVerts, outVerts2 + n * 3, inVerts, inVertsOffset + i * 3);
+                    Vector3f.Copy(inVerts, outVerts2 + n * 3, inVerts, inVertsOffset + i * 3);
                     n++;
                 }
             }
@@ -263,12 +263,12 @@ namespace DotRecast.Recast
             float by = hfBBMax.y - hfBBMin.y;
 
             // Calculate the bounding box of the triangle.
-            RecastVectors.Copy(ref tmin, verts, v0 * 3);
-            RecastVectors.Copy(ref tmax, verts, v0 * 3);
-            RecastVectors.Min(ref tmin, verts, v1 * 3);
-            RecastVectors.Min(ref tmin, verts, v2 * 3);
-            RecastVectors.Max(ref tmax, verts, v1 * 3);
-            RecastVectors.Max(ref tmax, verts, v2 * 3);
+            Vector3f.Copy(ref tmin, verts, v0 * 3);
+            Vector3f.Copy(ref tmax, verts, v0 * 3);
+            Vector3f.Min(ref tmin, verts, v1 * 3);
+            Vector3f.Min(ref tmin, verts, v2 * 3);
+            Vector3f.Max(ref tmax, verts, v1 * 3);
+            Vector3f.Max(ref tmax, verts, v2 * 3);
 
             // If the triangle does not touch the bbox of the heightfield, skip the triagle.
             if (!OverlapBounds(hfBBMin, hfBBMax, tmin, tmax))
@@ -291,9 +291,9 @@ namespace DotRecast.Recast
             int p1 = inRow + 7 * 3;
             int p2 = p1 + 7 * 3;
 
-            RecastVectors.Copy(buf, 0, verts, v0 * 3);
-            RecastVectors.Copy(buf, 3, verts, v1 * 3);
-            RecastVectors.Copy(buf, 6, verts, v2 * 3);
+            Vector3f.Copy(buf, 0, verts, v0 * 3);
+            Vector3f.Copy(buf, 3, verts, v1 * 3);
+            Vector3f.Copy(buf, 6, verts, v2 * 3);
             int nvRow, nvIn = 3;
 
             for (int z = z0; z <= z1; ++z)

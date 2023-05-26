@@ -101,20 +101,20 @@ namespace DotRecast.Recast
         {
             Vector3f e0 = new Vector3f();
             Vector3f e1 = new Vector3f();
-            RecastVectors.Sub(ref e0, verts, v1 * 3, v0 * 3);
-            RecastVectors.Sub(ref e1, verts, v2 * 3, v0 * 3);
-            RecastVectors.Cross(norm, e0, e1);
-            RecastVectors.Normalize(norm);
+            Vector3f.Sub(ref e0, verts, v1 * 3, v0 * 3);
+            Vector3f.Sub(ref e1, verts, v2 * 3, v0 * 3);
+            Vector3f.Cross(norm, e0, e1);
+            Vector3f.Normalize(norm);
         }
         
         static void CalcTriNormal(float[] verts, int v0, int v1, int v2, ref Vector3f norm)
         {
             Vector3f e0 = new Vector3f();
             Vector3f e1 = new Vector3f();
-            RecastVectors.Sub(ref e0, verts, v1 * 3, v0 * 3);
-            RecastVectors.Sub(ref e1, verts, v2 * 3, v0 * 3);
-            RecastVectors.Cross(ref norm, e0, e1);
-            RecastVectors.Normalize(ref norm);
+            Vector3f.Sub(ref e0, verts, v1 * 3, v0 * 3);
+            Vector3f.Sub(ref e1, verts, v2 * 3, v0 * 3);
+            Vector3f.Cross(ref norm, e0, e1);
+            Vector3f.Normalize(ref norm);
         }
 
 

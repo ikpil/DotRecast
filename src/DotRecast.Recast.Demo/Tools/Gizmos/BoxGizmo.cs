@@ -56,9 +56,9 @@ public class BoxGizmo : IColliderGizmo
         float[] vertices = new float[8 * 3];
         for (int i = 0; i < 8; i++)
         {
-            vertices[i * 3 + 0] = RecastVectors.Dot(VERTS[i], trX) + center.x;
-            vertices[i * 3 + 1] = RecastVectors.Dot(VERTS[i], trY) + center.y;
-            vertices[i * 3 + 2] = RecastVectors.Dot(VERTS[i], trZ) + center.z;
+            vertices[i * 3 + 0] = Vector3f.Dot(VERTS[i], trX) + center.x;
+            vertices[i * 3 + 1] = Vector3f.Dot(VERTS[i], trY) + center.y;
+            vertices[i * 3 + 2] = Vector3f.Dot(VERTS[i], trZ) + center.z;
         }
 
         debugDraw.Begin(DebugDrawPrimitives.TRIS);

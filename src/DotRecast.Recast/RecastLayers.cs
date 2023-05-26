@@ -26,7 +26,7 @@ namespace DotRecast.Recast
 {
     using static RecastCommon;
     using static RecastConstants;
-    using static RecastVectors;
+    
     using static RecastRegion;
 
     public class RecastLayers

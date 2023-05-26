@@ -74,11 +74,11 @@ namespace DotRecast.Detour.Dynamic.Colliders
                 Vector3f.Of(up.x, up.y, up.z),
                 Vector3f.Zero
             };
-            RecastVectors.Normalize(ref halfEdges[1]);
-            RecastVectors.Cross(ref halfEdges[0], up, forward);
-            RecastVectors.Normalize(ref halfEdges[0]);
-            RecastVectors.Cross(ref halfEdges[2], halfEdges[0], up);
-            RecastVectors.Normalize(ref halfEdges[2]);
+            Vector3f.Normalize(ref halfEdges[1]);
+            Vector3f.Cross(ref halfEdges[0], up, forward);
+            Vector3f.Normalize(ref halfEdges[0]);
+            Vector3f.Cross(ref halfEdges[2], halfEdges[0], up);
+            Vector3f.Normalize(ref halfEdges[2]);
             halfEdges[0].x *= extent.x;
             halfEdges[0].y *= extent.x;
             halfEdges[0].z *= extent.x;

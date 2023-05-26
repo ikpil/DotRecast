@@ -23,7 +23,7 @@ using DotRecast.Detour.TileCache.Io.Compress;
 using DotRecast.Recast.Geom;
 using NUnit.Framework;
 using static DotRecast.Core.RcMath;
-using static DotRecast.Recast.RecastVectors;
+
 
 namespace DotRecast.Detour.TileCache.Test;
 

@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using DotRecast.Core;
 using DotRecast.Recast;
 using DotRecast.Recast.Geom;
-using static DotRecast.Recast.RecastVectors;
+
 
 namespace DotRecast.Detour.Test;
 

@@ -22,8 +22,6 @@ using DotRecast.Core;
 
 namespace DotRecast.Recast
 {
-    using static RecastVectors;
-
     public class RecastBuilderConfig
     {
         public readonly RecastConfig cfg;

@@ -1,6 +1,6 @@
 using DotRecast.Core;
 using DotRecast.Recast.Demo.Draw;
-using static DotRecast.Recast.RecastVectors;
+
 using static DotRecast.Core.RcMath;
 using static DotRecast.Recast.Demo.Tools.Gizmos.GizmoHelper;
 
@@ -23,11 +23,11 @@ public class CapsuleGizmo : IColliderGizmo
         Vector3f axis = Vector3f.Of(end.x - start.x, end.y - start.y, end.z - start.z);
         Vector3f[] normals = new Vector3f[3];
         normals[1] = Vector3f.Of(end.x - start.x, end.y - start.y, end.z - start.z);
-        Normalize(ref normals[1]);
+        Vector3f.Normalize(ref normals[1]);
         normals[0] = GetSideVector(axis);
         normals[2] = Vector3f.Zero;
-        Cross(ref normals[2], normals[0], normals[1]);
-        Normalize(ref normals[2]);
+        Vector3f.Cross(ref normals[2], normals[0], normals[1]);
+        Vector3f.Normalize(ref normals[2]);
         triangles = GenerateSphericalTriangles();
         var trX = Vector3f.Of(normals[0].x, normals[1].x, normals[2].x);
         var trY = Vector3f.Of(normals[0].y, normals[1].y, normals[2].y);
@@ -49,7 +49,7 @@ public class CapsuleGizmo : IColliderGizmo
             v.x = vertices[i] - center[0];
             v.y = vertices[i + 1] - center[1];
             v.z = vertices[i + 2] - center[2];
-            Normalize(ref v);
+            Vector3f.Normalize(ref v);
             gradient[i / 3] = Clamp(0.57735026f * (v.x + v.y + v.z), -1, 1);
         }
     }
@@ -63,9 +63,9 @@ public class CapsuleGizmo : IColliderGizmo
         }
 
         Vector3f forward = new Vector3f();
-        Cross(ref forward, side, axis);
-        Cross(ref side, axis, forward);
-        Normalize(ref side);
+        Vector3f.Cross(ref forward, side, axis);
+        Vector3f.Cross(ref side, axis, forward);
+        Vector3f.Normalize(ref side);
         return side;
     }
 

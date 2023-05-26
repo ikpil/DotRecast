@@ -20,7 +20,7 @@ using System;
 using DotRecast.Core;
 using static DotRecast.Core.RcMath;
 using static DotRecast.Recast.RecastConstants;
-using static DotRecast.Recast.RecastVectors;
+
 
 namespace DotRecast.Recast
 {
@@ -84,9 +84,9 @@ namespace DotRecast.Recast
                 Vector3f.Of(halfEdges[1].x, halfEdges[1].y, halfEdges[1].z),
                 Vector3f.Of(halfEdges[2].x, halfEdges[2].y, halfEdges[2].z),
             };
-            Normalize(ref normals[0]);
-            Normalize(ref normals[1]);
-            Normalize(ref normals[2]);
+            Vector3f.Normalize(ref normals[0]);
+            Vector3f.Normalize(ref normals[1]);
+            Vector3f.Normalize(ref normals[2]);
 
             float[] vertices = new float[8 * 3];
             float[] bounds = new float[]
@@ -184,7 +184,7 @@ namespace DotRecast.Recast
 
         private static void Plane(float[][] planes, int p, float[] v1, float[] v2, float[] vertices, int vert)
         {
-            RecastVectors.Cross(planes[p], v1, v2);
+            Vector3f.Cross(planes[p], v1, v2);
             planes[p][3] = planes[p][0] * vertices[vert] + planes[p][1] * vertices[vert + 1] + planes[p][2] * vertices[vert + 2];
         }
 
@@ -306,14 +306,14 @@ namespace DotRecast.Recast
             {
                 Vector3f[] rectangleOnStartPlane = new Vector3f[4];
                 Vector3f[] rectangleOnEndPlane = new Vector3f[4];
-                float ds = Dot(axis, start);
-                float de = Dot(axis, end);
+                float ds = Vector3f.Dot(axis, start);
+                float de = Vector3f.Dot(axis, end);
                 for (int i = 0; i < 4; i++)
                 {
                     float x = rectangle[(i + 1) & 2];
                     float z = rectangle[(i & 2) + 1];
                     Vector3f a = Vector3f.Of(x, rectangle[4], z);
-                    float dotAxisA = Dot(axis, a);
+                    float dotAxisA = Vector3f.Dot(axis, a);
                     float t = (ds - dotAxisA) / axis.y;
                     rectangleOnStartPlane[i].x = x;
                     rectangleOnStartPlane[i].y = rectangle[4] + t;
@@ -348,9 +348,9 @@ namespace DotRecast.Recast
                 rectangleOnPlane[j].y - rectangleOnPlane[i].y,
                 rectangleOnPlane[j].z - rectangleOnPlane[i].z
             );
-            float dl = Dot(d, d);
-            float b = Dot(m, d) / dl;
-            float c = (Dot(m, m) - radiusSqr) / dl;
+            float dl = Vector3f.Dot(d, d);
+            float b = Vector3f.Dot(m, d) / dl;
+            float c = (Vector3f.Dot(m, m) - radiusSqr) / dl;
             float discr = b * b - c;
             if (discr > EPSILON)
             {
@@ -429,10 +429,10 @@ namespace DotRecast.Recast
             Vector3f d = axis;
             Vector3f m = Vector3f.Of(point.x - start.x, point.y - start.y, point.z - start.z);
             // float[] n = { 0, 1, 0 };
-            float md = Dot(m, d);
+            float md = Vector3f.Dot(m, d);
             // float nd = Dot(n, d);
             float nd = axis.y;
-            float dd = Dot(d, d);
+            float dd = Vector3f.Dot(d, d);
 
             // float nn = Dot(n, n);
             float nn = 1;
@@ -440,7 +440,7 @@ namespace DotRecast.Recast
             float mn = m.y;
             // float a = dd * nn - nd * nd;
             float a = dd - nd * nd;
-            float k = Dot(m, m) - radiusSqr;
+            float k = Vector3f.Dot(m, m) - radiusSqr;
             float c = dd * k - md * md;
             if (Math.Abs(a) < EPSILON)
             {
@@ -534,7 +534,7 @@ namespace DotRecast.Recast
                 {
                     if (Math.Abs(planes[j][1]) > EPSILON)
                     {
-                        float dotNormalPoint = Dot(planes[j], point);
+                        float dotNormalPoint = Vector3f.Dot(planes[j], point);
                         float t = (planes[j][3] - dotNormalPoint) / planes[j][1];
                         float y = point.y + t;
                         bool valid = true;
@@ -744,15 +744,15 @@ namespace DotRecast.Recast
 
         private static float? RayTriangleIntersection(Vector3f point, int plane, float[][] planes)
         {
-            float t = (planes[plane][3] - Dot(planes[plane], point)) / planes[plane][1];
+            float t = (planes[plane][3] - Vector3f.Dot(planes[plane], point)) / planes[plane][1];
             float[] s = { point.x, point.y + t, point.z };
-            float u = Dot(s, planes[plane + 1]) - planes[plane + 1][3];
+            float u = Vector3f.Dot(s, planes[plane + 1]) - planes[plane + 1][3];
             if (u < 0.0f || u > 1.0f)
             {
                 return null;
             }
 
-            float v = Dot(s, planes[plane + 2]) - planes[plane + 2][3];
+            float v = Vector3f.Dot(s, planes[plane + 2]) - planes[plane + 2][3];
             if (v < 0.0f)
             {
                 return null;
