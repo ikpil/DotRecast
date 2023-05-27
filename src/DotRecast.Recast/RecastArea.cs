@@ -368,8 +368,8 @@ namespace DotRecast.Recast
             Vector3f.Copy(ref bmax, verts, 0);
             for (int i = 3; i < verts.Length; i += 3)
             {
-                Vector3f.Min(ref bmin, verts, i);
-                Vector3f.Max(ref bmax, verts, i);
+               bmin.Min(verts, i);
+               bmax.Max(verts, i);
             }
 
             bmin.y = hmin;

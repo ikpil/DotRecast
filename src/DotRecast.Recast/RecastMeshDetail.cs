@@ -1009,8 +1009,8 @@ namespace DotRecast.Recast
                 Vector3f.Copy(ref bmax, @in, 0);
                 for (int i = 1; i < nin; ++i)
                 {
-                    Vector3f.Min(ref bmin, @in, i * 3);
-                    Vector3f.Max(ref bmax, @in, i * 3);
+                   bmin.Min(@in, i * 3);
+                   bmax.Max(@in, i * 3);
                 }
 
                 int x0 = (int)Math.Floor(bmin.x / sampleDist);

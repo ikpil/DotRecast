@@ -1234,8 +1234,8 @@ namespace DotRecast.Recast
             int maxVertsPerMesh = 0;
             for (int i = 0; i < nmeshes; ++i)
             {
-                Vector3f.Min(ref mesh.bmin, meshes[i].bmin);
-                Vector3f.Max(ref mesh.bmax, meshes[i].bmax);
+                mesh.bmin.Min(meshes[i].bmin);
+                mesh.bmax.Max(meshes[i].bmax);
                 maxVertsPerMesh = Math.Max(maxVertsPerMesh, meshes[i].nverts);
                 maxVerts += meshes[i].nverts;
                 maxPolys += meshes[i].npolys;

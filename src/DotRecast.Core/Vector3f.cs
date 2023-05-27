@@ -228,6 +228,23 @@ namespace DotRecast.Core
             y = Math.Min(y, @in[i + 1]);
             z = Math.Min(z, @in[i + 2]);
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Min(Vector3f b)
+        {
+            x = Math.Min(x, b.x);
+            y = Math.Min(y, b.y);
+            z = Math.Min(z, b.z);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Max(Vector3f b)
+        {
+            x = Math.Max(x, b.x);
+            y = Math.Max(y, b.y);
+            z = Math.Max(z, b.z);
+        }
+
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Max(float[] @in, int i)
@@ -504,33 +521,6 @@ namespace DotRecast.Core
             return float.IsFinite(v.x) && float.IsFinite(v.z);
         }
 
-        public static void Min(ref Vector3f a, float[] b, int i)
-        {
-            a.x = Math.Min(a.x, b[i + 0]);
-            a.y = Math.Min(a.y, b[i + 1]);
-            a.z = Math.Min(a.z, b[i + 2]);
-        }
-
-        public static void Min(ref Vector3f a, Vector3f b)
-        {
-            a.x = Math.Min(a.x, b.x);
-            a.y = Math.Min(a.y, b.y);
-            a.z = Math.Min(a.z, b.z);
-        }
-
-        public static void Max(ref Vector3f a, float[] b, int i)
-        {
-            a.x = Math.Max(a.x, b[i + 0]);
-            a.y = Math.Max(a.y, b[i + 1]);
-            a.z = Math.Max(a.z, b[i + 2]);
-        }
-
-        public static void Max(ref Vector3f a, Vector3f b)
-        {
-            a.x = Math.Max(a.x, b.x);
-            a.y = Math.Max(a.y, b.y);
-            a.z = Math.Max(a.z, b.z);
-        }
 
         public static void Copy(ref Vector3f @out, float[] @in, int i)
         {

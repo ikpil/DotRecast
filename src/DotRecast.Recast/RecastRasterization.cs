@@ -265,10 +265,10 @@ namespace DotRecast.Recast
             // Calculate the bounding box of the triangle.
             Vector3f.Copy(ref tmin, verts, v0 * 3);
             Vector3f.Copy(ref tmax, verts, v0 * 3);
-            Vector3f.Min(ref tmin, verts, v1 * 3);
-            Vector3f.Min(ref tmin, verts, v2 * 3);
-            Vector3f.Max(ref tmax, verts, v1 * 3);
-            Vector3f.Max(ref tmax, verts, v2 * 3);
+            tmin.Min(verts, v1 * 3);
+            tmin.Min(verts, v2 * 3);
+            tmax.Max(verts, v1 * 3);
+            tmax.Max(verts, v2 * 3);
 
             // If the triangle does not touch the bbox of the heightfield, skip the triagle.
             if (!OverlapBounds(hfBBMin, hfBBMax, tmin, tmax))
