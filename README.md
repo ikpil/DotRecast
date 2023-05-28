@@ -1,4 +1,6 @@
+[![License: Zlib](https://img.shields.io/badge/License-Zlib-lightgrey.svg)](https://opensource.org/licenses/Zlib)
 [![.NET](https://github.com/ikpil/DotRecast/actions/workflows/dotnet.yml/badge.svg)](https://github.com/ikpil/DotRecast/actions/workflows/dotnet.yml)
+
 # DotRecast
 DotRecast are port of recastnavigation(c++), recast4j(java).
 C# Recast & Detour is a navigation mesh toolkit for games, Unity3D and servers.
