@@ -142,7 +142,14 @@ namespace DotRecast.Core
             return overlap;
         }
 
-        public static Tuple<float, float> DistancePtSegSqr2D(Vector3f pt, Vector3f p, Vector3f q)
+        public static DistSeg DistancePtSegSqr2D(Vector3f pt, float[] verts, int p, int q)
+        {
+            var vp = Vector3f.Of(verts, p);
+            var vq = Vector3f.Of(verts, q);
+            return DistancePtSegSqr2D(pt, vp, vq);
+        }
+
+        public static DistSeg DistancePtSegSqr2D(Vector3f pt, Vector3f p, Vector3f q)
         {
             float pqx = q.x - p.x;
             float pqz = q.z - p.z;
@@ -166,7 +173,11 @@ namespace DotRecast.Core
 
             dx = p.x + t * pqx - pt.x;
             dz = p.z + t * pqz - pt.z;
-            return Tuple.Create(dx * dx + dz * dz, t);
+            return new DistSeg()
+            {
+                DistSqr = dx * dx + dz * dz,
+                Seg = t,
+            };
         }
 
         public static float? ClosestHeightPointTriangle(Vector3f p, Vector3f a, Vector3f b, Vector3f c)
@@ -452,66 +463,6 @@ namespace DotRecast.Core
 
             result.intersects = true;
             return result;
-        }
-
-        public static Tuple<float, float> DistancePtSegSqr2D(Vector3f pt, SegmentVert verts, int p, int q)
-        {
-            float pqx = verts[q + 0] - verts[p + 0];
-            float pqz = verts[q + 2] - verts[p + 2];
-            float dx = pt.x - verts[p + 0];
-            float dz = pt.z - verts[p + 2];
-            float d = pqx * pqx + pqz * pqz;
-            float t = pqx * dx + pqz * dz;
-            if (d > 0)
-            {
-                t /= d;
-            }
-
-            if (t < 0)
-            {
-                t = 0;
-            }
-            else if (t > 1)
-            {
-                t = 1;
-            }
-
-            dx = verts[p + 0] + t * pqx - pt.x;
-            dz = verts[p + 2] + t * pqz - pt.z;
-            return Tuple.Create(dx * dx + dz * dz, t);
-        }
-
-
-        public static DistSeg DistancePtSegSqr2D(Vector3f pt, float[] verts, int p, int q)
-        {
-            float pqx = verts[q + 0] - verts[p + 0];
-            float pqz = verts[q + 2] - verts[p + 2];
-            float dx = pt.x - verts[p + 0];
-            float dz = pt.z - verts[p + 2];
-            float d = pqx * pqx + pqz * pqz;
-            float t = pqx * dx + pqz * dz;
-            if (d > 0)
-            {
-                t /= d;
-            }
-
-            if (t < 0)
-            {
-                t = 0;
-            }
-            else if (t > 1)
-            {
-                t = 1;
-            }
-
-            dx = verts[p + 0] + t * pqx - pt.x;
-            dz = verts[p + 2] + t * pqz - pt.z;
-
-            return new DistSeg()
-            {
-                DistSqr = dx * dx + dz * dz,
-                Seg = t,
-            };
         }
 
         public static int OppositeTile(int side)

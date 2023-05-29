@@ -116,14 +116,17 @@ namespace DotRecast.Detour.Crowd
                         for (int k = 0; k < gpws.CountSegmentRefs(); ++k)
                         {
                             SegmentVert s = gpws.GetSegmentVert(k);
+                            var s0 = Vector3f.Of(s[0], s[1], s[2]);
+                            var s3 = Vector3f.Of(s[3], s[4], s[5]);
+
                             // Skip too distant segments.
-                            Tuple<float, float> distseg = DistancePtSegSqr2D(pos, s, 0, 3);
-                            if (distseg.Item1 > Sqr(collisionQueryRange))
+                            var distseg = DistancePtSegSqr2D(pos, s0, s3);
+                            if (distseg.DistSqr > Sqr(collisionQueryRange))
                             {
                                 continue;
                             }
 
-                            AddSegment(distseg.Item1, s);
+                            AddSegment(distseg.DistSqr, s);
                         }
                     }
                 }

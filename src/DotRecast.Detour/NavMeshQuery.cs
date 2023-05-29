@@ -347,7 +347,7 @@ namespace DotRecast.Detour
 
                     // If the circle is not touching the next polygon, skip it.
                     var distseg = DistancePtSegSqr2D(centerPos, va, vb);
-                    float distSqr = distseg.Item1;
+                    float distSqr = distseg.DistSqr;
                     if (distSqr > radiusSqr)
                     {
                         continue;
@@ -541,7 +541,7 @@ namespace DotRecast.Detour
                 i = poly.verts[1] * 3;
                 var v1 = new Vector3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
                 var dt = DistancePtSegSqr2D(pos, v0, v1);
-                return Results.Success(v0.y + (v1.y - v0.y) * dt.Item2);
+                return Results.Success(v0.y + (v1.y - v0.y) * dt.Seg);
             }
 
             float? height = m_nav.GetPolyHeight(tile, poly, pos);
@@ -1626,8 +1626,8 @@ namespace DotRecast.Detour
                         // If starting really close the portal, advance.
                         if (i == 0)
                         {
-                            Tuple<float, float> dt = DistancePtSegSqr2D(portalApex, left, right);
-                            if (dt.Item1 < Sqr(0.001f))
+                            var dt = DistancePtSegSqr2D(portalApex, left, right);
+                            if (dt.DistSqr < Sqr(0.001f))
                             {
                                 continue;
                             }
@@ -2553,8 +2553,8 @@ namespace DotRecast.Detour
                     var vb = pp.result.right;
 
                     // If the circle is not touching the next polygon, skip it.
-                    Tuple<float, float> distseg = DistancePtSegSqr2D(centerPos, va, vb);
-                    float distSqr = distseg.Item1;
+                    var distseg = DistancePtSegSqr2D(centerPos, va, vb);
+                    float distSqr = distseg.DistSqr;
                     if (distSqr > radiusSqr)
                     {
                         continue;
@@ -2917,8 +2917,8 @@ namespace DotRecast.Detour
                     var vb = pp.result.right;
 
                     // If the circle is not touching the next polygon, skip it.
-                    Tuple<float, float> distseg = DistancePtSegSqr2D(centerPos, va, vb);
-                    float distSqr = distseg.Item1;
+                    var distseg = DistancePtSegSqr2D(centerPos, va, vb);
+                    float distSqr = distseg.DistSqr;
                     if (distSqr > radiusSqr)
                     {
                         continue;

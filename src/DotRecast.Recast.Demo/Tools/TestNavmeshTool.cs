@@ -847,10 +847,11 @@ public class TestNavmeshTool : Tool
                             for (int j = 0; j < wallSegments.CountSegmentVerts(); ++j)
                             {
                                 SegmentVert s = wallSegments.GetSegmentVert(j);
-                                Vector3f s3 = Vector3f.Of(s[3], s[4], s[5]);
+                                var v0 = Vector3f.Of(s[0], s[1], s[2]);
+                                var s3 = Vector3f.Of(s[3], s[4], s[5]);
                                 // Skip too distant segments.
-                                Tuple<float, float> distSqr = DistancePtSegSqr2D(m_spos, s, 0, 3);
-                                if (distSqr.Item1 > RcMath.Sqr(m_neighbourhoodRadius))
+                                var distSqr = DistancePtSegSqr2D(m_spos, v0, s3);
+                                if (distSqr.DistSqr > RcMath.Sqr(m_neighbourhoodRadius))
                                 {
                                     continue;
                                 }
