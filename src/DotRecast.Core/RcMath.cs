@@ -239,9 +239,9 @@ namespace DotRecast.Core
                     c = !c;
                 }
 
-                Tuple<float, float> edet = DistancePtSegSqr2D(pt, verts, vj, vi);
-                ed[j] = edet.Item1;
-                et[j] = edet.Item2;
+                var edet = DistancePtSegSqr2D(pt, verts, vj, vi);
+                ed[j] = edet.DistSqr;
+                et[j] = edet.Seg;
             }
 
             return c;
@@ -482,7 +482,7 @@ namespace DotRecast.Core
         }
 
 
-        public static Tuple<float, float> DistancePtSegSqr2D(Vector3f pt, float[] verts, int p, int q)
+        public static DistSeg DistancePtSegSqr2D(Vector3f pt, float[] verts, int p, int q)
         {
             float pqx = verts[q + 0] - verts[p + 0];
             float pqz = verts[q + 2] - verts[p + 2];
@@ -506,7 +506,12 @@ namespace DotRecast.Core
 
             dx = verts[p + 0] + t * pqx - pt.x;
             dz = verts[p + 2] + t * pqz - pt.z;
-            return Tuple.Create(dx * dx + dz * dz, t);
+
+            return new DistSeg()
+            {
+                DistSqr = dx * dx + dz * dz,
+                Seg = t,
+            };
         }
 
         public static int OppositeTile(int side)

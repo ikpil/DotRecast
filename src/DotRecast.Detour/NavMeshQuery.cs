@@ -1906,9 +1906,9 @@ namespace DotRecast.Detour
                         // Wall edge, calc distance.
                         int vj = j * 3;
                         int vi = i * 3;
-                        Tuple<float, float> distSeg = DistancePtSegSqr2D(endPos, verts, vj, vi);
-                        float distSqr = distSeg.Item1;
-                        float tseg = distSeg.Item2;
+                        var distSeg = DistancePtSegSqr2D(endPos, verts, vj, vi);
+                        float distSqr = distSeg.DistSqr;
+                        float tseg = distSeg.Seg;
                         if (distSqr < bestDist)
                         {
                             // Update nearest distance.
@@ -1932,8 +1932,8 @@ namespace DotRecast.Detour
                             // TODO: Maybe should use GetPortalPoints(), but this one is way faster.
                             int vj = j * 3;
                             int vi = i * 3;
-                            Tuple<float, float> distseg = DistancePtSegSqr2D(searchPos, verts, vj, vi);
-                            float distSqr = distseg.Item1;
+                            var distseg = DistancePtSegSqr2D(searchPos, verts, vj, vi);
+                            float distSqr = distseg.DistSqr;
                             if (distSqr > searchRadSqr)
                             {
                                 continue;
@@ -3261,9 +3261,9 @@ namespace DotRecast.Detour
                     // Calc distance to the edge.
                     int vj = bestPoly.verts[j] * 3;
                     int vi = bestPoly.verts[i] * 3;
-                    Tuple<float, float> distseg = DistancePtSegSqr2D(centerPos, bestTile.data.verts, vj, vi);
-                    float distSqr = distseg.Item1;
-                    float tseg = distseg.Item2;
+                    var distseg = DistancePtSegSqr2D(centerPos, bestTile.data.verts, vj, vi);
+                    float distSqr = distseg.DistSqr;
+                    float tseg = distseg.Seg;
 
                     // Edge is too far, skip.
                     if (distSqr > radiusSqr)
@@ -3307,8 +3307,8 @@ namespace DotRecast.Detour
                     // Calc distance to the edge.
                     int va = bestPoly.verts[link.edge] * 3;
                     int vb = bestPoly.verts[(link.edge + 1) % bestPoly.vertCount] * 3;
-                    Tuple<float, float> distseg = DistancePtSegSqr2D(centerPos, bestTile.data.verts, va, vb);
-                    float distSqr = distseg.Item1;
+                    var distseg = DistancePtSegSqr2D(centerPos, bestTile.data.verts, va, vb);
+                    float distSqr = distseg.DistSqr;
                     // If the circle is not touching the next polygon, skip it.
                     if (distSqr > radiusSqr)
                     {
