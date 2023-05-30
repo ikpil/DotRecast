@@ -346,8 +346,7 @@ namespace DotRecast.Detour
                     var vb = portalpoints.result.right;
 
                     // If the circle is not touching the next polygon, skip it.
-                    var distseg = DistancePtSegSqr2D(centerPos, va, vb);
-                    float distSqr = distseg.DistSqr;
+                    var distSqr = DistancePtSegSqr2D(centerPos, va, vb, out var tesg);
                     if (distSqr > radiusSqr)
                     {
                         continue;
@@ -540,8 +539,8 @@ namespace DotRecast.Detour
                 var v0 = new Vector3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
                 i = poly.verts[1] * 3;
                 var v1 = new Vector3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
-                var dt = DistancePtSegSqr2D(pos, v0, v1);
-                return Results.Success(v0.y + (v1.y - v0.y) * dt.Seg);
+                var distSqr = DistancePtSegSqr2D(pos, v0, v1, out var tseg);
+                return Results.Success(v0.y + (v1.y - v0.y) * tseg);
             }
 
             float? height = m_nav.GetPolyHeight(tile, poly, pos);
@@ -1500,10 +1499,8 @@ namespace DotRecast.Detour
                 }
 
                 // Append intersection
-                Tuple<float, float> interect = IntersectSegSeg2D(startPos, endPos, left, right);
-                if (null != interect)
+                if (IntersectSegSeg2D(startPos, endPos, left, right, out var _, out var t))
                 {
-                    float t = interect.Item2;
                     var pt = Vector3f.Lerp(left, right, t);
                     stat = AppendVertex(pt, 0, path[i + 1], straightPath, maxStraightPath);
                     if (!stat.IsInProgress())
@@ -1626,8 +1623,8 @@ namespace DotRecast.Detour
                         // If starting really close the portal, advance.
                         if (i == 0)
                         {
-                            var dt = DistancePtSegSqr2D(portalApex, left, right);
-                            if (dt.DistSqr < Sqr(0.001f))
+                            var distSqr = DistancePtSegSqr2D(portalApex, left, right, out var t);
+                            if (distSqr < Sqr(0.001f))
                             {
                                 continue;
                             }
@@ -1906,9 +1903,7 @@ namespace DotRecast.Detour
                         // Wall edge, calc distance.
                         int vj = j * 3;
                         int vi = i * 3;
-                        var distSeg = DistancePtSegSqr2D(endPos, verts, vj, vi);
-                        float distSqr = distSeg.DistSqr;
-                        float tseg = distSeg.Seg;
+                        var distSqr = DistancePtSegSqr2D(endPos, verts, vj, vi, out var tseg);
                         if (distSqr < bestDist)
                         {
                             // Update nearest distance.
@@ -1932,8 +1927,7 @@ namespace DotRecast.Detour
                             // TODO: Maybe should use GetPortalPoints(), but this one is way faster.
                             int vj = j * 3;
                             int vi = i * 3;
-                            var distseg = DistancePtSegSqr2D(searchPos, verts, vj, vi);
-                            float distSqr = distseg.DistSqr;
+                            var distSqr = DistancePtSegSqr2D(searchPos, verts, vj, vi, out var _);
                             if (distSqr > searchRadSqr)
                             {
                                 continue;
@@ -2127,17 +2121,16 @@ namespace DotRecast.Detour
             Vector3f left = ppoints.result.left;
             Vector3f right = ppoints.result.right;
             float t = 0.5f;
-            Tuple<float, float> interect = IntersectSegSeg2D(fromPos, toPos, left, right);
-            if (null != interect)
+            if (IntersectSegSeg2D(fromPos, toPos, left, right, out var _, out var t2))
             {
-                t = Clamp(interect.Item2, 0.1f, 0.9f);
+                t = Clamp(t2, 0.1f, 0.9f);
             }
 
             Vector3f pt = Vector3f.Lerp(left, right, t);
             return Results.Success(pt);
         }
 
-        private static float s = 1.0f / 255.0f;
+        private const float s = 1.0f / 255.0f;
 
         /// @par
         ///
@@ -2553,8 +2546,7 @@ namespace DotRecast.Detour
                     var vb = pp.result.right;
 
                     // If the circle is not touching the next polygon, skip it.
-                    var distseg = DistancePtSegSqr2D(centerPos, va, vb);
-                    float distSqr = distseg.DistSqr;
+                    var distSqr = DistancePtSegSqr2D(centerPos, va, vb, out var _);
                     if (distSqr > radiusSqr)
                     {
                         continue;
@@ -2917,8 +2909,7 @@ namespace DotRecast.Detour
                     var vb = pp.result.right;
 
                     // If the circle is not touching the next polygon, skip it.
-                    var distseg = DistancePtSegSqr2D(centerPos, va, vb);
-                    float distSqr = distseg.DistSqr;
+                    var distSqr = DistancePtSegSqr2D(centerPos, va, vb, out var _);
                     if (distSqr > radiusSqr)
                     {
                         continue;
@@ -3261,9 +3252,7 @@ namespace DotRecast.Detour
                     // Calc distance to the edge.
                     int vj = bestPoly.verts[j] * 3;
                     int vi = bestPoly.verts[i] * 3;
-                    var distseg = DistancePtSegSqr2D(centerPos, bestTile.data.verts, vj, vi);
-                    float distSqr = distseg.DistSqr;
-                    float tseg = distseg.Seg;
+                    var distSqr = DistancePtSegSqr2D(centerPos, bestTile.data.verts, vj, vi, out var tseg);
 
                     // Edge is too far, skip.
                     if (distSqr > radiusSqr)
@@ -3307,8 +3296,7 @@ namespace DotRecast.Detour
                     // Calc distance to the edge.
                     int va = bestPoly.verts[link.edge] * 3;
                     int vb = bestPoly.verts[(link.edge + 1) % bestPoly.vertCount] * 3;
-                    var distseg = DistancePtSegSqr2D(centerPos, bestTile.data.verts, va, vb);
-                    float distSqr = distseg.DistSqr;
+                    var distSqr = DistancePtSegSqr2D(centerPos, bestTile.data.verts, va, vb, out var tseg);
                     // If the circle is not touching the next polygon, skip it.
                     if (distSqr > radiusSqr)
                     {

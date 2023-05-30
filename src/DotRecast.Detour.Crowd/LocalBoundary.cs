@@ -120,13 +120,13 @@ namespace DotRecast.Detour.Crowd
                             var s3 = Vector3f.Of(s[3], s[4], s[5]);
 
                             // Skip too distant segments.
-                            var distseg = DistancePtSegSqr2D(pos, s0, s3);
-                            if (distseg.DistSqr > Sqr(collisionQueryRange))
+                            var distSqr = DistancePtSegSqr2D(pos, s0, s3, out var tseg);
+                            if (distSqr > Sqr(collisionQueryRange))
                             {
                                 continue;
                             }
 
-                            AddSegment(distseg.DistSqr, s);
+                            AddSegment(distSqr, s);
                         }
                     }
                 }

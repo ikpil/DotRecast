@@ -1187,9 +1187,7 @@ namespace DotRecast.Detour
                             continue;
                         }
 
-                        var dt = DistancePtSegSqr2D(pos, v[j], v[k]);
-                        float d = dt.DistSqr;
-                        float t = dt.Seg;
+                        var d = DistancePtSegSqr2D(pos, v[j], v[k], out var t);
                         if (d < dmin)
                         {
                             dmin = d;
@@ -1213,9 +1211,7 @@ namespace DotRecast.Detour
                     v[1].y = tile.data.verts[poly.verts[k] * 3 + 1];
                     v[1].z = tile.data.verts[poly.verts[k] * 3 + 2];
 
-                    var dt = DistancePtSegSqr2D(pos, v[0], v[1]);
-                    float d = dt.DistSqr;
-                    float t = dt.Seg;
+                    var d = DistancePtSegSqr2D(pos, v[0], v[1], out var t);
                     if (d < dmin)
                     {
                         dmin = d;
@@ -1343,8 +1339,8 @@ namespace DotRecast.Detour
                 var v0 = new Vector3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
                 i = poly.verts[1] * 3;
                 var v1 = new Vector3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
-                var dt = DistancePtSegSqr2D(pos, v0, v1);
-                return new ClosestPointOnPolyResult(false, Vector3f.Lerp(v0, v1, dt.Seg));
+                var distSqr = DistancePtSegSqr2D(pos, v0, v1, out var t);
+                return new ClosestPointOnPolyResult(false, Vector3f.Lerp(v0, v1, t));
             }
 
             // Outside poly that is not an offmesh connection.

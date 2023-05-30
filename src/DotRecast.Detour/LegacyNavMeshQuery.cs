@@ -738,10 +738,7 @@ namespace DotRecast.Detour
                     // Calc distance to the edge.
                     int vj = bestPoly.verts[j] * 3;
                     int vi = bestPoly.verts[i] * 3;
-                    var distseg = DistancePtSegSqr2D(centerPos, bestTile.data.verts, vj, vi);
-                    float distSqr = distseg.DistSqr;
-                    float tseg = distseg.Seg;
-
+                    var distSqr =  DistancePtSegSqr2D(centerPos, bestTile.data.verts, vj, vi, out var tseg);
                     // Edge is too far, skip.
                     if (distSqr > radiusSqr)
                     {
@@ -784,8 +781,7 @@ namespace DotRecast.Detour
                     // Calc distance to the edge.
                     int va = bestPoly.verts[link.edge] * 3;
                     int vb = bestPoly.verts[(link.edge + 1) % bestPoly.vertCount] * 3;
-                    var distseg = DistancePtSegSqr2D(centerPos, bestTile.data.verts, va, vb);
-                    float distSqr = distseg.DistSqr;
+                    var distSqr = DistancePtSegSqr2D(centerPos, bestTile.data.verts, va, vb, out var tseg);
                     // If the circle is not touching the next polygon, skip it.
                     if (distSqr > radiusSqr)
                     {

@@ -235,11 +235,8 @@ namespace DotRecast.Detour
 
         private static Intersection SegSegInt(Vector3f a, Vector3f b, Vector3f c, Vector3f d, ref Vector3f p, ref Vector3f q)
         {
-            var isec = IntersectSegSeg2D(a, b, c, d);
-            if (null != isec)
+            if (IntersectSegSeg2D(a, b, c, d, out var s, out var t))
             {
-                float s = isec.Item1;
-                float t = isec.Item2;
                 if (s >= 0.0f && s <= 1.0f && t >= 0.0f && t <= 1.0f)
                 {
                     p.x = a.x + (b.x - a.x) * s;

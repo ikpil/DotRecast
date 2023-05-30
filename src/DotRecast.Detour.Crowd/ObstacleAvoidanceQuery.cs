@@ -150,8 +150,8 @@ namespace DotRecast.Detour.Crowd
 
                 // Precalc if the agent is really close to the segment.
                 float r = 0.01f;
-                var dt = DistancePtSegSqr2D(pos, seg.p, seg.q);
-                seg.touch = dt.DistSqr < Sqr(r);
+                var distSqr = DistancePtSegSqr2D(pos, seg.p, seg.q, out var t);
+                seg.touch = distSqr < Sqr(r);
             }
         }
 

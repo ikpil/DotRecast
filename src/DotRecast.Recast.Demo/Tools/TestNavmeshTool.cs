@@ -850,8 +850,8 @@ public class TestNavmeshTool : Tool
                                 var v0 = Vector3f.Of(s[0], s[1], s[2]);
                                 var s3 = Vector3f.Of(s[3], s[4], s[5]);
                                 // Skip too distant segments.
-                                var distSqr = DistancePtSegSqr2D(m_spos, v0, s3);
-                                if (distSqr.DistSqr > RcMath.Sqr(m_neighbourhoodRadius))
+                                var distSqr = DistancePtSegSqr2D(m_spos, v0, s3, out var tseg);
+                                if (distSqr > RcMath.Sqr(m_neighbourhoodRadius))
                                 {
                                     continue;
                                 }

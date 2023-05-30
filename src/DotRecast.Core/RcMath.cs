@@ -142,21 +142,21 @@ namespace DotRecast.Core
             return overlap;
         }
 
-        public static DistSeg DistancePtSegSqr2D(Vector3f pt, float[] verts, int p, int q)
+        public static float DistancePtSegSqr2D(Vector3f pt, float[] verts, int p, int q, out float t)
         {
             var vp = Vector3f.Of(verts, p);
             var vq = Vector3f.Of(verts, q);
-            return DistancePtSegSqr2D(pt, vp, vq);
+            return DistancePtSegSqr2D(pt, vp, vq, out t);
         }
 
-        public static DistSeg DistancePtSegSqr2D(Vector3f pt, Vector3f p, Vector3f q)
+        public static float DistancePtSegSqr2D(Vector3f pt, Vector3f p, Vector3f q, out float t)
         {
             float pqx = q.x - p.x;
             float pqz = q.z - p.z;
             float dx = pt.x - p.x;
             float dz = pt.z - p.z;
             float d = pqx * pqx + pqz * pqz;
-            float t = pqx * dx + pqz * dz;
+            t = pqx * dx + pqz * dz;
             if (d > 0)
             {
                 t /= d;
@@ -173,11 +173,7 @@ namespace DotRecast.Core
 
             dx = p.x + t * pqx - pt.x;
             dz = p.z + t * pqz - pt.z;
-            return new DistSeg()
-            {
-                DistSqr = dx * dx + dz * dz,
-                Seg = t,
-            };
+            return dx * dx + dz * dz;
         }
 
         public static float? ClosestHeightPointTriangle(Vector3f p, Vector3f a, Vector3f b, Vector3f c)
@@ -244,15 +240,13 @@ namespace DotRecast.Core
             {
                 int vi = i * 3;
                 int vj = j * 3;
-                if (((verts[vi + 2] > pt.z) != (verts[vj + 2] > pt.z)) && (pt.x < (verts[vj + 0] - verts[vi + 0])
-                        * (pt.z - verts[vi + 2]) / (verts[vj + 2] - verts[vi + 2]) + verts[vi + 0]))
+                if (((verts[vi + 2] > pt.z) != (verts[vj + 2] > pt.z)) &&
+                    (pt.x < (verts[vj + 0] - verts[vi + 0]) * (pt.z - verts[vi + 2]) / (verts[vj + 2] - verts[vi + 2]) + verts[vi + 0]))
                 {
                     c = !c;
                 }
 
-                var edet = DistancePtSegSqr2D(pt, verts, vj, vi);
-                ed[j] = edet.DistSqr;
-                et[j] = edet.Seg;
+                ed[j] = DistancePtSegSqr2D(pt, verts, vj, vi, out et[j]);
             }
 
             return c;
@@ -471,20 +465,24 @@ namespace DotRecast.Core
         }
 
 
-        public static Tuple<float, float> IntersectSegSeg2D(Vector3f ap, Vector3f aq, Vector3f bp, Vector3f bq)
+        public static bool IntersectSegSeg2D(Vector3f ap, Vector3f aq, Vector3f bp, Vector3f bq, out float s, out float t)
         {
+            s = 0;
+            t = 0;
+
             Vector3f u = aq.Subtract(ap);
             Vector3f v = bq.Subtract(bp);
             Vector3f w = ap.Subtract(bp);
             float d = Vector3f.PerpXZ(u, v);
             if (Math.Abs(d) < 1e-6f)
             {
-                return null;
+                return false;
             }
 
-            float s = Vector3f.PerpXZ(v, w) / d;
-            float t = Vector3f.PerpXZ(u, w) / d;
-            return Tuple.Create(s, t);
+            s = Vector3f.PerpXZ(v, w) / d;
+            t = Vector3f.PerpXZ(u, w) / d;
+
+            return true;
         }
     }
 }
