@@ -383,8 +383,9 @@ namespace DotRecast.Detour.Crowd
 
         static readonly float DT_PI = 3.14159265f;
 
-        public Tuple<int, Vector3f> SampleVelocityAdaptive(Vector3f pos, float rad, float vmax, Vector3f vel,
-            Vector3f dvel, ObstacleAvoidanceParams option, ObstacleAvoidanceDebugData debug)
+        public int SampleVelocityAdaptive(Vector3f pos, float rad, float vmax, Vector3f vel, Vector3f dvel, out Vector3f nvel,
+            ObstacleAvoidanceParams option,
+            ObstacleAvoidanceDebugData debug)
         {
             Prepare(pos, dvel);
             m_params = option;
@@ -392,7 +393,7 @@ namespace DotRecast.Detour.Crowd
             m_vmax = vmax;
             m_invVmax = vmax > 0 ? 1.0f / vmax : float.MaxValue;
 
-            Vector3f nvel = Vector3f.Zero;
+            nvel = Vector3f.Zero;
 
             if (debug != null)
                 debug.Reset();
@@ -490,7 +491,7 @@ namespace DotRecast.Detour.Crowd
 
             nvel = res;
 
-            return Tuple.Create(ns, nvel);
+            return ns;
         }
     }
 }

@@ -1183,10 +1183,8 @@ namespace DotRecast.Detour.Crowd
 
                     if (adaptive)
                     {
-                        var nsnvel = _obstacleQuery.SampleVelocityAdaptive(ag.npos, ag.option.radius,
-                            ag.desiredSpeed, ag.vel, ag.dvel, option, vod);
-                        ns = nsnvel.Item1;
-                        ag.nvel = nsnvel.Item2;
+                        ns = _obstacleQuery.SampleVelocityAdaptive(ag.npos, ag.option.radius, ag.desiredSpeed,
+                            ag.vel, ag.dvel, out ag.nvel, option, vod);
                     }
                     else
                     {
