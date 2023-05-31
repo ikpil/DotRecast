@@ -60,8 +60,8 @@ public class UnityAStarPathfindingImporterTest
         NavMesh mesh = LoadNavMesh("test_boundstree.zip");
         Vector3f position = Vector3f.Of(387.52988f, 19.997f, 368.86282f);
 
-        int[] tilePos = mesh.CalcTileLoc(position);
-        long tileRef = mesh.GetTileRefAt(tilePos[0], tilePos[1], 0);
+        mesh.CalcTileLoc(position, out var tileX, out var tileY);
+        long tileRef = mesh.GetTileRefAt(tileX, tileY, 0);
         MeshTile tile = mesh.GetTileByRef(tileRef);
         MeshData data = tile.data;
         BVNode[] bvNodes = data.bvTree;

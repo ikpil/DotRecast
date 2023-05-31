@@ -710,12 +710,9 @@ namespace DotRecast.Detour
 
             Vector3f bmin = center.Subtract(halfExtents);
             Vector3f bmax = center.Add(halfExtents);
-            int[] minxy = m_nav.CalcTileLoc(bmin);
-            int minx = minxy[0];
-            int miny = minxy[1];
-            int[] maxxy = m_nav.CalcTileLoc(bmax);
-            int maxx = maxxy[0];
-            int maxy = maxxy[1];
+            m_nav.CalcTileLoc(bmin, out var minx, out var miny);
+            m_nav.CalcTileLoc(bmax, out var maxx, out var maxy);
+            
             List<MeshTile> tiles = new List<MeshTile>();
             for (int y = miny; y <= maxy; ++y)
             {

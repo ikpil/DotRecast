@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Numerics;
+using System.Runtime.InteropServices.ComTypes;
 using DotRecast.Core;
 using DotRecast.Detour.QueryResults;
 
@@ -210,11 +211,10 @@ namespace DotRecast.Detour
      *            The world position for the query. [(x, y, z)]
      * @return 2-element int array with (tx,ty) tile location
      */
-        public int[] CalcTileLoc(Vector3f pos)
+        public void CalcTileLoc(Vector3f pos, out int tx, out int ty)
         {
-            int tx = (int)Math.Floor((pos.x - m_orig.x) / m_tileWidth);
-            int ty = (int)Math.Floor((pos.z - m_orig.z) / m_tileHeight);
-            return new int[] { tx, ty };
+            tx = (int)Math.Floor((pos.x - m_orig.x) / m_tileWidth);
+            ty = (int)Math.Floor((pos.z - m_orig.z) / m_tileHeight);
         }
 
         public Result<Tuple<MeshTile, Poly>> GetTileAndPolyByRef(long refs)
