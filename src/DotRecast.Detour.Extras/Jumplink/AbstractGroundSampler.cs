@@ -7,8 +7,7 @@ namespace DotRecast.Detour.Extras.Jumplink
 {
     public abstract class AbstractGroundSampler : IGroundSampler
     {
-        protected void SampleGround(JumpLinkBuilderConfig acfg, EdgeSampler es,
-            Func<Vector3f, float, Tuple<bool, float>> heightFunc)
+        protected void SampleGround(JumpLinkBuilderConfig acfg, EdgeSampler es, Func<Vector3f, float, Tuple<bool, float>> heightFunc)
         {
             float cs = acfg.cellSize;
             float dist = (float)Math.Sqrt(Vector3f.Dist2DSqr(es.start.p, es.start.q));

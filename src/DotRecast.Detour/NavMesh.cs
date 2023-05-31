@@ -141,18 +141,14 @@ namespace DotRecast.Detour
         /// @param[out] it The index of the tile.
         /// @param[out] ip The index of the polygon within the tile.
         /// @see #encodePolyId
-        static int[] DecodePolyId(long refs)
+        static void DecodePolyId(long refs, out int salt, out int it, out int ip)
         {
-            int salt;
-            int it;
-            int ip;
             long saltMask = (1L << DT_SALT_BITS) - 1;
             long tileMask = (1L << DT_TILE_BITS) - 1;
             long polyMask = (1L << DT_POLY_BITS) - 1;
             salt = (int)((refs >> (DT_POLY_BITS + DT_TILE_BITS)) & saltMask);
             it = (int)((refs >> DT_POLY_BITS) & tileMask);
             ip = (int)(refs & polyMask);
-            return new int[] { salt, it, ip };
         }
 
         /// Extracts a tile's salt value from the specified polygon reference.
@@ -228,10 +224,7 @@ namespace DotRecast.Detour
                 return Results.InvalidParam<Tuple<MeshTile, Poly>>("ref = 0");
             }
 
-            int[] saltitip = DecodePolyId(refs);
-            int salt = saltitip[0];
-            int it = saltitip[1];
-            int ip = saltitip[2];
+            DecodePolyId(refs, out var salt, out var it, out var ip);
             if (it >= m_maxTiles)
             {
                 return Results.InvalidParam<Tuple<MeshTile, Poly>>("tile > m_maxTiles");
@@ -258,9 +251,7 @@ namespace DotRecast.Detour
         /// it does not validate the reference.
         public Tuple<MeshTile, Poly> GetTileAndPolyByRefUnsafe(long refs)
         {
-            int[] saltitip = DecodePolyId(refs);
-            int it = saltitip[1];
-            int ip = saltitip[2];
+            DecodePolyId(refs, out var salt, out var it, out var ip);
             return Tuple.Create(m_tiles[it], m_tiles[it].data.polys[ip]);
         }
 
@@ -271,10 +262,7 @@ namespace DotRecast.Detour
                 return false;
             }
 
-            int[] saltitip = DecodePolyId(refs);
-            int salt = saltitip[0];
-            int it = saltitip[1];
-            int ip = saltitip[2];
+            DecodePolyId(refs, out var salt, out var it, out var ip);
             if (it >= m_maxTiles)
             {
                 return false;
@@ -1523,10 +1511,7 @@ namespace DotRecast.Detour
             }
 
             // Get current polygon
-            int[] saltitip = DecodePolyId(polyRef);
-            int salt = saltitip[0];
-            int it = saltitip[1];
-            int ip = saltitip[2];
+            DecodePolyId(polyRef, out var salt, out var it, out var ip);
             if (it >= m_maxTiles)
             {
                 return Results.InvalidParam<Tuple<Vector3f, Vector3f>>("Invalid tile ID > max tiles");
@@ -1593,10 +1578,7 @@ namespace DotRecast.Detour
                 return Status.FAILURE;
             }
 
-            int[] saltTilePoly = DecodePolyId(refs);
-            int salt = saltTilePoly[0];
-            int it = saltTilePoly[1];
-            int ip = saltTilePoly[2];
+            DecodePolyId(refs, out var salt, out var it, out var ip);
             if (it >= m_maxTiles)
             {
                 return Status.FAILURE_INVALID_PARAM;
@@ -1627,10 +1609,7 @@ namespace DotRecast.Detour
                 return Results.Failure<int>();
             }
 
-            int[] saltTilePoly = DecodePolyId(refs);
-            int salt = saltTilePoly[0];
-            int it = saltTilePoly[1];
-            int ip = saltTilePoly[2];
+            DecodePolyId(refs, out var salt, out var it, out var ip);
             if (it >= m_maxTiles)
             {
                 return Results.InvalidParam<int>();
@@ -1659,10 +1638,7 @@ namespace DotRecast.Detour
                 return Status.FAILURE;
             }
 
-            int[] saltTilePoly = DecodePolyId(refs);
-            int salt = saltTilePoly[0];
-            int it = saltTilePoly[1];
-            int ip = saltTilePoly[2];
+            DecodePolyId(refs, out var salt, out var it, out var ip);
             if (it >= m_maxTiles)
             {
                 return Status.FAILURE;
@@ -1693,10 +1669,7 @@ namespace DotRecast.Detour
                 return Results.Failure<int>();
             }
 
-            int[] saltTilePoly = DecodePolyId(refs);
-            int salt = saltTilePoly[0];
-            int it = saltTilePoly[1];
-            int ip = saltTilePoly[2];
+            DecodePolyId(refs, out var salt, out var it, out var ip);
             if (it >= m_maxTiles)
             {
                 return Results.InvalidParam<int>();
