@@ -136,7 +136,7 @@ namespace DotRecast.Recast
             {
                 latch.Wait();
             }
-            catch (ThreadInterruptedException e)
+            catch (ThreadInterruptedException)
             {
             }
 
