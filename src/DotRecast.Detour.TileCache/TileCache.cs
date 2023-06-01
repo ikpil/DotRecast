@@ -74,7 +74,7 @@ namespace DotRecast.Detour.TileCache
         /// Encodes a tile id.
         private long EncodeTileId(int salt, int it)
         {
-            return ((long)salt << m_tileBits) | it;
+            return ((long)salt << m_tileBits) | (long)it;
         }
 
         /// Decodes a tile salt.
@@ -94,7 +94,7 @@ namespace DotRecast.Detour.TileCache
         /// Encodes an obstacle id.
         private long EncodeObstacleId(int salt, int it)
         {
-            return ((long)salt << 16) | it;
+            return ((long)salt << 16) | (long)it;
         }
 
         /// Decodes an obstacle salt.
@@ -120,7 +120,7 @@ namespace DotRecast.Detour.TileCache
             m_tcomp = tcomp;
             m_tmproc = tmprocs;
 
-            m_tileLutSize = NextPow2(m_params.maxTiles / 4);
+            m_tileLutSize = DetourCommon.NextPow2(m_params.maxTiles / 4);
             if (m_tileLutSize == 0)
             {
                 m_tileLutSize = 1;
@@ -136,7 +136,7 @@ namespace DotRecast.Detour.TileCache
                 m_nextFreeTile = m_tiles[i];
             }
 
-            m_tileBits = Ilog2(NextPow2(m_params.maxTiles));
+            m_tileBits = DetourCommon.Ilog2(DetourCommon.NextPow2(m_params.maxTiles));
             m_saltBits = Math.Min(31, 32 - m_tileBits);
             if (m_saltBits < 10)
             {
@@ -458,7 +458,7 @@ namespace DotRecast.Detour.TileCache
                         Vector3f tbmin = new Vector3f();
                         Vector3f tbmax = new Vector3f();
                         CalcTightTileBounds(tile.header, ref tbmin, ref tbmax);
-                        if (OverlapBounds(bmin, bmax, tbmin, tbmax))
+                        if (DetourCommon.OverlapBounds(bmin, bmax, tbmin, tbmax))
                         {
                             results.Add(i);
                         }

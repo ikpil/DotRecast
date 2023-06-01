@@ -156,7 +156,7 @@ namespace DotRecast.Recast
 
         private static bool CircumCircle(float[] verts, int p1, int p2, int p3, ref Vector3f c, RcAtomicFloat r)
         {
-            float EPS = 1e-6f;
+            const float EPS = 1e-6f;
             // Calculate the circle relative to p1, to avoid some precision issues.
             Vector3f v1 = new Vector3f();
             Vector3f v2 = new Vector3f();
@@ -204,7 +204,7 @@ namespace DotRecast.Recast
             float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
 
             // If point lies inside the triangle, return interpolated y-coord.
-            float EPS = 1e-4f;
+            const float EPS = 1e-4f;
             if (u >= -EPS && v >= -EPS && (u + v) <= 1 + EPS)
             {
                 float y = verts[a + 1] + v0.y * u + v1.y * v;
@@ -512,7 +512,7 @@ namespace DotRecast.Recast
 
         static int CompleteFacet(Telemetry ctx, float[] pts, int npts, List<int> edges, int maxEdges, int nfaces, int e)
         {
-            float EPS = 1e-5f;
+            const float EPS = 1e-5f;
 
             int edge = e * 4;
 

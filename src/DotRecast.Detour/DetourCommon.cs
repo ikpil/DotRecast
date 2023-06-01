@@ -3,9 +3,40 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
-    public static class DtCommon
+    public static class DetourCommon
     {
         private static readonly float EQUAL_THRESHOLD = RcMath.Sqr(1.0f / 16384.0f);
+
+        public static int NextPow2(int v)
+        {
+            v--;
+            v |= v >> 1;
+            v |= v >> 2;
+            v |= v >> 4;
+            v |= v >> 8;
+            v |= v >> 16;
+            v++;
+            return v;
+        }
+
+        public static int Ilog2(int v)
+        {
+            int r;
+            int shift;
+            r = (v > 0xffff ? 1 : 0) << 4;
+            v >>= r;
+            shift = (v > 0xff ? 1 : 0) << 3;
+            v >>= shift;
+            r |= shift;
+            shift = (v > 0xf ? 1 : 0) << 2;
+            v >>= shift;
+            r |= shift;
+            shift = (v > 0x3 ? 1 : 0) << 1;
+            v >>= shift;
+            r |= shift;
+            r |= (v >> 1);
+            return r;
+        }
 
         /// Performs a 'sloppy' colocation check of the specified points.
         /// @param[in] p0 A point. [(x, y, z)]
@@ -311,7 +342,7 @@ namespace DotRecast.Detour
         public static IntersectResult IntersectSegmentPoly2D(Vector3f p0, Vector3f p1, float[] verts, int nverts)
         {
             IntersectResult result = new IntersectResult();
-            float EPS = 0.000001f;
+            const float EPS = 0.000001f;
             var dir = p1.Subtract(p0);
 
             var p0v = p0;

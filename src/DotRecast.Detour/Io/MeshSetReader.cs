@@ -140,8 +140,8 @@ namespace DotRecast.Detour.Io
 
         private long Convert32BitRef(int refs, NavMeshParams option)
         {
-            int m_tileBits = Ilog2(NextPow2(option.maxTiles));
-            int m_polyBits = Ilog2(NextPow2(option.maxPolys));
+            int m_tileBits = DetourCommon.Ilog2(DetourCommon.NextPow2(option.maxTiles));
+            int m_polyBits = DetourCommon.Ilog2(DetourCommon.NextPow2(option.maxPolys));
             // Only allow 31 salt bits, since the salt mask is calculated using 32bit uint and it will overflow.
             int m_saltBits = Math.Min(31, 32 - m_tileBits - m_polyBits);
             int saltMask = (1 << m_saltBits) - 1;

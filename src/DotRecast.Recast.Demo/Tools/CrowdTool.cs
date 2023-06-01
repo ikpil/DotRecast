@@ -236,10 +236,8 @@ public class CrowdTool : Tool
             Vector3f bmin = new Vector3f();
             Vector3f bmax = new Vector3f();
             GetAgentBounds(ag, ref bmin, ref bmax);
-            float[] isect = Intersections.IntersectSegmentAABB(s, p, bmin, bmax);
-            if (null != isect)
+            if (Intersections.IsectSegAABB(s, p, bmin, bmax, out var tmin, out var tmax))
             {
-                float tmin = isect[0];
                 if (tmin > 0 && tmin < tsel)
                 {
                     isel = ag;
@@ -486,7 +484,7 @@ public class CrowdTool : Tool
                     Vector3f[] s = ag.boundary.GetSegment(j);
                     Vector3f s0 = s[0];
                     Vector3f s3 = s[1];
-                    if (TriArea2D(pos, s0, s3) < 0.0f)
+                    if (DetourCommon.TriArea2D(pos, s0, s3) < 0.0f)
                         col = DuDarkenCol(col);
 
                     dd.AppendArrow(s[0].x, s[0].y + 0.2f, s[0].z, s[1].x, s[1].z + 0.2f, s[1].z, 0.0f, 0.3f, col);

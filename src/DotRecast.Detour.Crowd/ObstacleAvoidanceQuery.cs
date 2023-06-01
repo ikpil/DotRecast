@@ -131,7 +131,7 @@ namespace DotRecast.Detour.Crowd
                 cir.dp.Normalize();
                 dv = cir.dvel.Subtract(dvel);
 
-                float a = TriArea2D(orig, cir.dp, dv);
+                float a = DetourCommon.TriArea2D(orig, cir.dp, dv);
                 if (a < 0.01f)
                 {
                     cir.np.x = -cir.dp.z;
@@ -150,7 +150,7 @@ namespace DotRecast.Detour.Crowd
 
                 // Precalc if the agent is really close to the segment.
                 float r = 0.01f;
-                var distSqr = DistancePtSegSqr2D(pos, seg.p, seg.q, out var t);
+                var distSqr = DetourCommon.DistancePtSegSqr2D(pos, seg.p, seg.q, out var t);
                 seg.touch = distSqr < Sqr(r);
             }
         }

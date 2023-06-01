@@ -77,8 +77,8 @@ public class DemoInputGeomProvider : IInputGeomProvider
         Vector3f.Copy(ref bmax, vertices, 0);
         for (int i = 1; i < vertices.Length / 3; i++)
         {
-           bmin.Min(vertices, i * 3);
-           bmax.Max(vertices, i * 3);
+            bmin.Min(vertices, i * 3);
+            bmax.Max(vertices, i * 3);
         }
 
         _mesh = new TriMesh(vertices, faces);
@@ -152,15 +152,13 @@ public class DemoInputGeomProvider : IInputGeomProvider
     public float? RaycastMesh(Vector3f src, Vector3f dst)
     {
         // Prune hit ray.
-        float[] btminmax = Intersections.IntersectSegmentAABB(src, dst, bmin, bmax);
-        if (null == btminmax)
+        if (!Intersections.IsectSegAABB(src, dst, bmin, bmax, out var btmin, out var btmax))
         {
             return null;
         }
 
-        float btmin = btminmax[0];
-        float btmax = btminmax[1];
-        float[] p = new float[2], q = new float[2];
+        float[] p = new float[2];
+        float[] q = new float[2];
         p[0] = src.x + (dst.x - src.x) * btmin;
         p[1] = src.z + (dst.z - src.z) * btmin;
         q[0] = src.x + (dst.x - src.x) * btmax;
@@ -185,12 +183,12 @@ public class DemoInputGeomProvider : IInputGeomProvider
                     vertices[tris[j] * 3 + 2]
                 );
                 Vector3f v2 = Vector3f.Of(
-                    vertices[tris[j + 1] * 3], 
+                    vertices[tris[j + 1] * 3],
                     vertices[tris[j + 1] * 3 + 1],
                     vertices[tris[j + 1] * 3 + 2]
                 );
                 Vector3f v3 = Vector3f.Of(
-                    vertices[tris[j + 2] * 3], 
+                    vertices[tris[j + 2] * 3],
                     vertices[tris[j + 2] * 3 + 1],
                     vertices[tris[j + 2] * 3 + 2]
                 );

@@ -132,7 +132,7 @@ public class RecastDebugDraw : DebugDraw
             }
 
             int col;
-            if (query != null && query.IsInClosedList(@base | i))
+            if (query != null && query.IsInClosedList(@base | (long)i))
             {
                 col = DuRGBA(255, 196, 0, 64);
             }
@@ -179,7 +179,7 @@ public class RecastDebugDraw : DebugDraw
                 }
 
                 int col, col2;
-                if (query != null && query.IsInClosedList(@base | i))
+                if (query != null && query.IsInClosedList(@base | (long)i))
                 {
                     col = DuRGBA(255, 196, 0, 220);
                 }
@@ -1269,7 +1269,7 @@ public class RecastDebugDraw : DebugDraw
                     continue;
                 }
 
-                DebugDrawNavMeshPoly(mesh, @base | j, col);
+                DebugDrawNavMeshPoly(mesh, @base | (long)j, col);
             }
         }
     }

@@ -291,8 +291,7 @@ public class NavMeshRenderer
         debugDraw.Begin(DebugDrawPrimitives.POINTS, 3.0f);
         foreach (ConvexVolume vol in geom.ConvexVolumes())
         {
-            int col = DebugDraw
-                .DuDarkenCol(DebugDraw.DuTransCol(DebugDraw.AreaToCol(vol.areaMod.GetMaskedValue()), 220));
+            int col = DebugDraw.DuDarkenCol(DebugDraw.DuTransCol(DebugDraw.AreaToCol(vol.areaMod.GetMaskedValue()), 220));
             for (int j = 0; j < vol.verts.Length; j += 3)
             {
                 debugDraw.Vertex(vol.verts[j + 0], vol.verts[j + 1] + 0.1f, vol.verts[j + 2], col);

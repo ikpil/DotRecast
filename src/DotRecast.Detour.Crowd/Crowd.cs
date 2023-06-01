@@ -1161,7 +1161,7 @@ namespace DotRecast.Detour.Crowd
                         Vector3f[] s = ag.boundary.GetSegment(j);
                         Vector3f s3 = s[1];
                         //Array.Copy(s, 3, s3, 0, 3);
-                        if (TriArea2D(ag.npos, s[0], s3) < 0.0f)
+                        if (DetourCommon.TriArea2D(ag.npos, s[0], s3) < 0.0f)
                         {
                             continue;
                         }

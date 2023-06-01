@@ -43,7 +43,7 @@ namespace DotRecast.Detour.Crowd
             int iterCount = config.maxFindPathIterations;
             while (iterCount > 0)
             {
-                PathQuery? q = queue.First?.Value;
+                PathQuery q = queue.First?.Value;
                 if (q == null)
                 {
                     break;

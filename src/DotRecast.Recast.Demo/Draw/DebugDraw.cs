@@ -394,7 +394,7 @@ public class DebugDraw
 
     void AppendArrowHead(Vector3f p, Vector3f q, float s, int col)
     {
-        float eps = 0.001f;
+        const float eps = 0.001f;
         if (VdistSqr(p, q) < eps * eps)
         {
             return;

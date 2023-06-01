@@ -17,8 +17,6 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using DotRecast.Core;
-using static DotRecast.Core.RcMath;
 
 namespace DotRecast.Core
 {
@@ -78,16 +76,16 @@ namespace DotRecast.Core
             return t;
         }
 
-        public static float[] IntersectSegmentAABB(Vector3f sp, Vector3f sq, Vector3f amin, Vector3f amax)
+        public static bool IsectSegAABB(Vector3f sp, Vector3f sq, Vector3f amin, Vector3f amax, out float tmin, out float tmax)
         {
-            float EPS = 1e-6f;
+            const float EPS = 1e-6f;
 
             Vector3f d = new Vector3f();
             d.x = sq.x - sp.x;
             d.y = sq.y - sp.y;
             d.z = sq.z - sp.z;
-            float tmin = 0.0f;
-            float tmax = 1.0f;
+            tmin = 0.0f;
+            tmax = float.MaxValue;
 
             for (int i = 0; i < 3; i++)
             {
@@ -95,7 +93,7 @@ namespace DotRecast.Core
                 {
                     if (sp[i] < amin[i] || sp[i] > amax[i])
                     {
-                        return null;
+                        return false;
                     }
                 }
                 else
@@ -103,11 +101,10 @@ namespace DotRecast.Core
                     float ood = 1.0f / d[i];
                     float t1 = (amin[i] - sp[i]) * ood;
                     float t2 = (amax[i] - sp[i]) * ood;
+
                     if (t1 > t2)
                     {
-                        float tmp = t1;
-                        t1 = t2;
-                        t2 = tmp;
+                        (t1, t2) = (t2, t1);
                     }
 
                     if (t1 > tmin)
@@ -122,12 +119,12 @@ namespace DotRecast.Core
 
                     if (tmin > tmax)
                     {
-                        return null;
+                        return false;
                     }
                 }
             }
 
-            return new float[] { tmin, tmax };
+            return true;
         }
     }
 }
