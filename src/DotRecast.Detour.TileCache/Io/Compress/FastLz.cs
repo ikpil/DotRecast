@@ -29,35 +29,35 @@ namespace DotRecast.Detour.TileCache.Io.Compress
  */
     public class FastLz
     {
-        private static readonly int MAX_DISTANCE = 8191;
-        private static readonly int MAX_FARDISTANCE = 65535 + MAX_DISTANCE - 1;
+        private const int MAX_DISTANCE = 8191;
+        private const int MAX_FARDISTANCE = 65535 + MAX_DISTANCE - 1;
 
-        private static readonly int HASH_LOG = 13;
-        private static readonly int HASH_SIZE = 1 << HASH_LOG; // 8192
-        private static readonly int HASH_MASK = HASH_SIZE - 1;
+        private const int HASH_LOG = 13;
+        private const int HASH_SIZE = 1 << HASH_LOG; // 8192
+        private const int HASH_MASK = HASH_SIZE - 1;
 
-        private static readonly int MAX_COPY = 32;
-        private static readonly int MAX_LEN = 256 + 8;
+        private const int MAX_COPY = 32;
+        private const int MAX_LEN = 256 + 8;
 
-        private static readonly int MIN_RECOMENDED_LENGTH_FOR_LEVEL_2 = 1024 * 64;
+        private const int MIN_RECOMENDED_LENGTH_FOR_LEVEL_2 = 1024 * 64;
 
-        private static readonly int MAGIC_NUMBER = 'F' << 16 | 'L' << 8 | 'Z';
+        private const int MAGIC_NUMBER = 'F' << 16 | 'L' << 8 | 'Z';
 
-        private static readonly byte BLOCK_TYPE_NON_COMPRESSED = 0x00;
-        private static readonly byte BLOCK_TYPE_COMPRESSED = 0x01;
-        private static readonly byte BLOCK_WITHOUT_CHECKSUM = 0x00;
-        private static readonly byte BLOCK_WITH_CHECKSUM = 0x10;
+        private const byte BLOCK_TYPE_NON_COMPRESSED = 0x00;
+        private const byte BLOCK_TYPE_COMPRESSED = 0x01;
+        private const byte BLOCK_WITHOUT_CHECKSUM = 0x00;
+        private const byte BLOCK_WITH_CHECKSUM = 0x10;
 
-        private static readonly int OPTIONS_OFFSET = 3;
-        private static readonly int CHECKSUM_OFFSET = 4;
+        private const int OPTIONS_OFFSET = 3;
+        private const int CHECKSUM_OFFSET = 4;
 
-        private static readonly int MAX_CHUNK_LENGTH = 0xFFFF;
+        private const int MAX_CHUNK_LENGTH = 0xFFFF;
 
         /**
      * Do not call {@link #Compress(byte[], int, int, byte[], int, int)} for input buffers
      * which length less than this value.
      */
-        private static readonly int MIN_LENGTH_TO_COMPRESSION = 32;
+        private const int MIN_LENGTH_TO_COMPRESSION = 32;
 
         /**
      * In this case {@link #Compress(byte[], int, int, byte[], int, int)} will choose level
@@ -65,17 +65,17 @@ namespace DotRecast.Detour.TileCache.Io.Compress
      * {@link #MIN_RECOMENDED_LENGTH_FOR_LEVEL_2} {@link #LEVEL_1} will be choosen,
      * otherwise {@link #LEVEL_2}.
      */
-        private static readonly int LEVEL_AUTO = 0;
+        private const int LEVEL_AUTO = 0;
 
         /**
      * Level 1 is the fastest compression and generally useful for short data.
      */
-        private static readonly int LEVEL_1 = 1;
+        private const int LEVEL_1 = 1;
 
         /**
      * Level 2 is slightly slower but it gives better compression ratio.
      */
-        private static readonly int LEVEL_2 = 2;
+        private const int LEVEL_2 = 2;
 
         /**
      * The output buffer must be at least 6% larger than the input buffer and can not be smaller than 66 bytes.
