@@ -429,8 +429,8 @@ public class RecastDemo
         {
             Vector3f bmin = sample.GetInputGeom().GetMeshBoundsMin();
             Vector3f bmax = sample.GetInputGeom().GetMeshBoundsMax();
-            int[] voxels = Recast.CalcGridSize(bmin, bmax, settingsUI.GetCellSize());
-            settingsUI.SetVoxels(voxels);
+            Recast.CalcGridSize(bmin, bmax, settingsUI.GetCellSize(), out var gw, out var gh);
+            settingsUI.SetVoxels(gw, gh);
             settingsUI.SetTiles(tileNavMeshBuilder.GetTiles(sample.GetInputGeom(), settingsUI.GetCellSize(), settingsUI.GetTileSize()));
             settingsUI.SetMaxTiles(tileNavMeshBuilder.GetMaxTiles(sample.GetInputGeom(), settingsUI.GetCellSize(), settingsUI.GetTileSize()));
             settingsUI.SetMaxPolys(tileNavMeshBuilder.GetMaxPolysPerTile(sample.GetInputGeom(), settingsUI.GetCellSize(), settingsUI.GetTileSize()));

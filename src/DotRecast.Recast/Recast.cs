@@ -25,9 +25,9 @@ namespace DotRecast.Recast
 {
     using static RecastConstants;
 
-    public class Recast
+    public static class Recast
     {
-        void CalcBounds(float[] verts, int nv, float[] bmin, float[] bmax)
+        public static void CalcBounds(float[] verts, int nv, float[] bmin, float[] bmax)
         {
             for (int i = 0; i < 3; i++)
             {
@@ -46,27 +46,16 @@ namespace DotRecast.Recast
             // Calculate bounding box.
         }
 
-        public static int[] CalcGridSize(float[] bmin, float[] bmax, float cs)
+        public static void CalcGridSize(Vector3f bmin, Vector3f bmax, float cs, out int sizeX, out int sizeZ)
         {
-            return new int[] { (int)((bmax[0] - bmin[0]) / cs + 0.5f), (int)((bmax[2] - bmin[2]) / cs + 0.5f) };
-        }
-        
-        public static int[] CalcGridSize(Vector3f bmin, float[] bmax, float cs)
-        {
-            return new int[] { (int)((bmax[0] - bmin.x) / cs + 0.5f), (int)((bmax[2] - bmin.z) / cs + 0.5f) };
-        }
-        
-        public static int[] CalcGridSize(Vector3f bmin, Vector3f bmax, float cs)
-        {
-            return new int[] { (int)((bmax.x - bmin.x) / cs + 0.5f), (int)((bmax.z - bmin.z) / cs + 0.5f) };
+            sizeX = (int)((bmax.x - bmin.x) / cs + 0.5f);
+            sizeZ = (int)((bmax.z - bmin.z) / cs + 0.5f);
         }
 
 
         public static int[] CalcTileCount(Vector3f bmin, Vector3f bmax, float cs, int tileSizeX, int tileSizeZ)
         {
-            int[] gwd = CalcGridSize(bmin, bmax, cs);
-            int gw = gwd[0];
-            int gd = gwd[1];
+            CalcGridSize(bmin, bmax, cs, out var gw, out var gd);
             int tw = (gw + tileSizeX - 1) / tileSizeX;
             int td = (gd + tileSizeZ - 1) / tileSizeZ;
             return new int[] { tw, td };
@@ -79,8 +68,7 @@ namespace DotRecast.Recast
         /// See the #rcConfig documentation for more information on the configuration parameters.
         ///
         /// @see rcHeightfield, rcClearUnwalkableTriangles, rcRasterizeTriangles
-        public static int[] MarkWalkableTriangles(Telemetry ctx, float walkableSlopeAngle, float[] verts, int[] tris, int nt,
-            AreaModification areaMod)
+        public static int[] MarkWalkableTriangles(Telemetry ctx, float walkableSlopeAngle, float[] verts, int[] tris, int nt, AreaModification areaMod)
         {
             int[] areas = new int[nt];
             float walkableThr = (float)Math.Cos(walkableSlopeAngle / 180.0f * Math.PI);
@@ -97,17 +85,7 @@ namespace DotRecast.Recast
             return areas;
         }
 
-        static void CalcTriNormal(float[] verts, int v0, int v1, int v2, float[] norm)
-        {
-            Vector3f e0 = new Vector3f();
-            Vector3f e1 = new Vector3f();
-            Vector3f.Sub(ref e0, verts, v1 * 3, v0 * 3);
-            Vector3f.Sub(ref e1, verts, v2 * 3, v0 * 3);
-            Vector3f.Cross(norm, e0, e1);
-            Vector3f.Normalize(norm);
-        }
-        
-        static void CalcTriNormal(float[] verts, int v0, int v1, int v2, ref Vector3f norm)
+        public static void CalcTriNormal(float[] verts, int v0, int v1, int v2, ref Vector3f norm)
         {
             Vector3f e0 = new Vector3f();
             Vector3f e1 = new Vector3f();
@@ -126,8 +104,7 @@ namespace DotRecast.Recast
         /// See the #rcConfig documentation for more information on the configuration parameters.
         ///
         /// @see rcHeightfield, rcClearUnwalkableTriangles, rcRasterizeTriangles
-        public static void ClearUnwalkableTriangles(Telemetry ctx, float walkableSlopeAngle, float[] verts, int nv,
-            int[] tris, int nt, int[] areas)
+        public static void ClearUnwalkableTriangles(Telemetry ctx, float walkableSlopeAngle, float[] verts, int nv, int[] tris, int nt, int[] areas)
         {
             float walkableThr = (float)Math.Cos(walkableSlopeAngle / 180.0f * Math.PI);
 

@@ -332,10 +332,10 @@ public class RcSettingsView : IRcView
         return detailSampleMaxError;
     }
 
-    public void SetVoxels(int[] voxels)
+    public void SetVoxels(int gw, int gh)
     {
-        this.voxels[0] = voxels[0];
-        this.voxels[1] = voxels[1];
+        voxels[0] = gw;
+        voxels[1] = gh;
     }
 
     public bool IsTiled()

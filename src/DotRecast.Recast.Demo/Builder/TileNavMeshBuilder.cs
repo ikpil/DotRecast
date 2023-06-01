@@ -97,18 +97,18 @@ public class TileNavMeshBuilder : AbstractNavMeshBuilder
 
     private int GetTileBits(DemoInputGeomProvider geom, float cellSize, int tileSize)
     {
-        int[] wh = Recast.CalcGridSize(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), cellSize);
-        int tw = (wh[0] + tileSize - 1) / tileSize;
-        int th = (wh[1] + tileSize - 1) / tileSize;
+        Recast.CalcGridSize(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), cellSize, out var gw, out var gh);
+        int tw = (gw + tileSize - 1) / tileSize;
+        int th = (gh + tileSize - 1) / tileSize;
         int tileBits = Math.Min(Ilog2(NextPow2(tw * th)), 14);
         return tileBits;
     }
 
     public int[] GetTiles(DemoInputGeomProvider geom, float cellSize, int tileSize)
     {
-        int[] wh = Recast.CalcGridSize(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), cellSize);
-        int tw = (wh[0] + tileSize - 1) / tileSize;
-        int th = (wh[1] + tileSize - 1) / tileSize;
+        Recast.CalcGridSize(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), cellSize, out var gw, out var gh);
+        int tw = (gw + tileSize - 1) / tileSize;
+        int th = (gh + tileSize - 1) / tileSize;
         return new int[] { tw, th };
     }
 
