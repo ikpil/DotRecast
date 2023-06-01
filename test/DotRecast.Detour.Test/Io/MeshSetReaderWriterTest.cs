@@ -69,9 +69,7 @@ public class MeshSetReaderWriterTest
 
         Vector3f bmin = geom.GetMeshBoundsMin();
         Vector3f bmax = geom.GetMeshBoundsMax();
-        int[] twh = Recast.Recast.CalcTileCount(bmin, bmax, m_cellSize, m_tileSize, m_tileSize);
-        int tw = twh[0];
-        int th = twh[1];
+        Recast.Recast.CalcTileCount(bmin, bmax, m_cellSize, m_tileSize, m_tileSize, out var tw, out var th);
         for (int y = 0; y < th; ++y)
         {
             for (int x = 0; x < tw; ++x)

@@ -53,12 +53,11 @@ namespace DotRecast.Recast
         }
 
 
-        public static int[] CalcTileCount(Vector3f bmin, Vector3f bmax, float cs, int tileSizeX, int tileSizeZ)
+        public static void CalcTileCount(Vector3f bmin, Vector3f bmax, float cs, int tileSizeX, int tileSizeZ, out int tw, out int td)
         {
             CalcGridSize(bmin, bmax, cs, out var gw, out var gd);
-            int tw = (gw + tileSizeX - 1) / tileSizeX;
-            int td = (gd + tileSizeZ - 1) / tileSizeZ;
-            return new int[] { tw, td };
+            tw = (gw + tileSizeX - 1) / tileSizeX;
+            td = (gd + tileSizeZ - 1) / tileSizeZ;
         }
 
         /// @par

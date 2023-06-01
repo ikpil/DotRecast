@@ -53,7 +53,7 @@ public class AbstractTileCacheTest
     public TileCache GetTileCache(IInputGeomProvider geom, RcByteOrder order, bool cCompatibility)
     {
         TileCacheParams option = new TileCacheParams();
-        int[] twh = Recast.Recast.CalcTileCount(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), m_cellSize, m_tileSize, m_tileSize);
+        Recast.Recast.CalcTileCount(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), m_cellSize, m_tileSize, m_tileSize, out var tw, out var th);
         option.ch = m_cellHeight;
         option.cs = m_cellSize;
         option.orig = geom.GetMeshBoundsMin();
@@ -63,7 +63,7 @@ public class AbstractTileCacheTest
         option.walkableRadius = m_agentRadius;
         option.walkableClimb = m_agentMaxClimb;
         option.maxSimplificationError = m_edgeMaxError;
-        option.maxTiles = twh[0] * twh[1] * EXPECTED_LAYERS_PER_TILE;
+        option.maxTiles = tw * th * EXPECTED_LAYERS_PER_TILE;
         option.maxObstacles = 128;
         NavMeshParams navMeshParams = new NavMeshParams();
         navMeshParams.orig = geom.GetMeshBoundsMin();
