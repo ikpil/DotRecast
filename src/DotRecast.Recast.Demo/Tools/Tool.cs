@@ -28,7 +28,7 @@ public abstract class Tool
 {
     public abstract void SetSample(Sample m_sample);
 
-    public abstract void HandleClick(Vector3f s, Vector3f p, bool shift);
+    public abstract void HandleClick(RcVec3f s, RcVec3f p, bool shift);
 
     public abstract void HandleRender(NavMeshRenderer renderer);
 
@@ -38,7 +38,7 @@ public abstract class Tool
 
     public abstract string GetName();
 
-    public virtual void HandleClickRay(Vector3f start, Vector3f direction, bool shift)
+    public virtual void HandleClickRay(RcVec3f start, RcVec3f direction, bool shift)
     {
         // ...
     }

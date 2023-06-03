@@ -47,7 +47,7 @@ public class CrowdTool : Tool
 
     public static readonly int AGENT_MAX_TRAIL = 64;
     private readonly Dictionary<long, AgentTrail> m_trails = new();
-    private Vector3f m_targetPos;
+    private RcVec3f m_targetPos;
     private long m_targetRef;
     private CrowdToolMode m_mode = CrowdToolMode.CREATE;
     private int m_modeIdx = CrowdToolMode.CREATE.Idx;
@@ -114,7 +114,7 @@ public class CrowdTool : Tool
         }
     }
 
-    public override void HandleClick(Vector3f s, Vector3f p, bool shift)
+    public override void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
         if (m_mode == CrowdToolMode.PROFILING)
         {
@@ -160,7 +160,7 @@ public class CrowdTool : Tool
             if (nav != null && navquery != null)
             {
                 IQueryFilter filter = new DefaultQueryFilter();
-                Vector3f halfExtents = crowd.GetQueryExtents();
+                RcVec3f halfExtents = crowd.GetQueryExtents();
                 Result<FindNearestPolyResult> result = navquery.FindNearestPoly(p, halfExtents, filter);
                 long refs = result.result.GetNearestRef();
                 if (refs != 0)
@@ -184,7 +184,7 @@ public class CrowdTool : Tool
         }
     }
 
-    private void AddAgent(Vector3f p)
+    private void AddAgent(RcVec3f p)
     {
         CrowdAgentParams ap = GetAgentParams();
         CrowdAgent ag = crowd.AddAgent(p, ap);
@@ -226,15 +226,15 @@ public class CrowdTool : Tool
         return ap;
     }
 
-    private CrowdAgent HitTestAgents(Vector3f s, Vector3f p)
+    private CrowdAgent HitTestAgents(RcVec3f s, RcVec3f p)
     {
         CrowdAgent isel = null;
         float tsel = float.MaxValue;
 
         foreach (CrowdAgent ag in crowd.GetActiveAgents())
         {
-            Vector3f bmin = new Vector3f();
-            Vector3f bmax = new Vector3f();
+            RcVec3f bmin = new RcVec3f();
+            RcVec3f bmax = new RcVec3f();
             GetAgentBounds(ag, ref bmin, ref bmax);
             if (Intersections.IsectSegAABB(s, p, bmin, bmax, out var tmin, out var tmax))
             {
@@ -249,9 +249,9 @@ public class CrowdTool : Tool
         return isel;
     }
 
-    private void GetAgentBounds(CrowdAgent ag, ref Vector3f bmin, ref Vector3f bmax)
+    private void GetAgentBounds(CrowdAgent ag, ref RcVec3f bmin, ref RcVec3f bmax)
     {
-        Vector3f p = ag.npos;
+        RcVec3f p = ag.npos;
         float r = ag.option.radius;
         float h = ag.option.height;
         bmin.x = p.x - r;
@@ -262,7 +262,7 @@ public class CrowdTool : Tool
         bmax.z = p.z + r;
     }
 
-    private void SetMoveTarget(Vector3f p, bool adjust)
+    private void SetMoveTarget(RcVec3f p, bool adjust)
     {
         if (sample == null || crowd == null)
             return;
@@ -270,21 +270,21 @@ public class CrowdTool : Tool
         // Find nearest point on navmesh and set move request to that location.
         NavMeshQuery navquery = sample.GetNavMeshQuery();
         IQueryFilter filter = crowd.GetFilter(0);
-        Vector3f halfExtents = crowd.GetQueryExtents();
+        RcVec3f halfExtents = crowd.GetQueryExtents();
 
         if (adjust)
         {
             // Request velocity
             if (m_agentDebug.agent != null)
             {
-                Vector3f vel = CalcVel(m_agentDebug.agent.npos, p, m_agentDebug.agent.option.maxSpeed);
+                RcVec3f vel = CalcVel(m_agentDebug.agent.npos, p, m_agentDebug.agent.option.maxSpeed);
                 crowd.RequestMoveVelocity(m_agentDebug.agent, vel);
             }
             else
             {
                 foreach (CrowdAgent ag in crowd.GetActiveAgents())
                 {
-                    Vector3f vel = CalcVel(ag.npos, p, ag.option.maxSpeed);
+                    RcVec3f vel = CalcVel(ag.npos, p, ag.option.maxSpeed);
                     crowd.RequestMoveVelocity(ag, vel);
                 }
             }
@@ -308,9 +308,9 @@ public class CrowdTool : Tool
         }
     }
 
-    private Vector3f CalcVel(Vector3f pos, Vector3f tgt, float speed)
+    private RcVec3f CalcVel(RcVec3f pos, RcVec3f tgt, float speed)
     {
-        Vector3f vel = tgt.Subtract(pos);
+        RcVec3f vel = tgt.Subtract(pos);
         vel.y = 0.0f;
         vel.Normalize();
         return vel.Scale(speed);
@@ -365,7 +365,7 @@ public class CrowdTool : Tool
             float gridy = -float.MaxValue;
             foreach (CrowdAgent ag in crowd.GetActiveAgents())
             {
-                Vector3f pos = ag.corridor.GetPos();
+                RcVec3f pos = ag.corridor.GetPos();
                 gridy = Math.Max(gridy, pos.y);
             }
 
@@ -394,10 +394,10 @@ public class CrowdTool : Tool
         foreach (CrowdAgent ag in crowd.GetActiveAgents())
         {
             AgentTrail trail = m_trails[ag.idx];
-            Vector3f pos = ag.npos;
+            RcVec3f pos = ag.npos;
 
             dd.Begin(LINES, 3.0f);
-            Vector3f prev = new Vector3f();
+            RcVec3f prev = new RcVec3f();
             float preva = 1;
             prev = pos;
             for (int j = 0; j < AGENT_MAX_TRAIL - 1; ++j)
@@ -421,7 +421,7 @@ public class CrowdTool : Tool
                 continue;
 
             float radius = ag.option.radius;
-            Vector3f pos = ag.npos;
+            RcVec3f pos = ag.npos;
 
             if (toolParams.m_showCorners)
             {
@@ -430,8 +430,8 @@ public class CrowdTool : Tool
                     dd.Begin(LINES, 2.0f);
                     for (int j = 0; j < ag.corners.Count; ++j)
                     {
-                        Vector3f va = j == 0 ? pos : ag.corners[j - 1].GetPos();
-                        Vector3f vb = ag.corners[j].GetPos();
+                        RcVec3f va = j == 0 ? pos : ag.corners[j - 1].GetPos();
+                        RcVec3f vb = ag.corners[j].GetPos();
                         dd.Vertex(va.x, va.y + radius, va.z, DuRGBA(128, 0, 0, 192));
                         dd.Vertex(vb.x, vb.y + radius, vb.z, DuRGBA(128, 0, 0, 192));
                     }
@@ -439,7 +439,7 @@ public class CrowdTool : Tool
                     if ((ag.corners[ag.corners.Count - 1].GetFlags()
                          & NavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
                     {
-                        Vector3f v = ag.corners[ag.corners.Count - 1].GetPos();
+                        RcVec3f v = ag.corners[ag.corners.Count - 1].GetPos();
                         dd.Vertex(v.x, v.y, v.z, DuRGBA(192, 0, 0, 192));
                         dd.Vertex(v.x, v.y + radius * 2, v.z, DuRGBA(192, 0, 0, 192));
                     }
@@ -473,7 +473,7 @@ public class CrowdTool : Tool
 
             if (toolParams.m_showCollisionSegments)
             {
-                Vector3f center = ag.boundary.GetCenter();
+                RcVec3f center = ag.boundary.GetCenter();
                 dd.DebugDrawCross(center.x, center.y + radius, center.z, 0.2f, DuRGBA(192, 0, 128, 255), 2.0f);
                 dd.DebugDrawCircle(center.x, center.y + radius, center.z, ag.option.collisionQueryRange, DuRGBA(192, 0, 128, 128), 2.0f);
 
@@ -481,9 +481,9 @@ public class CrowdTool : Tool
                 for (int j = 0; j < ag.boundary.GetSegmentCount(); ++j)
                 {
                     int col = DuRGBA(192, 0, 128, 192);
-                    Vector3f[] s = ag.boundary.GetSegment(j);
-                    Vector3f s0 = s[0];
-                    Vector3f s3 = s[1];
+                    RcVec3f[] s = ag.boundary.GetSegment(j);
+                    RcVec3f s0 = s[0];
+                    RcVec3f s3 = s[1];
                     if (DetourCommon.TriArea2D(pos, s0, s3) < 0.0f)
                         col = DuDarkenCol(col);
 
@@ -526,7 +526,7 @@ public class CrowdTool : Tool
         foreach (CrowdAgent ag in crowd.GetActiveAgents())
         {
             float radius = ag.option.radius;
-            Vector3f pos = ag.npos;
+            RcVec3f pos = ag.npos;
 
             int col = DuRGBA(0, 0, 0, 32);
             if (m_agentDebug.agent == ag)
@@ -539,7 +539,7 @@ public class CrowdTool : Tool
         {
             float height = ag.option.height;
             float radius = ag.option.radius;
-            Vector3f pos = ag.npos;
+            RcVec3f pos = ag.npos;
 
             int col = DuRGBA(220, 220, 220, 128);
             if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING
@@ -575,7 +575,7 @@ public class CrowdTool : Tool
                 dd.Begin(QUADS);
                 for (int j = 0; j < vod.GetSampleCount(); ++j)
                 {
-                    Vector3f p = vod.GetSampleVelocity(j);
+                    RcVec3f p = vod.GetSampleVelocity(j);
                     float sr = vod.GetSampleSize(j);
                     float pen = vod.GetSamplePenalty(j);
                     float pen2 = vod.GetSamplePreferredSidePenalty(j);
@@ -596,9 +596,9 @@ public class CrowdTool : Tool
         {
             float radius = ag.option.radius;
             float height = ag.option.height;
-            Vector3f pos = ag.npos;
-            Vector3f vel = ag.vel;
-            Vector3f dvel = ag.dvel;
+            RcVec3f pos = ag.npos;
+            RcVec3f vel = ag.vel;
+            RcVec3f dvel = ag.dvel;
 
             int col = DuRGBA(220, 220, 220, 192);
             if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING

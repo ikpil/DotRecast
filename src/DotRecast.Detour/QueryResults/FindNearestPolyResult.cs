@@ -25,10 +25,10 @@ namespace DotRecast.Detour.QueryResults
     public class FindNearestPolyResult
     {
         private readonly long nearestRef;
-        private readonly Vector3f nearestPos;
+        private readonly RcVec3f nearestPos;
         private readonly bool overPoly;
 
-        public FindNearestPolyResult(long nearestRef, Vector3f nearestPos, bool overPoly)
+        public FindNearestPolyResult(long nearestRef, RcVec3f nearestPos, bool overPoly)
         {
             this.nearestRef = nearestRef;
             this.nearestPos = nearestPos;
@@ -42,7 +42,7 @@ namespace DotRecast.Detour.QueryResults
         }
 
         /** Returns the nearest point on the polygon. [opt] [(x, y, z)]. Unchanged if no polygon is found. */
-        public Vector3f GetNearestPos()
+        public RcVec3f GetNearestPos()
         {
             return nearestPos;
         }

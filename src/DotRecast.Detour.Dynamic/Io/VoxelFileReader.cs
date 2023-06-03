@@ -101,11 +101,11 @@ namespace DotRecast.Detour.Dynamic.Io
                 int width = buf.GetInt();
                 int depth = buf.GetInt();
                 int borderSize = buf.GetInt();
-                Vector3f boundsMin = new Vector3f();
+                RcVec3f boundsMin = new RcVec3f();
                 boundsMin.x = buf.GetFloat();
                 boundsMin.y = buf.GetFloat();
                 boundsMin.z = buf.GetFloat();
-                Vector3f boundsMax = new Vector3f();
+                RcVec3f boundsMax = new RcVec3f();
                 boundsMax.x = buf.GetFloat();
                 boundsMax.y = buf.GetFloat();
                 boundsMax.z = buf.GetFloat();

@@ -26,7 +26,7 @@ namespace DotRecast.Detour
     {
         bool PassFilter(long refs, MeshTile tile, Poly poly);
 
-        float GetCost(Vector3f pa, Vector3f pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef, MeshTile curTile,
+        float GetCost(RcVec3f pa, RcVec3f pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef, MeshTile curTile,
             Poly curPoly, long nextRef, MeshTile nextTile, Poly nextPoly);
     }
 }

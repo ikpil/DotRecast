@@ -33,8 +33,8 @@ namespace DotRecast.Core
             int hull = 0;
             for (int i = 1; i < npts; ++i)
             {
-                Vector3f a = Vector3f.Of(pts[i * 3], pts[i * 3 + 1], pts[i * 3 + 2]);
-                Vector3f b = Vector3f.Of(pts[hull * 3], pts[hull * 3 + 1], pts[hull * 3 + 2]);
+                RcVec3f a = RcVec3f.Of(pts[i * 3], pts[i * 3 + 1], pts[i * 3 + 2]);
+                RcVec3f b = RcVec3f.Of(pts[hull * 3], pts[hull * 3 + 1], pts[hull * 3 + 2]);
                 if (Cmppt(a, b))
                 {
                     hull = i;
@@ -49,9 +49,9 @@ namespace DotRecast.Core
                 endpt = 0;
                 for (int j = 1; j < npts; ++j)
                 {
-                    Vector3f a = Vector3f.Of(pts[hull * 3], pts[hull * 3 + 1], pts[hull * 3 + 2]);
-                    Vector3f b = Vector3f.Of(pts[endpt * 3], pts[endpt * 3 + 1], pts[endpt * 3 + 2]);
-                    Vector3f c = Vector3f.Of(pts[j * 3], pts[j * 3 + 1], pts[j * 3 + 2]);
+                    RcVec3f a = RcVec3f.Of(pts[hull * 3], pts[hull * 3 + 1], pts[hull * 3 + 2]);
+                    RcVec3f b = RcVec3f.Of(pts[endpt * 3], pts[endpt * 3 + 1], pts[endpt * 3 + 2]);
+                    RcVec3f c = RcVec3f.Of(pts[j * 3], pts[j * 3 + 1], pts[j * 3 + 2]);
                     if (hull == endpt || Left(a, b, c))
                     {
                         endpt = j;
@@ -65,7 +65,7 @@ namespace DotRecast.Core
         }
 
         // Returns true if 'a' is more lower-left than 'b'.
-        private static bool Cmppt(Vector3f a, Vector3f b)
+        private static bool Cmppt(RcVec3f a, RcVec3f b)
         {
             if (a.x < b.x)
             {
@@ -91,7 +91,7 @@ namespace DotRecast.Core
         }
 
         // Returns true if 'c' is left of line 'a'-'b'.
-        private static bool Left(Vector3f a, Vector3f b, Vector3f c)
+        private static bool Left(RcVec3f a, RcVec3f b, RcVec3f c)
         {
             float u1 = b.x - a.x;
             float v1 = b.z - a.z;

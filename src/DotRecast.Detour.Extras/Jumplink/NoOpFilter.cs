@@ -9,7 +9,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             return true;
         }
 
-        public float GetCost(Vector3f pa, Vector3f pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef,
+        public float GetCost(RcVec3f pa, RcVec3f pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef,
             MeshTile curTile, Poly curPoly, long nextRef, MeshTile nextTile, Poly nextPoly)
         {
             return 0;

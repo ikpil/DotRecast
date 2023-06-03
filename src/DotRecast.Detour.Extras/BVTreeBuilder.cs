@@ -39,8 +39,8 @@ namespace DotRecast.Detour.Extras
                 BVItem it = new BVItem();
                 items[i] = it;
                 it.i = i;
-                Vector3f bmin = new Vector3f();
-                Vector3f bmax = new Vector3f();
+                RcVec3f bmin = new RcVec3f();
+                RcVec3f bmax = new RcVec3f();
                 bmin.Set(data.verts, data.polys[i].verts[0] * 3);
                 bmax.Set(data.verts, data.polys[i].verts[0] * 3);
                 for (int j = 1; j < data.polys[i].vertCount; j++)

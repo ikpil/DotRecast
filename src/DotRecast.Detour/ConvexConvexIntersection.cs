@@ -37,10 +37,10 @@ namespace DotRecast.Detour
             float[] inters = new float[Math.Max(m, n) * 3 * 3];
             int ii = 0;
             /* Initialize variables. */
-            Vector3f a = new Vector3f();
-            Vector3f b = new Vector3f();
-            Vector3f a1 = new Vector3f();
-            Vector3f b1 = new Vector3f();
+            RcVec3f a = new RcVec3f();
+            RcVec3f b = new RcVec3f();
+            RcVec3f a1 = new RcVec3f();
+            RcVec3f b1 = new RcVec3f();
 
             int aa = 0;
             int ba = 0;
@@ -49,8 +49,8 @@ namespace DotRecast.Detour
 
             InFlag f = InFlag.Unknown;
             bool FirstPoint = true;
-            Vector3f ip = new Vector3f();
-            Vector3f iq = new Vector3f();
+            RcVec3f ip = new RcVec3f();
+            RcVec3f iq = new RcVec3f();
 
             do
             {
@@ -59,8 +59,8 @@ namespace DotRecast.Detour
                 a1.Set(p, 3 * ((ai + n - 1) % n)); // prev a
                 b1.Set(q, 3 * ((bi + m - 1) % m)); // prev b
 
-                Vector3f A = a.Subtract(a1);
-                Vector3f B = b.Subtract(b1);
+                RcVec3f A = a.Subtract(a1);
+                RcVec3f B = b.Subtract(b1);
 
                 float cross = B.x * A.z - A.x * B.z; // TriArea2D({0, 0}, A, B);
                 float aHB = DetourCommon.TriArea2D(b1, b, a);
@@ -197,7 +197,7 @@ namespace DotRecast.Detour
             return ii + 3;
         }
 
-        private static int AddVertex(float[] inters, int ii, Vector3f p)
+        private static int AddVertex(float[] inters, int ii, RcVec3f p)
         {
             if (ii > 0)
             {
@@ -233,7 +233,7 @@ namespace DotRecast.Detour
             return inflag;
         }
 
-        private static Intersection SegSegInt(Vector3f a, Vector3f b, Vector3f c, Vector3f d, ref Vector3f p, ref Vector3f q)
+        private static Intersection SegSegInt(RcVec3f a, RcVec3f b, RcVec3f c, RcVec3f d, ref RcVec3f p, ref RcVec3f q)
         {
             if (DetourCommon.IntersectSegSeg2D(a, b, c, d, out var s, out var t))
             {
@@ -249,7 +249,7 @@ namespace DotRecast.Detour
             return Intersection.None;
         }
 
-        private static Intersection ParallelInt(Vector3f a, Vector3f b, Vector3f c, Vector3f d, ref Vector3f p, ref Vector3f q)
+        private static Intersection ParallelInt(RcVec3f a, RcVec3f b, RcVec3f c, RcVec3f d, ref RcVec3f p, ref RcVec3f q)
         {
             if (Between(a, b, c) && Between(a, b, d))
             {
@@ -296,7 +296,7 @@ namespace DotRecast.Detour
             return Intersection.None;
         }
 
-        private static bool Between(Vector3f a, Vector3f b, Vector3f c)
+        private static bool Between(RcVec3f a, RcVec3f b, RcVec3f c)
         {
             if (Math.Abs(a.x - b.x) > Math.Abs(a.z - b.z))
             {

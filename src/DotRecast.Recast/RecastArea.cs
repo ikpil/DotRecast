@@ -332,7 +332,7 @@ namespace DotRecast.Recast
             ctx.StopTimer("MARK_BOX_AREA");
         }
 
-        static bool PointInPoly(float[] verts, Vector3f p)
+        static bool PointInPoly(float[] verts, RcVec3f p)
         {
             bool c = false;
             int i, j;
@@ -362,10 +362,10 @@ namespace DotRecast.Recast
         {
             ctx.StartTimer("MARK_CONVEXPOLY_AREA");
 
-            Vector3f bmin = new Vector3f();
-            Vector3f bmax = new Vector3f();
-            Vector3f.Copy(ref bmin, verts, 0);
-            Vector3f.Copy(ref bmax, verts, 0);
+            RcVec3f bmin = new RcVec3f();
+            RcVec3f bmax = new RcVec3f();
+            RcVec3f.Copy(ref bmin, verts, 0);
+            RcVec3f.Copy(ref bmax, verts, 0);
             for (int i = 3; i < verts.Length; i += 3)
             {
                bmin.Min(verts, i);
@@ -413,7 +413,7 @@ namespace DotRecast.Recast
                             continue;
                         if (s.y >= miny && s.y <= maxy)
                         {
-                            Vector3f p = new Vector3f();
+                            RcVec3f p = new RcVec3f();
                             p.x = chf.bmin.x + (x + 0.5f) * chf.cs;
                             p.y = 0;
                             p.z = chf.bmin.z + (z + 0.5f) * chf.cs;
@@ -518,8 +518,8 @@ namespace DotRecast.Recast
         {
             ctx.StartTimer("MARK_CYLINDER_AREA");
 
-            Vector3f bmin = new Vector3f();
-            Vector3f bmax = new Vector3f();
+            RcVec3f bmin = new RcVec3f();
+            RcVec3f bmax = new RcVec3f();
             bmin.x = pos[0] - r;
             bmin.y = pos[1];
             bmin.z = pos[2] - r;

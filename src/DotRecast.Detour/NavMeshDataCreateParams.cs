@@ -115,10 +115,10 @@ namespace DotRecast.Detour
         public int tileLayer;
 
         /// < The tile's layer within the layered destination mesh. [Limit: >= 0] (Along the y-axis.)
-        public Vector3f bmin;
+        public RcVec3f bmin;
 
         /// < The minimum bounds of the tile. [(x, y, z)] [Unit: wu]
-        public Vector3f bmax;
+        public RcVec3f bmax;
 
         /// < The maximum bounds of the tile. [(x, y, z)] [Unit: wu]
         /// @}

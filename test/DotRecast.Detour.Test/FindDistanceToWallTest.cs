@@ -27,22 +27,22 @@ public class FindDistanceToWallTest : AbstractDetourTest
 {
     private static readonly float[] DISTANCES_TO_WALL = { 0.597511f, 3.201085f, 0.603713f, 2.791475f, 2.815544f };
 
-    private static readonly Vector3f[] HIT_POSITION =
+    private static readonly RcVec3f[] HIT_POSITION =
     {
-        Vector3f.Of(23.177608f, 10.197294f, -45.742954f),
-        Vector3f.Of(22.331268f, 10.197294f, -4.241272f),
-        Vector3f.Of(18.108675f, 15.743596f, -73.236839f),
-        Vector3f.Of(1.984785f, 10.197294f, -8.441269f),
-        Vector3f.Of(-22.315216f, 4.997294f, -11.441269f),
+        RcVec3f.Of(23.177608f, 10.197294f, -45.742954f),
+        RcVec3f.Of(22.331268f, 10.197294f, -4.241272f),
+        RcVec3f.Of(18.108675f, 15.743596f, -73.236839f),
+        RcVec3f.Of(1.984785f, 10.197294f, -8.441269f),
+        RcVec3f.Of(-22.315216f, 4.997294f, -11.441269f),
     };
 
-    private static readonly Vector3f[] HIT_NORMAL =
+    private static readonly RcVec3f[] HIT_NORMAL =
     {
-        Vector3f.Of(-0.955779f, 0.0f, -0.29408592f),
-        Vector3f.Of(0.0f, 0.0f, 1.0f),
-        Vector3f.Of(0.97014254f, 0.0f, 0.24253564f),
-        Vector3f.Of(-1.0f, 0.0f, 0.0f),
-        Vector3f.Of(1.0f, 0.0f, 0.0f),
+        RcVec3f.Of(-0.955779f, 0.0f, -0.29408592f),
+        RcVec3f.Of(0.0f, 0.0f, 1.0f),
+        RcVec3f.Of(0.97014254f, 0.0f, 0.24253564f),
+        RcVec3f.Of(-1.0f, 0.0f, 0.0f),
+        RcVec3f.Of(1.0f, 0.0f, 0.0f),
     };
 
     [Test]
@@ -51,7 +51,7 @@ public class FindDistanceToWallTest : AbstractDetourTest
         IQueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
-            Vector3f startPos = startPoss[i];
+            RcVec3f startPos = startPoss[i];
             Result<FindDistanceToWallResult> result = query.FindDistanceToWall(startRefs[i], startPos, 3.5f, filter);
             FindDistanceToWallResult hit = result.result;
             Assert.That(hit.GetDistance(), Is.EqualTo(DISTANCES_TO_WALL[i]).Within(0.001f));

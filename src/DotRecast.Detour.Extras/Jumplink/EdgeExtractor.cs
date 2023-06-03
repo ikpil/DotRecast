@@ -13,7 +13,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             List<JumpEdge> edges = new List<JumpEdge>();
             if (mesh != null)
             {
-                Vector3f orig = mesh.bmin;
+                RcVec3f orig = mesh.bmin;
                 float cs = mesh.cs;
                 float ch = mesh.ch;
                 for (int i = 0; i < mesh.npolys; i++)

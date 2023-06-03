@@ -103,7 +103,7 @@ public class CrowdProfilingTool
                         }
                     }
 
-                    Vector3f? pos = null;
+                    RcVec3f? pos = null;
                     switch (type)
                     {
                         case AgentType.MOB:
@@ -146,7 +146,7 @@ public class CrowdProfilingTool
         }
     }
 
-    private Vector3f? GetMobPosition(NavMeshQuery navquery, IQueryFilter filter)
+    private RcVec3f? GetMobPosition(NavMeshQuery navquery, IQueryFilter filter)
     {
         Result<FindRandomPointResult> result = navquery.FindRandomPoint(filter, rnd);
         if (result.Succeeded())
@@ -157,7 +157,7 @@ public class CrowdProfilingTool
         return null;
     }
 
-    private Vector3f? GetVillagerPosition(NavMeshQuery navquery, IQueryFilter filter)
+    private RcVec3f? GetVillagerPosition(NavMeshQuery navquery, IQueryFilter filter)
     {
         if (0 < zones.Count)
         {
@@ -189,7 +189,7 @@ public class CrowdProfilingTool
                     bool valid = true;
                     foreach (FindRandomPointResult zone in zones)
                     {
-                        if (Vector3f.DistSqr(zone.GetRandomPt(), result.result.GetRandomPt()) < zoneSeparation)
+                        if (RcVec3f.DistSqr(zone.GetRandomPt(), result.result.GetRandomPt()) < zoneSeparation)
                         {
                             valid = false;
                             break;
@@ -313,7 +313,7 @@ public class CrowdProfilingTool
         List<FindRandomPointResult> potentialTargets = new();
         foreach (FindRandomPointResult zone in zones)
         {
-            if (Vector3f.DistSqr(zone.GetRandomPt(), ag.npos) > zoneRadius * zoneRadius)
+            if (RcVec3f.DistSqr(zone.GetRandomPt(), ag.npos) > zoneRadius * zoneRadius)
             {
                 potentialTargets.Add(zone);
             }
@@ -363,7 +363,7 @@ public class CrowdProfilingTool
             foreach (CrowdAgent ag in crowd.GetActiveAgents())
             {
                 float radius = ag.option.radius;
-                Vector3f pos = ag.npos;
+                RcVec3f pos = ag.npos;
                 dd.DebugDrawCircle(pos.x, pos.y, pos.z, radius, DuRGBA(0, 0, 0, 32), 2.0f);
             }
 
@@ -373,7 +373,7 @@ public class CrowdProfilingTool
 
                 float height = ag.option.height;
                 float radius = ag.option.radius;
-                Vector3f pos = ag.npos;
+                RcVec3f pos = ag.npos;
 
                 int col = DuRGBA(220, 220, 220, 128);
                 if (agentData.type == AgentType.TRAVELLER)
@@ -404,7 +404,7 @@ public class CrowdProfilingTool
         dd.DepthMask(true);
     }
 
-    private CrowdAgent AddAgent(Vector3f p, AgentType type)
+    private CrowdAgent AddAgent(RcVec3f p, AgentType type)
     {
         CrowdAgentParams ap = agentParamsSupplier.Invoke();
         ap.userData = new AgentData(type, p);

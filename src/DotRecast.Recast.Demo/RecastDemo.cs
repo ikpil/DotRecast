@@ -85,13 +85,13 @@ public class RecastDemo
     private float scrollZoom;
     private readonly float[] origMousePos = new float[2];
     private readonly float[] origCameraEulers = new float[2];
-    private Vector3f origCameraPos = new Vector3f();
+    private RcVec3f origCameraPos = new RcVec3f();
 
     private readonly float[] cameraEulers = { 45, -45 };
-    private Vector3f cameraPos = Vector3f.Of(0, 0, 0);
+    private RcVec3f cameraPos = RcVec3f.Of(0, 0, 0);
 
-    private Vector3f rayStart = new Vector3f();
-    private Vector3f rayEnd = new Vector3f();
+    private RcVec3f rayStart = new RcVec3f();
+    private RcVec3f rayEnd = new RcVec3f();
 
     private float[] projectionMatrix = new float[16];
     private float[] modelviewMatrix = new float[16];
@@ -106,7 +106,7 @@ public class RecastDemo
 
     private int[] viewport;
     private bool markerPositionSet;
-    private Vector3f markerPosition = new Vector3f();
+    private RcVec3f markerPosition = new RcVec3f();
 
     private ToolsView toolsUI;
     private RcSettingsView settingsUI;
@@ -427,8 +427,8 @@ public class RecastDemo
        */
         if (sample.GetInputGeom() != null)
         {
-            Vector3f bmin = sample.GetInputGeom().GetMeshBoundsMin();
-            Vector3f bmax = sample.GetInputGeom().GetMeshBoundsMax();
+            RcVec3f bmin = sample.GetInputGeom().GetMeshBoundsMin();
+            RcVec3f bmax = sample.GetInputGeom().GetMeshBoundsMax();
             Recast.CalcGridSize(bmin, bmax, settingsUI.GetCellSize(), out var gw, out var gh);
             settingsUI.SetVoxels(gw, gh);
             settingsUI.SetTiles(tileNavMeshBuilder.GetTiles(sample.GetInputGeom(), settingsUI.GetCellSize(), settingsUI.GetTileSize()));
@@ -598,7 +598,7 @@ public class RecastDemo
                     hit = PolyMeshRaycast.Raycast(sample.GetRecastResults(), rayStart, rayEnd);
                 }
 
-                Vector3f rayDir = Vector3f.Of(rayEnd.x - rayStart.x, rayEnd.y - rayStart.y, rayEnd.z - rayStart.z);
+                RcVec3f rayDir = RcVec3f.Of(rayEnd.x - rayStart.x, rayEnd.y - rayStart.y, rayEnd.z - rayStart.z);
                 Tool rayTool = toolsUI.GetTool();
                 rayDir.Normalize();
                 if (rayTool != null)
@@ -619,7 +619,7 @@ public class RecastDemo
                     }
                     else
                     {
-                        Vector3f pos = new Vector3f();
+                        RcVec3f pos = new RcVec3f();
                         pos.x = rayStart.x + (rayEnd.x - rayStart.x) * hitTime;
                         pos.y = rayStart.y + (rayEnd.y - rayStart.y) * hitTime;
                         pos.z = rayStart.z + (rayEnd.z - rayStart.z) * hitTime;
@@ -644,8 +644,8 @@ public class RecastDemo
 
         if (sample.IsChanged())
         {
-            Vector3f? bminN = null;
-            Vector3f? bmaxN = null;
+            RcVec3f? bminN = null;
+            RcVec3f? bmaxN = null;
             if (sample.GetInputGeom() != null)
             {
                 bminN = sample.GetInputGeom().GetMeshBoundsMin();
@@ -653,7 +653,7 @@ public class RecastDemo
             }
             else if (sample.GetNavMesh() != null)
             {
-                Vector3f[] bounds = NavMeshUtils.GetNavMeshBounds(sample.GetNavMesh());
+                RcVec3f[] bounds = NavMeshUtils.GetNavMeshBounds(sample.GetNavMesh());
                 bminN = bounds[0];
                 bmaxN = bounds[1];
             }
@@ -665,17 +665,17 @@ public class RecastDemo
                     {
                         if (bminN == null)
                         {
-                            bminN = Vector3f.Of(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
-                            bmaxN = Vector3f.Of(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
+                            bminN = RcVec3f.Of(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
+                            bmaxN = RcVec3f.Of(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
                         }
 
-                        bminN = Vector3f.Of(
+                        bminN = RcVec3f.Of(
                             Math.Min(bminN.Value.x, result.GetSolidHeightfield().bmin.x),
                             Math.Min(bminN.Value.y, result.GetSolidHeightfield().bmin.y),
                             Math.Min(bminN.Value.z, result.GetSolidHeightfield().bmin.z)
                         );
 
-                        bmaxN = Vector3f.Of(
+                        bmaxN = RcVec3f.Of(
                             Math.Max(bmaxN.Value.x, result.GetSolidHeightfield().bmax.x),
                             Math.Max(bmaxN.Value.y, result.GetSolidHeightfield().bmax.y),
                             Math.Max(bmaxN.Value.z, result.GetSolidHeightfield().bmax.z)
@@ -686,8 +686,8 @@ public class RecastDemo
 
             if (bminN != null && bmaxN != null)
             {
-                Vector3f bmin = bminN.Value;
-                Vector3f bmax = bmaxN.Value;
+                RcVec3f bmin = bminN.Value;
+                RcVec3f bmax = bmaxN.Value;
 
                 camr = (float)(Math.Sqrt(
                                    Sqr(bmax.x - bmin.x) + Sqr(bmax.y - bmin.y) + Sqr(bmax.z - bmin.z))

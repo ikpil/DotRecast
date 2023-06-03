@@ -11,9 +11,9 @@ public class SphereGizmo : IColliderGizmo
     private readonly float[] vertices;
     private readonly int[] triangles;
     private readonly float radius;
-    private readonly Vector3f center;
+    private readonly RcVec3f center;
 
-    public SphereGizmo(Vector3f center, float radius)
+    public SphereGizmo(RcVec3f center, float radius)
     {
         this.center = center;
         this.radius = radius;

@@ -33,7 +33,7 @@ public class OffMeshConnectionTool : Tool
 {
     private Sample sample;
     private bool hitPosSet;
-    private Vector3f hitPos;
+    private RcVec3f hitPos;
     private int bidir;
 
     public override void SetSample(Sample m_sample)
@@ -41,7 +41,7 @@ public class OffMeshConnectionTool : Tool
         sample = m_sample;
     }
 
-    public override void HandleClick(Vector3f s, Vector3f p, bool shift)
+    public override void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
         DemoInputGeomProvider geom = sample.GetInputGeom();
         if (geom == null)
@@ -57,7 +57,7 @@ public class OffMeshConnectionTool : Tool
             DemoOffMeshConnection nearestConnection = null;
             foreach (DemoOffMeshConnection offMeshCon in geom.GetOffMeshConnections())
             {
-                float d = Math.Min(Vector3f.DistSqr(p, offMeshCon.verts, 0), Vector3f.DistSqr(p, offMeshCon.verts, 3));
+                float d = Math.Min(RcVec3f.DistSqr(p, offMeshCon.verts, 0), RcVec3f.DistSqr(p, offMeshCon.verts, 3));
                 if (d < nearestDist && Math.Sqrt(d) < sample.GetSettingsUI().GetAgentRadius())
                 {
                     nearestDist = d;

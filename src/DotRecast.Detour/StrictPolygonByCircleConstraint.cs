@@ -13,13 +13,13 @@ namespace DotRecast.Detour
         private const int CIRCLE_SEGMENTS = 12;
         private static float[] unitCircle;
 
-        public float[] Aply(float[] verts, Vector3f center, float radius)
+        public float[] Aply(float[] verts, RcVec3f center, float radius)
         {
             float radiusSqr = radius * radius;
             int outsideVertex = -1;
             for (int pv = 0; pv < verts.Length; pv += 3)
             {
-                if (Vector3f.Dist2DSqr(center, verts, pv) > radiusSqr)
+                if (RcVec3f.Dist2DSqr(center, verts, pv) > radiusSqr)
                 {
                     outsideVertex = pv;
                     break;
@@ -43,7 +43,7 @@ namespace DotRecast.Detour
             return intersection;
         }
 
-        private float[] Circle(Vector3f center, float radius)
+        private float[] Circle(RcVec3f center, float radius)
         {
             if (unitCircle == null)
             {

@@ -26,7 +26,7 @@ namespace DotRecast.Detour
  */
     public static class NavMeshRaycast
     {
-        public static float? Raycast(NavMesh mesh, Vector3f src, Vector3f dst)
+        public static float? Raycast(NavMesh mesh, RcVec3f src, RcVec3f dst)
         {
             for (int t = 0; t < mesh.GetMaxTiles(); ++t)
             {
@@ -44,7 +44,7 @@ namespace DotRecast.Detour
             return null;
         }
 
-        private static float? Raycast(MeshTile tile, Vector3f sp, Vector3f sq)
+        private static float? Raycast(MeshTile tile, RcVec3f sp, RcVec3f sq)
         {
             for (int i = 0; i < tile.data.header.polyCount; ++i)
             {
@@ -58,7 +58,7 @@ namespace DotRecast.Detour
 
                 if (pd != null)
                 {
-                    Vector3f[] verts = new Vector3f[3];
+                    RcVec3f[] verts = new RcVec3f[3];
                     for (int j = 0; j < pd.triCount; ++j)
                     {
                         int t = (pd.triBase + j) * 4;

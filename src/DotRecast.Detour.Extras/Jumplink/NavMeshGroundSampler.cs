@@ -42,9 +42,9 @@ namespace DotRecast.Detour.Extras.Jumplink
         }
 
 
-        private Tuple<bool, float> GetNavMeshHeight(NavMeshQuery navMeshQuery, Vector3f pt, float cs, float heightRange)
+        private Tuple<bool, float> GetNavMeshHeight(NavMeshQuery navMeshQuery, RcVec3f pt, float cs, float heightRange)
         {
-            Vector3f halfExtents = new Vector3f { x = cs, y = heightRange, z = cs };
+            RcVec3f halfExtents = new RcVec3f { x = cs, y = heightRange, z = cs };
             float maxHeight = pt.y + heightRange;
             RcAtomicBoolean found = new RcAtomicBoolean();
             RcAtomicFloat minHeight = new RcAtomicFloat(pt.y);

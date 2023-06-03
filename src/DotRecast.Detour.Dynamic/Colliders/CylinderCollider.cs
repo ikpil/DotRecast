@@ -24,11 +24,11 @@ namespace DotRecast.Detour.Dynamic.Colliders
 {
     public class CylinderCollider : AbstractCollider
     {
-        private readonly Vector3f start;
-        private readonly Vector3f end;
+        private readonly RcVec3f start;
+        private readonly RcVec3f end;
         private readonly float radius;
 
-        public CylinderCollider(Vector3f start, Vector3f end, float radius, int area, float flagMergeThreshold) :
+        public CylinderCollider(RcVec3f start, RcVec3f end, float radius, int area, float flagMergeThreshold) :
             base(area, flagMergeThreshold, Bounds(start, end, radius))
         {
             this.start = start;
@@ -42,7 +42,7 @@ namespace DotRecast.Detour.Dynamic.Colliders
                 telemetry);
         }
 
-        private static float[] Bounds(Vector3f start, Vector3f end, float radius)
+        private static float[] Bounds(RcVec3f start, RcVec3f end, float radius)
         {
             return new float[]
             {

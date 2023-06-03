@@ -35,11 +35,11 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                 int endNode = indexToNode[buffer.GetInt()];
                 int connectedNode1 = buffer.GetInt();
                 int connectedNode2 = buffer.GetInt();
-                Vector3f clamped1 = new Vector3f();
+                RcVec3f clamped1 = new RcVec3f();
                 clamped1.x = buffer.GetFloat();
                 clamped1.y = buffer.GetFloat();
                 clamped1.z = buffer.GetFloat();
-                Vector3f clamped2 = new Vector3f();
+                RcVec3f clamped2 = new RcVec3f();
                 clamped2.x = buffer.GetFloat();
                 clamped2.y = buffer.GetFloat();
                 clamped2.z = buffer.GetFloat();

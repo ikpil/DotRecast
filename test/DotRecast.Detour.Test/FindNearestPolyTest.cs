@@ -38,10 +38,10 @@ public class FindNearestPolyTest : AbstractDetourTest
     public void TestFindNearestPoly()
     {
         IQueryFilter filter = new DefaultQueryFilter();
-        Vector3f extents = Vector3f.Of(2, 4, 2);
+        RcVec3f extents = RcVec3f.Of(2, 4, 2);
         for (int i = 0; i < startRefs.Length; i++)
         {
-            Vector3f startPos = startPoss[i];
+            RcVec3f startPos = startPoss[i];
             Result<FindNearestPolyResult> poly = query.FindNearestPoly(startPos, extents, filter);
             Assert.That(poly.Succeeded(), Is.True);
             Assert.That(poly.result.GetNearestRef(), Is.EqualTo(POLY_REFS[i]));
@@ -59,7 +59,7 @@ public class FindNearestPolyTest : AbstractDetourTest
             return false;
         }
 
-        public float GetCost(Vector3f pa, Vector3f pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef, MeshTile curTile,
+        public float GetCost(RcVec3f pa, RcVec3f pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef, MeshTile curTile,
             Poly curPoly, long nextRef, MeshTile nextTile, Poly nextPoly)
         {
             return 0;
@@ -70,10 +70,10 @@ public class FindNearestPolyTest : AbstractDetourTest
     public void ShouldReturnStartPosWhenNoPolyIsValid()
     {
         var filter = new EmptyQueryFilter();
-        Vector3f extents = Vector3f.Of(2, 4, 2);
+        RcVec3f extents = RcVec3f.Of(2, 4, 2);
         for (int i = 0; i < startRefs.Length; i++)
         {
-            Vector3f startPos = startPoss[i];
+            RcVec3f startPos = startPoss[i];
             Result<FindNearestPolyResult> poly = query.FindNearestPoly(startPos, extents, filter);
             Assert.That(poly.Succeeded(), Is.True);
             Assert.That(poly.result.GetNearestRef(), Is.EqualTo(0L));

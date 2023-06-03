@@ -30,7 +30,7 @@ public class DemoOffMeshConnection
     public readonly int area;
     public readonly int flags;
 
-    public DemoOffMeshConnection(Vector3f start, Vector3f end, float radius, bool bidir, int area, int flags)
+    public DemoOffMeshConnection(RcVec3f start, RcVec3f end, float radius, bool bidir, int area, int flags)
     {
         verts = new float[6];
         verts[0] = start.x;

@@ -25,10 +25,10 @@ namespace DotRecast.Detour.Extras.Unity.Astar
         public readonly long linkID;
         public readonly int startNode;
         public readonly int endNode;
-        public readonly Vector3f clamped1;
-        public readonly Vector3f clamped2;
+        public readonly RcVec3f clamped1;
+        public readonly RcVec3f clamped2;
 
-        public NodeLink2(long linkID, int startNode, int endNode, Vector3f clamped1, Vector3f clamped2) : base()
+        public NodeLink2(long linkID, int startNode, int endNode, RcVec3f clamped1, RcVec3f clamped2) : base()
         {
             this.linkID = linkID;
             this.startNode = startNode;

@@ -26,9 +26,9 @@ namespace DotRecast.Detour.QueryResults
     public class FindRandomPointResult
     {
         private readonly long randomRef;
-        private readonly Vector3f randomPt;
+        private readonly RcVec3f randomPt;
 
-        public FindRandomPointResult(long randomRef, Vector3f randomPt)
+        public FindRandomPointResult(long randomRef, RcVec3f randomPt)
         {
             this.randomRef = randomRef;
             this.randomPt = randomPt;
@@ -41,7 +41,7 @@ namespace DotRecast.Detour.QueryResults
         }
 
         /// @param[out] randomPt The random location.
-        public Vector3f GetRandomPt()
+        public RcVec3f GetRandomPt()
         {
             return randomPt;
         }

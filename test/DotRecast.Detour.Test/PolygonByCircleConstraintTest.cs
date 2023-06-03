@@ -30,7 +30,7 @@ public class PolygonByCircleConstraintTest
     public void ShouldHandlePolygonFullyInsideCircle()
     {
         float[] polygon = { -2, 0, 2, 2, 0, 2, 2, 0, -2, -2, 0, -2 };
-        Vector3f center = Vector3f.Of(1, 0, 1);
+        RcVec3f center = RcVec3f.Of(1, 0, 1);
         float[] constrained = constraint.Aply(polygon, center, 6);
 
         Assert.That(constrained, Is.EqualTo(polygon));
@@ -41,7 +41,7 @@ public class PolygonByCircleConstraintTest
     {
         int expectedSize = 21;
         float[] polygon = { -2, 0, 2, 2, 0, 2, 2, 0, -2, -2, 0, -2 };
-        Vector3f center = Vector3f.Of(2, 0, 0);
+        RcVec3f center = RcVec3f.Of(2, 0, 0);
 
         float[] constrained = constraint.Aply(polygon, center, 3);
         Assert.That(constrained.Length, Is.EqualTo(expectedSize));
@@ -53,7 +53,7 @@ public class PolygonByCircleConstraintTest
     {
         int expectedSize = 12 * 3;
         float[] polygon = { -4, 0, 0, -3, 0, 3, 2, 0, 3, 3, 0, -3, -2, 0, -4 };
-        Vector3f center = Vector3f.Of(-1, 0, -1);
+        RcVec3f center = RcVec3f.Of(-1, 0, -1);
         float[] constrained = constraint.Aply(polygon, center, 2);
 
         Assert.That(constrained.Length, Is.EqualTo(expectedSize));
@@ -71,7 +71,7 @@ public class PolygonByCircleConstraintTest
     {
         int expectedSize = 9 * 3;
         float[] polygon = { -4, 0, 0, -3, 0, 3, 2, 0, 3, 3, 0, -3, -2, 0, -4 };
-        Vector3f center = Vector3f.Of(-2, 0, -1);
+        RcVec3f center = RcVec3f.Of(-2, 0, -1);
         float[] constrained = constraint.Aply(polygon, center, 3);
 
         Assert.That(constrained.Length, Is.EqualTo(expectedSize));
@@ -83,7 +83,7 @@ public class PolygonByCircleConstraintTest
     {
         int expectedSize = 7 * 3;
         float[] polygon = { -4, 0, 0, -3, 0, 3, 2, 0, 3, 3, 0, -3, -2, 0, -4 };
-        Vector3f center = Vector3f.Of(4, 0, 0);
+        RcVec3f center = RcVec3f.Of(4, 0, 0);
         float[] constrained = constraint.Aply(polygon, center, 4);
 
         Assert.That(constrained.Length, Is.EqualTo(expectedSize));

@@ -46,14 +46,14 @@ namespace DotRecast.Recast
             // Calculate bounding box.
         }
 
-        public static void CalcGridSize(Vector3f bmin, Vector3f bmax, float cs, out int sizeX, out int sizeZ)
+        public static void CalcGridSize(RcVec3f bmin, RcVec3f bmax, float cs, out int sizeX, out int sizeZ)
         {
             sizeX = (int)((bmax.x - bmin.x) / cs + 0.5f);
             sizeZ = (int)((bmax.z - bmin.z) / cs + 0.5f);
         }
 
 
-        public static void CalcTileCount(Vector3f bmin, Vector3f bmax, float cs, int tileSizeX, int tileSizeZ, out int tw, out int td)
+        public static void CalcTileCount(RcVec3f bmin, RcVec3f bmax, float cs, int tileSizeX, int tileSizeZ, out int tw, out int td)
         {
             CalcGridSize(bmin, bmax, cs, out var gw, out var gd);
             tw = (gw + tileSizeX - 1) / tileSizeX;
@@ -71,7 +71,7 @@ namespace DotRecast.Recast
         {
             int[] areas = new int[nt];
             float walkableThr = (float)Math.Cos(walkableSlopeAngle / 180.0f * Math.PI);
-            Vector3f norm = new Vector3f();
+            RcVec3f norm = new RcVec3f();
             for (int i = 0; i < nt; ++i)
             {
                 int tri = i * 3;
@@ -84,14 +84,14 @@ namespace DotRecast.Recast
             return areas;
         }
 
-        public static void CalcTriNormal(float[] verts, int v0, int v1, int v2, ref Vector3f norm)
+        public static void CalcTriNormal(float[] verts, int v0, int v1, int v2, ref RcVec3f norm)
         {
-            Vector3f e0 = new Vector3f();
-            Vector3f e1 = new Vector3f();
-            Vector3f.Sub(ref e0, verts, v1 * 3, v0 * 3);
-            Vector3f.Sub(ref e1, verts, v2 * 3, v0 * 3);
-            Vector3f.Cross(ref norm, e0, e1);
-            Vector3f.Normalize(ref norm);
+            RcVec3f e0 = new RcVec3f();
+            RcVec3f e1 = new RcVec3f();
+            RcVec3f.Sub(ref e0, verts, v1 * 3, v0 * 3);
+            RcVec3f.Sub(ref e1, verts, v2 * 3, v0 * 3);
+            RcVec3f.Cross(ref norm, e0, e1);
+            RcVec3f.Normalize(ref norm);
         }
 
 
@@ -107,7 +107,7 @@ namespace DotRecast.Recast
         {
             float walkableThr = (float)Math.Cos(walkableSlopeAngle / 180.0f * Math.PI);
 
-            Vector3f norm = new Vector3f();
+            RcVec3f norm = new RcVec3f();
 
             for (int i = 0; i < nt; ++i)
             {

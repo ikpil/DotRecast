@@ -4,22 +4,22 @@ namespace DotRecast.Recast.Demo.Tools.Gizmos;
 
 public static class GizmoFactory
 {
-    public static IColliderGizmo Box(Vector3f center, Vector3f[] halfEdges)
+    public static IColliderGizmo Box(RcVec3f center, RcVec3f[] halfEdges)
     {
         return new BoxGizmo(center, halfEdges);
     }
 
-    public static IColliderGizmo Sphere(Vector3f center, float radius)
+    public static IColliderGizmo Sphere(RcVec3f center, float radius)
     {
         return new SphereGizmo(center, radius);
     }
 
-    public static IColliderGizmo Capsule(Vector3f start, Vector3f end, float radius)
+    public static IColliderGizmo Capsule(RcVec3f start, RcVec3f end, float radius)
     {
         return new CapsuleGizmo(start, end, radius);
     }
 
-    public static IColliderGizmo Cylinder(Vector3f start, Vector3f end, float radius)
+    public static IColliderGizmo Cylinder(RcVec3f start, RcVec3f end, float radius)
     {
         return new CylinderGizmo(start, end, radius);
     }

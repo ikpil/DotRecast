@@ -26,10 +26,10 @@ namespace DotRecast.Detour.QueryResults
     public class FindDistanceToWallResult
     {
         private readonly float distance;
-        private readonly Vector3f position;
-        private readonly Vector3f normal;
+        private readonly RcVec3f position;
+        private readonly RcVec3f normal;
 
-        public FindDistanceToWallResult(float distance, Vector3f position, Vector3f normal)
+        public FindDistanceToWallResult(float distance, RcVec3f position, RcVec3f normal)
         {
             this.distance = distance;
             this.position = position;
@@ -41,12 +41,12 @@ namespace DotRecast.Detour.QueryResults
             return distance;
         }
 
-        public Vector3f GetPosition()
+        public RcVec3f GetPosition()
         {
             return position;
         }
 
-        public Vector3f GetNormal()
+        public RcVec3f GetNormal()
         {
             return normal;
         }

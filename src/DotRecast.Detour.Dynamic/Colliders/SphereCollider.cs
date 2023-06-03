@@ -24,10 +24,10 @@ namespace DotRecast.Detour.Dynamic.Colliders
 {
     public class SphereCollider : AbstractCollider
     {
-        private readonly Vector3f center;
+        private readonly RcVec3f center;
         private readonly float radius;
 
-        public SphereCollider(Vector3f center, float radius, int area, float flagMergeThreshold) :
+        public SphereCollider(RcVec3f center, float radius, int area, float flagMergeThreshold) :
             base(area, flagMergeThreshold, Bounds(center, radius))
         {
             this.center = center;
@@ -40,7 +40,7 @@ namespace DotRecast.Detour.Dynamic.Colliders
                 telemetry);
         }
 
-        private static float[] Bounds(Vector3f center, float radius)
+        private static float[] Bounds(RcVec3f center, float radius)
         {
             return new float[]
             {

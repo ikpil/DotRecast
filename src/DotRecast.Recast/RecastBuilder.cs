@@ -43,8 +43,8 @@ namespace DotRecast.Recast
 
         public List<RecastBuilderResult> BuildTiles(IInputGeomProvider geom, RecastConfig cfg, TaskFactory taskFactory)
         {
-            Vector3f bmin = geom.GetMeshBoundsMin();
-            Vector3f bmax = geom.GetMeshBoundsMax();
+            RcVec3f bmin = geom.GetMeshBoundsMin();
+            RcVec3f bmax = geom.GetMeshBoundsMax();
             Recast.CalcTileCount(bmin, bmax, cfg.cs, cfg.tileSizeX, cfg.tileSizeZ, out var tw, out var th);
             List<RecastBuilderResult> results = new List<RecastBuilderResult>();
             if (null != taskFactory)
@@ -62,8 +62,8 @@ namespace DotRecast.Recast
 
         public Task BuildTilesAsync(IInputGeomProvider geom, RecastConfig cfg, int threads, List<RecastBuilderResult> results, TaskFactory taskFactory, CancellationToken cancellationToken)
         {
-            Vector3f bmin = geom.GetMeshBoundsMin();
-            Vector3f bmax = geom.GetMeshBoundsMax();
+            RcVec3f bmin = geom.GetMeshBoundsMin();
+            RcVec3f bmax = geom.GetMeshBoundsMax();
             Recast.CalcTileCount(bmin, bmax, cfg.cs, cfg.tileSizeX, cfg.tileSizeZ, out var tw, out var th);
             Task task;
             if (1 < threads)
@@ -78,7 +78,7 @@ namespace DotRecast.Recast
             return task;
         }
 
-        private Task BuildSingleThreadAsync(IInputGeomProvider geom, RecastConfig cfg, Vector3f bmin, Vector3f bmax,
+        private Task BuildSingleThreadAsync(IInputGeomProvider geom, RecastConfig cfg, RcVec3f bmin, RcVec3f bmax,
             int tw, int th, List<RecastBuilderResult> results)
         {
             RcAtomicInteger counter = new RcAtomicInteger(0);
@@ -93,7 +93,7 @@ namespace DotRecast.Recast
             return Task.CompletedTask;
         }
 
-        private Task BuildMultiThreadAsync(IInputGeomProvider geom, RecastConfig cfg, Vector3f bmin, Vector3f bmax,
+        private Task BuildMultiThreadAsync(IInputGeomProvider geom, RecastConfig cfg, RcVec3f bmin, RcVec3f bmax,
             int tw, int th, List<RecastBuilderResult> results, TaskFactory taskFactory, CancellationToken cancellationToken)
         {
             RcAtomicInteger counter = new RcAtomicInteger(0);
@@ -143,7 +143,7 @@ namespace DotRecast.Recast
             return Task.WhenAll(tasks.ToArray());
         }
 
-        private RecastBuilderResult BuildTile(IInputGeomProvider geom, RecastConfig cfg, Vector3f bmin, Vector3f bmax, int tx,
+        private RecastBuilderResult BuildTile(IInputGeomProvider geom, RecastConfig cfg, RcVec3f bmin, RcVec3f bmax, int tx,
             int ty, RcAtomicInteger counter, int total)
         {
             RecastBuilderResult result = Build(geom, new RecastBuilderConfig(cfg, bmin, bmax, tx, ty));

@@ -25,9 +25,9 @@ namespace DotRecast.Recast.Geom
 {
     public interface IInputGeomProvider : IConvexVolumeProvider
     {
-        Vector3f GetMeshBoundsMin();
+        RcVec3f GetMeshBoundsMin();
 
-        Vector3f GetMeshBoundsMax();
+        RcVec3f GetMeshBoundsMax();
 
         IEnumerable<TriMesh> Meshes();
     }

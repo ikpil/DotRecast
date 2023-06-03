@@ -195,7 +195,7 @@ namespace DotRecast.Detour
      *            Function returning a random number [0..1).
      * @return Random location
      */
-        public Result<FindRandomPointResult> FindRandomPointAroundCircle(long startRef, Vector3f centerPos, float maxRadius,
+        public Result<FindRandomPointResult> FindRandomPointAroundCircle(long startRef, RcVec3f centerPos, float maxRadius,
             IQueryFilter filter, FRand frand)
         {
             return FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, IPolygonByCircleConstraint.Noop());
@@ -216,17 +216,17 @@ namespace DotRecast.Detour
      *            Function returning a random number [0..1).
      * @return Random location
      */
-        public Result<FindRandomPointResult> FindRandomPointWithinCircle(long startRef, Vector3f centerPos, float maxRadius,
+        public Result<FindRandomPointResult> FindRandomPointWithinCircle(long startRef, RcVec3f centerPos, float maxRadius,
             IQueryFilter filter, FRand frand)
         {
             return FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, IPolygonByCircleConstraint.Strict());
         }
 
-        public Result<FindRandomPointResult> FindRandomPointAroundCircle(long startRef, Vector3f centerPos, float maxRadius,
+        public Result<FindRandomPointResult> FindRandomPointAroundCircle(long startRef, RcVec3f centerPos, float maxRadius,
             IQueryFilter filter, FRand frand, IPolygonByCircleConstraint constraint)
         {
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !Vector3f.IsFinite(centerPos) || maxRadius < 0
+            if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(centerPos) || maxRadius < 0
                 || !float.IsFinite(maxRadius) || null == filter || null == frand)
             {
                 return Results.InvalidParam<FindRandomPointResult>();
@@ -362,10 +362,10 @@ namespace DotRecast.Detour
                     // Cost
                     if (neighbourNode.flags == 0)
                     {
-                        neighbourNode.pos = Vector3f.Lerp(va, vb, 0.5f);
+                        neighbourNode.pos = RcVec3f.Lerp(va, vb, 0.5f);
                     }
 
-                    float total = bestNode.total + Vector3f.Distance(bestNode.pos, neighbourNode.pos);
+                    float total = bestNode.total + RcVec3f.Distance(bestNode.pos, neighbourNode.pos);
 
                     // The node is already in open list and the new result is worse, skip.
                     if ((neighbourNode.flags & Node.DT_NODE_OPEN) != 0 && total >= neighbourNode.total)
@@ -400,7 +400,7 @@ namespace DotRecast.Detour
             float t = frand.Next();
 
             float[] areas = new float[randomPolyVerts.Length / 3];
-            Vector3f pt = DetourCommon.RandomPointInConvexPoly(randomPolyVerts, randomPolyVerts.Length / 3, areas, s, t);
+            RcVec3f pt = DetourCommon.RandomPointInConvexPoly(randomPolyVerts, randomPolyVerts.Length / 3, areas, s, t);
             ClosestPointOnPolyResult closest = ClosestPointOnPoly(randomPolyRef, pt).result;
             return Results.Success(new FindRandomPointResult(randomPolyRef, closest.GetClosest()));
         }
@@ -420,9 +420,9 @@ namespace DotRecast.Detour
         /// @param[out] closest
         /// @param[out] posOverPoly
         /// @returns The status flags for the query.
-        public Result<ClosestPointOnPolyResult> ClosestPointOnPoly(long refs, Vector3f pos)
+        public Result<ClosestPointOnPolyResult> ClosestPointOnPoly(long refs, RcVec3f pos)
         {
-            if (!m_nav.IsValidPolyRef(refs) || !Vector3f.IsFinite(pos))
+            if (!m_nav.IsValidPolyRef(refs) || !RcVec3f.IsFinite(pos))
             {
                 return Results.InvalidParam<ClosestPointOnPolyResult>();
             }
@@ -447,24 +447,24 @@ namespace DotRecast.Detour
         /// @param[in] pos The position to check. [(x, y, z)]
         /// @param[out] closest The closest point. [(x, y, z)]
         /// @returns The status flags for the query.
-        public Result<Vector3f> ClosestPointOnPolyBoundary(long refs, Vector3f pos)
+        public Result<RcVec3f> ClosestPointOnPolyBoundary(long refs, RcVec3f pos)
         {
             Result<Tuple<MeshTile, Poly>> tileAndPoly = m_nav.GetTileAndPolyByRef(refs);
             if (tileAndPoly.Failed())
             {
-                return Results.Of<Vector3f>(tileAndPoly.status, tileAndPoly.message);
+                return Results.Of<RcVec3f>(tileAndPoly.status, tileAndPoly.message);
             }
 
             MeshTile tile = tileAndPoly.result.Item1;
             Poly poly = tileAndPoly.result.Item2;
             if (tile == null)
             {
-                return Results.InvalidParam<Vector3f>("Invalid tile");
+                return Results.InvalidParam<RcVec3f>("Invalid tile");
             }
 
-            if (!Vector3f.IsFinite(pos))
+            if (!RcVec3f.IsFinite(pos))
             {
-                return Results.InvalidParam<Vector3f>();
+                return Results.InvalidParam<RcVec3f>();
             }
 
             // Collect vertices.
@@ -477,7 +477,7 @@ namespace DotRecast.Detour
                 Array.Copy(tile.data.verts, poly.verts[i] * 3, verts, i * 3, 3);
             }
 
-            Vector3f closest;
+            RcVec3f closest;
             if (DetourCommon.DistancePtPolyEdgesSqr(pos, verts, nv, edged, edget))
             {
                 closest = pos;
@@ -498,7 +498,7 @@ namespace DotRecast.Detour
 
                 int va = imin * 3;
                 int vb = ((imin + 1) % nv) * 3;
-                closest = Vector3f.Lerp(verts, va, vb, edget[imin]);
+                closest = RcVec3f.Lerp(verts, va, vb, edget[imin]);
             }
 
             return Results.Success(closest);
@@ -514,7 +514,7 @@ namespace DotRecast.Detour
         /// @param[in] pos A position within the xz-bounds of the polygon. [(x, y, z)]
         /// @param[out] height The height at the surface of the polygon.
         /// @returns The status flags for the query.
-        public Result<float> GetPolyHeight(long refs, Vector3f pos)
+        public Result<float> GetPolyHeight(long refs, RcVec3f pos)
         {
             Result<Tuple<MeshTile, Poly>> tileAndPoly = m_nav.GetTileAndPolyByRef(refs);
             if (tileAndPoly.Failed())
@@ -525,7 +525,7 @@ namespace DotRecast.Detour
             MeshTile tile = tileAndPoly.result.Item1;
             Poly poly = tileAndPoly.result.Item2;
 
-            if (!Vector3f.IsFinite2D(pos))
+            if (!RcVec3f.IsFinite2D(pos))
             {
                 return Results.InvalidParam<float>();
             }
@@ -536,9 +536,9 @@ namespace DotRecast.Detour
             if (poly.GetPolyType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
                 int i = poly.verts[0] * 3;
-                var v0 = new Vector3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
+                var v0 = new RcVec3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
                 i = poly.verts[1] * 3;
-                var v1 = new Vector3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
+                var v1 = new RcVec3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
                 var distSqr = DetourCommon.DistancePtSegSqr2D(pos, v0, v1, out var tseg);
                 return Results.Success(v0.y + (v1.y - v0.y) * tseg);
             }
@@ -559,7 +559,7 @@ namespace DotRecast.Detour
      *            The polygon filter to apply to the query.
      * @return FindNearestPolyResult containing nearestRef, nearestPt and overPoly
      */
-        public Result<FindNearestPolyResult> FindNearestPoly(Vector3f center, Vector3f halfExtents, IQueryFilter filter)
+        public Result<FindNearestPolyResult> FindNearestPoly(RcVec3f center, RcVec3f halfExtents, IQueryFilter filter)
         {
             // Get nearby polygons from proximity grid.
             FindNearestPolyQuery query = new FindNearestPolyQuery(this, center);
@@ -573,7 +573,7 @@ namespace DotRecast.Detour
         }
 
         // FIXME: (PP) duplicate?
-        protected void QueryPolygonsInTile(MeshTile tile, Vector3f qmin, Vector3f qmax, IQueryFilter filter, IPolyQuery query)
+        protected void QueryPolygonsInTile(MeshTile tile, RcVec3f qmin, RcVec3f qmax, IQueryFilter filter, IPolyQuery query)
         {
             if (tile.data.bvTree != null)
             {
@@ -630,8 +630,8 @@ namespace DotRecast.Detour
             }
             else
             {
-                Vector3f bmin = new Vector3f();
-                Vector3f bmax = new Vector3f();
+                RcVec3f bmin = new RcVec3f();
+                RcVec3f bmax = new RcVec3f();
                 long @base = m_nav.GetPolyRefBase(tile);
                 for (int i = 0; i < tile.data.header.polyCount; ++i)
                 {
@@ -680,16 +680,16 @@ namespace DotRecast.Detour
      *            The polygon filter to apply to the query.
      * @return The reference ids of the polygons that overlap the query box.
      */
-        public Status QueryPolygons(Vector3f center, Vector3f halfExtents, IQueryFilter filter, IPolyQuery query)
+        public Status QueryPolygons(RcVec3f center, RcVec3f halfExtents, IQueryFilter filter, IPolyQuery query)
         {
-            if (!Vector3f.IsFinite(center) || !Vector3f.IsFinite(halfExtents) || null == filter)
+            if (!RcVec3f.IsFinite(center) || !RcVec3f.IsFinite(halfExtents) || null == filter)
             {
                 return Status.FAILURE_INVALID_PARAM;
             }
 
             // Find tiles the query touches.
-            Vector3f bmin = center.Subtract(halfExtents);
-            Vector3f bmax = center.Add(halfExtents);
+            RcVec3f bmin = center.Subtract(halfExtents);
+            RcVec3f bmax = center.Add(halfExtents);
             foreach (var t in QueryTiles(center, halfExtents))
             {
                 QueryPolygonsInTile(t, bmin, bmax, filter, query);
@@ -701,15 +701,15 @@ namespace DotRecast.Detour
         /**
      * Finds tiles that overlap the search box.
      */
-        public IList<MeshTile> QueryTiles(Vector3f center, Vector3f halfExtents)
+        public IList<MeshTile> QueryTiles(RcVec3f center, RcVec3f halfExtents)
         {
-            if (!Vector3f.IsFinite(center) || !Vector3f.IsFinite(halfExtents))
+            if (!RcVec3f.IsFinite(center) || !RcVec3f.IsFinite(halfExtents))
             {
                 return ImmutableArray<MeshTile>.Empty;
             }
 
-            Vector3f bmin = center.Subtract(halfExtents);
-            Vector3f bmax = center.Add(halfExtents);
+            RcVec3f bmin = center.Subtract(halfExtents);
+            RcVec3f bmax = center.Add(halfExtents);
             m_nav.CalcTileLoc(bmin, out var minx, out var miny);
             m_nav.CalcTileLoc(bmax, out var maxx, out var maxy);
 
@@ -745,22 +745,22 @@ namespace DotRecast.Detour
      *            The polygon filter to apply to the query.
      * @return Found path
      */
-        public virtual Result<List<long>> FindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, IQueryFilter filter)
+        public virtual Result<List<long>> FindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IQueryFilter filter)
         {
             return FindPath(startRef, endRef, startPos, endPos, filter, new DefaultQueryHeuristic(), 0, 0);
         }
 
-        public virtual Result<List<long>> FindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, IQueryFilter filter,
+        public virtual Result<List<long>> FindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IQueryFilter filter,
             int options, float raycastLimit)
         {
             return FindPath(startRef, endRef, startPos, endPos, filter, new DefaultQueryHeuristic(), options, raycastLimit);
         }
 
-        public Result<List<long>> FindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, IQueryFilter filter,
+        public Result<List<long>> FindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IQueryFilter filter,
             IQueryHeuristic heuristic, int options, float raycastLimit)
         {
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !Vector3f.IsFinite(startPos) || !Vector3f.IsFinite(endPos) || null == filter)
+            if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !RcVec3f.IsFinite(startPos) || !RcVec3f.IsFinite(endPos) || null == filter)
             {
                 return Results.InvalidParam<List<long>>();
             }
@@ -849,7 +849,7 @@ namespace DotRecast.Detour
                 if ((options & DT_FINDPATH_ANY_ANGLE) != 0)
                 {
                     if ((parentRef != 0) && (raycastLimitSqr >= float.MaxValue
-                                             || Vector3f.DistSqr(parentNode.pos, bestNode.pos) < raycastLimitSqr))
+                                             || RcVec3f.DistSqr(parentNode.pos, bestNode.pos) < raycastLimitSqr))
                     {
                         tryLOS = true;
                     }
@@ -1017,19 +1017,19 @@ namespace DotRecast.Detour
      *            query options (see: #FindPathOptions)
      * @return
      */
-        public Status InitSlicedFindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, IQueryFilter filter,
+        public Status InitSlicedFindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IQueryFilter filter,
             int options)
         {
             return InitSlicedFindPath(startRef, endRef, startPos, endPos, filter, options, new DefaultQueryHeuristic(), -1.0f);
         }
 
-        public Status InitSlicedFindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, IQueryFilter filter,
+        public Status InitSlicedFindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IQueryFilter filter,
             int options, float raycastLimit)
         {
             return InitSlicedFindPath(startRef, endRef, startPos, endPos, filter, options, new DefaultQueryHeuristic(), raycastLimit);
         }
 
-        public Status InitSlicedFindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, IQueryFilter filter,
+        public Status InitSlicedFindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IQueryFilter filter,
             int options, IQueryHeuristic heuristic, float raycastLimit)
         {
             // Init path state.
@@ -1045,7 +1045,7 @@ namespace DotRecast.Detour
             m_query.raycastLimitSqr = Sqr(raycastLimit);
 
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !Vector3f.IsFinite(startPos) || !Vector3f.IsFinite(endPos) || null == filter)
+            if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !RcVec3f.IsFinite(startPos) || !RcVec3f.IsFinite(endPos) || null == filter)
             {
                 return Status.FAILURE_INVALID_PARAM;
             }
@@ -1175,7 +1175,7 @@ namespace DotRecast.Detour
                 if ((m_query.options & DT_FINDPATH_ANY_ANGLE) != 0)
                 {
                     if ((parentRef != 0) && (m_query.raycastLimitSqr >= float.MaxValue
-                                             || Vector3f.DistSqr(parentNode.pos, bestNode.pos) < m_query.raycastLimitSqr))
+                                             || RcVec3f.DistSqr(parentNode.pos, bestNode.pos) < m_query.raycastLimitSqr))
                     {
                         tryLOS = true;
                     }
@@ -1421,7 +1421,7 @@ namespace DotRecast.Detour
             return Results.Of(status, path);
         }
 
-        protected Status AppendVertex(Vector3f pos, int flags, long refs, List<StraightPathItem> straightPath,
+        protected Status AppendVertex(RcVec3f pos, int flags, long refs, List<StraightPathItem> straightPath,
             int maxStraightPath)
         {
             if (straightPath.Count > 0 && DetourCommon.VEqual(straightPath[straightPath.Count - 1].pos, pos))
@@ -1448,7 +1448,7 @@ namespace DotRecast.Detour
             return Status.IN_PROGRESS;
         }
 
-        protected Status AppendPortals(int startIdx, int endIdx, Vector3f endPos, List<long> path,
+        protected Status AppendPortals(int startIdx, int endIdx, RcVec3f endPos, List<long> path,
             List<StraightPathItem> straightPath, int maxStraightPath, int options)
         {
             var startPos = straightPath[straightPath.Count - 1].pos;
@@ -1498,7 +1498,7 @@ namespace DotRecast.Detour
                 // Append intersection
                 if (DetourCommon.IntersectSegSeg2D(startPos, endPos, left, right, out var _, out var t))
                 {
-                    var pt = Vector3f.Lerp(left, right, t);
+                    var pt = RcVec3f.Lerp(left, right, t);
                     stat = AppendVertex(pt, 0, path[i + 1], straightPath, maxStraightPath);
                     if (!stat.IsInProgress())
                     {
@@ -1535,18 +1535,18 @@ namespace DotRecast.Detour
         /// @param[in] maxStraightPath The maximum number of points the straight path arrays can hold. [Limit: > 0]
         /// @param[in] options Query options. (see: #dtStraightPathOptions)
         /// @returns The status flags for the query.
-        public virtual Result<List<StraightPathItem>> FindStraightPath(Vector3f startPos, Vector3f endPos, List<long> path,
+        public virtual Result<List<StraightPathItem>> FindStraightPath(RcVec3f startPos, RcVec3f endPos, List<long> path,
             int maxStraightPath, int options)
         {
             List<StraightPathItem> straightPath = new List<StraightPathItem>();
-            if (!Vector3f.IsFinite(startPos) || !Vector3f.IsFinite(endPos)
+            if (!RcVec3f.IsFinite(startPos) || !RcVec3f.IsFinite(endPos)
                                              || null == path || 0 == path.Count || path[0] == 0 || maxStraightPath <= 0)
             {
                 return Results.InvalidParam<List<StraightPathItem>>();
             }
 
             // TODO: Should this be callers responsibility?
-            Result<Vector3f> closestStartPosRes = ClosestPointOnPolyBoundary(path[0], startPos);
+            Result<RcVec3f> closestStartPosRes = ClosestPointOnPolyBoundary(path[0], startPos);
             if (closestStartPosRes.Failed())
             {
                 return Results.InvalidParam<List<StraightPathItem>>("Cannot find start position");
@@ -1569,9 +1569,9 @@ namespace DotRecast.Detour
 
             if (path.Count > 1)
             {
-                Vector3f portalApex = closestStartPos;
-                Vector3f portalLeft = portalApex;
-                Vector3f portalRight = portalApex;
+                RcVec3f portalApex = closestStartPos;
+                RcVec3f portalLeft = portalApex;
+                RcVec3f portalRight = portalApex;
                 int apexIndex = 0;
                 int leftIndex = 0;
                 int rightIndex = 0;
@@ -1584,8 +1584,8 @@ namespace DotRecast.Detour
 
                 for (int i = 0; i < path.Count; ++i)
                 {
-                    Vector3f left;
-                    Vector3f right;
+                    RcVec3f left;
+                    RcVec3f right;
                     int toType;
 
                     if (i + 1 < path.Count)
@@ -1793,11 +1793,11 @@ namespace DotRecast.Detour
         /// @param[in] endPos The desired end position of the mover. [(x, y, z)]
         /// @param[in] filter The polygon filter to apply to the query.
         /// @returns Path
-        public Result<MoveAlongSurfaceResult> MoveAlongSurface(long startRef, Vector3f startPos, Vector3f endPos, IQueryFilter filter)
+        public Result<MoveAlongSurfaceResult> MoveAlongSurface(long startRef, RcVec3f startPos, RcVec3f endPos, IQueryFilter filter)
         {
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !Vector3f.IsFinite(startPos)
-                                                || !Vector3f.IsFinite(endPos) || null == filter)
+            if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(startPos)
+                                                || !RcVec3f.IsFinite(endPos) || null == filter)
             {
                 return Results.InvalidParam<MoveAlongSurfaceResult>();
             }
@@ -1813,14 +1813,14 @@ namespace DotRecast.Detour
             LinkedList<Node> stack = new LinkedList<Node>();
             stack.AddLast(startNode);
 
-            Vector3f bestPos = new Vector3f();
+            RcVec3f bestPos = new RcVec3f();
             float bestDist = float.MaxValue;
             Node bestNode = null;
             bestPos = startPos;
 
             // Search constraints
-            var searchPos = Vector3f.Lerp(startPos, endPos, 0.5f);
-            float searchRadSqr = Sqr(Vector3f.Distance(startPos, endPos) / 2.0f + 0.001f);
+            var searchPos = RcVec3f.Lerp(startPos, endPos, 0.5f);
+            float searchRadSqr = Sqr(RcVec3f.Distance(startPos, endPos) / 2.0f + 0.001f);
 
             float[] verts = new float[m_nav.GetMaxVertsPerPoly() * 3];
 
@@ -1904,7 +1904,7 @@ namespace DotRecast.Detour
                         if (distSqr < bestDist)
                         {
                             // Update nearest distance.
-                            bestPos = Vector3f.Lerp(verts, vj, vi, tseg);
+                            bestPos = RcVec3f.Lerp(verts, vj, vi, tseg);
                             bestDist = distSqr;
                             bestNode = curNode;
                         }
@@ -1996,8 +1996,8 @@ namespace DotRecast.Detour
         protected Result<PortalResult> GetPortalPoints(long from, Poly fromPoly, MeshTile fromTile, long to, Poly toPoly,
             MeshTile toTile, int fromType, int toType)
         {
-            Vector3f left = new Vector3f();
-            Vector3f right = new Vector3f();
+            RcVec3f left = new RcVec3f();
+            RcVec3f right = new RcVec3f();
             // Find the link that points to the 'to' polygon.
             Link link = null;
             for (int i = fromTile.polyLinks[fromPoly.index]; i != NavMesh.DT_NULL_LINK; i = fromTile.links[i].next)
@@ -2080,50 +2080,50 @@ namespace DotRecast.Detour
                     float s = 1.0f / 255.0f;
                     float tmin = link.bmin * s;
                     float tmax = link.bmax * s;
-                    left = Vector3f.Lerp(fromTile.data.verts, v0 * 3, v1 * 3, tmin);
-                    right = Vector3f.Lerp(fromTile.data.verts, v0 * 3, v1 * 3, tmax);
+                    left = RcVec3f.Lerp(fromTile.data.verts, v0 * 3, v1 * 3, tmin);
+                    right = RcVec3f.Lerp(fromTile.data.verts, v0 * 3, v1 * 3, tmax);
                 }
             }
 
             return Results.Success(new PortalResult(left, right, fromType, toType));
         }
 
-        protected Result<Vector3f> GetEdgeMidPoint(long from, Poly fromPoly, MeshTile fromTile, long to,
+        protected Result<RcVec3f> GetEdgeMidPoint(long from, Poly fromPoly, MeshTile fromTile, long to,
             Poly toPoly, MeshTile toTile)
         {
             Result<PortalResult> ppoints = GetPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, 0, 0);
             if (ppoints.Failed())
             {
-                return Results.Of<Vector3f>(ppoints.status, ppoints.message);
+                return Results.Of<RcVec3f>(ppoints.status, ppoints.message);
             }
 
             var left = ppoints.result.left;
             var right = ppoints.result.right;
-            Vector3f mid = new Vector3f();
+            RcVec3f mid = new RcVec3f();
             mid.x = (left.x + right.x) * 0.5f;
             mid.y = (left.y + right.y) * 0.5f;
             mid.z = (left.z + right.z) * 0.5f;
             return Results.Success(mid);
         }
 
-        protected Result<Vector3f> GetEdgeIntersectionPoint(Vector3f fromPos, long from, Poly fromPoly, MeshTile fromTile,
-            Vector3f toPos, long to, Poly toPoly, MeshTile toTile)
+        protected Result<RcVec3f> GetEdgeIntersectionPoint(RcVec3f fromPos, long from, Poly fromPoly, MeshTile fromTile,
+            RcVec3f toPos, long to, Poly toPoly, MeshTile toTile)
         {
             Result<PortalResult> ppoints = GetPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, 0, 0);
             if (ppoints.Failed())
             {
-                return Results.Of<Vector3f>(ppoints.status, ppoints.message);
+                return Results.Of<RcVec3f>(ppoints.status, ppoints.message);
             }
 
-            Vector3f left = ppoints.result.left;
-            Vector3f right = ppoints.result.right;
+            RcVec3f left = ppoints.result.left;
+            RcVec3f right = ppoints.result.right;
             float t = 0.5f;
             if (DetourCommon.IntersectSegSeg2D(fromPos, toPos, left, right, out var _, out var t2))
             {
                 t = Clamp(t2, 0.1f, 0.9f);
             }
 
-            Vector3f pt = Vector3f.Lerp(left, right, t);
+            RcVec3f pt = RcVec3f.Lerp(left, right, t);
             return Results.Success(pt);
         }
 
@@ -2181,11 +2181,11 @@ namespace DotRecast.Detour
         /// @param[out] pathCount The number of visited polygons. [opt]
         /// @param[in] maxPath The maximum number of polygons the @p path array can hold.
         /// @returns The status flags for the query.
-        public Result<RaycastHit> Raycast(long startRef, Vector3f startPos, Vector3f endPos, IQueryFilter filter, int options,
+        public Result<RaycastHit> Raycast(long startRef, RcVec3f startPos, RcVec3f endPos, IQueryFilter filter, int options,
             long prevRef)
         {
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !Vector3f.IsFinite(startPos) || !Vector3f.IsFinite(endPos) || null == filter
+            if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(startPos) || !RcVec3f.IsFinite(endPos) || null == filter
                 || (prevRef != 0 && !m_nav.IsValidPolyRef(prevRef)))
             {
                 return Results.InvalidParam<RaycastHit>();
@@ -2195,8 +2195,8 @@ namespace DotRecast.Detour
 
             float[] verts = new float[m_nav.GetMaxVertsPerPoly() * 3 + 3];
 
-            Vector3f curPos = Vector3f.Zero;
-            Vector3f lastPos = Vector3f.Zero;
+            RcVec3f curPos = RcVec3f.Zero;
+            RcVec3f lastPos = RcVec3f.Zero;
 
             curPos = startPos;
             var dir = endPos.Subtract(startPos);
@@ -2363,9 +2363,9 @@ namespace DotRecast.Detour
                     // compute the intersection point at the furthest end of the polygon
                     // and correct the height (since the raycast moves in 2d)
                     lastPos = curPos;
-                    curPos = Vector3f.Mad(startPos, dir, hit.t);
-                    var e1 = Vector3f.Of(verts, iresult.segMax * 3);
-                    var e2 = Vector3f.Of(verts, ((iresult.segMax + 1) % nv) * 3);
+                    curPos = RcVec3f.Mad(startPos, dir, hit.t);
+                    var e1 = RcVec3f.Of(verts, iresult.segMax * 3);
+                    var e2 = RcVec3f.Of(verts, ((iresult.segMax + 1) % nv) * 3);
                     var eDir = e2.Subtract(e1);
                     var diff = curPos.Subtract(e1);
                     float s = Sqr(eDir.x) > Sqr(eDir.z) ? diff.x / eDir.x : diff.z / eDir.z;
@@ -2449,11 +2449,11 @@ namespace DotRecast.Detour
         /// @param[out] resultCount The number of polygons found. [opt]
         /// @param[in] maxResult The maximum number of polygons the result arrays can hold.
         /// @returns The status flags for the query.
-        public Result<FindPolysAroundResult> FindPolysAroundCircle(long startRef, Vector3f centerPos, float radius, IQueryFilter filter)
+        public Result<FindPolysAroundResult> FindPolysAroundCircle(long startRef, RcVec3f centerPos, float radius, IQueryFilter filter)
         {
             // Validate input
 
-            if (!m_nav.IsValidPolyRef(startRef) || !Vector3f.IsFinite(centerPos) || radius < 0
+            if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(centerPos) || radius < 0
                 || !float.IsFinite(radius) || null == filter)
             {
                 return Results.InvalidParam<FindPolysAroundResult>();
@@ -2559,7 +2559,7 @@ namespace DotRecast.Detour
                     // Cost
                     if (neighbourNode.flags == 0)
                     {
-                        neighbourNode.pos = Vector3f.Lerp(va, vb, 0.5f);
+                        neighbourNode.pos = RcVec3f.Lerp(va, vb, 0.5f);
                     }
 
                     float cost = filter.GetCost(bestNode.pos, neighbourNode.pos, parentRef, parentTile, parentPoly, bestRef,
@@ -2642,7 +2642,7 @@ namespace DotRecast.Detour
             m_nodePool.Clear();
             m_openList.Clear();
 
-            Vector3f centerPos = Vector3f.Zero;
+            RcVec3f centerPos = RcVec3f.Zero;
             for (int i = 0; i < nverts; ++i)
             {
                 centerPos.x += verts[i * 3];
@@ -2751,7 +2751,7 @@ namespace DotRecast.Detour
                     // Cost
                     if (neighbourNode.flags == 0)
                     {
-                        neighbourNode.pos = Vector3f.Lerp(va, vb, 0.5f);
+                        neighbourNode.pos = RcVec3f.Lerp(va, vb, 0.5f);
                     }
 
                     float cost = filter.GetCost(bestNode.pos, neighbourNode.pos, parentRef, parentTile, parentPoly, bestRef,
@@ -2817,11 +2817,11 @@ namespace DotRecast.Detour
         /// @param[out] resultCount The number of polygons found.
         /// @param[in] maxResult The maximum number of polygons the result arrays can hold.
         /// @returns The status flags for the query.
-        public Result<FindLocalNeighbourhoodResult> FindLocalNeighbourhood(long startRef, Vector3f centerPos, float radius,
+        public Result<FindLocalNeighbourhoodResult> FindLocalNeighbourhood(long startRef, RcVec3f centerPos, float radius,
             IQueryFilter filter)
         {
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !Vector3f.IsFinite(centerPos) || radius < 0
+            if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(centerPos) || radius < 0
                 || !float.IsFinite(radius) || null == filter)
             {
                 return Results.InvalidParam<FindLocalNeighbourhoodResult>();
@@ -3111,8 +3111,8 @@ namespace DotRecast.Detour
                         float tmin = ints[k].tmin / 255.0f;
                         float tmax = ints[k].tmax / 255.0f;
                         var seg = new SegmentVert();
-                        seg.vmin = Vector3f.Lerp(tile.data.verts, vj, vi, tmin);
-                        seg.vmax = Vector3f.Lerp(tile.data.verts, vj, vi, tmax);
+                        seg.vmin = RcVec3f.Lerp(tile.data.verts, vj, vi, tmin);
+                        seg.vmax = RcVec3f.Lerp(tile.data.verts, vj, vi, tmax);
                         segmentVerts.Add(seg);
                         segmentRefs.Add(ints[k].refs);
                     }
@@ -3125,8 +3125,8 @@ namespace DotRecast.Detour
                         float tmin = imin / 255.0f;
                         float tmax = imax / 255.0f;
                         var seg = new SegmentVert();
-                        seg.vmin = Vector3f.Lerp(tile.data.verts, vj, vi, tmin);
-                        seg.vmax = Vector3f.Lerp(tile.data.verts, vj, vi, tmax);
+                        seg.vmin = RcVec3f.Lerp(tile.data.verts, vj, vi, tmin);
+                        seg.vmax = RcVec3f.Lerp(tile.data.verts, vj, vi, tmax);
                         segmentVerts.Add(seg);
                         segmentRefs.Add(0L);
                     }
@@ -3156,11 +3156,11 @@ namespace DotRecast.Detour
         /// @param[out] hitNormal The normalized ray formed from the wall point to the
         /// source point. [(x, y, z)]
         /// @returns The status flags for the query.
-        public virtual Result<FindDistanceToWallResult> FindDistanceToWall(long startRef, Vector3f centerPos, float maxRadius,
+        public virtual Result<FindDistanceToWallResult> FindDistanceToWall(long startRef, RcVec3f centerPos, float maxRadius,
             IQueryFilter filter)
         {
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !Vector3f.IsFinite(centerPos) || maxRadius < 0
+            if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(centerPos) || maxRadius < 0
                 || !float.IsFinite(maxRadius) || null == filter)
             {
                 return Results.InvalidParam<FindDistanceToWallResult>();
@@ -3179,9 +3179,9 @@ namespace DotRecast.Detour
             m_openList.Push(startNode);
 
             float radiusSqr = Sqr(maxRadius);
-            Vector3f hitPos = new Vector3f();
-            Vector3f? bestvj = null;
-            Vector3f? bestvi = null;
+            RcVec3f hitPos = new RcVec3f();
+            RcVec3f? bestvj = null;
+            RcVec3f? bestvi = null;
             while (!m_openList.IsEmpty())
             {
                 Node bestNode = m_openList.Pop();
@@ -3265,8 +3265,8 @@ namespace DotRecast.Detour
                                + (bestTile.data.verts[vi + 1] - bestTile.data.verts[vj + 1]) * tseg;
                     hitPos.z = bestTile.data.verts[vj + 2]
                                + (bestTile.data.verts[vi + 2] - bestTile.data.verts[vj + 2]) * tseg;
-                    bestvj = Vector3f.Of(bestTile.data.verts, vj);
-                    bestvi = Vector3f.Of(bestTile.data.verts, vi);
+                    bestvj = RcVec3f.Of(bestTile.data.verts, vj);
+                    bestvi = RcVec3f.Of(bestTile.data.verts, vi);
                 }
 
                 for (int i = bestTile.polyLinks[bestPoly.index]; i != NavMesh.DT_NULL_LINK; i = bestTile.links[i].next)
@@ -3323,7 +3323,7 @@ namespace DotRecast.Detour
                         }
                     }
 
-                    float total = bestNode.total + Vector3f.Distance(bestNode.pos, neighbourNode.pos);
+                    float total = bestNode.total + RcVec3f.Distance(bestNode.pos, neighbourNode.pos);
 
                     // The node is already in open list and the new result is worse, skip.
                     if ((neighbourNode.flags & Node.DT_NODE_OPEN) != 0 && total >= neighbourNode.total)
@@ -3349,7 +3349,7 @@ namespace DotRecast.Detour
             }
 
             // Calc hit normal.
-            Vector3f hitNormal = new Vector3f();
+            RcVec3f hitNormal = new RcVec3f();
             if (bestvi != null && bestvj != null)
             {
                 var tangent = bestvi.Value.Subtract(bestvj.Value);

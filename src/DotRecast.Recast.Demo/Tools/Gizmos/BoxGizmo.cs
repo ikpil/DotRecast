@@ -12,28 +12,28 @@ public class BoxGizmo : IColliderGizmo
         2, 6, 7, 2, 7, 3, 4, 0, 3, 4, 3, 7
     };
 
-    private static readonly Vector3f[] VERTS =
+    private static readonly RcVec3f[] VERTS =
     {
-        Vector3f.Of( -1f, -1f, -1f),
-        Vector3f.Of( 1f, -1f, -1f),
-        Vector3f.Of( 1f, -1f, 1f),
-        Vector3f.Of( -1f, -1f, 1f),
-        Vector3f.Of( -1f, 1f, -1f),
-        Vector3f.Of( 1f, 1f, -1f),
-        Vector3f.Of( 1f, 1f, 1f),
-        Vector3f.Of( -1f, 1f, 1f),
+        RcVec3f.Of( -1f, -1f, -1f),
+        RcVec3f.Of( 1f, -1f, -1f),
+        RcVec3f.Of( 1f, -1f, 1f),
+        RcVec3f.Of( -1f, -1f, 1f),
+        RcVec3f.Of( -1f, 1f, -1f),
+        RcVec3f.Of( 1f, 1f, -1f),
+        RcVec3f.Of( 1f, 1f, 1f),
+        RcVec3f.Of( -1f, 1f, 1f),
     };
 
     private readonly float[] vertices = new float[8 * 3];
-    private readonly Vector3f center;
-    private readonly Vector3f[] halfEdges;
+    private readonly RcVec3f center;
+    private readonly RcVec3f[] halfEdges;
 
-    public BoxGizmo(Vector3f center, Vector3f extent, Vector3f forward, Vector3f up) :
+    public BoxGizmo(RcVec3f center, RcVec3f extent, RcVec3f forward, RcVec3f up) :
         this(center, BoxCollider.GetHalfEdges(up, forward, extent))
     {
     }
 
-    public BoxGizmo(Vector3f center, Vector3f[] halfEdges)
+    public BoxGizmo(RcVec3f center, RcVec3f[] halfEdges)
     {
         this.center = center;
         this.halfEdges = halfEdges;
@@ -50,15 +50,15 @@ public class BoxGizmo : IColliderGizmo
 
     public void Render(RecastDebugDraw debugDraw)
     {
-        var trX = Vector3f.Of(halfEdges[0].x, halfEdges[1].x, halfEdges[2].x);
-        var trY = Vector3f.Of(halfEdges[0].y, halfEdges[1].y, halfEdges[2].y);
-        var trZ = Vector3f.Of(halfEdges[0].z, halfEdges[1].z, halfEdges[2].z);
+        var trX = RcVec3f.Of(halfEdges[0].x, halfEdges[1].x, halfEdges[2].x);
+        var trY = RcVec3f.Of(halfEdges[0].y, halfEdges[1].y, halfEdges[2].y);
+        var trZ = RcVec3f.Of(halfEdges[0].z, halfEdges[1].z, halfEdges[2].z);
         float[] vertices = new float[8 * 3];
         for (int i = 0; i < 8; i++)
         {
-            vertices[i * 3 + 0] = Vector3f.Dot(VERTS[i], trX) + center.x;
-            vertices[i * 3 + 1] = Vector3f.Dot(VERTS[i], trY) + center.y;
-            vertices[i * 3 + 2] = Vector3f.Dot(VERTS[i], trZ) + center.z;
+            vertices[i * 3 + 0] = RcVec3f.Dot(VERTS[i], trX) + center.x;
+            vertices[i * 3 + 1] = RcVec3f.Dot(VERTS[i], trY) + center.y;
+            vertices[i * 3 + 2] = RcVec3f.Dot(VERTS[i], trZ) + center.z;
         }
 
         debugDraw.Begin(DebugDrawPrimitives.TRIS);

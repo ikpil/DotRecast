@@ -25,8 +25,8 @@ namespace DotRecast.Detour.Crowd.Tracking
     public class CrowdAgentDebugInfo
     {
         public CrowdAgent agent;
-        public Vector3f optStart = new Vector3f();
-        public Vector3f optEnd = new Vector3f();
+        public RcVec3f optStart = new RcVec3f();
+        public RcVec3f optEnd = new RcVec3f();
         public ObstacleAvoidanceDebugData vod;
     }
 }

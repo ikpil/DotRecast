@@ -5,7 +5,7 @@ namespace DotRecast.Detour.Crowd
     public class Segment
     {
         /** Segment start/end */
-        public Vector3f[] s = new Vector3f[2];
+        public RcVec3f[] s = new RcVec3f[2];
 
         /** Distance for pruning. */
         public float d;

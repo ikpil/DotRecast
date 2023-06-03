@@ -24,7 +24,7 @@ namespace DotRecast.Detour
 
     public interface IPolygonByCircleConstraint
     {
-        float[] Aply(float[] polyVerts, Vector3f circleCenter, float radius);
+        float[] Aply(float[] polyVerts, RcVec3f circleCenter, float radius);
 
         public static IPolygonByCircleConstraint Noop()
         {

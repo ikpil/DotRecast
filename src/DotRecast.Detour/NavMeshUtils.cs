@@ -24,10 +24,10 @@ namespace DotRecast.Detour
 {
     public static class NavMeshUtils
     {
-        public static Vector3f[] GetNavMeshBounds(NavMesh mesh)
+        public static RcVec3f[] GetNavMeshBounds(NavMesh mesh)
         {
-            Vector3f bmin = Vector3f.Of(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
-            Vector3f bmax = Vector3f.Of(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
+            RcVec3f bmin = RcVec3f.Of(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
+            RcVec3f bmax = RcVec3f.Of(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
             for (int t = 0; t < mesh.GetMaxTiles(); ++t)
             {
                 MeshTile tile = mesh.GetTile(t);

@@ -32,8 +32,8 @@ public class DemoInputGeomProvider : IInputGeomProvider
     public readonly float[] vertices;
     public readonly int[] faces;
     public readonly float[] normals;
-    private readonly Vector3f bmin;
-    private readonly Vector3f bmax;
+    private readonly RcVec3f bmin;
+    private readonly RcVec3f bmax;
     private readonly List<ConvexVolume> _convexVolumes = new();
     private readonly List<DemoOffMeshConnection> offMeshConnections = new();
     private readonly TriMesh _mesh;
@@ -71,10 +71,10 @@ public class DemoInputGeomProvider : IInputGeomProvider
         this.faces = faces;
         normals = new float[faces.Length];
         CalculateNormals();
-        bmin = Vector3f.Zero;
-        bmax = Vector3f.Zero;
-        Vector3f.Copy(ref bmin, vertices, 0);
-        Vector3f.Copy(ref bmax, vertices, 0);
+        bmin = RcVec3f.Zero;
+        bmax = RcVec3f.Zero;
+        RcVec3f.Copy(ref bmin, vertices, 0);
+        RcVec3f.Copy(ref bmax, vertices, 0);
         for (int i = 1; i < vertices.Length / 3; i++)
         {
             bmin.Min(vertices, i * 3);
@@ -84,12 +84,12 @@ public class DemoInputGeomProvider : IInputGeomProvider
         _mesh = new TriMesh(vertices, faces);
     }
 
-    public Vector3f GetMeshBoundsMin()
+    public RcVec3f GetMeshBoundsMin()
     {
         return bmin;
     }
 
-    public Vector3f GetMeshBoundsMax()
+    public RcVec3f GetMeshBoundsMax()
     {
         return bmax;
     }
@@ -101,8 +101,8 @@ public class DemoInputGeomProvider : IInputGeomProvider
             int v0 = faces[i] * 3;
             int v1 = faces[i + 1] * 3;
             int v2 = faces[i + 2] * 3;
-            Vector3f e0 = new Vector3f();
-            Vector3f e1 = new Vector3f();
+            RcVec3f e0 = new RcVec3f();
+            RcVec3f e1 = new RcVec3f();
             for (int j = 0; j < 3; ++j)
             {
                 e0[j] = vertices[v1 + j] - vertices[v0 + j];
@@ -138,7 +138,7 @@ public class DemoInputGeomProvider : IInputGeomProvider
         return offMeshConnections;
     }
 
-    public void AddOffMeshConnection(Vector3f start, Vector3f end, float radius, bool bidir, int area, int flags)
+    public void AddOffMeshConnection(RcVec3f start, RcVec3f end, float radius, bool bidir, int area, int flags)
     {
         offMeshConnections.Add(new DemoOffMeshConnection(start, end, radius, bidir, area, flags));
     }
@@ -149,7 +149,7 @@ public class DemoInputGeomProvider : IInputGeomProvider
         offMeshConnections.RemoveAll(filter); // TODO : 확인 필요
     }
 
-    public float? RaycastMesh(Vector3f src, Vector3f dst)
+    public float? RaycastMesh(RcVec3f src, RcVec3f dst)
     {
         // Prune hit ray.
         if (!Intersections.IsectSegAABB(src, dst, bmin, bmax, out var btmin, out var btmax))
@@ -177,17 +177,17 @@ public class DemoInputGeomProvider : IInputGeomProvider
             int[] tris = chunk.tris;
             for (int j = 0; j < chunk.tris.Length; j += 3)
             {
-                Vector3f v1 = Vector3f.Of(
+                RcVec3f v1 = RcVec3f.Of(
                     vertices[tris[j] * 3],
                     vertices[tris[j] * 3 + 1],
                     vertices[tris[j] * 3 + 2]
                 );
-                Vector3f v2 = Vector3f.Of(
+                RcVec3f v2 = RcVec3f.Of(
                     vertices[tris[j + 1] * 3],
                     vertices[tris[j + 1] * 3 + 1],
                     vertices[tris[j + 1] * 3 + 2]
                 );
-                Vector3f v3 = Vector3f.Of(
+                RcVec3f v3 = RcVec3f.Of(
                     vertices[tris[j + 2] * 3],
                     vertices[tris[j + 2] * 3 + 1],
                     vertices[tris[j + 2] * 3 + 2]

@@ -33,7 +33,7 @@ public class VoxelQueryTest
 {
     private const int TILE_WIDTH = 100;
     private const int TILE_DEPTH = 90;
-    private static readonly Vector3f ORIGIN = Vector3f.Of(50, 10, 40);
+    private static readonly RcVec3f ORIGIN = RcVec3f.Of(50, 10, 40);
 
 
     [Test]
@@ -55,8 +55,8 @@ public class VoxelQueryTest
             });
 
         VoxelQuery query = new VoxelQuery(ORIGIN, TILE_WIDTH, TILE_DEPTH, hfProvider.Object);
-        Vector3f start = Vector3f.Of(120, 10, 365);
-        Vector3f end = Vector3f.Of(320, 10, 57);
+        RcVec3f start = RcVec3f.Of(120, 10, 365);
+        RcVec3f end = RcVec3f.Of(320, 10, 57);
 
         // When
         query.Raycast(start, end);
@@ -71,8 +71,8 @@ public class VoxelQueryTest
     {
         DynamicNavMesh mesh = CreateDynaMesh();
         VoxelQuery query = mesh.VoxelQuery();
-        Vector3f start = Vector3f.Of(7.4f, 0.5f, -64.8f);
-        Vector3f end = Vector3f.Of(31.2f, 0.5f, -75.3f);
+        RcVec3f start = RcVec3f.Of(7.4f, 0.5f, -64.8f);
+        RcVec3f end = RcVec3f.Of(31.2f, 0.5f, -75.3f);
         float? hit = query.Raycast(start, end);
         Assert.That(hit, Is.Null);
     }
@@ -82,8 +82,8 @@ public class VoxelQueryTest
     {
         DynamicNavMesh mesh = CreateDynaMesh();
         VoxelQuery query = mesh.VoxelQuery();
-        Vector3f start = Vector3f.Of(32.3f, 0.5f, 47.9f);
-        Vector3f end = Vector3f.Of(-31.2f, 0.5f, -29.8f);
+        RcVec3f start = RcVec3f.Of(32.3f, 0.5f, 47.9f);
+        RcVec3f end = RcVec3f.Of(-31.2f, 0.5f, -29.8f);
         float? hit = query.Raycast(start, end);
         Assert.That(hit, Is.Not.Null);
         Assert.That(hit.Value, Is.EqualTo(0.5263836f).Within(1e-7f));

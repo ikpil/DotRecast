@@ -31,7 +31,7 @@ namespace DotRecast.Detour
     public class NavMeshParams
     {
         /** The world space origin of the navigation mesh's tile space. [(x, y, z)] */
-        public Vector3f orig = new Vector3f();
+        public RcVec3f orig = new RcVec3f();
 
         /** The width of each tile. (Along the x-axis.) */
         public float tileWidth;

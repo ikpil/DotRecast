@@ -30,8 +30,8 @@ namespace DotRecast.Recast.Geom
         public readonly float[] vertices;
         public readonly int[] faces;
         public readonly float[] normals;
-        private Vector3f bmin;
-        private Vector3f bmax;
+        private RcVec3f bmin;
+        private RcVec3f bmax;
         private readonly List<ConvexVolume> volumes = new List<ConvexVolume>();
         private readonly TriMesh _mesh;
 
@@ -68,10 +68,10 @@ namespace DotRecast.Recast.Geom
             this.faces = faces;
             normals = new float[faces.Length];
             CalculateNormals();
-            bmin = Vector3f.Zero;
-            bmax = Vector3f.Zero;
-            Vector3f.Copy(ref bmin, vertices, 0);
-            Vector3f.Copy(ref bmax, vertices, 0);
+            bmin = RcVec3f.Zero;
+            bmax = RcVec3f.Zero;
+            RcVec3f.Copy(ref bmin, vertices, 0);
+            RcVec3f.Copy(ref bmax, vertices, 0);
             for (int i = 1; i < vertices.Length / 3; i++)
             {
                 bmin.Min(vertices, i * 3);
@@ -81,12 +81,12 @@ namespace DotRecast.Recast.Geom
             _mesh = new TriMesh(vertices, faces);
         }
 
-        public Vector3f GetMeshBoundsMin()
+        public RcVec3f GetMeshBoundsMin()
         {
             return bmin;
         }
 
-        public Vector3f GetMeshBoundsMax()
+        public RcVec3f GetMeshBoundsMax()
         {
             return bmax;
         }
@@ -119,8 +119,8 @@ namespace DotRecast.Recast.Geom
                 int v1 = faces[i + 1] * 3;
                 int v2 = faces[i + 2] * 3;
 
-                var e0 = new Vector3f();
-                var e1 = new Vector3f();
+                var e0 = new RcVec3f();
+                var e1 = new RcVec3f();
                 e0.x = vertices[v1 + 0] - vertices[v0 + 0];
                 e0.y = vertices[v1 + 1] - vertices[v0 + 1];
                 e0.z = vertices[v1 + 2] - vertices[v0 + 2];

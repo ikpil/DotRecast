@@ -28,8 +28,8 @@ namespace DotRecast.Detour
         public Node lastBestNode;
         public float lastBestNodeCost;
         public long startRef, endRef;
-        public Vector3f startPos = new Vector3f();
-        public Vector3f endPos = new Vector3f();
+        public RcVec3f startPos = new RcVec3f();
+        public RcVec3f endPos = new RcVec3f();
         public IQueryFilter filter;
         public int options;
         public float raycastLimitSqr;

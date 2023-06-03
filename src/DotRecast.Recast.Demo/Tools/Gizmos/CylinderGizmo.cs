@@ -11,31 +11,31 @@ public class CylinderGizmo : IColliderGizmo
 {
     private readonly float[] vertices;
     private readonly int[] triangles;
-    private readonly Vector3f center;
+    private readonly RcVec3f center;
     private readonly float[] gradient;
 
-    public CylinderGizmo(Vector3f start, Vector3f end, float radius)
+    public CylinderGizmo(RcVec3f start, RcVec3f end, float radius)
     {
-        center = Vector3f.Of(
+        center = RcVec3f.Of(
             0.5f * (start.x + end.x), 0.5f * (start.y + end.y),
             0.5f * (start.z + end.z)
         );
-        Vector3f axis = Vector3f.Of(end.x - start.x, end.y - start.y, end.z - start.z);
-        Vector3f[] normals = new Vector3f[3];
-        normals[1] = Vector3f.Of(end.x - start.x, end.y - start.y, end.z - start.z);
-        Vector3f.Normalize(ref normals[1]);
+        RcVec3f axis = RcVec3f.Of(end.x - start.x, end.y - start.y, end.z - start.z);
+        RcVec3f[] normals = new RcVec3f[3];
+        normals[1] = RcVec3f.Of(end.x - start.x, end.y - start.y, end.z - start.z);
+        RcVec3f.Normalize(ref normals[1]);
         normals[0] = GetSideVector(axis);
-        normals[2] = Vector3f.Zero;
-        Vector3f.Cross(ref normals[2], normals[0], normals[1]);
-        Vector3f.Normalize(ref normals[2]);
+        normals[2] = RcVec3f.Zero;
+        RcVec3f.Cross(ref normals[2], normals[0], normals[1]);
+        RcVec3f.Normalize(ref normals[2]);
         triangles = GenerateCylindricalTriangles();
-        Vector3f trX = Vector3f.Of(normals[0].x, normals[1].x, normals[2].x);
-        Vector3f trY = Vector3f.Of(normals[0].y, normals[1].y, normals[2].y);
-        Vector3f trZ = Vector3f.Of(normals[0].z, normals[1].z, normals[2].z);
+        RcVec3f trX = RcVec3f.Of(normals[0].x, normals[1].x, normals[2].x);
+        RcVec3f trY = RcVec3f.Of(normals[0].y, normals[1].y, normals[2].y);
+        RcVec3f trZ = RcVec3f.Of(normals[0].z, normals[1].z, normals[2].z);
         vertices = GenerateCylindricalVertices();
         float halfLength = 0.5f * axis.Length();
         gradient = new float[vertices.Length / 3];
-        Vector3f v = new Vector3f();
+        RcVec3f v = new RcVec3f();
         for (int i = 0; i < vertices.Length; i += 3)
         {
             float offset = (i >= vertices.Length / 2) ? -halfLength : halfLength;
@@ -54,24 +54,24 @@ public class CylinderGizmo : IColliderGizmo
                 v.x = vertices[i] - center.x;
                 v.y = vertices[i + 1] - center.y;
                 v.z = vertices[i + 2] - center.z;
-                Vector3f.Normalize(ref v);
+                RcVec3f.Normalize(ref v);
                 gradient[i / 3] = Clamp(0.57735026f * (v.x + v.y + v.z), -1, 1);
             }
         }
     }
 
-    private Vector3f GetSideVector(Vector3f axis)
+    private RcVec3f GetSideVector(RcVec3f axis)
     {
-        Vector3f side = Vector3f.Of(1, 0, 0);
+        RcVec3f side = RcVec3f.Of(1, 0, 0);
         if (axis.x > 0.8)
         {
-            side = Vector3f.Of(0, 0, 1);
+            side = RcVec3f.Of(0, 0, 1);
         }
 
-        Vector3f forward = new Vector3f();
-        Vector3f.Cross(ref forward, side, axis);
-        Vector3f.Cross(ref side, axis, forward);
-        Vector3f.Normalize(ref side);
+        RcVec3f forward = new RcVec3f();
+        RcVec3f.Cross(ref forward, side, axis);
+        RcVec3f.Cross(ref side, axis, forward);
+        RcVec3f.Normalize(ref side);
         return side;
     }
 

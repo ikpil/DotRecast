@@ -4,8 +4,8 @@ namespace DotRecast.Core
 {
     public struct SegmentVert
     {
-        public Vector3f vmin;
-        public Vector3f vmax;
+        public RcVec3f vmin;
+        public RcVec3f vmax;
 
         public float this[int index]
         {

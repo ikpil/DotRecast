@@ -24,7 +24,7 @@ namespace DotRecast.Recast
 
     public static class PolyMeshRaycast
     {
-        public static float? Raycast(IList<RecastBuilderResult> results, Vector3f src, Vector3f dst)
+        public static float? Raycast(IList<RecastBuilderResult> results, RcVec3f src, RcVec3f dst)
         {
             foreach (RecastBuilderResult result in results)
             {
@@ -41,7 +41,7 @@ namespace DotRecast.Recast
             return null;
         }
 
-        private static float? Raycast(PolyMesh poly, PolyMeshDetail meshDetail, Vector3f sp, Vector3f sq)
+        private static float? Raycast(PolyMesh poly, PolyMeshDetail meshDetail, RcVec3f sp, RcVec3f sq)
         {
             if (meshDetail != null)
             {
@@ -55,7 +55,7 @@ namespace DotRecast.Recast
                     int tris = btris * 4;
                     for (int j = 0; j < ntris; ++j)
                     {
-                        Vector3f[] vs = new Vector3f[3];
+                        RcVec3f[] vs = new RcVec3f[3];
                         for (int k = 0; k < 3; ++k)
                         {
                             vs[k].x = meshDetail.verts[verts + meshDetail.tris[tris + j * 4 + k] * 3];

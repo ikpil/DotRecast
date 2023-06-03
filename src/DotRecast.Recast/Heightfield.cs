@@ -32,10 +32,10 @@ namespace DotRecast.Recast
         public readonly int height;
 
         /** The minimum bounds in world space. [(x, y, z)] */
-        public readonly Vector3f bmin;
+        public readonly RcVec3f bmin;
 
         /** The maximum bounds in world space. [(x, y, z)] */
-        public Vector3f bmax;
+        public RcVec3f bmax;
 
         /** The size of each cell. (On the xz-plane.) */
         public readonly float cs;
@@ -49,7 +49,7 @@ namespace DotRecast.Recast
         /** Border size in cell units */
         public readonly int borderSize;
 
-        public Heightfield(int width, int height, Vector3f bmin, Vector3f bmax, float cs, float ch, int borderSize)
+        public Heightfield(int width, int height, RcVec3f bmin, RcVec3f bmax, float cs, float ch, int borderSize)
         {
             this.width = width;
             this.height = height;

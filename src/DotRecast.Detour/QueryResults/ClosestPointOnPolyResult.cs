@@ -25,9 +25,9 @@ namespace DotRecast.Detour.QueryResults
     public class ClosestPointOnPolyResult
     {
         private readonly bool posOverPoly;
-        private readonly Vector3f closest;
+        private readonly RcVec3f closest;
 
-        public ClosestPointOnPolyResult(bool posOverPoly, Vector3f closest)
+        public ClosestPointOnPolyResult(bool posOverPoly, RcVec3f closest)
         {
             this.posOverPoly = posOverPoly;
             this.closest = closest;
@@ -40,7 +40,7 @@ namespace DotRecast.Detour.QueryResults
         }
 
         /** Returns the closest point on the polygon. [(x, y, z)] */
-        public Vector3f GetClosest()
+        public RcVec3f GetClosest()
         {
             return closest;
         }

@@ -57,7 +57,7 @@ public class FindLocalNeighbourhoodTest : AbstractDetourTest
         IQueryFilter filter = new DefaultQueryFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
-            Vector3f startPos = startPoss[i];
+            RcVec3f startPos = startPoss[i];
             Result<FindLocalNeighbourhoodResult> poly = query.FindLocalNeighbourhood(startRefs[i], startPos, 3.5f, filter);
             Assert.That(poly.result.GetRefs().Count, Is.EqualTo(REFS[i].Length));
             for (int v = 0; v < REFS[i].Length; v++)

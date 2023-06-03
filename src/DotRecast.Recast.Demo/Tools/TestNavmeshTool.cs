@@ -23,15 +23,15 @@ public class TestNavmeshTool : Tool
     private TestNavmeshToolMode m_toolMode => TestNavmeshToolMode.Values[m_toolModeIdx];
     private bool m_sposSet;
     private bool m_eposSet;
-    private Vector3f m_spos;
-    private Vector3f m_epos;
+    private RcVec3f m_spos;
+    private RcVec3f m_epos;
     private readonly DefaultQueryFilter m_filter;
-    private readonly Vector3f m_polyPickExt = Vector3f.Of(2, 4, 2);
+    private readonly RcVec3f m_polyPickExt = RcVec3f.Of(2, 4, 2);
     private long m_startRef;
     private long m_endRef;
-    private Vector3f m_hitPos;
+    private RcVec3f m_hitPos;
     private float m_distanceToWall;
-    private Vector3f m_hitNormal;
+    private RcVec3f m_hitNormal;
     private List<StraightPathItem> m_straightPath;
     private int m_straightPathOptions;
     private List<long> m_polys;
@@ -39,10 +39,10 @@ public class TestNavmeshTool : Tool
     private List<long> m_parent;
     private float m_neighbourhoodRadius;
     private readonly float[] m_queryPoly = new float[12];
-    private List<Vector3f> m_smoothPath;
+    private List<RcVec3f> m_smoothPath;
     private Status m_pathFindStatus = Status.FAILURE;
     private bool enableRaycast = true;
-    private readonly List<Vector3f> randomPoints = new();
+    private readonly List<RcVec3f> randomPoints = new();
     private bool constrainByCircle;
 
     private int includeFlags = SampleAreaModifications.SAMPLE_POLYFLAGS_ALL;
@@ -59,7 +59,7 @@ public class TestNavmeshTool : Tool
         this.m_sample = m_sample;
     }
 
-    public override void HandleClick(Vector3f s, Vector3f p, bool shift)
+    public override void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
         if (shift)
         {
@@ -195,8 +195,8 @@ public class TestNavmeshTool : Tool
                 {
                     List<long> polys = new(m_polys);
                     // Iterate over the path to find smooth path on the detail mesh surface.
-                    Vector3f iterPos = m_navQuery.ClosestPointOnPoly(m_startRef, m_spos).result.GetClosest();
-                    Vector3f targetPos = m_navQuery.ClosestPointOnPoly(polys[polys.Count - 1], m_epos).result.GetClosest();
+                    RcVec3f iterPos = m_navQuery.ClosestPointOnPoly(m_startRef, m_spos).result.GetClosest();
+                    RcVec3f targetPos = m_navQuery.ClosestPointOnPoly(polys[polys.Count - 1], m_epos).result.GetClosest();
 
                     float STEP_SIZE = 0.5f;
                     float SLOP = 0.01f;
@@ -225,8 +225,8 @@ public class TestNavmeshTool : Tool
                             : false;
 
                         // Find movement delta.
-                        Vector3f delta = steerTarget.steerPos.Subtract(iterPos);
-                        float len = (float)Math.Sqrt(Vector3f.Dot(delta, delta));
+                        RcVec3f delta = steerTarget.steerPos.Subtract(iterPos);
+                        float len = (float)Math.Sqrt(RcVec3f.Dot(delta, delta));
                         // If the steer target is end of path or off-mesh link, do not move past the location.
                         if ((endOfPath || offMeshConnection) && len < STEP_SIZE)
                         {
@@ -237,7 +237,7 @@ public class TestNavmeshTool : Tool
                             len = STEP_SIZE / len;
                         }
 
-                        Vector3f moveTgt = Vector3f.Mad(iterPos, delta, len);
+                        RcVec3f moveTgt = RcVec3f.Mad(iterPos, delta, len);
                         // Move
                         Result<MoveAlongSurfaceResult> result = m_navQuery.MoveAlongSurface(polys[0], iterPos,
                             moveTgt, m_filter);
@@ -331,7 +331,7 @@ public class TestNavmeshTool : Tool
                 if (0 < m_polys.Count)
                 {
                     // In case of partial path, make sure the end point is clamped to the last polygon.
-                    var epos = Vector3f.Of(m_epos.x, m_epos.y, m_epos.z);
+                    var epos = RcVec3f.Of(m_epos.x, m_epos.y, m_epos.z);
                     if (m_polys[m_polys.Count - 1] != m_endRef)
                     {
                         Result<ClosestPointOnPolyResult> result = m_navQuery
@@ -380,7 +380,7 @@ public class TestNavmeshTool : Tool
                         else
                         {
                             // Hit
-                            m_hitPos = Vector3f.Lerp(m_spos, m_epos, hit.result.t);
+                            m_hitPos = RcVec3f.Lerp(m_spos, m_epos, hit.result.t);
                             m_hitNormal = hit.result.hitNormal;
                             m_hitResult = true;
                         }
@@ -731,13 +731,13 @@ public class TestNavmeshTool : Tool
         {
             dd.DebugDrawNavMeshPoly(m_navMesh, m_startRef, startCol);
             dd.DepthMask(false);
-            if (m_spos != Vector3f.Zero)
+            if (m_spos != RcVec3f.Zero)
             {
                 dd.DebugDrawCircle(m_spos.x, m_spos.y + agentHeight / 2, m_spos.z, m_distanceToWall,
                     DuRGBA(64, 16, 0, 220), 2.0f);
             }
 
-            if (m_hitPos != Vector3f.Zero)
+            if (m_hitPos != RcVec3f.Zero)
             {
                 dd.Begin(LINES, 3.0f);
                 dd.Vertex(m_hitPos.x, m_hitPos.y + 0.02f, m_hitPos.z, DuRGBA(0, 0, 0, 192));
@@ -758,8 +758,8 @@ public class TestNavmeshTool : Tool
                     if (m_parent[i] != 0)
                     {
                         dd.DepthMask(false);
-                        Vector3f p0 = GetPolyCenter(m_navMesh, m_parent[i]);
-                        Vector3f p1 = GetPolyCenter(m_navMesh, m_polys[i]);
+                        RcVec3f p0 = GetPolyCenter(m_navMesh, m_parent[i]);
+                        RcVec3f p1 = GetPolyCenter(m_navMesh, m_polys[i]);
                         dd.DebugDrawArc(p0.x, p0.y, p0.z, p1.x, p1.y, p1.z, 0.25f, 0.0f, 0.4f,
                             DuRGBA(0, 0, 0, 128), 2.0f);
                         dd.DepthMask(true);
@@ -791,8 +791,8 @@ public class TestNavmeshTool : Tool
                     if (m_parent[i] != 0)
                     {
                         dd.DepthMask(false);
-                        Vector3f p0 = GetPolyCenter(m_navMesh, m_parent[i]);
-                        Vector3f p1 = GetPolyCenter(m_navMesh, m_polys[i]);
+                        RcVec3f p0 = GetPolyCenter(m_navMesh, m_parent[i]);
+                        RcVec3f p1 = GetPolyCenter(m_navMesh, m_polys[i]);
                         dd.DebugDrawArc(p0.x, p0.y, p0.z, p1.x, p1.y, p1.z, 0.25f, 0.0f, 0.4f,
                             DuRGBA(0, 0, 0, 128), 2.0f);
                         dd.DepthMask(true);
@@ -828,8 +828,8 @@ public class TestNavmeshTool : Tool
                     if (m_parent[i] != 0)
                     {
                         dd.DepthMask(false);
-                        Vector3f p0 = GetPolyCenter(m_navMesh, m_parent[i]);
-                        Vector3f p1 = GetPolyCenter(m_navMesh, m_polys[i]);
+                        RcVec3f p0 = GetPolyCenter(m_navMesh, m_parent[i]);
+                        RcVec3f p1 = GetPolyCenter(m_navMesh, m_polys[i]);
                         dd.DebugDrawArc(p0.x, p0.y, p0.z, p1.x, p1.y, p1.z, 0.25f, 0.0f, 0.4f,
                             DuRGBA(0, 0, 0, 128), 2.0f);
                         dd.DepthMask(true);
@@ -847,8 +847,8 @@ public class TestNavmeshTool : Tool
                             for (int j = 0; j < wallSegments.CountSegmentVerts(); ++j)
                             {
                                 SegmentVert s = wallSegments.GetSegmentVert(j);
-                                var v0 = Vector3f.Of(s[0], s[1], s[2]);
-                                var s3 = Vector3f.Of(s[3], s[4], s[5]);
+                                var v0 = RcVec3f.Of(s[0], s[1], s[2]);
+                                var s3 = RcVec3f.Of(s[3], s[4], s[5]);
                                 // Skip too distant segments.
                                 var distSqr = DetourCommon.DistancePtSegSqr2D(m_spos, v0, s3, out var tseg);
                                 if (distSqr > RcMath.Sqr(m_neighbourhoodRadius))
@@ -856,11 +856,11 @@ public class TestNavmeshTool : Tool
                                     continue;
                                 }
 
-                                Vector3f delta = s3.Subtract(s.vmin);
-                                Vector3f p0 = Vector3f.Mad(s.vmin, delta, 0.5f);
-                                Vector3f norm = Vector3f.Of(delta.z, 0, -delta.x);
+                                RcVec3f delta = s3.Subtract(s.vmin);
+                                RcVec3f p0 = RcVec3f.Mad(s.vmin, delta, 0.5f);
+                                RcVec3f norm = RcVec3f.Of(delta.z, 0, -delta.x);
                                 norm.Normalize();
-                                Vector3f p1 = Vector3f.Mad(p0, norm, agentRadius * 0.5f);
+                                RcVec3f p1 = RcVec3f.Mad(p0, norm, agentRadius * 0.5f);
                                 // Skip backfacing segments.
                                 if (wallSegments.GetSegmentRef(j) != 0)
                                 {
@@ -905,7 +905,7 @@ public class TestNavmeshTool : Tool
             dd.DepthMask(false);
             dd.Begin(POINTS, 4.0f);
             int col = DuRGBA(64, 16, 0, 220);
-            foreach (Vector3f point in randomPoints)
+            foreach (RcVec3f point in randomPoints)
             {
                 dd.Vertex(point.x, point.y + 0.1f, point.z, col);
             }
@@ -926,7 +926,7 @@ public class TestNavmeshTool : Tool
         }
     }
 
-    private void DrawAgent(RecastDebugDraw dd, Vector3f pos, int col)
+    private void DrawAgent(RecastDebugDraw dd, RcVec3f pos, int col)
     {
         float r = m_sample.GetSettingsUI().GetAgentRadius();
         float h = m_sample.GetSettingsUI().GetAgentHeight();
@@ -947,9 +947,9 @@ public class TestNavmeshTool : Tool
         dd.DepthMask(true);
     }
 
-    private Vector3f GetPolyCenter(NavMesh navMesh, long refs)
+    private RcVec3f GetPolyCenter(NavMesh navMesh, long refs)
     {
-        Vector3f center = Vector3f.Zero;
+        RcVec3f center = RcVec3f.Zero;
 
         Result<Tuple<MeshTile, Poly>> tileAndPoly = navMesh.GetTileAndPolyByRef(refs);
         if (tileAndPoly.Succeeded())
@@ -991,7 +991,7 @@ public class TestNavmeshTool : Tool
                 if (m_polys != null)
                 {
                     // In case of partial path, make sure the end point is clamped to the last polygon.
-                    Vector3f epos = new Vector3f();
+                    RcVec3f epos = new RcVec3f();
                     epos = m_epos;
                     if (m_polys[m_polys.Count - 1] != m_endRef)
                     {

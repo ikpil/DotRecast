@@ -50,8 +50,8 @@ public class VoxelFileReaderWriterTest
         Assert.That(f.tiles[0].width, Is.EqualTo(810));
         Assert.That(f.tiles[0].depth, Is.EqualTo(810));
         Assert.That(f.tiles[0].spanData.Length, Is.EqualTo(9021024));
-        Assert.That(f.tiles[0].boundsMin, Is.EqualTo(Vector3f.Of(-101.25f, 0f, -101.25f)));
-        Assert.That(f.tiles[0].boundsMax, Is.EqualTo(Vector3f.Of(101.25f, 5.0f, 101.25f)));
+        Assert.That(f.tiles[0].boundsMin, Is.EqualTo(RcVec3f.Of(-101.25f, 0f, -101.25f)));
+        Assert.That(f.tiles[0].boundsMax, Is.EqualTo(RcVec3f.Of(101.25f, 5.0f, 101.25f)));
     }
 
     [TestCase(false)]
@@ -81,8 +81,8 @@ public class VoxelFileReaderWriterTest
         Assert.That(f.tiles[0].spanData.Length, Is.EqualTo(104952));
         Assert.That(f.tiles[5].spanData.Length, Is.EqualTo(109080));
         Assert.That(f.tiles[18].spanData.Length, Is.EqualTo(113400));
-        Assert.That(f.tiles[0].boundsMin, Is.EqualTo(Vector3f.Of(-101.25f, 0f, -101.25f)));
-        Assert.That(f.tiles[0].boundsMax, Is.EqualTo(Vector3f.Of(-78.75f, 5.0f, -78.75f)));
+        Assert.That(f.tiles[0].boundsMin, Is.EqualTo(RcVec3f.Of(-101.25f, 0f, -101.25f)));
+        Assert.That(f.tiles[0].boundsMax, Is.EqualTo(RcVec3f.Of(-78.75f, 5.0f, -78.75f)));
     }
 
     private VoxelFile ReadWriteRead(BinaryReader bis, bool compression)

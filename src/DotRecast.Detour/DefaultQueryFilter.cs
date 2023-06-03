@@ -86,10 +86,10 @@ namespace DotRecast.Detour
             return (poly.flags & m_includeFlags) != 0 && (poly.flags & m_excludeFlags) == 0;
         }
 
-        public float GetCost(Vector3f pa, Vector3f pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef,
+        public float GetCost(RcVec3f pa, RcVec3f pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef,
             MeshTile curTile, Poly curPoly, long nextRef, MeshTile nextTile, Poly nextPoly)
         {
-            return Vector3f.Distance(pa, pb) * m_areaCost[curPoly.GetArea()];
+            return RcVec3f.Distance(pa, pb) * m_areaCost[curPoly.GetArea()];
         }
 
         public int GetIncludeFlags()

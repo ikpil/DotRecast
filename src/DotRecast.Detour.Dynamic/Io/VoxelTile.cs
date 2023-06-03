@@ -30,13 +30,13 @@ namespace DotRecast.Detour.Dynamic.Io
         public readonly int borderSize;
         public int width;
         public int depth;
-        public readonly Vector3f boundsMin;
-        public Vector3f boundsMax;
+        public readonly RcVec3f boundsMin;
+        public RcVec3f boundsMax;
         public float cellSize;
         public float cellHeight;
         public readonly byte[] spanData;
 
-        public VoxelTile(int tileX, int tileZ, int width, int depth, Vector3f boundsMin, Vector3f boundsMax, float cellSize,
+        public VoxelTile(int tileX, int tileZ, int width, int depth, RcVec3f boundsMin, RcVec3f boundsMax, float cellSize,
             float cellHeight, int borderSize, RcByteBuffer buffer)
         {
             this.tileX = tileX;

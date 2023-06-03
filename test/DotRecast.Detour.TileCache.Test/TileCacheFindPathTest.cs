@@ -30,8 +30,8 @@ namespace DotRecast.Detour.TileCache.Test;
 [Parallelizable]
 public class TileCacheFindPathTest : AbstractTileCacheTest
 {
-    private readonly Vector3f start = Vector3f.Of(39.44734f, 9.998177f, -0.784811f);
-    private readonly Vector3f end = Vector3f.Of(19.292645f, 11.611748f, -57.750366f);
+    private readonly RcVec3f start = RcVec3f.Of(39.44734f, 9.998177f, -0.784811f);
+    private readonly RcVec3f end = RcVec3f.Of(19.292645f, 11.611748f, -57.750366f);
     private readonly NavMesh navmesh;
     private readonly NavMeshQuery query;
 
@@ -48,13 +48,13 @@ public class TileCacheFindPathTest : AbstractTileCacheTest
     public void TestFindPath()
     {
         IQueryFilter filter = new DefaultQueryFilter();
-        Vector3f extents = Vector3f.Of(2f, 4f, 2f);
+        RcVec3f extents = RcVec3f.Of(2f, 4f, 2f);
         Result<FindNearestPolyResult> findPolyStart = query.FindNearestPoly(start, extents, filter);
         Result<FindNearestPolyResult> findPolyEnd = query.FindNearestPoly(end, extents, filter);
         long startRef = findPolyStart.result.GetNearestRef();
         long endRef = findPolyEnd.result.GetNearestRef();
-        Vector3f startPos = findPolyStart.result.GetNearestPos();
-        Vector3f endPos = findPolyEnd.result.GetNearestPos();
+        RcVec3f startPos = findPolyStart.result.GetNearestPos();
+        RcVec3f endPos = findPolyEnd.result.GetNearestPos();
         Result<List<long>> path = query.FindPath(startRef, endRef, startPos, endPos, filter);
         int maxStraightPath = 256;
         int options = 0;

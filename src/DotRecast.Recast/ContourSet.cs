@@ -30,10 +30,10 @@ namespace DotRecast.Recast
         public List<Contour> conts = new List<Contour>();
 
         /** The minimum bounds in world space. [(x, y, z)] */
-        public Vector3f bmin = new Vector3f();
+        public RcVec3f bmin = new RcVec3f();
 
         /** The maximum bounds in world space. [(x, y, z)] */
-        public Vector3f bmax = new Vector3f();
+        public RcVec3f bmax = new RcVec3f();
 
         /** The size of each cell. (On the xz-plane.) */
         public float cs;

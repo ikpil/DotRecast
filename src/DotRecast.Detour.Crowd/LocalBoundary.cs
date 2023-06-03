@@ -32,7 +32,7 @@ namespace DotRecast.Detour.Crowd
         public const int MAX_LOCAL_SEGS = 8;
 
 
-        Vector3f m_center = new Vector3f();
+        RcVec3f m_center = new RcVec3f();
         List<Segment> m_segs = new List<Segment>();
         List<long> m_polys = new List<long>();
 
@@ -90,7 +90,7 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        public void Update(long refs, Vector3f pos, float collisionQueryRange, NavMeshQuery navquery, IQueryFilter filter)
+        public void Update(long refs, RcVec3f pos, float collisionQueryRange, NavMeshQuery navquery, IQueryFilter filter)
         {
             if (refs == 0)
             {
@@ -116,8 +116,8 @@ namespace DotRecast.Detour.Crowd
                         for (int k = 0; k < gpws.CountSegmentRefs(); ++k)
                         {
                             SegmentVert s = gpws.GetSegmentVert(k);
-                            var s0 = Vector3f.Of(s[0], s[1], s[2]);
-                            var s3 = Vector3f.Of(s[3], s[4], s[5]);
+                            var s0 = RcVec3f.Of(s[0], s[1], s[2]);
+                            var s3 = RcVec3f.Of(s[3], s[4], s[5]);
 
                             // Skip too distant segments.
                             var distSqr = DetourCommon.DistancePtSegSqr2D(pos, s0, s3, out var tseg);
@@ -152,12 +152,12 @@ namespace DotRecast.Detour.Crowd
             return true;
         }
 
-        public Vector3f GetCenter()
+        public RcVec3f GetCenter()
         {
             return m_center;
         }
 
-        public Vector3f[] GetSegment(int j)
+        public RcVec3f[] GetSegment(int j)
         {
             return m_segs[j].s;
         }

@@ -27,18 +27,18 @@ namespace DotRecast.Detour
 //TODO: (PP) Add comments
     public class StraightPathItem
     {
-        public Vector3f pos;
+        public RcVec3f pos;
         public int flags;
         public long refs;
 
-        public StraightPathItem(Vector3f pos, int flags, long refs)
+        public StraightPathItem(RcVec3f pos, int flags, long refs)
         {
             this.pos = pos;
             this.flags = flags;
             this.refs = refs;
         }
 
-        public Vector3f GetPos()
+        public RcVec3f GetPos()
         {
             return pos;
         }

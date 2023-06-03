@@ -2,12 +2,12 @@ using System;
 
 namespace DotRecast.Core
 {
-    public struct Vector2f
+    public struct RcVec2f
     {
         public float x;
         public float y;
 
-        public static Vector2f Zero { get; } = new Vector2f { x = 0, y = 0 };
+        public static RcVec2f Zero { get; } = new RcVec2f { x = 0, y = 0 };
 
         public float Get(int idx)
         {
@@ -22,13 +22,13 @@ namespace DotRecast.Core
 
         public override bool Equals(object obj)
         {
-            if (!(obj is Vector2f))
+            if (!(obj is RcVec2f))
                 return false;
 
-            return Equals((Vector2f)obj);
+            return Equals((RcVec2f)obj);
         }
 
-        public bool Equals(Vector2f other)
+        public bool Equals(RcVec2f other)
         {
             return x.Equals(other.x) &&
                    y.Equals(other.y);
@@ -41,12 +41,12 @@ namespace DotRecast.Core
             return hash;
         }
 
-        public static bool operator ==(Vector2f left, Vector2f right)
+        public static bool operator ==(RcVec2f left, RcVec2f right)
         {
             return left.Equals(right);
         }
 
-        public static bool operator !=(Vector2f left, Vector2f right)
+        public static bool operator !=(RcVec2f left, RcVec2f right)
         {
             return !left.Equals(right);
         }

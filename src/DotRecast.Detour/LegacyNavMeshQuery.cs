@@ -34,16 +34,16 @@ namespace DotRecast.Detour
         {
         }
 
-        public override Result<List<long>> FindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, IQueryFilter filter,
+        public override Result<List<long>> FindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IQueryFilter filter,
             int options, float raycastLimit)
         {
             return FindPath(startRef, endRef, startPos, endPos, filter);
         }
 
-        public override Result<List<long>> FindPath(long startRef, long endRef, Vector3f startPos, Vector3f endPos, IQueryFilter filter)
+        public override Result<List<long>> FindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IQueryFilter filter)
         {
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !Vector3f.IsFinite(startPos) || !Vector3f.IsFinite(endPos) || null == filter)
+            if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !RcVec3f.IsFinite(startPos) || !RcVec3f.IsFinite(endPos) || null == filter)
             {
                 return Results.InvalidParam<List<long>>();
             }
@@ -62,7 +62,7 @@ namespace DotRecast.Detour
             startNode.pos = startPos;
             startNode.pidx = 0;
             startNode.cost = 0;
-            startNode.total = Vector3f.Distance(startPos, endPos) * H_SCALE;
+            startNode.total = RcVec3f.Distance(startPos, endPos) * H_SCALE;
             startNode.id = startRef;
             startNode.flags = Node.DT_NODE_OPEN;
             m_openList.Push(startNode);
@@ -173,7 +173,7 @@ namespace DotRecast.Detour
                         float curCost = filter.GetCost(bestNode.pos, neighbourNode.pos, parentRef, parentTile, parentPoly,
                             bestRef, bestTile, bestPoly, neighbourRef, neighbourTile, neighbourPoly);
                         cost = bestNode.cost + curCost;
-                        heuristic = Vector3f.Distance(neighbourNode.pos, endPos) * H_SCALE;
+                        heuristic = RcVec3f.Distance(neighbourNode.pos, endPos) * H_SCALE;
                     }
 
                     float total = cost + heuristic;
@@ -317,7 +317,7 @@ namespace DotRecast.Detour
                 bool tryLOS = false;
                 if ((m_query.options & DT_FINDPATH_ANY_ANGLE) != 0)
                 {
-                    if ((parentRef != 0) && (Vector3f.DistSqr(parentNode.pos, bestNode.pos) < m_query.raycastLimitSqr))
+                    if ((parentRef != 0) && (RcVec3f.DistSqr(parentNode.pos, bestNode.pos) < m_query.raycastLimitSqr))
                     {
                         tryLOS = true;
                     }
@@ -410,7 +410,7 @@ namespace DotRecast.Detour
                     }
                     else
                     {
-                        heuristic = Vector3f.Distance(neighbourNode.pos, m_query.endPos) * H_SCALE;
+                        heuristic = RcVec3f.Distance(neighbourNode.pos, m_query.endPos) * H_SCALE;
                     }
 
                     float total = cost + heuristic;
@@ -645,10 +645,10 @@ namespace DotRecast.Detour
             return Results.Of(status, path);
         }
 
-        public override Result<FindDistanceToWallResult> FindDistanceToWall(long startRef, Vector3f centerPos, float maxRadius, IQueryFilter filter)
+        public override Result<FindDistanceToWallResult> FindDistanceToWall(long startRef, RcVec3f centerPos, float maxRadius, IQueryFilter filter)
         {
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !Vector3f.IsFinite(centerPos) || maxRadius < 0
+            if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(centerPos) || maxRadius < 0
                 || !float.IsFinite(maxRadius) || null == filter)
             {
                 return Results.InvalidParam<FindDistanceToWallResult>();
@@ -667,9 +667,9 @@ namespace DotRecast.Detour
             m_openList.Push(startNode);
 
             float radiusSqr = Sqr(maxRadius);
-            Vector3f hitPos = Vector3f.Zero;
-            Vector3f? bestvj = null;
-            Vector3f? bestvi = null;
+            RcVec3f hitPos = RcVec3f.Zero;
+            RcVec3f? bestvj = null;
+            RcVec3f? bestvi = null;
 
             while (!m_openList.IsEmpty())
             {
@@ -753,8 +753,8 @@ namespace DotRecast.Detour
                                + (bestTile.data.verts[vi + 1] - bestTile.data.verts[vj + 1]) * tseg;
                     hitPos.z = bestTile.data.verts[vj + 2]
                                + (bestTile.data.verts[vi + 2] - bestTile.data.verts[vj + 2]) * tseg;
-                    bestvj = Vector3f.Of(bestTile.data.verts, vj);
-                    bestvi = Vector3f.Of(bestTile.data.verts, vi);
+                    bestvj = RcVec3f.Of(bestTile.data.verts, vj);
+                    bestvi = RcVec3f.Of(bestTile.data.verts, vi);
                 }
 
                 for (int i = bestTile.polyLinks[bestPoly.index]; i != NavMesh.DT_NULL_LINK; i = bestTile.links[i].next)
@@ -811,7 +811,7 @@ namespace DotRecast.Detour
                         }
                     }
 
-                    float total = bestNode.total + Vector3f.Distance(bestNode.pos, neighbourNode.pos);
+                    float total = bestNode.total + RcVec3f.Distance(bestNode.pos, neighbourNode.pos);
 
                     // The node is already in open list and the new result is worse, skip.
                     if ((neighbourNode.flags & Node.DT_NODE_OPEN) != 0 && total >= neighbourNode.total)
@@ -837,7 +837,7 @@ namespace DotRecast.Detour
             }
 
             // Calc hit normal.
-            Vector3f hitNormal = new Vector3f();
+            RcVec3f hitNormal = new RcVec3f();
             if (bestvi != null && bestvj != null)
             {
                 var tangent = bestvi.Value.Subtract(bestvj.Value);

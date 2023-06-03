@@ -55,8 +55,8 @@ public class TestTileLayerBuilder : AbstractTileLayersBuilder
             PartitionType.WATERSHED, m_cellSize, m_cellHeight, m_agentMaxSlope, true, true, true, m_agentHeight,
             m_agentRadius, m_agentMaxClimb, m_regionMinArea, m_regionMergeArea, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly,
             true, m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
-        Vector3f bmin = geom.GetMeshBoundsMin();
-        Vector3f bmax = geom.GetMeshBoundsMax();
+        RcVec3f bmin = geom.GetMeshBoundsMin();
+        RcVec3f bmax = geom.GetMeshBoundsMax();
         Recast.Recast.CalcTileCount(bmin, bmax, m_cellSize, m_tileSize, m_tileSize, out tw, out th);
     }
 
@@ -117,8 +117,8 @@ public class TestTileLayerBuilder : AbstractTileLayersBuilder
     protected HeightfieldLayerSet GetHeightfieldSet(int tx, int ty)
     {
         RecastBuilder rcBuilder = new RecastBuilder();
-        Vector3f bmin = geom.GetMeshBoundsMin();
-        Vector3f bmax = geom.GetMeshBoundsMax();
+        RcVec3f bmin = geom.GetMeshBoundsMin();
+        RcVec3f bmax = geom.GetMeshBoundsMax();
         RecastBuilderConfig cfg = new RecastBuilderConfig(rcConfig, bmin, bmax, tx, ty);
         HeightfieldLayerSet lset = rcBuilder.BuildLayers(geom, cfg);
         return lset;

@@ -7,10 +7,10 @@ namespace DotRecast.Detour.Extras.Jumplink
 {
     public abstract class AbstractGroundSampler : IGroundSampler
     {
-        protected void SampleGround(JumpLinkBuilderConfig acfg, EdgeSampler es, Func<Vector3f, float, Tuple<bool, float>> heightFunc)
+        protected void SampleGround(JumpLinkBuilderConfig acfg, EdgeSampler es, Func<RcVec3f, float, Tuple<bool, float>> heightFunc)
         {
             float cs = acfg.cellSize;
-            float dist = (float)Math.Sqrt(Vector3f.Dist2DSqr(es.start.p, es.start.q));
+            float dist = (float)Math.Sqrt(RcVec3f.Dist2DSqr(es.start.p, es.start.q));
             int ngsamples = Math.Max(2, (int)Math.Ceiling(dist / cs));
             SampleGroundSegment(heightFunc, es.start, ngsamples);
             foreach (GroundSegment end in es.end)
@@ -21,7 +21,7 @@ namespace DotRecast.Detour.Extras.Jumplink
 
         public abstract void Sample(JumpLinkBuilderConfig acfg, RecastBuilderResult result, EdgeSampler es);
 
-        protected void SampleGroundSegment(Func<Vector3f, float, Tuple<bool, float>> heightFunc, GroundSegment seg, int nsamples)
+        protected void SampleGroundSegment(Func<RcVec3f, float, Tuple<bool, float>> heightFunc, GroundSegment seg, int nsamples)
         {
             seg.gsamples = new GroundSample[nsamples];
 
@@ -31,7 +31,7 @@ namespace DotRecast.Detour.Extras.Jumplink
 
                 GroundSample s = new GroundSample();
                 seg.gsamples[i] = s;
-                Vector3f pt = Vector3f.Lerp(seg.p, seg.q, u);
+                RcVec3f pt = RcVec3f.Lerp(seg.p, seg.q, u);
                 Tuple<bool, float> height = heightFunc.Invoke(pt, seg.height);
                 s.p.x = pt.x;
                 s.p.y = height.Item2;

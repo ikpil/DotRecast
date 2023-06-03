@@ -24,17 +24,17 @@ namespace DotRecast.Detour.Dynamic.Colliders
 {
     public class BoxCollider : AbstractCollider
     {
-        private readonly Vector3f center;
-        private readonly Vector3f[] halfEdges;
+        private readonly RcVec3f center;
+        private readonly RcVec3f[] halfEdges;
 
-        public BoxCollider(Vector3f center, Vector3f[] halfEdges, int area, float flagMergeThreshold) :
+        public BoxCollider(RcVec3f center, RcVec3f[] halfEdges, int area, float flagMergeThreshold) :
             base(area, flagMergeThreshold, Bounds(center, halfEdges))
         {
             this.center = center;
             this.halfEdges = halfEdges;
         }
 
-        private static float[] Bounds(Vector3f center, Vector3f[] halfEdges)
+        private static float[] Bounds(RcVec3f center, RcVec3f[] halfEdges)
         {
             float[] bounds = new float[]
             {
@@ -66,19 +66,19 @@ namespace DotRecast.Detour.Dynamic.Colliders
                 hf, center, halfEdges, area, (int)Math.Floor(flagMergeThreshold / hf.ch), telemetry);
         }
 
-        public static Vector3f[] GetHalfEdges(Vector3f up, Vector3f forward, Vector3f extent)
+        public static RcVec3f[] GetHalfEdges(RcVec3f up, RcVec3f forward, RcVec3f extent)
         {
-            Vector3f[] halfEdges =
+            RcVec3f[] halfEdges =
             {
-                Vector3f.Zero,
-                Vector3f.Of(up.x, up.y, up.z),
-                Vector3f.Zero
+                RcVec3f.Zero,
+                RcVec3f.Of(up.x, up.y, up.z),
+                RcVec3f.Zero
             };
-            Vector3f.Normalize(ref halfEdges[1]);
-            Vector3f.Cross(ref halfEdges[0], up, forward);
-            Vector3f.Normalize(ref halfEdges[0]);
-            Vector3f.Cross(ref halfEdges[2], halfEdges[0], up);
-            Vector3f.Normalize(ref halfEdges[2]);
+            RcVec3f.Normalize(ref halfEdges[1]);
+            RcVec3f.Cross(ref halfEdges[0], up, forward);
+            RcVec3f.Normalize(ref halfEdges[0]);
+            RcVec3f.Cross(ref halfEdges[2], halfEdges[0], up);
+            RcVec3f.Normalize(ref halfEdges[2]);
             halfEdges[0].x *= extent.x;
             halfEdges[0].y *= extent.x;
             halfEdges[0].z *= extent.x;

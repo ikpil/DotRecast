@@ -54,23 +54,23 @@ namespace DotRecast.Detour.Crowd
         /// The desired speed.
         public float desiredSpeed;
 
-        public Vector3f npos = new Vector3f();
+        public RcVec3f npos = new RcVec3f();
 
         /// < The current agent position. [(x, y, z)]
-        public Vector3f disp = new Vector3f();
+        public RcVec3f disp = new RcVec3f();
 
         /// < A temporary value used to accumulate agent displacement during iterative
         /// collision resolution. [(x, y, z)]
-        public Vector3f dvel = new Vector3f();
+        public RcVec3f dvel = new RcVec3f();
 
         /// < The desired velocity of the agent. Based on the current path, calculated
         /// from
         /// scratch each frame. [(x, y, z)]
-        public Vector3f nvel = new Vector3f();
+        public RcVec3f nvel = new RcVec3f();
 
         /// < The desired velocity adjusted by obstacle avoidance, calculated from scratch each
         /// frame. [(x, y, z)]
-        public Vector3f vel = new Vector3f();
+        public RcVec3f vel = new RcVec3f();
 
         /// < The actual velocity of the agent. The change from nvel -> vel is
         /// constrained by max acceleration. [(x, y, z)]
@@ -86,7 +86,7 @@ namespace DotRecast.Detour.Crowd
         public long targetRef;
 
         /// < Target polyref of the movement request.
-        public Vector3f targetPos = new Vector3f();
+        public RcVec3f targetPos = new RcVec3f();
 
         /// < Target position of the movement request (or velocity in case of
         /// DT_CROWDAGENT_TARGET_VELOCITY).
@@ -115,7 +115,7 @@ namespace DotRecast.Detour.Crowd
         {
             // Fake dynamic constraint.
             float maxDelta = option.maxAcceleration * dt;
-            Vector3f dv = nvel.Subtract(vel);
+            RcVec3f dv = nvel.Subtract(vel);
             float ds = dv.Length();
             if (ds > maxDelta)
                 dv = dv.Scale(maxDelta / ds);
@@ -123,9 +123,9 @@ namespace DotRecast.Detour.Crowd
 
             // Integrate
             if (vel.Length() > 0.0001f)
-                npos = Vector3f.Mad(npos, vel, dt);
+                npos = RcVec3f.Mad(npos, vel, dt);
             else
-                vel = Vector3f.Zero;
+                vel = RcVec3f.Zero;
         }
 
         public bool OverOffmeshConnection(float radius)
@@ -139,7 +139,7 @@ namespace DotRecast.Detour.Crowd
                 : false;
             if (offMeshConnection)
             {
-                float distSq = Vector3f.Dist2DSqr(npos, corners[corners.Count - 1].GetPos());
+                float distSq = RcVec3f.Dist2DSqr(npos, corners[corners.Count - 1].GetPos());
                 if (distSq < radius * radius)
                     return true;
             }
@@ -154,14 +154,14 @@ namespace DotRecast.Detour.Crowd
 
             bool endOfPath = ((corners[corners.Count - 1].GetFlags() & NavMeshQuery.DT_STRAIGHTPATH_END) != 0) ? true : false;
             if (endOfPath)
-                return Math.Min(Vector3f.Dist2D(npos, corners[corners.Count - 1].GetPos()), range);
+                return Math.Min(RcVec3f.Dist2D(npos, corners[corners.Count - 1].GetPos()), range);
 
             return range;
         }
 
-        public Vector3f CalcSmoothSteerDirection()
+        public RcVec3f CalcSmoothSteerDirection()
         {
-            Vector3f dir = new Vector3f();
+            RcVec3f dir = new RcVec3f();
             if (0 < corners.Count)
             {
                 int ip0 = 0;
@@ -188,9 +188,9 @@ namespace DotRecast.Detour.Crowd
             return dir;
         }
 
-        public Vector3f CalcStraightSteerDirection()
+        public RcVec3f CalcStraightSteerDirection()
         {
-            Vector3f dir = new Vector3f();
+            RcVec3f dir = new RcVec3f();
             if (0 < corners.Count)
             {
                 dir = corners[0].GetPos().Subtract(npos);
@@ -201,7 +201,7 @@ namespace DotRecast.Detour.Crowd
             return dir;
         }
 
-        public void SetTarget(long refs, Vector3f pos)
+        public void SetTarget(long refs, RcVec3f pos)
         {
             targetRef = refs;
             targetPos = pos;

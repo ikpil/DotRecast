@@ -105,7 +105,7 @@ public class FindPolysAroundCircleTest : AbstractDetourTest
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
-            Vector3f startPos = startPoss[i];
+            RcVec3f startPos = startPoss[i];
             Result<FindPolysAroundResult> result = query.FindPolysAroundCircle(startRef, startPos, 7.5f, filter);
             Assert.That(result.Succeeded(), Is.True);
             FindPolysAroundResult polys = result.result;

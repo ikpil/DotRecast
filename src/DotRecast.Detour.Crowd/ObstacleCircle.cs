@@ -6,21 +6,21 @@ namespace DotRecast.Detour.Crowd
     public class ObstacleCircle
     {
         /** Position of the obstacle */
-        public Vector3f p = new Vector3f();
+        public RcVec3f p = new RcVec3f();
 
         /** Velocity of the obstacle */
-        public Vector3f vel = new Vector3f();
+        public RcVec3f vel = new RcVec3f();
 
         /** Velocity of the obstacle */
-        public Vector3f dvel = new Vector3f();
+        public RcVec3f dvel = new RcVec3f();
 
         /** Radius of the obstacle */
         public float rad;
 
         /** Use for side selection during sampling. */
-        public Vector3f dp = new Vector3f();
+        public RcVec3f dp = new RcVec3f();
 
         /** Use for side selection during sampling. */
-        public Vector3f np = new Vector3f();
+        public RcVec3f np = new RcVec3f();
     }
 }

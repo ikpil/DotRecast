@@ -25,16 +25,16 @@ namespace DotRecast.Recast.Geom
 {
     public class SingleTrimeshInputGeomProvider : IInputGeomProvider
     {
-        private readonly Vector3f bmin;
-        private readonly Vector3f bmax;
+        private readonly RcVec3f bmin;
+        private readonly RcVec3f bmax;
         private readonly TriMesh _mesh;
 
         public SingleTrimeshInputGeomProvider(float[] vertices, int[] faces)
         {
-            bmin = Vector3f.Zero;
-            bmax = Vector3f.Zero;
-            Vector3f.Copy(ref bmin, vertices, 0);
-            Vector3f.Copy(ref bmax, vertices, 0);
+            bmin = RcVec3f.Zero;
+            bmax = RcVec3f.Zero;
+            RcVec3f.Copy(ref bmin, vertices, 0);
+            RcVec3f.Copy(ref bmax, vertices, 0);
             for (int i = 1; i < vertices.Length / 3; i++)
             {
                 bmin.Min(vertices, i * 3);
@@ -44,12 +44,12 @@ namespace DotRecast.Recast.Geom
             _mesh = new TriMesh(vertices, faces);
         }
 
-        public Vector3f GetMeshBoundsMin()
+        public RcVec3f GetMeshBoundsMin()
         {
             return bmin;
         }
 
-        public Vector3f GetMeshBoundsMax()
+        public RcVec3f GetMeshBoundsMax()
         {
             return bmax;
         }

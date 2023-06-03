@@ -410,8 +410,8 @@ namespace DotRecast.Recast
             int lh = h - borderSize * 2;
 
             // Build contracted bbox for layers.
-            Vector3f bmin = chf.bmin;
-            Vector3f bmax = chf.bmax;
+            RcVec3f bmin = chf.bmin;
+            RcVec3f bmax = chf.bmax;
             bmin.x += borderSize * chf.cs;
             bmin.z += borderSize * chf.cs;
             bmax.x -= borderSize * chf.cs;

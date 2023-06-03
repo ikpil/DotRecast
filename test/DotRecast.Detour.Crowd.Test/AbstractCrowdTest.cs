@@ -39,22 +39,22 @@ public class AbstractCrowdTest
 
     protected readonly long[] endRefs = { 281474976710721L, 281474976710767L, 281474976710758L, 281474976710731L, 281474976710772L };
 
-    protected readonly Vector3f[] startPoss =
+    protected readonly RcVec3f[] startPoss =
     {
-        Vector3f.Of(22.60652f, 10.197294f, -45.918674f),
-        Vector3f.Of(22.331268f, 10.197294f, -1.0401875f),
-        Vector3f.Of(18.694363f, 15.803535f, -73.090416f),
-        Vector3f.Of(0.7453353f, 10.197294f, -5.94005f),
-        Vector3f.Of(-20.651257f, 5.904126f, -13.712508f),
+        RcVec3f.Of(22.60652f, 10.197294f, -45.918674f),
+        RcVec3f.Of(22.331268f, 10.197294f, -1.0401875f),
+        RcVec3f.Of(18.694363f, 15.803535f, -73.090416f),
+        RcVec3f.Of(0.7453353f, 10.197294f, -5.94005f),
+        RcVec3f.Of(-20.651257f, 5.904126f, -13.712508f),
     };
 
-    protected readonly Vector3f[] endPoss =
+    protected readonly RcVec3f[] endPoss =
     {
-        Vector3f.Of(6.4576626f, 10.197294f, -18.33406f),
-        Vector3f.Of(-5.8023443f, 0.19729415f, 3.008419f),
-        Vector3f.Of(38.423977f, 10.197294f, -0.116066754f),
-        Vector3f.Of(0.8635526f, 10.197294f, -10.31032f),
-        Vector3f.Of(18.784092f, 10.197294f, 3.0543678f),
+        RcVec3f.Of(6.4576626f, 10.197294f, -18.33406f),
+        RcVec3f.Of(-5.8023443f, 0.19729415f, 3.008419f),
+        RcVec3f.Of(38.423977f, 10.197294f, -0.116066754f),
+        RcVec3f.Of(0.8635526f, 10.197294f, -10.31032f),
+        RcVec3f.Of(18.784092f, 10.197294f, 3.0543678f),
     };
 
     protected MeshData nmd;
@@ -113,14 +113,14 @@ public class AbstractCrowdTest
         return ap;
     }
 
-    protected void AddAgentGrid(int size, float distance, int updateFlags, int obstacleAvoidanceType, Vector3f startPos)
+    protected void AddAgentGrid(int size, float distance, int updateFlags, int obstacleAvoidanceType, RcVec3f startPos)
     {
         CrowdAgentParams ap = GetAgentParams(updateFlags, obstacleAvoidanceType);
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
             {
-                Vector3f pos = new Vector3f();
+                RcVec3f pos = new RcVec3f();
                 pos.x = startPos.x + i * distance;
                 pos.y = startPos.y;
                 pos.z = startPos.z + j * distance;
@@ -129,15 +129,15 @@ public class AbstractCrowdTest
         }
     }
 
-    protected void SetMoveTarget(Vector3f pos, bool adjust)
+    protected void SetMoveTarget(RcVec3f pos, bool adjust)
     {
-        Vector3f ext = crowd.GetQueryExtents();
+        RcVec3f ext = crowd.GetQueryExtents();
         IQueryFilter filter = crowd.GetFilter(0);
         if (adjust)
         {
             foreach (CrowdAgent ag in crowd.GetActiveAgents())
             {
-                Vector3f vel = CalcVel(ag.npos, pos, ag.option.maxSpeed);
+                RcVec3f vel = CalcVel(ag.npos, pos, ag.option.maxSpeed);
                 crowd.RequestMoveVelocity(ag, vel);
             }
         }
@@ -151,9 +151,9 @@ public class AbstractCrowdTest
         }
     }
 
-    protected Vector3f CalcVel(Vector3f pos, Vector3f tgt, float speed)
+    protected RcVec3f CalcVel(RcVec3f pos, RcVec3f tgt, float speed)
     {
-        Vector3f vel = tgt.Subtract(pos);
+        RcVec3f vel = tgt.Subtract(pos);
         vel.y = 0.0f;
         vel.Normalize();
         vel = vel.Scale(speed);

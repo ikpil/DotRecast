@@ -10,7 +10,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             return u * g + (1f - u) * f;
         }
 
-        public virtual Vector3f Apply(Vector3f start, Vector3f end, float u)
+        public virtual RcVec3f Apply(RcVec3f start, RcVec3f end, float u)
         {
             throw new NotImplementedException();
         }

@@ -86,10 +86,10 @@ public class DynamicUpdateTool : Tool
     private readonly DemoInputGeomProvider convexGeom;
     private bool sposSet;
     private bool eposSet;
-    private Vector3f spos;
-    private Vector3f epos;
+    private RcVec3f spos;
+    private RcVec3f epos;
     private bool raycastHit;
-    private Vector3f raycastHitPos;
+    private RcVec3f raycastHitPos;
 
     public DynamicUpdateTool()
     {
@@ -104,7 +104,7 @@ public class DynamicUpdateTool : Tool
         this.sample = sample;
     }
 
-    public override void HandleClick(Vector3f s, Vector3f p, bool shift)
+    public override void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
         if (mode == DynamicUpdateToolMode.COLLIDERS)
         {
@@ -171,21 +171,21 @@ public class DynamicUpdateTool : Tool
 
             if (sposSet && eposSet && dynaMesh != null)
             {
-                Vector3f sp = Vector3f.Of(spos.x, spos.y + 1.3f, spos.z);
-                Vector3f ep = Vector3f.Of(epos.x, epos.y + 1.3f, epos.z);
+                RcVec3f sp = RcVec3f.Of(spos.x, spos.y + 1.3f, spos.z);
+                RcVec3f ep = RcVec3f.Of(epos.x, epos.y + 1.3f, epos.z);
                 long t1 = RcFrequency.Ticks;
                 float? hitPos = dynaMesh.VoxelQuery().Raycast(sp, ep);
                 long t2 = RcFrequency.Ticks;
                 raycastTime = (t2 - t1) / TimeSpan.TicksPerMillisecond;
                 raycastHit = hitPos.HasValue;
                 raycastHitPos = hitPos.HasValue
-                    ? Vector3f.Of(sp.x + hitPos.Value * (ep.x - sp.x), sp.y + hitPos.Value * (ep.y - sp.y), sp.z + hitPos.Value * (ep.z - sp.z))
+                    ? RcVec3f.Of(sp.x + hitPos.Value * (ep.x - sp.x), sp.y + hitPos.Value * (ep.y - sp.y), sp.z + hitPos.Value * (ep.z - sp.z))
                     : ep;
             }
         }
     }
 
-    private Tuple<ICollider, IColliderGizmo> SphereCollider(Vector3f p)
+    private Tuple<ICollider, IColliderGizmo> SphereCollider(RcVec3f p)
     {
         float radius = 1 + (float)random.NextDouble() * 10;
         return Tuple.Create<ICollider, IColliderGizmo>(
@@ -193,10 +193,10 @@ public class DynamicUpdateTool : Tool
             GizmoFactory.Sphere(p, radius));
     }
 
-    private Tuple<ICollider, IColliderGizmo> CapsuleCollider(Vector3f p)
+    private Tuple<ICollider, IColliderGizmo> CapsuleCollider(RcVec3f p)
     {
         float radius = 0.4f + (float)random.NextDouble() * 4f;
-        Vector3f a = Vector3f.Of(
+        RcVec3f a = RcVec3f.Of(
             (1f - 2 * (float)random.NextDouble()),
             0.01f + (float)random.NextDouble(),
             (1f - 2 * (float)random.NextDouble())
@@ -206,67 +206,67 @@ public class DynamicUpdateTool : Tool
         a.x *= len;
         a.y *= len;
         a.z *= len;
-        Vector3f start = Vector3f.Of(p.x, p.y, p.z);
-        Vector3f end = Vector3f.Of(p.x + a.x, p.y + a.y, p.z + a.z);
+        RcVec3f start = RcVec3f.Of(p.x, p.y, p.z);
+        RcVec3f end = RcVec3f.Of(p.x + a.x, p.y + a.y, p.z + a.z);
         return Tuple.Create<ICollider, IColliderGizmo>(new CapsuleCollider(
             start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb), GizmoFactory.Capsule(start, end, radius));
     }
 
-    private Tuple<ICollider, IColliderGizmo> BoxCollider(Vector3f p)
+    private Tuple<ICollider, IColliderGizmo> BoxCollider(RcVec3f p)
     {
-        Vector3f extent = Vector3f.Of(
+        RcVec3f extent = RcVec3f.Of(
             0.5f + (float)random.NextDouble() * 6f,
             0.5f + (float)random.NextDouble() * 6f,
             0.5f + (float)random.NextDouble() * 6f
         );
-        Vector3f forward = Vector3f.Of((1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()));
-        Vector3f up = Vector3f.Of((1f - 2 * (float)random.NextDouble()), 0.01f + (float)random.NextDouble(), (1f - 2 * (float)random.NextDouble()));
-        Vector3f[] halfEdges = Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(up, forward, extent);
+        RcVec3f forward = RcVec3f.Of((1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()));
+        RcVec3f up = RcVec3f.Of((1f - 2 * (float)random.NextDouble()), 0.01f + (float)random.NextDouble(), (1f - 2 * (float)random.NextDouble()));
+        RcVec3f[] halfEdges = Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(up, forward, extent);
         return Tuple.Create<ICollider, IColliderGizmo>(
             new BoxCollider(p, halfEdges, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb), GizmoFactory.Box(p, halfEdges));
     }
 
-    private Tuple<ICollider, IColliderGizmo> CylinderCollider(Vector3f p)
+    private Tuple<ICollider, IColliderGizmo> CylinderCollider(RcVec3f p)
     {
         float radius = 0.7f + (float)random.NextDouble() * 4f;
-        Vector3f a = Vector3f.Of(1f - 2 * (float)random.NextDouble(), 0.01f + (float)random.NextDouble(), 1f - 2 * (float)random.NextDouble());
+        RcVec3f a = RcVec3f.Of(1f - 2 * (float)random.NextDouble(), 0.01f + (float)random.NextDouble(), 1f - 2 * (float)random.NextDouble());
         a.Normalize();
         float len = 2f + (float)random.NextDouble() * 20f;
         a[0] *= len;
         a[1] *= len;
         a[2] *= len;
-        Vector3f start = Vector3f.Of(p.x, p.y, p.z);
-        Vector3f end = Vector3f.Of(p.x + a.x, p.y + a.y, p.z + a.z);
+        RcVec3f start = RcVec3f.Of(p.x, p.y, p.z);
+        RcVec3f end = RcVec3f.Of(p.x + a.x, p.y + a.y, p.z + a.z);
         return Tuple.Create<ICollider, IColliderGizmo>(new CylinderCollider(start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER,
             dynaMesh.config.walkableClimb), GizmoFactory.Cylinder(start, end, radius));
     }
 
-    private Tuple<ICollider, IColliderGizmo> CompositeCollider(Vector3f p)
+    private Tuple<ICollider, IColliderGizmo> CompositeCollider(RcVec3f p)
     {
-        Vector3f baseExtent = Vector3f.Of(5, 3, 8);
-        Vector3f baseCenter = Vector3f.Of(p.x, p.y + 3, p.z);
-        Vector3f baseUp = Vector3f.Of(0, 1, 0);
-        Vector3f forward = Vector3f.Of((1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()));
+        RcVec3f baseExtent = RcVec3f.Of(5, 3, 8);
+        RcVec3f baseCenter = RcVec3f.Of(p.x, p.y + 3, p.z);
+        RcVec3f baseUp = RcVec3f.Of(0, 1, 0);
+        RcVec3f forward = RcVec3f.Of((1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()));
         forward.Normalize();
-        Vector3f side = Vector3f.Cross(forward, baseUp);
+        RcVec3f side = RcVec3f.Cross(forward, baseUp);
         BoxCollider @base = new BoxCollider(baseCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(baseUp, forward, baseExtent),
             SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, dynaMesh.config.walkableClimb);
-        var roofUp = Vector3f.Zero;
-        Vector3f roofExtent = Vector3f.Of(4.5f, 4.5f, 8f);
+        var roofUp = RcVec3f.Zero;
+        RcVec3f roofExtent = RcVec3f.Of(4.5f, 4.5f, 8f);
         float[] rx = GLU.Build_4x4_rotation_matrix(45, forward.x, forward.y, forward.z);
         roofUp = MulMatrixVector(ref roofUp, rx, baseUp);
-        Vector3f roofCenter = Vector3f.Of(p.x, p.y + 6, p.z);
+        RcVec3f roofCenter = RcVec3f.Of(p.x, p.y + 6, p.z);
         BoxCollider roof = new BoxCollider(roofCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(roofUp, forward, roofExtent),
             SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, dynaMesh.config.walkableClimb);
-        Vector3f trunkStart = Vector3f.Of(
+        RcVec3f trunkStart = RcVec3f.Of(
             baseCenter.x - forward.x * 15 + side.x * 6,
             p.y,
             baseCenter.z - forward.z * 15 + side.z * 6
         );
-        Vector3f trunkEnd = Vector3f.Of(trunkStart.x, trunkStart.y + 10, trunkStart.z);
+        RcVec3f trunkEnd = RcVec3f.Of(trunkStart.x, trunkStart.y + 10, trunkStart.z);
         CapsuleCollider trunk = new CapsuleCollider(trunkStart, trunkEnd, 0.5f, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD,
             dynaMesh.config.walkableClimb);
-        Vector3f crownCenter = Vector3f.Of(
+        RcVec3f crownCenter = RcVec3f.Of(
             baseCenter.x - forward.x * 15 + side.x * 6, p.y + 10,
             baseCenter.z - forward.z * 15 + side.z * 6
         );
@@ -281,17 +281,17 @@ public class DynamicUpdateTool : Tool
         return Tuple.Create<ICollider, IColliderGizmo>(collider, gizmo);
     }
 
-    private Tuple<ICollider, IColliderGizmo> TrimeshBridge(Vector3f p)
+    private Tuple<ICollider, IColliderGizmo> TrimeshBridge(RcVec3f p)
     {
         return TrimeshCollider(p, bridgeGeom);
     }
 
-    private Tuple<ICollider, IColliderGizmo> TrimeshHouse(Vector3f p)
+    private Tuple<ICollider, IColliderGizmo> TrimeshHouse(RcVec3f p)
     {
         return TrimeshCollider(p, houseGeom);
     }
 
-    private Tuple<ICollider, IColliderGizmo> ConvexTrimesh(Vector3f p)
+    private Tuple<ICollider, IColliderGizmo> ConvexTrimesh(RcVec3f p)
     {
         float[] verts = TransformVertices(p, convexGeom, 360);
         ConvexTrimeshCollider collider = new ConvexTrimeshCollider(verts, convexGeom.faces,
@@ -299,7 +299,7 @@ public class DynamicUpdateTool : Tool
         return Tuple.Create<ICollider, IColliderGizmo>(collider, GizmoFactory.Trimesh(verts, convexGeom.faces));
     }
 
-    private Tuple<ICollider, IColliderGizmo> TrimeshCollider(Vector3f p, DemoInputGeomProvider geom)
+    private Tuple<ICollider, IColliderGizmo> TrimeshCollider(RcVec3f p, DemoInputGeomProvider geom)
     {
         float[] verts = TransformVertices(p, geom, 0);
         TrimeshCollider collider = new TrimeshCollider(verts, geom.faces, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD,
@@ -307,14 +307,14 @@ public class DynamicUpdateTool : Tool
         return Tuple.Create<ICollider, IColliderGizmo>(collider, GizmoFactory.Trimesh(verts, geom.faces));
     }
 
-    private float[] TransformVertices(Vector3f p, DemoInputGeomProvider geom, float ax)
+    private float[] TransformVertices(RcVec3f p, DemoInputGeomProvider geom, float ax)
     {
         float[] rx = GLU.Build_4x4_rotation_matrix((float)random.NextDouble() * ax, 1, 0, 0);
         float[] ry = GLU.Build_4x4_rotation_matrix((float)random.NextDouble() * 360, 0, 1, 0);
         float[] m = GLU.Mul(rx, ry);
         float[] verts = new float[geom.vertices.Length];
-        Vector3f v = new Vector3f();
-        Vector3f vr = new Vector3f();
+        RcVec3f v = new RcVec3f();
+        RcVec3f vr = new RcVec3f();
         for (int i = 0; i < geom.vertices.Length; i += 3)
         {
             v.x = geom.vertices[i];
@@ -340,7 +340,7 @@ public class DynamicUpdateTool : Tool
         return resultvector;
     }
 
-    private Vector3f MulMatrixVector(ref Vector3f resultvector, float[] matrix, Vector3f pvector)
+    private RcVec3f MulMatrixVector(ref RcVec3f resultvector, float[] matrix, RcVec3f pvector)
     {
         resultvector.x = matrix[0] * pvector.x + matrix[4] * pvector.y + matrix[8] * pvector.z;
         resultvector.y = matrix[1] * pvector.x + matrix[5] * pvector.y + matrix[9] * pvector.z;
@@ -349,7 +349,7 @@ public class DynamicUpdateTool : Tool
     }
 
 
-    public override void HandleClickRay(Vector3f start, Vector3f dir, bool shift)
+    public override void HandleClickRay(RcVec3f start, RcVec3f dir, bool shift)
     {
         if (mode == DynamicUpdateToolMode.COLLIDERS)
         {
@@ -369,7 +369,7 @@ public class DynamicUpdateTool : Tool
         }
     }
 
-    private bool Hit(Vector3f point, Vector3f dir, float[] bounds)
+    private bool Hit(RcVec3f point, RcVec3f dir, float[] bounds)
     {
         float cx = 0.5f * (bounds[0] + bounds[3]);
         float cy = 0.5f * (bounds[1] + bounds[4]);
@@ -423,7 +423,7 @@ public class DynamicUpdateTool : Tool
             }
 
             dd.DepthMask(false);
-            if (raycastHitPos != Vector3f.Zero)
+            if (raycastHitPos != RcVec3f.Zero)
             {
                 int spathCol = raycastHit ? DuRGBA(128, 32, 16, 220) : DuRGBA(64, 128, 240, 220);
                 dd.Begin(LINES, 2.0f);
@@ -436,7 +436,7 @@ public class DynamicUpdateTool : Tool
         }
     }
 
-    private void DrawAgent(RecastDebugDraw dd, Vector3f pos, int col)
+    private void DrawAgent(RecastDebugDraw dd, RcVec3f pos, int col)
     {
         float r = sample.GetSettingsUI().GetAgentRadius();
         float h = sample.GetSettingsUI().GetAgentHeight();

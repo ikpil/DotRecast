@@ -132,7 +132,7 @@ public class FindPolysAroundShapeTest : AbstractDetourTest
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
-            Vector3f startPos = startPoss[i];
+            RcVec3f startPos = startPoss[i];
             Result<FindPolysAroundResult> polys = query.FindPolysAroundShape(startRef, GetQueryPoly(startPos, endPoss[i]), filter);
             Assert.That(polys.result.GetRefs().Count, Is.EqualTo(REFS[i].Length));
             for (int v = 0; v < REFS[i].Length; v++)
@@ -153,7 +153,7 @@ public class FindPolysAroundShapeTest : AbstractDetourTest
         }
     }
 
-    private float[] GetQueryPoly(Vector3f m_spos, Vector3f m_epos)
+    private float[] GetQueryPoly(RcVec3f m_spos, RcVec3f m_epos)
     {
         float nx = (m_epos.z - m_spos.z) * 0.25f;
         float nz = -(m_epos.x - m_spos.x) * 0.25f;

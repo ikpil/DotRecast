@@ -34,22 +34,22 @@ public abstract class AbstractDetourTest
         281474976710721L, 281474976710767L, 281474976710758L, 281474976710731L, 281474976710772L
     };
 
-    protected static readonly Vector3f[] startPoss =
+    protected static readonly RcVec3f[] startPoss =
     {
-        Vector3f.Of(22.60652f, 10.197294f, -45.918674f),
-        Vector3f.Of(22.331268f, 10.197294f, -1.0401875f),
-        Vector3f.Of(18.694363f, 15.803535f, -73.090416f),
-        Vector3f.Of(0.7453353f, 10.197294f, -5.94005f),
-        Vector3f.Of(-20.651257f, 5.904126f, -13.712508f)
+        RcVec3f.Of(22.60652f, 10.197294f, -45.918674f),
+        RcVec3f.Of(22.331268f, 10.197294f, -1.0401875f),
+        RcVec3f.Of(18.694363f, 15.803535f, -73.090416f),
+        RcVec3f.Of(0.7453353f, 10.197294f, -5.94005f),
+        RcVec3f.Of(-20.651257f, 5.904126f, -13.712508f)
     };
 
-    protected static readonly Vector3f[] endPoss =
+    protected static readonly RcVec3f[] endPoss =
     {
-        Vector3f.Of(6.4576626f, 10.197294f, -18.33406f),
-        Vector3f.Of(-5.8023443f, 0.19729415f, 3.008419f),
-        Vector3f.Of(38.423977f, 10.197294f, -0.116066754f),
-        Vector3f.Of(0.8635526f, 10.197294f, -10.31032f),
-        Vector3f.Of(18.784092f, 10.197294f, 3.0543678f),
+        RcVec3f.Of(6.4576626f, 10.197294f, -18.33406f),
+        RcVec3f.Of(-5.8023443f, 0.19729415f, 3.008419f),
+        RcVec3f.Of(38.423977f, 10.197294f, -0.116066754f),
+        RcVec3f.Of(0.8635526f, 10.197294f, -10.31032f),
+        RcVec3f.Of(18.784092f, 10.197294f, 3.0543678f),
     };
 
     protected NavMeshQuery query;

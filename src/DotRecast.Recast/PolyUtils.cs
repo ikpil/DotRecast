@@ -24,14 +24,14 @@ namespace DotRecast.Recast
 {
     public static class PolyUtils
     {
-        public static bool PointInPoly(float[] verts, Vector3f p)
+        public static bool PointInPoly(float[] verts, RcVec3f p)
         {
             int i, j;
             bool c = false;
             for (i = 0, j = verts.Length / 3 - 1; i < verts.Length / 3; j = i++)
             {
-                Vector3f vi = Vector3f.Of(verts[i * 3], verts[i * 3 + 1], verts[i * 3 + 2]);
-                Vector3f vj = Vector3f.Of(verts[j * 3], verts[j * 3 + 1], verts[j * 3 + 2]);
+                RcVec3f vi = RcVec3f.Of(verts[i * 3], verts[i * 3 + 1], verts[i * 3 + 2]);
+                RcVec3f vj = RcVec3f.Of(verts[j * 3], verts[j * 3 + 1], verts[j * 3 + 2]);
                 if (((vi.z > p.z) != (vj.z > p.z))
                     && (p.x < (vj.x - vi.x) * (p.z - vi.z) / (vj.z - vi.z) + vi.x))
                 {

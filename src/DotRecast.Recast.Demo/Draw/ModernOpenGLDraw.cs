@@ -286,13 +286,13 @@ public class ModernOpenGLDraw : IOpenGLDraw
         vertices.Add(new OpenGLVertex(pos, color));
     }
     
-    public void Vertex(Vector3f pos, int color)
+    public void Vertex(RcVec3f pos, int color)
     {
         vertices.Add(new OpenGLVertex(pos, color));
     }
 
 
-    public void Vertex(Vector3f pos, int color, Vector2f uv)
+    public void Vertex(RcVec3f pos, int color, RcVec2f uv)
     {
         vertices.Add(new OpenGLVertex(pos, uv, color));
     }

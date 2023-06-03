@@ -43,7 +43,7 @@ namespace DotRecast.Recast
             return a[0] * b[0] + a[2] * b[2];
         }
 
-        private static float Vdot2(Vector3f a, Vector3f b)
+        private static float Vdot2(RcVec3f a, RcVec3f b)
         {
             return a.x * b.x + a.z * b.z;
         }
@@ -68,7 +68,7 @@ namespace DotRecast.Recast
             return dx * dx + dy * dy;
         }
 
-        private static float VdistSq2(float[] p, Vector3f q)
+        private static float VdistSq2(float[] p, RcVec3f q)
         {
             float dx = q.x - p[0];
             float dy = q.z - p[2];
@@ -76,7 +76,7 @@ namespace DotRecast.Recast
         }
 
 
-        private static float VdistSq2(Vector3f p, Vector3f q)
+        private static float VdistSq2(RcVec3f p, RcVec3f q)
         {
             float dx = q.x - p.x;
             float dy = q.z - p.z;
@@ -89,12 +89,12 @@ namespace DotRecast.Recast
             return (float)Math.Sqrt(VdistSq2(p, q));
         }
 
-        private static float Vdist2(Vector3f p, Vector3f q)
+        private static float Vdist2(RcVec3f p, RcVec3f q)
         {
             return (float)Math.Sqrt(VdistSq2(p, q));
         }
 
-        private static float Vdist2(float[] p, Vector3f q)
+        private static float Vdist2(float[] p, RcVec3f q)
         {
             return (float)Math.Sqrt(VdistSq2(p, q));
         }
@@ -107,7 +107,7 @@ namespace DotRecast.Recast
             return dx * dx + dy * dy;
         }
 
-        private static float VdistSq2(Vector3f p, float[] verts, int q)
+        private static float VdistSq2(RcVec3f p, float[] verts, int q)
         {
             float dx = verts[q + 0] - p.x;
             float dy = verts[q + 2] - p.z;
@@ -120,7 +120,7 @@ namespace DotRecast.Recast
             return (float)Math.Sqrt(VdistSq2(p, verts, q));
         }
 
-        private static float Vdist2(Vector3f p, float[] verts, int q)
+        private static float Vdist2(RcVec3f p, float[] verts, int q)
         {
             return (float)Math.Sqrt(VdistSq2(p, verts, q));
         }
@@ -144,7 +144,7 @@ namespace DotRecast.Recast
             return u1 * v2 - v1 * u2;
         }
 
-        private static float Vcross2(Vector3f p1, Vector3f p2, Vector3f p3)
+        private static float Vcross2(RcVec3f p1, RcVec3f p2, RcVec3f p3)
         {
             float u1 = p2.x - p1.x;
             float v1 = p2.z - p1.z;
@@ -154,15 +154,15 @@ namespace DotRecast.Recast
         }
 
 
-        private static bool CircumCircle(float[] verts, int p1, int p2, int p3, ref Vector3f c, RcAtomicFloat r)
+        private static bool CircumCircle(float[] verts, int p1, int p2, int p3, ref RcVec3f c, RcAtomicFloat r)
         {
             const float EPS = 1e-6f;
             // Calculate the circle relative to p1, to avoid some precision issues.
-            Vector3f v1 = new Vector3f();
-            Vector3f v2 = new Vector3f();
-            Vector3f v3 = new Vector3f();
-            Vector3f.Sub(ref v2, verts, p2, p1);
-            Vector3f.Sub(ref v3, verts, p3, p1);
+            RcVec3f v1 = new RcVec3f();
+            RcVec3f v2 = new RcVec3f();
+            RcVec3f v3 = new RcVec3f();
+            RcVec3f.Sub(ref v2, verts, p2, p1);
+            RcVec3f.Sub(ref v3, verts, p3, p1);
 
             float cp = Vcross2(v1, v2, v3);
             if (Math.Abs(cp) > EPS)
@@ -174,23 +174,23 @@ namespace DotRecast.Recast
                 c.y = 0;
                 c.z = (v1Sq * (v3.x - v2.x) + v2Sq * (v1.x - v3.x) + v3Sq * (v2.x - v1.x)) / (2 * cp);
                 r.Exchange(Vdist2(c, v1));
-                Vector3f.Add(ref c, c, verts, p1);
+                RcVec3f.Add(ref c, c, verts, p1);
                 return true;
             }
 
-            Vector3f.Copy(ref c, verts, p1);
+            RcVec3f.Copy(ref c, verts, p1);
             r.Exchange(0f);
             return false;
         }
 
-        private static float DistPtTri(Vector3f p, float[] verts, int a, int b, int c)
+        private static float DistPtTri(RcVec3f p, float[] verts, int a, int b, int c)
         {
-            Vector3f v0 = new Vector3f();
-            Vector3f v1 = new Vector3f();
-            Vector3f v2 = new Vector3f();
-            Vector3f.Sub(ref v0, verts, c, a);
-            Vector3f.Sub(ref v1, verts, b, a);
-            Vector3f.Sub(ref v2, p, verts, a);
+            RcVec3f v0 = new RcVec3f();
+            RcVec3f v1 = new RcVec3f();
+            RcVec3f v2 = new RcVec3f();
+            RcVec3f.Sub(ref v0, verts, c, a);
+            RcVec3f.Sub(ref v1, verts, b, a);
+            RcVec3f.Sub(ref v2, p, verts, a);
 
             float dot00 = Vdot2(v0, v0);
             float dot01 = Vdot2(v0, v1);
@@ -245,7 +245,7 @@ namespace DotRecast.Recast
             return dx * dx + dy * dy + dz * dz;
         }
 
-        private static float DistancePtSeg2d(Vector3f verts, float[] poly, int p, int q)
+        private static float DistancePtSeg2d(RcVec3f verts, float[] poly, int p, int q)
         {
             float pqx = poly[q + 0] - poly[p + 0];
             float pqz = poly[q + 2] - poly[p + 2];
@@ -301,7 +301,7 @@ namespace DotRecast.Recast
             return dx * dx + dz * dz;
         }
 
-        private static float DistToTriMesh(Vector3f p, float[] verts, int nverts, List<int> tris, int ntris)
+        private static float DistToTriMesh(RcVec3f p, float[] verts, int nverts, List<int> tris, int ntris)
         {
             float dmin = float.MaxValue;
             for (int i = 0; i < ntris; ++i)
@@ -324,7 +324,7 @@ namespace DotRecast.Recast
             return dmin;
         }
 
-        private static float DistToPoly(int nvert, float[] verts, Vector3f p)
+        private static float DistToPoly(int nvert, float[] verts, RcVec3f p)
         {
             float dmin = float.MaxValue;
             int i, j;
@@ -536,7 +536,7 @@ namespace DotRecast.Recast
 
             // Find best point on left of edge.
             int pt = npts;
-            Vector3f c = new Vector3f();
+            RcVec3f c = new RcVec3f();
             RcAtomicFloat r = new RcAtomicFloat(-1f);
             for (int u = 0; u < npts; ++u)
             {
@@ -845,7 +845,7 @@ namespace DotRecast.Recast
 
             for (int i = 0; i < nin; ++i)
             {
-                Vector3f.Copy(verts, i * 3, @in, i * 3);
+                RcVec3f.Copy(verts, i * 3, @in, i * 3);
             }
 
             tris.Clear();
@@ -964,7 +964,7 @@ namespace DotRecast.Recast
                     {
                         for (int k = nidx - 2; k > 0; --k)
                         {
-                            Vector3f.Copy(verts, nverts * 3, edge, idx[k] * 3);
+                            RcVec3f.Copy(verts, nverts * 3, edge, idx[k] * 3);
                             hull[nhull++] = nverts;
                             nverts++;
                         }
@@ -973,7 +973,7 @@ namespace DotRecast.Recast
                     {
                         for (int k = 1; k < nidx - 1; ++k)
                         {
-                            Vector3f.Copy(verts, nverts * 3, edge, idx[k] * 3);
+                            RcVec3f.Copy(verts, nverts * 3, edge, idx[k] * 3);
                             hull[nhull++] = nverts;
                             nverts++;
                         }
@@ -1003,10 +1003,10 @@ namespace DotRecast.Recast
             if (sampleDist > 0)
             {
                 // Create sample locations in a grid.
-                Vector3f bmin = new Vector3f();
-                Vector3f bmax = new Vector3f();
-                Vector3f.Copy(ref bmin, @in, 0);
-                Vector3f.Copy(ref bmax, @in, 0);
+                RcVec3f bmin = new RcVec3f();
+                RcVec3f bmax = new RcVec3f();
+                RcVec3f.Copy(ref bmin, @in, 0);
+                RcVec3f.Copy(ref bmax, @in, 0);
                 for (int i = 1; i < nin; ++i)
                 {
                    bmin.Min(@in, i * 3);
@@ -1022,7 +1022,7 @@ namespace DotRecast.Recast
                 {
                     for (int x = x0; x < x1; ++x)
                     {
-                        Vector3f pt = new Vector3f();
+                        RcVec3f pt = new RcVec3f();
                         pt.x = x * sampleDist;
                         pt.y = (bmax.y + bmin.y) * 0.5f;
                         pt.z = z * sampleDist;
@@ -1051,7 +1051,7 @@ namespace DotRecast.Recast
                     }
 
                     // Find sample with most error.
-                    Vector3f bestpt = new Vector3f();
+                    RcVec3f bestpt = new RcVec3f();
                     float bestd = 0;
                     int besti = -1;
                     for (int i = 0; i < nsamples; ++i)
@@ -1062,7 +1062,7 @@ namespace DotRecast.Recast
                             continue; // skip added.
                         }
 
-                        Vector3f pt = new Vector3f();
+                        RcVec3f pt = new RcVec3f();
                         // The sample location is jittered to get rid of some bad triangulations
                         // which are cause by symmetrical data from the grid structure.
                         pt.x = samples[s + 0] * sampleDist + GetJitterX(i) * cs * 0.1f;
@@ -1091,7 +1091,7 @@ namespace DotRecast.Recast
                     // Mark sample as added.
                     samples[besti * 4 + 3] = 1;
                     // Add the new sample point.
-                    Vector3f.Copy(verts, nverts * 3, bestpt, 0);
+                    RcVec3f.Copy(verts, nverts * 3, bestpt, 0);
                     nverts++;
 
                     // Create new triangulation.
@@ -1436,7 +1436,7 @@ namespace DotRecast.Recast
             int nvp = mesh.nvp;
             float cs = mesh.cs;
             float ch = mesh.ch;
-            Vector3f orig = mesh.bmin;
+            RcVec3f orig = mesh.bmin;
             int borderSize = mesh.borderSize;
             int heightSearchRadius = (int)Math.Max(1, Math.Ceiling(mesh.maxEdgeError));
 
@@ -1666,7 +1666,7 @@ namespace DotRecast.Recast
 
                 for (int k = 0; k < dm.nverts; ++k)
                 {
-                    Vector3f.Copy(mesh.verts, mesh.nverts * 3, dm.verts, k * 3);
+                    RcVec3f.Copy(mesh.verts, mesh.nverts * 3, dm.verts, k * 3);
                     mesh.nverts++;
                 }
 

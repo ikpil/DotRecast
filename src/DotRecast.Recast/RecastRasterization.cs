@@ -50,7 +50,7 @@ namespace DotRecast.Recast
             return overlap;
         }
         
-        private static bool OverlapBounds(Vector3f amin, Vector3f amax, Vector3f bmin, Vector3f bmax)
+        private static bool OverlapBounds(RcVec3f amin, RcVec3f amax, RcVec3f bmin, RcVec3f bmax)
         {
             bool overlap = true;
             overlap = (amin.x > bmax.x || amax.x < bmin.x) ? false : overlap;
@@ -191,19 +191,19 @@ namespace DotRecast.Recast
                                                      + (inVerts[inVertsOffset + i * 3 + 1] - inVerts[inVertsOffset + j * 3 + 1]) * s;
                     inVerts[outVerts1 + m * 3 + 2] = inVerts[inVertsOffset + j * 3 + 2]
                                                      + (inVerts[inVertsOffset + i * 3 + 2] - inVerts[inVertsOffset + j * 3 + 2]) * s;
-                    Vector3f.Copy(inVerts, outVerts2 + n * 3, inVerts, outVerts1 + m * 3);
+                    RcVec3f.Copy(inVerts, outVerts2 + n * 3, inVerts, outVerts1 + m * 3);
                     m++;
                     n++;
                     // add the i'th point to the right polygon. Do NOT add points that are on the dividing line
                     // since these were already added above
                     if (d[i] > 0)
                     {
-                        Vector3f.Copy(inVerts, outVerts1 + m * 3, inVerts, inVertsOffset + i * 3);
+                        RcVec3f.Copy(inVerts, outVerts1 + m * 3, inVerts, inVertsOffset + i * 3);
                         m++;
                     }
                     else if (d[i] < 0)
                     {
-                        Vector3f.Copy(inVerts, outVerts2 + n * 3, inVerts, inVertsOffset + i * 3);
+                        RcVec3f.Copy(inVerts, outVerts2 + n * 3, inVerts, inVertsOffset + i * 3);
                         n++;
                     }
                 }
@@ -212,13 +212,13 @@ namespace DotRecast.Recast
                     // add the i'th point to the right polygon. Addition is done even for points on the dividing line
                     if (d[i] >= 0)
                     {
-                        Vector3f.Copy(inVerts, outVerts1 + m * 3, inVerts, inVertsOffset + i * 3);
+                        RcVec3f.Copy(inVerts, outVerts1 + m * 3, inVerts, inVertsOffset + i * 3);
                         m++;
                         if (d[i] != 0)
                             continue;
                     }
 
-                    Vector3f.Copy(inVerts, outVerts2 + n * 3, inVerts, inVertsOffset + i * 3);
+                    RcVec3f.Copy(inVerts, outVerts2 + n * 3, inVerts, inVertsOffset + i * 3);
                     n++;
                 }
             }
@@ -255,16 +255,16 @@ namespace DotRecast.Recast
      * @param flagMergeThreshold
      *            The threshold in which area flags will be merged
      */
-        private static void RasterizeTri(float[] verts, int v0, int v1, int v2, int area, Heightfield hf, Vector3f hfBBMin,
-            Vector3f hfBBMax, float cellSize, float inverseCellSize, float inverseCellHeight, int flagMergeThreshold)
+        private static void RasterizeTri(float[] verts, int v0, int v1, int v2, int area, Heightfield hf, RcVec3f hfBBMin,
+            RcVec3f hfBBMax, float cellSize, float inverseCellSize, float inverseCellHeight, int flagMergeThreshold)
         {
-            Vector3f tmin = new Vector3f();
-            Vector3f tmax = new Vector3f();
+            RcVec3f tmin = new RcVec3f();
+            RcVec3f tmax = new RcVec3f();
             float by = hfBBMax.y - hfBBMin.y;
 
             // Calculate the bounding box of the triangle.
-            Vector3f.Copy(ref tmin, verts, v0 * 3);
-            Vector3f.Copy(ref tmax, verts, v0 * 3);
+            RcVec3f.Copy(ref tmin, verts, v0 * 3);
+            RcVec3f.Copy(ref tmax, verts, v0 * 3);
             tmin.Min(verts, v1 * 3);
             tmin.Min(verts, v2 * 3);
             tmax.Max(verts, v1 * 3);
@@ -291,9 +291,9 @@ namespace DotRecast.Recast
             int p1 = inRow + 7 * 3;
             int p2 = p1 + 7 * 3;
 
-            Vector3f.Copy(buf, 0, verts, v0 * 3);
-            Vector3f.Copy(buf, 3, verts, v1 * 3);
-            Vector3f.Copy(buf, 6, verts, v2 * 3);
+            RcVec3f.Copy(buf, 0, verts, v0 * 3);
+            RcVec3f.Copy(buf, 3, verts, v1 * 3);
+            RcVec3f.Copy(buf, 6, verts, v2 * 3);
             int nvRow, nvIn = 3;
 
             for (int z = z0; z <= z1; ++z)

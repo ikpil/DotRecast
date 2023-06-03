@@ -200,8 +200,8 @@ public class NavMeshRenderer
     private void DrawGeomBounds(DemoInputGeomProvider geom)
     {
         // Draw bounds
-        Vector3f bmin = geom.GetMeshBoundsMin();
-        Vector3f bmax = geom.GetMeshBoundsMax();
+        RcVec3f bmin = geom.GetMeshBoundsMin();
+        RcVec3f bmax = geom.GetMeshBoundsMax();
         debugDraw.DebugDrawBoxWire(bmin.x, bmin.y, bmin.z, bmax.x, bmax.y, bmax.z,
             DebugDraw.DuRGBA(255, 255, 255, 128), 1.0f);
         debugDraw.Begin(DebugDrawPrimitives.POINTS, 5.0f);
@@ -250,8 +250,8 @@ public class NavMeshRenderer
             int col = DebugDraw.DuTransCol(DebugDraw.AreaToCol(vol.areaMod.GetMaskedValue()), 32);
             for (int j = 0, k = vol.verts.Length - 3; j < vol.verts.Length; k = j, j += 3)
             {
-                var va = Vector3f.Of(vol.verts[k], vol.verts[k + 1], vol.verts[k + 2]);
-                var vb = Vector3f.Of(vol.verts[j], vol.verts[j + 1], vol.verts[j + 2]);
+                var va = RcVec3f.Of(vol.verts[k], vol.verts[k + 1], vol.verts[k + 2]);
+                var vb = RcVec3f.Of(vol.verts[j], vol.verts[j + 1], vol.verts[j + 2]);
 
                 debugDraw.Vertex(vol.verts[0], vol.hmax, vol.verts[2], col);
                 debugDraw.Vertex(vb.x, vol.hmax, vb.z, col);
@@ -275,8 +275,8 @@ public class NavMeshRenderer
             int col = DebugDraw.DuTransCol(DebugDraw.AreaToCol(vol.areaMod.GetMaskedValue()), 220);
             for (int j = 0, k = vol.verts.Length - 3; j < vol.verts.Length; k = j, j += 3)
             {
-                var va = Vector3f.Of(vol.verts[k], vol.verts[k + 1], vol.verts[k + 2]);
-                var vb = Vector3f.Of(vol.verts[j], vol.verts[j + 1], vol.verts[j + 2]);
+                var va = RcVec3f.Of(vol.verts[k], vol.verts[k + 1], vol.verts[k + 2]);
+                var vb = RcVec3f.Of(vol.verts[j], vol.verts[j + 1], vol.verts[j + 2]);
                 debugDraw.Vertex(va.x, vol.hmin, va.z, DebugDraw.DuDarkenCol(col));
                 debugDraw.Vertex(vb.x, vol.hmin, vb.z, DebugDraw.DuDarkenCol(col));
                 debugDraw.Vertex(va.x, vol.hmax, va.z, col);

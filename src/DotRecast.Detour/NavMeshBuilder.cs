@@ -159,8 +159,8 @@ namespace DotRecast.Detour
                 {
                     int vb = option.detailMeshes[i * 4 + 0];
                     int ndv = option.detailMeshes[i * 4 + 1];
-                    Vector3f bmin = new Vector3f();
-                    Vector3f bmax = new Vector3f();
+                    RcVec3f bmin = new RcVec3f();
+                    RcVec3f bmax = new RcVec3f();
                     int dv = vb * 3;
                     bmin.Set(option.detailVerts, dv);
                     bmax.Set(option.detailVerts, dv);
@@ -223,7 +223,7 @@ namespace DotRecast.Detour
         const int XM = 1 << 2;
         const int ZM = 1 << 3;
 
-        public static int ClassifyOffMeshPoint(Vector3f pt, Vector3f bmin, Vector3f bmax)
+        public static int ClassifyOffMeshPoint(RcVec3f pt, RcVec3f bmin, RcVec3f bmax)
         {
             int outcode = 0;
             outcode |= (pt.x >= bmax.x) ? XP : 0;
@@ -310,8 +310,8 @@ namespace DotRecast.Detour
 
                 hmin -= option.walkableClimb;
                 hmax += option.walkableClimb;
-                Vector3f bmin = new Vector3f();
-                Vector3f bmax = new Vector3f();
+                RcVec3f bmin = new RcVec3f();
+                RcVec3f bmax = new RcVec3f();
                 bmin = option.bmin;
                 bmax = option.bmax;
                 bmin.y = hmin;
@@ -319,8 +319,8 @@ namespace DotRecast.Detour
 
                 for (int i = 0; i < option.offMeshConCount; ++i)
                 {
-                    var p0 = Vector3f.Of(option.offMeshConVerts, (i * 2 + 0) * 3);
-                    var p1 = Vector3f.Of(option.offMeshConVerts, (i * 2 + 1) * 3);
+                    var p0 = RcVec3f.Of(option.offMeshConVerts, (i * 2 + 0) * 3);
+                    var p1 = RcVec3f.Of(option.offMeshConVerts, (i * 2 + 1) * 3);
 
                     offMeshConClass[i * 2 + 0] = ClassifyOffMeshPoint(p0, bmin, bmax);
                     offMeshConClass[i * 2 + 1] = ClassifyOffMeshPoint(p1, bmin, bmax);

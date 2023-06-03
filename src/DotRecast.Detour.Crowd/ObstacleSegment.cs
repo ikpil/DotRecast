@@ -5,10 +5,10 @@ namespace DotRecast.Detour.Crowd
     public class ObstacleSegment
     {
         /** End points of the obstacle segment */
-        public Vector3f p = new Vector3f();
+        public RcVec3f p = new RcVec3f();
 
         /** End points of the obstacle segment */
-        public Vector3f q = new Vector3f();
+        public RcVec3f q = new RcVec3f();
 
         public bool touch;
     }

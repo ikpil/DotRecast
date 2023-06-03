@@ -18,42 +18,41 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Runtime.CompilerServices;
-using System.Security.Permissions;
 
 namespace DotRecast.Core
 {
-    public struct Vector3f
+    public struct RcVec3f
     {
         public float x;
         public float y;
         public float z;
 
-        public static Vector3f Zero { get; } = new Vector3f(0, 0, 0);
-        public static Vector3f Up { get; } = new Vector3f(0, 1, 0);
+        public static RcVec3f Zero { get; } = new RcVec3f(0, 0, 0);
+        public static RcVec3f Up { get; } = new RcVec3f(0, 1, 0);
 
-        public static Vector3f Of(float[] f)
+        public static RcVec3f Of(float[] f)
         {
             return Of(f, 0);
         }
 
-        public static Vector3f Of(float[] f, int idx)
+        public static RcVec3f Of(float[] f, int idx)
         {
             return Of(f[idx + 0], f[idx + 1], f[idx + 2]);
         }
 
-        public static Vector3f Of(float x, float y, float z)
+        public static RcVec3f Of(float x, float y, float z)
         {
-            return new Vector3f(x, y, z);
+            return new RcVec3f(x, y, z);
         }
 
-        public Vector3f(float x, float y, float z)
+        public RcVec3f(float x, float y, float z)
         {
             this.x = x;
             this.y = y;
             this.z = z;
         }
 
-        public Vector3f(float f)
+        public RcVec3f(float f)
         {
             x = f;
             y = f;
@@ -61,7 +60,7 @@ namespace DotRecast.Core
         }
 
 
-        public Vector3f(float[] f)
+        public RcVec3f(float[] f)
         {
             x = f[0];
             y = f[1];
@@ -133,9 +132,9 @@ namespace DotRecast.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly Vector3f Subtract(Vector3f right)
+        public readonly RcVec3f Subtract(RcVec3f right)
         {
-            return new Vector3f(
+            return new RcVec3f(
                 x - right.x,
                 y - right.y,
                 z - right.z
@@ -143,9 +142,9 @@ namespace DotRecast.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly Vector3f Add(Vector3f v2)
+        public readonly RcVec3f Add(RcVec3f v2)
         {
-            return new Vector3f(
+            return new RcVec3f(
                 x + v2.x,
                 y + v2.y,
                 z + v2.z
@@ -153,9 +152,9 @@ namespace DotRecast.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly Vector3f Scale(float scale)
+        public readonly RcVec3f Scale(float scale)
         {
-            return new Vector3f(
+            return new RcVec3f(
                 x * scale,
                 y * scale,
                 z * scale
@@ -171,7 +170,7 @@ namespace DotRecast.Core
         /// The vectors are projected onto the xz-plane, so the y-values are
         /// ignored.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly float Dot2D(Vector3f v)
+        public readonly float Dot2D(RcVec3f v)
         {
             return x * v.x + z * v.z;
         }
@@ -185,13 +184,13 @@ namespace DotRecast.Core
 
         public override bool Equals(object obj)
         {
-            if (!(obj is Vector3f))
+            if (!(obj is RcVec3f))
                 return false;
 
-            return Equals((Vector3f)obj);
+            return Equals((RcVec3f)obj);
         }
 
-        public bool Equals(Vector3f other)
+        public bool Equals(RcVec3f other)
         {
             return x.Equals(other.x) &&
                    y.Equals(other.y) &&
@@ -230,7 +229,7 @@ namespace DotRecast.Core
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Min(Vector3f b)
+        public void Min(RcVec3f b)
         {
             x = Math.Min(x, b.x);
             y = Math.Min(y, b.y);
@@ -238,7 +237,7 @@ namespace DotRecast.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Max(Vector3f b)
+        public void Max(RcVec3f b)
         {
             x = Math.Max(x, b.x);
             y = Math.Max(y, b.y);
@@ -255,33 +254,33 @@ namespace DotRecast.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator ==(Vector3f left, Vector3f right)
+        public static bool operator ==(RcVec3f left, RcVec3f right)
         {
             return left.Equals(right);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator !=(Vector3f left, Vector3f right)
+        public static bool operator !=(RcVec3f left, RcVec3f right)
         {
             return !left.Equals(right);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector3f operator -(Vector3f left, Vector3f right)
+        public static RcVec3f operator -(RcVec3f left, RcVec3f right)
         {
             return left.Subtract(right);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector3f operator +(Vector3f left, Vector3f right)
+        public static RcVec3f operator +(RcVec3f left, RcVec3f right)
         {
             return left.Add(right);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector3f operator *(Vector3f left, Vector3f right)
+        public static RcVec3f operator *(RcVec3f left, RcVec3f right)
         {
-            return new Vector3f(
+            return new RcVec3f(
                 left.x * right.x,
                 left.y * right.y,
                 left.z * right.z
@@ -289,21 +288,21 @@ namespace DotRecast.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector3f operator *(Vector3f left, float right)
+        public static RcVec3f operator *(RcVec3f left, float right)
         {
-            return left * new Vector3f(right);
+            return left * new RcVec3f(right);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector3f operator *(float left, Vector3f right)
+        public static RcVec3f operator *(float left, RcVec3f right)
         {
             return right * left;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector3f Cross(Vector3f v1, Vector3f v2)
+        public static RcVec3f Cross(RcVec3f v1, RcVec3f v2)
         {
-            return new Vector3f(
+            return new RcVec3f(
                 (v1.y * v2.z) - (v1.z * v2.y),
                 (v1.z * v2.x) - (v1.x * v2.z),
                 (v1.x * v2.y) - (v1.y * v2.x)
@@ -311,9 +310,9 @@ namespace DotRecast.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector3f Lerp(Vector3f v1, Vector3f v2, float t)
+        public static RcVec3f Lerp(RcVec3f v1, RcVec3f v2, float t)
         {
-            return new Vector3f(
+            return new RcVec3f(
                 v1.x + (v2.x - v1.x) * t,
                 v1.y + (v2.y - v1.y) * t,
                 v1.z + (v2.z - v1.z) * t
@@ -325,7 +324,7 @@ namespace DotRecast.Core
         /// @param[in] v2 A point. [(x, y, z)]
         /// @return The distance between the two points.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Distance(Vector3f v1, Vector3f v2)
+        public static float Distance(RcVec3f v1, RcVec3f v2)
         {
             float dx = v2.x - v1.x;
             float dy = v2.y - v1.y;
@@ -334,7 +333,7 @@ namespace DotRecast.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Dot(Vector3f v1, Vector3f v2)
+        public static float Dot(RcVec3f v1, RcVec3f v2)
         {
             return (v1.x * v2.x) + (v1.y * v2.y)
                                  + (v1.z * v2.z);
@@ -347,14 +346,14 @@ namespace DotRecast.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Dot(float[] v1, Vector3f v2)
+        public static float Dot(float[] v1, RcVec3f v2)
         {
             return v1[0] * v2.x + v1[1] * v2.y + v1[2] * v2.z;
         }
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float PerpXZ(Vector3f a, Vector3f b)
+        public static float PerpXZ(RcVec3f a, RcVec3f b)
         {
             return (a.x * b.z) - (a.z * b.x);
         }
@@ -365,9 +364,9 @@ namespace DotRecast.Core
         /// @param[in] v2 The vector to scale and add to @p v1. [(x, y, z)]
         /// @param[in] s The amount to scale @p v2 by before adding to @p v1.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector3f Mad(Vector3f v1, Vector3f v2, float s)
+        public static RcVec3f Mad(RcVec3f v1, RcVec3f v2, float s)
         {
-            return new Vector3f()
+            return new RcVec3f()
             {
                 x = v1.x + (v2.x * s),
                 y = v1.y + (v2.y * s),
@@ -382,9 +381,9 @@ namespace DotRecast.Core
         /// @param[in] v2 The destination vector.
         /// @param[in] t The interpolation factor. [Limits: 0 <= value <= 1.0]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector3f Lerp(float[] verts, int v1, int v2, float t)
+        public static RcVec3f Lerp(float[] verts, int v1, int v2, float t)
         {
-            return new Vector3f(
+            return new RcVec3f(
                 verts[v1 + 0] + (verts[v2 + 0] - verts[v1 + 0]) * t,
                 verts[v1 + 1] + (verts[v2 + 1] - verts[v1 + 1]) * t,
                 verts[v1 + 2] + (verts[v2 + 2] - verts[v1 + 2]) * t
@@ -397,7 +396,7 @@ namespace DotRecast.Core
         /// @param[in] v2 A point. [(x, y, z)]
         /// @return The distance between the two points.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float DistSqr(Vector3f v1, float[] v2, int i)
+        public static float DistSqr(RcVec3f v1, float[] v2, int i)
         {
             float dx = v2[i] - v1.x;
             float dy = v2[i + 1] - v1.y;
@@ -406,7 +405,7 @@ namespace DotRecast.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float DistSqr(Vector3f v1, Vector3f v2)
+        public static float DistSqr(RcVec3f v1, RcVec3f v2)
         {
             float dx = v2.x - v1.x;
             float dy = v2.y - v1.y;
@@ -448,7 +447,7 @@ namespace DotRecast.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Dist2D(Vector3f v1, Vector3f v2)
+        public static float Dist2D(RcVec3f v1, RcVec3f v2)
         {
             float dx = v2.x - v1.x;
             float dz = v2.z - v1.z;
@@ -465,7 +464,7 @@ namespace DotRecast.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Dist2DSqr(Vector3f v1, Vector3f v2)
+        public static float Dist2DSqr(RcVec3f v1, RcVec3f v2)
         {
             float dx = v2.x - v1.x;
             float dz = v2.z - v1.z;
@@ -473,7 +472,7 @@ namespace DotRecast.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Dist2DSqr(Vector3f p, float[] verts, int i)
+        public static float Dist2DSqr(RcVec3f p, float[] verts, int i)
         {
             float dx = verts[i] - p.x;
             float dz = verts[i + 2] - p.z;
@@ -488,7 +487,7 @@ namespace DotRecast.Core
         /// The vectors are projected onto the xz-plane, so the y-values are
         /// ignored.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Perp2D(Vector3f u, Vector3f v)
+        public static float Perp2D(RcVec3f u, RcVec3f v)
         {
             return u.z * v.x - u.x * v.z;
         }
@@ -497,7 +496,7 @@ namespace DotRecast.Core
         /// @param[in] v The vector. [(x, y, z)]
         /// @return The square of the scalar length of the vector.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float LenSqr(Vector3f v)
+        public static float LenSqr(RcVec3f v)
         {
             return v.x * v.x + v.y * v.y + v.z * v.z;
         }
@@ -508,7 +507,7 @@ namespace DotRecast.Core
         /// @return True if all of the point's components are finite, i.e. not NaN
         /// or any of the infinities.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsFinite(Vector3f v)
+        public static bool IsFinite(RcVec3f v)
         {
             return float.IsFinite(v.x) && float.IsFinite(v.y) && float.IsFinite(v.z);
         }
@@ -516,13 +515,13 @@ namespace DotRecast.Core
         /// Checks that the specified vector's 2D components are finite.
         /// @param[in] v A point. [(x, y, z)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsFinite2D(Vector3f v)
+        public static bool IsFinite2D(RcVec3f v)
         {
             return float.IsFinite(v.x) && float.IsFinite(v.z);
         }
 
 
-        public static void Copy(ref Vector3f @out, float[] @in, int i)
+        public static void Copy(ref RcVec3f @out, float[] @in, int i)
         {
             Copy(ref @out, 0, @in, i);
         }
@@ -534,21 +533,21 @@ namespace DotRecast.Core
             @out[n + 2] = @in[m + 2];
         }
 
-        public static void Copy(float[] @out, int n, Vector3f @in, int m)
+        public static void Copy(float[] @out, int n, RcVec3f @in, int m)
         {
             @out[n] = @in[m];
             @out[n + 1] = @in[m + 1];
             @out[n + 2] = @in[m + 2];
         }
 
-        public static void Copy(ref Vector3f @out, int n, float[] @in, int m)
+        public static void Copy(ref RcVec3f @out, int n, float[] @in, int m)
         {
             @out[n] = @in[m];
             @out[n + 1] = @in[m + 1];
             @out[n + 2] = @in[m + 2];
         }
 
-        public static void Add(ref Vector3f e0, Vector3f a, float[] verts, int i)
+        public static void Add(ref RcVec3f e0, RcVec3f a, float[] verts, int i)
         {
             e0.x = a.x + verts[i];
             e0.y = a.y + verts[i + 1];
@@ -556,7 +555,7 @@ namespace DotRecast.Core
         }
 
 
-        public static void Sub(ref Vector3f e0, float[] verts, int i, int j)
+        public static void Sub(ref RcVec3f e0, float[] verts, int i, int j)
         {
             e0.x = verts[i] - verts[j];
             e0.y = verts[i + 1] - verts[j + 1];
@@ -564,7 +563,7 @@ namespace DotRecast.Core
         }
 
 
-        public static void Sub(ref Vector3f e0, Vector3f i, float[] verts, int j)
+        public static void Sub(ref RcVec3f e0, RcVec3f i, float[] verts, int j)
         {
             e0.x = i.x - verts[j];
             e0.y = i.y - verts[j + 1];
@@ -579,14 +578,14 @@ namespace DotRecast.Core
             dest[2] = v1[0] * v2[1] - v1[1] * v2[0];
         }
 
-        public static void Cross(float[] dest, Vector3f v1, Vector3f v2)
+        public static void Cross(float[] dest, RcVec3f v1, RcVec3f v2)
         {
             dest[0] = v1.y * v2.z - v1.z * v2.y;
             dest[1] = v1.z * v2.x - v1.x * v2.z;
             dest[2] = v1.x * v2.y - v1.y * v2.x;
         }
 
-        public static void Cross(ref Vector3f dest, Vector3f v1, Vector3f v2)
+        public static void Cross(ref RcVec3f dest, RcVec3f v1, RcVec3f v2)
         {
             dest.x = v1.y * v2.z - v1.z * v2.y;
             dest.y = v1.z * v2.x - v1.x * v2.z;
@@ -602,7 +601,7 @@ namespace DotRecast.Core
             v[2] *= d;
         }
 
-        public static void Normalize(ref Vector3f v)
+        public static void Normalize(ref RcVec3f v)
         {
             float d = (float)(1.0f / Math.Sqrt(v.x * v.x + v.y * v.y + v.z * v.z));
             v.x *= d;

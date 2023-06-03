@@ -45,7 +45,7 @@ public class JumpLinkBuilderTool : Tool
         annotationBuilder = null;
     }
 
-    public override void HandleClick(Vector3f s, Vector3f p, bool shift)
+    public override void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
     }
 
@@ -236,7 +236,7 @@ public class JumpLinkBuilderTool : Tool
                     {
                         GroundSample s = link.start.gsamples[i];
                         float u = i / (float)(link.start.gsamples.Length - 1);
-                        Vector3f spt = Vector3f.Lerp(link.start.p, link.start.q, u);
+                        RcVec3f spt = RcVec3f.Lerp(link.start.p, link.start.q, u);
                         int col = DuRGBA(48, 16, 16, 255); // DuRGBA(255,(s->flags & 4)?255:0,0,255);
                         float off = 0.1f;
                         if (!s.validHeight)
@@ -256,7 +256,7 @@ public class JumpLinkBuilderTool : Tool
                     {
                         GroundSample s = link.start.gsamples[i];
                         float u = i / (float)(link.start.gsamples.Length - 1);
-                        Vector3f spt = Vector3f.Lerp(link.start.p, link.start.q, u);
+                        RcVec3f spt = RcVec3f.Lerp(link.start.p, link.start.q, u);
                         int col = DuRGBA(255, 255, 255, 255);
                         float off = 0;
                         if (s.validHeight)
@@ -276,7 +276,7 @@ public class JumpLinkBuilderTool : Tool
                         {
                             GroundSample s = end.gsamples[i];
                             float u = i / (float)(end.gsamples.Length - 1);
-                            Vector3f spt = Vector3f.Lerp(end.p, end.q, u);
+                            RcVec3f spt = RcVec3f.Lerp(end.p, end.q, u);
                             int col = DuRGBA(48, 16, 16, 255); // DuRGBA(255,(s->flags & 4)?255:0,0,255);
                             float off = 0.1f;
                             if (!s.validHeight)
@@ -295,7 +295,7 @@ public class JumpLinkBuilderTool : Tool
                         {
                             GroundSample s = end.gsamples[i];
                             float u = i / (float)(end.gsamples.Length - 1);
-                            Vector3f spt = Vector3f.Lerp(end.p, end.q, u);
+                            RcVec3f spt = RcVec3f.Lerp(end.p, end.q, u);
                             int col = DuRGBA(255, 255, 255, 255);
                             float off = 0;
                             if (s.validHeight)
@@ -316,7 +316,7 @@ public class JumpLinkBuilderTool : Tool
         dd.DepthMask(true);
     }
 
-    private void DrawTrajectory(RecastDebugDraw dd, JumpLink link, Vector3f pa, Vector3f pb, Trajectory tra, int cola)
+    private void DrawTrajectory(RecastDebugDraw dd, JumpLink link, RcVec3f pa, RcVec3f pb, Trajectory tra, int cola)
     {
     }
 
@@ -431,12 +431,12 @@ public class JumpLinkBuilderTool : Tool
     {
         int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP_AUTO;
         int flags = SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP;
-        Vector3f prev = new Vector3f();
+        RcVec3f prev = new RcVec3f();
         for (int i = 0; i < link.startSamples.Length; i++)
         {
-            Vector3f p = link.startSamples[i].p;
-            Vector3f q = link.endSamples[i].p;
-            if (i == 0 || Vector3f.Dist2D(prev, p) > agentRadius)
+            RcVec3f p = link.startSamples[i].p;
+            RcVec3f q = link.endSamples[i].p;
+            if (i == 0 || RcVec3f.Dist2D(prev, p) > agentRadius)
             {
                 geom.AddOffMeshConnection(p, q, agentRadius, false, area, flags);
                 prev = p;

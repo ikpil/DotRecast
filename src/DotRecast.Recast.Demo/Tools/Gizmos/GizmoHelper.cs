@@ -176,9 +176,9 @@ public class GizmoHelper
 
     public static int GetColorByNormal(float[] vertices, int v0, int v1, int v2)
     {
-        Vector3f e0 = new Vector3f();
-        Vector3f e1 = new Vector3f();
-        Vector3f normal = new Vector3f();
+        RcVec3f e0 = new RcVec3f();
+        RcVec3f e1 = new RcVec3f();
+        RcVec3f normal = new RcVec3f();
         for (int j = 0; j < 3; ++j)
         {
             e0[j] = vertices[v1 + j] - vertices[v0 + j];
@@ -188,7 +188,7 @@ public class GizmoHelper
         normal.x = e0.y * e1.z - e0.z * e1.y;
         normal.y = e0.z * e1.x - e0.x * e1.z;
         normal.z = e0.x * e1.y - e0.y * e1.x;
-        Vector3f.Normalize(ref normal);
+        RcVec3f.Normalize(ref normal);
         float c = Clamp(0.57735026f * (normal.x + normal.y + normal.z), -1, 1);
         int col = DebugDraw.DuLerpCol(DebugDraw.DuRGBA(32, 32, 0, 160), DebugDraw.DuRGBA(220, 220, 0, 160),
             (int)(127 * (1 + c)));

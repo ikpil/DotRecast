@@ -30,7 +30,7 @@ namespace DotRecast.Detour
         private const int MAX_STEER_POINTS = 3;
 
 
-        public static SteerTarget GetSteerTarget(NavMeshQuery navQuery, Vector3f startPos, Vector3f endPos,
+        public static SteerTarget GetSteerTarget(NavMeshQuery navQuery, RcVec3f startPos, RcVec3f endPos,
             float minTargetDist, List<long> path)
         {
             // Find steer target.
@@ -64,7 +64,7 @@ namespace DotRecast.Detour
             if (ns >= straightPath.Count)
                 return null;
 
-            Vector3f steerPos = Vector3f.Of(
+            RcVec3f steerPos = RcVec3f.Of(
                 straightPath[ns].GetPos().x,
                 startPos.y,
                 straightPath[ns].GetPos().z
@@ -76,7 +76,7 @@ namespace DotRecast.Detour
             return target;
         }
 
-        public static bool InRange(Vector3f v1, Vector3f v2, float r, float h)
+        public static bool InRange(RcVec3f v1, RcVec3f v2, float r, float h)
         {
             float dx = v2.x - v1.x;
             float dy = v2.y - v1.y;

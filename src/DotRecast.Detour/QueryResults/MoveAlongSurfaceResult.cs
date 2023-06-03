@@ -26,18 +26,18 @@ namespace DotRecast.Detour.QueryResults
     public class MoveAlongSurfaceResult
     {
         /** The result position of the mover. [(x, y, z)] */
-        private readonly Vector3f resultPos;
+        private readonly RcVec3f resultPos;
 
         /** The reference ids of the polygons visited during the move. */
         private readonly List<long> visited;
 
-        public MoveAlongSurfaceResult(Vector3f resultPos, List<long> visited)
+        public MoveAlongSurfaceResult(RcVec3f resultPos, List<long> visited)
         {
             this.resultPos = resultPos;
             this.visited = visited;
         }
 
-        public Vector3f GetResultPos()
+        public RcVec3f GetResultPos()
         {
             return resultPos;
         }

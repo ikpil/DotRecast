@@ -80,7 +80,7 @@ namespace DotRecast.Detour.Crowd.Tracking
             NormalizeArray(m_tpen, m_nsamples);
         }
 
-        public void AddSample(Vector3f vel, float ssize, float pen, float vpen, float vcpen, float spen, float tpen)
+        public void AddSample(RcVec3f vel, float ssize, float pen, float vpen, float vcpen, float spen, float tpen)
         {
             if (m_nsamples >= m_maxSamples)
                 return;
@@ -101,9 +101,9 @@ namespace DotRecast.Detour.Crowd.Tracking
             return m_nsamples;
         }
 
-        public Vector3f GetSampleVelocity(int i)
+        public RcVec3f GetSampleVelocity(int i)
         {
-            Vector3f vel = new Vector3f();
+            RcVec3f vel = new RcVec3f();
             vel.x = m_vel[i * 3];
             vel.y = m_vel[i * 3 + 1];
             vel.z = m_vel[i * 3 + 2];

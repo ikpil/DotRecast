@@ -22,20 +22,20 @@ namespace DotRecast.Core
 {
     public static class Intersections
     {
-        public static float? IntersectSegmentTriangle(Vector3f sp, Vector3f sq, Vector3f a, Vector3f b, Vector3f c)
+        public static float? IntersectSegmentTriangle(RcVec3f sp, RcVec3f sq, RcVec3f a, RcVec3f b, RcVec3f c)
         {
             float v, w;
-            Vector3f ab = b.Subtract(a);
-            Vector3f ac = c.Subtract(a);
-            Vector3f qp = sp.Subtract(sq);
+            RcVec3f ab = b.Subtract(a);
+            RcVec3f ac = c.Subtract(a);
+            RcVec3f qp = sp.Subtract(sq);
 
             // Compute triangle normal. Can be precalculated or cached if
             // intersecting multiple segments against the same triangle
-            Vector3f norm = Vector3f.Cross(ab, ac);
+            RcVec3f norm = RcVec3f.Cross(ab, ac);
 
             // Compute denominator d. If d <= 0, segment is parallel to or points
             // away from triangle, so exit early
-            float d = Vector3f.Dot(qp, norm);
+            float d = RcVec3f.Dot(qp, norm);
             if (d <= 0.0f)
             {
                 return null;
@@ -44,8 +44,8 @@ namespace DotRecast.Core
             // Compute intersection t value of pq with plane of triangle. A ray
             // intersects iff 0 <= t. Segment intersects iff 0 <= t <= 1. Delay
             // dividing by d until intersection has been found to pierce triangle
-            Vector3f ap = sp.Subtract(a);
-            float t = Vector3f.Dot(ap, norm);
+            RcVec3f ap = sp.Subtract(a);
+            float t = RcVec3f.Dot(ap, norm);
             if (t < 0.0f)
             {
                 return null;
@@ -57,14 +57,14 @@ namespace DotRecast.Core
             }
 
             // Compute barycentric coordinate components and test if within bounds
-            Vector3f e = Vector3f.Cross(qp, ap);
-            v = Vector3f.Dot(ac, e);
+            RcVec3f e = RcVec3f.Cross(qp, ap);
+            v = RcVec3f.Dot(ac, e);
             if (v < 0.0f || v > d)
             {
                 return null;
             }
 
-            w = -Vector3f.Dot(ab, e);
+            w = -RcVec3f.Dot(ab, e);
             if (w < 0.0f || v + w > d)
             {
                 return null;
@@ -76,11 +76,11 @@ namespace DotRecast.Core
             return t;
         }
 
-        public static bool IsectSegAABB(Vector3f sp, Vector3f sq, Vector3f amin, Vector3f amax, out float tmin, out float tmax)
+        public static bool IsectSegAABB(RcVec3f sp, RcVec3f sq, RcVec3f amin, RcVec3f amax, out float tmin, out float tmax)
         {
             const float EPS = 1e-6f;
 
-            Vector3f d = new Vector3f();
+            RcVec3f d = new RcVec3f();
             d.x = sq.x - sp.x;
             d.y = sq.y - sp.y;
             d.z = sq.z - sp.z;

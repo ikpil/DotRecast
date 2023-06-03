@@ -30,7 +30,7 @@ namespace DotRecast.Recast.Geom
         int ntris;
         int maxTrisPerChunk;
 
-        private void CalcExtends(BoundsItem[] items, int imin, int imax, ref Vector2f bmin, ref Vector2f bmax)
+        private void CalcExtends(BoundsItem[] items, int imin, int imax, ref RcVec2f bmin, ref RcVec2f bmax)
         {
             bmin.x = items[imin].bmin.x;
             bmin.y = items[imin].bmin.y;
@@ -185,7 +185,7 @@ namespace DotRecast.Recast.Geom
             }
         }
 
-        private bool CheckOverlapRect(float[] amin, float[] amax, Vector2f bmin, Vector2f bmax)
+        private bool CheckOverlapRect(float[] amin, float[] amax, RcVec2f bmin, RcVec2f bmax)
         {
             bool overlap = true;
             overlap = (amin[0] > bmax.x || amax[0] < bmin.x) ? false : overlap;
@@ -251,7 +251,7 @@ namespace DotRecast.Recast.Geom
             return ids;
         }
 
-        private bool CheckOverlapSegment(float[] p, float[] q, Vector2f bmin, Vector2f bmax)
+        private bool CheckOverlapSegment(float[] p, float[] q, RcVec2f bmin, RcVec2f bmax)
         {
             float EPSILON = 1e-6f;
 

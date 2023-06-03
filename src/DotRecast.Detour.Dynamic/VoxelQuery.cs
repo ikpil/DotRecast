@@ -29,12 +29,12 @@ namespace DotRecast.Detour.Dynamic
  */
     public class VoxelQuery
     {
-        private readonly Vector3f origin;
+        private readonly RcVec3f origin;
         private readonly float tileWidth;
         private readonly float tileDepth;
         private readonly Func<int, int, Heightfield> heightfieldProvider;
 
-        public VoxelQuery(Vector3f origin, float tileWidth, float tileDepth, Func<int, int, Heightfield> heightfieldProvider)
+        public VoxelQuery(RcVec3f origin, float tileWidth, float tileDepth, Func<int, int, Heightfield> heightfieldProvider)
         {
             this.origin = origin;
             this.tileWidth = tileWidth;
@@ -47,12 +47,12 @@ namespace DotRecast.Detour.Dynamic
      *
      * @return Optional with hit parameter (t) or empty if no hit found
      */
-        public float? Raycast(Vector3f start, Vector3f end)
+        public float? Raycast(RcVec3f start, RcVec3f end)
         {
             return TraverseTiles(start, end);
         }
 
-        private float? TraverseTiles(Vector3f start, Vector3f end)
+        private float? TraverseTiles(RcVec3f start, RcVec3f end)
         {
             float relStartX = start.x - origin.x;
             float relStartZ = start.z - origin.z;
@@ -107,7 +107,7 @@ namespace DotRecast.Detour.Dynamic
             return null;
         }
 
-        private float? TraversHeightfield(int x, int z, Vector3f start, Vector3f end, float tMin, float tMax)
+        private float? TraversHeightfield(int x, int z, RcVec3f start, RcVec3f end, float tMin, float tMax)
         {
             Heightfield hf = heightfieldProvider.Invoke(x, z);
             if (null != hf)

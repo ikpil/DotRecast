@@ -190,7 +190,7 @@ public class DebugDraw
         GetOpenGlDraw().Vertex(pos, color);
     }
     
-    public void Vertex(Vector3f pos, int color)
+    public void Vertex(RcVec3f pos, int color)
     {
         GetOpenGlDraw().Vertex(pos, color);
     }
@@ -201,7 +201,7 @@ public class DebugDraw
         GetOpenGlDraw().Vertex(x, y, z, color);
     }
 
-    public void Vertex(Vector3f pos, int color, Vector2f uv)
+    public void Vertex(RcVec3f pos, int color, RcVec2f uv)
     {
         GetOpenGlDraw().Vertex(pos, color, uv);
     }
@@ -259,12 +259,12 @@ public class DebugDraw
         float dy = y1 - y0;
         float dz = z1 - z0;
         float len = (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
-        Vector3f prev = new Vector3f();
+        RcVec3f prev = new RcVec3f();
         EvalArc(x0, y0, z0, dx, dy, dz, len * h, PAD, ref prev);
         for (int i = 1; i <= NUM_ARC_PTS; ++i)
         {
             float u = PAD + i * ARC_PTS_SCALE;
-            Vector3f pt = new Vector3f();
+            RcVec3f pt = new RcVec3f();
             EvalArc(x0, y0, z0, dx, dy, dz, len * h, u, ref pt);
             Vertex(prev.x, prev.y, prev.z, col);
             Vertex(pt.x, pt.y, pt.z, col);
@@ -276,8 +276,8 @@ public class DebugDraw
         // End arrows
         if (as0 > 0.001f)
         {
-            Vector3f p = new Vector3f();
-            Vector3f q = new Vector3f();
+            RcVec3f p = new RcVec3f();
+            RcVec3f q = new RcVec3f();
             EvalArc(x0, y0, z0, dx, dy, dz, len * h, PAD, ref p);
             EvalArc(x0, y0, z0, dx, dy, dz, len * h, PAD + 0.05f, ref q);
             AppendArrowHead(p, q, as0, col);
@@ -285,15 +285,15 @@ public class DebugDraw
 
         if (as1 > 0.001f)
         {
-            Vector3f p = new Vector3f();
-            Vector3f q = new Vector3f();
+            RcVec3f p = new RcVec3f();
+            RcVec3f q = new RcVec3f();
             EvalArc(x0, y0, z0, dx, dy, dz, len * h, 1 - PAD, ref p);
             EvalArc(x0, y0, z0, dx, dy, dz, len * h, 1 - (PAD + 0.05f), ref q);
             AppendArrowHead(p, q, as1, col);
         }
     }
 
-    private void EvalArc(float x0, float y0, float z0, float dx, float dy, float dz, float h, float u, ref Vector3f res)
+    private void EvalArc(float x0, float y0, float z0, float dx, float dy, float dz, float h, float u, ref RcVec3f res)
     {
         res.x = x0 + dx * u;
         res.y = y0 + dy * u + h * (1 - (u * 2 - 1) * (u * 2 - 1));
@@ -384,15 +384,15 @@ public class DebugDraw
         Vertex(x1, y1, z1, col);
 
         // End arrows
-        Vector3f p = Vector3f.Of(x0, y0, z0);
-        Vector3f q = Vector3f.Of(x1, y1, z1);
+        RcVec3f p = RcVec3f.Of(x0, y0, z0);
+        RcVec3f q = RcVec3f.Of(x1, y1, z1);
         if (as0 > 0.001f)
             AppendArrowHead(p, q, as0, col);
         if (as1 > 0.001f)
             AppendArrowHead(q, p, as1, col);
     }
 
-    void AppendArrowHead(Vector3f p, Vector3f q, float s, int col)
+    void AppendArrowHead(RcVec3f p, RcVec3f q, float s, int col)
     {
         const float eps = 0.001f;
         if (VdistSqr(p, q) < eps * eps)
@@ -400,9 +400,9 @@ public class DebugDraw
             return;
         }
 
-        Vector3f ax = new Vector3f();
-        Vector3f ay = Vector3f.Of(0, 1, 0);
-        Vector3f az = new Vector3f();
+        RcVec3f ax = new RcVec3f();
+        RcVec3f ay = RcVec3f.Of(0, 1, 0);
+        RcVec3f az = new RcVec3f();
         Vsub(ref az, q, p);
         Vnormalize(ref az);
         Vcross(ref ax, ay, az);
@@ -418,14 +418,14 @@ public class DebugDraw
         Vertex(p.x + az.x * s - ax.x * s / 3, p.y + az.y * s - ax.y * s / 3, p.z + az.z * s - ax.z * s / 3, col);
     }
 
-    public void Vcross(ref Vector3f dest, Vector3f v1, Vector3f v2)
+    public void Vcross(ref RcVec3f dest, RcVec3f v1, RcVec3f v2)
     {
         dest.x = v1.y * v2.z - v1.z * v2.y;
         dest.y = v1.z * v2.x - v1.x * v2.z;
         dest.z = v1.x * v2.y - v1.y * v2.x;
     }
 
-    public void Vnormalize(ref Vector3f v)
+    public void Vnormalize(ref RcVec3f v)
     {
         float d = (float)(1.0f / Math.Sqrt(v.x * v.x + v.y * v.y + v.z * v.z));
         v.x *= d;
@@ -433,14 +433,14 @@ public class DebugDraw
         v.z *= d;
     }
 
-    public void Vsub(ref Vector3f dest, Vector3f v1, Vector3f v2)
+    public void Vsub(ref RcVec3f dest, RcVec3f v1, RcVec3f v2)
     {
         dest.x = v1.x - v2.x;
         dest.y = v1.y - v2.y;
         dest.z = v1.z - v2.z;
     }
 
-    public float VdistSqr(Vector3f v1, Vector3f v2)
+    public float VdistSqr(RcVec3f v1, RcVec3f v2)
     {
         float x = v1.x - v2.x;
         float y = v1.y - v2.y;
@@ -588,7 +588,7 @@ public class DebugDraw
         return _projectionMatrix;
     }
 
-    public float[] ViewMatrix(Vector3f cameraPos, float[] cameraEulers)
+    public float[] ViewMatrix(RcVec3f cameraPos, float[] cameraEulers)
     {
         float[] rx = GLU.Build_4x4_rotation_matrix(cameraEulers[0], 1, 0, 0);
         float[] ry = GLU.Build_4x4_rotation_matrix(cameraEulers[1], 0, 1, 0);
@@ -699,7 +699,7 @@ public class DebugDraw
         return true;
     }
 
-    public bool FrustumTest(Vector3f bmin, Vector3f bmax)
+    public bool FrustumTest(RcVec3f bmin, RcVec3f bmax)
     {
         return FrustumTest(new float[] { bmin.x, bmin.y, bmin.z, bmax.x, bmax.y, bmax.z });
     }
