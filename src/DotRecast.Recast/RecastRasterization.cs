@@ -25,7 +25,6 @@ using static DotRecast.Recast.RecastConstants;
 
 namespace DotRecast.Recast
 {
-
     public class RecastRasterization
     {
         /**
@@ -49,7 +48,7 @@ namespace DotRecast.Recast
             overlap = (amin[2] > bmax[2] || amax[2] < bmin[2]) ? false : overlap;
             return overlap;
         }
-        
+
         private static bool OverlapBounds(RcVec3f amin, RcVec3f amax, RcVec3f bmin, RcVec3f bmax)
         {
             bool overlap = true;
@@ -151,79 +150,79 @@ namespace DotRecast.Recast
             }
         }
 
-        /**
-     * Divides a convex polygon of max 12 vertices into two convex polygons across a separating axis.
-     *
-     * @param inVerts
-     *            The input polygon vertices
-     * @param inVertsOffset
-     *            The offset of the first polygon vertex
-     * @param inVertsCount
-     *            The number of input polygon vertices
-     * @param outVerts1
-     *            The offset of the resulting polygon 1's vertices
-     * @param outVerts2
-     *            The offset of the resulting polygon 2's vertices
-     * @param axisOffset
-     *            The offset along the specified axis
-     * @param axis
-     *            The separating axis
-     * @return The number of resulting polygon 1 and polygon 2 vertices
-     */
-        private static int[] DividePoly(float[] inVerts, int inVertsOffset, int inVertsCount, int outVerts1, int outVerts2, float axisOffset,
-            int axis)
+        /// Divides a convex polygon of max 12 vertices into two convex polygons
+        /// across a separating axis.
+        /// 
+        /// @param[in]	inVerts			The input polygon vertices
+        /// @param[in]	inVertsCount	The number of input polygon vertices
+        /// @param[out]	outVerts1		Resulting polygon 1's vertices
+        /// @param[out]	outVerts1Count	The number of resulting polygon 1 vertices
+        /// @param[out]	outVerts2		Resulting polygon 2's vertices
+        /// @param[out]	outVerts2Count	The number of resulting polygon 2 vertices
+        /// @param[in]	axisOffset		THe offset along the specified axis
+        /// @param[in]	axis			The separating axis
+        private static void DividePoly(float[] inVerts, int inVertsOffset, int inVertsCount,
+            int outVerts1, out int outVerts1Count,
+            int outVerts2, out int outVerts2Count,
+            float axisOffset, int axis)
         {
             float[] d = new float[12];
-            for (int i = 0; i < inVertsCount; ++i)
-                d[i] = axisOffset - inVerts[inVertsOffset + i * 3 + axis];
 
-            int m = 0, n = 0;
-            for (int i = 0, j = inVertsCount - 1; i < inVertsCount; j = i, ++i)
+            // How far positive or negative away from the separating axis is each vertex.
+            for (int inVert = 0; inVert < inVertsCount; ++inVert)
             {
-                bool ina = d[j] >= 0;
-                bool inb = d[i] >= 0;
+                d[inVert] = axisOffset - inVerts[inVertsOffset + inVert * 3 + axis];
+            }
+
+            int poly1Vert = 0;
+            int poly2Vert = 0;
+            for (int inVertA = 0, inVertB = inVertsCount - 1; inVertA < inVertsCount; inVertB = inVertA, ++inVertA)
+            {
+                bool ina = d[inVertB] >= 0;
+                bool inb = d[inVertA] >= 0;
                 if (ina != inb)
                 {
-                    float s = d[j] / (d[j] - d[i]);
-                    inVerts[outVerts1 + m * 3 + 0] = inVerts[inVertsOffset + j * 3 + 0]
-                                                     + (inVerts[inVertsOffset + i * 3 + 0] - inVerts[inVertsOffset + j * 3 + 0]) * s;
-                    inVerts[outVerts1 + m * 3 + 1] = inVerts[inVertsOffset + j * 3 + 1]
-                                                     + (inVerts[inVertsOffset + i * 3 + 1] - inVerts[inVertsOffset + j * 3 + 1]) * s;
-                    inVerts[outVerts1 + m * 3 + 2] = inVerts[inVertsOffset + j * 3 + 2]
-                                                     + (inVerts[inVertsOffset + i * 3 + 2] - inVerts[inVertsOffset + j * 3 + 2]) * s;
-                    RcVec3f.Copy(inVerts, outVerts2 + n * 3, inVerts, outVerts1 + m * 3);
-                    m++;
-                    n++;
+                    float s = d[inVertB] / (d[inVertB] - d[inVertA]);
+                    inVerts[outVerts1 + poly1Vert * 3 + 0] = inVerts[inVertsOffset + inVertB * 3 + 0] +
+                                                             (inVerts[inVertsOffset + inVertA * 3 + 0] - inVerts[inVertsOffset + inVertB * 3 + 0]) * s;
+                    inVerts[outVerts1 + poly1Vert * 3 + 1] = inVerts[inVertsOffset + inVertB * 3 + 1] +
+                                                             (inVerts[inVertsOffset + inVertA * 3 + 1] - inVerts[inVertsOffset + inVertB * 3 + 1]) * s;
+                    inVerts[outVerts1 + poly1Vert * 3 + 2] = inVerts[inVertsOffset + inVertB * 3 + 2] +
+                                                             (inVerts[inVertsOffset + inVertA * 3 + 2] - inVerts[inVertsOffset + inVertB * 3 + 2]) * s;
+                    RcVec3f.Copy(inVerts, outVerts2 + poly2Vert * 3, inVerts, outVerts1 + poly1Vert * 3);
+                    poly1Vert++;
+                    poly2Vert++;
                     // add the i'th point to the right polygon. Do NOT add points that are on the dividing line
                     // since these were already added above
-                    if (d[i] > 0)
+                    if (d[inVertA] > 0)
                     {
-                        RcVec3f.Copy(inVerts, outVerts1 + m * 3, inVerts, inVertsOffset + i * 3);
-                        m++;
+                        RcVec3f.Copy(inVerts, outVerts1 + poly1Vert * 3, inVerts, inVertsOffset + inVertA * 3);
+                        poly1Vert++;
                     }
-                    else if (d[i] < 0)
+                    else if (d[inVertA] < 0)
                     {
-                        RcVec3f.Copy(inVerts, outVerts2 + n * 3, inVerts, inVertsOffset + i * 3);
-                        n++;
+                        RcVec3f.Copy(inVerts, outVerts2 + poly2Vert * 3, inVerts, inVertsOffset + inVertA * 3);
+                        poly2Vert++;
                     }
                 }
                 else // same side
                 {
                     // add the i'th point to the right polygon. Addition is done even for points on the dividing line
-                    if (d[i] >= 0)
+                    if (d[inVertA] >= 0)
                     {
-                        RcVec3f.Copy(inVerts, outVerts1 + m * 3, inVerts, inVertsOffset + i * 3);
-                        m++;
-                        if (d[i] != 0)
+                        RcVec3f.Copy(inVerts, outVerts1 + poly1Vert * 3, inVerts, inVertsOffset + inVertA * 3);
+                        poly1Vert++;
+                        if (d[inVertA] != 0)
                             continue;
                     }
 
-                    RcVec3f.Copy(inVerts, outVerts2 + n * 3, inVerts, inVertsOffset + i * 3);
-                    n++;
+                    RcVec3f.Copy(inVerts, outVerts2 + poly2Vert * 3, inVerts, inVertsOffset + inVertA * 3);
+                    poly2Vert++;
                 }
             }
 
-            return new int[] { m, n };
+            outVerts1Count = poly1Vert;
+            outVerts2Count = poly2Vert;
         }
 
         /**
@@ -300,14 +299,9 @@ namespace DotRecast.Recast
             {
                 // Clip polygon to row. Store the remaining polygon as well
                 float cellZ = hfBBMin.z + z * cellSize;
-                int[] nvrowin = DividePoly(buf, @in, nvIn, inRow, p1, cellZ + cellSize, 2);
-                nvRow = nvrowin[0];
-                nvIn = nvrowin[1];
-                {
-                    int temp = @in;
-                    @in = p1;
-                    p1 = temp;
-                }
+                DividePoly(buf, @in, nvIn, inRow, out nvRow, p1, out nvIn, cellZ + cellSize, 2);
+                (@in, p1) = (p1, @in);
+
                 if (nvRow < 3)
                     continue;
 
@@ -340,16 +334,12 @@ namespace DotRecast.Recast
                 {
                     // Clip polygon to column. store the remaining polygon as well
                     float cx = hfBBMin.x + x * cellSize;
-                    int[] nvnv2 = DividePoly(buf, inRow, nv2, p1, p2, cx + cellSize, 0);
-                    nv = nvnv2[0];
-                    nv2 = nvnv2[1];
-                    {
-                        int temp = inRow;
-                        inRow = p2;
-                        p2 = temp;
-                    }
+                    DividePoly(buf, inRow, nv2, p1, out nv, p2, out nv2, cx + cellSize, 0);
+                    (inRow, p2) = (p2, inRow);
+
                     if (nv < 3)
                         continue;
+
                     if (x < 0)
                     {
                         continue;
