@@ -24,11 +24,27 @@ namespace DotRecast.Recast
 {
     public static class RecastCommon
     {
+        private static readonly int[] DirOffsetX = { -1, 0, 1, 0, };
+        private static readonly int[] DirOffsetY = { 0, 1, 0, -1 };
+        private static readonly int[] DirForOffset = { 3, 0, -1, 2, 1 };
+
+        /// Sets the neighbor connection data for the specified direction.
+        /// @param[in] s The span to update.
+        /// @param[in] dir The direction to set. [Limits: 0 <= value < 4]
+        /// @param[in] i The index of the neighbor span.
+        public static void SetCon(CompactSpan s, int dir, int i)
+        {
+            int shift = dir * 6;
+            int con = s.con;
+            s.con = (con & ~(0x3f << shift)) | ((i & 0x3f) << shift);
+        }
+
         /// Gets neighbor connection data for the specified direction.
         /// @param[in] s The span to check.
         /// @param[in] dir The direction to check. [Limits: 0 <= value < 4]
         /// @return The neighbor connection data for the specified direction,
         /// or #RC_NOT_CONNECTED if there is no connection.
+        ///
         public static int GetCon(CompactSpan s, int dir)
         {
             int shift = dir * 6;
@@ -41,8 +57,7 @@ namespace DotRecast.Recast
         /// in the direction.
         public static int GetDirOffsetX(int dir)
         {
-            int[] offset = { -1, 0, 1, 0, };
-            return offset[dir & 0x03];
+            return DirOffsetX[dir & 0x03];
         }
 
         /// Gets the standard height (z-axis) offset for the specified direction.
@@ -51,29 +66,16 @@ namespace DotRecast.Recast
         /// in the direction.
         public static int GetDirOffsetY(int dir)
         {
-            int[] offset = { 0, 1, 0, -1 };
-            return offset[dir & 0x03];
+            return DirOffsetY[dir & 0x03];
         }
 
         /// Gets the direction for the specified offset. One of x and y should be 0.
         /// @param[in] x The x offset. [Limits: -1 <= value <= 1]
         /// @param[in] y The y offset. [Limits: -1 <= value <= 1]
         /// @return The direction that represents the offset.
-        public static int RcGetDirForOffset(int x, int y)
+        public static int GetDirForOffset(int x, int y)
         {
-            int[] dirs = { 3, 0, -1, 2, 1 };
-            return dirs[((y + 1) << 1) + x];
-        }
-
-        /// Sets the neighbor connection data for the specified direction.
-        /// @param[in] s The span to update.
-        /// @param[in] dir The direction to set. [Limits: 0 <= value < 4]
-        /// @param[in] i The index of the neighbor span.
-        public static void SetCon(CompactSpan s, int dir, int i)
-        {
-            int shift = dir * 6;
-            int con = s.con;
-            s.con = (con & ~(0x3f << shift)) | ((i & 0x3f) << shift);
+            return DirForOffset[((y + 1) << 1) + x];
         }
     }
 }

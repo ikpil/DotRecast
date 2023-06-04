@@ -1203,11 +1203,11 @@ namespace DotRecast.Recast
                 int directDir;
                 if (cx == pcx)
                 {
-                    directDir = RcGetDirForOffset(0, pcy > cy ? 1 : -1);
+                    directDir = GetDirForOffset(0, pcy > cy ? 1 : -1);
                 }
                 else
                 {
-                    directDir = RcGetDirForOffset(pcx > cx ? 1 : -1, 0);
+                    directDir = GetDirForOffset(pcx > cx ? 1 : -1, 0);
                 }
 
                 // Push the direct dir last so we start with this on next iteration
