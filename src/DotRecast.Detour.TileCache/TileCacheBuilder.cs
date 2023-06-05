@@ -30,10 +30,11 @@ namespace DotRecast.Detour.TileCache
 {
     public class TileCacheBuilder
     {
-        const int DT_TILECACHE_NULL_AREA = 0;
-        const int DT_TILECACHE_WALKABLE_AREA = 63;
-        const int DT_TILECACHE_NULL_IDX = 0xffff;
-
+        public const int DT_TILECACHE_NULL_AREA = 0;
+        public const int DT_TILECACHE_WALKABLE_AREA = 63;
+        public const int DT_TILECACHE_NULL_IDX = 0xffff;
+        private static readonly int[] DirOffsetX = { -1, 0, 1, 0, };
+        private static readonly int[] DirOffsetY = { 0, 1, 0, -1 };
 
         private readonly TileCacheLayerHeaderReader reader = new TileCacheLayerHeaderReader();
 
@@ -336,17 +337,15 @@ namespace DotRecast.Detour.TileCache
             int ib = bx + by * w;
             return layer.regs[ib];
         }
-
+        
         private int GetDirOffsetX(int dir)
         {
-            int[] offset = new int[] { -1, 0, 1, 0, };
-            return offset[dir & 0x03];
+            return DirOffsetX[dir & 0x03];
         }
 
         private int GetDirOffsetY(int dir)
         {
-            int[] offset = new int[] { 0, 1, 0, -1 };
-            return offset[dir & 0x03];
+            return DirOffsetY[dir & 0x03];
         }
 
         private void WalkContour(TileCacheLayer layer, int x, int y, TempContour cont)

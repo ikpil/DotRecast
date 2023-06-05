@@ -29,22 +29,20 @@ namespace DotRecast.Recast
         private static readonly int[] DirForOffset = { 3, 0, -1, 2, 1 };
 
         /// Sets the neighbor connection data for the specified direction.
-        /// @param[in] s The span to update.
-        /// @param[in] dir The direction to set. [Limits: 0 <= value < 4]
-        /// @param[in] i The index of the neighbor span.
-        public static void SetCon(CompactSpan s, int dir, int i)
+        /// @param[in]		span			The span to update.
+        /// @param[in]		direction		The direction to set. [Limits: 0 <= value < 4]
+        /// @param[in]		neighborIndex	The index of the neighbor span.
+        public static void SetCon(CompactSpan span, int direction, int neighborIndex)
         {
-            int shift = dir * 6;
-            int con = s.con;
-            s.con = (con & ~(0x3f << shift)) | ((i & 0x3f) << shift);
+            int shift = direction * 6;
+            int con = span.con;
+            span.con = (con & ~(0x3f << shift)) | ((neighborIndex & 0x3f) << shift);
         }
 
         /// Gets neighbor connection data for the specified direction.
-        /// @param[in] s The span to check.
-        /// @param[in] dir The direction to check. [Limits: 0 <= value < 4]
-        /// @return The neighbor connection data for the specified direction,
-        /// or #RC_NOT_CONNECTED if there is no connection.
-        ///
+        /// @param[in]		span		The span to check.
+        /// @param[in]		direction	The direction to check. [Limits: 0 <= value < 4]
+        /// @return The neighbor connection data for the specified direction, or #RC_NOT_CONNECTED if there is no connection.
         public static int GetCon(CompactSpan s, int dir)
         {
             int shift = dir * 6;
@@ -52,26 +50,25 @@ namespace DotRecast.Recast
         }
 
         /// Gets the standard width (x-axis) offset for the specified direction.
-        /// @param[in] dir The direction. [Limits: 0 <= value < 4]
-        /// @return The width offset to apply to the current cell position to move
-        /// in the direction.
+        /// @param[in]		direction		The direction. [Limits: 0 <= value < 4]
+        /// @return The width offset to apply to the current cell position to move in the direction.
         public static int GetDirOffsetX(int dir)
         {
             return DirOffsetX[dir & 0x03];
         }
 
+        // TODO (graham): Rename this to rcGetDirOffsetZ
         /// Gets the standard height (z-axis) offset for the specified direction.
-        /// @param[in] dir The direction. [Limits: 0 <= value < 4]
-        /// @return The height offset to apply to the current cell position to move
-        /// in the direction.
+        /// @param[in]		direction		The direction. [Limits: 0 <= value < 4]
+        /// @return The height offset to apply to the current cell position to move in the direction.
         public static int GetDirOffsetY(int dir)
         {
             return DirOffsetY[dir & 0x03];
         }
 
         /// Gets the direction for the specified offset. One of x and y should be 0.
-        /// @param[in] x The x offset. [Limits: -1 <= value <= 1]
-        /// @param[in] y The y offset. [Limits: -1 <= value <= 1]
+        /// @param[in]		offsetX		The x offset. [Limits: -1 <= value <= 1]
+        /// @param[in]		offsetZ		The z offset. [Limits: -1 <= value <= 1]
         /// @return The direction that represents the offset.
         public static int GetDirForOffset(int x, int y)
         {
