@@ -126,7 +126,7 @@ namespace DotRecast.Recast
             return (int)(n & (VERTEX_BUCKET_COUNT - 1));
         }
 
-        private static int[] AddVertex(int x, int y, int z, int[] verts, int[] firstVert, int[] nextVert, int nv)
+        private static int AddVertex(int x, int y, int z, int[] verts, int[] firstVert, int[] nextVert, ref int nv)
         {
             int bucket = ComputeVertexHash(x, 0, z);
             int i = firstVert[bucket];
@@ -135,7 +135,7 @@ namespace DotRecast.Recast
             {
                 int v = i * 3;
                 if (verts[v + 0] == x && (Math.Abs(verts[v + 1] - y) <= 2) && verts[v + 2] == z)
-                    return new int[] { i, nv };
+                    return i;
                 i = nextVert[i]; // next
             }
 
@@ -149,7 +149,7 @@ namespace DotRecast.Recast
             nextVert[i] = firstVert[bucket];
             firstVert[bucket] = i;
 
-            return new int[] { i, nv };
+            return i;
         }
 
         public static int Prev(int i, int n)
@@ -1044,10 +1044,9 @@ namespace DotRecast.Recast
                 for (int j = 0; j < cont.nverts; ++j)
                 {
                     int v = j * 4;
-                    int[] inv = AddVertex(cont.verts[v + 0], cont.verts[v + 1], cont.verts[v + 2], mesh.verts, firstVert,
-                        nextVert, mesh.nverts);
-                    indices[j] = inv[0];
-                    mesh.nverts = inv[1];
+                    indices[j] = AddVertex(cont.verts[v + 0], cont.verts[v + 1], cont.verts[v + 2],
+                        mesh.verts, firstVert, nextVert, ref mesh.nverts);
+
                     if ((cont.verts[v + 3] & RC_BORDER_VERTEX) != 0)
                     {
                         // This vertex should be removed.
@@ -1275,11 +1274,8 @@ namespace DotRecast.Recast
                 for (int j = 0; j < pmesh.nverts; ++j)
                 {
                     int v = j * 3;
-                    int[] inv = AddVertex(pmesh.verts[v + 0] + ox, pmesh.verts[v + 1], pmesh.verts[v + 2] + oz, mesh.verts,
-                        firstVert, nextVert, mesh.nverts);
-
-                    vremap[j] = inv[0];
-                    mesh.nverts = inv[1];
+                    vremap[j] = AddVertex(pmesh.verts[v + 0] + ox, pmesh.verts[v + 1], pmesh.verts[v + 2] + oz,
+                        mesh.verts, firstVert, nextVert, ref mesh.nverts);
                 }
 
                 for (int j = 0; j < pmesh.npolys; ++j)
