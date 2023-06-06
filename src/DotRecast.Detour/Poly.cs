@@ -23,13 +23,13 @@ namespace DotRecast.Detour
     /** Defines a polygon within a MeshTile object. */
     public class Poly
     {
-        public readonly int index;
-
         /** The polygon is a standard convex polygon that is part of the surface of the mesh. */
         public const int DT_POLYTYPE_GROUND = 0;
 
         /** The polygon is an off-mesh connection consisting of two vertices. */
         public const int DT_POLYTYPE_OFFMESH_CONNECTION = 1;
+        
+        public readonly int index;
 
         /** The indices of the polygon's vertices. The actual vertices are located in MeshTile::verts. */
         public readonly int[] verts;

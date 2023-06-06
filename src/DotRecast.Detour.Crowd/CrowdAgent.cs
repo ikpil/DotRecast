@@ -24,8 +24,6 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour.Crowd
 {
-    using static DotRecast.Core.RcMath;
-
     /// Represents an agent managed by a #dtCrowd object.
     /// @ingroup crowd
     public class CrowdAgent

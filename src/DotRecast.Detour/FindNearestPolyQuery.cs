@@ -4,8 +4,6 @@ using DotRecast.Detour.QueryResults;
 
 namespace DotRecast.Detour
 {
-    using static DotRecast.Core.RcMath;
-
     public class FindNearestPolyQuery : IPolyQuery
     {
         private readonly NavMeshQuery query;

@@ -21,8 +21,6 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
-    using static DotRecast.Core.RcMath;
-
     /**
  * Convex-convex intersection based on "Computational Geometry in C" by Joseph O'Rourke
  */

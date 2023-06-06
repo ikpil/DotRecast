@@ -18,7 +18,6 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 using DotRecast.Recast;
-using static DotRecast.Core.RcMath;
 
 namespace DotRecast.Detour.Dynamic
 {
