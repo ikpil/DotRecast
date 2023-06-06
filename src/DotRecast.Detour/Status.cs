@@ -28,13 +28,11 @@ namespace DotRecast.Detour
         public static readonly Status PARTIAL_RESULT = new Status(3);
         public static readonly Status FAILURE_INVALID_PARAM = new Status(4);
 
-        public int Value { get; }
+        public readonly int Value;
 
-        private Status(int vlaue)
+        private Status(int value)
         {
-            Value = vlaue;
+            Value = value;
         }
     }
-
-}
 }
