@@ -463,14 +463,18 @@ namespace DotRecast.Recast
 
         private static int GetPolyMergeValue(int[] polys, int pa, int pb, int[] verts, out int ea, out int eb, int nvp)
         {
-            ea = -1;
-            eb = -1;
+            ea = 0;
+            eb = 0;
+
             int na = CountPolyVerts(polys, pa, nvp);
             int nb = CountPolyVerts(polys, pb, nvp);
 
             // If the merged polygon would be too big, do not merge.
             if (na + nb - 2 > nvp)
                 return -1;
+
+            ea = -1;
+            eb = -1;
 
             // Check if the polygons share an edge.
 

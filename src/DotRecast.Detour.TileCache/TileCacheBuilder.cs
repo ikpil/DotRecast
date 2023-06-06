@@ -337,7 +337,7 @@ namespace DotRecast.Detour.TileCache
             int ib = bx + by * w;
             return layer.regs[ib];
         }
-        
+
         private int GetDirOffsetX(int dir)
         {
             return DirOffsetX[dir & 0x03];
@@ -1189,18 +1189,21 @@ namespace DotRecast.Detour.TileCache
                 - (verts[c] - verts[a]) * (verts[b + 2] - verts[a + 2]) < 0;
         }
 
-        private int[] GetPolyMergeValue(int[] polys, int pa, int pb, int[] verts, int maxVertsPerPoly)
+        private int GetPolyMergeValue(int[] polys, int pa, int pb, int[] verts, out int ea, out int eb, int maxVertsPerPoly)
         {
+            ea = 0;
+            eb = 0;
+
             int na = CountPolyVerts(polys, pa, maxVertsPerPoly);
             int nb = CountPolyVerts(polys, pb, maxVertsPerPoly);
 
             // If the merged polygon would be too big, do not merge.
             if (na + nb - 2 > maxVertsPerPoly)
-                return new int[] { -1, 0, 0 };
+                return -1;
 
             // Check if the polygons share an edge.
-            int ea = -1;
-            int eb = -1;
+            ea = -1;
+            eb = -1;
 
             for (int i = 0; i < na; ++i)
             {
@@ -1208,9 +1211,7 @@ namespace DotRecast.Detour.TileCache
                 int va1 = polys[pa + (i + 1) % na];
                 if (va0 > va1)
                 {
-                    int tmp = va0;
-                    va0 = va1;
-                    va1 = tmp;
+                    (va0, va1) = (va1, va0);
                 }
 
                 for (int j = 0; j < nb; ++j)
@@ -1219,9 +1220,7 @@ namespace DotRecast.Detour.TileCache
                     int vb1 = polys[pb + (j + 1) % nb];
                     if (vb0 > vb1)
                     {
-                        int tmp = vb0;
-                        vb0 = vb1;
-                        vb1 = tmp;
+                        (vb0, vb1) = (vb1, vb0);
                     }
 
                     if (va0 == vb0 && va1 == vb1)
@@ -1235,7 +1234,7 @@ namespace DotRecast.Detour.TileCache
 
             // No common edge, cannot merge.
             if (ea == -1 || eb == -1)
-                return new int[] { -1, ea, eb };
+                return -1;
 
             // Check to see if the merged polygon would be convex.
             int va, vb, vc;
@@ -1244,13 +1243,13 @@ namespace DotRecast.Detour.TileCache
             vb = polys[pa + ea];
             vc = polys[pb + (eb + 2) % nb];
             if (!Uleft(verts, va * 3, vb * 3, vc * 3))
-                return new int[] { -1, ea, eb };
+                return -1;
 
             va = polys[pb + (eb + nb - 1) % nb];
             vb = polys[pb + eb];
             vc = polys[pa + (ea + 2) % na];
             if (!Uleft(verts, va * 3, vb * 3, vc * 3))
-                return new int[] { -1, ea, eb };
+                return -1;
 
             va = polys[pa + ea];
             vb = polys[pa + (ea + 1) % na];
@@ -1258,7 +1257,7 @@ namespace DotRecast.Detour.TileCache
             int dx = verts[va * 3 + 0] - verts[vb * 3 + 0];
             int dy = verts[va * 3 + 2] - verts[vb * 3 + 2];
 
-            return new int[] { dx * dx + dy * dy, ea, eb };
+            return (dx * dx) + (dy * dy);
         }
 
         private void MergePolys(int[] polys, int pa, int pb, int ea, int eb, int maxVertsPerPoly)
@@ -1581,10 +1580,7 @@ namespace DotRecast.Detour.TileCache
                         for (int k = j + 1; k < npolys; ++k)
                         {
                             int pk = k * maxVertsPerPoly;
-                            int[] pm = GetPolyMergeValue(polys, pj, pk, mesh.verts, maxVertsPerPoly);
-                            int v = pm[0];
-                            int ea = pm[1];
-                            int eb = pm[2];
+                            int v = GetPolyMergeValue(polys, pj, pk, mesh.verts, out var ea, out var eb, maxVertsPerPoly);
                             if (v > bestMergeVal)
                             {
                                 bestMergeVal = v;
@@ -1740,10 +1736,7 @@ namespace DotRecast.Detour.TileCache
                             for (int k = j + 1; k < npolys; ++k)
                             {
                                 int pk = k * maxVertsPerPoly;
-                                int[] pm = GetPolyMergeValue(polys, pj, pk, mesh.verts, maxVertsPerPoly);
-                                int v = pm[0];
-                                int ea = pm[1];
-                                int eb = pm[2];
+                                int v = GetPolyMergeValue(polys, pj, pk, mesh.verts, out var ea, out var eb, maxVertsPerPoly);
                                 if (v > bestMergeVal)
                                 {
                                     bestMergeVal = v;
