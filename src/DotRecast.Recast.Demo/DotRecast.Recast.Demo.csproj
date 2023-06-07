@@ -18,12 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\DotRecast.Detour.Crowd\DotRecast.Detour.Crowd.csproj" />
-        <ProjectReference Include="..\DotRecast.Detour.Dynamic\DotRecast.Detour.Dynamic.csproj" />
-        <ProjectReference Include="..\DotRecast.Detour.Extras\DotRecast.Detour.Extras.csproj" />
-        <ProjectReference Include="..\DotRecast.Detour.TileCache\DotRecast.Detour.TileCache.csproj" />
-        <ProjectReference Include="..\DotRecast.Detour\DotRecast.Detour.csproj" />
-        <ProjectReference Include="..\DotRecast.Recast\DotRecast.Recast.csproj" />
+        <ProjectReference Include="..\DotRecast.Recast.DemoTool\DotRecast.Recast.DemoTool.csproj" />
     </ItemGroup>
 
 </Project>
