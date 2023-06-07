@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DotRecast.Core\DotRecast.Core.csproj" />
+    <ProjectReference Include="..\DotRecast.Recast\DotRecast.Recast.csproj" />
+    <ProjectReference Include="..\DotRecast.Detour\DotRecast.Detour.csproj" />
+    <ProjectReference Include="..\DotRecast.Detour.Crowd\DotRecast.Detour.Crowd.csproj" />
+    <ProjectReference Include="..\DotRecast.Detour.Dynamic\DotRecast.Detour.Dynamic.csproj" />
+    <ProjectReference Include="..\DotRecast.Detour.Extras\DotRecast.Detour.Extras.csproj" />
+    <ProjectReference Include="..\DotRecast.Detour.TileCache\DotRecast.Detour.TileCache.csproj" />
+  </ItemGroup>
+
+</Project>
