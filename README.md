@@ -2,7 +2,7 @@
 [![.NET](https://github.com/ikpil/DotRecast/actions/workflows/dotnet.yml/badge.svg)](https://github.com/ikpil/DotRecast/actions/workflows/dotnet.yml)
 
 # Introduction
-1. DotRecast is a port of C++'s recastnavigation and Java's recast4j to the C# language.
+1. DotRecast is a port of C++'s [recastnavigation](https://github.com/recastnavigation/recastnavigation) and Java's [recast4j](https://github.com/ppiastucki/recast4j) to the C# language.
 2. For game development, C# servers, C# project, and Unity3D are supported.
 3. DotRecast consists of Recast and Detour, Crowd, Dynamic, Extras, TileCache, DemoTool, Demo
 
