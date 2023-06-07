@@ -18,7 +18,6 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using DotRecast.Core;
 using DotRecast.Detour;
@@ -28,7 +27,6 @@ using DotRecast.Recast.DemoTool.Builder;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.DemoTool;
 using ImGuiNET;
-using Silk.NET.Windowing;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 
 namespace DotRecast.Recast.Demo.Tools;

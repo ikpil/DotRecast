@@ -17,16 +17,13 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
-using System.Linq;
 using DotRecast.Core;
-using Silk.NET.Windowing;
 using DotRecast.Detour.Extras.Jumplink;
 using DotRecast.Recast.DemoTool.Builder;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.DemoTool;
 using DotRecast.Recast.DemoTool.Geom;
 using ImGuiNET;
-using static DotRecast.Core.RcMath;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 

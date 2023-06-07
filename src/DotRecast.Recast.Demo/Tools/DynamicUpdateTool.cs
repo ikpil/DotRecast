@@ -18,13 +18,8 @@ freely, subject to the following restrictions:
 
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Diagnostics;
 using System.IO;
-using System.Numerics;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using DotRecast.Core;
 using DotRecast.Detour.Dynamic;
@@ -37,8 +32,6 @@ using DotRecast.Recast.Demo.Tools.Gizmos;
 using DotRecast.Recast.Demo.UI;
 using DotRecast.Recast.DemoTool;
 using ImGuiNET;
-using Silk.NET.OpenAL;
-using Silk.NET.Windowing;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 

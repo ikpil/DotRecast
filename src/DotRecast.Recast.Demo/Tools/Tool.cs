@@ -20,7 +20,6 @@ freely, subject to the following restrictions:
 
 using DotRecast.Core;
 using DotRecast.Recast.Demo.Draw;
-using Silk.NET.Windowing;
 
 namespace DotRecast.Recast.Demo.Tools;
 
