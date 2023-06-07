@@ -27,8 +27,11 @@ namespace DotRecast.Core
         public float y;
         public float z;
 
-        public static RcVec3f Zero { get; } = new RcVec3f(0, 0, 0);
-        public static RcVec3f Up { get; } = new RcVec3f(0, 1, 0);
+        public static RcVec3f Zero { get; } = new RcVec3f(0.0f, 0.0f, 0.0f);
+        public static RcVec3f One { get; } = new RcVec3f(1.0f);
+        public static RcVec3f UnitX { get; } = new RcVec3f(1.0f, 0.0f, 0.0f);
+        public static RcVec3f UnitY { get; } = new RcVec3f(0.0f, 1.0f, 0.0f);
+        public static RcVec3f UnitZ { get; } = new RcVec3f(0.0f, 0.0f, 1.0f);
 
         public static RcVec3f Of(float[] f)
         {
@@ -227,7 +230,7 @@ namespace DotRecast.Core
             y = Math.Min(y, @in[i + 1]);
             z = Math.Min(z, @in[i + 2]);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Min(RcVec3f b)
         {
