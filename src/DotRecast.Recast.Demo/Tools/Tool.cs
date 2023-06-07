@@ -26,6 +26,9 @@ namespace DotRecast.Recast.Demo.Tools;
 
 public abstract class Tool
 {
+    public abstract string GetName();
+    public abstract void Layout();
+
     public abstract void SetSample(Sample m_sample);
 
     public abstract void HandleClick(RcVec3f s, RcVec3f p, bool shift);
@@ -33,10 +36,6 @@ public abstract class Tool
     public abstract void HandleRender(NavMeshRenderer renderer);
 
     public abstract void HandleUpdate(float dt);
-
-    public abstract void Layout();
-
-    public abstract string GetName();
 
     public virtual void HandleClickRay(RcVec3f start, RcVec3f direction, bool shift)
     {

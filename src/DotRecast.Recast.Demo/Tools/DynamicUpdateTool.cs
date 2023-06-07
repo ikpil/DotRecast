@@ -35,6 +35,7 @@ using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.DemoTool.Geom;
 using DotRecast.Recast.Demo.Tools.Gizmos;
 using DotRecast.Recast.Demo.UI;
+using DotRecast.Recast.DemoTool;
 using ImGuiNET;
 using Silk.NET.OpenAL;
 using Silk.NET.Windowing;

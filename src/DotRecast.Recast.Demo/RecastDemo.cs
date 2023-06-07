@@ -40,6 +40,7 @@ using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.DemoTool.Geom;
 using DotRecast.Recast.Demo.Tools;
 using DotRecast.Recast.Demo.UI;
+using DotRecast.Recast.DemoTool;
 using static DotRecast.Core.RcMath;
 using Window = Silk.NET.Windowing.Window;
 

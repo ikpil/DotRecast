@@ -29,6 +29,7 @@ using DotRecast.Detour.Crowd.Tracking;
 using DotRecast.Detour.QueryResults;
 using DotRecast.Recast.DemoTool.Builder;
 using DotRecast.Recast.Demo.Draw;
+using DotRecast.Recast.DemoTool;
 using DotRecast.Recast.DemoTool.Geom;
 using ImGuiNET;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
@@ -46,8 +47,7 @@ public class CrowdTool : Tool
     private readonly CrowdProfilingTool profilingTool;
     private readonly CrowdAgentDebugInfo m_agentDebug = new CrowdAgentDebugInfo();
 
-    public static readonly int AGENT_MAX_TRAIL = 64;
-    private readonly Dictionary<long, AgentTrail> m_trails = new();
+    private readonly Dictionary<long, CrowdAgentTrail> m_trails = new();
     private RcVec3f m_targetPos;
     private long m_targetRef;
     private CrowdToolMode m_mode = CrowdToolMode.CREATE;
@@ -197,11 +197,11 @@ public class CrowdTool : Tool
             // Init trail
             if (!m_trails.TryGetValue(ag.idx, out var trail))
             {
-                trail = new AgentTrail();
+                trail = new CrowdAgentTrail();
                 m_trails.Add(ag.idx, trail);
             }
 
-            for (int i = 0; i < AGENT_MAX_TRAIL; ++i)
+            for (int i = 0; i < CrowdAgentTrail.AGENT_MAX_TRAIL; ++i)
             {
                 trail.trail[i * 3] = p.x;
                 trail.trail[i * 3 + 1] = p.y;
@@ -394,18 +394,18 @@ public class CrowdTool : Tool
         // Trail
         foreach (CrowdAgent ag in crowd.GetActiveAgents())
         {
-            AgentTrail trail = m_trails[ag.idx];
+            CrowdAgentTrail trail = m_trails[ag.idx];
             RcVec3f pos = ag.npos;
 
             dd.Begin(LINES, 3.0f);
             RcVec3f prev = new RcVec3f();
             float preva = 1;
             prev = pos;
-            for (int j = 0; j < AGENT_MAX_TRAIL - 1; ++j)
+            for (int j = 0; j < CrowdAgentTrail.AGENT_MAX_TRAIL - 1; ++j)
             {
-                int idx = (trail.htrail + AGENT_MAX_TRAIL - j) % AGENT_MAX_TRAIL;
+                int idx = (trail.htrail + CrowdAgentTrail.AGENT_MAX_TRAIL - j) % CrowdAgentTrail.AGENT_MAX_TRAIL;
                 int v = idx * 3;
-                float a = 1 - j / (float)AGENT_MAX_TRAIL;
+                float a = 1 - j / (float)CrowdAgentTrail.AGENT_MAX_TRAIL;
                 dd.Vertex(prev.x, prev.y + 0.1f, prev.z, DuRGBA(0, 0, 0, (int)(128 * preva)));
                 dd.Vertex(trail.trail[v], trail.trail[v + 1] + 0.1f, trail.trail[v + 2], DuRGBA(0, 0, 0, (int)(128 * a)));
                 preva = a;
@@ -650,9 +650,9 @@ public class CrowdTool : Tool
         // Update agent trails
         foreach (CrowdAgent ag in crowd.GetActiveAgents())
         {
-            AgentTrail trail = m_trails[ag.idx];
+            CrowdAgentTrail trail = m_trails[ag.idx];
             // Update agent movement trail.
-            trail.htrail = (trail.htrail + 1) % AGENT_MAX_TRAIL;
+            trail.htrail = (trail.htrail + 1) % CrowdAgentTrail.AGENT_MAX_TRAIL;
             trail.trail[trail.htrail * 3] = ag.npos.x;
             trail.trail[trail.htrail * 3 + 1] = ag.npos.y;
             trail.trail[trail.htrail * 3 + 2] = ag.npos.z;

@@ -23,6 +23,7 @@ using Silk.NET.Windowing;
 using DotRecast.Detour.Extras.Jumplink;
 using DotRecast.Recast.DemoTool.Builder;
 using DotRecast.Recast.Demo.Draw;
+using DotRecast.Recast.DemoTool;
 using DotRecast.Recast.DemoTool.Geom;
 using ImGuiNET;
 using static DotRecast.Core.RcMath;
