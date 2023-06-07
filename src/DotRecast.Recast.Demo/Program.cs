@@ -10,8 +10,8 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        InitializeLogger();
         InitializeWorkingDirectory();
+        InitializeLogger();
         StartDemo();
     }
 
@@ -27,8 +27,9 @@ public static class Program
             .WriteTo.Async(c => c.Console(outputTemplate: format))
             .WriteTo.Async(c => c.File(
                 "logs/log.log",
-                rollingInterval: RollingInterval.Day,
+                rollingInterval: RollingInterval.Hour,
                 rollOnFileSizeLimit: true,
+                retainedFileCountLimit: null,
                 outputTemplate: format)
             )
             .CreateLogger();
