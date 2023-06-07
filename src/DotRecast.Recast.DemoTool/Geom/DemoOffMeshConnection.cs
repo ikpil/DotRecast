@@ -20,28 +20,29 @@ freely, subject to the following restrictions:
 
 using DotRecast.Core;
 
-namespace DotRecast.Recast.Demo.Geom;
-
-public class DemoOffMeshConnection
+namespace DotRecast.Recast.DemoTool.Geom
 {
-    public readonly float[] verts;
-    public readonly float radius;
-    public readonly bool bidir;
-    public readonly int area;
-    public readonly int flags;
-
-    public DemoOffMeshConnection(RcVec3f start, RcVec3f end, float radius, bool bidir, int area, int flags)
+    public class DemoOffMeshConnection
     {
-        verts = new float[6];
-        verts[0] = start.x;
-        verts[1] = start.y;
-        verts[2] = start.z;
-        verts[3] = end.x;
-        verts[4] = end.y;
-        verts[5] = end.z;
-        this.radius = radius;
-        this.bidir = bidir;
-        this.area = area;
-        this.flags = flags;
+        public readonly float[] verts;
+        public readonly float radius;
+        public readonly bool bidir;
+        public readonly int area;
+        public readonly int flags;
+
+        public DemoOffMeshConnection(RcVec3f start, RcVec3f end, float radius, bool bidir, int area, int flags)
+        {
+            verts = new float[6];
+            verts[0] = start.x;
+            verts[1] = start.y;
+            verts[2] = start.z;
+            verts[3] = end.x;
+            verts[4] = end.y;
+            verts[5] = end.z;
+            this.radius = radius;
+            this.bidir = bidir;
+            this.area = area;
+            this.flags = flags;
+        }
     }
 }

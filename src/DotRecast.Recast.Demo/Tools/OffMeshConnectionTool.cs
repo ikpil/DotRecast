@@ -21,9 +21,9 @@ freely, subject to the following restrictions:
 using System;
 using Silk.NET.Windowing;
 using DotRecast.Core;
-using DotRecast.Recast.Demo.Builder;
+using DotRecast.Recast.DemoTool.Builder;
 using DotRecast.Recast.Demo.Draw;
-using DotRecast.Recast.Demo.Geom;
+using DotRecast.Recast.DemoTool.Geom;
 using ImGuiNET;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 

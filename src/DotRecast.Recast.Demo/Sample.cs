@@ -21,7 +21,7 @@ freely, subject to the following restrictions:
 using System.Collections.Generic;
 using DotRecast.Detour;
 using DotRecast.Recast.Demo.Draw;
-using DotRecast.Recast.Demo.Geom;
+using DotRecast.Recast.DemoTool.Geom;
 
 using DotRecast.Recast.Demo.UI;
 

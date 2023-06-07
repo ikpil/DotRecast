@@ -24,7 +24,7 @@ using System.Numerics;
 using DotRecast.Core;
 using DotRecast.Detour;
 using DotRecast.Detour.QueryResults;
-using DotRecast.Recast.Demo.Builder;
+using DotRecast.Recast.DemoTool.Builder;
 using Silk.NET.OpenGL;
 
 namespace DotRecast.Recast.Demo.Draw;

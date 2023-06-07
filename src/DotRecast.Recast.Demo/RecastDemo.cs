@@ -35,9 +35,9 @@ using DotRecast.Core;
 using DotRecast.Detour;
 using DotRecast.Detour.Extras.Unity.Astar;
 using DotRecast.Detour.Io;
-using DotRecast.Recast.Demo.Builder;
+using DotRecast.Recast.DemoTool.Builder;
 using DotRecast.Recast.Demo.Draw;
-using DotRecast.Recast.Demo.Geom;
+using DotRecast.Recast.DemoTool.Geom;
 using DotRecast.Recast.Demo.Tools;
 using DotRecast.Recast.Demo.UI;
 using static DotRecast.Core.RcMath;
@@ -385,10 +385,12 @@ public class RecastDemo
         var renderGl = _gl.GetStringS(GLEnum.Renderer);
         var glslString = _gl.GetStringS(GLEnum.ShadingLanguageVersion);
 
-        Logger.Debug(vendor);
-        Logger.Debug(version);
-        Logger.Debug(renderGl);
-        Logger.Debug(glslString);
+        var workingDirectory = Directory.GetCurrentDirectory();
+        Logger.Information($"working directory - {workingDirectory}");
+        Logger.Information(vendor);
+        Logger.Information(version);
+        Logger.Information(renderGl);
+        Logger.Information(glslString);
 
 
         DemoInputGeomProvider geom = LoadInputMesh(Loader.ToBytes("nav_test.obj"));

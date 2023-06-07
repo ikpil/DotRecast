@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using DotRecast.Recast.Demo.Geom;
+using DotRecast.Recast.DemoTool.Geom;
 
 namespace DotRecast.Recast.Demo.Tools;
 
