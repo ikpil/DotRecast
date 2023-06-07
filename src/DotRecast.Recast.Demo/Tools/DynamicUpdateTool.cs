@@ -73,8 +73,8 @@ public class DynamicUpdateTool : Tool
     private long buildTime;
     private long raycastTime;
 
-    private int colliderShapeIdx = (int)ColliderShape.SPHERE;
-    private ColliderShape colliderShape = ColliderShape.SPHERE;
+    private int colliderShapeIdx = (int)DynamicColliderShape.SPHERE;
+    private DynamicColliderShape colliderShape = DynamicColliderShape.SPHERE;
 
     private DynamicNavMesh dynaMesh;
     private readonly TaskFactory executor;
@@ -113,35 +113,35 @@ public class DynamicUpdateTool : Tool
                 Tuple<ICollider, IColliderGizmo> colliderWithGizmo = null;
                 if (dynaMesh != null)
                 {
-                    if (colliderShape == ColliderShape.SPHERE)
+                    if (colliderShape == DynamicColliderShape.SPHERE)
                     {
                         colliderWithGizmo = SphereCollider(p);
                     }
-                    else if (colliderShape == ColliderShape.CAPSULE)
+                    else if (colliderShape == DynamicColliderShape.CAPSULE)
                     {
                         colliderWithGizmo = CapsuleCollider(p);
                     }
-                    else if (colliderShape == ColliderShape.BOX)
+                    else if (colliderShape == DynamicColliderShape.BOX)
                     {
                         colliderWithGizmo = BoxCollider(p);
                     }
-                    else if (colliderShape == ColliderShape.CYLINDER)
+                    else if (colliderShape == DynamicColliderShape.CYLINDER)
                     {
                         colliderWithGizmo = CylinderCollider(p);
                     }
-                    else if (colliderShape == ColliderShape.COMPOSITE)
+                    else if (colliderShape == DynamicColliderShape.COMPOSITE)
                     {
                         colliderWithGizmo = CompositeCollider(p);
                     }
-                    else if (colliderShape == ColliderShape.TRIMESH_BRIDGE)
+                    else if (colliderShape == DynamicColliderShape.TRIMESH_BRIDGE)
                     {
                         colliderWithGizmo = TrimeshBridge(p);
                     }
-                    else if (colliderShape == ColliderShape.TRIMESH_HOUSE)
+                    else if (colliderShape == DynamicColliderShape.TRIMESH_HOUSE)
                     {
                         colliderWithGizmo = TrimeshHouse(p);
                     }
-                    else if (colliderShape == ColliderShape.CONVEX)
+                    else if (colliderShape == DynamicColliderShape.CONVEX)
                     {
                         colliderWithGizmo = ConvexTrimesh(p);
                     }
@@ -617,19 +617,19 @@ public class DynamicUpdateTool : Tool
             ImGui.Separator();
             var prev = colliderShape;
             ImGui.Checkbox("Show", ref showColliders);
-            ImGui.RadioButton("Sphere", ref colliderShapeIdx, (int)ColliderShape.SPHERE);
-            ImGui.RadioButton("Capsule", ref colliderShapeIdx, (int)ColliderShape.CAPSULE);
-            ImGui.RadioButton("Box", ref colliderShapeIdx, (int)ColliderShape.BOX);
-            ImGui.RadioButton("Cylinder", ref colliderShapeIdx, (int)ColliderShape.CYLINDER);
-            ImGui.RadioButton("Composite", ref colliderShapeIdx, (int)ColliderShape.COMPOSITE);
-            ImGui.RadioButton("Convex Trimesh", ref colliderShapeIdx, (int)ColliderShape.CONVEX);
-            ImGui.RadioButton("Trimesh Bridge", ref colliderShapeIdx, (int)ColliderShape.TRIMESH_BRIDGE);
-            ImGui.RadioButton("Trimesh House", ref colliderShapeIdx, (int)ColliderShape.TRIMESH_HOUSE);
+            ImGui.RadioButton("Sphere", ref colliderShapeIdx, (int)DynamicColliderShape.SPHERE);
+            ImGui.RadioButton("Capsule", ref colliderShapeIdx, (int)DynamicColliderShape.CAPSULE);
+            ImGui.RadioButton("Box", ref colliderShapeIdx, (int)DynamicColliderShape.BOX);
+            ImGui.RadioButton("Cylinder", ref colliderShapeIdx, (int)DynamicColliderShape.CYLINDER);
+            ImGui.RadioButton("Composite", ref colliderShapeIdx, (int)DynamicColliderShape.COMPOSITE);
+            ImGui.RadioButton("Convex Trimesh", ref colliderShapeIdx, (int)DynamicColliderShape.CONVEX);
+            ImGui.RadioButton("Trimesh Bridge", ref colliderShapeIdx, (int)DynamicColliderShape.TRIMESH_BRIDGE);
+            ImGui.RadioButton("Trimesh House", ref colliderShapeIdx, (int)DynamicColliderShape.TRIMESH_HOUSE);
             ImGui.NewLine();
 
             if ((int)prev != colliderShapeIdx)
             {
-                colliderShape = (ColliderShape)colliderShapeIdx;
+                colliderShape = (DynamicColliderShape)colliderShapeIdx;
             }
         }
 
