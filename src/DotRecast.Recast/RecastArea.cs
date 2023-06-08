@@ -283,7 +283,7 @@ namespace DotRecast.Recast
         /// The value of spacial parameters are in world units.
         ///
         /// @see rcCompactHeightfield, rcMedianFilterWalkableArea
-        public void MarkBoxArea(Telemetry ctx, float[] bmin, float[] bmax, AreaModification areaMod, RcCompactHeightfield chf)
+        public static void MarkBoxArea(Telemetry ctx, float[] bmin, float[] bmax, AreaModification areaMod, RcCompactHeightfield chf)
         {
             ctx.StartTimer("MARK_BOX_AREA");
 

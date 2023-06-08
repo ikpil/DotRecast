@@ -1615,7 +1615,7 @@ namespace DotRecast.Recast
         }
 
         /// @see rcAllocPolyMeshDetail, rcPolyMeshDetail
-        RcPolyMeshDetail MergePolyMeshDetails(Telemetry ctx, RcPolyMeshDetail[] meshes, int nmeshes)
+        private static RcPolyMeshDetail MergePolyMeshDetails(Telemetry ctx, RcPolyMeshDetail[] meshes, int nmeshes)
         {
             RcPolyMeshDetail mesh = new RcPolyMeshDetail();
 
