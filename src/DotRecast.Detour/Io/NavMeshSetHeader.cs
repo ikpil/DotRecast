@@ -28,7 +28,7 @@ namespace DotRecast.Detour.Io
         public int magic;
         public int version;
         public int numTiles;
-        public NavMeshParams option = new NavMeshParams();
+        public DtNavMeshParams option = new DtNavMeshParams();
         public int maxVertsPerPoly;
     }
 }

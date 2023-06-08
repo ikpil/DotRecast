@@ -54,7 +54,7 @@ public class FindLocalNeighbourhoodTest : AbstractDetourTest
     [Test]
     public void TestFindNearestPoly()
     {
-        IQueryFilter filter = new DefaultQueryFilter();
+        IDtQueryFilter filter = new DtQueryDefaultFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
             RcVec3f startPos = startPoss[i];

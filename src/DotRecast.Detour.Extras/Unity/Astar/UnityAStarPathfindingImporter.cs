@@ -33,12 +33,12 @@ namespace DotRecast.Detour.Extras.Unity.Astar
         private readonly LinkBuilder linkCreator = new LinkBuilder();
         private readonly OffMeshLinkCreator offMeshLinkCreator = new OffMeshLinkCreator();
 
-        public NavMesh[] Load(FileStream zipFile)
+        public DtNavMesh[] Load(FileStream zipFile)
         {
             GraphData graphData = reader.Read(zipFile);
             Meta meta = graphData.meta;
             NodeLink2[] nodeLinks2 = graphData.nodeLinks2;
-            NavMesh[] meshes = new NavMesh[meta.graphs];
+            DtNavMesh[] meshes = new DtNavMesh[meta.graphs];
             int nodeOffset = 0;
             for (int graphIndex = 0; graphIndex < meta.graphs; graphIndex++)
             {
@@ -58,7 +58,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                 linkCreator.Build(nodeOffset, graphMeshData, connections);
                 // Finally, process all the off-mesh links that can be actually converted to detour data
                 offMeshLinkCreator.Build(graphMeshData, nodeLinks2, nodeOffset);
-                NavMeshParams option = new NavMeshParams();
+                DtNavMeshParams option = new DtNavMeshParams();
                 option.maxTiles = graphMeshData.tiles.Length;
                 option.maxPolys = 32768;
                 option.tileWidth = graphMeta.tileSizeX * graphMeta.cellSize;
@@ -66,8 +66,8 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                 option.orig.x = -0.5f * graphMeta.forcedBoundsSize.x + graphMeta.forcedBoundsCenter.x;
                 option.orig.y = -0.5f * graphMeta.forcedBoundsSize.y + graphMeta.forcedBoundsCenter.y;
                 option.orig.z = -0.5f * graphMeta.forcedBoundsSize.z + graphMeta.forcedBoundsCenter.z;
-                NavMesh mesh = new NavMesh(option, 3);
-                foreach (MeshData t in graphMeshData.tiles)
+                DtNavMesh mesh = new DtNavMesh(option, 3);
+                foreach (DtMeshData t in graphMeshData.tiles)
                 {
                     mesh.AddTile(t, 0, 0);
                 }

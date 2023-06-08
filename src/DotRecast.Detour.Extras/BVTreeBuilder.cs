@@ -23,15 +23,15 @@ namespace DotRecast.Detour.Extras
 {
     public class BVTreeBuilder
     {
-        public void Build(MeshData data)
+        public void Build(DtMeshData data)
         {
-            data.bvTree = new BVNode[data.header.polyCount * 2];
+            data.bvTree = new DtBVNode[data.header.polyCount * 2];
             data.header.bvNodeCount = data.bvTree.Length == 0
                 ? 0
                 : CreateBVTree(data, data.bvTree, data.header.bvQuantFactor);
         }
 
-        private static int CreateBVTree(MeshData data, BVNode[] nodes, float quantFactor)
+        private static int CreateBVTree(DtMeshData data, DtBVNode[] nodes, float quantFactor)
         {
             BVItem[] items = new BVItem[data.header.polyCount];
             for (int i = 0; i < data.header.polyCount; i++)

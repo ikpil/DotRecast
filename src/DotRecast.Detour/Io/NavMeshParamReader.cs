@@ -4,9 +4,9 @@ namespace DotRecast.Detour.Io
 {
     public class NavMeshParamReader
     {
-        public NavMeshParams Read(RcByteBuffer bb)
+        public DtNavMeshParams Read(RcByteBuffer bb)
         {
-            NavMeshParams option = new NavMeshParams();
+            DtNavMeshParams option = new DtNavMeshParams();
             option.orig.x = bb.GetFloat();
             option.orig.y = bb.GetFloat();
             option.orig.z = bb.GetFloat();

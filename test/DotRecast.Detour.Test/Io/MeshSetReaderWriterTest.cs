@@ -65,7 +65,7 @@ public class MeshSetReaderWriterTest
         header.option.maxTiles = m_maxTiles;
         header.option.maxPolys = m_maxPolysPerTile;
         header.numTiles = 0;
-        NavMesh mesh = new NavMesh(header.option, 6);
+        DtNavMesh mesh = new DtNavMesh(header.option, 6);
 
         RcVec3f bmin = geom.GetMeshBoundsMin();
         RcVec3f bmax = geom.GetMeshBoundsMax();
@@ -81,7 +81,7 @@ public class MeshSetReaderWriterTest
                     m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
                 RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, bmin, bmax, x, y);
                 TestDetourBuilder db = new TestDetourBuilder();
-                MeshData data = db.Build(geom, bcfg, m_agentHeight, m_agentRadius, m_agentMaxClimb, x, y, true);
+                DtMeshData data = db.Build(geom, bcfg, m_agentHeight, m_agentRadius, m_agentMaxClimb, x, y, true);
                 if (data != null)
                 {
                     mesh.RemoveTile(mesh.GetTileRefAt(x, y, 0));
@@ -100,7 +100,7 @@ public class MeshSetReaderWriterTest
         Assert.That(mesh.GetMaxTiles(), Is.EqualTo(128));
         Assert.That(mesh.GetParams().maxPolys, Is.EqualTo(0x8000));
         Assert.That(mesh.GetParams().tileWidth, Is.EqualTo(9.6f).Within(0.001f));
-        List<MeshTile> tiles = mesh.GetTilesAt(6, 9);
+        List<DtMeshTile> tiles = mesh.GetTilesAt(6, 9);
         Assert.That(tiles.Count, Is.EqualTo(1));
         Assert.That(tiles[0].data.polys.Length, Is.EqualTo(2));
         Assert.That(tiles[0].data.verts.Length, Is.EqualTo(7 * 3));

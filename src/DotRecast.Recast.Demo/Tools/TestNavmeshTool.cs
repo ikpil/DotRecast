@@ -25,7 +25,7 @@ public class TestNavmeshTool : Tool
     private bool m_eposSet;
     private RcVec3f m_spos;
     private RcVec3f m_epos;
-    private readonly DefaultQueryFilter m_filter;
+    private readonly DtQueryDefaultFilter m_filter;
     private readonly RcVec3f m_polyPickExt = RcVec3f.Of(2, 4, 2);
     private long m_startRef;
     private long m_endRef;
@@ -40,7 +40,7 @@ public class TestNavmeshTool : Tool
     private float m_neighbourhoodRadius;
     private readonly float[] m_queryPoly = new float[12];
     private List<RcVec3f> m_smoothPath;
-    private Status m_pathFindStatus = Status.FAILURE;
+    private DtStatus m_pathFindStatus = DtStatus.FAILURE;
     private bool enableRaycast = true;
     private readonly List<RcVec3f> randomPoints = new();
     private bool constrainByCircle;
@@ -50,7 +50,7 @@ public class TestNavmeshTool : Tool
 
     public TestNavmeshTool()
     {
-        m_filter = new DefaultQueryFilter(SampleAreaModifications.SAMPLE_POLYFLAGS_ALL,
+        m_filter = new DtQueryDefaultFilter(SampleAreaModifications.SAMPLE_POLYFLAGS_ALL,
             SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED, new float[] { 1f, 1f, 1f, 1f, 2f, 1.5f });
     }
 
@@ -110,8 +110,8 @@ public class TestNavmeshTool : Tool
             ImGui.Text("Vertices at crossings");
             ImGui.Separator();
             ImGui.RadioButton("None", ref m_straightPathOptions, 0);
-            ImGui.RadioButton("Area", ref m_straightPathOptions, NavMeshQuery.DT_STRAIGHTPATH_AREA_CROSSINGS);
-            ImGui.RadioButton("All", ref m_straightPathOptions, NavMeshQuery.DT_STRAIGHTPATH_ALL_CROSSINGS);
+            ImGui.RadioButton("Area", ref m_straightPathOptions, DtNavMeshQuery.DT_STRAIGHTPATH_AREA_CROSSINGS);
+            ImGui.RadioButton("All", ref m_straightPathOptions, DtNavMeshQuery.DT_STRAIGHTPATH_ALL_CROSSINGS);
         }
 
         if (m_toolMode == TestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE)
@@ -165,7 +165,7 @@ public class TestNavmeshTool : Tool
             return;
         }
 
-        NavMeshQuery m_navQuery = m_sample.GetNavMeshQuery();
+        DtNavMeshQuery m_navQuery = m_sample.GetNavMeshQuery();
         if (m_sposSet)
         {
             m_startRef = m_navQuery.FindNearestPoly(m_spos, m_polyPickExt, m_filter).result?.GetNearestRef() ?? 0;
@@ -184,13 +184,13 @@ public class TestNavmeshTool : Tool
             m_endRef = 0;
         }
 
-        NavMesh m_navMesh = m_sample.GetNavMesh();
+        DtNavMesh m_navMesh = m_sample.GetNavMesh();
         if (m_toolMode == TestNavmeshToolMode.PATHFIND_FOLLOW)
         {
             if (m_sposSet && m_eposSet && m_startRef != 0 && m_endRef != 0)
             {
                 m_polys = m_navQuery.FindPath(m_startRef, m_endRef, m_spos, m_epos, m_filter,
-                    enableRaycast ? NavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue).result;
+                    enableRaycast ? DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue).result;
                 if (0 < m_polys.Count)
                 {
                     List<long> polys = new(m_polys);
@@ -216,11 +216,11 @@ public class TestNavmeshTool : Tool
                             break;
                         }
 
-                        bool endOfPath = (steerTarget.steerPosFlag & NavMeshQuery.DT_STRAIGHTPATH_END) != 0
+                        bool endOfPath = (steerTarget.steerPosFlag & DtNavMeshQuery.DT_STRAIGHTPATH_END) != 0
                             ? true
                             : false;
                         bool offMeshConnection = (steerTarget.steerPosFlag
-                                                  & NavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0
+                                                  & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0
                             ? true
                             : false;
 
@@ -327,7 +327,7 @@ public class TestNavmeshTool : Tool
             if (m_sposSet && m_eposSet && m_startRef != 0 && m_endRef != 0)
             {
                 m_polys = m_navQuery.FindPath(m_startRef, m_endRef, m_spos, m_epos, m_filter,
-                    enableRaycast ? NavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue).result;
+                    enableRaycast ? DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue).result;
                 if (0 < m_polys.Count)
                 {
                     // In case of partial path, make sure the end point is clamped to the last polygon.
@@ -358,7 +358,7 @@ public class TestNavmeshTool : Tool
             if (m_sposSet && m_eposSet && m_startRef != 0 && m_endRef != 0)
             {
                 m_pathFindStatus = m_navQuery.InitSlicedFindPath(m_startRef, m_endRef, m_spos, m_epos, m_filter,
-                    enableRaycast ? NavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue);
+                    enableRaycast ? DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue);
             }
         }
         else if (m_toolMode == TestNavmeshToolMode.RAYCAST)
@@ -367,7 +367,7 @@ public class TestNavmeshTool : Tool
             if (m_sposSet && m_eposSet && m_startRef != 0)
             {
                 {
-                    Result<RaycastHit> hit = m_navQuery.Raycast(m_startRef, m_spos, m_epos, m_filter, 0, 0);
+                    Result<DtRaycastHit> hit = m_navQuery.Raycast(m_startRef, m_spos, m_epos, m_filter, 0, 0);
                     if (hit.Succeeded())
                     {
                         m_polys = hit.result.path;
@@ -533,7 +533,7 @@ public class TestNavmeshTool : Tool
 
         dd.DepthMask(true);
 
-        NavMesh m_navMesh = m_sample.GetNavMesh();
+        DtNavMesh m_navMesh = m_sample.GetNavMesh();
         if (m_navMesh == null)
         {
             return;
@@ -629,7 +629,7 @@ public class TestNavmeshTool : Tool
                     StraightPathItem straightPathItem = m_straightPath[i];
                     StraightPathItem straightPathItem2 = m_straightPath[i + 1];
                     int col;
-                    if ((straightPathItem.GetFlags() & NavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
+                    if ((straightPathItem.GetFlags() & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
                     {
                         col = offMeshCol;
                     }
@@ -650,15 +650,15 @@ public class TestNavmeshTool : Tool
                 {
                     StraightPathItem straightPathItem = m_straightPath[i];
                     int col;
-                    if ((straightPathItem.GetFlags() & NavMeshQuery.DT_STRAIGHTPATH_START) != 0)
+                    if ((straightPathItem.GetFlags() & DtNavMeshQuery.DT_STRAIGHTPATH_START) != 0)
                     {
                         col = startCol;
                     }
-                    else if ((straightPathItem.GetFlags() & NavMeshQuery.DT_STRAIGHTPATH_END) != 0)
+                    else if ((straightPathItem.GetFlags() & DtNavMeshQuery.DT_STRAIGHTPATH_END) != 0)
                     {
                         col = endCol;
                     }
-                    else if ((straightPathItem.GetFlags() & NavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
+                    else if ((straightPathItem.GetFlags() & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
                     {
                         col = offMeshCol;
                     }
@@ -947,15 +947,15 @@ public class TestNavmeshTool : Tool
         dd.DepthMask(true);
     }
 
-    private RcVec3f GetPolyCenter(NavMesh navMesh, long refs)
+    private RcVec3f GetPolyCenter(DtNavMesh navMesh, long refs)
     {
         RcVec3f center = RcVec3f.Zero;
 
-        Result<Tuple<MeshTile, Poly>> tileAndPoly = navMesh.GetTileAndPolyByRef(refs);
+        Result<Tuple<DtMeshTile, DtPoly>> tileAndPoly = navMesh.GetTileAndPolyByRef(refs);
         if (tileAndPoly.Succeeded())
         {
-            MeshTile tile = tileAndPoly.result.Item1;
-            Poly poly = tileAndPoly.result.Item2;
+            DtMeshTile tile = tileAndPoly.result.Item1;
+            DtPoly poly = tileAndPoly.result.Item2;
             for (int i = 0; i < poly.vertCount; ++i)
             {
                 int v = poly.verts[i] * 3;
@@ -978,7 +978,7 @@ public class TestNavmeshTool : Tool
         // TODO Auto-generated method stub
         if (m_toolMode == TestNavmeshToolMode.PATHFIND_SLICED)
         {
-            NavMeshQuery m_navQuery = m_sample.GetNavMeshQuery();
+            DtNavMeshQuery m_navQuery = m_sample.GetNavMeshQuery();
             if (m_pathFindStatus.IsInProgress())
             {
                 m_pathFindStatus = m_navQuery.UpdateSlicedFindPath(1).status;
@@ -1005,7 +1005,7 @@ public class TestNavmeshTool : Tool
 
                     {
                         Result<List<StraightPathItem>> result = m_navQuery.FindStraightPath(m_spos, epos, m_polys,
-                            MAX_POLYS, NavMeshQuery.DT_STRAIGHTPATH_ALL_CROSSINGS);
+                            MAX_POLYS, DtNavMeshQuery.DT_STRAIGHTPATH_ALL_CROSSINGS);
                         if (result.Succeeded())
                         {
                             m_straightPath = result.result;
@@ -1013,7 +1013,7 @@ public class TestNavmeshTool : Tool
                     }
                 }
 
-                m_pathFindStatus = Status.FAILURE;
+                m_pathFindStatus = DtStatus.FAILURE;
             }
         }
     }

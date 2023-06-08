@@ -22,9 +22,9 @@ namespace DotRecast.Detour
 {
     public class DetourBuilder
     {
-        public MeshData Build(NavMeshDataCreateParams option, int tileX, int tileY)
+        public DtMeshData Build(DtNavMeshCreateParams option, int tileX, int tileY)
         {
-            MeshData data = NavMeshBuilder.CreateNavMeshData(option);
+            DtMeshData data = NavMeshBuilder.CreateNavMeshData(option);
             if (data != null)
             {
                 data.header.x = tileX;

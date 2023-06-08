@@ -52,18 +52,18 @@ public abstract class AbstractDetourTest
         RcVec3f.Of(18.784092f, 10.197294f, 3.0543678f),
     };
 
-    protected NavMeshQuery query;
-    protected NavMesh navmesh;
+    protected DtNavMeshQuery query;
+    protected DtNavMesh navmesh;
 
     [SetUp]
     public void SetUp()
     {
         navmesh = CreateNavMesh();
-        query = new NavMeshQuery(navmesh);
+        query = new DtNavMeshQuery(navmesh);
     }
 
-    protected NavMesh CreateNavMesh()
+    protected DtNavMesh CreateNavMesh()
     {
-        return new NavMesh(new RecastTestMeshBuilder().GetMeshData(), 6, 0);
+        return new DtNavMesh(new RecastTestMeshBuilder().GetMeshData(), 6, 0);
     }
 }

@@ -101,7 +101,7 @@ public class FindPolysAroundCircleTest : AbstractDetourTest
     [Test]
     public void TestFindPolysAroundCircle()
     {
-        IQueryFilter filter = new DefaultQueryFilter();
+        IDtQueryFilter filter = new DtQueryDefaultFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];

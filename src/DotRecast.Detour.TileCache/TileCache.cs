@@ -49,7 +49,7 @@ namespace DotRecast.Detour.TileCache
         private readonly int m_tileBits;
 
         /// < Number of tile bits in the tile ID.
-        private readonly NavMesh m_navmesh;
+        private readonly DtNavMesh m_navmesh;
 
         private readonly TileCacheParams m_params;
         private readonly TileCacheStorageParams m_storageParams;
@@ -111,7 +111,7 @@ namespace DotRecast.Detour.TileCache
             return (int)(refs & tileMask);
         }
 
-        public TileCache(TileCacheParams option, TileCacheStorageParams storageParams, NavMesh navmesh,
+        public TileCache(TileCacheParams option, TileCacheStorageParams storageParams, DtNavMesh navmesh,
             ITileCacheCompressor tcomp, ITileCacheMeshProcess tmprocs)
         {
             m_params = option;
@@ -172,7 +172,7 @@ namespace DotRecast.Detour.TileCache
             List<long> tiles = new List<long>();
 
             // Find tile based on hash.
-            int h = NavMesh.ComputeTileHash(tx, ty, m_tileLutMask);
+            int h = DtNavMesh.ComputeTileHash(tx, ty, m_tileLutMask);
             CompressedTile tile = m_posLookup[h];
             while (tile != null)
             {
@@ -190,7 +190,7 @@ namespace DotRecast.Detour.TileCache
         CompressedTile GetTileAt(int tx, int ty, int tlayer)
         {
             // Find tile based on hash.
-            int h = NavMesh.ComputeTileHash(tx, ty, m_tileLutMask);
+            int h = DtNavMesh.ComputeTileHash(tx, ty, m_tileLutMask);
             CompressedTile tile = m_posLookup[h];
             while (tile != null)
             {
@@ -278,7 +278,7 @@ namespace DotRecast.Detour.TileCache
             }
 
             // Insert tile into the position lut.
-            int h = NavMesh.ComputeTileHash(header.tx, header.ty, m_tileLutMask);
+            int h = DtNavMesh.ComputeTileHash(header.tx, header.ty, m_tileLutMask);
             tile.next = m_posLookup[h];
             m_posLookup[h] = tile;
 
@@ -317,7 +317,7 @@ namespace DotRecast.Detour.TileCache
             }
 
             // Remove tile from hash lookup.
-            int h = NavMesh.ComputeTileHash(tile.header.tx, tile.header.ty, m_tileLutMask);
+            int h = DtNavMesh.ComputeTileHash(tile.header.tx, tile.header.ty, m_tileLutMask);
             CompressedTile prev = null;
             CompressedTile cur = m_posLookup[h];
             while (cur != null)
@@ -641,7 +641,7 @@ namespace DotRecast.Detour.TileCache
                 return;
             }
 
-            NavMeshDataCreateParams option = new NavMeshDataCreateParams();
+            DtNavMeshCreateParams option = new DtNavMeshCreateParams();
             option.verts = polyMesh.verts;
             option.vertCount = polyMesh.nverts;
             option.polys = polyMesh.polys;
@@ -665,7 +665,7 @@ namespace DotRecast.Detour.TileCache
                 m_tmproc.Process(option);
             }
 
-            MeshData meshData = NavMeshBuilder.CreateNavMeshData(option);
+            DtMeshData meshData = NavMeshBuilder.CreateNavMeshData(option);
             // Remove existing tile.
             m_navmesh.RemoveTile(m_navmesh.GetTileRefAt(tile.header.tx, tile.header.ty, tile.header.tlayer));
             // Add new tile, or leave the location empty. if (navData) { // Let the
@@ -741,7 +741,7 @@ namespace DotRecast.Detour.TileCache
             return m_tiles[i];
         }
 
-        public NavMesh GetNavMesh()
+        public DtNavMesh GetNavMesh()
         {
             return m_navmesh;
         }

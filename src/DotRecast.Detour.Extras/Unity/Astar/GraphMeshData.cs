@@ -22,9 +22,9 @@ namespace DotRecast.Detour.Extras.Unity.Astar
     {
         public readonly int tileXCount;
         public readonly int tileZCount;
-        public readonly MeshData[] tiles;
+        public readonly DtMeshData[] tiles;
 
-        public GraphMeshData(int tileXCount, int tileZCount, MeshData[] tiles)
+        public GraphMeshData(int tileXCount, int tileZCount, DtMeshData[] tiles)
         {
             this.tileXCount = tileXCount;
             this.tileZCount = tileZCount;
@@ -34,7 +34,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
         public int CountNodes()
         {
             int polyCount = 0;
-            foreach (MeshData t in tiles)
+            foreach (DtMeshData t in tiles)
             {
                 polyCount += t.header.polyCount;
             }
@@ -42,10 +42,10 @@ namespace DotRecast.Detour.Extras.Unity.Astar
             return polyCount;
         }
 
-        public Poly GetNode(int node)
+        public DtPoly GetNode(int node)
         {
             int index = 0;
-            foreach (MeshData t in tiles)
+            foreach (DtMeshData t in tiles)
             {
                 if (node - index >= 0 && node - index < t.header.polyCount)
                 {
@@ -58,10 +58,10 @@ namespace DotRecast.Detour.Extras.Unity.Astar
             return null;
         }
 
-        public MeshData GetTile(int node)
+        public DtMeshData GetTile(int node)
         {
             int index = 0;
-            foreach (MeshData t in tiles)
+            foreach (DtMeshData t in tiles)
             {
                 if (node - index >= 0 && node - index < t.header.polyCount)
                 {

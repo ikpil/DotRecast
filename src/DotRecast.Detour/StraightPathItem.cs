@@ -22,8 +22,6 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
-    using static DotRecast.Core.RcMath;
-
 //TODO: (PP) Add comments
     public class StraightPathItem
     {

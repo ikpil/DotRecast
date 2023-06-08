@@ -23,7 +23,7 @@ namespace DotRecast.Detour.Test;
 
 public class TestDetourBuilder : DetourBuilder
 {
-    public MeshData Build(IInputGeomProvider geom, RecastBuilderConfig rcConfig, float agentHeight, float agentRadius,
+    public DtMeshData Build(IInputGeomProvider geom, RecastBuilderConfig rcConfig, float agentHeight, float agentRadius,
         float agentMaxClimb, int x, int y, bool applyRecastDemoFlags)
     {
         RecastBuilder rcBuilder = new RecastBuilder();
@@ -59,15 +59,15 @@ public class TestDetourBuilder : DetourBuilder
         }
 
         RcPolyMeshDetail dmesh = rcResult.GetMeshDetail();
-        NavMeshDataCreateParams option = GetNavMeshCreateParams(rcConfig.cfg, pmesh, dmesh, agentHeight, agentRadius,
+        DtNavMeshCreateParams option = GetNavMeshCreateParams(rcConfig.cfg, pmesh, dmesh, agentHeight, agentRadius,
             agentMaxClimb);
         return Build(option, x, y);
     }
 
-    public NavMeshDataCreateParams GetNavMeshCreateParams(RcConfig rcConfig, RcPolyMesh pmesh, RcPolyMeshDetail dmesh,
+    public DtNavMeshCreateParams GetNavMeshCreateParams(RcConfig rcConfig, RcPolyMesh pmesh, RcPolyMeshDetail dmesh,
         float agentHeight, float agentRadius, float agentMaxClimb)
     {
-        NavMeshDataCreateParams option = new NavMeshDataCreateParams();
+        DtNavMeshCreateParams option = new DtNavMeshCreateParams();
         option.verts = pmesh.verts;
         option.vertCount = pmesh.nverts;
         option.polys = pmesh.polys;

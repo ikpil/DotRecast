@@ -99,8 +99,8 @@ public class Crowd4VelocityTest : AbstractCrowdTest
     [Test]
     public void TestAgent1Quality3TVTA()
     {
-        int updateFlags = CrowdAgentParams.DT_CROWD_ANTICIPATE_TURNS | CrowdAgentParams.DT_CROWD_OPTIMIZE_VIS
-                                                                     | CrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO | CrowdAgentParams.DT_CROWD_OBSTACLE_AVOIDANCE;
+        int updateFlags = DtCrowdAgentParams.DT_CROWD_ANTICIPATE_TURNS | DtCrowdAgentParams.DT_CROWD_OPTIMIZE_VIS
+                                                                     | DtCrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO | DtCrowdAgentParams.DT_CROWD_OBSTACLE_AVOIDANCE;
 
         AddAgentGrid(2, 0.3f, updateFlags, 3, endPoss[0]);
         SetMoveTarget(endPoss[4], false);
@@ -112,7 +112,7 @@ public class Crowd4VelocityTest : AbstractCrowdTest
                 SetMoveTarget(startPoss[2], true);
             }
 
-            CrowdAgent ag = agents[1];
+            DtCrowdAgent ag = agents[1];
             Assert.That(ag.npos.x, Is.EqualTo(EXPECTED_A1Q3TVTA[i][0]).Within(0.001f));
             Assert.That(ag.npos.y, Is.EqualTo(EXPECTED_A1Q3TVTA[i][1]).Within(0.001f));
             Assert.That(ag.npos.z, Is.EqualTo(EXPECTED_A1Q3TVTA[i][2]).Within(0.001f));

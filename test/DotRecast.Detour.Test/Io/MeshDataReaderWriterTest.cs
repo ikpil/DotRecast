@@ -27,7 +27,7 @@ namespace DotRecast.Detour.Test.Io;
 public class MeshDataReaderWriterTest
 {
     private const int VERTS_PER_POLYGON = 6;
-    private MeshData meshData;
+    private DtMeshData meshData;
 
     [SetUp]
     public void SetUp()
@@ -71,7 +71,7 @@ public class MeshDataReaderWriterTest
 
         using var bris = new BinaryReader(ms);
         MeshDataReader reader = new MeshDataReader();
-        MeshData readData = reader.Read(bris, VERTS_PER_POLYGON);
+        DtMeshData readData = reader.Read(bris, VERTS_PER_POLYGON);
 
         Assert.That(readData.header.vertCount, Is.EqualTo(meshData.header.vertCount));
         Assert.That(readData.header.polyCount, Is.EqualTo(meshData.header.polyCount));

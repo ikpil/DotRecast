@@ -2,16 +2,16 @@
 
 namespace DotRecast.Detour.Extras.Jumplink
 {
-    public class PolyQueryInvoker : IPolyQuery
+    public class PolyQueryInvoker : IDtPolyQuery
     {
-        public readonly Action<MeshTile, Poly, long> _callback;
+        public readonly Action<DtMeshTile, DtPoly, long> _callback;
 
-        public PolyQueryInvoker(Action<MeshTile, Poly, long> callback)
+        public PolyQueryInvoker(Action<DtMeshTile, DtPoly, long> callback)
         {
             _callback = callback;
         }
 
-        public void Process(MeshTile tile, Poly poly, long refs)
+        public void Process(DtMeshTile tile, DtPoly poly, long refs)
         {
             _callback?.Invoke(tile, poly, refs);
         }

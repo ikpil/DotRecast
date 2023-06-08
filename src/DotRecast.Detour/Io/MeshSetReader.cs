@@ -30,37 +30,37 @@ namespace DotRecast.Detour.Io
         private readonly MeshDataReader meshReader = new MeshDataReader();
         private readonly NavMeshParamReader paramReader = new NavMeshParamReader();
 
-        public NavMesh Read(BinaryReader @is, int maxVertPerPoly)
+        public DtNavMesh Read(BinaryReader @is, int maxVertPerPoly)
         {
             return Read(IOUtils.ToByteBuffer(@is), maxVertPerPoly, false);
         }
 
-        public NavMesh Read(RcByteBuffer bb, int maxVertPerPoly)
+        public DtNavMesh Read(RcByteBuffer bb, int maxVertPerPoly)
         {
             return Read(bb, maxVertPerPoly, false);
         }
 
-        public NavMesh Read32Bit(BinaryReader @is, int maxVertPerPoly)
+        public DtNavMesh Read32Bit(BinaryReader @is, int maxVertPerPoly)
         {
             return Read(IOUtils.ToByteBuffer(@is), maxVertPerPoly, true);
         }
 
-        public NavMesh Read32Bit(RcByteBuffer bb, int maxVertPerPoly)
+        public DtNavMesh Read32Bit(RcByteBuffer bb, int maxVertPerPoly)
         {
             return Read(bb, maxVertPerPoly, true);
         }
 
-        public NavMesh Read(BinaryReader @is)
+        public DtNavMesh Read(BinaryReader @is)
         {
             return Read(IOUtils.ToByteBuffer(@is));
         }
 
-        public NavMesh Read(RcByteBuffer bb)
+        public DtNavMesh Read(RcByteBuffer bb)
         {
             return Read(bb, -1, false);
         }
 
-        NavMesh Read(RcByteBuffer bb, int maxVertPerPoly, bool is32Bit)
+        DtNavMesh Read(RcByteBuffer bb, int maxVertPerPoly, bool is32Bit)
         {
             NavMeshSetHeader header = ReadHeader(bb, maxVertPerPoly);
             if (header.maxVertsPerPoly <= 0)
@@ -69,7 +69,7 @@ namespace DotRecast.Detour.Io
             }
 
             bool cCompatibility = header.version == NavMeshSetHeader.NAVMESHSET_VERSION;
-            NavMesh mesh = new NavMesh(header.option, header.maxVertsPerPoly);
+            DtNavMesh mesh = new DtNavMesh(header.option, header.maxVertsPerPoly);
             ReadTiles(bb, is32Bit, header, cCompatibility, mesh);
             return mesh;
         }
@@ -107,7 +107,7 @@ namespace DotRecast.Detour.Io
             return header;
         }
 
-        private void ReadTiles(RcByteBuffer bb, bool is32Bit, NavMeshSetHeader header, bool cCompatibility, NavMesh mesh)
+        private void ReadTiles(RcByteBuffer bb, bool is32Bit, NavMeshSetHeader header, bool cCompatibility, DtNavMesh mesh)
         {
             // Read tiles.
             for (int i = 0; i < header.numTiles; ++i)
@@ -133,12 +133,12 @@ namespace DotRecast.Detour.Io
                     bb.GetInt(); // C struct padding
                 }
 
-                MeshData data = meshReader.Read(bb, mesh.GetMaxVertsPerPoly(), is32Bit);
+                DtMeshData data = meshReader.Read(bb, mesh.GetMaxVertsPerPoly(), is32Bit);
                 mesh.AddTile(data, i, tileHeader.tileRef);
             }
         }
 
-        private long Convert32BitRef(int refs, NavMeshParams option)
+        private long Convert32BitRef(int refs, DtNavMeshParams option)
         {
             int m_tileBits = DetourCommon.Ilog2(DetourCommon.NextPow2(option.maxTiles));
             int m_polyBits = DetourCommon.Ilog2(DetourCommon.NextPow2(option.maxPolys));
@@ -150,7 +150,7 @@ namespace DotRecast.Detour.Io
             int salt = ((refs >> (m_polyBits + m_tileBits)) & saltMask);
             int it = ((refs >> m_polyBits) & tileMask);
             int ip = refs & polyMask;
-            return NavMesh.EncodePolyId(salt, it, ip);
+            return DtNavMesh.EncodePolyId(salt, it, ip);
         }
     }
 }

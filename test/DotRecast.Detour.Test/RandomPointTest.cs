@@ -32,12 +32,12 @@ public class RandomPointTest : AbstractDetourTest
     public void TestRandom()
     {
         FRand f = new FRand(1);
-        IQueryFilter filter = new DefaultQueryFilter();
+        IDtQueryFilter filter = new DtQueryDefaultFilter();
         for (int i = 0; i < 1000; i++)
         {
             Result<FindRandomPointResult> point = query.FindRandomPoint(filter, f);
             Assert.That(point.Succeeded(), Is.True);
-            Tuple<MeshTile, Poly> tileAndPoly = navmesh.GetTileAndPolyByRef(point.result.GetRandomRef()).result;
+            Tuple<DtMeshTile, DtPoly> tileAndPoly = navmesh.GetTileAndPolyByRef(point.result.GetRandomRef()).result;
             float[] bmin = new float[2];
             float[] bmax = new float[2];
             for (int j = 0; j < tileAndPoly.Item2.vertCount; j++)
@@ -60,7 +60,7 @@ public class RandomPointTest : AbstractDetourTest
     public void TestRandomAroundCircle()
     {
         FRand f = new FRand(1);
-        IQueryFilter filter = new DefaultQueryFilter();
+        IDtQueryFilter filter = new DtQueryDefaultFilter();
         FindRandomPointResult point = query.FindRandomPoint(filter, f).result;
         for (int i = 0; i < 1000; i++)
         {
@@ -68,7 +68,7 @@ public class RandomPointTest : AbstractDetourTest
                 5f, filter, f);
             Assert.That(result.Failed(), Is.False);
             point = result.result;
-            Tuple<MeshTile, Poly> tileAndPoly = navmesh.GetTileAndPolyByRef(point.GetRandomRef()).result;
+            Tuple<DtMeshTile, DtPoly> tileAndPoly = navmesh.GetTileAndPolyByRef(point.GetRandomRef()).result;
             float[] bmin = new float[2];
             float[] bmax = new float[2];
             for (int j = 0; j < tileAndPoly.Item2.vertCount; j++)
@@ -91,7 +91,7 @@ public class RandomPointTest : AbstractDetourTest
     public void TestRandomWithinCircle()
     {
         FRand f = new FRand(1);
-        IQueryFilter filter = new DefaultQueryFilter();
+        IDtQueryFilter filter = new DtQueryDefaultFilter();
         FindRandomPointResult point = query.FindRandomPoint(filter, f).result;
         float radius = 5f;
         for (int i = 0; i < 1000; i++)
@@ -109,7 +109,7 @@ public class RandomPointTest : AbstractDetourTest
     public void TestPerformance()
     {
         FRand f = new FRand(1);
-        IQueryFilter filter = new DefaultQueryFilter();
+        IDtQueryFilter filter = new DtQueryDefaultFilter();
         FindRandomPointResult point = query.FindRandomPoint(filter, f).result;
         float radius = 5f;
         // jvm warmup

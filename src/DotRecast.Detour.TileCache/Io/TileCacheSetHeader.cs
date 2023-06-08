@@ -29,7 +29,7 @@ namespace DotRecast.Detour.TileCache.Io
         public int magic;
         public int version;
         public int numTiles;
-        public NavMeshParams meshParams = new NavMeshParams();
+        public DtNavMeshParams meshParams = new DtNavMeshParams();
         public TileCacheParams cacheParams = new TileCacheParams();
     }
 }

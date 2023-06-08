@@ -82,9 +82,9 @@ public class TileCacheReaderWriterTest : AbstractTileCacheTest
         Assert.That(tc.GetParams().maxObstacles, Is.EqualTo(128));
         Assert.That(tc.GetTileCount(), Is.EqualTo(168));
         // Tile0: Tris: 8, Verts: 18 Detail Meshed: 8 Detail Verts: 0 Detail Tris: 14
-        MeshTile tile = tc.GetNavMesh().GetTile(0);
-        MeshData data = tile.data;
-        MeshHeader header = data.header;
+        DtMeshTile tile = tc.GetNavMesh().GetTile(0);
+        DtMeshData data = tile.data;
+        DtMeshHeader header = data.header;
         Assert.That(header.vertCount, Is.EqualTo(18));
         Assert.That(header.polyCount, Is.EqualTo(8));
         Assert.That(header.detailMeshCount, Is.EqualTo(8));

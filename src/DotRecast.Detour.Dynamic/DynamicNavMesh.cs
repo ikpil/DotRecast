@@ -36,10 +36,10 @@ namespace DotRecast.Detour.Dynamic
         private readonly RecastBuilder builder;
         private readonly Dictionary<long, DynamicTile> _tiles = new Dictionary<long, DynamicTile>();
         private readonly Telemetry telemetry;
-        private readonly NavMeshParams navMeshParams;
+        private readonly DtNavMeshParams navMeshParams;
         private readonly BlockingCollection<IUpdateQueueItem> updateQueue = new BlockingCollection<IUpdateQueueItem>();
         private readonly RcAtomicLong currentColliderId = new RcAtomicLong(0);
-        private NavMesh _navMesh;
+        private DtNavMesh _navMesh;
         private bool dirty = true;
 
         public DynamicNavMesh(VoxelFile voxelFile)
@@ -58,7 +58,7 @@ namespace DotRecast.Detour.Dynamic
             config.detailSampleDistance = voxelFile.detailSampleDistance;
             config.detailSampleMaxError = voxelFile.detailSampleMaxError;
             builder = new RecastBuilder();
-            navMeshParams = new NavMeshParams();
+            navMeshParams = new DtNavMeshParams();
             navMeshParams.orig.x = voxelFile.bounds[0];
             navMeshParams.orig.y = voxelFile.bounds[1];
             navMeshParams.orig.z = voxelFile.bounds[2];
@@ -75,7 +75,7 @@ namespace DotRecast.Detour.Dynamic
             telemetry = new Telemetry();
         }
 
-        public NavMesh NavMesh()
+        public DtNavMesh NavMesh()
         {
             return _navMesh;
         }
@@ -216,7 +216,7 @@ namespace DotRecast.Detour.Dynamic
 
         private void Rebuild(DynamicTile tile)
         {
-            NavMeshDataCreateParams option = new NavMeshDataCreateParams();
+            DtNavMeshCreateParams option = new DtNavMeshCreateParams();
             option.walkableHeight = config.walkableHeight;
             dirty = dirty | tile.Build(builder, config, telemetry);
         }
@@ -225,7 +225,7 @@ namespace DotRecast.Detour.Dynamic
         {
             if (dirty)
             {
-                NavMesh navMesh = new NavMesh(navMeshParams, MAX_VERTS_PER_POLY);
+                DtNavMesh navMesh = new DtNavMesh(navMeshParams, MAX_VERTS_PER_POLY);
                 foreach (var t in _tiles.Values)
                     t.AddTo(navMesh);
 

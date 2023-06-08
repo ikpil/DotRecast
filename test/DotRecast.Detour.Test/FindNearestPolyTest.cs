@@ -37,7 +37,7 @@ public class FindNearestPolyTest : AbstractDetourTest
     [Test]
     public void TestFindNearestPoly()
     {
-        IQueryFilter filter = new DefaultQueryFilter();
+        IDtQueryFilter filter = new DtQueryDefaultFilter();
         RcVec3f extents = RcVec3f.Of(2, 4, 2);
         for (int i = 0; i < startRefs.Length; i++)
         {
@@ -52,24 +52,11 @@ public class FindNearestPolyTest : AbstractDetourTest
         }
     }
 
-    public class EmptyQueryFilter : IQueryFilter
-    {
-        public bool PassFilter(long refs, MeshTile tile, Poly poly)
-        {
-            return false;
-        }
-
-        public float GetCost(RcVec3f pa, RcVec3f pb, long prevRef, MeshTile prevTile, Poly prevPoly, long curRef, MeshTile curTile,
-            Poly curPoly, long nextRef, MeshTile nextTile, Poly nextPoly)
-        {
-            return 0;
-        }
-    }
 
     [Test]
     public void ShouldReturnStartPosWhenNoPolyIsValid()
     {
-        var filter = new EmptyQueryFilter();
+        var filter = new DtQueryEmptyFilter();
         RcVec3f extents = RcVec3f.Of(2, 4, 2);
         for (int i = 0; i < startRefs.Length; i++)
         {

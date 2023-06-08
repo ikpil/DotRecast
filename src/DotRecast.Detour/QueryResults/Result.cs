@@ -24,45 +24,45 @@ namespace DotRecast.Detour.QueryResults
     {
         public static Result<T> Success<T>(T result)
         {
-            return new Result<T>(result, Status.SUCCSESS, null);
+            return new Result<T>(result, DtStatus.SUCCSESS, null);
         }
 
         public static Result<T> Failure<T>()
         {
-            return new Result<T>(default, Status.FAILURE, null);
+            return new Result<T>(default, DtStatus.FAILURE, null);
         }
 
         public static Result<T> InvalidParam<T>()
         {
-            return new Result<T>(default, Status.FAILURE_INVALID_PARAM, null);
+            return new Result<T>(default, DtStatus.FAILURE_INVALID_PARAM, null);
         }
 
         public static Result<T> Failure<T>(string message)
         {
-            return new Result<T>(default, Status.FAILURE, message);
+            return new Result<T>(default, DtStatus.FAILURE, message);
         }
 
         public static Result<T> InvalidParam<T>(string message)
         {
-            return new Result<T>(default, Status.FAILURE_INVALID_PARAM, message);
+            return new Result<T>(default, DtStatus.FAILURE_INVALID_PARAM, message);
         }
 
         public static Result<T> Failure<T>(T result)
         {
-            return new Result<T>(result, Status.FAILURE, null);
+            return new Result<T>(result, DtStatus.FAILURE, null);
         }
 
         public static Result<T> Partial<T>(T result)
         {
-            return new Result<T>(default, Status.PARTIAL_RESULT, null);
+            return new Result<T>(default, DtStatus.PARTIAL_RESULT, null);
         }
 
-        public static Result<T> Of<T>(Status status, string message)
+        public static Result<T> Of<T>(DtStatus status, string message)
         {
             return new Result<T>(default, status, message);
         }
 
-        public static Result<T> Of<T>(Status status, T result)
+        public static Result<T> Of<T>(DtStatus status, T result)
         {
             return new Result<T>(result, status, null);
         }
@@ -71,10 +71,10 @@ namespace DotRecast.Detour.QueryResults
     public readonly struct Result<T>
     {
         public readonly T result;
-        public readonly Status status;
+        public readonly DtStatus status;
         public readonly string message;
 
-        internal Result(T result, Status status, string message)
+        internal Result(T result, DtStatus status, string message)
         {
             this.result = result;
             this.status = status;

@@ -24,7 +24,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
 
         public void Build(GraphMeshData graphData)
         {
-            foreach (MeshData d in graphData.tiles)
+            foreach (DtMeshData d in graphData.tiles)
             {
                 builder.Build(d);
             }

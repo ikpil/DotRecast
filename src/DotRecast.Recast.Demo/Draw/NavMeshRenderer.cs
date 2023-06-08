@@ -51,10 +51,10 @@ public class NavMeshRenderer
             return;
         }
 
-        NavMeshQuery navQuery = sample.GetNavMeshQuery();
+        DtNavMeshQuery navQuery = sample.GetNavMeshQuery();
         DemoInputGeomProvider geom = sample.GetInputGeom();
         IList<RecastBuilderResult> rcBuilderResults = sample.GetRecastResults();
-        NavMesh navMesh = sample.GetNavMesh();
+        DtNavMesh navMesh = sample.GetNavMesh();
         RcSettingsView rcSettingsView = sample.GetSettingsUI();
         debugDraw.Fog(true);
         debugDraw.DepthMask(true);

@@ -30,13 +30,13 @@ namespace DotRecast.Recast.Demo;
 public class Sample
 {
     private DemoInputGeomProvider inputGeom;
-    private NavMesh navMesh;
-    private NavMeshQuery navMeshQuery;
+    private DtNavMesh navMesh;
+    private DtNavMeshQuery navMeshQuery;
     private readonly RcSettingsView _settingsView;
     private IList<RecastBuilderResult> recastResults;
     private bool changed;
 
-    public Sample(DemoInputGeomProvider inputGeom, IList<RecastBuilderResult> recastResults, NavMesh navMesh,
+    public Sample(DemoInputGeomProvider inputGeom, IList<RecastBuilderResult> recastResults, DtNavMesh navMesh,
         RcSettingsView settingsView, RecastDebugDraw debugDraw)
     {
         this.inputGeom = inputGeom;
@@ -47,9 +47,9 @@ public class Sample
         changed = true;
     }
 
-    private void SetQuery(NavMesh navMesh)
+    private void SetQuery(DtNavMesh navMesh)
     {
-        navMeshQuery = navMesh != null ? new NavMeshQuery(navMesh) : null;
+        navMeshQuery = navMesh != null ? new DtNavMeshQuery(navMesh) : null;
     }
 
     public DemoInputGeomProvider GetInputGeom()
@@ -62,7 +62,7 @@ public class Sample
         return recastResults;
     }
 
-    public NavMesh GetNavMesh()
+    public DtNavMesh GetNavMesh()
     {
         return navMesh;
     }
@@ -72,7 +72,7 @@ public class Sample
         return _settingsView;
     }
 
-    public NavMeshQuery GetNavMeshQuery()
+    public DtNavMeshQuery GetNavMeshQuery()
     {
         return navMeshQuery;
     }
@@ -87,7 +87,7 @@ public class Sample
         this.changed = changed;
     }
 
-    public void Update(DemoInputGeomProvider geom, IList<RecastBuilderResult> recastResults, NavMesh navMesh)
+    public void Update(DemoInputGeomProvider geom, IList<RecastBuilderResult> recastResults, DtNavMesh navMesh)
     {
         inputGeom = geom;
         this.recastResults = recastResults;

@@ -26,7 +26,7 @@ namespace DotRecast.Recast.DemoTool.Builder
 {
     public class SoloNavMeshBuilder : AbstractNavMeshBuilder
     {
-        public Tuple<IList<RecastBuilderResult>, NavMesh> Build(DemoInputGeomProvider geom, PartitionType partitionType,
+        public Tuple<IList<RecastBuilderResult>, DtNavMesh> Build(DemoInputGeomProvider geom, PartitionType partitionType,
             float cellSize, float cellHeight, float agentHeight, float agentRadius, float agentMaxClimb,
             float agentMaxSlope, int regionMinSize, int regionMergeSize, float edgeMaxLen, float edgeMaxError,
             int vertsPerPoly, float detailSampleDist, float detailSampleMaxError, bool filterLowHangingObstacles,
@@ -42,9 +42,9 @@ namespace DotRecast.Recast.DemoTool.Builder
                     vertsPerPoly));
         }
 
-        private NavMesh BuildNavMesh(MeshData meshData, int vertsPerPoly)
+        private DtNavMesh BuildNavMesh(DtMeshData meshData, int vertsPerPoly)
         {
-            return new NavMesh(meshData, vertsPerPoly, 0);
+            return new DtNavMesh(meshData, vertsPerPoly, 0);
         }
 
         private RecastBuilderResult BuildRecastResult(DemoInputGeomProvider geom, PartitionType partitionType, float cellSize,
@@ -62,10 +62,10 @@ namespace DotRecast.Recast.DemoTool.Builder
             return rcBuilder.Build(geom, bcfg);
         }
 
-        private MeshData BuildMeshData(DemoInputGeomProvider geom, float cellSize, float cellHeight, float agentHeight,
+        private DtMeshData BuildMeshData(DemoInputGeomProvider geom, float cellSize, float cellHeight, float agentHeight,
             float agentRadius, float agentMaxClimb, RecastBuilderResult result)
         {
-            NavMeshDataCreateParams option = GetNavMeshCreateParams(geom, cellSize, cellHeight, agentHeight, agentRadius,
+            DtNavMeshCreateParams option = GetNavMeshCreateParams(geom, cellSize, cellHeight, agentHeight, agentRadius,
                 agentMaxClimb, result);
             return UpdateAreaAndFlags(NavMeshBuilder.CreateNavMeshData(option));
         }

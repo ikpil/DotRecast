@@ -22,14 +22,14 @@ namespace DotRecast.Detour.Extras
 {
     public class ObjExporter
     {
-        public void Export(NavMesh mesh)
+        public void Export(DtNavMesh mesh)
         {
             string filename = Path.Combine(Directory.GetCurrentDirectory(), "Demo", "astar.obj");
             using var fs = new FileStream(filename, FileMode.CreateNew);
             using var fw = new StreamWriter(fs);
             for (int i = 0; i < mesh.GetTileCount(); i++)
             {
-                MeshTile tile = mesh.GetTile(i);
+                DtMeshTile tile = mesh.GetTile(i);
                 if (tile != null)
                 {
                     for (int v = 0; v < tile.data.header.vertCount; v++)
@@ -43,13 +43,13 @@ namespace DotRecast.Detour.Extras
             int vertexOffset = 1;
             for (int i = 0; i < mesh.GetTileCount(); i++)
             {
-                MeshTile tile = mesh.GetTile(i);
+                DtMeshTile tile = mesh.GetTile(i);
                 if (tile != null)
                 {
                     for (int p = 0; p < tile.data.header.polyCount; p++)
                     {
                         fw.Write("f ");
-                        Poly poly = tile.data.polys[p];
+                        DtPoly poly = tile.data.polys[p];
                         for (int v = 0; v < poly.vertCount; v++)
                         {
                             fw.Write(poly.verts[v] + vertexOffset + " ");

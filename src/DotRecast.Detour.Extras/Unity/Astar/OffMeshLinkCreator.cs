@@ -28,23 +28,23 @@ namespace DotRecast.Detour.Extras.Unity.Astar
             {
                 foreach (NodeLink2 l in links)
                 {
-                    MeshData startTile = graphData.GetTile(l.startNode - nodeOffset);
-                    Poly startNode = graphData.GetNode(l.startNode - nodeOffset);
-                    MeshData endTile = graphData.GetTile(l.endNode - nodeOffset);
-                    Poly endNode = graphData.GetNode(l.endNode - nodeOffset);
+                    DtMeshData startTile = graphData.GetTile(l.startNode - nodeOffset);
+                    DtPoly startNode = graphData.GetNode(l.startNode - nodeOffset);
+                    DtMeshData endTile = graphData.GetTile(l.endNode - nodeOffset);
+                    DtPoly endNode = graphData.GetNode(l.endNode - nodeOffset);
                     if (startNode != null && endNode != null)
                     {
                         // FIXME: Optimise
                         startTile.polys = RcArrayUtils.CopyOf(startTile.polys, startTile.polys.Length + 1);
                         int poly = startTile.header.polyCount;
-                        startTile.polys[poly] = new Poly(poly, 2);
+                        startTile.polys[poly] = new DtPoly(poly, 2);
                         startTile.polys[poly].verts[0] = startTile.header.vertCount;
                         startTile.polys[poly].verts[1] = startTile.header.vertCount + 1;
-                        startTile.polys[poly].SetType(Poly.DT_POLYTYPE_OFFMESH_CONNECTION);
+                        startTile.polys[poly].SetType(DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION);
                         startTile.verts = RcArrayUtils.CopyOf(startTile.verts, startTile.verts.Length + 6);
                         startTile.header.polyCount++;
                         startTile.header.vertCount += 2;
-                        OffMeshConnection connection = new OffMeshConnection();
+                        DtOffMeshConnection connection = new DtOffMeshConnection();
                         connection.poly = poly;
                         connection.pos = new float[]
                         {
@@ -58,7 +58,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                         connection.userId = (int)l.linkID;
                         if (startTile.offMeshCons == null)
                         {
-                            startTile.offMeshCons = new OffMeshConnection[1];
+                            startTile.offMeshCons = new DtOffMeshConnection[1];
                         }
                         else
                         {

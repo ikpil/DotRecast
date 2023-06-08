@@ -26,7 +26,7 @@ namespace DotRecast.Detour.Test;
 
 public class TestTiledNavMeshBuilder
 {
-    private readonly NavMesh navMesh;
+    private readonly DtNavMesh navMesh;
     private const float m_cellSize = 0.3f;
     private const float m_cellHeight = 0.2f;
     private const float m_agentHeight = 2.0f;
@@ -58,13 +58,13 @@ public class TestTiledNavMeshBuilder
         float m_detailSampleMaxError, int m_tileSize)
     {
         // Create empty nav mesh
-        NavMeshParams navMeshParams = new NavMeshParams();
+        DtNavMeshParams navMeshParams = new DtNavMeshParams();
         navMeshParams.orig = m_geom.GetMeshBoundsMin();
         navMeshParams.tileWidth = m_tileSize * m_cellSize;
         navMeshParams.tileHeight = m_tileSize * m_cellSize;
         navMeshParams.maxTiles = 128;
         navMeshParams.maxPolys = 32768;
-        navMesh = new NavMesh(navMeshParams, 6);
+        navMesh = new DtNavMesh(navMeshParams, 6);
 
         // Build all tiles
         RcConfig cfg = new RcConfig(true, m_tileSize, m_tileSize, RcConfig.CalcBorder(m_agentRadius, m_cellSize),
@@ -89,7 +89,7 @@ public class TestTiledNavMeshBuilder
                 pmesh.flags[i] = 1;
             }
 
-            NavMeshDataCreateParams option = new NavMeshDataCreateParams();
+            DtNavMeshCreateParams option = new DtNavMeshCreateParams();
             option.verts = pmesh.verts;
             option.vertCount = pmesh.nverts;
             option.polys = pmesh.polys;
@@ -117,7 +117,7 @@ public class TestTiledNavMeshBuilder
         }
     }
 
-    public NavMesh GetNavMesh()
+    public DtNavMesh GetNavMesh()
     {
         return navMesh;
     }

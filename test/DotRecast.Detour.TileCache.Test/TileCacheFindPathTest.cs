@@ -32,8 +32,8 @@ public class TileCacheFindPathTest : AbstractTileCacheTest
 {
     private readonly RcVec3f start = RcVec3f.Of(39.44734f, 9.998177f, -0.784811f);
     private readonly RcVec3f end = RcVec3f.Of(19.292645f, 11.611748f, -57.750366f);
-    private readonly NavMesh navmesh;
-    private readonly NavMeshQuery query;
+    private readonly DtNavMesh navmesh;
+    private readonly DtNavMeshQuery query;
 
     public TileCacheFindPathTest()
     {
@@ -41,13 +41,13 @@ public class TileCacheFindPathTest : AbstractTileCacheTest
         using var @is = new BinaryReader(msis);
         TileCache tcC = new TileCacheReader().Read(@is, 6, new TestTileCacheMeshProcess());
         navmesh = tcC.GetNavMesh();
-        query = new NavMeshQuery(navmesh);
+        query = new DtNavMeshQuery(navmesh);
     }
 
     [Test]
     public void TestFindPath()
     {
-        IQueryFilter filter = new DefaultQueryFilter();
+        IDtQueryFilter filter = new DtQueryDefaultFilter();
         RcVec3f extents = RcVec3f.Of(2f, 4f, 2f);
         Result<FindNearestPolyResult> findPolyStart = query.FindNearestPoly(start, extents, filter);
         Result<FindNearestPolyResult> findPolyEnd = query.FindNearestPoly(end, extents, filter);

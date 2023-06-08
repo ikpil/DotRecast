@@ -26,7 +26,7 @@ namespace DotRecast.Detour.Test;
 [Parallelizable]
 public class TiledFindPathTest
 {
-    private static readonly Status[] STATUSES = { Status.SUCCSESS };
+    private static readonly DtStatus[] STATUSES = { DtStatus.SUCCSESS };
 
     private static readonly long[][] RESULTS =
     {
@@ -46,17 +46,17 @@ public class TiledFindPathTest
     protected static readonly RcVec3f[] START_POS = { RcVec3f.Of(39.447338f, 9.998177f, -0.784811f) };
     protected static readonly RcVec3f[] END_POS = { RcVec3f.Of(19.292645f, 11.611748f, -57.750366f) };
 
-    protected NavMeshQuery query;
-    protected NavMesh navmesh;
+    protected DtNavMeshQuery query;
+    protected DtNavMesh navmesh;
 
     [SetUp]
     public void SetUp()
     {
         navmesh = CreateNavMesh();
-        query = new NavMeshQuery(navmesh);
+        query = new DtNavMeshQuery(navmesh);
     }
 
-    protected NavMesh CreateNavMesh()
+    protected DtNavMesh CreateNavMesh()
     {
         return new TestTiledNavMeshBuilder().GetNavMesh();
     }
@@ -64,7 +64,7 @@ public class TiledFindPathTest
     [Test]
     public void TestFindPath()
     {
-        IQueryFilter filter = new DefaultQueryFilter();
+        IDtQueryFilter filter = new DtQueryDefaultFilter();
         for (int i = 0; i < START_REFS.Length; i++)
         {
             long startRef = START_REFS[i];

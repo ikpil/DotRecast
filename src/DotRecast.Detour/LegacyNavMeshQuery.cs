@@ -26,21 +26,21 @@ namespace DotRecast.Detour
     using static DotRecast.Core.RcMath;
 
 
-    public class LegacyNavMeshQuery : NavMeshQuery
+    public class LegacyNavMeshQuery : DtNavMeshQuery
     {
         private static float H_SCALE = 0.999f; // Search heuristic scale.
 
-        public LegacyNavMeshQuery(NavMesh nav) : base(nav)
+        public LegacyNavMeshQuery(DtNavMesh nav) : base(nav)
         {
         }
 
-        public override Result<List<long>> FindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IQueryFilter filter,
+        public override Result<List<long>> FindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter,
             int options, float raycastLimit)
         {
             return FindPath(startRef, endRef, startPos, endPos, filter);
         }
 
-        public override Result<List<long>> FindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IQueryFilter filter)
+        public override Result<List<long>> FindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter)
         {
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !RcVec3f.IsFinite(startPos) || !RcVec3f.IsFinite(endPos) || null == filter)
@@ -58,26 +58,26 @@ namespace DotRecast.Detour
             m_nodePool.Clear();
             m_openList.Clear();
 
-            Node startNode = m_nodePool.GetNode(startRef);
+            DtNode startNode = m_nodePool.GetNode(startRef);
             startNode.pos = startPos;
             startNode.pidx = 0;
             startNode.cost = 0;
             startNode.total = RcVec3f.Distance(startPos, endPos) * H_SCALE;
             startNode.id = startRef;
-            startNode.flags = Node.DT_NODE_OPEN;
+            startNode.flags = DtNode.DT_NODE_OPEN;
             m_openList.Push(startNode);
 
-            Node lastBestNode = startNode;
+            DtNode lastBestNode = startNode;
             float lastBestNodeCost = startNode.total;
 
-            Status status = Status.SUCCSESS;
+            DtStatus status = DtStatus.SUCCSESS;
 
             while (!m_openList.IsEmpty())
             {
                 // Remove node from open list and put it in closed list.
-                Node bestNode = m_openList.Pop();
-                bestNode.flags &= ~Node.DT_NODE_OPEN;
-                bestNode.flags |= Node.DT_NODE_CLOSED;
+                DtNode bestNode = m_openList.Pop();
+                bestNode.flags &= ~DtNode.DT_NODE_OPEN;
+                bestNode.flags |= DtNode.DT_NODE_CLOSED;
 
                 // Reached the goal, stop searching.
                 if (bestNode.id == endRef)
@@ -89,14 +89,14 @@ namespace DotRecast.Detour
                 // Get current poly and tile.
                 // The API input has been cheked already, skip checking internal data.
                 long bestRef = bestNode.id;
-                Tuple<MeshTile, Poly> tileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(bestRef);
-                MeshTile bestTile = tileAndPoly.Item1;
-                Poly bestPoly = tileAndPoly.Item2;
+                Tuple<DtMeshTile, DtPoly> tileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(bestRef);
+                DtMeshTile bestTile = tileAndPoly.Item1;
+                DtPoly bestPoly = tileAndPoly.Item2;
 
                 // Get parent poly and tile.
                 long parentRef = 0;
-                MeshTile parentTile = null;
-                Poly parentPoly = null;
+                DtMeshTile parentTile = null;
+                DtPoly parentPoly = null;
                 if (bestNode.pidx != 0)
                 {
                     parentRef = m_nodePool.GetNodeAtIdx(bestNode.pidx).id;
@@ -109,7 +109,7 @@ namespace DotRecast.Detour
                     parentPoly = tileAndPoly.Item2;
                 }
 
-                for (int i = bestTile.polyLinks[bestPoly.index]; i != NavMesh.DT_NULL_LINK; i = bestTile.links[i].next)
+                for (int i = bestTile.polyLinks[bestPoly.index]; i != DtNavMesh.DT_NULL_LINK; i = bestTile.links[i].next)
                 {
                     long neighbourRef = bestTile.links[i].refs;
 
@@ -122,8 +122,8 @@ namespace DotRecast.Detour
                     // Get neighbour poly and tile.
                     // The API input has been cheked already, skip checking internal data.
                     tileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(neighbourRef);
-                    MeshTile neighbourTile = tileAndPoly.Item1;
-                    Poly neighbourPoly = tileAndPoly.Item2;
+                    DtMeshTile neighbourTile = tileAndPoly.Item1;
+                    DtPoly neighbourPoly = tileAndPoly.Item2;
 
                     if (!filter.PassFilter(neighbourRef, neighbourTile, neighbourPoly))
                     {
@@ -138,7 +138,7 @@ namespace DotRecast.Detour
                     }
 
                     // get the node
-                    Node neighbourNode = m_nodePool.GetNode(neighbourRef, crossSide);
+                    DtNode neighbourNode = m_nodePool.GetNode(neighbourRef, crossSide);
 
                     // If the node is visited the first time, calculate node position.
                     if (neighbourNode.flags == 0)
@@ -179,13 +179,13 @@ namespace DotRecast.Detour
                     float total = cost + heuristic;
 
                     // The node is already in open list and the new result is worse, skip.
-                    if ((neighbourNode.flags & Node.DT_NODE_OPEN) != 0 && total >= neighbourNode.total)
+                    if ((neighbourNode.flags & DtNode.DT_NODE_OPEN) != 0 && total >= neighbourNode.total)
                     {
                         continue;
                     }
 
                     // The node is already visited and process, and the new result is worse, skip.
-                    if ((neighbourNode.flags & Node.DT_NODE_CLOSED) != 0 && total >= neighbourNode.total)
+                    if ((neighbourNode.flags & DtNode.DT_NODE_CLOSED) != 0 && total >= neighbourNode.total)
                     {
                         continue;
                     }
@@ -193,11 +193,11 @@ namespace DotRecast.Detour
                     // Add or update the node.
                     neighbourNode.pidx = m_nodePool.GetNodeIdx(bestNode);
                     neighbourNode.id = neighbourRef;
-                    neighbourNode.flags = (neighbourNode.flags & ~Node.DT_NODE_CLOSED);
+                    neighbourNode.flags = (neighbourNode.flags & ~DtNode.DT_NODE_CLOSED);
                     neighbourNode.cost = cost;
                     neighbourNode.total = total;
 
-                    if ((neighbourNode.flags & Node.DT_NODE_OPEN) != 0)
+                    if ((neighbourNode.flags & DtNode.DT_NODE_OPEN) != 0)
                     {
                         // Already in open, update node location.
                         m_openList.Modify(neighbourNode);
@@ -205,7 +205,7 @@ namespace DotRecast.Detour
                     else
                     {
                         // Put the node in open list.
-                        neighbourNode.flags |= Node.DT_NODE_OPEN;
+                        neighbourNode.flags |= DtNode.DT_NODE_OPEN;
                         m_openList.Push(neighbourNode);
                     }
 
@@ -222,7 +222,7 @@ namespace DotRecast.Detour
 
             if (lastBestNode.id != endRef)
             {
-                status = Status.PARTIAL_RESULT;
+                status = DtStatus.PARTIAL_RESULT;
             }
 
             return Results.Of(status, path);
@@ -245,7 +245,7 @@ namespace DotRecast.Detour
             // Make sure the request is still valid.
             if (!m_nav.IsValidPolyRef(m_query.startRef) || !m_nav.IsValidPolyRef(m_query.endRef))
             {
-                m_query.status = Status.FAILURE;
+                m_query.status = DtStatus.FAILURE;
                 return Results.Of(m_query.status, 0);
             }
 
@@ -255,15 +255,15 @@ namespace DotRecast.Detour
                 iter++;
 
                 // Remove node from open list and put it in closed list.
-                Node bestNode = m_openList.Pop();
-                bestNode.flags &= ~Node.DT_NODE_OPEN;
-                bestNode.flags |= Node.DT_NODE_CLOSED;
+                DtNode bestNode = m_openList.Pop();
+                bestNode.flags &= ~DtNode.DT_NODE_OPEN;
+                bestNode.flags |= DtNode.DT_NODE_CLOSED;
 
                 // Reached the goal, stop searching.
                 if (bestNode.id == m_query.endRef)
                 {
                     m_query.lastBestNode = bestNode;
-                    m_query.status = Status.SUCCSESS;
+                    m_query.status = DtStatus.SUCCSESS;
                     return Results.Of(m_query.status, iter);
                 }
 
@@ -271,21 +271,21 @@ namespace DotRecast.Detour
                 // The API input has been cheked already, skip checking internal
                 // data.
                 long bestRef = bestNode.id;
-                Result<Tuple<MeshTile, Poly>> tileAndPoly = m_nav.GetTileAndPolyByRef(bestRef);
+                Result<Tuple<DtMeshTile, DtPoly>> tileAndPoly = m_nav.GetTileAndPolyByRef(bestRef);
                 if (tileAndPoly.Failed())
                 {
-                    m_query.status = Status.FAILURE;
+                    m_query.status = DtStatus.FAILURE;
                     // The polygon has disappeared during the sliced query, fail.
                     return Results.Of(m_query.status, iter);
                 }
 
-                MeshTile bestTile = tileAndPoly.result.Item1;
-                Poly bestPoly = tileAndPoly.result.Item2;
+                DtMeshTile bestTile = tileAndPoly.result.Item1;
+                DtPoly bestPoly = tileAndPoly.result.Item2;
                 // Get parent and grand parent poly and tile.
                 long parentRef = 0, grandpaRef = 0;
-                MeshTile parentTile = null;
-                Poly parentPoly = null;
-                Node parentNode = null;
+                DtMeshTile parentTile = null;
+                DtPoly parentPoly = null;
+                DtNode parentNode = null;
                 if (bestNode.pidx != 0)
                 {
                     parentNode = m_nodePool.GetNodeAtIdx(bestNode.pidx);
@@ -305,7 +305,7 @@ namespace DotRecast.Detour
                     {
                         // The polygon has disappeared during the sliced query,
                         // fail.
-                        m_query.status = Status.FAILURE;
+                        m_query.status = DtStatus.FAILURE;
                         return Results.Of(m_query.status, iter);
                     }
 
@@ -323,7 +323,7 @@ namespace DotRecast.Detour
                     }
                 }
 
-                for (int i = bestTile.polyLinks[bestPoly.index]; i != NavMesh.DT_NULL_LINK; i = bestTile.links[i].next)
+                for (int i = bestTile.polyLinks[bestPoly.index]; i != DtNavMesh.DT_NULL_LINK; i = bestTile.links[i].next)
                 {
                     long neighbourRef = bestTile.links[i].refs;
 
@@ -337,9 +337,9 @@ namespace DotRecast.Detour
                     // Get neighbour poly and tile.
                     // The API input has been cheked already, skip checking internal
                     // data.
-                    Tuple<MeshTile, Poly> tileAndPolyUns = m_nav.GetTileAndPolyByRefUnsafe(neighbourRef);
-                    MeshTile neighbourTile = tileAndPolyUns.Item1;
-                    Poly neighbourPoly = tileAndPolyUns.Item2;
+                    Tuple<DtMeshTile, DtPoly> tileAndPolyUns = m_nav.GetTileAndPolyByRefUnsafe(neighbourRef);
+                    DtMeshTile neighbourTile = tileAndPolyUns.Item1;
+                    DtPoly neighbourPoly = tileAndPolyUns.Item2;
 
                     if (!m_query.filter.PassFilter(neighbourRef, neighbourTile, neighbourPoly))
                     {
@@ -347,7 +347,7 @@ namespace DotRecast.Detour
                     }
 
                     // get the neighbor node
-                    Node neighbourNode = m_nodePool.GetNode(neighbourRef, 0);
+                    DtNode neighbourNode = m_nodePool.GetNode(neighbourRef, 0);
 
                     // do not expand to nodes that were already visited from the
                     // same parent
@@ -376,7 +376,7 @@ namespace DotRecast.Detour
                     bool foundShortCut = false;
                     if (tryLOS)
                     {
-                        Result<RaycastHit> rayHit = Raycast(parentRef, parentNode.pos, neighbourNode.pos, m_query.filter,
+                        Result<DtRaycastHit> rayHit = Raycast(parentRef, parentNode.pos, neighbourNode.pos, m_query.filter,
                             DT_RAYCAST_USE_COSTS, grandpaRef);
                         if (rayHit.Succeeded())
                         {
@@ -417,14 +417,14 @@ namespace DotRecast.Detour
 
                     // The node is already in open list and the new result is worse,
                     // skip.
-                    if ((neighbourNode.flags & Node.DT_NODE_OPEN) != 0 && total >= neighbourNode.total)
+                    if ((neighbourNode.flags & DtNode.DT_NODE_OPEN) != 0 && total >= neighbourNode.total)
                     {
                         continue;
                     }
 
                     // The node is already visited and process, and the new result
                     // is worse, skip.
-                    if ((neighbourNode.flags & Node.DT_NODE_CLOSED) != 0 && total >= neighbourNode.total)
+                    if ((neighbourNode.flags & DtNode.DT_NODE_CLOSED) != 0 && total >= neighbourNode.total)
                     {
                         continue;
                     }
@@ -432,15 +432,15 @@ namespace DotRecast.Detour
                     // Add or update the node.
                     neighbourNode.pidx = foundShortCut ? bestNode.pidx : m_nodePool.GetNodeIdx(bestNode);
                     neighbourNode.id = neighbourRef;
-                    neighbourNode.flags = (neighbourNode.flags & ~(Node.DT_NODE_CLOSED | Node.DT_NODE_PARENT_DETACHED));
+                    neighbourNode.flags = (neighbourNode.flags & ~(DtNode.DT_NODE_CLOSED | DtNode.DT_NODE_PARENT_DETACHED));
                     neighbourNode.cost = cost;
                     neighbourNode.total = total;
                     if (foundShortCut)
                     {
-                        neighbourNode.flags = (neighbourNode.flags | Node.DT_NODE_PARENT_DETACHED);
+                        neighbourNode.flags = (neighbourNode.flags | DtNode.DT_NODE_PARENT_DETACHED);
                     }
 
-                    if ((neighbourNode.flags & Node.DT_NODE_OPEN) != 0)
+                    if ((neighbourNode.flags & DtNode.DT_NODE_OPEN) != 0)
                     {
                         // Already in open, update node location.
                         m_openList.Modify(neighbourNode);
@@ -448,7 +448,7 @@ namespace DotRecast.Detour
                     else
                     {
                         // Put the node in open list.
-                        neighbourNode.flags |= Node.DT_NODE_OPEN;
+                        neighbourNode.flags |= DtNode.DT_NODE_OPEN;
                         m_openList.Push(neighbourNode);
                     }
 
@@ -464,7 +464,7 @@ namespace DotRecast.Detour
             // Exhausted all nodes, but could not find path.
             if (m_openList.IsEmpty())
             {
-                m_query.status = Status.PARTIAL_RESULT;
+                m_query.status = DtStatus.PARTIAL_RESULT;
             }
 
             return Results.Of(m_query.status, iter);
@@ -480,7 +480,7 @@ namespace DotRecast.Detour
             if (m_query.status.IsFailed())
             {
                 // Reset query.
-                m_query = new QueryData();
+                m_query = new DtQueryData();
                 return Results.Failure(path);
             }
 
@@ -494,20 +494,20 @@ namespace DotRecast.Detour
                 // Reverse the path.
                 if (m_query.lastBestNode.id != m_query.endRef)
                 {
-                    m_query.status = Status.PARTIAL_RESULT;
+                    m_query.status = DtStatus.PARTIAL_RESULT;
                 }
 
-                Node prev = null;
-                Node node = m_query.lastBestNode;
+                DtNode prev = null;
+                DtNode node = m_query.lastBestNode;
                 int prevRay = 0;
                 do
                 {
-                    Node next = m_nodePool.GetNodeAtIdx(node.pidx);
+                    DtNode next = m_nodePool.GetNodeAtIdx(node.pidx);
                     node.pidx = m_nodePool.GetNodeIdx(prev);
                     prev = node;
-                    int nextRay = node.flags & Node.DT_NODE_PARENT_DETACHED; // keep track of whether parent is not adjacent
+                    int nextRay = node.flags & DtNode.DT_NODE_PARENT_DETACHED; // keep track of whether parent is not adjacent
                     // (i.e. due to raycast shortcut)
-                    node.flags = (node.flags & ~Node.DT_NODE_PARENT_DETACHED) | prevRay; // and store it in the reversed
+                    node.flags = (node.flags & ~DtNode.DT_NODE_PARENT_DETACHED) | prevRay; // and store it in the reversed
                     // path's node
                     prevRay = nextRay;
                     node = next;
@@ -517,10 +517,10 @@ namespace DotRecast.Detour
                 node = prev;
                 do
                 {
-                    Node next = m_nodePool.GetNodeAtIdx(node.pidx);
-                    if ((node.flags & Node.DT_NODE_PARENT_DETACHED) != 0)
+                    DtNode next = m_nodePool.GetNodeAtIdx(node.pidx);
+                    if ((node.flags & DtNode.DT_NODE_PARENT_DETACHED) != 0)
                     {
-                        Result<RaycastHit> iresult = Raycast(node.id, node.pos, next.pos, m_query.filter, 0, 0);
+                        Result<DtRaycastHit> iresult = Raycast(node.id, node.pos, next.pos, m_query.filter, 0, 0);
                         if (iresult.Succeeded())
                         {
                             path.AddRange(iresult.result.path);
@@ -541,9 +541,9 @@ namespace DotRecast.Detour
                 } while (node != null);
             }
 
-            Status status = m_query.status;
+            DtStatus status = m_query.status;
             // Reset query.
-            m_query = new QueryData();
+            m_query = new DtQueryData();
 
             return Results.Of(status, path);
         }
@@ -566,7 +566,7 @@ namespace DotRecast.Detour
             if (m_query.status.IsFailed())
             {
                 // Reset query.
-                m_query = new QueryData();
+                m_query = new DtQueryData();
                 return Results.Failure(path);
             }
 
@@ -578,8 +578,8 @@ namespace DotRecast.Detour
             else
             {
                 // Find furthest existing node that was visited.
-                Node prev = null;
-                Node node = null;
+                DtNode prev = null;
+                DtNode node = null;
                 for (int i = existing.Count - 1; i >= 0; --i)
                 {
                     node = m_nodePool.FindNode(existing[i]);
@@ -591,7 +591,7 @@ namespace DotRecast.Detour
 
                 if (node == null)
                 {
-                    m_query.status = Status.PARTIAL_RESULT;
+                    m_query.status = DtStatus.PARTIAL_RESULT;
                     node = m_query.lastBestNode;
                 }
 
@@ -599,12 +599,12 @@ namespace DotRecast.Detour
                 int prevRay = 0;
                 do
                 {
-                    Node next = m_nodePool.GetNodeAtIdx(node.pidx);
+                    DtNode next = m_nodePool.GetNodeAtIdx(node.pidx);
                     node.pidx = m_nodePool.GetNodeIdx(prev);
                     prev = node;
-                    int nextRay = node.flags & Node.DT_NODE_PARENT_DETACHED; // keep track of whether parent is not adjacent
+                    int nextRay = node.flags & DtNode.DT_NODE_PARENT_DETACHED; // keep track of whether parent is not adjacent
                     // (i.e. due to raycast shortcut)
-                    node.flags = (node.flags & ~Node.DT_NODE_PARENT_DETACHED) | prevRay; // and store it in the reversed
+                    node.flags = (node.flags & ~DtNode.DT_NODE_PARENT_DETACHED) | prevRay; // and store it in the reversed
                     // path's node
                     prevRay = nextRay;
                     node = next;
@@ -614,10 +614,10 @@ namespace DotRecast.Detour
                 node = prev;
                 do
                 {
-                    Node next = m_nodePool.GetNodeAtIdx(node.pidx);
-                    if ((node.flags & Node.DT_NODE_PARENT_DETACHED) != 0)
+                    DtNode next = m_nodePool.GetNodeAtIdx(node.pidx);
+                    if ((node.flags & DtNode.DT_NODE_PARENT_DETACHED) != 0)
                     {
-                        Result<RaycastHit> iresult = Raycast(node.id, node.pos, next.pos, m_query.filter, 0, 0);
+                        Result<DtRaycastHit> iresult = Raycast(node.id, node.pos, next.pos, m_query.filter, 0, 0);
                         if (iresult.Succeeded())
                         {
                             path.AddRange(iresult.result.path);
@@ -638,14 +638,14 @@ namespace DotRecast.Detour
                 } while (node != null);
             }
 
-            Status status = m_query.status;
+            DtStatus status = m_query.status;
             // Reset query.
-            m_query = new QueryData();
+            m_query = new DtQueryData();
 
             return Results.Of(status, path);
         }
 
-        public override Result<FindDistanceToWallResult> FindDistanceToWall(long startRef, RcVec3f centerPos, float maxRadius, IQueryFilter filter)
+        public override Result<FindDistanceToWallResult> FindDistanceToWall(long startRef, RcVec3f centerPos, float maxRadius, IDtQueryFilter filter)
         {
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(centerPos) || maxRadius < 0
@@ -657,13 +657,13 @@ namespace DotRecast.Detour
             m_nodePool.Clear();
             m_openList.Clear();
 
-            Node startNode = m_nodePool.GetNode(startRef);
+            DtNode startNode = m_nodePool.GetNode(startRef);
             startNode.pos = centerPos;
             startNode.pidx = 0;
             startNode.cost = 0;
             startNode.total = 0;
             startNode.id = startRef;
-            startNode.flags = Node.DT_NODE_OPEN;
+            startNode.flags = DtNode.DT_NODE_OPEN;
             m_openList.Push(startNode);
 
             float radiusSqr = Sqr(maxRadius);
@@ -673,16 +673,16 @@ namespace DotRecast.Detour
 
             while (!m_openList.IsEmpty())
             {
-                Node bestNode = m_openList.Pop();
-                bestNode.flags &= ~Node.DT_NODE_OPEN;
-                bestNode.flags |= Node.DT_NODE_CLOSED;
+                DtNode bestNode = m_openList.Pop();
+                bestNode.flags &= ~DtNode.DT_NODE_OPEN;
+                bestNode.flags |= DtNode.DT_NODE_CLOSED;
 
                 // Get poly and tile.
                 // The API input has been cheked already, skip checking internal data.
                 long bestRef = bestNode.id;
-                Tuple<MeshTile, Poly> tileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(bestRef);
-                MeshTile bestTile = tileAndPoly.Item1;
-                Poly bestPoly = tileAndPoly.Item2;
+                Tuple<DtMeshTile, DtPoly> tileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(bestRef);
+                DtMeshTile bestTile = tileAndPoly.Item1;
+                DtPoly bestPoly = tileAndPoly.Item2;
 
                 // Get parent poly and tile.
                 long parentRef = 0;
@@ -695,20 +695,20 @@ namespace DotRecast.Detour
                 for (int i = 0, j = bestPoly.vertCount - 1; i < bestPoly.vertCount; j = i++)
                 {
                     // Skip non-solid edges.
-                    if ((bestPoly.neis[j] & NavMesh.DT_EXT_LINK) != 0)
+                    if ((bestPoly.neis[j] & DtNavMesh.DT_EXT_LINK) != 0)
                     {
                         // Tile border.
                         bool solid = true;
-                        for (int k = bestTile.polyLinks[bestPoly.index]; k != NavMesh.DT_NULL_LINK; k = bestTile.links[k].next)
+                        for (int k = bestTile.polyLinks[bestPoly.index]; k != DtNavMesh.DT_NULL_LINK; k = bestTile.links[k].next)
                         {
-                            Link link = bestTile.links[k];
+                            DtLink link = bestTile.links[k];
                             if (link.edge == j)
                             {
                                 if (link.refs != 0)
                                 {
-                                    Tuple<MeshTile, Poly> linkTileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(link.refs);
-                                    MeshTile neiTile = linkTileAndPoly.Item1;
-                                    Poly neiPoly = linkTileAndPoly.Item2;
+                                    Tuple<DtMeshTile, DtPoly> linkTileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(link.refs);
+                                    DtMeshTile neiTile = linkTileAndPoly.Item1;
+                                    DtPoly neiPoly = linkTileAndPoly.Item2;
                                     if (filter.PassFilter(link.refs, neiTile, neiPoly))
                                     {
                                         solid = false;
@@ -757,9 +757,9 @@ namespace DotRecast.Detour
                     bestvi = RcVec3f.Of(bestTile.data.verts, vi);
                 }
 
-                for (int i = bestTile.polyLinks[bestPoly.index]; i != NavMesh.DT_NULL_LINK; i = bestTile.links[i].next)
+                for (int i = bestTile.polyLinks[bestPoly.index]; i != DtNavMesh.DT_NULL_LINK; i = bestTile.links[i].next)
                 {
-                    Link link = bestTile.links[i];
+                    DtLink link = bestTile.links[i];
                     long neighbourRef = link.refs;
                     // Skip invalid neighbours and do not follow back to parent.
                     if (neighbourRef == 0 || neighbourRef == parentRef)
@@ -768,12 +768,12 @@ namespace DotRecast.Detour
                     }
 
                     // Expand to neighbour.
-                    Tuple<MeshTile, Poly> neighbourTileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(neighbourRef);
-                    MeshTile neighbourTile = neighbourTileAndPoly.Item1;
-                    Poly neighbourPoly = neighbourTileAndPoly.Item2;
+                    Tuple<DtMeshTile, DtPoly> neighbourTileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(neighbourRef);
+                    DtMeshTile neighbourTile = neighbourTileAndPoly.Item1;
+                    DtPoly neighbourPoly = neighbourTileAndPoly.Item2;
 
                     // Skip off-mesh connections.
-                    if (neighbourPoly.GetPolyType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+                    if (neighbourPoly.GetPolyType() == DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
                     {
                         continue;
                     }
@@ -793,9 +793,9 @@ namespace DotRecast.Detour
                         continue;
                     }
 
-                    Node neighbourNode = m_nodePool.GetNode(neighbourRef);
+                    DtNode neighbourNode = m_nodePool.GetNode(neighbourRef);
 
-                    if ((neighbourNode.flags & Node.DT_NODE_CLOSED) != 0)
+                    if ((neighbourNode.flags & DtNode.DT_NODE_CLOSED) != 0)
                     {
                         continue;
                     }
@@ -814,23 +814,23 @@ namespace DotRecast.Detour
                     float total = bestNode.total + RcVec3f.Distance(bestNode.pos, neighbourNode.pos);
 
                     // The node is already in open list and the new result is worse, skip.
-                    if ((neighbourNode.flags & Node.DT_NODE_OPEN) != 0 && total >= neighbourNode.total)
+                    if ((neighbourNode.flags & DtNode.DT_NODE_OPEN) != 0 && total >= neighbourNode.total)
                     {
                         continue;
                     }
 
                     neighbourNode.id = neighbourRef;
-                    neighbourNode.flags = (neighbourNode.flags & ~Node.DT_NODE_CLOSED);
+                    neighbourNode.flags = (neighbourNode.flags & ~DtNode.DT_NODE_CLOSED);
                     neighbourNode.pidx = m_nodePool.GetNodeIdx(bestNode);
                     neighbourNode.total = total;
 
-                    if ((neighbourNode.flags & Node.DT_NODE_OPEN) != 0)
+                    if ((neighbourNode.flags & DtNode.DT_NODE_OPEN) != 0)
                     {
                         m_openList.Modify(neighbourNode);
                     }
                     else
                     {
-                        neighbourNode.flags |= Node.DT_NODE_OPEN;
+                        neighbourNode.flags |= DtNode.DT_NODE_OPEN;
                         m_openList.Push(neighbourNode);
                     }
                 }

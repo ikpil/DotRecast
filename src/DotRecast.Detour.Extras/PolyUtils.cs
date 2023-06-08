@@ -23,7 +23,7 @@ namespace DotRecast.Detour.Extras
         /**
      * Find edge shared by 2 polygons within the same tile
      */
-        public static int FindEdge(Poly node, Poly neighbour, MeshData tile, MeshData neighbourTile)
+        public static int FindEdge(DtPoly node, DtPoly neighbour, DtMeshData tile, DtMeshData neighbourTile)
         {
             // Compare indices first assuming there are no duplicate vertices
             for (int i = 0; i < node.vertCount; i++)
@@ -76,7 +76,7 @@ namespace DotRecast.Detour.Extras
         /**
      * Find edge closest to the given coordinate
      */
-        public static int FindEdge(Poly node, MeshData tile, float value, int comp)
+        public static int FindEdge(DtPoly node, DtMeshData tile, float value, int comp)
         {
             float error = float.MaxValue;
             int edge = 0;

@@ -53,9 +53,9 @@ public class TileCacheReaderTest
         Assert.That(tc.GetTileCount(), Is.EqualTo(168));
         // Tile0: Tris: 1, Verts: 4 Detail Meshed: 1 Detail Verts: 0 Detail Tris: 2
         // Verts: -2.269517, 28.710686, 28.710686
-        MeshTile tile = tc.GetNavMesh().GetTile(0);
-        MeshData data = tile.data;
-        MeshHeader header = data.header;
+        DtMeshTile tile = tc.GetNavMesh().GetTile(0);
+        DtMeshData data = tile.data;
+        DtMeshHeader header = data.header;
         Assert.That(header.vertCount, Is.EqualTo(4));
         Assert.That(header.polyCount, Is.EqualTo(1));
         Assert.That(header.detailMeshCount, Is.EqualTo(1));
@@ -151,9 +151,9 @@ public class TileCacheReaderTest
         Assert.That(tc.GetTileCount(), Is.EqualTo(168));
         // Tile0: Tris: 8, Verts: 18 Detail Meshed: 8 Detail Verts: 0 Detail Tris: 14
         // Verts: 14.997294, 15.484785, 15.484785
-        MeshTile tile = tc.GetNavMesh().GetTile(0);
-        MeshData data = tile.data;
-        MeshHeader header = data.header;
+        DtMeshTile tile = tc.GetNavMesh().GetTile(0);
+        DtMeshData data = tile.data;
+        DtMeshHeader header = data.header;
         Assert.That(header.vertCount, Is.EqualTo(18));
         Assert.That(header.polyCount, Is.EqualTo(8));
         Assert.That(header.detailMeshCount, Is.EqualTo(8));

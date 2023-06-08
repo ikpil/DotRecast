@@ -26,11 +26,11 @@ namespace DotRecast.Detour
  */
     public static class NavMeshRaycast
     {
-        public static float? Raycast(NavMesh mesh, RcVec3f src, RcVec3f dst)
+        public static float? Raycast(DtNavMesh mesh, RcVec3f src, RcVec3f dst)
         {
             for (int t = 0; t < mesh.GetMaxTiles(); ++t)
             {
-                MeshTile tile = mesh.GetTile(t);
+                DtMeshTile tile = mesh.GetTile(t);
                 if (tile != null && tile.data != null)
                 {
                     float? intersection = Raycast(tile, src, dst);
@@ -44,17 +44,17 @@ namespace DotRecast.Detour
             return null;
         }
 
-        private static float? Raycast(MeshTile tile, RcVec3f sp, RcVec3f sq)
+        private static float? Raycast(DtMeshTile tile, RcVec3f sp, RcVec3f sq)
         {
             for (int i = 0; i < tile.data.header.polyCount; ++i)
             {
-                Poly p = tile.data.polys[i];
-                if (p.GetPolyType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+                DtPoly p = tile.data.polys[i];
+                if (p.GetPolyType() == DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
                 {
                     continue;
                 }
 
-                PolyDetail pd = tile.data.detailMeshes[i];
+                DtPolyDetail pd = tile.data.detailMeshes[i];
 
                 if (pd != null)
                 {

@@ -23,7 +23,7 @@ namespace DotRecast.Detour.Test;
 [Parallelizable]
 public class NavMeshBuilderTest
 {
-    private MeshData nmd;
+    private DtMeshData nmd;
 
     [SetUp]
     public void SetUp()
@@ -56,7 +56,7 @@ public class NavMeshBuilderTest
 
         Assert.That(nmd.offMeshCons[0].rad, Is.EqualTo(0.1f));
         Assert.That(nmd.offMeshCons[0].poly, Is.EqualTo(118));
-        Assert.That(nmd.offMeshCons[0].flags, Is.EqualTo(NavMesh.DT_OFFMESH_CON_BIDIR));
+        Assert.That(nmd.offMeshCons[0].flags, Is.EqualTo(DtNavMesh.DT_OFFMESH_CON_BIDIR));
         Assert.That(nmd.offMeshCons[0].side, Is.EqualTo(0xFF));
         Assert.That(nmd.offMeshCons[0].userId, Is.EqualTo(0x4567));
         Assert.That(nmd.polys[118].vertCount, Is.EqualTo(2));
@@ -64,6 +64,6 @@ public class NavMeshBuilderTest
         Assert.That(nmd.polys[118].verts[1], Is.EqualTo(224));
         Assert.That(nmd.polys[118].flags, Is.EqualTo(12));
         Assert.That(nmd.polys[118].GetArea(), Is.EqualTo(2));
-        Assert.That(nmd.polys[118].GetPolyType(), Is.EqualTo(Poly.DT_POLYTYPE_OFFMESH_CONNECTION));
+        Assert.That(nmd.polys[118].GetPolyType(), Is.EqualTo(DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION));
     }
 }

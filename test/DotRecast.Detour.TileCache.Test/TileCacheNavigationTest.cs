@@ -34,7 +34,7 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
     protected readonly long[] endRefs = { 281474986147841L };
     protected readonly RcVec3f[] startPoss = { RcVec3f.Of(39.447338f, 9.998177f, -0.784811f) };
     protected readonly RcVec3f[] endPoss = { RcVec3f.Of(19.292645f, 11.611748f, -57.750366f) };
-    private readonly Status[] statuses = { Status.SUCCSESS };
+    private readonly DtStatus[] statuses = { DtStatus.SUCCSESS };
 
     private readonly long[][] results =
     {
@@ -49,8 +49,8 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
         }
     };
 
-    protected NavMesh navmesh;
-    protected NavMeshQuery query;
+    protected DtNavMesh navmesh;
+    protected DtNavMeshQuery query;
 
     [SetUp]
     public void SetUp()
@@ -77,13 +77,13 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
         }
 
         navmesh = tc.GetNavMesh();
-        query = new NavMeshQuery(navmesh);
+        query = new DtNavMeshQuery(navmesh);
     }
 
     [Test]
     public void TestFindPathWithDefaultHeuristic()
     {
-        IQueryFilter filter = new DefaultQueryFilter();
+        IDtQueryFilter filter = new DtQueryDefaultFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
@@ -103,7 +103,7 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
     [Test]
     public void TestFindPathWithNoHeuristic()
     {
-        IQueryFilter filter = new DefaultQueryFilter();
+        IDtQueryFilter filter = new DtQueryDefaultFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];

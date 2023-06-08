@@ -24,7 +24,7 @@ namespace DotRecast.Detour.Crowd.Test;
 
 public class RecastTestMeshBuilder
 {
-    private readonly MeshData meshData;
+    private readonly DtMeshData meshData;
     public const float m_cellSize = 0.3f;
     public const float m_cellHeight = 0.2f;
     public const float m_agentHeight = 2.0f;
@@ -64,7 +64,7 @@ public class RecastTestMeshBuilder
         }
 
         RcPolyMeshDetail m_dmesh = rcResult.GetMeshDetail();
-        NavMeshDataCreateParams option = new NavMeshDataCreateParams();
+        DtNavMeshCreateParams option = new DtNavMeshCreateParams();
         option.verts = m_pmesh.verts;
         option.vertCount = m_pmesh.nverts;
         option.polys = m_pmesh.polys;
@@ -107,7 +107,7 @@ public class RecastTestMeshBuilder
         meshData = NavMeshBuilder.CreateNavMeshData(option);
     }
 
-    public MeshData GetMeshData()
+    public DtMeshData GetMeshData()
     {
         return meshData;
     }

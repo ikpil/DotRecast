@@ -37,7 +37,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
             }
 
             int tileZCount = buffer.GetInt();
-            MeshData[] tiles = new MeshData[tileXCount * tileZCount];
+            DtMeshData[] tiles = new DtMeshData[tileXCount * tileZCount];
             for (int z = 0; z < tileZCount; z++)
             {
                 for (int x = 0; x < tileXCount; x++)
@@ -50,7 +50,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                         throw new ArgumentException("Inconsistent tile positions");
                     }
 
-                    tiles[tileIndex] = new MeshData();
+                    tiles[tileIndex] = new DtMeshData();
                     int width = buffer.GetInt();
                     int depth = buffer.GetInt();
 
@@ -75,8 +75,8 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                     }
 
                     int nodeCount = buffer.GetInt();
-                    Poly[] nodes = new Poly[nodeCount];
-                    PolyDetail[] detailNodes = new PolyDetail[nodeCount];
+                    DtPoly[] nodes = new DtPoly[nodeCount];
+                    DtPolyDetail[] detailNodes = new DtPolyDetail[nodeCount];
                     float[] detailVerts = new float[0];
                     int[] detailTris = new int[4 * nodeCount];
                     int vertMask = GetVertMask(vertsCount);
@@ -84,7 +84,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                     float ymax = float.NegativeInfinity;
                     for (int i = 0; i < nodes.Length; i++)
                     {
-                        nodes[i] = new Poly(i, maxVertPerPoly);
+                        nodes[i] = new DtPoly(i, maxVertPerPoly);
                         nodes[i].vertCount = 3;
                         // XXX: What can we do with the penalty?
                         int penalty = buffer.GetInt();
@@ -98,7 +98,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                         ymax = Math.Max(ymax, verts[nodes[i].verts[0] * 3 + 1]);
                         ymax = Math.Max(ymax, verts[nodes[i].verts[1] * 3 + 1]);
                         ymax = Math.Max(ymax, verts[nodes[i].verts[2] * 3 + 1]);
-                        detailNodes[i] = new PolyDetail();
+                        detailNodes[i] = new DtPolyDetail();
                         detailNodes[i].vertBase = 0;
                         detailNodes[i].vertCount = 0;
                         detailNodes[i].triBase = i;
@@ -116,9 +116,9 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                     tiles[tileIndex].detailMeshes = detailNodes;
                     tiles[tileIndex].detailVerts = detailVerts;
                     tiles[tileIndex].detailTris = detailTris;
-                    MeshHeader header = new MeshHeader();
-                    header.magic = MeshHeader.DT_NAVMESH_MAGIC;
-                    header.version = MeshHeader.DT_NAVMESH_VERSION;
+                    DtMeshHeader header = new DtMeshHeader();
+                    header.magic = DtMeshHeader.DT_NAVMESH_MAGIC;
+                    header.version = DtMeshHeader.DT_NAVMESH_VERSION;
                     header.x = x;
                     header.y = z;
                     header.polyCount = nodeCount;

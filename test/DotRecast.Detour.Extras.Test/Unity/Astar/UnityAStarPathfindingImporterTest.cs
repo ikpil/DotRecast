@@ -33,11 +33,11 @@ public class UnityAStarPathfindingImporterTest
     [Test]
     public void Test_v4_0_6()
     {
-        NavMesh mesh = LoadNavMesh("graph.zip");
+        DtNavMesh mesh = LoadNavMesh("graph.zip");
         RcVec3f startPos = RcVec3f.Of(8.200293f, 2.155071f, -26.176147f);
         RcVec3f endPos = RcVec3f.Of(11.971109f, 0.000000f, 8.663261f);
         Result<List<long>> path = FindPath(mesh, startPos, endPos);
-        Assert.That(path.status, Is.EqualTo(Status.SUCCSESS));
+        Assert.That(path.status, Is.EqualTo(DtStatus.SUCCSESS));
         Assert.That(path.result.Count, Is.EqualTo(57));
         SaveMesh(mesh, "v4_0_6");
     }
@@ -45,7 +45,7 @@ public class UnityAStarPathfindingImporterTest
     [Test]
     public void Test_v4_1_16()
     {
-        NavMesh mesh = LoadNavMesh("graph_v4_1_16.zip");
+        DtNavMesh mesh = LoadNavMesh("graph_v4_1_16.zip");
         RcVec3f startPos = RcVec3f.Of(22.93f, -2.37f, -5.11f);
         RcVec3f endPos = RcVec3f.Of(16.81f, -2.37f, 25.52f);
         Result<List<long>> path = FindPath(mesh, startPos, endPos);
@@ -57,14 +57,14 @@ public class UnityAStarPathfindingImporterTest
     [Test]
     public void TestBoundsTree()
     {
-        NavMesh mesh = LoadNavMesh("test_boundstree.zip");
+        DtNavMesh mesh = LoadNavMesh("test_boundstree.zip");
         RcVec3f position = RcVec3f.Of(387.52988f, 19.997f, 368.86282f);
 
         mesh.CalcTileLoc(position, out var tileX, out var tileY);
         long tileRef = mesh.GetTileRefAt(tileX, tileY, 0);
-        MeshTile tile = mesh.GetTileByRef(tileRef);
-        MeshData data = tile.data;
-        BVNode[] bvNodes = data.bvTree;
+        DtMeshTile tile = mesh.GetTileByRef(tileRef);
+        DtMeshData data = tile.data;
+        DtBVNode[] bvNodes = data.bvTree;
         data.bvTree = null; // set BV-Tree empty to get 'clear' search poly without BV
         FindNearestPolyResult clearResult = GetNearestPolys(mesh, position)[0]; // check poly to exists
 
@@ -77,7 +77,7 @@ public class UnityAStarPathfindingImporterTest
         Assert.That(bvResult.GetNearestRef(), Is.EqualTo(clearResult.GetNearestRef()));
     }
 
-    private NavMesh LoadNavMesh(string filename)
+    private DtNavMesh LoadNavMesh(string filename)
     {
         var filepath = Loader.ToRPath(filename);
         using var fs = new FileStream(filepath, FileMode.Open, FileAccess.Read);
@@ -85,24 +85,24 @@ public class UnityAStarPathfindingImporterTest
         // Import the graphs
         UnityAStarPathfindingImporter importer = new UnityAStarPathfindingImporter();
 
-        NavMesh[] meshes = importer.Load(fs);
+        DtNavMesh[] meshes = importer.Load(fs);
         return meshes[0];
     }
 
-    private Result<List<long>> FindPath(NavMesh mesh, RcVec3f startPos, RcVec3f endPos)
+    private Result<List<long>> FindPath(DtNavMesh mesh, RcVec3f startPos, RcVec3f endPos)
     {
         // Perform a simple pathfinding
-        NavMeshQuery query = new NavMeshQuery(mesh);
-        IQueryFilter filter = new DefaultQueryFilter();
+        DtNavMeshQuery query = new DtNavMeshQuery(mesh);
+        IDtQueryFilter filter = new DtQueryDefaultFilter();
 
         FindNearestPolyResult[] polys = GetNearestPolys(mesh, startPos, endPos);
         return query.FindPath(polys[0].GetNearestRef(), polys[1].GetNearestRef(), startPos, endPos, filter);
     }
 
-    private FindNearestPolyResult[] GetNearestPolys(NavMesh mesh, params RcVec3f[] positions)
+    private FindNearestPolyResult[] GetNearestPolys(DtNavMesh mesh, params RcVec3f[] positions)
     {
-        NavMeshQuery query = new NavMeshQuery(mesh);
-        IQueryFilter filter = new DefaultQueryFilter();
+        DtNavMeshQuery query = new DtNavMeshQuery(mesh);
+        IDtQueryFilter filter = new DtQueryDefaultFilter();
         RcVec3f extents = RcVec3f.Of(0.1f, 0.1f, 0.1f);
 
         FindNearestPolyResult[] results = new FindNearestPolyResult[positions.Length];
@@ -118,12 +118,12 @@ public class UnityAStarPathfindingImporterTest
         return results;
     }
 
-    private void SaveMesh(NavMesh mesh, string filePostfix)
+    private void SaveMesh(DtNavMesh mesh, string filePostfix)
     {
         // Set the flag to RecastDemo work properly
         for (int i = 0; i < mesh.GetTileCount(); i++)
         {
-            foreach (Poly p in mesh.GetTile(i).data.polys)
+            foreach (DtPoly p in mesh.GetTile(i).data.polys)
             {
                 p.flags = 1;
             }

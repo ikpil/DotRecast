@@ -26,10 +26,10 @@ namespace DotRecast.Detour.Test;
 [Parallelizable]
 public class FindPathTest : AbstractDetourTest
 {
-    private static readonly Status[] STATUSES =
+    private static readonly DtStatus[] STATUSES =
     {
-        Status.SUCCSESS, Status.PARTIAL_RESULT, Status.SUCCSESS, Status.SUCCSESS,
-        Status.SUCCSESS
+        DtStatus.SUCCSESS, DtStatus.PARTIAL_RESULT, DtStatus.SUCCSESS, DtStatus.SUCCSESS,
+        DtStatus.SUCCSESS
     };
 
     private static readonly long[][] RESULTS =
@@ -131,7 +131,7 @@ public class FindPathTest : AbstractDetourTest
     [Test]
     public void TestFindPath()
     {
-        IQueryFilter filter = new DefaultQueryFilter();
+        IDtQueryFilter filter = new DtQueryDefaultFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
@@ -151,16 +151,16 @@ public class FindPathTest : AbstractDetourTest
     [Test]
     public void TestFindPathSliced()
     {
-        IQueryFilter filter = new DefaultQueryFilter();
+        IDtQueryFilter filter = new DtQueryDefaultFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
             long endRef = endRefs[i];
             var startPos = startPoss[i];
             var endPos = endPoss[i];
-            query.InitSlicedFindPath(startRef, endRef, startPos, endPos, filter, NavMeshQuery.DT_FINDPATH_ANY_ANGLE);
-            Status status = Status.IN_PROGRESS;
-            while (status == Status.IN_PROGRESS)
+            query.InitSlicedFindPath(startRef, endRef, startPos, endPos, filter, DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE);
+            DtStatus status = DtStatus.IN_PROGRESS;
+            while (status == DtStatus.IN_PROGRESS)
             {
                 Result<int> res = query.UpdateSlicedFindPath(10);
                 status = res.status;
@@ -179,7 +179,7 @@ public class FindPathTest : AbstractDetourTest
     [Test]
     public void TestFindPathStraight()
     {
-        IQueryFilter filter = new DefaultQueryFilter();
+        IDtQueryFilter filter = new DtQueryDefaultFilter();
         for (int i = 0; i < STRAIGHT_PATHS.Length; i++)
         {
             // startRefs.Length; i++) {

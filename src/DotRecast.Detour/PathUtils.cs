@@ -30,7 +30,7 @@ namespace DotRecast.Detour
         private const int MAX_STEER_POINTS = 3;
 
 
-        public static SteerTarget GetSteerTarget(NavMeshQuery navQuery, RcVec3f startPos, RcVec3f endPos,
+        public static SteerTarget GetSteerTarget(DtNavMeshQuery navQuery, RcVec3f startPos, RcVec3f endPos,
             float minTargetDist, List<long> path)
         {
             // Find steer target.
@@ -54,7 +54,7 @@ namespace DotRecast.Detour
             while (ns < straightPath.Count)
             {
                 // Stop at Off-Mesh link or when point is further than slop away.
-                if (((straightPath[ns].GetFlags() & NavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
+                if (((straightPath[ns].GetFlags() & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
                     || !InRange(straightPath[ns].GetPos(), startPos, minTargetDist, 1000.0f))
                     break;
                 ns++;
@@ -143,7 +143,7 @@ namespace DotRecast.Detour
         // +-S-+-T-+
         // |:::| | <-- the step can end up in here, resulting U-turn path.
         // +---+---+
-        public static List<long> FixupShortcuts(List<long> path, NavMeshQuery navQuery)
+        public static List<long> FixupShortcuts(List<long> path, DtNavMeshQuery navQuery)
         {
             if (path.Count < 3)
             {
@@ -153,18 +153,18 @@ namespace DotRecast.Detour
             // Get connected polygons
             List<long> neis = new List<long>();
 
-            Result<Tuple<MeshTile, Poly>> tileAndPoly = navQuery.GetAttachedNavMesh().GetTileAndPolyByRef(path[0]);
+            Result<Tuple<DtMeshTile, DtPoly>> tileAndPoly = navQuery.GetAttachedNavMesh().GetTileAndPolyByRef(path[0]);
             if (tileAndPoly.Failed())
             {
                 return path;
             }
 
-            MeshTile tile = tileAndPoly.result.Item1;
-            Poly poly = tileAndPoly.result.Item2;
+            DtMeshTile tile = tileAndPoly.result.Item1;
+            DtPoly poly = tileAndPoly.result.Item2;
 
-            for (int k = tile.polyLinks[poly.index]; k != NavMesh.DT_NULL_LINK; k = tile.links[k].next)
+            for (int k = tile.polyLinks[poly.index]; k != DtNavMesh.DT_NULL_LINK; k = tile.links[k].next)
             {
-                Link link = tile.links[k];
+                DtLink link = tile.links[k];
                 if (link.refs != 0)
                 {
                     neis.Add(link.refs);

@@ -22,6 +22,6 @@ namespace DotRecast.Detour.TileCache
 {
     public interface ITileCacheMeshProcess
     {
-        void Process(NavMeshDataCreateParams option);
+        void Process(DtNavMeshCreateParams option);
     }
 }

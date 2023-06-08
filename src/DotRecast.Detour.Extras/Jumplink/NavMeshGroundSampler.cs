@@ -7,17 +7,17 @@ namespace DotRecast.Detour.Extras.Jumplink
 {
     class NavMeshGroundSampler : AbstractGroundSampler
     {
-        private readonly IQueryFilter filter = new NoOpFilter();
+        private readonly IDtQueryFilter filter = new DtQueryNoOpFilter();
 
         public override void Sample(JumpLinkBuilderConfig acfg, RecastBuilderResult result, EdgeSampler es)
         {
-            NavMeshQuery navMeshQuery = CreateNavMesh(result, acfg.agentRadius, acfg.agentHeight, acfg.agentClimb);
+            DtNavMeshQuery navMeshQuery = CreateNavMesh(result, acfg.agentRadius, acfg.agentHeight, acfg.agentClimb);
             SampleGround(acfg, es, (pt, h) => GetNavMeshHeight(navMeshQuery, pt, acfg.cellSize, h));
         }
 
-        private NavMeshQuery CreateNavMesh(RecastBuilderResult r, float agentRadius, float agentHeight, float agentClimb)
+        private DtNavMeshQuery CreateNavMesh(RecastBuilderResult r, float agentRadius, float agentHeight, float agentClimb)
         {
-            NavMeshDataCreateParams option = new NavMeshDataCreateParams();
+            DtNavMeshCreateParams option = new DtNavMeshCreateParams();
             option.verts = r.GetMesh().verts;
             option.vertCount = r.GetMesh().nverts;
             option.polys = r.GetMesh().polys;
@@ -38,11 +38,11 @@ namespace DotRecast.Detour.Extras.Jumplink
             option.cs = r.GetMesh().cs;
             option.ch = r.GetMesh().ch;
             option.buildBvTree = true;
-            return new NavMeshQuery(new NavMesh(NavMeshBuilder.CreateNavMeshData(option), option.nvp, 0));
+            return new DtNavMeshQuery(new DtNavMesh(NavMeshBuilder.CreateNavMeshData(option), option.nvp, 0));
         }
 
 
-        private Tuple<bool, float> GetNavMeshHeight(NavMeshQuery navMeshQuery, RcVec3f pt, float cs, float heightRange)
+        private Tuple<bool, float> GetNavMeshHeight(DtNavMeshQuery navMeshQuery, RcVec3f pt, float cs, float heightRange)
         {
             RcVec3f halfExtents = new RcVec3f { x = cs, y = heightRange, z = cs };
             float maxHeight = pt.y + heightRange;

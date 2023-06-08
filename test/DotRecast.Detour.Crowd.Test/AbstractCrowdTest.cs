@@ -57,39 +57,39 @@ public class AbstractCrowdTest
         RcVec3f.Of(18.784092f, 10.197294f, 3.0543678f),
     };
 
-    protected MeshData nmd;
-    protected NavMeshQuery query;
-    protected NavMesh navmesh;
-    protected Crowd crowd;
-    protected List<CrowdAgent> agents;
+    protected DtMeshData nmd;
+    protected DtNavMeshQuery query;
+    protected DtNavMesh navmesh;
+    protected DtCrowd crowd;
+    protected List<DtCrowdAgent> agents;
 
     [SetUp]
     public void SetUp()
     {
         nmd = new RecastTestMeshBuilder().GetMeshData();
-        navmesh = new NavMesh(nmd, 6, 0);
-        query = new NavMeshQuery(navmesh);
-        CrowdConfig config = new CrowdConfig(0.6f);
-        crowd = new Crowd(config, navmesh);
-        ObstacleAvoidanceParams option = new ObstacleAvoidanceParams();
+        navmesh = new DtNavMesh(nmd, 6, 0);
+        query = new DtNavMeshQuery(navmesh);
+        DtCrowdConfig config = new DtCrowdConfig(0.6f);
+        crowd = new DtCrowd(config, navmesh);
+        DtObstacleAvoidanceParams option = new DtObstacleAvoidanceParams();
         option.velBias = 0.5f;
         option.adaptiveDivs = 5;
         option.adaptiveRings = 2;
         option.adaptiveDepth = 1;
         crowd.SetObstacleAvoidanceParams(0, option);
-        option = new ObstacleAvoidanceParams();
+        option = new DtObstacleAvoidanceParams();
         option.velBias = 0.5f;
         option.adaptiveDivs = 5;
         option.adaptiveRings = 2;
         option.adaptiveDepth = 2;
         crowd.SetObstacleAvoidanceParams(1, option);
-        option = new ObstacleAvoidanceParams();
+        option = new DtObstacleAvoidanceParams();
         option.velBias = 0.5f;
         option.adaptiveDivs = 7;
         option.adaptiveRings = 2;
         option.adaptiveDepth = 3;
         crowd.SetObstacleAvoidanceParams(2, option);
-        option = new ObstacleAvoidanceParams();
+        option = new DtObstacleAvoidanceParams();
         option.velBias = 0.5f;
         option.adaptiveDivs = 7;
         option.adaptiveRings = 3;
@@ -98,9 +98,9 @@ public class AbstractCrowdTest
         agents = new();
     }
 
-    protected CrowdAgentParams GetAgentParams(int updateFlags, int obstacleAvoidanceType)
+    protected DtCrowdAgentParams GetAgentParams(int updateFlags, int obstacleAvoidanceType)
     {
-        CrowdAgentParams ap = new CrowdAgentParams();
+        DtCrowdAgentParams ap = new DtCrowdAgentParams();
         ap.radius = 0.6f;
         ap.height = 2f;
         ap.maxAcceleration = 8.0f;
@@ -115,7 +115,7 @@ public class AbstractCrowdTest
 
     protected void AddAgentGrid(int size, float distance, int updateFlags, int obstacleAvoidanceType, RcVec3f startPos)
     {
-        CrowdAgentParams ap = GetAgentParams(updateFlags, obstacleAvoidanceType);
+        DtCrowdAgentParams ap = GetAgentParams(updateFlags, obstacleAvoidanceType);
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
@@ -132,10 +132,10 @@ public class AbstractCrowdTest
     protected void SetMoveTarget(RcVec3f pos, bool adjust)
     {
         RcVec3f ext = crowd.GetQueryExtents();
-        IQueryFilter filter = crowd.GetFilter(0);
+        IDtQueryFilter filter = crowd.GetFilter(0);
         if (adjust)
         {
-            foreach (CrowdAgent ag in crowd.GetActiveAgents())
+            foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
             {
                 RcVec3f vel = CalcVel(ag.npos, pos, ag.option.maxSpeed);
                 crowd.RequestMoveVelocity(ag, vel);
@@ -144,7 +144,7 @@ public class AbstractCrowdTest
         else
         {
             Result<FindNearestPolyResult> nearest = query.FindNearestPoly(pos, ext, filter);
-            foreach (CrowdAgent ag in crowd.GetActiveAgents())
+            foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
             {
                 crowd.RequestMoveTarget(ag, nearest.result.GetNearestRef(), nearest.result.GetNearestPos());
             }
@@ -163,7 +163,7 @@ public class AbstractCrowdTest
     protected void DumpActiveAgents(int i)
     {
         Console.WriteLine(crowd.GetActiveAgents().Count);
-        foreach (CrowdAgent ag in crowd.GetActiveAgents())
+        foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
         {
             Console.WriteLine(ag.state + ", " + ag.targetState);
             Console.WriteLine(ag.npos.x + ", " + ag.npos.y + ", " + ag.npos.z);

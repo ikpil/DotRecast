@@ -32,7 +32,7 @@ namespace DotRecast.Detour.Dynamic
         public readonly VoxelTile voxelTile;
         public DynamicTileCheckpoint checkpoint;
         public RecastBuilderResult recastResult;
-        MeshData meshData;
+        DtMeshData meshData;
         private readonly ConcurrentDictionary<long, ICollider> colliders = new ConcurrentDictionary<long, ICollider>();
         private bool dirty = true;
         private long id;
@@ -48,7 +48,7 @@ namespace DotRecast.Detour.Dynamic
             {
                 RcHeightfield heightfield = BuildHeightfield(config, telemetry);
                 RecastBuilderResult r = BuildRecast(builder, config, voxelTile, heightfield, telemetry);
-                NavMeshDataCreateParams option = NavMeshCreateParams(voxelTile.tileX, voxelTile.tileZ, voxelTile.cellSize,
+                DtNavMeshCreateParams option = NavMeshCreateParams(voxelTile.tileX, voxelTile.tileZ, voxelTile.cellSize,
                     voxelTile.cellHeight, config, r);
                 meshData = NavMeshBuilder.CreateNavMeshData(option);
                 return true;
@@ -116,12 +116,12 @@ namespace DotRecast.Detour.Dynamic
             }
         }
 
-        private NavMeshDataCreateParams NavMeshCreateParams(int tilex, int tileZ, float cellSize, float cellHeight,
+        private DtNavMeshCreateParams NavMeshCreateParams(int tilex, int tileZ, float cellSize, float cellHeight,
             DynamicNavMeshConfig config, RecastBuilderResult rcResult)
         {
             RcPolyMesh m_pmesh = rcResult.GetMesh();
             RcPolyMeshDetail m_dmesh = rcResult.GetMeshDetail();
-            NavMeshDataCreateParams option = new NavMeshDataCreateParams();
+            DtNavMeshCreateParams option = new DtNavMeshCreateParams();
             for (int i = 0; i < m_pmesh.npolys; ++i)
             {
                 m_pmesh.flags[i] = 1;
@@ -164,7 +164,7 @@ namespace DotRecast.Detour.Dynamic
             return option;
         }
 
-        public void AddTo(NavMesh navMesh)
+        public void AddTo(DtNavMesh navMesh)
         {
             if (meshData != null)
             {

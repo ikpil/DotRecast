@@ -565,15 +565,15 @@ public class Crowd1Test : AbstractCrowdTest
     [Test]
     public void TestAgent1Quality0TVTA()
     {
-        int updateFlags = CrowdAgentParams.DT_CROWD_ANTICIPATE_TURNS | CrowdAgentParams.DT_CROWD_OPTIMIZE_VIS
-                                                                     | CrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO | CrowdAgentParams.DT_CROWD_OBSTACLE_AVOIDANCE;
+        int updateFlags = DtCrowdAgentParams.DT_CROWD_ANTICIPATE_TURNS | DtCrowdAgentParams.DT_CROWD_OPTIMIZE_VIS
+                                                                     | DtCrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO | DtCrowdAgentParams.DT_CROWD_OBSTACLE_AVOIDANCE;
 
         AddAgentGrid(1, 0.4f, updateFlags, 0, startPoss[0]);
         SetMoveTarget(endPoss[0], false);
         for (int i = 0; i < EXPECTED_A1Q0TVTA.Length; i++)
         {
             crowd.Update(1 / 5f, null);
-            foreach (CrowdAgent ag in crowd.GetActiveAgents())
+            foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
             {
                 Assert.That(ag.npos.x, Is.EqualTo(EXPECTED_A1Q0TVTA[i][0]).Within(0.001f));
                 Assert.That(ag.npos.y, Is.EqualTo(EXPECTED_A1Q0TVTA[i][1]).Within(0.001f));
@@ -588,15 +588,15 @@ public class Crowd1Test : AbstractCrowdTest
     [Test]
     public void TestAgent1Quality0TVT()
     {
-        int updateFlags = CrowdAgentParams.DT_CROWD_ANTICIPATE_TURNS | CrowdAgentParams.DT_CROWD_OPTIMIZE_VIS
-                                                                     | CrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO;
+        int updateFlags = DtCrowdAgentParams.DT_CROWD_ANTICIPATE_TURNS | DtCrowdAgentParams.DT_CROWD_OPTIMIZE_VIS
+                                                                     | DtCrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO;
 
         AddAgentGrid(1, 0.4f, updateFlags, 0, startPoss[0]);
         SetMoveTarget(endPoss[0], false);
         for (int i = 0; i < EXPECTED_A1Q0TVT.Length; i++)
         {
             crowd.Update(1 / 5f, null);
-            foreach (CrowdAgent ag in crowd.GetActiveAgents())
+            foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
             {
                 Assert.That(ag.npos.x, Is.EqualTo(EXPECTED_A1Q0TVT[i][0]).Within(0.001f));
                 Assert.That(ag.npos.y, Is.EqualTo(EXPECTED_A1Q0TVT[i][1]).Within(0.001f));
@@ -611,14 +611,14 @@ public class Crowd1Test : AbstractCrowdTest
     [Test]
     public void TestAgent1Quality0TV()
     {
-        int updateFlags = CrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO | CrowdAgentParams.DT_CROWD_OPTIMIZE_VIS;
+        int updateFlags = DtCrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO | DtCrowdAgentParams.DT_CROWD_OPTIMIZE_VIS;
 
         AddAgentGrid(1, 0.4f, updateFlags, 0, startPoss[0]);
         SetMoveTarget(endPoss[0], false);
         for (int i = 0; i < EXPECTED_A1Q0TV.Length; i++)
         {
             crowd.Update(1 / 5f, null);
-            foreach (CrowdAgent ag in crowd.GetActiveAgents())
+            foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
             {
                 Assert.That(ag.npos.x, Is.EqualTo(EXPECTED_A1Q0TV[i][0]).Within(0.001f));
                 Assert.That(ag.npos.y, Is.EqualTo(EXPECTED_A1Q0TV[i][1]).Within(0.001f));
@@ -633,14 +633,14 @@ public class Crowd1Test : AbstractCrowdTest
     [Test]
     public void TestAgent1Quality0T()
     {
-        int updateFlags = CrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO;
+        int updateFlags = DtCrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO;
 
         AddAgentGrid(1, 0.4f, updateFlags, 0, startPoss[0]);
         SetMoveTarget(endPoss[0], false);
         for (int i = 0; i < EXPECTED_A1Q0T.Length; i++)
         {
             crowd.Update(1 / 5f, null);
-            foreach (CrowdAgent ag in crowd.GetActiveAgents())
+            foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
             {
                 Assert.That(ag.npos.x, Is.EqualTo(EXPECTED_A1Q0T[i][0]).Within(0.001));
                 Assert.That(ag.npos.y, Is.EqualTo(EXPECTED_A1Q0T[i][1]).Within(0.001));
@@ -655,15 +655,15 @@ public class Crowd1Test : AbstractCrowdTest
     [Test]
     public void TestAgent1Quality1TVTA()
     {
-        int updateFlags = CrowdAgentParams.DT_CROWD_ANTICIPATE_TURNS | CrowdAgentParams.DT_CROWD_OPTIMIZE_VIS
-                                                                     | CrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO | CrowdAgentParams.DT_CROWD_OBSTACLE_AVOIDANCE;
+        int updateFlags = DtCrowdAgentParams.DT_CROWD_ANTICIPATE_TURNS | DtCrowdAgentParams.DT_CROWD_OPTIMIZE_VIS
+                                                                     | DtCrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO | DtCrowdAgentParams.DT_CROWD_OBSTACLE_AVOIDANCE;
 
         AddAgentGrid(1, 0.4f, updateFlags, 1, startPoss[0]);
         SetMoveTarget(endPoss[0], false);
         for (int i = 0; i < EXPECTED_A1Q1TVTA.Length; i++)
         {
             crowd.Update(1 / 5f, null);
-            foreach (CrowdAgent ag in crowd.GetActiveAgents())
+            foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
             {
                 Assert.That(ag.npos.x, Is.EqualTo(EXPECTED_A1Q1TVTA[i][0]).Within(0.001f));
                 Assert.That(ag.npos.y, Is.EqualTo(EXPECTED_A1Q1TVTA[i][1]).Within(0.001f));
@@ -678,15 +678,15 @@ public class Crowd1Test : AbstractCrowdTest
     [Test]
     public void TestAgent1Quality2TVTA()
     {
-        int updateFlags = CrowdAgentParams.DT_CROWD_ANTICIPATE_TURNS | CrowdAgentParams.DT_CROWD_OPTIMIZE_VIS
-                                                                     | CrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO | CrowdAgentParams.DT_CROWD_OBSTACLE_AVOIDANCE;
+        int updateFlags = DtCrowdAgentParams.DT_CROWD_ANTICIPATE_TURNS | DtCrowdAgentParams.DT_CROWD_OPTIMIZE_VIS
+                                                                     | DtCrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO | DtCrowdAgentParams.DT_CROWD_OBSTACLE_AVOIDANCE;
 
         AddAgentGrid(1, 0.4f, updateFlags, 2, startPoss[0]);
         SetMoveTarget(endPoss[0], false);
         for (int i = 0; i < EXPECTED_A1Q2TVTA.Length; i++)
         {
             crowd.Update(1 / 5f, null);
-            foreach (CrowdAgent ag in crowd.GetActiveAgents())
+            foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
             {
                 Assert.That(ag.npos.x, Is.EqualTo(EXPECTED_A1Q2TVTA[i][0]).Within(0.001f));
                 Assert.That(ag.npos.y, Is.EqualTo(EXPECTED_A1Q2TVTA[i][1]).Within(0.001f));
@@ -701,15 +701,15 @@ public class Crowd1Test : AbstractCrowdTest
     [Test]
     public void TestAgent1Quality3TVTA()
     {
-        int updateFlags = CrowdAgentParams.DT_CROWD_ANTICIPATE_TURNS | CrowdAgentParams.DT_CROWD_OPTIMIZE_VIS
-                                                                     | CrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO | CrowdAgentParams.DT_CROWD_OBSTACLE_AVOIDANCE;
+        int updateFlags = DtCrowdAgentParams.DT_CROWD_ANTICIPATE_TURNS | DtCrowdAgentParams.DT_CROWD_OPTIMIZE_VIS
+                                                                     | DtCrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO | DtCrowdAgentParams.DT_CROWD_OBSTACLE_AVOIDANCE;
 
         AddAgentGrid(1, 0.4f, updateFlags, 3, startPoss[0]);
         SetMoveTarget(endPoss[0], false);
         for (int i = 0; i < EXPECTED_A1Q3TVTA.Length; i++)
         {
             crowd.Update(1 / 5f, null);
-            foreach (CrowdAgent ag in crowd.GetActiveAgents())
+            foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
             {
                 Assert.That(ag.npos.x, Is.EqualTo(EXPECTED_A1Q3TVTA[i][0]).Within(0.001f));
                 Assert.That(ag.npos.y, Is.EqualTo(EXPECTED_A1Q3TVTA[i][1]).Within(0.001f));
@@ -724,16 +724,16 @@ public class Crowd1Test : AbstractCrowdTest
     [Test]
     public void TestAgent1Quality3TVTAS()
     {
-        int updateFlags = CrowdAgentParams.DT_CROWD_ANTICIPATE_TURNS | CrowdAgentParams.DT_CROWD_OPTIMIZE_VIS
-                                                                     | CrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO | CrowdAgentParams.DT_CROWD_OBSTACLE_AVOIDANCE
-                                                                     | CrowdAgentParams.DT_CROWD_SEPARATION;
+        int updateFlags = DtCrowdAgentParams.DT_CROWD_ANTICIPATE_TURNS | DtCrowdAgentParams.DT_CROWD_OPTIMIZE_VIS
+                                                                     | DtCrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO | DtCrowdAgentParams.DT_CROWD_OBSTACLE_AVOIDANCE
+                                                                     | DtCrowdAgentParams.DT_CROWD_SEPARATION;
 
         AddAgentGrid(1, 0.4f, updateFlags, 3, startPoss[0]);
         SetMoveTarget(endPoss[0], false);
         for (int i = 0; i < EXPECTED_A1Q3TVTAS.Length; i++)
         {
             crowd.Update(1 / 5f, null);
-            foreach (CrowdAgent ag in crowd.GetActiveAgents())
+            foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
             {
                 Assert.That(ag.npos.x, Is.EqualTo(EXPECTED_A1Q3TVTAS[i][0]).Within(0.001f));
                 Assert.That(ag.npos.y, Is.EqualTo(EXPECTED_A1Q3TVTAS[i][1]).Within(0.001f));

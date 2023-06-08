@@ -41,7 +41,7 @@ public class AbstractTileCacheTest
 
     protected class TestTileCacheMeshProcess : ITileCacheMeshProcess
     {
-        public void Process(NavMeshDataCreateParams option)
+        public void Process(DtNavMeshCreateParams option)
         {
             for (int i = 0; i < option.polyCount; ++i)
             {
@@ -65,13 +65,13 @@ public class AbstractTileCacheTest
         option.maxSimplificationError = m_edgeMaxError;
         option.maxTiles = tw * th * EXPECTED_LAYERS_PER_TILE;
         option.maxObstacles = 128;
-        NavMeshParams navMeshParams = new NavMeshParams();
+        DtNavMeshParams navMeshParams = new DtNavMeshParams();
         navMeshParams.orig = geom.GetMeshBoundsMin();
         navMeshParams.tileWidth = m_tileSize * m_cellSize;
         navMeshParams.tileHeight = m_tileSize * m_cellSize;
         navMeshParams.maxTiles = 256;
         navMeshParams.maxPolys = 16384;
-        NavMesh navMesh = new NavMesh(navMeshParams, 6);
+        DtNavMesh navMesh = new DtNavMesh(navMeshParams, 6);
         TileCache tc = new TileCache(option, new TileCacheStorageParams(order, cCompatibility), navMesh,
             TileCacheCompressorFactory.Get(cCompatibility), new TestTileCacheMeshProcess());
         return tc;

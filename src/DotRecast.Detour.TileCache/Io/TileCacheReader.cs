@@ -63,7 +63,7 @@ namespace DotRecast.Detour.TileCache.Io
             header.numTiles = bb.GetInt();
             header.meshParams = paramReader.Read(bb);
             header.cacheParams = ReadCacheParams(bb, cCompatibility);
-            NavMesh mesh = new NavMesh(header.meshParams, maxVertPerPoly);
+            DtNavMesh mesh = new DtNavMesh(header.meshParams, maxVertPerPoly);
             ITileCacheCompressor compressor = TileCacheCompressorFactory.Get(cCompatibility);
             TileCache tc = new TileCache(header.cacheParams, new TileCacheStorageParams(bb.Order(), cCompatibility), mesh,
                 compressor, meshProcessor);

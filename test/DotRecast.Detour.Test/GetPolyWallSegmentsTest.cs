@@ -77,7 +77,7 @@ public class GetPolyWallSegmentsTest : AbstractDetourTest
     [Test]
     public void TestFindDistanceToWall()
     {
-        IQueryFilter filter = new DefaultQueryFilter();
+        IDtQueryFilter filter = new DtQueryDefaultFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
             Result<GetPolyWallSegmentsResult> result = query.GetPolyWallSegments(startRefs[i], true, filter);

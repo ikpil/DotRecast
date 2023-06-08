@@ -5,13 +5,13 @@ namespace DotRecast.Recast.DemoTool.Builder
 {
     public abstract class AbstractNavMeshBuilder
     {
-        protected NavMeshDataCreateParams GetNavMeshCreateParams(DemoInputGeomProvider m_geom, float m_cellSize,
+        protected DtNavMeshCreateParams GetNavMeshCreateParams(DemoInputGeomProvider m_geom, float m_cellSize,
             float m_cellHeight, float m_agentHeight, float m_agentRadius, float m_agentMaxClimb,
             RecastBuilderResult rcResult)
         {
             RcPolyMesh m_pmesh = rcResult.GetMesh();
             RcPolyMeshDetail m_dmesh = rcResult.GetMeshDetail();
-            NavMeshDataCreateParams option = new NavMeshDataCreateParams();
+            DtNavMeshCreateParams option = new DtNavMeshCreateParams();
             for (int i = 0; i < m_pmesh.npolys; ++i)
             {
                 m_pmesh.flags[i] = 1;
@@ -66,7 +66,7 @@ namespace DotRecast.Recast.DemoTool.Builder
             return option;
         }
 
-        protected MeshData UpdateAreaAndFlags(MeshData meshData)
+        protected DtMeshData UpdateAreaAndFlags(DtMeshData meshData)
         {
             // Update poly flags from areas.
             for (int i = 0; i < meshData.polys.Length; ++i)

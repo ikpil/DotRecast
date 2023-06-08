@@ -307,7 +307,7 @@ public class RecastDemo
 
     private void LoadNavMesh(FileStream file, string filename)
     {
-        NavMesh mesh = null;
+        DtNavMesh mesh = null;
         if (filename.EndsWith(".zip") || filename.EndsWith(".bytes"))
         {
             UnityAStarPathfindingImporter importer = new UnityAStarPathfindingImporter();
@@ -533,7 +533,7 @@ public class RecastDemo
 
                 Logger.Information($"build");
 
-                Tuple<IList<RecastBuilderResult>, NavMesh> buildResult;
+                Tuple<IList<RecastBuilderResult>, DtNavMesh> buildResult;
                 if (settingsUI.IsTiled())
                 {
                     buildResult = tileNavMeshBuilder.Build(sample.GetInputGeom(), settingsUI.GetPartitioning(), m_cellSize,

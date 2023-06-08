@@ -102,12 +102,12 @@ public class RecastDebugDraw : DebugDraw
         Texture(false);
     }
 
-    public void DebugDrawNavMeshWithClosedList(NavMesh mesh, NavMeshQuery query, int flags)
+    public void DebugDrawNavMeshWithClosedList(DtNavMesh mesh, DtNavMeshQuery query, int flags)
     {
-        NavMeshQuery q = (flags & DRAWNAVMESH_CLOSEDLIST) != 0 ? query : null;
+        DtNavMeshQuery q = (flags & DRAWNAVMESH_CLOSEDLIST) != 0 ? query : null;
         for (int i = 0; i < mesh.GetMaxTiles(); ++i)
         {
-            MeshTile tile = mesh.GetTile(i);
+            DtMeshTile tile = mesh.GetTile(i);
             if (tile != null && tile.data != null)
             {
                 DrawMeshTile(mesh, q, tile, flags);
@@ -115,18 +115,18 @@ public class RecastDebugDraw : DebugDraw
         }
     }
 
-    private void DrawMeshTile(NavMesh mesh, NavMeshQuery query, MeshTile tile, int flags)
+    private void DrawMeshTile(DtNavMesh mesh, DtNavMeshQuery query, DtMeshTile tile, int flags)
     {
         long @base = mesh.GetPolyRefBase(tile);
 
-        int tileNum = NavMesh.DecodePolyIdTile(@base);
+        int tileNum = DtNavMesh.DecodePolyIdTile(@base);
         int tileColor = DuIntToCol(tileNum, 128);
         DepthMask(false);
         Begin(DebugDrawPrimitives.TRIS);
         for (int i = 0; i < tile.data.header.polyCount; ++i)
         {
-            Poly p = tile.data.polys[i];
-            if (p.GetPolyType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+            DtPoly p = tile.data.polys[i];
+            if (p.GetPolyType() == DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
                 continue;
             }
@@ -171,9 +171,9 @@ public class RecastDebugDraw : DebugDraw
             Begin(DebugDrawPrimitives.LINES, 2.0f);
             for (int i = 0; i < tile.data.header.polyCount; ++i)
             {
-                Poly p = tile.data.polys[i];
+                DtPoly p = tile.data.polys[i];
 
-                if (p.GetPolyType() != Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+                if (p.GetPolyType() != DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
                 {
                     continue;
                 }
@@ -188,7 +188,7 @@ public class RecastDebugDraw : DebugDraw
                     col = DuDarkenCol(DuTransCol(AreaToCol(p.GetArea()), 220));
                 }
 
-                OffMeshConnection con = tile.data.offMeshCons[i - tile.data.header.offMeshBase];
+                DtOffMeshConnection con = tile.data.offMeshCons[i - tile.data.header.offMeshBase];
                 RcVec3f va = RcVec3f.Of(
                     tile.data.verts[p.verts[0] * 3], tile.data.verts[p.verts[0] * 3 + 1],
                     tile.data.verts[p.verts[0] * 3 + 2]
@@ -201,7 +201,7 @@ public class RecastDebugDraw : DebugDraw
                 // Check to see if start and end end-points have links.
                 bool startSet = false;
                 bool endSet = false;
-                for (int k = tile.polyLinks[p.index]; k != NavMesh.DT_NULL_LINK; k = tile.links[k].next)
+                for (int k = tile.polyLinks[p.index]; k != DtNavMesh.DT_NULL_LINK; k = tile.links[k].next)
                 {
                     if (tile.links[k].edge == 0)
                     {
@@ -253,12 +253,12 @@ public class RecastDebugDraw : DebugDraw
         DepthMask(true);
     }
 
-    private void DrawPoly(MeshTile tile, int index, int col)
+    private void DrawPoly(DtMeshTile tile, int index, int col)
     {
-        Poly p = tile.data.polys[index];
+        DtPoly p = tile.data.polys[index];
         if (tile.data.detailMeshes != null)
         {
-            PolyDetail pd = tile.data.detailMeshes[index];
+            DtPolyDetail pd = tile.data.detailMeshes[index];
             if (pd != null)
             {
                 for (int j = 0; j < pd.triCount; ++j)
@@ -297,7 +297,7 @@ public class RecastDebugDraw : DebugDraw
         }
     }
 
-    void DrawPolyBoundaries(MeshTile tile, int col, float linew, bool inner)
+    void DrawPolyBoundaries(DtMeshTile tile, int col, float linew, bool inner)
     {
         float thr = 0.01f * 0.01f;
 
@@ -305,9 +305,9 @@ public class RecastDebugDraw : DebugDraw
 
         for (int i = 0; i < tile.data.header.polyCount; ++i)
         {
-            Poly p = tile.data.polys[i];
+            DtPoly p = tile.data.polys[i];
 
-            if (p.GetPolyType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+            if (p.GetPolyType() == DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
                 continue;
             }
@@ -322,10 +322,10 @@ public class RecastDebugDraw : DebugDraw
                         continue;
                     }
 
-                    if ((p.neis[j] & NavMesh.DT_EXT_LINK) != 0)
+                    if ((p.neis[j] & DtNavMesh.DT_EXT_LINK) != 0)
                     {
                         bool con = false;
-                        for (int k = tile.polyLinks[p.index]; k != NavMesh.DT_NULL_LINK; k = tile.links[k].next)
+                        for (int k = tile.polyLinks[p.index]; k != DtNavMesh.DT_NULL_LINK; k = tile.links[k].next)
                         {
                             if (tile.links[k].edge == j)
                             {
@@ -370,7 +370,7 @@ public class RecastDebugDraw : DebugDraw
                 // This is really slow.
                 if (tile.data.detailMeshes != null)
                 {
-                    PolyDetail pd = tile.data.detailMeshes[i];
+                    DtPolyDetail pd = tile.data.detailMeshes[i];
                     for (int k = 0; k < pd.triCount; ++k)
                     {
                         int t = (pd.triBase + k) * 4;
@@ -397,7 +397,7 @@ public class RecastDebugDraw : DebugDraw
 
                         for (int m = 0, n = 2; m < 3; n = m++)
                         {
-                            if ((NavMesh.GetDetailTriEdgeFlags(tile.data.detailTris[t + 3], n) & NavMesh.DT_DETAIL_EDGE_BOUNDARY) == 0)
+                            if ((DtNavMesh.GetDetailTriEdgeFlags(tile.data.detailTris[t + 3], n) & DtNavMesh.DT_DETAIL_EDGE_BOUNDARY) == 0)
                                 continue;
 
                             if (((tile.data.detailTris[t + 3] >> (n * 2)) & 0x3) == 0)
@@ -442,11 +442,11 @@ public class RecastDebugDraw : DebugDraw
         return dx * dx + dz * dz;
     }
 
-    public void DebugDrawNavMeshBVTree(NavMesh mesh)
+    public void DebugDrawNavMeshBVTree(DtNavMesh mesh)
     {
         for (int i = 0; i < mesh.GetMaxTiles(); ++i)
         {
-            MeshTile tile = mesh.GetTile(i);
+            DtMeshTile tile = mesh.GetTile(i);
             if (tile != null && tile.data != null && tile.data.header != null)
             {
                 DrawMeshTileBVTree(tile);
@@ -454,14 +454,14 @@ public class RecastDebugDraw : DebugDraw
         }
     }
 
-    private void DrawMeshTileBVTree(MeshTile tile)
+    private void DrawMeshTileBVTree(DtMeshTile tile)
     {
         // Draw BV nodes.
         float cs = 1.0f / tile.data.header.bvQuantFactor;
         Begin(DebugDrawPrimitives.LINES, 1.0f);
         for (int i = 0; i < tile.data.header.bvNodeCount; ++i)
         {
-            BVNode n = tile.data.bvTree[i];
+            DtBVNode n = tile.data.bvTree[i];
             if (n.i < 0)
             {
                 continue;
@@ -1196,17 +1196,17 @@ public class RecastDebugDraw : DebugDraw
         End();
     }
 
-    public void DebugDrawNavMeshNodes(NavMeshQuery query)
+    public void DebugDrawNavMeshNodes(DtNavMeshQuery query)
     {
-        NodePool pool = query.GetNodePool();
+        DtNodePool pool = query.GetNodePool();
         if (pool != null)
         {
             float off = 0.5f;
             Begin(DebugDrawPrimitives.POINTS, 4.0f);
 
-            foreach (List<Node> nodes in pool.GetNodeMap().Values)
+            foreach (List<DtNode> nodes in pool.GetNodeMap().Values)
             {
-                foreach (Node node in nodes)
+                foreach (DtNode node in nodes)
                 {
                     if (node == null)
                     {
@@ -1220,9 +1220,9 @@ public class RecastDebugDraw : DebugDraw
             End();
 
             Begin(DebugDrawPrimitives.LINES, 2.0f);
-            foreach (List<Node> nodes in pool.GetNodeMap().Values)
+            foreach (List<DtNode> nodes in pool.GetNodeMap().Values)
             {
-                foreach (Node node in nodes)
+                foreach (DtNode node in nodes)
                 {
                     if (node == null)
                     {
@@ -1234,7 +1234,7 @@ public class RecastDebugDraw : DebugDraw
                         continue;
                     }
 
-                    Node parent = pool.GetNodeAtIdx(node.pidx);
+                    DtNode parent = pool.GetNodeAtIdx(node.pidx);
                     if (parent == null)
                     {
                         continue;
@@ -1249,11 +1249,11 @@ public class RecastDebugDraw : DebugDraw
         }
     }
 
-    public void DebugDrawNavMeshPolysWithFlags(NavMesh mesh, int polyFlags, int col)
+    public void DebugDrawNavMeshPolysWithFlags(DtNavMesh mesh, int polyFlags, int col)
     {
         for (int i = 0; i < mesh.GetMaxTiles(); ++i)
         {
-            MeshTile tile = mesh.GetTile(i);
+            DtMeshTile tile = mesh.GetTile(i);
             if (tile == null || tile.data == null || tile.data.header == null)
             {
                 continue;
@@ -1263,7 +1263,7 @@ public class RecastDebugDraw : DebugDraw
 
             for (int j = 0; j < tile.data.header.polyCount; ++j)
             {
-                Poly p = tile.data.polys[j];
+                DtPoly p = tile.data.polys[j];
                 if ((p.flags & polyFlags) == 0)
                 {
                     continue;
@@ -1274,31 +1274,31 @@ public class RecastDebugDraw : DebugDraw
         }
     }
 
-    public void DebugDrawNavMeshPoly(NavMesh mesh, long refs, int col)
+    public void DebugDrawNavMeshPoly(DtNavMesh mesh, long refs, int col)
     {
         if (refs == 0)
         {
             return;
         }
 
-        Result<Tuple<MeshTile, Poly>> tileAndPolyResult = mesh.GetTileAndPolyByRef(refs);
+        Result<Tuple<DtMeshTile, DtPoly>> tileAndPolyResult = mesh.GetTileAndPolyByRef(refs);
         if (tileAndPolyResult.Failed())
         {
             return;
         }
 
-        Tuple<MeshTile, Poly> tileAndPoly = tileAndPolyResult.result;
-        MeshTile tile = tileAndPoly.Item1;
-        Poly poly = tileAndPoly.Item2;
+        Tuple<DtMeshTile, DtPoly> tileAndPoly = tileAndPolyResult.result;
+        DtMeshTile tile = tileAndPoly.Item1;
+        DtPoly poly = tileAndPoly.Item2;
 
         DepthMask(false);
 
         int c = DuTransCol(col, 64);
         int ip = poly.index;
 
-        if (poly.GetPolyType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
+        if (poly.GetPolyType() == DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
         {
-            OffMeshConnection con = tile.data.offMeshCons[ip - tile.data.header.offMeshBase];
+            DtOffMeshConnection con = tile.data.offMeshCons[ip - tile.data.header.offMeshBase];
 
             Begin(DebugDrawPrimitives.LINES, 2.0f);
 
@@ -1318,11 +1318,11 @@ public class RecastDebugDraw : DebugDraw
         DepthMask(true);
     }
 
-    public void DebugDrawNavMeshPortals(NavMesh mesh)
+    public void DebugDrawNavMeshPortals(DtNavMesh mesh)
     {
         for (int i = 0; i < mesh.GetMaxTiles(); ++i)
         {
-            MeshTile tile = mesh.GetTile(i);
+            DtMeshTile tile = mesh.GetTile(i);
             if (tile.data != null && tile.data.header != null)
             {
                 DrawMeshTilePortal(tile);
@@ -1330,7 +1330,7 @@ public class RecastDebugDraw : DebugDraw
         }
     }
 
-    private void DrawMeshTilePortal(MeshTile tile)
+    private void DrawMeshTilePortal(DtMeshTile tile)
     {
         float padx = 0.04f;
         float pady = tile.data.header.walkableClimb;
@@ -1339,11 +1339,11 @@ public class RecastDebugDraw : DebugDraw
 
         for (int side = 0; side < 8; ++side)
         {
-            int m = NavMesh.DT_EXT_LINK | (short)side;
+            int m = DtNavMesh.DT_EXT_LINK | (short)side;
 
             for (int i = 0; i < tile.data.header.polyCount; ++i)
             {
-                Poly poly = tile.data.polys[i];
+                DtPoly poly = tile.data.polys[i];
 
                 // Create new links.
                 int nv = poly.vertCount;
