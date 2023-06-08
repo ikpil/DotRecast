@@ -602,7 +602,7 @@ public class RecastDemo
                 }
 
                 RcVec3f rayDir = RcVec3f.Of(rayEnd.x - rayStart.x, rayEnd.y - rayStart.y, rayEnd.z - rayStart.z);
-                Tool rayTool = toolsUI.GetTool();
+                ITool rayTool = toolsUI.GetTool();
                 rayDir.Normalize();
                 if (rayTool != null)
                 {
@@ -727,7 +727,7 @@ public class RecastDemo
 
         dd.Fog(camr * 0.1f, camr * 1.25f);
         renderer.Render(sample);
-        Tool tool = toolsUI.GetTool();
+        ITool tool = toolsUI.GetTool();
         if (tool != null)
         {
             tool.HandleRender(renderer);

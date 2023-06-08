@@ -30,19 +30,18 @@ public class ToolsView : IRcView
 {
     //private readonly NkColor white = NkColor.Create();
     private int _currentToolIdx = 0;
-    private Tool currentTool;
+    private ITool currentTool;
     private bool enabled;
-    private readonly Tool[] tools;
-
-    public ToolsView(params Tool[] tools)
-    {
-        this.tools = tools;
-    }
-
+    private readonly ITool[] tools;
     private bool _mouseInside;
     public bool IsMouseInside() => _mouseInside;
 
     private RecastDemoCanvas _canvas;
+
+    public ToolsView(params ITool[] tools)
+    {
+        this.tools = tools;
+    }
 
     public void Bind(RecastDemoCanvas canvas)
     {
@@ -51,7 +50,6 @@ public class ToolsView : IRcView
 
     public void Update(double dt)
     {
-        
     }
 
     public void Draw(double dt)
@@ -89,7 +87,7 @@ public class ToolsView : IRcView
         this.enabled = enabled;
     }
 
-    public Tool GetTool()
+    public ITool GetTool()
     {
         return currentTool;
     }

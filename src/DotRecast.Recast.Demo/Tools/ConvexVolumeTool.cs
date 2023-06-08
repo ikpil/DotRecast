@@ -30,7 +30,7 @@ using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class ConvexVolumeTool : Tool
+public class ConvexVolumeTool : ITool
 {
     private Sample sample;
     private int areaTypeValue = SampleAreaModifications.SAMPLE_AREAMOD_GRASS.Value;
@@ -41,12 +41,12 @@ public class ConvexVolumeTool : Tool
     private readonly List<float> pts = new();
     private readonly List<int> hull = new();
 
-    public override void SetSample(Sample m_sample)
+    public void SetSample(Sample m_sample)
     {
         sample = m_sample;
     }
 
-    public override void HandleClick(RcVec3f s, RcVec3f p, bool shift)
+    public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
         DemoInputGeomProvider geom = sample.GetInputGeom();
         if (geom == null)
@@ -139,7 +139,7 @@ public class ConvexVolumeTool : Tool
         }
     }
 
-    public override void HandleRender(NavMeshRenderer renderer)
+    public void HandleRender(NavMeshRenderer renderer)
     {
         RecastDebugDraw dd = renderer.GetDebugDraw();
         // Find height extent of the shape.
@@ -182,7 +182,7 @@ public class ConvexVolumeTool : Tool
         dd.End();
     }
 
-    public override void Layout()
+    public void Layout()
     {
         ImGui.SliderFloat("Shape Height", ref boxHeight, 0.1f, 20f, "%.1f");
         ImGui.SliderFloat("Shape Descent", ref boxDescent, 0.1f, 20f, "%.1f");
@@ -224,13 +224,19 @@ public class ConvexVolumeTool : Tool
         }
     }
 
-    public override string GetName()
+    public string GetName()
     {
         return "Create Convex Volumes";
     }
 
-    public override void HandleUpdate(float dt)
+    public void HandleUpdate(float dt)
     {
         // TODO Auto-generated method stub
     }
+    
+    public void HandleClickRay(RcVec3f start, RcVec3f direction, bool shift)
+    {
+
+    }
+
 }

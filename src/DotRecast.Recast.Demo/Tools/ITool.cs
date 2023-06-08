@@ -23,21 +23,18 @@ using DotRecast.Recast.Demo.Draw;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public abstract class Tool
+public interface ITool
 {
-    public abstract string GetName();
-    public abstract void Layout();
+    string GetName();
+    void Layout();
 
-    public abstract void SetSample(Sample m_sample);
+    void SetSample(Sample m_sample);
 
-    public abstract void HandleClick(RcVec3f s, RcVec3f p, bool shift);
+    void HandleClick(RcVec3f s, RcVec3f p, bool shift);
 
-    public abstract void HandleRender(NavMeshRenderer renderer);
+    void HandleRender(NavMeshRenderer renderer);
 
-    public abstract void HandleUpdate(float dt);
+    void HandleUpdate(float dt);
 
-    public virtual void HandleClickRay(RcVec3f start, RcVec3f direction, bool shift)
-    {
-        // ...
-    }
+    void HandleClickRay(RcVec3f start, RcVec3f direction, bool shift);
 }

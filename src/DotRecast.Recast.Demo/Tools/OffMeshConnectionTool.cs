@@ -28,19 +28,19 @@ using static DotRecast.Recast.Demo.Draw.DebugDraw;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class OffMeshConnectionTool : Tool
+public class OffMeshConnectionTool : ITool
 {
     private Sample sample;
     private bool hitPosSet;
     private RcVec3f hitPos;
     private int bidir;
 
-    public override void SetSample(Sample m_sample)
+    public void SetSample(Sample m_sample)
     {
         sample = m_sample;
     }
 
-    public override void HandleClick(RcVec3f s, RcVec3f p, bool shift)
+    public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
         DemoInputGeomProvider geom = sample.GetInputGeom();
         if (geom == null)
@@ -87,7 +87,7 @@ public class OffMeshConnectionTool : Tool
         }
     }
 
-    public override void HandleRender(NavMeshRenderer renderer)
+    public void HandleRender(NavMeshRenderer renderer)
     {
         if (sample == null)
         {
@@ -109,19 +109,25 @@ public class OffMeshConnectionTool : Tool
         }
     }
 
-    public override void Layout()
+    public void Layout()
     {
         ImGui.RadioButton("One Way", ref bidir, 0);
         ImGui.RadioButton("Bidirectional", ref bidir, 1);
     }
 
-    public override string GetName()
+    public string GetName()
     {
         return "Create Off-Mesh Links";
     }
 
-    public override void HandleUpdate(float dt)
+    public void HandleUpdate(float dt)
     {
         // TODO Auto-generated method stub
     }
+    
+    public void HandleClickRay(RcVec3f start, RcVec3f direction, bool shift)
+    {
+
+    }
+
 }

@@ -29,7 +29,7 @@ using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class JumpLinkBuilderTool : Tool
+public class JumpLinkBuilderTool : ITool
 {
     private readonly List<JumpLink> links = new();
     private Sample sample;
@@ -37,17 +37,17 @@ public class JumpLinkBuilderTool : Tool
     private readonly int selEdge = -1;
     private readonly JumpLinkBuilderToolParams option = new JumpLinkBuilderToolParams();
 
-    public override void SetSample(Sample sample)
+    public void SetSample(Sample sample)
     {
         this.sample = sample;
         annotationBuilder = null;
     }
 
-    public override void HandleClick(RcVec3f s, RcVec3f p, bool shift)
+    public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
     }
 
-    public override void HandleRender(NavMeshRenderer renderer)
+    public void HandleRender(NavMeshRenderer renderer)
     {
         int col0 = DuLerpCol(DuRGBA(32, 255, 96, 255), DuRGBA(255, 255, 255, 255), 200);
         int col1 = DuRGBA(32, 255, 96, 255);
@@ -318,11 +318,11 @@ public class JumpLinkBuilderTool : Tool
     {
     }
 
-    public override void HandleUpdate(float dt)
+    public void HandleUpdate(float dt)
     {
     }
 
-    public override void Layout()
+    public void Layout()
     {
         if (0 >= sample.GetRecastResults().Count)
             return;
@@ -442,8 +442,12 @@ public class JumpLinkBuilderTool : Tool
         }
     }
 
-    public override string GetName()
+    public string GetName()
     {
         return "Annotation Builder";
+    }
+
+    public void HandleClickRay(RcVec3f start, RcVec3f direction, bool shift)
+    {
     }
 }

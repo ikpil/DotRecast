@@ -34,7 +34,7 @@ using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class CrowdTool : Tool
+public class CrowdTool : ITool
 {
     private readonly CrowdToolParams toolParams = new CrowdToolParams();
     private Sample sample;
@@ -56,7 +56,7 @@ public class CrowdTool : Tool
         profilingTool = new CrowdProfilingTool(GetAgentParams);
     }
 
-    public override void SetSample(Sample psample)
+    public void SetSample(Sample psample)
     {
         if (sample != psample)
         {
@@ -111,7 +111,7 @@ public class CrowdTool : Tool
         }
     }
 
-    public override void HandleClick(RcVec3f s, RcVec3f p, bool shift)
+    public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
         if (m_mode == CrowdToolMode.PROFILING)
         {
@@ -313,7 +313,7 @@ public class CrowdTool : Tool
         return vel.Scale(speed);
     }
 
-    public override void HandleRender(NavMeshRenderer renderer)
+    public void HandleRender(NavMeshRenderer renderer)
     {
         if (m_mode == CrowdToolMode.PROFILING)
         {
@@ -620,7 +620,7 @@ public class CrowdTool : Tool
         dd.DepthMask(true);
     }
 
-    public override void HandleUpdate(float dt)
+    public void HandleUpdate(float dt)
     {
         UpdateTick(dt);
     }
@@ -665,7 +665,7 @@ public class CrowdTool : Tool
         m_agentDebug.agent = agent;
     }
 
-    public override void Layout()
+    public void Layout()
     {
         ImGui.Text($"Crowd Tool Mode");
         ImGui.Separator();
@@ -794,8 +794,14 @@ public class CrowdTool : Tool
         return updateFlags;
     }
 
-    public override string GetName()
+    public string GetName()
     {
         return "Crowd";
     }
+    
+    public void HandleClickRay(RcVec3f start, RcVec3f direction, bool shift)
+    {
+
+    }
+
 }

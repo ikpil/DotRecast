@@ -37,7 +37,7 @@ using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class DynamicUpdateTool : Tool
+public class DynamicUpdateTool : ITool
 {
     private Sample sample;
     private int toolModeIdx = DynamicUpdateToolMode.BUILD.Idx;
@@ -92,12 +92,12 @@ public class DynamicUpdateTool : Tool
         convexGeom = DemoObjImporter.Load(Loader.ToBytes("convex.obj"));
     }
 
-    public override void SetSample(Sample sample)
+    public void SetSample(Sample sample)
     {
         this.sample = sample;
     }
 
-    public override void HandleClick(RcVec3f s, RcVec3f p, bool shift)
+    public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
         if (mode == DynamicUpdateToolMode.COLLIDERS)
         {
@@ -342,7 +342,7 @@ public class DynamicUpdateTool : Tool
     }
 
 
-    public override void HandleClickRay(RcVec3f start, RcVec3f dir, bool shift)
+    public void HandleClickRay(RcVec3f start, RcVec3f dir, bool shift)
     {
         if (mode == DynamicUpdateToolMode.COLLIDERS)
         {
@@ -390,7 +390,7 @@ public class DynamicUpdateTool : Tool
         return disc >= 0.0f;
     }
 
-    public override void HandleRender(NavMeshRenderer renderer)
+    public void HandleRender(NavMeshRenderer renderer)
     {
         if (mode == DynamicUpdateToolMode.COLLIDERS)
         {
@@ -450,7 +450,7 @@ public class DynamicUpdateTool : Tool
         dd.DepthMask(true);
     }
 
-    public override void HandleUpdate(float dt)
+    public void HandleUpdate(float dt)
     {
         if (dynaMesh != null)
         {
@@ -477,7 +477,7 @@ public class DynamicUpdateTool : Tool
         }
     }
 
-    public override void Layout()
+    public void Layout()
     {
         ImGui.Text($"Dynamic Update Tool Modes");
         ImGui.Separator();
@@ -744,7 +744,7 @@ public class DynamicUpdateTool : Tool
         filterWalkableLowHeightSpans = dynaMesh.config.filterWalkableLowHeightSpans;
     }
 
-    public override string GetName()
+    public string GetName()
     {
         return "Dynamic Updates";
     }

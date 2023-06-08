@@ -12,7 +12,7 @@ using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class TestNavmeshTool : Tool
+public class TestNavmeshTool : ITool
 {
     private const int MAX_POLYS = 256;
     private const int MAX_SMOOTH = 2048;
@@ -54,12 +54,12 @@ public class TestNavmeshTool : Tool
             SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED, new float[] { 1f, 1f, 1f, 1f, 2f, 1.5f });
     }
 
-    public override void SetSample(Sample m_sample)
+    public void SetSample(Sample m_sample)
     {
         this.m_sample = m_sample;
     }
 
-    public override void HandleClick(RcVec3f s, RcVec3f p, bool shift)
+    public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
         if (shift)
         {
@@ -75,7 +75,7 @@ public class TestNavmeshTool : Tool
         Recalc();
     }
 
-    public override void Layout()
+    public void Layout()
     {
         var previousToolMode = m_toolMode;
         int previousStraightPathOptions = m_straightPathOptions;
@@ -153,7 +153,7 @@ public class TestNavmeshTool : Tool
         }
     }
 
-    public override string GetName()
+    public string GetName()
     {
         return "Test Navmesh";
     }
@@ -505,7 +505,7 @@ public class TestNavmeshTool : Tool
         }
     }
 
-    public override void HandleRender(NavMeshRenderer renderer)
+    public void HandleRender(NavMeshRenderer renderer)
     {
         if (m_sample == null)
         {
@@ -973,7 +973,7 @@ public class TestNavmeshTool : Tool
         return center;
     }
 
-    public override void HandleUpdate(float dt)
+    public void HandleUpdate(float dt)
     {
         // TODO Auto-generated method stub
         if (m_toolMode == TestNavmeshToolMode.PATHFIND_SLICED)
@@ -1016,5 +1016,9 @@ public class TestNavmeshTool : Tool
                 m_pathFindStatus = DtStatus.FAILURE;
             }
         }
+    }
+
+    public void HandleClickRay(RcVec3f start, RcVec3f direction, bool shift)
+    {
     }
 }
