@@ -67,7 +67,7 @@ public class TestTiledNavMeshBuilder
         navMesh = new NavMesh(navMeshParams, 6);
 
         // Build all tiles
-        RecastConfig cfg = new RecastConfig(true, m_tileSize, m_tileSize, RecastConfig.CalcBorder(m_agentRadius, m_cellSize),
+        RcConfig cfg = new RcConfig(true, m_tileSize, m_tileSize, RcConfig.CalcBorder(m_agentRadius, m_cellSize),
             m_partitionType, m_cellSize, m_cellHeight, m_agentMaxSlope, true, true, true, m_agentHeight, m_agentRadius,
             m_agentMaxClimb, m_regionMinArea, m_regionMergeArea, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, true,
             m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
@@ -78,7 +78,7 @@ public class TestTiledNavMeshBuilder
 
         foreach (RecastBuilderResult result in rcResult)
         {
-            PolyMesh pmesh = result.GetMesh();
+            RcPolyMesh pmesh = result.GetMesh();
             if (pmesh.npolys == 0)
             {
                 continue;
@@ -97,7 +97,7 @@ public class TestTiledNavMeshBuilder
             option.polyFlags = pmesh.flags;
             option.polyCount = pmesh.npolys;
             option.nvp = pmesh.nvp;
-            PolyMeshDetail dmesh = result.GetMeshDetail();
+            RcPolyMeshDetail dmesh = result.GetMeshDetail();
             option.detailMeshes = dmesh.meshes;
             option.detailVerts = dmesh.verts;
             option.detailVertsCount = dmesh.nverts;

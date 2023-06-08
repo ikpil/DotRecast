@@ -2,7 +2,7 @@
 
 namespace DotRecast.Recast
 {
-    public class LayerRegion
+    public class RcLayerRegion
     {
         public int id;
         public int layerId;
@@ -11,7 +11,7 @@ namespace DotRecast.Recast
         public List<int> layers;
         public List<int> neis;
 
-        public LayerRegion(int i)
+        public RcLayerRegion(int i)
         {
             id = i;
             ymin = 0xFFFF;

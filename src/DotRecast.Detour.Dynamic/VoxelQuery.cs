@@ -32,9 +32,9 @@ namespace DotRecast.Detour.Dynamic
         private readonly RcVec3f origin;
         private readonly float tileWidth;
         private readonly float tileDepth;
-        private readonly Func<int, int, Heightfield> heightfieldProvider;
+        private readonly Func<int, int, RcHeightfield> heightfieldProvider;
 
-        public VoxelQuery(RcVec3f origin, float tileWidth, float tileDepth, Func<int, int, Heightfield> heightfieldProvider)
+        public VoxelQuery(RcVec3f origin, float tileWidth, float tileDepth, Func<int, int, RcHeightfield> heightfieldProvider)
         {
             this.origin = origin;
             this.tileWidth = tileWidth;
@@ -109,7 +109,7 @@ namespace DotRecast.Detour.Dynamic
 
         private float? TraversHeightfield(int x, int z, RcVec3f start, RcVec3f end, float tMin, float tMax)
         {
-            Heightfield hf = heightfieldProvider.Invoke(x, z);
+            RcHeightfield hf = heightfieldProvider.Invoke(x, z);
             if (null != hf)
             {
                 float tx = end.x - start.x;
@@ -146,7 +146,7 @@ namespace DotRecast.Detour.Dynamic
                         float y2 = start.y + ty * (tMin + Math.Min(tMaxX, tMaxZ)) - hf.bmin.y;
                         float ymin = Math.Min(y1, y2) / hf.ch;
                         float ymax = Math.Max(y1, y2) / hf.ch;
-                        Span span = hf.spans[sx + sz * hf.width];
+                        RcSpan span = hf.spans[sx + sz * hf.width];
                         while (span != null)
                         {
                             if (span.smin <= ymin && span.smax >= ymax)

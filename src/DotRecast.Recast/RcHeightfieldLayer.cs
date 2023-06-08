@@ -4,7 +4,7 @@ namespace DotRecast.Recast
 {
     /// Represents a heightfield layer within a layer set.
     /// @see rcHeightfieldLayerSet
-    public class HeightfieldLayer
+    public class RcHeightfieldLayer
     {
         public RcVec3f bmin = new RcVec3f();
 

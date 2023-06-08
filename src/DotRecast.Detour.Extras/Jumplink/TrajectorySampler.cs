@@ -7,7 +7,7 @@ namespace DotRecast.Detour.Extras.Jumplink
 {
     class TrajectorySampler
     {
-        public void Sample(JumpLinkBuilderConfig acfg, Heightfield heightfield, EdgeSampler es)
+        public void Sample(JumpLinkBuilderConfig acfg, RcHeightfield heightfield, EdgeSampler es)
         {
             int nsamples = es.start.gsamples.Length;
             for (int i = 0; i < nsamples; ++i)
@@ -32,7 +32,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             }
         }
 
-        private bool SampleTrajectory(JumpLinkBuilderConfig acfg, Heightfield solid, RcVec3f pa, RcVec3f pb, Trajectory tra)
+        private bool SampleTrajectory(JumpLinkBuilderConfig acfg, RcHeightfield solid, RcVec3f pa, RcVec3f pb, Trajectory tra)
         {
             float cs = Math.Min(acfg.cellSize, acfg.cellHeight);
             float d = RcVec3f.Dist2D(pa, pb) + Math.Abs(pa.y - pb.y);
@@ -50,7 +50,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             return true;
         }
 
-        private bool CheckHeightfieldCollision(Heightfield solid, float x, float ymin, float ymax, float z)
+        private bool CheckHeightfieldCollision(RcHeightfield solid, float x, float ymin, float ymax, float z)
         {
             int w = solid.width;
             int h = solid.height;
@@ -65,7 +65,7 @@ namespace DotRecast.Detour.Extras.Jumplink
                 return false;
             }
 
-            Span s = solid.spans[ix + iz * w];
+            RcSpan s = solid.spans[ix + iz * w];
             if (s == null)
             {
                 return false;

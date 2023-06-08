@@ -24,7 +24,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Recast.Test;
 
-using static RecastConstants;
+using static RcConstants;
 
 [Parallelizable]
 public class RecastLayersTest
@@ -56,7 +56,7 @@ public class RecastLayersTest
     [Test]
     public void TestDungeon()
     {
-        HeightfieldLayerSet lset = Build("dungeon.obj", 3, 2);
+        RcHeightfieldLayerSet lset = Build("dungeon.obj", 3, 2);
         Assert.That(lset.layers.Length, Is.EqualTo(1));
         Assert.That(lset.layers[0].width, Is.EqualTo(48));
         Assert.That(lset.layers[0].hmin, Is.EqualTo(51));
@@ -74,7 +74,7 @@ public class RecastLayersTest
     [Test]
     public void Test()
     {
-        HeightfieldLayerSet lset = Build("nav_test.obj", 3, 2);
+        RcHeightfieldLayerSet lset = Build("nav_test.obj", 3, 2);
         Assert.That(lset.layers.Length, Is.EqualTo(3));
         Assert.That(lset.layers[0].width, Is.EqualTo(48));
         Assert.That(lset.layers[0].hmin, Is.EqualTo(13));
@@ -116,7 +116,7 @@ public class RecastLayersTest
     [Test]
     public void Test2()
     {
-        HeightfieldLayerSet lset = Build("nav_test.obj", 2, 4);
+        RcHeightfieldLayerSet lset = Build("nav_test.obj", 2, 4);
         Assert.That(lset.layers.Length, Is.EqualTo(2));
         Assert.That(lset.layers[0].width, Is.EqualTo(48));
         Assert.That(lset.layers[0].hmin, Is.EqualTo(13));
@@ -143,16 +143,16 @@ public class RecastLayersTest
         Assert.That(lset.layers[1].cons[1600], Is.EqualTo(0));
     }
 
-    private HeightfieldLayerSet Build(string filename, int x, int y)
+    private RcHeightfieldLayerSet Build(string filename, int x, int y)
     {
         IInputGeomProvider geom = ObjImporter.Load(Loader.ToBytes(filename));
         RecastBuilder builder = new RecastBuilder();
-        RecastConfig cfg = new RecastConfig(true, m_tileSize, m_tileSize, RecastConfig.CalcBorder(m_agentRadius, m_cellSize),
+        RcConfig cfg = new RcConfig(true, m_tileSize, m_tileSize, RcConfig.CalcBorder(m_agentRadius, m_cellSize),
             m_partitionType, m_cellSize, m_cellHeight, m_agentMaxSlope, true, true, true, m_agentHeight, m_agentRadius,
             m_agentMaxClimb, m_regionMinArea, m_regionMergeArea, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, true,
             m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
         RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), x, y);
-        HeightfieldLayerSet lset = builder.BuildLayers(geom, bcfg);
+        RcHeightfieldLayerSet lset = builder.BuildLayers(geom, bcfg);
         return lset;
     }
 }

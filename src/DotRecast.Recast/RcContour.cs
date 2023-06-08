@@ -21,7 +21,7 @@ freely, subject to the following restrictions:
 namespace DotRecast.Recast
 {
     /** Represents a simple, non-overlapping contour in field space. */
-    public class Contour
+    public class RcContour
     {
         /** Simplified contour vertex and connection data. [Size: 4 * #nverts] */
         public int[] verts;

@@ -22,9 +22,9 @@ using System;
 
 namespace DotRecast.Recast
 {
-    using static RecastConstants;
+    using static RcConstants;
 
-    public class RecastFilter
+    public static class RecastFilter
     {
         /// @par
         ///
@@ -37,7 +37,7 @@ namespace DotRecast.Recast
         /// #rcFilterLedgeSpans after calling this filter.
         ///
         /// @see rcHeightfield, rcConfig
-        public static void FilterLowHangingWalkableObstacles(Telemetry ctx, int walkableClimb, Heightfield solid)
+        public static void FilterLowHangingWalkableObstacles(Telemetry ctx, int walkableClimb, RcHeightfield solid)
         {
             ctx.StartTimer("FILTER_LOW_OBSTACLES");
 
@@ -48,11 +48,11 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < w; ++x)
                 {
-                    Span ps = null;
+                    RcSpan ps = null;
                     bool previousWalkable = false;
                     int previousArea = RC_NULL_AREA;
 
-                    for (Span s = solid.spans[x + y * w]; s != null; ps = s, s = s.next)
+                    for (RcSpan s = solid.spans[x + y * w]; s != null; ps = s, s = s.next)
                     {
                         bool walkable = s.area != RC_NULL_AREA;
                         // If current span is not walkable, but there is walkable
@@ -84,7 +84,7 @@ namespace DotRecast.Recast
         /// A span is a ledge if: <tt>RcAbs(currentSpan.smax - neighborSpan.smax) > walkableClimb</tt>
         ///
         /// @see rcHeightfield, rcConfig
-        public static void FilterLedgeSpans(Telemetry ctx, int walkableHeight, int walkableClimb, Heightfield solid)
+        public static void FilterLedgeSpans(Telemetry ctx, int walkableHeight, int walkableClimb, RcHeightfield solid)
         {
             ctx.StartTimer("FILTER_LEDGE");
 
@@ -96,7 +96,7 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < w; ++x)
                 {
-                    for (Span s = solid.spans[x + y * w]; s != null; s = s.next)
+                    for (RcSpan s = solid.spans[x + y * w]; s != null; s = s.next)
                     {
                         // Skip non walkable spans.
                         if (s.area == RC_NULL_AREA)
@@ -124,7 +124,7 @@ namespace DotRecast.Recast
                             }
 
                             // From minus infinity to the first span.
-                            Span ns = solid.spans[dx + dy * w];
+                            RcSpan ns = solid.spans[dx + dy * w];
                             int nbot = -walkableClimb;
                             int ntop = ns != null ? ns.smin : SPAN_MAX_HEIGHT;
                             // Skip neightbour if the gap between the spans is too small.
@@ -177,7 +177,7 @@ namespace DotRecast.Recast
         /// maximum to the next higher span's minimum. (Same grid column.)
         ///
         /// @see rcHeightfield, rcConfig
-        public static void FilterWalkableLowHeightSpans(Telemetry ctx, int walkableHeight, Heightfield solid)
+        public static void FilterWalkableLowHeightSpans(Telemetry ctx, int walkableHeight, RcHeightfield solid)
         {
             ctx.StartTimer("FILTER_WALKABLE");
 
@@ -190,7 +190,7 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < w; ++x)
                 {
-                    for (Span s = solid.spans[x + y * w]; s != null; s = s.next)
+                    for (RcSpan s = solid.spans[x + y * w]; s != null; s = s.next)
                     {
                         int bot = (s.smax);
                         int top = s.next != null ? s.next.smin : SPAN_MAX_HEIGHT;

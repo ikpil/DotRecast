@@ -1,6 +1,6 @@
 ﻿namespace DotRecast.Recast
 {
-    public class PotentialDiagonal
+    public class RcPotentialDiagonal
     {
         public int dist;
         public int vert;

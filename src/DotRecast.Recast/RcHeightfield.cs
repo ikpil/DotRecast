@@ -23,7 +23,7 @@ using DotRecast.Core;
 namespace DotRecast.Recast
 {
     /** Represents a heightfield layer within a layer set. */
-    public class Heightfield
+    public class RcHeightfield
     {
         /** The width of the heightfield. (Along the x-axis in cell units.) */
         public readonly int width;
@@ -44,12 +44,12 @@ namespace DotRecast.Recast
         public readonly float ch;
 
         /** Heightfield of spans (width*height). */
-        public readonly Span[] spans;
+        public readonly RcSpan[] spans;
 
         /** Border size in cell units */
         public readonly int borderSize;
 
-        public Heightfield(int width, int height, RcVec3f bmin, RcVec3f bmax, float cs, float ch, int borderSize)
+        public RcHeightfield(int width, int height, RcVec3f bmin, RcVec3f bmax, float cs, float ch, int borderSize)
         {
             this.width = width;
             this.height = height;
@@ -58,7 +58,7 @@ namespace DotRecast.Recast
             this.cs = cs;
             this.ch = ch;
             this.borderSize = borderSize;
-            spans = new Span[width * height];
+            spans = new RcSpan[width * height];
         }
     }
 }

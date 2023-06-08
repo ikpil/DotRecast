@@ -2,12 +2,12 @@
 
 namespace DotRecast.Recast
 {
-    public class CompareDiagDist : IComparer<PotentialDiagonal>
+    public class CompareDiagDist : IComparer<RcPotentialDiagonal>
     {
-        public int Compare(PotentialDiagonal va, PotentialDiagonal vb)
+        public int Compare(RcPotentialDiagonal va, RcPotentialDiagonal vb)
         {
-            PotentialDiagonal a = va;
-            PotentialDiagonal b = vb;
+            RcPotentialDiagonal a = va;
+            RcPotentialDiagonal b = vb;
             return a.dist.CompareTo(b.dist);
         }
     }

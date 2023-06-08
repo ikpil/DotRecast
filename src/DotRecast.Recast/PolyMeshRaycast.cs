@@ -41,7 +41,7 @@ namespace DotRecast.Recast
             return null;
         }
 
-        private static float? Raycast(PolyMesh poly, PolyMeshDetail meshDetail, RcVec3f sp, RcVec3f sq)
+        private static float? Raycast(RcPolyMesh poly, RcPolyMeshDetail meshDetail, RcVec3f sp, RcVec3f sq)
         {
             if (meshDetail != null)
             {

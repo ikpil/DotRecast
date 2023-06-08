@@ -25,13 +25,11 @@ using DotRecast.Core;
 namespace DotRecast.Recast
 {
     using static RecastCommon;
-    using static RecastConstants;
-    
-    using static RecastRegion;
+    using static RcConstants;
 
-    public class RecastLayers
+    public static class RecastLayers
     {
-        const int RC_MAX_LAYERS = RecastConstants.RC_NOT_CONNECTED;
+        const int RC_MAX_LAYERS = RcConstants.RC_NOT_CONNECTED;
         const int RC_MAX_NEIS = 16;
 
 
@@ -53,7 +51,7 @@ namespace DotRecast.Recast
             return (amin > bmax || amax < bmin) ? false : true;
         }
 
-        public static HeightfieldLayerSet BuildHeightfieldLayers(Telemetry ctx, CompactHeightfield chf, int walkableHeight)
+        public static RcHeightfieldLayerSet BuildHeightfieldLayers(Telemetry ctx, RcCompactHeightfield chf, int walkableHeight)
         {
             ctx.StartTimer("RC_TIMER_BUILD_LAYERS");
             int w = chf.width;
@@ -62,10 +60,10 @@ namespace DotRecast.Recast
             int[] srcReg = new int[chf.spanCount];
             Array.Fill(srcReg, 0xFF);
             int nsweeps = chf.width; // Math.Max(chf.width, chf.height);
-            SweepSpan[] sweeps = new SweepSpan[nsweeps];
+            RcSweepSpan[] sweeps = new RcSweepSpan[nsweeps];
             for (int i = 0; i < sweeps.Length; i++)
             {
-                sweeps[i] = new SweepSpan();
+                sweeps[i] = new RcSweepSpan();
             }
 
             // Partition walkable area into monotone regions.
@@ -80,11 +78,11 @@ namespace DotRecast.Recast
 
                 for (int x = borderSize; x < w - borderSize; ++x)
                 {
-                    CompactCell c = chf.cells[x + y * w];
+                    RcCompactCell c = chf.cells[x + y * w];
 
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
-                        CompactSpan s = chf.spans[i];
+                        RcCompactSpan s = chf.spans[i];
                         if (chf.areas[i] == RC_NULL_AREA)
                             continue;
                         int sid = 0xFF;
@@ -165,7 +163,7 @@ namespace DotRecast.Recast
                 // Remap local sweep ids to region ids.
                 for (int x = borderSize; x < w - borderSize; ++x)
                 {
-                    CompactCell c = chf.cells[x + y * w];
+                    RcCompactCell c = chf.cells[x + y * w];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
                         if (srcReg[i] != 0xff)
@@ -175,12 +173,12 @@ namespace DotRecast.Recast
             }
 
             int nregs = regId;
-            LayerRegion[] regs = new LayerRegion[nregs];
+            RcLayerRegion[] regs = new RcLayerRegion[nregs];
 
             // Construct regions
             for (int i = 0; i < nregs; ++i)
             {
-                regs[i] = new LayerRegion(i);
+                regs[i] = new RcLayerRegion(i);
             }
 
             // Find region neighbours and overlapping regions.
@@ -189,13 +187,13 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < w; ++x)
                 {
-                    CompactCell c = chf.cells[x + y * w];
+                    RcCompactCell c = chf.cells[x + y * w];
 
                     lregs.Clear();
 
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
-                        CompactSpan s = chf.spans[i];
+                        RcCompactSpan s = chf.spans[i];
                         int ri = srcReg[i];
                         if (ri == 0xff)
                             continue;
@@ -228,8 +226,8 @@ namespace DotRecast.Recast
                         {
                             if (lregs[i] != lregs[j])
                             {
-                                LayerRegion ri = regs[lregs[i]];
-                                LayerRegion rj = regs[lregs[j]];
+                                RcLayerRegion ri = regs[lregs[i]];
+                                RcLayerRegion rj = regs[lregs[j]];
                                 AddUnique(ri.layers, lregs[j]);
                                 AddUnique(rj.layers, lregs[i]);
                             }
@@ -245,7 +243,7 @@ namespace DotRecast.Recast
 
             for (int i = 0; i < nregs; ++i)
             {
-                LayerRegion root = regs[i];
+                RcLayerRegion root = regs[i];
                 // Skip already visited.
                 if (root.layerId != 0xff)
                     continue;
@@ -261,11 +259,11 @@ namespace DotRecast.Recast
                     // Pop front
                     int pop = stack[0]; // TODO : 여기에 stack 처럼 작동하게 했는데, 스택인지는 모르겠음
                     stack.RemoveAt(0);
-                    LayerRegion reg = regs[pop];
+                    RcLayerRegion reg = regs[pop];
 
                     foreach (int nei in reg.neis)
                     {
-                        LayerRegion regn = regs[nei];
+                        RcLayerRegion regn = regs[nei];
                         // Skip already visited.
                         if (regn.layerId != 0xff)
                             continue;
@@ -299,7 +297,7 @@ namespace DotRecast.Recast
 
             for (int i = 0; i < nregs; ++i)
             {
-                LayerRegion ri = regs[i];
+                RcLayerRegion ri = regs[i];
                 if (!ri.@base)
                     continue;
 
@@ -313,7 +311,7 @@ namespace DotRecast.Recast
                     {
                         if (i == j)
                             continue;
-                        LayerRegion rj = regs[j];
+                        RcLayerRegion rj = regs[j];
                         if (!rj.@base)
                             continue;
 
@@ -360,7 +358,7 @@ namespace DotRecast.Recast
                     // Merge
                     for (int j = 0; j < nregs; ++j)
                     {
-                        LayerRegion rj = regs[j];
+                        RcLayerRegion rj = regs[j];
                         if (rj.layerId == oldId)
                         {
                             rj.@base = false;
@@ -417,11 +415,11 @@ namespace DotRecast.Recast
             bmax.x -= borderSize * chf.cs;
             bmax.z -= borderSize * chf.cs;
 
-            HeightfieldLayerSet lset = new HeightfieldLayerSet();
-            lset.layers = new HeightfieldLayer[layerId];
+            RcHeightfieldLayerSet lset = new RcHeightfieldLayerSet();
+            lset.layers = new RcHeightfieldLayer[layerId];
             for (int i = 0; i < lset.layers.Length; i++)
             {
-                lset.layers[i] = new HeightfieldLayer();
+                lset.layers[i] = new RcHeightfieldLayer();
             }
 
             // Store layers.
@@ -429,7 +427,7 @@ namespace DotRecast.Recast
             {
                 int curId = i;
 
-                HeightfieldLayer layer = lset.layers[i];
+                RcHeightfieldLayer layer = lset.layers[i];
 
                 int gridSize = lw * lh;
 
@@ -475,10 +473,10 @@ namespace DotRecast.Recast
                     {
                         int cx = borderSize + x;
                         int cy = borderSize + y;
-                        CompactCell c = chf.cells[cx + cy * w];
+                        RcCompactCell c = chf.cells[cx + cy * w];
                         for (int j = c.index, nj = c.index + c.count; j < nj; ++j)
                         {
-                            CompactSpan s = chf.spans[j];
+                            RcCompactSpan s = chf.spans[j];
                             // Skip unassigned regions.
                             if (srcReg[j] == 0xff)
                                 continue;
@@ -515,7 +513,7 @@ namespace DotRecast.Recast
                                         portal |= (char)(1 << dir);
                                         // Update height so that it matches on both
                                         // sides of the portal.
-                                        CompactSpan @as = chf.spans[ai];
+                                        RcCompactSpan @as = chf.spans[ai];
                                         if (@as.y > hmin)
                                             layer.heights[idx] = Math.Max(layer.heights[idx], (char)(@as.y - hmin));
                                     }

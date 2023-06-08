@@ -1,10 +1,10 @@
 ﻿namespace DotRecast.Recast
 {
-    public class ContourHole
+    public class RcContourHole
     {
         public int leftmost;
         public int minx;
         public int minz;
-        public Contour contour;
+        public RcContour contour;
     }
 }

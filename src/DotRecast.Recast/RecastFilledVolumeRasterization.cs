@@ -19,7 +19,7 @@ freely, subject to the following restrictions:
 using System;
 using DotRecast.Core;
 using static DotRecast.Core.RcMath;
-using static DotRecast.Recast.RecastConstants;
+using static DotRecast.Recast.RcConstants;
 
 
 namespace DotRecast.Recast
@@ -29,7 +29,7 @@ namespace DotRecast.Recast
         private const float EPSILON = 0.00001f;
         private static readonly int[] BOX_EDGES = new[] { 0, 1, 0, 2, 0, 4, 1, 3, 1, 5, 2, 3, 2, 6, 3, 7, 4, 5, 4, 6, 5, 7, 6, 7 };
 
-        public static void RasterizeSphere(Heightfield hf, RcVec3f center, float radius, int area, int flagMergeThr, Telemetry ctx)
+        public static void RasterizeSphere(RcHeightfield hf, RcVec3f center, float radius, int area, int flagMergeThr, Telemetry ctx)
         {
             ctx.StartTimer("RASTERIZE_SPHERE");
             float[] bounds =
@@ -42,7 +42,7 @@ namespace DotRecast.Recast
             ctx.StopTimer("RASTERIZE_SPHERE");
         }
 
-        public static void RasterizeCapsule(Heightfield hf, RcVec3f start, RcVec3f end, float radius, int area, int flagMergeThr,
+        public static void RasterizeCapsule(RcHeightfield hf, RcVec3f start, RcVec3f end, float radius, int area, int flagMergeThr,
             Telemetry ctx)
         {
             ctx.StartTimer("RASTERIZE_CAPSULE");
@@ -58,7 +58,7 @@ namespace DotRecast.Recast
             ctx.StopTimer("RASTERIZE_CAPSULE");
         }
 
-        public static void RasterizeCylinder(Heightfield hf, RcVec3f start, RcVec3f end, float radius, int area, int flagMergeThr,
+        public static void RasterizeCylinder(RcHeightfield hf, RcVec3f start, RcVec3f end, float radius, int area, int flagMergeThr,
             Telemetry ctx)
         {
             ctx.StartTimer("RASTERIZE_CYLINDER");
@@ -74,7 +74,7 @@ namespace DotRecast.Recast
             ctx.StopTimer("RASTERIZE_CYLINDER");
         }
 
-        public static void RasterizeBox(Heightfield hf, RcVec3f center, RcVec3f[] halfEdges, int area, int flagMergeThr,
+        public static void RasterizeBox(RcHeightfield hf, RcVec3f center, RcVec3f[] halfEdges, int area, int flagMergeThr,
             Telemetry ctx)
         {
             ctx.StartTimer("RASTERIZE_BOX");
@@ -126,7 +126,7 @@ namespace DotRecast.Recast
             ctx.StopTimer("RASTERIZE_BOX");
         }
 
-        public static void RasterizeConvex(Heightfield hf, float[] vertices, int[] triangles, int area, int flagMergeThr,
+        public static void RasterizeConvex(RcHeightfield hf, float[] vertices, int[] triangles, int area, int flagMergeThr,
             Telemetry ctx)
         {
             ctx.StartTimer("RASTERIZE_CONVEX");
@@ -188,7 +188,7 @@ namespace DotRecast.Recast
             planes[p][3] = planes[p][0] * vertices[vert] + planes[p][1] * vertices[vert + 1] + planes[p][2] * vertices[vert + 2];
         }
 
-        private static void RasterizationFilledShape(Heightfield hf, float[] bounds, int area, int flagMergeThr,
+        private static void RasterizationFilledShape(RcHeightfield hf, float[] bounds, int area, int flagMergeThr,
             Func<float[], float[]> intersection)
         {
             if (!OverlapBounds(hf.bmin, hf.bmax, bounds))

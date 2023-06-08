@@ -20,7 +20,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Recast.Test;
 
-using static RecastConstants;
+using static RcConstants;
 
 [Parallelizable]
 public class RecastTest

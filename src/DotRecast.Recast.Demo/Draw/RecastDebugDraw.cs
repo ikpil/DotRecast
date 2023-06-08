@@ -476,7 +476,7 @@ public class RecastDebugDraw : DebugDraw
         End();
     }
 
-    public void DebugDrawCompactHeightfieldSolid(CompactHeightfield chf)
+    public void DebugDrawCompactHeightfieldSolid(RcCompactHeightfield chf)
     {
         float cs = chf.cs;
         float ch = chf.ch;
@@ -489,11 +489,11 @@ public class RecastDebugDraw : DebugDraw
             {
                 float fx = chf.bmin.x + x * cs;
                 float fz = chf.bmin.z + y * cs;
-                CompactCell c = chf.cells[x + y * chf.width];
+                RcCompactCell c = chf.cells[x + y * chf.width];
 
                 for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                 {
-                    CompactSpan s = chf.spans[i];
+                    RcCompactSpan s = chf.spans[i];
 
                     int area = chf.areas[i];
                     int color;
@@ -501,7 +501,7 @@ public class RecastDebugDraw : DebugDraw
                     {
                         color = DuRGBA(0, 192, 255, 64);
                     }
-                    else if (area == RecastConstants.RC_NULL_AREA)
+                    else if (area == RcConstants.RC_NULL_AREA)
                     {
                         color = DuRGBA(0, 0, 0, 64);
                     }
@@ -522,7 +522,7 @@ public class RecastDebugDraw : DebugDraw
         End();
     }
 
-    public void DebugDrawRegionConnections(ContourSet cset)
+    public void DebugDrawRegionConnections(RcContourSet cset)
     {
         float alpha = 1f;
 
@@ -536,7 +536,7 @@ public class RecastDebugDraw : DebugDraw
 
         for (int i = 0; i < cset.conts.Count; ++i)
         {
-            Contour cont = cset.conts[i];
+            RcContour cont = cset.conts[i];
             RcVec3f pos = GetContourCenter(cont, orig, cs, ch);
             for (int j = 0; j < cont.nverts; ++j)
             {
@@ -546,7 +546,7 @@ public class RecastDebugDraw : DebugDraw
                     continue;
                 }
 
-                Contour cont2 = FindContourFromSet(cset, (short)cont.verts[v + 3]);
+                RcContour cont2 = FindContourFromSet(cset, (short)cont.verts[v + 3]);
                 if (cont2 != null)
                 {
                     RcVec3f pos2 = GetContourCenter(cont2, orig, cs, ch);
@@ -563,7 +563,7 @@ public class RecastDebugDraw : DebugDraw
 
         for (int i = 0; i < cset.conts.Count; ++i)
         {
-            Contour cont = cset.conts[i];
+            RcContour cont = cset.conts[i];
             int col = DuDarkenCol(DuIntToCol(cont.reg, a));
             RcVec3f pos = GetContourCenter(cont, orig, cs, ch);
             Vertex(pos, col);
@@ -572,7 +572,7 @@ public class RecastDebugDraw : DebugDraw
         End();
     }
 
-    private RcVec3f GetContourCenter(Contour cont, RcVec3f orig, float cs, float ch)
+    private RcVec3f GetContourCenter(RcContour cont, RcVec3f orig, float cs, float ch)
     {
         RcVec3f center = new RcVec3f();
         center.x = 0;
@@ -601,7 +601,7 @@ public class RecastDebugDraw : DebugDraw
         return center;
     }
 
-    private Contour FindContourFromSet(ContourSet cset, int reg)
+    private RcContour FindContourFromSet(RcContourSet cset, int reg)
     {
         for (int i = 0; i < cset.conts.Count; ++i)
         {
@@ -614,7 +614,7 @@ public class RecastDebugDraw : DebugDraw
         return null;
     }
 
-    public void DebugDrawRawContours(ContourSet cset, float alpha)
+    public void DebugDrawRawContours(RcContourSet cset, float alpha)
     {
         RcVec3f orig = cset.bmin;
         float cs = cset.cs;
@@ -626,7 +626,7 @@ public class RecastDebugDraw : DebugDraw
 
         for (int i = 0; i < cset.conts.Count; ++i)
         {
-            Contour c = cset.conts[i];
+            RcContour c = cset.conts[i];
             int color = DuIntToCol(c.reg, a);
 
             for (int j = 0; j < c.nrverts; ++j)
@@ -662,7 +662,7 @@ public class RecastDebugDraw : DebugDraw
 
         for (int i = 0; i < cset.conts.Count; ++i)
         {
-            Contour c = cset.conts[i];
+            RcContour c = cset.conts[i];
             int color = DuDarkenCol(DuIntToCol(c.reg, a));
 
             for (int j = 0; j < c.nrverts; ++j)
@@ -673,7 +673,7 @@ public class RecastDebugDraw : DebugDraw
                 int v3 = c.rverts[j * 4 + 3];
                 float off = 0;
                 int colv = color;
-                if ((v3 & RecastConstants.RC_BORDER_VERTEX) != 0)
+                if ((v3 & RcConstants.RC_BORDER_VERTEX) != 0)
                 {
                     colv = DuRGBA(255, 255, 255, a);
                     off = ch * 2;
@@ -689,7 +689,7 @@ public class RecastDebugDraw : DebugDraw
         End();
     }
 
-    public void DebugDrawContours(ContourSet cset)
+    public void DebugDrawContours(RcContourSet cset)
     {
         float alpha = 1f;
         RcVec3f orig = cset.bmin;
@@ -702,7 +702,7 @@ public class RecastDebugDraw : DebugDraw
 
         for (int i = 0; i < cset.conts.Count; ++i)
         {
-            Contour c = cset.conts[i];
+            RcContour c = cset.conts[i];
             if (c.nverts == 0)
             {
                 continue;
@@ -720,7 +720,7 @@ public class RecastDebugDraw : DebugDraw
                 int vb0 = c.verts[j * 4];
                 int vb1 = c.verts[j * 4 + 1];
                 int vb2 = c.verts[j * 4 + 2];
-                int col = (va3 & RecastConstants.RC_AREA_BORDER) != 0 ? bcolor : color;
+                int col = (va3 & RcConstants.RC_AREA_BORDER) != 0 ? bcolor : color;
 
                 float fx = orig.x + va0 * cs;
                 float fy = orig.y + (va1 + 1 + (i & 1)) * ch;
@@ -740,7 +740,7 @@ public class RecastDebugDraw : DebugDraw
 
         for (int i = 0; i < cset.conts.Count; ++i)
         {
-            Contour c = cset.conts[i];
+            RcContour c = cset.conts[i];
             int color = DuDarkenCol(DuIntToCol(c.reg, a));
 
             for (int j = 0; j < c.nverts; ++j)
@@ -751,7 +751,7 @@ public class RecastDebugDraw : DebugDraw
                 int v3 = c.verts[j * 4 + 3];
                 float off = 0;
                 int colv = color;
-                if ((v3 & RecastConstants.RC_BORDER_VERTEX) != 0)
+                if ((v3 & RcConstants.RC_BORDER_VERTEX) != 0)
                 {
                     colv = DuRGBA(255, 255, 255, a);
                     off = ch * 2;
@@ -767,7 +767,7 @@ public class RecastDebugDraw : DebugDraw
         End();
     }
 
-    public void DebugDrawHeightfieldSolid(Heightfield hf)
+    public void DebugDrawHeightfieldSolid(RcHeightfield hf)
     {
         if (!FrustumTest(hf.bmin, hf.bmax))
         {
@@ -792,7 +792,7 @@ public class RecastDebugDraw : DebugDraw
             {
                 float fx = orig.x + x * cs;
                 float fz = orig.z + y * cs;
-                Span s = hf.spans[x + y * w];
+                RcSpan s = hf.spans[x + y * w];
                 while (s != null)
                 {
                     AppendBox(fx, orig.y + s.smin * ch, fz, fx + cs, orig.y + s.smax * ch, fz + cs, fcol);
@@ -804,7 +804,7 @@ public class RecastDebugDraw : DebugDraw
         End();
     }
 
-    public void DebugDrawHeightfieldWalkable(Heightfield hf)
+    public void DebugDrawHeightfieldWalkable(RcHeightfield hf)
     {
         RcVec3f orig = hf.bmin;
         float cs = hf.cs;
@@ -824,14 +824,14 @@ public class RecastDebugDraw : DebugDraw
             {
                 float fx = orig.x + x * cs;
                 float fz = orig.z + y * cs;
-                Span s = hf.spans[x + y * w];
+                RcSpan s = hf.spans[x + y * w];
                 while (s != null)
                 {
                     if (s.area == SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WALKABLE)
                     {
                         fcol[0] = DuRGBA(64, 128, 160, 255);
                     }
-                    else if (s.area == RecastConstants.RC_NULL_AREA)
+                    else if (s.area == RcConstants.RC_NULL_AREA)
                     {
                         fcol[0] = DuRGBA(64, 64, 64, 255);
                     }
@@ -849,7 +849,7 @@ public class RecastDebugDraw : DebugDraw
         End();
     }
 
-    public void DebugDrawCompactHeightfieldRegions(CompactHeightfield chf)
+    public void DebugDrawCompactHeightfieldRegions(RcCompactHeightfield chf)
     {
         float cs = chf.cs;
         float ch = chf.ch;
@@ -862,11 +862,11 @@ public class RecastDebugDraw : DebugDraw
             {
                 float fx = chf.bmin.x + x * cs;
                 float fz = chf.bmin.z + y * cs;
-                CompactCell c = chf.cells[x + y * chf.width];
+                RcCompactCell c = chf.cells[x + y * chf.width];
 
                 for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                 {
-                    CompactSpan s = chf.spans[i];
+                    RcCompactSpan s = chf.spans[i];
                     float fy = chf.bmin.y + (s.y) * ch;
                     int color;
                     if (s.reg != 0)
@@ -889,7 +889,7 @@ public class RecastDebugDraw : DebugDraw
         End();
     }
 
-    public void DebugDrawCompactHeightfieldDistance(CompactHeightfield chf)
+    public void DebugDrawCompactHeightfieldDistance(RcCompactHeightfield chf)
     {
         if (chf.dist == null)
         {
@@ -915,11 +915,11 @@ public class RecastDebugDraw : DebugDraw
             {
                 float fx = chf.bmin.x + x * cs;
                 float fz = chf.bmin.z + y * cs;
-                CompactCell c = chf.cells[x + y * chf.width];
+                RcCompactCell c = chf.cells[x + y * chf.width];
 
                 for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                 {
-                    CompactSpan s = chf.spans[i];
+                    RcCompactSpan s = chf.spans[i];
                     float fy = chf.bmin.y + (s.y + 1) * ch;
                     char cd = (char)(chf.dist[i] * dscale);
                     int color = DuRGBA(cd, cd, cd, 255);
@@ -934,7 +934,7 @@ public class RecastDebugDraw : DebugDraw
         End();
     }
 
-    public void DebugDrawPolyMesh(PolyMesh mesh)
+    public void DebugDrawPolyMesh(RcPolyMesh mesh)
     {
         int nvp = mesh.nvp;
         float cs = mesh.cs;
@@ -953,7 +953,7 @@ public class RecastDebugDraw : DebugDraw
             {
                 color = DuRGBA(0, 192, 255, 64);
             }
-            else if (area == RecastConstants.RC_NULL_AREA)
+            else if (area == RcConstants.RC_NULL_AREA)
             {
                 color = DuRGBA(0, 0, 0, 64);
             }
@@ -965,7 +965,7 @@ public class RecastDebugDraw : DebugDraw
             int[] vi = new int[3];
             for (int j = 2; j < nvp; ++j)
             {
-                if (mesh.polys[p + j] == RecastConstants.RC_MESH_NULL_IDX)
+                if (mesh.polys[p + j] == RcConstants.RC_MESH_NULL_IDX)
                 {
                     break;
                 }
@@ -996,7 +996,7 @@ public class RecastDebugDraw : DebugDraw
             int p = i * nvp * 2;
             for (int j = 0; j < nvp; ++j)
             {
-                if (mesh.polys[p + j] == RecastConstants.RC_MESH_NULL_IDX)
+                if (mesh.polys[p + j] == RcConstants.RC_MESH_NULL_IDX)
                 {
                     break;
                 }
@@ -1006,7 +1006,7 @@ public class RecastDebugDraw : DebugDraw
                     continue;
                 }
 
-                int nj = (j + 1 >= nvp || mesh.polys[p + j + 1] == RecastConstants.RC_MESH_NULL_IDX) ? 0 : j + 1;
+                int nj = (j + 1 >= nvp || mesh.polys[p + j + 1] == RcConstants.RC_MESH_NULL_IDX) ? 0 : j + 1;
                 int[] vi = { mesh.polys[p + j], mesh.polys[p + nj] };
 
                 for (int k = 0; k < 2; ++k)
@@ -1030,7 +1030,7 @@ public class RecastDebugDraw : DebugDraw
             int p = i * nvp * 2;
             for (int j = 0; j < nvp; ++j)
             {
-                if (mesh.polys[p + j] == RecastConstants.RC_MESH_NULL_IDX)
+                if (mesh.polys[p + j] == RcConstants.RC_MESH_NULL_IDX)
                 {
                     break;
                 }
@@ -1040,7 +1040,7 @@ public class RecastDebugDraw : DebugDraw
                     continue;
                 }
 
-                int nj = (j + 1 >= nvp || mesh.polys[p + j + 1] == RecastConstants.RC_MESH_NULL_IDX) ? 0 : j + 1;
+                int nj = (j + 1 >= nvp || mesh.polys[p + j + 1] == RcConstants.RC_MESH_NULL_IDX) ? 0 : j + 1;
                 int[] vi = { mesh.polys[p + j], mesh.polys[p + nj] };
 
                 int col = colb;
@@ -1076,7 +1076,7 @@ public class RecastDebugDraw : DebugDraw
         End();
     }
 
-    public void DebugDrawPolyMeshDetail(PolyMeshDetail dmesh)
+    public void DebugDrawPolyMeshDetail(RcPolyMeshDetail dmesh)
     {
         Begin(DebugDrawPrimitives.TRIS);
 

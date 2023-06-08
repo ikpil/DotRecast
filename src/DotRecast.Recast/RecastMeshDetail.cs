@@ -23,17 +23,17 @@ using System.Collections.Generic;
 using DotRecast.Core;
 using static DotRecast.Core.RcMath;
 using static DotRecast.Recast.RecastCommon;
-using static DotRecast.Recast.RecastConstants;
+using static DotRecast.Recast.RcConstants;
 
 namespace DotRecast.Recast
 {
-    public class RecastMeshDetail
+    public static class RecastMeshDetail
     {
         public const int MAX_VERTS = 127;
         public const int MAX_TRIS = 255; // Max tris for delaunay is 2n-2-k (n=num verts, k=num hull verts).
         public const int MAX_VERTS_PER_EDGE = 32;
 
-        public const int RC_UNSET_HEIGHT = RecastConstants.SPAN_MAX_HEIGHT;
+        public const int RC_UNSET_HEIGHT = RcConstants.SPAN_MAX_HEIGHT;
         public const int EV_UNDEF = -1;
         public const int EV_HULL = -2;
 
@@ -346,7 +346,7 @@ namespace DotRecast.Recast
         }
 
         private static int GetHeight(float fx, float fy, float fz, float cs, float ics, float ch, int radius,
-            HeightPatch hp)
+            RcHeightPatch hp)
         {
             int ix = (int)Math.Floor(fx * ics + 0.01f);
             int iz = (int)Math.Floor(fz * ics + 0.01f);
@@ -832,7 +832,7 @@ namespace DotRecast.Recast
         }
 
         static int BuildPolyDetail(Telemetry ctx, float[] @in, int nin, float sampleDist, float sampleMaxError,
-            int heightSearchRadius, CompactHeightfield chf, HeightPatch hp, float[] verts, List<int> tris)
+            int heightSearchRadius, RcCompactHeightfield chf, RcHeightPatch hp, float[] verts, List<int> tris)
         {
             List<int> samples = new List<int>(512);
 
@@ -1113,8 +1113,8 @@ namespace DotRecast.Recast
             return nverts;
         }
 
-        static void SeedArrayWithPolyCenter(Telemetry ctx, CompactHeightfield chf, int[] meshpoly, int poly, int npoly,
-            int[] verts, int bs, HeightPatch hp, List<int> array)
+        static void SeedArrayWithPolyCenter(Telemetry ctx, RcCompactHeightfield chf, int[] meshpoly, int poly, int npoly,
+            int[] verts, int bs, RcHeightPatch hp, List<int> array)
         {
             // Note: Reads to the compact heightfield are offset by border size (bs)
             // since border size offset is already removed from the polymesh vertices.
@@ -1136,10 +1136,10 @@ namespace DotRecast.Recast
                         continue;
                     }
 
-                    CompactCell c = chf.cells[(ax + bs) + (az + bs) * chf.width];
+                    RcCompactCell c = chf.cells[(ax + bs) + (az + bs) * chf.width];
                     for (int i = c.index, ni = c.index + c.count; i < ni && dmin > 0; ++i)
                     {
-                        CompactSpan s = chf.spans[i];
+                        RcCompactSpan s = chf.spans[i];
                         int d = Math.Abs(ay - s.y);
                         if (d < dmin)
                         {
@@ -1215,7 +1215,7 @@ namespace DotRecast.Recast
                 dirs[3] = dirs[directDir];
                 dirs[directDir] = tmp;
 
-                CompactSpan cs = chf.spans[ci];
+                RcCompactSpan cs = chf.spans[ci];
 
                 for (int i = 0; i < 4; ++i)
                 {
@@ -1258,7 +1258,7 @@ namespace DotRecast.Recast
             array.Add(cy + bs);
             array.Add(ci);
             Array.Fill(hp.data, RC_UNSET_HEIGHT, 0, (hp.width * hp.height) - (0));
-            CompactSpan cs2 = chf.spans[ci];
+            RcCompactSpan cs2 = chf.spans[ci];
             hp.data[cx - hp.xmin + (cy - hp.ymin) * hp.width] = cs2.y;
         }
 
@@ -1271,8 +1271,8 @@ namespace DotRecast.Recast
             queue.Add(v3);
         }
 
-        static void GetHeightData(Telemetry ctx, CompactHeightfield chf, int[] meshpolys, int poly, int npoly, int[] verts,
-            int bs, HeightPatch hp, int region)
+        static void GetHeightData(Telemetry ctx, RcCompactHeightfield chf, int[] meshpolys, int poly, int npoly, int[] verts,
+            int bs, RcHeightPatch hp, int region)
         {
             // Note: Reads to the compact heightfield are offset by border size (bs)
             // since border size offset is already removed from the polymesh vertices.
@@ -1295,10 +1295,10 @@ namespace DotRecast.Recast
                     for (int hx = 0; hx < hp.width; hx++)
                     {
                         int x = hp.xmin + hx + bs;
-                        CompactCell c = chf.cells[x + y * chf.width];
+                        RcCompactCell c = chf.cells[x + y * chf.width];
                         for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                         {
-                            CompactSpan s = chf.spans[i];
+                            RcCompactSpan s = chf.spans[i];
                             if (s.reg == region)
                             {
                                 // Store height
@@ -1314,7 +1314,7 @@ namespace DotRecast.Recast
                                         int ax = x + GetDirOffsetX(dir);
                                         int ay = y + GetDirOffsetY(dir);
                                         int ai = chf.cells[ax + ay * chf.width].index + GetCon(s, dir);
-                                        CompactSpan @as = chf.spans[ai];
+                                        RcCompactSpan @as = chf.spans[ai];
                                         if (@as.reg != region)
                                         {
                                             border = true;
@@ -1360,7 +1360,7 @@ namespace DotRecast.Recast
                     queue = queue.GetRange(RETRACT_SIZE * 3, queue.Count - (RETRACT_SIZE * 3));
                 }
 
-                CompactSpan cs = chf.spans[ci];
+                RcCompactSpan cs = chf.spans[ci];
                 for (int dir = 0; dir < 4; ++dir)
                 {
                     if (GetCon(cs, dir) == RC_NOT_CONNECTED)
@@ -1384,7 +1384,7 @@ namespace DotRecast.Recast
                     }
 
                     int ai = chf.cells[ax + ay * chf.width].index + GetCon(cs, dir);
-                    CompactSpan @as = chf.spans[ai];
+                    RcCompactSpan @as = chf.spans[ai];
 
                     hp.data[hx + hy * hp.width] = @as.y;
                     Push3(queue, ax, ay, ai);
@@ -1423,7 +1423,7 @@ namespace DotRecast.Recast
         /// See the #rcConfig documentation for more information on the configuration parameters.
         ///
         /// @see rcAllocPolyMeshDetail, rcPolyMesh, rcCompactHeightfield, rcPolyMeshDetail, rcConfig
-        public static PolyMeshDetail BuildPolyMeshDetail(Telemetry ctx, PolyMesh mesh, CompactHeightfield chf,
+        public static RcPolyMeshDetail BuildPolyMeshDetail(Telemetry ctx, RcPolyMesh mesh, RcCompactHeightfield chf,
             float sampleDist, float sampleMaxError)
         {
             ctx.StartTimer("POLYMESHDETAIL");
@@ -1432,7 +1432,7 @@ namespace DotRecast.Recast
                 return null;
             }
 
-            PolyMeshDetail dmesh = new PolyMeshDetail();
+            RcPolyMeshDetail dmesh = new RcPolyMeshDetail();
             int nvp = mesh.nvp;
             float cs = mesh.cs;
             float ch = mesh.ch;
@@ -1442,7 +1442,7 @@ namespace DotRecast.Recast
 
             List<int> tris = new List<int>(512);
             float[] verts = new float[256 * 3];
-            HeightPatch hp = new HeightPatch();
+            RcHeightPatch hp = new RcHeightPatch();
             int nPolyVerts = 0;
             int maxhw = 0, maxhh = 0;
 
@@ -1615,9 +1615,9 @@ namespace DotRecast.Recast
         }
 
         /// @see rcAllocPolyMeshDetail, rcPolyMeshDetail
-        PolyMeshDetail MergePolyMeshDetails(Telemetry ctx, PolyMeshDetail[] meshes, int nmeshes)
+        RcPolyMeshDetail MergePolyMeshDetails(Telemetry ctx, RcPolyMeshDetail[] meshes, int nmeshes)
         {
-            PolyMeshDetail mesh = new PolyMeshDetail();
+            RcPolyMeshDetail mesh = new RcPolyMeshDetail();
 
             ctx.StartTimer("MERGE_POLYMESHDETAIL");
 
@@ -1647,7 +1647,7 @@ namespace DotRecast.Recast
             // Merge datas.
             for (int i = 0; i < nmeshes; ++i)
             {
-                PolyMeshDetail dm = meshes[i];
+                RcPolyMeshDetail dm = meshes[i];
                 if (dm == null)
                 {
                     continue;

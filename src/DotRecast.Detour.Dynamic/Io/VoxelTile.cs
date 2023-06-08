@@ -51,7 +51,7 @@ namespace DotRecast.Detour.Dynamic.Io
             spanData = ToByteArray(buffer, width, depth, VoxelFile.PREFERRED_BYTE_ORDER);
         }
 
-        public VoxelTile(int tileX, int tileZ, Heightfield heightfield)
+        public VoxelTile(int tileX, int tileZ, RcHeightfield heightfield)
         {
             this.tileX = tileX;
             this.tileZ = tileZ;
@@ -65,25 +65,25 @@ namespace DotRecast.Detour.Dynamic.Io
             spanData = SerializeSpans(heightfield, VoxelFile.PREFERRED_BYTE_ORDER);
         }
 
-        public Heightfield Heightfield()
+        public RcHeightfield Heightfield()
         {
             return VoxelFile.PREFERRED_BYTE_ORDER == RcByteOrder.BIG_ENDIAN ? HeightfieldBE() : HeightfieldLE();
         }
 
-        private Heightfield HeightfieldBE()
+        private RcHeightfield HeightfieldBE()
         {
-            Heightfield hf = new Heightfield(width, depth, boundsMin, boundsMax, cellSize, cellHeight, borderSize);
+            RcHeightfield hf = new RcHeightfield(width, depth, boundsMin, boundsMax, cellSize, cellHeight, borderSize);
             int position = 0;
             for (int z = 0, pz = 0; z < depth; z++, pz += width)
             {
                 for (int x = 0; x < width; x++)
                 {
-                    Span prev = null;
+                    RcSpan prev = null;
                     int spanCount = ByteUtils.GetShortBE(spanData, position);
                     position += 2;
                     for (int s = 0; s < spanCount; s++)
                     {
-                        Span span = new Span();
+                        RcSpan span = new RcSpan();
                         span.smin = ByteUtils.GetIntBE(spanData, position);
                         position += 4;
                         span.smax = ByteUtils.GetIntBE(spanData, position);
@@ -107,20 +107,20 @@ namespace DotRecast.Detour.Dynamic.Io
             return hf;
         }
 
-        private Heightfield HeightfieldLE()
+        private RcHeightfield HeightfieldLE()
         {
-            Heightfield hf = new Heightfield(width, depth, boundsMin, boundsMax, cellSize, cellHeight, borderSize);
+            RcHeightfield hf = new RcHeightfield(width, depth, boundsMin, boundsMax, cellSize, cellHeight, borderSize);
             int position = 0;
             for (int z = 0, pz = 0; z < depth; z++, pz += width)
             {
                 for (int x = 0; x < width; x++)
                 {
-                    Span prev = null;
+                    RcSpan prev = null;
                     int spanCount = ByteUtils.GetShortLE(spanData, position);
                     position += 2;
                     for (int s = 0; s < spanCount; s++)
                     {
-                        Span span = new Span();
+                        RcSpan span = new RcSpan();
                         span.smin = ByteUtils.GetIntLE(spanData, position);
                         position += 4;
                         span.smax = ByteUtils.GetIntLE(spanData, position);
@@ -144,7 +144,7 @@ namespace DotRecast.Detour.Dynamic.Io
             return hf;
         }
 
-        private byte[] SerializeSpans(Heightfield heightfield, RcByteOrder order)
+        private byte[] SerializeSpans(RcHeightfield heightfield, RcByteOrder order)
         {
             int[] counts = new int[heightfield.width * heightfield.height];
             int totalCount = 0;
@@ -152,7 +152,7 @@ namespace DotRecast.Detour.Dynamic.Io
             {
                 for (int x = 0; x < heightfield.width; x++)
                 {
-                    Span span = heightfield.spans[pz + x];
+                    RcSpan span = heightfield.spans[pz + x];
                     while (span != null)
                     {
                         counts[pz + x]++;
@@ -169,7 +169,7 @@ namespace DotRecast.Detour.Dynamic.Io
                 for (int x = 0; x < heightfield.width; x++)
                 {
                     position = ByteUtils.PutShort(counts[pz + x], data, position, order);
-                    Span span = heightfield.spans[pz + x];
+                    RcSpan span = heightfield.spans[pz + x];
                     while (span != null)
                     {
                         position = ByteUtils.PutInt(span.smin, data, position, order);

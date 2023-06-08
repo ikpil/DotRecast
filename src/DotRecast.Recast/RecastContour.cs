@@ -23,14 +23,14 @@ using System.Collections.Generic;
 
 namespace DotRecast.Recast
 {
-    using static RecastConstants;
+    using static RcConstants;
 
     public static class RecastContour
     {
-        private static CornerHeight GetCornerHeight(int x, int y, int i, int dir, CompactHeightfield chf)
+        private static CornerHeight GetCornerHeight(int x, int y, int i, int dir, RcCompactHeightfield chf)
         {
             bool isBorderVertex = false;
-            CompactSpan s = chf.spans[i];
+            RcCompactSpan s = chf.spans[i];
             int ch = s.y;
             int dirp = (dir + 1) & 0x3;
 
@@ -48,7 +48,7 @@ namespace DotRecast.Recast
                 int ax = x + RecastCommon.GetDirOffsetX(dir);
                 int ay = y + RecastCommon.GetDirOffsetY(dir);
                 int ai = chf.cells[ax + ay * chf.width].index + RecastCommon.GetCon(s, dir);
-                CompactSpan @as = chf.spans[ai];
+                RcCompactSpan @as = chf.spans[ai];
                 ch = Math.Max(ch, @as.y);
                 regs[1] = chf.spans[ai].reg | (chf.areas[ai] << 16);
                 if (RecastCommon.GetCon(@as, dirp) != RC_NOT_CONNECTED)
@@ -56,7 +56,7 @@ namespace DotRecast.Recast
                     int ax2 = ax + RecastCommon.GetDirOffsetX(dirp);
                     int ay2 = ay + RecastCommon.GetDirOffsetY(dirp);
                     int ai2 = chf.cells[ax2 + ay2 * chf.width].index + RecastCommon.GetCon(@as, dirp);
-                    CompactSpan as2 = chf.spans[ai2];
+                    RcCompactSpan as2 = chf.spans[ai2];
                     ch = Math.Max(ch, as2.y);
                     regs[2] = chf.spans[ai2].reg | (chf.areas[ai2] << 16);
                 }
@@ -67,7 +67,7 @@ namespace DotRecast.Recast
                 int ax = x + RecastCommon.GetDirOffsetX(dirp);
                 int ay = y + RecastCommon.GetDirOffsetY(dirp);
                 int ai = chf.cells[ax + ay * chf.width].index + RecastCommon.GetCon(s, dirp);
-                CompactSpan @as = chf.spans[ai];
+                RcCompactSpan @as = chf.spans[ai];
                 ch = Math.Max(ch, @as.y);
                 regs[3] = chf.spans[ai].reg | (chf.areas[ai] << 16);
                 if (RecastCommon.GetCon(@as, dir) != RC_NOT_CONNECTED)
@@ -75,7 +75,7 @@ namespace DotRecast.Recast
                     int ax2 = ax + RecastCommon.GetDirOffsetX(dir);
                     int ay2 = ay + RecastCommon.GetDirOffsetY(dir);
                     int ai2 = chf.cells[ax2 + ay2 * chf.width].index + RecastCommon.GetCon(@as, dir);
-                    CompactSpan as2 = chf.spans[ai2];
+                    RcCompactSpan as2 = chf.spans[ai2];
                     ch = Math.Max(ch, as2.y);
                     regs[2] = chf.spans[ai2].reg | (chf.areas[ai2] << 16);
                 }
@@ -105,7 +105,7 @@ namespace DotRecast.Recast
             return new CornerHeight(ch, isBorderVertex);
         }
 
-        private static void WalkContour(int x, int y, int i, CompactHeightfield chf, int[] flags, List<int> points)
+        private static void WalkContour(int x, int y, int i, RcCompactHeightfield chf, int[] flags, List<int> points)
         {
             // Choose the first non-connected edge
             int dir = 0;
@@ -144,7 +144,7 @@ namespace DotRecast.Recast
                     }
 
                     int r = 0;
-                    CompactSpan s = chf.spans[i];
+                    RcCompactSpan s = chf.spans[i];
                     if (RecastCommon.GetCon(s, dir) != RC_NOT_CONNECTED)
                     {
                         int ax = x + RecastCommon.GetDirOffsetX(dir);
@@ -172,10 +172,10 @@ namespace DotRecast.Recast
                     int ni = -1;
                     int nx = x + RecastCommon.GetDirOffsetX(dir);
                     int ny = y + RecastCommon.GetDirOffsetY(dir);
-                    CompactSpan s = chf.spans[i];
+                    RcCompactSpan s = chf.spans[i];
                     if (RecastCommon.GetCon(s, dir) != RC_NOT_CONNECTED)
                     {
-                        CompactCell nc = chf.cells[nx + ny * chf.width];
+                        RcCompactCell nc = chf.cells[nx + ny * chf.width];
                         ni = nc.index + RecastCommon.GetCon(s, dir);
                     }
 
@@ -548,7 +548,7 @@ namespace DotRecast.Recast
             }
         }
 
-        private static void MergeContours(Contour ca, Contour cb, int ia, int ib)
+        private static void MergeContours(RcContour ca, RcContour cb, int ia, int ib)
         {
             int maxVerts = ca.nverts + cb.nverts + 2;
             int[] verts = new int[maxVerts * 4];
@@ -587,7 +587,7 @@ namespace DotRecast.Recast
         }
 
         // Finds the lowest leftmost vertex of a contour.
-        private static int[] FindLeftMostVertex(Contour contour)
+        private static int[] FindLeftMostVertex(RcContour contour)
         {
             int minx = contour.verts[0];
             int minz = contour.verts[2];
@@ -607,7 +607,7 @@ namespace DotRecast.Recast
             return new int[] { minx, minz, leftmost };
         }
 
-        private static void MergeRegionHoles(Telemetry ctx, ContourRegion region)
+        private static void MergeRegionHoles(Telemetry ctx, RcContourRegion region)
         {
             // Sort holes from left to right.
             for (int i = 0; i < region.nholes; i++)
@@ -624,18 +624,18 @@ namespace DotRecast.Recast
             for (int i = 0; i < region.nholes; i++)
                 maxVerts += region.holes[i].contour.nverts;
 
-            PotentialDiagonal[] diags = new PotentialDiagonal[maxVerts];
+            RcPotentialDiagonal[] diags = new RcPotentialDiagonal[maxVerts];
             for (int pd = 0; pd < maxVerts; pd++)
             {
-                diags[pd] = new PotentialDiagonal();
+                diags[pd] = new RcPotentialDiagonal();
             }
 
-            Contour outline = region.outline;
+            RcContour outline = region.outline;
 
             // Merge holes into the outline one by one.
             for (int i = 0; i < region.nholes; i++)
             {
-                Contour hole = region.holes[i].contour;
+                RcContour hole = region.holes[i].contour;
 
                 int index = -1;
                 int bestVertex = region.holes[i].leftmost;
@@ -713,13 +713,13 @@ namespace DotRecast.Recast
         /// See the #rcConfig documentation for more information on the configuration parameters.
         ///
         /// @see rcAllocContourSet, rcCompactHeightfield, rcContourSet, rcConfig
-        public static ContourSet BuildContours(Telemetry ctx, CompactHeightfield chf, float maxError, int maxEdgeLen,
+        public static RcContourSet BuildContours(Telemetry ctx, RcCompactHeightfield chf, float maxError, int maxEdgeLen,
             int buildFlags)
         {
             int w = chf.width;
             int h = chf.height;
             int borderSize = chf.borderSize;
-            ContourSet cset = new ContourSet();
+            RcContourSet cset = new RcContourSet();
 
             ctx.StartTimer("CONTOURS");
             cset.bmin = chf.bmin;
@@ -750,11 +750,11 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < w; ++x)
                 {
-                    CompactCell c = chf.cells[x + y * w];
+                    RcCompactCell c = chf.cells[x + y * w];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
                         int res = 0;
-                        CompactSpan s = chf.spans[i];
+                        RcCompactSpan s = chf.spans[i];
                         if (chf.spans[i].reg == 0 || (chf.spans[i].reg & RC_BORDER_REG) != 0)
                         {
                             flags[i] = 0;
@@ -790,7 +790,7 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < w; ++x)
                 {
-                    CompactCell c = chf.cells[x + y * w];
+                    RcCompactCell c = chf.cells[x + y * w];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
                         if (flags[i] == 0 || flags[i] == 0xf)
@@ -820,7 +820,7 @@ namespace DotRecast.Recast
                         // Create contour.
                         if (simplified.Count / 4 >= 3)
                         {
-                            Contour cont = new Contour();
+                            RcContour cont = new RcContour();
                             cset.conts.Add(cont);
 
                             cont.nverts = simplified.Count / 4;
@@ -872,7 +872,7 @@ namespace DotRecast.Recast
                 int nholes = 0;
                 for (int i = 0; i < cset.conts.Count; ++i)
                 {
-                    Contour cont = cset.conts[i];
+                    RcContour cont = cset.conts[i];
                     // If the contour is wound backwards, it is a hole.
                     winding[i] = CalcAreaOfPolygon2D(cont.verts, cont.nverts) < 0 ? -1 : 1;
                     if (winding[i] < 0)
@@ -884,15 +884,15 @@ namespace DotRecast.Recast
                     // Collect outline contour and holes contours per region.
                     // We assume that there is one outline and multiple holes.
                     int nregions = chf.maxRegions + 1;
-                    ContourRegion[] regions = new ContourRegion[nregions];
+                    RcContourRegion[] regions = new RcContourRegion[nregions];
                     for (int i = 0; i < nregions; i++)
                     {
-                        regions[i] = new ContourRegion();
+                        regions[i] = new RcContourRegion();
                     }
 
                     for (int i = 0; i < cset.conts.Count; ++i)
                     {
-                        Contour cont = cset.conts[i];
+                        RcContour cont = cset.conts[i];
                         // Positively would contours are outlines, negative holes.
                         if (winding[i] > 0)
                         {
@@ -914,10 +914,10 @@ namespace DotRecast.Recast
                     {
                         if (regions[i].nholes > 0)
                         {
-                            regions[i].holes = new ContourHole[regions[i].nholes];
+                            regions[i].holes = new RcContourHole[regions[i].nholes];
                             for (int nh = 0; nh < regions[i].nholes; nh++)
                             {
-                                regions[i].holes[nh] = new ContourHole();
+                                regions[i].holes[nh] = new RcContourHole();
                             }
 
                             regions[i].nholes = 0;
@@ -926,8 +926,8 @@ namespace DotRecast.Recast
 
                     for (int i = 0; i < cset.conts.Count; ++i)
                     {
-                        Contour cont = cset.conts[i];
-                        ContourRegion reg = regions[cont.reg];
+                        RcContour cont = cset.conts[i];
+                        RcContourRegion reg = regions[cont.reg];
                         if (winding[i] < 0)
                             reg.holes[reg.nholes++].contour = cont;
                     }
@@ -935,7 +935,7 @@ namespace DotRecast.Recast
                     // Finally merge each regions holes into the outline.
                     for (int i = 0; i < nregions; i++)
                     {
-                        ContourRegion reg = regions[i];
+                        RcContourRegion reg = regions[i];
                         if (reg.nholes == 0)
                             continue;
 

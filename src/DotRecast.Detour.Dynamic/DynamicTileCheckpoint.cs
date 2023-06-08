@@ -23,28 +23,28 @@ namespace DotRecast.Detour.Dynamic
 {
     public class DynamicTileCheckpoint
     {
-        public readonly Heightfield heightfield;
+        public readonly RcHeightfield heightfield;
         public readonly ISet<long> colliders;
 
-        public DynamicTileCheckpoint(Heightfield heightfield, ISet<long> colliders)
+        public DynamicTileCheckpoint(RcHeightfield heightfield, ISet<long> colliders)
         {
             this.colliders = colliders;
             this.heightfield = Clone(heightfield);
         }
 
-        private Heightfield Clone(Heightfield source)
+        private RcHeightfield Clone(RcHeightfield source)
         {
-            Heightfield clone = new Heightfield(source.width, source.height, source.bmin, source.bmax, source.cs,
+            RcHeightfield clone = new RcHeightfield(source.width, source.height, source.bmin, source.bmax, source.cs,
                 source.ch, source.borderSize);
             for (int z = 0, pz = 0; z < source.height; z++, pz += source.width)
             {
                 for (int x = 0; x < source.width; x++)
                 {
-                    Span span = source.spans[pz + x];
-                    Span prevCopy = null;
+                    RcSpan span = source.spans[pz + x];
+                    RcSpan prevCopy = null;
                     while (span != null)
                     {
-                        Span copy = new Span();
+                        RcSpan copy = new RcSpan();
                         copy.smin = span.smin;
                         copy.smax = span.smax;
                         copy.area = span.area;

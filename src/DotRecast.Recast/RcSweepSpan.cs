@@ -1,6 +1,6 @@
 ﻿namespace DotRecast.Recast
 {
-    public class SweepSpan
+    public class RcSweepSpan
     {
         public int rid; // row id
         public int id; // region id

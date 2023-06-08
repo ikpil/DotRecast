@@ -20,19 +20,28 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Recast
 {
-    /** Represents a span of unobstructed space within a compact heightfield. */
-    public class CompactSpan
+    /**
+ * Contains triangle meshes that represent detailed height data associated with the polygons in its associated polygon
+ * mesh object.
+ */
+    public class RcPolyMeshDetail
     {
-        /** The lower extent of the span. (Measured from the heightfield's base.) */
-        public int y;
+        /** The sub-mesh data. [Size: 4*#nmeshes] */
+        public int[] meshes;
 
-        /** The id of the region the span belongs to. (Or zero if not in a region.) */
-        public int reg;
+        /** The mesh vertices. [Size: 3*#nverts] */
+        public float[] verts;
 
-        /** Packed neighbor connection data. */
-        public int con;
+        /** The mesh triangles. [Size: 4*#ntris] */
+        public int[] tris;
 
-        /** The height of the span. (Measured from #y.) */
-        public int h;
+        /** The number of sub-meshes defined by #meshes. */
+        public int nmeshes;
+
+        /** The number of vertices in #verts. */
+        public int nverts;
+
+        /** The number of triangles in #tris. */
+        public int ntris;
     }
 }

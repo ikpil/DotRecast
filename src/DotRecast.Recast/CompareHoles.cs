@@ -2,9 +2,9 @@
 
 namespace DotRecast.Recast
 {
-    public class CompareHoles : IComparer<ContourHole>
+    public class CompareHoles : IComparer<RcContourHole>
     {
-        public int Compare(ContourHole a, ContourHole b)
+        public int Compare(RcContourHole a, RcContourHole b)
         {
             if (a.minx == b.minx)
             {

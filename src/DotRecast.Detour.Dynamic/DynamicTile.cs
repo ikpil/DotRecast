@@ -46,7 +46,7 @@ namespace DotRecast.Detour.Dynamic
         {
             if (dirty)
             {
-                Heightfield heightfield = BuildHeightfield(config, telemetry);
+                RcHeightfield heightfield = BuildHeightfield(config, telemetry);
                 RecastBuilderResult r = BuildRecast(builder, config, voxelTile, heightfield, telemetry);
                 NavMeshDataCreateParams option = NavMeshCreateParams(voxelTile.tileX, voxelTile.tileZ, voxelTile.cellSize,
                     voxelTile.cellHeight, config, r);
@@ -57,10 +57,10 @@ namespace DotRecast.Detour.Dynamic
             return false;
         }
 
-        private Heightfield BuildHeightfield(DynamicNavMeshConfig config, Telemetry telemetry)
+        private RcHeightfield BuildHeightfield(DynamicNavMeshConfig config, Telemetry telemetry)
         {
             ICollection<long> rasterizedColliders = checkpoint != null ? checkpoint.colliders : ImmutableHashSet<long>.Empty;
-            Heightfield heightfield = checkpoint != null ? checkpoint.heightfield : voxelTile.Heightfield();
+            RcHeightfield heightfield = checkpoint != null ? checkpoint.heightfield : voxelTile.Heightfield();
             foreach (var (cid, c) in colliders)
             {
                 if (!rasterizedColliders.Contains(cid))
@@ -79,9 +79,9 @@ namespace DotRecast.Detour.Dynamic
         }
 
         private RecastBuilderResult BuildRecast(RecastBuilder builder, DynamicNavMeshConfig config, VoxelTile vt,
-            Heightfield heightfield, Telemetry telemetry)
+            RcHeightfield heightfield, Telemetry telemetry)
         {
-            RecastConfig rcConfig = new RecastConfig(config.useTiles, config.tileSizeX, config.tileSizeZ, vt.borderSize,
+            RcConfig rcConfig = new RcConfig(config.useTiles, config.tileSizeX, config.tileSizeZ, vt.borderSize,
                 config.partitionType, vt.cellSize, vt.cellHeight, config.walkableSlopeAngle, true, true, true,
                 config.walkableHeight, config.walkableRadius, config.walkableClimb, config.minRegionArea, config.regionMergeArea,
                 config.maxEdgeLen, config.maxSimplificationError,
@@ -119,8 +119,8 @@ namespace DotRecast.Detour.Dynamic
         private NavMeshDataCreateParams NavMeshCreateParams(int tilex, int tileZ, float cellSize, float cellHeight,
             DynamicNavMeshConfig config, RecastBuilderResult rcResult)
         {
-            PolyMesh m_pmesh = rcResult.GetMesh();
-            PolyMeshDetail m_dmesh = rcResult.GetMeshDetail();
+            RcPolyMesh m_pmesh = rcResult.GetMesh();
+            RcPolyMeshDetail m_dmesh = rcResult.GetMeshDetail();
             NavMeshDataCreateParams option = new NavMeshDataCreateParams();
             for (int i = 0; i < m_pmesh.npolys; ++i)
             {

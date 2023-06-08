@@ -42,7 +42,7 @@ public class TestTileLayerBuilder : AbstractTileLayersBuilder
     private const int m_vertsPerPoly = 6;
     private const float m_detailSampleDist = 6.0f;
     private const float m_detailSampleMaxError = 1.0f;
-    private readonly RecastConfig rcConfig;
+    private readonly RcConfig rcConfig;
     private const int m_tileSize = 48;
     protected readonly IInputGeomProvider geom;
     private readonly int tw;
@@ -51,7 +51,7 @@ public class TestTileLayerBuilder : AbstractTileLayersBuilder
     public TestTileLayerBuilder(IInputGeomProvider geom)
     {
         this.geom = geom;
-        rcConfig = new RecastConfig(true, m_tileSize, m_tileSize, RecastConfig.CalcBorder(m_agentRadius, m_cellSize),
+        rcConfig = new RcConfig(true, m_tileSize, m_tileSize, RcConfig.CalcBorder(m_agentRadius, m_cellSize),
             PartitionType.WATERSHED, m_cellSize, m_cellHeight, m_agentMaxSlope, true, true, true, m_agentHeight,
             m_agentRadius, m_agentMaxClimb, m_regionMinArea, m_regionMergeArea, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly,
             true, m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
@@ -77,14 +77,14 @@ public class TestTileLayerBuilder : AbstractTileLayersBuilder
 
     protected override List<byte[]> Build(int tx, int ty, RcByteOrder order, bool cCompatibility)
     {
-        HeightfieldLayerSet lset = GetHeightfieldSet(tx, ty);
+        RcHeightfieldLayerSet lset = GetHeightfieldSet(tx, ty);
         List<byte[]> result = new();
         if (lset != null)
         {
             TileCacheBuilder builder = new TileCacheBuilder();
             for (int i = 0; i < lset.layers.Length; ++i)
             {
-                HeightfieldLayer layer = lset.layers[i];
+                RcHeightfieldLayer layer = lset.layers[i];
 
                 // Store header
                 TileCacheLayerHeader header = new TileCacheLayerHeader();
@@ -114,13 +114,13 @@ public class TestTileLayerBuilder : AbstractTileLayersBuilder
         return result;
     }
 
-    protected HeightfieldLayerSet GetHeightfieldSet(int tx, int ty)
+    protected RcHeightfieldLayerSet GetHeightfieldSet(int tx, int ty)
     {
         RecastBuilder rcBuilder = new RecastBuilder();
         RcVec3f bmin = geom.GetMeshBoundsMin();
         RcVec3f bmax = geom.GetMeshBoundsMax();
         RecastBuilderConfig cfg = new RecastBuilderConfig(rcConfig, bmin, bmax, tx, ty);
-        HeightfieldLayerSet lset = rcBuilder.BuildLayers(geom, cfg);
+        RcHeightfieldLayerSet lset = rcBuilder.BuildLayers(geom, cfg);
         return lset;
     }
 }

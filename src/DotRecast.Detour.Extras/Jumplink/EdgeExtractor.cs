@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using DotRecast.Core;
 using DotRecast.Recast;
-using static DotRecast.Recast.RecastConstants;
+using static DotRecast.Recast.RcConstants;
 
 
 namespace DotRecast.Detour.Extras.Jumplink
 {
     public class EdgeExtractor
     {
-        public JumpEdge[] ExtractEdges(PolyMesh mesh)
+        public JumpEdge[] ExtractEdges(RcPolyMesh mesh)
         {
             List<JumpEdge> edges = new List<JumpEdge>();
             if (mesh != null)

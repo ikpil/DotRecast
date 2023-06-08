@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Recast
 {
-    public static class RecastConstants
+    public static class RcConstants
     {
         public const int RC_NULL_AREA = 0;
         public const int RC_NOT_CONNECTED = 0x3f;

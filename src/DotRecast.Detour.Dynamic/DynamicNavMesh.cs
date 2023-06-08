@@ -88,7 +88,7 @@ namespace DotRecast.Detour.Dynamic
             return new VoxelQuery(navMeshParams.orig, navMeshParams.tileWidth, navMeshParams.tileHeight, LookupHeightfield);
         }
 
-        private Heightfield LookupHeightfield(int x, int z)
+        private RcHeightfield LookupHeightfield(int x, int z)
         {
             return GetTileAt(x, z)?.checkpoint.heightfield;
         }

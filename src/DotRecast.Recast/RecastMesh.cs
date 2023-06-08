@@ -23,9 +23,9 @@ using DotRecast.Core;
 
 namespace DotRecast.Recast
 {
-    using static RecastConstants;
+    using static RcConstants;
 
-    public class RecastMesh
+    public static class RecastMesh
     {
         public const int MAX_MESH_VERTS_POLY = 0xffff;
         public const int VERTEX_BUCKET_COUNT = (1 << 12);
@@ -41,7 +41,7 @@ namespace DotRecast.Recast
             int nextEdge = nverts;
             int edgeCount = 0;
 
-            Edge[] edges = new Edge[maxEdgeCount];
+            RcEdge[] edges = new RcEdge[maxEdgeCount];
 
             for (int i = 0; i < nverts; i++)
                 firstEdge[i] = RC_MESH_NULL_IDX;
@@ -59,7 +59,7 @@ namespace DotRecast.Recast
                         : polys[t + j + 1];
                     if (v0 < v1)
                     {
-                        Edge edge = new Edge();
+                        RcEdge edge = new RcEdge();
                         edges[edgeCount] = edge;
                         edge.vert[0] = v0;
                         edge.vert[1] = v1;
@@ -90,7 +90,7 @@ namespace DotRecast.Recast
                     {
                         for (int e = firstEdge[v1]; e != RC_MESH_NULL_IDX; e = firstEdge[nextEdge + e])
                         {
-                            Edge edge = edges[e];
+                            RcEdge edge = edges[e];
                             if (edge.vert[1] == v0 && edge.poly[0] == edge.poly[1])
                             {
                                 edge.poly[1] = i;
@@ -105,7 +105,7 @@ namespace DotRecast.Recast
             // Store adjacency
             for (int i = 0; i < edgeCount; ++i)
             {
-                Edge e = edges[i];
+                RcEdge e = edges[i];
                 if (e.poly[0] != e.poly[1])
                 {
                     int p0 = e.poly[0] * vertsPerPoly * 2;
@@ -574,7 +574,7 @@ namespace DotRecast.Recast
             return an;
         }
 
-        private static bool CanRemoveVertex(Telemetry ctx, PolyMesh mesh, int rem)
+        private static bool CanRemoveVertex(Telemetry ctx, RcPolyMesh mesh, int rem)
         {
             int nvp = mesh.nvp;
 
@@ -677,7 +677,7 @@ namespace DotRecast.Recast
             return true;
         }
 
-        private static void RemoveVertex(Telemetry ctx, PolyMesh mesh, int rem, int maxTris)
+        private static void RemoveVertex(Telemetry ctx, RcPolyMesh mesh, int rem, int maxTris)
         {
             int nvp = mesh.nvp;
 
@@ -964,10 +964,10 @@ namespace DotRecast.Recast
         /// limit must be retricted to <= #DT_VERTS_PER_POLYGON.
         ///
         /// @see rcAllocPolyMesh, rcContourSet, rcPolyMesh, rcConfig
-        public static PolyMesh BuildPolyMesh(Telemetry ctx, ContourSet cset, int nvp)
+        public static RcPolyMesh BuildPolyMesh(Telemetry ctx, RcContourSet cset, int nvp)
         {
             ctx.StartTimer("POLYMESH");
-            PolyMesh mesh = new PolyMesh();
+            RcPolyMesh mesh = new RcPolyMesh();
             mesh.bmin = cset.bmin;
             mesh.bmax = cset.bmax;
             mesh.cs = cset.cs;
@@ -1020,7 +1020,7 @@ namespace DotRecast.Recast
 
             for (int i = 0; i < cset.conts.Count; ++i)
             {
-                Contour cont = cset.conts[i];
+                RcContour cont = cset.conts[i];
 
                 // Skip null contours.
                 if (cont.nverts < 3)
@@ -1209,13 +1209,13 @@ namespace DotRecast.Recast
         }
 
         /// @see rcAllocPolyMesh, rcPolyMesh
-        public static PolyMesh MergePolyMeshes(Telemetry ctx, PolyMesh[] meshes, int nmeshes)
+        public static RcPolyMesh MergePolyMeshes(Telemetry ctx, RcPolyMesh[] meshes, int nmeshes)
         {
             if (nmeshes == 0 || meshes == null)
                 return null;
 
             ctx.StartTimer("MERGE_POLYMESH");
-            PolyMesh mesh = new PolyMesh();
+            RcPolyMesh mesh = new RcPolyMesh();
             mesh.nvp = meshes[0].nvp;
             mesh.cs = meshes[0].cs;
             mesh.ch = meshes[0].ch;
@@ -1254,7 +1254,7 @@ namespace DotRecast.Recast
 
             for (int i = 0; i < nmeshes; ++i)
             {
-                PolyMesh pmesh = meshes[i];
+                RcPolyMesh pmesh = meshes[i];
 
                 int ox = (int)Math.Floor((pmesh.bmin.x - mesh.bmin.x) / mesh.cs + 0.5f);
                 int oz = (int)Math.Floor((pmesh.bmin.z - mesh.bmin.z) / mesh.cs + 0.5f);
@@ -1338,9 +1338,9 @@ namespace DotRecast.Recast
             return mesh;
         }
 
-        public static PolyMesh CopyPolyMesh(Telemetry ctx, PolyMesh src)
+        public static RcPolyMesh CopyPolyMesh(Telemetry ctx, RcPolyMesh src)
         {
-            PolyMesh dst = new PolyMesh();
+            RcPolyMesh dst = new RcPolyMesh();
 
             dst.nverts = src.nverts;
             dst.npolys = src.npolys;

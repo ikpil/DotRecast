@@ -23,7 +23,7 @@ using DotRecast.Core;
 namespace DotRecast.Recast
 {
     /** A compact, static heightfield representing unobstructed space. */
-    public class CompactHeightfield
+    public class RcCompactHeightfield
     {
         /** The width of the heightfield. (Along the x-axis in cell units.) */
         public int width;
@@ -62,10 +62,10 @@ namespace DotRecast.Recast
         public float ch;
 
         /** Array of cells. [Size: #width*#height] */
-        public CompactCell[] cells;
+        public RcCompactCell[] cells;
 
         /** Array of spans. [Size: #spanCount] */
-        public CompactSpan[] spans;
+        public RcCompactSpan[] spans;
 
         /** Array containing border distance data. [Size: #spanCount] */
         public int[] dist;

@@ -40,7 +40,7 @@ namespace DotRecast.Detour.Dynamic.Colliders
             this.triangles = triangles;
         }
 
-        public override void Rasterize(Heightfield hf, Telemetry telemetry)
+        public override void Rasterize(RcHeightfield hf, Telemetry telemetry)
         {
             RecastFilledVolumeRasterization.RasterizeConvex(hf, vertices, triangles, area,
                 (int)Math.Floor(flagMergeThreshold / hf.ch), telemetry);

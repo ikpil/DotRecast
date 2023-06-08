@@ -1,6 +1,6 @@
 /*
 Copyright (c) 2009-2010 Mikko Mononen memon@inside.org
-recast4j copyright (c) 2015-2019 Piotr Piastucki piotr@jtilia.org
+Recast4J Copyright (c) 2015 Piotr Piastucki piotr@jtilia.org
 DotRecast Copyright (c) 2023 Choi Ikpil ikpil@naver.com
 
 This software is provided 'as-is', without any express or implied
@@ -18,16 +18,39 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using System.Collections.Generic;
 using DotRecast.Core;
 
 namespace DotRecast.Recast
 {
-    /** Represents a group of related contours. */
-    public class ContourSet
+    /** Represents a polygon mesh suitable for use in building a navigation mesh. */
+    public class RcPolyMesh
     {
-        /** A list of the contours in the set. */
-        public List<Contour> conts = new List<Contour>();
+        /** The mesh vertices. [Form: (x, y, z) coordinates * #nverts] */
+        public int[] verts;
+
+        /** Polygon and neighbor data. [Length: #maxpolys * 2 * #nvp] */
+        public int[] polys;
+
+        /** The region id assigned to each polygon. [Length: #maxpolys] */
+        public int[] regs;
+
+        /** The area id assigned to each polygon. [Length: #maxpolys] */
+        public int[] areas;
+
+        /** The number of vertices. */
+        public int nverts;
+
+        /** The number of polygons. */
+        public int npolys;
+
+        /** The maximum number of vertices per polygon. */
+        public int nvp;
+
+        /** The number of allocated polygons. */
+        public int maxpolys;
+
+        /** The user defined flags for each polygon. [Length: #maxpolys] */
+        public int[] flags;
 
         /** The minimum bounds in world space. [(x, y, z)] */
         public RcVec3f bmin = new RcVec3f();
@@ -41,16 +64,10 @@ namespace DotRecast.Recast
         /** The height of each cell. (The minimum increment along the y-axis.) */
         public float ch;
 
-        /** The width of the set. (Along the x-axis in cell units.) */
-        public int width;
-
-        /** The height of the set. (Along the z-axis in cell units.) */
-        public int height;
-
-        /** The AABB border size used to generate the source data from which the contours were derived. */
+        /** The AABB border size used to generate the source data from which the mesh was derived. */
         public int borderSize;
 
-        /** The max edge error that this contour set was simplified with. */
-        public float maxError;
+        /** The max error of the polygon edges in the mesh. */
+        public float maxEdgeError;
     }
 }

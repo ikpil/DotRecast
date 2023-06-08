@@ -18,15 +18,15 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
+
 namespace DotRecast.Recast
 {
-    /** Provides information on the content of a cell column in a compact heightfield. */
-    public class CompactCell
+    /// Represents a set of heightfield layers.
+    /// @ingroup recast
+    /// @see rcAllocHeightfieldLayerSet, rcFreeHeightfieldLayerSet
+    public class RcHeightfieldLayerSet
     {
-        /** Index to the first span in the column. */
-        public int index;
-
-        /** Number of spans in the column. */
-        public int count;
+        public RcHeightfieldLayer[] layers; /// < The layers in the set. [Size: #nlayers]
     }
 }

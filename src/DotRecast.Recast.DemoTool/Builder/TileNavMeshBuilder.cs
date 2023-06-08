@@ -54,7 +54,7 @@ namespace DotRecast.Recast.DemoTool.Builder
             int vertsPerPoly, float detailSampleDist, float detailSampleMaxError, bool filterLowHangingObstacles,
             bool filterLedgeSpans, bool filterWalkableLowHeightSpans, int tileSize)
         {
-            RecastConfig cfg = new RecastConfig(true, tileSize, tileSize, RecastConfig.CalcBorder(agentRadius, cellSize),
+            RcConfig cfg = new RcConfig(true, tileSize, tileSize, RcConfig.CalcBorder(agentRadius, cellSize),
                 partitionType, cellSize, cellHeight, agentMaxSlope, filterLowHangingObstacles, filterLedgeSpans,
                 filterWalkableLowHeightSpans, agentHeight, agentRadius, agentMaxClimb,
                 regionMinSize * regionMinSize * cellSize * cellSize,

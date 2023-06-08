@@ -41,7 +41,7 @@ namespace DotRecast.Recast
             this.progressListener = progressListener;
         }
 
-        public List<RecastBuilderResult> BuildTiles(IInputGeomProvider geom, RecastConfig cfg, TaskFactory taskFactory)
+        public List<RecastBuilderResult> BuildTiles(IInputGeomProvider geom, RcConfig cfg, TaskFactory taskFactory)
         {
             RcVec3f bmin = geom.GetMeshBoundsMin();
             RcVec3f bmax = geom.GetMeshBoundsMax();
@@ -60,7 +60,7 @@ namespace DotRecast.Recast
         }
 
 
-        public Task BuildTilesAsync(IInputGeomProvider geom, RecastConfig cfg, int threads, List<RecastBuilderResult> results, TaskFactory taskFactory, CancellationToken cancellationToken)
+        public Task BuildTilesAsync(IInputGeomProvider geom, RcConfig cfg, int threads, List<RecastBuilderResult> results, TaskFactory taskFactory, CancellationToken cancellationToken)
         {
             RcVec3f bmin = geom.GetMeshBoundsMin();
             RcVec3f bmax = geom.GetMeshBoundsMax();
@@ -78,7 +78,7 @@ namespace DotRecast.Recast
             return task;
         }
 
-        private Task BuildSingleThreadAsync(IInputGeomProvider geom, RecastConfig cfg, RcVec3f bmin, RcVec3f bmax,
+        private Task BuildSingleThreadAsync(IInputGeomProvider geom, RcConfig cfg, RcVec3f bmin, RcVec3f bmax,
             int tw, int th, List<RecastBuilderResult> results)
         {
             RcAtomicInteger counter = new RcAtomicInteger(0);
@@ -93,7 +93,7 @@ namespace DotRecast.Recast
             return Task.CompletedTask;
         }
 
-        private Task BuildMultiThreadAsync(IInputGeomProvider geom, RecastConfig cfg, RcVec3f bmin, RcVec3f bmax,
+        private Task BuildMultiThreadAsync(IInputGeomProvider geom, RcConfig cfg, RcVec3f bmin, RcVec3f bmax,
             int tw, int th, List<RecastBuilderResult> results, TaskFactory taskFactory, CancellationToken cancellationToken)
         {
             RcAtomicInteger counter = new RcAtomicInteger(0);
@@ -143,7 +143,7 @@ namespace DotRecast.Recast
             return Task.WhenAll(tasks.ToArray());
         }
 
-        private RecastBuilderResult BuildTile(IInputGeomProvider geom, RecastConfig cfg, RcVec3f bmin, RcVec3f bmax, int tx,
+        private RecastBuilderResult BuildTile(IInputGeomProvider geom, RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tx,
             int ty, RcAtomicInteger counter, int total)
         {
             RecastBuilderResult result = Build(geom, new RecastBuilderConfig(cfg, bmin, bmax, tx, ty));
@@ -157,20 +157,20 @@ namespace DotRecast.Recast
 
         public RecastBuilderResult Build(IInputGeomProvider geom, RecastBuilderConfig builderCfg)
         {
-            RecastConfig cfg = builderCfg.cfg;
+            RcConfig cfg = builderCfg.cfg;
             Telemetry ctx = new Telemetry();
             //
             // Step 1. Rasterize input polygon soup.
             //
-            Heightfield solid = RecastVoxelization.BuildSolidHeightfield(geom, builderCfg, ctx);
+            RcHeightfield solid = RecastVoxelization.BuildSolidHeightfield(geom, builderCfg, ctx);
             return Build(builderCfg.tileX, builderCfg.tileZ, geom, cfg, solid, ctx);
         }
 
-        public RecastBuilderResult Build(int tileX, int tileZ, IConvexVolumeProvider geom, RecastConfig cfg, Heightfield solid,
+        public RecastBuilderResult Build(int tileX, int tileZ, IConvexVolumeProvider geom, RcConfig cfg, RcHeightfield solid,
             Telemetry ctx)
         {
             FilterHeightfield(solid, cfg, ctx);
-            CompactHeightfield chf = BuildCompactHeightfield(geom, cfg, ctx, solid);
+            RcCompactHeightfield chf = BuildCompactHeightfield(geom, cfg, ctx, solid);
 
             // Partition the heightfield so that we can use simple algorithm later
             // to triangulate the walkable areas.
@@ -235,20 +235,20 @@ namespace DotRecast.Recast
             //
 
             // Create contours.
-            ContourSet cset = RecastContour.BuildContours(ctx, chf, cfg.maxSimplificationError, cfg.maxEdgeLen,
-                RecastConstants.RC_CONTOUR_TESS_WALL_EDGES);
+            RcContourSet cset = RecastContour.BuildContours(ctx, chf, cfg.maxSimplificationError, cfg.maxEdgeLen,
+                RcConstants.RC_CONTOUR_TESS_WALL_EDGES);
 
             //
             // Step 6. Build polygons mesh from contours.
             //
 
-            PolyMesh pmesh = RecastMesh.BuildPolyMesh(ctx, cset, cfg.maxVertsPerPoly);
+            RcPolyMesh pmesh = RecastMesh.BuildPolyMesh(ctx, cset, cfg.maxVertsPerPoly);
 
             //
             // Step 7. Create detail mesh which allows to access approximate height
             // on each polygon.
             //
-            PolyMeshDetail dmesh = cfg.buildMeshDetail
+            RcPolyMeshDetail dmesh = cfg.buildMeshDetail
                 ? RecastMeshDetail.BuildPolyMeshDetail(ctx, pmesh, chf, cfg.detailSampleDist, cfg.detailSampleMaxError)
                 : null;
             return new RecastBuilderResult(tileX, tileZ, solid, chf, cset, pmesh, dmesh, ctx);
@@ -257,7 +257,7 @@ namespace DotRecast.Recast
         /*
          * Step 2. Filter walkable surfaces.
          */
-        private void FilterHeightfield(Heightfield solid, RecastConfig cfg, Telemetry ctx)
+        private void FilterHeightfield(RcHeightfield solid, RcConfig cfg, Telemetry ctx)
         {
             // Once all geometry is rasterized, we do initial pass of filtering to
             // remove unwanted overhangs caused by the conservative rasterization
@@ -281,13 +281,13 @@ namespace DotRecast.Recast
         /*
          * Step 3. Partition walkable surface to simple regions.
          */
-        private CompactHeightfield BuildCompactHeightfield(IConvexVolumeProvider volumeProvider, RecastConfig cfg, Telemetry ctx,
-            Heightfield solid)
+        private RcCompactHeightfield BuildCompactHeightfield(IConvexVolumeProvider volumeProvider, RcConfig cfg, Telemetry ctx,
+            RcHeightfield solid)
         {
             // Compact the heightfield so that it is faster to handle from now on.
             // This will result more cache coherent data as well as the neighbours
             // between walkable cells will be calculated.
-            CompactHeightfield chf = RecastCompact.BuildCompactHeightfield(ctx, cfg.walkableHeight, cfg.walkableClimb, solid);
+            RcCompactHeightfield chf = RecastCompact.BuildCompactHeightfield(ctx, cfg.walkableHeight, cfg.walkableClimb, solid);
 
             // Erode the walkable area by agent radius.
             RecastArea.ErodeWalkableArea(ctx, cfg.walkableRadius, chf);
@@ -303,12 +303,12 @@ namespace DotRecast.Recast
             return chf;
         }
 
-        public HeightfieldLayerSet BuildLayers(IInputGeomProvider geom, RecastBuilderConfig builderCfg)
+        public RcHeightfieldLayerSet BuildLayers(IInputGeomProvider geom, RecastBuilderConfig builderCfg)
         {
             Telemetry ctx = new Telemetry();
-            Heightfield solid = RecastVoxelization.BuildSolidHeightfield(geom, builderCfg, ctx);
+            RcHeightfield solid = RecastVoxelization.BuildSolidHeightfield(geom, builderCfg, ctx);
             FilterHeightfield(solid, builderCfg.cfg, ctx);
-            CompactHeightfield chf = BuildCompactHeightfield(geom, builderCfg.cfg, ctx, solid);
+            RcCompactHeightfield chf = BuildCompactHeightfield(geom, builderCfg.cfg, ctx, solid);
             return RecastLayers.BuildHeightfieldLayers(ctx, chf, builderCfg.cfg.walkableHeight);
         }
     }

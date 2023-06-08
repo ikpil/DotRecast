@@ -25,7 +25,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Recast.Test;
 
-using static RecastConstants;
+using static RcConstants;
 
 [Parallelizable]
 public class RecastSoloMeshTest
@@ -106,7 +106,7 @@ public class RecastSoloMeshTest
         //
 
         // Init build configuration from GUI
-        RecastConfig cfg = new RecastConfig(partitionType, m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius,
+        RcConfig cfg = new RcConfig(partitionType, m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius,
             m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize, m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError,
             m_vertsPerPoly, m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
         RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, bmin, bmax);
@@ -115,7 +115,7 @@ public class RecastSoloMeshTest
         //
 
         // Allocate voxel heightfield where we rasterize our input data to.
-        Heightfield m_solid = new Heightfield(bcfg.width, bcfg.height, bcfg.bmin, bcfg.bmax, cfg.cs, cfg.ch, cfg.borderSize);
+        RcHeightfield m_solid = new RcHeightfield(bcfg.width, bcfg.height, bcfg.bmin, bcfg.bmax, cfg.cs, cfg.ch, cfg.borderSize);
 
         foreach (TriMesh geom in geomProvider.Meshes())
         {
@@ -155,7 +155,7 @@ public class RecastSoloMeshTest
         // Compact the heightfield so that it is faster to handle from now on.
         // This will result more cache coherent data as well as the neighbours
         // between walkable cells will be calculated.
-        CompactHeightfield m_chf = RecastCompact.BuildCompactHeightfield(m_ctx, cfg.walkableHeight, cfg.walkableClimb,
+        RcCompactHeightfield m_chf = RecastCompact.BuildCompactHeightfield(m_ctx, cfg.walkableHeight, cfg.walkableClimb,
             m_solid);
 
         // Erode the walkable area by agent radius.
@@ -234,8 +234,8 @@ public class RecastSoloMeshTest
         //
 
         // Create contours.
-        ContourSet m_cset = RecastContour.BuildContours(m_ctx, m_chf, cfg.maxSimplificationError, cfg.maxEdgeLen,
-            RecastConstants.RC_CONTOUR_TESS_WALL_EDGES);
+        RcContourSet m_cset = RecastContour.BuildContours(m_ctx, m_chf, cfg.maxSimplificationError, cfg.maxEdgeLen,
+            RcConstants.RC_CONTOUR_TESS_WALL_EDGES);
 
         Assert.That(m_cset.conts.Count, Is.EqualTo(expContours), "Contours");
         //
@@ -243,7 +243,7 @@ public class RecastSoloMeshTest
         //
 
         // Build polygon navmesh from the contours.
-        PolyMesh m_pmesh = RecastMesh.BuildPolyMesh(m_ctx, m_cset, cfg.maxVertsPerPoly);
+        RcPolyMesh m_pmesh = RecastMesh.BuildPolyMesh(m_ctx, m_cset, cfg.maxVertsPerPoly);
         Assert.That(m_pmesh.nverts, Is.EqualTo(expVerts), "Mesh Verts");
         Assert.That(m_pmesh.npolys, Is.EqualTo(expPolys), "Mesh Polys");
 
@@ -252,7 +252,7 @@ public class RecastSoloMeshTest
         // on each polygon.
         //
 
-        PolyMeshDetail m_dmesh = RecastMeshDetail.BuildPolyMeshDetail(m_ctx, m_pmesh, m_chf, cfg.detailSampleDist,
+        RcPolyMeshDetail m_dmesh = RecastMeshDetail.BuildPolyMeshDetail(m_ctx, m_pmesh, m_chf, cfg.detailSampleDist,
             cfg.detailSampleMaxError);
         Assert.That(m_dmesh.nmeshes, Is.EqualTo(expDetMeshes), "Mesh Detail Meshes");
         Assert.That(m_dmesh.nverts, Is.EqualTo(expDetVerts), "Mesh Detail Verts");
@@ -268,7 +268,7 @@ public class RecastSoloMeshTest
         }
     }
 
-    private void SaveObj(string filename, PolyMesh mesh)
+    private void SaveObj(string filename, RcPolyMesh mesh)
     {
         try
         {
@@ -308,7 +308,7 @@ public class RecastSoloMeshTest
         }
     }
 
-    private void SaveObj(string filename, PolyMeshDetail dmesh)
+    private void SaveObj(string filename, RcPolyMeshDetail dmesh)
     {
         try
         {

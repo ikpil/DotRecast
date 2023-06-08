@@ -23,9 +23,9 @@ using DotRecast.Core;
 
 namespace DotRecast.Recast
 {
-    using static RecastConstants;
+    using static RcConstants;
 
-    public class RecastArea
+    public static class RecastArea
     {
         /// @par
         ///
@@ -35,7 +35,7 @@ namespace DotRecast.Recast
         /// This method is usually called immediately after the heightfield has been built.
         ///
         /// @see rcCompactHeightfield, rcBuildCompactHeightfield, rcConfig::walkableRadius
-        public static void ErodeWalkableArea(Telemetry ctx, int radius, CompactHeightfield chf)
+        public static void ErodeWalkableArea(Telemetry ctx, int radius, RcCompactHeightfield chf)
         {
             int w = chf.width;
             int h = chf.height;
@@ -48,7 +48,7 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < w; ++x)
                 {
-                    CompactCell c = chf.cells[x + y * w];
+                    RcCompactCell c = chf.cells[x + y * w];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
                         if (chf.areas[i] == RC_NULL_AREA)
@@ -57,7 +57,7 @@ namespace DotRecast.Recast
                         }
                         else
                         {
-                            CompactSpan s = chf.spans[i];
+                            RcCompactSpan s = chf.spans[i];
                             int nc = 0;
                             for (int dir = 0; dir < 4; ++dir)
                             {
@@ -88,10 +88,10 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < w; ++x)
                 {
-                    CompactCell c = chf.cells[x + y * w];
+                    RcCompactCell c = chf.cells[x + y * w];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
-                        CompactSpan s = chf.spans[i];
+                        RcCompactSpan s = chf.spans[i];
 
                         if (RecastCommon.GetCon(s, 0) != RC_NOT_CONNECTED)
                         {
@@ -99,7 +99,7 @@ namespace DotRecast.Recast
                             int ax = x + RecastCommon.GetDirOffsetX(0);
                             int ay = y + RecastCommon.GetDirOffsetY(0);
                             int ai = chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 0);
-                            CompactSpan @as = chf.spans[ai];
+                            RcCompactSpan @as = chf.spans[ai];
                             nd = Math.Min(dist[ai] + 2, 255);
                             if (nd < dist[i])
                                 dist[i] = nd;
@@ -122,7 +122,7 @@ namespace DotRecast.Recast
                             int ax = x + RecastCommon.GetDirOffsetX(3);
                             int ay = y + RecastCommon.GetDirOffsetY(3);
                             int ai = chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 3);
-                            CompactSpan @as = chf.spans[ai];
+                            RcCompactSpan @as = chf.spans[ai];
                             nd = Math.Min(dist[ai] + 2, 255);
                             if (nd < dist[i])
                                 dist[i] = nd;
@@ -147,10 +147,10 @@ namespace DotRecast.Recast
             {
                 for (int x = w - 1; x >= 0; --x)
                 {
-                    CompactCell c = chf.cells[x + y * w];
+                    RcCompactCell c = chf.cells[x + y * w];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
-                        CompactSpan s = chf.spans[i];
+                        RcCompactSpan s = chf.spans[i];
 
                         if (RecastCommon.GetCon(s, 2) != RC_NOT_CONNECTED)
                         {
@@ -158,7 +158,7 @@ namespace DotRecast.Recast
                             int ax = x + RecastCommon.GetDirOffsetX(2);
                             int ay = y + RecastCommon.GetDirOffsetY(2);
                             int ai = chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 2);
-                            CompactSpan @as = chf.spans[ai];
+                            RcCompactSpan @as = chf.spans[ai];
                             nd = Math.Min(dist[ai] + 2, 255);
                             if (nd < dist[i])
                                 dist[i] = nd;
@@ -181,7 +181,7 @@ namespace DotRecast.Recast
                             int ax = x + RecastCommon.GetDirOffsetX(1);
                             int ay = y + RecastCommon.GetDirOffsetY(1);
                             int ai = chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 1);
-                            CompactSpan @as = chf.spans[ai];
+                            RcCompactSpan @as = chf.spans[ai];
                             nd = Math.Min(dist[ai] + 2, 255);
                             if (nd < dist[i])
                                 dist[i] = nd;
@@ -215,7 +215,7 @@ namespace DotRecast.Recast
         /// such as #rcMarkBoxArea, #rcMarkConvexPolyArea, and #rcMarkCylinderArea.
         ///
         /// @see rcCompactHeightfield
-        public bool MedianFilterWalkableArea(Telemetry ctx, CompactHeightfield chf)
+        public static bool MedianFilterWalkableArea(Telemetry ctx, RcCompactHeightfield chf)
         {
             int w = chf.width;
             int h = chf.height;
@@ -228,10 +228,10 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < w; ++x)
                 {
-                    CompactCell c = chf.cells[x + y * w];
+                    RcCompactCell c = chf.cells[x + y * w];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
-                        CompactSpan s = chf.spans[i];
+                        RcCompactSpan s = chf.spans[i];
                         if (chf.areas[i] == RC_NULL_AREA)
                         {
                             areas[i] = chf.areas[i];
@@ -252,7 +252,7 @@ namespace DotRecast.Recast
                                 if (chf.areas[ai] != RC_NULL_AREA)
                                     nei[dir * 2 + 0] = chf.areas[ai];
 
-                                CompactSpan @as = chf.spans[ai];
+                                RcCompactSpan @as = chf.spans[ai];
                                 int dir2 = (dir + 1) & 0x3;
                                 if (RecastCommon.GetCon(@as, dir2) != RC_NOT_CONNECTED)
                                 {
@@ -283,7 +283,7 @@ namespace DotRecast.Recast
         /// The value of spacial parameters are in world units.
         ///
         /// @see rcCompactHeightfield, rcMedianFilterWalkableArea
-        public void MarkBoxArea(Telemetry ctx, float[] bmin, float[] bmax, AreaModification areaMod, CompactHeightfield chf)
+        public void MarkBoxArea(Telemetry ctx, float[] bmin, float[] bmax, AreaModification areaMod, RcCompactHeightfield chf)
         {
             ctx.StartTimer("MARK_BOX_AREA");
 
@@ -316,10 +316,10 @@ namespace DotRecast.Recast
             {
                 for (int x = minx; x <= maxx; ++x)
                 {
-                    CompactCell c = chf.cells[x + z * chf.width];
+                    RcCompactCell c = chf.cells[x + z * chf.width];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
-                        CompactSpan s = chf.spans[i];
+                        RcCompactSpan s = chf.spans[i];
                         if (s.y >= miny && s.y <= maxy)
                         {
                             if (chf.areas[i] != RC_NULL_AREA)
@@ -358,7 +358,7 @@ namespace DotRecast.Recast
         ///
         /// @see rcCompactHeightfield, rcMedianFilterWalkableArea
         public static void MarkConvexPolyArea(Telemetry ctx, float[] verts, float hmin, float hmax, AreaModification areaMod,
-            CompactHeightfield chf)
+            RcCompactHeightfield chf)
         {
             ctx.StartTimer("MARK_CONVEXPOLY_AREA");
 
@@ -405,10 +405,10 @@ namespace DotRecast.Recast
             {
                 for (int x = minx; x <= maxx; ++x)
                 {
-                    CompactCell c = chf.cells[x + z * chf.width];
+                    RcCompactCell c = chf.cells[x + z * chf.width];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
-                        CompactSpan s = chf.spans[i];
+                        RcCompactSpan s = chf.spans[i];
                         if (chf.areas[i] == RC_NULL_AREA)
                             continue;
                         if (s.y >= miny && s.y <= maxy)
@@ -430,7 +430,7 @@ namespace DotRecast.Recast
             ctx.StopTimer("MARK_CONVEXPOLY_AREA");
         }
 
-        int OffsetPoly(float[] verts, int nverts, float offset, float[] outVerts, int maxOutVerts)
+        public static int OffsetPoly(float[] verts, int nverts, float offset, float[] outVerts, int maxOutVerts)
         {
             float MITER_LIMIT = 1.20f;
 
@@ -513,8 +513,7 @@ namespace DotRecast.Recast
         /// The value of spacial parameters are in world units.
         ///
         /// @see rcCompactHeightfield, rcMedianFilterWalkableArea
-        public void MarkCylinderArea(Telemetry ctx, float[] pos, float r, float h, AreaModification areaMod,
-            CompactHeightfield chf)
+        public static void MarkCylinderArea(Telemetry ctx, float[] pos, float r, float h, AreaModification areaMod, RcCompactHeightfield chf)
         {
             ctx.StartTimer("MARK_CYLINDER_AREA");
 
@@ -557,10 +556,10 @@ namespace DotRecast.Recast
             {
                 for (int x = minx; x <= maxx; ++x)
                 {
-                    CompactCell c = chf.cells[x + z * chf.width];
+                    RcCompactCell c = chf.cells[x + z * chf.width];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
-                        CompactSpan s = chf.spans[i];
+                        RcCompactSpan s = chf.spans[i];
 
                         if (chf.areas[i] == RC_NULL_AREA)
                             continue;

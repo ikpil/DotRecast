@@ -23,7 +23,7 @@ using DotRecast.Core;
 
 namespace DotRecast.Recast
 {
-    using static RecastConstants;
+    using static RcConstants;
 
     public static class Recast
     {

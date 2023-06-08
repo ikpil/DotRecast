@@ -61,17 +61,17 @@ namespace DotRecast.Detour.Dynamic.Io
             tiles.Add(tile);
         }
 
-        public RecastConfig GetConfig(VoxelTile tile, PartitionType partitionType, int maxPolyVerts, int regionMergeSize,
+        public RcConfig GetConfig(VoxelTile tile, PartitionType partitionType, int maxPolyVerts, int regionMergeSize,
             bool filterLowHangingObstacles, bool filterLedgeSpans, bool filterWalkableLowHeightSpans,
             AreaModification walkbableAreaMod, bool buildMeshDetail, float detailSampleDist, float detailSampleMaxError)
         {
-            return new RecastConfig(useTiles, tileSizeX, tileSizeZ, tile.borderSize, partitionType, cellSize, tile.cellHeight,
+            return new RcConfig(useTiles, tileSizeX, tileSizeZ, tile.borderSize, partitionType, cellSize, tile.cellHeight,
                 walkableSlopeAngle, filterLowHangingObstacles, filterLedgeSpans, filterWalkableLowHeightSpans, walkableHeight,
                 walkableRadius, walkableClimb, minRegionArea, regionMergeArea, maxEdgeLen, maxSimplificationError, maxPolyVerts,
                 buildMeshDetail, detailSampleDist, detailSampleMaxError, walkbableAreaMod);
         }
 
-        public static VoxelFile From(RecastConfig config, List<RecastBuilderResult> results)
+        public static VoxelFile From(RcConfig config, List<RecastBuilderResult> results)
         {
             VoxelFile f = new VoxelFile();
             f.version = 1;
@@ -146,7 +146,7 @@ namespace DotRecast.Detour.Dynamic.Io
             };
             foreach (VoxelTile vt in mesh.VoxelTiles())
             {
-                Heightfield heightfield = vt.Heightfield();
+                RcHeightfield heightfield = vt.Heightfield();
                 f.tiles.Add(new VoxelTile(vt.tileX, vt.tileZ, heightfield));
                 f.bounds[0] = Math.Min(f.bounds[0], vt.boundsMin.x);
                 f.bounds[1] = Math.Min(f.bounds[1], vt.boundsMin.y);

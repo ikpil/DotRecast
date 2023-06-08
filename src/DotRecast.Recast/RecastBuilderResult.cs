@@ -4,14 +4,14 @@
     {
         public readonly int tileX;
         public readonly int tileZ;
-        private readonly CompactHeightfield chf;
-        private readonly ContourSet cs;
-        private readonly PolyMesh pmesh;
-        private readonly PolyMeshDetail dmesh;
-        private readonly Heightfield solid;
+        private readonly RcCompactHeightfield chf;
+        private readonly RcContourSet cs;
+        private readonly RcPolyMesh pmesh;
+        private readonly RcPolyMeshDetail dmesh;
+        private readonly RcHeightfield solid;
         private readonly Telemetry telemetry;
 
-        public RecastBuilderResult(int tileX, int tileZ, Heightfield solid, CompactHeightfield chf, ContourSet cs, PolyMesh pmesh, PolyMeshDetail dmesh, Telemetry ctx)
+        public RecastBuilderResult(int tileX, int tileZ, RcHeightfield solid, RcCompactHeightfield chf, RcContourSet cs, RcPolyMesh pmesh, RcPolyMeshDetail dmesh, Telemetry ctx)
         {
             this.tileX = tileX;
             this.tileZ = tileZ;
@@ -23,27 +23,27 @@
             telemetry = ctx;
         }
 
-        public PolyMesh GetMesh()
+        public RcPolyMesh GetMesh()
         {
             return pmesh;
         }
 
-        public PolyMeshDetail GetMeshDetail()
+        public RcPolyMeshDetail GetMeshDetail()
         {
             return dmesh;
         }
 
-        public CompactHeightfield GetCompactHeightfield()
+        public RcCompactHeightfield GetCompactHeightfield()
         {
             return chf;
         }
 
-        public ContourSet GetContourSet()
+        public RcContourSet GetContourSet()
         {
             return cs;
         }
 
-        public Heightfield GetSolidHeightfield()
+        public RcHeightfield GetSolidHeightfield()
         {
             return solid;
         }

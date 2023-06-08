@@ -9,8 +9,8 @@ namespace DotRecast.Recast.DemoTool.Builder
             float m_cellHeight, float m_agentHeight, float m_agentRadius, float m_agentMaxClimb,
             RecastBuilderResult rcResult)
         {
-            PolyMesh m_pmesh = rcResult.GetMesh();
-            PolyMeshDetail m_dmesh = rcResult.GetMeshDetail();
+            RcPolyMesh m_pmesh = rcResult.GetMesh();
+            RcPolyMeshDetail m_dmesh = rcResult.GetMeshDetail();
             NavMeshDataCreateParams option = new NavMeshDataCreateParams();
             for (int i = 0; i < m_pmesh.npolys; ++i)
             {

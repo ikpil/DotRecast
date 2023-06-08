@@ -39,7 +39,7 @@ public class VoxelQueryTest
     [Test]
     public void ShouldTraverseTiles()
     {
-        var hfProvider = new Mock<Func<int, int, Heightfield>>();
+        var hfProvider = new Mock<Func<int, int, RcHeightfield>>();
 
         // Given
         List<int> captorX = new();
@@ -47,7 +47,7 @@ public class VoxelQueryTest
 
         hfProvider
             .Setup(e => e.Invoke(It.IsAny<int>(), It.IsAny<int>()))
-            .Returns((Heightfield)null)
+            .Returns((RcHeightfield)null)
             .Callback<int, int>((x, z) =>
             {
                 captorX.Add(x);

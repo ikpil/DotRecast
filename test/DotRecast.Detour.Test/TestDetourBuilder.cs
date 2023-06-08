@@ -28,7 +28,7 @@ public class TestDetourBuilder : DetourBuilder
     {
         RecastBuilder rcBuilder = new RecastBuilder();
         RecastBuilderResult rcResult = rcBuilder.Build(geom, rcConfig);
-        PolyMesh pmesh = rcResult.GetMesh();
+        RcPolyMesh pmesh = rcResult.GetMesh();
 
         if (applyRecastDemoFlags)
         {
@@ -58,13 +58,13 @@ public class TestDetourBuilder : DetourBuilder
             }
         }
 
-        PolyMeshDetail dmesh = rcResult.GetMeshDetail();
+        RcPolyMeshDetail dmesh = rcResult.GetMeshDetail();
         NavMeshDataCreateParams option = GetNavMeshCreateParams(rcConfig.cfg, pmesh, dmesh, agentHeight, agentRadius,
             agentMaxClimb);
         return Build(option, x, y);
     }
 
-    public NavMeshDataCreateParams GetNavMeshCreateParams(RecastConfig rcConfig, PolyMesh pmesh, PolyMeshDetail dmesh,
+    public NavMeshDataCreateParams GetNavMeshCreateParams(RcConfig rcConfig, RcPolyMesh pmesh, RcPolyMeshDetail dmesh,
         float agentHeight, float agentRadius, float agentMaxClimb)
     {
         NavMeshDataCreateParams option = new NavMeshDataCreateParams();

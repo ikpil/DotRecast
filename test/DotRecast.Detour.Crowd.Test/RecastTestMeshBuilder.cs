@@ -51,19 +51,19 @@ public class RecastTestMeshBuilder
         int m_regionMinSize, int m_regionMergeSize, float m_edgeMaxLen, float m_edgeMaxError, int m_vertsPerPoly,
         float m_detailSampleDist, float m_detailSampleMaxError)
     {
-        RecastConfig cfg = new RecastConfig(m_partitionType, m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius,
+        RcConfig cfg = new RcConfig(m_partitionType, m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius,
             m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize, m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError,
             m_vertsPerPoly, m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
         RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, m_geom.GetMeshBoundsMin(), m_geom.GetMeshBoundsMax());
         RecastBuilder rcBuilder = new RecastBuilder();
         RecastBuilderResult rcResult = rcBuilder.Build(m_geom, bcfg);
-        PolyMesh m_pmesh = rcResult.GetMesh();
+        RcPolyMesh m_pmesh = rcResult.GetMesh();
         for (int i = 0; i < m_pmesh.npolys; ++i)
         {
             m_pmesh.flags[i] = 1;
         }
 
-        PolyMeshDetail m_dmesh = rcResult.GetMeshDetail();
+        RcPolyMeshDetail m_dmesh = rcResult.GetMeshDetail();
         NavMeshDataCreateParams option = new NavMeshDataCreateParams();
         option.verts = m_pmesh.verts;
         option.vertCount = m_pmesh.nverts;

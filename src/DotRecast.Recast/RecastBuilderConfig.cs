@@ -24,7 +24,7 @@ namespace DotRecast.Recast
 {
     public class RecastBuilderConfig
     {
-        public readonly RecastConfig cfg;
+        public readonly RcConfig cfg;
 
         public readonly int tileX;
         public readonly int tileZ;
@@ -41,11 +41,11 @@ namespace DotRecast.Recast
         /** The maximum bounds of the field's AABB. [(x, y, z)] [Units: wu] **/
         public readonly RcVec3f bmax = new RcVec3f();
 
-        public RecastBuilderConfig(RecastConfig cfg, RcVec3f bmin, RcVec3f bmax) : this(cfg, bmin, bmax, 0, 0)
+        public RecastBuilderConfig(RcConfig cfg, RcVec3f bmin, RcVec3f bmax) : this(cfg, bmin, bmax, 0, 0)
         {
         }
 
-        public RecastBuilderConfig(RecastConfig cfg, RcVec3f bmin, RcVec3f bmax, int tileX, int tileZ)
+        public RecastBuilderConfig(RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tileX, int tileZ)
         {
             this.tileX = tileX;
             this.tileZ = tileZ;

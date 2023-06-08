@@ -2,7 +2,7 @@
 
 namespace DotRecast.Recast
 {
-    public class Region
+    public class RcRegion
     {
         public int spanCount; // Number of spans belonging to this region
         public int id; // ID of the region
@@ -15,7 +15,7 @@ namespace DotRecast.Recast
         public List<int> connections;
         public List<int> floors;
 
-        public Region(int i)
+        public RcRegion(int i)
         {
             id = i;
             ymin = 0xFFFF;

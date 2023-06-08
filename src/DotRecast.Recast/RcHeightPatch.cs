@@ -1,6 +1,6 @@
 ﻿namespace DotRecast.Recast
 {
-    public class HeightPatch
+    public class RcHeightPatch
     {
         public int xmin;
         public int ymin;

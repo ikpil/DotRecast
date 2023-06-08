@@ -21,11 +21,11 @@ freely, subject to the following restrictions:
 using System;
 using DotRecast.Core;
 using static DotRecast.Core.RcMath;
-using static DotRecast.Recast.RecastConstants;
+using static DotRecast.Recast.RcConstants;
 
 namespace DotRecast.Recast
 {
-    public class RecastRasterization
+    public static class RecastRasterization
     {
         /**
      * Check whether two bounding boxes overlap
@@ -80,12 +80,12 @@ namespace DotRecast.Recast
      *            The merge theshold. [Limit: >= 0] [Units: vx]
      * @see Heightfield, Span.
      */
-        public static void AddSpan(Heightfield heightfield, int x, int y, int spanMin, int spanMax, int areaId,
+        public static void AddSpan(RcHeightfield heightfield, int x, int y, int spanMin, int spanMax, int areaId,
             int flagMergeThreshold)
         {
             int idx = x + y * heightfield.width;
 
-            Span s = new Span();
+            RcSpan s = new RcSpan();
             s.smin = spanMin;
             s.smax = spanMax;
             s.area = areaId;
@@ -98,8 +98,8 @@ namespace DotRecast.Recast
                 return;
             }
 
-            Span prev = null;
-            Span cur = heightfield.spans[idx];
+            RcSpan prev = null;
+            RcSpan cur = heightfield.spans[idx];
 
             // Insert and merge spans.
             while (cur != null)
@@ -128,7 +128,7 @@ namespace DotRecast.Recast
                         s.area = Math.Max(s.area, cur.area);
 
                     // Remove current span.
-                    Span next = cur.next;
+                    RcSpan next = cur.next;
                     if (prev != null)
                         prev.next = next;
                     else
@@ -254,7 +254,7 @@ namespace DotRecast.Recast
      * @param flagMergeThreshold
      *            The threshold in which area flags will be merged
      */
-        private static void RasterizeTri(float[] verts, int v0, int v1, int v2, int area, Heightfield hf, RcVec3f hfBBMin,
+        private static void RasterizeTri(float[] verts, int v0, int v1, int v2, int area, RcHeightfield hf, RcVec3f hfBBMin,
             RcVec3f hfBBMax, float cellSize, float inverseCellSize, float inverseCellHeight, int flagMergeThreshold)
         {
             RcVec3f tmin = new RcVec3f();
@@ -397,7 +397,7 @@ namespace DotRecast.Recast
      *            The distance where the walkable flag is favored over the non-walkable flag. [Limit: >= 0] [Units: vx]
      * @see Heightfield
      */
-        public static void RasterizeTriangle(Heightfield heightfield, float[] verts, int v0, int v1, int v2, int area,
+        public static void RasterizeTriangle(RcHeightfield heightfield, float[] verts, int v0, int v1, int v2, int area,
             int flagMergeThreshold, Telemetry ctx)
         {
             ctx.StartTimer("RASTERIZE_TRIANGLES");
@@ -428,7 +428,7 @@ namespace DotRecast.Recast
      *            The distance where the walkable flag is favored over the non-walkable flag. [Limit: >= 0] [Units: vx]
      * @see Heightfield
      */
-        public static void RasterizeTriangles(Heightfield heightfield, float[] verts, int[] tris, int[] areaIds, int numTris,
+        public static void RasterizeTriangles(RcHeightfield heightfield, float[] verts, int[] tris, int[] areaIds, int numTris,
             int flagMergeThreshold, Telemetry ctx)
         {
             ctx.StartTimer("RASTERIZE_TRIANGLES");
@@ -465,7 +465,7 @@ namespace DotRecast.Recast
      *            The distance where the walkable flag is favored over the non-walkable flag. [Limit: >= 0] [Units: vx]
      * @see Heightfield
      */
-        public static void RasterizeTriangles(Heightfield heightfield, float[] verts, int[] areaIds, int numTris,
+        public static void RasterizeTriangles(RcHeightfield heightfield, float[] verts, int[] areaIds, int numTris,
             int flagMergeThreshold, Telemetry ctx)
         {
             ctx.StartTimer("RASTERIZE_TRIANGLES");

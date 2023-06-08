@@ -53,7 +53,7 @@ namespace DotRecast.Recast.DemoTool.Builder
             float detailSampleDist, float detailSampleMaxError, bool filterLowHangingObstacles, bool filterLedgeSpans,
             bool filterWalkableLowHeightSpans)
         {
-            RecastConfig cfg = new RecastConfig(partitionType, cellSize, cellHeight, agentMaxSlope, filterLowHangingObstacles,
+            RcConfig cfg = new RcConfig(partitionType, cellSize, cellHeight, agentMaxSlope, filterLowHangingObstacles,
                 filterLedgeSpans, filterWalkableLowHeightSpans, agentHeight, agentRadius, agentMaxClimb, regionMinSize,
                 regionMergeSize, edgeMaxLen, edgeMaxError, vertsPerPoly, detailSampleDist, detailSampleMaxError,
                 SampleAreaModifications.SAMPLE_AREAMOD_WALKABLE, true);
