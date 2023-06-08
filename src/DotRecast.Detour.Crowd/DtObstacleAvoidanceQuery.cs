@@ -155,44 +155,53 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        SweepCircleCircleResult SweepCircleCircle(RcVec3f c0, float r0, RcVec3f v, RcVec3f c1, float r1)
+        private bool SweepCircleCircle(RcVec3f c0, float r0, RcVec3f v, RcVec3f c1, float r1, out float tmin, out float tmax)
         {
             const float EPS = 0.0001f;
+
+            tmin = 0;
+            tmax = 0;
+
             RcVec3f s = c1.Subtract(c0);
             float r = r0 + r1;
             float c = s.Dot2D(s) - r * r;
             float a = v.Dot2D(v);
             if (a < EPS)
-                return new SweepCircleCircleResult(false, 0f, 0f); // not moving
+                return false; // not moving
 
             // Overlap, calc time to exit.
             float b = v.Dot2D(s);
             float d = b * b - a * c;
             if (d < 0.0f)
-                return new SweepCircleCircleResult(false, 0f, 0f); // no intersection.
+                return false; // no intersection.
+
             a = 1.0f / a;
             float rd = (float)Math.Sqrt(d);
-            return new SweepCircleCircleResult(true, (b - rd) * a, (b + rd) * a);
+
+            tmin = (b - rd) * a;
+            tmax = (b + rd) * a;
+
+            return true;
         }
 
-        IsectRaySegResult IsectRaySeg(RcVec3f ap, RcVec3f u, RcVec3f bp, RcVec3f bq)
+        private bool IsectRaySeg(RcVec3f ap, RcVec3f u, RcVec3f bp, RcVec3f bq, ref float t)
         {
             RcVec3f v = bq.Subtract(bp);
             RcVec3f w = ap.Subtract(bp);
             float d = RcVec3f.Perp2D(u, v);
             if (Math.Abs(d) < 1e-6f)
-                return new IsectRaySegResult(false, 0f);
+                return false;
 
             d = 1.0f / d;
-            float t = RcVec3f.Perp2D(v, w) * d;
+            t = RcVec3f.Perp2D(v, w) * d;
             if (t < 0 || t > 1)
-                return new IsectRaySegResult(false, 0f);
+                return false;
 
             float s = RcVec3f.Perp2D(u, w) * d;
             if (s < 0 || s > 1)
-                return new IsectRaySegResult(false, 0f);
+                return false;
 
-            return new IsectRaySegResult(true, t);
+            return true;
         }
 
         /**
@@ -237,10 +246,8 @@ namespace DotRecast.Detour.Crowd
                 side += Clamp(Math.Min(cir.dp.Dot2D(vab) * 0.5f + 0.5f, cir.np.Dot2D(vab) * 2), 0.0f, 1.0f);
                 nside++;
 
-                SweepCircleCircleResult sres = SweepCircleCircle(pos, rad, vab, cir.p, cir.rad);
-                if (!sres.intersection)
+                if (!SweepCircleCircle(pos, rad, vab, cir.p, cir.rad, out var htmin, out var htmax))
                     continue;
-                float htmin = sres.htmin, htmax = sres.htmax;
 
                 // Handle overlapping obstacles.
                 if (htmin < 0.0f && htmax > 0.0f)
@@ -281,11 +288,8 @@ namespace DotRecast.Detour.Crowd
                 }
                 else
                 {
-                    var ires = IsectRaySeg(pos, vcand, seg.p, seg.q);
-                    if (!ires.result)
+                    if (!IsectRaySeg(pos, vcand, seg.p, seg.q, ref htmin))
                         continue;
-
-                    htmin = ires.htmin;
                 }
 
                 // Avoid less when facing walls.
