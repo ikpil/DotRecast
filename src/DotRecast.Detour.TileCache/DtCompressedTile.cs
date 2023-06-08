@@ -18,17 +18,25 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using System.Collections.Generic;
-using DotRecast.Core;
-
-namespace DotRecast.Recast.Geom
+namespace DotRecast.Detour.TileCache
 {
-    public interface IInputGeomProvider : IConvexVolumeProvider
+    public class DtCompressedTile
     {
-        RcVec3f GetMeshBoundsMin();
+        public readonly int index;
+        public int salt;
 
-        RcVec3f GetMeshBoundsMax();
+        /// < Counter describing modifications to the tile.
+        public DtTileCacheLayerHeader header;
 
-        IEnumerable<RcTriMesh> Meshes();
+        public byte[] data;
+        public int compressed; // offset of compressed data
+        public int flags;
+        public DtCompressedTile next;
+
+        public DtCompressedTile(int index)
+        {
+            this.index = index;
+            salt = 1;
+        }
     }
 }

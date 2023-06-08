@@ -35,7 +35,7 @@ namespace DotRecast.Recast.DemoTool.Geom
         private readonly RcVec3f bmax;
         private readonly List<ConvexVolume> _convexVolumes = new List<ConvexVolume>();
         private readonly List<DemoOffMeshConnection> offMeshConnections = new List<DemoOffMeshConnection>();
-        private readonly TriMesh _mesh;
+        private readonly RcTriMesh _mesh;
 
         public DemoInputGeomProvider(List<float> vertexPositions, List<int> meshFaces) :
             this(MapVertices(vertexPositions), MapFaces(meshFaces))
@@ -80,7 +80,7 @@ namespace DotRecast.Recast.DemoTool.Geom
                 bmax.Max(vertices, i * 3);
             }
 
-            _mesh = new TriMesh(vertices, faces);
+            _mesh = new RcTriMesh(vertices, faces);
         }
 
         public RcVec3f GetMeshBoundsMin()
@@ -127,7 +127,7 @@ namespace DotRecast.Recast.DemoTool.Geom
             return _convexVolumes;
         }
 
-        public IEnumerable<TriMesh> Meshes()
+        public IEnumerable<RcTriMesh> Meshes()
         {
             return ImmutableArray.Create(_mesh);
         }
@@ -163,7 +163,7 @@ namespace DotRecast.Recast.DemoTool.Geom
             q[0] = src.x + (dst.x - src.x) * btmax;
             q[1] = src.z + (dst.z - src.z) * btmax;
 
-            List<ChunkyTriMeshNode> chunks = _mesh.chunkyTriMesh.GetChunksOverlappingSegment(p, q);
+            List<RcChunkyTriMeshNode> chunks = _mesh.chunkyTriMesh.GetChunksOverlappingSegment(p, q);
             if (0 == chunks.Count)
             {
                 return null;
@@ -171,7 +171,7 @@ namespace DotRecast.Recast.DemoTool.Geom
 
             float? tmin = 1.0f;
             bool hit = false;
-            foreach (ChunkyTriMeshNode chunk in chunks)
+            foreach (RcChunkyTriMeshNode chunk in chunks)
             {
                 int[] tris = chunk.tris;
                 for (int j = 0; j < chunk.tris.Length; j += 3)

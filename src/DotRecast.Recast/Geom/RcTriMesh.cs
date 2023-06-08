@@ -19,16 +19,35 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
-using DotRecast.Core;
 
 namespace DotRecast.Recast.Geom
 {
-    public interface IInputGeomProvider : IConvexVolumeProvider
+    public class RcTriMesh
     {
-        RcVec3f GetMeshBoundsMin();
+        private readonly float[] vertices;
+        private readonly int[] faces;
+        public readonly RcChunkyTriMesh chunkyTriMesh;
 
-        RcVec3f GetMeshBoundsMax();
+        public RcTriMesh(float[] vertices, int[] faces)
+        {
+            this.vertices = vertices;
+            this.faces = faces;
+            chunkyTriMesh = new RcChunkyTriMesh(vertices, faces, faces.Length / 3, 32);
+        }
 
-        IEnumerable<RcTriMesh> Meshes();
+        public int[] GetTris()
+        {
+            return faces;
+        }
+
+        public float[] GetVerts()
+        {
+            return vertices;
+        }
+
+        public List<RcChunkyTriMeshNode> GetChunksOverlappingRect(float[] bmin, float[] bmax)
+        {
+            return chunkyTriMesh.GetChunksOverlappingRect(bmin, bmax);
+        }
     }
 }

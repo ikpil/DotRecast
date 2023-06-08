@@ -23,8 +23,7 @@ namespace DotRecast.Recast
 {
     public static class RecastVoxelization
     {
-        public static RcHeightfield BuildSolidHeightfield(IInputGeomProvider geomProvider, RecastBuilderConfig builderCfg,
-            Telemetry ctx)
+        public static RcHeightfield BuildSolidHeightfield(IInputGeomProvider geomProvider, RecastBuilderConfig builderCfg, Telemetry ctx)
         {
             RcConfig cfg = builderCfg.cfg;
 
@@ -41,7 +40,7 @@ namespace DotRecast.Recast
             // If your input data is multiple meshes, you can transform them here,
             // calculate
             // the are type for each of the meshes and rasterize them.
-            foreach (TriMesh geom in geomProvider.Meshes())
+            foreach (RcTriMesh geom in geomProvider.Meshes())
             {
                 float[] verts = geom.GetVerts();
                 if (cfg.useTiles)
@@ -52,8 +51,8 @@ namespace DotRecast.Recast
                     tbmin[1] = builderCfg.bmin.z;
                     tbmax[0] = builderCfg.bmax.x;
                     tbmax[1] = builderCfg.bmax.z;
-                    List<ChunkyTriMeshNode> nodes = geom.GetChunksOverlappingRect(tbmin, tbmax);
-                    foreach (ChunkyTriMeshNode node in nodes)
+                    List<RcChunkyTriMeshNode> nodes = geom.GetChunksOverlappingRect(tbmin, tbmax);
+                    foreach (RcChunkyTriMeshNode node in nodes)
                     {
                         int[] tris = node.tris;
                         int ntris = tris.Length / 3;

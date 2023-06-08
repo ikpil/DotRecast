@@ -18,17 +18,32 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using System.Collections.Generic;
-using DotRecast.Core;
-
-namespace DotRecast.Recast.Geom
+namespace DotRecast.Detour.TileCache
 {
-    public interface IInputGeomProvider : IConvexVolumeProvider
+    public class DtTileCachePolyMesh
     {
-        RcVec3f GetMeshBoundsMin();
+        public int nvp;
+        public int nverts;
 
-        RcVec3f GetMeshBoundsMax();
+        /// < Number of vertices.
+        public int npolys;
 
-        IEnumerable<RcTriMesh> Meshes();
+        /// < Number of polygons.
+        public int[] verts;
+
+        /// < Vertices of the mesh, 3 elements per vertex.
+        public int[] polys;
+
+        /// < Polygons of the mesh, nvp*2 elements per polygon.
+        public int[] flags;
+
+        /// < Per polygon flags.
+        public int[] areas;
+
+        /// < Area ID of polygons.
+        public DtTileCachePolyMesh(int nvp)
+        {
+            this.nvp = nvp;
+        }
     }
 }

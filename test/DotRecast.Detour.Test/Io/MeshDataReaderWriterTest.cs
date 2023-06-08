@@ -65,12 +65,12 @@ public class MeshDataReaderWriterTest
         using var ms = new MemoryStream();
         using var bwos = new BinaryWriter(ms);
 
-        MeshDataWriter writer = new MeshDataWriter();
+        DtMeshDataWriter writer = new DtMeshDataWriter();
         writer.Write(bwos, meshData, order, cCompatibility);
         ms.Seek(0, SeekOrigin.Begin);
 
         using var bris = new BinaryReader(ms);
-        MeshDataReader reader = new MeshDataReader();
+        DtMeshDataReader reader = new DtMeshDataReader();
         DtMeshData readData = reader.Read(bris, VERTS_PER_POLYGON);
 
         Assert.That(readData.header.vertCount, Is.EqualTo(meshData.header.vertCount));

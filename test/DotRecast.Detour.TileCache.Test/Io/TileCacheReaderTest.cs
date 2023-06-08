@@ -29,14 +29,14 @@ namespace DotRecast.Detour.TileCache.Test.Io;
 [Parallelizable]
 public class TileCacheReaderTest
 {
-    private readonly TileCacheReader reader = new TileCacheReader();
+    private readonly DtTileCacheReader reader = new DtTileCacheReader();
 
     [Test]
     public void TestNavmesh()
     {
         using var ms = new MemoryStream(Loader.ToBytes("all_tiles_tilecache.bin"));
         using var @is = new BinaryReader(ms);
-        TileCache tc = reader.Read(@is, 6, null);
+        DtTileCache tc = reader.Read(@is, 6, null);
         Assert.That(tc.GetNavMesh().GetMaxTiles(), Is.EqualTo(256));
         Assert.That(tc.GetNavMesh().GetParams().maxPolys, Is.EqualTo(16384));
         Assert.That(tc.GetNavMesh().GetParams().tileWidth, Is.EqualTo(14.4f).Within(0.001f));
@@ -134,7 +134,7 @@ public class TileCacheReaderTest
     {
         using var ms = new MemoryStream(Loader.ToBytes("dungeon_all_tiles_tilecache.bin"));
         using var @is = new BinaryReader(ms);
-        TileCache tc = reader.Read(@is, 6, null);
+        DtTileCache tc = reader.Read(@is, 6, null);
         Assert.That(tc.GetNavMesh().GetMaxTiles(), Is.EqualTo(256));
         Assert.That(tc.GetNavMesh().GetParams().maxPolys, Is.EqualTo(16384));
         Assert.That(tc.GetNavMesh().GetParams().tileWidth, Is.EqualTo(14.4f).Within(0.001f));

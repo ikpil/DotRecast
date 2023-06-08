@@ -60,7 +60,7 @@ public class TileCacheTest : AbstractTileCacheTest
     private void TestDungeon(RcByteOrder order, bool cCompatibility)
     {
         IInputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("dungeon.obj"));
-        TileCache tc = GetTileCache(geom, order, cCompatibility);
+        DtTileCache tc = GetTileCache(geom, order, cCompatibility);
         TestTileLayerBuilder layerBuilder = new TestTileLayerBuilder(geom);
         List<byte[]> layers = layerBuilder.Build(order, cCompatibility, 1);
         int cacheLayerCount = 0;
@@ -156,7 +156,7 @@ public class TileCacheTest : AbstractTileCacheTest
     private void Test(RcByteOrder order, bool cCompatibility)
     {
         IInputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("nav_test.obj"));
-        TileCache tc = GetTileCache(geom, order, cCompatibility);
+        DtTileCache tc = GetTileCache(geom, order, cCompatibility);
         TestTileLayerBuilder layerBuilder = new TestTileLayerBuilder(geom);
         List<byte[]> layers = layerBuilder.Build(order, cCompatibility, 1);
         int cacheLayerCount = 0;
@@ -205,7 +205,7 @@ public class TileCacheTest : AbstractTileCacheTest
         long t3 = RcFrequency.Ticks;
         Console.WriteLine(" Time ST : " + (t2 - t1) / TimeSpan.TicksPerMillisecond);
         Console.WriteLine(" Time MT : " + (t3 - t2) / TimeSpan.TicksPerMillisecond);
-        TileCache tc = GetTileCache(geom, order, cCompatibility);
+        DtTileCache tc = GetTileCache(geom, order, cCompatibility);
         foreach (byte[] layer in layers)
         {
             long refs = tc.AddTile(layer, 0);

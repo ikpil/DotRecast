@@ -130,7 +130,7 @@ public class UnityAStarPathfindingImporterTest
         }
 
         // Save the mesh as recast file,
-        MeshSetWriter writer = new MeshSetWriter();
+        DtMeshSetWriter writer = new DtMeshSetWriter();
         string filename = $"all_tiles_navmesh_{filePostfix}.bin";
         string filepath = Path.Combine("test-output", filename);
         using var fs = new FileStream(filename, FileMode.Create);

@@ -30,8 +30,8 @@ namespace DotRecast.Detour.Test.Io;
 [Parallelizable]
 public class MeshSetReaderWriterTest
 {
-    private readonly MeshSetWriter writer = new MeshSetWriter();
-    private readonly MeshSetReader reader = new MeshSetReader();
+    private readonly DtMeshSetWriter writer = new DtMeshSetWriter();
+    private readonly DtMeshSetReader reader = new DtMeshSetReader();
     private const float m_cellSize = 0.3f;
     private const float m_cellHeight = 0.2f;
     private const float m_agentHeight = 2.0f;

@@ -81,15 +81,15 @@ public class TestTileLayerBuilder : AbstractTileLayersBuilder
         List<byte[]> result = new();
         if (lset != null)
         {
-            TileCacheBuilder builder = new TileCacheBuilder();
+            DtTileCacheBuilder builder = new DtTileCacheBuilder();
             for (int i = 0; i < lset.layers.Length; ++i)
             {
                 RcHeightfieldLayer layer = lset.layers[i];
 
                 // Store header
-                TileCacheLayerHeader header = new TileCacheLayerHeader();
-                header.magic = TileCacheLayerHeader.DT_TILECACHE_MAGIC;
-                header.version = TileCacheLayerHeader.DT_TILECACHE_VERSION;
+                DtTileCacheLayerHeader header = new DtTileCacheLayerHeader();
+                header.magic = DtTileCacheLayerHeader.DT_TILECACHE_MAGIC;
+                header.version = DtTileCacheLayerHeader.DT_TILECACHE_VERSION;
 
                 // Tile layer location in the navmesh.
                 header.tx = tx;

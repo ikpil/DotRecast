@@ -18,17 +18,20 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using System.Collections.Generic;
-using DotRecast.Core;
+using K4os.Compression.LZ4;
 
-namespace DotRecast.Recast.Geom
+namespace DotRecast.Detour.TileCache.Io.Compress
 {
-    public interface IInputGeomProvider : IConvexVolumeProvider
+    public class DtTileCacheLZ4Compressor : IDtTileCacheCompressor
     {
-        RcVec3f GetMeshBoundsMin();
+        public byte[] Decompress(byte[] buf, int offset, int len, int outputlen)
+        {
+            return LZ4Pickler.Unpickle(buf, offset, len);
+        }
 
-        RcVec3f GetMeshBoundsMax();
-
-        IEnumerable<RcTriMesh> Meshes();
+        public byte[] Compress(byte[] buf)
+        {
+            return LZ4Pickler.Pickle(buf);
+        }
     }
 }

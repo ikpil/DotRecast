@@ -21,14 +21,29 @@ freely, subject to the following restrictions:
 using System.Collections.Generic;
 using DotRecast.Core;
 
-namespace DotRecast.Recast.Geom
+namespace DotRecast.Detour.TileCache
 {
-    public interface IInputGeomProvider : IConvexVolumeProvider
+    public class DtTileCacheObstacle
     {
-        RcVec3f GetMeshBoundsMin();
+        public readonly int index;
+        public TileCacheObstacleType type;
+        public RcVec3f pos = new RcVec3f();
+        public RcVec3f bmin = new RcVec3f();
+        public RcVec3f bmax = new RcVec3f();
+        public float radius, height;
+        public RcVec3f center = new RcVec3f();
+        public RcVec3f extents = new RcVec3f();
+        public readonly float[] rotAux = new float[2]; // { Cos(0.5f*angle)*Sin(-0.5f*angle); Cos(0.5f*angle)*Cos(0.5f*angle) - 0.5 }
+        public List<long> touched = new List<long>();
+        public readonly List<long> pending = new List<long>();
+        public int salt;
+        public ObstacleState state = ObstacleState.DT_OBSTACLE_EMPTY;
+        public DtTileCacheObstacle next;
 
-        RcVec3f GetMeshBoundsMax();
-
-        IEnumerable<RcTriMesh> Meshes();
+        public DtTileCacheObstacle(int index)
+        {
+            salt = 1;
+            this.index = index;
+        }
     }
 }

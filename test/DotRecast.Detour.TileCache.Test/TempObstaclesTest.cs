@@ -36,7 +36,7 @@ public class TempObstaclesTest : AbstractTileCacheTest
         IInputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("dungeon.obj"));
         TestTileLayerBuilder layerBuilder = new TestTileLayerBuilder(geom);
         List<byte[]> layers = layerBuilder.Build(RcByteOrder.LITTLE_ENDIAN, cCompatibility, 1);
-        TileCache tc = GetTileCache(geom, RcByteOrder.LITTLE_ENDIAN, cCompatibility);
+        DtTileCache tc = GetTileCache(geom, RcByteOrder.LITTLE_ENDIAN, cCompatibility);
         foreach (byte[] data in layers)
         {
             long refs = tc.AddTile(data, 0);
@@ -70,7 +70,7 @@ public class TempObstaclesTest : AbstractTileCacheTest
         IInputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("dungeon.obj"));
         TestTileLayerBuilder layerBuilder = new TestTileLayerBuilder(geom);
         List<byte[]> layers = layerBuilder.Build(RcByteOrder.LITTLE_ENDIAN, cCompatibility, 1);
-        TileCache tc = GetTileCache(geom, RcByteOrder.LITTLE_ENDIAN, cCompatibility);
+        DtTileCache tc = GetTileCache(geom, RcByteOrder.LITTLE_ENDIAN, cCompatibility);
         foreach (byte[] data in layers)
         {
             long refs = tc.AddTile(data, 0);

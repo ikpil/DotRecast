@@ -22,7 +22,7 @@ using DotRecast.Detour.Io;
 
 namespace DotRecast.Detour.Dynamic.Io
 {
-    public class VoxelFileWriter : DetourWriter
+    public class VoxelFileWriter : DtWriter
     {
         private readonly LZ4VoxelTileCompressor compressor = new LZ4VoxelTileCompressor();
 

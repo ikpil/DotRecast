@@ -18,17 +18,16 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using System.Collections.Generic;
-using DotRecast.Core;
-
-namespace DotRecast.Recast.Geom
+namespace DotRecast.Detour.TileCache.Io.Compress
 {
-    public interface IInputGeomProvider : IConvexVolumeProvider
+    public static class DtTileCacheCompressorFactory
     {
-        RcVec3f GetMeshBoundsMin();
+        public static IDtTileCacheCompressor Get(bool cCompatibility)
+        {
+            if (cCompatibility)
+                return new DtTileCacheFastLzCompressor();
 
-        RcVec3f GetMeshBoundsMax();
-
-        IEnumerable<RcTriMesh> Meshes();
+            return new DtTileCacheLZ4Compressor();
+        }
     }
 }

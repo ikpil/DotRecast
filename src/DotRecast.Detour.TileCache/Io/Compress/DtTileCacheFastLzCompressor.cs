@@ -18,17 +18,24 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using System.Collections.Generic;
 using DotRecast.Core;
 
-namespace DotRecast.Recast.Geom
+namespace DotRecast.Detour.TileCache.Io.Compress
 {
-    public interface IInputGeomProvider : IConvexVolumeProvider
+    public class DtTileCacheFastLzCompressor : IDtTileCacheCompressor
     {
-        RcVec3f GetMeshBoundsMin();
+        public byte[] Decompress(byte[] buf, int offset, int len, int outputlen)
+        {
+            byte[] output = new byte[outputlen];
+            FastLz.Decompress(buf, offset, len, output, 0, outputlen);
+            return output;
+        }
 
-        RcVec3f GetMeshBoundsMax();
-
-        IEnumerable<RcTriMesh> Meshes();
+        public byte[] Compress(byte[] buf)
+        {
+            byte[] output = new byte[FastLz.CalculateOutputBufferLength(buf.Length)];
+            int len = FastLz.Compress(buf, 0, buf.Length, output, 0, output.Length);
+            return RcArrayUtils.CopyOf(output, len);
+        }
     }
 }

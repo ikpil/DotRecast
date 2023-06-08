@@ -18,17 +18,33 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using System.Collections.Generic;
 using DotRecast.Core;
 
-namespace DotRecast.Recast.Geom
+namespace DotRecast.Detour.TileCache
 {
-    public interface IInputGeomProvider : IConvexVolumeProvider
+    public class DtTileCacheLayerHeader
     {
-        RcVec3f GetMeshBoundsMin();
+        public const int DT_TILECACHE_MAGIC = 'D' << 24 | 'T' << 16 | 'L' << 8 | 'R';
 
-        RcVec3f GetMeshBoundsMax();
+        /// < 'DTLR';
+        public const int DT_TILECACHE_VERSION = 1;
 
-        IEnumerable<RcTriMesh> Meshes();
+        public int magic;
+
+        /// < Data magic
+        public int version;
+
+        /// < Data version
+        public int tx, ty, tlayer;
+
+        public RcVec3f bmin = new RcVec3f();
+        public RcVec3f bmax = new RcVec3f();
+        public int hmin, hmax;
+
+        /// < Height min/max range
+        public int width, height;
+
+        /// < Dimension of the layer.
+        public int minx, maxx, miny, maxy; /// < Usable sub-region.
     }
 }

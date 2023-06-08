@@ -315,7 +315,7 @@ public class RecastDemo
         }
         else if (filename.EndsWith(".bin") || filename.EndsWith(".navmesh"))
         {
-            MeshSetReader reader = new MeshSetReader();
+            DtMeshSetReader reader = new DtMeshSetReader();
             using (var fis = new BinaryReader(file))
             {
                 mesh = reader.Read(fis, 6);

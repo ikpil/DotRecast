@@ -39,7 +39,7 @@ public class AbstractTileCacheTest
     private readonly float m_edgeMaxError = 1.3f;
     private readonly int m_tileSize = 48;
 
-    protected class TestTileCacheMeshProcess : ITileCacheMeshProcess
+    protected class TestTileCacheMeshProcess : IDtTileCacheMeshProcess
     {
         public void Process(DtNavMeshCreateParams option)
         {
@@ -50,9 +50,9 @@ public class AbstractTileCacheTest
         }
     }
 
-    public TileCache GetTileCache(IInputGeomProvider geom, RcByteOrder order, bool cCompatibility)
+    public DtTileCache GetTileCache(IInputGeomProvider geom, RcByteOrder order, bool cCompatibility)
     {
-        TileCacheParams option = new TileCacheParams();
+        DtTileCacheParams option = new DtTileCacheParams();
         Recast.Recast.CalcTileCount(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), m_cellSize, m_tileSize, m_tileSize, out var tw, out var th);
         option.ch = m_cellHeight;
         option.cs = m_cellSize;
@@ -72,8 +72,8 @@ public class AbstractTileCacheTest
         navMeshParams.maxTiles = 256;
         navMeshParams.maxPolys = 16384;
         DtNavMesh navMesh = new DtNavMesh(navMeshParams, 6);
-        TileCache tc = new TileCache(option, new TileCacheStorageParams(order, cCompatibility), navMesh,
-            TileCacheCompressorFactory.Get(cCompatibility), new TestTileCacheMeshProcess());
+        DtTileCache tc = new DtTileCache(option, new TileCacheStorageParams(order, cCompatibility), navMesh,
+            DtTileCacheCompressorFactory.Get(cCompatibility), new TestTileCacheMeshProcess());
         return tc;
     }
 }

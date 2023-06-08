@@ -39,7 +39,7 @@ public class TileCacheFindPathTest : AbstractTileCacheTest
     {
         using var msis = new MemoryStream(Loader.ToBytes("dungeon_all_tiles_tilecache.bin"));
         using var @is = new BinaryReader(msis);
-        TileCache tcC = new TileCacheReader().Read(@is, 6, new TestTileCacheMeshProcess());
+        DtTileCache tcC = new DtTileCacheReader().Read(@is, 6, new TestTileCacheMeshProcess());
         navmesh = tcC.GetNavMesh();
         query = new DtNavMeshQuery(navmesh);
     }
