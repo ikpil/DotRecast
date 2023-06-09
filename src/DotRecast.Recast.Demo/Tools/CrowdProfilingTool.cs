@@ -74,7 +74,7 @@ public class CrowdProfilingTool
         ImGui.SliderInt("Max Iterations", ref maxIterations, 0, 4000);
         ImGui.NewLine();
 
-        if (ImGui.Button("Start"))
+        if (ImGui.Button("Start Crowd Profiling"))
         {
             if (navMesh != null)
             {

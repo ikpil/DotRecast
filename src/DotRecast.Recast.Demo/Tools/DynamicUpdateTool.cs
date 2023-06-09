@@ -594,7 +594,7 @@ public class DynamicUpdateTool : ITool
             ImGui.SliderFloat("Max Sample Error", ref detailSampleMaxError, 0f, 16f, "%.1f");
             ImGui.NewLine();
 
-            if (ImGui.Button("Build"))
+            if (ImGui.Button("Build Dynamic mesh"))
             {
                 if (dynaMesh != null)
                 {

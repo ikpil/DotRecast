@@ -355,7 +355,7 @@ public class JumpLinkBuilderTool : ITool
         //option.buildTypes = buildTypes;
         bool build = false;
         bool buildOffMeshConnections = false;
-        if (ImGui.Button("Build"))
+        if (ImGui.Button("Build Jump Link"))
         {
             build = true;
         }

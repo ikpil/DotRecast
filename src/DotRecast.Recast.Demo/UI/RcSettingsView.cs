@@ -201,7 +201,7 @@ public class RcSettingsView : IRcView
         ImGui.Text($"Build Time: {buildTime} ms");
 
         ImGui.Separator();
-        buildTriggered = ImGui.Button("Build");
+        buildTriggered = ImGui.Button("Build Nav Mesh");
         const string strLoadNavMesh = "Load Nav Mesh...";
         if (ImGui.Button(strLoadNavMesh))
         {
