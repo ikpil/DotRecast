@@ -4,22 +4,22 @@
     {
         public static bool IsSuccess(this DtStatus @this)
         {
-            return @this == DtStatus.SUCCSESS || @this == DtStatus.PARTIAL_RESULT;
+            return @this == DtStatus.DT_SUCCSESS || @this == DtStatus.DT_PARTIAL_RESULT;
         }
         
         public static bool IsFailed(this DtStatus @this)
         {
-            return @this == DtStatus.FAILURE || @this == DtStatus.FAILURE_INVALID_PARAM;
+            return @this == DtStatus.DT_FAILURE || @this == DtStatus.DT_INVALID_PARAM;
         }
 
         public static bool IsInProgress(this DtStatus @this)
         {
-            return @this == DtStatus.IN_PROGRESS;
+            return @this == DtStatus.DT_IN_PROGRESS;
         }
 
         public static bool IsPartial(this DtStatus @this)
         {
-            return @this == DtStatus.PARTIAL_RESULT;
+            return @this == DtStatus.DT_PARTIAL_RESULT;
         }
     }
 }

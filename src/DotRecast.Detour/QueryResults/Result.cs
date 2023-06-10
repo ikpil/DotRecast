@@ -24,37 +24,37 @@ namespace DotRecast.Detour.QueryResults
     {
         public static Result<T> Success<T>(T result)
         {
-            return new Result<T>(result, DtStatus.SUCCSESS, null);
+            return new Result<T>(result, DtStatus.DT_SUCCSESS, null);
         }
 
         public static Result<T> Failure<T>()
         {
-            return new Result<T>(default, DtStatus.FAILURE, null);
+            return new Result<T>(default, DtStatus.DT_FAILURE, null);
         }
 
         public static Result<T> InvalidParam<T>()
         {
-            return new Result<T>(default, DtStatus.FAILURE_INVALID_PARAM, null);
+            return new Result<T>(default, DtStatus.DT_INVALID_PARAM, null);
         }
 
         public static Result<T> Failure<T>(string message)
         {
-            return new Result<T>(default, DtStatus.FAILURE, message);
+            return new Result<T>(default, DtStatus.DT_FAILURE, message);
         }
 
         public static Result<T> InvalidParam<T>(string message)
         {
-            return new Result<T>(default, DtStatus.FAILURE_INVALID_PARAM, message);
+            return new Result<T>(default, DtStatus.DT_INVALID_PARAM, message);
         }
 
         public static Result<T> Failure<T>(T result)
         {
-            return new Result<T>(result, DtStatus.FAILURE, null);
+            return new Result<T>(result, DtStatus.DT_FAILURE, null);
         }
 
         public static Result<T> Partial<T>(T result)
         {
-            return new Result<T>(default, DtStatus.PARTIAL_RESULT, null);
+            return new Result<T>(default, DtStatus.DT_PARTIAL_RESULT, null);
         }
 
         public static Result<T> Of<T>(DtStatus status, string message)

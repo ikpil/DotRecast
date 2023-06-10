@@ -1568,31 +1568,31 @@ namespace DotRecast.Detour
         {
             if (refs == 0)
             {
-                return DtStatus.FAILURE;
+                return DtStatus.DT_FAILURE;
             }
 
             DecodePolyId(refs, out var salt, out var it, out var ip);
             if (it >= m_maxTiles)
             {
-                return DtStatus.FAILURE_INVALID_PARAM;
+                return DtStatus.DT_INVALID_PARAM;
             }
 
             if (m_tiles[it].salt != salt || m_tiles[it].data == null || m_tiles[it].data.header == null)
             {
-                return DtStatus.FAILURE_INVALID_PARAM;
+                return DtStatus.DT_INVALID_PARAM;
             }
 
             DtMeshTile tile = m_tiles[it];
             if (ip >= tile.data.header.polyCount)
             {
-                return DtStatus.FAILURE_INVALID_PARAM;
+                return DtStatus.DT_INVALID_PARAM;
             }
 
             DtPoly poly = tile.data.polys[ip];
 
             // Change flags.
             poly.flags = flags;
-            return DtStatus.SUCCSESS;
+            return DtStatus.DT_SUCCSESS;
         }
 
         public Result<int> GetPolyFlags(long refs)
@@ -1628,31 +1628,31 @@ namespace DotRecast.Detour
         {
             if (refs == 0)
             {
-                return DtStatus.FAILURE;
+                return DtStatus.DT_FAILURE;
             }
 
             DecodePolyId(refs, out var salt, out var it, out var ip);
             if (it >= m_maxTiles)
             {
-                return DtStatus.FAILURE;
+                return DtStatus.DT_FAILURE;
             }
 
             if (m_tiles[it].salt != salt || m_tiles[it].data == null || m_tiles[it].data.header == null)
             {
-                return DtStatus.FAILURE_INVALID_PARAM;
+                return DtStatus.DT_INVALID_PARAM;
             }
 
             DtMeshTile tile = m_tiles[it];
             if (ip >= tile.data.header.polyCount)
             {
-                return DtStatus.FAILURE_INVALID_PARAM;
+                return DtStatus.DT_INVALID_PARAM;
             }
 
             DtPoly poly = tile.data.polys[ip];
 
             poly.SetArea(area);
 
-            return DtStatus.SUCCSESS;
+            return DtStatus.DT_SUCCSESS;
         }
 
         public Result<int> GetPolyArea(long refs)

@@ -28,8 +28,8 @@ public class FindPathTest : AbstractDetourTest
 {
     private static readonly DtStatus[] STATUSES =
     {
-        DtStatus.SUCCSESS, DtStatus.PARTIAL_RESULT, DtStatus.SUCCSESS, DtStatus.SUCCSESS,
-        DtStatus.SUCCSESS
+        DtStatus.DT_SUCCSESS, DtStatus.DT_PARTIAL_RESULT, DtStatus.DT_SUCCSESS, DtStatus.DT_SUCCSESS,
+        DtStatus.DT_SUCCSESS
     };
 
     private static readonly long[][] RESULTS =
@@ -159,8 +159,8 @@ public class FindPathTest : AbstractDetourTest
             var startPos = startPoss[i];
             var endPos = endPoss[i];
             query.InitSlicedFindPath(startRef, endRef, startPos, endPos, filter, DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE);
-            DtStatus status = DtStatus.IN_PROGRESS;
-            while (status == DtStatus.IN_PROGRESS)
+            DtStatus status = DtStatus.DT_IN_PROGRESS;
+            while (status == DtStatus.DT_IN_PROGRESS)
             {
                 Result<int> res = query.UpdateSlicedFindPath(10);
                 status = res.status;

@@ -40,7 +40,7 @@ public class TestNavmeshTool : ITool
     private float m_neighbourhoodRadius;
     private readonly float[] m_queryPoly = new float[12];
     private List<RcVec3f> m_smoothPath;
-    private DtStatus m_pathFindStatus = DtStatus.FAILURE;
+    private DtStatus m_pathFindStatus = DtStatus.DT_FAILURE;
     private bool enableRaycast = true;
     private readonly List<RcVec3f> randomPoints = new();
     private bool constrainByCircle;
@@ -1011,7 +1011,7 @@ public class TestNavmeshTool : ITool
                     }
                 }
 
-                m_pathFindStatus = DtStatus.FAILURE;
+                m_pathFindStatus = DtStatus.DT_FAILURE;
             }
         }
     }

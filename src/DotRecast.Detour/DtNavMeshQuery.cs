@@ -678,7 +678,7 @@ namespace DotRecast.Detour
         {
             if (!RcVec3f.IsFinite(center) || !RcVec3f.IsFinite(halfExtents) || null == filter)
             {
-                return DtStatus.FAILURE_INVALID_PARAM;
+                return DtStatus.DT_INVALID_PARAM;
             }
 
             // Find tiles the query touches.
@@ -689,7 +689,7 @@ namespace DotRecast.Detour
                 QueryPolygonsInTile(t, bmin, bmax, filter, query);
             }
 
-            return DtStatus.SUCCSESS;
+            return DtStatus.DT_SUCCSESS;
         }
 
         /**
@@ -793,7 +793,7 @@ namespace DotRecast.Detour
             DtNode lastBestNode = startNode;
             float lastBestNodeCost = startNode.total;
 
-            DtStatus status = DtStatus.SUCCSESS;
+            DtStatus status = DtStatus.DT_SUCCSESS;
 
             while (!m_openList.IsEmpty())
             {
@@ -979,7 +979,7 @@ namespace DotRecast.Detour
 
             if (lastBestNode.id != endRef)
             {
-                status = DtStatus.PARTIAL_RESULT;
+                status = DtStatus.DT_PARTIAL_RESULT;
             }
 
             return Results.Of(status, path);
@@ -1022,7 +1022,7 @@ namespace DotRecast.Detour
         {
             // Init path state.
             m_query = new DtQueryData();
-            m_query.status = DtStatus.FAILURE;
+            m_query.status = DtStatus.DT_FAILURE;
             m_query.startRef = startRef;
             m_query.endRef = endRef;
             m_query.startPos = startPos;
@@ -1035,7 +1035,7 @@ namespace DotRecast.Detour
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !RcVec3f.IsFinite(startPos) || !RcVec3f.IsFinite(endPos) || null == filter)
             {
-                return DtStatus.FAILURE_INVALID_PARAM;
+                return DtStatus.DT_INVALID_PARAM;
             }
 
             // trade quality with performance?
@@ -1050,8 +1050,8 @@ namespace DotRecast.Detour
 
             if (startRef == endRef)
             {
-                m_query.status = DtStatus.SUCCSESS;
-                return DtStatus.SUCCSESS;
+                m_query.status = DtStatus.DT_SUCCSESS;
+                return DtStatus.DT_SUCCSESS;
             }
 
             m_nodePool.Clear();
@@ -1066,7 +1066,7 @@ namespace DotRecast.Detour
             startNode.flags = DtNode.DT_NODE_OPEN;
             m_openList.Push(startNode);
 
-            m_query.status = DtStatus.IN_PROGRESS;
+            m_query.status = DtStatus.DT_IN_PROGRESS;
             m_query.lastBestNode = startNode;
             m_query.lastBestNodeCost = startNode.total;
 
@@ -1090,7 +1090,7 @@ namespace DotRecast.Detour
             // Make sure the request is still valid.
             if (!m_nav.IsValidPolyRef(m_query.startRef) || !m_nav.IsValidPolyRef(m_query.endRef))
             {
-                m_query.status = DtStatus.FAILURE;
+                m_query.status = DtStatus.DT_FAILURE;
                 return Results.Of(m_query.status, 0);
             }
 
@@ -1108,7 +1108,7 @@ namespace DotRecast.Detour
                 if (bestNode.id == m_query.endRef)
                 {
                     m_query.lastBestNode = bestNode;
-                    m_query.status = DtStatus.SUCCSESS;
+                    m_query.status = DtStatus.DT_SUCCSESS;
                     return Results.Of(m_query.status, iter);
                 }
 
@@ -1119,7 +1119,7 @@ namespace DotRecast.Detour
                 Result<Tuple<DtMeshTile, DtPoly>> tileAndPoly = m_nav.GetTileAndPolyByRef(bestRef);
                 if (tileAndPoly.Failed())
                 {
-                    m_query.status = DtStatus.FAILURE;
+                    m_query.status = DtStatus.DT_FAILURE;
                     // The polygon has disappeared during the sliced query, fail.
                     return Results.Of(m_query.status, iter);
                 }
@@ -1150,7 +1150,7 @@ namespace DotRecast.Detour
                     {
                         // The polygon has disappeared during the sliced query,
                         // fail.
-                        m_query.status = DtStatus.FAILURE;
+                        m_query.status = DtStatus.DT_FAILURE;
                         return Results.Of(m_query.status, iter);
                     }
 
@@ -1308,7 +1308,7 @@ namespace DotRecast.Detour
             // Exhausted all nodes, but could not find path.
             if (m_openList.IsEmpty())
             {
-                m_query.status = DtStatus.PARTIAL_RESULT;
+                m_query.status = DtStatus.DT_PARTIAL_RESULT;
             }
 
             return Results.Of(m_query.status, iter);
@@ -1338,7 +1338,7 @@ namespace DotRecast.Detour
                 // Reverse the path.
                 if (m_query.lastBestNode.id != m_query.endRef)
                 {
-                    m_query.status = DtStatus.PARTIAL_RESULT;
+                    m_query.status = DtStatus.DT_PARTIAL_RESULT;
                 }
 
                 path = GetPathToNode(m_query.lastBestNode);
@@ -1393,7 +1393,7 @@ namespace DotRecast.Detour
 
                 if (node == null)
                 {
-                    m_query.status = DtStatus.PARTIAL_RESULT;
+                    m_query.status = DtStatus.DT_PARTIAL_RESULT;
                     node = m_query.lastBestNode;
                 }
 
@@ -1427,11 +1427,11 @@ namespace DotRecast.Detour
                 // If reached end of path or there is no space to append more vertices, return.
                 if (flags == DT_STRAIGHTPATH_END || straightPath.Count >= maxStraightPath)
                 {
-                    return DtStatus.SUCCSESS;
+                    return DtStatus.DT_SUCCSESS;
                 }
             }
 
-            return DtStatus.IN_PROGRESS;
+            return DtStatus.DT_IN_PROGRESS;
         }
 
         protected DtStatus AppendPortals(int startIdx, int endIdx, RcVec3f endPos, List<long> path,
@@ -1447,7 +1447,7 @@ namespace DotRecast.Detour
                 Result<Tuple<DtMeshTile, DtPoly>> tileAndPoly = m_nav.GetTileAndPolyByRef(from);
                 if (tileAndPoly.Failed())
                 {
-                    return DtStatus.FAILURE;
+                    return DtStatus.DT_FAILURE;
                 }
 
                 DtMeshTile fromTile = tileAndPoly.result.Item1;
@@ -1457,7 +1457,7 @@ namespace DotRecast.Detour
                 tileAndPoly = m_nav.GetTileAndPolyByRef(to);
                 if (tileAndPoly.Failed())
                 {
-                    return DtStatus.FAILURE;
+                    return DtStatus.DT_FAILURE;
                 }
 
                 DtMeshTile toTile = tileAndPoly.result.Item1;
@@ -1493,7 +1493,7 @@ namespace DotRecast.Detour
                 }
             }
 
-            return DtStatus.IN_PROGRESS;
+            return DtStatus.DT_IN_PROGRESS;
         }
 
         /// @par
