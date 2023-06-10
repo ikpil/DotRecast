@@ -48,7 +48,7 @@ public class CrowdProfilingTool
     private DtNavMesh navMesh;
     private DtCrowdConfig config;
     private FRand rnd;
-    private readonly List<FindRandomPointResult> zones = new();
+    private readonly List<DtPolyPoint> _polyPoints = new();
     private long crowdUpdateTime;
 
     public CrowdProfilingTool(Func<DtCrowdAgentParams> agentParamsSupplier)
@@ -158,10 +158,10 @@ public class CrowdProfilingTool
 
     private RcVec3f? GetVillagerPosition(DtNavMeshQuery navquery, IDtQueryFilter filter)
     {
-        if (0 < zones.Count)
+        if (0 < _polyPoints.Count)
         {
-            int zone = (int)(rnd.Next() * zones.Count);
-            var status = navquery.FindRandomPointWithinCircle(zones[zone].GetRandomRef(), zones[zone].GetRandomPt(), zoneRadius, filter, rnd,
+            int zone = (int)(rnd.Next() * _polyPoints.Count);
+            var status = navquery.FindRandomPointWithinCircle(_polyPoints[zone].refs, _polyPoints[zone].pt, zoneRadius, filter, rnd,
                 out var randomRef, out var randomPt);
             if (status.Succeeded())
             {
@@ -174,7 +174,7 @@ public class CrowdProfilingTool
 
     private void CreateZones()
     {
-        zones.Clear();
+        _polyPoints.Clear();
         IDtQueryFilter filter = new DtQueryDefaultFilter();
         DtNavMeshQuery navquery = new DtNavMeshQuery(navMesh);
         for (int i = 0; i < numberOfZones; i++)
@@ -186,9 +186,9 @@ public class CrowdProfilingTool
                 if (status.Succeeded())
                 {
                     bool valid = true;
-                    foreach (var zone in zones)
+                    foreach (var zone in _polyPoints)
                     {
-                        if (RcVec3f.DistSqr(zone.GetRandomPt(), randomPt) < zoneSeparation)
+                        if (RcVec3f.DistSqr(zone.pt, randomPt) < zoneSeparation)
                         {
                             valid = false;
                             break;
@@ -197,7 +197,7 @@ public class CrowdProfilingTool
 
                     if (valid)
                     {
-                        zones.Add(new FindRandomPointResult(randomRef, randomPt));
+                        _polyPoints.Add(new DtPolyPoint(randomRef, randomPt));
                         break;
                     }
                 }
@@ -309,10 +309,10 @@ public class CrowdProfilingTool
     private void MoveTraveller(DtNavMeshQuery navquery, IDtQueryFilter filter, DtCrowdAgent ag, CrowdAgentData crowAgentData)
     {
         // Move to another zone
-        List<FindRandomPointResult> potentialTargets = new();
-        foreach (FindRandomPointResult zone in zones)
+        List<DtPolyPoint> potentialTargets = new();
+        foreach (var zone in _polyPoints)
         {
-            if (RcVec3f.DistSqr(zone.GetRandomPt(), ag.npos) > zoneRadius * zoneRadius)
+            if (RcVec3f.DistSqr(zone.pt, ag.npos) > zoneRadius * zoneRadius)
             {
                 potentialTargets.Add(zone);
             }
@@ -321,7 +321,7 @@ public class CrowdProfilingTool
         if (0 < potentialTargets.Count)
         {
             potentialTargets.Shuffle();
-            crowd.RequestMoveTarget(ag, potentialTargets[0].GetRandomRef(), potentialTargets[0].GetRandomPt());
+            crowd.RequestMoveTarget(ag, potentialTargets[0].refs, potentialTargets[0].pt);
         }
     }
 
