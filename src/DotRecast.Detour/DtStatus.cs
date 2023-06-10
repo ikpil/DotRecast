@@ -56,19 +56,19 @@ namespace DotRecast.Detour
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool IsSuccess()
+        public bool Succeeded()
         {
             return 0 != (Value & (DT_SUCCSESS.Value | DT_PARTIAL_RESULT.Value));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool IsFailed()
+        public bool Failed()
         {
             return 0 != (Value & (DT_FAILURE.Value | DT_INVALID_PARAM.Value));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool IsInProgress()
+        public bool InProgress()
         {
             return 0 != (Value & DT_IN_PROGRESS.Value);
         }

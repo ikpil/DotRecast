@@ -335,7 +335,7 @@ public class TestNavmeshTool : ITool
                     if (m_polys[m_polys.Count - 1] != m_endRef)
                     {
                         var result = m_navQuery.ClosestPointOnPoly(m_polys[m_polys.Count - 1], m_epos, out var closest, out var _);
-                        if (result.IsSuccess())
+                        if (result.Succeeded())
                         {
                             epos = closest;
                         }
@@ -489,8 +489,9 @@ public class TestNavmeshTool : ITool
                 float dz = m_epos.z - m_spos.z;
                 float dist = (float)Math.Sqrt(dx * dx + dz * dz);
                 IPolygonByCircleConstraint constraint = constrainByCircle
-                    ? IPolygonByCircleConstraint.Strict()
-                    : IPolygonByCircleConstraint.Noop();
+                    ? StrictPolygonByCircleConstraint.Strict
+                    : NoOpPolygonByCircleConstraint.Noop;
+                
                 for (int i = 0; i < 200; i++)
                 {
                     Result<FindRandomPointResult> result = m_navQuery.FindRandomPointAroundCircle(m_startRef, m_spos, dist,
@@ -978,12 +979,12 @@ public class TestNavmeshTool : ITool
         if (m_toolMode == TestNavmeshToolMode.PATHFIND_SLICED)
         {
             DtNavMeshQuery m_navQuery = m_sample.GetNavMeshQuery();
-            if (m_pathFindStatus.IsInProgress())
+            if (m_pathFindStatus.InProgress())
             {
                 m_pathFindStatus = m_navQuery.UpdateSlicedFindPath(1).status;
             }
 
-            if (m_pathFindStatus.IsSuccess())
+            if (m_pathFindStatus.Succeeded())
             {
                 m_polys = m_navQuery.FinalizeSlicedFindPath().result;
                 m_straightPath = null;
@@ -995,7 +996,7 @@ public class TestNavmeshTool : ITool
                     if (m_polys[m_polys.Count - 1] != m_endRef)
                     {
                         var result = m_navQuery.ClosestPointOnPoly(m_polys[m_polys.Count - 1], m_epos, out var closest, out var _);
-                        if (result.IsSuccess())
+                        if (result.Succeeded())
                         {
                             epos = closest;
                         }

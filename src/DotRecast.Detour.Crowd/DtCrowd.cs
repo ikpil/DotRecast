@@ -616,7 +616,7 @@ namespace DotRecast.Detour.Crowd
                             // Partial path, constrain target position inside the
                             // last polygon.
                             var cr = _navQuery.ClosestPointOnPoly(reqPath[reqPath.Count - 1], ag.targetPos, out reqPos, out var _);
-                            if (cr.IsFailed())
+                            if (cr.Failed())
                             {
                                 reqPath = new List<long>();
                             }
@@ -694,7 +694,7 @@ namespace DotRecast.Detour.Crowd
                     // _telemetry.RecordPathWaitTime(ag.targetReplanTime);
                     // Poll path queue.
                     DtStatus status = ag.targetPathQueryResult.status;
-                    if (status.IsFailed())
+                    if (status.Failed())
                     {
                         // Path find failed, retry if the target location is still
                         // valid.
@@ -710,7 +710,7 @@ namespace DotRecast.Detour.Crowd
 
                         ag.targetReplanTime = 0;
                     }
-                    else if (status.IsSuccess())
+                    else if (status.Succeeded())
                     {
                         List<long> path = ag.corridor.GetPath();
                         if (0 == path.Count)
@@ -723,7 +723,7 @@ namespace DotRecast.Detour.Crowd
 
                         bool valid = true;
                         List<long> res = ag.targetPathQueryResult.path;
-                        if (status.IsFailed() || 0 == res.Count)
+                        if (status.Failed() || 0 == res.Count)
                         {
                             valid = false;
                         }
@@ -780,7 +780,7 @@ namespace DotRecast.Detour.Crowd
                                 // Partial path, constrain target position inside
                                 // the last polygon.
                                 var cr = _navQuery.ClosestPointOnPoly(res[res.Count - 1], targetPos, out var nearest, out var _);
-                                if (cr.IsSuccess())
+                                if (cr.Succeeded())
                                 {
                                     targetPos = nearest;
                                 }

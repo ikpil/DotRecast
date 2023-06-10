@@ -147,10 +147,10 @@ public class CrowdProfilingTool
 
     private RcVec3f? GetMobPosition(DtNavMeshQuery navquery, IDtQueryFilter filter)
     {
-        Result<FindRandomPointResult> result = navquery.FindRandomPoint(filter, rnd);
-        if (result.Succeeded())
+        var status = navquery.FindRandomPoint(filter, rnd, out var randomRef, out var randomPt);
+        if (status.Succeeded())
         {
-            return result.result.GetRandomPt();
+            return randomPt;
         }
 
         return null;
@@ -182,13 +182,13 @@ public class CrowdProfilingTool
             float zoneSeparation = zoneRadius * zoneRadius * 16;
             for (int k = 0; k < 100; k++)
             {
-                Result<FindRandomPointResult> result = navquery.FindRandomPoint(filter, rnd);
-                if (result.Succeeded())
+                var status = navquery.FindRandomPoint(filter, rnd, out var randomRef, out var randomPt);
+                if (status.Succeeded())
                 {
                     bool valid = true;
-                    foreach (FindRandomPointResult zone in zones)
+                    foreach (var zone in zones)
                     {
-                        if (RcVec3f.DistSqr(zone.GetRandomPt(), result.result.GetRandomPt()) < zoneSeparation)
+                        if (RcVec3f.DistSqr(zone.GetRandomPt(), randomPt) < zoneSeparation)
                         {
                             valid = false;
                             break;
@@ -197,7 +197,7 @@ public class CrowdProfilingTool
 
                     if (valid)
                     {
-                        zones.Add(result.result);
+                        zones.Add(new FindRandomPointResult(randomRef, randomPt));
                         break;
                     }
                 }

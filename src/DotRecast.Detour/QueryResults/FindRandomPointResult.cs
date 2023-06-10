@@ -22,7 +22,7 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour.QueryResults
 {
-//TODO: (PP) Add comments
+    //TODO: (PP) Add comments
     public class FindRandomPointResult
     {
         private readonly long randomRef;

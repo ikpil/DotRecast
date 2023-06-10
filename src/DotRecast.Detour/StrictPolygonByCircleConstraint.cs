@@ -9,7 +9,27 @@ namespace DotRecast.Detour
     public class StrictPolygonByCircleConstraint : IPolygonByCircleConstraint
     {
         private const int CIRCLE_SEGMENTS = 12;
-        private static float[] unitCircle;
+        private static readonly float[] UnitCircle = MakeUnitCircle();
+
+        public static readonly IPolygonByCircleConstraint Strict = new StrictPolygonByCircleConstraint();
+
+        private StrictPolygonByCircleConstraint()
+        {
+        }
+
+        private static float[] MakeUnitCircle()
+        {
+            var temp = new float[CIRCLE_SEGMENTS * 3];
+            for (int i = 0; i < CIRCLE_SEGMENTS; i++)
+            {
+                double a = i * Math.PI * 2 / CIRCLE_SEGMENTS;
+                temp[3 * i] = (float)Math.Cos(a);
+                temp[3 * i + 1] = 0;
+                temp[3 * i + 2] = (float)-Math.Sin(a);
+            }
+
+            return temp;
+        }
 
         public float[] Aply(float[] verts, RcVec3f center, float radius)
         {
@@ -41,26 +61,15 @@ namespace DotRecast.Detour
             return intersection;
         }
 
+
         private float[] Circle(RcVec3f center, float radius)
         {
-            if (unitCircle == null)
-            {
-                unitCircle = new float[CIRCLE_SEGMENTS * 3];
-                for (int i = 0; i < CIRCLE_SEGMENTS; i++)
-                {
-                    double a = i * Math.PI * 2 / CIRCLE_SEGMENTS;
-                    unitCircle[3 * i] = (float)Math.Cos(a);
-                    unitCircle[3 * i + 1] = 0;
-                    unitCircle[3 * i + 2] = (float)-Math.Sin(a);
-                }
-            }
-
             float[] circle = new float[12 * 3];
             for (int i = 0; i < CIRCLE_SEGMENTS * 3; i += 3)
             {
-                circle[i] = unitCircle[i] * radius + center.x;
+                circle[i] = UnitCircle[i] * radius + center.x;
                 circle[i + 1] = center.y;
-                circle[i + 2] = unitCircle[i + 2] * radius + center.z;
+                circle[i + 2] = UnitCircle[i + 2] * radius + center.z;
             }
 
             return circle;

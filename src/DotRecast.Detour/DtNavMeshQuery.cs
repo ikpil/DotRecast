@@ -72,24 +72,24 @@ namespace DotRecast.Detour
             m_openList = new DtNodeQueue();
         }
 
-        /**
-     * Returns random location on navmesh. Polygons are chosen weighted by area. The search runs in linear related to
-     * number of polygon.
-     *
-     * @param filter
-     *            The polygon filter to apply to the query.
-     * @param frand
-     *            Function returning a random number [0..1).
-     * @return Random location
-     */
-        public Result<FindRandomPointResult> FindRandomPoint(IDtQueryFilter filter, FRand frand)
+        /// Returns random location on navmesh.
+        /// Polygons are chosen weighted by area. The search runs in linear related to number of polygon.
+        ///  @param[in]		filter			The polygon filter to apply to the query.
+        ///  @param[in]		frand			Function returning a random number [0..1).
+        ///  @param[out]	randomRef		The reference id of the random location.
+        ///  @param[out]	randomPt		The random location. 
+        /// @returns The status flags for the query.
+        public DtStatus FindRandomPoint(IDtQueryFilter filter, FRand frand, out long randomRef, out RcVec3f randomPt)
         {
-            // Randomly pick one tile. Assume that all tiles cover roughly the same area.
+            randomRef = 0;
+            randomPt = RcVec3f.Zero;
+
             if (null == filter || null == frand)
             {
-                return Results.InvalidParam<FindRandomPointResult>();
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
+            // Randomly pick one tile. Assume that all tiles cover roughly the same area.
             DtMeshTile tile = null;
             float tsum = 0.0f;
             for (int i = 0; i < m_nav.GetMaxTiles(); i++)
@@ -112,7 +112,7 @@ namespace DotRecast.Detour
 
             if (tile == null)
             {
-                return Results.InvalidParam<FindRandomPointResult>("Tile not found");
+                return DtStatus.DT_FAILURE;
             }
 
             // Randomly pick one polygon weighted by polygon area.
@@ -159,7 +159,7 @@ namespace DotRecast.Detour
 
             if (poly == null)
             {
-                return Results.InvalidParam<FindRandomPointResult>("Poly not found");
+                return DtStatus.DT_FAILURE;
             }
 
             // Randomly pick point on polygon.
@@ -176,7 +176,11 @@ namespace DotRecast.Detour
 
             var pt = DetourCommon.RandomPointInConvexPoly(verts, poly.vertCount, areas, s, t);
             ClosestPointOnPoly(polyRef, pt, out var closest, out var _);
-            return Results.Success(new FindRandomPointResult(polyRef, closest));
+
+            randomRef = polyRef;
+            randomPt = closest;
+
+            return DtStatus.DT_SUCCSESS;
         }
 
         /**
@@ -198,7 +202,7 @@ namespace DotRecast.Detour
         public Result<FindRandomPointResult> FindRandomPointAroundCircle(long startRef, RcVec3f centerPos, float maxRadius,
             IDtQueryFilter filter, FRand frand)
         {
-            return FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, IPolygonByCircleConstraint.Noop());
+            return FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, NoOpPolygonByCircleConstraint.Noop);
         }
 
         /**
@@ -219,7 +223,7 @@ namespace DotRecast.Detour
         public Result<FindRandomPointResult> FindRandomPointWithinCircle(long startRef, RcVec3f centerPos, float maxRadius,
             IDtQueryFilter filter, FRand frand)
         {
-            return FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, IPolygonByCircleConstraint.Strict());
+            return FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, StrictPolygonByCircleConstraint.Strict);
         }
 
         public Result<FindRandomPointResult> FindRandomPointAroundCircle(long startRef, RcVec3f centerPos, float maxRadius,
@@ -416,9 +420,9 @@ namespace DotRecast.Detour
         /// @returns The status flags for the query.
         public DtStatus ClosestPointOnPoly(long refs, RcVec3f pos, out RcVec3f closest, out bool posOverPoly)
         {
-            closest = RcVec3f.Zero;
+            closest = pos;
             posOverPoly = false;
-            
+
             if (!m_nav.IsValidPolyRef(refs) || !RcVec3f.IsFinite(pos))
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
@@ -562,7 +566,7 @@ namespace DotRecast.Detour
             // Get nearby polygons from proximity grid.
             DtFindNearestPolyQuery query = new DtFindNearestPolyQuery(this, center);
             DtStatus status = QueryPolygons(center, halfExtents, filter, query);
-            if (status.IsFailed())
+            if (status.Failed())
             {
                 return Results.Of<FindNearestPolyResult>(status, "");
             }
@@ -1083,7 +1087,7 @@ namespace DotRecast.Detour
      */
         public virtual Result<int> UpdateSlicedFindPath(int maxIter)
         {
-            if (!m_query.status.IsInProgress())
+            if (!m_query.status.InProgress())
             {
                 return Results.Of(m_query.status, 0);
             }
@@ -1322,7 +1326,7 @@ namespace DotRecast.Detour
         public virtual Result<List<long>> FinalizeSlicedFindPath()
         {
             List<long> path = new List<long>(64);
-            if (m_query.status.IsFailed())
+            if (m_query.status.Failed())
             {
                 // Reset query.
                 m_query = new DtQueryData();
@@ -1367,7 +1371,7 @@ namespace DotRecast.Detour
                 return Results.Failure(path);
             }
 
-            if (m_query.status.IsFailed())
+            if (m_query.status.Failed())
             {
                 // Reset query.
                 m_query = new DtQueryData();
@@ -1487,7 +1491,7 @@ namespace DotRecast.Detour
                 {
                     var pt = RcVec3f.Lerp(left, right, t);
                     stat = AppendVertex(pt, 0, path[i + 1], straightPath, maxStraightPath);
-                    if (!stat.IsInProgress())
+                    if (!stat.InProgress())
                     {
                         return stat;
                     }
@@ -1549,7 +1553,7 @@ namespace DotRecast.Detour
             var closestEndPos = closestEndPosRes.result;
             // Add start point.
             DtStatus stat = AppendVertex(closestStartPos, DT_STRAIGHTPATH_START, path[0], straightPath, maxStraightPath);
-            if (!stat.IsInProgress())
+            if (!stat.InProgress())
             {
                 return Results.Success(straightPath);
             }
@@ -1639,7 +1643,7 @@ namespace DotRecast.Detour
                             {
                                 stat = AppendPortals(apexIndex, leftIndex, portalLeft, path, straightPath, maxStraightPath,
                                     options);
-                                if (!stat.IsInProgress())
+                                if (!stat.InProgress())
                                 {
                                     return Results.Success(straightPath);
                                 }
@@ -1662,7 +1666,7 @@ namespace DotRecast.Detour
 
                             // Append or update vertex
                             stat = AppendVertex(portalApex, flags, refs, straightPath, maxStraightPath);
-                            if (!stat.IsInProgress())
+                            if (!stat.InProgress())
                             {
                                 return Results.Success(straightPath);
                             }
@@ -1696,7 +1700,7 @@ namespace DotRecast.Detour
                             {
                                 stat = AppendPortals(apexIndex, rightIndex, portalRight, path, straightPath,
                                     maxStraightPath, options);
-                                if (!stat.IsInProgress())
+                                if (!stat.InProgress())
                                 {
                                     return Results.Success(straightPath);
                                 }
@@ -1719,7 +1723,7 @@ namespace DotRecast.Detour
 
                             // Append or update vertex
                             stat = AppendVertex(portalApex, flags, refs, straightPath, maxStraightPath);
-                            if (!stat.IsInProgress())
+                            if (!stat.InProgress())
                             {
                                 return Results.Success(straightPath);
                             }
@@ -1742,7 +1746,7 @@ namespace DotRecast.Detour
                 {
                     stat = AppendPortals(apexIndex, path.Count - 1, closestEndPos, path, straightPath, maxStraightPath,
                         options);
-                    if (!stat.IsInProgress())
+                    if (!stat.InProgress())
                     {
                         return Results.Success(straightPath);
                     }

@@ -74,12 +74,12 @@ namespace DotRecast.Detour.QueryResults
 
         public bool Failed()
         {
-            return status.IsFailed();
+            return status.Failed();
         }
 
         public bool Succeeded()
         {
-            return status.IsSuccess();
+            return status.Succeeded();
         }
     }
 }

@@ -35,9 +35,9 @@ public class RandomPointTest : AbstractDetourTest
         IDtQueryFilter filter = new DtQueryDefaultFilter();
         for (int i = 0; i < 1000; i++)
         {
-            Result<FindRandomPointResult> point = query.FindRandomPoint(filter, f);
-            Assert.That(point.Succeeded(), Is.True);
-            Tuple<DtMeshTile, DtPoly> tileAndPoly = navmesh.GetTileAndPolyByRef(point.result.GetRandomRef()).result;
+            var status = query.FindRandomPoint(filter, f, out var randomRef, out var randomPt);
+            Assert.That(status.Succeeded(), Is.True);
+            Tuple<DtMeshTile, DtPoly> tileAndPoly = navmesh.GetTileAndPolyByRef(randomRef).result;
             float[] bmin = new float[2];
             float[] bmax = new float[2];
             for (int j = 0; j < tileAndPoly.Item2.vertCount; j++)
@@ -49,10 +49,10 @@ public class RandomPointTest : AbstractDetourTest
                 bmax[1] = j == 0 ? tileAndPoly.Item1.data.verts[v + 2] : Math.Max(bmax[1], tileAndPoly.Item1.data.verts[v + 2]);
             }
 
-            Assert.That(point.result.GetRandomPt().x >= bmin[0], Is.True);
-            Assert.That(point.result.GetRandomPt().x <= bmax[0], Is.True);
-            Assert.That(point.result.GetRandomPt().z >= bmin[1], Is.True);
-            Assert.That(point.result.GetRandomPt().z <= bmax[1], Is.True);
+            Assert.That(randomPt.x >= bmin[0], Is.True);
+            Assert.That(randomPt.x <= bmax[0], Is.True);
+            Assert.That(randomPt.z >= bmin[1], Is.True);
+            Assert.That(randomPt.z <= bmax[1], Is.True);
         }
     }
 
@@ -61,14 +61,15 @@ public class RandomPointTest : AbstractDetourTest
     {
         FRand f = new FRand(1);
         IDtQueryFilter filter = new DtQueryDefaultFilter();
-        FindRandomPointResult point = query.FindRandomPoint(filter, f).result;
+        query.FindRandomPoint(filter, f, out var randomRef, out var randomPt);
         for (int i = 0; i < 1000; i++)
         {
-            Result<FindRandomPointResult> result = query.FindRandomPointAroundCircle(point.GetRandomRef(), point.GetRandomPt(),
-                5f, filter, f);
+            Result<FindRandomPointResult> result = query.FindRandomPointAroundCircle(randomRef, randomPt, 5f, filter, f);
             Assert.That(result.Failed(), Is.False);
-            point = result.result;
-            Tuple<DtMeshTile, DtPoly> tileAndPoly = navmesh.GetTileAndPolyByRef(point.GetRandomRef()).result;
+
+            randomRef = result.result.GetRandomRef();
+            randomPt = result.result.GetRandomPt();
+            Tuple<DtMeshTile, DtPoly> tileAndPoly = navmesh.GetTileAndPolyByRef(randomRef).result;
             float[] bmin = new float[2];
             float[] bmax = new float[2];
             for (int j = 0; j < tileAndPoly.Item2.vertCount; j++)
@@ -80,10 +81,10 @@ public class RandomPointTest : AbstractDetourTest
                 bmax[1] = j == 0 ? tileAndPoly.Item1.data.verts[v + 2] : Math.Max(bmax[1], tileAndPoly.Item1.data.verts[v + 2]);
             }
 
-            Assert.That(point.GetRandomPt().x >= bmin[0], Is.True);
-            Assert.That(point.GetRandomPt().x <= bmax[0], Is.True);
-            Assert.That(point.GetRandomPt().z >= bmin[1], Is.True);
-            Assert.That(point.GetRandomPt().z <= bmax[1], Is.True);
+            Assert.That(randomPt.x >= bmin[0], Is.True);
+            Assert.That(randomPt.x <= bmax[0], Is.True);
+            Assert.That(randomPt.z >= bmin[1], Is.True);
+            Assert.That(randomPt.z <= bmax[1], Is.True);
         }
     }
 
@@ -92,16 +93,18 @@ public class RandomPointTest : AbstractDetourTest
     {
         FRand f = new FRand(1);
         IDtQueryFilter filter = new DtQueryDefaultFilter();
-        FindRandomPointResult point = query.FindRandomPoint(filter, f).result;
+        query.FindRandomPoint(filter, f, out var randomRef, out var randomPt);
         float radius = 5f;
         for (int i = 0; i < 1000; i++)
         {
-            Result<FindRandomPointResult> result = query.FindRandomPointWithinCircle(point.GetRandomRef(), point.GetRandomPt(),
-                radius, filter, f);
+            Result<FindRandomPointResult> result = query.FindRandomPointWithinCircle(randomRef, randomPt, radius, filter, f);
             Assert.That(result.Failed(), Is.False);
-            float distance = RcVec3f.Dist2D(point.GetRandomPt(), result.result.GetRandomPt());
+
+            float distance = RcVec3f.Dist2D(randomPt, result.result.GetRandomPt());
             Assert.That(distance <= radius, Is.True);
-            point = result.result;
+
+            randomRef = result.result.GetRandomRef();
+            randomPt = result.result.GetRandomPt();
         }
     }
 
@@ -110,29 +113,30 @@ public class RandomPointTest : AbstractDetourTest
     {
         FRand f = new FRand(1);
         IDtQueryFilter filter = new DtQueryDefaultFilter();
-        FindRandomPointResult point = query.FindRandomPoint(filter, f).result;
+        query.FindRandomPoint(filter, f, out var randomRef, out var randomPt);
+        
         float radius = 5f;
         // jvm warmup
         for (int i = 0; i < 1000; i++)
         {
-            query.FindRandomPointAroundCircle(point.GetRandomRef(), point.GetRandomPt(), radius, filter, f);
+            query.FindRandomPointAroundCircle(randomRef, randomPt, radius, filter, f);
         }
 
         for (int i = 0; i < 1000; i++)
         {
-            query.FindRandomPointWithinCircle(point.GetRandomRef(), point.GetRandomPt(), radius, filter, f);
+            query.FindRandomPointWithinCircle(randomRef, randomPt, radius, filter, f);
         }
 
         long t1 = RcFrequency.Ticks;
         for (int i = 0; i < 10000; i++)
         {
-            query.FindRandomPointAroundCircle(point.GetRandomRef(), point.GetRandomPt(), radius, filter, f);
+            query.FindRandomPointAroundCircle(randomRef, randomPt, radius, filter, f);
         }
 
         long t2 = RcFrequency.Ticks;
         for (int i = 0; i < 10000; i++)
         {
-            query.FindRandomPointWithinCircle(point.GetRandomRef(), point.GetRandomPt(), radius, filter, f);
+            query.FindRandomPointWithinCircle(randomRef, randomPt, radius, filter, f);
         }
 
         long t3 = RcFrequency.Ticks;

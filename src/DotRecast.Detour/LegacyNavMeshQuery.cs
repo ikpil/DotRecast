@@ -230,7 +230,7 @@ namespace DotRecast.Detour
      */
         public override Result<int> UpdateSlicedFindPath(int maxIter)
         {
-            if (!m_query.status.IsInProgress())
+            if (!m_query.status.InProgress())
             {
                 return Results.Of(m_query.status, 0);
             }
@@ -467,7 +467,7 @@ namespace DotRecast.Detour
         public override Result<List<long>> FinalizeSlicedFindPath()
         {
             List<long> path = new List<long>(64);
-            if (m_query.status.IsFailed())
+            if (m_query.status.Failed())
             {
                 // Reset query.
                 m_query = new DtQueryData();
@@ -553,7 +553,7 @@ namespace DotRecast.Detour
                 return Results.Failure(path);
             }
 
-            if (m_query.status.IsFailed())
+            if (m_query.status.Failed())
             {
                 // Reset query.
                 m_query = new DtQueryData();

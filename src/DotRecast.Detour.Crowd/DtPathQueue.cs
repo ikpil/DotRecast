@@ -56,21 +56,21 @@ namespace DotRecast.Detour.Crowd
                 }
 
                 // Handle query in progress.
-                if (q.result.status.IsInProgress())
+                if (q.result.status.InProgress())
                 {
                     Result<int> res = q.navQuery.UpdateSlicedFindPath(iterCount);
                     q.result.status = res.status;
                     iterCount -= res.result;
                 }
 
-                if (q.result.status.IsSuccess())
+                if (q.result.status.Succeeded())
                 {
                     Result<List<long>> path = q.navQuery.FinalizeSlicedFindPath();
                     q.result.status = path.status;
                     q.result.path = path.result;
                 }
 
-                if (!(q.result.status.IsFailed() || q.result.status.IsSuccess()))
+                if (!(q.result.status.Failed() || q.result.status.Succeeded()))
                 {
                     queue.AddFirst(q);
                 }
