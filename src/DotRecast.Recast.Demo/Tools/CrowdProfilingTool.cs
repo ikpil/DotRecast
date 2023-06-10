@@ -161,11 +161,11 @@ public class CrowdProfilingTool
         if (0 < zones.Count)
         {
             int zone = (int)(rnd.Next() * zones.Count);
-            Result<FindRandomPointResult> result = navquery.FindRandomPointWithinCircle(zones[zone].GetRandomRef(),
-                zones[zone].GetRandomPt(), zoneRadius, filter, rnd);
-            if (result.Succeeded())
+            var status = navquery.FindRandomPointWithinCircle(zones[zone].GetRandomRef(), zones[zone].GetRandomPt(), zoneRadius, filter, rnd,
+                out var randomRef, out var randomPt);
+            if (status.Succeeded())
             {
-                return result.result.GetRandomPt();
+                return randomPt;
             }
         }
 
@@ -282,11 +282,11 @@ public class CrowdProfilingTool
         Result<FindNearestPolyResult> nearestPoly = navquery.FindNearestPoly(ag.npos, crowd.GetQueryExtents(), filter);
         if (nearestPoly.Succeeded())
         {
-            Result<FindRandomPointResult> result = navquery.FindRandomPointAroundCircle(nearestPoly.result.GetNearestRef(),
-                crowAgentData.home, zoneRadius * 2f, filter, rnd);
-            if (result.Succeeded())
+            var status = navquery.FindRandomPointAroundCircle(nearestPoly.result.GetNearestRef(), crowAgentData.home, zoneRadius * 2f, filter, rnd, 
+                out var randomRef, out var randomPt);
+            if (status.Succeeded())
             {
-                crowd.RequestMoveTarget(ag, result.result.GetRandomRef(), result.result.GetRandomPt());
+                crowd.RequestMoveTarget(ag, randomRef, randomPt);
             }
         }
     }
@@ -297,11 +297,11 @@ public class CrowdProfilingTool
         Result<FindNearestPolyResult> nearestPoly = navquery.FindNearestPoly(ag.npos, crowd.GetQueryExtents(), filter);
         if (nearestPoly.Succeeded())
         {
-            Result<FindRandomPointResult> result = navquery.FindRandomPointAroundCircle(nearestPoly.result.GetNearestRef(),
-                crowAgentData.home, zoneRadius * 0.2f, filter, rnd);
-            if (result.Succeeded())
+            var status = navquery.FindRandomPointAroundCircle(nearestPoly.result.GetNearestRef(), crowAgentData.home, zoneRadius * 0.2f, filter, rnd,
+                out var randomRef, out var randomPt);
+            if (status.Succeeded())
             {
-                crowd.RequestMoveTarget(ag, result.result.GetRandomRef(), result.result.GetRandomPt());
+                crowd.RequestMoveTarget(ag, randomRef, randomPt);
             }
         }
     }

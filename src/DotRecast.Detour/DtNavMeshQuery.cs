@@ -199,10 +199,14 @@ namespace DotRecast.Detour
      *            Function returning a random number [0..1).
      * @return Random location
      */
-        public Result<FindRandomPointResult> FindRandomPointAroundCircle(long startRef, RcVec3f centerPos, float maxRadius,
-            IDtQueryFilter filter, FRand frand)
+        public DtStatus FindRandomPointAroundCircle(long startRef, RcVec3f centerPos, float maxRadius,
+            IDtQueryFilter filter, FRand frand, out long randomRef, out RcVec3f randomPt)
         {
-            return FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, NoOpPolygonByCircleConstraint.Noop);
+            var result = FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, NoOpPolygonByCircleConstraint.Noop);
+            randomRef = result.result.GetRandomRef();
+            randomPt = result.result.GetRandomPt();
+            
+            return result.status;
         }
 
         /**
@@ -220,14 +224,19 @@ namespace DotRecast.Detour
      *            Function returning a random number [0..1).
      * @return Random location
      */
-        public Result<FindRandomPointResult> FindRandomPointWithinCircle(long startRef, RcVec3f centerPos, float maxRadius,
-            IDtQueryFilter filter, FRand frand)
+        public DtStatus FindRandomPointWithinCircle(long startRef, RcVec3f centerPos, float maxRadius,
+            IDtQueryFilter filter, FRand frand, out long randomRef, out RcVec3f randomPt)
         {
-            return FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, StrictPolygonByCircleConstraint.Strict);
+            var result = FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, StrictPolygonByCircleConstraint.Strict);
+            randomRef = result.result.GetRandomRef();
+            randomPt = result.result.GetRandomPt();
+            
+            return result.status;
         }
 
         public Result<FindRandomPointResult> FindRandomPointAroundCircle(long startRef, RcVec3f centerPos, float maxRadius,
-            IDtQueryFilter filter, FRand frand, IPolygonByCircleConstraint constraint)
+            IDtQueryFilter filter, FRand frand, 
+            IPolygonByCircleConstraint constraint)
         {
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(centerPos) || maxRadius < 0
