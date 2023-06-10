@@ -411,7 +411,9 @@ namespace DotRecast.Detour
             float[] areas = new float[randomPolyVerts.Length / 3];
             RcVec3f pt = DetourCommon.RandomPointInConvexPoly(randomPolyVerts, randomPolyVerts.Length / 3, areas, s, t);
             ClosestPointOnPoly(randomPolyRef, pt, out var closest, out var _);
-            Results.Success(new FindRandomPointResult(randomPolyRef, closest));
+
+            randomRef = randomPolyRef;
+            randomPt = closest;
 
             return status;
         }
