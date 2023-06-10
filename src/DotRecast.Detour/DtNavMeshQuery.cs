@@ -232,9 +232,7 @@ namespace DotRecast.Detour
                 return Results.InvalidParam<FindRandomPointResult>();
             }
 
-            Tuple<DtMeshTile, DtPoly> tileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(startRef);
-            DtMeshTile startTile = tileAndPoly.Item1;
-            DtPoly startPoly = tileAndPoly.Item2;
+            m_nav.GetTileAndPolyByRefUnsafe(startRef, out var startTile, out var startPoly);
             if (!filter.PassFilter(startRef, startTile, startPoly))
             {
                 return Results.InvalidParam<FindRandomPointResult>("Invalid start ref");
@@ -267,9 +265,7 @@ namespace DotRecast.Detour
                 // Get poly and tile.
                 // The API input has been cheked already, skip checking internal data.
                 long bestRef = bestNode.id;
-                Tuple<DtMeshTile, DtPoly> bestTilePoly = m_nav.GetTileAndPolyByRefUnsafe(bestRef);
-                DtMeshTile bestTile = bestTilePoly.Item1;
-                DtPoly bestPoly = bestTilePoly.Item2;
+                m_nav.GetTileAndPolyByRefUnsafe(bestRef, out var bestTile, out var bestPoly);
 
                 // Place random locations on on ground.
                 if (bestPoly.GetPolyType() == DtPoly.DT_POLYTYPE_GROUND)
@@ -324,9 +320,7 @@ namespace DotRecast.Detour
                     }
 
                     // Expand to neighbour
-                    Tuple<DtMeshTile, DtPoly> neighbourTilePoly = m_nav.GetTileAndPolyByRefUnsafe(neighbourRef);
-                    DtMeshTile neighbourTile = neighbourTilePoly.Item1;
-                    DtPoly neighbourPoly = neighbourTilePoly.Item2;
+                    m_nav.GetTileAndPolyByRefUnsafe(neighbourRef, out var neighbourTile, out var neighbourPoly);
 
                     // Do not advance if the polygon is excluded by the filter.
                     if (!filter.PassFilter(neighbourRef, neighbourTile, neighbourPoly))
@@ -818,9 +812,7 @@ namespace DotRecast.Detour
                 // Get current poly and tile.
                 // The API input has been cheked already, skip checking internal data.
                 long bestRef = bestNode.id;
-                Tuple<DtMeshTile, DtPoly> tileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(bestRef);
-                DtMeshTile bestTile = tileAndPoly.Item1;
-                DtPoly bestPoly = tileAndPoly.Item2;
+                m_nav.GetTileAndPolyByRefUnsafe(bestRef, out var bestTile, out var bestPoly);
 
                 // Get parent poly and tile.
                 long parentRef = 0, grandpaRef = 0;
@@ -839,9 +831,7 @@ namespace DotRecast.Detour
 
                 if (parentRef != 0)
                 {
-                    tileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(parentRef);
-                    parentTile = tileAndPoly.Item1;
-                    parentPoly = tileAndPoly.Item2;
+                    m_nav.GetTileAndPolyByRefUnsafe(parentRef, out parentTile, out parentPoly);
                 }
 
                 // decide whether to test raycast to previous nodes
@@ -867,9 +857,7 @@ namespace DotRecast.Detour
 
                     // Get neighbour poly and tile.
                     // The API input has been cheked already, skip checking internal data.
-                    tileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(neighbourRef);
-                    DtMeshTile neighbourTile = tileAndPoly.Item1;
-                    DtPoly neighbourPoly = tileAndPoly.Item2;
+                    m_nav.GetTileAndPolyByRefUnsafe(neighbourRef, out var neighbourTile, out var neighbourPoly);
 
                     if (!filter.PassFilter(neighbourRef, neighbourTile, neighbourPoly))
                     {
@@ -1195,9 +1183,7 @@ namespace DotRecast.Detour
                     // Get neighbour poly and tile.
                     // The API input has been cheked already, skip checking internal
                     // data.
-                    Tuple<DtMeshTile, DtPoly> tileAndPolyUns = m_nav.GetTileAndPolyByRefUnsafe(neighbourRef);
-                    DtMeshTile neighbourTile = tileAndPolyUns.Item1;
-                    DtPoly neighbourPoly = tileAndPolyUns.Item2;
+                    m_nav.GetTileAndPolyByRefUnsafe(neighbourRef, out var neighbourTile, out var neighbourPoly);
 
                     if (!m_query.filter.PassFilter(neighbourRef, neighbourTile, neighbourPoly))
                     {
@@ -1540,7 +1526,7 @@ namespace DotRecast.Detour
         {
             List<StraightPathItem> straightPath = new List<StraightPathItem>();
             if (!RcVec3f.IsFinite(startPos) || !RcVec3f.IsFinite(endPos)
-                                             || null == path || 0 == path.Count || path[0] == 0 || maxStraightPath <= 0)
+                                            || null == path || 0 == path.Count || path[0] == 0 || maxStraightPath <= 0)
             {
                 return Results.InvalidParam<List<StraightPathItem>>();
             }
@@ -1833,9 +1819,7 @@ namespace DotRecast.Detour
                 // Get poly and tile.
                 // The API input has been cheked already, skip checking internal data.
                 long curRef = curNode.id;
-                Tuple<DtMeshTile, DtPoly> tileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(curRef);
-                DtMeshTile curTile = tileAndPoly.Item1;
-                DtPoly curPoly = tileAndPoly.Item2;
+                m_nav.GetTileAndPolyByRefUnsafe(curRef, out var curTile, out var curPoly);
 
                 // Collect vertices.
                 int nverts = curPoly.vertCount;
@@ -1870,9 +1854,7 @@ namespace DotRecast.Detour
                             {
                                 if (link.refs != 0)
                                 {
-                                    tileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(link.refs);
-                                    DtMeshTile neiTile = tileAndPoly.Item1;
-                                    DtPoly neiPoly = tileAndPoly.Item2;
+                                    m_nav.GetTileAndPolyByRefUnsafe(link.refs, out var neiTile, out var neiPoly);
                                     if (filter.PassFilter(link.refs, neiTile, neiPoly))
                                     {
                                         if (nneis < MAX_NEIS)
@@ -2206,16 +2188,12 @@ namespace DotRecast.Detour
 
             // The API input has been checked already, skip checking internal data.
             long curRef = startRef;
-            Tuple<DtMeshTile, DtPoly> tileAndPolyUns = m_nav.GetTileAndPolyByRefUnsafe(curRef);
-            tile = tileAndPolyUns.Item1;
-            poly = tileAndPolyUns.Item2;
+            m_nav.GetTileAndPolyByRefUnsafe(curRef, out tile, out poly);
             nextTile = prevTile = tile;
             nextPoly = prevPoly = poly;
             if (prevRef != 0)
             {
-                tileAndPolyUns = m_nav.GetTileAndPolyByRefUnsafe(prevRef);
-                prevTile = tileAndPolyUns.Item1;
-                prevPoly = tileAndPolyUns.Item2;
+                m_nav.GetTileAndPolyByRefUnsafe(prevRef, out prevTile, out prevPoly);
             }
 
             while (curRef != 0)
@@ -2277,9 +2255,8 @@ namespace DotRecast.Detour
                     }
 
                     // Get pointer to the next polygon.
-                    tileAndPolyUns = m_nav.GetTileAndPolyByRefUnsafe(link.refs);
-                    nextTile = tileAndPolyUns.Item1;
-                    nextPoly = tileAndPolyUns.Item2;
+                    m_nav.GetTileAndPolyByRefUnsafe(link.refs, out nextTile, out nextPoly);
+
                     // Skip off-mesh connections.
                     if (nextPoly.GetPolyType() == DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
                     {
@@ -2486,9 +2463,7 @@ namespace DotRecast.Detour
                 // Get poly and tile.
                 // The API input has been cheked already, skip checking internal data.
                 long bestRef = bestNode.id;
-                Tuple<DtMeshTile, DtPoly> tileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(bestRef);
-                DtMeshTile bestTile = tileAndPoly.Item1;
-                DtPoly bestPoly = tileAndPoly.Item2;
+                m_nav.GetTileAndPolyByRefUnsafe(bestRef, out var bestTile, out var bestPoly);
 
                 // Get parent poly and tile.
                 long parentRef = 0;
@@ -2501,9 +2476,7 @@ namespace DotRecast.Detour
 
                 if (parentRef != 0)
                 {
-                    tileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(parentRef);
-                    parentTile = tileAndPoly.Item1;
-                    parentPoly = tileAndPoly.Item2;
+                    m_nav.GetTileAndPolyByRefUnsafe(parentRef, out parentTile, out parentPoly);
                 }
 
                 resultRef.Add(bestRef);
@@ -2521,9 +2494,7 @@ namespace DotRecast.Detour
                     }
 
                     // Expand to neighbour
-                    tileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(neighbourRef);
-                    DtMeshTile neighbourTile = tileAndPoly.Item1;
-                    DtPoly neighbourPoly = tileAndPoly.Item2;
+                    m_nav.GetTileAndPolyByRefUnsafe(neighbourRef, out var neighbourTile, out var neighbourPoly);
 
                     // Do not advance if the polygon is excluded by the filter.
                     if (!filter.PassFilter(neighbourRef, neighbourTile, neighbourPoly))
@@ -2673,9 +2644,7 @@ namespace DotRecast.Detour
                 // Get poly and tile.
                 // The API input has been cheked already, skip checking internal data.
                 long bestRef = bestNode.id;
-                Tuple<DtMeshTile, DtPoly> tileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(bestRef);
-                DtMeshTile bestTile = tileAndPoly.Item1;
-                DtPoly bestPoly = tileAndPoly.Item2;
+                m_nav.GetTileAndPolyByRefUnsafe(bestRef, out var bestTile, out var bestPoly);
 
                 // Get parent poly and tile.
                 long parentRef = 0;
@@ -2688,9 +2657,7 @@ namespace DotRecast.Detour
 
                 if (parentRef != 0)
                 {
-                    tileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(parentRef);
-                    parentTile = tileAndPoly.Item1;
-                    parentPoly = tileAndPoly.Item2;
+                    m_nav.GetTileAndPolyByRefUnsafe(parentRef, out parentTile, out parentPoly);
                 }
 
                 resultRef.Add(bestRef);
@@ -2708,9 +2675,7 @@ namespace DotRecast.Detour
                     }
 
                     // Expand to neighbour
-                    tileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(neighbourRef);
-                    DtMeshTile neighbourTile = tileAndPoly.Item1;
-                    DtPoly neighbourPoly = tileAndPoly.Item2;
+                    m_nav.GetTileAndPolyByRefUnsafe(neighbourRef, out var neighbourTile, out var neighbourPoly);
 
                     // Do not advance if the polygon is excluded by the filter.
                     if (!filter.PassFilter(neighbourRef, neighbourTile, neighbourPoly))
@@ -2856,9 +2821,7 @@ namespace DotRecast.Detour
                 // Get poly and tile.
                 // The API input has been cheked already, skip checking internal data.
                 long curRef = curNode.id;
-                Tuple<DtMeshTile, DtPoly> tileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(curRef);
-                DtMeshTile curTile = tileAndPoly.Item1;
-                DtPoly curPoly = tileAndPoly.Item2;
+                m_nav.GetTileAndPolyByRefUnsafe(curRef, out var curTile, out var curPoly);
 
                 for (int i = curTile.polyLinks[curPoly.index]; i != DtNavMesh.DT_NULL_LINK; i = curTile.links[i].next)
                 {
@@ -2878,9 +2841,7 @@ namespace DotRecast.Detour
                     }
 
                     // Expand to neighbour
-                    tileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(neighbourRef);
-                    DtMeshTile neighbourTile = tileAndPoly.Item1;
-                    DtPoly neighbourPoly = tileAndPoly.Item2;
+                    m_nav.GetTileAndPolyByRefUnsafe(neighbourRef, out var neighbourTile, out var neighbourPoly);
 
                     // Skip off-mesh connections.
                     if (neighbourPoly.GetPolyType() == DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
@@ -2948,9 +2909,7 @@ namespace DotRecast.Detour
                         }
 
                         // Potentially overlapping.
-                        tileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(pastRef);
-                        DtMeshTile pastTile = tileAndPoly.Item1;
-                        DtPoly pastPoly = tileAndPoly.Item2;
+                        m_nav.GetTileAndPolyByRefUnsafe(pastRef, out var pastTile, out var pastPoly);
 
                         // Get vertices and test overlap
                         int npb = pastPoly.vertCount;
@@ -3053,9 +3012,7 @@ namespace DotRecast.Detour
                         {
                             if (link.refs != 0)
                             {
-                                Tuple<DtMeshTile, DtPoly> tileAndPolyUnsafe = m_nav.GetTileAndPolyByRefUnsafe(link.refs);
-                                DtMeshTile neiTile = tileAndPolyUnsafe.Item1;
-                                DtPoly neiPoly = tileAndPolyUnsafe.Item2;
+                                m_nav.GetTileAndPolyByRefUnsafe(link.refs, out var neiTile, out var neiPoly);
                                 if (filter.PassFilter(link.refs, neiTile, neiPoly))
                                 {
                                     InsertInterval(ints, link.bmin, link.bmax, link.refs);
@@ -3191,9 +3148,7 @@ namespace DotRecast.Detour
                 // Get poly and tile.
                 // The API input has been cheked already, skip checking internal data.
                 long bestRef = bestNode.id;
-                Tuple<DtMeshTile, DtPoly> tileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(bestRef);
-                DtMeshTile bestTile = tileAndPoly.Item1;
-                DtPoly bestPoly = tileAndPoly.Item2;
+                m_nav.GetTileAndPolyByRefUnsafe(bestRef, out var bestTile, out var bestPoly);
 
                 // Get parent poly and tile.
                 long parentRef = 0;
@@ -3217,9 +3172,7 @@ namespace DotRecast.Detour
                             {
                                 if (link.refs != 0)
                                 {
-                                    Tuple<DtMeshTile, DtPoly> linkTileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(link.refs);
-                                    DtMeshTile neiTile = linkTileAndPoly.Item1;
-                                    DtPoly neiPoly = linkTileAndPoly.Item2;
+                                    m_nav.GetTileAndPolyByRefUnsafe(link.refs, out var neiTile, out var neiPoly);
                                     if (filter.PassFilter(link.refs, neiTile, neiPoly))
                                     {
                                         solid = false;
@@ -3280,9 +3233,7 @@ namespace DotRecast.Detour
                     }
 
                     // Expand to neighbour.
-                    Tuple<DtMeshTile, DtPoly> neighbourTileAndPoly = m_nav.GetTileAndPolyByRefUnsafe(neighbourRef);
-                    DtMeshTile neighbourTile = neighbourTileAndPoly.Item1;
-                    DtPoly neighbourPoly = neighbourTileAndPoly.Item2;
+                    m_nav.GetTileAndPolyByRefUnsafe(neighbourRef, out var neighbourTile, out var neighbourPoly);
 
                     // Skip off-mesh connections.
                     if (neighbourPoly.GetPolyType() == DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)

@@ -334,8 +334,7 @@ public class TestNavmeshTool : ITool
                     var epos = RcVec3f.Of(m_epos.x, m_epos.y, m_epos.z);
                     if (m_polys[m_polys.Count - 1] != m_endRef)
                     {
-                        Result<ClosestPointOnPolyResult> result = m_navQuery
-                            .ClosestPointOnPoly(m_polys[m_polys.Count - 1], m_epos);
+                        Result<ClosestPointOnPolyResult> result = m_navQuery.ClosestPointOnPoly(m_polys[m_polys.Count - 1], m_epos);
                         if (result.Succeeded())
                         {
                             epos = result.result.GetClosest();
@@ -995,8 +994,7 @@ public class TestNavmeshTool : ITool
                     epos = m_epos;
                     if (m_polys[m_polys.Count - 1] != m_endRef)
                     {
-                        Result<ClosestPointOnPolyResult> result = m_navQuery
-                            .ClosestPointOnPoly(m_polys[m_polys.Count - 1], m_epos);
+                        Result<ClosestPointOnPolyResult> result = m_navQuery.ClosestPointOnPoly(m_polys[m_polys.Count - 1], m_epos);
                         if (result.Succeeded())
                         {
                             epos = result.result.GetClosest();

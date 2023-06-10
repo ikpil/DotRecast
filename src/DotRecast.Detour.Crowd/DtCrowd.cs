@@ -615,8 +615,7 @@ namespace DotRecast.Detour.Crowd
                         {
                             // Partial path, constrain target position inside the
                             // last polygon.
-                            Result<ClosestPointOnPolyResult> cr = _navQuery.ClosestPointOnPoly(reqPath[reqPath.Count - 1],
-                                ag.targetPos);
+                            Result<ClosestPointOnPolyResult> cr = _navQuery.ClosestPointOnPoly(reqPath[reqPath.Count - 1], ag.targetPos);
                             if (cr.Succeeded())
                             {
                                 reqPos = cr.result.GetClosest();

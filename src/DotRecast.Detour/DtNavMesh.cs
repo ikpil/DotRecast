@@ -243,10 +243,11 @@ namespace DotRecast.Detour
         /// reference is valid. This function is faster than #getTileAndPolyByRef,
         /// but
         /// it does not validate the reference.
-        public Tuple<DtMeshTile, DtPoly> GetTileAndPolyByRefUnsafe(long refs)
+        public void GetTileAndPolyByRefUnsafe(long refs, out DtMeshTile tile, out DtPoly poly)
         {
             DecodePolyId(refs, out var salt, out var it, out var ip);
-            return Tuple.Create(m_tiles[it], m_tiles[it].data.polys[ip]);
+            tile = m_tiles[it];
+            poly = m_tiles[it].data.polys[ip];
         }
 
         public bool IsValidPolyRef(long refs)
@@ -1302,9 +1303,7 @@ namespace DotRecast.Detour
 
         public ClosestPointOnPolyResult ClosestPointOnPoly(long refs, RcVec3f pos)
         {
-            Tuple<DtMeshTile, DtPoly> tileAndPoly = GetTileAndPolyByRefUnsafe(refs);
-            DtMeshTile tile = tileAndPoly.Item1;
-            DtPoly poly = tileAndPoly.Item2;
+            GetTileAndPolyByRefUnsafe(refs, out var tile, out var poly);
             RcVec3f closest = new RcVec3f();
             closest = pos;
             float? h = GetPolyHeight(tile, poly, pos);
