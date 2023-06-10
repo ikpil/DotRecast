@@ -195,8 +195,8 @@ public class TestNavmeshTool : ITool
                 {
                     List<long> polys = new(m_polys);
                     // Iterate over the path to find smooth path on the detail mesh surface.
-                    RcVec3f iterPos = m_navQuery.ClosestPointOnPoly(m_startRef, m_spos).result.GetClosest();
-                    RcVec3f targetPos = m_navQuery.ClosestPointOnPoly(polys[polys.Count - 1], m_epos).result.GetClosest();
+                    m_navQuery.ClosestPointOnPoly(m_startRef, m_spos, out var iterPos, out var _);
+                    m_navQuery.ClosestPointOnPoly(polys[polys.Count - 1], m_epos, out var targetPos, out var _);
 
                     float STEP_SIZE = 0.5f;
                     float SLOP = 0.01f;
@@ -334,10 +334,10 @@ public class TestNavmeshTool : ITool
                     var epos = RcVec3f.Of(m_epos.x, m_epos.y, m_epos.z);
                     if (m_polys[m_polys.Count - 1] != m_endRef)
                     {
-                        Result<ClosestPointOnPolyResult> result = m_navQuery.ClosestPointOnPoly(m_polys[m_polys.Count - 1], m_epos);
-                        if (result.Succeeded())
+                        var result = m_navQuery.ClosestPointOnPoly(m_polys[m_polys.Count - 1], m_epos, out var closest, out var _);
+                        if (result.IsSuccess())
                         {
-                            epos = result.result.GetClosest();
+                            epos = closest;
                         }
                     }
 
@@ -994,10 +994,10 @@ public class TestNavmeshTool : ITool
                     epos = m_epos;
                     if (m_polys[m_polys.Count - 1] != m_endRef)
                     {
-                        Result<ClosestPointOnPolyResult> result = m_navQuery.ClosestPointOnPoly(m_polys[m_polys.Count - 1], m_epos);
-                        if (result.Succeeded())
+                        var result = m_navQuery.ClosestPointOnPoly(m_polys[m_polys.Count - 1], m_epos, out var closest, out var _);
+                        if (result.IsSuccess())
                         {
-                            epos = result.result.GetClosest();
+                            epos = closest;
                         }
                     }
 

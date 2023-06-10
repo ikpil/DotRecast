@@ -175,8 +175,8 @@ namespace DotRecast.Detour
             float t = frand.Next();
 
             var pt = DetourCommon.RandomPointInConvexPoly(verts, poly.vertCount, areas, s, t);
-            ClosestPointOnPolyResult closest = ClosestPointOnPoly(polyRef, pt).result;
-            return Results.Success(new FindRandomPointResult(polyRef, closest.GetClosest()));
+            ClosestPointOnPoly(polyRef, pt, out var closest, out var _);
+            return Results.Success(new FindRandomPointResult(polyRef, closest));
         }
 
         /**
@@ -395,8 +395,8 @@ namespace DotRecast.Detour
 
             float[] areas = new float[randomPolyVerts.Length / 3];
             RcVec3f pt = DetourCommon.RandomPointInConvexPoly(randomPolyVerts, randomPolyVerts.Length / 3, areas, s, t);
-            ClosestPointOnPolyResult closest = ClosestPointOnPoly(randomPolyRef, pt).result;
-            return Results.Success(new FindRandomPointResult(randomPolyRef, closest.GetClosest()));
+            ClosestPointOnPoly(randomPolyRef, pt, out var closest, out var _);
+            return Results.Success(new FindRandomPointResult(randomPolyRef, closest));
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////
@@ -414,14 +414,18 @@ namespace DotRecast.Detour
         /// @param[out] closest
         /// @param[out] posOverPoly
         /// @returns The status flags for the query.
-        public Result<ClosestPointOnPolyResult> ClosestPointOnPoly(long refs, RcVec3f pos)
+        public DtStatus ClosestPointOnPoly(long refs, RcVec3f pos, out RcVec3f closest, out bool posOverPoly)
         {
+            closest = RcVec3f.Zero;
+            posOverPoly = false;
+            
             if (!m_nav.IsValidPolyRef(refs) || !RcVec3f.IsFinite(pos))
             {
-                return Results.InvalidParam<ClosestPointOnPolyResult>();
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            return Results.Success(m_nav.ClosestPointOnPoly(refs, pos));
+            m_nav.ClosestPointOnPoly(refs, pos, out closest, out posOverPoly);
+            return DtStatus.DT_SUCCSESS;
         }
 
         /// @par
@@ -1005,20 +1009,17 @@ namespace DotRecast.Detour
      *            query options (see: #FindPathOptions)
      * @return
      */
-        public DtStatus InitSlicedFindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter,
-            int options)
+        public DtStatus InitSlicedFindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter, int options)
         {
             return InitSlicedFindPath(startRef, endRef, startPos, endPos, filter, options, new DefaultQueryHeuristic(), -1.0f);
         }
 
-        public DtStatus InitSlicedFindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter,
-            int options, float raycastLimit)
+        public DtStatus InitSlicedFindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter, int options, float raycastLimit)
         {
             return InitSlicedFindPath(startRef, endRef, startPos, endPos, filter, options, new DefaultQueryHeuristic(), raycastLimit);
         }
 
-        public DtStatus InitSlicedFindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter,
-            int options, IQueryHeuristic heuristic, float raycastLimit)
+        public DtStatus InitSlicedFindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter, int options, IQueryHeuristic heuristic, float raycastLimit)
         {
             // Init path state.
             m_query = new DtQueryData();

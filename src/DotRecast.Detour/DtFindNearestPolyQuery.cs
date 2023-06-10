@@ -24,9 +24,7 @@ namespace DotRecast.Detour
         public void Process(DtMeshTile tile, DtPoly poly, long refs)
         {
             // Find nearest polygon amongst the nearby polygons.
-            Result<ClosestPointOnPolyResult> closest = query.ClosestPointOnPoly(refs, center);
-            bool posOverPoly = closest.result.IsPosOverPoly();
-            var closestPtPoly = closest.result.GetClosest();
+            query.ClosestPointOnPoly(refs, center, out var closestPtPoly, out var posOverPoly);
 
             // If a point is directly over a polygon and closer than
             // climb height, favor that instead of straight line nearest point.

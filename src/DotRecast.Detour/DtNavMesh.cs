@@ -1301,17 +1301,20 @@ namespace DotRecast.Detour
             return closest.y;
         }
 
-        public ClosestPointOnPolyResult ClosestPointOnPoly(long refs, RcVec3f pos)
+        public void ClosestPointOnPoly(long refs, RcVec3f pos, out RcVec3f closest, out bool posOverPoly)
         {
             GetTileAndPolyByRefUnsafe(refs, out var tile, out var poly);
-            RcVec3f closest = new RcVec3f();
             closest = pos;
+
             float? h = GetPolyHeight(tile, poly, pos);
             if (null != h)
             {
                 closest.y = h.Value;
-                return new ClosestPointOnPolyResult(true, closest);
+                posOverPoly = true;
+                return;
             }
+
+            posOverPoly = false;
 
             // Off-mesh connections don't have detail polygons.
             if (poly.GetPolyType() == DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
@@ -1320,12 +1323,13 @@ namespace DotRecast.Detour
                 var v0 = new RcVec3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
                 i = poly.verts[1] * 3;
                 var v1 = new RcVec3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
-                var distSqr = DetourCommon.DistancePtSegSqr2D(pos, v0, v1, out var t);
-                return new ClosestPointOnPolyResult(false, RcVec3f.Lerp(v0, v1, t));
+                DetourCommon.DistancePtSegSqr2D(pos, v0, v1, out var t);
+                closest = RcVec3f.Lerp(v0, v1, t);
+                return;
             }
 
             // Outside poly that is not an offmesh connection.
-            return new ClosestPointOnPolyResult(false, ClosestPointOnDetailEdges(tile, poly, pos, true));
+            closest = ClosestPointOnDetailEdges(tile, poly, pos, true);
         }
 
         FindNearestPolyResult FindNearestPolyInTile(DtMeshTile tile, RcVec3f center, RcVec3f extents)
@@ -1345,9 +1349,7 @@ namespace DotRecast.Detour
             {
                 long refs = polys[i];
                 float d;
-                ClosestPointOnPolyResult cpp = ClosestPointOnPoly(refs, center);
-                bool posOverPoly = cpp.IsPosOverPoly();
-                RcVec3f closestPtPoly = cpp.GetClosest();
+                ClosestPointOnPoly(refs, center, out var closestPtPoly, out var posOverPoly);
 
                 // If a point is directly over a polygon and closer than
                 // climb height, favor that instead of straight line nearest point.
