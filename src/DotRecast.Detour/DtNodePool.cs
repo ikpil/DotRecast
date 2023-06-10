@@ -64,7 +64,6 @@ namespace DotRecast.Detour
         public DtNode GetNode(long id, int state)
         {
             var hasNode = m_map.TryGetValue(id, out var nodes);
-            ;
             if (nodes != null)
             {
                 foreach (DtNode node in nodes)

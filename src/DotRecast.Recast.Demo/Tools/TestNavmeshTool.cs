@@ -491,14 +491,14 @@ public class TestNavmeshTool : ITool
                 IPolygonByCircleConstraint constraint = constrainByCircle
                     ? StrictPolygonByCircleConstraint.Strict
                     : NoOpPolygonByCircleConstraint.Noop;
-                
+
                 for (int i = 0; i < 200; i++)
                 {
-                    Result<FindRandomPointResult> result = m_navQuery.FindRandomPointAroundCircle(m_startRef, m_spos, dist,
-                        m_filter, new FRand(), constraint);
-                    if (result.Succeeded())
+                    var status = m_navQuery.FindRandomPointAroundCircle(m_startRef, m_spos, dist, m_filter, new FRand(), constraint,
+                        out var randomRef, out var randomPt);
+                    if (status.Succeeded())
                     {
-                        randomPoints.Add(result.result.GetRandomPt());
+                        randomPoints.Add(randomPt);
                     }
                 }
             }

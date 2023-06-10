@@ -202,11 +202,7 @@ namespace DotRecast.Detour
         public DtStatus FindRandomPointAroundCircle(long startRef, RcVec3f centerPos, float maxRadius,
             IDtQueryFilter filter, FRand frand, out long randomRef, out RcVec3f randomPt)
         {
-            var result = FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, NoOpPolygonByCircleConstraint.Noop);
-            randomRef = result.result.GetRandomRef();
-            randomPt = result.result.GetRandomPt();
-            
-            return result.status;
+            return FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, NoOpPolygonByCircleConstraint.Noop, out randomRef, out randomPt);
         }
 
         /**
@@ -227,28 +223,27 @@ namespace DotRecast.Detour
         public DtStatus FindRandomPointWithinCircle(long startRef, RcVec3f centerPos, float maxRadius,
             IDtQueryFilter filter, FRand frand, out long randomRef, out RcVec3f randomPt)
         {
-            var result = FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, StrictPolygonByCircleConstraint.Strict);
-            randomRef = result.result.GetRandomRef();
-            randomPt = result.result.GetRandomPt();
-            
-            return result.status;
+            return FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, StrictPolygonByCircleConstraint.Strict, out randomRef, out randomPt);
         }
 
-        public Result<FindRandomPointResult> FindRandomPointAroundCircle(long startRef, RcVec3f centerPos, float maxRadius,
-            IDtQueryFilter filter, FRand frand, 
-            IPolygonByCircleConstraint constraint)
+        public DtStatus FindRandomPointAroundCircle(long startRef, RcVec3f centerPos, float maxRadius,
+            IDtQueryFilter filter, FRand frand, IPolygonByCircleConstraint constraint,
+            out long randomRef, out RcVec3f randomPt)
         {
+            randomRef = startRef;
+            randomPt = centerPos;
+
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(centerPos) || maxRadius < 0
                 || !float.IsFinite(maxRadius) || null == filter || null == frand)
             {
-                return Results.InvalidParam<FindRandomPointResult>();
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             m_nav.GetTileAndPolyByRefUnsafe(startRef, out var startTile, out var startPoly);
             if (!filter.PassFilter(startRef, startTile, startPoly))
             {
-                return Results.InvalidParam<FindRandomPointResult>("Invalid start ref");
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             m_nodePool.Clear();
@@ -262,6 +257,8 @@ namespace DotRecast.Detour
             startNode.id = startRef;
             startNode.flags = DT_NODE_OPEN;
             m_openList.Push(startNode);
+
+            DtStatus status = DtStatus.DT_SUCCSESS;
 
             float radiusSqr = maxRadius * maxRadius;
             float areaSum = 0.0f;
@@ -360,6 +357,11 @@ namespace DotRecast.Detour
                     }
 
                     DtNode neighbourNode = m_nodePool.GetNode(neighbourRef);
+                    if (null == neighbourNode)
+                    {
+                        status |= DtStatus.DT_OUT_OF_NODES;
+                        continue;
+                    }
 
                     if ((neighbourNode.flags & DtNode.DT_NODE_CLOSED) != 0)
                     {
@@ -399,7 +401,7 @@ namespace DotRecast.Detour
 
             if (randomPoly == null)
             {
-                return Results.Failure<FindRandomPointResult>();
+                return DtStatus.DT_FAILURE;
             }
 
             // Randomly pick point on polygon.
@@ -409,7 +411,9 @@ namespace DotRecast.Detour
             float[] areas = new float[randomPolyVerts.Length / 3];
             RcVec3f pt = DetourCommon.RandomPointInConvexPoly(randomPolyVerts, randomPolyVerts.Length / 3, areas, s, t);
             ClosestPointOnPoly(randomPolyRef, pt, out var closest, out var _);
-            return Results.Success(new FindRandomPointResult(randomPolyRef, closest));
+            Results.Success(new FindRandomPointResult(randomPolyRef, closest));
+
+            return status;
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////
