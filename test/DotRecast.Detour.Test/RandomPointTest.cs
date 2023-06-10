@@ -37,16 +37,17 @@ public class RandomPointTest : AbstractDetourTest
         {
             var status = query.FindRandomPoint(filter, f, out var randomRef, out var randomPt);
             Assert.That(status.Succeeded(), Is.True);
-            Tuple<DtMeshTile, DtPoly> tileAndPoly = navmesh.GetTileAndPolyByRef(randomRef).result;
+
+            status = navmesh.GetTileAndPolyByRef(randomRef, out var tile, out var poly);
             float[] bmin = new float[2];
             float[] bmax = new float[2];
-            for (int j = 0; j < tileAndPoly.Item2.vertCount; j++)
+            for (int j = 0; j < poly.vertCount; j++)
             {
-                int v = tileAndPoly.Item2.verts[j] * 3;
-                bmin[0] = j == 0 ? tileAndPoly.Item1.data.verts[v] : Math.Min(bmin[0], tileAndPoly.Item1.data.verts[v]);
-                bmax[0] = j == 0 ? tileAndPoly.Item1.data.verts[v] : Math.Max(bmax[0], tileAndPoly.Item1.data.verts[v]);
-                bmin[1] = j == 0 ? tileAndPoly.Item1.data.verts[v + 2] : Math.Min(bmin[1], tileAndPoly.Item1.data.verts[v + 2]);
-                bmax[1] = j == 0 ? tileAndPoly.Item1.data.verts[v + 2] : Math.Max(bmax[1], tileAndPoly.Item1.data.verts[v + 2]);
+                int v = poly.verts[j] * 3;
+                bmin[0] = j == 0 ? tile.data.verts[v] : Math.Min(bmin[0], tile.data.verts[v]);
+                bmax[0] = j == 0 ? tile.data.verts[v] : Math.Max(bmax[0], tile.data.verts[v]);
+                bmin[1] = j == 0 ? tile.data.verts[v + 2] : Math.Min(bmin[1], tile.data.verts[v + 2]);
+                bmax[1] = j == 0 ? tile.data.verts[v + 2] : Math.Max(bmax[1], tile.data.verts[v + 2]);
             }
 
             Assert.That(randomPt.x >= bmin[0], Is.True);
@@ -69,18 +70,18 @@ public class RandomPointTest : AbstractDetourTest
 
             randomRef = nextRandomRef;
             randomPt = nextRandomPt;
-            
-            Tuple<DtMeshTile, DtPoly> tileAndPoly = navmesh.GetTileAndPolyByRef(randomRef).result;
+
+            status = navmesh.GetTileAndPolyByRef(randomRef, out var tile, out var poly);
             
             float[] bmin = new float[2];
             float[] bmax = new float[2];
-            for (int j = 0; j < tileAndPoly.Item2.vertCount; j++)
+            for (int j = 0; j < poly.vertCount; j++)
             {
-                int v = tileAndPoly.Item2.verts[j] * 3;
-                bmin[0] = j == 0 ? tileAndPoly.Item1.data.verts[v] : Math.Min(bmin[0], tileAndPoly.Item1.data.verts[v]);
-                bmax[0] = j == 0 ? tileAndPoly.Item1.data.verts[v] : Math.Max(bmax[0], tileAndPoly.Item1.data.verts[v]);
-                bmin[1] = j == 0 ? tileAndPoly.Item1.data.verts[v + 2] : Math.Min(bmin[1], tileAndPoly.Item1.data.verts[v + 2]);
-                bmax[1] = j == 0 ? tileAndPoly.Item1.data.verts[v + 2] : Math.Max(bmax[1], tileAndPoly.Item1.data.verts[v + 2]);
+                int v = poly.verts[j] * 3;
+                bmin[0] = j == 0 ? tile.data.verts[v] : Math.Min(bmin[0], tile.data.verts[v]);
+                bmax[0] = j == 0 ? tile.data.verts[v] : Math.Max(bmax[0], tile.data.verts[v]);
+                bmin[1] = j == 0 ? tile.data.verts[v + 2] : Math.Min(bmin[1], tile.data.verts[v + 2]);
+                bmax[1] = j == 0 ? tile.data.verts[v + 2] : Math.Max(bmax[1], tile.data.verts[v + 2]);
             }
 
             Assert.That(randomPt.x >= bmin[0], Is.True);

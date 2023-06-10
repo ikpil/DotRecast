@@ -264,16 +264,14 @@ namespace DotRecast.Detour
                 // The API input has been cheked already, skip checking internal
                 // data.
                 long bestRef = bestNode.id;
-                Result<Tuple<DtMeshTile, DtPoly>> tileAndPoly = m_nav.GetTileAndPolyByRef(bestRef);
-                if (tileAndPoly.Failed())
+                var status = m_nav.GetTileAndPolyByRef(bestRef, out var bestTile, out var bestPoly);
+                if (status.Failed())
                 {
                     m_query.status = DtStatus.DT_FAILURE;
                     // The polygon has disappeared during the sliced query, fail.
                     return Results.Of(m_query.status, iter);
                 }
 
-                DtMeshTile bestTile = tileAndPoly.result.Item1;
-                DtPoly bestPoly = tileAndPoly.result.Item2;
                 // Get parent and grand parent poly and tile.
                 long parentRef = 0, grandpaRef = 0;
                 DtMeshTile parentTile = null;
@@ -292,8 +290,8 @@ namespace DotRecast.Detour
                 if (parentRef != 0)
                 {
                     bool invalidParent = false;
-                    tileAndPoly = m_nav.GetTileAndPolyByRef(parentRef);
-                    invalidParent = tileAndPoly.Failed();
+                    status = m_nav.GetTileAndPolyByRef(parentRef, out parentTile, out parentPoly);
+                    invalidParent = status.Failed();
                     if (invalidParent || (grandpaRef != 0 && !m_nav.IsValidPolyRef(grandpaRef)))
                     {
                         // The polygon has disappeared during the sliced query,
@@ -301,9 +299,6 @@ namespace DotRecast.Detour
                         m_query.status = DtStatus.DT_FAILURE;
                         return Results.Of(m_query.status, iter);
                     }
-
-                    parentTile = tileAndPoly.result.Item1;
-                    parentPoly = tileAndPoly.result.Item2;
                 }
 
                 // decide whether to test raycast to previous nodes

@@ -153,14 +153,12 @@ namespace DotRecast.Detour
             // Get connected polygons
             List<long> neis = new List<long>();
 
-            Result<Tuple<DtMeshTile, DtPoly>> tileAndPoly = navQuery.GetAttachedNavMesh().GetTileAndPolyByRef(path[0]);
-            if (tileAndPoly.Failed())
+            var status = navQuery.GetAttachedNavMesh().GetTileAndPolyByRef(path[0], out var tile, out var poly);
+            if (status.Failed())
             {
                 return path;
             }
 
-            DtMeshTile tile = tileAndPoly.result.Item1;
-            DtPoly poly = tileAndPoly.result.Item2;
 
             for (int k = tile.polyLinks[poly.index]; k != DtNavMesh.DT_NULL_LINK; k = tile.links[k].next)
             {

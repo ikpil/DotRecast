@@ -1281,15 +1281,11 @@ public class RecastDebugDraw : DebugDraw
             return;
         }
 
-        Result<Tuple<DtMeshTile, DtPoly>> tileAndPolyResult = mesh.GetTileAndPolyByRef(refs);
-        if (tileAndPolyResult.Failed())
+        var status = mesh.GetTileAndPolyByRef(refs, out var tile, out var poly);
+        if (status.Failed())
         {
             return;
         }
-
-        Tuple<DtMeshTile, DtPoly> tileAndPoly = tileAndPolyResult.result;
-        DtMeshTile tile = tileAndPoly.Item1;
-        DtPoly poly = tileAndPoly.Item2;
 
         DepthMask(false);
 

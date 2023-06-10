@@ -211,30 +211,41 @@ namespace DotRecast.Detour
             ty = (int)Math.Floor((pos.z - m_orig.z) / m_tileHeight);
         }
 
-        public Result<Tuple<DtMeshTile, DtPoly>> GetTileAndPolyByRef(long refs)
+        /// Gets the tile and polygon for the specified polygon reference.
+        ///  @param[in]		ref		The reference for the a polygon.
+        ///  @param[out]	tile	The tile containing the polygon.
+        ///  @param[out]	poly	The polygon.
+        /// @return The status flags for the operation.
+        public DtStatus GetTileAndPolyByRef(long refs, out DtMeshTile tile, out DtPoly poly)
         {
+            tile = null;
+            poly = null;
+
             if (refs == 0)
             {
-                return Results.InvalidParam<Tuple<DtMeshTile, DtPoly>>("ref = 0");
+                return DtStatus.DT_FAILURE;
             }
 
             DecodePolyId(refs, out var salt, out var it, out var ip);
             if (it >= m_maxTiles)
             {
-                return Results.InvalidParam<Tuple<DtMeshTile, DtPoly>>("tile > m_maxTiles");
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             if (m_tiles[it].salt != salt || m_tiles[it].data.header == null)
             {
-                return Results.InvalidParam<Tuple<DtMeshTile, DtPoly>>("Invalid salt or header");
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             if (ip >= m_tiles[it].data.header.polyCount)
             {
-                return Results.InvalidParam<Tuple<DtMeshTile, DtPoly>>("poly > polyCount");
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            return Results.Success(Tuple.Create(m_tiles[it], m_tiles[it].data.polys[ip]));
+            tile = m_tiles[it];
+            poly = m_tiles[it].data.polys[ip];
+
+            return DtStatus.DT_SUCCSESS;
         }
 
         /// @par

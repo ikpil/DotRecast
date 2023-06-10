@@ -951,11 +951,9 @@ public class TestNavmeshTool : ITool
     {
         RcVec3f center = RcVec3f.Zero;
 
-        Result<Tuple<DtMeshTile, DtPoly>> tileAndPoly = navMesh.GetTileAndPolyByRef(refs);
-        if (tileAndPoly.Succeeded())
+        var status = navMesh.GetTileAndPolyByRef(refs, out var tile, out var poly);
+        if (status.Succeeded())
         {
-            DtMeshTile tile = tileAndPoly.result.Item1;
-            DtPoly poly = tileAndPoly.result.Item2;
             for (int i = 0; i < poly.vertCount; ++i)
             {
                 int v = poly.verts[i] * 3;

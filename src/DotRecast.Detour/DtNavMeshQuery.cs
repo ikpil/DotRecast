@@ -466,14 +466,12 @@ namespace DotRecast.Detour
         /// @returns The status flags for the query.
         public Result<RcVec3f> ClosestPointOnPolyBoundary(long refs, RcVec3f pos)
         {
-            Result<Tuple<DtMeshTile, DtPoly>> tileAndPoly = m_nav.GetTileAndPolyByRef(refs);
-            if (tileAndPoly.Failed())
+            var status = m_nav.GetTileAndPolyByRef(refs, out var tile, out var poly);
+            if (status.Failed())
             {
-                return Results.Of<RcVec3f>(tileAndPoly.status, tileAndPoly.message);
+                return Results.Of<RcVec3f>(status, "");
             }
 
-            DtMeshTile tile = tileAndPoly.result.Item1;
-            DtPoly poly = tileAndPoly.result.Item2;
             if (tile == null)
             {
                 return Results.InvalidParam<RcVec3f>("Invalid tile");
@@ -533,14 +531,11 @@ namespace DotRecast.Detour
         /// @returns The status flags for the query.
         public Result<float> GetPolyHeight(long refs, RcVec3f pos)
         {
-            Result<Tuple<DtMeshTile, DtPoly>> tileAndPoly = m_nav.GetTileAndPolyByRef(refs);
-            if (tileAndPoly.Failed())
+            var status = m_nav.GetTileAndPolyByRef(refs, out var tile, out var poly);
+            if (status.Failed())
             {
-                return Results.Of<float>(tileAndPoly.status, tileAndPoly.message);
+                return Results.Of<float>(status, "");
             }
-
-            DtMeshTile tile = tileAndPoly.result.Item1;
-            DtPoly poly = tileAndPoly.result.Item2;
 
             if (!RcVec3f.IsFinite2D(pos))
             {
@@ -1136,16 +1131,14 @@ namespace DotRecast.Detour
                 // The API input has been cheked already, skip checking internal
                 // data.
                 long bestRef = bestNode.id;
-                Result<Tuple<DtMeshTile, DtPoly>> tileAndPoly = m_nav.GetTileAndPolyByRef(bestRef);
-                if (tileAndPoly.Failed())
+                var status = m_nav.GetTileAndPolyByRef(bestRef, out var bestTile, out var bestPoly);
+                if (status.Failed())
                 {
                     m_query.status = DtStatus.DT_FAILURE;
                     // The polygon has disappeared during the sliced query, fail.
                     return Results.Of(m_query.status, iter);
                 }
 
-                DtMeshTile bestTile = tileAndPoly.result.Item1;
-                DtPoly bestPoly = tileAndPoly.result.Item2;
                 // Get parent and grand parent poly and tile.
                 long parentRef = 0, grandpaRef = 0;
                 DtMeshTile parentTile = null;
@@ -1164,8 +1157,8 @@ namespace DotRecast.Detour
                 if (parentRef != 0)
                 {
                     bool invalidParent = false;
-                    tileAndPoly = m_nav.GetTileAndPolyByRef(parentRef);
-                    invalidParent = tileAndPoly.Failed();
+                    status = m_nav.GetTileAndPolyByRef(parentRef, out parentTile, out parentPoly);
+                    invalidParent = status.Failed();
                     if (invalidParent || (grandpaRef != 0 && !m_nav.IsValidPolyRef(grandpaRef)))
                     {
                         // The polygon has disappeared during the sliced query,
@@ -1173,9 +1166,6 @@ namespace DotRecast.Detour
                         m_query.status = DtStatus.DT_FAILURE;
                         return Results.Of(m_query.status, iter);
                     }
-
-                    parentTile = tileAndPoly.result.Item1;
-                    parentPoly = tileAndPoly.result.Item2;
                 }
 
                 // decide whether to test raycast to previous nodes
@@ -1464,24 +1454,18 @@ namespace DotRecast.Detour
             {
                 // Calculate portal
                 long from = path[i];
-                Result<Tuple<DtMeshTile, DtPoly>> tileAndPoly = m_nav.GetTileAndPolyByRef(from);
-                if (tileAndPoly.Failed())
+                var status = m_nav.GetTileAndPolyByRef(from, out var fromTile, out var fromPoly);
+                if (status.Failed())
                 {
                     return DtStatus.DT_FAILURE;
                 }
-
-                DtMeshTile fromTile = tileAndPoly.result.Item1;
-                DtPoly fromPoly = tileAndPoly.result.Item2;
 
                 long to = path[i + 1];
-                tileAndPoly = m_nav.GetTileAndPolyByRef(to);
-                if (tileAndPoly.Failed())
+                status = m_nav.GetTileAndPolyByRef(to, out var toTile, out var toPoly);
+                if (status.Failed())
                 {
                     return DtStatus.DT_FAILURE;
                 }
-
-                DtMeshTile toTile = tileAndPoly.result.Item1;
-                DtPoly toPoly = tileAndPoly.result.Item2;
 
                 Result<PortalResult> portals = GetPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, 0, 0);
                 if (portals.Failed())
@@ -1969,26 +1953,20 @@ namespace DotRecast.Detour
 
         protected Result<PortalResult> GetPortalPoints(long from, long to)
         {
-            Result<Tuple<DtMeshTile, DtPoly>> tileAndPolyResult = m_nav.GetTileAndPolyByRef(from);
-            if (tileAndPolyResult.Failed())
+            var status = m_nav.GetTileAndPolyByRef(from, out var fromTile, out var fromPoly);
+            if (status.Failed())
             {
-                return Results.Of<PortalResult>(tileAndPolyResult.status, tileAndPolyResult.message);
+                return Results.Of<PortalResult>(status, "");
             }
 
-            Tuple<DtMeshTile, DtPoly> tileAndPoly = tileAndPolyResult.result;
-            DtMeshTile fromTile = tileAndPoly.Item1;
-            DtPoly fromPoly = tileAndPoly.Item2;
             int fromType = fromPoly.GetPolyType();
 
-            tileAndPolyResult = m_nav.GetTileAndPolyByRef(to);
-            if (tileAndPolyResult.Failed())
+            status = m_nav.GetTileAndPolyByRef(to, out var toTile, out var toPoly);
+            if (status.Failed())
             {
-                return Results.Of<PortalResult>(tileAndPolyResult.status, tileAndPolyResult.message);
+                return Results.Of<PortalResult>(status, "");
             }
 
-            tileAndPoly = tileAndPolyResult.result;
-            DtMeshTile toTile = tileAndPoly.Item1;
-            DtPoly toPoly = tileAndPoly.Item2;
             int toType = toPoly.GetPolyType();
 
             return GetPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, fromType, toType);
@@ -3000,19 +2978,16 @@ namespace DotRecast.Detour
         /// @returns The status flags for the query.
         public Result<GetPolyWallSegmentsResult> GetPolyWallSegments(long refs, bool storePortals, IDtQueryFilter filter)
         {
-            Result<Tuple<DtMeshTile, DtPoly>> tileAndPoly = m_nav.GetTileAndPolyByRef(refs);
-            if (tileAndPoly.Failed())
+            var status = m_nav.GetTileAndPolyByRef(refs, out var tile, out var poly);
+            if (status.Failed())
             {
-                return Results.Of<GetPolyWallSegmentsResult>(tileAndPoly.status, tileAndPoly.message);
+                return Results.Of<GetPolyWallSegmentsResult>(status, "");
             }
 
             if (null == filter)
             {
                 return Results.InvalidParam<GetPolyWallSegmentsResult>();
             }
-
-            DtMeshTile tile = tileAndPoly.result.Item1;
-            DtPoly poly = tileAndPoly.result.Item2;
 
             List<long> segmentRefs = new List<long>();
             List<SegmentVert> segmentVerts = new List<SegmentVert>();
@@ -3338,15 +3313,14 @@ namespace DotRecast.Detour
         /// @param[in] filter The filter to apply.
         public bool IsValidPolyRef(long refs, IDtQueryFilter filter)
         {
-            Result<Tuple<DtMeshTile, DtPoly>> tileAndPolyResult = m_nav.GetTileAndPolyByRef(refs);
-            if (tileAndPolyResult.Failed())
+            var status = m_nav.GetTileAndPolyByRef(refs, out var tile, out var poly);
+            if (status.Failed())
             {
                 return false;
             }
-
-            Tuple<DtMeshTile, DtPoly> tileAndPoly = tileAndPolyResult.result;
+            
             // If cannot pass filter, assume flags has changed and boundary is invalid.
-            if (!filter.PassFilter(refs, tileAndPoly.Item1, tileAndPoly.Item2))
+            if (!filter.PassFilter(refs, tile, poly))
             {
                 return false;
             }
