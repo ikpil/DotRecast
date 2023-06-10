@@ -18,6 +18,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System.Runtime.CompilerServices;
+
 namespace DotRecast.Detour
 {
     public class DtStatus
@@ -44,6 +46,30 @@ namespace DotRecast.Detour
         private DtStatus(uint value)
         {
             Value = value;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsSuccess()
+        {
+            return 0 != (Value & (DT_SUCCSESS.Value | DT_PARTIAL_RESULT.Value));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsFailed()
+        {
+            return 0 != (Value & (DT_FAILURE.Value | DT_INVALID_PARAM.Value));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsInProgress()
+        {
+            return 0 != (Value & DT_IN_PROGRESS.Value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsPartial()
+        {
+            return 0 != (Value & DT_PARTIAL_RESULT.Value);
         }
     }
 }
