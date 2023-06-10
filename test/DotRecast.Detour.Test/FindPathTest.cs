@@ -160,7 +160,7 @@ public class FindPathTest : AbstractDetourTest
             var endPos = endPoss[i];
             query.InitSlicedFindPath(startRef, endRef, startPos, endPos, filter, DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE);
             DtStatus status = DtStatus.DT_IN_PROGRESS;
-            while (status == DtStatus.DT_IN_PROGRESS)
+            while (status.IsInProgress())
             {
                 Result<int> res = query.UpdateSlicedFindPath(10);
                 status = res.status;

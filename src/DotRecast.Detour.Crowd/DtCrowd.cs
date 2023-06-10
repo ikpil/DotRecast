@@ -698,7 +698,7 @@ namespace DotRecast.Detour.Crowd
                     // _telemetry.RecordPathWaitTime(ag.targetReplanTime);
                     // Poll path queue.
                     DtStatus status = ag.targetPathQueryResult.status;
-                    if (status != null && status.IsFailed())
+                    if (status.IsFailed())
                     {
                         // Path find failed, retry if the target location is still
                         // valid.
@@ -714,7 +714,7 @@ namespace DotRecast.Detour.Crowd
 
                         ag.targetReplanTime = 0;
                     }
-                    else if (status != null && status.IsSuccess())
+                    else if (status.IsSuccess())
                     {
                         List<long> path = ag.corridor.GetPath();
                         if (0 == path.Count)

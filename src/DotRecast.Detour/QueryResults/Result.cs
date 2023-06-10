@@ -34,7 +34,7 @@ namespace DotRecast.Detour.QueryResults
 
         public static Result<T> InvalidParam<T>()
         {
-            return new Result<T>(default, DtStatus.DT_INVALID_PARAM, null);
+            return new Result<T>(default, DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM, null);
         }
 
         public static Result<T> Failure<T>(string message)
@@ -44,7 +44,7 @@ namespace DotRecast.Detour.QueryResults
 
         public static Result<T> InvalidParam<T>(string message)
         {
-            return new Result<T>(default, DtStatus.DT_INVALID_PARAM, message);
+            return new Result<T>(default, DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM, message);
         }
 
         public static Result<T> Failure<T>(T result)

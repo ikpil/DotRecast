@@ -26,14 +26,12 @@ namespace DotRecast.Detour.Crowd
     {
         /// Path find start and end location.
         public RcVec3f startPos = new RcVec3f();
-
         public RcVec3f endPos = new RcVec3f();
         public long startRef;
         public long endRef;
-        public IDtQueryFilter filter;
-
-        /// < TODO: This is potentially dangerous!
+        
         public readonly DtPathQueryResult result = new DtPathQueryResult();
+        public IDtQueryFilter filter; // < TODO: This is potentially dangerous!
 
         public DtNavMeshQuery navQuery;
     }

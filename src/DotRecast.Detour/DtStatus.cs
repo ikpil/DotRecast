@@ -22,8 +22,10 @@ using System.Runtime.CompilerServices;
 
 namespace DotRecast.Detour
 {
-    public class DtStatus
+    public readonly struct DtStatus
     {
+        public static readonly DtStatus Empty = new DtStatus(0);
+
         // High level status.
         public static readonly DtStatus DT_FAILURE = new DtStatus(1u << 31); // Operation failed. 
         public static readonly DtStatus DT_SUCCSESS = new DtStatus(1u << 30); // Operation succeed. 
@@ -40,12 +42,17 @@ namespace DotRecast.Detour
         public static readonly DtStatus DT_PARTIAL_RESULT = new DtStatus(1 << 6); // Query did not reach the end location, returning best guess. 
         public static readonly DtStatus DT_ALREADY_OCCUPIED = new DtStatus(1 << 7); // A tile has already been assigned to the given x,y coordinate
 
-
         public readonly uint Value;
 
         private DtStatus(uint value)
         {
             Value = value;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsEmpty()
+        {
+            return 0 == Value;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -70,6 +77,18 @@ namespace DotRecast.Detour
         public bool IsPartial()
         {
             return 0 != (Value & DT_PARTIAL_RESULT.Value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DtStatus operator |(DtStatus left, DtStatus right)
+        {
+            return new DtStatus(left.Value | right.Value);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DtStatus operator &(DtStatus left, DtStatus right)
+        {
+            return new DtStatus(left.Value & right.Value);
         }
     }
 }

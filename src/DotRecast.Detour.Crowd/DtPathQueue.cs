@@ -49,7 +49,7 @@ namespace DotRecast.Detour.Crowd
                 queue.RemoveFirst();
 
                 // Handle query start.
-                if (q.result.status == null)
+                if (q.result.status.IsEmpty())
                 {
                     q.navQuery = new DtNavMeshQuery(navMesh);
                     q.result.status = q.navQuery.InitSlicedFindPath(q.startRef, q.endRef, q.startPos, q.endPos, q.filter, 0);
@@ -89,7 +89,6 @@ namespace DotRecast.Detour.Crowd
             q.startRef = startRef;
             q.endPos = endPos;
             q.endRef = endRef;
-            q.result.status = null;
             q.filter = filter;
             queue.AddLast(q);
             return q.result;
