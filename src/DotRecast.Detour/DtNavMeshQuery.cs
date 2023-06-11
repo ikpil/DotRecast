@@ -1766,37 +1766,46 @@ namespace DotRecast.Detour
 
         /// @par
         ///
-        /// This method is optimized for small delta movement and a small number of
-        /// polygons. If used for too great a distance, the result set will form an
+        /// This method is optimized for small delta movement and a small number of 
+        /// polygons. If used for too great a distance, the result set will form an 
         /// incomplete path.
         ///
-        /// @p resultPos will equal the @p endPos if the end is reached.
+        /// @p resultPos will equal the @p endPos if the end is reached. 
         /// Otherwise the closest reachable position will be returned.
-        ///
-        /// @p resultPos is not projected onto the surface of the navigation
+        /// 
+        /// @p resultPos is not projected onto the surface of the navigation 
         /// mesh. Use #getPolyHeight if this is needed.
         ///
-        /// This method treats the end position in the same manner as
-        /// the #raycast method. (As a 2D point.) See that method's documentation
+        /// This method treats the end position in the same manner as 
+        /// the #raycast method. (As a 2D point.) See that method's documentation 
         /// for details.
-        ///
-        /// If the @p visited array is too small to hold the entire result set, it will
-        /// be filled as far as possible from the start position toward the end
+        /// 
+        /// If the @p visited array is too small to hold the entire result set, it will 
+        /// be filled as far as possible from the start position toward the end 
         /// position.
         ///
         /// Moves from the start to the end position constrained to the navigation mesh.
-        /// @param[in] startRef The reference id of the start polygon.
-        /// @param[in] startPos A position of the mover within the start polygon. [(x, y, x)]
-        /// @param[in] endPos The desired end position of the mover. [(x, y, z)]
-        /// @param[in] filter The polygon filter to apply to the query.
-        /// @returns Path
-        public Result<MoveAlongSurfaceResult> MoveAlongSurface(long startRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter)
+        ///  @param[in]		startRef		The reference id of the start polygon.
+        ///  @param[in]		startPos		A position of the mover within the start polygon. [(x, y, x)]
+        ///  @param[in]		endPos			The desired end position of the mover. [(x, y, z)]
+        ///  @param[in]		filter			The polygon filter to apply to the query.
+        ///  @param[out]	resultPos		The result position of the mover. [(x, y, z)]
+        ///  @param[out]	visited			The reference ids of the polygons visited during the move.
+        ///  @param[out]	visitedCount	The number of polygons visited during the move.
+        ///  @param[in]		maxVisitedSize	The maximum number of polygons the @p visited array can hold.
+        /// @returns The status flags for the query.
+        public DtStatus MoveAlongSurface(long startRef, RcVec3f startPos, RcVec3f endPos,
+            IDtQueryFilter filter,
+            out RcVec3f resultPos, out List<long> visited)
         {
+            resultPos = RcVec3f.Zero;
+            visited = new List<long>();
+
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(startPos)
                                                 || !RcVec3f.IsFinite(endPos) || null == filter)
             {
-                return Results.InvalidParam<MoveAlongSurfaceResult>();
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             DtNodePool tinyNodePool = new DtNodePool();
@@ -1932,7 +1941,6 @@ namespace DotRecast.Detour
                 }
             }
 
-            List<long> visited = new List<long>();
             if (bestNode != null)
             {
                 // Reverse the path.
@@ -1955,7 +1963,9 @@ namespace DotRecast.Detour
                 } while (node != null);
             }
 
-            return Results.Success(new MoveAlongSurfaceResult(bestPos, visited));
+            resultPos = bestPos;
+
+            return DtStatus.DT_SUCCSESS;
         }
 
         protected Result<PortalResult> GetPortalPoints(long from, long to)

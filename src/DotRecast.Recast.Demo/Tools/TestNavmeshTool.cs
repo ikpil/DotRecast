@@ -238,20 +238,16 @@ public class TestNavmeshTool : IRcTool
                         }
 
                         RcVec3f moveTgt = RcVec3f.Mad(iterPos, delta, len);
+                        
                         // Move
-                        Result<MoveAlongSurfaceResult> result = m_navQuery.MoveAlongSurface(polys[0], iterPos,
-                            moveTgt, m_filter);
-                        MoveAlongSurfaceResult moveAlongSurface = result.result;
+                        m_navQuery.MoveAlongSurface(polys[0], iterPos, moveTgt, m_filter, out var result, out var visited);
 
-                        iterPos.x = moveAlongSurface.GetResultPos().x;
-                        iterPos.y = moveAlongSurface.GetResultPos().y;
-                        iterPos.z = moveAlongSurface.GetResultPos().z;
+                        iterPos = result;
 
-                        List<long> visited = result.result.GetVisited();
                         polys = PathUtils.FixupCorridor(polys, visited);
                         polys = PathUtils.FixupShortcuts(polys, m_navQuery);
 
-                        Result<float> polyHeight = m_navQuery.GetPolyHeight(polys[0], moveAlongSurface.GetResultPos());
+                        Result<float> polyHeight = m_navQuery.GetPolyHeight(polys[0], result);
                         if (polyHeight.Succeeded())
                         {
                             iterPos.y = polyHeight.result;

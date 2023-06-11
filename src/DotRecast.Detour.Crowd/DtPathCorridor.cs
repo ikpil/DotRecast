@@ -426,13 +426,14 @@ namespace DotRecast.Detour.Crowd
         public bool MovePosition(RcVec3f npos, DtNavMeshQuery navquery, IDtQueryFilter filter)
         {
             // Move along navmesh and update new position.
-            Result<MoveAlongSurfaceResult> masResult = navquery.MoveAlongSurface(m_path[0], m_pos, npos, filter);
-            if (masResult.Succeeded())
+            var status = navquery.MoveAlongSurface(m_path[0], m_pos, npos, filter, out var result, out var visited);
+            if (status.Succeeded())
             {
-                m_path = MergeCorridorStartMoved(m_path, masResult.result.GetVisited());
+                m_path = MergeCorridorStartMoved(m_path, visited);
+                
                 // Adjust the position to stay on top of the navmesh.
-                m_pos = masResult.result.GetResultPos();
-                Result<float> hr = navquery.GetPolyHeight(m_path[0], masResult.result.GetResultPos());
+                m_pos = result;
+                Result<float> hr = navquery.GetPolyHeight(m_path[0], result);
                 if (hr.Succeeded())
                 {
                     m_pos.y = hr.result;
@@ -464,17 +465,17 @@ namespace DotRecast.Detour.Crowd
         public bool MoveTargetPosition(RcVec3f npos, DtNavMeshQuery navquery, IDtQueryFilter filter)
         {
             // Move along navmesh and update new position.
-            Result<MoveAlongSurfaceResult> masResult = navquery.MoveAlongSurface(m_path[m_path.Count - 1], m_target, npos, filter);
-            if (masResult.Succeeded())
+            var status = navquery.MoveAlongSurface(m_path[m_path.Count - 1], m_target, npos, filter, out var result, out var visited);
+            if (status.Succeeded())
             {
-                m_path = MergeCorridorEndMoved(m_path, masResult.result.GetVisited());
+                m_path = MergeCorridorEndMoved(m_path, visited);
                 // TODO: should we do that?
                 // Adjust the position to stay on top of the navmesh.
                 /*
                  * float h = m_target.y; navquery->GetPolyHeight(m_path[m_npath-1],
                  * result, &h); result.y = h;
                  */
-                m_target = masResult.result.GetResultPos();
+                m_target = result;
                 return true;
             }
 

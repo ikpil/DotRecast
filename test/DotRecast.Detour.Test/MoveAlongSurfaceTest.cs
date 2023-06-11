@@ -74,18 +74,18 @@ public class MoveAlongSurfaceTest : AbstractDetourTest
             long startRef = startRefs[i];
             RcVec3f startPos = startPoss[i];
             RcVec3f endPos = endPoss[i];
-            Result<MoveAlongSurfaceResult> result = query.MoveAlongSurface(startRef, startPos, endPos, filter);
-            Assert.That(result.Succeeded(), Is.True);
-            MoveAlongSurfaceResult path = result.result;
+            var status = query.MoveAlongSurface(startRef, startPos, endPos, filter, out var result, out var visited);
+            Assert.That(status.Succeeded(), Is.True);
+            
             for (int v = 0; v < 3; v++)
             {
-                Assert.That(path.GetResultPos()[v], Is.EqualTo(POSITION[i][v]).Within(0.01f));
+                Assert.That(result[v], Is.EqualTo(POSITION[i][v]).Within(0.01f));
             }
 
-            Assert.That(path.GetVisited().Count, Is.EqualTo(VISITED[i].Length));
+            Assert.That(visited.Count, Is.EqualTo(VISITED[i].Length));
             for (int j = 0; j < POSITION[i].Length; j++)
             {
-                Assert.That(path.GetVisited()[j], Is.EqualTo(VISITED[i][j]));
+                Assert.That(visited[j], Is.EqualTo(VISITED[i][j]));
             }
         }
     }

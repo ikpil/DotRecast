@@ -24,8 +24,6 @@ namespace DotRecast.Detour
 {
     public readonly struct DtStatus
     {
-        public static readonly DtStatus Empty = new DtStatus(0);
-
         // High level status.
         public static readonly DtStatus DT_FAILURE = new DtStatus(1u << 31); // Operation failed. 
         public static readonly DtStatus DT_SUCCSESS = new DtStatus(1u << 30); // Operation succeed. 
