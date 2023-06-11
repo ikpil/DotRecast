@@ -49,12 +49,9 @@ public class TileCacheFindPathTest : AbstractTileCacheTest
     {
         IDtQueryFilter filter = new DtQueryDefaultFilter();
         RcVec3f extents = RcVec3f.Of(2f, 4f, 2f);
-        Result<FindNearestPolyResult> findPolyStart = query.FindNearestPoly(start, extents, filter);
-        Result<FindNearestPolyResult> findPolyEnd = query.FindNearestPoly(end, extents, filter);
-        long startRef = findPolyStart.result.GetNearestRef();
-        long endRef = findPolyEnd.result.GetNearestRef();
-        RcVec3f startPos = findPolyStart.result.GetNearestPos();
-        RcVec3f endPos = findPolyEnd.result.GetNearestPos();
+        query.FindNearestPoly(start, extents, filter, out var startRef, out var startPos, out var _);
+        query.FindNearestPoly(end, extents, filter, out var endRef, out var endPos, out var _);
+
         Result<List<long>> path = query.FindPath(startRef, endRef, startPos, endPos, filter);
         int maxStraightPath = 256;
         int options = 0;

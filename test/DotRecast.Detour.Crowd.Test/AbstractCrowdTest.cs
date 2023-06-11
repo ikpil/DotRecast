@@ -143,10 +143,10 @@ public class AbstractCrowdTest
         }
         else
         {
-            Result<FindNearestPolyResult> nearest = query.FindNearestPoly(pos, ext, filter);
+            query.FindNearestPoly(pos, ext, filter, out var refs, out var nearest, out var _);
             foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
             {
-                crowd.RequestMoveTarget(ag, nearest.result.GetNearestRef(), nearest.result.GetNearestPos());
+                crowd.RequestMoveTarget(ag, refs, nearest);
             }
         }
     }

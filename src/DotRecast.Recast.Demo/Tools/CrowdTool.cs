@@ -158,8 +158,7 @@ public class CrowdTool : ITool
             {
                 IDtQueryFilter filter = new DtQueryDefaultFilter();
                 RcVec3f halfExtents = crowd.GetQueryExtents();
-                Result<FindNearestPolyResult> result = navquery.FindNearestPoly(p, halfExtents, filter);
-                long refs = result.result.GetNearestRef();
+                navquery.FindNearestPoly(p, halfExtents, filter, out var refs, out var nearest, out var _);
                 if (refs != 0)
                 {
                     Result<int> flags = nav.GetPolyFlags(refs);
@@ -288,9 +287,7 @@ public class CrowdTool : ITool
         }
         else
         {
-            Result<FindNearestPolyResult> result = navquery.FindNearestPoly(p, halfExtents, filter);
-            m_targetRef = result.result.GetNearestRef();
-            m_targetPos = result.result.GetNearestPos();
+            navquery.FindNearestPoly(p, halfExtents, filter, out m_targetRef, out m_targetPos, out var _);
             if (m_agentDebug.agent != null)
             {
                 crowd.RequestMoveTarget(m_agentDebug.agent, m_targetRef, m_targetPos);
@@ -798,10 +795,8 @@ public class CrowdTool : ITool
     {
         return "Crowd";
     }
-    
+
     public void HandleClickRay(RcVec3f start, RcVec3f direction, bool shift)
     {
-
     }
-
 }

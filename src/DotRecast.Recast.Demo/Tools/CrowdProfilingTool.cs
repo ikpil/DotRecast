@@ -279,10 +279,10 @@ public class CrowdProfilingTool
     private void MoveMob(DtNavMeshQuery navquery, IDtQueryFilter filter, DtCrowdAgent ag, CrowdAgentData crowAgentData)
     {
         // Move somewhere
-        Result<FindNearestPolyResult> nearestPoly = navquery.FindNearestPoly(ag.npos, crowd.GetQueryExtents(), filter);
-        if (nearestPoly.Succeeded())
+        var status = navquery.FindNearestPoly(ag.npos, crowd.GetQueryExtents(), filter, out var nearestRef, out var nearest, out var _);
+        if (status.Succeeded())
         {
-            var status = navquery.FindRandomPointAroundCircle(nearestPoly.result.GetNearestRef(), crowAgentData.home, zoneRadius * 2f, filter, rnd, 
+            status = navquery.FindRandomPointAroundCircle(nearestRef, crowAgentData.home, zoneRadius * 2f, filter, rnd,
                 out var randomRef, out var randomPt);
             if (status.Succeeded())
             {
@@ -294,10 +294,10 @@ public class CrowdProfilingTool
     private void MoveVillager(DtNavMeshQuery navquery, IDtQueryFilter filter, DtCrowdAgent ag, CrowdAgentData crowAgentData)
     {
         // Move somewhere close
-        Result<FindNearestPolyResult> nearestPoly = navquery.FindNearestPoly(ag.npos, crowd.GetQueryExtents(), filter);
-        if (nearestPoly.Succeeded())
+        var status = navquery.FindNearestPoly(ag.npos, crowd.GetQueryExtents(), filter, out var nearestRef, out var nearest, out var _);
+        if (status.Succeeded())
         {
-            var status = navquery.FindRandomPointAroundCircle(nearestPoly.result.GetNearestRef(), crowAgentData.home, zoneRadius * 0.2f, filter, rnd,
+            status = navquery.FindRandomPointAroundCircle(nearestRef, crowAgentData.home, zoneRadius * 0.2f, filter, rnd,
                 out var randomRef, out var randomPt);
             if (status.Succeeded())
             {

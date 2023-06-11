@@ -6,30 +6,30 @@ namespace DotRecast.Detour
 {
     public class DtFindNearestPolyQuery : IDtPolyQuery
     {
-        private readonly DtNavMeshQuery query;
-        private readonly RcVec3f center;
-        private long nearestRef;
-        private RcVec3f nearestPt;
-        private bool overPoly;
-        private float nearestDistanceSqr;
+        private readonly DtNavMeshQuery _query;
+        private readonly RcVec3f _center;
+        private long _nearestRef;
+        private RcVec3f _nearestPt;
+        private bool _overPoly;
+        private float _nearestDistanceSqr;
 
         public DtFindNearestPolyQuery(DtNavMeshQuery query, RcVec3f center)
         {
-            this.query = query;
-            this.center = center;
-            nearestDistanceSqr = float.MaxValue;
-            nearestPt = center;
+            this._query = query;
+            this._center = center;
+            _nearestDistanceSqr = float.MaxValue;
+            _nearestPt = center;
         }
 
         public void Process(DtMeshTile tile, DtPoly poly, long refs)
         {
             // Find nearest polygon amongst the nearby polygons.
-            query.ClosestPointOnPoly(refs, center, out var closestPtPoly, out var posOverPoly);
+            _query.ClosestPointOnPoly(refs, _center, out var closestPtPoly, out var posOverPoly);
 
             // If a point is directly over a polygon and closer than
             // climb height, favor that instead of straight line nearest point.
             float d = 0;
-            RcVec3f diff = center.Subtract(closestPtPoly);
+            RcVec3f diff = _center.Subtract(closestPtPoly);
             if (posOverPoly)
             {
                 d = Math.Abs(diff.y) - tile.data.header.walkableClimb;
@@ -40,18 +40,28 @@ namespace DotRecast.Detour
                 d = RcVec3f.LenSqr(diff);
             }
 
-            if (d < nearestDistanceSqr)
+            if (d < _nearestDistanceSqr)
             {
-                nearestPt = closestPtPoly;
-                nearestDistanceSqr = d;
-                nearestRef = refs;
-                overPoly = posOverPoly;
+                _nearestPt = closestPtPoly;
+                _nearestDistanceSqr = d;
+                _nearestRef = refs;
+                _overPoly = posOverPoly;
             }
         }
 
-        public FindNearestPolyResult Result()
+        public long NearestRef()
         {
-            return new FindNearestPolyResult(nearestRef, nearestPt, overPoly);
+            return _nearestRef;
+        }
+
+        public RcVec3f NearestPt()
+        {
+            return _nearestPt;
+        }
+
+        public bool OverPoly()
+        {
+            return _overPoly;
         }
     }
 }

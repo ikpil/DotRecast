@@ -559,29 +559,36 @@ namespace DotRecast.Detour
             return null != height ? Results.Success(height.Value) : Results.InvalidParam<float>();
         }
 
-        /**
-     * Finds the polygon nearest to the specified center point. If center and nearestPt point to an equal position,
-     * isOverPoly will be true; however there's also a special case of climb height inside the polygon
-     *
-     * @param center
-     *            The center of the search box. [(x, y, z)]
-     * @param halfExtents
-     *            The search distance along each axis. [(x, y, z)]
-     * @param filter
-     *            The polygon filter to apply to the query.
-     * @return FindNearestPolyResult containing nearestRef, nearestPt and overPoly
-     */
-        public Result<FindNearestPolyResult> FindNearestPoly(RcVec3f center, RcVec3f halfExtents, IDtQueryFilter filter)
+        /// Finds the polygon nearest to the specified center point.
+        /// [opt] means the specified parameter can be a null pointer, in that case the output parameter will not be set.
+        /// 
+        ///  @param[in]		center		The center of the search box. [(x, y, z)]
+        ///  @param[in]		halfExtents	The search distance along each axis. [(x, y, z)]
+        ///  @param[in]		filter		The polygon filter to apply to the query.
+        ///  @param[out]	nearestRef	The reference id of the nearest polygon. Will be set to 0 if no polygon is found.
+        ///  @param[out]	nearestPt	The nearest point on the polygon. Unchanged if no polygon is found. [opt] [(x, y, z)]
+        ///  @param[out]	isOverPoly 	Set to true if the point's X/Z coordinate lies inside the polygon, false otherwise. Unchanged if no polygon is found. [opt]
+        /// @returns The status flags for the query.
+        public DtStatus FindNearestPoly(RcVec3f center, RcVec3f halfExtents, IDtQueryFilter filter,
+            out long nearestRef, out RcVec3f nearestPt, out bool isOverPoly)
         {
+            nearestRef = 0;
+            nearestPt = center;
+            isOverPoly = false;
+            
             // Get nearby polygons from proximity grid.
             DtFindNearestPolyQuery query = new DtFindNearestPolyQuery(this, center);
             DtStatus status = QueryPolygons(center, halfExtents, filter, query);
             if (status.Failed())
             {
-                return Results.Of<FindNearestPolyResult>(status, "");
+                return status;
             }
 
-            return Results.Success(query.Result());
+            nearestRef = query.NearestRef();
+            nearestPt = query.NearestPt();
+            isOverPoly = query.OverPoly();
+
+            return DtStatus.DT_SUCCSESS;
         }
 
         // FIXME: (PP) duplicate?
@@ -3318,7 +3325,7 @@ namespace DotRecast.Detour
             {
                 return false;
             }
-            
+
             // If cannot pass filter, assume flags has changed and boundary is invalid.
             if (!filter.PassFilter(refs, tile, poly))
             {

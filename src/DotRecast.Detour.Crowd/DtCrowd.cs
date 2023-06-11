@@ -245,10 +245,13 @@ namespace DotRecast.Detour.Crowd
             UpdateAgentParameters(ag, option);
 
             // Find nearest position on navmesh and place the agent there.
-            Result<FindNearestPolyResult> nearestPoly = _navQuery.FindNearestPoly(pos, _ext, _filters[ag.option.queryFilterType]);
+            var status = _navQuery.FindNearestPoly(pos, _ext, _filters[ag.option.queryFilterType], out var refs, out var nearest, out var _);
+            if (status.Failed())
+            {
+                nearest = pos;
+                refs = 0;
+            }
 
-            var nearest = nearestPoly.Succeeded() ? nearestPoly.result.GetNearestPos() : pos;
-            long refs = nearestPoly.Succeeded() ? nearestPoly.result.GetNearestRef() : 0L;
             ag.corridor.Reset(refs, nearest);
             ag.boundary.Reset();
             ag.partial = false;
@@ -462,13 +465,8 @@ namespace DotRecast.Detour.Crowd
                 {
                     // Current location is not valid, try to reposition.
                     // TODO: this can snap agents, how to handle that?
-                    Result<FindNearestPolyResult> nearestPoly = _navQuery.FindNearestPoly(ag.npos, _ext,
-                        _filters[ag.option.queryFilterType]);
-                    agentRef = nearestPoly.Succeeded() ? nearestPoly.result.GetNearestRef() : 0L;
-                    if (nearestPoly.Succeeded())
-                    {
-                        agentPos = nearestPoly.result.GetNearestPos();
-                    }
+                    _navQuery.FindNearestPoly(ag.npos, _ext, _filters[ag.option.queryFilterType], out agentRef, out var nearest, out var _);
+                    agentPos = nearest;
 
                     if (agentRef == 0)
                     {
@@ -507,14 +505,8 @@ namespace DotRecast.Detour.Crowd
                     if (!_navQuery.IsValidPolyRef(ag.targetRef, _filters[ag.option.queryFilterType]))
                     {
                         // Current target is not valid, try to reposition.
-                        Result<FindNearestPolyResult> fnp = _navQuery.FindNearestPoly(ag.targetPos, _ext,
-                            _filters[ag.option.queryFilterType]);
-                        ag.targetRef = fnp.Succeeded() ? fnp.result.GetNearestRef() : 0L;
-                        if (fnp.Succeeded())
-                        {
-                            ag.targetPos = fnp.result.GetNearestPos();
-                        }
-
+                        _navQuery.FindNearestPoly(ag.targetPos, _ext, _filters[ag.option.queryFilterType], out ag.targetRef, out var nearest, out var _);
+                        ag.targetPos = nearest;
                         replan = true;
                     }
 

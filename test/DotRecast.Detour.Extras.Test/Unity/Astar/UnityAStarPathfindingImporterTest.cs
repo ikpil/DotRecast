@@ -66,15 +66,15 @@ public class UnityAStarPathfindingImporterTest
         DtMeshData data = tile.data;
         DtBVNode[] bvNodes = data.bvTree;
         data.bvTree = null; // set BV-Tree empty to get 'clear' search poly without BV
-        FindNearestPolyResult clearResult = GetNearestPolys(mesh, position)[0]; // check poly to exists
+        var clearResult = GetNearestPolys(mesh, position)[0]; // check poly to exists
 
         // restore BV-Tree and try search again
         // important aspect in that test: BV result must equals result without BV
         // if poly not found or found other poly - tile bounds is wrong!
         data.bvTree = bvNodes;
-        FindNearestPolyResult bvResult = GetNearestPolys(mesh, position)[0];
+        var bvResult = GetNearestPolys(mesh, position)[0];
 
-        Assert.That(bvResult.GetNearestRef(), Is.EqualTo(clearResult.GetNearestRef()));
+        Assert.That(bvResult.refs, Is.EqualTo(clearResult.refs));
     }
 
     private DtNavMesh LoadNavMesh(string filename)
@@ -95,24 +95,25 @@ public class UnityAStarPathfindingImporterTest
         DtNavMeshQuery query = new DtNavMeshQuery(mesh);
         IDtQueryFilter filter = new DtQueryDefaultFilter();
 
-        FindNearestPolyResult[] polys = GetNearestPolys(mesh, startPos, endPos);
-        return query.FindPath(polys[0].GetNearestRef(), polys[1].GetNearestRef(), startPos, endPos, filter);
+        var polys = GetNearestPolys(mesh, startPos, endPos);
+        return query.FindPath(polys[0].refs, polys[1].refs, startPos, endPos, filter);
     }
 
-    private FindNearestPolyResult[] GetNearestPolys(DtNavMesh mesh, params RcVec3f[] positions)
+    private DtPolyPoint[] GetNearestPolys(DtNavMesh mesh, params RcVec3f[] positions)
     {
         DtNavMeshQuery query = new DtNavMeshQuery(mesh);
         IDtQueryFilter filter = new DtQueryDefaultFilter();
         RcVec3f extents = RcVec3f.Of(0.1f, 0.1f, 0.1f);
 
-        FindNearestPolyResult[] results = new FindNearestPolyResult[positions.Length];
+        var results = new DtPolyPoint[positions.Length];
         for (int i = 0; i < results.Length; i++)
         {
             RcVec3f position = positions[i];
-            Result<FindNearestPolyResult> result = query.FindNearestPoly(position, extents, filter);
-            Assert.That(result.Succeeded(), Is.True);
-            Assert.That(result.result.GetNearestPos(), Is.Not.EqualTo(RcVec3f.Zero), "Nearest start position is null!");
-            results[i] = result.result;
+            var status = query.FindNearestPoly(position, extents, filter, out var nearestRef, out var nearest, out var _);
+            Assert.That(status.Succeeded(), Is.True);
+            Assert.That(nearest, Is.Not.EqualTo(RcVec3f.Zero), "Nearest start position is null!");
+
+            results[i] = new DtPolyPoint(nearestRef, nearest);
         }
 
         return results;

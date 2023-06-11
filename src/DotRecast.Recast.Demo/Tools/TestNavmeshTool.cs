@@ -168,7 +168,7 @@ public class TestNavmeshTool : ITool
         DtNavMeshQuery m_navQuery = m_sample.GetNavMeshQuery();
         if (m_sposSet)
         {
-            m_startRef = m_navQuery.FindNearestPoly(m_spos, m_polyPickExt, m_filter).result?.GetNearestRef() ?? 0;
+            m_navQuery.FindNearestPoly(m_spos, m_polyPickExt, m_filter, out m_startRef, out var _, out var _);
         }
         else
         {
@@ -177,7 +177,7 @@ public class TestNavmeshTool : ITool
 
         if (m_eposSet)
         {
-            m_endRef = m_navQuery.FindNearestPoly(m_epos, m_polyPickExt, m_filter).result?.GetNearestRef() ?? 0;
+            m_navQuery.FindNearestPoly(m_epos, m_polyPickExt, m_filter, out m_endRef, out var _, out var _);
         }
         else
         {
