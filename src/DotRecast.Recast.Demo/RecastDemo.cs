@@ -300,8 +300,6 @@ public class RecastDemo
     private DemoInputGeomProvider LoadInputMesh(byte[] stream)
     {
         DemoInputGeomProvider geom = DemoObjImporter.Load(stream);
-        sample = new Sample(geom, ImmutableArray<RecastBuilderResult>.Empty, null, settingsView, dd);
-        toolset.SetEnabled(true);
         return geom;
     }
 
@@ -368,7 +366,12 @@ public class RecastDemo
 
         _imgui = new ImGuiController(_gl, window, _input);
 
+        DemoInputGeomProvider geom = LoadInputMesh(Loader.ToBytes("nav_test.obj"));
+        sample = new Sample(geom, ImmutableArray<RecastBuilderResult>.Empty, null, dd);
+
         settingsView = new RcSettingsView();
+        settingsView.SetSample(sample);
+
         toolset = new RcToolsetView(
             new TestNavmeshTool(),
             new OffMeshConnectionTool(),
@@ -377,6 +380,7 @@ public class RecastDemo
             new JumpLinkBuilderTool(),
             new DynamicUpdateTool()
         );
+        toolset.SetEnabled(true);
         logView = new RcLogView();
 
         _canvas = new RcCanvas(window, settingsView, toolset, logView);
@@ -392,10 +396,6 @@ public class RecastDemo
         Logger.Information(version);
         Logger.Information(renderGl);
         Logger.Information(glslString);
-
-
-        DemoInputGeomProvider geom = LoadInputMesh(Loader.ToBytes("nav_test.obj"));
-        sample = new Sample(geom, ImmutableArray<RecastBuilderResult>.Empty, null, settingsView, dd);
     }
 
     private void UpdateKeyboard(float dt)
@@ -430,7 +430,7 @@ public class RecastDemo
        */
         if (sample.GetInputGeom() != null)
         {
-            var settings = settingsView.GetSettings();
+            var settings = sample.GetSettings();
             RcVec3f bmin = sample.GetInputGeom().GetMeshBoundsMin();
             RcVec3f bmax = sample.GetInputGeom().GetMeshBoundsMax();
             Recast.CalcGridSize(bmin, bmax, settings.cellSize, out var gw, out var gh);
@@ -485,7 +485,9 @@ public class RecastDemo
         if (settingsView.IsMeshInputTrigerred())
         {
             var bytes = Loader.ToBytes(settingsView.GetMeshInputFilePath());
-            sample.Update(LoadInputMesh(bytes), null, null);
+            var geom = LoadInputMesh(bytes);
+            
+            sample.Update(geom, ImmutableArray<RecastBuilderResult>.Empty, null);
         }
         else if (settingsView.IsNavMeshInputTrigerred())
         {
@@ -516,7 +518,7 @@ public class RecastDemo
         {
             if (!building)
             {
-                var settings = settingsView.GetSettings();
+                var settings = sample.GetSettings();
                 var partitioning = settings.partitioning;
                 var cellSize = settings.cellSize;
                 var cellHeight = settings.cellHeight;

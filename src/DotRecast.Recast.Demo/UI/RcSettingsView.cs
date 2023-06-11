@@ -47,22 +47,22 @@ public class RcSettingsView : IRcView
     private bool _mouseInside;
     public bool IsMouseInside() => _mouseInside;
 
-    private readonly RcSettings _settings;
+    private Sample _sample;
     private RcCanvas _canvas;
 
     public RcSettingsView()
     {
-        _settings = new();
+        
+    }
+    
+    public void SetSample(Sample sample)
+    {
+        _sample = sample;
     }
 
     public void Bind(RcCanvas canvas)
     {
         _canvas = canvas;
-    }
-
-    public RcSettings GetSettings()
-    {
-        return _settings;
     }
 
     public void Update(double dt)
@@ -71,6 +71,8 @@ public class RcSettingsView : IRcView
 
     public void Draw(double dt)
     {
+        var settings = _sample.GetSettings();
+        
         int width = 310;
         var posX = _canvas.Size.X - width;
         ImGui.SetNextWindowPos(new Vector2(posX, 0));
@@ -112,23 +114,23 @@ public class RcSettingsView : IRcView
         ImGui.Text("Rasterization");
         ImGui.Separator();
 
-        ImGui.SliderFloat("Cell Size", ref _settings.cellSize, 0.01f, 1f, "%.2f");
-        ImGui.SliderFloat("Cell Height", ref _settings.cellHeight, 0.01f, 1f, "%.2f");
+        ImGui.SliderFloat("Cell Size", ref settings.cellSize, 0.01f, 1f, "%.2f");
+        ImGui.SliderFloat("Cell Height", ref settings.cellHeight, 0.01f, 1f, "%.2f");
         ImGui.Text($"Voxels {voxels[0]} x {voxels[1]}");
         ImGui.NewLine();
 
         ImGui.Text("Agent");
         ImGui.Separator();
-        ImGui.SliderFloat("Height", ref _settings.agentHeight, 0.1f, 5f, "%.1f");
-        ImGui.SliderFloat("Radius", ref _settings.agentRadius, 0.1f, 5f, "%.1f");
-        ImGui.SliderFloat("Max Climb", ref _settings.agentMaxClimb, 0.1f, 5f, "%.1f");
-        ImGui.SliderFloat("Max Slope", ref _settings.agentMaxSlope, 1f, 90f, "%.0f");
+        ImGui.SliderFloat("Height", ref settings.agentHeight, 0.1f, 5f, "%.1f");
+        ImGui.SliderFloat("Radius", ref settings.agentRadius, 0.1f, 5f, "%.1f");
+        ImGui.SliderFloat("Max Climb", ref settings.agentMaxClimb, 0.1f, 5f, "%.1f");
+        ImGui.SliderFloat("Max Slope", ref settings.agentMaxSlope, 1f, 90f, "%.0f");
         ImGui.NewLine();
 
         ImGui.Text("Region");
         ImGui.Separator();
-        ImGui.SliderInt("Min Region Size", ref _settings.minRegionSize, 1, 150);
-        ImGui.SliderInt("Merged Region Size", ref _settings.mergedRegionSize, 1, 150);
+        ImGui.SliderInt("Min Region Size", ref settings.minRegionSize, 1, 150);
+        ImGui.SliderInt("Merged Region Size", ref settings.mergedRegionSize, 1, 150);
         ImGui.NewLine();
 
         ImGui.Text("Partitioning");
@@ -136,38 +138,38 @@ public class RcSettingsView : IRcView
         PartitionType.Values.ForEach(partition =>
         {
             var label = partition.Name.Substring(0, 1).ToUpper() + partition.Name.Substring(1).ToLower();
-            ImGui.RadioButton(label, ref _settings.partitioningIdx, partition.Idx);
+            ImGui.RadioButton(label, ref settings.partitioningIdx, partition.Idx);
         });
         ImGui.NewLine();
 
         ImGui.Text("Filtering");
         ImGui.Separator();
-        ImGui.Checkbox("Low Hanging Obstacles", ref _settings.filterLowHangingObstacles);
-        ImGui.Checkbox("Ledge Spans", ref _settings.filterLedgeSpans);
-        ImGui.Checkbox("Walkable Low Height Spans", ref _settings.filterWalkableLowHeightSpans);
+        ImGui.Checkbox("Low Hanging Obstacles", ref settings.filterLowHangingObstacles);
+        ImGui.Checkbox("Ledge Spans", ref settings.filterLedgeSpans);
+        ImGui.Checkbox("Walkable Low Height Spans", ref settings.filterWalkableLowHeightSpans);
         ImGui.NewLine();
 
         ImGui.Text("Polygonization");
         ImGui.Separator();
-        ImGui.SliderFloat("Max Edge Length", ref _settings.edgeMaxLen, 0f, 50f, "%.1f");
-        ImGui.SliderFloat("Max Edge Error", ref _settings.edgeMaxError, 0.1f, 3f, "%.1f");
-        ImGui.SliderInt("Vert Per Poly", ref _settings.vertsPerPoly, 3, 12);
+        ImGui.SliderFloat("Max Edge Length", ref settings.edgeMaxLen, 0f, 50f, "%.1f");
+        ImGui.SliderFloat("Max Edge Error", ref settings.edgeMaxError, 0.1f, 3f, "%.1f");
+        ImGui.SliderInt("Vert Per Poly", ref settings.vertsPerPoly, 3, 12);
         ImGui.NewLine();
 
         ImGui.Text("Detail Mesh");
         ImGui.Separator();
-        ImGui.SliderFloat("Sample Distance", ref _settings.detailSampleDist, 0f, 16f, "%.1f");
-        ImGui.SliderFloat("Max Sample Error", ref _settings.detailSampleMaxError, 0f, 16f, "%.1f");
+        ImGui.SliderFloat("Sample Distance", ref settings.detailSampleDist, 0f, 16f, "%.1f");
+        ImGui.SliderFloat("Max Sample Error", ref settings.detailSampleMaxError, 0f, 16f, "%.1f");
         ImGui.NewLine();
 
         ImGui.Text("Tiling");
         ImGui.Separator();
-        ImGui.Checkbox("Enable", ref _settings.tiled);
-        if (_settings.tiled)
+        ImGui.Checkbox("Enable", ref settings.tiled);
+        if (settings.tiled)
         {
-            if (0 < (_settings.tileSize % 16))
-                _settings.tileSize = _settings.tileSize + (16 - (_settings.tileSize % 16));
-            ImGui.SliderInt("Tile Size", ref _settings.tileSize, 16, 1024);
+            if (0 < (settings.tileSize % 16))
+                settings.tileSize = settings.tileSize + (16 - (settings.tileSize % 16));
+            ImGui.SliderInt("Tile Size", ref settings.tileSize, 16, 1024);
 
             ImGui.Text($"Tiles {tiles[0]} x {tiles[1]}");
             ImGui.Text($"Max Tiles {maxTiles}");

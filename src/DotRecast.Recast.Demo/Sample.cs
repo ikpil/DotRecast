@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using DotRecast.Detour;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.DemoTool.Geom;
-
 using DotRecast.Recast.Demo.UI;
 using DotRecast.Recast.DemoTool;
 
@@ -33,17 +32,17 @@ public class Sample
     private DemoInputGeomProvider _inputGeom;
     private DtNavMesh _navMesh;
     private DtNavMeshQuery _navMeshQuery;
-    private readonly RcSettings _settings;
+    private readonly RcSampleSettings _settings;
     private IList<RecastBuilderResult> _recastResults;
     private bool _changed;
 
-    public Sample(DemoInputGeomProvider inputGeom, IList<RecastBuilderResult> recastResults, DtNavMesh navMesh,
-        RcSettingsView settingsView, RecastDebugDraw debugDraw)
+    public Sample(DemoInputGeomProvider inputGeom, IList<RecastBuilderResult> recastResults, DtNavMesh navMesh, RecastDebugDraw debugDraw)
     {
         _inputGeom = inputGeom;
         _recastResults = recastResults;
         _navMesh = navMesh;
-        _settings = settingsView.GetSettings();
+        _settings = new();
+        
         SetQuery(navMesh);
         _changed = true;
     }
@@ -68,7 +67,7 @@ public class Sample
         return _navMesh;
     }
 
-    public RcSettings GetSettings()
+    public RcSampleSettings GetSettings()
     {
         return _settings;
     }

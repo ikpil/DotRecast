@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Numerics;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Drawing;
 using System.IO;
 using ImGuiNET;
+using Serilog;
 
 namespace DotRecast.Recast.Demo.UI;
 
 // original code : https://gist.github.com/prime31/91d1582624eb2635395417393018016e
 public class ImFilePicker
 {
+    private static readonly ILogger Logger = Log.ForContext<RecastDemo>();
+
     private static readonly Dictionary<string, ImFilePicker> _filePickers = new Dictionary<string, ImFilePicker>();
 
     public string RootFolder;
@@ -77,7 +81,7 @@ public class ImFilePicker
 
                     ImGui.PopStyleColor();
                 }
-                
+
                 var fileSystemEntries = GetFileSystemEntries(di.FullName);
                 foreach (var fse in fileSystemEntries)
                 {
@@ -157,7 +161,20 @@ public class ImFilePicker
         var files = new List<string>();
         var dirs = new List<string>();
 
-        foreach (var fse in Directory.GetFileSystemEntries(fullName, ""))
+        ImmutableArray<string> fileEntries;
+        try
+        {
+            fileEntries = Directory
+                .GetFileSystemEntries(fullName, "")
+                .ToImmutableArray();
+        }
+        catch (Exception e)
+        {
+            Logger.Error(e, "");
+            return files;
+        }
+
+        foreach (var fse in fileEntries)
         {
             if (Directory.Exists(fse))
             {
