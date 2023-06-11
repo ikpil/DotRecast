@@ -425,12 +425,11 @@ public class TestNavmeshTool : ITool
                 float dx = m_epos.x - m_spos.x;
                 float dz = m_epos.z - m_spos.z;
                 float dist = (float)Math.Sqrt(dx * dx + dz * dz);
-                Result<FindPolysAroundResult> result = m_navQuery.FindPolysAroundCircle(m_startRef, m_spos, dist,
-                    m_filter);
-                if (result.Succeeded())
+                var status = m_navQuery.FindPolysAroundCircle(m_startRef, m_spos, dist, m_filter, out var refs, out var parentRefs, out var costs);
+                if (status.Succeeded())
                 {
-                    m_polys = result.result.GetRefs();
-                    m_parent = result.result.GetParentRefs();
+                    m_polys = refs;
+                    m_parent = parentRefs;
                 }
             }
         }
@@ -458,11 +457,11 @@ public class TestNavmeshTool : ITool
                 m_queryPoly[10] = m_epos.y + agentHeight / 2;
                 m_queryPoly[11] = m_epos.z + nz;
 
-                Result<FindPolysAroundResult> result = m_navQuery.FindPolysAroundShape(m_startRef, m_queryPoly, m_filter);
-                if (result.Succeeded())
+                var status = m_navQuery.FindPolysAroundShape(m_startRef, m_queryPoly, m_filter, out var refs, out var parentRefs, out var costs);
+                if (status.Succeeded())
                 {
-                    m_polys = result.result.GetRefs();
-                    m_parent = result.result.GetParentRefs();
+                    m_polys = refs;
+                    m_parent = parentRefs;
                 }
             }
         }

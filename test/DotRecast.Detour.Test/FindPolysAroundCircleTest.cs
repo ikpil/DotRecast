@@ -106,19 +106,19 @@ public class FindPolysAroundCircleTest : AbstractDetourTest
         {
             long startRef = startRefs[i];
             RcVec3f startPos = startPoss[i];
-            Result<FindPolysAroundResult> result = query.FindPolysAroundCircle(startRef, startPos, 7.5f, filter);
-            Assert.That(result.Succeeded(), Is.True);
-            FindPolysAroundResult polys = result.result;
-            Assert.That(polys.GetRefs().Count, Is.EqualTo(REFS[i].Length));
+            var status = query.FindPolysAroundCircle(startRef, startPos, 7.5f, filter, out var refs, out var parentRefs, out var costs);
+            Assert.That(status.Succeeded(), Is.True);
+            
+            Assert.That(refs.Count, Is.EqualTo(REFS[i].Length));
             for (int v = 0; v < REFS[i].Length; v++)
             {
                 bool found = false;
                 for (int w = 0; w < REFS[i].Length; w++)
                 {
-                    if (REFS[i][v] == polys.GetRefs()[w])
+                    if (REFS[i][v] == refs[w])
                     {
-                        Assert.That(polys.GetParentRefs()[w], Is.EqualTo(PARENT_REFS[i][v]));
-                        Assert.That(polys.GetCosts()[w], Is.EqualTo(COSTS[i][v]).Within(0.01f));
+                        Assert.That(parentRefs[w], Is.EqualTo(PARENT_REFS[i][v]));
+                        Assert.That(costs[w], Is.EqualTo(COSTS[i][v]).Within(0.01f));
                         found = true;
                     }
                 }

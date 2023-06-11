@@ -133,17 +133,17 @@ public class FindPolysAroundShapeTest : AbstractDetourTest
         {
             long startRef = startRefs[i];
             RcVec3f startPos = startPoss[i];
-            Result<FindPolysAroundResult> polys = query.FindPolysAroundShape(startRef, GetQueryPoly(startPos, endPoss[i]), filter);
-            Assert.That(polys.result.GetRefs().Count, Is.EqualTo(REFS[i].Length));
+            query.FindPolysAroundShape(startRef, GetQueryPoly(startPos, endPoss[i]), filter, out var refs, out var parentRefs, out var costs);
+            Assert.That(refs.Count, Is.EqualTo(REFS[i].Length));
             for (int v = 0; v < REFS[i].Length; v++)
             {
                 bool found = false;
                 for (int w = 0; w < REFS[i].Length; w++)
                 {
-                    if (REFS[i][v] == polys.result.GetRefs()[w])
+                    if (REFS[i][v] == refs[w])
                     {
-                        Assert.That(polys.result.GetParentRefs()[w], Is.EqualTo(PARENT_REFS[i][v]));
-                        Assert.That(polys.result.GetCosts()[w], Is.EqualTo(COSTS[i][v]).Within(0.01f));
+                        Assert.That(parentRefs[w], Is.EqualTo(PARENT_REFS[i][v]));
+                        Assert.That(costs[w], Is.EqualTo(COSTS[i][v]).Within(0.01f));
                         found = true;
                     }
                 }

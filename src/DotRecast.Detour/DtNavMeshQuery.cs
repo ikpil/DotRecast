@@ -575,7 +575,7 @@ namespace DotRecast.Detour
             nearestRef = 0;
             nearestPt = center;
             isOverPoly = false;
-            
+
             // Get nearby polygons from proximity grid.
             DtFindNearestPolyQuery query = new DtFindNearestPolyQuery(this, center);
             DtStatus status = QueryPolygons(center, halfExtents, filter, query);
@@ -2416,34 +2416,35 @@ namespace DotRecast.Detour
         /// If the result arrays are to small to hold the entire result set, they will be
         /// filled to capacity.
         ///
-        /// @}
+        ///@}
         /// @name Dijkstra Search Functions
-        /// @{
+        /// @{ 
         /// Finds the polygons along the navigation graph that touch the specified circle.
-        /// @param[in] startRef The reference id of the polygon where the search starts.
-        /// @param[in] centerPos The center of the search circle. [(x, y, z)]
-        /// @param[in] radius The radius of the search circle.
-        /// @param[in] filter The polygon filter to apply to the query.
-        /// @param[out] resultRef The reference ids of the polygons touched by the circle. [opt]
-        /// @param[out] resultParent The reference ids of the parent polygons for each result.
-        /// Zero if a result polygon has no parent. [opt]
-        /// @param[out] resultCost The search cost from @p centerPos to the polygon. [opt]
-        /// @param[out] resultCount The number of polygons found. [opt]
-        /// @param[in] maxResult The maximum number of polygons the result arrays can hold.
+        ///  @param[in]		startRef		The reference id of the polygon where the search starts.
+        ///  @param[in]		centerPos		The center of the search circle. [(x, y, z)]
+        ///  @param[in]		radius			The radius of the search circle.
+        ///  @param[in]		filter			The polygon filter to apply to the query.
+        ///  @param[out]	resultRef		The reference ids of the polygons touched by the circle. [opt]
+        ///  @param[out]	resultParent	The reference ids of the parent polygons for each result. 
+        ///  								Zero if a result polygon has no parent. [opt]
+        ///  @param[out]	resultCost		The search cost from @p centerPos to the polygon. [opt]
+        ///  @param[out]	resultCount		The number of polygons found. [opt]
+        ///  @param[in]		maxResult		The maximum number of polygons the result arrays can hold.
         /// @returns The status flags for the query.
-        public Result<FindPolysAroundResult> FindPolysAroundCircle(long startRef, RcVec3f centerPos, float radius, IDtQueryFilter filter)
+        public DtStatus FindPolysAroundCircle(long startRef, RcVec3f centerPos, float radius, IDtQueryFilter filter,
+            out List<long> resultRef, out List<long> resultParent, out List<float> resultCost)
         {
-            // Validate input
+            // TODO : check performance 
+            resultRef = new List<long>();
+            resultParent = new List<long>();
+            resultCost = new List<float>();
 
+            // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(centerPos) || radius < 0
                 || !float.IsFinite(radius) || null == filter)
             {
-                return Results.InvalidParam<FindPolysAroundResult>();
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
-
-            List<long> resultRef = new List<long>();
-            List<long> resultParent = new List<long>();
-            List<float> resultCost = new List<float>();
 
             m_nodePool.Clear();
             m_openList.Clear();
@@ -2564,56 +2565,57 @@ namespace DotRecast.Detour
                 }
             }
 
-            return Results.Success(new FindPolysAroundResult(resultRef, resultParent, resultCost));
+            return DtStatus.DT_SUCCSESS;
         }
 
         /// @par
         ///
         /// The order of the result set is from least to highest cost.
-        ///
+        /// 
         /// At least one result array must be provided.
         ///
-        /// A common use case for this method is to perform Dijkstra searches.
-        /// Candidate polygons are found by searching the graph beginning at the start
+        /// A common use case for this method is to perform Dijkstra searches. 
+        /// Candidate polygons are found by searching the graph beginning at the start 
         /// polygon.
-        ///
-        /// The same intersection test restrictions that apply to FindPolysAroundCircle()
+        /// 
+        /// The same intersection test restrictions that apply to findPolysAroundCircle()
         /// method apply to this method.
-        ///
-        /// The 3D centroid of the search polygon is used as the start position for cost
+        /// 
+        /// The 3D centroid of the search polygon is used as the start position for cost 
         /// calculations.
-        ///
-        /// Intersection tests occur in 2D. All polygons are projected onto the
+        /// 
+        /// Intersection tests occur in 2D. All polygons are projected onto the 
         /// xz-plane. So the y-values of the vertices do not effect intersection tests.
-        ///
-        /// If the result arrays are is too small to hold the entire result set, they will
+        /// 
+        /// If the result arrays are is too small to hold the entire result set, they will 
         /// be filled to capacity.
         ///
         /// Finds the polygons along the naviation graph that touch the specified convex polygon.
-        /// @param[in] startRef The reference id of the polygon where the search starts.
-        /// @param[in] verts The vertices describing the convex polygon. (CCW)
-        /// [(x, y, z) * @p nverts]
-        /// @param[in] nverts The number of vertices in the polygon.
-        /// @param[in] filter The polygon filter to apply to the query.
-        /// @param[out] resultRef The reference ids of the polygons touched by the search polygon. [opt]
-        /// @param[out] resultParent The reference ids of the parent polygons for each result. Zero if a
-        /// result polygon has no parent. [opt]
-        /// @param[out] resultCost The search cost from the centroid point to the polygon. [opt]
-        /// @param[out] resultCount The number of polygons found.
-        /// @param[in] maxResult The maximum number of polygons the result arrays can hold.
+        ///  @param[in]		startRef		The reference id of the polygon where the search starts.
+        ///  @param[in]		verts			The vertices describing the convex polygon. (CCW) 
+        ///  								[(x, y, z) * @p nverts]
+        ///  @param[in]		nverts			The number of vertices in the polygon.
+        ///  @param[in]		filter			The polygon filter to apply to the query.
+        ///  @param[out]	resultRef		The reference ids of the polygons touched by the search polygon. [opt]
+        ///  @param[out]	resultParent	The reference ids of the parent polygons for each result. Zero if a 
+        ///  								result polygon has no parent. [opt]
+        ///  @param[out]	resultCost		The search cost from the centroid point to the polygon. [opt]
+        ///  @param[out]	resultCount		The number of polygons found.
+        ///  @param[in]		maxResult		The maximum number of polygons the result arrays can hold.
         /// @returns The status flags for the query.
-        public Result<FindPolysAroundResult> FindPolysAroundShape(long startRef, float[] verts, IDtQueryFilter filter)
+        public DtStatus FindPolysAroundShape(long startRef, float[] verts, IDtQueryFilter filter,
+            out List<long> resultRef, out List<long> resultParent, out List<float> resultCost)
         {
+            resultRef = new List<long>();
+            resultParent = new List<long>();
+            resultCost = new List<float>();
+
             // Validate input
             int nverts = verts.Length / 3;
             if (!m_nav.IsValidPolyRef(startRef) || null == verts || nverts < 3 || null == filter)
             {
-                return Results.InvalidParam<FindPolysAroundResult>();
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
-
-            List<long> resultRef = new List<long>();
-            List<long> resultParent = new List<long>();
-            List<float> resultCost = new List<float>();
 
             m_nodePool.Clear();
             m_openList.Clear();
@@ -2751,7 +2753,7 @@ namespace DotRecast.Detour
                 }
             }
 
-            return Results.Success(new FindPolysAroundResult(resultRef, resultParent, resultCost));
+            return DtStatus.DT_SUCCSESS;
         }
 
         /// @par
