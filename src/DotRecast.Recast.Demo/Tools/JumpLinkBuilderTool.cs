@@ -378,11 +378,13 @@ public class JumpLinkBuilderTool : IRcTool
             links.Clear();
             if (annotationBuilder != null)
             {
-                float cellSize = sample.GetSettingsUI().GetCellSize();
-                float agentHeight = sample.GetSettingsUI().GetAgentHeight();
-                float agentRadius = sample.GetSettingsUI().GetAgentRadius();
-                float agentClimb = sample.GetSettingsUI().GetAgentMaxClimb();
-                float cellHeight = sample.GetSettingsUI().GetCellHeight();
+                var settings = sample.GetSettings();
+                float cellSize = settings.cellSize;
+                float agentHeight = settings.agentHeight;
+                float agentRadius = settings.agentRadius;
+                float agentClimb = settings.agentMaxClimb;
+                float cellHeight = settings.cellHeight;
+                
                 if ((option.buildTypes & JumpLinkType.EDGE_CLIMB_DOWN.Bit) != 0)
                 {
                     JumpLinkBuilderConfig config = new JumpLinkBuilderConfig(cellSize, cellHeight, agentRadius,

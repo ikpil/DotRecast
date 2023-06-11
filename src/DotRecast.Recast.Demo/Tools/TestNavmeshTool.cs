@@ -439,7 +439,7 @@ public class TestNavmeshTool : IRcTool
             {
                 float nx = (m_epos.z - m_spos.z) * 0.25f;
                 float nz = -(m_epos.x - m_spos.x) * 0.25f;
-                float agentHeight = m_sample != null ? m_sample.GetSettingsUI().GetAgentHeight() : 0;
+                float agentHeight = m_sample != null ? m_sample.GetSettings().agentHeight : 0;
 
                 m_queryPoly[0] = m_spos.x + nx * 1.2f;
                 m_queryPoly[1] = m_spos.y + agentHeight / 2;
@@ -469,7 +469,7 @@ public class TestNavmeshTool : IRcTool
         {
             if (m_sposSet && m_startRef != 0)
             {
-                m_neighbourhoodRadius = m_sample.GetSettingsUI().GetAgentRadius() * 20.0f;
+                m_neighbourhoodRadius = m_sample.GetSettings().agentRadius * 20.0f;
                 Result<FindLocalNeighbourhoodResult> result = m_navQuery.FindLocalNeighbourhood(m_startRef, m_spos,
                     m_neighbourhoodRadius, m_filter);
                 if (result.Succeeded())
@@ -516,9 +516,9 @@ public class TestNavmeshTool : IRcTool
         int endCol = DuRGBA(51, 102, 0, 129);
         int pathCol = DuRGBA(0, 0, 0, 64);
 
-        float agentRadius = m_sample.GetSettingsUI().GetAgentRadius();
-        float agentHeight = m_sample.GetSettingsUI().GetAgentHeight();
-        float agentClimb = m_sample.GetSettingsUI().GetAgentMaxClimb();
+        float agentRadius = m_sample.GetSettings().agentRadius;
+        float agentHeight = m_sample.GetSettings().agentHeight;
+        float agentClimb = m_sample.GetSettings().agentMaxClimb;
 
         if (m_sposSet)
         {
@@ -927,9 +927,9 @@ public class TestNavmeshTool : IRcTool
 
     private void DrawAgent(RecastDebugDraw dd, RcVec3f pos, int col)
     {
-        float r = m_sample.GetSettingsUI().GetAgentRadius();
-        float h = m_sample.GetSettingsUI().GetAgentHeight();
-        float c = m_sample.GetSettingsUI().GetAgentMaxClimb();
+        float r = m_sample.GetSettings().agentRadius;
+        float h = m_sample.GetSettings().agentHeight;
+        float c = m_sample.GetSettings().agentMaxClimb;
         dd.DepthMask(false);
         // Agent dimensions.
         dd.DebugDrawCylinderWire(pos.x - r, pos.y + 0.02f, pos.z - r, pos.x + r, pos.y + h, pos.z + r, col, 2.0f);

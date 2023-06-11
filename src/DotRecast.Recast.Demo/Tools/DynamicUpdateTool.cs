@@ -431,9 +431,9 @@ public class DynamicUpdateTool : IRcTool
 
     private void DrawAgent(RecastDebugDraw dd, RcVec3f pos, int col)
     {
-        float r = sample.GetSettingsUI().GetAgentRadius();
-        float h = sample.GetSettingsUI().GetAgentHeight();
-        float c = sample.GetSettingsUI().GetAgentMaxClimb();
+        float r = sample.GetSettings().agentRadius;
+        float h = sample.GetSettings().agentHeight;
+        float c = sample.GetSettings().agentMaxClimb;
         dd.DepthMask(false);
         // Agent dimensions.
         dd.DebugDrawCylinderWire(pos.x - r, pos.y + 0.02f, pos.z - r, pos.x + r, pos.y + h, pos.z + r, col, 2.0f);

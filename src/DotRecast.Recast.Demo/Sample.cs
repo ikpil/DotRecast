@@ -24,75 +24,76 @@ using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.DemoTool.Geom;
 
 using DotRecast.Recast.Demo.UI;
+using DotRecast.Recast.DemoTool;
 
 namespace DotRecast.Recast.Demo;
 
 public class Sample
 {
-    private DemoInputGeomProvider inputGeom;
-    private DtNavMesh navMesh;
-    private DtNavMeshQuery navMeshQuery;
-    private readonly RcSettingsView _settingsView;
-    private IList<RecastBuilderResult> recastResults;
-    private bool changed;
+    private DemoInputGeomProvider _inputGeom;
+    private DtNavMesh _navMesh;
+    private DtNavMeshQuery _navMeshQuery;
+    private readonly RcSettings _settings;
+    private IList<RecastBuilderResult> _recastResults;
+    private bool _changed;
 
     public Sample(DemoInputGeomProvider inputGeom, IList<RecastBuilderResult> recastResults, DtNavMesh navMesh,
         RcSettingsView settingsView, RecastDebugDraw debugDraw)
     {
-        this.inputGeom = inputGeom;
-        this.recastResults = recastResults;
-        this.navMesh = navMesh;
-        _settingsView = settingsView;
+        _inputGeom = inputGeom;
+        _recastResults = recastResults;
+        _navMesh = navMesh;
+        _settings = settingsView.GetSettings();
         SetQuery(navMesh);
-        changed = true;
+        _changed = true;
     }
 
     private void SetQuery(DtNavMesh navMesh)
     {
-        navMeshQuery = navMesh != null ? new DtNavMeshQuery(navMesh) : null;
+        _navMeshQuery = navMesh != null ? new DtNavMeshQuery(navMesh) : null;
     }
 
     public DemoInputGeomProvider GetInputGeom()
     {
-        return inputGeom;
+        return _inputGeom;
     }
 
     public IList<RecastBuilderResult> GetRecastResults()
     {
-        return recastResults;
+        return _recastResults;
     }
 
     public DtNavMesh GetNavMesh()
     {
-        return navMesh;
+        return _navMesh;
     }
 
-    public RcSettingsView GetSettingsUI()
+    public RcSettings GetSettings()
     {
-        return _settingsView;
+        return _settings;
     }
 
     public DtNavMeshQuery GetNavMeshQuery()
     {
-        return navMeshQuery;
+        return _navMeshQuery;
     }
 
     public bool IsChanged()
     {
-        return changed;
+        return _changed;
     }
 
     public void SetChanged(bool changed)
     {
-        this.changed = changed;
+        _changed = changed;
     }
 
     public void Update(DemoInputGeomProvider geom, IList<RecastBuilderResult> recastResults, DtNavMesh navMesh)
     {
-        inputGeom = geom;
-        this.recastResults = recastResults;
-        this.navMesh = navMesh;
+        _inputGeom = geom;
+        _recastResults = recastResults;
+        _navMesh = navMesh;
         SetQuery(navMesh);
-        changed = true;
+        _changed = true;
     }
 }

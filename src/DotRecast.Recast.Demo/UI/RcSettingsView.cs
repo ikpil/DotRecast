@@ -23,45 +23,16 @@ using System.Linq;
 using System.Numerics;
 using DotRecast.Core;
 using DotRecast.Recast.Demo.Draw;
+using DotRecast.Recast.DemoTool;
 using ImGuiNET;
 
 namespace DotRecast.Recast.Demo.UI;
 
 public class RcSettingsView : IRcView
 {
-    private float cellSize = 0.3f;
-    private float cellHeight = 0.2f;
-
-    private float agentHeight = 2.0f;
-    private float agentRadius = 0.6f;
-    private float agentMaxClimb = 0.9f;
-    private float agentMaxSlope = 45f;
-
-    private int minRegionSize = 8;
-    private int mergedRegionSize = 20;
-
-    private int partitioningIdx = 0;
-    private PartitionType partitioning = PartitionType.WATERSHED;
-
-    private bool filterLowHangingObstacles = true;
-    private bool filterLedgeSpans = true;
-    private bool filterWalkableLowHeightSpans = true;
-
-    private float edgeMaxLen = 12f;
-    private float edgeMaxError = 1.3f;
-    private int vertsPerPoly = 6;
-
-    private float detailSampleDist = 6f;
-    private float detailSampleMaxError = 1f;
-
-    private bool tiled = false;
-    private int tileSize = 32;
-
-    // public readonly NkColor white = NkColor.Create();
-    // public readonly NkColor background = NkColor.Create();
-    // public readonly NkColor transparent = NkColor.Create();
     private bool buildTriggered;
     private long buildTime;
+    
     private readonly int[] voxels = new int[2];
     private readonly int[] tiles = new int[2];
     private int maxTiles;
@@ -76,16 +47,26 @@ public class RcSettingsView : IRcView
     private bool _mouseInside;
     public bool IsMouseInside() => _mouseInside;
 
+    private readonly RcSettings _settings;
     private RcCanvas _canvas;
+
+    public RcSettingsView()
+    {
+        _settings = new();
+    }
 
     public void Bind(RcCanvas canvas)
     {
         _canvas = canvas;
     }
 
+    public RcSettings GetSettings()
+    {
+        return _settings;
+    }
+
     public void Update(double dt)
     {
-        
     }
 
     public void Draw(double dt)
@@ -131,63 +112,62 @@ public class RcSettingsView : IRcView
         ImGui.Text("Rasterization");
         ImGui.Separator();
 
-        ImGui.SliderFloat("Cell Size", ref cellSize, 0.01f, 1f, "%.2f");
-        ImGui.SliderFloat("Cell Height", ref cellHeight, 0.01f, 1f, "%.2f");
+        ImGui.SliderFloat("Cell Size", ref _settings.cellSize, 0.01f, 1f, "%.2f");
+        ImGui.SliderFloat("Cell Height", ref _settings.cellHeight, 0.01f, 1f, "%.2f");
         ImGui.Text($"Voxels {voxels[0]} x {voxels[1]}");
         ImGui.NewLine();
 
         ImGui.Text("Agent");
         ImGui.Separator();
-        ImGui.SliderFloat("Height", ref agentHeight, 0.1f, 5f, "%.1f");
-        ImGui.SliderFloat("Radius", ref agentRadius, 0.1f, 5f, "%.1f");
-        ImGui.SliderFloat("Max Climb", ref agentMaxClimb, 0.1f, 5f, "%.1f");
-        ImGui.SliderFloat("Max Slope", ref agentMaxSlope, 1f, 90f, "%.0f");
+        ImGui.SliderFloat("Height", ref _settings.agentHeight, 0.1f, 5f, "%.1f");
+        ImGui.SliderFloat("Radius", ref _settings.agentRadius, 0.1f, 5f, "%.1f");
+        ImGui.SliderFloat("Max Climb", ref _settings.agentMaxClimb, 0.1f, 5f, "%.1f");
+        ImGui.SliderFloat("Max Slope", ref _settings.agentMaxSlope, 1f, 90f, "%.0f");
         ImGui.NewLine();
 
         ImGui.Text("Region");
         ImGui.Separator();
-        ImGui.SliderInt("Min Region Size", ref minRegionSize, 1, 150);
-        ImGui.SliderInt("Merged Region Size", ref mergedRegionSize, 1, 150);
+        ImGui.SliderInt("Min Region Size", ref _settings.minRegionSize, 1, 150);
+        ImGui.SliderInt("Merged Region Size", ref _settings.mergedRegionSize, 1, 150);
         ImGui.NewLine();
 
         ImGui.Text("Partitioning");
         ImGui.Separator();
         PartitionType.Values.ForEach(partition =>
         {
-            var label = partition.Name.Substring(0, 1).ToUpper()
-                        + partition.Name.Substring(1).ToLower();
-            ImGui.RadioButton(label, ref partitioningIdx, partition.Idx);
+            var label = partition.Name.Substring(0, 1).ToUpper() + partition.Name.Substring(1).ToLower();
+            ImGui.RadioButton(label, ref _settings.partitioningIdx, partition.Idx);
         });
         ImGui.NewLine();
 
         ImGui.Text("Filtering");
         ImGui.Separator();
-        ImGui.Checkbox("Low Hanging Obstacles", ref filterLowHangingObstacles);
-        ImGui.Checkbox("Ledge Spans", ref filterLedgeSpans);
-        ImGui.Checkbox("Walkable Low Height Spans", ref filterWalkableLowHeightSpans);
+        ImGui.Checkbox("Low Hanging Obstacles", ref _settings.filterLowHangingObstacles);
+        ImGui.Checkbox("Ledge Spans", ref _settings.filterLedgeSpans);
+        ImGui.Checkbox("Walkable Low Height Spans", ref _settings.filterWalkableLowHeightSpans);
         ImGui.NewLine();
 
         ImGui.Text("Polygonization");
         ImGui.Separator();
-        ImGui.SliderFloat("Max Edge Length", ref edgeMaxLen, 0f, 50f, "%.1f");
-        ImGui.SliderFloat("Max Edge Error", ref edgeMaxError, 0.1f, 3f, "%.1f");
-        ImGui.SliderInt("Vert Per Poly", ref vertsPerPoly, 3, 12);
+        ImGui.SliderFloat("Max Edge Length", ref _settings.edgeMaxLen, 0f, 50f, "%.1f");
+        ImGui.SliderFloat("Max Edge Error", ref _settings.edgeMaxError, 0.1f, 3f, "%.1f");
+        ImGui.SliderInt("Vert Per Poly", ref _settings.vertsPerPoly, 3, 12);
         ImGui.NewLine();
 
         ImGui.Text("Detail Mesh");
         ImGui.Separator();
-        ImGui.SliderFloat("Sample Distance", ref detailSampleDist, 0f, 16f, "%.1f");
-        ImGui.SliderFloat("Max Sample Error", ref detailSampleMaxError, 0f, 16f, "%.1f");
+        ImGui.SliderFloat("Sample Distance", ref _settings.detailSampleDist, 0f, 16f, "%.1f");
+        ImGui.SliderFloat("Max Sample Error", ref _settings.detailSampleMaxError, 0f, 16f, "%.1f");
         ImGui.NewLine();
 
         ImGui.Text("Tiling");
         ImGui.Separator();
-        ImGui.Checkbox("Enable", ref tiled);
-        if (tiled)
+        ImGui.Checkbox("Enable", ref _settings.tiled);
+        if (_settings.tiled)
         {
-            if (0 < (tileSize % 16))
-                tileSize = tileSize + (16 - (tileSize % 16));
-            ImGui.SliderInt("Tile Size", ref tileSize, 16, 1024);
+            if (0 < (_settings.tileSize % 16))
+                _settings.tileSize = _settings.tileSize + (16 - (_settings.tileSize % 16));
+            ImGui.SliderInt("Tile Size", ref _settings.tileSize, 16, 1024);
 
             ImGui.Text($"Tiles {tiles[0]} x {tiles[1]}");
             ImGui.Text($"Max Tiles {maxTiles}");
@@ -230,120 +210,27 @@ public class RcSettingsView : IRcView
         ImGui.End();
     }
 
-    public float GetCellSize()
-    {
-        return cellSize;
-    }
-
-    public float GetCellHeight()
-    {
-        return cellHeight;
-    }
-
-    public float GetAgentHeight()
-    {
-        return agentHeight;
-    }
-
-    public float GetAgentRadius()
-    {
-        return agentRadius;
-    }
-
-    public float GetAgentMaxClimb()
-    {
-        return agentMaxClimb;
-    }
-
-    public float GetAgentMaxSlope()
-    {
-        return agentMaxSlope;
-    }
-
-    public int GetMinRegionSize()
-    {
-        return minRegionSize;
-    }
-
-    public int GetMergedRegionSize()
-    {
-        return mergedRegionSize;
-    }
-
-    public PartitionType GetPartitioning()
-    {
-        return partitioning;
-    }
 
     public bool IsBuildTriggered()
     {
         return buildTriggered;
     }
 
-    public bool IsFilterLowHangingObstacles()
-    {
-        return filterLowHangingObstacles;
-    }
-
-    public bool IsFilterLedgeSpans()
-    {
-        return filterLedgeSpans;
-    }
-
-    public bool IsFilterWalkableLowHeightSpans()
-    {
-        return filterWalkableLowHeightSpans;
-    }
 
     public void SetBuildTime(long buildTime)
     {
         this.buildTime = buildTime;
     }
-    
+
     public DrawMode GetDrawMode()
     {
         return DrawMode.Values[drawMode];
-    }
-
-    public float GetEdgeMaxLen()
-    {
-        return edgeMaxLen;
-    }
-
-    public float GetEdgeMaxError()
-    {
-        return edgeMaxError;
-    }
-
-    public int GetVertsPerPoly()
-    {
-        return vertsPerPoly;
-    }
-
-    public float GetDetailSampleDist()
-    {
-        return detailSampleDist;
-    }
-
-    public float GetDetailSampleMaxError()
-    {
-        return detailSampleMaxError;
     }
 
     public void SetVoxels(int gw, int gh)
     {
         voxels[0] = gw;
         voxels[1] = gh;
-    }
-
-    public bool IsTiled()
-    {
-        return tiled;
-    }
-
-    public int GetTileSize()
-    {
-        return tileSize;
     }
 
     public void SetTiles(int[] tiles)

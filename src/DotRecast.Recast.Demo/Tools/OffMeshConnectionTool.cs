@@ -57,7 +57,7 @@ public class OffMeshConnectionTool : IRcTool
             foreach (DemoOffMeshConnection offMeshCon in geom.GetOffMeshConnections())
             {
                 float d = Math.Min(RcVec3f.DistSqr(p, offMeshCon.verts, 0), RcVec3f.DistSqr(p, offMeshCon.verts, 3));
-                if (d < nearestDist && Math.Sqrt(d) < sample.GetSettingsUI().GetAgentRadius())
+                if (d < nearestDist && Math.Sqrt(d) < sample.GetSettings().agentRadius)
                 {
                     nearestDist = d;
                     nearestConnection = offMeshCon;
@@ -81,7 +81,7 @@ public class OffMeshConnectionTool : IRcTool
             {
                 int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP;
                 int flags = SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP;
-                geom.AddOffMeshConnection(hitPos, p, sample.GetSettingsUI().GetAgentRadius(), 0 == bidir, area, flags);
+                geom.AddOffMeshConnection(hitPos, p, sample.GetSettings().agentRadius, 0 == bidir, area, flags);
                 hitPosSet = false;
             }
         }
@@ -95,7 +95,7 @@ public class OffMeshConnectionTool : IRcTool
         }
 
         RecastDebugDraw dd = renderer.GetDebugDraw();
-        float s = sample.GetSettingsUI().GetAgentRadius();
+        float s = sample.GetSettings().agentRadius;
 
         if (hitPosSet)
         {

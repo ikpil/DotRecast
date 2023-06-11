@@ -69,7 +69,7 @@ public class CrowdTool : IRcTool
         {
             m_nav = nav;
 
-            DtCrowdConfig config = new DtCrowdConfig(sample.GetSettingsUI().GetAgentRadius());
+            DtCrowdConfig config = new DtCrowdConfig(sample.GetSettings().agentRadius);
 
             crowd = new DtCrowd(config, nav, __ => new DtQueryDefaultFilter(SampleAreaModifications.SAMPLE_POLYFLAGS_ALL,
                 SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED, new float[] { 1f, 10f, 1f, 1f, 2f, 1.5f }));
@@ -107,7 +107,7 @@ public class CrowdTool : IRcTool
 
             crowd.SetObstacleAvoidanceParams(3, option);
 
-            profilingTool.Setup(sample.GetSettingsUI().GetAgentRadius(), m_nav);
+            profilingTool.Setup(sample.GetSettings().agentRadius, m_nav);
         }
     }
 
@@ -210,8 +210,8 @@ public class CrowdTool : IRcTool
     private DtCrowdAgentParams GetAgentParams()
     {
         DtCrowdAgentParams ap = new DtCrowdAgentParams();
-        ap.radius = sample.GetSettingsUI().GetAgentRadius();
-        ap.height = sample.GetSettingsUI().GetAgentHeight();
+        ap.radius = sample.GetSettings().agentRadius;
+        ap.height = sample.GetSettings().agentHeight;
         ap.maxAcceleration = 8.0f;
         ap.maxSpeed = 3.5f;
         ap.collisionQueryRange = ap.radius * 12.0f;
@@ -319,7 +319,7 @@ public class CrowdTool : IRcTool
         }
 
         RecastDebugDraw dd = renderer.GetDebugDraw();
-        float rad = sample.GetSettingsUI().GetAgentRadius();
+        float rad = sample.GetSettings().agentRadius;
         DtNavMesh nav = sample.GetNavMesh();
         if (nav == null || crowd == null)
             return;

@@ -109,7 +109,7 @@ public class RecastDemo
     private bool markerPositionSet;
     private RcVec3f markerPosition = new RcVec3f();
 
-    private RcToolsetView toolsetView;
+    private RcToolsetView toolset;
     private RcSettingsView settingsView;
     private RcLogView logView;
 
@@ -301,7 +301,7 @@ public class RecastDemo
     {
         DemoInputGeomProvider geom = DemoObjImporter.Load(stream);
         sample = new Sample(geom, ImmutableArray<RecastBuilderResult>.Empty, null, settingsView, dd);
-        toolsetView.SetEnabled(true);
+        toolset.SetEnabled(true);
         return geom;
     }
 
@@ -325,7 +325,7 @@ public class RecastDemo
         if (mesh != null)
         {
             //sample = new Sample(null, ImmutableArray<RecastBuilderResult>.Empty, mesh, settingsUI, dd);
-            toolsetView.SetEnabled(true);
+            toolset.SetEnabled(true);
         }
     }
 
@@ -369,7 +369,7 @@ public class RecastDemo
         _imgui = new ImGuiController(_gl, window, _input);
 
         settingsView = new RcSettingsView();
-        toolsetView = new RcToolsetView(
+        toolset = new RcToolsetView(
             new TestNavmeshTool(),
             new OffMeshConnectionTool(),
             new ConvexVolumeTool(),
@@ -379,7 +379,7 @@ public class RecastDemo
         );
         logView = new RcLogView();
 
-        _canvas = new RcCanvas(window, settingsView, toolsetView, logView);
+        _canvas = new RcCanvas(window, settingsView, toolset, logView);
 
         var vendor = _gl.GetStringS(GLEnum.Vendor);
         var version = _gl.GetStringS(GLEnum.Version);
@@ -430,13 +430,14 @@ public class RecastDemo
        */
         if (sample.GetInputGeom() != null)
         {
+            var settings = settingsView.GetSettings();
             RcVec3f bmin = sample.GetInputGeom().GetMeshBoundsMin();
             RcVec3f bmax = sample.GetInputGeom().GetMeshBoundsMax();
-            Recast.CalcGridSize(bmin, bmax, settingsView.GetCellSize(), out var gw, out var gh);
+            Recast.CalcGridSize(bmin, bmax, settings.cellSize, out var gw, out var gh);
             settingsView.SetVoxels(gw, gh);
-            settingsView.SetTiles(tileNavMeshBuilder.GetTiles(sample.GetInputGeom(), settingsView.GetCellSize(), settingsView.GetTileSize()));
-            settingsView.SetMaxTiles(tileNavMeshBuilder.GetMaxTiles(sample.GetInputGeom(), settingsView.GetCellSize(), settingsView.GetTileSize()));
-            settingsView.SetMaxPolys(tileNavMeshBuilder.GetMaxPolysPerTile(sample.GetInputGeom(), settingsView.GetCellSize(), settingsView.GetTileSize()));
+            settingsView.SetTiles(tileNavMeshBuilder.GetTiles(sample.GetInputGeom(), settings.cellSize, settings.tileSize));
+            settingsView.SetMaxTiles(tileNavMeshBuilder.GetMaxTiles(sample.GetInputGeom(), settings.cellSize, settings.tileSize));
+            settingsView.SetMaxPolys(tileNavMeshBuilder.GetMaxPolysPerTile(sample.GetInputGeom(), settings.cellSize, settings.tileSize));
         }
 
         UpdateKeyboard((float)dt);
@@ -475,7 +476,7 @@ public class RecastDemo
             timeAcc -= DELTA_TIME;
             if (simIter < 5 && sample != null)
             {
-                toolsetView.HandleUpdate(DELTA_TIME);
+                toolset.HandleUpdate(DELTA_TIME);
             }
 
             simIter++;
@@ -515,47 +516,84 @@ public class RecastDemo
         {
             if (!building)
             {
-                float m_cellSize = settingsView.GetCellSize();
-                float m_cellHeight = settingsView.GetCellHeight();
-                float m_agentHeight = settingsView.GetAgentHeight();
-                float m_agentRadius = settingsView.GetAgentRadius();
-                float m_agentMaxClimb = settingsView.GetAgentMaxClimb();
-                float m_agentMaxSlope = settingsView.GetAgentMaxSlope();
-                int m_regionMinSize = settingsView.GetMinRegionSize();
-                int m_regionMergeSize = settingsView.GetMergedRegionSize();
-                float m_edgeMaxLen = settingsView.GetEdgeMaxLen();
-                float m_edgeMaxError = settingsView.GetEdgeMaxError();
-                int m_vertsPerPoly = settingsView.GetVertsPerPoly();
-                float m_detailSampleDist = settingsView.GetDetailSampleDist();
-                float m_detailSampleMaxError = settingsView.GetDetailSampleMaxError();
-                int m_tileSize = settingsView.GetTileSize();
+                var settings = settingsView.GetSettings();
+                var partitioning = settings.partitioning;
+                var cellSize = settings.cellSize;
+                var cellHeight = settings.cellHeight;
+                var agentHeight = settings.agentHeight;
+                var agentRadius = settings.agentRadius;
+                var agentMaxClimb = settings.agentMaxClimb;
+                var agentMaxSlope = settings.agentMaxSlope;
+                var regionMinSize = settings.minRegionSize;
+                var regionMergeSize = settings.mergedRegionSize;
+                var edgeMaxLen = settings.edgeMaxLen;
+                var edgeMaxError = settings.edgeMaxError;
+                var vertsPerPoly = settings.vertsPerPoly;
+                var detailSampleDist = settings.detailSampleDist;
+                var detailSampleMaxError = settings.detailSampleMaxError;
+                var filterLowHangingObstacles = settings.filterLowHangingObstacles;
+                var filterLedgeSpans = settings.filterLedgeSpans;
+                var filterWalkableLowHeightSpans = settings.filterWalkableLowHeightSpans;
+                var tileSize = settings.tileSize;
+
                 long t = RcFrequency.Ticks;
 
                 Logger.Information($"build");
 
                 Tuple<IList<RecastBuilderResult>, DtNavMesh> buildResult;
-                if (settingsView.IsTiled())
+                if (settings.tiled)
                 {
-                    buildResult = tileNavMeshBuilder.Build(sample.GetInputGeom(), settingsView.GetPartitioning(), m_cellSize,
-                        m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize,
-                        m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, m_detailSampleDist,
-                        m_detailSampleMaxError, settingsView.IsFilterLowHangingObstacles(), settingsView.IsFilterLedgeSpans(),
-                        settingsView.IsFilterWalkableLowHeightSpans(), m_tileSize);
+                    buildResult = tileNavMeshBuilder.Build(
+                        sample.GetInputGeom(),
+                        partitioning,
+                        cellSize,
+                        cellHeight,
+                        agentHeight,
+                        agentRadius,
+                        agentMaxClimb,
+                        agentMaxSlope,
+                        regionMinSize,
+                        regionMergeSize,
+                        edgeMaxLen,
+                        edgeMaxError,
+                        vertsPerPoly,
+                        detailSampleDist,
+                        detailSampleMaxError,
+                        filterLowHangingObstacles,
+                        filterLedgeSpans,
+                        filterWalkableLowHeightSpans,
+                        tileSize
+                    );
                 }
                 else
                 {
-                    buildResult = soloNavMeshBuilder.Build(sample.GetInputGeom(), settingsView.GetPartitioning(), m_cellSize,
-                        m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize,
-                        m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, m_detailSampleDist,
-                        m_detailSampleMaxError, settingsView.IsFilterLowHangingObstacles(), settingsView.IsFilterLedgeSpans(),
-                        settingsView.IsFilterWalkableLowHeightSpans());
+                    buildResult = soloNavMeshBuilder.Build(
+                        sample.GetInputGeom(),
+                        partitioning,
+                        cellSize,
+                        cellHeight,
+                        agentHeight,
+                        agentRadius,
+                        agentMaxClimb,
+                        agentMaxSlope,
+                        regionMinSize,
+                        regionMergeSize,
+                        edgeMaxLen,
+                        edgeMaxError,
+                        vertsPerPoly,
+                        detailSampleDist,
+                        detailSampleMaxError,
+                        filterLowHangingObstacles,
+                        filterLedgeSpans,
+                        filterWalkableLowHeightSpans
+                    );
                 }
 
                 sample.Update(sample.GetInputGeom(), buildResult.Item1, buildResult.Item2);
                 sample.SetChanged(false);
                 settingsView.SetBuildTime((RcFrequency.Ticks - t) / TimeSpan.TicksPerMillisecond);
                 //settingsUI.SetBuildTelemetry(buildResult.Item1.Select(x => x.GetTelemetry()).ToList());
-                toolsetView.SetSample(sample);
+                toolset.SetSample(sample);
 
                 Logger.Information($"build times");
                 Logger.Information($"-----------------------------------------");
@@ -602,7 +640,7 @@ public class RecastDemo
                 }
 
                 RcVec3f rayDir = RcVec3f.Of(rayEnd.x - rayStart.x, rayEnd.y - rayStart.y, rayEnd.z - rayStart.z);
-                IRcTool rayTool = toolsetView.GetTool();
+                IRcTool rayTool = toolset.GetTool();
                 rayDir.Normalize();
                 if (rayTool != null)
                 {
@@ -704,7 +742,7 @@ public class RecastDemo
             }
 
             sample.SetChanged(false);
-            toolsetView.SetSample(sample);
+            toolset.SetSample(sample);
         }
 
 
@@ -726,8 +764,9 @@ public class RecastDemo
         modelviewMatrix = dd.ViewMatrix(cameraPos, cameraEulers);
 
         dd.Fog(camr * 0.1f, camr * 1.25f);
-        renderer.Render(sample);
-        IRcTool tool = toolsetView.GetTool();
+        renderer.Render(sample, settingsView.GetDrawMode());
+
+        IRcTool tool = toolset.GetTool();
         if (tool != null)
         {
             tool.HandleRender(renderer);
