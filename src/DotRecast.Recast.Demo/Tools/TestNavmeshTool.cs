@@ -12,7 +12,7 @@ using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class TestNavmeshTool : ITool
+public class TestNavmeshTool : IRcTool
 {
     private const int MAX_POLYS = 256;
     private const int MAX_SMOOTH = 2048;

@@ -28,7 +28,7 @@ using static DotRecast.Recast.Demo.Draw.DebugDraw;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class OffMeshConnectionTool : ITool
+public class OffMeshConnectionTool : IRcTool
 {
     private Sample sample;
     private bool hitPosSet;

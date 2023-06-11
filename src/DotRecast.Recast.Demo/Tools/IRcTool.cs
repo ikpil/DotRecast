@@ -23,7 +23,7 @@ using DotRecast.Recast.Demo.Draw;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public interface ITool
+public interface IRcTool
 {
     string GetName();
     void Layout();

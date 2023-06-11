@@ -13,7 +13,7 @@ namespace DotRecast.Recast.Demo.UI;
 
 public class RcLogView : IRcView
 {
-    private RecastDemoCanvas _canvas;
+    private RcCanvas _canvas;
     private bool _mouseInside;
 
     private readonly List<LogMessageItem> _lines;
@@ -42,7 +42,7 @@ public class RcLogView : IRcView
         _lines.Clear();
     }
 
-    public void Bind(RecastDemoCanvas canvas)
+    public void Bind(RcCanvas canvas)
     {
         _canvas = canvas;
     }

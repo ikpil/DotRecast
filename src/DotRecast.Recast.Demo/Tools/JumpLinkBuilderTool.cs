@@ -29,7 +29,7 @@ using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class JumpLinkBuilderTool : ITool
+public class JumpLinkBuilderTool : IRcTool
 {
     private readonly List<JumpLink> links = new();
     private Sample sample;

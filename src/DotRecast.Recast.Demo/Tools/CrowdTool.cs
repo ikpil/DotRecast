@@ -34,7 +34,7 @@ using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class CrowdTool : ITool
+public class CrowdTool : IRcTool
 {
     private readonly CrowdToolParams toolParams = new CrowdToolParams();
     private Sample sample;

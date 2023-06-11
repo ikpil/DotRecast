@@ -37,7 +37,7 @@ using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class DynamicUpdateTool : ITool
+public class DynamicUpdateTool : IRcTool
 {
     private Sample sample;
     private int toolModeIdx = DynamicUpdateToolMode.BUILD.Idx;

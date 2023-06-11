@@ -30,7 +30,7 @@ using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class ConvexVolumeTool : ITool
+public class ConvexVolumeTool : IRcTool
 {
     private Sample sample;
     private int areaTypeValue = SampleAreaModifications.SAMPLE_AREAMOD_GRASS.Value;

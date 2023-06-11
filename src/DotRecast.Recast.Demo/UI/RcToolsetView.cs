@@ -26,24 +26,24 @@ using ImGuiNET;
 
 namespace DotRecast.Recast.Demo.UI;
 
-public class ToolsView : IRcView
+public class RcToolsetView : IRcView
 {
     //private readonly NkColor white = NkColor.Create();
     private int _currentToolIdx = 0;
-    private ITool currentTool;
+    private IRcTool currentTool;
     private bool enabled;
-    private readonly ITool[] tools;
+    private readonly IRcTool[] tools;
     private bool _mouseInside;
     public bool IsMouseInside() => _mouseInside;
 
-    private RecastDemoCanvas _canvas;
+    private RcCanvas _canvas;
 
-    public ToolsView(params ITool[] tools)
+    public RcToolsetView(params IRcTool[] tools)
     {
         this.tools = tools;
     }
 
-    public void Bind(RecastDemoCanvas canvas)
+    public void Bind(RcCanvas canvas)
     {
         _canvas = canvas;
     }
@@ -87,7 +87,7 @@ public class ToolsView : IRcView
         this.enabled = enabled;
     }
 
-    public ITool GetTool()
+    public IRcTool GetTool()
     {
         return currentTool;
     }

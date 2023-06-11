@@ -23,9 +23,7 @@ using System.Linq;
 using System.Numerics;
 using DotRecast.Core;
 using DotRecast.Recast.Demo.Draw;
-using DotRecast.Recast.Demo.UI;
 using ImGuiNET;
-using Silk.NET.Windowing;
 
 namespace DotRecast.Recast.Demo.UI;
 
@@ -78,9 +76,9 @@ public class RcSettingsView : IRcView
     private bool _mouseInside;
     public bool IsMouseInside() => _mouseInside;
 
-    private RecastDemoCanvas _canvas;
+    private RcCanvas _canvas;
 
-    public void Bind(RecastDemoCanvas canvas)
+    public void Bind(RcCanvas canvas)
     {
         _canvas = canvas;
     }

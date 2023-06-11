@@ -27,7 +27,7 @@ using Silk.NET.Windowing;
 
 namespace DotRecast.Recast.Demo.UI;
 
-public class RecastDemoCanvas
+public class RcCanvas
 {
     private static readonly ILogger Logger = Log.ForContext<RecastDemo>();
 
@@ -38,7 +38,7 @@ public class RecastDemoCanvas
 
     public Vector2D<int> Size => _window.Size;
 
-    public RecastDemoCanvas(IWindow window, params IRcView[] views)
+    public RcCanvas(IWindow window, params IRcView[] views)
     {
         _window = window;
         _views = views;
