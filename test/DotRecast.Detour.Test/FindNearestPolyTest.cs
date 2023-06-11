@@ -42,12 +42,12 @@ public class FindNearestPolyTest : AbstractDetourTest
         for (int i = 0; i < startRefs.Length; i++)
         {
             RcVec3f startPos = startPoss[i];
-            var status = query.FindNearestPoly(startPos, extents, filter, out var nearestRef, out var nearest, out var _);
+            var status = query.FindNearestPoly(startPos, extents, filter, out var nearestRef, out var nearestPt, out var _);
             Assert.That(status.Succeeded(), Is.True);
             Assert.That(nearestRef, Is.EqualTo(POLY_REFS[i]));
             for (int v = 0; v < POLY_POS[i].Length; v++)
             {
-                Assert.That(nearest[v], Is.EqualTo(POLY_POS[i][v]).Within(0.001f));
+                Assert.That(nearestPt[v], Is.EqualTo(POLY_POS[i][v]).Within(0.001f));
             }
         }
     }
@@ -61,12 +61,12 @@ public class FindNearestPolyTest : AbstractDetourTest
         for (int i = 0; i < startRefs.Length; i++)
         {
             RcVec3f startPos = startPoss[i];
-            var status = query.FindNearestPoly(startPos, extents, filter, out var nearestRef, out var nearest, out var _);
+            var status = query.FindNearestPoly(startPos, extents, filter, out var nearestRef, out var nearestPt, out var _);
             Assert.That(status.Succeeded(), Is.True);
             Assert.That(nearestRef, Is.EqualTo(0L));
             for (int v = 0; v < POLY_POS[i].Length; v++)
             {
-                Assert.That(nearest[v], Is.EqualTo(startPos[v]).Within(0.001f));
+                Assert.That(nearestPt[v], Is.EqualTo(startPos[v]).Within(0.001f));
             }
         }
     }

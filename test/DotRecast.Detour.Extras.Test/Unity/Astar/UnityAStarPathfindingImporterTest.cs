@@ -109,11 +109,11 @@ public class UnityAStarPathfindingImporterTest
         for (int i = 0; i < results.Length; i++)
         {
             RcVec3f position = positions[i];
-            var status = query.FindNearestPoly(position, extents, filter, out var nearestRef, out var nearest, out var _);
+            var status = query.FindNearestPoly(position, extents, filter, out var nearestRef, out var nearestPt, out var _);
             Assert.That(status.Succeeded(), Is.True);
-            Assert.That(nearest, Is.Not.EqualTo(RcVec3f.Zero), "Nearest start position is null!");
+            Assert.That(nearestPt, Is.Not.EqualTo(RcVec3f.Zero), "Nearest start position is null!");
 
-            results[i] = new DtPolyPoint(nearestRef, nearest);
+            results[i] = new DtPolyPoint(nearestRef, nearestPt);
         }
 
         return results;

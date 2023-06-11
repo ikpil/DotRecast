@@ -279,7 +279,7 @@ public class CrowdProfilingTool
     private void MoveMob(DtNavMeshQuery navquery, IDtQueryFilter filter, DtCrowdAgent ag, CrowdAgentData crowAgentData)
     {
         // Move somewhere
-        var status = navquery.FindNearestPoly(ag.npos, crowd.GetQueryExtents(), filter, out var nearestRef, out var nearest, out var _);
+        var status = navquery.FindNearestPoly(ag.npos, crowd.GetQueryExtents(), filter, out var nearestRef, out var nearestPt, out var _);
         if (status.Succeeded())
         {
             status = navquery.FindRandomPointAroundCircle(nearestRef, crowAgentData.home, zoneRadius * 2f, filter, rnd,
@@ -294,7 +294,7 @@ public class CrowdProfilingTool
     private void MoveVillager(DtNavMeshQuery navquery, IDtQueryFilter filter, DtCrowdAgent ag, CrowdAgentData crowAgentData)
     {
         // Move somewhere close
-        var status = navquery.FindNearestPoly(ag.npos, crowd.GetQueryExtents(), filter, out var nearestRef, out var nearest, out var _);
+        var status = navquery.FindNearestPoly(ag.npos, crowd.GetQueryExtents(), filter, out var nearestRef, out var nearestPt, out var _);
         if (status.Succeeded())
         {
             status = navquery.FindRandomPointAroundCircle(nearestRef, crowAgentData.home, zoneRadius * 0.2f, filter, rnd,

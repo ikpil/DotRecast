@@ -840,14 +840,12 @@ namespace DotRecast.Detour
                 p.x = targetCon.pos[3];
                 p.y = targetCon.pos[4];
                 p.z = targetCon.pos[5];
-                FindNearestPolyResult nearest = FindNearestPolyInTile(tile, p, ext);
-                long refs = nearest.GetNearestRef();
+                var refs = FindNearestPolyInTile(tile, p, ext, out var nearestPt);
                 if (refs == 0)
                 {
                     continue;
                 }
 
-                var nearestPt = nearest.GetNearestPos();
                 // findNearestPoly may return too optimistic results, further check
                 // to make sure.
 
@@ -1070,15 +1068,13 @@ namespace DotRecast.Detour
                 };
 
                 // Find polygon to connect to.
-                FindNearestPolyResult nearestPoly = FindNearestPolyInTile(tile, RcVec3f.Of(con.pos), ext);
-                long refs = nearestPoly.GetNearestRef();
+                var refs = FindNearestPolyInTile(tile, RcVec3f.Of(con.pos), ext, out var nearestPt);
                 if (refs == 0)
                 {
                     continue;
                 }
 
                 float[] p = con.pos; // First vertex
-                RcVec3f nearestPt = nearestPoly.GetNearestPos();
                 // findNearestPoly may return too optimistic results, further check
                 // to make sure.
                 if (Sqr(nearestPt.x - p[0]) + Sqr(nearestPt.z - p[2]) > Sqr(con.rad))
@@ -1343,12 +1339,14 @@ namespace DotRecast.Detour
             closest = ClosestPointOnDetailEdges(tile, poly, pos, true);
         }
 
-        FindNearestPolyResult FindNearestPolyInTile(DtMeshTile tile, RcVec3f center, RcVec3f extents)
+        /// Find nearest polygon within a tile.
+        private long FindNearestPolyInTile(DtMeshTile tile, RcVec3f center, RcVec3f halfExtents, out RcVec3f nearestPt)
         {
-            RcVec3f nearestPt = new RcVec3f();
+            nearestPt = RcVec3f.Zero;
+
             bool overPoly = false;
-            RcVec3f bmin = center.Subtract(extents);
-            RcVec3f bmax = center.Add(extents);
+            RcVec3f bmin = center.Subtract(halfExtents);
+            RcVec3f bmax = center.Add(halfExtents);
 
             // Get nearby polygons from proximity grid.
             List<long> polys = QueryPolygonsInTile(tile, bmin, bmax);
@@ -1384,7 +1382,7 @@ namespace DotRecast.Detour
                 }
             }
 
-            return new FindNearestPolyResult(nearest, nearestPt, overPoly);
+            return nearest;
         }
 
         DtMeshTile GetTileAt(int x, int y, int layer)

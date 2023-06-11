@@ -158,7 +158,7 @@ public class CrowdTool : ITool
             {
                 IDtQueryFilter filter = new DtQueryDefaultFilter();
                 RcVec3f halfExtents = crowd.GetQueryExtents();
-                navquery.FindNearestPoly(p, halfExtents, filter, out var refs, out var nearest, out var _);
+                navquery.FindNearestPoly(p, halfExtents, filter, out var refs, out var nearestPt, out var _);
                 if (refs != 0)
                 {
                     Result<int> flags = nav.GetPolyFlags(refs);
