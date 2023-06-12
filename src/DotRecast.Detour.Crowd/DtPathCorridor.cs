@@ -430,13 +430,13 @@ namespace DotRecast.Detour.Crowd
             if (status.Succeeded())
             {
                 m_path = MergeCorridorStartMoved(m_path, visited);
-                
+
                 // Adjust the position to stay on top of the navmesh.
                 m_pos = result;
-                Result<float> hr = navquery.GetPolyHeight(m_path[0], result);
-                if (hr.Succeeded())
+                status = navquery.GetPolyHeight(m_path[0], result, out var h);
+                if (status.Succeeded())
                 {
-                    m_pos.y = hr.result;
+                    m_pos.y = h;
                 }
 
                 return true;

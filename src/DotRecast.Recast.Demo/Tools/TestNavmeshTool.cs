@@ -247,10 +247,10 @@ public class TestNavmeshTool : IRcTool
                         polys = PathUtils.FixupCorridor(polys, visited);
                         polys = PathUtils.FixupShortcuts(polys, m_navQuery);
 
-                        Result<float> polyHeight = m_navQuery.GetPolyHeight(polys[0], result);
-                        if (polyHeight.Succeeded())
+                        var status = m_navQuery.GetPolyHeight(polys[0], result, out var h);
+                        if (status.Succeeded())
                         {
-                            iterPos.y = polyHeight.result;
+                            iterPos.y = h;
                         }
 
                         // Handle end of path and off-mesh links when close enough.
@@ -265,8 +265,7 @@ public class TestNavmeshTool : IRcTool
 
                             break;
                         }
-                        else if (offMeshConnection
-                                 && PathUtils.InRange(iterPos, steerTarget.steerPos, SLOP, 1.0f))
+                        else if (offMeshConnection && PathUtils.InRange(iterPos, steerTarget.steerPos, SLOP, 1.0f))
                         {
                             // Reached off-mesh connection.
                             // Advance the path up to and over the off-mesh connection.
@@ -300,7 +299,8 @@ public class TestNavmeshTool : IRcTool
 
                                 // Move position at the other side of the off-mesh link.
                                 iterPos = endPos;
-                                iterPos.y = m_navQuery.GetPolyHeight(polys[0], iterPos).result;
+                                m_navQuery.GetPolyHeight(polys[0], iterPos, out var eh);
+                                iterPos.y = eh;
                             }
                         }
 
@@ -383,11 +383,10 @@ public class TestNavmeshTool : IRcTool
                         // Adjust height.
                         if (hit.result.path.Count > 0)
                         {
-                            Result<float> result = m_navQuery
-                                .GetPolyHeight(hit.result.path[hit.result.path.Count - 1], m_hitPos);
+                            var result = m_navQuery.GetPolyHeight(hit.result.path[hit.result.path.Count - 1], m_hitPos, out var h);
                             if (result.Succeeded())
                             {
-                                m_hitPos.y = result.result;
+                                m_hitPos.y = h;
                             }
                         }
                     }

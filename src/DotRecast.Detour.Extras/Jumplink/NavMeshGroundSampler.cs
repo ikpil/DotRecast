@@ -50,13 +50,12 @@ namespace DotRecast.Detour.Extras.Jumplink
             RcAtomicFloat minHeight = new RcAtomicFloat(pt.y);
             navMeshQuery.QueryPolygons(pt, halfExtents, filter, new PolyQueryInvoker((tile, poly, refs) =>
             {
-                Result<float> h = navMeshQuery.GetPolyHeight(refs, pt);
-                if (h.Succeeded())
+                var status = navMeshQuery.GetPolyHeight(refs, pt, out var h);
+                if (status.Succeeded())
                 {
-                    float y = h.result;
-                    if (y > minHeight.Get() && y < maxHeight)
+                    if (h > minHeight.Get() && h < maxHeight)
                     {
-                        minHeight.Exchange(y);
+                        minHeight.Exchange(h);
                         found.Set(true);
                     }
                 }

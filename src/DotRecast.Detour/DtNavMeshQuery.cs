@@ -529,17 +529,19 @@ namespace DotRecast.Detour
         /// @param[in] pos A position within the xz-bounds of the polygon. [(x, y, z)]
         /// @param[out] height The height at the surface of the polygon.
         /// @returns The status flags for the query.
-        public Result<float> GetPolyHeight(long refs, RcVec3f pos)
+        public DtStatus GetPolyHeight(long refs, RcVec3f pos, out float height)
         {
+            height = default;
+            
             var status = m_nav.GetTileAndPolyByRef(refs, out var tile, out var poly);
             if (status.Failed())
             {
-                return Results.Of<float>(status, "");
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             if (!RcVec3f.IsFinite2D(pos))
             {
-                return Results.InvalidParam<float>();
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             // We used to return success for offmesh connections, but the
@@ -551,12 +553,18 @@ namespace DotRecast.Detour
                 var v0 = new RcVec3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
                 i = poly.verts[1] * 3;
                 var v1 = new RcVec3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
-                var distSqr = DetourCommon.DistancePtSegSqr2D(pos, v0, v1, out var tseg);
-                return Results.Success(v0.y + (v1.y - v0.y) * tseg);
+                DetourCommon.DistancePtSegSqr2D(pos, v0, v1, out var t);
+                height = v0.y + (v1.y - v0.y) * t;
+                
+                return DtStatus.DT_SUCCSESS;
             }
 
-            float? height = m_nav.GetPolyHeight(tile, poly, pos);
-            return null != height ? Results.Success(height.Value) : Results.InvalidParam<float>();
+            float? h = m_nav.GetPolyHeight(tile, poly, pos);
+            if (!h.HasValue)
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
+
+            height = h.Value;
+            return DtStatus.DT_SUCCSESS;
         }
 
         /// Finds the polygon nearest to the specified center point.
