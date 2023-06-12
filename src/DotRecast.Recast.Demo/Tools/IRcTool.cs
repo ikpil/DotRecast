@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using DotRecast.Core;
 using DotRecast.Recast.Demo.Draw;
+using DotRecast.Recast.DemoTool;
 
 namespace DotRecast.Recast.Demo.Tools;
 

@@ -367,7 +367,7 @@ public class RecastDemo
         _imgui = new ImGuiController(_gl, window, _input);
 
         DemoInputGeomProvider geom = LoadInputMesh(Loader.ToBytes("nav_test.obj"));
-        sample = new Sample(geom, ImmutableArray<RecastBuilderResult>.Empty, null, dd);
+        sample = new Sample(geom, ImmutableArray<RecastBuilderResult>.Empty, null);
 
         settingsView = new RcSettingsView();
         settingsView.SetSample(sample);
@@ -486,7 +486,7 @@ public class RecastDemo
         {
             var bytes = Loader.ToBytes(settingsView.GetMeshInputFilePath());
             var geom = LoadInputMesh(bytes);
-            
+
             sample.Update(geom, ImmutableArray<RecastBuilderResult>.Empty, null);
         }
         else if (settingsView.IsNavMeshInputTrigerred())

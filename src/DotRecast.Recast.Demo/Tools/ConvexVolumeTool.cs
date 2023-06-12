@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using DotRecast.Core;
 using DotRecast.Recast.DemoTool.Builder;
 using DotRecast.Recast.Demo.Draw;
+using DotRecast.Recast.DemoTool;
 using DotRecast.Recast.DemoTool.Geom;
 using ImGuiNET;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;

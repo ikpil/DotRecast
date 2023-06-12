@@ -24,6 +24,7 @@ using DotRecast.Detour;
 using DotRecast.Recast.DemoTool.Builder;
 using DotRecast.Recast.DemoTool.Geom;
 using DotRecast.Recast.Demo.UI;
+using DotRecast.Recast.DemoTool;
 
 namespace DotRecast.Recast.Demo.Draw;
 

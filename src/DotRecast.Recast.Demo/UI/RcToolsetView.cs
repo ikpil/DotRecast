@@ -22,6 +22,7 @@ using System;
 using System.Numerics;
 using DotRecast.Core;
 using DotRecast.Recast.Demo.Tools;
+using DotRecast.Recast.DemoTool;
 using ImGuiNET;
 
 namespace DotRecast.Recast.Demo.UI;
