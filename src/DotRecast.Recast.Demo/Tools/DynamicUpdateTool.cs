@@ -40,7 +40,7 @@ namespace DotRecast.Recast.Demo.Tools;
 
 public class DynamicUpdateTool : IRcTool
 {
-    private Sample sample;
+    private Sample _sample;
     private int toolModeIdx = DynamicUpdateToolMode.BUILD.Idx;
     private DynamicUpdateToolMode mode = DynamicUpdateToolMode.BUILD;
     private float cellSize = 0.3f;
@@ -95,7 +95,7 @@ public class DynamicUpdateTool : IRcTool
 
     public void SetSample(Sample sample)
     {
-        this.sample = sample;
+        _sample = sample;
     }
 
     public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
@@ -432,9 +432,9 @@ public class DynamicUpdateTool : IRcTool
 
     private void DrawAgent(RecastDebugDraw dd, RcVec3f pos, int col)
     {
-        float r = sample.GetSettings().agentRadius;
-        float h = sample.GetSettings().agentHeight;
-        float c = sample.GetSettings().agentMaxClimb;
+        float r = _sample.GetSettings().agentRadius;
+        float h = _sample.GetSettings().agentHeight;
+        float c = _sample.GetSettings().agentMaxClimb;
         dd.DepthMask(false);
         // Agent dimensions.
         dd.DebugDrawCylinderWire(pos.x - r, pos.y + 0.02f, pos.z - r, pos.x + r, pos.y + h, pos.z + r, col, 2.0f);
@@ -468,8 +468,8 @@ public class DynamicUpdateTool : IRcTool
             if (updated)
             {
                 buildTime = (RcFrequency.Ticks - t) / TimeSpan.TicksPerMillisecond;
-                sample.Update(null, dynaMesh.RecastResults(), dynaMesh.NavMesh());
-                sample.SetChanged(false);
+                _sample.Update(null, dynaMesh.RecastResults(), dynaMesh.NavMesh());
+                _sample.SetChanged(false);
             }
         }
         catch (Exception e)
@@ -600,7 +600,7 @@ public class DynamicUpdateTool : IRcTool
                 if (dynaMesh != null)
                 {
                     BuildDynaMesh();
-                    sample.SetChanged(false);
+                    _sample.SetChanged(false);
                 }
             }
         }
@@ -701,7 +701,7 @@ public class DynamicUpdateTool : IRcTool
         }
 
         buildTime = (RcFrequency.Ticks - t) / TimeSpan.TicksPerMillisecond;
-        sample.Update(null, dynaMesh.RecastResults(), dynaMesh.NavMesh());
+        _sample.Update(null, dynaMesh.RecastResults(), dynaMesh.NavMesh());
     }
 
     private void ConfigDynaMesh()

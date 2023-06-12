@@ -33,14 +33,14 @@ namespace DotRecast.Recast.Demo.Tools;
 public class JumpLinkBuilderTool : IRcTool
 {
     private readonly List<JumpLink> links = new();
-    private Sample sample;
+    private Sample _sample;
     private JumpLinkBuilder annotationBuilder;
     private readonly int selEdge = -1;
     private readonly JumpLinkBuilderToolParams option = new JumpLinkBuilderToolParams();
 
     public void SetSample(Sample sample)
     {
-        this.sample = sample;
+        _sample = sample;
         annotationBuilder = null;
     }
 
@@ -325,7 +325,7 @@ public class JumpLinkBuilderTool : IRcTool
 
     public void Layout()
     {
-        if (0 >= sample.GetRecastResults().Count)
+        if (0 >= _sample.GetRecastResults().Count)
             return;
 
         ImGui.Text("Options");
@@ -370,16 +370,16 @@ public class JumpLinkBuilderTool : IRcTool
         {
             if (annotationBuilder == null)
             {
-                if (sample != null && 0 < sample.GetRecastResults().Count)
+                if (_sample != null && 0 < _sample.GetRecastResults().Count)
                 {
-                    annotationBuilder = new JumpLinkBuilder(sample.GetRecastResults());
+                    annotationBuilder = new JumpLinkBuilder(_sample.GetRecastResults());
                 }
             }
 
             links.Clear();
             if (annotationBuilder != null)
             {
-                var settings = sample.GetSettings();
+                var settings = _sample.GetSettings();
                 float cellSize = settings.cellSize;
                 float agentHeight = settings.agentHeight;
                 float agentRadius = settings.agentRadius;
@@ -406,7 +406,7 @@ public class JumpLinkBuilderTool : IRcTool
 
                 if (buildOffMeshConnections)
                 {
-                    DemoInputGeomProvider geom = sample.GetInputGeom();
+                    DemoInputGeomProvider geom = _sample.GetInputGeom();
                     if (geom != null)
                     {
                         int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP_AUTO;

@@ -29,7 +29,7 @@ public interface IRcTool
     string GetName();
     void Layout();
 
-    void SetSample(Sample m_sample);
+    void SetSample(Sample sample);
 
     void HandleClick(RcVec3f s, RcVec3f p, bool shift);
 

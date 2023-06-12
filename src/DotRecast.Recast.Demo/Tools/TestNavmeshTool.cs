@@ -18,7 +18,7 @@ public class TestNavmeshTool : IRcTool
     private const int MAX_POLYS = 256;
     private const int MAX_SMOOTH = 2048;
 
-    private Sample m_sample;
+    private Sample _sample;
 
     private int m_toolModeIdx = TestNavmeshToolMode.PATHFIND_FOLLOW.Idx;
     private TestNavmeshToolMode m_toolMode => TestNavmeshToolMode.Values[m_toolModeIdx];
@@ -51,13 +51,16 @@ public class TestNavmeshTool : IRcTool
 
     public TestNavmeshTool()
     {
-        m_filter = new DtQueryDefaultFilter(SampleAreaModifications.SAMPLE_POLYFLAGS_ALL,
-            SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED, new float[] { 1f, 1f, 1f, 1f, 2f, 1.5f });
+        m_filter = new DtQueryDefaultFilter(
+            SampleAreaModifications.SAMPLE_POLYFLAGS_ALL,
+            SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED,
+            new float[] { 1f, 1f, 1f, 1f, 2f, 1.5f }
+        );
     }
 
-    public void SetSample(Sample m_sample)
+    public void SetSample(Sample sample)
     {
-        this.m_sample = m_sample;
+        _sample = sample;
     }
 
     public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
@@ -161,12 +164,12 @@ public class TestNavmeshTool : IRcTool
 
     private void Recalc()
     {
-        if (m_sample.GetNavMesh() == null)
+        if (_sample.GetNavMesh() == null)
         {
             return;
         }
 
-        DtNavMeshQuery m_navQuery = m_sample.GetNavMeshQuery();
+        DtNavMeshQuery m_navQuery = _sample.GetNavMeshQuery();
         if (m_sposSet)
         {
             m_navQuery.FindNearestPoly(m_spos, m_polyPickExt, m_filter, out m_startRef, out var _, out var _);
@@ -185,7 +188,7 @@ public class TestNavmeshTool : IRcTool
             m_endRef = 0;
         }
 
-        DtNavMesh m_navMesh = m_sample.GetNavMesh();
+        DtNavMesh m_navMesh = _sample.GetNavMesh();
         if (m_toolMode == TestNavmeshToolMode.PATHFIND_FOLLOW)
         {
             if (m_sposSet && m_eposSet && m_startRef != 0 && m_endRef != 0)
@@ -239,7 +242,7 @@ public class TestNavmeshTool : IRcTool
                         }
 
                         RcVec3f moveTgt = RcVec3f.Mad(iterPos, delta, len);
-                        
+
                         // Move
                         m_navQuery.MoveAlongSurface(polys[0], iterPos, moveTgt, m_filter, out var result, out var visited);
 
@@ -435,7 +438,7 @@ public class TestNavmeshTool : IRcTool
             {
                 float nx = (m_epos.z - m_spos.z) * 0.25f;
                 float nz = -(m_epos.x - m_spos.x) * 0.25f;
-                float agentHeight = m_sample != null ? m_sample.GetSettings().agentHeight : 0;
+                float agentHeight = _sample != null ? _sample.GetSettings().agentHeight : 0;
 
                 m_queryPoly[0] = m_spos.x + nx * 1.2f;
                 m_queryPoly[1] = m_spos.y + agentHeight / 2;
@@ -465,7 +468,7 @@ public class TestNavmeshTool : IRcTool
         {
             if (m_sposSet && m_startRef != 0)
             {
-                m_neighbourhoodRadius = m_sample.GetSettings().agentRadius * 20.0f;
+                m_neighbourhoodRadius = _sample.GetSettings().agentRadius * 20.0f;
                 Result<FindLocalNeighbourhoodResult> result = m_navQuery.FindLocalNeighbourhood(m_startRef, m_spos,
                     m_neighbourhoodRadius, m_filter);
                 if (result.Succeeded())
@@ -502,7 +505,7 @@ public class TestNavmeshTool : IRcTool
 
     public void HandleRender(NavMeshRenderer renderer)
     {
-        if (m_sample == null)
+        if (_sample == null)
         {
             return;
         }
@@ -512,9 +515,9 @@ public class TestNavmeshTool : IRcTool
         int endCol = DuRGBA(51, 102, 0, 129);
         int pathCol = DuRGBA(0, 0, 0, 64);
 
-        float agentRadius = m_sample.GetSettings().agentRadius;
-        float agentHeight = m_sample.GetSettings().agentHeight;
-        float agentClimb = m_sample.GetSettings().agentMaxClimb;
+        float agentRadius = _sample.GetSettings().agentRadius;
+        float agentHeight = _sample.GetSettings().agentHeight;
+        float agentClimb = _sample.GetSettings().agentMaxClimb;
 
         if (m_sposSet)
         {
@@ -528,7 +531,7 @@ public class TestNavmeshTool : IRcTool
 
         dd.DepthMask(true);
 
-        DtNavMesh m_navMesh = m_sample.GetNavMesh();
+        DtNavMesh m_navMesh = _sample.GetNavMesh();
         if (m_navMesh == null)
         {
             return;
@@ -831,9 +834,9 @@ public class TestNavmeshTool : IRcTool
                     }
 
                     dd.DepthMask(true);
-                    if (m_sample.GetNavMeshQuery() != null)
+                    if (_sample.GetNavMeshQuery() != null)
                     {
-                        Result<GetPolyWallSegmentsResult> result = m_sample.GetNavMeshQuery()
+                        Result<GetPolyWallSegmentsResult> result = _sample.GetNavMeshQuery()
                             .GetPolyWallSegments(m_polys[i], false, m_filter);
                         if (result.Succeeded())
                         {
@@ -923,9 +926,9 @@ public class TestNavmeshTool : IRcTool
 
     private void DrawAgent(RecastDebugDraw dd, RcVec3f pos, int col)
     {
-        float r = m_sample.GetSettings().agentRadius;
-        float h = m_sample.GetSettings().agentHeight;
-        float c = m_sample.GetSettings().agentMaxClimb;
+        float r = _sample.GetSettings().agentRadius;
+        float h = _sample.GetSettings().agentHeight;
+        float c = _sample.GetSettings().agentMaxClimb;
         dd.DepthMask(false);
         // Agent dimensions.
         dd.DebugDrawCylinderWire(pos.x - r, pos.y + 0.02f, pos.z - r, pos.x + r, pos.y + h, pos.z + r, col, 2.0f);
@@ -971,7 +974,7 @@ public class TestNavmeshTool : IRcTool
         // TODO Auto-generated method stub
         if (m_toolMode == TestNavmeshToolMode.PATHFIND_SLICED)
         {
-            DtNavMeshQuery m_navQuery = m_sample.GetNavMeshQuery();
+            DtNavMeshQuery m_navQuery = _sample.GetNavMeshQuery();
             if (m_pathFindStatus.InProgress())
             {
                 m_pathFindStatus = m_navQuery.UpdateSlicedFindPath(1).status;

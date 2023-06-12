@@ -31,19 +31,19 @@ namespace DotRecast.Recast.Demo.Tools;
 
 public class OffMeshConnectionTool : IRcTool
 {
-    private Sample sample;
+    private Sample _sample;
     private bool hitPosSet;
     private RcVec3f hitPos;
     private int bidir;
 
-    public void SetSample(Sample m_sample)
+    public void SetSample(Sample sample)
     {
-        sample = m_sample;
+        _sample = sample;
     }
 
     public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
-        DemoInputGeomProvider geom = sample.GetInputGeom();
+        DemoInputGeomProvider geom = _sample.GetInputGeom();
         if (geom == null)
         {
             return;
@@ -58,7 +58,7 @@ public class OffMeshConnectionTool : IRcTool
             foreach (DemoOffMeshConnection offMeshCon in geom.GetOffMeshConnections())
             {
                 float d = Math.Min(RcVec3f.DistSqr(p, offMeshCon.verts, 0), RcVec3f.DistSqr(p, offMeshCon.verts, 3));
-                if (d < nearestDist && Math.Sqrt(d) < sample.GetSettings().agentRadius)
+                if (d < nearestDist && Math.Sqrt(d) < _sample.GetSettings().agentRadius)
                 {
                     nearestDist = d;
                     nearestConnection = offMeshCon;
@@ -82,7 +82,7 @@ public class OffMeshConnectionTool : IRcTool
             {
                 int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP;
                 int flags = SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP;
-                geom.AddOffMeshConnection(hitPos, p, sample.GetSettings().agentRadius, 0 == bidir, area, flags);
+                geom.AddOffMeshConnection(hitPos, p, _sample.GetSettings().agentRadius, 0 == bidir, area, flags);
                 hitPosSet = false;
             }
         }
@@ -90,20 +90,20 @@ public class OffMeshConnectionTool : IRcTool
 
     public void HandleRender(NavMeshRenderer renderer)
     {
-        if (sample == null)
+        if (_sample == null)
         {
             return;
         }
 
         RecastDebugDraw dd = renderer.GetDebugDraw();
-        float s = sample.GetSettings().agentRadius;
+        float s = _sample.GetSettings().agentRadius;
 
         if (hitPosSet)
         {
             dd.DebugDrawCross(hitPos.x, hitPos.y + 0.1f, hitPos.z, s, DuRGBA(0, 0, 0, 128), 2.0f);
         }
 
-        DemoInputGeomProvider geom = sample.GetInputGeom();
+        DemoInputGeomProvider geom = _sample.GetInputGeom();
         if (geom != null)
         {
             renderer.DrawOffMeshConnections(geom, true);
