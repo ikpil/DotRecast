@@ -7,11 +7,14 @@ namespace DotRecast.Detour.Extras.Jumplink
 {
     public abstract class AbstractGroundSampler : IGroundSampler
     {
-        protected void SampleGround(JumpLinkBuilderConfig acfg, EdgeSampler es, Func<RcVec3f, float, Tuple<bool, float>> heightFunc)
+        public delegate bool ComputeNavMeshHeight(RcVec3f pt, float cellSize, out float height);
+
+        protected void SampleGround(JumpLinkBuilderConfig acfg, EdgeSampler es, ComputeNavMeshHeight heightFunc)
         {
             float cs = acfg.cellSize;
             float dist = (float)Math.Sqrt(RcVec3f.Dist2DSqr(es.start.p, es.start.q));
             int ngsamples = Math.Max(2, (int)Math.Ceiling(dist / cs));
+
             SampleGroundSegment(heightFunc, es.start, ngsamples);
             foreach (GroundSegment end in es.end)
             {
@@ -21,7 +24,7 @@ namespace DotRecast.Detour.Extras.Jumplink
 
         public abstract void Sample(JumpLinkBuilderConfig acfg, RecastBuilderResult result, EdgeSampler es);
 
-        protected void SampleGroundSegment(Func<RcVec3f, float, Tuple<bool, float>> heightFunc, GroundSegment seg, int nsamples)
+        protected void SampleGroundSegment(ComputeNavMeshHeight heightFunc, GroundSegment seg, int nsamples)
         {
             seg.gsamples = new GroundSample[nsamples];
 
@@ -32,12 +35,12 @@ namespace DotRecast.Detour.Extras.Jumplink
                 GroundSample s = new GroundSample();
                 seg.gsamples[i] = s;
                 RcVec3f pt = RcVec3f.Lerp(seg.p, seg.q, u);
-                Tuple<bool, float> height = heightFunc.Invoke(pt, seg.height);
+                bool success = heightFunc.Invoke(pt, seg.height, out var height);
                 s.p.x = pt.x;
-                s.p.y = height.Item2;
+                s.p.y = height;
                 s.p.z = pt.z;
 
-                if (!height.Item1)
+                if (!success)
                 {
                     continue;
                 }

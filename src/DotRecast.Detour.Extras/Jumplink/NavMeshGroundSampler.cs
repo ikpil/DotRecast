@@ -12,7 +12,7 @@ namespace DotRecast.Detour.Extras.Jumplink
         public override void Sample(JumpLinkBuilderConfig acfg, RecastBuilderResult result, EdgeSampler es)
         {
             DtNavMeshQuery navMeshQuery = CreateNavMesh(result, acfg.agentRadius, acfg.agentHeight, acfg.agentClimb);
-            SampleGround(acfg, es, (pt, h) => GetNavMeshHeight(navMeshQuery, pt, acfg.cellSize, h));
+            SampleGround(acfg, es, (RcVec3f pt, float heightRange, out float height) => GetNavMeshHeight(navMeshQuery, pt, acfg.cellSize, heightRange, out height));
         }
 
         private DtNavMeshQuery CreateNavMesh(RecastBuilderResult r, float agentRadius, float agentHeight, float agentClimb)
@@ -42,12 +42,15 @@ namespace DotRecast.Detour.Extras.Jumplink
         }
 
 
-        private Tuple<bool, float> GetNavMeshHeight(DtNavMeshQuery navMeshQuery, RcVec3f pt, float cs, float heightRange)
+        private bool GetNavMeshHeight(DtNavMeshQuery navMeshQuery, RcVec3f pt, float cs, float heightRange, out float height)
         {
+            height = default;
+
             RcVec3f halfExtents = new RcVec3f { x = cs, y = heightRange, z = cs };
             float maxHeight = pt.y + heightRange;
             RcAtomicBoolean found = new RcAtomicBoolean();
             RcAtomicFloat minHeight = new RcAtomicFloat(pt.y);
+
             navMeshQuery.QueryPolygons(pt, halfExtents, filter, new PolyQueryInvoker((tile, poly, refs) =>
             {
                 var status = navMeshQuery.GetPolyHeight(refs, pt, out var h);
@@ -60,12 +63,15 @@ namespace DotRecast.Detour.Extras.Jumplink
                     }
                 }
             }));
+
             if (found.Get())
             {
-                return Tuple.Create(true, minHeight.Get());
+                height = minHeight.Get();
+                return true;
             }
 
-            return Tuple.Create(false, pt.y);
+            height = pt.y;
+            return false;
         }
     }
 }
