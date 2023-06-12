@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Recast.DemoTool
+﻿namespace DotRecast.Recast.DemoTool.Tools
 {
     public enum DynamicColliderShape
     {

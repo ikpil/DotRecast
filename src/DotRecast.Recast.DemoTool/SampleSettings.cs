@@ -1,6 +1,6 @@
 ﻿namespace DotRecast.Recast.DemoTool
 {
-    public class RcSampleSettings
+    public class SampleSettings
     {
         public float cellSize = 0.3f;
         public float cellHeight = 0.2f;

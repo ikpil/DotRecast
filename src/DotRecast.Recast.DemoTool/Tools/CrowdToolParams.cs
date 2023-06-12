@@ -16,7 +16,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-namespace DotRecast.Recast.DemoTool
+namespace DotRecast.Recast.DemoTool.Tools
 {
     public class CrowdToolParams
     {

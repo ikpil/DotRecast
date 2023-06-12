@@ -18,7 +18,7 @@ freely, subject to the following restrictions:
 
 using DotRecast.Detour.Extras.Jumplink;
 
-namespace DotRecast.Recast.DemoTool
+namespace DotRecast.Recast.DemoTool.Tools
 {
     public class JumpLinkBuilderToolParams
     {

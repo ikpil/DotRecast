@@ -31,6 +31,7 @@ using DotRecast.Recast.DemoTool.Geom;
 using DotRecast.Recast.Demo.Tools.Gizmos;
 using DotRecast.Recast.Demo.UI;
 using DotRecast.Recast.DemoTool;
+using DotRecast.Recast.DemoTool.Tools;
 using ImGuiNET;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;

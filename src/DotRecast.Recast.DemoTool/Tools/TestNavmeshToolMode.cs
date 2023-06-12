@@ -1,6 +1,6 @@
 ﻿using System.Collections.Immutable;
 
-namespace DotRecast.Recast.DemoTool
+namespace DotRecast.Recast.DemoTool.Tools
 {
     public class TestNavmeshToolMode
     {

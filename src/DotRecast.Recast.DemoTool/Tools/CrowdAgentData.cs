@@ -1,6 +1,6 @@
 ﻿using DotRecast.Core;
 
-namespace DotRecast.Recast.DemoTool
+namespace DotRecast.Recast.DemoTool.Tools
 {
     public class CrowdAgentData
     {

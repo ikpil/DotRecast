@@ -29,7 +29,7 @@ namespace DotRecast.Recast.DemoTool
         private DemoInputGeomProvider _inputGeom;
         private DtNavMesh _navMesh;
         private DtNavMeshQuery _navMeshQuery;
-        private readonly RcSampleSettings _settings;
+        private readonly SampleSettings _settings;
         private IList<RecastBuilderResult> _recastResults;
         private bool _changed;
 
@@ -38,7 +38,7 @@ namespace DotRecast.Recast.DemoTool
             _inputGeom = inputGeom;
             _recastResults = recastResults;
             _navMesh = navMesh;
-            _settings = new RcSampleSettings();
+            _settings = new SampleSettings();
 
             SetQuery(navMesh);
             _changed = true;
@@ -64,7 +64,7 @@ namespace DotRecast.Recast.DemoTool
             return _navMesh;
         }
 
-        public RcSampleSettings GetSettings()
+        public SampleSettings GetSettings()
         {
             return _settings;
         }
