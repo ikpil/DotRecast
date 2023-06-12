@@ -39,7 +39,6 @@ public class CrowdTool : IRcTool
 {
     private readonly CrowdToolImpl _impl;
     private readonly CrowdToolParams toolParams = new CrowdToolParams();
-    private Sample _sample;
     private DtNavMesh m_nav;
     private DtCrowd crowd;
     private readonly CrowdProfilingTool profilingTool;
@@ -64,16 +63,15 @@ public class CrowdTool : IRcTool
         return _impl;
     }
 
-    public void SetSample(Sample sample)
+    public void OnSampleChanged()
     {
-        _sample = sample;
-        DtNavMesh nav = _sample.GetNavMesh();
+        DtNavMesh nav = _impl.GetSample().GetNavMesh();
 
         if (nav != null && m_nav != nav)
         {
             m_nav = nav;
 
-            DtCrowdConfig config = new DtCrowdConfig(_sample.GetSettings().agentRadius);
+            DtCrowdConfig config = new DtCrowdConfig(_impl.GetSample().GetSettings().agentRadius);
 
             crowd = new DtCrowd(config, nav, __ => new DtQueryDefaultFilter(SampleAreaModifications.SAMPLE_POLYFLAGS_ALL,
                 SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED, new float[] { 1f, 10f, 1f, 1f, 2f, 1.5f }));
@@ -111,7 +109,7 @@ public class CrowdTool : IRcTool
 
             crowd.SetObstacleAvoidanceParams(3, option);
 
-            profilingTool.Setup(_sample.GetSettings().agentRadius, m_nav);
+            profilingTool.Setup(_impl.GetSample().GetSettings().agentRadius, m_nav);
         }
     }
 
@@ -156,8 +154,8 @@ public class CrowdTool : IRcTool
         }
         else if (m_mode == CrowdToolMode.TOGGLE_POLYS)
         {
-            DtNavMesh nav = _sample.GetNavMesh();
-            DtNavMeshQuery navquery = _sample.GetNavMeshQuery();
+            DtNavMesh nav = _impl.GetSample().GetNavMesh();
+            DtNavMeshQuery navquery = _impl.GetSample().GetNavMeshQuery();
             if (nav != null && navquery != null)
             {
                 IDtQueryFilter filter = new DtQueryDefaultFilter();
@@ -214,8 +212,8 @@ public class CrowdTool : IRcTool
     private DtCrowdAgentParams GetAgentParams()
     {
         DtCrowdAgentParams ap = new DtCrowdAgentParams();
-        ap.radius = _sample.GetSettings().agentRadius;
-        ap.height = _sample.GetSettings().agentHeight;
+        ap.radius = _impl.GetSample().GetSettings().agentRadius;
+        ap.height = _impl.GetSample().GetSettings().agentHeight;
         ap.maxAcceleration = 8.0f;
         ap.maxSpeed = 3.5f;
         ap.collisionQueryRange = ap.radius * 12.0f;
@@ -264,11 +262,11 @@ public class CrowdTool : IRcTool
 
     private void SetMoveTarget(RcVec3f p, bool adjust)
     {
-        if (_sample == null || crowd == null)
+        if (_impl.GetSample() == null || crowd == null)
             return;
 
         // Find nearest point on navmesh and set move request to that location.
-        DtNavMeshQuery navquery = _sample.GetNavMeshQuery();
+        DtNavMeshQuery navquery = _impl.GetSample().GetNavMeshQuery();
         IDtQueryFilter filter = crowd.GetFilter(0);
         RcVec3f halfExtents = crowd.GetQueryExtents();
 
@@ -323,8 +321,8 @@ public class CrowdTool : IRcTool
         }
 
         RecastDebugDraw dd = renderer.GetDebugDraw();
-        float rad = _sample.GetSettings().agentRadius;
-        DtNavMesh nav = _sample.GetNavMesh();
+        float rad = _impl.GetSample().GetSettings().agentRadius;
+        DtNavMesh nav = _impl.GetSample().GetNavMesh();
         if (nav == null || crowd == null)
             return;
 
@@ -636,7 +634,7 @@ public class CrowdTool : IRcTool
 
         if (crowd == null)
             return;
-        DtNavMesh nav = _sample.GetNavMesh();
+        DtNavMesh nav = _impl.GetSample().GetNavMesh();
         if (nav == null)
             return;
 

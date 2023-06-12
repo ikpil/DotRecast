@@ -13,15 +13,12 @@ using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-
-
 public class TestNavmeshTool : IRcTool
 {
     private const int MAX_POLYS = 256;
     private const int MAX_SMOOTH = 2048;
 
     private readonly TestNavmeshToolImpl _impl;
-    private Sample _sample;
 
     private int m_toolModeIdx = TestNavmeshToolMode.PATHFIND_FOLLOW.Idx;
     private TestNavmeshToolMode m_toolMode => TestNavmeshToolMode.Values[m_toolModeIdx];
@@ -66,11 +63,12 @@ public class TestNavmeshTool : IRcTool
     {
         return _impl;
     }
-
-    public void SetSample(Sample sample)
+    
+    public void OnSampleChanged()
     {
-        _sample = sample;
+        // ..
     }
+
 
     public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
@@ -169,12 +167,12 @@ public class TestNavmeshTool : IRcTool
 
     private void Recalc()
     {
-        if (_sample.GetNavMesh() == null)
+        if (_impl.GetSample().GetNavMesh() == null)
         {
             return;
         }
 
-        DtNavMeshQuery m_navQuery = _sample.GetNavMeshQuery();
+        DtNavMeshQuery m_navQuery = _impl.GetSample().GetNavMeshQuery();
         if (m_sposSet)
         {
             m_navQuery.FindNearestPoly(m_spos, m_polyPickExt, m_filter, out m_startRef, out var _, out var _);
@@ -193,7 +191,7 @@ public class TestNavmeshTool : IRcTool
             m_endRef = 0;
         }
 
-        DtNavMesh m_navMesh = _sample.GetNavMesh();
+        DtNavMesh m_navMesh = _impl.GetSample().GetNavMesh();
         if (m_toolMode == TestNavmeshToolMode.PATHFIND_FOLLOW)
         {
             if (m_sposSet && m_eposSet && m_startRef != 0 && m_endRef != 0)
@@ -443,7 +441,7 @@ public class TestNavmeshTool : IRcTool
             {
                 float nx = (m_epos.z - m_spos.z) * 0.25f;
                 float nz = -(m_epos.x - m_spos.x) * 0.25f;
-                float agentHeight = _sample != null ? _sample.GetSettings().agentHeight : 0;
+                float agentHeight = _impl.GetSample() != null ? _impl.GetSample().GetSettings().agentHeight : 0;
 
                 m_queryPoly[0] = m_spos.x + nx * 1.2f;
                 m_queryPoly[1] = m_spos.y + agentHeight / 2;
@@ -473,7 +471,7 @@ public class TestNavmeshTool : IRcTool
         {
             if (m_sposSet && m_startRef != 0)
             {
-                m_neighbourhoodRadius = _sample.GetSettings().agentRadius * 20.0f;
+                m_neighbourhoodRadius = _impl.GetSample().GetSettings().agentRadius * 20.0f;
                 Result<FindLocalNeighbourhoodResult> result = m_navQuery.FindLocalNeighbourhood(m_startRef, m_spos,
                     m_neighbourhoodRadius, m_filter);
                 if (result.Succeeded())
@@ -510,7 +508,7 @@ public class TestNavmeshTool : IRcTool
 
     public void HandleRender(NavMeshRenderer renderer)
     {
-        if (_sample == null)
+        if (_impl.GetSample() == null)
         {
             return;
         }
@@ -520,9 +518,9 @@ public class TestNavmeshTool : IRcTool
         int endCol = DuRGBA(51, 102, 0, 129);
         int pathCol = DuRGBA(0, 0, 0, 64);
 
-        float agentRadius = _sample.GetSettings().agentRadius;
-        float agentHeight = _sample.GetSettings().agentHeight;
-        float agentClimb = _sample.GetSettings().agentMaxClimb;
+        float agentRadius = _impl.GetSample().GetSettings().agentRadius;
+        float agentHeight = _impl.GetSample().GetSettings().agentHeight;
+        float agentClimb = _impl.GetSample().GetSettings().agentMaxClimb;
 
         if (m_sposSet)
         {
@@ -536,7 +534,7 @@ public class TestNavmeshTool : IRcTool
 
         dd.DepthMask(true);
 
-        DtNavMesh m_navMesh = _sample.GetNavMesh();
+        DtNavMesh m_navMesh = _impl.GetSample().GetNavMesh();
         if (m_navMesh == null)
         {
             return;
@@ -839,9 +837,9 @@ public class TestNavmeshTool : IRcTool
                     }
 
                     dd.DepthMask(true);
-                    if (_sample.GetNavMeshQuery() != null)
+                    if (_impl.GetSample().GetNavMeshQuery() != null)
                     {
-                        Result<GetPolyWallSegmentsResult> result = _sample.GetNavMeshQuery()
+                        Result<GetPolyWallSegmentsResult> result = _impl.GetSample().GetNavMeshQuery()
                             .GetPolyWallSegments(m_polys[i], false, m_filter);
                         if (result.Succeeded())
                         {
@@ -931,9 +929,9 @@ public class TestNavmeshTool : IRcTool
 
     private void DrawAgent(RecastDebugDraw dd, RcVec3f pos, int col)
     {
-        float r = _sample.GetSettings().agentRadius;
-        float h = _sample.GetSettings().agentHeight;
-        float c = _sample.GetSettings().agentMaxClimb;
+        float r = _impl.GetSample().GetSettings().agentRadius;
+        float h = _impl.GetSample().GetSettings().agentHeight;
+        float c = _impl.GetSample().GetSettings().agentMaxClimb;
         dd.DepthMask(false);
         // Agent dimensions.
         dd.DebugDrawCylinderWire(pos.x - r, pos.y + 0.02f, pos.z - r, pos.x + r, pos.y + h, pos.z + r, col, 2.0f);
@@ -979,7 +977,7 @@ public class TestNavmeshTool : IRcTool
         // TODO Auto-generated method stub
         if (m_toolMode == TestNavmeshToolMode.PATHFIND_SLICED)
         {
-            DtNavMeshQuery m_navQuery = _sample.GetNavMeshQuery();
+            DtNavMeshQuery m_navQuery = _impl.GetSample().GetNavMeshQuery();
             if (m_pathFindStatus.InProgress())
             {
                 m_pathFindStatus = m_navQuery.UpdateSlicedFindPath(1).status;

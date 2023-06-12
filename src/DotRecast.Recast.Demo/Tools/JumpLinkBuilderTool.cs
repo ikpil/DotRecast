@@ -34,7 +34,6 @@ public class JumpLinkBuilderTool : IRcTool
 {
     private readonly JumpLinkBuilderToolImpl _impl;
     private readonly List<JumpLink> links = new();
-    private Sample _sample;
     private JumpLinkBuilder annotationBuilder;
     private readonly int selEdge = -1;
     private readonly JumpLinkBuilderToolParams option = new JumpLinkBuilderToolParams();
@@ -50,9 +49,8 @@ public class JumpLinkBuilderTool : IRcTool
         return _impl;
     }
 
-    public void SetSample(Sample sample)
+    public void OnSampleChanged()
     {
-        _sample = sample;
         annotationBuilder = null;
     }
 
@@ -337,7 +335,7 @@ public class JumpLinkBuilderTool : IRcTool
 
     public void Layout()
     {
-        if (0 >= _sample.GetRecastResults().Count)
+        if (0 >= _impl.GetSample().GetRecastResults().Count)
             return;
 
         ImGui.Text("Options");
@@ -382,16 +380,16 @@ public class JumpLinkBuilderTool : IRcTool
         {
             if (annotationBuilder == null)
             {
-                if (_sample != null && 0 < _sample.GetRecastResults().Count)
+                if (_impl.GetSample() != null && 0 < _impl.GetSample().GetRecastResults().Count)
                 {
-                    annotationBuilder = new JumpLinkBuilder(_sample.GetRecastResults());
+                    annotationBuilder = new JumpLinkBuilder(_impl.GetSample().GetRecastResults());
                 }
             }
 
             links.Clear();
             if (annotationBuilder != null)
             {
-                var settings = _sample.GetSettings();
+                var settings = _impl.GetSample().GetSettings();
                 float cellSize = settings.cellSize;
                 float agentHeight = settings.agentHeight;
                 float agentRadius = settings.agentRadius;
@@ -418,7 +416,7 @@ public class JumpLinkBuilderTool : IRcTool
 
                 if (buildOffMeshConnections)
                 {
-                    DemoInputGeomProvider geom = _sample.GetInputGeom();
+                    DemoInputGeomProvider geom = _impl.GetSample().GetInputGeom();
                     if (geom != null)
                     {
                         int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP_AUTO;

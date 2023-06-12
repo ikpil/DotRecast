@@ -35,7 +35,6 @@ namespace DotRecast.Recast.Demo.Tools;
 public class ConvexVolumeTool : IRcTool
 {
     private readonly ConvexVolumeToolImpl _impl;
-    private Sample _sample;
     private int areaTypeValue = SampleAreaModifications.SAMPLE_AREAMOD_GRASS.Value;
     private AreaModification areaType = SampleAreaModifications.SAMPLE_AREAMOD_GRASS;
     private float boxHeight = 6f;
@@ -54,14 +53,14 @@ public class ConvexVolumeTool : IRcTool
         return _impl;
     }
 
-    public void SetSample(Sample sample)
+    public void OnSampleChanged()
     {
-        _sample = sample;
+        // ..
     }
 
     public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
-        DemoInputGeomProvider geom = _sample.GetInputGeom();
+        DemoInputGeomProvider geom = _impl.GetSample().GetInputGeom();
         if (geom == null)
         {
             return;
@@ -229,7 +228,7 @@ public class ConvexVolumeTool : IRcTool
             hull.Clear();
             pts.Clear();
 
-            DemoInputGeomProvider geom = _sample.GetInputGeom();
+            DemoInputGeomProvider geom = _impl.GetSample().GetInputGeom();
             if (geom != null)
             {
                 geom.ClearConvexVolumes();

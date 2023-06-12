@@ -95,7 +95,8 @@ public class RcToolsetView : IRcView
 
     public void SetSample(Sample sample)
     {
-        tools.ForEach(t => t.SetSample(sample));
+        tools.ForEach(t => t.GetTool().SetSample(sample));
+        tools.ForEach(t => t.OnSampleChanged());
     }
 
     public void HandleUpdate(float dt)
