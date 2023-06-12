@@ -25,6 +25,7 @@ using DotRecast.Recast.DemoTool.Builder;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.DemoTool;
 using DotRecast.Recast.DemoTool.Geom;
+using DotRecast.Recast.DemoTool.Tools;
 using ImGuiNET;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
@@ -33,6 +34,7 @@ namespace DotRecast.Recast.Demo.Tools;
 
 public class ConvexVolumeTool : IRcTool
 {
+    private readonly ConvexVolumeToolImpl _impl;
     private Sample _sample;
     private int areaTypeValue = SampleAreaModifications.SAMPLE_AREAMOD_GRASS.Value;
     private AreaModification areaType = SampleAreaModifications.SAMPLE_AREAMOD_GRASS;
@@ -41,6 +43,16 @@ public class ConvexVolumeTool : IRcTool
     private float polyOffset = 0f;
     private readonly List<float> pts = new();
     private readonly List<int> hull = new();
+
+    public ConvexVolumeTool()
+    {
+        _impl = new ConvexVolumeToolImpl();
+    }
+
+    public ISampleTool GetTool()
+    {
+        return _impl;
+    }
 
     public void SetSample(Sample sample)
     {
@@ -225,19 +237,12 @@ public class ConvexVolumeTool : IRcTool
         }
     }
 
-    public string GetName()
-    {
-        return "Create Convex Volumes";
-    }
-
     public void HandleUpdate(float dt)
     {
         // TODO Auto-generated method stub
     }
-    
+
     public void HandleClickRay(RcVec3f start, RcVec3f direction, bool shift)
     {
-
     }
-
 }

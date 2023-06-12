@@ -24,6 +24,7 @@ using DotRecast.Recast.DemoTool.Builder;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.DemoTool;
 using DotRecast.Recast.DemoTool.Geom;
+using DotRecast.Recast.DemoTool.Tools;
 using ImGuiNET;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 
@@ -31,10 +32,21 @@ namespace DotRecast.Recast.Demo.Tools;
 
 public class OffMeshConnectionTool : IRcTool
 {
+    private readonly OffMeshConnectionToolImpl _impl;
     private Sample _sample;
     private bool hitPosSet;
     private RcVec3f hitPos;
     private int bidir;
+
+    public OffMeshConnectionTool()
+    {
+        _impl = new();
+    }
+
+    public ISampleTool GetTool()
+    {
+        return _impl;
+    }
 
     public void SetSample(Sample sample)
     {
@@ -116,19 +128,13 @@ public class OffMeshConnectionTool : IRcTool
         ImGui.RadioButton("Bidirectional", ref bidir, 1);
     }
 
-    public string GetName()
-    {
-        return "Create Off-Mesh Links";
-    }
 
     public void HandleUpdate(float dt)
     {
         // TODO Auto-generated method stub
     }
-    
+
     public void HandleClickRay(RcVec3f start, RcVec3f direction, bool shift)
     {
-
     }
-
 }

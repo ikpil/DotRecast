@@ -37,6 +37,7 @@ namespace DotRecast.Recast.Demo.Tools;
 
 public class CrowdTool : IRcTool
 {
+    private readonly CrowdToolImpl _impl;
     private readonly CrowdToolParams toolParams = new CrowdToolParams();
     private Sample _sample;
     private DtNavMesh m_nav;
@@ -55,6 +56,12 @@ public class CrowdTool : IRcTool
     {
         m_agentDebug.vod = new DtObstacleAvoidanceDebugData(2048);
         profilingTool = new CrowdProfilingTool(GetAgentParams);
+        _impl = new();
+    }
+
+    public ISampleTool GetTool()
+    {
+        return _impl;
     }
 
     public void SetSample(Sample sample)
@@ -788,10 +795,6 @@ public class CrowdTool : IRcTool
         return updateFlags;
     }
 
-    public string GetName()
-    {
-        return "Crowd";
-    }
 
     public void HandleClickRay(RcVec3f start, RcVec3f direction, bool shift)
     {

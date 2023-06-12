@@ -40,6 +40,7 @@ namespace DotRecast.Recast.Demo.Tools;
 
 public class DynamicUpdateTool : IRcTool
 {
+    private readonly DynamicUpdateToolImpl _impl;
     private Sample _sample;
     private int toolModeIdx = DynamicUpdateToolMode.BUILD.Idx;
     private DynamicUpdateToolMode mode = DynamicUpdateToolMode.BUILD;
@@ -87,10 +88,16 @@ public class DynamicUpdateTool : IRcTool
 
     public DynamicUpdateTool()
     {
+        _impl = new();
         executor = Task.Factory;
         bridgeGeom = DemoObjImporter.Load(Loader.ToBytes("bridge.obj"));
         houseGeom = DemoObjImporter.Load(Loader.ToBytes("house.obj"));
         convexGeom = DemoObjImporter.Load(Loader.ToBytes("convex.obj"));
+    }
+
+    public ISampleTool GetTool()
+    {
+        return _impl;
     }
 
     public void SetSample(Sample sample)
@@ -743,10 +750,5 @@ public class DynamicUpdateTool : IRcTool
         filterLowHangingObstacles = dynaMesh.config.filterLowHangingObstacles;
         filterLedgeSpans = dynaMesh.config.filterLedgeSpans;
         filterWalkableLowHeightSpans = dynaMesh.config.filterWalkableLowHeightSpans;
-    }
-
-    public string GetName()
-    {
-        return "Dynamic Updates";
     }
 }

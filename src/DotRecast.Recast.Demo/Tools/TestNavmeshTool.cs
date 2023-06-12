@@ -13,11 +13,14 @@ using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
 namespace DotRecast.Recast.Demo.Tools;
 
+
+
 public class TestNavmeshTool : IRcTool
 {
     private const int MAX_POLYS = 256;
     private const int MAX_SMOOTH = 2048;
 
+    private readonly TestNavmeshToolImpl _impl;
     private Sample _sample;
 
     private int m_toolModeIdx = TestNavmeshToolMode.PATHFIND_FOLLOW.Idx;
@@ -51,11 +54,17 @@ public class TestNavmeshTool : IRcTool
 
     public TestNavmeshTool()
     {
+        _impl = new();
         m_filter = new DtQueryDefaultFilter(
             SampleAreaModifications.SAMPLE_POLYFLAGS_ALL,
             SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED,
             new float[] { 1f, 1f, 1f, 1f, 2f, 1.5f }
         );
+    }
+
+    public ISampleTool GetTool()
+    {
+        return _impl;
     }
 
     public void SetSample(Sample sample)
@@ -157,10 +166,6 @@ public class TestNavmeshTool : IRcTool
         }
     }
 
-    public string GetName()
-    {
-        return "Test Navmesh";
-    }
 
     private void Recalc()
     {

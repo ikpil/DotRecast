@@ -64,7 +64,7 @@ public class RcToolsetView : IRcView
         for (int i = 0; i < tools.Length; ++i)
         {
             var tool = tools[i];
-            ImGui.RadioButton(tool.GetName(), ref _currentToolIdx, i);
+            ImGui.RadioButton(tool.GetTool().GetName(), ref _currentToolIdx, i);
         }
 
         ImGui.NewLine();
@@ -76,7 +76,7 @@ public class RcToolsetView : IRcView
         }
 
         currentTool = tools[_currentToolIdx];
-        ImGui.Text(currentTool.GetName());
+        ImGui.Text(currentTool.GetTool().GetName());
         ImGui.Separator();
         currentTool.Layout();
 

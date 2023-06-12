@@ -26,7 +26,7 @@ namespace DotRecast.Recast.Demo.Tools;
 
 public interface IRcTool
 {
-    string GetName();
+    ISampleTool GetTool();
     void Layout();
 
     void SetSample(Sample sample);

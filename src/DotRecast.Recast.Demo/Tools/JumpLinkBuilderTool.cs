@@ -32,11 +32,23 @@ namespace DotRecast.Recast.Demo.Tools;
 
 public class JumpLinkBuilderTool : IRcTool
 {
+    private readonly JumpLinkBuilderToolImpl _impl;
     private readonly List<JumpLink> links = new();
     private Sample _sample;
     private JumpLinkBuilder annotationBuilder;
     private readonly int selEdge = -1;
     private readonly JumpLinkBuilderToolParams option = new JumpLinkBuilderToolParams();
+
+
+    public JumpLinkBuilderTool()
+    {
+        _impl = new();
+    }
+
+    public ISampleTool GetTool()
+    {
+        return _impl;
+    }
 
     public void SetSample(Sample sample)
     {
@@ -385,7 +397,7 @@ public class JumpLinkBuilderTool : IRcTool
                 float agentRadius = settings.agentRadius;
                 float agentClimb = settings.agentMaxClimb;
                 float cellHeight = settings.cellHeight;
-                
+
                 if ((option.buildTypes & JumpLinkType.EDGE_CLIMB_DOWN.Bit) != 0)
                 {
                     JumpLinkBuilderConfig config = new JumpLinkBuilderConfig(cellSize, cellHeight, agentRadius,
@@ -445,10 +457,6 @@ public class JumpLinkBuilderTool : IRcTool
         }
     }
 
-    public string GetName()
-    {
-        return "Annotation Builder";
-    }
 
     public void HandleClickRay(RcVec3f start, RcVec3f direction, bool shift)
     {
