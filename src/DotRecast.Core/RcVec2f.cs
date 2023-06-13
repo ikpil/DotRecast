@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 
 namespace DotRecast.Core
 {
@@ -28,6 +29,7 @@ namespace DotRecast.Core
             return Equals((RcVec2f)obj);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(RcVec2f other)
         {
             return x.Equals(other.x) &&
@@ -41,14 +43,21 @@ namespace DotRecast.Core
             return hash;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(RcVec2f left, RcVec2f right)
         {
             return left.Equals(right);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(RcVec2f left, RcVec2f right)
         {
             return !left.Equals(right);
+        }
+        
+        public override string ToString()
+        {
+            return $"{x}, {y}";
         }
     }
 }

@@ -193,6 +193,7 @@ namespace DotRecast.Core
             return Equals((RcVec3f)obj);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(RcVec3f other)
         {
             return x.Equals(other.x) &&
@@ -254,6 +255,11 @@ namespace DotRecast.Core
             x = Math.Max(x, @in[i]);
             y = Math.Max(y, @in[i + 1]);
             z = Math.Max(z, @in[i + 2]);
+        }
+        
+        public override string ToString()
+        {
+            return $"{x}, {y}, {z}";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
