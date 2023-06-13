@@ -35,6 +35,7 @@ namespace DotRecast.Recast.Demo.Tools;
 public class ConvexVolumeTool : IRcTool
 {
     private readonly ConvexVolumeToolImpl _impl;
+    
     private int areaTypeValue = SampleAreaModifications.SAMPLE_AREAMOD_GRASS.Value;
     private AreaModification areaType = SampleAreaModifications.SAMPLE_AREAMOD_GRASS;
     private float boxHeight = 6f;

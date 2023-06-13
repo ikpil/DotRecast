@@ -74,7 +74,7 @@ public class RecastDemo
 
     private bool processHitTest = false;
     private bool processHitTestShift;
-    private int modState;
+    private int _modState;
 
     private readonly float[] mousePos = new float[2];
 
@@ -190,7 +190,7 @@ public class RecastDemo
 
     public void OnMouseUpAndDown(IMouse mouse, MouseButton button, bool down)
     {
-        modState = 0;
+        _modState = 0;
         if (down)
         {
             if (button == MouseButton.Right)
@@ -241,8 +241,7 @@ public class RecastDemo
                 if (!_mouseOverMenu)
                 {
                     processHitTest = true;
-                    //processHitTestShift = (mods & Keys.GLFW_MOD_SHIFT) != 0 ? true : false;
-                    //processHitTestShift = (mods & Keys.) != 0 ? true : false;
+                    processHitTestShift = _modState != 0 ? true : false;
                 }
             }
             else if (button == MouseButton.Middle)
@@ -411,7 +410,7 @@ public class RecastDemo
             var tempMoveDown = keyboard.IsKeyPressed(Key.E) || keyboard.IsKeyPressed(Key.PageDown) ? 1.0f : -1f;
             var tempMoveAccel = keyboard.IsKeyPressed(Key.ShiftLeft) || keyboard.IsKeyPressed(Key.ShiftRight) ? 1.0f : -1f;
 
-            modState = keyboard.IsKeyPressed(Key.ControlLeft) || keyboard.IsKeyPressed(Key.ShiftRight) ? 1 : 0;
+            _modState |= keyboard.IsKeyPressed(Key.ControlLeft) || keyboard.IsKeyPressed(Key.ShiftLeft) || keyboard.IsKeyPressed(Key.ShiftRight) ? 1 : 0;
             _moveFront = Clamp(_moveFront + tempMoveFront * dt * 4.0f, 0, 2.0f);
             _moveLeft = Clamp(_moveLeft + tempMoveLeft * dt * 4.0f, 0, 2.0f);
             _moveBack = Clamp(_moveBack + tempMoveBack * dt * 4.0f, 0, 2.0f);
@@ -652,7 +651,7 @@ public class RecastDemo
                 if (hit.HasValue)
                 {
                     float hitTime = hit.Value;
-                    if (0 != modState)
+                    if (0 != _modState)
                     {
                         // Marker
                         markerPositionSet = true;
@@ -674,7 +673,7 @@ public class RecastDemo
                 }
                 else
                 {
-                    if (0 != modState)
+                    if (0 != _modState)
                     {
                         // Marker
                         markerPositionSet = false;
