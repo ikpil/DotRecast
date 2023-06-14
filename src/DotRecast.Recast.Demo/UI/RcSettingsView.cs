@@ -25,14 +25,17 @@ using DotRecast.Core;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.DemoTool;
 using ImGuiNET;
+using Serilog;
 
 namespace DotRecast.Recast.Demo.UI;
 
 public class RcSettingsView : IRcView
 {
+    private static readonly ILogger Logger = Log.ForContext<RecastDemo>();
+
     private bool buildTriggered;
     private long buildTime;
-    
+
     private readonly int[] voxels = new int[2];
     private readonly int[] tiles = new int[2];
     private int maxTiles;
@@ -52,9 +55,8 @@ public class RcSettingsView : IRcView
 
     public RcSettingsView()
     {
-        
     }
-    
+
     public void SetSample(Sample sample)
     {
         _sample = sample;
@@ -72,14 +74,14 @@ public class RcSettingsView : IRcView
     public void Draw(double dt)
     {
         var settings = _sample.GetSettings();
-        
+
         int width = 310;
         var posX = _canvas.Size.X - width;
         ImGui.SetNextWindowPos(new Vector2(posX, 0));
         ImGui.SetNextWindowSize(new Vector2(width, _canvas.Size.Y));
         ImGui.Begin("Properties", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize);
 
-        _mouseInside = ImGui.IsWindowHovered();
+        _mouseInside = ImGui.IsWindowHovered(ImGuiHoveredFlags.RectOnly | ImGuiHoveredFlags.RootAndChildWindows);
 
         ImGui.Text("Input Mesh");
         ImGui.Separator();

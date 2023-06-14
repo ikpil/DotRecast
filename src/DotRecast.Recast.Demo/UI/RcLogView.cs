@@ -33,7 +33,7 @@ public class RcLogView : IRcView
         var lines = message
             .Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
             .Select(x => new LogMessageItem { Level = level, Message = x });
-        
+
         _lines.AddRange(lines);
     }
 
@@ -78,7 +78,7 @@ public class RcLogView : IRcView
 
         if (ImGui.BeginChild("scrolling", Vector2.Zero, false, ImGuiWindowFlags.HorizontalScrollbar))
         {
-            _mouseInside = ImGui.IsWindowHovered();
+            _mouseInside = ImGui.IsWindowHovered(ImGuiHoveredFlags.RectOnly | ImGuiHoveredFlags.RootAndChildWindows);
 
             ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, Vector2.Zero);
 

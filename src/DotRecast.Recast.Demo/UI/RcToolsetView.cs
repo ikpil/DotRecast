@@ -59,7 +59,7 @@ public class RcToolsetView : IRcView
         ImGui.SetNextWindowPos(new Vector2(0, 0));
         ImGui.SetNextWindowSize(new Vector2(width, _canvas.Size.Y));
         ImGui.Begin("Tools", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize);
-        _mouseInside = ImGui.IsWindowHovered();
+        _mouseInside = ImGui.IsWindowHovered(ImGuiHoveredFlags.RectOnly | ImGuiHoveredFlags.RootAndChildWindows);
 
         for (int i = 0; i < tools.Length; ++i)
         {
