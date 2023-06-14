@@ -190,7 +190,6 @@ public class RecastDemo
 
     public void OnMouseUpAndDown(IMouse mouse, MouseButton button, bool down)
     {
-        _modState = 0;
         if (down)
         {
             if (button == MouseButton.Right)
@@ -399,6 +398,8 @@ public class RecastDemo
 
     private void UpdateKeyboard(float dt)
     {
+        _modState = 0;
+        
         // keyboard input
         foreach (var keyboard in _input.Keyboards)
         {
@@ -409,8 +410,10 @@ public class RecastDemo
             var tempMoveUp = keyboard.IsKeyPressed(Key.Q) || keyboard.IsKeyPressed(Key.PageUp) ? 1.0f : -1f;
             var tempMoveDown = keyboard.IsKeyPressed(Key.E) || keyboard.IsKeyPressed(Key.PageDown) ? 1.0f : -1f;
             var tempMoveAccel = keyboard.IsKeyPressed(Key.ShiftLeft) || keyboard.IsKeyPressed(Key.ShiftRight) ? 1.0f : -1f;
+            var tempControl = keyboard.IsKeyPressed(Key.ControlLeft) || keyboard.IsKeyPressed(Key.ControlRight);
 
-            _modState |= keyboard.IsKeyPressed(Key.ControlLeft) || keyboard.IsKeyPressed(Key.ShiftLeft) || keyboard.IsKeyPressed(Key.ShiftRight) ? 1 : 0;
+            _modState |= tempControl || 0 < tempMoveAccel ? 1 : 0;
+            //Logger.Information($"{_modState}");
             _moveFront = Clamp(_moveFront + tempMoveFront * dt * 4.0f, 0, 2.0f);
             _moveLeft = Clamp(_moveLeft + tempMoveLeft * dt * 4.0f, 0, 2.0f);
             _moveBack = Clamp(_moveBack + tempMoveBack * dt * 4.0f, 0, 2.0f);
@@ -645,6 +648,7 @@ public class RecastDemo
                 rayDir.Normalize();
                 if (rayTool != null)
                 {
+                    Logger.Information($"click ray - tool({rayTool.GetTool().GetName()}) rayStart({rayStart}) pos({rayDir}) shift({processHitTestShift})");
                     rayTool.HandleClickRay(rayStart, rayDir, processHitTestShift);
                 }
 
@@ -667,6 +671,7 @@ public class RecastDemo
                         pos.z = rayStart.z + (rayEnd.z - rayStart.z) * hitTime;
                         if (rayTool != null)
                         {
+                            Logger.Information($"click - tool({rayTool.GetTool().GetName()}) rayStart({rayStart}) pos({pos}) shift({processHitTestShift})");
                             rayTool.HandleClick(rayStart, pos, processHitTestShift);
                         }
                     }
@@ -777,6 +782,7 @@ public class RecastDemo
 
         _canvas.Draw(dt);
         _mouseOverMenu = _canvas.IsMouseOverUI();
+        
         _imgui.Render();
 
         window.SwapBuffers();
