@@ -781,7 +781,7 @@ public class RecastDemo
         dd.Fog(false);
 
         _canvas.Draw(dt);
-        _mouseOverMenu = _canvas.IsMouseOverUI();
+        _mouseOverMenu = _canvas.IsMouseOver();
         
         _imgui.Render();
 

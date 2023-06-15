@@ -14,7 +14,8 @@ namespace DotRecast.Recast.Demo.UI;
 public class RcLogView : IRcView
 {
     private RcCanvas _canvas;
-    private bool _mouseInside;
+    private bool _isHovered;
+    public bool IsHovered() => _isHovered;
 
     private readonly List<LogMessageItem> _lines;
     private readonly ConcurrentQueue<LogMessageItem> _queues;
@@ -59,7 +60,6 @@ public class RcLogView : IRcView
         }
     }
 
-    public bool IsMouseInside() => _mouseInside;
 
     public void Draw(double dt)
     {
@@ -78,7 +78,7 @@ public class RcLogView : IRcView
 
         if (ImGui.BeginChild("scrolling", Vector2.Zero, false, ImGuiWindowFlags.HorizontalScrollbar))
         {
-            _mouseInside = ImGui.IsWindowHovered(ImGuiHoveredFlags.RectOnly | ImGuiHoveredFlags.RootAndChildWindows);
+            _isHovered = ImGui.IsWindowHovered(ImGuiHoveredFlags.RectOnly | ImGuiHoveredFlags.RootAndChildWindows);
 
             ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, Vector2.Zero);
 

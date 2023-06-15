@@ -47,8 +47,8 @@ public class RcSettingsView : IRcView
     private bool meshInputTrigerred;
     private bool navMeshInputTrigerred;
 
-    private bool _mouseInside;
-    public bool IsMouseInside() => _mouseInside;
+    private bool _isHovered;
+    public bool IsHovered() => _isHovered;
 
     private Sample _sample;
     private RcCanvas _canvas;
@@ -81,7 +81,7 @@ public class RcSettingsView : IRcView
         ImGui.SetNextWindowSize(new Vector2(width, _canvas.Size.Y));
         ImGui.Begin("Properties", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize);
 
-        _mouseInside = ImGui.IsWindowHovered(ImGuiHoveredFlags.RectOnly | ImGuiHoveredFlags.RootAndChildWindows);
+        _isHovered = ImGui.IsWindowHovered(ImGuiHoveredFlags.RectOnly | ImGuiHoveredFlags.RootAndChildWindows);
 
         ImGui.Text("Input Mesh");
         ImGui.Separator();
