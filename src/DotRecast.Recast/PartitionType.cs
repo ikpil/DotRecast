@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Linq;
 
 namespace DotRecast.Recast
 {
@@ -19,6 +20,11 @@ namespace DotRecast.Recast
         {
             Idx = idx;
             Name = name;
+        }
+
+        public static PartitionType OfIdx(int idx)
+        {
+            return Values.FirstOrDefault(x => x.Idx == idx) ?? WATERSHED;
         }
 
         public override string ToString() => Name;
