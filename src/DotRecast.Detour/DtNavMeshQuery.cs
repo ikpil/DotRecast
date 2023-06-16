@@ -927,17 +927,17 @@ namespace DotRecast.Detour
                     List<long> shortcut = null;
                     if (tryLOS)
                     {
-                        Result<DtRaycastHit> rayHit = Raycast(parentRef, parentNode.pos, neighbourPos, filter,
-                            DT_RAYCAST_USE_COSTS, grandpaRef);
-                        if (rayHit.Succeeded())
+                        status = Raycast(parentRef, parentNode.pos, neighbourPos, filter,
+                            DT_RAYCAST_USE_COSTS, grandpaRef, out var rayHit);
+                        if (status.Succeeded())
                         {
-                            foundShortCut = rayHit.result.t >= 1.0f;
+                            foundShortCut = rayHit.t >= 1.0f;
                             if (foundShortCut)
                             {
-                                shortcut = rayHit.result.path;
+                                shortcut = rayHit.path;
                                 // shortcut found using raycast. Using shorter cost
                                 // instead
-                                cost = parentNode.cost + rayHit.result.pathCost;
+                                cost = parentNode.cost + rayHit.pathCost;
                             }
                         }
                     }
@@ -1246,17 +1246,17 @@ namespace DotRecast.Detour
                     List<long> shortcut = null;
                     if (tryLOS)
                     {
-                        Result<DtRaycastHit> rayHit = Raycast(parentRef, parentNode.pos, neighbourPos, m_query.filter,
-                            DT_RAYCAST_USE_COSTS, grandpaRef);
-                        if (rayHit.Succeeded())
+                        status = Raycast(parentRef, parentNode.pos, neighbourPos, m_query.filter,
+                            DT_RAYCAST_USE_COSTS, grandpaRef, out var rayHit);
+                        if (status.Succeeded())
                         {
-                            foundShortCut = rayHit.result.t >= 1.0f;
+                            foundShortCut = rayHit.t >= 1.0f;
                             if (foundShortCut)
                             {
-                                shortcut = rayHit.result.path;
+                                shortcut = rayHit.path;
                                 // shortcut found using raycast. Using shorter cost
                                 // instead
-                                cost = parentNode.cost + rayHit.result.pathCost;
+                                cost = parentNode.cost + rayHit.pathCost;
                             }
                         }
                     }
@@ -2186,17 +2186,20 @@ namespace DotRecast.Detour
         /// @param[out] pathCount The number of visited polygons. [opt]
         /// @param[in] maxPath The maximum number of polygons the @p path array can hold.
         /// @returns The status flags for the query.
-        public Result<DtRaycastHit> Raycast(long startRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter, int options,
-            long prevRef)
+        public DtStatus Raycast(long startRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter, int options,
+            long prevRef, out DtRaycastHit hit)
         {
+            hit = null;
+            
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(startPos) || !RcVec3f.IsFinite(endPos) || null == filter
+            if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(startPos) || !RcVec3f.IsFinite(endPos) 
+                || null == filter
                 || (prevRef != 0 && !m_nav.IsValidPolyRef(prevRef)))
             {
-                return Results.InvalidParam<DtRaycastHit>();
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            DtRaycastHit hit = new DtRaycastHit();
+            hit = new DtRaycastHit();
 
             float[] verts = new float[m_nav.GetMaxVertsPerPoly() * 3 + 3];
 
@@ -2235,7 +2238,7 @@ namespace DotRecast.Detour
                 if (!iresult.intersects)
                 {
                     // Could not hit the polygon, keep the old t and report hit.
-                    return Results.Success(hit);
+                    return DtStatus.DT_SUCCSESS;
                 }
 
                 hit.hitEdgeIndex = iresult.segMax;
@@ -2261,7 +2264,7 @@ namespace DotRecast.Detour
                             curRef, tile, poly);
                     }
 
-                    return Results.Success(hit);
+                    return DtStatus.DT_SUCCSESS;
                 }
 
                 // Follow neighbours.
@@ -2390,7 +2393,7 @@ namespace DotRecast.Detour
                     hit.hitNormal.y = 0;
                     hit.hitNormal.z = -dx;
                     hit.hitNormal.Normalize();
-                    return Results.Success(hit);
+                    return DtStatus.DT_SUCCSESS;
                 }
 
                 // No hit, advance to neighbour polygon.
@@ -2402,7 +2405,7 @@ namespace DotRecast.Detour
                 poly = nextPoly;
             }
 
-            return Results.Success(hit);
+            return DtStatus.DT_SUCCSESS;
         }
 
         /// @par

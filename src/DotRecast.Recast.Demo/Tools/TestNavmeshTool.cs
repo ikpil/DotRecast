@@ -369,11 +369,11 @@ public class TestNavmeshTool : IRcTool
             if (m_sposSet && m_eposSet && m_startRef != 0)
             {
                 {
-                    Result<DtRaycastHit> hit = m_navQuery.Raycast(m_startRef, m_spos, m_epos, m_filter, 0, 0);
-                    if (hit.Succeeded())
+                    var status = m_navQuery.Raycast(m_startRef, m_spos, m_epos, m_filter, 0, 0, out var rayHit);
+                    if (status.Succeeded())
                     {
-                        m_polys = hit.result.path;
-                        if (hit.result.t > 1)
+                        m_polys = rayHit.path;
+                        if (rayHit.t > 1)
                         {
                             // No hit
                             m_hitPos = m_epos;
@@ -382,15 +382,15 @@ public class TestNavmeshTool : IRcTool
                         else
                         {
                             // Hit
-                            m_hitPos = RcVec3f.Lerp(m_spos, m_epos, hit.result.t);
-                            m_hitNormal = hit.result.hitNormal;
+                            m_hitPos = RcVec3f.Lerp(m_spos, m_epos, rayHit.t);
+                            m_hitNormal = rayHit.hitNormal;
                             m_hitResult = true;
                         }
 
                         // Adjust height.
-                        if (hit.result.path.Count > 0)
+                        if (rayHit.path.Count > 0)
                         {
-                            var result = m_navQuery.GetPolyHeight(hit.result.path[hit.result.path.Count - 1], m_hitPos, out var h);
+                            var result = m_navQuery.GetPolyHeight(rayHit.path[rayHit.path.Count - 1], m_hitPos, out var h);
                             if (result.Succeeded())
                             {
                                 m_hitPos.y = h;

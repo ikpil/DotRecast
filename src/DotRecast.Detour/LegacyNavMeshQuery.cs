@@ -361,16 +361,16 @@ namespace DotRecast.Detour
                     bool foundShortCut = false;
                     if (tryLOS)
                     {
-                        Result<DtRaycastHit> rayHit = Raycast(parentRef, parentNode.pos, neighbourNode.pos, m_query.filter,
-                            DT_RAYCAST_USE_COSTS, grandpaRef);
-                        if (rayHit.Succeeded())
+                        status = Raycast(parentRef, parentNode.pos, neighbourNode.pos, m_query.filter,
+                            DT_RAYCAST_USE_COSTS, grandpaRef, out var rayHit);
+                        if (status.Succeeded())
                         {
-                            foundShortCut = rayHit.result.t >= 1.0f;
+                            foundShortCut = rayHit.t >= 1.0f;
                             if (foundShortCut)
                             {
                                 // shortcut found using raycast. Using shorter cost
                                 // instead
-                                cost = parentNode.cost + rayHit.result.pathCost;
+                                cost = parentNode.cost + rayHit.pathCost;
                             }
                         }
                     }
@@ -505,10 +505,11 @@ namespace DotRecast.Detour
                     DtNode next = m_nodePool.GetNodeAtIdx(node.pidx);
                     if ((node.flags & DtNode.DT_NODE_PARENT_DETACHED) != 0)
                     {
-                        Result<DtRaycastHit> iresult = Raycast(node.id, node.pos, next.pos, m_query.filter, 0, 0);
-                        if (iresult.Succeeded())
+                        var status2 = Raycast(node.id, node.pos, next.pos, m_query.filter, 0, 0, 
+                            out var rayHit);
+                        if (status2.Succeeded())
                         {
-                            path.AddRange(iresult.result.path);
+                            path.AddRange(rayHit.path);
                         }
 
                         // raycast ends on poly boundary and the path might include the next poly boundary.
@@ -602,10 +603,11 @@ namespace DotRecast.Detour
                     DtNode next = m_nodePool.GetNodeAtIdx(node.pidx);
                     if ((node.flags & DtNode.DT_NODE_PARENT_DETACHED) != 0)
                     {
-                        Result<DtRaycastHit> iresult = Raycast(node.id, node.pos, next.pos, m_query.filter, 0, 0);
-                        if (iresult.Succeeded())
+                        var status2 = Raycast(node.id, node.pos, next.pos, m_query.filter, 0, 0,
+                            out var rayHit);
+                        if (status2.Succeeded())
                         {
-                            path.AddRange(iresult.result.path);
+                            path.AddRange(rayHit.path);
                         }
 
                         // raycast ends on poly boundary and the path might include the next poly boundary.
