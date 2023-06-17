@@ -1609,33 +1609,41 @@ namespace DotRecast.Detour
             return DtStatus.DT_SUCCSESS;
         }
 
-        public Result<int> GetPolyFlags(long refs)
+        /// Gets the user defined flags for the specified polygon.
+        ///  @param[in]		ref				The polygon reference.
+        ///  @param[out]	resultFlags		The polygon flags.
+        /// @return The status flags for the operation.
+        public DtStatus GetPolyFlags(long refs, out int resultFlags)
         {
+            resultFlags = 0;
+            
             if (refs == 0)
             {
-                return Results.Failure<int>();
+                return DtStatus.DT_FAILURE;
             }
 
             DecodePolyId(refs, out var salt, out var it, out var ip);
             if (it >= m_maxTiles)
             {
-                return Results.InvalidParam<int>();
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             if (m_tiles[it].salt != salt || m_tiles[it].data == null || m_tiles[it].data.header == null)
             {
-                return Results.InvalidParam<int>();
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             DtMeshTile tile = m_tiles[it];
             if (ip >= tile.data.header.polyCount)
             {
-                return Results.InvalidParam<int>();
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             DtPoly poly = tile.data.polys[ip];
 
-            return Results.Success(poly.flags);
+            resultFlags = poly.flags;
+            
+            return DtStatus.DT_SUCCSESS;
         }
 
         public DtStatus SetPolyArea(long refs, char area)

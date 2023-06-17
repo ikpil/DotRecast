@@ -163,10 +163,10 @@ public class CrowdTool : IRcTool
                 navquery.FindNearestPoly(p, halfExtents, filter, out var refs, out var nearestPt, out var _);
                 if (refs != 0)
                 {
-                    Result<int> flags = nav.GetPolyFlags(refs);
-                    if (flags.Succeeded())
+                    var status = nav.GetPolyFlags(refs, out var f);
+                    if (status.Succeeded())
                     {
-                        nav.SetPolyFlags(refs, flags.result ^ SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED);
+                        nav.SetPolyFlags(refs, f ^ SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED);
                     }
                 }
             }
