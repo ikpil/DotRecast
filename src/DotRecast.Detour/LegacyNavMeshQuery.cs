@@ -505,9 +505,8 @@ namespace DotRecast.Detour
                     DtNode next = m_nodePool.GetNodeAtIdx(node.pidx);
                     if ((node.flags & DtNode.DT_NODE_PARENT_DETACHED) != 0)
                     {
-                        var status2 = Raycast(node.id, node.pos, next.pos, m_query.filter, 0, 0, 
-                            out var rayHit);
-                        if (status2.Succeeded())
+                        var status = Raycast(node.id, node.pos, next.pos, m_query.filter, 0, 0, out var rayHit);
+                        if (status.Succeeded())
                         {
                             path.AddRange(rayHit.path);
                         }
@@ -527,11 +526,11 @@ namespace DotRecast.Detour
                 } while (node != null);
             }
 
-            DtStatus status = m_query.status;
+            DtStatus details = m_query.status;
             // Reset query.
             m_query = new DtQueryData();
 
-            return Results.Of(status, path);
+            return Results.Of(details, path);
         }
 
         /// Finalizes and returns the results of an incomplete sliced path query, returning the path to the furthest
@@ -603,9 +602,8 @@ namespace DotRecast.Detour
                     DtNode next = m_nodePool.GetNodeAtIdx(node.pidx);
                     if ((node.flags & DtNode.DT_NODE_PARENT_DETACHED) != 0)
                     {
-                        var status2 = Raycast(node.id, node.pos, next.pos, m_query.filter, 0, 0,
-                            out var rayHit);
-                        if (status2.Succeeded())
+                        var status = Raycast(node.id, node.pos, next.pos, m_query.filter, 0, 0, out var rayHit);
+                        if (status.Succeeded())
                         {
                             path.AddRange(rayHit.path);
                         }
@@ -625,11 +623,12 @@ namespace DotRecast.Detour
                 } while (node != null);
             }
 
-            DtStatus status = m_query.status;
+            DtStatus details = m_query.status;
+            
             // Reset query.
             m_query = new DtQueryData();
 
-            return Results.Of(status, path);
+            return Results.Of(details, path);
         }
 
         public override Result<FindDistanceToWallResult> FindDistanceToWall(long startRef, RcVec3f centerPos, float maxRadius, IDtQueryFilter filter)

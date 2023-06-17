@@ -532,7 +532,7 @@ namespace DotRecast.Detour
         public DtStatus GetPolyHeight(long refs, RcVec3f pos, out float height)
         {
             height = default;
-            
+
             var status = m_nav.GetTileAndPolyByRef(refs, out var tile, out var poly);
             if (status.Failed())
             {
@@ -555,7 +555,7 @@ namespace DotRecast.Detour
                 var v1 = new RcVec3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
                 DetourCommon.DistancePtSegSqr2D(pos, v0, v1, out var t);
                 height = v0.y + (v1.y - v0.y) * t;
-                
+
                 return DtStatus.DT_SUCCSESS;
             }
 
@@ -2190,11 +2190,10 @@ namespace DotRecast.Detour
             long prevRef, out DtRaycastHit hit)
         {
             hit = null;
-            
+
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(startPos) || !RcVec3f.IsFinite(endPos) 
-                || null == filter
-                || (prevRef != 0 && !m_nav.IsValidPolyRef(prevRef)))
+            if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(startPos) || !RcVec3f.IsFinite(endPos)
+                || null == filter || (prevRef != 0 && !m_nav.IsValidPolyRef(prevRef)))
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
