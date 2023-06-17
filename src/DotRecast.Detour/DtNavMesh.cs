@@ -1497,39 +1497,43 @@ namespace DotRecast.Detour
             return (int)(n & mask);
         }
 
+        /// Gets the endpoints for an off-mesh connection, ordered by "direction of travel".
+        ///  @param[in]		prevRef		The reference of the polygon before the connection.
+        ///  @param[in]		polyRef		The reference of the off-mesh connection polygon.
+        ///  @param[out]	startPos	The start position of the off-mesh connection. [(x, y, z)]
+        ///  @param[out]	endPos		The end position of the off-mesh connection. [(x, y, z)]
+        /// @return The status flags for the operation.
+        /// 
         /// @par
         ///
-        /// Off-mesh connections are stored in the navigation mesh as special
-        /// 2-vertex
-        /// polygons with a single edge. At least one of the vertices is expected to
-        /// be
-        /// inside a normal polygon. So an off-mesh connection is "entered" from a
-        /// normal polygon at one of its endpoints. This is the polygon identified
-        /// by
+        /// Off-mesh connections are stored in the navigation mesh as special 2-vertex 
+        /// polygons with a single edge. At least one of the vertices is expected to be 
+        /// inside a normal polygon. So an off-mesh connection is "entered" from a 
+        /// normal polygon at one of its endpoints. This is the polygon identified by 
         /// the prevRef parameter.
-        public Result<Tuple<RcVec3f, RcVec3f>> GetOffMeshConnectionPolyEndPoints(long prevRef, long polyRef)
+        public DtStatus GetOffMeshConnectionPolyEndPoints(long prevRef, long polyRef, ref RcVec3f startPos, ref RcVec3f endPos)
         {
             if (polyRef == 0)
             {
-                return Results.InvalidParam<Tuple<RcVec3f, RcVec3f>>("polyRef = 0");
+                return DtStatus.DT_FAILURE;
             }
 
             // Get current polygon
             DecodePolyId(polyRef, out var salt, out var it, out var ip);
             if (it >= m_maxTiles)
             {
-                return Results.InvalidParam<Tuple<RcVec3f, RcVec3f>>("Invalid tile ID > max tiles");
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             if (m_tiles[it].salt != salt || m_tiles[it].data.header == null)
             {
-                return Results.InvalidParam<Tuple<RcVec3f, RcVec3f>>("Invalid salt or missing tile header");
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             DtMeshTile tile = m_tiles[it];
             if (ip >= tile.data.header.polyCount)
             {
-                return Results.InvalidParam<Tuple<RcVec3f, RcVec3f>>("Invalid poly ID > poly count");
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             DtPoly poly = tile.data.polys[ip];
@@ -1537,7 +1541,7 @@ namespace DotRecast.Detour
             // Make sure that the current poly is indeed off-mesh link.
             if (poly.GetPolyType() != DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
-                return Results.InvalidParam<Tuple<RcVec3f, RcVec3f>>("Invalid poly type");
+                return DtStatus.DT_FAILURE;
             }
 
             // Figure out which way to hand out the vertices.
@@ -1558,11 +1562,10 @@ namespace DotRecast.Detour
                 }
             }
 
-            RcVec3f startPos = new RcVec3f();
-            RcVec3f endPos = new RcVec3f();
-            startPos.Set(tile.data.verts, poly.verts[idx0] * 3);
-            endPos.Set(tile.data.verts, poly.verts[idx1] * 3);
-            return Results.Success(Tuple.Create(startPos, endPos));
+            startPos = RcVec3f.Of(tile.data.verts, poly.verts[idx0] * 3);
+            endPos = RcVec3f.Of(tile.data.verts, poly.verts[idx1] * 3);
+            
+            return DtStatus.DT_SUCCSESS;
         }
 
         public int GetMaxVertsPerPoly()

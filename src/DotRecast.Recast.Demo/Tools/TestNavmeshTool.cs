@@ -275,6 +275,9 @@ public class TestNavmeshTool : IRcTool
                         else if (offMeshConnection && PathUtils.InRange(iterPos, steerTarget.steerPos, SLOP, 1.0f))
                         {
                             // Reached off-mesh connection.
+                            RcVec3f startPos = RcVec3f.Zero;
+                            RcVec3f endPos = RcVec3f.Zero;
+                            
                             // Advance the path up to and over the off-mesh connection.
                             long prevRef = 0;
                             long polyRef = polys[0];
@@ -289,11 +292,9 @@ public class TestNavmeshTool : IRcTool
                             polys = polys.GetRange(npos, polys.Count - npos);
 
                             // Handle the connection.
-                            var offMeshCon = m_navMesh.GetOffMeshConnectionPolyEndPoints(prevRef, polyRef);
-                            if (offMeshCon.Succeeded())
+                            var status2 = m_navMesh.GetOffMeshConnectionPolyEndPoints(prevRef, polyRef, ref startPos, ref endPos);
+                            if (status2.Succeeded())
                             {
-                                var startPos = offMeshCon.result.Item1;
-                                var endPos = offMeshCon.result.Item2;
                                 if (m_smoothPath.Count < MAX_SMOOTH)
                                 {
                                     m_smoothPath.Add(startPos);
