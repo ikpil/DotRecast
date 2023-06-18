@@ -1589,10 +1589,14 @@ namespace DotRecast.Detour
 
                     if (i + 1 < path.Count)
                     {
+                        int fromType; // // fromType is ignored.
+                        
                         // Next portal.
-                        Result<PortalResult> portalPoints = GetPortalPoints(path[i], path[i + 1]);
+                        var portalPoints = GetPortalPoints(path[i], path[i + 1], out left, out right, out fromType, out toType);
                         if (portalPoints.Failed())
                         {
+                            // Failed to get portal points, in practice this means that path[i+1] is invalid polygon.
+                            // Clamp the end point to path[i], and return the path so far.
                             closestEndPosRes = ClosestPointOnPolyBoundary(path[i], endPos);
                             if (closestEndPosRes.Failed())
                             {
@@ -1611,10 +1615,6 @@ namespace DotRecast.Detour
                             AppendVertex(closestEndPos, 0, path[i], straightPath, maxStraightPath);
                             return Results.Success(straightPath);
                         }
-
-                        left = portalPoints.result.left;
-                        right = portalPoints.result.right;
-                        toType = portalPoints.result.toType;
 
                         // If starting really close the portal, advance.
                         if (i == 0)
@@ -1970,26 +1970,30 @@ namespace DotRecast.Detour
             return DtStatus.DT_SUCCSESS;
         }
 
-        protected Result<PortalResult> GetPortalPoints(long from, long to)
+        protected DtStatus GetPortalPoints(long from, long to, out RcVec3f left, out RcVec3f right, out int fromType, out int toType)
         {
+            left = RcVec3f.Zero;
+            right = RcVec3f.Zero;
+            fromType = 0;
+            toType = 0;
+
             var status = m_nav.GetTileAndPolyByRef(from, out var fromTile, out var fromPoly);
             if (status.Failed())
             {
-                return Results.Of<PortalResult>(status, "");
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            int fromType = fromPoly.GetPolyType();
+            fromType = fromPoly.GetPolyType();
 
             status = m_nav.GetTileAndPolyByRef(to, out var toTile, out var toPoly);
             if (status.Failed())
             {
-                return Results.Of<PortalResult>(status, "");
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            int toType = toPoly.GetPolyType();
+            toType = toPoly.GetPolyType();
 
-            var ppStatus = GetPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, out var left, out var right);
-            return Results.Of(ppStatus, new PortalResult(left, right, fromType, toType));
+            return GetPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, out left, out right);
         }
 
         // Returns portal points between two polygons.
