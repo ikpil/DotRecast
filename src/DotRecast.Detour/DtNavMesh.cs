@@ -1564,7 +1564,7 @@ namespace DotRecast.Detour
 
             startPos = RcVec3f.Of(tile.data.verts, poly.verts[idx0] * 3);
             endPos = RcVec3f.Of(tile.data.verts, poly.verts[idx1] * 3);
-            
+
             return DtStatus.DT_SUCCSESS;
         }
 
@@ -1616,7 +1616,7 @@ namespace DotRecast.Detour
         public DtStatus GetPolyFlags(long refs, out int resultFlags)
         {
             resultFlags = 0;
-            
+
             if (refs == 0)
             {
                 return DtStatus.DT_FAILURE;
@@ -1642,7 +1642,7 @@ namespace DotRecast.Detour
             DtPoly poly = tile.data.polys[ip];
 
             resultFlags = poly.flags;
-            
+
             return DtStatus.DT_SUCCSESS;
         }
 
@@ -1677,33 +1677,36 @@ namespace DotRecast.Detour
             return DtStatus.DT_SUCCSESS;
         }
 
-        public Result<int> GetPolyArea(long refs)
+        public DtStatus GetPolyArea(long refs, out int resultArea)
         {
+            resultArea = 0;
+
             if (refs == 0)
             {
-                return Results.Failure<int>();
+                return DtStatus.DT_FAILURE;
             }
 
             DecodePolyId(refs, out var salt, out var it, out var ip);
             if (it >= m_maxTiles)
             {
-                return Results.InvalidParam<int>();
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             if (m_tiles[it].salt != salt || m_tiles[it].data == null || m_tiles[it].data.header == null)
             {
-                return Results.InvalidParam<int>();
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             DtMeshTile tile = m_tiles[it];
             if (ip >= tile.data.header.polyCount)
             {
-                return Results.InvalidParam<int>();
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             DtPoly poly = tile.data.polys[ip];
+            resultArea = poly.GetArea();
 
-            return Results.Success(poly.GetArea());
+            return DtStatus.DT_SUCCSESS;
         }
 
         /**
