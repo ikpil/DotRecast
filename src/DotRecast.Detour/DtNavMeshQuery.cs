@@ -901,14 +901,13 @@ namespace DotRecast.Detour
 
                     // If the node is visited the first time, calculate node position.
                     var neighbourPos = neighbourNode.pos;
-                    var midpod = neighbourRef == endRef
-                        ? GetEdgeIntersectionPoint(bestNode.pos, bestRef, bestPoly, bestTile, endPos, neighbourRef,
-                            neighbourPoly, neighbourTile)
-                        : GetEdgeMidPoint(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly, neighbourTile);
-                    if (!midpod.Failed())
-                    {
-                        neighbourPos = midpod.result;
-                    }
+                    var empStatus = neighbourRef == endRef
+                        ? GetEdgeIntersectionPoint(bestNode.pos, bestRef, bestPoly, bestTile,
+                            endPos, neighbourRef, neighbourPoly, neighbourTile,
+                            ref neighbourPos)
+                        : GetEdgeMidPoint(bestRef, bestPoly, bestTile,
+                            neighbourRef, neighbourPoly, neighbourTile,
+                            ref neighbourPos);
 
                     // Calculate cost and heuristic.
                     float cost = 0;
@@ -1220,14 +1219,13 @@ namespace DotRecast.Detour
                     // If the node is visited the first time, calculate node
                     // position.
                     var neighbourPos = neighbourNode.pos;
-                    var midpod = neighbourRef == m_query.endRef
-                        ? GetEdgeIntersectionPoint(bestNode.pos, bestRef, bestPoly, bestTile, m_query.endPos,
-                            neighbourRef, neighbourPoly, neighbourTile)
-                        : GetEdgeMidPoint(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly, neighbourTile);
-                    if (!midpod.Failed())
-                    {
-                        neighbourPos = midpod.result;
-                    }
+                    var empStatus = neighbourRef == m_query.endRef
+                        ? GetEdgeIntersectionPoint(bestNode.pos, bestRef, bestPoly, bestTile, 
+                            m_query.endPos, neighbourRef, neighbourPoly, neighbourTile,
+                            ref neighbourPos)
+                        : GetEdgeMidPoint(bestRef, bestPoly, bestTile, 
+                            neighbourRef, neighbourPoly, neighbourTile, 
+                            ref neighbourPos);
 
                     // Calculate cost and heuristic.
                     float cost = 0;
@@ -1583,7 +1581,7 @@ namespace DotRecast.Detour
                     if (i + 1 < path.Count)
                     {
                         int fromType; // // fromType is ignored.
-                        
+
                         // Next portal.
                         var ppStatus = GetPortalPoints(path[i], path[i + 1], out left, out right, out fromType, out toType);
                         if (ppStatus.Failed())
@@ -2087,29 +2085,30 @@ namespace DotRecast.Detour
             return DtStatus.DT_SUCCSESS;
         }
 
-        protected Result<RcVec3f> GetEdgeMidPoint(long from, DtPoly fromPoly, DtMeshTile fromTile, long to,
-            DtPoly toPoly, DtMeshTile toTile)
+        protected DtStatus GetEdgeMidPoint(long from, DtPoly fromPoly, DtMeshTile fromTile, long to,
+            DtPoly toPoly, DtMeshTile toTile, ref RcVec3f mid)
         {
             var ppStatus = GetPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, out var left, out var right);
             if (ppStatus.Failed())
             {
-                return Results.Of<RcVec3f>(ppStatus, "");
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            RcVec3f mid = new RcVec3f();
             mid.x = (left.x + right.x) * 0.5f;
             mid.y = (left.y + right.y) * 0.5f;
             mid.z = (left.z + right.z) * 0.5f;
-            return Results.Success(mid);
+
+            return DtStatus.DT_SUCCSESS;
         }
 
-        protected Result<RcVec3f> GetEdgeIntersectionPoint(RcVec3f fromPos, long from, DtPoly fromPoly, DtMeshTile fromTile,
-            RcVec3f toPos, long to, DtPoly toPoly, DtMeshTile toTile)
+        protected DtStatus GetEdgeIntersectionPoint(RcVec3f fromPos, long from, DtPoly fromPoly, DtMeshTile fromTile,
+            RcVec3f toPos, long to, DtPoly toPoly, DtMeshTile toTile,
+            ref RcVec3f pt)
         {
             var ppStatus = GetPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, out var left, out var right);
             if (ppStatus.Failed())
             {
-                return Results.Of<RcVec3f>(ppStatus, "");
+                return DtStatus.DT_FAILURE;
             }
 
             float t = 0.5f;
@@ -2118,8 +2117,8 @@ namespace DotRecast.Detour
                 t = Clamp(t2, 0.1f, 0.9f);
             }
 
-            RcVec3f pt = RcVec3f.Lerp(left, right, t);
-            return Results.Success(pt);
+            pt = RcVec3f.Lerp(left, right, t);
+            return DtStatus.DT_SUCCSESS;
         }
 
         private const float s = 1.0f / 255.0f;
@@ -3271,12 +3270,9 @@ namespace DotRecast.Detour
                     // Cost
                     if (neighbourNode.flags == 0)
                     {
-                        var midPoint = GetEdgeMidPoint(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly,
-                            neighbourTile);
-                        if (midPoint.Succeeded())
-                        {
-                            neighbourNode.pos = midPoint.result;
-                        }
+                        GetEdgeMidPoint(bestRef, bestPoly, bestTile,
+                            neighbourRef, neighbourPoly, neighbourTile,
+                            ref neighbourNode.pos);
                     }
 
                     float total = bestNode.total + RcVec3f.Distance(bestNode.pos, neighbourNode.pos);

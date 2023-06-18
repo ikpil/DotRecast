@@ -136,12 +136,9 @@ namespace DotRecast.Detour
                     // If the node is visited the first time, calculate node position.
                     if (neighbourNode.flags == 0)
                     {
-                        var midpod = GetEdgeMidPoint(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly,
-                            neighbourTile);
-                        if (!midpod.Failed())
-                        {
-                            neighbourNode.pos = midpod.result;
-                        }
+                        GetEdgeMidPoint(bestRef, bestPoly, bestTile,
+                            neighbourRef, neighbourPoly, neighbourTile,
+                            ref neighbourNode.pos);
                     }
 
                     // Calculate cost and heuristic.
@@ -345,12 +342,9 @@ namespace DotRecast.Detour
                     // position.
                     if (neighbourNode.flags == 0)
                     {
-                        var midpod = GetEdgeMidPoint(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly,
-                            neighbourTile);
-                        if (!midpod.Failed())
-                        {
-                            neighbourNode.pos = midpod.result;
-                        }
+                        GetEdgeMidPoint(bestRef, bestPoly, bestTile,
+                            neighbourRef, neighbourPoly, neighbourTile,
+                            ref neighbourNode.pos);
                     }
 
                     // Calculate cost and heuristic.
@@ -624,7 +618,7 @@ namespace DotRecast.Detour
             }
 
             DtStatus details = m_query.status;
-            
+
             // Reset query.
             m_query = new DtQueryData();
 
@@ -783,12 +777,9 @@ namespace DotRecast.Detour
                     // Cost
                     if (neighbourNode.flags == 0)
                     {
-                        var midPoint = GetEdgeMidPoint(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly,
-                            neighbourTile);
-                        if (midPoint.Succeeded())
-                        {
-                            neighbourNode.pos = midPoint.result;
-                        }
+                        GetEdgeMidPoint(bestRef, bestPoly, bestTile,
+                            neighbourRef, neighbourPoly, neighbourTile,
+                            ref neighbourNode.pos);
                     }
 
                     float total = bestNode.total + RcVec3f.Distance(bestNode.pos, neighbourNode.pos);
