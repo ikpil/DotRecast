@@ -1220,11 +1220,11 @@ namespace DotRecast.Detour
                     // position.
                     var neighbourPos = neighbourNode.pos;
                     var empStatus = neighbourRef == m_query.endRef
-                        ? GetEdgeIntersectionPoint(bestNode.pos, bestRef, bestPoly, bestTile, 
+                        ? GetEdgeIntersectionPoint(bestNode.pos, bestRef, bestPoly, bestTile,
                             m_query.endPos, neighbourRef, neighbourPoly, neighbourTile,
                             ref neighbourPos)
-                        : GetEdgeMidPoint(bestRef, bestPoly, bestTile, 
-                            neighbourRef, neighbourPoly, neighbourTile, 
+                        : GetEdgeMidPoint(bestRef, bestPoly, bestTile,
+                            neighbourRef, neighbourPoly, neighbourTile,
                             ref neighbourPos);
 
                     // Calculate cost and heuristic.
@@ -3108,23 +3108,28 @@ namespace DotRecast.Detour
         /// The normal will become unpredicable if @p hitDist is a very small number.
         ///
         /// Finds the distance from the specified position to the nearest polygon wall.
-        /// @param[in] startRef The reference id of the polygon containing @p centerPos.
-        /// @param[in] centerPos The center of the search circle. [(x, y, z)]
-        /// @param[in] maxRadius The radius of the search circle.
-        /// @param[in] filter The polygon filter to apply to the query.
-        /// @param[out] hitDist The distance to the nearest wall from @p centerPos.
-        /// @param[out] hitPos The nearest position on the wall that was hit. [(x, y, z)]
-        /// @param[out] hitNormal The normalized ray formed from the wall point to the
-        /// source point. [(x, y, z)]
+        ///  @param[in]		startRef		The reference id of the polygon containing @p centerPos.
+        ///  @param[in]		centerPos		The center of the search circle. [(x, y, z)]
+        ///  @param[in]		maxRadius		The radius of the search circle.
+        ///  @param[in]		filter			The polygon filter to apply to the query.
+        ///  @param[out]	hitDist			The distance to the nearest wall from @p centerPos.
+        ///  @param[out]	hitPos			The nearest position on the wall that was hit. [(x, y, z)]
+        ///  @param[out]	hitNormal		The normalized ray formed from the wall point to the 
+        ///  								source point. [(x, y, z)]
         /// @returns The status flags for the query.
-        public virtual Result<FindDistanceToWallResult> FindDistanceToWall(long startRef, RcVec3f centerPos, float maxRadius,
-            IDtQueryFilter filter)
+        public virtual DtStatus FindDistanceToWall(long startRef, RcVec3f centerPos, float maxRadius,
+            IDtQueryFilter filter,
+            out float hitDist, out RcVec3f hitPos, out RcVec3f hitNormal)
         {
+            hitDist = 0;
+            hitPos = RcVec3f.Zero;
+            hitNormal = RcVec3f.Zero;
+            
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(centerPos) || maxRadius < 0
                 || !float.IsFinite(maxRadius) || null == filter)
             {
-                return Results.InvalidParam<FindDistanceToWallResult>();
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             m_nodePool.Clear();
@@ -3140,9 +3145,10 @@ namespace DotRecast.Detour
             m_openList.Push(startNode);
 
             float radiusSqr = Sqr(maxRadius);
-            RcVec3f hitPos = new RcVec3f();
             RcVec3f? bestvj = null;
             RcVec3f? bestvi = null;
+
+            var status = DtStatus.DT_SUCCSESS;
             while (!m_openList.IsEmpty())
             {
                 DtNode bestNode = m_openList.Pop();
@@ -3217,11 +3223,9 @@ namespace DotRecast.Detour
                     // Hit wall, update radius.
                     radiusSqr = distSqr;
                     // Calculate hit pos.
-                    hitPos.x = bestTile.data.verts[vj] + (bestTile.data.verts[vi] - bestTile.data.verts[vj]) * tseg;
-                    hitPos.y = bestTile.data.verts[vj + 1]
-                               + (bestTile.data.verts[vi + 1] - bestTile.data.verts[vj + 1]) * tseg;
-                    hitPos.z = bestTile.data.verts[vj + 2]
-                               + (bestTile.data.verts[vi + 2] - bestTile.data.verts[vj + 2]) * tseg;
+                    hitPos.x = bestTile.data.verts[vj + 0] + (bestTile.data.verts[vi + 0] - bestTile.data.verts[vj + 0]) * tseg;
+                    hitPos.y = bestTile.data.verts[vj + 1] + (bestTile.data.verts[vi + 1] - bestTile.data.verts[vj + 1]) * tseg;
+                    hitPos.z = bestTile.data.verts[vj + 2] + (bestTile.data.verts[vi + 2] - bestTile.data.verts[vj + 2]) * tseg;
                     bestvj = RcVec3f.Of(bestTile.data.verts, vj);
                     bestvi = RcVec3f.Of(bestTile.data.verts, vi);
                 }
@@ -3261,6 +3265,11 @@ namespace DotRecast.Detour
                     }
 
                     DtNode neighbourNode = m_nodePool.GetNode(neighbourRef);
+                    if (null == neighbourNode)
+                    {
+                        status |= DtStatus.DT_OUT_OF_NODES;
+                        continue;
+                    }
 
                     if ((neighbourNode.flags & DtNode.DT_NODE_CLOSED) != 0)
                     {
@@ -3301,7 +3310,6 @@ namespace DotRecast.Detour
             }
 
             // Calc hit normal.
-            RcVec3f hitNormal = new RcVec3f();
             if (bestvi != null && bestvj != null)
             {
                 var tangent = bestvi.Value.Subtract(bestvj.Value);
@@ -3311,7 +3319,9 @@ namespace DotRecast.Detour
                 hitNormal.Normalize();
             }
 
-            return Results.Success(new FindDistanceToWallResult((float)Math.Sqrt(radiusSqr), hitPos, hitNormal));
+            hitDist = (float)Math.Sqrt(radiusSqr);
+
+            return status;
         }
 
         /// Returns true if the polygon reference is valid and passes the filter restrictions.

@@ -625,13 +625,19 @@ namespace DotRecast.Detour
             return Results.Of(details, path);
         }
 
-        public override Result<FindDistanceToWallResult> FindDistanceToWall(long startRef, RcVec3f centerPos, float maxRadius, IDtQueryFilter filter)
+        public override DtStatus FindDistanceToWall(long startRef, RcVec3f centerPos, float maxRadius, 
+            IDtQueryFilter filter,
+            out float hitDist, out RcVec3f hitPos, out RcVec3f hitNormal)
         {
+            hitDist = 0;
+            hitPos = RcVec3f.Zero;
+            hitNormal = RcVec3f.Zero;
+            
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(centerPos) || maxRadius < 0
                 || !float.IsFinite(maxRadius) || null == filter)
             {
-                return Results.InvalidParam<FindDistanceToWallResult>();
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             m_nodePool.Clear();
@@ -647,9 +653,10 @@ namespace DotRecast.Detour
             m_openList.Push(startNode);
 
             float radiusSqr = Sqr(maxRadius);
-            RcVec3f hitPos = RcVec3f.Zero;
             RcVec3f? bestvj = null;
             RcVec3f? bestvi = null;
+
+            var status = DtStatus.DT_SUCCSESS;
 
             while (!m_openList.IsEmpty())
             {
@@ -724,11 +731,9 @@ namespace DotRecast.Detour
                     // Hit wall, update radius.
                     radiusSqr = distSqr;
                     // Calculate hit pos.
-                    hitPos.x = bestTile.data.verts[vj] + (bestTile.data.verts[vi] - bestTile.data.verts[vj]) * tseg;
-                    hitPos.y = bestTile.data.verts[vj + 1]
-                               + (bestTile.data.verts[vi + 1] - bestTile.data.verts[vj + 1]) * tseg;
-                    hitPos.z = bestTile.data.verts[vj + 2]
-                               + (bestTile.data.verts[vi + 2] - bestTile.data.verts[vj + 2]) * tseg;
+                    hitPos.x = bestTile.data.verts[vj + 0] + (bestTile.data.verts[vi + 0] - bestTile.data.verts[vj + 0]) * tseg;
+                    hitPos.y = bestTile.data.verts[vj + 1] + (bestTile.data.verts[vi + 1] - bestTile.data.verts[vj + 1]) * tseg;
+                    hitPos.z = bestTile.data.verts[vj + 2] + (bestTile.data.verts[vi + 2] - bestTile.data.verts[vj + 2]) * tseg;
                     bestvj = RcVec3f.Of(bestTile.data.verts, vj);
                     bestvi = RcVec3f.Of(bestTile.data.verts, vi);
                 }
@@ -768,6 +773,11 @@ namespace DotRecast.Detour
                     }
 
                     DtNode neighbourNode = m_nodePool.GetNode(neighbourRef);
+                    if (null == neighbourNode)
+                    {
+                        status |= DtStatus.DT_OUT_OF_NODES;
+                        continue;
+                    }
 
                     if ((neighbourNode.flags & DtNode.DT_NODE_CLOSED) != 0)
                     {
@@ -808,7 +818,6 @@ namespace DotRecast.Detour
             }
 
             // Calc hit normal.
-            RcVec3f hitNormal = new RcVec3f();
             if (bestvi != null && bestvj != null)
             {
                 var tangent = bestvi.Value.Subtract(bestvj.Value);
@@ -817,8 +826,10 @@ namespace DotRecast.Detour
                 hitNormal.z = -tangent.x;
                 hitNormal.Normalize();
             }
-
-            return Results.Success(new FindDistanceToWallResult((float)Math.Sqrt(radiusSqr), hitPos, hitNormal));
+            
+            hitDist = (float)Math.Sqrt(radiusSqr);
+            
+            return status;
         }
     }
 }

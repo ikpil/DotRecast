@@ -52,17 +52,17 @@ public class FindDistanceToWallTest : AbstractDetourTest
         for (int i = 0; i < startRefs.Length; i++)
         {
             RcVec3f startPos = startPoss[i];
-            Result<FindDistanceToWallResult> result = query.FindDistanceToWall(startRefs[i], startPos, 3.5f, filter);
-            FindDistanceToWallResult hit = result.result;
-            Assert.That(hit.GetDistance(), Is.EqualTo(DISTANCES_TO_WALL[i]).Within(0.001f));
-            
-            Assert.That(hit.GetPosition().x, Is.EqualTo(HIT_POSITION[i].x).Within(0.001f));
-            Assert.That(hit.GetPosition().y, Is.EqualTo(HIT_POSITION[i].y).Within(0.001f));
-            Assert.That(hit.GetPosition().z, Is.EqualTo(HIT_POSITION[i].z).Within(0.001f));
+            query.FindDistanceToWall(startRefs[i], startPos, 3.5f, filter,
+                out var hitDist, out var hitPos, out var hitNormal);
+            Assert.That(hitDist, Is.EqualTo(DISTANCES_TO_WALL[i]).Within(0.001f));
 
-            Assert.That(hit.GetNormal().x, Is.EqualTo(HIT_NORMAL[i].x).Within(0.001f));
-            Assert.That(hit.GetNormal().y, Is.EqualTo(HIT_NORMAL[i].y).Within(0.001f));
-            Assert.That(hit.GetNormal().z, Is.EqualTo(HIT_NORMAL[i].z).Within(0.001f));
+            Assert.That(hitPos.x, Is.EqualTo(HIT_POSITION[i].x).Within(0.001f));
+            Assert.That(hitPos.y, Is.EqualTo(HIT_POSITION[i].y).Within(0.001f));
+            Assert.That(hitPos.z, Is.EqualTo(HIT_POSITION[i].z).Within(0.001f));
+
+            Assert.That(hitNormal.x, Is.EqualTo(HIT_NORMAL[i].x).Within(0.001f));
+            Assert.That(hitNormal.y, Is.EqualTo(HIT_NORMAL[i].y).Within(0.001f));
+            Assert.That(hitNormal.z, Is.EqualTo(HIT_NORMAL[i].z).Within(0.001f));
         }
     }
 }

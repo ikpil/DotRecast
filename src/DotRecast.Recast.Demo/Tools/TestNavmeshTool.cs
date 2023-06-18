@@ -411,13 +411,12 @@ public class TestNavmeshTool : IRcTool
             if (m_sposSet && m_startRef != 0)
             {
                 m_distanceToWall = 0.0f;
-                Result<FindDistanceToWallResult> result = m_navQuery.FindDistanceToWall(m_startRef, m_spos, 100.0f,
-                    m_filter);
+                var result = m_navQuery.FindDistanceToWall(m_startRef, m_spos, 100.0f, m_filter, out var hitDist, out var hitPos, out var hitNormal);
                 if (result.Succeeded())
                 {
-                    m_distanceToWall = result.result.GetDistance();
-                    m_hitPos = result.result.GetPosition();
-                    m_hitNormal = result.result.GetNormal();
+                    m_distanceToWall = hitDist;
+                    m_hitPos = hitPos;
+                    m_hitNormal = hitNormal;
                 }
             }
         }
