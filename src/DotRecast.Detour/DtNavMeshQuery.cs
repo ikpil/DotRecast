@@ -339,15 +339,12 @@ namespace DotRecast.Detour
                     }
 
                     // Find edge and calc distance to the edge.
-                    Result<PortalResult> portalpoints = GetPortalPoints(bestRef, bestPoly, bestTile, neighbourRef,
-                        neighbourPoly, neighbourTile, 0, 0);
-                    if (portalpoints.Failed())
+                    var ppStatus = GetPortalPoints(bestRef, bestPoly, bestTile, neighbourRef,
+                        neighbourPoly, neighbourTile, out var va, out var vb);
+                    if (ppStatus.Failed())
                     {
                         continue;
                     }
-
-                    var va = portalpoints.result.left;
-                    var vb = portalpoints.result.right;
 
                     // If the circle is not touching the next polygon, skip it.
                     var distSqr = DetourCommon.DistancePtSegSqr2D(centerPos, va, vb, out var tesg);
@@ -1482,14 +1479,11 @@ namespace DotRecast.Detour
                     return DtStatus.DT_FAILURE;
                 }
 
-                Result<PortalResult> portals = GetPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, 0, 0);
-                if (portals.Failed())
+                var ppStatus = GetPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, out var left, out var right);
+                if (ppStatus.Failed())
                 {
                     break;
                 }
-
-                var left = portals.result.left;
-                var right = portals.result.right;
 
                 if ((options & DT_STRAIGHTPATH_AREA_CROSSINGS) != 0)
                 {
@@ -1994,15 +1988,18 @@ namespace DotRecast.Detour
 
             int toType = toPoly.GetPolyType();
 
-            return GetPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, fromType, toType);
+            var ppStatus = GetPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, out var left, out var right);
+            return Results.Of(ppStatus, new PortalResult(left, right, fromType, toType));
         }
 
         // Returns portal points between two polygons.
-        protected Result<PortalResult> GetPortalPoints(long from, DtPoly fromPoly, DtMeshTile fromTile, long to, DtPoly toPoly,
-            DtMeshTile toTile, int fromType, int toType)
+        protected DtStatus GetPortalPoints(long from, DtPoly fromPoly, DtMeshTile fromTile,
+            long to, DtPoly toPoly, DtMeshTile toTile,
+            out RcVec3f left, out RcVec3f right)
         {
-            RcVec3f left = new RcVec3f();
-            RcVec3f right = new RcVec3f();
+            left = RcVec3f.Zero;
+            right = RcVec3f.Zero;
+
             // Find the link that points to the 'to' polygon.
             DtLink link = null;
             for (int i = fromTile.polyLinks[fromPoly.index]; i != DtNavMesh.DT_NULL_LINK; i = fromTile.links[i].next)
@@ -2016,7 +2013,7 @@ namespace DotRecast.Detour
 
             if (link == null)
             {
-                return Results.InvalidParam<PortalResult>("No link found");
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             // Handle off-mesh connections.
@@ -2035,11 +2032,12 @@ namespace DotRecast.Detour
                         right.x = fromTile.data.verts[fromPoly.verts[v] * 3];
                         right.y = fromTile.data.verts[fromPoly.verts[v] * 3 + 1];
                         right.z = fromTile.data.verts[fromPoly.verts[v] * 3 + 2];
-                        return Results.Success(new PortalResult(left, right, fromType, toType));
+
+                        return DtStatus.DT_SUCCSESS;
                     }
                 }
 
-                return Results.InvalidParam<PortalResult>("Invalid offmesh from connection");
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             if (toPoly.GetPolyType() == DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
@@ -2057,11 +2055,11 @@ namespace DotRecast.Detour
                         right.y = toTile.data.verts[toPoly.verts[v] * 3 + 1];
                         right.z = toTile.data.verts[toPoly.verts[v] * 3 + 2];
 
-                        return Results.Success(new PortalResult(left, right, fromType, toType));
+                        return DtStatus.DT_SUCCSESS;
                     }
                 }
 
-                return Results.InvalidParam<PortalResult>("Invalid offmesh to connection");
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             // Find portal vertices.
@@ -2090,20 +2088,18 @@ namespace DotRecast.Detour
                 }
             }
 
-            return Results.Success(new PortalResult(left, right, fromType, toType));
+            return DtStatus.DT_SUCCSESS;
         }
 
         protected Result<RcVec3f> GetEdgeMidPoint(long from, DtPoly fromPoly, DtMeshTile fromTile, long to,
             DtPoly toPoly, DtMeshTile toTile)
         {
-            Result<PortalResult> ppoints = GetPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, 0, 0);
-            if (ppoints.Failed())
+            var ppStatus = GetPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, out var left, out var right);
+            if (ppStatus.Failed())
             {
-                return Results.Of<RcVec3f>(ppoints.status, ppoints.message);
+                return Results.Of<RcVec3f>(ppStatus, "");
             }
 
-            var left = ppoints.result.left;
-            var right = ppoints.result.right;
             RcVec3f mid = new RcVec3f();
             mid.x = (left.x + right.x) * 0.5f;
             mid.y = (left.y + right.y) * 0.5f;
@@ -2114,14 +2110,12 @@ namespace DotRecast.Detour
         protected Result<RcVec3f> GetEdgeIntersectionPoint(RcVec3f fromPos, long from, DtPoly fromPoly, DtMeshTile fromTile,
             RcVec3f toPos, long to, DtPoly toPoly, DtMeshTile toTile)
         {
-            Result<PortalResult> ppoints = GetPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, 0, 0);
-            if (ppoints.Failed())
+            var ppStatus = GetPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, out var left, out var right);
+            if (ppStatus.Failed())
             {
-                return Results.Of<RcVec3f>(ppoints.status, ppoints.message);
+                return Results.Of<RcVec3f>(ppStatus, "");
             }
 
-            RcVec3f left = ppoints.result.left;
-            RcVec3f right = ppoints.result.right;
             float t = 0.5f;
             if (DetourCommon.IntersectSegSeg2D(fromPos, toPos, left, right, out var _, out var t2))
             {
@@ -2529,15 +2523,12 @@ namespace DotRecast.Detour
                     }
 
                     // Find edge and calc distance to the edge.
-                    Result<PortalResult> pp = GetPortalPoints(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly,
-                        neighbourTile, 0, 0);
-                    if (pp.Failed())
+                    var ppStatus = GetPortalPoints(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly,
+                        neighbourTile, out var va, out var vb);
+                    if (ppStatus.Failed())
                     {
                         continue;
                     }
-
-                    var va = pp.result.left;
-                    var vb = pp.result.right;
 
                     // If the circle is not touching the next polygon, skip it.
                     var distSqr = DetourCommon.DistancePtSegSqr2D(centerPos, va, vb, out var _);
@@ -2711,15 +2702,12 @@ namespace DotRecast.Detour
                     }
 
                     // Find edge and calc distance to the edge.
-                    Result<PortalResult> pp = GetPortalPoints(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly,
-                        neighbourTile, 0, 0);
-                    if (pp.Failed())
+                    var ppStatus = GetPortalPoints(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly,
+                        neighbourTile, out var va, out var vb);
+                    if (ppStatus.Failed())
                     {
                         continue;
                     }
-
-                    var va = pp.result.left;
-                    var vb = pp.result.right;
 
                     // If the poly is not touching the edge to the next polygon, skip the connection it.
                     IntersectResult ir = DetourCommon.IntersectSegmentPoly2D(va, vb, verts, nverts);
@@ -2883,15 +2871,12 @@ namespace DotRecast.Detour
                     }
 
                     // Find edge and calc distance to the edge.
-                    Result<PortalResult> pp = GetPortalPoints(curRef, curPoly, curTile, neighbourRef, neighbourPoly,
-                        neighbourTile, 0, 0);
-                    if (pp.Failed())
+                    var ppStatus = GetPortalPoints(curRef, curPoly, curTile, neighbourRef, neighbourPoly,
+                        neighbourTile, out var va, out var vb);
+                    if (ppStatus.Failed())
                     {
                         continue;
                     }
-
-                    var va = pp.result.left;
-                    var vb = pp.result.right;
 
                     // If the circle is not touching the next polygon, skip it.
                     var distSqr = DetourCommon.DistancePtSegSqr2D(centerPos, va, vb, out var _);
