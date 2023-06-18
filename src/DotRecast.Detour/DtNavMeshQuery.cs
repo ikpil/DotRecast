@@ -448,35 +448,31 @@ namespace DotRecast.Detour
         ///
         /// Much faster than ClosestPointOnPoly().
         ///
-        /// If the provided position lies within the polygon's xz-bounds (above or below),
+        /// If the provided position lies within the polygon's xz-bounds (above or below), 
         /// then @p pos and @p closest will be equal.
         ///
-        /// The height of @p closest will be the polygon boundary. The height detail is not used.
-        ///
+        /// The height of @p closest will be the polygon boundary.  The height detail is not used.
+        /// 
         /// @p pos does not have to be within the bounds of the polybon or the navigation mesh.
-        ///
-        /// Returns a point on the boundary closest to the source point if the source point is outside the
+        /// 
+        /// Returns a point on the boundary closest to the source point if the source point is outside the 
         /// polygon's xz-bounds.
-        /// @param[in] ref The reference id to the polygon.
-        /// @param[in] pos The position to check. [(x, y, z)]
-        /// @param[out] closest The closest point. [(x, y, z)]
+        ///  @param[in]		ref			The reference id to the polygon.
+        ///  @param[in]		pos			The position to check. [(x, y, z)]
+        ///  @param[out]	closest		The closest point. [(x, y, z)]
         /// @returns The status flags for the query.
-        public Result<RcVec3f> ClosestPointOnPolyBoundary(long refs, RcVec3f pos)
+        public DtStatus ClosestPointOnPolyBoundary(long refs, RcVec3f pos, out RcVec3f closest)
         {
+            closest = pos;
             var status = m_nav.GetTileAndPolyByRef(refs, out var tile, out var poly);
             if (status.Failed())
             {
-                return Results.Of<RcVec3f>(status, "");
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            if (tile == null)
+            if (tile == null || !RcVec3f.IsFinite(pos))
             {
-                return Results.InvalidParam<RcVec3f>("Invalid tile");
-            }
-
-            if (!RcVec3f.IsFinite(pos))
-            {
-                return Results.InvalidParam<RcVec3f>();
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             // Collect vertices.
@@ -489,7 +485,6 @@ namespace DotRecast.Detour
                 Array.Copy(tile.data.verts, poly.verts[i] * 3, verts, i * 3, 3);
             }
 
-            RcVec3f closest;
             if (DetourCommon.DistancePtPolyEdgesSqr(pos, verts, nv, edged, edget))
             {
                 closest = pos;
@@ -513,7 +508,7 @@ namespace DotRecast.Detour
                 closest = RcVec3f.Lerp(verts, va, vb, edget[imin]);
             }
 
-            return Results.Success(closest);
+            return DtStatus.DT_SUCCSESS;
         }
 
         /// @par
@@ -1545,20 +1540,18 @@ namespace DotRecast.Detour
             }
 
             // TODO: Should this be callers responsibility?
-            Result<RcVec3f> closestStartPosRes = ClosestPointOnPolyBoundary(path[0], startPos);
+            var closestStartPosRes = ClosestPointOnPolyBoundary(path[0], startPos, out var closestStartPos);
             if (closestStartPosRes.Failed())
             {
                 return Results.InvalidParam<List<StraightPathItem>>("Cannot find start position");
             }
 
-            var closestStartPos = closestStartPosRes.result;
-            var closestEndPosRes = ClosestPointOnPolyBoundary(path[path.Count - 1], endPos);
+            var closestEndPosRes = ClosestPointOnPolyBoundary(path[path.Count - 1], endPos, out var closestEndPos);
             if (closestEndPosRes.Failed())
             {
                 return Results.InvalidParam<List<StraightPathItem>>("Cannot find end position");
             }
 
-            var closestEndPos = closestEndPosRes.result;
             // Add start point.
             DtStatus stat = AppendVertex(closestStartPos, DT_STRAIGHTPATH_START, path[0], straightPath, maxStraightPath);
             if (!stat.InProgress())
@@ -1592,18 +1585,17 @@ namespace DotRecast.Detour
                         int fromType; // // fromType is ignored.
                         
                         // Next portal.
-                        var portalPoints = GetPortalPoints(path[i], path[i + 1], out left, out right, out fromType, out toType);
-                        if (portalPoints.Failed())
+                        var ppStatus = GetPortalPoints(path[i], path[i + 1], out left, out right, out fromType, out toType);
+                        if (ppStatus.Failed())
                         {
                             // Failed to get portal points, in practice this means that path[i+1] is invalid polygon.
                             // Clamp the end point to path[i], and return the path so far.
-                            closestEndPosRes = ClosestPointOnPolyBoundary(path[i], endPos);
-                            if (closestEndPosRes.Failed())
+                            var cpStatus = ClosestPointOnPolyBoundary(path[i], endPos, out closestEndPos);
+                            if (cpStatus.Failed())
                             {
                                 return Results.InvalidParam<List<StraightPathItem>>();
                             }
 
-                            closestEndPos = closestEndPosRes.result;
                             // Append portals along the current straight path segment.
                             if ((options & (DT_STRAIGHTPATH_AREA_CROSSINGS | DT_STRAIGHTPATH_ALL_CROSSINGS)) != 0)
                             {

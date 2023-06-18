@@ -515,7 +515,7 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        public void TrimInvalidPath(long safeRef, float[] safePos, DtNavMeshQuery navquery, IDtQueryFilter filter)
+        public bool TrimInvalidPath(long safeRef, float[] safePos, DtNavMeshQuery navquery, IDtQueryFilter filter)
         {
             // Keep valid path as far as possible.
             int n = 0;
@@ -524,7 +524,12 @@ namespace DotRecast.Detour.Crowd
                 n++;
             }
 
-            if (n == 0)
+            if (m_path.Count == n)
+            {
+                // All valid, no need to fix.
+                return true;
+            }
+            else if (n == 0)
             {
                 // The first polyref is bad, use current safe values.
                 m_pos.Set(safePos);
@@ -533,16 +538,13 @@ namespace DotRecast.Detour.Crowd
             }
             else if (n < m_path.Count)
             {
-                m_path = m_path.GetRange(0, n);
                 // The path is partially usable.
+                m_path = m_path.GetRange(0, n);
             }
 
             // Clamp target pos to last poly
-            var result = navquery.ClosestPointOnPolyBoundary(m_path[m_path.Count - 1], m_target);
-            if (result.Succeeded())
-            {
-                m_target = result.result;
-            }
+            navquery.ClosestPointOnPolyBoundary(m_path[m_path.Count - 1], m_target, out m_target);
+            return true;
         }
 
         /**
