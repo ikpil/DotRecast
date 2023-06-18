@@ -31,10 +31,10 @@ namespace DotRecast.Detour.Crowd
     {
         public const int MAX_LOCAL_SEGS = 8;
 
-
-        RcVec3f m_center = new RcVec3f();
-        List<DtSegment> m_segs = new List<DtSegment>();
-        List<long> m_polys = new List<long>();
+        private RcVec3f m_center = new RcVec3f();
+        private List<DtSegment> m_segs = new List<DtSegment>();
+        private List<long> m_polys = new List<long>();
+        private List<long> m_parents = new List<long>();
 
         public DtLocalBoundary()
         {
@@ -90,21 +90,20 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        public void Update(long refs, RcVec3f pos, float collisionQueryRange, DtNavMeshQuery navquery, IDtQueryFilter filter)
+        public void Update(long startRef, RcVec3f pos, float collisionQueryRange, DtNavMeshQuery navquery, IDtQueryFilter filter)
         {
-            if (refs == 0)
+            if (startRef == 0)
             {
                 Reset();
                 return;
             }
 
             m_center = pos;
+
             // First query non-overlapping polygons.
-            Result<FindLocalNeighbourhoodResult> res = navquery.FindLocalNeighbourhood(refs, pos, collisionQueryRange,
-                filter);
-            if (res.Succeeded())
+            var status = navquery.FindLocalNeighbourhood(startRef, pos, collisionQueryRange, filter, ref m_polys, ref m_parents);
+            if (status.Succeeded())
             {
-                m_polys = res.result.GetRefs();
                 m_segs.Clear();
                 // Secondly, store all polygon edges.
                 for (int j = 0; j < m_polys.Count; ++j)

@@ -2761,49 +2761,48 @@ namespace DotRecast.Detour
 
         /// @par
         ///
-        /// This method is optimized for a small search radius and small number of result
+        /// This method is optimized for a small search radius and small number of result 
         /// polygons.
         ///
-        /// Candidate polygons are found by searching the navigation graph beginning at
+        /// Candidate polygons are found by searching the navigation graph beginning at 
         /// the start polygon.
         ///
-        /// The same intersection test restrictions that apply to the findPolysAroundCircle
+        /// The same intersection test restrictions that apply to the findPolysAroundCircle 
         /// mehtod applies to this method.
         ///
-        /// The value of the center point is used as the start point for cost calculations.
-        /// It is not projected onto the surface of the mesh, so its y-value will effect
+        /// The value of the center point is used as the start point for cost calculations. 
+        /// It is not projected onto the surface of the mesh, so its y-value will effect 
         /// the costs.
-        ///
-        /// Intersection tests occur in 2D. All polygons and the search circle are
-        /// projected onto the xz-plane. So the y-value of the center point does not
+        /// 
+        /// Intersection tests occur in 2D. All polygons and the search circle are 
+        /// projected onto the xz-plane. So the y-value of the center point does not 
         /// effect intersection tests.
-        ///
-        /// If the result arrays are is too small to hold the entire result set, they will
+        /// 
+        /// If the result arrays are is too small to hold the entire result set, they will 
         /// be filled to capacity.
-        ///
+        /// 
         /// Finds the non-overlapping navigation polygons in the local neighbourhood around the center position.
-        /// @param[in] startRef The reference id of the polygon where the search starts.
-        /// @param[in] centerPos The center of the query circle. [(x, y, z)]
-        /// @param[in] radius The radius of the query circle.
-        /// @param[in] filter The polygon filter to apply to the query.
-        /// @param[out] resultRef The reference ids of the polygons touched by the circle.
-        /// @param[out] resultParent The reference ids of the parent polygons for each result.
-        /// Zero if a result polygon has no parent. [opt]
-        /// @param[out] resultCount The number of polygons found.
-        /// @param[in] maxResult The maximum number of polygons the result arrays can hold.
+        ///  @param[in]		startRef		The reference id of the polygon where the search starts.
+        ///  @param[in]		centerPos		The center of the query circle. [(x, y, z)]
+        ///  @param[in]		radius			The radius of the query circle.
+        ///  @param[in]		filter			The polygon filter to apply to the query.
+        ///  @param[out]	resultRef		The reference ids of the polygons touched by the circle.
+        ///  @param[out]	resultParent	The reference ids of the parent polygons for each result. 
         /// @returns The status flags for the query.
-        public Result<FindLocalNeighbourhoodResult> FindLocalNeighbourhood(long startRef, RcVec3f centerPos, float radius,
-            IDtQueryFilter filter)
+        public DtStatus FindLocalNeighbourhood(long startRef, RcVec3f centerPos, float radius,
+            IDtQueryFilter filter,
+            ref List<long> resultRef, ref List<long> resultParent)
         {
+            
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(centerPos) || radius < 0
                 || !float.IsFinite(radius) || null == filter)
             {
-                return Results.InvalidParam<FindLocalNeighbourhoodResult>();
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            List<long> resultRef = new List<long>();
-            List<long> resultParent = new List<long>();
+            resultRef.Clear();
+            resultParent.Clear();
 
             DtNodePool tinyNodePool = new DtNodePool();
 
@@ -2943,7 +2942,7 @@ namespace DotRecast.Detour
                 }
             }
 
-            return Results.Success(new FindLocalNeighbourhoodResult(resultRef, resultParent));
+            return DtStatus.DT_SUCCSESS;
         }
 
 
@@ -3124,7 +3123,7 @@ namespace DotRecast.Detour
             hitDist = 0;
             hitPos = RcVec3f.Zero;
             hitNormal = RcVec3f.Zero;
-            
+
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(centerPos) || maxRadius < 0
                 || !float.IsFinite(maxRadius) || null == filter)

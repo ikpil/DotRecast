@@ -16,8 +16,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System.Collections.Generic;
 using DotRecast.Core;
-using DotRecast.Detour.QueryResults;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
@@ -58,11 +58,13 @@ public class FindLocalNeighbourhoodTest : AbstractDetourTest
         for (int i = 0; i < startRefs.Length; i++)
         {
             RcVec3f startPos = startPoss[i];
-            Result<FindLocalNeighbourhoodResult> poly = query.FindLocalNeighbourhood(startRefs[i], startPos, 3.5f, filter);
-            Assert.That(poly.result.GetRefs().Count, Is.EqualTo(REFS[i].Length));
+            var refs = new List<long>();
+            var parentRefs = new List<long>();
+            var status = query.FindLocalNeighbourhood(startRefs[i], startPos, 3.5f, filter, ref refs, ref parentRefs);
+            Assert.That(refs.Count, Is.EqualTo(REFS[i].Length));
             for (int v = 0; v < REFS[i].Length; v++)
             {
-                Assert.That(poly.result.GetRefs()[v], Is.EqualTo(REFS[i][v]));
+                Assert.That(refs[v], Is.EqualTo(REFS[i][v]));
             }
         }
     }
