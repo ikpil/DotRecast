@@ -27,11 +27,6 @@ namespace DotRecast.Detour.QueryResults
             return new Result<T>(result, DtStatus.DT_SUCCSESS, null);
         }
 
-        public static Result<T> Failure<T>()
-        {
-            return new Result<T>(default, DtStatus.DT_FAILURE, null);
-        }
-
         public static Result<T> InvalidParam<T>()
         {
             return new Result<T>(default, DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM, null);
@@ -45,11 +40,6 @@ namespace DotRecast.Detour.QueryResults
         public static Result<T> Failure<T>(T result)
         {
             return new Result<T>(result, DtStatus.DT_FAILURE, null);
-        }
-
-        public static Result<T> Of<T>(DtStatus status, string message)
-        {
-            return new Result<T>(default, status, message);
         }
 
         public static Result<T> Of<T>(DtStatus status, T result)
