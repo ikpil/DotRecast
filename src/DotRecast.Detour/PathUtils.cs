@@ -34,13 +34,13 @@ namespace DotRecast.Detour
             float minTargetDist, List<long> path)
         {
             // Find steer target.
-            Result<List<StraightPathItem>> result = navQuery.FindStraightPath(startPos, endPos, path, MAX_STEER_POINTS, 0);
+            var straightPath = new List<StraightPathItem>();
+            var result = navQuery.FindStraightPath(startPos, endPos, path, ref straightPath, MAX_STEER_POINTS, 0);
             if (result.Failed())
             {
                 return null;
             }
 
-            List<StraightPathItem> straightPath = result.result;
             float[] steerPoints = new float[straightPath.Count * 3];
             for (int i = 0; i < straightPath.Count; i++)
             {

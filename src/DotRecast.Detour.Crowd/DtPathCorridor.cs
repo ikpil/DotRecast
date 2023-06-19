@@ -234,16 +234,14 @@ namespace DotRecast.Detour.Crowd
      * @param[in] navquery The query object used to build the corridor.
      * @return Corners
      */
-        public List<StraightPathItem> FindCorners(int maxCorners, DtNavMeshQuery navquery, IDtQueryFilter filter)
+        public int FindCorners(ref List<StraightPathItem> corners, int maxCorners, DtNavMeshQuery navquery, IDtQueryFilter filter)
         {
-            List<StraightPathItem> path = new List<StraightPathItem>();
-            Result<List<StraightPathItem>> result = navquery.FindStraightPath(m_pos, m_target, m_path, maxCorners, 0);
+            var result = navquery.FindStraightPath(m_pos, m_target, m_path, ref corners, maxCorners, 0);
             if (result.Succeeded())
             {
-                path = result.result;
                 // Prune points in the beginning of the path which are too close.
                 int start = 0;
-                foreach (StraightPathItem spi in path)
+                foreach (StraightPathItem spi in corners)
                 {
                     if ((spi.GetFlags() & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0
                         || RcVec3f.Dist2DSqr(spi.GetPos(), m_pos) > MIN_TARGET_DIST)
@@ -254,11 +252,11 @@ namespace DotRecast.Detour.Crowd
                     start++;
                 }
 
-                int end = path.Count;
+                int end = corners.Count;
                 // Prune points after an off-mesh connection.
-                for (int i = start; i < path.Count; i++)
+                for (int i = start; i < corners.Count; i++)
                 {
-                    StraightPathItem spi = path[i];
+                    StraightPathItem spi = corners[i];
                     if ((spi.GetFlags() & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
                     {
                         end = i + 1;
@@ -266,10 +264,10 @@ namespace DotRecast.Detour.Crowd
                     }
                 }
 
-                path = path.GetRange(start, end - start);
+                corners = corners.GetRange(start, end - start);
             }
 
-            return path;
+            return corners.Count;
         }
 
         /**

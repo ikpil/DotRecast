@@ -63,7 +63,7 @@ public class TestNavmeshTool : IRcTool
     {
         return _impl;
     }
-    
+
     public void OnSampleChanged()
     {
         // ..
@@ -277,7 +277,7 @@ public class TestNavmeshTool : IRcTool
                             // Reached off-mesh connection.
                             RcVec3f startPos = RcVec3f.Zero;
                             RcVec3f endPos = RcVec3f.Zero;
-                            
+
                             // Advance the path up to and over the off-mesh connection.
                             long prevRef = 0;
                             long polyRef = polys[0];
@@ -345,8 +345,7 @@ public class TestNavmeshTool : IRcTool
                         }
                     }
 
-                    m_straightPath = m_navQuery.FindStraightPath(m_spos, epos, m_polys, MAX_POLYS,
-                        m_straightPathOptions).result;
+                    m_navQuery.FindStraightPath(m_spos, epos, m_polys, ref m_straightPath, MAX_POLYS, m_straightPathOptions);
                 }
             }
             else
@@ -839,7 +838,7 @@ public class TestNavmeshTool : IRcTool
                         var result = _impl.GetSample()
                             .GetNavMeshQuery()
                             .GetPolyWallSegments(m_polys[i], false, m_filter, ref segmentVerts, ref segmentRefs);
-                        
+
                         if (result.Succeeded())
                         {
                             dd.Begin(LINES, 2.0f);
@@ -999,14 +998,7 @@ public class TestNavmeshTool : IRcTool
                         }
                     }
 
-                    {
-                        Result<List<StraightPathItem>> result = m_navQuery.FindStraightPath(m_spos, epos, m_polys,
-                            MAX_POLYS, DtNavMeshQuery.DT_STRAIGHTPATH_ALL_CROSSINGS);
-                        if (result.Succeeded())
-                        {
-                            m_straightPath = result.result;
-                        }
-                    }
+                    m_navQuery.FindStraightPath(m_spos, epos, m_polys, ref m_straightPath, MAX_POLYS, DtNavMeshQuery.DT_STRAIGHTPATH_ALL_CROSSINGS);
                 }
 
                 m_pathFindStatus = DtStatus.DT_FAILURE;

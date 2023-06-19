@@ -31,6 +31,7 @@ namespace DotRecast.Detour
 
         // Detail information for status.
         public static readonly DtStatus DT_STATUS_DETAIL_MASK = new DtStatus(0x0ffffff);
+        public static readonly DtStatus DT_STATUS_NOTHING = new DtStatus(0); // nothing
         public static readonly DtStatus DT_WRONG_MAGIC = new DtStatus(1 << 0); // Input data is not recognized.
         public static readonly DtStatus DT_WRONG_VERSION = new DtStatus(1 << 1); // Input data is in wrong version.
         public static readonly DtStatus DT_OUT_OF_MEMORY = new DtStatus(1 << 2); // Operation ran out of memory.
@@ -82,7 +83,7 @@ namespace DotRecast.Detour
         {
             return new DtStatus(left.Value | right.Value);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DtStatus operator &(DtStatus left, DtStatus right)
         {

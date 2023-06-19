@@ -55,7 +55,9 @@ public class TileCacheFindPathTest : AbstractTileCacheTest
         Result<List<long>> path = query.FindPath(startRef, endRef, startPos, endPos, filter);
         int maxStraightPath = 256;
         int options = 0;
-        Result<List<StraightPathItem>> pathStr = query.FindStraightPath(startPos, endPos, path.result, maxStraightPath, options);
-        Assert.That(pathStr.result.Count, Is.EqualTo(8));
+
+        var pathStr = new List<StraightPathItem>();
+         query.FindStraightPath(startPos, endPos, path.result, ref pathStr, maxStraightPath, options);
+        Assert.That(pathStr.Count, Is.EqualTo(8));
     }
 }

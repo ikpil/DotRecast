@@ -22,7 +22,7 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
-//TODO: (PP) Add comments
+    //TODO: (PP) Add comments
     public class StraightPathItem
     {
         public RcVec3f pos;

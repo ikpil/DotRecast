@@ -942,7 +942,7 @@ namespace DotRecast.Detour.Crowd
                 }
 
                 // Find corners for steering
-                ag.corners = ag.corridor.FindCorners(DT_CROWDAGENT_MAX_CORNERS, _navQuery, _filters[ag.option.queryFilterType]);
+                ag.corridor.FindCorners(ref ag.corners, DT_CROWDAGENT_MAX_CORNERS, _navQuery, _filters[ag.option.queryFilterType]);
 
                 // Check to see if the corner after the next corner is directly visible,
                 // and short cut to there.

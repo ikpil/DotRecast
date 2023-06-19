@@ -1422,7 +1422,7 @@ namespace DotRecast.Detour
             return Results.Of(status, path);
         }
 
-        protected DtStatus AppendVertex(RcVec3f pos, int flags, long refs, List<StraightPathItem> straightPath,
+        protected DtStatus AppendVertex(RcVec3f pos, int flags, long refs, ref List<StraightPathItem> straightPath,
             int maxStraightPath)
         {
             if (straightPath.Count > 0 && DetourCommon.VEqual(straightPath[straightPath.Count - 1].pos, pos))
@@ -1450,7 +1450,7 @@ namespace DotRecast.Detour
         }
 
         protected DtStatus AppendPortals(int startIdx, int endIdx, RcVec3f endPos, List<long> path,
-            List<StraightPathItem> straightPath, int maxStraightPath, int options)
+            ref List<StraightPathItem> straightPath, int maxStraightPath, int options)
         {
             var startPos = straightPath[straightPath.Count - 1].pos;
             // Append or update last vertex
@@ -1491,7 +1491,7 @@ namespace DotRecast.Detour
                 if (DetourCommon.IntersectSegSeg2D(startPos, endPos, left, right, out var _, out var t))
                 {
                     var pt = RcVec3f.Lerp(left, right, t);
-                    stat = AppendVertex(pt, 0, path[i + 1], straightPath, maxStraightPath);
+                    stat = AppendVertex(pt, 0, path[i + 1], ref straightPath, maxStraightPath);
                     if (!stat.InProgress())
                     {
                         return stat;
@@ -1503,58 +1503,61 @@ namespace DotRecast.Detour
         }
 
         /// @par
-        /// Finds the straight path from the start to the end position within the polygon corridor.
-        ///
+        /// 
         /// This method peforms what is often called 'string pulling'.
         ///
-        /// The start position is clamped to the first polygon in the path, and the
-        /// end position is clamped to the last. So the start and end positions should
+        /// The start position is clamped to the first polygon in the path, and the 
+        /// end position is clamped to the last. So the start and end positions should 
         /// normally be within or very near the first and last polygons respectively.
         ///
-        /// The returned polygon references represent the reference id of the polygon
-        /// that is entered at the associated path position. The reference id associated
-        /// with the end point will always be zero. This allows, for example, matching
+        /// The returned polygon references represent the reference id of the polygon 
+        /// that is entered at the associated path position. The reference id associated 
+        /// with the end point will always be zero.  This allows, for example, matching 
         /// off-mesh link points to their representative polygons.
         ///
-        /// If the provided result buffers are too small for the entire result set,
-        /// they will be filled as far as possible from the start toward the end
+        /// If the provided result buffers are too small for the entire result set, 
+        /// they will be filled as far as possible from the start toward the end 
         /// position.
         ///
-        /// @param[in] startPos Path start position. [(x, y, z)]
-        /// @param[in] endPos Path end position. [(x, y, z)]
-        /// @param[in] path An array of polygon references that represent the path corridor.
-        /// @param[out] straightPath Points describing the straight path. [(x, y, z) * @p straightPathCount].
-        /// @param[in] maxStraightPath The maximum number of points the straight path arrays can hold. [Limit: > 0]
-        /// @param[in] options Query options. (see: #dtStraightPathOptions)
+        /// Finds the straight path from the start to the end position within the polygon corridor.
+        ///  @param[in]		startPos			Path start position. [(x, y, z)]
+        ///  @param[in]		endPos				Path end position. [(x, y, z)]
+        ///  @param[in]		path				An array of polygon references that represent the path corridor.
+        ///  @param[in]		pathSize			The number of polygons in the @p path array.
+        ///  @param[out]	straightPath		Points describing the straight path. [(x, y, z) * @p straightPathCount].
+        ///  @param[in]		maxStraightPath		The maximum number of points the straight path arrays can hold.  [Limit: > 0]
+        ///  @param[in]		options				Query options. (see: #dtStraightPathOptions)
         /// @returns The status flags for the query.
-        public virtual Result<List<StraightPathItem>> FindStraightPath(RcVec3f startPos, RcVec3f endPos, List<long> path,
+        public virtual DtStatus FindStraightPath(RcVec3f startPos, RcVec3f endPos, List<long> path, 
+            ref List<StraightPathItem> straightPath,
             int maxStraightPath, int options)
         {
-            List<StraightPathItem> straightPath = new List<StraightPathItem>();
+            straightPath.Clear();
+            
             if (!RcVec3f.IsFinite(startPos) || !RcVec3f.IsFinite(endPos)
                                             || null == path || 0 == path.Count || path[0] == 0 || maxStraightPath <= 0)
             {
-                return Results.InvalidParam<List<StraightPathItem>>();
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             // TODO: Should this be callers responsibility?
             var closestStartPosRes = ClosestPointOnPolyBoundary(path[0], startPos, out var closestStartPos);
             if (closestStartPosRes.Failed())
             {
-                return Results.InvalidParam<List<StraightPathItem>>("Cannot find start position");
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             var closestEndPosRes = ClosestPointOnPolyBoundary(path[path.Count - 1], endPos, out var closestEndPos);
             if (closestEndPosRes.Failed())
             {
-                return Results.InvalidParam<List<StraightPathItem>>("Cannot find end position");
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             // Add start point.
-            DtStatus stat = AppendVertex(closestStartPos, DT_STRAIGHTPATH_START, path[0], straightPath, maxStraightPath);
+            DtStatus stat = AppendVertex(closestStartPos, DT_STRAIGHTPATH_START, path[0], ref straightPath, maxStraightPath);
             if (!stat.InProgress())
             {
-                return Results.Success(straightPath);
+                return stat;
             }
 
             if (path.Count > 1)
@@ -1591,19 +1594,20 @@ namespace DotRecast.Detour
                             var cpStatus = ClosestPointOnPolyBoundary(path[i], endPos, out closestEndPos);
                             if (cpStatus.Failed())
                             {
-                                return Results.InvalidParam<List<StraightPathItem>>();
+                                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
                             }
 
                             // Append portals along the current straight path segment.
                             if ((options & (DT_STRAIGHTPATH_AREA_CROSSINGS | DT_STRAIGHTPATH_ALL_CROSSINGS)) != 0)
                             {
                                 // Ignore status return value as we're just about to return anyway.
-                                AppendPortals(apexIndex, i, closestEndPos, path, straightPath, maxStraightPath, options);
+                                AppendPortals(apexIndex, i, closestEndPos, path, ref straightPath, maxStraightPath, options);
                             }
 
                             // Ignore status return value as we're just about to return anyway.
-                            AppendVertex(closestEndPos, 0, path[i], straightPath, maxStraightPath);
-                            return Results.Success(straightPath);
+                            AppendVertex(closestEndPos, 0, path[i], ref straightPath, maxStraightPath);
+                            
+                            return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM | (straightPath.Count >= maxStraightPath ? DtStatus.DT_BUFFER_TOO_SMALL : DtStatus.DT_STATUS_NOTHING);
                         }
 
                         // If starting really close the portal, advance.
@@ -1639,11 +1643,10 @@ namespace DotRecast.Detour
                             // Append portals along the current straight path segment.
                             if ((options & (DT_STRAIGHTPATH_AREA_CROSSINGS | DT_STRAIGHTPATH_ALL_CROSSINGS)) != 0)
                             {
-                                stat = AppendPortals(apexIndex, leftIndex, portalLeft, path, straightPath, maxStraightPath,
-                                    options);
+                                stat = AppendPortals(apexIndex, leftIndex, portalLeft, path, ref straightPath, maxStraightPath, options);
                                 if (!stat.InProgress())
                                 {
-                                    return Results.Success(straightPath);
+                                    return stat;
                                 }
                             }
 
@@ -1663,10 +1666,10 @@ namespace DotRecast.Detour
                             long refs = leftPolyRef;
 
                             // Append or update vertex
-                            stat = AppendVertex(portalApex, flags, refs, straightPath, maxStraightPath);
+                            stat = AppendVertex(portalApex, flags, refs, ref straightPath, maxStraightPath);
                             if (!stat.InProgress())
                             {
-                                return Results.Success(straightPath);
+                                return stat;
                             }
 
                             portalLeft = portalApex;
@@ -1696,11 +1699,10 @@ namespace DotRecast.Detour
                             // Append portals along the current straight path segment.
                             if ((options & (DT_STRAIGHTPATH_AREA_CROSSINGS | DT_STRAIGHTPATH_ALL_CROSSINGS)) != 0)
                             {
-                                stat = AppendPortals(apexIndex, rightIndex, portalRight, path, straightPath,
-                                    maxStraightPath, options);
+                                stat = AppendPortals(apexIndex, rightIndex, portalRight, path, ref straightPath, maxStraightPath, options);
                                 if (!stat.InProgress())
                                 {
-                                    return Results.Success(straightPath);
+                                    return stat;
                                 }
                             }
 
@@ -1720,10 +1722,10 @@ namespace DotRecast.Detour
                             long refs = rightPolyRef;
 
                             // Append or update vertex
-                            stat = AppendVertex(portalApex, flags, refs, straightPath, maxStraightPath);
+                            stat = AppendVertex(portalApex, flags, refs, ref straightPath, maxStraightPath);
                             if (!stat.InProgress())
                             {
-                                return Results.Success(straightPath);
+                                return stat;
                             }
 
                             portalLeft = portalApex;
@@ -1742,18 +1744,17 @@ namespace DotRecast.Detour
                 // Append portals along the current straight path segment.
                 if ((options & (DT_STRAIGHTPATH_AREA_CROSSINGS | DT_STRAIGHTPATH_ALL_CROSSINGS)) != 0)
                 {
-                    stat = AppendPortals(apexIndex, path.Count - 1, closestEndPos, path, straightPath, maxStraightPath,
-                        options);
+                    stat = AppendPortals(apexIndex, path.Count - 1, closestEndPos, path, ref straightPath, maxStraightPath, options);
                     if (!stat.InProgress())
                     {
-                        return Results.Success(straightPath);
+                        return stat;
                     }
                 }
             }
 
             // Ignore status return value as we're just about to return anyway.
-            AppendVertex(closestEndPos, DT_STRAIGHTPATH_END, 0, straightPath, maxStraightPath);
-            return Results.Success(straightPath);
+            AppendVertex(closestEndPos, DT_STRAIGHTPATH_END, 0, ref straightPath, maxStraightPath);
+            return DtStatus.DT_SUCCSESS | (straightPath.Count >= maxStraightPath ? DtStatus.DT_BUFFER_TOO_SMALL : DtStatus.DT_STATUS_NOTHING);
         }
 
         /// @par
