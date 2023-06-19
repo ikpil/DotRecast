@@ -104,17 +104,20 @@ namespace DotRecast.Detour.Crowd
             var status = navquery.FindLocalNeighbourhood(startRef, pos, collisionQueryRange, filter, ref m_polys, ref m_parents);
             if (status.Succeeded())
             {
-                m_segs.Clear();
                 // Secondly, store all polygon edges.
+                m_segs.Clear();
+
+                var segmentVerts = new List<SegmentVert>();
+                var segmentRefs = new List<long>();
+                
                 for (int j = 0; j < m_polys.Count; ++j)
                 {
-                    Result<GetPolyWallSegmentsResult> result = navquery.GetPolyWallSegments(m_polys[j], false, filter);
+                    var result = navquery.GetPolyWallSegments(m_polys[j], false, filter, ref segmentVerts, ref segmentRefs);
                     if (result.Succeeded())
                     {
-                        GetPolyWallSegmentsResult gpws = result.result;
-                        for (int k = 0; k < gpws.CountSegmentRefs(); ++k)
+                        for (int k = 0; k < segmentRefs.Count; ++k)
                         {
-                            SegmentVert s = gpws.GetSegmentVert(k);
+                            SegmentVert s = segmentVerts[k];
                             var s0 = RcVec3f.Of(s[0], s[1], s[2]);
                             var s3 = RcVec3f.Of(s[3], s[4], s[5]);
 

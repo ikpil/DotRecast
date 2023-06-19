@@ -816,6 +816,9 @@ public class TestNavmeshTool : IRcTool
         {
             if (m_polys != null)
             {
+                var segmentVerts = new List<SegmentVert>();
+                var segmentRefs = new List<long>();
+
                 for (int i = 0; i < m_polys.Count; i++)
                 {
                     dd.DebugDrawNavMeshPoly(m_navMesh, m_polys[i], pathCol);
@@ -833,15 +836,16 @@ public class TestNavmeshTool : IRcTool
                     dd.DepthMask(true);
                     if (_impl.GetSample().GetNavMeshQuery() != null)
                     {
-                        Result<GetPolyWallSegmentsResult> result = _impl.GetSample().GetNavMeshQuery()
-                            .GetPolyWallSegments(m_polys[i], false, m_filter);
+                        var result = _impl.GetSample()
+                            .GetNavMeshQuery()
+                            .GetPolyWallSegments(m_polys[i], false, m_filter, ref segmentVerts, ref segmentRefs);
+                        
                         if (result.Succeeded())
                         {
                             dd.Begin(LINES, 2.0f);
-                            GetPolyWallSegmentsResult wallSegments = result.result;
-                            for (int j = 0; j < wallSegments.CountSegmentVerts(); ++j)
+                            for (int j = 0; j < segmentVerts.Count; ++j)
                             {
-                                SegmentVert s = wallSegments.GetSegmentVert(j);
+                                SegmentVert s = segmentVerts[j];
                                 var v0 = RcVec3f.Of(s[0], s[1], s[2]);
                                 var s3 = RcVec3f.Of(s[3], s[4], s[5]);
                                 // Skip too distant segments.
@@ -857,7 +861,7 @@ public class TestNavmeshTool : IRcTool
                                 norm.Normalize();
                                 RcVec3f p1 = RcVec3f.Mad(p0, norm, agentRadius * 0.5f);
                                 // Skip backfacing segments.
-                                if (wallSegments.GetSegmentRef(j) != 0)
+                                if (segmentRefs[j] != 0)
                                 {
                                     int col = DuRGBA(255, 255, 255, 32);
                                     dd.Vertex(s[0], s[1] + agentClimb, s[2], col);

@@ -2984,23 +2984,24 @@ namespace DotRecast.Detour
         /// @param[out] segmentCount The number of segments returned.
         /// @param[in] maxSegments The maximum number of segments the result arrays can hold.
         /// @returns The status flags for the query.
-        public Result<GetPolyWallSegmentsResult> GetPolyWallSegments(long refs, bool storePortals, IDtQueryFilter filter)
+        public DtStatus GetPolyWallSegments(long refs, bool storePortals, IDtQueryFilter filter,
+            ref List<SegmentVert> segmentVerts, ref List<long> segmentRefs)
         {
+            segmentVerts.Clear();
+            segmentRefs.Clear();
+            
             var status = m_nav.GetTileAndPolyByRef(refs, out var tile, out var poly);
             if (status.Failed())
             {
-                return Results.Of<GetPolyWallSegmentsResult>(status, "");
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             if (null == filter)
             {
-                return Results.InvalidParam<GetPolyWallSegmentsResult>();
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            List<long> segmentRefs = new List<long>();
-            List<SegmentVert> segmentVerts = new List<SegmentVert>();
             List<DtSegInterval> ints = new List<DtSegInterval>(16);
-
             for (int i = 0, j = poly.vertCount - 1; i < poly.vertCount; j = i++)
             {
                 // Skip non-solid edges.
@@ -3093,7 +3094,7 @@ namespace DotRecast.Detour
                 }
             }
 
-            return Results.Success(new GetPolyWallSegmentsResult(segmentVerts, segmentRefs));
+            return DtStatus.DT_SUCCSESS;
         }
 
         /// @par

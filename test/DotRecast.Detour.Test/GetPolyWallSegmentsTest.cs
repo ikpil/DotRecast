@@ -16,7 +16,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using DotRecast.Detour.QueryResults;
+using System.Collections.Generic;
+using DotRecast.Core;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
@@ -77,24 +78,26 @@ public class GetPolyWallSegmentsTest : AbstractDetourTest
     [Test]
     public void TestFindDistanceToWall()
     {
+        var segmentVerts = new List<SegmentVert>();
+        var segmentRefs = new List<long>();
+
         IDtQueryFilter filter = new DtQueryDefaultFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
-            Result<GetPolyWallSegmentsResult> result = query.GetPolyWallSegments(startRefs[i], true, filter);
-            GetPolyWallSegmentsResult segments = result.result;
-            Assert.That(segments.CountSegmentVerts(), Is.EqualTo(VERTICES[i].Length / 6));
-            Assert.That(segments.CountSegmentRefs(), Is.EqualTo(REFS[i].Length));
+            var result = query.GetPolyWallSegments(startRefs[i], true, filter, ref segmentVerts, ref segmentRefs);
+            Assert.That(segmentVerts.Count, Is.EqualTo(VERTICES[i].Length / 6));
+            Assert.That(segmentRefs.Count, Is.EqualTo(REFS[i].Length));
             for (int v = 0; v < VERTICES[i].Length / 6; v++)
             {
                 for (int n = 0; n < 6; n++)
                 {
-                    Assert.That(segments.GetSegmentVert(v)[n], Is.EqualTo(VERTICES[i][v * 6 + n]).Within(0.001f));
+                    Assert.That(segmentVerts[v][n], Is.EqualTo(VERTICES[i][v * 6 + n]).Within(0.001f));
                 }
             }
 
             for (int v = 0; v < REFS[i].Length; v++)
             {
-                Assert.That(segments.GetSegmentRef(v), Is.EqualTo(REFS[i][v]));
+                Assert.That(segmentRefs[v], Is.EqualTo(REFS[i][v]));
             }
         }
     }
