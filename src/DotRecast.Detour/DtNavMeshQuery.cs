@@ -1253,7 +1253,6 @@ namespace DotRecast.Detour
                             }
                         }
                     }
-                    
 
 
                     // update move cost
@@ -2129,7 +2128,6 @@ namespace DotRecast.Detour
             return DtStatus.DT_SUCCSESS;
         }
 
-        private const float s = 1.0f / 255.0f;
 
         /// @par
         ///
@@ -2317,6 +2315,7 @@ namespace DotRecast.Detour
                     if (link.side == 0 || link.side == 4)
                     {
                         // Calculate link size.
+                        const float s = 1.0f / 255.0f;
                         float lmin = tile.data.verts[left + 2]
                                      + (tile.data.verts[right + 2] - tile.data.verts[left + 2]) * (link.bmin * s);
                         float lmax = tile.data.verts[left + 2]
@@ -2337,6 +2336,7 @@ namespace DotRecast.Detour
                     else if (link.side == 2 || link.side == 6)
                     {
                         // Calculate link size.
+                        const float s = 1.0f / 255.0f;
                         float lmin = tile.data.verts[left]
                                      + (tile.data.verts[right] - tile.data.verts[left]) * (link.bmin * s);
                         float lmax = tile.data.verts[left]
