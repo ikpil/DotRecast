@@ -1528,17 +1528,17 @@ namespace DotRecast.Detour
         ///  @param[in]		maxStraightPath		The maximum number of points the straight path arrays can hold.  [Limit: > 0]
         ///  @param[in]		options				Query options. (see: #dtStraightPathOptions)
         /// @returns The status flags for the query.
-        public virtual DtStatus FindStraightPath(RcVec3f startPos, RcVec3f endPos, List<long> path, 
+        public virtual DtStatus FindStraightPath(RcVec3f startPos, RcVec3f endPos, List<long> path,
             ref List<StraightPathItem> straightPath,
             int maxStraightPath, int options)
         {
-            straightPath.Clear();
-            
-            if (!RcVec3f.IsFinite(startPos) || !RcVec3f.IsFinite(endPos)
-                                            || null == path || 0 == path.Count || path[0] == 0 || maxStraightPath <= 0)
+            if (!RcVec3f.IsFinite(startPos) || !RcVec3f.IsFinite(endPos) || null == straightPath
+                || null == path || 0 == path.Count || path[0] == 0 || maxStraightPath <= 0)
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
+
+            straightPath.Clear();
 
             // TODO: Should this be callers responsibility?
             var closestStartPosRes = ClosestPointOnPolyBoundary(path[0], startPos, out var closestStartPos);
@@ -1606,7 +1606,7 @@ namespace DotRecast.Detour
 
                             // Ignore status return value as we're just about to return anyway.
                             AppendVertex(closestEndPos, 0, path[i], ref straightPath, maxStraightPath);
-                            
+
                             return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM | (straightPath.Count >= maxStraightPath ? DtStatus.DT_BUFFER_TOO_SMALL : DtStatus.DT_STATUS_NOTHING);
                         }
 
@@ -2794,7 +2794,6 @@ namespace DotRecast.Detour
             IDtQueryFilter filter,
             ref List<long> resultRef, ref List<long> resultParent)
         {
-            
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(centerPos) || radius < 0
                 || !float.IsFinite(radius) || null == filter)
@@ -2990,7 +2989,7 @@ namespace DotRecast.Detour
         {
             segmentVerts.Clear();
             segmentRefs.Clear();
-            
+
             var status = m_nav.GetTileAndPolyByRef(refs, out var tile, out var poly);
             if (status.Failed())
             {
