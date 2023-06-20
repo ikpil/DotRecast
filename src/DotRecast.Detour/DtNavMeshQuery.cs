@@ -1101,18 +1101,19 @@ namespace DotRecast.Detour
      *            The maximum number of iterations to perform.
      * @return The status flags for the query.
      */
-        public virtual Result<int> UpdateSlicedFindPath(int maxIter)
+        public virtual DtStatus UpdateSlicedFindPath(int maxIter, out int doneIters)
         {
+            doneIters = 0;
             if (!m_query.status.InProgress())
             {
-                return Results.Of(m_query.status, 0);
+                return m_query.status;
             }
 
             // Make sure the request is still valid.
             if (!m_nav.IsValidPolyRef(m_query.startRef) || !m_nav.IsValidPolyRef(m_query.endRef))
             {
                 m_query.status = DtStatus.DT_FAILURE;
-                return Results.Of(m_query.status, 0);
+                return DtStatus.DT_FAILURE;
             }
 
             int iter = 0;
@@ -1129,8 +1130,10 @@ namespace DotRecast.Detour
                 if (bestNode.id == m_query.endRef)
                 {
                     m_query.lastBestNode = bestNode;
-                    m_query.status = DtStatus.DT_SUCCSESS;
-                    return Results.Of(m_query.status, iter);
+                    var details = m_query.status & DtStatus.DT_STATUS_DETAIL_MASK;
+                    m_query.status = DtStatus.DT_SUCCSESS | details;
+                    doneIters = iter;
+                    return m_query.status;
                 }
 
                 // Get current poly and tile.
@@ -1140,9 +1143,10 @@ namespace DotRecast.Detour
                 var status = m_nav.GetTileAndPolyByRef(bestRef, out var bestTile, out var bestPoly);
                 if (status.Failed())
                 {
-                    m_query.status = DtStatus.DT_FAILURE;
                     // The polygon has disappeared during the sliced query, fail.
-                    return Results.Of(m_query.status, iter);
+                    m_query.status = DtStatus.DT_FAILURE;
+                    doneIters = iter;
+                    return m_query.status;
                 }
 
                 // Get parent and grand parent poly and tile.
@@ -1167,10 +1171,10 @@ namespace DotRecast.Detour
                     invalidParent = status.Failed();
                     if (invalidParent || (grandpaRef != 0 && !m_nav.IsValidPolyRef(grandpaRef)))
                     {
-                        // The polygon has disappeared during the sliced query,
-                        // fail.
+                        // The polygon has disappeared during the sliced query fail.
                         m_query.status = DtStatus.DT_FAILURE;
-                        return Results.Of(m_query.status, iter);
+                        doneIters = iter;
+                        return m_query.status;
                     }
                 }
 
@@ -1236,8 +1240,7 @@ namespace DotRecast.Detour
                     List<long> shortcut = null;
                     if (tryLOS)
                     {
-                        status = Raycast(parentRef, parentNode.pos, neighbourPos, m_query.filter,
-                            DT_RAYCAST_USE_COSTS, grandpaRef, out var rayHit);
+                        status = Raycast(parentRef, parentNode.pos, neighbourPos, m_query.filter, DT_RAYCAST_USE_COSTS, grandpaRef, out var rayHit);
                         if (status.Succeeded())
                         {
                             foundShortCut = rayHit.t >= 1.0f;
@@ -1250,6 +1253,8 @@ namespace DotRecast.Detour
                             }
                         }
                     }
+                    
+
 
                     // update move cost
                     if (!foundShortCut)
@@ -1293,7 +1298,7 @@ namespace DotRecast.Detour
                     // Add or update the node.
                     neighbourNode.pidx = foundShortCut ? bestNode.pidx : m_nodePool.GetNodeIdx(bestNode);
                     neighbourNode.id = neighbourRef;
-                    neighbourNode.flags = (neighbourNode.flags & ~DtNode.DT_NODE_CLOSED);
+                    neighbourNode.flags = (neighbourNode.flags & ~DT_NODE_CLOSED);
                     neighbourNode.cost = cost;
                     neighbourNode.total = total;
                     neighbourNode.pos = neighbourPos;
@@ -1323,10 +1328,12 @@ namespace DotRecast.Detour
             // Exhausted all nodes, but could not find path.
             if (m_openList.IsEmpty())
             {
-                m_query.status = DtStatus.DT_PARTIAL_RESULT;
+                var details = m_query.status & DtStatus.DT_STATUS_DETAIL_MASK;
+                m_query.status = DtStatus.DT_SUCCSESS | details;
             }
 
-            return Results.Of(m_query.status, iter);
+            doneIters = iter;
+            return m_query.status;
         }
 
         /// Finalizes and returns the results of a sliced path query.

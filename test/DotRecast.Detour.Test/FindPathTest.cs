@@ -162,8 +162,7 @@ public class FindPathTest : AbstractDetourTest
             DtStatus status = DtStatus.DT_IN_PROGRESS;
             while (status.InProgress())
             {
-                Result<int> res = query.UpdateSlicedFindPath(10);
-                status = res.status;
+                status = query.UpdateSlicedFindPath(10, out var _);
             }
 
             Result<List<long>> path = query.FinalizeSlicedFindPath();

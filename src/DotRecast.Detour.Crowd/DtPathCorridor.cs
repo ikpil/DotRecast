@@ -350,7 +350,7 @@ namespace DotRecast.Detour.Crowd
             }
 
             navquery.InitSlicedFindPath(m_path[0], m_path[m_path.Count - 1], m_pos, m_target, filter, 0);
-            navquery.UpdateSlicedFindPath(maxIterations);
+            navquery.UpdateSlicedFindPath(maxIterations, out var _);
             Result<List<long>> fpr = navquery.FinalizeSlicedFindPathPartial(m_path);
 
             if (fpr.Succeeded() && fpr.result.Count > 0)

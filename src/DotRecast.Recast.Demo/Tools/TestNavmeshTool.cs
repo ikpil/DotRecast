@@ -977,7 +977,7 @@ public class TestNavmeshTool : IRcTool
             DtNavMeshQuery m_navQuery = _impl.GetSample().GetNavMeshQuery();
             if (m_pathFindStatus.InProgress())
             {
-                m_pathFindStatus = m_navQuery.UpdateSlicedFindPath(1).status;
+                m_pathFindStatus = m_navQuery.UpdateSlicedFindPath(1, out var _);
             }
 
             if (m_pathFindStatus.Succeeded())

@@ -46,6 +46,7 @@ namespace DotRecast.Detour.Crowd
                 {
                     break;
                 }
+
                 queue.RemoveFirst();
 
                 // Handle query start.
@@ -58,9 +59,8 @@ namespace DotRecast.Detour.Crowd
                 // Handle query in progress.
                 if (q.result.status.InProgress())
                 {
-                    Result<int> res = q.navQuery.UpdateSlicedFindPath(iterCount);
-                    q.result.status = res.status;
-                    iterCount -= res.result;
+                    q.result.status = q.navQuery.UpdateSlicedFindPath(iterCount, out var iters);
+                    iterCount -= iters;
                 }
 
                 if (q.result.status.Succeeded())
