@@ -388,8 +388,10 @@ public class RecastDemo
         var renderGl = _gl.GetStringS(GLEnum.Renderer);
         var glslString = _gl.GetStringS(GLEnum.ShadingLanguageVersion);
 
+        
         var workingDirectory = Directory.GetCurrentDirectory();
         Logger.Information($"working directory - {workingDirectory}");
+        Logger.Information($"ImGui.Net version - {ImGui.GetVersion()}");
         Logger.Information(vendor);
         Logger.Information(version);
         Logger.Information(renderGl);

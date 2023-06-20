@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Serilog" Version="2.12.0" />
+        <PackageReference Include="Serilog" Version="3.0.0" />
         <PackageReference Include="Serilog.Settings.Configuration" Version="7.0.0" />
         <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
         <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
@@ -15,6 +15,7 @@
         <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
         <PackageReference Include="Silk.NET" Version="2.17.1" />
         <PackageReference Include="Silk.NET.OpenGL.Extensions.ImGui" Version="2.17.1" />
+        <PackageReference Include="ImGui.NET" Version="1.89.5" />
     </ItemGroup>
 
     <ItemGroup>
