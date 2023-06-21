@@ -766,13 +766,13 @@ namespace DotRecast.Detour
      */
         public virtual Result<List<long>> FindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter)
         {
-            return FindPath(startRef, endRef, startPos, endPos, filter, new DefaultQueryHeuristic(), 0, 0);
+            return FindPath(startRef, endRef, startPos, endPos, filter, DefaultQueryHeuristic.Default, 0, 0);
         }
 
         public virtual Result<List<long>> FindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter,
             int options, float raycastLimit)
         {
-            return FindPath(startRef, endRef, startPos, endPos, filter, new DefaultQueryHeuristic(), options, raycastLimit);
+            return FindPath(startRef, endRef, startPos, endPos, filter, DefaultQueryHeuristic.Default, options, raycastLimit);
         }
 
         public Result<List<long>> FindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter,
@@ -1031,12 +1031,12 @@ namespace DotRecast.Detour
      */
         public DtStatus InitSlicedFindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter, int options)
         {
-            return InitSlicedFindPath(startRef, endRef, startPos, endPos, filter, options, new DefaultQueryHeuristic(), -1.0f);
+            return InitSlicedFindPath(startRef, endRef, startPos, endPos, filter, options, DefaultQueryHeuristic.Default, -1.0f);
         }
 
         public DtStatus InitSlicedFindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter, int options, float raycastLimit)
         {
-            return InitSlicedFindPath(startRef, endRef, startPos, endPos, filter, options, new DefaultQueryHeuristic(), raycastLimit);
+            return InitSlicedFindPath(startRef, endRef, startPos, endPos, filter, options, DefaultQueryHeuristic.Default, raycastLimit);
         }
 
         public DtStatus InitSlicedFindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter, int options, IQueryHeuristic heuristic, float raycastLimit)

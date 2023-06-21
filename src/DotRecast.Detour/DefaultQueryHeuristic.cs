@@ -21,14 +21,12 @@ using static DotRecast.Core.RcMath;
 
 namespace DotRecast.Detour
 {
-
     public class DefaultQueryHeuristic : IQueryHeuristic
     {
-        private readonly float scale;
+        public const float H_SCALE = 0.999f; // Search heuristic scale.
+        public static readonly DefaultQueryHeuristic Default = new DefaultQueryHeuristic(H_SCALE);
 
-        public DefaultQueryHeuristic() : this(0.999f)
-        {
-        }
+        private readonly float scale;
 
         public DefaultQueryHeuristic(float scale)
         {
