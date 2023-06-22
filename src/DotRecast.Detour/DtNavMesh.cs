@@ -22,7 +22,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using DotRecast.Core;
-using DotRecast.Detour.QueryResults;
 
 namespace DotRecast.Detour
 {

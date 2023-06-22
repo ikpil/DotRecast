@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using DotRecast.Core;
 using DotRecast.Detour.Dynamic.Colliders;
 using DotRecast.Detour.Dynamic.Io;
-using DotRecast.Detour.QueryResults;
+
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Dynamic.Test;

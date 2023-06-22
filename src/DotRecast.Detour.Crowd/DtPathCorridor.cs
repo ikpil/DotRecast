@@ -21,7 +21,7 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using DotRecast.Core;
-using DotRecast.Detour.QueryResults;
+
 
 namespace DotRecast.Detour.Crowd
 {
@@ -349,13 +349,14 @@ namespace DotRecast.Detour.Crowd
                 return false;
             }
 
+            var res = new List<long>();
             navquery.InitSlicedFindPath(m_path[0], m_path[m_path.Count - 1], m_pos, m_target, filter, 0);
             navquery.UpdateSlicedFindPath(maxIterations, out var _);
-            Result<List<long>> fpr = navquery.FinalizeSlicedFindPathPartial(m_path);
+            var status = navquery.FinalizeSlicedFindPathPartial(m_path, ref res);
 
-            if (fpr.Succeeded() && fpr.result.Count > 0)
+            if (status.Succeeded() && res.Count > 0)
             {
-                m_path = MergeCorridorStartShortcut(m_path, fpr.result);
+                m_path = MergeCorridorStartShortcut(m_path, res);
                 return true;
             }
 

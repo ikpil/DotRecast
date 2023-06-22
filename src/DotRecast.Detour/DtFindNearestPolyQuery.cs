@@ -1,6 +1,5 @@
 using System;
 using DotRecast.Core;
-using DotRecast.Detour.QueryResults;
 
 namespace DotRecast.Detour
 {

@@ -18,7 +18,7 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 using DotRecast.Core;
-using DotRecast.Detour.QueryResults;
+
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
@@ -156,6 +156,7 @@ public class FindPathTest : AbstractDetourTest
     public void TestFindPathSliced()
     {
         IDtQueryFilter filter = new DtQueryDefaultFilter();
+        var path = new List<long>();
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
@@ -169,12 +170,12 @@ public class FindPathTest : AbstractDetourTest
                 status = query.UpdateSlicedFindPath(10, out var _);
             }
 
-            Result<List<long>> path = query.FinalizeSlicedFindPath();
-            Assert.That(path.status, Is.EqualTo(STATUSES[i]), $"index({i})");
-            Assert.That(path.result.Count, Is.EqualTo(RESULTS[i].Length));
+            status = query.FinalizeSlicedFindPath(ref path);
+            Assert.That(status, Is.EqualTo(STATUSES[i]), $"index({i})");
+            Assert.That(path.Count, Is.EqualTo(RESULTS[i].Length));
             for (int j = 0; j < RESULTS[i].Length; j++)
             {
-                Assert.That(path.result[j], Is.EqualTo(RESULTS[i][j]));
+                Assert.That(path[j], Is.EqualTo(RESULTS[i][j]));
             }
         }
     }

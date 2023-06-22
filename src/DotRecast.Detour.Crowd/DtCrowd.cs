@@ -25,7 +25,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using DotRecast.Core;
 using DotRecast.Detour.Crowd.Tracking;
-using DotRecast.Detour.QueryResults;
+
 
 namespace DotRecast.Detour.Crowd
 {
@@ -560,6 +560,7 @@ namespace DotRecast.Detour.Crowd
             RcSortedQueue<DtCrowdAgent> queue = new RcSortedQueue<DtCrowdAgent>((a1, a2) => a2.targetReplanTime.CompareTo(a1.targetReplanTime));
 
             // Fire off new requests.
+            List<long> reqPath = new List<long>();
             foreach (DtCrowdAgent ag in agents)
             {
                 if (ag.state == CrowdAgentState.DT_CROWDAGENT_STATE_INVALID)
@@ -580,27 +581,27 @@ namespace DotRecast.Detour.Crowd
                     {
                         throw new ArgumentException("Empty path");
                     }
+                    
 
                     // Quick search towards the goal.
                     _navQuery.InitSlicedFindPath(path[0], ag.targetRef, ag.npos, ag.targetPos,
                         _filters[ag.option.queryFilterType], 0);
                     _navQuery.UpdateSlicedFindPath(_config.maxTargetFindPathIterations, out var _);
-                    Result<List<long>> pathFound;
+
+                    DtStatus status;
                     if (ag.targetReplan) // && npath > 10)
                     {
-                        // Try to use existing steady path during replan if
-                        // possible.
-                        pathFound = _navQuery.FinalizeSlicedFindPathPartial(path);
+                        // Try to use existing steady path during replan if possible.
+                        status = _navQuery.FinalizeSlicedFindPathPartial(path, ref reqPath);
                     }
                     else
                     {
                         // Try to move towards target when goal changes.
-                        pathFound = _navQuery.FinalizeSlicedFindPath();
+                        status = _navQuery.FinalizeSlicedFindPath(ref reqPath);
                     }
 
-                    List<long> reqPath = pathFound.result;
                     RcVec3f reqPos = new RcVec3f();
-                    if (pathFound.Succeeded() && reqPath.Count > 0)
+                    if (status.Succeeded() && reqPath.Count > 0)
                     {
                         // In progress or succeed.
                         if (reqPath[reqPath.Count - 1] != ag.targetRef)

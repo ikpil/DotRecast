@@ -17,7 +17,7 @@ freely, subject to the following restrictions:
 */
 
 using DotRecast.Core;
-using DotRecast.Detour.QueryResults;
+
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;

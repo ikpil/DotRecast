@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 using DotRecast.Core;
-using DotRecast.Detour.QueryResults;
+
 
 namespace DotRecast.Detour.Crowd
 {
@@ -65,9 +65,7 @@ namespace DotRecast.Detour.Crowd
 
                 if (q.result.status.Succeeded())
                 {
-                    Result<List<long>> path = q.navQuery.FinalizeSlicedFindPath();
-                    q.result.status = path.status;
-                    q.result.path = path.result;
+                    q.result.status = q.navQuery.FinalizeSlicedFindPath(ref q.result.path);
                 }
 
                 if (!(q.result.status.Failed() || q.result.status.Succeeded()))

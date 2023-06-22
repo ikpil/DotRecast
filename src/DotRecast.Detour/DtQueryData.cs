@@ -22,14 +22,15 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
-    public class DtQueryData
+    public struct DtQueryData
     {
         public DtStatus status;
         public DtNode lastBestNode;
         public float lastBestNodeCost;
-        public long startRef, endRef;
-        public RcVec3f startPos = new RcVec3f();
-        public RcVec3f endPos = new RcVec3f();
+        public long startRef;
+        public long endRef;
+        public RcVec3f startPos;
+        public RcVec3f endPos;
         public IDtQueryFilter filter;
         public int options;
         public float raycastLimitSqr;

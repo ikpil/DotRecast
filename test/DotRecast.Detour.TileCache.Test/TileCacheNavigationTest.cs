@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 using DotRecast.Core;
-using DotRecast.Detour.QueryResults;
+
 using DotRecast.Recast;
 using DotRecast.Recast.Geom;
 using NUnit.Framework;

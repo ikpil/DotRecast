@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using DotRecast.Core;
 using DotRecast.Detour;
-using DotRecast.Detour.QueryResults;
+
 using DotRecast.Recast.DemoTool.Builder;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.DemoTool;
@@ -982,7 +982,7 @@ public class TestNavmeshTool : IRcTool
 
             if (m_pathFindStatus.Succeeded())
             {
-                m_polys = m_navQuery.FinalizeSlicedFindPath().result;
+                m_navQuery.FinalizeSlicedFindPath(ref m_polys);
                 m_straightPath = null;
                 if (m_polys != null)
                 {

@@ -1,6 +1,6 @@
 using System;
 using DotRecast.Core;
-using DotRecast.Detour.QueryResults;
+
 using DotRecast.Recast;
 
 namespace DotRecast.Detour.Extras.Jumplink

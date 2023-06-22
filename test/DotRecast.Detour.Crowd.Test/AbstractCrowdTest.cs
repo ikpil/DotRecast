@@ -21,7 +21,7 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using DotRecast.Core;
-using DotRecast.Detour.QueryResults;
+
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Crowd.Test;

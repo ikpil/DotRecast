@@ -24,7 +24,7 @@ using DotRecast.Core;
 using DotRecast.Detour;
 using DotRecast.Detour.Crowd;
 using DotRecast.Detour.Crowd.Tracking;
-using DotRecast.Detour.QueryResults;
+
 using DotRecast.Recast.DemoTool.Builder;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.DemoTool;
