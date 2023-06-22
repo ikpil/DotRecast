@@ -650,7 +650,7 @@ public class RecastDemo
                 rayDir.Normalize();
                 if (rayTool != null)
                 {
-                    Logger.Information($"click ray - tool({rayTool.GetTool().GetName()}) rayStart({rayStart}) pos({rayDir}) shift({processHitTestShift})");
+                    Logger.Information($"click ray - tool({rayTool.GetTool().GetName()}) rayStart({rayStart.x:0.#},{rayStart.y:0.#},{rayStart.z:0.#}) pos({rayDir.x:0.#},{rayDir.y:0.#},{rayDir.z:0.#}) shift({processHitTestShift})");
                     rayTool.HandleClickRay(rayStart, rayDir, processHitTestShift);
                 }
 
@@ -673,7 +673,7 @@ public class RecastDemo
                         pos.z = rayStart.z + (rayEnd.z - rayStart.z) * hitTime;
                         if (rayTool != null)
                         {
-                            Logger.Information($"click - tool({rayTool.GetTool().GetName()}) rayStart({rayStart}) pos({pos}) shift({processHitTestShift})");
+                            Logger.Information($"click - tool({rayTool.GetTool().GetName()}) rayStart({rayStart.x:0.#},{rayStart.y:0.#},{rayStart.z:0.#}) pos({pos.x:0.#},{pos.y:0.#},{pos.z:0.#}) shift({processHitTestShift})");
                             rayTool.HandleClick(rayStart, pos, processHitTestShift);
                         }
                     }
