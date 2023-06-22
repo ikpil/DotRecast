@@ -63,11 +63,12 @@ public class RcLogView : IRcView
 
     public void Draw(double dt)
     {
-        int otherWidth = 310;
+        int otherWidth1 = 350;
+        int otherWidth2 = 620;
         int height = 234;
-        var width = _canvas.Size.X - (otherWidth * 2);
+        var width = _canvas.Size.X - (otherWidth1 + otherWidth2);
         //var posX = _canvas.Size.X - width;
-        ImGui.SetNextWindowPos(new Vector2(otherWidth, _canvas.Size.Y - height));
+        ImGui.SetNextWindowPos(new Vector2(otherWidth1, _canvas.Size.Y - height));
         ImGui.SetNextWindowSize(new Vector2(width, height));
         if (!ImGui.Begin("Log", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize))
         {

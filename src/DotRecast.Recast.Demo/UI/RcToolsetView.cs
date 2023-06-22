@@ -55,7 +55,7 @@ public class RcToolsetView : IRcView
 
     public void Draw(double dt)
     {
-        int width = 310;
+        int width = 350;
         ImGui.SetNextWindowPos(new Vector2(0, 0));
         ImGui.SetNextWindowSize(new Vector2(width, _canvas.Size.Y));
         ImGui.Begin("Tools", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize);

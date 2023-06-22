@@ -362,7 +362,8 @@ public class RecastDemo
 
         dd.Init(camr);
 
-        _imgui = new ImGuiController(_gl, window, _input);
+        ImGuiFontConfig imGuiFontConfig = new(Path.Combine("resources\\fonts", "DroidSans.ttf"), 24, null);
+        _imgui = new ImGuiController(_gl, window, _input, imGuiFontConfig);
 
         DemoInputGeomProvider geom = LoadInputMesh(Loader.ToBytes("nav_test.obj"));
         sample = new Sample(geom, ImmutableArray<RecastBuilderResult>.Empty, null);
