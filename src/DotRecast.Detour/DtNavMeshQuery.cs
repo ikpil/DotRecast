@@ -764,12 +764,17 @@ namespace DotRecast.Detour
      *            The polygon filter to apply to the query.
      * @return Found path
      */
-        public Result<List<long>> FindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter, DtFindPathOption fpo)
+        public DtStatus FindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter, ref List<long> path, DtFindPathOption fpo)
         {
+            if (null == path)
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
+
+            path.Clear();
+
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !RcVec3f.IsFinite(startPos) || !RcVec3f.IsFinite(endPos) || null == filter)
             {
-                return Results.InvalidParam<List<long>>();
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
             var heuristic = fpo.heuristic;
@@ -790,9 +795,8 @@ namespace DotRecast.Detour
 
             if (startRef == endRef)
             {
-                List<long> singlePath = new List<long>(1);
-                singlePath.Add(startRef);
-                return Results.Success(singlePath);
+                path.Add(startRef);
+                return DtStatus.DT_SUCCSESS;
             }
 
             m_nodePool.Clear();
@@ -810,7 +814,6 @@ namespace DotRecast.Detour
             DtNode lastBestNode = startNode;
             float lastBestNodeCost = startNode.total;
 
-            DtStatus status = DtStatus.DT_SUCCSESS;
 
             while (!m_openList.IsEmpty())
             {
@@ -910,9 +913,9 @@ namespace DotRecast.Detour
                     List<long> shortcut = null;
                     if (tryLOS)
                     {
-                        status = Raycast(parentRef, parentNode.pos, neighbourPos, filter,
+                        var rayStatus = Raycast(parentRef, parentNode.pos, neighbourPos, filter,
                             DT_RAYCAST_USE_COSTS, grandpaRef, out var rayHit);
-                        if (status.Succeeded())
+                        if (rayStatus.Succeeded())
                         {
                             foundShortCut = rayHit.t >= 1.0f;
                             if (foundShortCut)
@@ -991,15 +994,13 @@ namespace DotRecast.Detour
                 }
             }
 
-            var path = new List<long>();
-            GetPathToNode(lastBestNode, ref path);
-
+            var status = GetPathToNode(lastBestNode, ref path);
             if (lastBestNode.id != endRef)
             {
-                status = DtStatus.DT_PARTIAL_RESULT;
+                status |= DtStatus.DT_PARTIAL_RESULT;
             }
 
-            return Results.Of(status, path);
+            return status;
         }
 
         /**
@@ -1352,17 +1353,18 @@ namespace DotRecast.Detour
                 // Reverse the path.
                 if (m_query.lastBestNode.id != m_query.endRef)
                 {
-                    m_query.status = DtStatus.DT_PARTIAL_RESULT;
+                    m_query.status |= DtStatus.DT_PARTIAL_RESULT;
                 }
 
                 GetPathToNode(m_query.lastBestNode, ref path);
             }
 
-            DtStatus status = m_query.status;
+            var details = m_query.status & DtStatus.DT_STATUS_DETAIL_MASK;
+
             // Reset query.
             m_query = new DtQueryData();
 
-            return Results.Of(status, path);
+            return Results.Of(DtStatus.DT_SUCCSESS | details, path);
         }
 
         /// Finalizes and returns the results of an incomplete sliced path query, returning the path to the furthest

@@ -84,18 +84,19 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
     public void TestFindPathWithDefaultHeuristic()
     {
         IDtQueryFilter filter = new DtQueryDefaultFilter();
+        var path = new List<long>();
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
             long endRef = endRefs[i];
             RcVec3f startPos = startPoss[i];
             RcVec3f endPos = endPoss[i];
-            Result<List<long>> path = query.FindPath(startRef, endRef, startPos, endPos, filter, DtFindPathOption.Zero);
-            Assert.That(path.status, Is.EqualTo(statuses[i]));
-            Assert.That(path.result.Count, Is.EqualTo(results[i].Length));
+            var status = query.FindPath(startRef, endRef, startPos, endPos, filter, ref path, DtFindPathOption.NoOption);
+            Assert.That(status, Is.EqualTo(statuses[i]));
+            Assert.That(path.Count, Is.EqualTo(results[i].Length));
             for (int j = 0; j < results[i].Length; j++)
             {
-                Assert.That(path.result[j], Is.EqualTo(results[i][j])); // TODO : 확인 필요
+                Assert.That(path[j], Is.EqualTo(results[i][j])); // TODO : 확인 필요
             }
         }
     }
@@ -104,19 +105,19 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
     public void TestFindPathWithNoHeuristic()
     {
         IDtQueryFilter filter = new DtQueryDefaultFilter();
+        var path = new List<long>();
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
             long endRef = endRefs[i];
             RcVec3f startPos = startPoss[i];
             RcVec3f endPos = endPoss[i];
-            Result<List<long>> path = query.FindPath(startRef, endRef, startPos, endPos, filter, new(new DefaultQueryHeuristic(0.0f),
-                0, 0));
-            Assert.That(path.status, Is.EqualTo(statuses[i]));
-            Assert.That(path.result.Count, Is.EqualTo(results[i].Length));
+            var status = query.FindPath(startRef, endRef, startPos, endPos, filter, ref path, DtFindPathOption.ZeroScale);
+            Assert.That(status, Is.EqualTo(statuses[i]));
+            Assert.That(path.Count, Is.EqualTo(results[i].Length));
             for (int j = 0; j < results[i].Length; j++)
             {
-                Assert.That(path.result[j], Is.EqualTo(results[i][j])); // TODO : 확인 필요
+                Assert.That(path[j], Is.EqualTo(results[i][j])); // TODO : 확인 필요
             }
         }
     }

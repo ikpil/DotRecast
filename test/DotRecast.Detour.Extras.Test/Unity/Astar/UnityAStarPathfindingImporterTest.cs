@@ -96,7 +96,9 @@ public class UnityAStarPathfindingImporterTest
         IDtQueryFilter filter = new DtQueryDefaultFilter();
 
         var polys = GetNearestPolys(mesh, startPos, endPos);
-        return query.FindPath(polys[0].refs, polys[1].refs, startPos, endPos, filter, DtFindPathOption.Zero);
+        var path = new List<long>();
+        var status = query.FindPath(polys[0].refs, polys[1].refs, startPos, endPos, filter, ref path, DtFindPathOption.NoOption);
+        return Results.Of(status, path);
     }
 
     private DtPolyPoint[] GetNearestPolys(DtNavMesh mesh, params RcVec3f[] positions)
