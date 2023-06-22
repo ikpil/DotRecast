@@ -71,7 +71,7 @@ public class TiledFindPathTest
             long endRef = END_REFS[i];
             RcVec3f startPos = START_POS[i];
             RcVec3f endPos = END_POS[i];
-            Result<List<long>> path = query.FindPath(startRef, endRef, startPos, endPos, filter);
+            Result<List<long>> path = query.FindPath(startRef, endRef, startPos, endPos, filter, DtFindPathOption.Zero);
             Assert.That(path.status, Is.EqualTo(STATUSES[i]));
             Assert.That(path.result.Count, Is.EqualTo(RESULTS[i].Length));
             for (int j = 0; j < RESULTS[i].Length; j++)

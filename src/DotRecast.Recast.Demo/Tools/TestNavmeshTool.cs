@@ -197,7 +197,7 @@ public class TestNavmeshTool : IRcTool
             if (m_sposSet && m_eposSet && m_startRef != 0 && m_endRef != 0)
             {
                 m_polys = m_navQuery.FindPath(m_startRef, m_endRef, m_spos, m_epos, m_filter,
-                    enableRaycast ? DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue).result;
+                    new(enableRaycast ? DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue)).result;
                 if (0 < m_polys.Count)
                 {
                     List<long> polys = new(m_polys);
@@ -331,7 +331,7 @@ public class TestNavmeshTool : IRcTool
             if (m_sposSet && m_eposSet && m_startRef != 0 && m_endRef != 0)
             {
                 m_polys = m_navQuery.FindPath(m_startRef, m_endRef, m_spos, m_epos, m_filter,
-                    enableRaycast ? DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue).result;
+                    new(enableRaycast ? DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue)).result;
                 if (0 < m_polys.Count)
                 {
                     // In case of partial path, make sure the end point is clamped to the last polygon.

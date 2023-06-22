@@ -764,25 +764,17 @@ namespace DotRecast.Detour
      *            The polygon filter to apply to the query.
      * @return Found path
      */
-        public virtual Result<List<long>> FindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter)
-        {
-            return FindPath(startRef, endRef, startPos, endPos, filter, DefaultQueryHeuristic.Default, 0, 0);
-        }
-
-        public virtual Result<List<long>> FindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter,
-            int options, float raycastLimit)
-        {
-            return FindPath(startRef, endRef, startPos, endPos, filter, DefaultQueryHeuristic.Default, options, raycastLimit);
-        }
-
-        public Result<List<long>> FindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter,
-            IQueryHeuristic heuristic, int options, float raycastLimit)
+        public Result<List<long>> FindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter, DtFindPathOption fpo)
         {
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !RcVec3f.IsFinite(startPos) || !RcVec3f.IsFinite(endPos) || null == filter)
             {
                 return Results.InvalidParam<List<long>>();
             }
+
+            var heuristic = fpo.heuristic;
+            var raycastLimit = fpo.raycastLimit;
+            var options = fpo.options;
 
             float raycastLimitSqr = Sqr(raycastLimit);
 

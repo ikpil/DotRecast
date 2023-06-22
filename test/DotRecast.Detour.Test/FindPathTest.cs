@@ -138,7 +138,7 @@ public class FindPathTest : AbstractDetourTest
             long endRef = endRefs[i];
             RcVec3f startPos = startPoss[i];
             RcVec3f endPos = endPoss[i];
-            Result<List<long>> path = query.FindPath(startRef, endRef, startPos, endPos, filter);
+            Result<List<long>> path = query.FindPath(startRef, endRef, startPos, endPos, filter, DtFindPathOption.Zero);
             Assert.That(path.status, Is.EqualTo(STATUSES[i]));
             Assert.That(path.result.Count, Is.EqualTo(RESULTS[i].Length));
             for (int j = 0; j < RESULTS[i].Length; j++)
@@ -186,7 +186,7 @@ public class FindPathTest : AbstractDetourTest
             long endRef = endRefs[i];
             var startPos = startPoss[i];
             var endPos = endPoss[i];
-            Result<List<long>> path = query.FindPath(startRef, endRef, startPos, endPos, filter);
+            Result<List<long>> path = query.FindPath(startRef, endRef, startPos, endPos, filter, DtFindPathOption.Zero);
             var straightPath = new List<StraightPathItem>();
             query.FindStraightPath(startPos, endPos, path.result, ref straightPath, int.MaxValue, 0);
             Assert.That(straightPath.Count, Is.EqualTo(STRAIGHT_PATHS[i].Length));

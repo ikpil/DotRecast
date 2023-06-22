@@ -52,7 +52,7 @@ public class TileCacheFindPathTest : AbstractTileCacheTest
         query.FindNearestPoly(start, extents, filter, out var startRef, out var startPos, out var _);
         query.FindNearestPoly(end, extents, filter, out var endRef, out var endPos, out var _);
 
-        Result<List<long>> path = query.FindPath(startRef, endRef, startPos, endPos, filter);
+        Result<List<long>> path = query.FindPath(startRef, endRef, startPos, endPos, filter, DtFindPathOption.Zero);
         int maxStraightPath = 256;
         int options = 0;
 
