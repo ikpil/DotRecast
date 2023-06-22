@@ -36,9 +36,10 @@ public class UnityAStarPathfindingImporterTest
         DtNavMesh mesh = LoadNavMesh("graph.zip");
         RcVec3f startPos = RcVec3f.Of(8.200293f, 2.155071f, -26.176147f);
         RcVec3f endPos = RcVec3f.Of(11.971109f, 0.000000f, 8.663261f);
-        Result<List<long>> path = FindPath(mesh, startPos, endPos);
-        Assert.That(path.status, Is.EqualTo(DtStatus.DT_SUCCSESS));
-        Assert.That(path.result.Count, Is.EqualTo(57));
+        var path = new List<long>();
+        var status = FindPath(mesh, startPos, endPos, ref path);
+        Assert.That(status, Is.EqualTo(DtStatus.DT_SUCCSESS));
+        Assert.That(path.Count, Is.EqualTo(57));
         SaveMesh(mesh, "v4_0_6");
     }
 
@@ -48,9 +49,10 @@ public class UnityAStarPathfindingImporterTest
         DtNavMesh mesh = LoadNavMesh("graph_v4_1_16.zip");
         RcVec3f startPos = RcVec3f.Of(22.93f, -2.37f, -5.11f);
         RcVec3f endPos = RcVec3f.Of(16.81f, -2.37f, 25.52f);
-        Result<List<long>> path = FindPath(mesh, startPos, endPos);
-        Assert.That(path.status.Succeeded(), Is.True);
-        Assert.That(path.result.Count, Is.EqualTo(15));
+        var path = new List<long>();
+        var status = FindPath(mesh, startPos, endPos, ref path);
+        Assert.That(status.Succeeded(), Is.True);
+        Assert.That(path.Count, Is.EqualTo(15));
         SaveMesh(mesh, "v4_1_16");
     }
 
@@ -89,16 +91,14 @@ public class UnityAStarPathfindingImporterTest
         return meshes[0];
     }
 
-    private Result<List<long>> FindPath(DtNavMesh mesh, RcVec3f startPos, RcVec3f endPos)
+    private DtStatus FindPath(DtNavMesh mesh, RcVec3f startPos, RcVec3f endPos, ref List<long> path)
     {
         // Perform a simple pathfinding
         DtNavMeshQuery query = new DtNavMeshQuery(mesh);
         IDtQueryFilter filter = new DtQueryDefaultFilter();
 
         var polys = GetNearestPolys(mesh, startPos, endPos);
-        var path = new List<long>();
-        var status = query.FindPath(polys[0].refs, polys[1].refs, startPos, endPos, filter, ref path, DtFindPathOption.NoOption);
-        return Results.Of(status, path);
+        return query.FindPath(polys[0].refs, polys[1].refs, startPos, endPos, filter, ref path, DtFindPathOption.NoOption);
     }
 
     private DtPolyPoint[] GetNearestPolys(DtNavMesh mesh, params RcVec3f[] positions)
