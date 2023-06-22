@@ -75,11 +75,17 @@ public class RcSettingsView : IRcView
     {
         var settings = _sample.GetSettings();
 
-        int width = 620;
-        var posX = _canvas.Size.X - width;
-        ImGui.SetNextWindowPos(new Vector2(posX, 0));
-        ImGui.SetNextWindowSize(new Vector2(width, _canvas.Size.Y));
-        ImGui.Begin("Properties", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize);
+        ImGui.Begin("Properties");
+        
+        // size reset
+        var size = ImGui.GetItemRectSize();
+        if (32 >= size.X && 32 >= size.Y)
+        {
+            int width = 310;
+            var posX = _canvas.Size.X - width;
+            //ImGui.SetWindowPos(new Vector2(posX, 0));
+            ImGui.SetWindowSize(new Vector2(width, _canvas.Size.Y));
+        }
 
         _isHovered = ImGui.IsWindowHovered(ImGuiHoveredFlags.RectOnly | ImGuiHoveredFlags.RootAndChildWindows);
 

@@ -55,10 +55,17 @@ public class RcToolsetView : IRcView
 
     public void Draw(double dt)
     {
-        int width = 350;
-        ImGui.SetNextWindowPos(new Vector2(0, 0));
-        ImGui.SetNextWindowSize(new Vector2(width, _canvas.Size.Y));
-        ImGui.Begin("Tools", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize);
+        ImGui.Begin("Tools");
+        
+        // size reset
+        var size = ImGui.GetItemRectSize();
+        if (32 >= size.X && 32 >= size.Y)
+        {
+            int width = 310;
+            //ImGui.SetWindowPos(new Vector2(0, 0));
+            ImGui.SetWindowSize(new Vector2(width, _canvas.Size.Y));
+        }
+        
         _isHovered = ImGui.IsWindowHovered(ImGuiHoveredFlags.RectOnly | ImGuiHoveredFlags.RootAndChildWindows);
 
         for (int i = 0; i < tools.Length; ++i)
