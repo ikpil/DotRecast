@@ -75,7 +75,7 @@ public class RcSettingsView : IRcView
     {
         var settings = _sample.GetSettings();
 
-        int width = 310;
+        int width = 620;
         var posX = _canvas.Size.X - width;
         ImGui.SetNextWindowPos(new Vector2(posX, 0));
         ImGui.SetNextWindowSize(new Vector2(width, _canvas.Size.Y));
