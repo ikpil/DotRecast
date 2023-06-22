@@ -10,6 +10,9 @@
         public float agentMaxClimb = 0.9f;
         public float agentMaxSlope = 45f;
 
+        public float agentMaxAcceleration = 8.0f;
+        public float agentMaxSpeed = 3.5f;
+
         public int minRegionSize = 8;
         public int mergedRegionSize = 20;
 
