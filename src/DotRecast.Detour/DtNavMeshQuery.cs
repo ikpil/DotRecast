@@ -991,7 +991,8 @@ namespace DotRecast.Detour
                 }
             }
 
-            List<long> path = GetPathToNode(lastBestNode);
+            var path = new List<long>();
+            GetPathToNode(lastBestNode, ref path);
 
             if (lastBestNode.id != endRef)
             {
@@ -1354,7 +1355,7 @@ namespace DotRecast.Detour
                     m_query.status = DtStatus.DT_PARTIAL_RESULT;
                 }
 
-                path = GetPathToNode(m_query.lastBestNode);
+                GetPathToNode(m_query.lastBestNode, ref path);
             }
 
             DtStatus status = m_query.status;
@@ -1410,7 +1411,7 @@ namespace DotRecast.Detour
                     node = m_query.lastBestNode;
                 }
 
-                path = GetPathToNode(node);
+                GetPathToNode(node, ref path);
             }
 
             DtStatus status = m_query.status;
@@ -3378,15 +3379,14 @@ namespace DotRecast.Detour
                 return Results.InvalidParam<List<long>>("Invalid end ref");
             }
 
-            return Results.Success(GetPathToNode(endNode));
+            var path = new List<long>();
+            GetPathToNode(endNode, ref path);
+            return Results.Success(path);
         }
 
-        /**
-     * Gets the path leading to the specified end node.
-     */
-        protected List<long> GetPathToNode(DtNode endNode)
+        // Gets the path leading to the specified end node.
+        protected DtStatus GetPathToNode(DtNode endNode, ref List<long> path)
         {
-            List<long> path = new List<long>();
             // Reverse the path.
             DtNode curNode = endNode;
             do
@@ -3409,7 +3409,7 @@ namespace DotRecast.Detour
                 curNode = nextNode;
             } while (curNode != null);
 
-            return path;
+            return DtStatus.DT_SUCCSESS;
         }
 
         /**
