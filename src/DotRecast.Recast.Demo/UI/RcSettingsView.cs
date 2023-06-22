@@ -127,6 +127,9 @@ public class RcSettingsView : IRcView
         ImGui.SliderFloat("Radius", ref settings.agentRadius, 0.1f, 5f, "%.1f");
         ImGui.SliderFloat("Max Climb", ref settings.agentMaxClimb, 0.1f, 5f, "%.1f");
         ImGui.SliderFloat("Max Slope", ref settings.agentMaxSlope, 1f, 90f, "%.0f");
+        ImGui.SliderFloat("Max Acceleration", ref settings.agentMaxAcceleration, 8f, 999f, "%.1f");
+        ImGui.SliderFloat("Max Speed", ref settings.agentMaxSpeed, 1f, 10f, "%.1f");
+
         ImGui.NewLine();
 
         ImGui.Text("Region");

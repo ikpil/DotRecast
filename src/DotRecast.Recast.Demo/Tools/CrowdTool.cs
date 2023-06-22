@@ -214,8 +214,8 @@ public class CrowdTool : IRcTool
         DtCrowdAgentParams ap = new DtCrowdAgentParams();
         ap.radius = _impl.GetSample().GetSettings().agentRadius;
         ap.height = _impl.GetSample().GetSettings().agentHeight;
-        ap.maxAcceleration = 8.0f;
-        ap.maxSpeed = 3.5f;
+        ap.maxAcceleration = _impl.GetSample().GetSettings().agentMaxAcceleration;
+        ap.maxSpeed = _impl.GetSample().GetSettings().agentMaxSpeed;
         ap.collisionQueryRange = ap.radius * 12.0f;
         ap.pathOptimizationRange = ap.radius * 30.0f;
         ap.updateFlags = GetUpdateFlags();
