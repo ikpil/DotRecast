@@ -118,8 +118,8 @@ namespace DotRecast.Detour.Crowd
                         for (int k = 0; k < segmentRefs.Count; ++k)
                         {
                             SegmentVert s = segmentVerts[k];
-                            var s0 = RcVec3f.Of(s[0], s[1], s[2]);
-                            var s3 = RcVec3f.Of(s[3], s[4], s[5]);
+                            var s0 = s.vmin;
+                            var s3 = s.vmax;
 
                             // Skip too distant segments.
                             var distSqr = DetourCommon.DistancePtSegSqr2D(pos, s0, s3, out var tseg);

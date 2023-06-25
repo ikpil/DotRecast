@@ -845,8 +845,8 @@ public class TestNavmeshTool : IRcTool
                             for (int j = 0; j < segmentVerts.Count; ++j)
                             {
                                 SegmentVert s = segmentVerts[j];
-                                var v0 = RcVec3f.Of(s[0], s[1], s[2]);
-                                var s3 = RcVec3f.Of(s[3], s[4], s[5]);
+                                var v0 = s.vmin;
+                                var s3 = s.vmax;
                                 // Skip too distant segments.
                                 var distSqr = DetourCommon.DistancePtSegSqr2D(m_spos, v0, s3, out var tseg);
                                 if (distSqr > RcMath.Sqr(m_neighbourhoodRadius))
@@ -863,8 +863,8 @@ public class TestNavmeshTool : IRcTool
                                 if (segmentRefs[j] != 0)
                                 {
                                     int col = DuRGBA(255, 255, 255, 32);
-                                    dd.Vertex(s[0], s[1] + agentClimb, s[2], col);
-                                    dd.Vertex(s[3], s[4] + agentClimb, s[5], col);
+                                    dd.Vertex(s.vmin.x, s.vmin.y + agentClimb, s.vmin.z, col);
+                                    dd.Vertex(s.vmax.x, s.vmax.y + agentClimb, s.vmax.z, col);
                                 }
                                 else
                                 {
@@ -877,8 +877,8 @@ public class TestNavmeshTool : IRcTool
                                     dd.Vertex(p0.x, p0.y + agentClimb, p0.z, col);
                                     dd.Vertex(p1.x, p1.y + agentClimb, p1.z, col);
 
-                                    dd.Vertex(s[0], s[1] + agentClimb, s[2], col);
-                                    dd.Vertex(s[3], s[4] + agentClimb, s[5], col);
+                                    dd.Vertex(s.vmin.x, s.vmin.y + agentClimb, s.vmin.z, col);
+                                    dd.Vertex(s.vmax.x, s.vmax.y + agentClimb, s.vmax.z, col);
                                 }
                             }
 
