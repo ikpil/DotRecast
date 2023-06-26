@@ -195,6 +195,7 @@ public class TestNavmeshTool : IRcTool
         {
             if (m_sposSet && m_eposSet && m_startRef != 0 && m_endRef != 0)
             {
+                m_polys = new();
                 m_navQuery.FindPath(m_startRef, m_endRef, m_spos, m_epos, m_filter, ref m_polys,
                     new(enableRaycast ? DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue));
                 if (0 < m_polys.Count)
@@ -327,6 +328,7 @@ public class TestNavmeshTool : IRcTool
         {
             if (m_sposSet && m_eposSet && m_startRef != 0 && m_endRef != 0)
             {
+                m_polys = new();
                 m_navQuery.FindPath(m_startRef, m_endRef, m_spos, m_epos, m_filter, ref m_polys,
                     new(enableRaycast ? DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue));
                 if (0 < m_polys.Count)
