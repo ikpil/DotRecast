@@ -25,48 +25,48 @@ namespace DotRecast.Detour.Test;
 [Parallelizable]
 public class GetPolyWallSegmentsTest : AbstractDetourTest
 {
-    private static readonly float[][] VERTICES =
+    private static readonly SegmentVert[][] VERTICES =
     {
-        new[]
+        new SegmentVert[]
         {
-            22.084785f, 10.197294f, -48.341274f, 22.684784f, 10.197294f, -44.141273f,
-            22.684784f, 10.197294f, -44.141273f, 23.884785f, 10.197294f, -48.041275f,
-            23.884785f, 10.197294f, -48.041275f, 22.084785f, 10.197294f, -48.341274f,
+            new(22.084785f, 10.197294f, -48.341274f, 22.684784f, 10.197294f, -44.141273f),
+            new(22.684784f, 10.197294f, -44.141273f, 23.884785f, 10.197294f, -48.041275f),
+            new(23.884785f, 10.197294f, -48.041275f, 22.084785f, 10.197294f, -48.341274f),
         },
-        new[]
+        new SegmentVert[]
         {
-            27.784786f, 10.197294f, 4.158730f, 28.384785f, 10.197294f, 2.358727f,
-            28.384785f, 10.197294f, 2.358727f, 28.384785f, 10.197294f, -2.141273f,
-            28.384785f, 10.197294f, -2.141273f, 27.784786f, 10.197294f, -2.741272f,
-            27.784786f, 10.197294f, -2.741272f, 19.684784f, 10.197294f, -4.241272f,
-            19.684784f, 10.197294f, -4.241272f, 19.684784f, 10.197294f, 4.158730f,
-            19.684784f, 10.197294f, 4.158730f, 27.784786f, 10.197294f, 4.158730f,
+            new(27.784786f, 10.197294f, 4.158730f, 28.384785f, 10.197294f, 2.358727f),
+            new(28.384785f, 10.197294f, 2.358727f, 28.384785f, 10.197294f, -2.141273f),
+            new(28.384785f, 10.197294f, -2.141273f, 27.784786f, 10.197294f, -2.741272f),
+            new(27.784786f, 10.197294f, -2.741272f, 19.684784f, 10.197294f, -4.241272f),
+            new(19.684784f, 10.197294f, -4.241272f, 19.684784f, 10.197294f, 4.158730f),
+            new(19.684784f, 10.197294f, 4.158730f, 27.784786f, 10.197294f, 4.158730f),
         },
-        new[]
+        new SegmentVert[]
         {
-            22.384785f, 14.997294f, -71.741272f, 19.084785f, 16.597294f, -74.741272f,
-            19.084785f, 16.597294f, -74.741272f, 18.184784f, 15.997294f, -73.541275f,
-            18.184784f, 15.997294f, -73.541275f, 17.884785f, 14.997294f, -72.341278f,
-            17.884785f, 14.997294f, -72.341278f, 17.584785f, 14.997294f, -70.841278f,
-            17.584785f, 14.997294f, -70.841278f, 22.084785f, 14.997294f, -70.541275f,
-            22.084785f, 14.997294f, -70.541275f, 22.384785f, 14.997294f, -71.741272f,
+            new(22.384785f, 14.997294f, -71.741272f, 19.084785f, 16.597294f, -74.741272f),
+            new(19.084785f, 16.597294f, -74.741272f, 18.184784f, 15.997294f, -73.541275f),
+            new(18.184784f, 15.997294f, -73.541275f, 17.884785f, 14.997294f, -72.341278f),
+            new(17.884785f, 14.997294f, -72.341278f, 17.584785f, 14.997294f, -70.841278f),
+            new(17.584785f, 14.997294f, -70.841278f, 22.084785f, 14.997294f, -70.541275f),
+            new(22.084785f, 14.997294f, -70.541275f, 22.384785f, 14.997294f, -71.741272f),
         },
-        new[]
+        new SegmentVert[]
         {
-            4.684784f, 10.197294f, -6.941269f, 1.984785f, 10.197294f, -8.441269f,
-            1.984785f, 10.197294f, -8.441269f, -4.015217f, 10.197294f, -6.941269f,
-            -4.015217f, 10.197294f, -6.941269f, -1.615215f, 10.197294f, -1.541275f,
-            -1.615215f, 10.197294f, -1.541275f, 1.384785f, 10.197294f, 1.458725f,
-            1.384785f, 10.197294f, 1.458725f, 7.984783f, 10.197294f, -2.441269f,
-            7.984783f, 10.197294f, -2.441269f, 4.684784f, 10.197294f, -6.941269f,
+            new(4.684784f, 10.197294f, -6.941269f, 1.984785f, 10.197294f, -8.441269f),
+            new(1.984785f, 10.197294f, -8.441269f, -4.015217f, 10.197294f, -6.941269f),
+            new(-4.015217f, 10.197294f, -6.941269f, -1.615215f, 10.197294f, -1.541275f),
+            new(-1.615215f, 10.197294f, -1.541275f, 1.384785f, 10.197294f, 1.458725f),
+            new(1.384785f, 10.197294f, 1.458725f, 7.984783f, 10.197294f, -2.441269f),
+            new(7.984783f, 10.197294f, -2.441269f, 4.684784f, 10.197294f, -6.941269f),
         },
-        new[]
+        new SegmentVert[]
         {
-            -22.315216f, 6.597294f, -17.141273f, -23.815216f, 5.397294f, -13.841270f,
-            -23.815216f, 5.397294f, -13.841270f, -24.115217f, 4.997294f, -12.041275f,
-            -24.115217f, 4.997294f, -12.041275f, -22.315216f, 4.997294f, -11.441269f,
-            -22.315216f, 4.997294f, -11.441269f, -17.815216f, 5.197294f, -11.441269f,
-            -17.815216f, 5.197294f, -11.441269f, -22.315216f, 6.597294f, -17.141273f,
+            new(-22.315216f, 6.597294f, -17.141273f, -23.815216f, 5.397294f, -13.841270f),
+            new(-23.815216f, 5.397294f, -13.841270f, -24.115217f, 4.997294f, -12.041275f),
+            new(-24.115217f, 4.997294f, -12.041275f, -22.315216f, 4.997294f, -11.441269f),
+            new(-22.315216f, 4.997294f, -11.441269f, -17.815216f, 5.197294f, -11.441269f),
+            new(-17.815216f, 5.197294f, -11.441269f, -22.315216f, 6.597294f, -17.141273f),
         }
     };
 
@@ -89,16 +89,16 @@ public class GetPolyWallSegmentsTest : AbstractDetourTest
         for (int i = 0; i < startRefs.Length; i++)
         {
             var result = query.GetPolyWallSegments(startRefs[i], true, filter, ref segmentVerts, ref segmentRefs);
-            Assert.That(segmentVerts.Count, Is.EqualTo(VERTICES[i].Length / 6));
+            Assert.That(segmentVerts.Count, Is.EqualTo(VERTICES[i].Length));
             Assert.That(segmentRefs.Count, Is.EqualTo(REFS[i].Length));
             for (int v = 0; v < VERTICES[i].Length / 6; v++)
             {
-                Assert.That(segmentVerts[v].vmin.x, Is.EqualTo(VERTICES[i][v * 6 + 0]).Within(0.001f));
-                Assert.That(segmentVerts[v].vmin.y, Is.EqualTo(VERTICES[i][v * 6 + 1]).Within(0.001f));
-                Assert.That(segmentVerts[v].vmin.z, Is.EqualTo(VERTICES[i][v * 6 + 2]).Within(0.001f));
-                Assert.That(segmentVerts[v].vmax.x, Is.EqualTo(VERTICES[i][v * 6 + 3]).Within(0.001f));
-                Assert.That(segmentVerts[v].vmax.y, Is.EqualTo(VERTICES[i][v * 6 + 4]).Within(0.001f));
-                Assert.That(segmentVerts[v].vmax.z, Is.EqualTo(VERTICES[i][v * 6 + 5]).Within(0.001f));
+                Assert.That(segmentVerts[v].vmin.x, Is.EqualTo(VERTICES[i][v].vmin.x).Within(0.001f));
+                Assert.That(segmentVerts[v].vmin.y, Is.EqualTo(VERTICES[i][v].vmin.y).Within(0.001f));
+                Assert.That(segmentVerts[v].vmin.z, Is.EqualTo(VERTICES[i][v].vmin.z).Within(0.001f));
+                Assert.That(segmentVerts[v].vmax.x, Is.EqualTo(VERTICES[i][v].vmax.x).Within(0.001f));
+                Assert.That(segmentVerts[v].vmax.y, Is.EqualTo(VERTICES[i][v].vmax.y).Within(0.001f));
+                Assert.That(segmentVerts[v].vmax.z, Is.EqualTo(VERTICES[i][v].vmax.z).Within(0.001f));
             }
 
             for (int v = 0; v < REFS[i].Length; v++)
