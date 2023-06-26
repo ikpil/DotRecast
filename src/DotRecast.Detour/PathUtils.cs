@@ -83,53 +83,6 @@ namespace DotRecast.Detour
             return (dx * dx + dz * dz) < r * r && Math.Abs(dy) < h;
         }
 
-        public static List<long> FixupCorridor(List<long> path, List<long> visited)
-        {
-            int furthestPath = -1;
-            int furthestVisited = -1;
-
-            // Find furthest common polygon.
-            for (int i = path.Count - 1; i >= 0; --i)
-            {
-                bool found = false;
-                for (int j = visited.Count - 1; j >= 0; --j)
-                {
-                    if (path[i] == visited[j])
-                    {
-                        furthestPath = i;
-                        furthestVisited = j;
-                        found = true;
-                    }
-                }
-
-                if (found)
-                    break;
-            }
-
-            // If no intersection found just return current path.
-            if (furthestPath == -1 || furthestVisited == -1)
-                return path;
-
-            // Concatenate paths.
-
-            // Adjust beginning of the buffer to include the visited.
-            int req = visited.Count - furthestVisited;
-            int orig = Math.Min(furthestPath + 1, path.Count);
-            int size = Math.Max(0, path.Count - orig);
-            List<long> fixupPath = new List<long>();
-            // Store visited
-            for (int i = 0; i < req; ++i)
-            {
-                fixupPath.Add(visited[(visited.Count - 1) - i]);
-            }
-
-            for (int i = 0; i < size; i++)
-            {
-                fixupPath.Add(path[orig + i]);
-            }
-
-            return fixupPath;
-        }
 
         // This function checks if the path has a small U-turn, that is,
         // a polygon further in the path is adjacent to the first polygon
@@ -193,6 +146,127 @@ namespace DotRecast.Detour
             }
 
             return path;
+        }
+
+        public static List<long> MergeCorridorStartMoved(List<long> path, List<long> visited)
+        {
+            int furthestPath = -1;
+            int furthestVisited = -1;
+
+            // Find furthest common polygon.
+            for (int i = path.Count - 1; i >= 0; --i)
+            {
+                bool found = false;
+                for (int j = visited.Count - 1; j >= 0; --j)
+                {
+                    if (path[i] == visited[j])
+                    {
+                        furthestPath = i;
+                        furthestVisited = j;
+                        found = true;
+                    }
+                }
+
+                if (found)
+                {
+                    break;
+                }
+            }
+
+            // If no intersection found just return current path.
+            if (furthestPath == -1 || furthestVisited == -1)
+            {
+                return path;
+            }
+
+            // Concatenate paths.
+
+            // Adjust beginning of the buffer to include the visited.
+            List<long> result = new List<long>();
+            // Store visited
+            for (int i = visited.Count - 1; i > furthestVisited; --i)
+            {
+                result.Add(visited[i]);
+            }
+
+            result.AddRange(path.GetRange(furthestPath, path.Count - furthestPath));
+            return result;
+        }
+
+        public static List<long> MergeCorridorEndMoved(List<long> path, List<long> visited)
+        {
+            int furthestPath = -1;
+            int furthestVisited = -1;
+
+            // Find furthest common polygon.
+            for (int i = 0; i < path.Count; ++i)
+            {
+                bool found = false;
+                for (int j = visited.Count - 1; j >= 0; --j)
+                {
+                    if (path[i] == visited[j])
+                    {
+                        furthestPath = i;
+                        furthestVisited = j;
+                        found = true;
+                    }
+                }
+
+                if (found)
+                {
+                    break;
+                }
+            }
+
+            // If no intersection found just return current path.
+            if (furthestPath == -1 || furthestVisited == -1)
+            {
+                return path;
+            }
+
+            // Concatenate paths.
+            List<long> result = path.GetRange(0, furthestPath);
+            result.AddRange(visited.GetRange(furthestVisited, visited.Count - furthestVisited));
+            return result;
+        }
+
+        public static List<long> MergeCorridorStartShortcut(List<long> path, List<long> visited)
+        {
+            int furthestPath = -1;
+            int furthestVisited = -1;
+
+            // Find furthest common polygon.
+            for (int i = path.Count - 1; i >= 0; --i)
+            {
+                bool found = false;
+                for (int j = visited.Count - 1; j >= 0; --j)
+                {
+                    if (path[i] == visited[j])
+                    {
+                        furthestPath = i;
+                        furthestVisited = j;
+                        found = true;
+                    }
+                }
+
+                if (found)
+                {
+                    break;
+                }
+            }
+
+            // If no intersection found just return current path.
+            if (furthestPath == -1 || furthestVisited <= 0)
+            {
+                return path;
+            }
+
+            // Concatenate paths.
+
+            // Adjust beginning of the buffer to include the visited.
+            List<long> result = visited.GetRange(0, furthestVisited);
+            result.AddRange(path.GetRange(furthestPath, path.Count - furthestPath));
+            return result;
         }
     }
 }

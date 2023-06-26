@@ -70,126 +70,6 @@ namespace DotRecast.Detour.Crowd
         private RcVec3f m_target = new RcVec3f();
         private List<long> m_path;
 
-        protected List<long> MergeCorridorStartMoved(List<long> path, List<long> visited)
-        {
-            int furthestPath = -1;
-            int furthestVisited = -1;
-
-            // Find furthest common polygon.
-            for (int i = path.Count - 1; i >= 0; --i)
-            {
-                bool found = false;
-                for (int j = visited.Count - 1; j >= 0; --j)
-                {
-                    if (path[i] == visited[j])
-                    {
-                        furthestPath = i;
-                        furthestVisited = j;
-                        found = true;
-                    }
-                }
-
-                if (found)
-                {
-                    break;
-                }
-            }
-
-            // If no intersection found just return current path.
-            if (furthestPath == -1 || furthestVisited == -1)
-            {
-                return path;
-            }
-
-            // Concatenate paths.
-
-            // Adjust beginning of the buffer to include the visited.
-            List<long> result = new List<long>();
-            // Store visited
-            for (int i = visited.Count - 1; i > furthestVisited; --i)
-            {
-                result.Add(visited[i]);
-            }
-
-            result.AddRange(path.GetRange(furthestPath, path.Count - furthestPath));
-            return result;
-        }
-
-        protected List<long> MergeCorridorEndMoved(List<long> path, List<long> visited)
-        {
-            int furthestPath = -1;
-            int furthestVisited = -1;
-
-            // Find furthest common polygon.
-            for (int i = 0; i < path.Count; ++i)
-            {
-                bool found = false;
-                for (int j = visited.Count - 1; j >= 0; --j)
-                {
-                    if (path[i] == visited[j])
-                    {
-                        furthestPath = i;
-                        furthestVisited = j;
-                        found = true;
-                    }
-                }
-
-                if (found)
-                {
-                    break;
-                }
-            }
-
-            // If no intersection found just return current path.
-            if (furthestPath == -1 || furthestVisited == -1)
-            {
-                return path;
-            }
-
-            // Concatenate paths.
-            List<long> result = path.GetRange(0, furthestPath);
-            result.AddRange(visited.GetRange(furthestVisited, visited.Count - furthestVisited));
-            return result;
-        }
-
-        protected List<long> MergeCorridorStartShortcut(List<long> path, List<long> visited)
-        {
-            int furthestPath = -1;
-            int furthestVisited = -1;
-
-            // Find furthest common polygon.
-            for (int i = path.Count - 1; i >= 0; --i)
-            {
-                bool found = false;
-                for (int j = visited.Count - 1; j >= 0; --j)
-                {
-                    if (path[i] == visited[j])
-                    {
-                        furthestPath = i;
-                        furthestVisited = j;
-                        found = true;
-                    }
-                }
-
-                if (found)
-                {
-                    break;
-                }
-            }
-
-            // If no intersection found just return current path.
-            if (furthestPath == -1 || furthestVisited <= 0)
-            {
-                return path;
-            }
-
-            // Concatenate paths.
-
-            // Adjust beginning of the buffer to include the visited.
-            List<long> result = visited.GetRange(0, furthestVisited);
-            result.AddRange(path.GetRange(furthestPath, path.Count - furthestPath));
-            return result;
-        }
 
         /**
      * Allocates the corridor's path buffer.
@@ -321,7 +201,7 @@ namespace DotRecast.Detour.Crowd
             {
                 if (rayHit.path.Count > 1 && rayHit.t > 0.99f)
                 {
-                    m_path = MergeCorridorStartShortcut(m_path, rayHit.path);
+                    m_path = PathUtils.MergeCorridorStartShortcut(m_path, rayHit.path);
                 }
             }
         }
@@ -356,7 +236,7 @@ namespace DotRecast.Detour.Crowd
 
             if (status.Succeeded() && res.Count > 0)
             {
-                m_path = MergeCorridorStartShortcut(m_path, res);
+                m_path = PathUtils.MergeCorridorStartShortcut(m_path, res);
                 return true;
             }
 
@@ -387,7 +267,7 @@ namespace DotRecast.Detour.Crowd
             refs[1] = polyRef;
 
             DtNavMesh nav = navquery.GetAttachedNavMesh();
-            var startEnd = nav.GetOffMeshConnectionPolyEndPoints(refs[0], refs[1],  ref startPos, ref endPos);
+            var startEnd = nav.GetOffMeshConnectionPolyEndPoints(refs[0], refs[1], ref startPos, ref endPos);
             if (startEnd.Succeeded())
             {
                 m_pos = endPos;
@@ -426,7 +306,7 @@ namespace DotRecast.Detour.Crowd
             var status = navquery.MoveAlongSurface(m_path[0], m_pos, npos, filter, out var result, out var visited);
             if (status.Succeeded())
             {
-                m_path = MergeCorridorStartMoved(m_path, visited);
+                m_path = PathUtils.MergeCorridorStartMoved(m_path, visited);
 
                 // Adjust the position to stay on top of the navmesh.
                 m_pos = result;
@@ -465,7 +345,7 @@ namespace DotRecast.Detour.Crowd
             var status = navquery.MoveAlongSurface(m_path[m_path.Count - 1], m_target, npos, filter, out var result, out var visited);
             if (status.Succeeded())
             {
-                m_path = MergeCorridorEndMoved(m_path, visited);
+                m_path = PathUtils.MergeCorridorEndMoved(m_path, visited);
                 // TODO: should we do that?
                 // Adjust the position to stay on top of the navmesh.
                 /*
