@@ -81,14 +81,13 @@ namespace DotRecast.Detour.Crowd
         }
 
         // 해당 셀 사이즈의 크기로 x ~ y 영역을 찾아, 군집 에이전트를 가져오는 코드
-        public HashSet<DtCrowdAgent> QueryItems(float minx, float miny, float maxx, float maxy)
+        public int QueryItems(float minx, float miny, float maxx, float maxy, ref HashSet<DtCrowdAgent> result)
         {
             int iminx = (int)Math.Floor(minx * _invCellSize);
             int iminy = (int)Math.Floor(miny * _invCellSize);
             int imaxx = (int)Math.Floor(maxx * _invCellSize);
             int imaxy = (int)Math.Floor(maxy * _invCellSize);
 
-            HashSet<DtCrowdAgent> result = new HashSet<DtCrowdAgent>();
             for (int y = iminy; y <= imaxy; ++y)
             {
                 for (int x = iminx; x <= imaxx; ++x)
@@ -104,7 +103,7 @@ namespace DotRecast.Detour.Crowd
                 }
             }
 
-            return result;
+            return result.Count;
         }
 
         public IEnumerable<(long, int)> GetItemCounts()

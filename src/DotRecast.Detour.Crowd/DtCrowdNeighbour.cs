@@ -3,7 +3,7 @@
     /// Provides neighbor data for agents managed by the crowd.
     /// @ingroup crowd
     /// @see dtCrowdAgent::neis, dtCrowd
-    public class DtCrowdNeighbour
+    public readonly struct DtCrowdNeighbour
     {
         public readonly DtCrowdAgent agent;
 

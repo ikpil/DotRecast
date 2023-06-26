@@ -886,17 +886,19 @@ namespace DotRecast.Detour.Crowd
                 }
 
                 // Query neighbour agents
-                ag.neis = GetNeighbours(ag.npos, ag.option.height, ag.option.collisionQueryRange, ag, _grid);
+                GetNeighbours(ag.npos, ag.option.height, ag.option.collisionQueryRange, ag, ref ag.neis, _grid);
             }
 
             _telemetry.Stop("buildNeighbours");
         }
 
 
-        private List<DtCrowdNeighbour> GetNeighbours(RcVec3f pos, float height, float range, DtCrowdAgent skip, DtProximityGrid grid)
+        private int GetNeighbours(RcVec3f pos, float height, float range, DtCrowdAgent skip, ref List<DtCrowdNeighbour> result, DtProximityGrid grid)
         {
-            HashSet<DtCrowdAgent> proxAgents = grid.QueryItems(pos.x - range, pos.z - range, pos.x + range, pos.z + range);
-            List<DtCrowdNeighbour> result = new List<DtCrowdNeighbour>(proxAgents.Count);
+            result.Clear();
+
+            var proxAgents = new HashSet<DtCrowdAgent>();
+            int nids = grid.QueryItems(pos.x - range, pos.z - range, pos.x + range, pos.z + range, ref proxAgents);
             foreach (DtCrowdAgent ag in proxAgents)
             {
                 if (ag == skip)
@@ -922,7 +924,7 @@ namespace DotRecast.Detour.Crowd
             }
 
             result.Sort((o1, o2) => o1.dist.CompareTo(o2.dist));
-            return result;
+            return result.Count;
         }
 
         private void FindCorners(IList<DtCrowdAgent> agents, DtCrowdAgentDebugInfo debug)
