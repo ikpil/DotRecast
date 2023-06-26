@@ -1,29 +1,20 @@
-﻿using System;
-
-namespace DotRecast.Core
+﻿namespace DotRecast.Core
 {
     public struct SegmentVert
     {
         public RcVec3f vmin;
         public RcVec3f vmax;
 
-        public float this[int index]
+        public SegmentVert(float v0, float v1, float v2, float v3, float v4, float v5)
         {
-            get => GetElement(index);
+            vmin.x = v0;
+            vmin.y = v1;
+            vmin.z = v2;
+            
+            vmax.x = v3;
+            vmax.y = v4;
+            vmax.z = v5;
         }
 
-        public float GetElement(int index)
-        {
-            switch (index)
-            {
-                case 0: return vmin.x;
-                case 1: return vmin.y;
-                case 2: return vmin.z;
-                case 3: return vmax.x;
-                case 4: return vmax.y;
-                case 5: return vmax.z;
-                default: throw new IndexOutOfRangeException($"{index}");
-            }
-        }
     }
 }
