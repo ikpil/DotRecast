@@ -33,11 +33,6 @@ namespace DotRecast.Recast.Demo.Tools;
 public class JumpLinkBuilderTool : IRcTool
 {
     private readonly JumpLinkBuilderToolImpl _impl;
-    private readonly List<JumpLink> links = new();
-    private JumpLinkBuilder annotationBuilder;
-    private readonly int selEdge = -1;
-    private readonly JumpLinkBuilderToolParams option = new JumpLinkBuilderToolParams();
-
 
     public JumpLinkBuilderTool()
     {
@@ -51,7 +46,7 @@ public class JumpLinkBuilderTool : IRcTool
 
     public void OnSampleChanged()
     {
-        annotationBuilder = null;
+        _impl.Clear();
     }
 
     public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
@@ -65,10 +60,15 @@ public class JumpLinkBuilderTool : IRcTool
         RecastDebugDraw dd = renderer.GetDebugDraw();
         dd.DepthMask(false);
 
-        if ((option.flags & JumpLinkBuilderToolParams.DRAW_WALKABLE_BORDER) != 0)
+        var option = _impl.GetOption();
+        var annotationBuilder = _impl.GetAnnotationBuilder();
+
+        if ((option.flags & JumpLinkBuilderToolOptions.DRAW_WALKABLE_BORDER) != 0)
         {
             if (annotationBuilder != null)
             {
+                var selEdge = _impl.GetSelEdge();
+
                 foreach (JumpEdge[] edges in annotationBuilder.GetEdges())
                 {
                     dd.Begin(LINES, 3.0f);
@@ -121,10 +121,10 @@ public class JumpLinkBuilderTool : IRcTool
             }
         }
 
-        if ((option.flags & JumpLinkBuilderToolParams.DRAW_ANNOTATIONS) != 0)
+        if ((option.flags & JumpLinkBuilderToolOptions.DRAW_ANNOTATIONS) != 0)
         {
             dd.Begin(QUADS);
-            foreach (JumpLink link in links)
+            foreach (JumpLink link in _impl.GetLinks())
             {
                 for (int j = 0; j < link.nspine - 1; ++j)
                 {
@@ -141,7 +141,7 @@ public class JumpLinkBuilderTool : IRcTool
 
             dd.End();
             dd.Begin(LINES, 3.0f);
-            foreach (JumpLink link in links)
+            foreach (JumpLink link in _impl.GetLinks())
             {
                 for (int j = 0; j < link.nspine - 1; ++j)
                 {
@@ -170,9 +170,9 @@ public class JumpLinkBuilderTool : IRcTool
 
         if (annotationBuilder != null)
         {
-            foreach (JumpLink link in links)
+            foreach (JumpLink link in _impl.GetLinks())
             {
-                if ((option.flags & JumpLinkBuilderToolParams.DRAW_ANIM_TRAJECTORY) != 0)
+                if ((option.flags & JumpLinkBuilderToolOptions.DRAW_ANIM_TRAJECTORY) != 0)
                 {
                     float r = link.start.height;
 
@@ -238,7 +238,7 @@ public class JumpLinkBuilderTool : IRcTool
                     dd.End();
                 }
 
-                if ((option.flags & JumpLinkBuilderToolParams.DRAW_LAND_SAMPLES) != 0)
+                if ((option.flags & JumpLinkBuilderToolOptions.DRAW_LAND_SAMPLES) != 0)
                 {
                     dd.Begin(POINTS, 8.0f);
                     for (int i = 0; i < link.start.gsamples.Length; ++i)
@@ -338,6 +338,8 @@ public class JumpLinkBuilderTool : IRcTool
         if (0 >= _impl.GetSample().GetRecastResults().Count)
             return;
 
+        var option = _impl.GetOption();
+
         ImGui.Text("Options");
         ImGui.Separator();
         ImGui.SliderFloat("Ground Tolerance", ref option.groundTolerance, 0f, 2f, "%.2f");
@@ -378,81 +380,18 @@ public class JumpLinkBuilderTool : IRcTool
 
         if (build || buildOffMeshConnections)
         {
-            if (annotationBuilder == null)
-            {
-                if (_impl.GetSample() != null && 0 < _impl.GetSample().GetRecastResults().Count)
-                {
-                    annotationBuilder = new JumpLinkBuilder(_impl.GetSample().GetRecastResults());
-                }
-            }
-
-            links.Clear();
-            if (annotationBuilder != null)
-            {
-                var settings = _impl.GetSample().GetSettings();
-                float cellSize = settings.cellSize;
-                float agentHeight = settings.agentHeight;
-                float agentRadius = settings.agentRadius;
-                float agentClimb = settings.agentMaxClimb;
-                float cellHeight = settings.cellHeight;
-
-                if ((option.buildTypes & JumpLinkType.EDGE_CLIMB_DOWN.Bit) != 0)
-                {
-                    JumpLinkBuilderConfig config = new JumpLinkBuilderConfig(cellSize, cellHeight, agentRadius,
-                        agentHeight, agentClimb, option.groundTolerance, -agentRadius * 0.2f,
-                        cellSize + 2 * agentRadius + option.climbDownDistance,
-                        -option.climbDownMaxHeight, -option.climbDownMinHeight, 0);
-                    links.AddRange(annotationBuilder.Build(config, JumpLinkType.EDGE_CLIMB_DOWN));
-                }
-
-                if ((option.buildTypes & JumpLinkType.EDGE_JUMP.Bit) != 0)
-                {
-                    JumpLinkBuilderConfig config = new JumpLinkBuilderConfig(cellSize, cellHeight, agentRadius,
-                        agentHeight, agentClimb, option.groundTolerance, -agentRadius * 0.2f,
-                        option.edgeJumpEndDistance, -option.edgeJumpDownMaxHeight,
-                        option.edgeJumpUpMaxHeight, option.edgeJumpHeight);
-                    links.AddRange(annotationBuilder.Build(config, JumpLinkType.EDGE_JUMP));
-                }
-
-                if (buildOffMeshConnections)
-                {
-                    DemoInputGeomProvider geom = _impl.GetSample().GetInputGeom();
-                    if (geom != null)
-                    {
-                        int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP_AUTO;
-                        geom.RemoveOffMeshConnections(c => c.area == area);
-                        links.ForEach(l => AddOffMeshLink(l, geom, agentRadius));
-                    }
-                }
-            }
+            _impl.Build(buildOffMeshConnections);
         }
 
         ImGui.Text("Debug Draw Options");
         ImGui.Separator();
         //int newFlags = 0;
-        ImGui.CheckboxFlags("Walkable Border", ref option.flags, JumpLinkBuilderToolParams.DRAW_WALKABLE_BORDER);
-        ImGui.CheckboxFlags("Selected Edge", ref option.flags, JumpLinkBuilderToolParams.DRAW_SELECTED_EDGE);
-        ImGui.CheckboxFlags("Anim Trajectory", ref option.flags, JumpLinkBuilderToolParams.DRAW_ANIM_TRAJECTORY);
-        ImGui.CheckboxFlags("Land Samples", ref option.flags, JumpLinkBuilderToolParams.DRAW_LAND_SAMPLES);
-        ImGui.CheckboxFlags("All Annotations", ref option.flags, JumpLinkBuilderToolParams.DRAW_ANNOTATIONS);
+        ImGui.CheckboxFlags("Walkable Border", ref option.flags, JumpLinkBuilderToolOptions.DRAW_WALKABLE_BORDER);
+        ImGui.CheckboxFlags("Selected Edge", ref option.flags, JumpLinkBuilderToolOptions.DRAW_SELECTED_EDGE);
+        ImGui.CheckboxFlags("Anim Trajectory", ref option.flags, JumpLinkBuilderToolOptions.DRAW_ANIM_TRAJECTORY);
+        ImGui.CheckboxFlags("Land Samples", ref option.flags, JumpLinkBuilderToolOptions.DRAW_LAND_SAMPLES);
+        ImGui.CheckboxFlags("All Annotations", ref option.flags, JumpLinkBuilderToolOptions.DRAW_ANNOTATIONS);
         //option.flags = newFlags;
-    }
-
-    private void AddOffMeshLink(JumpLink link, DemoInputGeomProvider geom, float agentRadius)
-    {
-        int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP_AUTO;
-        int flags = SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP;
-        RcVec3f prev = new RcVec3f();
-        for (int i = 0; i < link.startSamples.Length; i++)
-        {
-            RcVec3f p = link.startSamples[i].p;
-            RcVec3f q = link.endSamples[i].p;
-            if (i == 0 || RcVec3f.Dist2D(prev, p) > agentRadius)
-            {
-                geom.AddOffMeshConnection(p, q, agentRadius, false, area, flags);
-                prev = p;
-            }
-        }
     }
 
 

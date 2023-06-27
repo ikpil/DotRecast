@@ -123,7 +123,7 @@ namespace DotRecast.Detour
 
             // If any of the neighbour polygons is within the next few polygons
             // in the path, short cut to that polygon directly.
-            int maxLookAhead = 6;
+            const int maxLookAhead = 6;
             int cut = 0;
             for (int i = Math.Min(maxLookAhead, path.Count) - 1; i > 1 && cut == 0; i--)
             {
