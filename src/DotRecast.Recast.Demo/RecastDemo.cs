@@ -41,7 +41,9 @@ using DotRecast.Recast.DemoTool.Geom;
 using DotRecast.Recast.Demo.Tools;
 using DotRecast.Recast.Demo.UI;
 using DotRecast.Recast.DemoTool;
+using Silk.NET.GLFW;
 using static DotRecast.Core.RcMath;
+using MouseButton = Silk.NET.Input.MouseButton;
 using Window = Silk.NET.Windowing.Window;
 
 namespace DotRecast.Recast.Demo;
@@ -240,7 +242,7 @@ public class RecastDemo
                 if (!_mouseOverMenu)
                 {
                     processHitTest = true;
-                    processHitTestShift = _modState != 0 ? true : false;
+                    processHitTestShift = 0 != (_modState & KeyModState.Shift);
                 }
             }
             else if (button == MouseButton.Middle)
@@ -389,7 +391,7 @@ public class RecastDemo
         var renderGl = _gl.GetStringS(GLEnum.Renderer);
         var glslString = _gl.GetStringS(GLEnum.ShadingLanguageVersion);
 
-        
+
         var workingDirectory = Directory.GetCurrentDirectory();
         Logger.Information($"working directory - {workingDirectory}");
         Logger.Information($"ImGui.Net version - {ImGui.GetVersion()}");
@@ -402,7 +404,7 @@ public class RecastDemo
     private void UpdateKeyboard(float dt)
     {
         _modState = 0;
-        
+
         // keyboard input
         foreach (var keyboard in _input.Keyboards)
         {
@@ -415,7 +417,9 @@ public class RecastDemo
             var tempMoveAccel = keyboard.IsKeyPressed(Key.ShiftLeft) || keyboard.IsKeyPressed(Key.ShiftRight) ? 1.0f : -1f;
             var tempControl = keyboard.IsKeyPressed(Key.ControlLeft) || keyboard.IsKeyPressed(Key.ControlRight);
 
-            _modState |= tempControl || 0 < tempMoveAccel ? 1 : 0;
+            _modState |= tempControl ? (int)KeyModState.Control : (int)KeyModState.None;
+            _modState |= 0 < tempMoveAccel ? (int)KeyModState.Shift : (int)KeyModState.None;
+
             //Logger.Information($"{_modState}");
             _moveFront = Clamp(_moveFront + tempMoveFront * dt * 4.0f, 0, 2.0f);
             _moveLeft = Clamp(_moveLeft + tempMoveLeft * dt * 4.0f, 0, 2.0f);
@@ -658,7 +662,7 @@ public class RecastDemo
                 if (hit.HasValue)
                 {
                     float hitTime = hit.Value;
-                    if (0 != _modState)
+                    if (0 != (_modState & KeyModState.Control))
                     {
                         // Marker
                         markerPositionSet = true;
@@ -681,7 +685,7 @@ public class RecastDemo
                 }
                 else
                 {
-                    if (0 != _modState)
+                    if (0 != (_modState & KeyModState.Control))
                     {
                         // Marker
                         markerPositionSet = false;
@@ -785,7 +789,7 @@ public class RecastDemo
 
         _canvas.Draw(dt);
         _mouseOverMenu = _canvas.IsMouseOver();
-        
+
         _imgui.Render();
 
         window.SwapBuffers();
