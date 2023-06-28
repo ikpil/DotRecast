@@ -63,7 +63,7 @@ public class JumpLinkBuilderTool : IRcTool
         var option = _impl.GetOption();
         var annotationBuilder = _impl.GetAnnotationBuilder();
 
-        if ((option.flags & JumpLinkBuilderToolOptions.DRAW_WALKABLE_BORDER) != 0)
+        if ((option.flags & JumpLinkBuilderToolOption.DRAW_WALKABLE_BORDER) != 0)
         {
             if (annotationBuilder != null)
             {
@@ -121,7 +121,7 @@ public class JumpLinkBuilderTool : IRcTool
             }
         }
 
-        if ((option.flags & JumpLinkBuilderToolOptions.DRAW_ANNOTATIONS) != 0)
+        if ((option.flags & JumpLinkBuilderToolOption.DRAW_ANNOTATIONS) != 0)
         {
             dd.Begin(QUADS);
             foreach (JumpLink link in _impl.GetLinks())
@@ -172,7 +172,7 @@ public class JumpLinkBuilderTool : IRcTool
         {
             foreach (JumpLink link in _impl.GetLinks())
             {
-                if ((option.flags & JumpLinkBuilderToolOptions.DRAW_ANIM_TRAJECTORY) != 0)
+                if ((option.flags & JumpLinkBuilderToolOption.DRAW_ANIM_TRAJECTORY) != 0)
                 {
                     float r = link.start.height;
 
@@ -238,7 +238,7 @@ public class JumpLinkBuilderTool : IRcTool
                     dd.End();
                 }
 
-                if ((option.flags & JumpLinkBuilderToolOptions.DRAW_LAND_SAMPLES) != 0)
+                if ((option.flags & JumpLinkBuilderToolOption.DRAW_LAND_SAMPLES) != 0)
                 {
                     dd.Begin(POINTS, 8.0f);
                     for (int i = 0; i < link.start.gsamples.Length; ++i)
@@ -386,11 +386,11 @@ public class JumpLinkBuilderTool : IRcTool
         ImGui.Text("Debug Draw Options");
         ImGui.Separator();
         //int newFlags = 0;
-        ImGui.CheckboxFlags("Walkable Border", ref option.flags, JumpLinkBuilderToolOptions.DRAW_WALKABLE_BORDER);
-        ImGui.CheckboxFlags("Selected Edge", ref option.flags, JumpLinkBuilderToolOptions.DRAW_SELECTED_EDGE);
-        ImGui.CheckboxFlags("Anim Trajectory", ref option.flags, JumpLinkBuilderToolOptions.DRAW_ANIM_TRAJECTORY);
-        ImGui.CheckboxFlags("Land Samples", ref option.flags, JumpLinkBuilderToolOptions.DRAW_LAND_SAMPLES);
-        ImGui.CheckboxFlags("All Annotations", ref option.flags, JumpLinkBuilderToolOptions.DRAW_ANNOTATIONS);
+        ImGui.CheckboxFlags("Walkable Border", ref option.flags, JumpLinkBuilderToolOption.DRAW_WALKABLE_BORDER);
+        ImGui.CheckboxFlags("Selected Edge", ref option.flags, JumpLinkBuilderToolOption.DRAW_SELECTED_EDGE);
+        ImGui.CheckboxFlags("Anim Trajectory", ref option.flags, JumpLinkBuilderToolOption.DRAW_ANIM_TRAJECTORY);
+        ImGui.CheckboxFlags("Land Samples", ref option.flags, JumpLinkBuilderToolOption.DRAW_LAND_SAMPLES);
+        ImGui.CheckboxFlags("All Annotations", ref option.flags, JumpLinkBuilderToolOption.DRAW_ANNOTATIONS);
         //option.flags = newFlags;
     }
 

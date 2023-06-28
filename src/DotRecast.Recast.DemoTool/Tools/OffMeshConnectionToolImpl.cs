@@ -8,11 +8,11 @@ namespace DotRecast.Recast.DemoTool.Tools
     public class OffMeshConnectionToolImpl : ISampleTool
     {
         private Sample _sample;
-        private readonly OffMeshConnectionToolOptions _options;
+        private readonly OffMeshConnectionToolOption _option;
 
         public OffMeshConnectionToolImpl()
         {
-            _options = new OffMeshConnectionToolOptions();
+            _option = new OffMeshConnectionToolOption();
         }
 
         public string GetName()
@@ -31,9 +31,9 @@ namespace DotRecast.Recast.DemoTool.Tools
         }
 
 
-        public OffMeshConnectionToolOptions GetOptions()
+        public OffMeshConnectionToolOption GetOption()
         {
-            return _options;
+            return _option;
         }
 
         public void Add(RcVec3f start, RcVec3f end)
@@ -44,7 +44,7 @@ namespace DotRecast.Recast.DemoTool.Tools
 
             int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP;
             int flags = SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP;
-            geom.AddOffMeshConnection(start, end, _sample.GetSettings().agentRadius, 0 == _options.bidir, area, flags);
+            geom.AddOffMeshConnection(start, end, _sample.GetSettings().agentRadius, 0 == _option.bidir, area, flags);
         }
 
         public void Remove(RcVec3f p)

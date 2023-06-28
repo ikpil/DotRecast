@@ -13,12 +13,12 @@ namespace DotRecast.Recast.DemoTool.Tools
         private readonly List<JumpLink> _links;
         private JumpLinkBuilder _annotationBuilder;
         private readonly int _selEdge = -1;
-        private readonly JumpLinkBuilderToolOptions _option;
+        private readonly JumpLinkBuilderToolOption _option;
 
         public JumpLinkBuilderToolImpl()
         {
             _links = new List<JumpLink>();
-            _option = new JumpLinkBuilderToolOptions();
+            _option = new JumpLinkBuilderToolOption();
         }
 
 
@@ -42,7 +42,7 @@ namespace DotRecast.Recast.DemoTool.Tools
             _annotationBuilder = null;
         }
 
-        public JumpLinkBuilderToolOptions GetOption()
+        public JumpLinkBuilderToolOption GetOption()
         {
             return _option;
         }

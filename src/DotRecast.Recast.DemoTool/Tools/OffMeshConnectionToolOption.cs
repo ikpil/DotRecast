@@ -1,6 +1,6 @@
 ﻿namespace DotRecast.Recast.DemoTool.Tools
 {
-    public class OffMeshConnectionToolOptions
+    public class OffMeshConnectionToolOption
     {
         public int bidir;
     }

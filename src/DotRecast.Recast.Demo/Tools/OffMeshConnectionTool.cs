@@ -103,7 +103,7 @@ public class OffMeshConnectionTool : IRcTool
 
     public void Layout()
     {
-        var options = _impl.GetOptions();
+        var options = _impl.GetOption();
         ImGui.RadioButton("One Way", ref options.bidir, 0);
         ImGui.RadioButton("Bidirectional", ref options.bidir, 1);
     }

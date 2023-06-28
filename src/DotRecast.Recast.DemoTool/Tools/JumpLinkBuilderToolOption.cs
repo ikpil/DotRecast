@@ -20,7 +20,7 @@ using DotRecast.Detour.Extras.Jumplink;
 
 namespace DotRecast.Recast.DemoTool.Tools
 {
-    public class JumpLinkBuilderToolOptions
+    public class JumpLinkBuilderToolOption
     {
         public const int DRAW_WALKABLE_SURFACE = 1 << 0;
         public const int DRAW_WALKABLE_BORDER = 1 << 1;
