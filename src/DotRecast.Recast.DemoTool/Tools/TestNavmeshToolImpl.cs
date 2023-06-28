@@ -2,12 +2,20 @@
 {
     public class TestNavmeshToolImpl : ISampleTool
     {
+        private Sample _sample;
+        private readonly TestNavmeshToolOption _option;
+
+        public TestNavmeshToolImpl()
+        {
+            _option = new TestNavmeshToolOption();
+        }
+
         public string GetName()
         {
             return "Test Navmesh";
         }
-        
-        private Sample _sample;
+
+
         public void SetSample(Sample sample)
         {
             _sample = sample;
@@ -18,5 +26,9 @@
             return _sample;
         }
 
+        public TestNavmeshToolOption GetOption()
+        {
+            return _option;
+        }
     }
 }
