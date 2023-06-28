@@ -35,7 +35,6 @@ public class OffMeshConnectionTool : IRcTool
     private readonly OffMeshConnectionToolImpl _impl;
     private bool hitPosSet;
     private RcVec3f hitPos;
-    private int bidir;
 
     public OffMeshConnectionTool()
     {
@@ -46,7 +45,7 @@ public class OffMeshConnectionTool : IRcTool
     {
         return _impl;
     }
-    
+
     public void OnSampleChanged()
     {
         // ..
@@ -62,24 +61,7 @@ public class OffMeshConnectionTool : IRcTool
 
         if (shift)
         {
-            // Delete
-            // Find nearest link end-point
-            float nearestDist = float.MaxValue;
-            DemoOffMeshConnection nearestConnection = null;
-            foreach (DemoOffMeshConnection offMeshCon in geom.GetOffMeshConnections())
-            {
-                float d = Math.Min(RcVec3f.DistSqr(p, offMeshCon.verts, 0), RcVec3f.DistSqr(p, offMeshCon.verts, 3));
-                if (d < nearestDist && Math.Sqrt(d) < _impl.GetSample().GetSettings().agentRadius)
-                {
-                    nearestDist = d;
-                    nearestConnection = offMeshCon;
-                }
-            }
-
-            if (nearestConnection != null)
-            {
-                geom.GetOffMeshConnections().Remove(nearestConnection);
-            }
+            _impl.Remove(p);
         }
         else
         {
@@ -91,9 +73,7 @@ public class OffMeshConnectionTool : IRcTool
             }
             else
             {
-                int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP;
-                int flags = SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP;
-                geom.AddOffMeshConnection(hitPos, p, _impl.GetSample().GetSettings().agentRadius, 0 == bidir, area, flags);
+                _impl.Add(hitPos, p);
                 hitPosSet = false;
             }
         }
@@ -123,8 +103,9 @@ public class OffMeshConnectionTool : IRcTool
 
     public void Layout()
     {
-        ImGui.RadioButton("One Way", ref bidir, 0);
-        ImGui.RadioButton("Bidirectional", ref bidir, 1);
+        var options = _impl.GetOptions();
+        ImGui.RadioButton("One Way", ref options.bidir, 0);
+        ImGui.RadioButton("Bidirectional", ref options.bidir, 1);
     }
 
 
