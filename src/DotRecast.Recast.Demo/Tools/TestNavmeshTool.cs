@@ -453,7 +453,11 @@ public class TestNavmeshTool : IRcTool
                 m_queryPoly[10] = m_epos.y + agentHeight / 2;
                 m_queryPoly[11] = m_epos.z + nz;
 
-                var status = m_navQuery.FindPolysAroundShape(m_startRef, m_queryPoly, m_filter, out var refs, out var parentRefs, out var costs);
+                var refs = new List<long>();
+                var parentRefs = new List<long>();
+                var costs = new List<float>();
+
+                var status = m_navQuery.FindPolysAroundShape(m_startRef, m_queryPoly, m_filter, ref refs, ref parentRefs, ref costs);
                 if (status.Succeeded())
                 {
                     m_polys = refs;

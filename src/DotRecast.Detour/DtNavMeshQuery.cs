@@ -2621,12 +2621,12 @@ namespace DotRecast.Detour
         ///  @param[in]		maxResult		The maximum number of polygons the result arrays can hold.
         /// @returns The status flags for the query.
         public DtStatus FindPolysAroundShape(long startRef, float[] verts, IDtQueryFilter filter,
-            out List<long> resultRef, out List<long> resultParent, out List<float> resultCost)
+            ref List<long> resultRef, ref List<long> resultParent, ref List<float> resultCost)
         {
-            resultRef = new List<long>();
-            resultParent = new List<long>();
-            resultCost = new List<float>();
-
+            resultRef.Clear();
+            resultParent.Clear();
+            resultCost.Clear();
+            
             // Validate input
             int nverts = verts.Length / 3;
             if (!m_nav.IsValidPolyRef(startRef) || null == verts || nverts < 3 || null == filter)
