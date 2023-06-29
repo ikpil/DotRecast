@@ -15,7 +15,6 @@ namespace DotRecast.Recast.Demo.Tools;
 public class TestNavmeshTool : IRcTool
 {
     private const int MAX_POLYS = 256;
-    private const int MAX_SMOOTH = 2048;
 
     private readonly TestNavmeshToolImpl _impl;
 
@@ -185,132 +184,19 @@ public class TestNavmeshTool : IRcTool
 
         var option = _impl.GetOption();
 
-        DtNavMesh m_navMesh = _impl.GetSample().GetNavMesh();
         if (option.mode == TestNavmeshToolMode.PATHFIND_FOLLOW)
         {
             if (m_sposSet && m_eposSet && m_startRef != 0 && m_endRef != 0)
             {
-                m_polys = new();
-                m_navQuery.FindPath(m_startRef, m_endRef, m_spos, m_epos, m_filter, ref m_polys,
-                    new(option.enableRaycast ? DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue));
-                if (0 < m_polys.Count)
+                var polys = new List<long>();
+                var smoothPath = new List<RcVec3f>();
+                var status = _impl.FindFollowPath(m_startRef, m_endRef, m_spos, m_epos, m_filter, option.enableRaycast,
+                    ref polys, ref smoothPath);
+
+                if (status.Succeeded())
                 {
-                    // Iterate over the path to find smooth path on the detail mesh surface.
-                    m_navQuery.ClosestPointOnPoly(m_startRef, m_spos, out var iterPos, out var _);
-                    m_navQuery.ClosestPointOnPoly(m_polys[m_polys.Count - 1], m_epos, out var targetPos, out var _);
-
-                    float STEP_SIZE = 0.5f;
-                    float SLOP = 0.01f;
-
-                    m_smoothPath = new();
-                    m_smoothPath.Add(iterPos);
-
-                    // Move towards target a small advancement at a time until target reached or
-                    // when ran out of memory to store the path.
-                    while (0 < m_polys.Count && m_smoothPath.Count < MAX_SMOOTH)
-                    {
-                        // Find location to steer towards.
-                        SteerTarget steerTarget = PathUtils.GetSteerTarget(m_navQuery, iterPos, targetPos, SLOP, m_polys);
-                        if (null == steerTarget)
-                        {
-                            break;
-                        }
-
-                        bool endOfPath = (steerTarget.steerPosFlag & DtNavMeshQuery.DT_STRAIGHTPATH_END) != 0
-                            ? true
-                            : false;
-                        bool offMeshConnection = (steerTarget.steerPosFlag
-                                                  & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0
-                            ? true
-                            : false;
-
-                        // Find movement delta.
-                        RcVec3f delta = steerTarget.steerPos.Subtract(iterPos);
-                        float len = (float)Math.Sqrt(RcVec3f.Dot(delta, delta));
-                        // If the steer target is end of path or off-mesh link, do not move past the location.
-                        if ((endOfPath || offMeshConnection) && len < STEP_SIZE)
-                        {
-                            len = 1;
-                        }
-                        else
-                        {
-                            len = STEP_SIZE / len;
-                        }
-
-                        RcVec3f moveTgt = RcVec3f.Mad(iterPos, delta, len);
-
-                        // Move
-                        m_navQuery.MoveAlongSurface(m_polys[0], iterPos, moveTgt, m_filter, out var result, out var visited);
-
-                        iterPos = result;
-
-                        m_polys = PathUtils.MergeCorridorStartMoved(m_polys, visited);
-                        m_polys = PathUtils.FixupShortcuts(m_polys, m_navQuery);
-
-                        var status = m_navQuery.GetPolyHeight(m_polys[0], result, out var h);
-                        if (status.Succeeded())
-                        {
-                            iterPos.y = h;
-                        }
-
-                        // Handle end of path and off-mesh links when close enough.
-                        if (endOfPath && PathUtils.InRange(iterPos, steerTarget.steerPos, SLOP, 1.0f))
-                        {
-                            // Reached end of path.
-                            iterPos = targetPos;
-                            if (m_smoothPath.Count < MAX_SMOOTH)
-                            {
-                                m_smoothPath.Add(iterPos);
-                            }
-
-                            break;
-                        }
-                        else if (offMeshConnection && PathUtils.InRange(iterPos, steerTarget.steerPos, SLOP, 1.0f))
-                        {
-                            // Reached off-mesh connection.
-                            RcVec3f startPos = RcVec3f.Zero;
-                            RcVec3f endPos = RcVec3f.Zero;
-
-                            // Advance the path up to and over the off-mesh connection.
-                            long prevRef = 0;
-                            long polyRef = m_polys[0];
-                            int npos = 0;
-                            while (npos < m_polys.Count && polyRef != steerTarget.steerPosRef)
-                            {
-                                prevRef = polyRef;
-                                polyRef = m_polys[npos];
-                                npos++;
-                            }
-
-                            m_polys = m_polys.GetRange(npos, m_polys.Count - npos);
-
-                            // Handle the connection.
-                            var status2 = m_navMesh.GetOffMeshConnectionPolyEndPoints(prevRef, polyRef, ref startPos, ref endPos);
-                            if (status2.Succeeded())
-                            {
-                                if (m_smoothPath.Count < MAX_SMOOTH)
-                                {
-                                    m_smoothPath.Add(startPos);
-                                    // Hack to make the dotted path not visible during off-mesh connection.
-                                    if ((m_smoothPath.Count & 1) != 0)
-                                    {
-                                        m_smoothPath.Add(startPos);
-                                    }
-                                }
-
-                                // Move position at the other side of the off-mesh link.
-                                iterPos = endPos;
-                                m_navQuery.GetPolyHeight(m_polys[0], iterPos, out var eh);
-                                iterPos.y = eh;
-                            }
-                        }
-
-                        // Store results.
-                        if (m_smoothPath.Count < MAX_SMOOTH)
-                        {
-                            m_smoothPath.Add(iterPos);
-                        }
-                    }
+                    m_polys = polys;
+                    m_smoothPath = smoothPath;
                 }
             }
             else
@@ -323,23 +209,15 @@ public class TestNavmeshTool : IRcTool
         {
             if (m_sposSet && m_eposSet && m_startRef != 0 && m_endRef != 0)
             {
-                m_polys = new();
-                m_navQuery.FindPath(m_startRef, m_endRef, m_spos, m_epos, m_filter, ref m_polys,
-                    new(option.enableRaycast ? DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue));
-                if (0 < m_polys.Count)
-                {
-                    // In case of partial path, make sure the end point is clamped to the last polygon.
-                    var epos = RcVec3f.Of(m_epos.x, m_epos.y, m_epos.z);
-                    if (m_polys[m_polys.Count - 1] != m_endRef)
-                    {
-                        var result = m_navQuery.ClosestPointOnPoly(m_polys[m_polys.Count - 1], m_epos, out var closest, out var _);
-                        if (result.Succeeded())
-                        {
-                            epos = closest;
-                        }
-                    }
+                var polys = new List<long>();
+                var straightPath = new List<StraightPathItem>();
+                var status = _impl.FindStraightPath(m_startRef, m_endRef, m_spos, m_epos, m_filter, option.enableRaycast,
+                    ref polys, ref straightPath, option.straightPathOptions);
 
-                    m_navQuery.FindStraightPath(m_spos, epos, m_polys, ref m_straightPath, MAX_POLYS, option.straightPathOptions);
+                if (status.Succeeded())
+                {
+                    m_polys = polys;
+                    m_straightPath = straightPath;
                 }
             }
             else
@@ -354,8 +232,7 @@ public class TestNavmeshTool : IRcTool
 
             if (m_sposSet && m_eposSet && m_startRef != 0 && m_endRef != 0)
             {
-                m_pathFindStatus = m_navQuery.InitSlicedFindPath(m_startRef, m_endRef, m_spos, m_epos, m_filter,
-                    option.enableRaycast ? DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue);
+                m_pathFindStatus = _impl.InitSlicedFindPath(m_startRef, m_endRef, m_spos, m_epos, m_filter, option.enableRaycast);
             }
         }
         else if (option.mode == TestNavmeshToolMode.RAYCAST)
@@ -363,39 +240,18 @@ public class TestNavmeshTool : IRcTool
             m_straightPath = null;
             if (m_sposSet && m_eposSet && m_startRef != 0)
             {
+                var polys = new List<long>();
+                var straightPath = new List<StraightPathItem>();
+                var status = _impl.Raycast(m_startRef, m_spos, m_epos, m_filter,
+                    ref polys, ref straightPath, out var hitPos, out var hitNormal, out var hitResult);
+
+                if (status.Succeeded())
                 {
-                    var status = m_navQuery.Raycast(m_startRef, m_spos, m_epos, m_filter, 0, 0, out var rayHit);
-                    if (status.Succeeded())
-                    {
-                        m_polys = rayHit.path;
-                        if (rayHit.t > 1)
-                        {
-                            // No hit
-                            m_hitPos = m_epos;
-                            m_hitResult = false;
-                        }
-                        else
-                        {
-                            // Hit
-                            m_hitPos = RcVec3f.Lerp(m_spos, m_epos, rayHit.t);
-                            m_hitNormal = rayHit.hitNormal;
-                            m_hitResult = true;
-                        }
-
-                        // Adjust height.
-                        if (rayHit.path.Count > 0)
-                        {
-                            var result = m_navQuery.GetPolyHeight(rayHit.path[rayHit.path.Count - 1], m_hitPos, out var h);
-                            if (result.Succeeded())
-                            {
-                                m_hitPos.y = h;
-                            }
-                        }
-                    }
-
-                    m_straightPath = new();
-                    m_straightPath.Add(new StraightPathItem(m_spos, 0, 0));
-                    m_straightPath.Add(new StraightPathItem(m_hitPos, 0, 0));
+                    m_polys = polys;
+                    m_straightPath = straightPath;
+                    m_hitPos = hitPos;
+                    m_hitNormal = hitNormal;
+                    m_hitResult = hitResult;
                 }
             }
         }
