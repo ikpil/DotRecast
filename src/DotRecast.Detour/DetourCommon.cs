@@ -339,7 +339,7 @@ namespace DotRecast.Detour
             return dx * dx + dz * dz;
         }
 
-        public static IntersectResult IntersectSegmentPoly2D(RcVec3f p0, RcVec3f p1, float[] verts, int nverts)
+        public static IntersectResult IntersectSegmentPoly2D(RcVec3f p0, RcVec3f p1, RcVec3f[] verts, int nverts)
         {
             IntersectResult result = new IntersectResult();
             const float EPS = 0.000001f;
@@ -348,8 +348,8 @@ namespace DotRecast.Detour
             var p0v = p0;
             for (int i = 0, j = nverts - 1; i < nverts; j = i++)
             {
-                RcVec3f vpj = RcVec3f.Of(verts, j * 3);
-                RcVec3f vpi = RcVec3f.Of(verts, i * 3);
+                RcVec3f vpj = verts[j];
+                RcVec3f vpi = verts[i];
                 var edge = vpi.Subtract(vpj);
                 var diff = p0v.Subtract(vpj);
                 float n = RcVec3f.Perp2D(edge, diff);

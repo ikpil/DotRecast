@@ -158,28 +158,28 @@ public class FindPolysAroundShapeTest : AbstractDetourTest
         }
     }
 
-    private float[] GetQueryPoly(RcVec3f m_spos, RcVec3f m_epos)
+    private RcVec3f[] GetQueryPoly(RcVec3f m_spos, RcVec3f m_epos)
     {
         float nx = (m_epos.z - m_spos.z) * 0.25f;
         float nz = -(m_epos.x - m_spos.x) * 0.25f;
         float agentHeight = 2.0f;
 
-        float[] m_queryPoly = new float[12];
-        m_queryPoly[0] = m_spos.x + nx * 1.2f;
-        m_queryPoly[1] = m_spos.y + agentHeight / 2;
-        m_queryPoly[2] = m_spos.z + nz * 1.2f;
+        RcVec3f[] m_queryPoly = new RcVec3f[4];
+        m_queryPoly[0].x = m_spos.x + nx * 1.2f;
+        m_queryPoly[0].y = m_spos.y + agentHeight / 2;
+        m_queryPoly[0].z = m_spos.z + nz * 1.2f;
 
-        m_queryPoly[3] = m_spos.x - nx * 1.3f;
-        m_queryPoly[4] = m_spos.y + agentHeight / 2;
-        m_queryPoly[5] = m_spos.z - nz * 1.3f;
+        m_queryPoly[1].x = m_spos.x - nx * 1.3f;
+        m_queryPoly[1].y = m_spos.y + agentHeight / 2;
+        m_queryPoly[1].z = m_spos.z - nz * 1.3f;
 
-        m_queryPoly[6] = m_epos.x - nx * 0.8f;
-        m_queryPoly[7] = m_epos.y + agentHeight / 2;
-        m_queryPoly[8] = m_epos.z - nz * 0.8f;
+        m_queryPoly[2].x = m_epos.x - nx * 0.8f;
+        m_queryPoly[2].y = m_epos.y + agentHeight / 2;
+        m_queryPoly[2].z = m_epos.z - nz * 0.8f;
 
-        m_queryPoly[9] = m_epos.x + nx;
-        m_queryPoly[10] = m_epos.y + agentHeight / 2;
-        m_queryPoly[11] = m_epos.z + nz;
+        m_queryPoly[3].x = m_epos.x + nx;
+        m_queryPoly[3].y = m_epos.y + agentHeight / 2;
+        m_queryPoly[3].z = m_epos.z + nz;
         return m_queryPoly;
     }
 }

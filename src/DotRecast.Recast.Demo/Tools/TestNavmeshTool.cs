@@ -22,19 +22,23 @@ public class TestNavmeshTool : IRcTool
     private bool m_eposSet;
     private RcVec3f m_spos;
     private RcVec3f m_epos;
-    private readonly DtQueryDefaultFilter m_filter;
-    private readonly RcVec3f m_polyPickExt = RcVec3f.Of(2, 4, 2);
     private long m_startRef;
     private long m_endRef;
+    
+    private readonly DtQueryDefaultFilter m_filter;
+    private readonly RcVec3f m_polyPickExt = RcVec3f.Of(2, 4, 2);
+    
+    // for hit
     private RcVec3f m_hitPos;
-    private float m_distanceToWall;
     private RcVec3f m_hitNormal;
+    private bool m_hitResult;
+    
+    private float m_distanceToWall;
     private List<StraightPathItem> m_straightPath;
     private List<long> m_polys;
-    private bool m_hitResult;
     private List<long> m_parent;
     private float m_neighbourhoodRadius;
-    private readonly float[] m_queryPoly = new float[12];
+    private readonly RcVec3f[] m_queryPoly = new RcVec3f[4];
     private List<RcVec3f> m_smoothPath;
     private DtStatus m_pathFindStatus = DtStatus.DT_FAILURE;
     private readonly List<RcVec3f> randomPoints = new();
@@ -293,21 +297,21 @@ public class TestNavmeshTool : IRcTool
                 float nz = -(m_epos.x - m_spos.x) * 0.25f;
                 float agentHeight = _impl.GetSample() != null ? _impl.GetSample().GetSettings().agentHeight : 0;
 
-                m_queryPoly[0] = m_spos.x + nx * 1.2f;
-                m_queryPoly[1] = m_spos.y + agentHeight / 2;
-                m_queryPoly[2] = m_spos.z + nz * 1.2f;
+                m_queryPoly[0].x = m_spos.x + nx * 1.2f;
+                m_queryPoly[0].y = m_spos.y + agentHeight / 2;
+                m_queryPoly[0].z = m_spos.z + nz * 1.2f;
 
-                m_queryPoly[3] = m_spos.x - nx * 1.3f;
-                m_queryPoly[4] = m_spos.y + agentHeight / 2;
-                m_queryPoly[5] = m_spos.z - nz * 1.3f;
+                m_queryPoly[1].x = m_spos.x - nx * 1.3f;
+                m_queryPoly[1].y = m_spos.y + agentHeight / 2;
+                m_queryPoly[1].z = m_spos.z - nz * 1.3f;
 
-                m_queryPoly[6] = m_epos.x - nx * 0.8f;
-                m_queryPoly[7] = m_epos.y + agentHeight / 2;
-                m_queryPoly[8] = m_epos.z - nz * 0.8f;
+                m_queryPoly[2].x = m_epos.x - nx * 0.8f;
+                m_queryPoly[2].y = m_epos.y + agentHeight / 2;
+                m_queryPoly[2].z = m_epos.z - nz * 0.8f;
 
-                m_queryPoly[9] = m_epos.x + nx;
-                m_queryPoly[10] = m_epos.y + agentHeight / 2;
-                m_queryPoly[11] = m_epos.z + nz;
+                m_queryPoly[3].x = m_epos.x + nx;
+                m_queryPoly[3].y = m_epos.y + agentHeight / 2;
+                m_queryPoly[3].z = m_epos.z + nz;
 
                 var refs = new List<long>();
                 var parentRefs = new List<long>();
@@ -659,8 +663,8 @@ public class TestNavmeshTool : IRcTool
                 dd.Begin(LINES, 2.0f);
                 for (int i = 0, j = 3; i < 4; j = i++)
                 {
-                    dd.Vertex(m_queryPoly[j * 3], m_queryPoly[j * 3 + 1], m_queryPoly[j * 3 + 2], col);
-                    dd.Vertex(m_queryPoly[i * 3], m_queryPoly[i * 3 + 1], m_queryPoly[i * 3 + 2], col);
+                    dd.Vertex(m_queryPoly[j].x, m_queryPoly[j].y, m_queryPoly[j].z, col);
+                    dd.Vertex(m_queryPoly[i].x, m_queryPoly[i].y, m_queryPoly[i].z, col);
                 }
 
                 dd.End();

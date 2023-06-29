@@ -2198,7 +2198,7 @@ namespace DotRecast.Detour
 
             hit = new DtRaycastHit();
 
-            float[] verts = new float[m_nav.GetMaxVertsPerPoly() * 3 + 3];
+            RcVec3f[] verts = new RcVec3f[m_nav.GetMaxVertsPerPoly() + 1];
 
             RcVec3f curPos = RcVec3f.Zero;
             RcVec3f lastPos = RcVec3f.Zero;
@@ -2227,7 +2227,7 @@ namespace DotRecast.Detour
                 int nv = 0;
                 for (int i = 0; i < poly.vertCount; ++i)
                 {
-                    Array.Copy(tile.data.verts, poly.verts[i] * 3, verts, nv * 3, 3);
+                    verts[nv] = RcVec3f.Of(tile.data.verts, poly.verts[i] * 3);
                     nv++;
                 }
 
@@ -2366,8 +2366,8 @@ namespace DotRecast.Detour
                     // and correct the height (since the raycast moves in 2d)
                     lastPos = curPos;
                     curPos = RcVec3f.Mad(startPos, dir, hit.t);
-                    var e1 = RcVec3f.Of(verts, iresult.segMax * 3);
-                    var e2 = RcVec3f.Of(verts, ((iresult.segMax + 1) % nv) * 3);
+                    var e1 = verts[iresult.segMax];
+                    var e2 = verts[(iresult.segMax + 1) % nv];
                     var eDir = e2.Subtract(e1);
                     var diff = curPos.Subtract(e1);
                     float s = Sqr(eDir.x) > Sqr(eDir.z) ? diff.x / eDir.x : diff.z / eDir.z;
@@ -2384,10 +2384,10 @@ namespace DotRecast.Detour
                     // Calculate hit normal.
                     int a = iresult.segMax;
                     int b = iresult.segMax + 1 < nv ? iresult.segMax + 1 : 0;
-                    int va = a * 3;
-                    int vb = b * 3;
-                    float dx = verts[vb] - verts[va];
-                    float dz = verts[vb + 2] - verts[va + 2];
+                    // int va = a * 3;
+                    // int vb = b * 3;
+                    float dx = verts[b].x - verts[a].x;
+                    float dz = verts[b].z - verts[a].x;
                     hit.hitNormal.x = dz;
                     hit.hitNormal.y = 0;
                     hit.hitNormal.z = -dx;
@@ -2620,7 +2620,7 @@ namespace DotRecast.Detour
         ///  @param[out]	resultCount		The number of polygons found.
         ///  @param[in]		maxResult		The maximum number of polygons the result arrays can hold.
         /// @returns The status flags for the query.
-        public DtStatus FindPolysAroundShape(long startRef, float[] verts, IDtQueryFilter filter,
+        public DtStatus FindPolysAroundShape(long startRef, RcVec3f[] verts, IDtQueryFilter filter,
             ref List<long> resultRef, ref List<long> resultParent, ref List<float> resultCost)
         {
             resultRef.Clear();
@@ -2628,7 +2628,7 @@ namespace DotRecast.Detour
             resultCost.Clear();
             
             // Validate input
-            int nverts = verts.Length / 3;
+            int nverts = verts.Length;
             if (!m_nav.IsValidPolyRef(startRef) || null == verts || nverts < 3 || null == filter)
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
@@ -2640,9 +2640,7 @@ namespace DotRecast.Detour
             RcVec3f centerPos = RcVec3f.Zero;
             for (int i = 0; i < nverts; ++i)
             {
-                centerPos.x += verts[i * 3];
-                centerPos.y += verts[i * 3 + 1];
-                centerPos.z += verts[i * 3 + 2];
+                centerPos += verts[i];
             }
 
             float scale = 1.0f / nverts;
