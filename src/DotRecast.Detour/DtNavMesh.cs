@@ -724,6 +724,8 @@ namespace DotRecast.Detour
                 return;
             }
 
+            var connectPolys = new List<DtConnectPoly>();
+
             // Connect border links.
             for (int i = 0; i < tile.data.header.polyCount; ++i)
             {
@@ -750,12 +752,12 @@ namespace DotRecast.Detour
                     // Create new links
                     int va = poly.verts[j] * 3;
                     int vb = poly.verts[(j + 1) % nv] * 3;
-                    IList<Tuple<long, float, float>> connectedPolys = FindConnectingPolys(tile.data.verts, va, vb, target, DetourCommon.OppositeTile(dir));
-                    foreach (Tuple<long, float, float> connectedPoly in connectedPolys)
+                    int nnei = FindConnectingPolys(tile.data.verts, va, vb, target, DetourCommon.OppositeTile(dir), ref connectPolys);
+                    foreach (var connectPoly in connectPolys)
                     {
                         int idx = AllocLink(tile);
                         DtLink link = tile.links[idx];
-                        link.refs = connectedPoly.Item1;
+                        link.refs = connectPoly.refs;
                         link.edge = j;
                         link.side = dir;
 
@@ -765,9 +767,9 @@ namespace DotRecast.Detour
                         // Compress portal limits to a byte value.
                         if (dir == 0 || dir == 4)
                         {
-                            float tmin = (connectedPoly.Item2 - tile.data.verts[va + 2])
+                            float tmin = (connectPoly.tmin - tile.data.verts[va + 2])
                                          / (tile.data.verts[vb + 2] - tile.data.verts[va + 2]);
-                            float tmax = (connectedPoly.Item3 - tile.data.verts[va + 2])
+                            float tmax = (connectPoly.tmax - tile.data.verts[va + 2])
                                          / (tile.data.verts[vb + 2] - tile.data.verts[va + 2]);
                             if (tmin > tmax)
                             {
@@ -781,9 +783,9 @@ namespace DotRecast.Detour
                         }
                         else if (dir == 2 || dir == 6)
                         {
-                            float tmin = (connectedPoly.Item2 - tile.data.verts[va])
+                            float tmin = (connectPoly.tmin - tile.data.verts[va])
                                          / (tile.data.verts[vb] - tile.data.verts[va]);
-                            float tmax = (connectedPoly.Item3 - tile.data.verts[va])
+                            float tmax = (connectPoly.tmax - tile.data.verts[va])
                                          / (tile.data.verts[vb] - tile.data.verts[va]);
                             if (tmin > tmax)
                             {
@@ -887,14 +889,14 @@ namespace DotRecast.Detour
             }
         }
 
-        private IList<Tuple<long, float, float>> FindConnectingPolys(float[] verts, int va, int vb, DtMeshTile tile, int side)
+        private int FindConnectingPolys(float[] verts, int va, int vb, DtMeshTile tile, int side,
+            ref List<DtConnectPoly> cons)
         {
             if (tile == null)
-            {
-                return ImmutableArray<Tuple<long, float, float>>.Empty;
-            }
+                return 0;
 
-            List<Tuple<long, float, float>> result = new List<Tuple<long, float, float>>();
+            cons.Clear();
+
             RcVec2f amin = RcVec2f.Zero;
             RcVec2f amax = RcVec2f.Zero;
             CalcSlabEndPoints(verts, va, vb, ref amin, ref amax, side);
@@ -904,6 +906,7 @@ namespace DotRecast.Detour
             RcVec2f bmin = RcVec2f.Zero;
             RcVec2f bmax = RcVec2f.Zero;
             int m = DT_EXT_LINK | side;
+            int n = 0;
             long @base = GetPolyRefBase(tile);
 
             for (int i = 0; i < tile.data.header.polyCount; ++i)
@@ -939,12 +942,13 @@ namespace DotRecast.Detour
                     long refs = @base | (long)i;
                     float tmin = Math.Max(amin.x, bmin.x);
                     float tmax = Math.Min(amax.x, bmax.x);
-                    result.Add(Tuple.Create(refs, tmin, tmax));
+                    cons.Add(new DtConnectPoly(refs, tmin, tmax));
+                    n++;
                     break;
                 }
             }
 
-            return result;
+            return n;
         }
 
         static float GetSlabCoord(float[] verts, int va, int side)
