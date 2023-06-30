@@ -581,7 +581,7 @@ namespace DotRecast.Detour.Crowd
                     {
                         throw new ArgumentException("Empty path");
                     }
-                    
+
 
                     // Quick search towards the goal.
                     _navQuery.InitSlicedFindPath(path[0], ag.targetRef, ag.npos, ag.targetPos,
@@ -1178,10 +1178,8 @@ namespace DotRecast.Detour.Crowd
                     }
                     else
                     {
-                        var nsnvel = _obstacleQuery.SampleVelocityGrid(ag.npos, ag.option.radius,
-                            ag.desiredSpeed, ag.vel, ag.dvel, option, vod);
-                        ns = nsnvel.Item1;
-                        ag.nvel = nsnvel.Item2;
+                        ns = _obstacleQuery.SampleVelocityGrid(ag.npos, ag.option.radius,
+                            ag.desiredSpeed, ag.vel, ag.dvel, out ag.nvel, option, vod);
                     }
 
                     _velocitySampleCount += ns;

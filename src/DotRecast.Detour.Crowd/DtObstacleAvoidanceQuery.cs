@@ -319,7 +319,7 @@ namespace DotRecast.Detour.Crowd
             return penalty;
         }
 
-        public Tuple<int, RcVec3f> SampleVelocityGrid(RcVec3f pos, float rad, float vmax, RcVec3f vel, RcVec3f dvel,
+        public int SampleVelocityGrid(RcVec3f pos, float rad, float vmax, RcVec3f vel, RcVec3f dvel, out RcVec3f nvel,
             DtObstacleAvoidanceParams option, DtObstacleAvoidanceDebugData debug)
         {
             Prepare(pos, dvel);
@@ -328,7 +328,7 @@ namespace DotRecast.Detour.Crowd
             m_vmax = vmax;
             m_invVmax = vmax > 0 ? 1.0f / vmax : float.MaxValue;
 
-            RcVec3f nvel = RcVec3f.Zero;
+            nvel = RcVec3f.Zero;
 
             if (debug != null)
                 debug.Reset();
@@ -359,7 +359,7 @@ namespace DotRecast.Detour.Crowd
                 }
             }
 
-            return Tuple.Create(ns, nvel);
+            return ns;
         }
 
         // vector normalization that ignores the y-component.
