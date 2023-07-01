@@ -583,7 +583,7 @@ namespace DotRecast.Detour.TileCache
             }
         }
 
-        static Tuple<int, bool> GetCornerHeight(DtTileCacheLayer layer, int x, int y, int z, int walkableClimb)
+        static int GetCornerHeight(DtTileCacheLayer layer, int x, int y, int z, int walkableClimb, out bool shouldRemove)
         {
             int w = layer.header.width;
             int h = layer.header.height;
@@ -623,13 +623,13 @@ namespace DotRecast.Detour.TileCache
                 if ((portal & (1 << dir)) != 0)
                     portalCount++;
 
-            bool shouldRemove = false;
+            shouldRemove = false;
             if (n > 1 && portalCount == 1 && allSameReg)
             {
                 shouldRemove = true;
             }
 
-            return Tuple.Create(height, shouldRemove);
+            return height;
         }
 
         // TODO: move this somewhere else, once the layer meshing is done.
@@ -687,10 +687,8 @@ namespace DotRecast.Detour.TileCache
                             // stored at segment
                             // vertex of a
                             // segment.
-                            Tuple<int, bool> res = GetCornerHeight(layer, temp.verts[v], temp.verts[v + 1],
-                                temp.verts[v + 2], walkableClimb);
-                            int lh = res.Item1;
-                            bool shouldRemove = res.Item2;
+                            int lh = GetCornerHeight(layer, temp.verts[v], temp.verts[v + 1], temp.verts[v + 2],
+                                walkableClimb, out var shouldRemove);
                             cont.verts[dst + 0] = temp.verts[v];
                             cont.verts[dst + 1] = lh;
                             cont.verts[dst + 2] = temp.verts[v + 2];
