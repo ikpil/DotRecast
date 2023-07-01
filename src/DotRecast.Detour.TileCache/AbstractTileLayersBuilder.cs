@@ -53,39 +53,24 @@ namespace DotRecast.Detour.TileCache
             return layers;
         }
 
+
         private List<byte[]> BuildMultiThread(RcByteOrder order, bool cCompatibility, int tw, int th, int threads)
         {
-            var tasks = new ConcurrentQueue<Task<Tuple<int, int, List<byte[]>>>>();
+            var results = new List<DtTileCacheBuildResult>();
             for (int y = 0; y < th; ++y)
             {
                 for (int x = 0; x < tw; ++x)
                 {
                     int tx = x;
                     int ty = y;
-                    var task = Task.Run(() =>
-                    {
-                        var partial = Build(tx, ty, order, cCompatibility);
-                        return Tuple.Create(tx, ty, partial);
-                    });
-                    tasks.Enqueue(task);
+                    var task = Task.Run(() => Build(tx, ty, order, cCompatibility));
+                    results.Add(new DtTileCacheBuildResult(tx, ty, task));
                 }
             }
 
-            var partialResults = tasks
-                .Select(x => x.Result)
-                .ToDictionary(x => Tuple.Create(x.Item1, x.Item2), x => x.Item3);
-
-            List<byte[]> layers = new List<byte[]>();
-            for (int y = 0; y < th; ++y)
-            {
-                for (int x = 0; x < tw; ++x)
-                {
-                    var key = Tuple.Create(x, y);
-                    layers.AddRange(partialResults[key]);
-                }
-            }
-
-            return layers;
+            return results
+                .SelectMany(x => x.task.Result)
+                .ToList();
         }
 
         protected abstract List<byte[]> Build(int tx, int ty, RcByteOrder order, bool cCompatibility);
