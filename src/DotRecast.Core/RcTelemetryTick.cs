@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DotRecast.Recast
+namespace DotRecast.Core
 {
     public readonly struct RcTelemetryTick
     {

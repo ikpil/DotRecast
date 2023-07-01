@@ -43,7 +43,7 @@ namespace DotRecast.Detour.Crowd
             return _maxTimeToFindPath;
         }
 
-        public Dictionary<string, long> ExecutionTimings()
+        public Dictionary<string, long> ToExecutionTimings()
         {
             return _executionTimings;
         }

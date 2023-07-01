@@ -132,7 +132,7 @@ public class CrowdProfilingTool
             ImGui.Text($"Max time to enqueue request: {crowd.Telemetry().MaxTimeToEnqueueRequest()} s");
             ImGui.Text($"Max time to find path: {crowd.Telemetry().MaxTimeToFindPath()} s");
             List<Tuple<string, long>> timings = crowd.Telemetry()
-                .ExecutionTimings()
+                .ToExecutionTimings()
                 .Select(e => Tuple.Create(e.Key, e.Value))
                 .OrderBy(x => x.Item2)
                 .ToList();

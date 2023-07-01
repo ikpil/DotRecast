@@ -1,4 +1,6 @@
-﻿namespace DotRecast.Recast
+﻿using DotRecast.Core;
+
+namespace DotRecast.Recast
 {
     public class RecastBuilderResult
     {

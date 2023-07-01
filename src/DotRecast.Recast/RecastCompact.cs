@@ -17,6 +17,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using DotRecast.Core;
 using static DotRecast.Core.RcMath;
 using static DotRecast.Recast.RcConstants;
 

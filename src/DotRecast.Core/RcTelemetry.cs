@@ -19,12 +19,10 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using DotRecast.Core;
 
-namespace DotRecast.Recast
+namespace DotRecast.Core
 {
     public class RcTelemetry
     {
