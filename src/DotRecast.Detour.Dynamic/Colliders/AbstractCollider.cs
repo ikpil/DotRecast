@@ -38,6 +38,6 @@ namespace DotRecast.Detour.Dynamic.Colliders
             return _bounds;
         }
 
-        public abstract void Rasterize(RcHeightfield hf, Telemetry telemetry);
+        public abstract void Rasterize(RcHeightfield hf, RcTelemetry telemetry);
     }
 }

@@ -847,7 +847,7 @@ namespace DotRecast.Recast
             }
         }
 
-        private static int MergeAndFilterRegions(Telemetry ctx, int minRegionArea, int mergeRegionSize, int maxRegionId,
+        private static int MergeAndFilterRegions(RcTelemetry ctx, int minRegionArea, int mergeRegionSize, int maxRegionId,
             RcCompactHeightfield chf, int[] srcReg, List<int> overlaps)
         {
             int w = chf.width;
@@ -1169,7 +1169,7 @@ namespace DotRecast.Recast
             }
         }
 
-        private static int MergeAndFilterLayerRegions(Telemetry ctx, int minRegionArea, int maxRegionId,
+        private static int MergeAndFilterLayerRegions(RcTelemetry ctx, int minRegionArea, int maxRegionId,
             RcCompactHeightfield chf, int[] srcReg, List<int> overlaps)
         {
             int w = chf.width;
@@ -1415,7 +1415,7 @@ namespace DotRecast.Recast
         /// and rcCompactHeightfield::dist fields.
         ///
         /// @see rcCompactHeightfield, rcBuildRegions, rcBuildRegionsMonotone
-        public static void BuildDistanceField(Telemetry ctx, RcCompactHeightfield chf)
+        public static void BuildDistanceField(RcTelemetry ctx, RcCompactHeightfield chf)
         {
             ctx.StartTimer("DISTANCEFIELD");
             int[] src = new int[chf.spanCount];
@@ -1478,7 +1478,7 @@ namespace DotRecast.Recast
         /// @warning The distance field must be created using #rcBuildDistanceField before attempting to build regions.
         ///
         /// @see rcCompactHeightfield, rcCompactSpan, rcBuildDistanceField, rcBuildRegionsMonotone, rcConfig
-        public static void BuildRegionsMonotone(Telemetry ctx, RcCompactHeightfield chf, int minRegionArea,
+        public static void BuildRegionsMonotone(RcTelemetry ctx, RcCompactHeightfield chf, int minRegionArea,
             int mergeRegionArea)
         {
             ctx.StartTimer("REGIONS");
@@ -1661,7 +1661,7 @@ namespace DotRecast.Recast
         /// @warning The distance field must be created using #rcBuildDistanceField before attempting to build regions.
         ///
         /// @see rcCompactHeightfield, rcCompactSpan, rcBuildDistanceField, rcBuildRegionsMonotone, rcConfig
-        public static void BuildRegions(Telemetry ctx, RcCompactHeightfield chf, int minRegionArea,
+        public static void BuildRegions(RcTelemetry ctx, RcCompactHeightfield chf, int minRegionArea,
             int mergeRegionArea)
         {
             ctx.StartTimer("REGIONS");
@@ -1786,7 +1786,7 @@ namespace DotRecast.Recast
             ctx.StopTimer("REGIONS");
         }
 
-        public static void BuildLayerRegions(Telemetry ctx, RcCompactHeightfield chf, int minRegionArea)
+        public static void BuildLayerRegions(RcTelemetry ctx, RcCompactHeightfield chf, int minRegionArea)
         {
             ctx.StartTimer("REGIONS");
 

@@ -51,7 +51,7 @@ namespace DotRecast.Recast
             return (amin > bmax || amax < bmin) ? false : true;
         }
 
-        public static RcHeightfieldLayerSet BuildHeightfieldLayers(Telemetry ctx, RcCompactHeightfield chf, int walkableHeight)
+        public static RcHeightfieldLayerSet BuildHeightfieldLayers(RcTelemetry ctx, RcCompactHeightfield chf, int walkableHeight)
         {
             ctx.StartTimer("RC_TIMER_BUILD_LAYERS");
             int w = chf.width;

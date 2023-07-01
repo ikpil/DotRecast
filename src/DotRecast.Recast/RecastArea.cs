@@ -35,7 +35,7 @@ namespace DotRecast.Recast
         /// This method is usually called immediately after the heightfield has been built.
         ///
         /// @see rcCompactHeightfield, rcBuildCompactHeightfield, rcConfig::walkableRadius
-        public static void ErodeWalkableArea(Telemetry ctx, int radius, RcCompactHeightfield chf)
+        public static void ErodeWalkableArea(RcTelemetry ctx, int radius, RcCompactHeightfield chf)
         {
             int w = chf.width;
             int h = chf.height;
@@ -215,7 +215,7 @@ namespace DotRecast.Recast
         /// such as #rcMarkBoxArea, #rcMarkConvexPolyArea, and #rcMarkCylinderArea.
         ///
         /// @see rcCompactHeightfield
-        public static bool MedianFilterWalkableArea(Telemetry ctx, RcCompactHeightfield chf)
+        public static bool MedianFilterWalkableArea(RcTelemetry ctx, RcCompactHeightfield chf)
         {
             int w = chf.width;
             int h = chf.height;
@@ -283,7 +283,7 @@ namespace DotRecast.Recast
         /// The value of spacial parameters are in world units.
         ///
         /// @see rcCompactHeightfield, rcMedianFilterWalkableArea
-        public static void MarkBoxArea(Telemetry ctx, float[] bmin, float[] bmax, AreaModification areaMod, RcCompactHeightfield chf)
+        public static void MarkBoxArea(RcTelemetry ctx, float[] bmin, float[] bmax, AreaModification areaMod, RcCompactHeightfield chf)
         {
             ctx.StartTimer("MARK_BOX_AREA");
 
@@ -357,7 +357,7 @@ namespace DotRecast.Recast
         /// projected onto the xz-plane at @p hmin, then extruded to @p hmax.
         ///
         /// @see rcCompactHeightfield, rcMedianFilterWalkableArea
-        public static void MarkConvexPolyArea(Telemetry ctx, float[] verts, float hmin, float hmax, AreaModification areaMod,
+        public static void MarkConvexPolyArea(RcTelemetry ctx, float[] verts, float hmin, float hmax, AreaModification areaMod,
             RcCompactHeightfield chf)
         {
             ctx.StartTimer("MARK_CONVEXPOLY_AREA");
@@ -513,7 +513,7 @@ namespace DotRecast.Recast
         /// The value of spacial parameters are in world units.
         ///
         /// @see rcCompactHeightfield, rcMedianFilterWalkableArea
-        public static void MarkCylinderArea(Telemetry ctx, float[] pos, float r, float h, AreaModification areaMod, RcCompactHeightfield chf)
+        public static void MarkCylinderArea(RcTelemetry ctx, float[] pos, float r, float h, AreaModification areaMod, RcCompactHeightfield chf)
         {
             ctx.StartTimer("MARK_CYLINDER_AREA");
 

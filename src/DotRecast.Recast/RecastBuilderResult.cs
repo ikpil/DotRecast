@@ -9,9 +9,9 @@
         private readonly RcPolyMesh pmesh;
         private readonly RcPolyMeshDetail dmesh;
         private readonly RcHeightfield solid;
-        private readonly Telemetry telemetry;
+        private readonly RcTelemetry telemetry;
 
-        public RecastBuilderResult(int tileX, int tileZ, RcHeightfield solid, RcCompactHeightfield chf, RcContourSet cs, RcPolyMesh pmesh, RcPolyMeshDetail dmesh, Telemetry ctx)
+        public RecastBuilderResult(int tileX, int tileZ, RcHeightfield solid, RcCompactHeightfield chf, RcContourSet cs, RcPolyMesh pmesh, RcPolyMeshDetail dmesh, RcTelemetry ctx)
         {
             this.tileX = tileX;
             this.tileZ = tileZ;
@@ -48,7 +48,7 @@
             return solid;
         }
 
-        public Telemetry GetTelemetry()
+        public RcTelemetry GetTelemetry()
         {
             return telemetry;
         }

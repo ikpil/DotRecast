@@ -29,6 +29,7 @@ namespace DotRecast.Detour.Crowd
         public const int TIMING_SAMPLES = 10;
         private float _maxTimeToEnqueueRequest;
         private float _maxTimeToFindPath;
+        
         private readonly Dictionary<string, long> _executionTimings = new Dictionary<string, long>();
         private readonly Dictionary<string, List<long>> _executionTimingSamples = new Dictionary<string, List<long>>();
 

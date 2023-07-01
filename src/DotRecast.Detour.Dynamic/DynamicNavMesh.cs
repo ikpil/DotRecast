@@ -35,7 +35,7 @@ namespace DotRecast.Detour.Dynamic
         public readonly DynamicNavMeshConfig config;
         private readonly RecastBuilder builder;
         private readonly Dictionary<long, DynamicTile> _tiles = new Dictionary<long, DynamicTile>();
-        private readonly Telemetry telemetry;
+        private readonly RcTelemetry telemetry;
         private readonly DtNavMeshParams navMeshParams;
         private readonly BlockingCollection<IUpdateQueueItem> updateQueue = new BlockingCollection<IUpdateQueueItem>();
         private readonly RcAtomicLong currentColliderId = new RcAtomicLong(0);
@@ -72,7 +72,7 @@ namespace DotRecast.Detour.Dynamic
             }
 
             ;
-            telemetry = new Telemetry();
+            telemetry = new RcTelemetry();
         }
 
         public DtNavMesh NavMesh()

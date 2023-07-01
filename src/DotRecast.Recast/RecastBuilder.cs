@@ -158,7 +158,7 @@ namespace DotRecast.Recast
         public RecastBuilderResult Build(IInputGeomProvider geom, RecastBuilderConfig builderCfg)
         {
             RcConfig cfg = builderCfg.cfg;
-            Telemetry ctx = new Telemetry();
+            RcTelemetry ctx = new RcTelemetry();
             //
             // Step 1. Rasterize input polygon soup.
             //
@@ -167,7 +167,7 @@ namespace DotRecast.Recast
         }
 
         public RecastBuilderResult Build(int tileX, int tileZ, IConvexVolumeProvider geom, RcConfig cfg, RcHeightfield solid,
-            Telemetry ctx)
+            RcTelemetry ctx)
         {
             FilterHeightfield(solid, cfg, ctx);
             RcCompactHeightfield chf = BuildCompactHeightfield(geom, cfg, ctx, solid);
@@ -257,7 +257,7 @@ namespace DotRecast.Recast
         /*
          * Step 2. Filter walkable surfaces.
          */
-        private void FilterHeightfield(RcHeightfield solid, RcConfig cfg, Telemetry ctx)
+        private void FilterHeightfield(RcHeightfield solid, RcConfig cfg, RcTelemetry ctx)
         {
             // Once all geometry is rasterized, we do initial pass of filtering to
             // remove unwanted overhangs caused by the conservative rasterization
@@ -281,7 +281,7 @@ namespace DotRecast.Recast
         /*
          * Step 3. Partition walkable surface to simple regions.
          */
-        private RcCompactHeightfield BuildCompactHeightfield(IConvexVolumeProvider volumeProvider, RcConfig cfg, Telemetry ctx,
+        private RcCompactHeightfield BuildCompactHeightfield(IConvexVolumeProvider volumeProvider, RcConfig cfg, RcTelemetry ctx,
             RcHeightfield solid)
         {
             // Compact the heightfield so that it is faster to handle from now on.
@@ -305,7 +305,7 @@ namespace DotRecast.Recast
 
         public RcHeightfieldLayerSet BuildLayers(IInputGeomProvider geom, RecastBuilderConfig builderCfg)
         {
-            Telemetry ctx = new Telemetry();
+            RcTelemetry ctx = new RcTelemetry();
             RcHeightfield solid = RecastVoxelization.BuildSolidHeightfield(geom, builderCfg, ctx);
             FilterHeightfield(solid, builderCfg.cfg, ctx);
             RcCompactHeightfield chf = BuildCompactHeightfield(geom, builderCfg.cfg, ctx, solid);

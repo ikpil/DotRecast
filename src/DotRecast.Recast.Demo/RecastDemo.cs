@@ -611,8 +611,8 @@ public class RecastDemo
                 var telemetries = buildResult.RecastBuilderResults
                     .Select(x => x.GetTelemetry())
                     .SelectMany(x => x.ToList())
-                    .GroupBy(x => x.Item1)
-                    .ToImmutableSortedDictionary(x => x.Key, x => x.Sum(y => y.Item2));
+                    .GroupBy(x => x.Key)
+                    .ToImmutableSortedDictionary(x => x.Key, x => x.Sum(y => y.Millis));
 
                 foreach (var (key, millis) in telemetries)
                 {

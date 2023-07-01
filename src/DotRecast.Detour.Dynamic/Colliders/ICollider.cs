@@ -23,6 +23,6 @@ namespace DotRecast.Detour.Dynamic.Colliders
     public interface ICollider
     {
         float[] Bounds();
-        void Rasterize(RcHeightfield hf, Telemetry telemetry);
+        void Rasterize(RcHeightfield hf, RcTelemetry telemetry);
     }
 }

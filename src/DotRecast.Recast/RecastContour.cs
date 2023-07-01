@@ -607,7 +607,7 @@ namespace DotRecast.Recast
             return new int[] { minx, minz, leftmost };
         }
 
-        private static void MergeRegionHoles(Telemetry ctx, RcContourRegion region)
+        private static void MergeRegionHoles(RcTelemetry ctx, RcContourRegion region)
         {
             // Sort holes from left to right.
             for (int i = 0; i < region.nholes; i++)
@@ -713,7 +713,7 @@ namespace DotRecast.Recast
         /// See the #rcConfig documentation for more information on the configuration parameters.
         ///
         /// @see rcAllocContourSet, rcCompactHeightfield, rcContourSet, rcConfig
-        public static RcContourSet BuildContours(Telemetry ctx, RcCompactHeightfield chf, float maxError, int maxEdgeLen,
+        public static RcContourSet BuildContours(RcTelemetry ctx, RcCompactHeightfield chf, float maxError, int maxEdgeLen,
             int buildFlags)
         {
             int w = chf.width;

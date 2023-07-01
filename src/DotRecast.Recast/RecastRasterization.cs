@@ -398,7 +398,7 @@ namespace DotRecast.Recast
      * @see Heightfield
      */
         public static void RasterizeTriangle(RcHeightfield heightfield, float[] verts, int v0, int v1, int v2, int area,
-            int flagMergeThreshold, Telemetry ctx)
+            int flagMergeThreshold, RcTelemetry ctx)
         {
             ctx.StartTimer("RASTERIZE_TRIANGLES");
 
@@ -429,7 +429,7 @@ namespace DotRecast.Recast
      * @see Heightfield
      */
         public static void RasterizeTriangles(RcHeightfield heightfield, float[] verts, int[] tris, int[] areaIds, int numTris,
-            int flagMergeThreshold, Telemetry ctx)
+            int flagMergeThreshold, RcTelemetry ctx)
         {
             ctx.StartTimer("RASTERIZE_TRIANGLES");
 
@@ -466,7 +466,7 @@ namespace DotRecast.Recast
      * @see Heightfield
      */
         public static void RasterizeTriangles(RcHeightfield heightfield, float[] verts, int[] areaIds, int numTris,
-            int flagMergeThreshold, Telemetry ctx)
+            int flagMergeThreshold, RcTelemetry ctx)
         {
             ctx.StartTimer("RASTERIZE_TRIANGLES");
 

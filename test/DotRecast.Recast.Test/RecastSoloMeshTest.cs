@@ -100,7 +100,7 @@ public class RecastSoloMeshTest
         long time = RcFrequency.Ticks;
         RcVec3f bmin = geomProvider.GetMeshBoundsMin();
         RcVec3f bmax = geomProvider.GetMeshBoundsMax();
-        Telemetry m_ctx = new Telemetry();
+        RcTelemetry m_ctx = new RcTelemetry();
         //
         // Step 1. Initialize build config.
         //
@@ -262,9 +262,9 @@ public class RecastSoloMeshTest
         Console.WriteLine("           " + (time3 - time) / TimeSpan.TicksPerMillisecond + " ms");
         SaveObj(filename.Substring(0, filename.LastIndexOf('.')) + "_" + partitionType + "_detail.obj", m_dmesh);
         SaveObj(filename.Substring(0, filename.LastIndexOf('.')) + "_" + partitionType + ".obj", m_pmesh);
-        foreach (var (key, millis) in m_ctx.ToList())
+        foreach (var rtt in m_ctx.ToList())
         {
-            Console.WriteLine($"{key} : {millis} ms");
+            Console.WriteLine($"{rtt.Key} : {rtt.Millis} ms");
         }
     }
 
