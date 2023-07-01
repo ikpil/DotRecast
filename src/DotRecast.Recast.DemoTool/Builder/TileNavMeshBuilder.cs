@@ -32,20 +32,19 @@ namespace DotRecast.Recast.DemoTool.Builder
         {
         }
 
-        public Tuple<IList<RecastBuilderResult>, DtNavMesh> Build(DemoInputGeomProvider geom, PartitionType partitionType,
+        public NavMeshBuildResult Build(DemoInputGeomProvider geom, PartitionType partitionType,
             float cellSize, float cellHeight, float agentHeight, float agentRadius, float agentMaxClimb,
             float agentMaxSlope, int regionMinSize, int regionMergeSize, float edgeMaxLen, float edgeMaxError,
             int vertsPerPoly, float detailSampleDist, float detailSampleMaxError, bool filterLowHangingObstacles,
             bool filterLedgeSpans, bool filterWalkableLowHeightSpans, int tileSize)
         {
-            List<RecastBuilderResult> rcResult = BuildRecastResult(geom, partitionType, cellSize, cellHeight, agentHeight,
+            List<RecastBuilderResult> results = BuildRecastResult(geom, partitionType, cellSize, cellHeight, agentHeight,
                 agentRadius, agentMaxClimb, agentMaxSlope, regionMinSize, regionMergeSize, edgeMaxLen, edgeMaxError,
                 vertsPerPoly, detailSampleDist, detailSampleMaxError, filterLowHangingObstacles, filterLedgeSpans,
                 filterWalkableLowHeightSpans, tileSize);
-            return Tuple.Create((IList<RecastBuilderResult>)rcResult,
-                BuildNavMesh(geom,
-                    BuildMeshData(geom, cellSize, cellHeight, agentHeight, agentRadius, agentMaxClimb, rcResult),
-                    cellSize, tileSize, vertsPerPoly));
+            var tileMeshData = BuildMeshData(geom, cellSize, cellHeight, agentHeight, agentRadius, agentMaxClimb, results);
+            var tileNavMesh = BuildNavMesh(geom, tileMeshData, cellSize, tileSize, vertsPerPoly);
+            return new NavMeshBuildResult(results, tileNavMesh);
         }
 
         private List<RecastBuilderResult> BuildRecastResult(DemoInputGeomProvider geom, PartitionType partitionType,
@@ -64,13 +63,10 @@ namespace DotRecast.Recast.DemoTool.Builder
             return rcBuilder.BuildTiles(geom, cfg, Task.Factory);
         }
 
-        private DtNavMesh BuildNavMesh(DemoInputGeomProvider geom, List<DtMeshData> meshData, float cellSize, int tileSize,
-            int vertsPerPoly)
+        private DtNavMesh BuildNavMesh(DemoInputGeomProvider geom, List<DtMeshData> meshData, float cellSize, int tileSize, int vertsPerPoly)
         {
             DtNavMeshParams navMeshParams = new DtNavMeshParams();
-            navMeshParams.orig.x = geom.GetMeshBoundsMin().x;
-            navMeshParams.orig.y = geom.GetMeshBoundsMin().y;
-            navMeshParams.orig.z = geom.GetMeshBoundsMin().z;
+            navMeshParams.orig = geom.GetMeshBoundsMin();
             navMeshParams.tileWidth = tileSize * cellSize;
             navMeshParams.tileHeight = tileSize * cellSize;
 

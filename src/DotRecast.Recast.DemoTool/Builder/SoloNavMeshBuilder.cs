@@ -26,7 +26,7 @@ namespace DotRecast.Recast.DemoTool.Builder
 {
     public class SoloNavMeshBuilder : AbstractNavMeshBuilder
     {
-        public Tuple<IList<RecastBuilderResult>, DtNavMesh> Build(DemoInputGeomProvider geom, PartitionType partitionType,
+        public NavMeshBuildResult Build(DemoInputGeomProvider geom, PartitionType partitionType,
             float cellSize, float cellHeight, float agentHeight, float agentRadius, float agentMaxClimb,
             float agentMaxSlope, int regionMinSize, int regionMergeSize, float edgeMaxLen, float edgeMaxError,
             int vertsPerPoly, float detailSampleDist, float detailSampleMaxError, bool filterLowHangingObstacles,
@@ -36,10 +36,10 @@ namespace DotRecast.Recast.DemoTool.Builder
                 agentRadius, agentMaxClimb, agentMaxSlope, regionMinSize, regionMergeSize, edgeMaxLen, edgeMaxError,
                 vertsPerPoly, detailSampleDist, detailSampleMaxError, filterLowHangingObstacles, filterLedgeSpans,
                 filterWalkableLowHeightSpans);
-            return Tuple.Create(ImmutableArray.Create(rcResult) as IList<RecastBuilderResult>,
-                BuildNavMesh(
-                    BuildMeshData(geom, cellSize, cellHeight, agentHeight, agentRadius, agentMaxClimb, rcResult),
-                    vertsPerPoly));
+
+            var meshData = BuildMeshData(geom, cellSize, cellHeight, agentHeight, agentRadius, agentMaxClimb, rcResult);
+            var navMesh = BuildNavMesh(meshData, vertsPerPoly);
+            return new NavMeshBuildResult(ImmutableArray.Create(rcResult), navMesh);
         }
 
         private DtNavMesh BuildNavMesh(DtMeshData meshData, int vertsPerPoly)

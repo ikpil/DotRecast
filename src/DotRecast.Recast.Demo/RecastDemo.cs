@@ -551,7 +551,7 @@ public class RecastDemo
 
                 Logger.Information($"build");
 
-                Tuple<IList<RecastBuilderResult>, DtNavMesh> buildResult;
+                NavMeshBuildResult buildResult;
                 if (settings.tiled)
                 {
                     buildResult = tileNavMeshBuilder.Build(
@@ -600,7 +600,7 @@ public class RecastDemo
                     );
                 }
 
-                sample.Update(sample.GetInputGeom(), buildResult.Item1, buildResult.Item2);
+                sample.Update(sample.GetInputGeom(), buildResult.RecastBuilderResults, buildResult.NavMesh);
                 sample.SetChanged(false);
                 settingsView.SetBuildTime((RcFrequency.Ticks - t) / TimeSpan.TicksPerMillisecond);
                 //settingsUI.SetBuildTelemetry(buildResult.Item1.Select(x => x.GetTelemetry()).ToList());
@@ -608,7 +608,7 @@ public class RecastDemo
 
                 Logger.Information($"build times");
                 Logger.Information($"-----------------------------------------");
-                var telemetries = buildResult.Item1
+                var telemetries = buildResult.RecastBuilderResults
                     .Select(x => x.GetTelemetry())
                     .SelectMany(x => x.ToList())
                     .GroupBy(x => x.Item1)
