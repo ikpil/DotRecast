@@ -29,7 +29,7 @@ namespace DotRecast.Detour.Crowd
         public const int TIMING_SAMPLES = 10;
         private float _maxTimeToEnqueueRequest;
         private float _maxTimeToFindPath;
-        
+
         private readonly Dictionary<string, long> _executionTimings = new Dictionary<string, long>();
         private readonly Dictionary<string, List<long>> _executionTimingSamples = new Dictionary<string, List<long>>();
 
@@ -43,9 +43,12 @@ namespace DotRecast.Detour.Crowd
             return _maxTimeToFindPath;
         }
 
-        public Dictionary<string, long> ToExecutionTimings()
+        public List<RcTelemetryTick> ToExecutionTimings()
         {
-            return _executionTimings;
+            return _executionTimings
+                .Select(e => new RcTelemetryTick(e.Key, e.Value))
+                .OrderByDescending(x => x.Ticks)
+                .ToList();
         }
 
         public void Start()

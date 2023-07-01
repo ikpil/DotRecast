@@ -22,7 +22,6 @@ using System.Linq;
 using DotRecast.Core;
 using DotRecast.Detour;
 using DotRecast.Detour.Crowd;
-
 using DotRecast.Recast.DemoTool.Builder;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.DemoTool;
@@ -131,15 +130,12 @@ public class CrowdProfilingTool
         {
             ImGui.Text($"Max time to enqueue request: {crowd.Telemetry().MaxTimeToEnqueueRequest()} s");
             ImGui.Text($"Max time to find path: {crowd.Telemetry().MaxTimeToFindPath()} s");
-            List<Tuple<string, long>> timings = crowd.Telemetry()
-                .ToExecutionTimings()
-                .Select(e => Tuple.Create(e.Key, e.Value))
-                .OrderBy(x => x.Item2)
-                .ToList();
+            var timings = crowd.Telemetry()
+                .ToExecutionTimings();
 
-            foreach (Tuple<string, long> e in timings)
+            foreach (var rtt in timings)
             {
-                ImGui.Text($"{e.Item1}: {e.Item2 / TimeSpan.TicksPerMicrosecond} us");
+                ImGui.Text($"{rtt.Key}: {rtt.Micros} us");
             }
 
             ImGui.Text($"Update Time: {crowdUpdateTime} ms");

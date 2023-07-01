@@ -7,6 +7,7 @@ namespace DotRecast.Core
         public readonly string Key;
         public readonly long Ticks;
         public long Millis => Ticks / TimeSpan.TicksPerMillisecond;
+        public long Micros => Ticks / 10; // TimeSpan.TicksPerMicrosecond;
 
         public RcTelemetryTick(string key, long ticks)
         {
