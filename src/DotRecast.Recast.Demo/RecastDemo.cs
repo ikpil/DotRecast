@@ -493,31 +493,6 @@ public class RecastDemo : IRecastDemoChannel
             simIter++;
         }
 
-        if (settingsView.IsNavMeshInputTrigerred())
-        {
-            // try (MemoryStack stack = StackPush()) {
-            //     PointerBuffer aFilterPatterns = stack.MallocPointer(4);
-            //     aFilterPatterns.Put(stack.UTF8("*.bin"));
-            //     aFilterPatterns.Put(stack.UTF8("*.zip"));
-            //     aFilterPatterns.Put(stack.UTF8("*.bytes"));
-            //     aFilterPatterns.Put(stack.UTF8("*.navmesh"));
-            //     aFilterPatterns.Flip();
-            //     string filename = TinyFileDialogs.Tinyfd_openFileDialog("Open Nav Mesh File", "", aFilterPatterns,
-            //         "Nav Mesh File", false);
-            //     if (filename != null) {
-            //         File file = new File(filename);
-            //         if (file.Exists()) {
-            //             try {
-            //                 LoadNavMesh(file, filename);
-            //                 geom = null;
-            //             } catch (Exception e) {
-            //                 Console.WriteLine(e);
-            //             }
-            //         }
-            //     }
-            // }
-        }
-
         if (!_mouseOverMenu)
         {
             GLU.GlhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 0.0f, modelviewMatrix, projectionMatrix, viewport, ref rayStart);
@@ -700,17 +675,25 @@ public class RecastDemo : IRecastDemoChannel
 
     private void OnMessage(IRecastDemoMessage message)
     {
-        if (message is SourceGeomFileSelectedEvent args)
+        if (message is GeomLoadBeganEvent args)
         {
-            OnSourceGeomFileSelected(args);
+            OnGeomLoadBegan(args);
         }
-        else if (message is NavMeshBuildEvent args2)
+        else if (message is NavMeshBuildBeganEvent args2)
         {
-            OnNavMeshBuild(args2);
+            OnNavMeshBuildBegan(args2);
+        }
+        else if (message is NavMeshSaveBeganEvent args3)
+        {
+            OnNavMeshSaveBegan(args3);
+        }
+        else if (message is NavMeshLoadBeganEvent args4)
+        {
+            OnNavMeshLoadBegan(args4);
         }
     }
 
-    private void OnSourceGeomFileSelected(SourceGeomFileSelectedEvent args)
+    private void OnGeomLoadBegan(GeomLoadBeganEvent args)
     {
         var bytes = Loader.ToBytes(args.FilePath);
         var geom = LoadInputMesh(bytes);
@@ -718,7 +701,7 @@ public class RecastDemo : IRecastDemoChannel
         sample.Update(geom, ImmutableArray<RecastBuilderResult>.Empty, null);
     }
 
-    private void OnNavMeshBuild(NavMeshBuildEvent args)
+    private void OnNavMeshBuildBegan(NavMeshBuildBeganEvent args)
     {
         if (null == sample.GetInputGeom())
         {
@@ -817,5 +800,35 @@ public class RecastDemo : IRecastDemoChannel
         {
             Logger.Information($"{key}: {millis} ms");
         }
+    }
+
+    private void OnNavMeshSaveBegan(NavMeshSaveBeganEvent args)
+    {
+        
+    }
+
+    private void OnNavMeshLoadBegan(NavMeshLoadBeganEvent args)
+    {
+        // try (MemoryStack stack = StackPush()) {
+        //     PointerBuffer aFilterPatterns = stack.MallocPointer(4);
+        //     aFilterPatterns.Put(stack.UTF8("*.bin"));
+        //     aFilterPatterns.Put(stack.UTF8("*.zip"));
+        //     aFilterPatterns.Put(stack.UTF8("*.bytes"));
+        //     aFilterPatterns.Put(stack.UTF8("*.navmesh"));
+        //     aFilterPatterns.Flip();
+        //     string filename = TinyFileDialogs.Tinyfd_openFileDialog("Open Nav Mesh File", "", aFilterPatterns,
+        //         "Nav Mesh File", false);
+        //     if (filename != null) {
+        //         File file = new File(filename);
+        //         if (file.Exists()) {
+        //             try {
+        //                 LoadNavMesh(file, filename);
+        //                 geom = null;
+        //             } catch (Exception e) {
+        //                 Console.WriteLine(e);
+        //             }
+        //         }
+        //     }
+        // }        
     }
 }

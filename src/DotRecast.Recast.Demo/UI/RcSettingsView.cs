@@ -44,8 +44,6 @@ public class RcSettingsView : IRcView
 
     private int drawMode = DrawMode.DRAWMODE_NAVMESH.Idx;
 
-    private bool navMeshInputTrigerred;
-
     private bool _isHovered;
     public bool IsHovered() => _isHovered;
 
@@ -76,7 +74,7 @@ public class RcSettingsView : IRcView
         var settings = _sample.GetSettings();
 
         ImGui.Begin("Properties");
-        
+
         // size reset
         var size = ImGui.GetItemRectSize();
         if (32 >= size.X && 32 >= size.Y)
@@ -104,7 +102,7 @@ public class RcSettingsView : IRcView
             var picker = ImFilePicker.GetFilePicker(strLoadSourceGeom, Path.Combine(Environment.CurrentDirectory), ".obj");
             if (picker.Draw())
             {
-                _channel.SendMessage(new SourceGeomFileSelectedEvent()
+                _channel.SendMessage(new GeomLoadBeganEvent()
                 {
                     FilePath = picker.SelectedFile,
                 });
@@ -192,9 +190,9 @@ public class RcSettingsView : IRcView
         ImGui.Separator();
         if (ImGui.Button("Build NavMesh"))
         {
-            _channel.SendMessage(new NavMeshBuildEvent());
+            _channel.SendMessage(new NavMeshBuildBeganEvent());
         }
-        
+
         {
             const string strLoadNavMesh = "Load NavMesh";
             if (ImGui.Button(strLoadNavMesh))
@@ -208,7 +206,10 @@ public class RcSettingsView : IRcView
                 var picker = ImFilePicker.GetFilePicker(strLoadNavMesh, Path.Combine(Environment.CurrentDirectory));
                 if (picker.Draw())
                 {
-                    Logger.Information(picker.SelectedFile);
+                    _channel.SendMessage(new NavMeshLoadBeganEvent()
+                    {
+                        FilePath = picker.SelectedFile,
+                    });
                     ImFilePicker.RemoveFilePicker(strLoadNavMesh);
                 }
 
@@ -216,12 +217,9 @@ public class RcSettingsView : IRcView
             }
         }
 
+        if (ImGui.Button("Save NavMesh"))
         {
-            const string strSaveNavMesh = "Save NavMesh";
-            if (ImGui.Button(strSaveNavMesh))
-            {
-                
-            }
+            _channel.SendMessage(new NavMeshSaveBeganEvent());
         }
 
 
@@ -266,10 +264,5 @@ public class RcSettingsView : IRcView
     public void SetMaxPolys(int maxPolys)
     {
         this.maxPolys = maxPolys;
-    }
-
-    public bool IsNavMeshInputTrigerred()
-    {
-        return navMeshInputTrigerred;
     }
 }
