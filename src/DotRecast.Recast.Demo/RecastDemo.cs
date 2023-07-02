@@ -66,7 +66,6 @@ public class RecastDemo : IRecastDemoChannel
 
     //private readonly RecastDebugDraw dd;
     private NavMeshRenderer renderer;
-    private bool building = false;
     private float timeAcc = 0;
     private float camr = 1000;
 
@@ -519,108 +518,6 @@ public class RecastDemo : IRecastDemoChannel
             // }
         }
 
-        if (settingsView.IsBuildTriggered() && sample.GetInputGeom() != null)
-        {
-            if (!building)
-            {
-                var settings = sample.GetSettings();
-                var partitioning = settings.partitioning;
-                var cellSize = settings.cellSize;
-                var cellHeight = settings.cellHeight;
-                var agentHeight = settings.agentHeight;
-                var agentRadius = settings.agentRadius;
-                var agentMaxClimb = settings.agentMaxClimb;
-                var agentMaxSlope = settings.agentMaxSlope;
-                var regionMinSize = settings.minRegionSize;
-                var regionMergeSize = settings.mergedRegionSize;
-                var edgeMaxLen = settings.edgeMaxLen;
-                var edgeMaxError = settings.edgeMaxError;
-                var vertsPerPoly = settings.vertsPerPoly;
-                var detailSampleDist = settings.detailSampleDist;
-                var detailSampleMaxError = settings.detailSampleMaxError;
-                var filterLowHangingObstacles = settings.filterLowHangingObstacles;
-                var filterLedgeSpans = settings.filterLedgeSpans;
-                var filterWalkableLowHeightSpans = settings.filterWalkableLowHeightSpans;
-                var tileSize = settings.tileSize;
-
-                long t = RcFrequency.Ticks;
-
-                Logger.Information($"build");
-
-                NavMeshBuildResult buildResult;
-                if (settings.tiled)
-                {
-                    buildResult = tileNavMeshBuilder.Build(
-                        sample.GetInputGeom(),
-                        partitioning,
-                        cellSize,
-                        cellHeight,
-                        agentHeight,
-                        agentRadius,
-                        agentMaxClimb,
-                        agentMaxSlope,
-                        regionMinSize,
-                        regionMergeSize,
-                        edgeMaxLen,
-                        edgeMaxError,
-                        vertsPerPoly,
-                        detailSampleDist,
-                        detailSampleMaxError,
-                        filterLowHangingObstacles,
-                        filterLedgeSpans,
-                        filterWalkableLowHeightSpans,
-                        tileSize
-                    );
-                }
-                else
-                {
-                    buildResult = soloNavMeshBuilder.Build(
-                        sample.GetInputGeom(),
-                        partitioning,
-                        cellSize,
-                        cellHeight,
-                        agentHeight,
-                        agentRadius,
-                        agentMaxClimb,
-                        agentMaxSlope,
-                        regionMinSize,
-                        regionMergeSize,
-                        edgeMaxLen,
-                        edgeMaxError,
-                        vertsPerPoly,
-                        detailSampleDist,
-                        detailSampleMaxError,
-                        filterLowHangingObstacles,
-                        filterLedgeSpans,
-                        filterWalkableLowHeightSpans
-                    );
-                }
-
-                sample.Update(sample.GetInputGeom(), buildResult.RecastBuilderResults, buildResult.NavMesh);
-                sample.SetChanged(false);
-                settingsView.SetBuildTime((RcFrequency.Ticks - t) / TimeSpan.TicksPerMillisecond);
-                //settingsUI.SetBuildTelemetry(buildResult.Item1.Select(x => x.GetTelemetry()).ToList());
-                toolset.SetSample(sample);
-
-                Logger.Information($"build times");
-                Logger.Information($"-----------------------------------------");
-                var telemetries = buildResult.RecastBuilderResults
-                    .Select(x => x.GetTelemetry())
-                    .SelectMany(x => x.ToList())
-                    .GroupBy(x => x.Key)
-                    .ToImmutableSortedDictionary(x => x.Key, x => x.Sum(y => y.Millis));
-
-                foreach (var (key, millis) in telemetries)
-                {
-                    Logger.Information($"{key}: {millis} ms");
-                }
-            }
-        }
-        else
-        {
-            building = false;
-        }
-
         if (!_mouseOverMenu)
         {
             GLU.GlhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 0.0f, modelviewMatrix, projectionMatrix, viewport, ref rayStart);
@@ -801,15 +698,124 @@ public class RecastDemo : IRecastDemoChannel
         _messages.Enqueue(message);
     }
 
-    public void OnMessage(IRecastDemoMessage message)
+    private void OnMessage(IRecastDemoMessage message)
     {
-        if (message is SourceGeomSelected args)
+        if (message is SourceGeomFileSelectedEvent args)
         {
-            var bytes = Loader.ToBytes(args.FilePath);
-            var geom = LoadInputMesh(bytes);
-
-            sample.Update(geom, ImmutableArray<RecastBuilderResult>.Empty, null);
+            OnSourceGeomFileSelected(args);
+        }
+        else if (message is NavMeshBuildEvent args2)
+        {
+            OnNavMeshBuild(args2);
         }
     }
-    
+
+    private void OnSourceGeomFileSelected(SourceGeomFileSelectedEvent args)
+    {
+        var bytes = Loader.ToBytes(args.FilePath);
+        var geom = LoadInputMesh(bytes);
+
+        sample.Update(geom, ImmutableArray<RecastBuilderResult>.Empty, null);
+    }
+
+    private void OnNavMeshBuild(NavMeshBuildEvent args)
+    {
+        if (null == sample.GetInputGeom())
+        {
+            Logger.Information($"not found source geom");
+            return;
+        }
+
+        var settings = sample.GetSettings();
+        var partitioning = settings.partitioning;
+        var cellSize = settings.cellSize;
+        var cellHeight = settings.cellHeight;
+        var agentHeight = settings.agentHeight;
+        var agentRadius = settings.agentRadius;
+        var agentMaxClimb = settings.agentMaxClimb;
+        var agentMaxSlope = settings.agentMaxSlope;
+        var regionMinSize = settings.minRegionSize;
+        var regionMergeSize = settings.mergedRegionSize;
+        var edgeMaxLen = settings.edgeMaxLen;
+        var edgeMaxError = settings.edgeMaxError;
+        var vertsPerPoly = settings.vertsPerPoly;
+        var detailSampleDist = settings.detailSampleDist;
+        var detailSampleMaxError = settings.detailSampleMaxError;
+        var filterLowHangingObstacles = settings.filterLowHangingObstacles;
+        var filterLedgeSpans = settings.filterLedgeSpans;
+        var filterWalkableLowHeightSpans = settings.filterWalkableLowHeightSpans;
+        var tileSize = settings.tileSize;
+
+        long t = RcFrequency.Ticks;
+
+        Logger.Information($"build");
+
+        NavMeshBuildResult buildResult;
+        if (settings.tiled)
+        {
+            buildResult = tileNavMeshBuilder.Build(
+                sample.GetInputGeom(),
+                partitioning,
+                cellSize,
+                cellHeight,
+                agentHeight,
+                agentRadius,
+                agentMaxClimb,
+                agentMaxSlope,
+                regionMinSize,
+                regionMergeSize,
+                edgeMaxLen,
+                edgeMaxError,
+                vertsPerPoly,
+                detailSampleDist,
+                detailSampleMaxError,
+                filterLowHangingObstacles,
+                filterLedgeSpans,
+                filterWalkableLowHeightSpans,
+                tileSize
+            );
+        }
+        else
+        {
+            buildResult = soloNavMeshBuilder.Build(
+                sample.GetInputGeom(),
+                partitioning,
+                cellSize,
+                cellHeight,
+                agentHeight,
+                agentRadius,
+                agentMaxClimb,
+                agentMaxSlope,
+                regionMinSize,
+                regionMergeSize,
+                edgeMaxLen,
+                edgeMaxError,
+                vertsPerPoly,
+                detailSampleDist,
+                detailSampleMaxError,
+                filterLowHangingObstacles,
+                filterLedgeSpans,
+                filterWalkableLowHeightSpans
+            );
+        }
+
+        sample.Update(sample.GetInputGeom(), buildResult.RecastBuilderResults, buildResult.NavMesh);
+        sample.SetChanged(false);
+        settingsView.SetBuildTime((RcFrequency.Ticks - t) / TimeSpan.TicksPerMillisecond);
+        //settingsUI.SetBuildTelemetry(buildResult.Item1.Select(x => x.GetTelemetry()).ToList());
+        toolset.SetSample(sample);
+
+        Logger.Information($"build times");
+        Logger.Information($"-----------------------------------------");
+        var telemetries = buildResult.RecastBuilderResults
+            .Select(x => x.GetTelemetry())
+            .SelectMany(x => x.ToList())
+            .GroupBy(x => x.Key)
+            .ToImmutableSortedDictionary(x => x.Key, x => x.Sum(y => y.Millis));
+
+        foreach (var (key, millis) in telemetries)
+        {
+            Logger.Information($"{key}: {millis} ms");
+        }
+    }
 }

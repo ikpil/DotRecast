@@ -35,7 +35,6 @@ public class RcSettingsView : IRcView
     private static readonly ILogger Logger = Log.ForContext<RcSettingsView>();
 
     private readonly IRecastDemoChannel _channel;
-    private bool buildTriggered;
     private long buildTime;
 
     private readonly int[] voxels = new int[2];
@@ -105,7 +104,7 @@ public class RcSettingsView : IRcView
             var picker = ImFilePicker.GetFilePicker(strLoadSourceGeom, Path.Combine(Environment.CurrentDirectory), ".obj");
             if (picker.Draw())
             {
-                _channel.SendMessage(new SourceGeomSelected()
+                _channel.SendMessage(new SourceGeomFileSelectedEvent()
                 {
                     FilePath = picker.SelectedFile,
                 });
@@ -191,7 +190,11 @@ public class RcSettingsView : IRcView
         ImGui.Text($"Build Time: {buildTime} ms");
 
         ImGui.Separator();
-        buildTriggered = ImGui.Button("Build NavMesh");
+        if (ImGui.Button("Build NavMesh"))
+        {
+            _channel.SendMessage(new NavMeshBuildEvent());
+        }
+        
         {
             const string strLoadNavMesh = "Load NavMesh";
             if (ImGui.Button(strLoadNavMesh))
@@ -232,13 +235,6 @@ public class RcSettingsView : IRcView
 
         ImGui.End();
     }
-
-
-    public bool IsBuildTriggered()
-    {
-        return buildTriggered;
-    }
-
 
     public void SetBuildTime(long buildTime)
     {
