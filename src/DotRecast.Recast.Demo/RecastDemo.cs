@@ -37,6 +37,7 @@ using DotRecast.Detour.Extras.Unity.Astar;
 using DotRecast.Detour.Io;
 using DotRecast.Recast.DemoTool.Builder;
 using DotRecast.Recast.Demo.Draw;
+using DotRecast.Recast.Demo.Messages;
 using DotRecast.Recast.DemoTool.Geom;
 using DotRecast.Recast.Demo.Tools;
 using DotRecast.Recast.Demo.UI;
@@ -48,7 +49,7 @@ using Window = Silk.NET.Windowing.Window;
 
 namespace DotRecast.Recast.Demo;
 
-public class RecastDemo
+public class RecastDemo : IRecastDemoChannel
 {
     private static readonly ILogger Logger = Log.ForContext<RecastDemo>();
 
@@ -117,9 +118,11 @@ public class RecastDemo
 
     private long prevFrameTime;
     private RecastDebugDraw dd;
+    private Queue<IRecastDemoMessage> _messages;
 
     public RecastDemo()
     {
+        _messages = new();
     }
 
     public void Run()
@@ -370,7 +373,7 @@ public class RecastDemo
         DemoInputGeomProvider geom = LoadInputMesh(Loader.ToBytes("nav_test.obj"));
         sample = new Sample(geom, ImmutableArray<RecastBuilderResult>.Empty, null);
 
-        settingsView = new RcSettingsView();
+        settingsView = new RcSettingsView(this);
         settingsView.SetSample(sample);
 
         toolset = new RcToolsetView(
@@ -491,14 +494,7 @@ public class RecastDemo
             simIter++;
         }
 
-        if (settingsView.IsMeshInputTrigerred())
-        {
-            var bytes = Loader.ToBytes(settingsView.GetMeshInputFilePath());
-            var geom = LoadInputMesh(bytes);
-
-            sample.Update(geom, ImmutableArray<RecastBuilderResult>.Empty, null);
-        }
-        else if (settingsView.IsNavMeshInputTrigerred())
+        if (settingsView.IsNavMeshInputTrigerred())
         {
             // try (MemoryStack stack = StackPush()) {
             //     PointerBuffer aFilterPatterns = stack.MallocPointer(4);
@@ -758,6 +754,11 @@ public class RecastDemo
             toolset.SetSample(sample);
         }
 
+        if (_messages.TryDequeue(out var msg))
+        {
+            OnMessage(msg);
+        }
+
 
         var io = ImGui.GetIO();
 
@@ -794,4 +795,21 @@ public class RecastDemo
 
         window.SwapBuffers();
     }
+
+    public void SendMessage(IRecastDemoMessage message)
+    {
+        _messages.Enqueue(message);
+    }
+
+    public void OnMessage(IRecastDemoMessage message)
+    {
+        if (message is SourceGeomSelected args)
+        {
+            var bytes = Loader.ToBytes(args.FilePath);
+            var geom = LoadInputMesh(bytes);
+
+            sample.Update(geom, ImmutableArray<RecastBuilderResult>.Empty, null);
+        }
+    }
+    
 }

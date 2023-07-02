@@ -20,7 +20,6 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using DotRecast.Core;
 
 namespace DotRecast.Detour
