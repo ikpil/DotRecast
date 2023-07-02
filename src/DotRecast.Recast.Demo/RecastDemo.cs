@@ -72,6 +72,7 @@ public class RecastDemo : IRecastDemoChannel
     private readonly SoloNavMeshBuilder soloNavMeshBuilder = new SoloNavMeshBuilder();
     private readonly TileNavMeshBuilder tileNavMeshBuilder = new TileNavMeshBuilder();
 
+    private string _lastGeomFileName;
     private Sample sample;
 
     private bool processHitTest = false;
@@ -297,9 +298,12 @@ public class RecastDemo : IRecastDemoChannel
         return window;
     }
 
-    private DemoInputGeomProvider LoadInputMesh(byte[] stream)
+    private DemoInputGeomProvider LoadInputMesh(string filename)
     {
-        DemoInputGeomProvider geom = DemoObjImporter.Load(stream);
+        var bytes = Loader.ToBytes(filename);
+        DemoInputGeomProvider geom = DemoObjImporter.Load(bytes);
+
+        _lastGeomFileName = filename;
         return geom;
     }
 
@@ -372,7 +376,7 @@ public class RecastDemo : IRecastDemoChannel
         ImGuiFontConfig imGuiFontConfig = new(Path.Combine("resources\\fonts", "DroidSans.ttf"), 16, null);
         _imgui = new ImGuiController(_gl, window, _input, imGuiFontConfig);
 
-        DemoInputGeomProvider geom = LoadInputMesh(Loader.ToBytes("nav_test.obj"));
+        DemoInputGeomProvider geom = LoadInputMesh("nav_test.obj");
         sample = new Sample(geom, ImmutableArray<RecastBuilderResult>.Empty, null);
 
         settingsView = new RcSettingsView(this);
@@ -698,8 +702,7 @@ public class RecastDemo : IRecastDemoChannel
 
     private void OnGeomLoadBegan(GeomLoadBeganEvent args)
     {
-        var bytes = Loader.ToBytes(args.FilePath);
-        var geom = LoadInputMesh(bytes);
+        var geom = LoadInputMesh(args.FilePath);
 
         sample.Update(geom, ImmutableArray<RecastBuilderResult>.Empty, null);
     }
@@ -807,6 +810,24 @@ public class RecastDemo : IRecastDemoChannel
 
     private void OnNavMeshSaveBegan(NavMeshSaveBeganEvent args)
     {
+        var navMesh = sample.GetNavMesh();
+        if (null == navMesh)
+        {
+            Logger.Error("navmesh is null");
+            return;
+        }
+
+        DateTime now = DateTime.Now;
+        string ymdhms = $"{now:yyyyMMdd_HHmmss}";
+        var filename = Path.GetFileNameWithoutExtension(_lastGeomFileName);
+        var navmeshFilePath = $"{filename}_{ymdhms}.navmesh";
+        
+        using var fs = new FileStream(navmeshFilePath, FileMode.Create, FileAccess.Write);
+        using var bw = new BinaryWriter(fs);
+
+        var writer = new DtMeshSetWriter();
+        writer.Write(bw, navMesh, RcByteOrder.LITTLE_ENDIAN, true);
+        Logger.Information($"saved navmesh - {navmeshFilePath}");
     }
 
     private void OnNavMeshLoadBegan(NavMeshLoadBeganEvent args)
