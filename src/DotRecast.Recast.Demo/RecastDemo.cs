@@ -117,7 +117,7 @@ public class RecastDemo : IRecastDemoChannel
 
     private long prevFrameTime;
     private RecastDebugDraw dd;
-    private Queue<IRecastDemoMessage> _messages;
+    private readonly Queue<IRecastDemoMessage> _messages;
 
     public RecastDemo()
     {
@@ -174,9 +174,7 @@ public class RecastDemo : IRecastDemoChannel
         if (pan)
         {
             float[] modelviewMatrix = dd.ViewMatrix(cameraPos, cameraEulers);
-            cameraPos.x = origCameraPos.x;
-            cameraPos.y = origCameraPos.y;
-            cameraPos.z = origCameraPos.z;
+            cameraPos = origCameraPos;
 
             cameraPos.x -= 0.1f * dx * modelviewMatrix[0];
             cameraPos.y -= 0.1f * dx * modelviewMatrix[4];
@@ -307,25 +305,30 @@ public class RecastDemo : IRecastDemoChannel
 
     private void LoadNavMesh(FileStream file, string filename)
     {
-        DtNavMesh mesh = null;
-        if (filename.EndsWith(".zip") || filename.EndsWith(".bytes"))
+        try
         {
-            UnityAStarPathfindingImporter importer = new UnityAStarPathfindingImporter();
-            mesh = importer.Load(file)[0];
-        }
-        else if (filename.EndsWith(".bin") || filename.EndsWith(".navmesh"))
-        {
-            DtMeshSetReader reader = new DtMeshSetReader();
-            using (var fis = new BinaryReader(file))
+            DtNavMesh mesh = null;
+            if (filename.EndsWith(".zip"))
             {
-                mesh = reader.Read(fis, 6);
+                UnityAStarPathfindingImporter importer = new UnityAStarPathfindingImporter();
+                mesh = importer.Load(file)[0];
+            }
+            else
+            {
+                using var br = new BinaryReader(file);
+                DtMeshSetReader reader = new DtMeshSetReader();
+                mesh = reader.Read(br, 6);
+            }
+
+            if (null != mesh)
+            {
+                sample = new Sample(sample.GetInputGeom(), ImmutableArray<RecastBuilderResult>.Empty, mesh);
+                toolset.SetEnabled(true);
             }
         }
-
-        if (mesh != null)
+        catch (Exception e)
         {
-            //sample = new Sample(null, ImmutableArray<RecastBuilderResult>.Empty, mesh, settingsUI, dd);
-            toolset.SetEnabled(true);
+            Logger.Error(e, "");
         }
     }
 
@@ -617,7 +620,7 @@ public class RecastDemo : IRecastDemoChannel
                 cameraPos.x = (bmax.x + bmin.x) / 2 + camr;
                 cameraPos.y = (bmax.y + bmin.y) / 2 + camr;
                 cameraPos.z = (bmax.z + bmin.z) / 2 + camr;
-                camr *= 3;
+                camr *= 5;
                 cameraEulers[0] = 45;
                 cameraEulers[1] = -45;
             }
@@ -804,31 +807,30 @@ public class RecastDemo : IRecastDemoChannel
 
     private void OnNavMeshSaveBegan(NavMeshSaveBeganEvent args)
     {
-        
     }
 
     private void OnNavMeshLoadBegan(NavMeshLoadBeganEvent args)
     {
-        // try (MemoryStack stack = StackPush()) {
-        //     PointerBuffer aFilterPatterns = stack.MallocPointer(4);
-        //     aFilterPatterns.Put(stack.UTF8("*.bin"));
-        //     aFilterPatterns.Put(stack.UTF8("*.zip"));
-        //     aFilterPatterns.Put(stack.UTF8("*.bytes"));
-        //     aFilterPatterns.Put(stack.UTF8("*.navmesh"));
-        //     aFilterPatterns.Flip();
-        //     string filename = TinyFileDialogs.Tinyfd_openFileDialog("Open Nav Mesh File", "", aFilterPatterns,
-        //         "Nav Mesh File", false);
-        //     if (filename != null) {
-        //         File file = new File(filename);
-        //         if (file.Exists()) {
-        //             try {
-        //                 LoadNavMesh(file, filename);
-        //                 geom = null;
-        //             } catch (Exception e) {
-        //                 Console.WriteLine(e);
-        //             }
-        //         }
-        //     }
-        // }        
+        if (string.IsNullOrEmpty(args.FilePath))
+        {
+            Logger.Error("file path is empty");
+            return;
+        }
+
+        if (!File.Exists(args.FilePath))
+        {
+            Logger.Error($"not found navmesh file - {args.FilePath}");
+            return;
+        }
+
+        try
+        {
+            using FileStream fs = new FileStream(args.FilePath, FileMode.Open, FileAccess.Read);
+            LoadNavMesh(fs, args.FilePath);
+        }
+        catch (Exception e)
+        {
+            Logger.Error(e, "");
+        }
     }
 }
