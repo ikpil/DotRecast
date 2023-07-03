@@ -64,7 +64,7 @@ namespace DotRecast.Detour
         }
 
         /** Sets the polygon type. (See: #dtPolyTypes.) */
-        public void SetType(int t)
+        public void SetPolyType(int t)
         {
             areaAndtype = (areaAndtype & 0x3f) | (t << 6);
         }

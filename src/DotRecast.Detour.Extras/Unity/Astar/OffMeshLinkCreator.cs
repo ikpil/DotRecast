@@ -40,7 +40,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                         startTile.polys[poly] = new DtPoly(poly, 2);
                         startTile.polys[poly].verts[0] = startTile.header.vertCount;
                         startTile.polys[poly].verts[1] = startTile.header.vertCount + 1;
-                        startTile.polys[poly].SetType(DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION);
+                        startTile.polys[poly].SetPolyType(DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION);
                         startTile.verts = RcArrayUtils.CopyOf(startTile.verts, startTile.verts.Length + 6);
                         startTile.header.polyCount++;
                         startTile.header.vertCount += 2;
