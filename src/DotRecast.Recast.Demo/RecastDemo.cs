@@ -324,7 +324,7 @@ public class RecastDemo : IRecastDemoChannel
 
             if (null != mesh)
             {
-                sample = new Sample(sample.GetInputGeom(), ImmutableArray<RecastBuilderResult>.Empty, mesh);
+                sample.Update(sample.GetInputGeom(), ImmutableArray<RecastBuilderResult>.Empty, mesh);
                 toolset.SetEnabled(true);
             }
         }
