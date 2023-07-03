@@ -95,7 +95,7 @@ namespace DotRecast.Recast
 
                 if (bevel && cross < 0.0f)
                 {
-                    if (n + 2 >= maxOutVerts)
+                    if (n + 2 > maxOutVerts)
                     {
                         return 0;
                     }
@@ -112,7 +112,7 @@ namespace DotRecast.Recast
                 }
                 else
                 {
-                    if (n + 1 >= maxOutVerts)
+                    if (n + 1 > maxOutVerts)
                     {
                         return 0;
                     }
