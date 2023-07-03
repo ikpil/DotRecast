@@ -94,8 +94,6 @@ public class RecastDemo : IRecastDemoChannel
     private readonly float[] cameraEulers = { 45, -45 };
     private RcVec3f cameraPos = RcVec3f.Of(0, 0, 0);
 
-    private RcVec3f rayStart = new RcVec3f();
-    private RcVec3f rayEnd = new RcVec3f();
 
     private float[] projectionMatrix = new float[16];
     private float[] modelviewMatrix = new float[16];
@@ -500,75 +498,21 @@ public class RecastDemo : IRecastDemoChannel
             simIter++;
         }
 
-        if (!_mouseOverMenu)
+        if (processHitTest)
         {
+            processHitTest = false;
+            
+            RcVec3f rayStart = new RcVec3f();
+            RcVec3f rayEnd = new RcVec3f();
+
             GLU.GlhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 0.0f, modelviewMatrix, projectionMatrix, viewport, ref rayStart);
             GLU.GlhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 1.0f, modelviewMatrix, projectionMatrix, viewport, ref rayEnd);
 
-            // Hit test mesh.
-            DemoInputGeomProvider inputGeom = sample.GetInputGeom();
-            if (processHitTest && sample != null)
+            SendMessage(new RaycastEvent()
             {
-                float? hit = null;
-                if (inputGeom != null)
-                {
-                    hit = inputGeom.RaycastMesh(rayStart, rayEnd);
-                }
-
-                if (!hit.HasValue && sample.GetNavMesh() != null)
-                {
-                    hit = NavMeshRaycast.Raycast(sample.GetNavMesh(), rayStart, rayEnd);
-                }
-
-                if (!hit.HasValue && sample.GetRecastResults() != null)
-                {
-                    hit = PolyMeshRaycast.Raycast(sample.GetRecastResults(), rayStart, rayEnd);
-                }
-
-                RcVec3f rayDir = RcVec3f.Of(rayEnd.x - rayStart.x, rayEnd.y - rayStart.y, rayEnd.z - rayStart.z);
-                IRcTool rayTool = toolset.GetTool();
-                rayDir.Normalize();
-                if (rayTool != null)
-                {
-                    Logger.Information($"click ray - tool({rayTool.GetTool().GetName()}) rayStart({rayStart.x:0.#},{rayStart.y:0.#},{rayStart.z:0.#}) pos({rayDir.x:0.#},{rayDir.y:0.#},{rayDir.z:0.#}) shift({processHitTestShift})");
-                    rayTool.HandleClickRay(rayStart, rayDir, processHitTestShift);
-                }
-
-                if (hit.HasValue)
-                {
-                    float hitTime = hit.Value;
-                    if (0 != (_modState & KeyModState.Control))
-                    {
-                        // Marker
-                        markerPositionSet = true;
-                        markerPosition.x = rayStart.x + (rayEnd.x - rayStart.x) * hitTime;
-                        markerPosition.y = rayStart.y + (rayEnd.y - rayStart.y) * hitTime;
-                        markerPosition.z = rayStart.z + (rayEnd.z - rayStart.z) * hitTime;
-                    }
-                    else
-                    {
-                        RcVec3f pos = new RcVec3f();
-                        pos.x = rayStart.x + (rayEnd.x - rayStart.x) * hitTime;
-                        pos.y = rayStart.y + (rayEnd.y - rayStart.y) * hitTime;
-                        pos.z = rayStart.z + (rayEnd.z - rayStart.z) * hitTime;
-                        if (rayTool != null)
-                        {
-                            Logger.Information($"click - tool({rayTool.GetTool().GetName()}) rayStart({rayStart.x:0.#},{rayStart.y:0.#},{rayStart.z:0.#}) pos({pos.x:0.#},{pos.y:0.#},{pos.z:0.#}) shift({processHitTestShift})");
-                            rayTool.HandleClick(rayStart, pos, processHitTestShift);
-                        }
-                    }
-                }
-                else
-                {
-                    if (0 != (_modState & KeyModState.Control))
-                    {
-                        // Marker
-                        markerPositionSet = false;
-                    }
-                }
-            }
-
-            processHitTest = false;
+                Start = rayStart,
+                End = rayEnd,
+            });
         }
 
         if (sample.IsChanged())
@@ -698,6 +642,10 @@ public class RecastDemo : IRecastDemoChannel
         {
             OnNavMeshLoadBegan(args4);
         }
+        else if (message is RaycastEvent args5)
+        {
+            OnRaycast(args5);
+        }
     }
 
     private void OnGeomLoadBegan(GeomLoadBeganEvent args)
@@ -821,7 +769,7 @@ public class RecastDemo : IRecastDemoChannel
         string ymdhms = $"{now:yyyyMMdd_HHmmss}";
         var filename = Path.GetFileNameWithoutExtension(_lastGeomFileName);
         var navmeshFilePath = $"{filename}_{ymdhms}.navmesh";
-        
+
         using var fs = new FileStream(navmeshFilePath, FileMode.Create, FileAccess.Write);
         using var bw = new BinaryWriter(fs);
 
@@ -852,6 +800,75 @@ public class RecastDemo : IRecastDemoChannel
         catch (Exception e)
         {
             Logger.Error(e, "");
+        }
+    }
+
+    private void OnRaycast(RaycastEvent args)
+    {
+        var rayStart = args.Start;
+        var rayEnd = args.End;
+
+        // Hit test mesh.
+        DemoInputGeomProvider inputGeom = sample.GetInputGeom();
+        if (sample == null)
+            return;
+
+        float? hit = null;
+        if (inputGeom != null)
+        {
+            hit = inputGeom.RaycastMesh(rayStart, rayEnd);
+        }
+
+        if (!hit.HasValue && sample.GetNavMesh() != null)
+        {
+            hit = NavMeshRaycast.Raycast(sample.GetNavMesh(), rayStart, rayEnd);
+        }
+
+        if (!hit.HasValue && sample.GetRecastResults() != null)
+        {
+            hit = PolyMeshRaycast.Raycast(sample.GetRecastResults(), rayStart, rayEnd);
+        }
+
+        RcVec3f rayDir = RcVec3f.Of(rayEnd.x - rayStart.x, rayEnd.y - rayStart.y, rayEnd.z - rayStart.z);
+        IRcTool rayTool = toolset.GetTool();
+        rayDir.Normalize();
+        if (rayTool != null)
+        {
+            Logger.Information($"click ray - tool({rayTool.GetTool().GetName()}) rayStart({rayStart.x:0.#},{rayStart.y:0.#},{rayStart.z:0.#}) pos({rayDir.x:0.#},{rayDir.y:0.#},{rayDir.z:0.#}) shift({processHitTestShift})");
+            rayTool.HandleClickRay(rayStart, rayDir, processHitTestShift);
+        }
+
+        if (hit.HasValue)
+        {
+            float hitTime = hit.Value;
+            if (0 != (_modState & KeyModState.Control))
+            {
+                // Marker
+                markerPositionSet = true;
+                markerPosition.x = rayStart.x + (rayEnd.x - rayStart.x) * hitTime;
+                markerPosition.y = rayStart.y + (rayEnd.y - rayStart.y) * hitTime;
+                markerPosition.z = rayStart.z + (rayEnd.z - rayStart.z) * hitTime;
+            }
+            else
+            {
+                RcVec3f pos = new RcVec3f();
+                pos.x = rayStart.x + (rayEnd.x - rayStart.x) * hitTime;
+                pos.y = rayStart.y + (rayEnd.y - rayStart.y) * hitTime;
+                pos.z = rayStart.z + (rayEnd.z - rayStart.z) * hitTime;
+                if (rayTool != null)
+                {
+                    Logger.Information($"click - tool({rayTool.GetTool().GetName()}) rayStart({rayStart.x:0.#},{rayStart.y:0.#},{rayStart.z:0.#}) pos({pos.x:0.#},{pos.y:0.#},{pos.z:0.#}) shift({processHitTestShift})");
+                    rayTool.HandleClick(rayStart, pos, processHitTestShift);
+                }
+            }
+        }
+        else
+        {
+            if (0 != (_modState & KeyModState.Control))
+            {
+                // Marker
+                markerPositionSet = false;
+            }
         }
     }
 }
