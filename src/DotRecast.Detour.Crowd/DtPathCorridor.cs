@@ -303,7 +303,8 @@ namespace DotRecast.Detour.Crowd
         public bool MovePosition(RcVec3f npos, DtNavMeshQuery navquery, IDtQueryFilter filter)
         {
             // Move along navmesh and update new position.
-            var status = navquery.MoveAlongSurface(m_path[0], m_pos, npos, filter, out var result, out var visited);
+            var visited = new List<long>();
+            var status = navquery.MoveAlongSurface(m_path[0], m_pos, npos, filter, out var result, ref visited);
             if (status.Succeeded())
             {
                 m_path = PathUtils.MergeCorridorStartMoved(m_path, visited);
@@ -342,7 +343,8 @@ namespace DotRecast.Detour.Crowd
         public bool MoveTargetPosition(RcVec3f npos, DtNavMeshQuery navquery, IDtQueryFilter filter)
         {
             // Move along navmesh and update new position.
-            var status = navquery.MoveAlongSurface(m_path[m_path.Count - 1], m_target, npos, filter, out var result, out var visited);
+            var visited = new List<long>();
+            var status = navquery.MoveAlongSurface(m_path[m_path.Count - 1], m_target, npos, filter, out var result, ref visited);
             if (status.Succeeded())
             {
                 m_path = PathUtils.MergeCorridorEndMoved(m_path, visited);

@@ -24,15 +24,15 @@ public class TestNavmeshTool : IRcTool
     private RcVec3f m_epos;
     private long m_startRef;
     private long m_endRef;
-    
+
     private readonly DtQueryDefaultFilter m_filter;
     private readonly RcVec3f m_polyPickExt = RcVec3f.Of(2, 4, 2);
-    
+
     // for hit
     private RcVec3f m_hitPos;
     private RcVec3f m_hitNormal;
     private bool m_hitResult;
-    
+
     private float m_distanceToWall;
     private List<StraightPathItem> m_straightPath;
     private List<long> m_polys;
@@ -281,7 +281,12 @@ public class TestNavmeshTool : IRcTool
                 float dx = m_epos.x - m_spos.x;
                 float dz = m_epos.z - m_spos.z;
                 float dist = (float)Math.Sqrt(dx * dx + dz * dz);
-                var status = m_navQuery.FindPolysAroundCircle(m_startRef, m_spos, dist, m_filter, out var refs, out var parentRefs, out var costs);
+                
+                List<long> refs = new();
+                List<long> parentRefs = new();
+                List<float> costs = new();
+
+                var status = m_navQuery.FindPolysAroundCircle(m_startRef, m_spos, dist, m_filter, ref refs, ref parentRefs, ref costs);
                 if (status.Succeeded())
                 {
                     m_polys = refs;

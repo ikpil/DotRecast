@@ -16,6 +16,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System.Collections.Generic;
 using DotRecast.Core;
 
 using NUnit.Framework;
@@ -69,12 +70,13 @@ public class MoveAlongSurfaceTest : AbstractDetourTest
     public void TestMoveAlongSurface()
     {
         IDtQueryFilter filter = new DtQueryDefaultFilter();
+        var visited = new List<long>();
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
             RcVec3f startPos = startPoss[i];
             RcVec3f endPos = endPoss[i];
-            var status = query.MoveAlongSurface(startRef, startPos, endPos, filter, out var result, out var visited);
+            var status = query.MoveAlongSurface(startRef, startPos, endPos, filter, out var result, ref visited);
             Assert.That(status.Succeeded(), Is.True);
             
             for (int v = 0; v < 3; v++)

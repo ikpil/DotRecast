@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
 using System.Collections.Generic;
 using DotRecast.Detour;
 using DotRecast.Recast.DemoTool.Geom;
@@ -90,7 +91,38 @@ namespace DotRecast.Recast.DemoTool
             _recastResults = recastResults;
             _navMesh = navMesh;
             SetQuery(navMesh);
+
             _changed = true;
+            
+            // // by update
+            // _inputGeom.ClearConvexVolumes();
+            // _inputGeom.RemoveOffMeshConnections(x => true);
+            //
+            // if (null != _navMesh && 0 < _navMesh.GetTileCount())
+            // {
+            //     for (int ti = 0; ti < _navMesh.GetTileCount(); ++ti)
+            //     {
+            //         var tile = _navMesh.GetTile(ti);
+            //         for (int pi = 0; pi < tile.data.polys.Length; ++pi)
+            //         {
+            //             var polyType = tile.data.polys[pi].GetPolyType();
+            //             var polyArea= tile.data.polys[pi].GetArea();
+            //
+            //             if (0 != polyType)
+            //             {
+            //                 int a = 3;
+            //             }
+            //
+            //             if (0 != polyArea)
+            //             {
+            //                 int b = 3;
+            //             }
+            //             
+            //             Console.WriteLine($"tileIdx({ti}) polyIdx({pi}) polyType({polyType} polyArea({polyArea})");
+            //         }
+            //         
+            //     }
+            // }
         }
     }
 }

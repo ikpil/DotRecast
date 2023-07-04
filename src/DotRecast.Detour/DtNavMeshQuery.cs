@@ -1798,10 +1798,12 @@ namespace DotRecast.Detour
         /// @returns The status flags for the query.
         public DtStatus MoveAlongSurface(long startRef, RcVec3f startPos, RcVec3f endPos,
             IDtQueryFilter filter,
-            out RcVec3f resultPos, out List<long> visited)
+            out RcVec3f resultPos, ref List<long> visited)
         {
             resultPos = RcVec3f.Zero;
-            visited = new List<long>();
+            
+            if (null != visited)
+                visited.Clear();
 
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(startPos)
@@ -2452,12 +2454,14 @@ namespace DotRecast.Detour
         ///  @param[in]		maxResult		The maximum number of polygons the result arrays can hold.
         /// @returns The status flags for the query.
         public DtStatus FindPolysAroundCircle(long startRef, RcVec3f centerPos, float radius, IDtQueryFilter filter,
-            out List<long> resultRef, out List<long> resultParent, out List<float> resultCost)
+            ref List<long> resultRef, ref List<long> resultParent, ref List<float> resultCost)
         {
-            // TODO : check performance 
-            resultRef = new List<long>();
-            resultParent = new List<long>();
-            resultCost = new List<float>();
+            if (null != resultRef)
+            {
+                resultRef.Clear();
+                resultParent.Clear();
+                resultCost.Clear();
+            }
 
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(centerPos) || radius < 0

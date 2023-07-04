@@ -60,6 +60,7 @@ namespace DotRecast.Recast.DemoTool.Tools
 
             smoothPath.Clear();
             smoothPath.Add(iterPos);
+            var visited = new List<long>();
 
             // Move towards target a small advancement at a time until target reached or
             // when ran out of memory to store the path.
@@ -96,7 +97,7 @@ namespace DotRecast.Recast.DemoTool.Tools
                 RcVec3f moveTgt = RcVec3f.Mad(iterPos, delta, len);
 
                 // Move
-                navQuery.MoveAlongSurface(polys[0], iterPos, moveTgt, filter, out var result, out var visited);
+                navQuery.MoveAlongSurface(polys[0], iterPos, moveTgt, filter, out var result, ref visited);
 
                 iterPos = result;
 
