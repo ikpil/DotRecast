@@ -25,17 +25,15 @@ namespace DotRecast.Core
         // Calculates convex hull on xz-plane of points on 'pts',
         // stores the indices of the resulting hull in 'out' and
         // returns number of points on hull.
-        public static List<int> Convexhull(List<float> pts)
+        public static List<int> Convexhull(List<RcVec3f> pts)
         {
-            int npts = pts.Count / 3;
+            int npts = pts.Count;
             List<int> @out = new List<int>();
             // Find lower-leftmost point.
             int hull = 0;
             for (int i = 1; i < npts; ++i)
             {
-                RcVec3f a = RcVec3f.Of(pts[i * 3], pts[i * 3 + 1], pts[i * 3 + 2]);
-                RcVec3f b = RcVec3f.Of(pts[hull * 3], pts[hull * 3 + 1], pts[hull * 3 + 2]);
-                if (Cmppt(a, b))
+                if (Cmppt(pts[i], pts[hull]))
                 {
                     hull = i;
                 }
@@ -49,9 +47,9 @@ namespace DotRecast.Core
                 endpt = 0;
                 for (int j = 1; j < npts; ++j)
                 {
-                    RcVec3f a = RcVec3f.Of(pts[hull * 3], pts[hull * 3 + 1], pts[hull * 3 + 2]);
-                    RcVec3f b = RcVec3f.Of(pts[endpt * 3], pts[endpt * 3 + 1], pts[endpt * 3 + 2]);
-                    RcVec3f c = RcVec3f.Of(pts[j * 3], pts[j * 3 + 1], pts[j * 3 + 2]);
+                    RcVec3f a = pts[hull];
+                    RcVec3f b = pts[endpt];
+                    RcVec3f c = pts[j];
                     if (hull == endpt || Left(a, b, c))
                     {
                         endpt = j;

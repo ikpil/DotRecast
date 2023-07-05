@@ -35,13 +35,13 @@ namespace DotRecast.Recast.Demo.Tools;
 public class ConvexVolumeTool : IRcTool
 {
     private readonly ConvexVolumeToolImpl _impl;
-    
+
     private int areaTypeValue = SampleAreaModifications.SAMPLE_AREAMOD_GRASS.Value;
     private AreaModification areaType = SampleAreaModifications.SAMPLE_AREAMOD_GRASS;
     private float boxHeight = 6f;
     private float boxDescent = 1f;
     private float polyOffset = 0f;
-    private readonly List<float> pts = new();
+    private readonly List<RcVec3f> pts = new();
     private readonly List<int> hull = new();
 
     public ConvexVolumeTool()
@@ -69,65 +69,16 @@ public class ConvexVolumeTool : IRcTool
 
         if (shift)
         {
-            // Delete
-            int nearestIndex = -1;
-            IList<ConvexVolume> vols = geom.ConvexVolumes();
-            for (int i = 0; i < vols.Count; ++i)
-            {
-                if (PolyUtils.PointInPoly(vols[i].verts, p) && p.y >= vols[i].hmin
-                                                            && p.y <= vols[i].hmax)
-                {
-                    nearestIndex = i;
-                }
-            }
-
-            // If end point close enough, delete it.
-            if (nearestIndex != -1)
-            {
-                geom.ConvexVolumes().RemoveAt(nearestIndex);
-            }
+            _impl.RemoveByPos(p);
         }
         else
         {
             // Create
 
             // If clicked on that last pt, create the shape.
-            if (pts.Count > 0 && RcVec3f.DistSqr(p, RcVec3f.Of(pts[pts.Count - 3], pts[pts.Count - 2], pts[pts.Count - 1])) < 0.2f * 0.2f)
+            if (pts.Count > 0 && RcVec3f.DistSqr(p, pts[pts.Count - 1]) < 0.2f * 0.2f)
             {
-                if (hull.Count > 2)
-                {
-                    // Create shape.
-                    float[] verts = new float[hull.Count * 3];
-                    for (int i = 0; i < hull.Count; ++i)
-                    {
-                        verts[i * 3] = pts[hull[i] * 3];
-                        verts[i * 3 + 1] = pts[hull[i] * 3 + 1];
-                        verts[i * 3 + 2] = pts[hull[i] * 3 + 2];
-                    }
-
-                    float minh = float.MaxValue, maxh = 0;
-                    for (int i = 0; i < hull.Count; ++i)
-                    {
-                        minh = Math.Min(minh, verts[i * 3 + 1]);
-                    }
-
-                    minh -= boxDescent;
-                    maxh = minh + boxHeight;
-
-                    if (polyOffset > 0.01f)
-                    {
-                        float[] offset = new float[verts.Length * 2];
-                        int noffset = PolyUtils.OffsetPoly(verts, hull.Count, polyOffset, offset, offset.Length);
-                        if (noffset > 0)
-                        {
-                            geom.AddConvexVolume(RcArrayUtils.CopyOf(offset, 0, noffset * 3), minh, maxh, areaType);
-                        }
-                    }
-                    else
-                    {
-                        geom.AddConvexVolume(verts, minh, maxh, areaType);
-                    }
-                }
+                _impl.Add(pts, hull, areaType, boxDescent, boxHeight, polyOffset);
 
                 pts.Clear();
                 hull.Clear();
@@ -135,9 +86,8 @@ public class ConvexVolumeTool : IRcTool
             else
             {
                 // Add new point
-                pts.Add(p.x);
-                pts.Add(p.y);
-                pts.Add(p.z);
+                pts.Add(p);
+
                 // Update hull.
                 if (pts.Count > 3)
                 {
@@ -157,24 +107,24 @@ public class ConvexVolumeTool : IRcTool
         RecastDebugDraw dd = renderer.GetDebugDraw();
         // Find height extent of the shape.
         float minh = float.MaxValue, maxh = 0;
-        for (int i = 0; i < pts.Count; i += 3)
+        for (int i = 0; i < pts.Count; ++i)
         {
-            minh = Math.Min(minh, pts[i + 1]);
+            minh = Math.Min(minh, pts[i].y);
         }
 
         minh -= boxDescent;
         maxh = minh + boxHeight;
 
         dd.Begin(POINTS, 4.0f);
-        for (int i = 0; i < pts.Count; i += 3)
+        for (int i = 0; i < pts.Count; ++i)
         {
             int col = DuRGBA(255, 255, 255, 255);
-            if (i == pts.Count - 3)
+            if (i == pts.Count - 1)
             {
                 col = DuRGBA(240, 32, 16, 255);
             }
 
-            dd.Vertex(pts[i + 0], pts[i + 1] + 0.1f, pts[i + 2], col);
+            dd.Vertex(pts[i].x, pts[i].y + 0.1f, pts[i].z, col);
         }
 
         dd.End();
@@ -182,14 +132,14 @@ public class ConvexVolumeTool : IRcTool
         dd.Begin(LINES, 2.0f);
         for (int i = 0, j = hull.Count - 1; i < hull.Count; j = i++)
         {
-            int vi = hull[j] * 3;
-            int vj = hull[i] * 3;
-            dd.Vertex(pts[vj + 0], minh, pts[vj + 2], DuRGBA(255, 255, 255, 64));
-            dd.Vertex(pts[vi + 0], minh, pts[vi + 2], DuRGBA(255, 255, 255, 64));
-            dd.Vertex(pts[vj + 0], maxh, pts[vj + 2], DuRGBA(255, 255, 255, 64));
-            dd.Vertex(pts[vi + 0], maxh, pts[vi + 2], DuRGBA(255, 255, 255, 64));
-            dd.Vertex(pts[vj + 0], minh, pts[vj + 2], DuRGBA(255, 255, 255, 64));
-            dd.Vertex(pts[vj + 0], maxh, pts[vj + 2], DuRGBA(255, 255, 255, 64));
+            int vi = hull[j];
+            int vj = hull[i];
+            dd.Vertex(pts[vj].x, minh, pts[vj].z, DuRGBA(255, 255, 255, 64));
+            dd.Vertex(pts[vi].x, minh, pts[vi].z, DuRGBA(255, 255, 255, 64));
+            dd.Vertex(pts[vj].x, maxh, pts[vj].z, DuRGBA(255, 255, 255, 64));
+            dd.Vertex(pts[vi].x, maxh, pts[vi].z, DuRGBA(255, 255, 255, 64));
+            dd.Vertex(pts[vj].x, minh, pts[vj].z, DuRGBA(255, 255, 255, 64));
+            dd.Vertex(pts[vj].x, maxh, pts[vj].z, DuRGBA(255, 255, 255, 64));
         }
 
         dd.End();

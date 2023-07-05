@@ -45,7 +45,7 @@ namespace DotRecast.Recast
 
         public static int OffsetPoly(float[] verts, int nverts, float offset, float[] outVerts, int maxOutVerts)
         {
-            float MITER_LIMIT = 1.20f;
+            const float MITER_LIMIT = 1.20f;
 
             int n = 0;
 
