@@ -13,12 +13,10 @@ namespace DotRecast.Recast.DemoTool.Tools
         private readonly List<JumpLink> _links;
         private JumpLinkBuilder _annotationBuilder;
         private readonly int _selEdge = -1;
-        private readonly JumpLinkBuilderToolOption _option;
 
         public JumpLinkBuilderToolImpl()
         {
             _links = new List<JumpLink>();
-            _option = new JumpLinkBuilderToolOption();
         }
 
 
@@ -42,11 +40,6 @@ namespace DotRecast.Recast.DemoTool.Tools
             _annotationBuilder = null;
         }
 
-        public JumpLinkBuilderToolOption GetOption()
-        {
-            return _option;
-        }
-
         public JumpLinkBuilder GetAnnotationBuilder()
         {
             return _annotationBuilder;
@@ -62,7 +55,9 @@ namespace DotRecast.Recast.DemoTool.Tools
             return _links;
         }
 
-        public void Build(bool buildOffMeshConnections)
+        public void Build(bool buildOffMeshConnections, int buildTypes,
+            float groundTolerance, float climbDownDistance, float climbDownMaxHeight, float climbDownMinHeight,
+            float edgeJumpEndDistance, float edgeJumpHeight, float edgeJumpDownMaxHeight, float edgeJumpUpMaxHeight)
         {
             if (_annotationBuilder == null)
             {
@@ -82,7 +77,7 @@ namespace DotRecast.Recast.DemoTool.Tools
                 float agentClimb = settings.agentMaxClimb;
                 float cellHeight = settings.cellHeight;
 
-                if ((_option.buildTypes & JumpLinkType.EDGE_CLIMB_DOWN.Bit) != 0)
+                if ((buildTypes & JumpLinkType.EDGE_CLIMB_DOWN.Bit) != 0)
                 {
                     JumpLinkBuilderConfig config = new JumpLinkBuilderConfig(
                         cellSize,
@@ -90,17 +85,17 @@ namespace DotRecast.Recast.DemoTool.Tools
                         agentRadius,
                         agentHeight,
                         agentClimb,
-                        _option.groundTolerance,
+                        groundTolerance,
                         -agentRadius * 0.2f,
-                        cellSize + 2 * agentRadius + _option.climbDownDistance,
-                        -_option.climbDownMaxHeight,
-                        -_option.climbDownMinHeight,
+                        cellSize + 2 * agentRadius + climbDownDistance,
+                        -climbDownMaxHeight,
+                        -climbDownMinHeight,
                         0
                     );
                     _links.AddRange(_annotationBuilder.Build(config, JumpLinkType.EDGE_CLIMB_DOWN));
                 }
 
-                if ((_option.buildTypes & JumpLinkType.EDGE_JUMP.Bit) != 0)
+                if ((buildTypes & JumpLinkType.EDGE_JUMP.Bit) != 0)
                 {
                     JumpLinkBuilderConfig config = new JumpLinkBuilderConfig(
                         cellSize,
@@ -108,12 +103,12 @@ namespace DotRecast.Recast.DemoTool.Tools
                         agentRadius,
                         agentHeight,
                         agentClimb,
-                        _option.groundTolerance,
+                        groundTolerance,
                         -agentRadius * 0.2f,
-                        _option.edgeJumpEndDistance,
-                        -_option.edgeJumpDownMaxHeight,
-                        _option.edgeJumpUpMaxHeight,
-                        _option.edgeJumpHeight
+                        edgeJumpEndDistance,
+                        -edgeJumpDownMaxHeight,
+                        edgeJumpUpMaxHeight,
+                        edgeJumpHeight
                     );
                     _links.AddRange(_annotationBuilder.Build(config, JumpLinkType.EDGE_JUMP));
                 }

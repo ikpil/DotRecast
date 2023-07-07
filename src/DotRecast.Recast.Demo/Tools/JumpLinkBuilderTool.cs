@@ -33,10 +33,12 @@ namespace DotRecast.Recast.Demo.Tools;
 public class JumpLinkBuilderTool : IRcTool
 {
     private readonly JumpLinkBuilderToolImpl _impl;
+    private readonly JumpLinkBuilderToolOption _option;
 
     public JumpLinkBuilderTool()
     {
         _impl = new();
+        _option = new();
     }
 
     public ISampleTool GetTool()
@@ -60,10 +62,9 @@ public class JumpLinkBuilderTool : IRcTool
         RecastDebugDraw dd = renderer.GetDebugDraw();
         dd.DepthMask(false);
 
-        var option = _impl.GetOption();
         var annotationBuilder = _impl.GetAnnotationBuilder();
 
-        if ((option.flags & JumpLinkBuilderToolOption.DRAW_WALKABLE_BORDER) != 0)
+        if ((_option.flags & JumpLinkBuilderToolOption.DRAW_WALKABLE_BORDER) != 0)
         {
             if (annotationBuilder != null)
             {
@@ -121,7 +122,7 @@ public class JumpLinkBuilderTool : IRcTool
             }
         }
 
-        if ((option.flags & JumpLinkBuilderToolOption.DRAW_ANNOTATIONS) != 0)
+        if ((_option.flags & JumpLinkBuilderToolOption.DRAW_ANNOTATIONS) != 0)
         {
             dd.Begin(QUADS);
             foreach (JumpLink link in _impl.GetLinks())
@@ -172,7 +173,7 @@ public class JumpLinkBuilderTool : IRcTool
         {
             foreach (JumpLink link in _impl.GetLinks())
             {
-                if ((option.flags & JumpLinkBuilderToolOption.DRAW_ANIM_TRAJECTORY) != 0)
+                if ((_option.flags & JumpLinkBuilderToolOption.DRAW_ANIM_TRAJECTORY) != 0)
                 {
                     float r = link.start.height;
 
@@ -238,7 +239,7 @@ public class JumpLinkBuilderTool : IRcTool
                     dd.End();
                 }
 
-                if ((option.flags & JumpLinkBuilderToolOption.DRAW_LAND_SAMPLES) != 0)
+                if ((_option.flags & JumpLinkBuilderToolOption.DRAW_LAND_SAMPLES) != 0)
                 {
                     dd.Begin(POINTS, 8.0f);
                     for (int i = 0; i < link.start.gsamples.Length; ++i)
@@ -338,33 +339,31 @@ public class JumpLinkBuilderTool : IRcTool
         if (0 >= _impl.GetSample().GetRecastResults().Count)
             return;
 
-        var option = _impl.GetOption();
-
         ImGui.Text("Options");
         ImGui.Separator();
-        ImGui.SliderFloat("Ground Tolerance", ref option.groundTolerance, 0f, 2f, "%.2f");
+        ImGui.SliderFloat("Ground Tolerance", ref _option.groundTolerance, 0f, 2f, "%.2f");
         ImGui.NewLine();
 
         ImGui.Text("Climb Down");
         ImGui.Separator();
-        ImGui.SliderFloat("Distance", ref option.climbDownDistance, 0f, 5f, "%.2f");
-        ImGui.SliderFloat("Min Cliff Height", ref option.climbDownMinHeight, 0f, 10f, "%.2f");
-        ImGui.SliderFloat("Max Cliff Height", ref option.climbDownMaxHeight, 0f, 10f, "%.2f");
+        ImGui.SliderFloat("Distance", ref _option.climbDownDistance, 0f, 5f, "%.2f");
+        ImGui.SliderFloat("Min Cliff Height", ref _option.climbDownMinHeight, 0f, 10f, "%.2f");
+        ImGui.SliderFloat("Max Cliff Height", ref _option.climbDownMaxHeight, 0f, 10f, "%.2f");
         ImGui.NewLine();
 
         ImGui.Text("Jump Down");
         ImGui.Separator();
-        ImGui.SliderFloat("Max Distance", ref option.edgeJumpEndDistance, 0f, 10f, "%.2f");
-        ImGui.SliderFloat("Jump Height", ref option.edgeJumpHeight, 0f, 10f, "%.2f");
-        ImGui.SliderFloat("Max Jump Down", ref option.edgeJumpDownMaxHeight, 0f, 10f, "%.2f");
-        ImGui.SliderFloat("Max Jump Up", ref option.edgeJumpUpMaxHeight, 0f, 10f, "%.2f");
+        ImGui.SliderFloat("Max Distance", ref _option.edgeJumpEndDistance, 0f, 10f, "%.2f");
+        ImGui.SliderFloat("Jump Height", ref _option.edgeJumpHeight, 0f, 10f, "%.2f");
+        ImGui.SliderFloat("Max Jump Down", ref _option.edgeJumpDownMaxHeight, 0f, 10f, "%.2f");
+        ImGui.SliderFloat("Max Jump Up", ref _option.edgeJumpUpMaxHeight, 0f, 10f, "%.2f");
         ImGui.NewLine();
 
         ImGui.Text("Mode");
         ImGui.Separator();
         //int buildTypes = 0;
-        ImGui.CheckboxFlags("Climb Down", ref option.buildTypes, JumpLinkType.EDGE_CLIMB_DOWN.Bit);
-        ImGui.CheckboxFlags("Edge Jump", ref option.buildTypes, JumpLinkType.EDGE_JUMP.Bit);
+        ImGui.CheckboxFlags("Climb Down", ref _option.buildTypes, JumpLinkType.EDGE_CLIMB_DOWN.Bit);
+        ImGui.CheckboxFlags("Edge Jump", ref _option.buildTypes, JumpLinkType.EDGE_JUMP.Bit);
         //option.buildTypes = buildTypes;
         bool build = false;
         bool buildOffMeshConnections = false;
@@ -380,17 +379,27 @@ public class JumpLinkBuilderTool : IRcTool
 
         if (build || buildOffMeshConnections)
         {
-            _impl.Build(buildOffMeshConnections);
+            _impl.Build(buildOffMeshConnections,
+                _option.buildTypes,
+                _option.groundTolerance,
+                _option.climbDownDistance,
+                _option.climbDownMaxHeight,
+                _option.climbDownMinHeight,
+                _option.edgeJumpEndDistance,
+                _option.edgeJumpHeight,
+                _option.edgeJumpDownMaxHeight,
+                _option.edgeJumpUpMaxHeight
+            );
         }
 
         ImGui.Text("Debug Draw Options");
         ImGui.Separator();
         //int newFlags = 0;
-        ImGui.CheckboxFlags("Walkable Border", ref option.flags, JumpLinkBuilderToolOption.DRAW_WALKABLE_BORDER);
-        ImGui.CheckboxFlags("Selected Edge", ref option.flags, JumpLinkBuilderToolOption.DRAW_SELECTED_EDGE);
-        ImGui.CheckboxFlags("Anim Trajectory", ref option.flags, JumpLinkBuilderToolOption.DRAW_ANIM_TRAJECTORY);
-        ImGui.CheckboxFlags("Land Samples", ref option.flags, JumpLinkBuilderToolOption.DRAW_LAND_SAMPLES);
-        ImGui.CheckboxFlags("All Annotations", ref option.flags, JumpLinkBuilderToolOption.DRAW_ANNOTATIONS);
+        ImGui.CheckboxFlags("Walkable Border", ref _option.flags, JumpLinkBuilderToolOption.DRAW_WALKABLE_BORDER);
+        ImGui.CheckboxFlags("Selected Edge", ref _option.flags, JumpLinkBuilderToolOption.DRAW_SELECTED_EDGE);
+        ImGui.CheckboxFlags("Anim Trajectory", ref _option.flags, JumpLinkBuilderToolOption.DRAW_ANIM_TRAJECTORY);
+        ImGui.CheckboxFlags("Land Samples", ref _option.flags, JumpLinkBuilderToolOption.DRAW_LAND_SAMPLES);
+        ImGui.CheckboxFlags("All Annotations", ref _option.flags, JumpLinkBuilderToolOption.DRAW_ANNOTATIONS);
         //option.flags = newFlags;
     }
 
