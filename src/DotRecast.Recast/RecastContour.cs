@@ -722,7 +722,8 @@ namespace DotRecast.Recast
             int borderSize = chf.borderSize;
             RcContourSet cset = new RcContourSet();
 
-            ctx.StartTimer("CONTOURS");
+            using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_CONTOURS);
+            
             cset.bmin = chf.bmin;
             cset.bmax = chf.bmax;
             if (borderSize > 0)
@@ -744,7 +745,7 @@ namespace DotRecast.Recast
 
             int[] flags = new int[chf.spanCount];
 
-            ctx.StartTimer("CONTOURS_TRACE");
+            ctx.StartTimer(RcTimerLabel.RC_TIMER_BUILD_CONTOURS_TRACE);
 
             // Mark boundaries.
             for (int y = 0; y < h; ++y)
@@ -782,7 +783,7 @@ namespace DotRecast.Recast
                 }
             }
 
-            ctx.StopTimer("CONTOURS_TRACE");
+            ctx.StopTimer(RcTimerLabel.RC_TIMER_BUILD_CONTOURS_TRACE);
 
             List<int> verts = new List<int>(256);
             List<int> simplified = new List<int>(64);
@@ -808,14 +809,14 @@ namespace DotRecast.Recast
                         verts.Clear();
                         simplified.Clear();
 
-                        ctx.StartTimer("CONTOURS_WALK");
+                        ctx.StartTimer(RcTimerLabel.RC_TIMER_BUILD_CONTOURS_WALK);
                         WalkContour(x, y, i, chf, flags, verts);
-                        ctx.StopTimer("CONTOURS_WALK");
+                        ctx.StopTimer(RcTimerLabel.RC_TIMER_BUILD_CONTOURS_WALK);
 
-                        ctx.StartTimer("CONTOURS_SIMPLIFY");
+                        ctx.StartTimer(RcTimerLabel.RC_TIMER_BUILD_CONTOURS_SIMPLIFY);
                         SimplifyContour(verts, simplified, maxError, maxEdgeLen, buildFlags);
                         RemoveDegenerateSegments(simplified);
-                        ctx.StopTimer("CONTOURS_SIMPLIFY");
+                        ctx.StopTimer(RcTimerLabel.RC_TIMER_BUILD_CONTOURS_SIMPLIFY);
 
                         // Store region->contour remap info.
                         // Create contour.
@@ -956,7 +957,6 @@ namespace DotRecast.Recast
                 }
             }
 
-            ctx.StopTimer("CONTOURS");
             return cset;
         }
     }

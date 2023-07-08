@@ -41,7 +41,7 @@ namespace DotRecast.Recast
         public static RcCompactHeightfield BuildCompactHeightfield(RcTelemetry ctx, int walkableHeight, int walkableClimb,
             RcHeightfield hf)
         {
-            ctx.StartTimer("BUILD_COMPACTHEIGHTFIELD");
+            using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_COMPACTHEIGHTFIELD);
 
             RcCompactHeightfield chf = new RcCompactHeightfield();
             int w = hf.width;
@@ -161,7 +161,6 @@ namespace DotRecast.Recast
                                                                                                   + " (max: " + MAX_LAYERS + ")");
             }
 
-            ctx.StopTimer("BUILD_COMPACTHEIGHTFIELD");
             return chf;
         }
 

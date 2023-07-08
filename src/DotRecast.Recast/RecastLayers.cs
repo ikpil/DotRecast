@@ -53,7 +53,8 @@ namespace DotRecast.Recast
 
         public static RcHeightfieldLayerSet BuildHeightfieldLayers(RcTelemetry ctx, RcCompactHeightfield chf, int walkableHeight)
         {
-            ctx.StartTimer("RC_TIMER_BUILD_LAYERS");
+            using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_LAYERS);
+            
             int w = chf.width;
             int h = chf.height;
             int borderSize = chf.borderSize;
@@ -397,7 +398,7 @@ namespace DotRecast.Recast
             // No layers, return empty.
             if (layerId == 0)
             {
-                // ctx.StopTimer(RC_TIMER_BUILD_LAYERS);
+                // ctx.Stop(RC_TIMER_BUILD_LAYERS);
                 return null;
             }
 

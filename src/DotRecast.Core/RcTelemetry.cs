@@ -35,16 +35,23 @@ namespace DotRecast.Core
             _timerAccum = new ConcurrentDictionary<string, RcAtomicLong>();
         }
 
-        public void StartTimer(string name)
+        public IDisposable ScopedTimer(RcTimerLabel label)
         {
-            _timerStart.Value[name] = new RcAtomicLong(RcFrequency.Ticks);
+            StartTimer(label);
+            return new RcAnonymousDisposable(() => StopTimer(label));
+        }
+        
+        public void StartTimer(RcTimerLabel label)
+        {
+            _timerStart.Value[label.Name] = new RcAtomicLong(RcFrequency.Ticks);
         }
 
-        public void StopTimer(string name)
+
+        public void StopTimer(RcTimerLabel label)
         {
             _timerAccum
-                .GetOrAdd(name, _ => new RcAtomicLong(0))
-                .AddAndGet(RcFrequency.Ticks - _timerStart.Value?[name].Read() ?? 0);
+                .GetOrAdd(label.Name, _ => new RcAtomicLong(0))
+                .AddAndGet(RcFrequency.Ticks - _timerStart.Value?[label.Name].Read() ?? 0);
         }
 
         public void Warn(string message)

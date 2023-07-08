@@ -1009,8 +1009,8 @@ namespace DotRecast.Recast
                 RcVec3f.Copy(ref bmax, @in, 0);
                 for (int i = 1; i < nin; ++i)
                 {
-                   bmin.Min(@in, i * 3);
-                   bmax.Max(@in, i * 3);
+                    bmin.Min(@in, i * 3);
+                    bmax.Max(@in, i * 3);
                 }
 
                 int x0 = (int)Math.Floor(bmin.x / sampleDist);
@@ -1426,7 +1426,7 @@ namespace DotRecast.Recast
         public static RcPolyMeshDetail BuildPolyMeshDetail(RcTelemetry ctx, RcPolyMesh mesh, RcCompactHeightfield chf,
             float sampleDist, float sampleMaxError)
         {
-            ctx.StartTimer("POLYMESHDETAIL");
+            using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_POLYMESHDETAIL);
             if (mesh.nverts == 0 || mesh.npolys == 0)
             {
                 return null;
@@ -1610,16 +1610,15 @@ namespace DotRecast.Recast
                 }
             }
 
-            ctx.StopTimer("POLYMESHDETAIL");
             return dmesh;
         }
 
         /// @see rcAllocPolyMeshDetail, rcPolyMeshDetail
         private static RcPolyMeshDetail MergePolyMeshDetails(RcTelemetry ctx, RcPolyMeshDetail[] meshes, int nmeshes)
         {
-            RcPolyMeshDetail mesh = new RcPolyMeshDetail();
+            using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_MERGE_POLYMESHDETAIL);
 
-            ctx.StartTimer("MERGE_POLYMESHDETAIL");
+            RcPolyMeshDetail mesh = new RcPolyMeshDetail();
 
             int maxVerts = 0;
             int maxTris = 0;
@@ -1680,7 +1679,6 @@ namespace DotRecast.Recast
                 }
             }
 
-            ctx.StopTimer("MERGE_POLYMESHDETAIL");
             return mesh;
         }
     }

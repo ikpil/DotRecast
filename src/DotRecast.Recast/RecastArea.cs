@@ -39,7 +39,7 @@ namespace DotRecast.Recast
         {
             int w = chf.width;
             int h = chf.height;
-            ctx.StartTimer("ERODE_AREA");
+            using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_ERODE_AREA);
 
             int[] dist = new int[chf.spanCount];
             Array.Fill(dist, 255);
@@ -205,8 +205,6 @@ namespace DotRecast.Recast
             for (int i = 0; i < chf.spanCount; ++i)
                 if (dist[i] < thr)
                     chf.areas[i] = RC_NULL_AREA;
-
-            ctx.StopTimer("ERODE_AREA");
         }
 
         /// @par
@@ -220,7 +218,7 @@ namespace DotRecast.Recast
             int w = chf.width;
             int h = chf.height;
 
-            ctx.StartTimer("MEDIAN_AREA");
+            using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_MEDIAN_AREA);
 
             int[] areas = new int[chf.spanCount];
 
@@ -273,8 +271,6 @@ namespace DotRecast.Recast
 
             chf.areas = areas;
 
-            ctx.StopTimer("MEDIAN_AREA");
-
             return true;
         }
 
@@ -285,7 +281,7 @@ namespace DotRecast.Recast
         /// @see rcCompactHeightfield, rcMedianFilterWalkableArea
         public static void MarkBoxArea(RcTelemetry ctx, float[] bmin, float[] bmax, AreaModification areaMod, RcCompactHeightfield chf)
         {
-            ctx.StartTimer("MARK_BOX_AREA");
+            using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_MARK_BOX_AREA);
 
             int minx = (int)((bmin[0] - chf.bmin.x) / chf.cs);
             int miny = (int)((bmin[1] - chf.bmin.y) / chf.ch);
@@ -328,8 +324,6 @@ namespace DotRecast.Recast
                     }
                 }
             }
-
-            ctx.StopTimer("MARK_BOX_AREA");
         }
 
         static bool PointInPoly(float[] verts, RcVec3f p)
@@ -360,7 +354,7 @@ namespace DotRecast.Recast
         public static void MarkConvexPolyArea(RcTelemetry ctx, float[] verts, float hmin, float hmax, AreaModification areaMod,
             RcCompactHeightfield chf)
         {
-            ctx.StartTimer("MARK_CONVEXPOLY_AREA");
+            using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_MARK_CONVEXPOLY_AREA);
 
             RcVec3f bmin = new RcVec3f();
             RcVec3f bmax = new RcVec3f();
@@ -368,8 +362,8 @@ namespace DotRecast.Recast
             RcVec3f.Copy(ref bmax, verts, 0);
             for (int i = 3; i < verts.Length; i += 3)
             {
-               bmin.Min(verts, i);
-               bmax.Max(verts, i);
+                bmin.Min(verts, i);
+                bmax.Max(verts, i);
             }
 
             bmin.y = hmin;
@@ -426,8 +420,6 @@ namespace DotRecast.Recast
                     }
                 }
             }
-
-            ctx.StopTimer("MARK_CONVEXPOLY_AREA");
         }
 
         /// @par
@@ -437,7 +429,7 @@ namespace DotRecast.Recast
         /// @see rcCompactHeightfield, rcMedianFilterWalkableArea
         public static void MarkCylinderArea(RcTelemetry ctx, float[] pos, float r, float h, AreaModification areaMod, RcCompactHeightfield chf)
         {
-            ctx.StartTimer("MARK_CYLINDER_AREA");
+            using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_MARK_CYLINDER_AREA);
 
             RcVec3f bmin = new RcVec3f();
             RcVec3f bmax = new RcVec3f();
@@ -501,8 +493,6 @@ namespace DotRecast.Recast
                     }
                 }
             }
-
-            ctx.StopTimer("MARK_CYLINDER_AREA");
         }
     }
 }

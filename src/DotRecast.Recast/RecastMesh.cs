@@ -966,7 +966,8 @@ namespace DotRecast.Recast
         /// @see rcAllocPolyMesh, rcContourSet, rcPolyMesh, rcConfig
         public static RcPolyMesh BuildPolyMesh(RcTelemetry ctx, RcContourSet cset, int nvp)
         {
-            ctx.StartTimer("POLYMESH");
+            using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_POLYMESH);
+
             RcPolyMesh mesh = new RcPolyMesh();
             mesh.bmin = cset.bmin;
             mesh.bmax = cset.bmax;
@@ -1204,7 +1205,6 @@ namespace DotRecast.Recast
                                                                                                  + " (max " + MAX_MESH_VERTS_POLY + "). Data can be corrupted.");
             }
 
-            ctx.StopTimer("POLYMESH");
             return mesh;
         }
 
@@ -1214,7 +1214,8 @@ namespace DotRecast.Recast
             if (nmeshes == 0 || meshes == null)
                 return null;
 
-            ctx.StartTimer("MERGE_POLYMESH");
+            using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_MERGE_POLYMESH);
+
             RcPolyMesh mesh = new RcPolyMesh();
             mesh.nvp = meshes[0].nvp;
             mesh.cs = meshes[0].cs;
@@ -1332,8 +1333,6 @@ namespace DotRecast.Recast
                 throw new Exception("rcBuildPolyMesh: The resulting mesh has too many polygons " + mesh.npolys
                                                                                                  + " (max " + MAX_MESH_VERTS_POLY + "). Data can be corrupted.");
             }
-
-            ctx.StopTimer("MERGE_POLYMESH");
 
             return mesh;
         }

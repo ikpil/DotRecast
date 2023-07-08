@@ -40,7 +40,7 @@ namespace DotRecast.Recast
         /// @see rcHeightfield, rcConfig
         public static void FilterLowHangingWalkableObstacles(RcTelemetry ctx, int walkableClimb, RcHeightfield solid)
         {
-            ctx.StartTimer("FILTER_LOW_OBSTACLES");
+            using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_FILTER_LOW_OBSTACLES);
 
             int w = solid.width;
             int h = solid.height;
@@ -71,8 +71,6 @@ namespace DotRecast.Recast
                     }
                 }
             }
-
-            ctx.StopTimer("FILTER_LOW_OBSTACLES");
         }
 
         /// @par
@@ -87,7 +85,7 @@ namespace DotRecast.Recast
         /// @see rcHeightfield, rcConfig
         public static void FilterLedgeSpans(RcTelemetry ctx, int walkableHeight, int walkableClimb, RcHeightfield solid)
         {
-            ctx.StartTimer("FILTER_LEDGE");
+            using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_FILTER_BORDER);
 
             int w = solid.width;
             int h = solid.height;
@@ -168,8 +166,6 @@ namespace DotRecast.Recast
                     }
                 }
             }
-
-            ctx.StopTimer("FILTER_LEDGE");
         }
 
         /// @par
@@ -180,7 +176,7 @@ namespace DotRecast.Recast
         /// @see rcHeightfield, rcConfig
         public static void FilterWalkableLowHeightSpans(RcTelemetry ctx, int walkableHeight, RcHeightfield solid)
         {
-            ctx.StartTimer("FILTER_WALKABLE");
+            using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_FILTER_WALKABLE);
 
             int w = solid.width;
             int h = solid.height;
@@ -200,8 +196,6 @@ namespace DotRecast.Recast
                     }
                 }
             }
-
-            ctx.StopTimer("FILTER_WALKABLE");
         }
     }
 }
