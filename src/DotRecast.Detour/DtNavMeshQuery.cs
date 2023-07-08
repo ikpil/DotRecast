@@ -1801,7 +1801,7 @@ namespace DotRecast.Detour
             out RcVec3f resultPos, ref List<long> visited)
         {
             resultPos = RcVec3f.Zero;
-            
+
             if (null != visited)
                 visited.Clear();
 
@@ -2630,7 +2630,7 @@ namespace DotRecast.Detour
             resultRef.Clear();
             resultParent.Clear();
             resultCost.Clear();
-            
+
             // Validate input
             int nverts = verts.Length;
             if (!m_nav.IsValidPolyRef(startRef) || null == verts || nverts < 3 || null == filter)
@@ -3378,7 +3378,7 @@ namespace DotRecast.Detour
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
-            
+
             path.Clear();
 
             List<DtNode> nodes = m_nodePool.FindNodes(endRef);

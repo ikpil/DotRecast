@@ -1,10 +1,10 @@
 ﻿namespace DotRecast.Detour
 {
-    public class DtSegInterval
+    public readonly struct DtSegInterval
     {
-        public long refs;
-        public int tmin;
-        public int tmax;
+        public readonly long refs;
+        public readonly int tmin;
+        public readonly int tmax;
 
         public DtSegInterval(long refs, int tmin, int tmax)
         {
