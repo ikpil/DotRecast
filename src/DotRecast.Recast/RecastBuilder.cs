@@ -294,7 +294,7 @@ namespace DotRecast.Recast
             // (Optional) Mark areas.
             if (volumeProvider != null)
             {
-                foreach (ConvexVolume vol in volumeProvider.ConvexVolumes())
+                foreach (RcConvexVolume vol in volumeProvider.ConvexVolumes())
                 {
                     RecastArea.MarkConvexPolyArea(ctx, vol.verts, vol.hmin, vol.hmax, vol.areaMod, chf);
                 }

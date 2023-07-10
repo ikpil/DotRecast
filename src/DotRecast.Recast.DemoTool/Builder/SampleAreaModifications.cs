@@ -35,15 +35,15 @@ namespace DotRecast.Recast.DemoTool.Builder
         public const int SAMPLE_POLYAREA_TYPE_JUMP_AUTO = 0x6;
         public const int SAMPLE_POLYAREA_TYPE_WALKABLE = 0x3f;
 
-        public static readonly AreaModification SAMPLE_AREAMOD_WALKABLE = new AreaModification(SAMPLE_POLYAREA_TYPE_WALKABLE);
-        public static readonly AreaModification SAMPLE_AREAMOD_GROUND = new AreaModification(SAMPLE_POLYAREA_TYPE_GROUND);
-        public static readonly AreaModification SAMPLE_AREAMOD_WATER = new AreaModification(SAMPLE_POLYAREA_TYPE_WATER);
-        public static readonly AreaModification SAMPLE_AREAMOD_ROAD = new AreaModification(SAMPLE_POLYAREA_TYPE_ROAD);
-        public static readonly AreaModification SAMPLE_AREAMOD_GRASS = new AreaModification(SAMPLE_POLYAREA_TYPE_GRASS);
-        public static readonly AreaModification SAMPLE_AREAMOD_DOOR = new AreaModification(SAMPLE_POLYAREA_TYPE_DOOR);
-        public static readonly AreaModification SAMPLE_AREAMOD_JUMP = new AreaModification(SAMPLE_POLYAREA_TYPE_JUMP);
+        public static readonly RcAreaModification SAMPLE_AREAMOD_WALKABLE = new RcAreaModification(SAMPLE_POLYAREA_TYPE_WALKABLE);
+        public static readonly RcAreaModification SAMPLE_AREAMOD_GROUND = new RcAreaModification(SAMPLE_POLYAREA_TYPE_GROUND);
+        public static readonly RcAreaModification SAMPLE_AREAMOD_WATER = new RcAreaModification(SAMPLE_POLYAREA_TYPE_WATER);
+        public static readonly RcAreaModification SAMPLE_AREAMOD_ROAD = new RcAreaModification(SAMPLE_POLYAREA_TYPE_ROAD);
+        public static readonly RcAreaModification SAMPLE_AREAMOD_GRASS = new RcAreaModification(SAMPLE_POLYAREA_TYPE_GRASS);
+        public static readonly RcAreaModification SAMPLE_AREAMOD_DOOR = new RcAreaModification(SAMPLE_POLYAREA_TYPE_DOOR);
+        public static readonly RcAreaModification SAMPLE_AREAMOD_JUMP = new RcAreaModification(SAMPLE_POLYAREA_TYPE_JUMP);
 
-        public static readonly ImmutableArray<AreaModification> Values = ImmutableArray.Create(
+        public static readonly ImmutableArray<RcAreaModification> Values = ImmutableArray.Create(
             SAMPLE_AREAMOD_WALKABLE,
             SAMPLE_AREAMOD_GROUND,
             SAMPLE_AREAMOD_WATER,
@@ -53,7 +53,7 @@ namespace DotRecast.Recast.DemoTool.Builder
             SAMPLE_AREAMOD_JUMP
         );
 
-        public static AreaModification OfValue(int value)
+        public static RcAreaModification OfValue(int value)
         {
             return Values.FirstOrDefault(x => x.Value == value) ?? SAMPLE_AREAMOD_GRASS;
         }

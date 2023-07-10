@@ -23,13 +23,13 @@ namespace DotRecast.Recast.DemoTool.Tools
             return _sample;
         }
 
-        public ConvexVolume RemoveByPos(RcVec3f pos)
+        public RcConvexVolume RemoveByPos(RcVec3f pos)
         {
             var geom = _sample.GetInputGeom();
 
             // Delete
             int nearestIndex = -1;
-            IList<ConvexVolume> vols = geom.ConvexVolumes();
+            IList<RcConvexVolume> vols = geom.ConvexVolumes();
             for (int i = 0; i < vols.Count; ++i)
             {
                 if (PolyUtils.PointInPoly(vols[i].verts, pos) && pos.y >= vols[i].hmin
@@ -48,7 +48,7 @@ namespace DotRecast.Recast.DemoTool.Tools
             return removal;
         }
 
-        public void Add(List<RcVec3f> pts, List<int> hull, AreaModification areaType, float boxDescent, float boxHeight, float polyOffset)
+        public void Add(List<RcVec3f> pts, List<int> hull, RcAreaModification areaType, float boxDescent, float boxHeight, float polyOffset)
         {
             // 
             if (hull.Count <= 2)

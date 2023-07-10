@@ -40,21 +40,21 @@ public class SampleAreaModifications
     /// Flag for jump area. Can be combined with area types and door flag.
     public const int SAMPLE_POLYAREA_FLAG_JUMP = 0x10;
 
-    public static readonly AreaModification SAMPLE_AREAMOD_GROUND = new AreaModification(SAMPLE_POLYAREA_TYPE_GROUND,
+    public static readonly RcAreaModification SAMPLE_AREAMOD_GROUND = new RcAreaModification(SAMPLE_POLYAREA_TYPE_GROUND,
         SAMPLE_POLYAREA_TYPE_MASK);
 
-    public static readonly AreaModification SAMPLE_AREAMOD_WATER = new AreaModification(SAMPLE_POLYAREA_TYPE_WATER,
+    public static readonly RcAreaModification SAMPLE_AREAMOD_WATER = new RcAreaModification(SAMPLE_POLYAREA_TYPE_WATER,
         SAMPLE_POLYAREA_TYPE_MASK);
 
-    public static readonly AreaModification SAMPLE_AREAMOD_ROAD = new AreaModification(SAMPLE_POLYAREA_TYPE_ROAD,
+    public static readonly RcAreaModification SAMPLE_AREAMOD_ROAD = new RcAreaModification(SAMPLE_POLYAREA_TYPE_ROAD,
         SAMPLE_POLYAREA_TYPE_MASK);
 
-    public static readonly AreaModification SAMPLE_AREAMOD_GRASS = new AreaModification(SAMPLE_POLYAREA_TYPE_GRASS,
+    public static readonly RcAreaModification SAMPLE_AREAMOD_GRASS = new RcAreaModification(SAMPLE_POLYAREA_TYPE_GRASS,
         SAMPLE_POLYAREA_TYPE_MASK);
 
-    public static readonly AreaModification SAMPLE_AREAMOD_DOOR = new AreaModification(SAMPLE_POLYAREA_FLAG_DOOR,
+    public static readonly RcAreaModification SAMPLE_AREAMOD_DOOR = new RcAreaModification(SAMPLE_POLYAREA_FLAG_DOOR,
         SAMPLE_POLYAREA_FLAG_DOOR);
 
-    public static readonly AreaModification SAMPLE_AREAMOD_JUMP = new AreaModification(SAMPLE_POLYAREA_FLAG_JUMP,
+    public static readonly RcAreaModification SAMPLE_AREAMOD_JUMP = new RcAreaModification(SAMPLE_POLYAREA_FLAG_JUMP,
         SAMPLE_POLYAREA_FLAG_JUMP);
 }

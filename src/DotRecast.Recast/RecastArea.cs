@@ -279,7 +279,7 @@ namespace DotRecast.Recast
         /// The value of spacial parameters are in world units.
         ///
         /// @see rcCompactHeightfield, rcMedianFilterWalkableArea
-        public static void MarkBoxArea(RcTelemetry ctx, float[] bmin, float[] bmax, AreaModification areaMod, RcCompactHeightfield chf)
+        public static void MarkBoxArea(RcTelemetry ctx, float[] bmin, float[] bmax, RcAreaModification areaMod, RcCompactHeightfield chf)
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_MARK_BOX_AREA);
 
@@ -351,7 +351,7 @@ namespace DotRecast.Recast
         /// projected onto the xz-plane at @p hmin, then extruded to @p hmax.
         ///
         /// @see rcCompactHeightfield, rcMedianFilterWalkableArea
-        public static void MarkConvexPolyArea(RcTelemetry ctx, float[] verts, float hmin, float hmax, AreaModification areaMod,
+        public static void MarkConvexPolyArea(RcTelemetry ctx, float[] verts, float hmin, float hmax, RcAreaModification areaMod,
             RcCompactHeightfield chf)
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_MARK_CONVEXPOLY_AREA);
@@ -427,7 +427,7 @@ namespace DotRecast.Recast
         /// The value of spacial parameters are in world units.
         ///
         /// @see rcCompactHeightfield, rcMedianFilterWalkableArea
-        public static void MarkCylinderArea(RcTelemetry ctx, float[] pos, float r, float h, AreaModification areaMod, RcCompactHeightfield chf)
+        public static void MarkCylinderArea(RcTelemetry ctx, float[] pos, float r, float h, RcAreaModification areaMod, RcCompactHeightfield chf)
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_MARK_CYLINDER_AREA);
 

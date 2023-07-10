@@ -27,7 +27,7 @@ namespace DotRecast.Detour.Dynamic
         public readonly int tileSizeZ;
         public readonly float cellSize;
         public PartitionType partitionType = PartitionType.WATERSHED;
-        public AreaModification walkableAreaModification = new AreaModification(1);
+        public RcAreaModification walkableAreaModification = new RcAreaModification(1);
         public float walkableHeight;
         public float walkableSlopeAngle;
         public float walkableRadius;

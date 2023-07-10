@@ -59,9 +59,9 @@ namespace DotRecast.Recast.Geom
             return ImmutableArray.Create(_mesh);
         }
 
-        public IList<ConvexVolume> ConvexVolumes()
+        public IList<RcConvexVolume> ConvexVolumes()
         {
-            return ImmutableArray<ConvexVolume>.Empty;
+            return ImmutableArray<RcConvexVolume>.Empty;
         }
     }
 }

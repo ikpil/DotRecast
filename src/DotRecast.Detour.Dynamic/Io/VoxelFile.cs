@@ -63,7 +63,7 @@ namespace DotRecast.Detour.Dynamic.Io
 
         public RcConfig GetConfig(VoxelTile tile, PartitionType partitionType, int maxPolyVerts, int regionMergeSize,
             bool filterLowHangingObstacles, bool filterLedgeSpans, bool filterWalkableLowHeightSpans,
-            AreaModification walkbableAreaMod, bool buildMeshDetail, float detailSampleDist, float detailSampleMaxError)
+            RcAreaModification walkbableAreaMod, bool buildMeshDetail, float detailSampleDist, float detailSampleMaxError)
         {
             return new RcConfig(useTiles, tileSizeX, tileSizeZ, tile.borderSize, partitionType, cellSize, tile.cellHeight,
                 walkableSlopeAngle, filterLowHangingObstacles, filterLedgeSpans, filterWalkableLowHeightSpans, walkableHeight,

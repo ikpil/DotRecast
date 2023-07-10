@@ -93,7 +93,7 @@ namespace DotRecast.Recast
      **/
         public readonly float detailSampleMaxError;
 
-        public readonly AreaModification walkableAreaMod;
+        public readonly RcAreaModification walkableAreaMod;
         public readonly bool filterLowHangingObstacles;
         public readonly bool filterLedgeSpans;
         public readonly bool filterWalkableLowHeightSpans;
@@ -119,7 +119,7 @@ namespace DotRecast.Recast
         public RcConfig(PartitionType partitionType, float cellSize, float cellHeight, float agentHeight, float agentRadius,
             float agentMaxClimb, float agentMaxSlope, int regionMinSize, int regionMergeSize, float edgeMaxLen,
             float edgeMaxError, int vertsPerPoly, float detailSampleDist, float detailSampleMaxError,
-            AreaModification walkableAreaMod) : this(partitionType, cellSize, cellHeight, agentMaxSlope, true, true, true, agentHeight, agentRadius, agentMaxClimb,
+            RcAreaModification walkableAreaMod) : this(partitionType, cellSize, cellHeight, agentMaxSlope, true, true, true, agentHeight, agentRadius, agentMaxClimb,
             regionMinSize, regionMergeSize, edgeMaxLen, edgeMaxError, vertsPerPoly, detailSampleDist, detailSampleMaxError,
             walkableAreaMod, true)
         {
@@ -131,7 +131,7 @@ namespace DotRecast.Recast
         public RcConfig(PartitionType partitionType, float cellSize, float cellHeight, float agentMaxSlope,
             bool filterLowHangingObstacles, bool filterLedgeSpans, bool filterWalkableLowHeightSpans, float agentHeight,
             float agentRadius, float agentMaxClimb, int regionMinSize, int regionMergeSize, float edgeMaxLen, float edgeMaxError,
-            int vertsPerPoly, float detailSampleDist, float detailSampleMaxError, AreaModification walkableAreaMod,
+            int vertsPerPoly, float detailSampleDist, float detailSampleMaxError, RcAreaModification walkableAreaMod,
             bool buildMeshDetail) : this(false, 0, 0, 0, partitionType, cellSize, cellHeight, agentMaxSlope, filterLowHangingObstacles, filterLedgeSpans,
             filterWalkableLowHeightSpans, agentHeight, agentRadius, agentMaxClimb,
             regionMinSize * regionMinSize * cellSize * cellSize, regionMergeSize * regionMergeSize * cellSize * cellSize,
@@ -144,7 +144,7 @@ namespace DotRecast.Recast
             float cellSize, float cellHeight, float agentMaxSlope, bool filterLowHangingObstacles, bool filterLedgeSpans,
             bool filterWalkableLowHeightSpans, float agentHeight, float agentRadius, float agentMaxClimb, float minRegionArea,
             float mergeRegionArea, float edgeMaxLen, float edgeMaxError, int vertsPerPoly, bool buildMeshDetail,
-            float detailSampleDist, float detailSampleMaxError, AreaModification walkableAreaMod)
+            float detailSampleDist, float detailSampleMaxError, RcAreaModification walkableAreaMod)
         {
             this.useTiles = useTiles;
             this.tileSizeX = tileSizeX;

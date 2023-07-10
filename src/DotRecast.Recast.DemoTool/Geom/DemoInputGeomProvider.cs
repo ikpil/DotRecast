@@ -33,7 +33,7 @@ namespace DotRecast.Recast.DemoTool.Geom
         public readonly float[] normals;
         private readonly RcVec3f bmin;
         private readonly RcVec3f bmax;
-        private readonly List<ConvexVolume> _convexVolumes = new List<ConvexVolume>();
+        private readonly List<RcConvexVolume> _convexVolumes = new List<RcConvexVolume>();
         private readonly List<DemoOffMeshConnection> offMeshConnections = new List<DemoOffMeshConnection>();
         private readonly RcTriMesh _mesh;
 
@@ -122,7 +122,7 @@ namespace DotRecast.Recast.DemoTool.Geom
             }
         }
 
-        public IList<ConvexVolume> ConvexVolumes()
+        public IList<RcConvexVolume> ConvexVolumes()
         {
             return _convexVolumes;
         }
@@ -210,9 +210,9 @@ namespace DotRecast.Recast.DemoTool.Geom
         }
 
 
-        public void AddConvexVolume(float[] verts, float minh, float maxh, AreaModification areaMod)
+        public void AddConvexVolume(float[] verts, float minh, float maxh, RcAreaModification areaMod)
         {
-            ConvexVolume volume = new ConvexVolume();
+            RcConvexVolume volume = new RcConvexVolume();
             volume.verts = verts;
             volume.hmin = minh;
             volume.hmax = maxh;

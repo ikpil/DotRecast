@@ -245,7 +245,7 @@ public class NavMeshRenderer
 
         _debugDraw.Begin(DebugDrawPrimitives.TRIS);
 
-        foreach (ConvexVolume vol in geom.ConvexVolumes())
+        foreach (RcConvexVolume vol in geom.ConvexVolumes())
         {
             int col = DebugDraw.DuTransCol(DebugDraw.AreaToCol(vol.areaMod.GetMaskedValue()), 32);
             for (int j = 0, k = vol.verts.Length - 3; j < vol.verts.Length; k = j, j += 3)
@@ -270,7 +270,7 @@ public class NavMeshRenderer
         _debugDraw.End();
 
         _debugDraw.Begin(DebugDrawPrimitives.LINES, 2.0f);
-        foreach (ConvexVolume vol in geom.ConvexVolumes())
+        foreach (RcConvexVolume vol in geom.ConvexVolumes())
         {
             int col = DebugDraw.DuTransCol(DebugDraw.AreaToCol(vol.areaMod.GetMaskedValue()), 220);
             for (int j = 0, k = vol.verts.Length - 3; j < vol.verts.Length; k = j, j += 3)
@@ -289,7 +289,7 @@ public class NavMeshRenderer
         _debugDraw.End();
 
         _debugDraw.Begin(DebugDrawPrimitives.POINTS, 3.0f);
-        foreach (ConvexVolume vol in geom.ConvexVolumes())
+        foreach (RcConvexVolume vol in geom.ConvexVolumes())
         {
             int col = DebugDraw.DuDarkenCol(DebugDraw.DuTransCol(DebugDraw.AreaToCol(vol.areaMod.GetMaskedValue()), 220));
             for (int j = 0; j < vol.verts.Length; j += 3)

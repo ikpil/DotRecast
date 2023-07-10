@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Recast
 {
-    public class AreaModification
+    public class RcAreaModification
     {
         public const int RC_AREA_FLAGS_MASK = 0x3F;
 
@@ -33,7 +33,7 @@ namespace DotRecast.Recast
          * @param value
          *            The area id to apply. [Limit: &lt;= #RC_AREA_FLAGS_MASK]
          */
-        public AreaModification(int value)
+        public RcAreaModification(int value)
         {
             this.Value = value;
             Mask = RC_AREA_FLAGS_MASK;
@@ -46,13 +46,13 @@ namespace DotRecast.Recast
          * @param mask
          *            Bitwise mask used when applying value. [Limit: &lt;= #RC_AREA_FLAGS_MASK]
          */
-        public AreaModification(int value, int mask)
+        public RcAreaModification(int value, int mask)
         {
             this.Value = value;
             this.Mask = mask;
         }
 
-        public AreaModification(AreaModification other)
+        public RcAreaModification(RcAreaModification other)
         {
             Value = other.Value;
             Mask = other.Mask;
