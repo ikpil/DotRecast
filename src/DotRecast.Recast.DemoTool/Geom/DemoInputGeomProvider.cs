@@ -217,6 +217,11 @@ namespace DotRecast.Recast.DemoTool.Geom
             volume.hmin = minh;
             volume.hmax = maxh;
             volume.areaMod = areaMod;
+            AddConvexVolume(volume);
+        }
+        
+        public void AddConvexVolume(RcConvexVolume volume)
+        {
             _convexVolumes.Add(volume);
         }
 

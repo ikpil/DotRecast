@@ -78,7 +78,9 @@ public class ConvexVolumeTool : IRcTool
             // If clicked on that last pt, create the shape.
             if (pts.Count > 0 && RcVec3f.DistSqr(p, pts[pts.Count - 1]) < 0.2f * 0.2f)
             {
-                _impl.Add(pts, hull, areaType, boxDescent, boxHeight, polyOffset);
+                var vol = ConvexVolumeToolImpl.CreateConvexVolume(pts, hull, areaType, boxDescent, boxHeight, polyOffset);
+                if (null != vol)
+                    _impl.Add(vol);
 
                 pts.Clear();
                 hull.Clear();

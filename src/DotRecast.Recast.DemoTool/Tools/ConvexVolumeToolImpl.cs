@@ -48,11 +48,17 @@ namespace DotRecast.Recast.DemoTool.Tools
             return removal;
         }
 
-        public void Add(List<RcVec3f> pts, List<int> hull, RcAreaModification areaType, float boxDescent, float boxHeight, float polyOffset)
+        public void Add(RcConvexVolume volume)
+        {
+            var geom = _sample.GetInputGeom();
+            geom.AddConvexVolume(volume);
+        }
+
+        public static RcConvexVolume CreateConvexVolume(List<RcVec3f> pts, List<int> hull, RcAreaModification areaType, float boxDescent, float boxHeight, float polyOffset)
         {
             // 
             if (hull.Count <= 2)
-                return;
+                return null;
 
             // Create shape.
             float[] verts = new float[hull.Count * 3];
@@ -72,20 +78,23 @@ namespace DotRecast.Recast.DemoTool.Tools
             minh -= boxDescent;
             maxh = minh + boxHeight;
 
-            var geom = _sample.GetInputGeom();
             if (polyOffset > 0.01f)
             {
                 float[] offset = new float[verts.Length * 2];
                 int noffset = PolyUtils.OffsetPoly(verts, hull.Count, polyOffset, offset, offset.Length);
                 if (noffset > 0)
                 {
-                    geom.AddConvexVolume(RcArrayUtils.CopyOf(offset, 0, noffset * 3), minh, maxh, areaType);
+                    verts = RcArrayUtils.CopyOf(offset, 0, noffset * 3);
                 }
             }
-            else
+
+            return new RcConvexVolume()
             {
-                geom.AddConvexVolume(verts, minh, maxh, areaType);
-            }
+                verts = verts,
+                hmin = minh,
+                hmax = maxh,
+                areaMod = areaType,
+            };
         }
     }
 }
