@@ -350,9 +350,10 @@ public class TestNavmeshTool : IRcTool
                     ? StrictPolygonByCircleConstraint.Strict
                     : NoOpPolygonByCircleConstraint.Noop;
 
+                var frand = new FRand();
                 for (int i = 0; i < 200; i++)
                 {
-                    var status = m_navQuery.FindRandomPointAroundCircle(m_startRef, m_spos, dist, m_filter, new FRand(), constraint,
+                    var status = m_navQuery.FindRandomPointAroundCircle(m_startRef, m_spos, dist, m_filter, frand, constraint,
                         out var randomRef, out var randomPt);
                     if (status.Succeeded())
                     {
