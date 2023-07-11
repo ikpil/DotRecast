@@ -28,9 +28,10 @@ namespace DotRecast.Recast
 
     public static class RecastContour
     {
-        private static CornerHeight GetCornerHeight(int x, int y, int i, int dir, RcCompactHeightfield chf)
+        private static int GetCornerHeight(int x, int y, int i, int dir, RcCompactHeightfield chf, out bool isBorderVertex)
         {
-            bool isBorderVertex = false;
+            isBorderVertex = false;
+
             RcCompactSpan s = chf.spans[i];
             int ch = s.y;
             int dirp = (dir + 1) & 0x3;
@@ -103,7 +104,7 @@ namespace DotRecast.Recast
                 }
             }
 
-            return new CornerHeight(ch, isBorderVertex);
+            return ch;
         }
 
         private static void WalkContour(int x, int y, int i, RcCompactHeightfield chf, int[] flags, List<int> points)
@@ -124,11 +125,10 @@ namespace DotRecast.Recast
                 if ((flags[i] & (1 << dir)) != 0)
                 {
                     // Choose the edge corner
+                    bool isBorderVertex = false;
                     bool isAreaBorder = false;
-                    CornerHeight cornerHeight = GetCornerHeight(x, y, i, dir, chf);
-                    bool isBorderVertex = cornerHeight.borderVertex;
                     int px = x;
-                    int py = cornerHeight.height;
+                    int py = GetCornerHeight(x, y, i, dir, chf, out isBorderVertex);
                     int pz = y;
                     switch (dir)
                     {
@@ -723,7 +723,7 @@ namespace DotRecast.Recast
             RcContourSet cset = new RcContourSet();
 
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_CONTOURS);
-            
+
             cset.bmin = chf.bmin;
             cset.bmax = chf.bmax;
             if (borderSize > 0)
