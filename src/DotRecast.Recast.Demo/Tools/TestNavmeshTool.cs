@@ -618,8 +618,8 @@ public class TestNavmeshTool : IRcTool
                     if (m_parent[i] != 0)
                     {
                         dd.DepthMask(false);
-                        RcVec3f p0 = GetPolyCenter(m_navMesh, m_parent[i]);
-                        RcVec3f p1 = GetPolyCenter(m_navMesh, m_polys[i]);
+                        RcVec3f p0 = m_navMesh.GetPolyCenter(m_parent[i]);
+                        RcVec3f p1 = m_navMesh.GetPolyCenter(m_polys[i]);
                         dd.DebugDrawArc(p0.x, p0.y, p0.z, p1.x, p1.y, p1.z, 0.25f, 0.0f, 0.4f,
                             DuRGBA(0, 0, 0, 128), 2.0f);
                         dd.DepthMask(true);
@@ -651,8 +651,8 @@ public class TestNavmeshTool : IRcTool
                     if (m_parent[i] != 0)
                     {
                         dd.DepthMask(false);
-                        RcVec3f p0 = GetPolyCenter(m_navMesh, m_parent[i]);
-                        RcVec3f p1 = GetPolyCenter(m_navMesh, m_polys[i]);
+                        RcVec3f p0 = m_navMesh.GetPolyCenter(m_parent[i]);
+                        RcVec3f p1 = m_navMesh.GetPolyCenter(m_polys[i]);
                         dd.DebugDrawArc(p0.x, p0.y, p0.z, p1.x, p1.y, p1.z, 0.25f, 0.0f, 0.4f,
                             DuRGBA(0, 0, 0, 128), 2.0f);
                         dd.DepthMask(true);
@@ -691,8 +691,8 @@ public class TestNavmeshTool : IRcTool
                     if (m_parent[i] != 0)
                     {
                         dd.DepthMask(false);
-                        RcVec3f p0 = GetPolyCenter(m_navMesh, m_parent[i]);
-                        RcVec3f p1 = GetPolyCenter(m_navMesh, m_polys[i]);
+                        RcVec3f p0 = m_navMesh.GetPolyCenter(m_parent[i]);
+                        RcVec3f p1 = m_navMesh.GetPolyCenter(m_polys[i]);
                         dd.DebugDrawArc(p0.x, p0.y, p0.z, p1.x, p1.y, p1.z, 0.25f, 0.0f, 0.4f,
                             DuRGBA(0, 0, 0, 128), 2.0f);
                         dd.DepthMask(true);
@@ -811,29 +811,7 @@ public class TestNavmeshTool : IRcTool
         dd.DepthMask(true);
     }
 
-    private RcVec3f GetPolyCenter(DtNavMesh navMesh, long refs)
-    {
-        RcVec3f center = RcVec3f.Zero;
 
-        var status = navMesh.GetTileAndPolyByRef(refs, out var tile, out var poly);
-        if (status.Succeeded())
-        {
-            for (int i = 0; i < poly.vertCount; ++i)
-            {
-                int v = poly.verts[i] * 3;
-                center.x += tile.data.verts[v];
-                center.y += tile.data.verts[v + 1];
-                center.z += tile.data.verts[v + 2];
-            }
-
-            float s = 1.0f / poly.vertCount;
-            center.x *= s;
-            center.y *= s;
-            center.z *= s;
-        }
-
-        return center;
-    }
 
     public void HandleUpdate(float dt)
     {
