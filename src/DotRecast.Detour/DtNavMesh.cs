@@ -1710,6 +1710,30 @@ namespace DotRecast.Detour
 
             return DtStatus.DT_SUCCSESS;
         }
+        
+        public RcVec3f GetPolyCenter(long refs)
+        {
+            RcVec3f center = RcVec3f.Zero;
+
+            var status = GetTileAndPolyByRef(refs, out var tile, out var poly);
+            if (status.Succeeded())
+            {
+                for (int i = 0; i < poly.vertCount; ++i)
+                {
+                    int v = poly.verts[i] * 3;
+                    center.x += tile.data.verts[v];
+                    center.y += tile.data.verts[v + 1];
+                    center.z += tile.data.verts[v + 2];
+                }
+
+                float s = 1.0f / poly.vertCount;
+                center.x *= s;
+                center.y *= s;
+                center.z *= s;
+            }
+
+            return center;
+        }
 
         /**
      * Get flags for edge in detail triangle.
@@ -1737,28 +1761,6 @@ namespace DotRecast.Detour
             return tiles;
         }
         
-        public RcVec3f GetPolyCenter(long refs)
-        {
-            RcVec3f center = RcVec3f.Zero;
 
-            var status = GetTileAndPolyByRef(refs, out var tile, out var poly);
-            if (status.Succeeded())
-            {
-                for (int i = 0; i < poly.vertCount; ++i)
-                {
-                    int v = poly.verts[i] * 3;
-                    center.x += tile.data.verts[v];
-                    center.y += tile.data.verts[v + 1];
-                    center.z += tile.data.verts[v + 2];
-                }
-
-                float s = 1.0f / poly.vertCount;
-                center.x *= s;
-                center.y *= s;
-                center.z *= s;
-            }
-
-            return center;
-        }
     }
 }
