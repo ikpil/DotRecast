@@ -78,7 +78,7 @@ namespace DotRecast.Detour
         ///  @param[out]	randomRef		The reference id of the random location.
         ///  @param[out]	randomPt		The random location. 
         /// @returns The status flags for the query.
-        public DtStatus FindRandomPoint(IDtQueryFilter filter, FRand frand, out long randomRef, out RcVec3f randomPt)
+        public DtStatus FindRandomPoint(IDtQueryFilter filter, IRcRand frand, out long randomRef, out RcVec3f randomPt)
         {
             randomRef = 0;
             randomPt = RcVec3f.Zero;
@@ -199,7 +199,7 @@ namespace DotRecast.Detour
      * @return Random location
      */
         public DtStatus FindRandomPointAroundCircle(long startRef, RcVec3f centerPos, float maxRadius,
-            IDtQueryFilter filter, FRand frand, out long randomRef, out RcVec3f randomPt)
+            IDtQueryFilter filter, IRcRand frand, out long randomRef, out RcVec3f randomPt)
         {
             return FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, NoOpPolygonByCircleConstraint.Noop, out randomRef, out randomPt);
         }
@@ -220,13 +220,13 @@ namespace DotRecast.Detour
      * @return Random location
      */
         public DtStatus FindRandomPointWithinCircle(long startRef, RcVec3f centerPos, float maxRadius,
-            IDtQueryFilter filter, FRand frand, out long randomRef, out RcVec3f randomPt)
+            IDtQueryFilter filter, IRcRand frand, out long randomRef, out RcVec3f randomPt)
         {
             return FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, StrictPolygonByCircleConstraint.Strict, out randomRef, out randomPt);
         }
 
         public DtStatus FindRandomPointAroundCircle(long startRef, RcVec3f centerPos, float maxRadius,
-            IDtQueryFilter filter, FRand frand, IPolygonByCircleConstraint constraint,
+            IDtQueryFilter filter, IRcRand frand, IPolygonByCircleConstraint constraint,
             out long randomRef, out RcVec3f randomPt)
         {
             randomRef = startRef;

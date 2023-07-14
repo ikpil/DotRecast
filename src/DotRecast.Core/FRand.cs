@@ -2,7 +2,7 @@
 
 namespace DotRecast.Core
 {
-    public class FRand
+    public class FRand : IRcRand
     {
         private readonly Random _r;
 
