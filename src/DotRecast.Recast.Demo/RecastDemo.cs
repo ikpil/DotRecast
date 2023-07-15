@@ -517,18 +517,21 @@ public class RecastDemo : IRecastDemoChannel
 
         if (_sample.IsChanged())
         {
-            RcVec3f? bminN = null;
-            RcVec3f? bmaxN = null;
+            bool hasBound = false;
+            RcVec3f bminN = RcVec3f.Zero;
+            RcVec3f bmaxN = RcVec3f.Zero;
             if (_sample.GetInputGeom() != null)
             {
                 bminN = _sample.GetInputGeom().GetMeshBoundsMin();
                 bmaxN = _sample.GetInputGeom().GetMeshBoundsMax();
+                hasBound = true;
             }
             else if (_sample.GetNavMesh() != null)
             {
                 RcVec3f[] bounds = NavMeshUtils.GetNavMeshBounds(_sample.GetNavMesh());
                 bminN = bounds[0];
                 bmaxN = bounds[1];
+                hasBound = true;
             }
             else if (0 < _sample.GetRecastResults().Count)
             {
@@ -536,31 +539,33 @@ public class RecastDemo : IRecastDemoChannel
                 {
                     if (result.GetSolidHeightfield() != null)
                     {
-                        if (bminN == null)
+                        if (!hasBound)
                         {
                             bminN = RcVec3f.Of(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
                             bmaxN = RcVec3f.Of(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
                         }
 
                         bminN = RcVec3f.Of(
-                            Math.Min(bminN.Value.x, result.GetSolidHeightfield().bmin.x),
-                            Math.Min(bminN.Value.y, result.GetSolidHeightfield().bmin.y),
-                            Math.Min(bminN.Value.z, result.GetSolidHeightfield().bmin.z)
+                            Math.Min(bminN.x, result.GetSolidHeightfield().bmin.x),
+                            Math.Min(bminN.y, result.GetSolidHeightfield().bmin.y),
+                            Math.Min(bminN.z, result.GetSolidHeightfield().bmin.z)
                         );
 
                         bmaxN = RcVec3f.Of(
-                            Math.Max(bmaxN.Value.x, result.GetSolidHeightfield().bmax.x),
-                            Math.Max(bmaxN.Value.y, result.GetSolidHeightfield().bmax.y),
-                            Math.Max(bmaxN.Value.z, result.GetSolidHeightfield().bmax.z)
+                            Math.Max(bmaxN.x, result.GetSolidHeightfield().bmax.x),
+                            Math.Max(bmaxN.y, result.GetSolidHeightfield().bmax.y),
+                            Math.Max(bmaxN.z, result.GetSolidHeightfield().bmax.z)
                         );
+
+                        hasBound = true;
                     }
                 }
             }
 
-            if (bminN != null && bmaxN != null)
+            if (hasBound)
             {
-                RcVec3f bmin = bminN.Value;
-                RcVec3f bmax = bmaxN.Value;
+                RcVec3f bmin = bminN;
+                RcVec3f bmax = bmaxN;
 
                 camr = (float)(Math.Sqrt(
                                    Sqr(bmax.x - bmin.x) + Sqr(bmax.y - bmin.y) + Sqr(bmax.z - bmin.z))

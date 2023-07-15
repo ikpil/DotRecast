@@ -3157,8 +3157,10 @@ namespace DotRecast.Detour
             m_openList.Push(startNode);
 
             float radiusSqr = Sqr(maxRadius);
-            RcVec3f? bestvj = null;
-            RcVec3f? bestvi = null;
+
+            var hasBestV = false;
+            var bestvj = RcVec3f.Zero;
+            var bestvi = RcVec3f.Zero;
 
             var status = DtStatus.DT_SUCCSESS;
             while (!m_openList.IsEmpty())
@@ -3238,6 +3240,7 @@ namespace DotRecast.Detour
                     hitPos.x = bestTile.data.verts[vj + 0] + (bestTile.data.verts[vi + 0] - bestTile.data.verts[vj + 0]) * tseg;
                     hitPos.y = bestTile.data.verts[vj + 1] + (bestTile.data.verts[vi + 1] - bestTile.data.verts[vj + 1]) * tseg;
                     hitPos.z = bestTile.data.verts[vj + 2] + (bestTile.data.verts[vi + 2] - bestTile.data.verts[vj + 2]) * tseg;
+                    hasBestV = true;
                     bestvj = RcVec3f.Of(bestTile.data.verts, vj);
                     bestvi = RcVec3f.Of(bestTile.data.verts, vi);
                 }
@@ -3322,9 +3325,9 @@ namespace DotRecast.Detour
             }
 
             // Calc hit normal.
-            if (bestvi != null && bestvj != null)
+            if (hasBestV)
             {
-                var tangent = bestvi.Value.Subtract(bestvj.Value);
+                var tangent = bestvi.Subtract(bestvj);
                 hitNormal.x = tangent.z;
                 hitNormal.y = 0;
                 hitNormal.z = -tangent.x;

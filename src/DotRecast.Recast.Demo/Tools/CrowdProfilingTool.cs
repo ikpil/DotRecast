@@ -102,23 +102,24 @@ public class CrowdProfilingTool
                         }
                     }
 
-                    RcVec3f? pos = null;
+                    var status = DtStatus.DT_FAILURE;
+                    var randomPt = RcVec3f.Zero;
                     switch (type)
                     {
                         case CrowdAgentType.MOB:
-                            pos = GetMobPosition(navquery, filter);
+                            status = GetMobPosition(navquery, filter, out randomPt);
                             break;
                         case CrowdAgentType.VILLAGER:
-                            pos = GetVillagerPosition(navquery, filter);
+                            status = GetVillagerPosition(navquery, filter, out randomPt);
                             break;
                         case CrowdAgentType.TRAVELLER:
-                            pos = GetVillagerPosition(navquery, filter);
+                            status = GetVillagerPosition(navquery, filter, out randomPt);
                             break;
                     }
 
-                    if (pos != null)
+                    if (status.Succeeded())
                     {
-                        AddAgent(pos.Value, type);
+                        AddAgent(randomPt, type);
                     }
                 }
             }
@@ -142,31 +143,21 @@ public class CrowdProfilingTool
         }
     }
 
-    private RcVec3f? GetMobPosition(DtNavMeshQuery navquery, IDtQueryFilter filter)
+    private DtStatus GetMobPosition(DtNavMeshQuery navquery, IDtQueryFilter filter, out RcVec3f randomPt)
     {
-        var status = navquery.FindRandomPoint(filter, rnd, out var randomRef, out var randomPt);
-        if (status.Succeeded())
-        {
-            return randomPt;
-        }
-
-        return null;
+        return navquery.FindRandomPoint(filter, rnd, out var randomRef, out randomPt);
     }
 
-    private RcVec3f? GetVillagerPosition(DtNavMeshQuery navquery, IDtQueryFilter filter)
+    private DtStatus GetVillagerPosition(DtNavMeshQuery navquery, IDtQueryFilter filter, out RcVec3f randomPt)
     {
-        if (0 < _polyPoints.Count)
-        {
-            int zone = (int)(rnd.Next() * _polyPoints.Count);
-            var status = navquery.FindRandomPointWithinCircle(_polyPoints[zone].refs, _polyPoints[zone].pt, zoneRadius, filter, rnd,
-                out var randomRef, out var randomPt);
-            if (status.Succeeded())
-            {
-                return randomPt;
-            }
-        }
+        randomPt = RcVec3f.Zero;
 
-        return null;
+        if (0 >= _polyPoints.Count)
+            return DtStatus.DT_FAILURE;
+
+        int zone = (int)(rnd.Next() * _polyPoints.Count);
+        return navquery.FindRandomPointWithinCircle(_polyPoints[zone].refs, _polyPoints[zone].pt, zoneRadius, filter, rnd,
+            out var randomRef, out randomPt);
     }
 
     private void CreateZones()
