@@ -335,7 +335,14 @@ public class TestNavmeshTool : IRcTool
             if (m_sposSet && m_startRef != 0)
             {
                 m_neighbourhoodRadius = _impl.GetSample().GetSettings().agentRadius * 20.0f;
-                m_navQuery.FindLocalNeighbourhood(m_startRef, m_spos, m_neighbourhoodRadius, m_filter, ref m_polys, ref m_parent);
+                List<long> resultRef = new();
+                List<long> resultParent = new();
+                var status = m_navQuery.FindLocalNeighbourhood(m_startRef, m_spos, m_neighbourhoodRadius, m_filter, ref resultRef, ref resultParent);
+                if (status.Succeeded())
+                {
+                    m_polys = resultRef;
+                    m_parent = resultParent;
+                }
             }
         }
         else if (option.mode == TestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE)

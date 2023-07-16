@@ -2808,7 +2808,8 @@ namespace DotRecast.Detour
         {
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(centerPos) || radius < 0
-                || !float.IsFinite(radius) || null == filter)
+                || !float.IsFinite(radius) || null == filter
+                || null == resultRef || null == resultParent)
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
