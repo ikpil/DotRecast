@@ -688,7 +688,7 @@ public class TestNavmeshTool : IRcTool
         {
             if (m_polys != null)
             {
-                var segmentVerts = new List<SegmentVert>();
+                var segmentVerts = new List<RcSegmentVert>();
                 var segmentRefs = new List<long>();
 
                 for (int i = 0; i < m_polys.Count; i++)
@@ -717,7 +717,7 @@ public class TestNavmeshTool : IRcTool
                             dd.Begin(LINES, 2.0f);
                             for (int j = 0; j < segmentVerts.Count; ++j)
                             {
-                                SegmentVert s = segmentVerts[j];
+                                RcSegmentVert s = segmentVerts[j];
                                 var v0 = s.vmin;
                                 var s3 = s.vmax;
                                 // Skip too distant segments.

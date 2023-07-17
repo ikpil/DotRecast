@@ -2998,7 +2998,7 @@ namespace DotRecast.Detour
         /// @param[in] maxSegments The maximum number of segments the result arrays can hold.
         /// @returns The status flags for the query.
         public DtStatus GetPolyWallSegments(long refs, bool storePortals, IDtQueryFilter filter,
-            ref List<SegmentVert> segmentVerts, ref List<long> segmentRefs)
+            ref List<RcSegmentVert> segmentVerts, ref List<long> segmentRefs)
         {
             segmentVerts.Clear();
             segmentRefs.Clear();
@@ -3060,7 +3060,7 @@ namespace DotRecast.Detour
 
                     int ivj = poly.verts[j] * 3;
                     int ivi = poly.verts[i] * 3;
-                    var seg = new SegmentVert();
+                    var seg = new RcSegmentVert();
                     seg.vmin.Set(tile.data.verts, ivj);
                     seg.vmax.Set(tile.data.verts, ivi);
                     // Array.Copy(tile.data.verts, ivj, seg, 0, 3);
@@ -3084,7 +3084,7 @@ namespace DotRecast.Detour
                     {
                         float tmin = ints[k].tmin / 255.0f;
                         float tmax = ints[k].tmax / 255.0f;
-                        var seg = new SegmentVert();
+                        var seg = new RcSegmentVert();
                         seg.vmin = RcVec3f.Lerp(tile.data.verts, vj, vi, tmin);
                         seg.vmax = RcVec3f.Lerp(tile.data.verts, vj, vi, tmax);
                         segmentVerts.Add(seg);
@@ -3098,7 +3098,7 @@ namespace DotRecast.Detour
                     {
                         float tmin = imin / 255.0f;
                         float tmax = imax / 255.0f;
-                        var seg = new SegmentVert();
+                        var seg = new RcSegmentVert();
                         seg.vmin = RcVec3f.Lerp(tile.data.verts, vj, vi, tmin);
                         seg.vmax = RcVec3f.Lerp(tile.data.verts, vj, vi, tmax);
                         segmentVerts.Add(seg);

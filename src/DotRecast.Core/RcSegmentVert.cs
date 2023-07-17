@@ -1,11 +1,11 @@
 ﻿namespace DotRecast.Core
 {
-    public struct SegmentVert
+    public struct RcSegmentVert
     {
         public RcVec3f vmin;
         public RcVec3f vmax;
 
-        public SegmentVert(float v0, float v1, float v2, float v3, float v4, float v5)
+        public RcSegmentVert(float v0, float v1, float v2, float v3, float v4, float v5)
         {
             vmin.x = v0;
             vmin.y = v1;

@@ -48,7 +48,7 @@ namespace DotRecast.Detour.Crowd
             m_segs.Clear();
         }
 
-        protected void AddSegment(float dist, SegmentVert s)
+        protected void AddSegment(float dist, RcSegmentVert s)
         {
             // Insert neighbour based on the distance.
             DtSegment seg = new DtSegment();
@@ -107,7 +107,7 @@ namespace DotRecast.Detour.Crowd
                 // Secondly, store all polygon edges.
                 m_segs.Clear();
 
-                var segmentVerts = new List<SegmentVert>();
+                var segmentVerts = new List<RcSegmentVert>();
                 var segmentRefs = new List<long>();
                 
                 for (int j = 0; j < m_polys.Count; ++j)
@@ -117,7 +117,7 @@ namespace DotRecast.Detour.Crowd
                     {
                         for (int k = 0; k < segmentRefs.Count; ++k)
                         {
-                            SegmentVert s = segmentVerts[k];
+                            RcSegmentVert s = segmentVerts[k];
                             var s0 = s.vmin;
                             var s3 = s.vmax;
 
