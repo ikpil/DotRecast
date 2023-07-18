@@ -38,7 +38,7 @@ public class TestNavmeshTool : IRcTool
     private List<long> m_polys;
     private List<long> m_parent;
     private float m_neighbourhoodRadius;
-    private readonly RcVec3f[] m_queryPoly = new RcVec3f[4];
+    private RcVec3f[] m_queryPoly = new RcVec3f[4];
     private List<RcVec3f> m_smoothPath;
     private DtStatus m_pathFindStatus = DtStatus.DT_FAILURE;
     private readonly List<RcVec3f> randomPoints = new();
@@ -264,7 +264,6 @@ public class TestNavmeshTool : IRcTool
             m_distanceToWall = 0;
             if (m_sposSet && m_startRef != 0)
             {
-                m_distanceToWall = 0.0f;
                 var result = m_navQuery.FindDistanceToWall(m_startRef, m_spos, 100.0f, m_filter, out var hitDist, out var hitPos, out var hitNormal);
                 if (result.Succeeded())
                 {
@@ -298,33 +297,13 @@ public class TestNavmeshTool : IRcTool
         {
             if (m_sposSet && m_startRef != 0 && m_eposSet)
             {
-                float nx = (m_epos.z - m_spos.z) * 0.25f;
-                float nz = -(m_epos.x - m_spos.x) * 0.25f;
-                float agentHeight = _impl.GetSample() != null ? _impl.GetSample().GetSettings().agentHeight : 0;
-
-                m_queryPoly[0].x = m_spos.x + nx * 1.2f;
-                m_queryPoly[0].y = m_spos.y + agentHeight / 2;
-                m_queryPoly[0].z = m_spos.z + nz * 1.2f;
-
-                m_queryPoly[1].x = m_spos.x - nx * 1.3f;
-                m_queryPoly[1].y = m_spos.y + agentHeight / 2;
-                m_queryPoly[1].z = m_spos.z - nz * 1.3f;
-
-                m_queryPoly[2].x = m_epos.x - nx * 0.8f;
-                m_queryPoly[2].y = m_epos.y + agentHeight / 2;
-                m_queryPoly[2].z = m_epos.z - nz * 0.8f;
-
-                m_queryPoly[3].x = m_epos.x + nx;
-                m_queryPoly[3].y = m_epos.y + agentHeight / 2;
-                m_queryPoly[3].z = m_epos.z + nz;
-
                 var refs = new List<long>();
                 var parentRefs = new List<long>();
-                var costs = new List<float>();
 
-                var status = m_navQuery.FindPolysAroundShape(m_startRef, m_queryPoly, m_filter, ref refs, ref parentRefs, ref costs);
+                var status = _impl.FindPolysAroundShape(m_startRef, m_spos, m_epos, m_filter, ref refs, ref parentRefs, out var queryPoly);
                 if (status.Succeeded())
                 {
+                    m_queryPoly = queryPoly;
                     m_polys = refs;
                     m_parent = parentRefs;
                 }

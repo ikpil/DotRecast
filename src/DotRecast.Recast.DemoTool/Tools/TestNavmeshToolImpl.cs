@@ -251,5 +251,33 @@ namespace DotRecast.Recast.DemoTool.Tools
 
             return status;
         }
+
+        public DtStatus FindPolysAroundShape(long startRef, RcVec3f m_spos, RcVec3f m_epos, IDtQueryFilter filter, ref List<long> resultRef, ref List<long> resultParent, out RcVec3f[] queryPoly)
+        {
+            float nx = (m_epos.z - m_spos.z) * 0.25f;
+            float nz = -(m_epos.x - m_spos.x) * 0.25f;
+            float agentHeight = GetSample() != null ? GetSample().GetSettings().agentHeight : 0;
+
+            queryPoly = new RcVec3f[4];
+            queryPoly[0].x = m_spos.x + nx * 1.2f;
+            queryPoly[0].y = m_spos.y + agentHeight / 2;
+            queryPoly[0].z = m_spos.z + nz * 1.2f;
+
+            queryPoly[1].x = m_spos.x - nx * 1.3f;
+            queryPoly[1].y = m_spos.y + agentHeight / 2;
+            queryPoly[1].z = m_spos.z - nz * 1.3f;
+
+            queryPoly[2].x = m_epos.x - nx * 0.8f;
+            queryPoly[2].y = m_epos.y + agentHeight / 2;
+            queryPoly[2].z = m_epos.z - nz * 0.8f;
+
+            queryPoly[3].x = m_epos.x + nx;
+            queryPoly[3].y = m_epos.y + agentHeight / 2;
+            queryPoly[3].z = m_epos.z + nz;
+
+            var costs = new List<float>();
+            var navQuery = _sample.GetNavMeshQuery();
+            return navQuery.FindPolysAroundShape(startRef, queryPoly, filter, ref resultRef, ref resultParent, ref costs);
+        }
     }
 }
