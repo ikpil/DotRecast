@@ -277,15 +277,10 @@ public class TestNavmeshTool : IRcTool
         {
             if (m_sposSet && m_startRef != 0 && m_eposSet)
             {
-                float dx = m_epos.x - m_spos.x;
-                float dz = m_epos.z - m_spos.z;
-                float dist = (float)Math.Sqrt(dx * dx + dz * dz);
-                
                 List<long> refs = new();
                 List<long> parentRefs = new();
-                List<float> costs = new();
 
-                var status = m_navQuery.FindPolysAroundCircle(m_startRef, m_spos, dist, m_filter, ref refs, ref parentRefs, ref costs);
+                var status = _impl.FindPolysAroundCircle(m_startRef, m_spos, m_epos, m_filter, ref refs, ref parentRefs);
                 if (status.Succeeded())
                 {
                     m_polys = refs;
@@ -796,7 +791,6 @@ public class TestNavmeshTool : IRcTool
         dd.End();
         dd.DepthMask(true);
     }
-
 
 
     public void HandleUpdate(float dt)
