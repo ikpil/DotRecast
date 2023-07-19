@@ -324,23 +324,9 @@ public class TestNavmeshTool : IRcTool
             randomPoints.Clear();
             if (m_sposSet && m_startRef != 0 && m_eposSet)
             {
-                float dx = m_epos.x - m_spos.x;
-                float dz = m_epos.z - m_spos.z;
-                float dist = (float)Math.Sqrt(dx * dx + dz * dz);
-                IPolygonByCircleConstraint constraint = option.constrainByCircle
-                    ? StrictPolygonByCircleConstraint.Strict
-                    : NoOpPolygonByCircleConstraint.Noop;
-
-                var frand = new FRand();
-                for (int i = 0; i < 200; i++)
-                {
-                    var status = m_navQuery.FindRandomPointAroundCircle(m_startRef, m_spos, dist, m_filter, frand, constraint,
-                        out var randomRef, out var randomPt);
-                    if (status.Succeeded())
-                    {
-                        randomPoints.Add(randomPt);
-                    }
-                }
+                var points = new List<RcVec3f>();
+                _impl.FindRandomPointAroundCircle(m_startRef, m_spos, m_epos, m_filter, option.constrainByCircle, 500, ref points);
+                randomPoints.AddRange(points);
             }
         }
     }

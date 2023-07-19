@@ -291,5 +291,34 @@ namespace DotRecast.Recast.DemoTool.Tools
             var navQuery = _sample.GetNavMeshQuery();
             return navQuery.FindPolysAroundShape(startRef, queryPoly, filter, ref resultRef, ref resultParent, ref costs);
         }
+
+        public DtStatus FindRandomPointAroundCircle(long startRef, RcVec3f spos, RcVec3f epos, IDtQueryFilter filter, bool constrainByCircle, int count, ref List<RcVec3f> points)
+        {
+            float dx = epos.x - spos.x;
+            float dz = epos.z - spos.z;
+            float dist = (float)Math.Sqrt(dx * dx + dz * dz);
+
+            IPolygonByCircleConstraint constraint = constrainByCircle
+                ? StrictPolygonByCircleConstraint.Strict
+                : NoOpPolygonByCircleConstraint.Noop;
+
+            var frand = new FRand();
+            var navQuery = _sample.GetNavMeshQuery();
+
+            int prevCnt = points.Count;
+
+            while (0 < count && points.Count < prevCnt + count)
+            {
+                var status = navQuery.FindRandomPointAroundCircle(startRef, spos, dist, filter, frand, constraint,
+                    out var randomRef, out var randomPt);
+                
+                if (status.Succeeded())
+                {
+                    points.Add(randomPt);
+                }
+            }
+
+            return DtStatus.DT_SUCCSESS;
+        }
     }
 }
