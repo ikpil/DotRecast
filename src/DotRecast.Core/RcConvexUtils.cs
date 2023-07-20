@@ -20,7 +20,7 @@ using System.Collections.Generic;
 
 namespace DotRecast.Core
 {
-    public static class ConvexUtils
+    public static class RcConvexUtils
     {
         // Calculates convex hull on xz-plane of points on 'pts',
         // stores the indices of the resulting hull in 'out' and

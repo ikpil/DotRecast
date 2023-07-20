@@ -2233,26 +2233,26 @@ namespace DotRecast.Detour
                     nv++;
                 }
 
-                IntersectResult iresult = DetourCommon.IntersectSegmentPoly2D(startPos, endPos, verts, nv);
-                if (!iresult.intersects)
+                bool intersects = DetourCommon.IntersectSegmentPoly2D(startPos, endPos, verts, nv, out var tmin, out var tmax, out var segMin, out var segMax);
+                if (!intersects)
                 {
                     // Could not hit the polygon, keep the old t and report hit.
                     return DtStatus.DT_SUCCSESS;
                 }
 
-                hit.hitEdgeIndex = iresult.segMax;
+                hit.hitEdgeIndex = segMax;
 
                 // Keep track of furthest t so far.
-                if (iresult.tmax > hit.t)
+                if (tmax > hit.t)
                 {
-                    hit.t = iresult.tmax;
+                    hit.t = tmax;
                 }
 
                 // Store visited polygons.
                 hit.path.Add(curRef);
 
                 // Ray end is completely inside the polygon.
-                if (iresult.segMax == -1)
+                if (segMax == -1)
                 {
                     hit.t = float.MaxValue;
 
@@ -2274,7 +2274,7 @@ namespace DotRecast.Detour
                     DtLink link = tile.links[i];
 
                     // Find link which contains this edge.
-                    if (link.edge != iresult.segMax)
+                    if (link.edge != segMax)
                     {
                         continue;
                     }
@@ -2331,7 +2331,7 @@ namespace DotRecast.Detour
                         }
 
                         // Find Z intersection.
-                        float z = startPos.z + (endPos.z - startPos.z) * iresult.tmax;
+                        float z = startPos.z + (endPos.z - startPos.z) * tmax;
                         if (z >= lmin && z <= lmax)
                         {
                             nextRef = link.refs;
@@ -2352,7 +2352,7 @@ namespace DotRecast.Detour
                         }
 
                         // Find X intersection.
-                        float x = startPos.x + (endPos.x - startPos.x) * iresult.tmax;
+                        float x = startPos.x + (endPos.x - startPos.x) * tmax;
                         if (x >= lmin && x <= lmax)
                         {
                             nextRef = link.refs;
@@ -2368,8 +2368,8 @@ namespace DotRecast.Detour
                     // and correct the height (since the raycast moves in 2d)
                     lastPos = curPos;
                     curPos = RcVec3f.Mad(startPos, dir, hit.t);
-                    var e1 = verts[iresult.segMax];
-                    var e2 = verts[(iresult.segMax + 1) % nv];
+                    var e1 = verts[segMax];
+                    var e2 = verts[(segMax + 1) % nv];
                     var eDir = e2.Subtract(e1);
                     var diff = curPos.Subtract(e1);
                     float s = Sqr(eDir.x) > Sqr(eDir.z) ? diff.x / eDir.x : diff.z / eDir.z;
@@ -2384,8 +2384,8 @@ namespace DotRecast.Detour
                     // No neighbour, we hit a wall.
 
                     // Calculate hit normal.
-                    int a = iresult.segMax;
-                    int b = iresult.segMax + 1 < nv ? iresult.segMax + 1 : 0;
+                    int a = segMax;
+                    int b = segMax + 1 < nv ? segMax + 1 : 0;
                     // int va = a * 3;
                     // int vb = b * 3;
                     float dx = verts[b].x - verts[a].x;
@@ -2718,13 +2718,13 @@ namespace DotRecast.Detour
                     }
 
                     // If the poly is not touching the edge to the next polygon, skip the connection it.
-                    IntersectResult ir = DetourCommon.IntersectSegmentPoly2D(va, vb, verts, nverts);
-                    if (!ir.intersects)
+                    bool intersects = DetourCommon.IntersectSegmentPoly2D(va, vb, verts, nverts, out var tmin, out var tmax, out var segMin, out var segMax);
+                    if (!intersects)
                     {
                         continue;
                     }
 
-                    if (ir.tmin > 1.0f || ir.tmax < 0.0f)
+                    if (tmin > 1.0f || tmax < 0.0f)
                     {
                         continue;
                     }

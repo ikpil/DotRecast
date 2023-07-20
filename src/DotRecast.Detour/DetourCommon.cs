@@ -339,10 +339,18 @@ namespace DotRecast.Detour
             return dx * dx + dz * dz;
         }
 
-        public static IntersectResult IntersectSegmentPoly2D(RcVec3f p0, RcVec3f p1, RcVec3f[] verts, int nverts)
+        public static bool IntersectSegmentPoly2D(RcVec3f p0, RcVec3f p1,
+            RcVec3f[] verts, int nverts,
+            out float tmin, out float tmax,
+            out int segMin, out int segMax)
         {
-            IntersectResult result = new IntersectResult();
             const float EPS = 0.000001f;
+            
+            tmin = 0;
+            tmax = 1;
+            segMin = -1;
+            segMax = -1;
+            
             var dir = p1.Subtract(p0);
 
             var p0v = p0;
@@ -359,7 +367,7 @@ namespace DotRecast.Detour
                     // S is nearly parallel to this edge
                     if (n < 0)
                     {
-                        return result;
+                        return false;
                     }
                     else
                     {
@@ -371,35 +379,34 @@ namespace DotRecast.Detour
                 if (d < 0)
                 {
                     // segment S is entering across this edge
-                    if (t > result.tmin)
+                    if (t > tmin)
                     {
-                        result.tmin = t;
-                        result.segMin = j;
+                        tmin = t;
+                        segMin = j;
                         // S enters after leaving polygon
-                        if (result.tmin > result.tmax)
+                        if (tmin > tmax)
                         {
-                            return result;
+                            return false;
                         }
                     }
                 }
                 else
                 {
                     // segment S is leaving across this edge
-                    if (t < result.tmax)
+                    if (t < tmax)
                     {
-                        result.tmax = t;
-                        result.segMax = j;
+                        tmax = t;
+                        segMax = j;
                         // S leaves before entering polygon
-                        if (result.tmax < result.tmin)
+                        if (tmax < tmin)
                         {
-                            return result;
+                            return false;
                         }
                     }
                 }
             }
 
-            result.intersects = true;
-            return result;
+            return true;
         }
 
         public static int OppositeTile(int side)

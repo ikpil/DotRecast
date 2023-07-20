@@ -94,7 +94,7 @@ public class ConvexVolumeTool : IRcTool
                 if (pts.Count > 3)
                 {
                     hull.Clear();
-                    hull.AddRange(ConvexUtils.Convexhull(pts));
+                    hull.AddRange(RcConvexUtils.Convexhull(pts));
                 }
                 else
                 {
