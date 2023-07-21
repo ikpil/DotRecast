@@ -31,7 +31,7 @@ namespace DotRecast.Detour
             return temp;
         }
 
-        public float[] Aply(float[] verts, RcVec3f center, float radius)
+        public float[] Apply(float[] verts, RcVec3f center, float radius)
         {
             float radiusSqr = radius * radius;
             int outsideVertex = -1;

@@ -10,7 +10,7 @@ namespace DotRecast.Detour
         {
         }
 
-        public float[] Aply(float[] polyVerts, RcVec3f circleCenter, float radius)
+        public float[] Apply(float[] polyVerts, RcVec3f circleCenter, float radius)
         {
             return polyVerts;
         }

@@ -287,7 +287,7 @@ namespace DotRecast.Detour
                         Array.Copy(bestTile.data.verts, bestPoly.verts[j] * 3, polyVerts, j * 3, 3);
                     }
 
-                    float[] constrainedVerts = constraint.Aply(polyVerts, centerPos, maxRadius);
+                    float[] constrainedVerts = constraint.Apply(polyVerts, centerPos, maxRadius);
                     if (constrainedVerts != null)
                     {
                         int vertCount = constrainedVerts.Length / 3;
