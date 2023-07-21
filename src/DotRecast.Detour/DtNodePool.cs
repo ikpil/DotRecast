@@ -74,23 +74,21 @@ namespace DotRecast.Detour
                     }
                 }
             }
+            else
+            {
+                nodes = new List<DtNode>();
+                m_map.Add(id, nodes);
+            }
 
-            return Create(id, state);
+            return Create(id, state, nodes);
         }
 
-        protected DtNode Create(long id, int state)
+        private DtNode Create(long id, int state, List<DtNode> nodes)
         {
             DtNode node = new DtNode(m_nodes.Count + 1);
             node.id = id;
             node.state = state;
             m_nodes.Add(node);
-            var hasNode = m_map.TryGetValue(id, out var nodes);
-            ;
-            if (nodes == null)
-            {
-                nodes = new List<DtNode>();
-                m_map.Add(id, nodes);
-            }
 
             nodes.Add(node);
             return node;

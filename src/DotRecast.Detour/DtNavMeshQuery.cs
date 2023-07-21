@@ -3407,7 +3407,7 @@ namespace DotRecast.Detour
             DtNode curNode = endNode;
             do
             {
-                path.Insert(0, curNode.id);
+                path.Add(curNode.id);
                 DtNode nextNode = m_nodePool.GetNodeAtIdx(curNode.pidx);
                 if (curNode.shortcut != null)
                 {
@@ -3417,14 +3417,14 @@ namespace DotRecast.Detour
                         long id = curNode.shortcut[i];
                         if (id != curNode.id && id != nextNode.id)
                         {
-                            path.Insert(0, id);
+                            path.Add(id);
                         }
                     }
                 }
 
                 curNode = nextNode;
             } while (curNode != null);
-
+            path.Reverse();
             return DtStatus.DT_SUCCSESS;
         }
 
