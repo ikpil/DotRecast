@@ -444,7 +444,7 @@ namespace DotRecast.Detour.Crowd
 
         private void CheckPathValidity(IList<DtCrowdAgent> agents, float dt)
         {
-            _telemetry.Start("checkPathValidity");
+            using var timer = _telemetry.ScopedTimer("checkPathValidity");
 
             foreach (DtCrowdAgent ag in agents)
             {
@@ -549,13 +549,11 @@ namespace DotRecast.Detour.Crowd
                     }
                 }
             }
-
-            _telemetry.Stop("checkPathValidity");
         }
 
         private void UpdateMoveRequest(IList<DtCrowdAgent> agents, float dt)
         {
-            _telemetry.Start("updateMoveRequest");
+            using var timer = _telemetry.ScopedTimer("updateMoveRequest");
 
             RcSortedQueue<DtCrowdAgent> queue = new RcSortedQueue<DtCrowdAgent>((a1, a2) => a2.targetReplanTime.CompareTo(a1.targetReplanTime));
 
@@ -669,9 +667,10 @@ namespace DotRecast.Detour.Crowd
             }
 
             // Update requests.
-            _telemetry.Start("pathQueueUpdate");
-            _pathQ.Update(_navMesh);
-            _telemetry.Stop("pathQueueUpdate");
+            using (var timer2 = _telemetry.ScopedTimer("pathQueueUpdate"))
+            {
+                _pathQ.Update(_navMesh);
+            }
 
             // Process path results.
             foreach (DtCrowdAgent ag in agents)
@@ -805,13 +804,11 @@ namespace DotRecast.Detour.Crowd
                     ag.targetReplanWaitTime += dt;
                 }
             }
-
-            _telemetry.Stop("updateMoveRequest");
         }
 
         private void UpdateTopologyOptimization(IList<DtCrowdAgent> agents, float dt)
         {
-            _telemetry.Start("updateTopologyOptimization");
+            using var timer = _telemetry.ScopedTimer("updateTopologyOptimization");
 
             RcSortedQueue<DtCrowdAgent> queue = new RcSortedQueue<DtCrowdAgent>((a1, a2) => a2.topologyOptTime.CompareTo(a1.topologyOptTime));
 
@@ -846,13 +843,12 @@ namespace DotRecast.Detour.Crowd
                 ag.corridor.OptimizePathTopology(_navQuery, _filters[ag.option.queryFilterType], _config.maxTopologyOptimizationIterations);
                 ag.topologyOptTime = 0;
             }
-
-            _telemetry.Stop("updateTopologyOptimization");
         }
 
         private void BuildProximityGrid(IList<DtCrowdAgent> agents)
         {
-            _telemetry.Start("buildProximityGrid");
+            using var timer = _telemetry.ScopedTimer("buildProximityGrid");
+
             _grid = new DtProximityGrid(_config.maxAgentRadius * 3);
 
             foreach (DtCrowdAgent ag in agents)
@@ -861,13 +857,12 @@ namespace DotRecast.Detour.Crowd
                 float r = ag.option.radius;
                 _grid.AddItem(ag, p.x - r, p.z - r, p.x + r, p.z + r);
             }
-
-            _telemetry.Stop("buildProximityGrid");
         }
 
         private void BuildNeighbours(IList<DtCrowdAgent> agents)
         {
-            _telemetry.Start("buildNeighbours");
+            using var timer = _telemetry.ScopedTimer("buildNeighbours");
+
             foreach (DtCrowdAgent ag in agents)
             {
                 if (ag.state != CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
@@ -888,8 +883,6 @@ namespace DotRecast.Detour.Crowd
                 // Query neighbour agents
                 GetNeighbours(ag.npos, ag.option.height, ag.option.collisionQueryRange, ag, ref ag.neis, _grid);
             }
-
-            _telemetry.Stop("buildNeighbours");
         }
 
 
@@ -929,7 +922,8 @@ namespace DotRecast.Detour.Crowd
 
         private void FindCorners(IList<DtCrowdAgent> agents, DtCrowdAgentDebugInfo debug)
         {
-            _telemetry.Start("findCorners");
+            using var timer = _telemetry.ScopedTimer("findCorners");
+
             DtCrowdAgent debugAgent = debug != null ? debug.agent : null;
             foreach (DtCrowdAgent ag in agents)
             {
@@ -972,13 +966,12 @@ namespace DotRecast.Detour.Crowd
                     }
                 }
             }
-
-            _telemetry.Stop("findCorners");
         }
 
         private void TriggerOffMeshConnections(IList<DtCrowdAgent> agents)
         {
-            _telemetry.Start("triggerOffMeshConnections");
+            using var timer = _telemetry.ScopedTimer("triggerOffMeshConnections");
+
             foreach (DtCrowdAgent ag in agents)
             {
                 if (ag.state != CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
@@ -1021,13 +1014,12 @@ namespace DotRecast.Detour.Crowd
                     }
                 }
             }
-
-            _telemetry.Stop("triggerOffMeshConnections");
         }
 
         private void CalculateSteering(IList<DtCrowdAgent> agents)
         {
-            _telemetry.Start("calculateSteering");
+            using var timer = _telemetry.ScopedTimer("calculateSteering");
+
             foreach (DtCrowdAgent ag in agents)
             {
                 if (ag.state != CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
@@ -1119,13 +1111,12 @@ namespace DotRecast.Detour.Crowd
                 // Set the desired velocity.
                 ag.dvel = dvel;
             }
-
-            _telemetry.Stop("calculateSteering");
         }
 
         private void PlanVelocity(DtCrowdAgentDebugInfo debug, IList<DtCrowdAgent> agents)
         {
-            _telemetry.Start("planVelocity");
+            using var timer = _telemetry.ScopedTimer("planVelocity");
+
             DtCrowdAgent debugAgent = debug != null ? debug.agent : null;
             foreach (DtCrowdAgent ag in agents)
             {
@@ -1190,13 +1181,12 @@ namespace DotRecast.Detour.Crowd
                     ag.nvel = ag.dvel;
                 }
             }
-
-            _telemetry.Stop("planVelocity");
         }
 
         private void Integrate(float dt, IList<DtCrowdAgent> agents)
         {
-            _telemetry.Start("integrate");
+            using var timer = _telemetry.ScopedTimer("integrate");
+
             foreach (DtCrowdAgent ag in agents)
             {
                 if (ag.state != CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
@@ -1206,13 +1196,12 @@ namespace DotRecast.Detour.Crowd
 
                 ag.Integrate(dt);
             }
-
-            _telemetry.Stop("integrate");
         }
 
         private void HandleCollisions(IList<DtCrowdAgent> agents)
         {
-            _telemetry.Start("handleCollisions");
+            using var timer = _telemetry.ScopedTimer("handleCollisions");
+
             for (int iter = 0; iter < 4; ++iter)
             {
                 foreach (DtCrowdAgent ag in agents)
@@ -1283,13 +1272,12 @@ namespace DotRecast.Detour.Crowd
                     ag.npos = ag.npos.Add(ag.disp);
                 }
             }
-
-            _telemetry.Stop("handleCollisions");
         }
 
         private void MoveAgents(IList<DtCrowdAgent> agents)
         {
-            _telemetry.Start("moveAgents");
+            using var timer = _telemetry.ScopedTimer("moveAgents");
+
             foreach (DtCrowdAgent ag in agents)
             {
                 if (ag.state != CrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
@@ -1311,12 +1299,12 @@ namespace DotRecast.Detour.Crowd
                 }
             }
 
-            _telemetry.Stop("moveAgents");
         }
 
         private void UpdateOffMeshConnections(IList<DtCrowdAgent> agents, float dt)
         {
-            _telemetry.Start("updateOffMeshConnections");
+            using var timer = _telemetry.ScopedTimer("updateOffMeshConnections");
+
             foreach (DtCrowdAgent ag in agents)
             {
                 DtCrowdAgentAnimation anim = ag.animation;
@@ -1353,8 +1341,6 @@ namespace DotRecast.Detour.Crowd
                 ag.vel = RcVec3f.Zero;
                 ag.dvel = RcVec3f.Zero;
             }
-
-            _telemetry.Stop("updateOffMeshConnections");
         }
 
         private float Tween(float t, float t0, float t1)

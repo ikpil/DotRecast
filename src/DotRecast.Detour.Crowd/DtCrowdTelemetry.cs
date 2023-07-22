@@ -67,6 +67,12 @@ namespace DotRecast.Detour.Crowd
         {
             _maxTimeToFindPath = Math.Max(_maxTimeToFindPath, time);
         }
+        
+        public IDisposable ScopedTimer(string name)
+        {
+            Start(name);
+            return new RcAnonymousDisposable(() => Stop(name));
+        }
 
         public void Start(string name)
         {
