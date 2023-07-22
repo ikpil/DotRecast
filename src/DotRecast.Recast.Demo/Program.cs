@@ -37,7 +37,7 @@ public static class Program
 
     private static void InitializeWorkingDirectory()
     {
-        var path = Loader.ToRPath("dungeon.obj");
+        var path = Loader.FindParentPath("dungeon.obj");
         path = Path.GetDirectoryName(path);
         if (!string.IsNullOrEmpty(path))
         {

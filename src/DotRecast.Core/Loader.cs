@@ -6,7 +6,7 @@ namespace DotRecast.Core
     {
         public static byte[] ToBytes(string filename)
         {
-            var filepath = ToRPath(filename);
+            var filepath = FindParentPath(filename);
             using var fs = new FileStream(filepath, FileMode.Open, FileAccess.Read);
             byte[] buffer = new byte[fs.Length];
             fs.Read(buffer, 0, buffer.Length);
@@ -14,7 +14,7 @@ namespace DotRecast.Core
             return buffer;
         }
 
-        public static string ToRPath(string filename)
+        public static string FindParentPath(string filename)
         {
             string filePath = Path.Combine("resources", filename);
             for (int i = 0; i < 10; ++i)

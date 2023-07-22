@@ -10,6 +10,7 @@ namespace DotRecast.Core
 
         public static RcVec2f Zero { get; } = new RcVec2f { x = 0, y = 0 };
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float Get(int idx)
         {
             if (0 == idx)
@@ -36,6 +37,7 @@ namespace DotRecast.Core
                    y.Equals(other.y);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode()
         {
             int hash = x.GetHashCode();
@@ -55,6 +57,7 @@ namespace DotRecast.Core
             return !left.Equals(right);
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string ToString()
         {
             return $"{x}, {y}";

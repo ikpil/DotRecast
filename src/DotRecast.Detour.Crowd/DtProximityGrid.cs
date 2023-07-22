@@ -21,6 +21,7 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace DotRecast.Detour.Crowd
 {
@@ -37,6 +38,7 @@ namespace DotRecast.Detour.Crowd
             _items = new Dictionary<long, List<DtCrowdAgent>>();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long CombineKey(int x, int y)
         {
             uint ux = (uint)x;
@@ -44,6 +46,7 @@ namespace DotRecast.Detour.Crowd
             return ((long)ux << 32) | uy;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DecomposeKey(long key, out int x, out int y)
         {
             uint ux = (uint)(key >> 32);

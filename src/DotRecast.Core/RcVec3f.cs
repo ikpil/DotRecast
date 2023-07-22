@@ -48,6 +48,7 @@ namespace DotRecast.Core
             return new RcVec3f(x, y, z);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public RcVec3f(float x, float y, float z)
         {
             this.x = x;
@@ -55,6 +56,7 @@ namespace DotRecast.Core
             this.z = z;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public RcVec3f(float f)
         {
             x = f;
@@ -63,6 +65,7 @@ namespace DotRecast.Core
         }
 
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public RcVec3f(float[] f)
         {
             x = f[0];
@@ -76,6 +79,7 @@ namespace DotRecast.Core
             set => SetElement(index, value);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float GetElement(int index)
         {
             switch (index)
@@ -87,6 +91,7 @@ namespace DotRecast.Core
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetElement(int index, float value)
         {
             switch (index)
@@ -202,6 +207,7 @@ namespace DotRecast.Core
         }
 
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode()
         {
             int hash = x.GetHashCode();

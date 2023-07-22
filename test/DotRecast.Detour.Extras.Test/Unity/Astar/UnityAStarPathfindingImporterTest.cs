@@ -81,7 +81,7 @@ public class UnityAStarPathfindingImporterTest
 
     private DtNavMesh LoadNavMesh(string filename)
     {
-        var filepath = Loader.ToRPath(filename);
+        var filepath = Loader.FindParentPath(filename);
         using var fs = new FileStream(filepath, FileMode.Open, FileAccess.Read);
 
         // Import the graphs
