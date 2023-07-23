@@ -653,8 +653,7 @@ namespace DotRecast.Detour.Crowd
             while (!queue.IsEmpty())
             {
                 DtCrowdAgent ag = queue.Dequeue();
-                ag.targetPathQueryResult = _pathQ.Request(ag.corridor.GetLastPoly(), ag.targetRef, ag.corridor.GetTarget(),
-                    ag.targetPos, _filters[ag.option.queryFilterType]);
+                ag.targetPathQueryResult = _pathQ.Request(ag.corridor.GetLastPoly(), ag.targetRef, ag.corridor.GetTarget(), ag.targetPos, _filters[ag.option.queryFilterType]);
                 if (ag.targetPathQueryResult != null)
                 {
                     ag.targetState = MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_PATH;
@@ -1298,7 +1297,6 @@ namespace DotRecast.Detour.Crowd
                     ag.partial = false;
                 }
             }
-
         }
 
         private void UpdateOffMeshConnections(IList<DtCrowdAgent> agents, float dt)

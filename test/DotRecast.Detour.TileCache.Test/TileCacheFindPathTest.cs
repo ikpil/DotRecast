@@ -21,7 +21,6 @@ freely, subject to the following restrictions:
 using System.Collections.Generic;
 using System.IO;
 using DotRecast.Core;
-
 using DotRecast.Detour.TileCache.Io;
 using NUnit.Framework;
 
@@ -58,7 +57,7 @@ public class TileCacheFindPathTest : AbstractTileCacheTest
         int options = 0;
 
         var pathStr = new List<StraightPathItem>();
-         query.FindStraightPath(startPos, endPos, path, ref pathStr, maxStraightPath, options);
+        query.FindStraightPath(startPos, endPos, path, ref pathStr, maxStraightPath, options);
         Assert.That(pathStr.Count, Is.EqualTo(8));
     }
 }
