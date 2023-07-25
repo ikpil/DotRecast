@@ -944,7 +944,7 @@ namespace DotRecast.Detour.Crowd
                 // and short cut to there.
                 if ((ag.option.updateFlags & DtCrowdAgentParams.DT_CROWD_OPTIMIZE_VIS) != 0 && ag.corners.Count > 0)
                 {
-                    RcVec3f target = ag.corners[Math.Min(1, ag.corners.Count - 1)].GetPos();
+                    RcVec3f target = ag.corners[Math.Min(1, ag.corners.Count - 1)].pos;
                     ag.corridor.OptimizePathVisibility(target, ag.option.pathOptimizationRange, _navQuery,
                         _filters[ag.option.queryFilterType]);
 
@@ -993,7 +993,7 @@ namespace DotRecast.Detour.Crowd
 
                     // Adjust the path over the off-mesh connection.
                     long[] refs = new long[2];
-                    if (ag.corridor.MoveOverOffmeshConnection(ag.corners[ag.corners.Count - 1].GetRef(), refs, ref anim.startPos,
+                    if (ag.corridor.MoveOverOffmeshConnection(ag.corners[ag.corners.Count - 1].refs, refs, ref anim.startPos,
                             ref anim.endPos, _navQuery))
                     {
                         anim.initPos = ag.npos;

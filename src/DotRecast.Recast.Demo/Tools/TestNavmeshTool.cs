@@ -456,7 +456,7 @@ public class TestNavmeshTool : IRcTool
                     StraightPathItem straightPathItem = m_straightPath[i];
                     StraightPathItem straightPathItem2 = m_straightPath[i + 1];
                     int col;
-                    if ((straightPathItem.GetFlags() & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
+                    if ((straightPathItem.flags & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
                     {
                         col = offMeshCol;
                     }
@@ -465,10 +465,10 @@ public class TestNavmeshTool : IRcTool
                         col = spathCol;
                     }
 
-                    dd.Vertex(straightPathItem.GetPos().x, straightPathItem.GetPos().y + 0.4f,
-                        straightPathItem.GetPos().z, col);
-                    dd.Vertex(straightPathItem2.GetPos().x, straightPathItem2.GetPos().y + 0.4f,
-                        straightPathItem2.GetPos().z, col);
+                    dd.Vertex(straightPathItem.pos.x, straightPathItem.pos.y + 0.4f,
+                        straightPathItem.pos.z, col);
+                    dd.Vertex(straightPathItem2.pos.x, straightPathItem2.pos.y + 0.4f,
+                        straightPathItem2.pos.z, col);
                 }
 
                 dd.End();
@@ -477,15 +477,15 @@ public class TestNavmeshTool : IRcTool
                 {
                     StraightPathItem straightPathItem = m_straightPath[i];
                     int col;
-                    if ((straightPathItem.GetFlags() & DtNavMeshQuery.DT_STRAIGHTPATH_START) != 0)
+                    if ((straightPathItem.flags & DtNavMeshQuery.DT_STRAIGHTPATH_START) != 0)
                     {
                         col = startCol;
                     }
-                    else if ((straightPathItem.GetFlags() & DtNavMeshQuery.DT_STRAIGHTPATH_END) != 0)
+                    else if ((straightPathItem.flags & DtNavMeshQuery.DT_STRAIGHTPATH_END) != 0)
                     {
                         col = endCol;
                     }
-                    else if ((straightPathItem.GetFlags() & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
+                    else if ((straightPathItem.flags & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
                     {
                         col = offMeshCol;
                     }
@@ -494,8 +494,8 @@ public class TestNavmeshTool : IRcTool
                         col = spathCol;
                     }
 
-                    dd.Vertex(straightPathItem.GetPos().x, straightPathItem.GetPos().y + 0.4f,
-                        straightPathItem.GetPos().z, col);
+                    dd.Vertex(straightPathItem.pos.x, straightPathItem.pos.y + 0.4f,
+                        straightPathItem.pos.z, col);
                 }
 
                 dd.End();
@@ -523,10 +523,10 @@ public class TestNavmeshTool : IRcTool
                 {
                     StraightPathItem straightPathItem = m_straightPath[i];
                     StraightPathItem straightPathItem2 = m_straightPath[i + 1];
-                    dd.Vertex(straightPathItem.GetPos().x, straightPathItem.GetPos().y + 0.4f,
-                        straightPathItem.GetPos().z, spathCol);
-                    dd.Vertex(straightPathItem2.GetPos().x, straightPathItem2.GetPos().y + 0.4f,
-                        straightPathItem2.GetPos().z, spathCol);
+                    dd.Vertex(straightPathItem.pos.x, straightPathItem.pos.y + 0.4f,
+                        straightPathItem.pos.z, spathCol);
+                    dd.Vertex(straightPathItem2.pos.x, straightPathItem2.pos.y + 0.4f,
+                        straightPathItem2.pos.z, spathCol);
                 }
 
                 dd.End();
@@ -534,8 +534,8 @@ public class TestNavmeshTool : IRcTool
                 for (int i = 0; i < m_straightPath.Count; ++i)
                 {
                     StraightPathItem straightPathItem = m_straightPath[i];
-                    dd.Vertex(straightPathItem.GetPos().x, straightPathItem.GetPos().y + 0.4f,
-                        straightPathItem.GetPos().z, spathCol);
+                    dd.Vertex(straightPathItem.pos.x, straightPathItem.pos.y + 0.4f,
+                        straightPathItem.pos.z, spathCol);
                 }
 
                 dd.End();

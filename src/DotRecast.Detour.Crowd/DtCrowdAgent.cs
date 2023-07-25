@@ -131,13 +131,13 @@ namespace DotRecast.Detour.Crowd
             if (0 == corners.Count)
                 return false;
 
-            bool offMeshConnection = ((corners[corners.Count - 1].GetFlags()
+            bool offMeshConnection = ((corners[corners.Count - 1].flags
                                        & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
                 ? true
                 : false;
             if (offMeshConnection)
             {
-                float distSq = RcVec3f.Dist2DSqr(npos, corners[corners.Count - 1].GetPos());
+                float distSq = RcVec3f.Dist2DSqr(npos, corners[corners.Count - 1].pos);
                 if (distSq < radius * radius)
                     return true;
             }
@@ -150,9 +150,9 @@ namespace DotRecast.Detour.Crowd
             if (0 == corners.Count)
                 return range;
 
-            bool endOfPath = ((corners[corners.Count - 1].GetFlags() & DtNavMeshQuery.DT_STRAIGHTPATH_END) != 0) ? true : false;
+            bool endOfPath = ((corners[corners.Count - 1].flags & DtNavMeshQuery.DT_STRAIGHTPATH_END) != 0) ? true : false;
             if (endOfPath)
-                return Math.Min(RcVec3f.Dist2D(npos, corners[corners.Count - 1].GetPos()), range);
+                return Math.Min(RcVec3f.Dist2D(npos, corners[corners.Count - 1].pos), range);
 
             return range;
         }
@@ -164,8 +164,8 @@ namespace DotRecast.Detour.Crowd
             {
                 int ip0 = 0;
                 int ip1 = Math.Min(1, corners.Count - 1);
-                var p0 = corners[ip0].GetPos();
-                var p1 = corners[ip1].GetPos();
+                var p0 = corners[ip0].pos;
+                var p1 = corners[ip1].pos;
 
                 var dir0 = p0.Subtract(npos);
                 var dir1 = p1.Subtract(npos);
@@ -191,7 +191,7 @@ namespace DotRecast.Detour.Crowd
             RcVec3f dir = new RcVec3f();
             if (0 < corners.Count)
             {
-                dir = corners[0].GetPos().Subtract(npos);
+                dir = corners[0].pos.Subtract(npos);
                 dir.y = 0;
                 dir.Normalize();
             }

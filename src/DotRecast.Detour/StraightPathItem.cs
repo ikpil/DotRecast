@@ -35,20 +35,5 @@ namespace DotRecast.Detour
             this.flags = flags;
             this.refs = refs;
         }
-
-        public RcVec3f GetPos()
-        {
-            return pos;
-        }
-
-        public int GetFlags()
-        {
-            return flags;
-        }
-
-        public long GetRef()
-        {
-            return refs;
-        }
     }
 }

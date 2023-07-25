@@ -426,16 +426,16 @@ public class CrowdTool : IRcTool
                     dd.Begin(LINES, 2.0f);
                     for (int j = 0; j < ag.corners.Count; ++j)
                     {
-                        RcVec3f va = j == 0 ? pos : ag.corners[j - 1].GetPos();
-                        RcVec3f vb = ag.corners[j].GetPos();
+                        RcVec3f va = j == 0 ? pos : ag.corners[j - 1].pos;
+                        RcVec3f vb = ag.corners[j].pos;
                         dd.Vertex(va.x, va.y + radius, va.z, DuRGBA(128, 0, 0, 192));
                         dd.Vertex(vb.x, vb.y + radius, vb.z, DuRGBA(128, 0, 0, 192));
                     }
 
-                    if ((ag.corners[ag.corners.Count - 1].GetFlags()
+                    if ((ag.corners[ag.corners.Count - 1].flags
                          & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
                     {
-                        RcVec3f v = ag.corners[ag.corners.Count - 1].GetPos();
+                        RcVec3f v = ag.corners[ag.corners.Count - 1].pos;
                         dd.Vertex(v.x, v.y, v.z, DuRGBA(192, 0, 0, 192));
                         dd.Vertex(v.x, v.y + radius * 2, v.z, DuRGBA(192, 0, 0, 192));
                     }
