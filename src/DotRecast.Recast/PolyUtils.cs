@@ -25,106 +25,163 @@ namespace DotRecast.Recast
 {
     public static class PolyUtils
     {
-        public static bool PointInPoly(float[] verts, RcVec3f p)
+        // public static bool PointInPoly(float[] verts, RcVec3f p)
+        // {
+        //     bool c = false;
+        //     int i, j;
+        //     for (i = 0, j = verts.Length - 3; i < verts.Length; j = i, i += 3)
+        //     {
+        //         int vi = i;
+        //         int vj = j;
+        //         if (((verts[vi + 2] > p.z) != (verts[vj + 2] > p.z))
+        //             && (p.x < (verts[vj] - verts[vi]) * (p.z - verts[vi + 2]) / (verts[vj + 2] - verts[vi + 2])
+        //                 + verts[vi]))
+        //             c = !c;
+        //     }
+        //
+        //     return c;
+        // }
+
+        // TODO (graham): This is duplicated in the ConvexVolumeTool in RecastDemo
+        /// Checks if a point is contained within a polygon
+        ///
+        /// @param[in]	numVerts	Number of vertices in the polygon
+        /// @param[in]	verts		The polygon vertices
+        /// @param[in]	point		The point to check
+        /// @returns true if the point lies within the polygon, false otherwise.
+        public static bool PointInPoly(float[] verts, RcVec3f point)
         {
-            int i, j;
-            bool c = false;
-            for (i = 0, j = verts.Length / 3 - 1; i < verts.Length / 3; j = i++)
+            bool inPoly = false;
+            for (int i = 0, j = verts.Length / 3 - 1; i < verts.Length / 3; j = i++)
             {
                 RcVec3f vi = RcVec3f.Of(verts[i * 3], verts[i * 3 + 1], verts[i * 3 + 2]);
                 RcVec3f vj = RcVec3f.Of(verts[j * 3], verts[j * 3 + 1], verts[j * 3 + 2]);
-                if (((vi.z > p.z) != (vj.z > p.z))
-                    && (p.x < (vj.x - vi.x) * (p.z - vi.z) / (vj.z - vi.z) + vi.x))
+                if (vi.z > point.z == vj.z > point.z)
                 {
-                    c = !c;
+                    continue;
                 }
+
+                if (point.x >= (vj.x - vi.x) * (point.z - vi.z) / (vj.z - vi.z) + vi.x)
+                {
+                    continue;
+                }
+
+                inPoly = !inPoly;
             }
 
-            return c;
+            return inPoly;
         }
 
-        public static int OffsetPoly(float[] verts, int nverts, float offset, float[] outVerts, int maxOutVerts)
+        /// Expands a convex polygon along its vertex normals by the given offset amount.
+        /// Inserts extra vertices to bevel sharp corners.
+        ///
+        /// Helper function to offset convex polygons for rcMarkConvexPolyArea.
+        ///
+        /// @ingroup recast
+        /// 
+        /// @param[in]		verts		The vertices of the polygon [Form: (x, y, z) * @p numVerts]
+        /// @param[in]		numVerts	The number of vertices in the polygon.
+        /// @param[in]		offset		How much to offset the polygon by. [Units: wu]
+        /// @param[out]		outVerts	The offset vertices (should hold up to 2 * @p numVerts) [Form: (x, y, z) * return value]
+        /// @param[in]		maxOutVerts	The max number of vertices that can be stored to @p outVerts.
+        /// @returns Number of vertices in the offset polygon or 0 if too few vertices in @p outVerts.
+        public static int OffsetPoly(float[] verts, int numVerts, float offset, float[] outVerts, int maxOutVerts)
         {
+            // Defines the limit at which a miter becomes a bevel.
+            // Similar in behavior to https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-miterlimit
             const float MITER_LIMIT = 1.20f;
 
-            int n = 0;
+            int numOutVerts = 0;
 
-            for (int i = 0; i < nverts; i++)
+            for (int vertIndex = 0; vertIndex < numVerts; vertIndex++)
             {
-                int a = (i + nverts - 1) % nverts;
-                int b = i;
-                int c = (i + 1) % nverts;
-                int va = a * 3;
-                int vb = b * 3;
-                int vc = c * 3;
-                float dx0 = verts[vb] - verts[va];
-                float dy0 = verts[vb + 2] - verts[va + 2];
-                float d0 = dx0 * dx0 + dy0 * dy0;
-                if (d0 > 1e-6f)
-                {
-                    d0 = (float)(1.0f / Math.Sqrt(d0));
-                    dx0 *= d0;
-                    dy0 *= d0;
-                }
+                int vertIndexA = (vertIndex + numVerts - 1) % numVerts;
+                int vertIndexB = vertIndex;
+                int vertIndexC = (vertIndex + 1) % numVerts;
+                
+                RcVec3f vertA = RcVec3f.Of(verts, vertIndexA * 3);
+                RcVec3f vertB = RcVec3f.Of(verts, vertIndexB * 3);
+                RcVec3f vertC = RcVec3f.Of(verts, vertIndexC * 3);
+                
+                // From A to B on the x/z plane
+                RcVec3f prevSegmentDir = vertB.Subtract(vertA);
+                prevSegmentDir.y = 0; // Squash onto x/z plane
+                prevSegmentDir.SafeNormalize();
+                
+                // From B to C on the x/z plane
+                RcVec3f currSegmentDir = vertC.Subtract(vertB);
+                currSegmentDir.y = 0; // Squash onto x/z plane
+                currSegmentDir.SafeNormalize();
+                
+                // The y component of the cross product of the two normalized segment directions.
+                // The X and Z components of the cross product are both zero because the two
+                // segment direction vectors fall within the x/z plane.
+                float cross = currSegmentDir.x * prevSegmentDir.z - prevSegmentDir.x * currSegmentDir.z;
 
-                float dx1 = verts[vc] - verts[vb];
-                float dy1 = verts[vc + 2] - verts[vb + 2];
-                float d1 = dx1 * dx1 + dy1 * dy1;
-                if (d1 > 1e-6f)
-                {
-                    d1 = (float)(1.0f / Math.Sqrt(d1));
-                    dx1 *= d1;
-                    dy1 *= d1;
-                }
+                // CCW perpendicular vector to AB.  The segment normal.
+                float prevSegmentNormX = -prevSegmentDir.z;
+                float prevSegmentNormZ = prevSegmentDir.x;
 
-                float dlx0 = -dy0;
-                float dly0 = dx0;
-                float dlx1 = -dy1;
-                float dly1 = dx1;
-                float cross = dx1 * dy0 - dx0 * dy1;
-                float dmx = (dlx0 + dlx1) * 0.5f;
-                float dmy = (dly0 + dly1) * 0.5f;
-                float dmr2 = dmx * dmx + dmy * dmy;
-                bool bevel = dmr2 * MITER_LIMIT * MITER_LIMIT < 1.0f;
-                if (dmr2 > 1e-6f)
-                {
-                    float scale = 1.0f / dmr2;
-                    dmx *= scale;
-                    dmy *= scale;
-                }
+                // CCW perpendicular vector to BC.  The segment normal.
+                float currSegmentNormX = -currSegmentDir.z;
+                float currSegmentNormZ = currSegmentDir.x;
 
-                if (bevel && cross < 0.0f)
+                // Average the two segment normals to get the proportional miter offset for B.
+                // This isn't normalized because it's defining the distance and direction the corner will need to be
+                // adjusted proportionally to the edge offsets to properly miter the adjoining edges.
+                float cornerMiterX = (prevSegmentNormX + currSegmentNormX) * 0.5f;
+                float cornerMiterZ = (prevSegmentNormZ + currSegmentNormZ) * 0.5f;
+                float cornerMiterSqMag = RcMath.Sqr(cornerMiterX) + RcMath.Sqr(cornerMiterZ);
+                
+                // If the magnitude of the segment normal average is less than about .69444,
+                // the corner is an acute enough angle that the result should be beveled.
+                bool bevel = cornerMiterSqMag * MITER_LIMIT * MITER_LIMIT < 1.0f;
+                
+                // Scale the corner miter so it's proportional to how much the corner should be offset compared to the edges.
+                if (cornerMiterSqMag > RcVec3f.EPSILON)
                 {
-                    if (n + 2 > maxOutVerts)
+                    float scale = 1.0f / cornerMiterSqMag;
+                    cornerMiterX *= scale;
+                    cornerMiterZ *= scale;
+                }
+                
+                if (bevel && cross < 0.0f) // If the corner is convex and an acute enough angle, generate a bevel.
+                {
+                    if (numOutVerts + 2 > maxOutVerts)
                     {
                         return 0;
                     }
 
-                    float d = (1.0f - (dx0 * dx1 + dy0 * dy1)) * 0.5f;
-                    outVerts[n * 3 + 0] = verts[vb] + (-dlx0 + dx0 * d) * offset;
-                    outVerts[n * 3 + 1] = verts[vb + 1];
-                    outVerts[n * 3 + 2] = verts[vb + 2] + (-dly0 + dy0 * d) * offset;
-                    n++;
-                    outVerts[n * 3 + 0] = verts[vb] + (-dlx1 - dx1 * d) * offset;
-                    outVerts[n * 3 + 1] = verts[vb + 1];
-                    outVerts[n * 3 + 2] = verts[vb + 2] + (-dly1 - dy1 * d) * offset;
-                    n++;
+                    // Generate two bevel vertices at a distances from B proportional to the angle between the two segments.
+                    // Move each bevel vertex out proportional to the given offset.
+                    float d = (1.0f - (prevSegmentDir.x * currSegmentDir.x + prevSegmentDir.z * currSegmentDir.z)) * 0.5f;
+
+                    outVerts[numOutVerts * 3 + 0] = vertB.x + (-prevSegmentNormX + prevSegmentDir.x * d) * offset;
+                    outVerts[numOutVerts * 3 + 1] = vertB.y;
+                    outVerts[numOutVerts * 3 + 2] = vertB.z + (-prevSegmentNormZ + prevSegmentDir.z * d) * offset;
+                    numOutVerts++;
+
+                    outVerts[numOutVerts * 3 + 0] = vertB.x + (-currSegmentNormX - currSegmentDir.x * d) * offset;
+                    outVerts[numOutVerts * 3 + 1] = vertB.y;
+                    outVerts[numOutVerts * 3 + 2] = vertB.z + (-currSegmentNormZ - currSegmentDir.z * d) * offset;
+                    numOutVerts++;
                 }
                 else
                 {
-                    if (n + 1 > maxOutVerts)
+                    if (numOutVerts + 1 > maxOutVerts)
                     {
                         return 0;
                     }
 
-                    outVerts[n * 3 + 0] = verts[vb] - dmx * offset;
-                    outVerts[n * 3 + 1] = verts[vb + 1];
-                    outVerts[n * 3 + 2] = verts[vb + 2] - dmy * offset;
-                    n++;
+                    // Move B along the miter direction by the specified offset.
+                    outVerts[numOutVerts * 3 + 0] = vertB.x - cornerMiterX * offset;
+                    outVerts[numOutVerts * 3 + 1] = vertB.y;
+                    outVerts[numOutVerts * 3 + 2] = vertB.z - cornerMiterZ * offset;
+                    numOutVerts++;
                 }
             }
 
-            return n;
+            return numOutVerts;
         }
     }
 }

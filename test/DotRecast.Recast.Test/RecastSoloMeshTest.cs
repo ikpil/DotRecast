@@ -110,6 +110,7 @@ public class RecastSoloMeshTest
             m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize, m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError,
             m_vertsPerPoly, m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
         RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, bmin, bmax);
+        
         //
         // Step 2. Rasterize input polygon soup.
         //
@@ -125,22 +126,20 @@ public class RecastSoloMeshTest
 
             // Allocate array that can hold triangle area types.
             // If you have multiple meshes you need to process, allocate
-            // and array which can hold the max number of triangles you need to
-            // process.
+            // and array which can hold the max number of triangles you need to process.
 
-            // Find triangles which are walkable based on their slope and rasterize
-            // them.
-            // If your input data is multiple meshes, you can transform them here,
-            // calculate
+            // Find triangles which are walkable based on their slope and rasterize them.
+            // If your input data is multiple meshes, you can transform them here, calculate
             // the are type for each of the meshes and rasterize them.
-            int[] m_triareas = Recast.MarkWalkableTriangles(m_ctx, cfg.walkableSlopeAngle, verts, tris, ntris,
-                cfg.walkableAreaMod);
+            int[] m_triareas = Recast.MarkWalkableTriangles(m_ctx, cfg.walkableSlopeAngle, verts, tris, ntris, cfg.walkableAreaMod);
             RecastRasterization.RasterizeTriangles(m_solid, verts, tris, m_triareas, ntris, cfg.walkableClimb, m_ctx);
-            //
-            // Step 3. Filter walkables surfaces.
-            //
-        }
 
+        }
+        
+        //
+        // Step 3. Filter walkable surfaces.
+        //
+        
         // Once all geometry is rasterized, we do initial pass of filtering to
         // remove unwanted overhangs caused by the conservative rasterization
         // as well as filter spans where the character cannot possibly stand.

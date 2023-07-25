@@ -230,6 +230,24 @@ namespace DotRecast.Core
             }
         }
 
+        public const float EPSILON = 1e-6f;
+
+        /// Normalizes the vector if the length is greater than zero.
+        /// If the magnitude is zero, the vector is unchanged.
+        /// @param[in,out]	v	The vector to normalize. [(x, y, z)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void SafeNormalize()
+        {
+            float sqMag = RcMath.Sqr(x) + RcMath.Sqr(y) + RcMath.Sqr(z);
+            if (sqMag > EPSILON)
+            {
+                float inverseMag = 1.0f / (float)Math.Sqrt(sqMag);
+                x *= inverseMag;
+                y *= inverseMag;
+                z *= inverseMag;
+            }
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Min(float[] @in, int i)
         {
@@ -262,7 +280,7 @@ namespace DotRecast.Core
             y = Math.Max(y, @in[i + 1]);
             z = Math.Max(z, @in[i + 2]);
         }
-        
+
         public override string ToString()
         {
             return $"{x}, {y}, {z}";
