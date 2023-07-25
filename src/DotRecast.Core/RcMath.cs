@@ -19,21 +19,25 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace DotRecast.Core
 {
     public static class RcMath
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Sqr(float f)
         {
             return f * f;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Clamp(float v, float min, float max)
         {
             return Math.Max(Math.Min(v, max), min);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Clamp(int v, int min, int max)
         {
             return Math.Max(Math.Min(v, max), min);
