@@ -28,24 +28,21 @@ namespace DotRecast.Detour
     {
         private const int MAX_STEER_POINTS = 3;
 
-
-        public static SteerTarget GetSteerTarget(DtNavMeshQuery navQuery, RcVec3f startPos, RcVec3f endPos,
-            float minTargetDist, List<long> path)
+        public static bool GetSteerTarget(DtNavMeshQuery navQuery, RcVec3f startPos, RcVec3f endPos,
+            float minTargetDist,
+            List<long> path,
+            out RcVec3f steerPos, out int steerPosFlag, out long steerPosRef)
         {
+            steerPos = RcVec3f.Zero;
+            steerPosFlag = 0;
+            steerPosRef = 0;
+
             // Find steer target.
             var straightPath = new List<StraightPathItem>();
             var result = navQuery.FindStraightPath(startPos, endPos, path, ref straightPath, MAX_STEER_POINTS, 0);
             if (result.Failed())
             {
-                return null;
-            }
-
-            float[] steerPoints = new float[straightPath.Count * 3];
-            for (int i = 0; i < straightPath.Count; i++)
-            {
-                steerPoints[i * 3] = straightPath[i].GetPos().x;
-                steerPoints[i * 3 + 1] = straightPath[i].GetPos().y;
-                steerPoints[i * 3 + 2] = straightPath[i].GetPos().z;
+                return false;
             }
 
             // Find vertex far enough to steer to.
@@ -53,26 +50,22 @@ namespace DotRecast.Detour
             while (ns < straightPath.Count)
             {
                 // Stop at Off-Mesh link or when point is further than slop away.
-                if (((straightPath[ns].GetFlags() & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
-                    || !InRange(straightPath[ns].GetPos(), startPos, minTargetDist, 1000.0f))
+                if (((straightPath[ns].flags & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
+                    || !InRange(straightPath[ns].pos, startPos, minTargetDist, 1000.0f))
                     break;
                 ns++;
             }
 
             // Failed to find good point to steer to.
             if (ns >= straightPath.Count)
-                return null;
+                return false;
 
-            RcVec3f steerPos = RcVec3f.Of(
-                straightPath[ns].GetPos().x,
-                startPos.y,
-                straightPath[ns].GetPos().z
-            );
-            int steerPosFlag = straightPath[ns].GetFlags();
-            long steerPosRef = straightPath[ns].GetRef();
+            steerPos = straightPath[ns].pos;
+            steerPos.y = startPos.y;
+            steerPosFlag = straightPath[ns].flags;
+            steerPosRef = straightPath[ns].refs;
 
-            SteerTarget target = new SteerTarget(steerPos, steerPosFlag, steerPosRef, steerPoints);
-            return target;
+            return true;
         }
 
         public static bool InRange(RcVec3f v1, RcVec3f v2, float r, float h)

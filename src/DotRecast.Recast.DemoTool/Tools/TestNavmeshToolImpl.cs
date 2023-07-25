@@ -67,22 +67,21 @@ namespace DotRecast.Recast.DemoTool.Tools
             while (0 < polys.Count && smoothPath.Count < MAX_SMOOTH)
             {
                 // Find location to steer towards.
-                SteerTarget steerTarget = PathUtils.GetSteerTarget(navQuery, iterPos, targetPos, SLOP, polys);
-                if (null == steerTarget)
+                if (!PathUtils.GetSteerTarget(navQuery, iterPos, targetPos, SLOP,
+                        polys, out var steerPos, out var steerPosFlag, out var steerPosRef))
                 {
                     break;
                 }
 
-                bool endOfPath = (steerTarget.steerPosFlag & DtNavMeshQuery.DT_STRAIGHTPATH_END) != 0
+                bool endOfPath = (steerPosFlag & DtNavMeshQuery.DT_STRAIGHTPATH_END) != 0
                     ? true
                     : false;
-                bool offMeshConnection = (steerTarget.steerPosFlag
-                                          & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0
+                bool offMeshConnection = (steerPosFlag & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0
                     ? true
                     : false;
 
                 // Find movement delta.
-                RcVec3f delta = steerTarget.steerPos.Subtract(iterPos);
+                RcVec3f delta = steerPos.Subtract(iterPos);
                 float len = (float)Math.Sqrt(RcVec3f.Dot(delta, delta));
                 // If the steer target is end of path or off-mesh link, do not move past the location.
                 if ((endOfPath || offMeshConnection) && len < STEP_SIZE)
@@ -111,7 +110,7 @@ namespace DotRecast.Recast.DemoTool.Tools
                 }
 
                 // Handle end of path and off-mesh links when close enough.
-                if (endOfPath && PathUtils.InRange(iterPos, steerTarget.steerPos, SLOP, 1.0f))
+                if (endOfPath && PathUtils.InRange(iterPos, steerPos, SLOP, 1.0f))
                 {
                     // Reached end of path.
                     iterPos = targetPos;
@@ -122,7 +121,7 @@ namespace DotRecast.Recast.DemoTool.Tools
 
                     break;
                 }
-                else if (offMeshConnection && PathUtils.InRange(iterPos, steerTarget.steerPos, SLOP, 1.0f))
+                else if (offMeshConnection && PathUtils.InRange(iterPos, steerPos, SLOP, 1.0f))
                 {
                     // Reached off-mesh connection.
                     RcVec3f startPos = RcVec3f.Zero;
@@ -132,7 +131,7 @@ namespace DotRecast.Recast.DemoTool.Tools
                     long prevRef = 0;
                     long polyRef = polys[0];
                     int npos = 0;
-                    while (npos < polys.Count && polyRef != steerTarget.steerPosRef)
+                    while (npos < polys.Count && polyRef != steerPosRef)
                     {
                         prevRef = polyRef;
                         polyRef = polys[npos];
@@ -311,7 +310,7 @@ namespace DotRecast.Recast.DemoTool.Tools
             {
                 var status = navQuery.FindRandomPointAroundCircle(startRef, spos, dist, filter, frand, constraint,
                     out var randomRef, out var randomPt);
-                
+
                 if (status.Succeeded())
                 {
                     points.Add(randomPt);
