@@ -319,7 +319,8 @@ namespace DotRecast.Recast
                             }
                         }
 
-                        Array.Sort(neighborAreas);
+                        //Array.Sort(neighborAreas);
+                        neighborAreas.InsertSort();
                         areas[spanIndex] = neighborAreas[4];
                     }
                 }
