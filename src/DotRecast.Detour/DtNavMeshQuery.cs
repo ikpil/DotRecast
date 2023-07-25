@@ -21,6 +21,7 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Numerics;
 using DotRecast.Core;
 
 namespace DotRecast.Detour
@@ -1437,8 +1438,7 @@ namespace DotRecast.Detour
             if (straightPath.Count > 0 && DetourCommon.VEqual(straightPath[straightPath.Count - 1].pos, pos))
             {
                 // The vertices are equal, update flags and poly.
-                straightPath[straightPath.Count - 1].flags = flags;
-                straightPath[straightPath.Count - 1].refs = refs;
+                straightPath[straightPath.Count - 1] = new StraightPathItem(straightPath[straightPath.Count - 1].pos, flags, refs);
             }
             else
             {

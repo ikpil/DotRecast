@@ -809,6 +809,7 @@ public class TestNavmeshTool : IRcTool
                         }
                     }
 
+                    m_straightPath = new(MAX_POLYS);
                     m_navQuery.FindStraightPath(m_spos, epos, m_polys, ref m_straightPath, MAX_POLYS, DtNavMeshQuery.DT_STRAIGHTPATH_ALL_CROSSINGS);
                 }
 

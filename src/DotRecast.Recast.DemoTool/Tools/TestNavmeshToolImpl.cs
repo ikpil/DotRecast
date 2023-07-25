@@ -7,8 +7,8 @@ namespace DotRecast.Recast.DemoTool.Tools
 {
     public class TestNavmeshToolImpl : ISampleTool
     {
-        private const int MAX_POLYS = 256;
-        private const int MAX_SMOOTH = 2048;
+        public const int MAX_POLYS = 256;
+        public const int MAX_SMOOTH = 2048;
 
         private Sample _sample;
         private readonly TestNavmeshToolOption _option;
