@@ -43,11 +43,8 @@ namespace DotRecast.Detour
         /** The number of vertices in the polygon. */
         public int vertCount;
 
-        /**
-     * The bit packed area id and polygon type.
-     *
-     * @note Use the structure's set and get methods to access this value.
-     */
+        /// The bit packed area id and polygon type.
+        /// @note Use the structure's set and get methods to access this value.
         public int areaAndtype;
 
         public DtPoly(int index, int maxVertsPerPoly)
