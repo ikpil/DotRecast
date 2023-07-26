@@ -36,8 +36,6 @@ namespace DotRecast.Recast.DemoTool.Tools
 
             var tileRef = navMesh.GetTileRefAt(tx, ty, 0);
             navMesh.RemoveTile(tileRef); 
-            
-            navMesh.AddTile()
         }
 
         public void RemoveTile(RcVec3f pos)
