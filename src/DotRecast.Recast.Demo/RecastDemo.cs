@@ -382,6 +382,7 @@ public class RecastDemo : IRecastDemoChannel
 
         toolset = new RcToolsetView(
             new TestNavmeshTool(),
+            new TileTool(),
             new OffMeshConnectionTool(),
             new ConvexVolumeTool(),
             new CrowdTool(),

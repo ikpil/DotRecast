@@ -1,12 +1,12 @@
 ﻿namespace DotRecast.Recast.DemoTool.Tools
 {
-    public class CrowdToolImpl : ISampleTool
+    public class TileToolImpl : ISampleTool
     {
         private Sample _sample;
         
         public string GetName()
         {
-            return "Create Crowd";
+            return "Create Tiles";
         }
         
         public void SetSample(Sample sample)
