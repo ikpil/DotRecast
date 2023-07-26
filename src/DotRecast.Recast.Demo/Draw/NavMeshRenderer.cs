@@ -79,7 +79,7 @@ public class NavMeshRenderer
             DrawGeomBounds(geom);
         }
 
-        if (geom != null && settings.tiled)
+        if (geom != null)
         {
             int gw = 0, gh = 0;
             RcVec3f bmin = geom.GetMeshBoundsMin();
