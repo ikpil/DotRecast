@@ -41,11 +41,78 @@ public class DebugDraw
     {
         return openGlDraw;
     }
-    
+
+    public void Init(float fogDistance)
+    {
+        GetOpenGlDraw().Init();
+    }
+
+    public void Clear()
+    {
+        GetOpenGlDraw().Clear();
+    }
+
+    public void End()
+    {
+        GetOpenGlDraw().End();
+    }
+
     public void Begin(DebugDrawPrimitives prim)
     {
         Begin(prim, 1f);
     }
+
+    public void Begin(DebugDrawPrimitives prim, float size)
+    {
+        GetOpenGlDraw().Begin(prim, size);
+    }
+
+
+    public void Fog(float start, float end)
+    {
+        GetOpenGlDraw().Fog(start, end);
+    }
+
+    public void Fog(bool state)
+    {
+        GetOpenGlDraw().Fog(state);
+    }
+
+    public void DepthMask(bool state)
+    {
+        GetOpenGlDraw().DepthMask(state);
+    }
+
+    public void Texture(bool state)
+    {
+        GetOpenGlDraw().Texture(g_tex, state);
+    }
+
+    public void Vertex(float[] pos, int color)
+    {
+        GetOpenGlDraw().Vertex(pos, color);
+    }
+
+    public void Vertex(RcVec3f pos, int color)
+    {
+        GetOpenGlDraw().Vertex(pos, color);
+    }
+
+    public void Vertex(float x, float y, float z, int color)
+    {
+        GetOpenGlDraw().Vertex(x, y, z, color);
+    }
+
+    public void Vertex(RcVec3f pos, int color, RcVec2f uv)
+    {
+        GetOpenGlDraw().Vertex(pos, color, uv);
+    }
+
+    public void Vertex(float x, float y, float z, int color, float u, float v)
+    {
+        GetOpenGlDraw().Vertex(x, y, z, color, u, v);
+    }
+
 
     public void DebugDrawCylinderWire(float minx, float miny, float minz, float maxx, float maxy, float maxz, int col,
         float lineWidth)
@@ -225,42 +292,6 @@ public class DebugDraw
         Begin(DebugDrawPrimitives.LINES, lineWidth);
         AppendArc(x0, y0, z0, x1, y1, z1, h, as0, as1, col);
         End();
-    }
-
-    public void Begin(DebugDrawPrimitives prim, float size)
-    {
-        GetOpenGlDraw().Begin(prim, size);
-    }
-
-    public void Vertex(float[] pos, int color)
-    {
-        GetOpenGlDraw().Vertex(pos, color);
-    }
-
-    public void Vertex(RcVec3f pos, int color)
-    {
-        GetOpenGlDraw().Vertex(pos, color);
-    }
-
-
-    public void Vertex(float x, float y, float z, int color)
-    {
-        GetOpenGlDraw().Vertex(x, y, z, color);
-    }
-
-    public void Vertex(RcVec3f pos, int color, RcVec2f uv)
-    {
-        GetOpenGlDraw().Vertex(pos, color, uv);
-    }
-
-    public void Vertex(float x, float y, float z, int color, float u, float v)
-    {
-        GetOpenGlDraw().Vertex(x, y, z, color, u, v);
-    }
-
-    public void End()
-    {
-        GetOpenGlDraw().End();
     }
 
     public void DebugDrawCircle(float x, float y, float z, float r, int col, float lineWidth)
@@ -597,35 +628,6 @@ public class DebugDraw
         return (int)(((col >> 1) & 0x007f7f7f) | (col & 0xff000000));
     }
 
-    public void Fog(float start, float end)
-    {
-        GetOpenGlDraw().Fog(start, end);
-    }
-
-    public void Fog(bool state)
-    {
-        GetOpenGlDraw().Fog(state);
-    }
-
-    public void DepthMask(bool state)
-    {
-        GetOpenGlDraw().DepthMask(state);
-    }
-
-    public void Texture(bool state)
-    {
-        GetOpenGlDraw().Texture(g_tex, state);
-    }
-
-    public void Init(float fogDistance)
-    {
-        GetOpenGlDraw().Init();
-    }
-
-    public void Clear()
-    {
-        GetOpenGlDraw().Clear();
-    }
 
     public float[] ProjectionMatrix(float fovy, float aspect, float near, float far)
     {
@@ -650,7 +652,6 @@ public class DebugDraw
         UpdateFrustum();
         return _viewMatrix;
     }
-
 
 
     private readonly float[][] frustumPlanes =
