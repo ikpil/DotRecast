@@ -29,17 +29,7 @@ public class DebugDraw
 {
     private readonly GLCheckerTexture g_tex;
     private readonly IOpenGLDraw openGlDraw;
-    private readonly int[] boxIndices = { 7, 6, 5, 4, 0, 1, 2, 3, 1, 5, 6, 2, 3, 7, 4, 0, 2, 6, 7, 3, 0, 4, 5, 1, };
 
-    private readonly float[][] frustumPlanes = RcArrayUtils.Of<float>(6, 4);
-    // {
-    //     new[] { 0f, 0f, 0f, 0f },
-    //     new[] { 0f, 0f, 0f, 0f },
-    //     new[] { 0f, 0f, 0f, 0f },
-    //     new[] { 0f, 0f, 0f, 0f },
-    //     new[] { 0f, 0f, 0f, 0f },
-    //     new[] { 0f, 0f, 0f, 0f },
-    // };
 
     public DebugDraw(GL gl)
     {
@@ -47,7 +37,11 @@ public class DebugDraw
         openGlDraw = new ModernOpenGLDraw(gl);
     }
 
-
+    private IOpenGLDraw GetOpenGlDraw()
+    {
+        return openGlDraw;
+    }
+    
     public void Begin(DebugDrawPrimitives prim)
     {
         Begin(prim, 1f);
@@ -116,14 +110,16 @@ public class DebugDraw
         Begin(DebugDrawPrimitives.LINES, lineWidth);
         for (int i = 0; i <= h; ++i)
         {
-            Vertex(ox,oy,oz+i*size, col);
-            Vertex(ox+w*size,oy,oz+i*size, col);
+            Vertex(ox, oy, oz + i * size, col);
+            Vertex(ox + w * size, oy, oz + i * size, col);
         }
+
         for (int i = 0; i <= w; ++i)
         {
-            Vertex(ox+i*size,oy,oz, col);
-            Vertex(ox+i*size,oy,oz+h*size, col);
+            Vertex(ox + i * size, oy, oz, col);
+            Vertex(ox + i * size, oy, oz + h * size, col);
         }
+
         End();
     }
 
@@ -161,30 +157,64 @@ public class DebugDraw
         Vertex(minx, maxy, maxz, col);
     }
 
+    private readonly int[] boxIndices = { 7, 6, 5, 4, 0, 1, 2, 3, 1, 5, 6, 2, 3, 7, 4, 0, 2, 6, 7, 3, 0, 4, 5, 1, };
+
+    private readonly float[][] boxVerts =
+    {
+        new[] { 0f, 0f, 0f },
+        new[] { 0f, 0f, 0f },
+        new[] { 0f, 0f, 0f },
+        new[] { 0f, 0f, 0f },
+        new[] { 0f, 0f, 0f },
+        new[] { 0f, 0f, 0f },
+        new[] { 0f, 0f, 0f },
+        new[] { 0f, 0f, 0f }
+    };
+
     public void AppendBox(float minx, float miny, float minz, float maxx, float maxy, float maxz, int[] fcol)
     {
-        float[][] verts =
-        {
-            new[] { minx, miny, minz },
-            new[] { maxx, miny, minz },
-            new[] { maxx, miny, maxz },
-            new[] { minx, miny, maxz },
-            new[] { minx, maxy, minz },
-            new[] { maxx, maxy, minz },
-            new[] { maxx, maxy, maxz },
-            new[] { minx, maxy, maxz }
-        };
+        boxVerts[0][0] = minx;
+        boxVerts[0][1] = miny;
+        boxVerts[0][2] = minz;
+
+        boxVerts[1][0] = maxx;
+        boxVerts[1][1] = miny;
+        boxVerts[1][2] = minz;
+
+        boxVerts[2][0] = maxx;
+        boxVerts[2][1] = miny;
+        boxVerts[2][2] = maxz;
+
+        boxVerts[3][0] = minx;
+        boxVerts[3][1] = miny;
+        boxVerts[3][2] = maxz;
+
+        boxVerts[4][0] = minx;
+        boxVerts[4][1] = maxy;
+        boxVerts[4][2] = minz;
+
+        boxVerts[5][0] = maxx;
+        boxVerts[5][1] = maxy;
+        boxVerts[5][2] = minz;
+
+        boxVerts[6][0] = maxx;
+        boxVerts[6][1] = maxy;
+        boxVerts[6][2] = maxz;
+
+        boxVerts[7][0] = minx;
+        boxVerts[7][1] = maxy;
+        boxVerts[7][2] = maxz;
 
         int idx = 0;
         for (int i = 0; i < 6; ++i)
         {
-            Vertex(verts[boxIndices[idx]], fcol[i]);
+            Vertex(boxVerts[boxIndices[idx]], fcol[i]);
             idx++;
-            Vertex(verts[boxIndices[idx]], fcol[i]);
+            Vertex(boxVerts[boxIndices[idx]], fcol[i]);
             idx++;
-            Vertex(verts[boxIndices[idx]], fcol[i]);
+            Vertex(boxVerts[boxIndices[idx]], fcol[i]);
             idx++;
-            Vertex(verts[boxIndices[idx]], fcol[i]);
+            Vertex(boxVerts[boxIndices[idx]], fcol[i]);
             idx++;
         }
     }
@@ -621,35 +651,36 @@ public class DebugDraw
         return _viewMatrix;
     }
 
-    private IOpenGLDraw GetOpenGlDraw()
+
+
+    private readonly float[][] frustumPlanes =
     {
-        return openGlDraw;
-    }
+        new[] { 0f, 0f, 0f, 0f },
+        new[] { 0f, 0f, 0f, 0f },
+        new[] { 0f, 0f, 0f, 0f },
+        new[] { 0f, 0f, 0f, 0f },
+        new[] { 0f, 0f, 0f, 0f },
+        new[] { 0f, 0f, 0f, 0f },
+    };
 
     private void UpdateFrustum()
     {
         float[] vpm = GLU.Mul(_projectionMatrix, _viewMatrix);
         // left
-        frustumPlanes[0] = NormalizePlane(vpm[0 + 3] + vpm[0 + 0], vpm[4 + 3] + vpm[4 + 0], vpm[8 + 3] + vpm[8 + 0],
-            vpm[12 + 3] + vpm[12 + 0]);
+        NormalizePlane(vpm[0 + 3] + vpm[0 + 0], vpm[4 + 3] + vpm[4 + 0], vpm[8 + 3] + vpm[8 + 0], vpm[12 + 3] + vpm[12 + 0], ref frustumPlanes[0]);
         // right
-        frustumPlanes[1] = NormalizePlane(vpm[0 + 3] - vpm[0 + 0], vpm[4 + 3] - vpm[4 + 0], vpm[8 + 3] - vpm[8 + 0],
-            vpm[12 + 3] - vpm[12 + 0]);
+        NormalizePlane(vpm[0 + 3] - vpm[0 + 0], vpm[4 + 3] - vpm[4 + 0], vpm[8 + 3] - vpm[8 + 0], vpm[12 + 3] - vpm[12 + 0], ref frustumPlanes[1]);
         // top
-        frustumPlanes[2] = NormalizePlane(vpm[0 + 3] - vpm[0 + 1], vpm[4 + 3] - vpm[4 + 1], vpm[8 + 3] - vpm[8 + 1],
-            vpm[12 + 3] - vpm[12 + 1]);
+        NormalizePlane(vpm[0 + 3] - vpm[0 + 1], vpm[4 + 3] - vpm[4 + 1], vpm[8 + 3] - vpm[8 + 1], vpm[12 + 3] - vpm[12 + 1], ref frustumPlanes[2]);
         // bottom
-        frustumPlanes[3] = NormalizePlane(vpm[0 + 3] + vpm[0 + 1], vpm[4 + 3] + vpm[4 + 1], vpm[8 + 3] + vpm[8 + 1],
-            vpm[12 + 3] + vpm[12 + 1]);
+        NormalizePlane(vpm[0 + 3] + vpm[0 + 1], vpm[4 + 3] + vpm[4 + 1], vpm[8 + 3] + vpm[8 + 1], vpm[12 + 3] + vpm[12 + 1], ref frustumPlanes[3]);
         // near
-        frustumPlanes[4] = NormalizePlane(vpm[0 + 3] + vpm[0 + 2], vpm[4 + 3] + vpm[4 + 2], vpm[8 + 3] + vpm[8 + 2],
-            vpm[12 + 3] + vpm[12 + 2]);
+        NormalizePlane(vpm[0 + 3] + vpm[0 + 2], vpm[4 + 3] + vpm[4 + 2], vpm[8 + 3] + vpm[8 + 2], vpm[12 + 3] + vpm[12 + 2], ref frustumPlanes[4]);
         // far
-        frustumPlanes[5] = NormalizePlane(vpm[0 + 3] - vpm[0 + 2], vpm[4 + 3] - vpm[4 + 2], vpm[8 + 3] - vpm[8 + 2],
-            vpm[12 + 3] - vpm[12 + 2]);
+        NormalizePlane(vpm[0 + 3] - vpm[0 + 2], vpm[4 + 3] - vpm[4 + 2], vpm[8 + 3] - vpm[8 + 2], vpm[12 + 3] - vpm[12 + 2], ref frustumPlanes[5]);
     }
 
-    private float[] NormalizePlane(float px, float py, float pz, float pw)
+    private void NormalizePlane(float px, float py, float pz, float pw, ref float[] plane)
     {
         float length = (float)Math.Sqrt(px * px + py * py + pz * pz);
         if (length != 0)
@@ -661,7 +692,10 @@ public class DebugDraw
             pw *= length;
         }
 
-        return new float[] { px, py, pz, pw };
+        plane[0] = px;
+        plane[1] = py;
+        plane[2] = pz;
+        plane[3] = pw;
     }
 
     public bool FrustumTest(float[] bounds)
