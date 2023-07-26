@@ -1,10 +1,8 @@
-﻿using System.Reflection.Metadata;
-using DotRecast.Core;
+﻿using DotRecast.Core;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.DemoTool;
 using DotRecast.Recast.DemoTool.Tools;
 using ImGuiNET;
-using Silk.NET.Vulkan;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
