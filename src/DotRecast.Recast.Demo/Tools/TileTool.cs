@@ -4,7 +4,6 @@ using DotRecast.Recast.DemoTool;
 using DotRecast.Recast.DemoTool.Tools;
 using ImGuiNET;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
-using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
 namespace DotRecast.Recast.Demo.Tools;
 
@@ -50,14 +49,16 @@ public class TileTool : IRcTool
         _hitPos = p;
 
         var sample = _impl.GetSample();
-        if (null != sample)
+        if (null == sample)
+            return;
+
+        if (shift)
         {
-            if (shift)
-            {
-            }
-            else
-            {
-            }
+            _impl.RemoveTile(_hitPos);
+        }
+        else
+        {
+            _impl.BuildTile(_hitPos);
         }
     }
 
@@ -76,23 +77,24 @@ public class TileTool : IRcTool
         {
             var bmin = geom.GetMeshBoundsMin();
             var bmax = geom.GetMeshBoundsMax();
-            
+
             var settings = sample.GetSettings();
             var s = settings.agentRadius;
+            
             float ts = settings.tileSize * settings.cellSize;
             int tx = (int)((_hitPos.x - bmin[0]) / ts);
             int ty = (int)((_hitPos.z - bmin[2]) / ts);
 
             RcVec3f lastBuiltTileBmin = RcVec3f.Zero;
             RcVec3f lastBuiltTileBmax = RcVec3f.Zero;
-            
-            lastBuiltTileBmin[0] = bmin[0] + tx*ts;
+
+            lastBuiltTileBmin[0] = bmin[0] + tx * ts;
             lastBuiltTileBmin[1] = bmin[1];
-            lastBuiltTileBmin[2] = bmin[2] + ty*ts;
-	
-            lastBuiltTileBmax[0] = bmin[0] + (tx+1)*ts;
+            lastBuiltTileBmin[2] = bmin[2] + ty * ts;
+
+            lastBuiltTileBmax[0] = bmin[0] + (tx + 1) * ts;
             lastBuiltTileBmax[1] = bmax[1];
-            lastBuiltTileBmax[2] = bmin[2] + (ty+1)*ts;
+            lastBuiltTileBmax[2] = bmin[2] + (ty + 1) * ts;
 
             dd.DebugDrawCross(_hitPos.x, _hitPos.y + 0.1f, _hitPos.z, s, DuRGBA(0, 0, 0, 128), 2.0f);
             dd.DebugDrawBoxWire(
