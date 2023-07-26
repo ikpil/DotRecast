@@ -63,17 +63,41 @@ public class TileTool : IRcTool
 
     public void HandleRender(NavMeshRenderer renderer)
     {
+        var sample = _impl.GetSample();
+        if (null == sample)
+            return;
+
+        var geom = sample.GetInputGeom();
+        if (null == geom)
+            return;
+
         var dd = renderer.GetDebugDraw();
         if (_hitPosSet)
         {
-            var s = _impl.GetSample().GetSettings().agentRadius;
-            RcVec3f m_lastBuiltTileBmin = _hitPos - RcVec3f.One;
-            RcVec3f m_lastBuiltTileBmax = _hitPos + RcVec3f.One;
+            var bmin = geom.GetMeshBoundsMin();
+            var bmax = geom.GetMeshBoundsMax();
             
+            var settings = sample.GetSettings();
+            var s = settings.agentRadius;
+            float ts = settings.tileSize * settings.cellSize;
+            int tx = (int)((_hitPos.x - bmin[0]) / ts);
+            int ty = (int)((_hitPos.z - bmin[2]) / ts);
+
+            RcVec3f lastBuiltTileBmin = RcVec3f.Zero;
+            RcVec3f lastBuiltTileBmax = RcVec3f.Zero;
+            
+            lastBuiltTileBmin[0] = bmin[0] + tx*ts;
+            lastBuiltTileBmin[1] = bmin[1];
+            lastBuiltTileBmin[2] = bmin[2] + ty*ts;
+	
+            lastBuiltTileBmax[0] = bmin[0] + (tx+1)*ts;
+            lastBuiltTileBmax[1] = bmax[1];
+            lastBuiltTileBmax[2] = bmin[2] + (ty+1)*ts;
+
             dd.DebugDrawCross(_hitPos.x, _hitPos.y + 0.1f, _hitPos.z, s, DuRGBA(0, 0, 0, 128), 2.0f);
             dd.DebugDrawBoxWire(
-                m_lastBuiltTileBmin.x, m_lastBuiltTileBmin.y, m_lastBuiltTileBmin.z,
-                m_lastBuiltTileBmax.x, m_lastBuiltTileBmax.y, m_lastBuiltTileBmax.z,
+                lastBuiltTileBmin.x, lastBuiltTileBmin.y, lastBuiltTileBmin.z,
+                lastBuiltTileBmax.x, lastBuiltTileBmax.y, lastBuiltTileBmax.z,
                 DuRGBA(255, 255, 255, 64), 1.0f);
         }
     }
