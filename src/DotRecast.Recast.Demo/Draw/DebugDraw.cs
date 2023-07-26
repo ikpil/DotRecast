@@ -111,6 +111,23 @@ public class DebugDraw
         End();
     }
 
+    public void DebugDrawGridXZ(float ox, float oy, float oz, int w, int h, float size, int col, float lineWidth)
+    {
+        Begin(DebugDrawPrimitives.LINES, lineWidth);
+        for (int i = 0; i <= h; ++i)
+        {
+            Vertex(ox,oy,oz+i*size, col);
+            Vertex(ox+w*size,oy,oz+i*size, col);
+        }
+        for (int i = 0; i <= w; ++i)
+        {
+            Vertex(ox+i*size,oy,oz, col);
+            Vertex(ox+i*size,oy,oz+h*size, col);
+        }
+        End();
+    }
+
+
     public void AppendBoxWire(float minx, float miny, float minz, float maxx, float maxy, float maxz, int col)
     {
         // Top
@@ -189,7 +206,7 @@ public class DebugDraw
     {
         GetOpenGlDraw().Vertex(pos, color);
     }
-    
+
     public void Vertex(RcVec3f pos, int color)
     {
         GetOpenGlDraw().Vertex(pos, color);

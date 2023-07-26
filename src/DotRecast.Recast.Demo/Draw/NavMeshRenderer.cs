@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using DotRecast.Core;
 using DotRecast.Detour;
 using DotRecast.Recast.DemoTool.Builder;
@@ -78,6 +79,18 @@ public class NavMeshRenderer
             DrawGeomBounds(geom);
         }
 
+        if (geom != null && settings.tiled)
+        {
+            int gw = 0, gh = 0;
+            RcVec3f bmin = geom.GetMeshBoundsMin();
+            RcVec3f bmax = geom.GetMeshBoundsMax();
+            Recast.CalcGridSize(bmin, bmax, settings.cellSize, out gw, out gh);
+            int tw = (gw + settings.tileSize - 1) / settings.tileSize;
+            int th = (gh + settings.tileSize - 1) / settings.tileSize;
+            float s = settings.tileSize * settings.cellSize;
+            _debugDraw.DebugDrawGridXZ(bmin[0], bmin[1], bmin[2], tw, th, s, DebugDraw.DuRGBA(0, 0, 0, 64), 1.0f);
+        }
+
         if (navMesh != null && navQuery != null
                             && (drawMode == DrawMode.DRAWMODE_NAVMESH
                                 || drawMode == DrawMode.DRAWMODE_NAVMESH_TRANS
@@ -104,8 +117,7 @@ public class NavMeshRenderer
             if (drawMode == DrawMode.DRAWMODE_NAVMESH_NODES)
             {
                 _debugDraw.DebugDrawNavMeshNodes(navQuery);
-                _debugDraw.DebugDrawNavMeshPolysWithFlags(navMesh, SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED,
-                    DebugDraw.DuRGBA(0, 0, 0, 128));
+                _debugDraw.DebugDrawNavMeshPolysWithFlags(navMesh, SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED, DebugDraw.DuRGBA(0, 0, 0, 128));
             }
         }
 
