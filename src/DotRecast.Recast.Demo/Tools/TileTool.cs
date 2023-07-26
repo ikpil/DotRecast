@@ -67,20 +67,10 @@ public class TileTool : IRcTool
         if (_hitPosSet)
         {
             var s = _impl.GetSample().GetSettings().agentRadius;
-            dd.Begin(LINES, 2.0f);
-            dd.Vertex(_hitPos.x - s, _hitPos.y + 0.1f, _hitPos.z, DuRGBA(0, 0, 0, 128));
-            dd.Vertex(_hitPos.x + s, _hitPos.y + 0.1f, _hitPos.z, DuRGBA(0, 0, 0, 128));
-            dd.Vertex(_hitPos.x, _hitPos.y - s + 0.1f, _hitPos.z, DuRGBA(0, 0, 0, 128));
-            dd.Vertex(_hitPos.x, _hitPos.y + s + 0.1f, _hitPos.z, DuRGBA(0, 0, 0, 128));
-            dd.Vertex(_hitPos.x, _hitPos.y + 0.1f, _hitPos.z - s, DuRGBA(0, 0, 0, 128));
-            dd.Vertex(_hitPos.x, _hitPos.y + 0.1f, _hitPos.z + s, DuRGBA(0, 0, 0, 128));
-            dd.End();
-        }
-
-        if (_hitPosSet)
-        {
             RcVec3f m_lastBuiltTileBmin = _hitPos - RcVec3f.One;
             RcVec3f m_lastBuiltTileBmax = _hitPos + RcVec3f.One;
+            
+            dd.DebugDrawCross(_hitPos.x, _hitPos.y + 0.1f, _hitPos.z, s, DuRGBA(0, 0, 0, 128), 2.0f);
             dd.DebugDrawBoxWire(
                 m_lastBuiltTileBmin.x, m_lastBuiltTileBmin.y, m_lastBuiltTileBmin.z,
                 m_lastBuiltTileBmax.x, m_lastBuiltTileBmax.y, m_lastBuiltTileBmax.z,
