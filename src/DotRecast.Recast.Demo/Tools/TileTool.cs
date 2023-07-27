@@ -1,14 +1,17 @@
-﻿using DotRecast.Core;
+﻿using System;
+using DotRecast.Core;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.DemoTool;
 using DotRecast.Recast.DemoTool.Tools;
 using ImGuiNET;
+using Serilog;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 
 namespace DotRecast.Recast.Demo.Tools;
 
 public class TileTool : IRcTool
 {
+    private static readonly ILogger Logger = Log.ForContext<TileTool>();
     private readonly TileToolImpl _impl;
 
     private bool _hitPosSet;
@@ -58,7 +61,8 @@ public class TileTool : IRcTool
         }
         else
         {
-            _impl.BuildTile(_hitPos);
+            _impl.BuildTile(_hitPos, out var tileBuildTicks, out var tileTriCount, out var tileMemUsage);
+            Logger.Information($"{tileBuildTicks / (float)TimeSpan.TicksPerMillisecond}ms / {tileTriCount}Tris / {tileMemUsage}kB ");
         }
     }
 
@@ -80,7 +84,7 @@ public class TileTool : IRcTool
 
             var settings = sample.GetSettings();
             var s = settings.agentRadius;
-            
+
             float ts = settings.tileSize * settings.cellSize;
             int tx = (int)((_hitPos.x - bmin[0]) / ts);
             int ty = (int)((_hitPos.z - bmin[2]) / ts);
@@ -101,6 +105,8 @@ public class TileTool : IRcTool
                 lastBuiltTileBmin.x, lastBuiltTileBmin.y, lastBuiltTileBmin.z,
                 lastBuiltTileBmax.x, lastBuiltTileBmax.y, lastBuiltTileBmax.z,
                 DuRGBA(255, 255, 255, 64), 1.0f);
+
+            // 표기
         }
     }
 

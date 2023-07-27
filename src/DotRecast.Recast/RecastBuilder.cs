@@ -143,7 +143,7 @@ namespace DotRecast.Recast
             return Task.WhenAll(tasks.ToArray());
         }
 
-        private RecastBuilderResult BuildTile(IInputGeomProvider geom, RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tx,
+        public RecastBuilderResult BuildTile(IInputGeomProvider geom, RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tx,
             int ty, RcAtomicInteger counter, int total)
         {
             RecastBuilderResult result = Build(geom, new RecastBuilderConfig(cfg, bmin, bmax, tx, ty));

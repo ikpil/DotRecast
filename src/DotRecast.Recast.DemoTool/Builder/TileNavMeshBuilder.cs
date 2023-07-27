@@ -89,8 +89,8 @@ namespace DotRecast.Recast.DemoTool.Builder
             return navMesh;
         }
 
-        private List<DtMeshData> BuildMeshData(DemoInputGeomProvider geom, float cellSize, float cellHeight, float agentHeight,
-            float agentRadius, float agentMaxClimb, List<RecastBuilderResult> results)
+        public List<DtMeshData> BuildMeshData(DemoInputGeomProvider geom, float cellSize, float cellHeight, float agentHeight,
+            float agentRadius, float agentMaxClimb, IList<RecastBuilderResult> results)
         {
             // Add tiles to nav mesh
             List<DtMeshData> meshData = new List<DtMeshData>();
