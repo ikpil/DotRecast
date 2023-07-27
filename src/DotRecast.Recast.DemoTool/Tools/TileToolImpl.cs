@@ -26,6 +26,9 @@ namespace DotRecast.Recast.DemoTool.Tools
             var settings = _sample.GetSettings();
             var geom = _sample.GetInputGeom();
             var navMesh = _sample.GetNavMesh();
+
+            if (null == settings || null == geom || navMesh == null)
+                return;
             
             float ts = settings.tileSize * settings.cellSize;
             
@@ -43,6 +46,9 @@ namespace DotRecast.Recast.DemoTool.Tools
             var settings = _sample.GetSettings();
             var geom = _sample.GetInputGeom();
             var navMesh = _sample.GetNavMesh();
+            
+            if (null == settings || null == geom || navMesh == null)
+                return;
             
             float ts = settings.tileSize * settings.cellSize;
             
