@@ -2,6 +2,7 @@
 using DotRecast.Core;
 using DotRecast.Recast.DemoTool.Builder;
 using DotRecast.Recast.DemoTool.Geom;
+using DotRecast.Recast.Geom;
 
 namespace DotRecast.Recast.DemoTool.Tools
 {

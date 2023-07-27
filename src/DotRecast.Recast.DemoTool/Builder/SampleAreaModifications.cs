@@ -23,7 +23,6 @@ using System.Linq;
 
 namespace DotRecast.Recast.DemoTool.Builder
 {
-
     public class SampleAreaModifications
     {
         public const int SAMPLE_POLYAREA_TYPE_GROUND = 0x0;
@@ -34,6 +33,13 @@ namespace DotRecast.Recast.DemoTool.Builder
         public const int SAMPLE_POLYAREA_TYPE_JUMP = 0x5;
         public const int SAMPLE_POLYAREA_TYPE_JUMP_AUTO = 0x6;
         public const int SAMPLE_POLYAREA_TYPE_WALKABLE = 0x3f;
+
+        public static readonly int SAMPLE_POLYFLAGS_WALK = 0x01; // Ability to walk (ground, grass, road)
+        public static readonly int SAMPLE_POLYFLAGS_SWIM = 0x02; // Ability to swim (water).
+        public static readonly int SAMPLE_POLYFLAGS_DOOR = 0x04; // Ability to move through doors.
+        public static readonly int SAMPLE_POLYFLAGS_JUMP = 0x08; // Ability to jump.
+        public static readonly int SAMPLE_POLYFLAGS_DISABLED = 0x10; // Disabled polygon
+        public static readonly int SAMPLE_POLYFLAGS_ALL = 0xffff; // All abilities.
 
         public static readonly RcAreaModification SAMPLE_AREAMOD_WALKABLE = new RcAreaModification(SAMPLE_POLYAREA_TYPE_WALKABLE);
         public static readonly RcAreaModification SAMPLE_AREAMOD_GROUND = new RcAreaModification(SAMPLE_POLYAREA_TYPE_GROUND);
@@ -57,12 +63,5 @@ namespace DotRecast.Recast.DemoTool.Builder
         {
             return Values.FirstOrDefault(x => x.Value == value) ?? SAMPLE_AREAMOD_GRASS;
         }
-
-        public static readonly int SAMPLE_POLYFLAGS_WALK = 0x01; // Ability to walk (ground, grass, road)
-        public static readonly int SAMPLE_POLYFLAGS_SWIM = 0x02; // Ability to swim (water).
-        public static readonly int SAMPLE_POLYFLAGS_DOOR = 0x04; // Ability to move through doors.
-        public static readonly int SAMPLE_POLYFLAGS_JUMP = 0x08; // Ability to jump.
-        public static readonly int SAMPLE_POLYFLAGS_DISABLED = 0x10; // Disabled polygon
-        public static readonly int SAMPLE_POLYFLAGS_ALL = 0xffff; // All abilities.
     }
 }

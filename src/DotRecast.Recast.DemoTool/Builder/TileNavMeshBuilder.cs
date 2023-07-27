@@ -19,14 +19,12 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DotRecast.Core;
 using DotRecast.Detour;
 using DotRecast.Recast.DemoTool.Geom;
-using static DotRecast.Core.RcMath;
 
 namespace DotRecast.Recast.DemoTool.Builder
 {
-    public class TileNavMeshBuilder : AbstractNavMeshBuilder
+    public class TileNavMeshBuilder
     {
         public TileNavMeshBuilder()
         {
@@ -47,7 +45,7 @@ namespace DotRecast.Recast.DemoTool.Builder
             return new NavMeshBuildResult(results, tileNavMesh);
         }
 
-        private List<RecastBuilderResult> BuildRecastResult(DemoInputGeomProvider geom, PartitionType partitionType,
+        public List<RecastBuilderResult> BuildRecastResult(DemoInputGeomProvider geom, PartitionType partitionType,
             float cellSize, float cellHeight, float agentHeight, float agentRadius, float agentMaxClimb,
             float agentMaxSlope, int regionMinSize, int regionMergeSize, float edgeMaxLen, float edgeMaxError,
             int vertsPerPoly, float detailSampleDist, float detailSampleMaxError, bool filterLowHangingObstacles,
@@ -63,7 +61,7 @@ namespace DotRecast.Recast.DemoTool.Builder
             return rcBuilder.BuildTiles(geom, cfg, Task.Factory);
         }
 
-        private DtNavMesh BuildNavMesh(DemoInputGeomProvider geom, List<DtMeshData> meshData, float cellSize, int tileSize, int vertsPerPoly)
+        public DtNavMesh BuildNavMesh(DemoInputGeomProvider geom, List<DtMeshData> meshData, float cellSize, int tileSize, int vertsPerPoly)
         {
             DtNavMeshParams navMeshParams = new DtNavMeshParams();
             navMeshParams.orig = geom.GetMeshBoundsMin();
@@ -78,6 +76,31 @@ namespace DotRecast.Recast.DemoTool.Builder
             meshData.ForEach(md => navMesh.AddTile(md, 0, 0));
             return navMesh;
         }
+
+        private List<DtMeshData> BuildMeshData(DemoInputGeomProvider geom, float cellSize, float cellHeight, float agentHeight,
+            float agentRadius, float agentMaxClimb, List<RecastBuilderResult> results)
+        {
+            // Add tiles to nav mesh
+            List<DtMeshData> meshData = new List<DtMeshData>();
+            foreach (RecastBuilderResult result in results)
+            {
+                int x = result.tileX;
+                int z = result.tileZ;
+                DtNavMeshCreateParams option = DemoNavMeshBuilder
+                    .GetNavMeshCreateParams(geom, cellSize, cellHeight, agentHeight, agentRadius, agentMaxClimb, result);
+
+                option.tileX = x;
+                option.tileZ = z;
+                DtMeshData md = NavMeshBuilder.CreateNavMeshData(option);
+                if (md != null)
+                {
+                    meshData.Add(DemoNavMeshBuilder.UpdateAreaAndFlags(md));
+                }
+            }
+
+            return meshData;
+        }
+
 
         public int GetMaxTiles(DemoInputGeomProvider geom, float cellSize, int tileSize)
         {
@@ -106,29 +129,6 @@ namespace DotRecast.Recast.DemoTool.Builder
             int tw = (gw + tileSize - 1) / tileSize;
             int th = (gh + tileSize - 1) / tileSize;
             return new int[] { tw, th };
-        }
-
-        private List<DtMeshData> BuildMeshData(DemoInputGeomProvider geom, float cellSize, float cellHeight, float agentHeight,
-            float agentRadius, float agentMaxClimb, List<RecastBuilderResult> results)
-        {
-            // Add tiles to nav mesh
-            List<DtMeshData> meshData = new List<DtMeshData>();
-            foreach (RecastBuilderResult result in results)
-            {
-                int x = result.tileX;
-                int z = result.tileZ;
-                DtNavMeshCreateParams option = GetNavMeshCreateParams(geom, cellSize, cellHeight, agentHeight,
-                    agentRadius, agentMaxClimb, result);
-                option.tileX = x;
-                option.tileZ = z;
-                DtMeshData md = NavMeshBuilder.CreateNavMeshData(option);
-                if (md != null)
-                {
-                    meshData.Add(UpdateAreaAndFlags(md));
-                }
-            }
-
-            return meshData;
         }
     }
 }

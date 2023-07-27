@@ -228,7 +228,7 @@ public class NavMeshRenderer
         _debugDraw.DepthMask(false);
 
         _debugDraw.Begin(DebugDrawPrimitives.LINES, 2.0f);
-        foreach (DemoOffMeshConnection con in geom.GetOffMeshConnections())
+        foreach (var con in geom.GetOffMeshConnections())
         {
             float[] v = con.verts;
             _debugDraw.Vertex(v[0], v[1], v[2], baseColor);

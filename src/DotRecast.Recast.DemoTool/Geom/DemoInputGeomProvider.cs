@@ -34,7 +34,7 @@ namespace DotRecast.Recast.DemoTool.Geom
         private readonly RcVec3f bmin;
         private readonly RcVec3f bmax;
         private readonly List<RcConvexVolume> _convexVolumes = new List<RcConvexVolume>();
-        private readonly List<DemoOffMeshConnection> offMeshConnections = new List<DemoOffMeshConnection>();
+        private readonly List<DemoOffMeshConnection> _offMeshConnections = new List<DemoOffMeshConnection>();
         private readonly RcTriMesh _mesh;
 
         public DemoInputGeomProvider(List<float> vertexPositions, List<int> meshFaces) :
@@ -134,18 +134,18 @@ namespace DotRecast.Recast.DemoTool.Geom
 
         public List<DemoOffMeshConnection> GetOffMeshConnections()
         {
-            return offMeshConnections;
+            return _offMeshConnections;
         }
 
         public void AddOffMeshConnection(RcVec3f start, RcVec3f end, float radius, bool bidir, int area, int flags)
         {
-            offMeshConnections.Add(new DemoOffMeshConnection(start, end, radius, bidir, area, flags));
+            _offMeshConnections.Add(new DemoOffMeshConnection(start, end, radius, bidir, area, flags));
         }
 
         public void RemoveOffMeshConnections(Predicate<DemoOffMeshConnection> filter)
         {
             //offMeshConnections.RetainAll(offMeshConnections.Stream().Filter(c -> !filter.Test(c)).Collect(ToList()));
-            offMeshConnections.RemoveAll(filter); // TODO : 확인 필요
+            _offMeshConnections.RemoveAll(filter); // TODO : 확인 필요
         }
 
         public float? RaycastMesh(RcVec3f src, RcVec3f dst)

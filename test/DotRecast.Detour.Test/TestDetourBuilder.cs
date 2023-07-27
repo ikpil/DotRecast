@@ -93,10 +93,12 @@ public class TestDetourBuilder : DetourBuilder
         option.ch = rcConfig.ch;
         option.buildBvTree = true;
         /*
-         * option.offMeshConVerts = m_geom->GetOffMeshConnectionVerts(); option.offMeshConRad =
-         * m_geom->GetOffMeshConnectionRads(); option.offMeshConDir = m_geom->GetOffMeshConnectionDirs();
-         * option.offMeshConAreas = m_geom->GetOffMeshConnectionAreas(); option.offMeshConFlags =
-         * m_geom->GetOffMeshConnectionFlags(); option.offMeshConUserID = m_geom->GetOffMeshConnectionId();
+         * option.offMeshConVerts = m_geom->GetOffMeshConnectionVerts();
+         * option.offMeshConRad = m_geom->GetOffMeshConnectionRads();
+         * option.offMeshConDir = m_geom->GetOffMeshConnectionDirs();
+         * option.offMeshConAreas = m_geom->GetOffMeshConnectionAreas();
+         * option.offMeshConFlags = m_geom->GetOffMeshConnectionFlags();
+         * option.offMeshConUserID = m_geom->GetOffMeshConnectionId();
          * option.offMeshConCount = m_geom->GetOffMeshConnectionCount();
          */
         return option;

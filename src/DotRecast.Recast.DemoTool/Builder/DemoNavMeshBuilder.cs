@@ -1,48 +1,49 @@
 using DotRecast.Detour;
 using DotRecast.Recast.DemoTool.Geom;
+using DotRecast.Recast.Geom;
 
 namespace DotRecast.Recast.DemoTool.Builder
 {
-    public abstract class AbstractNavMeshBuilder
+    public static class DemoNavMeshBuilder
     {
-        protected DtNavMeshCreateParams GetNavMeshCreateParams(DemoInputGeomProvider m_geom, float m_cellSize,
-            float m_cellHeight, float m_agentHeight, float m_agentRadius, float m_agentMaxClimb,
+        public static DtNavMeshCreateParams GetNavMeshCreateParams(DemoInputGeomProvider geom, float cellSize,
+            float cellHeight, float agentHeight, float agentRadius, float agentMaxClimb,
             RecastBuilderResult rcResult)
         {
-            RcPolyMesh m_pmesh = rcResult.GetMesh();
-            RcPolyMeshDetail m_dmesh = rcResult.GetMeshDetail();
+            RcPolyMesh pmesh = rcResult.GetMesh();
+            RcPolyMeshDetail dmesh = rcResult.GetMeshDetail();
             DtNavMeshCreateParams option = new DtNavMeshCreateParams();
-            for (int i = 0; i < m_pmesh.npolys; ++i)
+            for (int i = 0; i < pmesh.npolys; ++i)
             {
-                m_pmesh.flags[i] = 1;
+                pmesh.flags[i] = 1;
             }
 
-            option.verts = m_pmesh.verts;
-            option.vertCount = m_pmesh.nverts;
-            option.polys = m_pmesh.polys;
-            option.polyAreas = m_pmesh.areas;
-            option.polyFlags = m_pmesh.flags;
-            option.polyCount = m_pmesh.npolys;
-            option.nvp = m_pmesh.nvp;
-            if (m_dmesh != null)
+            option.verts = pmesh.verts;
+            option.vertCount = pmesh.nverts;
+            option.polys = pmesh.polys;
+            option.polyAreas = pmesh.areas;
+            option.polyFlags = pmesh.flags;
+            option.polyCount = pmesh.npolys;
+            option.nvp = pmesh.nvp;
+            if (dmesh != null)
             {
-                option.detailMeshes = m_dmesh.meshes;
-                option.detailVerts = m_dmesh.verts;
-                option.detailVertsCount = m_dmesh.nverts;
-                option.detailTris = m_dmesh.tris;
-                option.detailTriCount = m_dmesh.ntris;
+                option.detailMeshes = dmesh.meshes;
+                option.detailVerts = dmesh.verts;
+                option.detailVertsCount = dmesh.nverts;
+                option.detailTris = dmesh.tris;
+                option.detailTriCount = dmesh.ntris;
             }
 
-            option.walkableHeight = m_agentHeight;
-            option.walkableRadius = m_agentRadius;
-            option.walkableClimb = m_agentMaxClimb;
-            option.bmin = m_pmesh.bmin;
-            option.bmax = m_pmesh.bmax;
-            option.cs = m_cellSize;
-            option.ch = m_cellHeight;
+            option.walkableHeight = agentHeight;
+            option.walkableRadius = agentRadius;
+            option.walkableClimb = agentMaxClimb;
+            option.bmin = pmesh.bmin;
+            option.bmax = pmesh.bmax;
+            option.cs = cellSize;
+            option.ch = cellHeight;
             option.buildBvTree = true;
 
-            option.offMeshConCount = m_geom.GetOffMeshConnections().Count;
+            option.offMeshConCount = geom.GetOffMeshConnections().Count;
             option.offMeshConVerts = new float[option.offMeshConCount * 6];
             option.offMeshConRad = new float[option.offMeshConCount];
             option.offMeshConDir = new int[option.offMeshConCount];
@@ -51,7 +52,7 @@ namespace DotRecast.Recast.DemoTool.Builder
             option.offMeshConUserID = new int[option.offMeshConCount];
             for (int i = 0; i < option.offMeshConCount; i++)
             {
-                DemoOffMeshConnection offMeshCon = m_geom.GetOffMeshConnections()[i];
+                DemoOffMeshConnection offMeshCon = geom.GetOffMeshConnections()[i];
                 for (int j = 0; j < 6; j++)
                 {
                     option.offMeshConVerts[6 * i + j] = offMeshCon.verts[j];
@@ -66,7 +67,7 @@ namespace DotRecast.Recast.DemoTool.Builder
             return option;
         }
 
-        protected DtMeshData UpdateAreaAndFlags(DtMeshData meshData)
+        public static DtMeshData UpdateAreaAndFlags(DtMeshData meshData)
         {
             // Update poly flags from areas.
             for (int i = 0; i < meshData.polys.Length; ++i)

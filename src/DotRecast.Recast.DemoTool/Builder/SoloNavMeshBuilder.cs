@@ -24,7 +24,7 @@ using DotRecast.Recast.DemoTool.Geom;
 
 namespace DotRecast.Recast.DemoTool.Builder
 {
-    public class SoloNavMeshBuilder : AbstractNavMeshBuilder
+    public class SoloNavMeshBuilder
     {
         public NavMeshBuildResult Build(DemoInputGeomProvider geom, PartitionType partitionType,
             float cellSize, float cellHeight, float agentHeight, float agentRadius, float agentMaxClimb,
@@ -62,12 +62,13 @@ namespace DotRecast.Recast.DemoTool.Builder
             return rcBuilder.Build(geom, bcfg);
         }
 
-        private DtMeshData BuildMeshData(DemoInputGeomProvider geom, float cellSize, float cellHeight, float agentHeight,
+        public DtMeshData BuildMeshData(DemoInputGeomProvider geom, float cellSize, float cellHeight, float agentHeight,
             float agentRadius, float agentMaxClimb, RecastBuilderResult result)
         {
-            DtNavMeshCreateParams option = GetNavMeshCreateParams(geom, cellSize, cellHeight, agentHeight, agentRadius,
-                agentMaxClimb, result);
-            return UpdateAreaAndFlags(NavMeshBuilder.CreateNavMeshData(option));
+            DtNavMeshCreateParams option = DemoNavMeshBuilder
+                .GetNavMeshCreateParams(geom, cellSize, cellHeight, agentHeight, agentRadius, agentMaxClimb, result);
+            var meshData = NavMeshBuilder.CreateNavMeshData(option);
+            return DemoNavMeshBuilder.UpdateAreaAndFlags(meshData);
         }
     }
 }
