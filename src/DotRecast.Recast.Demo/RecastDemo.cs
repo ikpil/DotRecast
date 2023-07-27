@@ -502,7 +502,7 @@ public class RecastDemo : IRecastDemoChannel
         if (processHitTest)
         {
             processHitTest = false;
-            
+
             RcVec3f rayStart = new RcVec3f();
             RcVec3f rayEnd = new RcVec3f();
 
@@ -669,77 +669,21 @@ public class RecastDemo : IRecastDemoChannel
             return;
         }
 
-        var settings = _sample.GetSettings();
-        var partitioning = settings.partitioning;
-        var cellSize = settings.cellSize;
-        var cellHeight = settings.cellHeight;
-        var agentHeight = settings.agentHeight;
-        var agentRadius = settings.agentRadius;
-        var agentMaxClimb = settings.agentMaxClimb;
-        var agentMaxSlope = settings.agentMaxSlope;
-        var regionMinSize = settings.minRegionSize;
-        var regionMergeSize = settings.mergedRegionSize;
-        var edgeMaxLen = settings.edgeMaxLen;
-        var edgeMaxError = settings.edgeMaxError;
-        var vertsPerPoly = settings.vertsPerPoly;
-        var detailSampleDist = settings.detailSampleDist;
-        var detailSampleMaxError = settings.detailSampleMaxError;
-        var filterLowHangingObstacles = settings.filterLowHangingObstacles;
-        var filterLedgeSpans = settings.filterLedgeSpans;
-        var filterWalkableLowHeightSpans = settings.filterWalkableLowHeightSpans;
-        var tileSize = settings.tileSize;
 
         long t = RcFrequency.Ticks;
 
         Logger.Information($"build");
 
         NavMeshBuildResult buildResult;
+
+        var settings = _sample.GetSettings();
         if (settings.tiled)
         {
-            buildResult = tileNavMeshBuilder.Build(
-                _sample.GetInputGeom(),
-                partitioning,
-                cellSize,
-                cellHeight,
-                agentHeight,
-                agentRadius,
-                agentMaxClimb,
-                agentMaxSlope,
-                regionMinSize,
-                regionMergeSize,
-                edgeMaxLen,
-                edgeMaxError,
-                vertsPerPoly,
-                detailSampleDist,
-                detailSampleMaxError,
-                filterLowHangingObstacles,
-                filterLedgeSpans,
-                filterWalkableLowHeightSpans,
-                tileSize
-            );
+            buildResult = tileNavMeshBuilder.Build(_sample.GetInputGeom(), settings);
         }
         else
         {
-            buildResult = soloNavMeshBuilder.Build(
-                _sample.GetInputGeom(),
-                partitioning,
-                cellSize,
-                cellHeight,
-                agentHeight,
-                agentRadius,
-                agentMaxClimb,
-                agentMaxSlope,
-                regionMinSize,
-                regionMergeSize,
-                edgeMaxLen,
-                edgeMaxError,
-                vertsPerPoly,
-                detailSampleDist,
-                detailSampleMaxError,
-                filterLowHangingObstacles,
-                filterLedgeSpans,
-                filterWalkableLowHeightSpans
-            );
+            buildResult = soloNavMeshBuilder.Build(_sample.GetInputGeom(), settings);
         }
 
         _sample.Update(_sample.GetInputGeom(), buildResult.RecastBuilderResults, buildResult.NavMesh);

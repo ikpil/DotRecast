@@ -1,5 +1,6 @@
 ﻿using DotRecast.Core;
 using DotRecast.Detour.TileCache;
+using DotRecast.Recast.DemoTool.Builder;
 
 namespace DotRecast.Recast.DemoTool.Tools
 {
@@ -37,8 +38,11 @@ namespace DotRecast.Recast.DemoTool.Tools
 
             int tx = (int)((pos.x - bmin[0]) / ts);
             int ty = (int)((pos.z - bmin[2]) / ts);
-            
-            var tileRef = navMesh.GetTileRefAt(tx, ty, 0);
+
+            // var tnmb = new TileNavMeshBuilder();
+            // tnmb.BuildRecastResult(geom, settings.partitioning, )
+
+            //var tileRef = navMesh.GetTileRefAt(tx, ty, 0);
             // navMesh.RemoveTile(tileRef); 
         }
 

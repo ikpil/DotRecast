@@ -30,6 +30,18 @@ namespace DotRecast.Recast.DemoTool.Builder
         {
         }
 
+        public NavMeshBuildResult Build(DemoInputGeomProvider geom, SampleSettings settings)
+        {
+            return Build(geom,
+                settings.partitioning, settings.cellSize, settings.cellHeight, settings.agentHeight,
+                settings.agentRadius, settings.agentMaxClimb, settings.agentMaxSlope,
+                settings.minRegionSize, settings.mergedRegionSize,
+                settings.edgeMaxLen, settings.edgeMaxError,
+                settings.vertsPerPoly, settings.detailSampleDist, settings.detailSampleMaxError,
+                settings.filterLowHangingObstacles, settings.filterLedgeSpans, settings.filterWalkableLowHeightSpans,
+                settings.tileSize);
+        }
+
         public NavMeshBuildResult Build(DemoInputGeomProvider geom, PartitionType partitionType,
             float cellSize, float cellHeight, float agentHeight, float agentRadius, float agentMaxClimb,
             float agentMaxSlope, int regionMinSize, int regionMergeSize, float edgeMaxLen, float edgeMaxError,
