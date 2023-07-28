@@ -43,56 +43,56 @@ public class RecastSoloMeshTest
     private const int m_vertsPerPoly = 6;
     private const float m_detailSampleDist = 6.0f;
     private const float m_detailSampleMaxError = 1.0f;
-    private PartitionType m_partitionType = PartitionType.WATERSHED;
+    private RcPartition m_partitionType = RcPartition.WATERSHED;
 
     [Test]
     public void TestPerformance()
     {
         for (int i = 0; i < 10; i++)
         {
-            TestBuild("dungeon.obj", PartitionType.WATERSHED, 52, 16, 15, 223, 118, 118, 513, 291);
-            TestBuild("dungeon.obj", PartitionType.MONOTONE, 0, 17, 16, 210, 100, 100, 453, 264);
-            TestBuild("dungeon.obj", PartitionType.LAYERS, 0, 5, 5, 203, 97, 97, 446, 266);
+            TestBuild("dungeon.obj", RcPartition.WATERSHED, 52, 16, 15, 223, 118, 118, 513, 291);
+            TestBuild("dungeon.obj", RcPartition.MONOTONE, 0, 17, 16, 210, 100, 100, 453, 264);
+            TestBuild("dungeon.obj", RcPartition.LAYERS, 0, 5, 5, 203, 97, 97, 446, 266);
         }
     }
 
     [Test]
     public void TestDungeonWatershed()
     {
-        TestBuild("dungeon.obj", PartitionType.WATERSHED, 52, 16, 15, 223, 118, 118, 513, 291);
+        TestBuild("dungeon.obj", RcPartition.WATERSHED, 52, 16, 15, 223, 118, 118, 513, 291);
     }
 
     [Test]
     public void TestDungeonMonotone()
     {
-        TestBuild("dungeon.obj", PartitionType.MONOTONE, 0, 17, 16, 210, 100, 100, 453, 264);
+        TestBuild("dungeon.obj", RcPartition.MONOTONE, 0, 17, 16, 210, 100, 100, 453, 264);
     }
 
     [Test]
     public void TestDungeonLayers()
     {
-        TestBuild("dungeon.obj", PartitionType.LAYERS, 0, 5, 5, 203, 97, 97, 446, 266);
+        TestBuild("dungeon.obj", RcPartition.LAYERS, 0, 5, 5, 203, 97, 97, 446, 266);
     }
 
     [Test]
     public void TestWatershed()
     {
-        TestBuild("nav_test.obj", PartitionType.WATERSHED, 60, 48, 47, 349, 155, 155, 812, 561);
+        TestBuild("nav_test.obj", RcPartition.WATERSHED, 60, 48, 47, 349, 155, 155, 812, 561);
     }
 
     [Test]
     public void TestMonotone()
     {
-        TestBuild("nav_test.obj", PartitionType.MONOTONE, 0, 50, 49, 341, 186, 186, 878, 567);
+        TestBuild("nav_test.obj", RcPartition.MONOTONE, 0, 50, 49, 341, 186, 186, 878, 567);
     }
 
     [Test]
     public void TestLayers()
     {
-        TestBuild("nav_test.obj", PartitionType.LAYERS, 0, 19, 32, 310, 150, 150, 773, 526);
+        TestBuild("nav_test.obj", RcPartition.LAYERS, 0, 19, 32, 310, 150, 150, 773, 526);
     }
 
-    public void TestBuild(string filename, PartitionType partitionType, int expDistance, int expRegions,
+    public void TestBuild(string filename, RcPartition partitionType, int expDistance, int expRegions,
         int expContours, int expVerts, int expPolys, int expDetMeshes, int expDetVerts, int expDetTris)
     {
         m_partitionType = partitionType;
@@ -206,7 +206,7 @@ public class RecastSoloMeshTest
         // tiles
         long time3 = RcFrequency.Ticks;
 
-        if (m_partitionType == PartitionType.WATERSHED)
+        if (m_partitionType == RcPartition.WATERSHED)
         {
             // Prepare for region partitioning, by calculating distance field
             // along the walkable surface.
@@ -214,7 +214,7 @@ public class RecastSoloMeshTest
             // Partition the walkable surface into simple regions without holes.
             RecastRegion.BuildRegions(m_ctx, m_chf, cfg.minRegionArea, cfg.mergeRegionArea);
         }
-        else if (m_partitionType == PartitionType.MONOTONE)
+        else if (m_partitionType == RcPartition.MONOTONE)
         {
             // Partition the walkable surface into simple regions without holes.
             // Monotone partitioning does not need distancefield.

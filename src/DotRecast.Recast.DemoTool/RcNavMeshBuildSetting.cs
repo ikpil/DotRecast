@@ -1,6 +1,6 @@
 ﻿namespace DotRecast.Recast.DemoTool
 {
-    public class SampleSettings
+    public class RcNavMeshBuildSetting
     {
         public float cellSize = 0.3f;
         public float cellHeight = 0.2f;
@@ -16,8 +16,7 @@
         public int minRegionSize = 8;
         public int mergedRegionSize = 20;
 
-        public int partitioningIdx = 0;
-        public PartitionType partitioning = PartitionType.WATERSHED;
+        public int partitioning = RcPartitionType.WATERSHED.Value;
 
         public bool filterLowHangingObstacles = true;
         public bool filterLedgeSpans = true;

@@ -24,7 +24,7 @@ namespace DotRecast.Recast
 {
     public class RcConfig
     {
-        public readonly PartitionType partitionType;
+        public readonly int partition;
 
         public readonly bool useTiles;
 
@@ -116,7 +116,7 @@ namespace DotRecast.Recast
         /**
      * Non-tiled build configuration
      */
-        public RcConfig(PartitionType partitionType, float cellSize, float cellHeight, float agentHeight, float agentRadius,
+        public RcConfig(RcPartition partitionType, float cellSize, float cellHeight, float agentHeight, float agentRadius,
             float agentMaxClimb, float agentMaxSlope, int regionMinSize, int regionMergeSize, float edgeMaxLen,
             float edgeMaxError, int vertsPerPoly, float detailSampleDist, float detailSampleMaxError,
             RcAreaModification walkableAreaMod) : this(partitionType, cellSize, cellHeight, agentMaxSlope, true, true, true, agentHeight, agentRadius, agentMaxClimb,
@@ -128,7 +128,7 @@ namespace DotRecast.Recast
         /**
      * Non-tiled build configuration
      */
-        public RcConfig(PartitionType partitionType, float cellSize, float cellHeight, float agentMaxSlope,
+        public RcConfig(RcPartition partitionType, float cellSize, float cellHeight, float agentMaxSlope,
             bool filterLowHangingObstacles, bool filterLedgeSpans, bool filterWalkableLowHeightSpans, float agentHeight,
             float agentRadius, float agentMaxClimb, int regionMinSize, int regionMergeSize, float edgeMaxLen, float edgeMaxError,
             int vertsPerPoly, float detailSampleDist, float detailSampleMaxError, RcAreaModification walkableAreaMod,
@@ -140,7 +140,7 @@ namespace DotRecast.Recast
             // Note: area = size*size in [Units: wu]
         }
 
-        public RcConfig(bool useTiles, int tileSizeX, int tileSizeZ, int borderSize, PartitionType partitionType,
+        public RcConfig(bool useTiles, int tileSizeX, int tileSizeZ, int borderSize, RcPartition partition,
             float cellSize, float cellHeight, float agentMaxSlope, bool filterLowHangingObstacles, bool filterLedgeSpans,
             bool filterWalkableLowHeightSpans, float agentHeight, float agentRadius, float agentMaxClimb, float minRegionArea,
             float mergeRegionArea, float edgeMaxLen, float edgeMaxError, int vertsPerPoly, bool buildMeshDetail,
@@ -150,7 +150,7 @@ namespace DotRecast.Recast
             this.tileSizeX = tileSizeX;
             this.tileSizeZ = tileSizeZ;
             this.borderSize = borderSize;
-            this.partitionType = partitionType;
+            this.partition = RcPartitionType.Of(partition).Value;
             cs = cellSize;
             ch = cellHeight;
             walkableSlopeAngle = agentMaxSlope;

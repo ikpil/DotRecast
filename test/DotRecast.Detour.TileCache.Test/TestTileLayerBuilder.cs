@@ -52,7 +52,7 @@ public class TestTileLayerBuilder : AbstractTileLayersBuilder
     {
         this.geom = geom;
         rcConfig = new RcConfig(true, m_tileSize, m_tileSize, RcConfig.CalcBorder(m_agentRadius, m_cellSize),
-            PartitionType.WATERSHED, m_cellSize, m_cellHeight, m_agentMaxSlope, true, true, true, m_agentHeight,
+            RcPartition.WATERSHED, m_cellSize, m_cellHeight, m_agentMaxSlope, true, true, true, m_agentHeight,
             m_agentRadius, m_agentMaxClimb, m_regionMinArea, m_regionMergeArea, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly,
             true, m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
         RcVec3f bmin = geom.GetMeshBoundsMin();

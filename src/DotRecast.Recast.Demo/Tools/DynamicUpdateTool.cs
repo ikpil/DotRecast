@@ -45,8 +45,7 @@ public class DynamicUpdateTool : IRcTool
     private DynamicUpdateToolMode mode = DynamicUpdateToolMode.BUILD;
     private float cellSize = 0.3f;
 
-    private int partitioningIdx = PartitionType.WATERSHED.Idx;
-    private PartitionType partitioning = PartitionType.WATERSHED;
+    private int partitioning = RcPartitionType.WATERSHED.Value;
     private bool filterLowHangingObstacles = true;
     private bool filterLedgeSpans = true;
     private bool filterWalkableLowHeightSpans = true;
@@ -575,11 +574,11 @@ public class DynamicUpdateTool : IRcTool
 
             ImGui.Text("Partitioning");
             ImGui.Separator();
-            PartitionType.Values.ForEach(partition =>
+            RcPartitionType.Values.ForEach(partition =>
             {
                 var label = partition.Name.Substring(0, 1).ToUpper()
                             + partition.Name.Substring(1).ToLower();
-                ImGui.RadioButton(label, ref partitioningIdx, partition.Idx);
+                ImGui.RadioButton(label, ref partitioning, partition.Value);
             });
             ImGui.NewLine();
 
@@ -721,7 +720,7 @@ public class DynamicUpdateTool : IRcTool
 
     private void ConfigDynaMesh()
     {
-        dynaMesh.config.partitionType = partitioning;
+        dynaMesh.config.partition = partitioning;
         dynaMesh.config.walkableHeight = walkableHeight;
         dynaMesh.config.walkableSlopeAngle = walkableSlopeAngle;
         dynaMesh.config.walkableRadius = walkableRadius;
@@ -742,7 +741,7 @@ public class DynamicUpdateTool : IRcTool
     private void UpdateUI()
     {
         cellSize = dynaMesh.config.cellSize;
-        partitioning = dynaMesh.config.partitionType;
+        partitioning = (int)dynaMesh.config.partition;
         walkableHeight = dynaMesh.config.walkableHeight;
         walkableSlopeAngle = dynaMesh.config.walkableSlopeAngle;
         walkableRadius = dynaMesh.config.walkableRadius;

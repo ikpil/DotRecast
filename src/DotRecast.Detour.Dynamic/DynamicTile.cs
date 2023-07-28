@@ -82,8 +82,9 @@ namespace DotRecast.Detour.Dynamic
         private RecastBuilderResult BuildRecast(RecastBuilder builder, DynamicNavMeshConfig config, VoxelTile vt,
             RcHeightfield heightfield, RcTelemetry telemetry)
         {
-            RcConfig rcConfig = new RcConfig(config.useTiles, config.tileSizeX, config.tileSizeZ, vt.borderSize,
-                config.partitionType, vt.cellSize, vt.cellHeight, config.walkableSlopeAngle, true, true, true,
+            RcConfig rcConfig = new RcConfig(
+                config.useTiles, config.tileSizeX, config.tileSizeZ, vt.borderSize,
+                RcPartitionType.OfValue(config.partition), vt.cellSize, vt.cellHeight, config.walkableSlopeAngle, true, true, true,
                 config.walkableHeight, config.walkableRadius, config.walkableClimb, config.minRegionArea, config.regionMergeArea,
                 config.maxEdgeLen, config.maxSimplificationError,
                 Math.Min(DynamicNavMesh.MAX_VERTS_PER_POLY, config.vertsPerPoly), true, config.detailSampleDistance,

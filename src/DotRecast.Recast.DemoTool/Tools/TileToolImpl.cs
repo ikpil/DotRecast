@@ -97,7 +97,7 @@ namespace DotRecast.Recast.DemoTool.Tools
                 settings.tileSize,
                 settings.tileSize,
                 RcConfig.CalcBorder(settings.agentRadius, settings.cellSize),
-                settings.partitioning,
+                RcPartitionType.OfValue(settings.partitioning),
                 settings.cellSize,
                 settings.cellHeight,
                 settings.agentMaxSlope,

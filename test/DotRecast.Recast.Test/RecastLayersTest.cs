@@ -44,7 +44,7 @@ public class RecastLayersTest
     private const int m_vertsPerPoly = 6;
     private const float m_detailSampleDist = 6.0f;
     private const float m_detailSampleMaxError = 1.0f;
-    private readonly PartitionType m_partitionType = PartitionType.WATERSHED;
+    private readonly int m_partitionType = RcPartitionType.WATERSHED.Value;
     private const int m_tileSize = 48;
 
     [Test]
@@ -148,7 +148,7 @@ public class RecastLayersTest
         IInputGeomProvider geom = ObjImporter.Load(Loader.ToBytes(filename));
         RecastBuilder builder = new RecastBuilder();
         RcConfig cfg = new RcConfig(true, m_tileSize, m_tileSize, RcConfig.CalcBorder(m_agentRadius, m_cellSize),
-            m_partitionType, m_cellSize, m_cellHeight, m_agentMaxSlope, true, true, true, m_agentHeight, m_agentRadius,
+            RcPartitionType.OfValue(m_partitionType), m_cellSize, m_cellHeight, m_agentMaxSlope, true, true, true, m_agentHeight, m_agentRadius,
             m_agentMaxClimb, m_regionMinArea, m_regionMergeArea, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, true,
             m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
         RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), x, y);

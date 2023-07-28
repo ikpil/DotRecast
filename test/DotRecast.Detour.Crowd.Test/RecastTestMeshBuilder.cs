@@ -40,13 +40,13 @@ public class RecastTestMeshBuilder
     public const float m_detailSampleMaxError = 1.0f;
 
     public RecastTestMeshBuilder() : this(ObjImporter.Load(Loader.ToBytes("dungeon.obj")),
-        PartitionType.WATERSHED, m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_agentMaxSlope,
+        RcPartition.WATERSHED, m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_agentMaxSlope,
         m_regionMinSize, m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, m_detailSampleDist,
         m_detailSampleMaxError)
     {
     }
 
-    public RecastTestMeshBuilder(IInputGeomProvider m_geom, PartitionType m_partitionType, float m_cellSize,
+    public RecastTestMeshBuilder(IInputGeomProvider m_geom, RcPartition m_partitionType, float m_cellSize,
         float m_cellHeight, float m_agentHeight, float m_agentRadius, float m_agentMaxClimb, float m_agentMaxSlope,
         int m_regionMinSize, int m_regionMergeSize, float m_edgeMaxLen, float m_edgeMaxError, int m_vertsPerPoly,
         float m_detailSampleDist, float m_detailSampleMaxError)

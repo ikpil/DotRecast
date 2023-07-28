@@ -32,7 +32,7 @@ namespace DotRecast.Detour.Dynamic.Io
         public const int VERSION_EXPORTER_RECAST4J = 0x1000;
         public const int VERSION_COMPRESSION_LZ4 = 0x0100;
         public int version;
-        public PartitionType partitionType = PartitionType.WATERSHED;
+        public int partition = RcPartitionType.WATERSHED.Value;
         public bool filterLowHangingObstacles = true;
         public bool filterLedgeSpans = true;
         public bool filterWalkableLowHeightSpans = true;
@@ -61,7 +61,7 @@ namespace DotRecast.Detour.Dynamic.Io
             tiles.Add(tile);
         }
 
-        public RcConfig GetConfig(VoxelTile tile, PartitionType partitionType, int maxPolyVerts, int regionMergeSize,
+        public RcConfig GetConfig(VoxelTile tile, RcPartition partitionType, int maxPolyVerts, int regionMergeSize,
             bool filterLowHangingObstacles, bool filterLedgeSpans, bool filterWalkableLowHeightSpans,
             RcAreaModification walkbableAreaMod, bool buildMeshDetail, float detailSampleDist, float detailSampleMaxError)
         {
@@ -75,7 +75,7 @@ namespace DotRecast.Detour.Dynamic.Io
         {
             VoxelFile f = new VoxelFile();
             f.version = 1;
-            f.partitionType = config.partitionType;
+            f.partition = config.partition;
             f.filterLowHangingObstacles = config.filterLowHangingObstacles;
             f.filterLedgeSpans = config.filterLedgeSpans;
             f.filterWalkableLowHeightSpans = config.filterWalkableLowHeightSpans;
@@ -119,7 +119,7 @@ namespace DotRecast.Detour.Dynamic.Io
             VoxelFile f = new VoxelFile();
             f.version = 1;
             DynamicNavMeshConfig config = mesh.config;
-            f.partitionType = config.partitionType;
+            f.partition = config.partition;
             f.filterLowHangingObstacles = config.filterLowHangingObstacles;
             f.filterLedgeSpans = config.filterLedgeSpans;
             f.filterWalkableLowHeightSpans = config.filterWalkableLowHeightSpans;

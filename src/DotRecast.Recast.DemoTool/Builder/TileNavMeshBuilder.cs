@@ -30,10 +30,10 @@ namespace DotRecast.Recast.DemoTool.Builder
         {
         }
 
-        public NavMeshBuildResult Build(DemoInputGeomProvider geom, SampleSettings settings)
+        public NavMeshBuildResult Build(DemoInputGeomProvider geom, RcNavMeshBuildSetting settings)
         {
             return Build(geom,
-                settings.partitioning, settings.cellSize, settings.cellHeight, settings.agentHeight,
+                RcPartitionType.OfValue(settings.partitioning), settings.cellSize, settings.cellHeight, settings.agentHeight,
                 settings.agentRadius, settings.agentMaxClimb, settings.agentMaxSlope,
                 settings.minRegionSize, settings.mergedRegionSize,
                 settings.edgeMaxLen, settings.edgeMaxError,
@@ -42,7 +42,7 @@ namespace DotRecast.Recast.DemoTool.Builder
                 settings.tileSize);
         }
 
-        public NavMeshBuildResult Build(DemoInputGeomProvider geom, PartitionType partitionType,
+        public NavMeshBuildResult Build(DemoInputGeomProvider geom, RcPartition partitionType,
             float cellSize, float cellHeight, float agentHeight, float agentRadius, float agentMaxClimb,
             float agentMaxSlope, int regionMinSize, int regionMergeSize, float edgeMaxLen, float edgeMaxError,
             int vertsPerPoly, float detailSampleDist, float detailSampleMaxError, bool filterLowHangingObstacles,
@@ -57,7 +57,7 @@ namespace DotRecast.Recast.DemoTool.Builder
             return new NavMeshBuildResult(results, tileNavMesh);
         }
 
-        public List<RecastBuilderResult> BuildRecastResult(DemoInputGeomProvider geom, PartitionType partitionType,
+        public List<RecastBuilderResult> BuildRecastResult(DemoInputGeomProvider geom, RcPartition partitionType,
             float cellSize, float cellHeight, float agentHeight, float agentRadius, float agentMaxClimb,
             float agentMaxSlope, int regionMinSize, int regionMergeSize, float edgeMaxLen, float edgeMaxError,
             int vertsPerPoly, float detailSampleDist, float detailSampleMaxError, bool filterLowHangingObstacles,
