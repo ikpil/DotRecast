@@ -35,14 +35,12 @@ public class TileTool : IRcTool
     {
         if (ImGui.Button("Create All Tile"))
         {
-            // if (m_sample)
-            //     m_sample->buildAllTiles();
+            _impl.BuildAllTiles();
         }
 
         if (ImGui.Button("Remove All Tile"))
         {
-            // if (m_sample)
-            //     m_sample->removeAllTiles();
+            _impl.RemoveAllTiles();
         }
     }
 

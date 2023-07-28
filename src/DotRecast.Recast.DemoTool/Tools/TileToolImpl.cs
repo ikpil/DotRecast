@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using System.Collections.Immutable;
-using System.Linq;
 using DotRecast.Core;
-using DotRecast.Detour.TileCache;
 using DotRecast.Recast.DemoTool.Builder;
 
 namespace DotRecast.Recast.DemoTool.Tools
@@ -26,26 +24,73 @@ namespace DotRecast.Recast.DemoTool.Tools
             return _sample;
         }
 
-        public bool BuildTile(RcVec3f pos, out long tileBuildTicks, out int tileTriCount, out int tileMemUsage)
+        public void RemoveAllTiles()
         {
             var settings = _sample.GetSettings();
             var geom = _sample.GetInputGeom();
             var navMesh = _sample.GetNavMesh();
 
-            tileBuildTicks = 0;
-            tileTriCount = 0;
-            tileMemUsage = 0;
+            if (null == settings || null == geom || navMesh == null)
+                return;
+
+            var bmin = geom.GetMeshBoundsMin();
+            var bmax = geom.GetMeshBoundsMax();
+            int gw = 0, gh = 0;
+            Recast.CalcGridSize(bmin, bmax, settings.cellSize, out gw, out gh);
+
+            int ts = settings.tileSize;
+            int tw = (gw + ts - 1) / ts;
+            int th = (gh + ts - 1) / ts;
+
+            for (int y = 0; y < th; ++y)
+            {
+                for (int x = 0; x < tw; ++x)
+                {
+                    var tileRef = navMesh.GetTileRefAt(x, y, 0);
+                    navMesh.RemoveTile(tileRef);
+                }
+            }
+        }
+
+        public void BuildAllTiles()
+        {
+            var settings = _sample.GetSettings();
+            var geom = _sample.GetInputGeom();
+            var navMesh = _sample.GetNavMesh();
 
             if (null == settings || null == geom || navMesh == null)
-                return false;
+                return;
 
-            float ts = settings.tileSize * settings.cellSize;
+            var bmin = geom.GetMeshBoundsMin();
+            var bmax = geom.GetMeshBoundsMax();
+            int gw = 0, gh = 0;
+            Recast.CalcGridSize(bmin, bmax, settings.cellSize, out gw, out gh);
+
+            int ts = settings.tileSize;
+            int tw = (gw + ts - 1) / ts;
+            int th = (gh + ts - 1) / ts;
+
+            for (int y = 0; y < th; ++y)
+            {
+                for (int x = 0; x < tw; ++x)
+                {
+                    BuildTile(x, y, out var tileBuildTicks, out var tileTriCount, out var tileMemUsage);
+                }
+            }
+        }
+
+        public bool BuildTile(int tx, int ty, out long tileBuildTicks, out int tileTriCount, out int tileMemUsage)
+        {
+            tileBuildTicks = 0;
+            tileTriCount = 0; // ...
+            tileMemUsage = 0; // ...
+
+            var settings = _sample.GetSettings();
+            var geom = _sample.GetInputGeom();
+            var navMesh = _sample.GetNavMesh();
 
             RcVec3f bmin = geom.GetMeshBoundsMin();
             RcVec3f bmax = geom.GetMeshBoundsMax();
-
-            int tx = (int)((pos.x - bmin[0]) / ts);
-            int ty = (int)((pos.z - bmin[2]) / ts);
 
             RcConfig cfg = new RcConfig(
                 true,
@@ -73,6 +118,7 @@ namespace DotRecast.Recast.DemoTool.Tools
                 SampleAreaModifications.SAMPLE_AREAMOD_WALKABLE
             );
 
+            var beginTick = RcFrequency.Ticks;
             var rb = new RecastBuilder();
             var result = rb.BuildTile(geom, cfg, bmin, bmax, tx, ty, new RcAtomicInteger(0), 1);
 
@@ -80,17 +126,42 @@ namespace DotRecast.Recast.DemoTool.Tools
             var meshData = tb.BuildMeshData(geom,
                 settings.cellSize, settings.cellHeight, settings.agentHeight, settings.agentRadius, settings.agentMaxClimb,
                 ImmutableArray.Create(result)
-            ).First();
+            ).FirstOrDefault();
+
+            if (null == meshData)
+                return false;
 
             navMesh.UpdateTile(meshData, 0);
 
-
-            var telemetry = result.GetTelemetry();
-            tileBuildTicks = telemetry.ToList().Sum(x => x.Ticks);
+            tileBuildTicks = RcFrequency.Ticks - beginTick;
             tileTriCount = 0; // ...
             tileMemUsage = 0; // ...
 
             return true;
+        }
+
+        public bool BuildTile(RcVec3f pos, out long tileBuildTicks, out int tileTriCount, out int tileMemUsage)
+        {
+            var settings = _sample.GetSettings();
+            var geom = _sample.GetInputGeom();
+            var navMesh = _sample.GetNavMesh();
+
+            tileBuildTicks = 0;
+            tileTriCount = 0;
+            tileMemUsage = 0;
+
+            if (null == settings || null == geom || navMesh == null)
+                return false;
+
+            float ts = settings.tileSize * settings.cellSize;
+
+            RcVec3f bmin = geom.GetMeshBoundsMin();
+            RcVec3f bmax = geom.GetMeshBoundsMax();
+
+            int tx = (int)((pos.x - bmin[0]) / ts);
+            int ty = (int)((pos.z - bmin[2]) / ts);
+
+            return BuildTile(tx, ty, out tileBuildTicks, out tileTriCount, out tileMemUsage);
         }
 
         public bool RemoveTile(RcVec3f pos)
