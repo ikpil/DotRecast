@@ -89,8 +89,8 @@ public class TestDetourBuilder : DetourBuilder
         option.walkableClimb = agentMaxClimb;
         option.bmin = pmesh.bmin;
         option.bmax = pmesh.bmax;
-        option.cs = rcConfig.cs;
-        option.ch = rcConfig.ch;
+        option.cs = rcConfig.Cs;
+        option.ch = rcConfig.Ch;
         option.buildBvTree = true;
         /*
          * option.offMeshConVerts = m_geom->GetOffMeshConnectionVerts();

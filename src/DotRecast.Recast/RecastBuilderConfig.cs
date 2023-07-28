@@ -52,10 +52,10 @@ namespace DotRecast.Recast
             this.cfg = cfg;
             this.bmin = bmin;
             this.bmax = bmax;
-            if (cfg.useTiles)
+            if (cfg.UseTiles)
             {
-                float tsx = cfg.tileSizeX * cfg.cs;
-                float tsz = cfg.tileSizeZ * cfg.cs;
+                float tsx = cfg.TileSizeX * cfg.Cs;
+                float tsz = cfg.TileSizeZ * cfg.Cs;
                 this.bmin.x += tileX * tsx;
                 this.bmin.z += tileZ * tsz;
                 this.bmax.x = this.bmin.x + tsx;
@@ -83,16 +83,16 @@ namespace DotRecast.Recast
                 // you will need to pass in data from neighbour terrain tiles too! In a simple case, just pass in all the 8
                 // neighbours,
                 // or use the bounding box below to only pass in a sliver of each of the 8 neighbours.
-                this.bmin.x -= cfg.borderSize * cfg.cs;
-                this.bmin.z -= cfg.borderSize * cfg.cs;
-                this.bmax.x += cfg.borderSize * cfg.cs;
-                this.bmax.z += cfg.borderSize * cfg.cs;
-                width = cfg.tileSizeX + cfg.borderSize * 2;
-                height = cfg.tileSizeZ + cfg.borderSize * 2;
+                this.bmin.x -= cfg.BorderSize * cfg.Cs;
+                this.bmin.z -= cfg.BorderSize * cfg.Cs;
+                this.bmax.x += cfg.BorderSize * cfg.Cs;
+                this.bmax.z += cfg.BorderSize * cfg.Cs;
+                width = cfg.TileSizeX + cfg.BorderSize * 2;
+                height = cfg.TileSizeZ + cfg.BorderSize * 2;
             }
             else
             {
-                Recast.CalcGridSize(this.bmin, this.bmax, cfg.cs, out width, out height);
+                Recast.CalcGridSize(this.bmin, this.bmax, cfg.Cs, out width, out height);
             }
         }
     }

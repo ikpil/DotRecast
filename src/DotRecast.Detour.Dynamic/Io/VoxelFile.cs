@@ -75,26 +75,26 @@ namespace DotRecast.Detour.Dynamic.Io
         {
             VoxelFile f = new VoxelFile();
             f.version = 1;
-            f.partition = config.partition;
-            f.filterLowHangingObstacles = config.filterLowHangingObstacles;
-            f.filterLedgeSpans = config.filterLedgeSpans;
-            f.filterWalkableLowHeightSpans = config.filterWalkableLowHeightSpans;
-            f.walkableRadius = config.walkableRadiusWorld;
-            f.walkableHeight = config.walkableHeightWorld;
-            f.walkableClimb = config.walkableClimbWorld;
-            f.walkableSlopeAngle = config.walkableSlopeAngle;
-            f.cellSize = config.cs;
-            f.maxSimplificationError = config.maxSimplificationError;
-            f.maxEdgeLen = config.maxEdgeLenWorld;
-            f.minRegionArea = config.minRegionAreaWorld;
-            f.regionMergeArea = config.mergeRegionAreaWorld;
-            f.vertsPerPoly = config.maxVertsPerPoly;
-            f.buildMeshDetail = config.buildMeshDetail;
-            f.detailSampleDistance = config.detailSampleDist;
-            f.detailSampleMaxError = config.detailSampleMaxError;
-            f.useTiles = config.useTiles;
-            f.tileSizeX = config.tileSizeX;
-            f.tileSizeZ = config.tileSizeZ;
+            f.partition = config.Partition;
+            f.filterLowHangingObstacles = config.FilterLowHangingObstacles;
+            f.filterLedgeSpans = config.FilterLedgeSpans;
+            f.filterWalkableLowHeightSpans = config.FilterWalkableLowHeightSpans;
+            f.walkableRadius = config.WalkableRadiusWorld;
+            f.walkableHeight = config.WalkableHeightWorld;
+            f.walkableClimb = config.WalkableClimbWorld;
+            f.walkableSlopeAngle = config.WalkableSlopeAngle;
+            f.cellSize = config.Cs;
+            f.maxSimplificationError = config.MaxSimplificationError;
+            f.maxEdgeLen = config.MaxEdgeLenWorld;
+            f.minRegionArea = config.MinRegionAreaWorld;
+            f.regionMergeArea = config.MergeRegionAreaWorld;
+            f.vertsPerPoly = config.MaxVertsPerPoly;
+            f.buildMeshDetail = config.BuildMeshDetail;
+            f.detailSampleDistance = config.DetailSampleDist;
+            f.detailSampleMaxError = config.DetailSampleMaxError;
+            f.useTiles = config.UseTiles;
+            f.tileSizeX = config.TileSizeX;
+            f.tileSizeZ = config.TileSizeZ;
             f.bounds = new float[]
             {
                 float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity,

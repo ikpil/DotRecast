@@ -29,7 +29,7 @@ namespace DotRecast.Recast
             RcConfig cfg = builderCfg.cfg;
 
             // Allocate voxel heightfield where we rasterize our input data to.
-            RcHeightfield solid = new RcHeightfield(builderCfg.width, builderCfg.height, builderCfg.bmin, builderCfg.bmax, cfg.cs, cfg.ch, cfg.borderSize);
+            RcHeightfield solid = new RcHeightfield(builderCfg.width, builderCfg.height, builderCfg.bmin, builderCfg.bmax, cfg.Cs, cfg.Ch, cfg.BorderSize);
 
             // Allocate array that can hold triangle area types.
             // If you have multiple meshes you need to process, allocate
@@ -44,7 +44,7 @@ namespace DotRecast.Recast
             foreach (RcTriMesh geom in geomProvider.Meshes())
             {
                 float[] verts = geom.GetVerts();
-                if (cfg.useTiles)
+                if (cfg.UseTiles)
                 {
                     float[] tbmin = new float[2];
                     float[] tbmax = new float[2];
@@ -57,16 +57,16 @@ namespace DotRecast.Recast
                     {
                         int[] tris = node.tris;
                         int ntris = tris.Length / 3;
-                        int[] m_triareas = Recast.MarkWalkableTriangles(ctx, cfg.walkableSlopeAngle, verts, tris, ntris, cfg.walkableAreaMod);
-                        RecastRasterization.RasterizeTriangles(solid, verts, tris, m_triareas, ntris, cfg.walkableClimb, ctx);
+                        int[] m_triareas = Recast.MarkWalkableTriangles(ctx, cfg.WalkableSlopeAngle, verts, tris, ntris, cfg.WalkableAreaMod);
+                        RecastRasterization.RasterizeTriangles(solid, verts, tris, m_triareas, ntris, cfg.WalkableClimb, ctx);
                     }
                 }
                 else
                 {
                     int[] tris = geom.GetTris();
                     int ntris = tris.Length / 3;
-                    int[] m_triareas = Recast.MarkWalkableTriangles(ctx, cfg.walkableSlopeAngle, verts, tris, ntris, cfg.walkableAreaMod);
-                    RecastRasterization.RasterizeTriangles(solid, verts, tris, m_triareas, ntris, cfg.walkableClimb, ctx);
+                    int[] m_triareas = Recast.MarkWalkableTriangles(ctx, cfg.WalkableSlopeAngle, verts, tris, ntris, cfg.WalkableAreaMod);
+                    RecastRasterization.RasterizeTriangles(solid, verts, tris, m_triareas, ntris, cfg.WalkableClimb, ctx);
                 }
             }
 

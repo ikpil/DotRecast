@@ -45,7 +45,7 @@ namespace DotRecast.Recast
         {
             RcVec3f bmin = geom.GetMeshBoundsMin();
             RcVec3f bmax = geom.GetMeshBoundsMax();
-            Recast.CalcTileCount(bmin, bmax, cfg.cs, cfg.tileSizeX, cfg.tileSizeZ, out var tw, out var th);
+            Recast.CalcTileCount(bmin, bmax, cfg.Cs, cfg.TileSizeX, cfg.TileSizeZ, out var tw, out var th);
             List<RecastBuilderResult> results = new List<RecastBuilderResult>();
             if (null != taskFactory)
             {
@@ -64,7 +64,7 @@ namespace DotRecast.Recast
         {
             RcVec3f bmin = geom.GetMeshBoundsMin();
             RcVec3f bmax = geom.GetMeshBoundsMax();
-            Recast.CalcTileCount(bmin, bmax, cfg.cs, cfg.tileSizeX, cfg.tileSizeZ, out var tw, out var th);
+            Recast.CalcTileCount(bmin, bmax, cfg.Cs, cfg.TileSizeX, cfg.TileSizeZ, out var tw, out var th);
             Task task;
             if (1 < threads)
             {
@@ -210,24 +210,24 @@ namespace DotRecast.Recast
             // * good choice to use for tiled navmesh with medium and small sized
             // tiles
 
-            if (cfg.partition == RcPartitionType.WATERSHED.Value)
+            if (cfg.Partition == RcPartitionType.WATERSHED.Value)
             {
                 // Prepare for region partitioning, by calculating distance field
                 // along the walkable surface.
                 RecastRegion.BuildDistanceField(ctx, chf);
                 // Partition the walkable surface into simple regions without holes.
-                RecastRegion.BuildRegions(ctx, chf, cfg.minRegionArea, cfg.mergeRegionArea);
+                RecastRegion.BuildRegions(ctx, chf, cfg.MinRegionArea, cfg.MergeRegionArea);
             }
-            else if (cfg.partition == RcPartitionType.MONOTONE.Value)
+            else if (cfg.Partition == RcPartitionType.MONOTONE.Value)
             {
                 // Partition the walkable surface into simple regions without holes.
                 // Monotone partitioning does not need distancefield.
-                RecastRegion.BuildRegionsMonotone(ctx, chf, cfg.minRegionArea, cfg.mergeRegionArea);
+                RecastRegion.BuildRegionsMonotone(ctx, chf, cfg.MinRegionArea, cfg.MergeRegionArea);
             }
             else
             {
                 // Partition the walkable surface into simple regions without holes.
-                RecastRegion.BuildLayerRegions(ctx, chf, cfg.minRegionArea);
+                RecastRegion.BuildLayerRegions(ctx, chf, cfg.MinRegionArea);
             }
 
             //
@@ -235,21 +235,21 @@ namespace DotRecast.Recast
             //
 
             // Create contours.
-            RcContourSet cset = RecastContour.BuildContours(ctx, chf, cfg.maxSimplificationError, cfg.maxEdgeLen,
+            RcContourSet cset = RecastContour.BuildContours(ctx, chf, cfg.MaxSimplificationError, cfg.MaxEdgeLen,
                 RcConstants.RC_CONTOUR_TESS_WALL_EDGES);
 
             //
             // Step 6. Build polygons mesh from contours.
             //
 
-            RcPolyMesh pmesh = RecastMesh.BuildPolyMesh(ctx, cset, cfg.maxVertsPerPoly);
+            RcPolyMesh pmesh = RecastMesh.BuildPolyMesh(ctx, cset, cfg.MaxVertsPerPoly);
 
             //
             // Step 7. Create detail mesh which allows to access approximate height
             // on each polygon.
             //
-            RcPolyMeshDetail dmesh = cfg.buildMeshDetail
-                ? RecastMeshDetail.BuildPolyMeshDetail(ctx, pmesh, chf, cfg.detailSampleDist, cfg.detailSampleMaxError)
+            RcPolyMeshDetail dmesh = cfg.BuildMeshDetail
+                ? RecastMeshDetail.BuildPolyMeshDetail(ctx, pmesh, chf, cfg.DetailSampleDist, cfg.DetailSampleMaxError)
                 : null;
             return new RecastBuilderResult(tileX, tileZ, solid, chf, cset, pmesh, dmesh, ctx);
         }
@@ -262,19 +262,19 @@ namespace DotRecast.Recast
             // Once all geometry is rasterized, we do initial pass of filtering to
             // remove unwanted overhangs caused by the conservative rasterization
             // as well as filter spans where the character cannot possibly stand.
-            if (cfg.filterLowHangingObstacles)
+            if (cfg.FilterLowHangingObstacles)
             {
-                RecastFilter.FilterLowHangingWalkableObstacles(ctx, cfg.walkableClimb, solid);
+                RecastFilter.FilterLowHangingWalkableObstacles(ctx, cfg.WalkableClimb, solid);
             }
 
-            if (cfg.filterLedgeSpans)
+            if (cfg.FilterLedgeSpans)
             {
-                RecastFilter.FilterLedgeSpans(ctx, cfg.walkableHeight, cfg.walkableClimb, solid);
+                RecastFilter.FilterLedgeSpans(ctx, cfg.WalkableHeight, cfg.WalkableClimb, solid);
             }
 
-            if (cfg.filterWalkableLowHeightSpans)
+            if (cfg.FilterWalkableLowHeightSpans)
             {
-                RecastFilter.FilterWalkableLowHeightSpans(ctx, cfg.walkableHeight, solid);
+                RecastFilter.FilterWalkableLowHeightSpans(ctx, cfg.WalkableHeight, solid);
             }
         }
 
@@ -287,10 +287,10 @@ namespace DotRecast.Recast
             // Compact the heightfield so that it is faster to handle from now on.
             // This will result more cache coherent data as well as the neighbours
             // between walkable cells will be calculated.
-            RcCompactHeightfield chf = RecastCompact.BuildCompactHeightfield(ctx, cfg.walkableHeight, cfg.walkableClimb, solid);
+            RcCompactHeightfield chf = RecastCompact.BuildCompactHeightfield(ctx, cfg.WalkableHeight, cfg.WalkableClimb, solid);
 
             // Erode the walkable area by agent radius.
-            RecastArea.ErodeWalkableArea(ctx, cfg.walkableRadius, chf);
+            RecastArea.ErodeWalkableArea(ctx, cfg.WalkableRadius, chf);
             // (Optional) Mark areas.
             if (volumeProvider != null)
             {
@@ -309,7 +309,7 @@ namespace DotRecast.Recast
             RcHeightfield solid = RecastVoxelization.BuildSolidHeightfield(geom, builderCfg, ctx);
             FilterHeightfield(solid, builderCfg.cfg, ctx);
             RcCompactHeightfield chf = BuildCompactHeightfield(geom, builderCfg.cfg, ctx, solid);
-            return RecastLayers.BuildHeightfieldLayers(ctx, chf, builderCfg.cfg.walkableHeight);
+            return RecastLayers.BuildHeightfieldLayers(ctx, chf, builderCfg.cfg.WalkableHeight);
         }
     }
 }

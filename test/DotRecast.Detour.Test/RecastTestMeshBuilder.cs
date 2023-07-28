@@ -47,17 +47,17 @@ public class RecastTestMeshBuilder
     {
     }
 
-    public RecastTestMeshBuilder(IInputGeomProvider m_geom, RcPartition m_partitionType, float m_cellSize,
-        float m_cellHeight, float m_agentHeight, float m_agentRadius, float m_agentMaxClimb, float m_agentMaxSlope,
-        int m_regionMinSize, int m_regionMergeSize, float m_edgeMaxLen, float m_edgeMaxError, int m_vertsPerPoly,
-        float m_detailSampleDist, float m_detailSampleMaxError)
+    public RecastTestMeshBuilder(IInputGeomProvider geom, RcPartition partition, float cellSize,
+        float cellHeight, float agentHeight, float agentRadius, float agentMaxClimb, float agentMaxSlope,
+        int regionMinSize, int regionMergeSize, float edgeMaxLen, float edgeMaxError, int vertsPerPoly,
+        float detailSampleDist, float detailSampleMaxError)
     {
-        RcConfig cfg = new RcConfig(m_partitionType, m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius,
-            m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize, m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError,
-            m_vertsPerPoly, m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
-        RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, m_geom.GetMeshBoundsMin(), m_geom.GetMeshBoundsMax());
+        RcConfig cfg = new RcConfig(partition, cellSize, cellHeight, agentHeight, agentRadius,
+            agentMaxClimb, agentMaxSlope, regionMinSize, regionMergeSize, edgeMaxLen, edgeMaxError,
+            vertsPerPoly, detailSampleDist, detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
+        RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax());
         RecastBuilder rcBuilder = new RecastBuilder();
-        RecastBuilderResult rcResult = rcBuilder.Build(m_geom, bcfg);
+        RecastBuilderResult rcResult = rcBuilder.Build(geom, bcfg);
         RcPolyMesh m_pmesh = rcResult.GetMesh();
         for (int i = 0; i < m_pmesh.npolys; ++i)
         {
@@ -78,13 +78,13 @@ public class RecastTestMeshBuilder
         option.detailVertsCount = m_dmesh.nverts;
         option.detailTris = m_dmesh.tris;
         option.detailTriCount = m_dmesh.ntris;
-        option.walkableHeight = m_agentHeight;
-        option.walkableRadius = m_agentRadius;
-        option.walkableClimb = m_agentMaxClimb;
+        option.walkableHeight = agentHeight;
+        option.walkableRadius = agentRadius;
+        option.walkableClimb = agentMaxClimb;
         option.bmin = m_pmesh.bmin;
         option.bmax = m_pmesh.bmax;
-        option.cs = m_cellSize;
-        option.ch = m_cellHeight;
+        option.cs = cellSize;
+        option.ch = cellHeight;
         option.buildBvTree = true;
 
         option.offMeshConVerts = new float[6];
