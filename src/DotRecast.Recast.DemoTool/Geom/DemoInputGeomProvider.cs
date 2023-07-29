@@ -42,28 +42,6 @@ namespace DotRecast.Recast.DemoTool.Geom
         {
         }
 
-        private static int[] MapFaces(List<int> meshFaces)
-        {
-            int[] faces = new int[meshFaces.Count];
-            for (int i = 0; i < faces.Length; i++)
-            {
-                faces[i] = meshFaces[i];
-            }
-
-            return faces;
-        }
-
-        private static float[] MapVertices(List<float> vertexPositions)
-        {
-            float[] vertices = new float[vertexPositions.Count];
-            for (int i = 0; i < vertices.Length; i++)
-            {
-                vertices[i] = vertexPositions[i];
-            }
-
-            return vertices;
-        }
-
         public DemoInputGeomProvider(float[] vertices, int[] faces)
         {
             this.vertices = vertices;
@@ -228,6 +206,28 @@ namespace DotRecast.Recast.DemoTool.Geom
         public void ClearConvexVolumes()
         {
             _convexVolumes.Clear();
+        }
+        
+        private static int[] MapFaces(List<int> meshFaces)
+        {
+            int[] faces = new int[meshFaces.Count];
+            for (int i = 0; i < faces.Length; i++)
+            {
+                faces[i] = meshFaces[i];
+            }
+
+            return faces;
+        }
+
+        private static float[] MapVertices(List<float> vertexPositions)
+        {
+            float[] vertices = new float[vertexPositions.Count];
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                vertices[i] = vertexPositions[i];
+            }
+
+            return vertices;
         }
     }
 }
