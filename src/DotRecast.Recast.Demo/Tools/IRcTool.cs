@@ -28,14 +28,9 @@ public interface IRcTool
 {
     ISampleTool GetTool();
     void OnSampleChanged();
-    
     void Layout();
-
     void HandleClick(RcVec3f s, RcVec3f p, bool shift);
-
     void HandleRender(NavMeshRenderer renderer);
-
     void HandleUpdate(float dt);
-
     void HandleClickRay(RcVec3f start, RcVec3f direction, bool shift);
 }
