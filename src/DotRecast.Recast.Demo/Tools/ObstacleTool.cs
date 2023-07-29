@@ -2,6 +2,7 @@
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.DemoTool;
 using DotRecast.Recast.DemoTool.Tools;
+using ImGuiNET;
 using Serilog;
 
 namespace DotRecast.Recast.Demo.Tools;
@@ -27,6 +28,15 @@ public class ObstacleTool : IRcTool
 
     public void Layout()
     {
+        if (ImGui.Button("Remove All"))
+        {
+            //m_sample->clearAllTempObstacles();
+        }
+		
+        ImGui.Separator();
+
+        ImGui.Text("Click LMB to create an obstacle.");
+        ImGui.Text("Shift+LMB to remove an obstacle.");
     }
 
     public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
