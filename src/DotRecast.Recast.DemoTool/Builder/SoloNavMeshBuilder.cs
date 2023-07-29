@@ -49,6 +49,11 @@ namespace DotRecast.Recast.DemoTool.Builder
                 filterWalkableLowHeightSpans);
 
             var meshData = BuildMeshData(geom, cellSize, cellHeight, agentHeight, agentRadius, agentMaxClimb, rcResult);
+            if (null == meshData)
+            {
+                return new NavMeshBuildResult();
+            }
+
             var navMesh = BuildNavMesh(meshData, vertsPerPoly);
             return new NavMeshBuildResult(ImmutableArray.Create(rcResult), navMesh);
         }
@@ -79,6 +84,11 @@ namespace DotRecast.Recast.DemoTool.Builder
             DtNavMeshCreateParams option = DemoNavMeshBuilder
                 .GetNavMeshCreateParams(geom, cellSize, cellHeight, agentHeight, agentRadius, agentMaxClimb, result);
             var meshData = NavMeshBuilder.CreateNavMeshData(option);
+            if (null == meshData)
+            {
+                return null;
+            }
+
             return DemoNavMeshBuilder.UpdateAreaAndFlags(meshData);
         }
     }

@@ -687,6 +687,12 @@ public class RecastDemo : IRecastDemoChannel
             buildResult = soloNavMeshBuilder.Build(_sample.GetInputGeom(), settings);
         }
 
+        if (!buildResult.Success)
+        {
+            Logger.Error("failed to build");
+            return;
+        }
+
         _sample.Update(_sample.GetInputGeom(), buildResult.RecastBuilderResults, buildResult.NavMesh);
         _sample.SetChanged(false);
         settingsView.SetBuildTime((RcFrequency.Ticks - t) / TimeSpan.TicksPerMillisecond);
