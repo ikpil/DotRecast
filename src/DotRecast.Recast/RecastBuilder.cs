@@ -45,7 +45,7 @@ namespace DotRecast.Recast
         {
             RcVec3f bmin = geom.GetMeshBoundsMin();
             RcVec3f bmax = geom.GetMeshBoundsMax();
-            Recast.CalcTileCount(bmin, bmax, cfg.Cs, cfg.TileSizeX, cfg.TileSizeZ, out var tw, out var th);
+            RcUtils.CalcTileCount(bmin, bmax, cfg.Cs, cfg.TileSizeX, cfg.TileSizeZ, out var tw, out var th);
             List<RecastBuilderResult> results = new List<RecastBuilderResult>();
             if (null != taskFactory)
             {
@@ -64,7 +64,7 @@ namespace DotRecast.Recast
         {
             RcVec3f bmin = geom.GetMeshBoundsMin();
             RcVec3f bmax = geom.GetMeshBoundsMax();
-            Recast.CalcTileCount(bmin, bmax, cfg.Cs, cfg.TileSizeX, cfg.TileSizeZ, out var tw, out var th);
+            RcUtils.CalcTileCount(bmin, bmax, cfg.Cs, cfg.TileSizeX, cfg.TileSizeZ, out var tw, out var th);
             Task task;
             if (1 < threads)
             {

@@ -131,7 +131,7 @@ public class RecastSoloMeshTest
             // Find triangles which are walkable based on their slope and rasterize them.
             // If your input data is multiple meshes, you can transform them here, calculate
             // the are type for each of the meshes and rasterize them.
-            int[] m_triareas = Recast.MarkWalkableTriangles(m_ctx, cfg.WalkableSlopeAngle, verts, tris, ntris, cfg.WalkableAreaMod);
+            int[] m_triareas = RcUtils.MarkWalkableTriangles(m_ctx, cfg.WalkableSlopeAngle, verts, tris, ntris, cfg.WalkableAreaMod);
             RecastRasterization.RasterizeTriangles(m_solid, verts, tris, m_triareas, ntris, cfg.WalkableClimb, m_ctx);
 
         }

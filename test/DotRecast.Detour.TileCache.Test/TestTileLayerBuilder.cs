@@ -57,7 +57,7 @@ public class TestTileLayerBuilder : AbstractTileLayersBuilder
             true, m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
         RcVec3f bmin = geom.GetMeshBoundsMin();
         RcVec3f bmax = geom.GetMeshBoundsMax();
-        Recast.Recast.CalcTileCount(bmin, bmax, m_cellSize, m_tileSize, m_tileSize, out tw, out th);
+        Recast.RcUtils.CalcTileCount(bmin, bmax, m_cellSize, m_tileSize, m_tileSize, out tw, out th);
     }
 
     public List<byte[]> Build(RcByteOrder order, bool cCompatibility, int threads)

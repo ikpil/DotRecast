@@ -36,7 +36,7 @@ namespace DotRecast.Recast.DemoTool.Tools
             var bmin = geom.GetMeshBoundsMin();
             var bmax = geom.GetMeshBoundsMax();
             int gw = 0, gh = 0;
-            Recast.CalcGridSize(bmin, bmax, settings.cellSize, out gw, out gh);
+            RcUtils.CalcGridSize(bmin, bmax, settings.cellSize, out gw, out gh);
 
             int ts = settings.tileSize;
             int tw = (gw + ts - 1) / ts;
@@ -64,7 +64,7 @@ namespace DotRecast.Recast.DemoTool.Tools
             var bmin = geom.GetMeshBoundsMin();
             var bmax = geom.GetMeshBoundsMax();
             int gw = 0, gh = 0;
-            Recast.CalcGridSize(bmin, bmax, settings.cellSize, out gw, out gh);
+            RcUtils.CalcGridSize(bmin, bmax, settings.cellSize, out gw, out gh);
 
             int ts = settings.tileSize;
             int tw = (gw + ts - 1) / ts;

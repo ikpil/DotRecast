@@ -11,6 +11,8 @@ public class ObstacleTool : IRcTool
 {
     private static readonly ILogger Logger = Log.ForContext<ObstacleTool>();
     private readonly ObstacleToolImpl _impl;
+    private bool _hitPosSet;
+    private RcVec3f _hitPos;
 
     public ObstacleTool()
     {
@@ -32,7 +34,7 @@ public class ObstacleTool : IRcTool
         {
             //m_sample->clearAllTempObstacles();
         }
-		
+
         ImGui.Separator();
 
         ImGui.Text("Click LMB to create an obstacle.");
@@ -41,6 +43,17 @@ public class ObstacleTool : IRcTool
 
     public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
+        _hitPosSet = true;
+        _hitPos = p;
+
+        if (shift)
+        {
+            _impl.RemoveTempObstacle(s, p);
+        }
+        else
+        {
+            _impl.AddTempObstacle(_hitPos);
+        }
     }
 
     public void HandleRender(NavMeshRenderer renderer)

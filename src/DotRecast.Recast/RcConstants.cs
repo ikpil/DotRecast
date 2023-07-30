@@ -22,9 +22,20 @@ namespace DotRecast.Recast
 {
     public static class RcConstants
     {
+        /// Represents the null area.
+        /// When a data element is given this value it is considered to no longer be 
+        /// assigned to a usable area.  (E.g. It is un-walkable.)
         public const int RC_NULL_AREA = 0;
-        public const int RC_NOT_CONNECTED = 0x3f;
+        
+        /// The default area id used to indicate a walkable polygon. 
+        /// This is also the maximum allowed area id, and the only non-null area id 
+        /// recognized by some steps in the build process. 
+        public const int RC_WALKABLE_AREA = 63;
 
+        /// The value returned by #rcGetCon if the specified direction is not connected
+        /// to another span. (Has no neighbor.)
+        public const int RC_NOT_CONNECTED = 0x3f;
+        
         /// Defines the number of bits allocated to rcSpan::smin and rcSpan::smax.
         public const int SPAN_HEIGHT_BITS = 20;
 

@@ -23,9 +23,9 @@ using DotRecast.Core;
 
 namespace DotRecast.Recast
 {
-    using static RcConstants;
-
-    public static class Recast
+    using static DotRecast.Recast.RcConstants;
+    
+    public static class RcUtils
     {
         public static void CalcBounds(float[] verts, int nv, float[] bmin, float[] bmax)
         {
