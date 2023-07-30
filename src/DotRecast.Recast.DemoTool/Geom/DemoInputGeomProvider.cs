@@ -169,12 +169,11 @@ namespace DotRecast.Recast.DemoTool.Geom
                         vertices[tris[j + 2] * 3 + 1],
                         vertices[tris[j + 2] * 3 + 2]
                     );
-                    float? t = Intersections.IntersectSegmentTriangle(src, dst, v1, v2, v3);
-                    if (null != t)
+                    if (Intersections.IntersectSegmentTriangle(src, dst, v1, v2, v3, out var t))
                     {
-                        if (t.Value < tmin)
+                        if (t < tmin)
                         {
-                            tmin = t.Value;
+                            tmin = t;
                         }
 
                         hit = true;

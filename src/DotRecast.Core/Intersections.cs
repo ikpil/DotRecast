@@ -22,8 +22,9 @@ namespace DotRecast.Core
 {
     public static class Intersections
     {
-        public static float? IntersectSegmentTriangle(RcVec3f sp, RcVec3f sq, RcVec3f a, RcVec3f b, RcVec3f c)
+        public static bool IntersectSegmentTriangle(RcVec3f sp, RcVec3f sq, RcVec3f a, RcVec3f b, RcVec3f c, out float t)
         {
+            t = 0;
             float v, w;
             RcVec3f ab = b.Subtract(a);
             RcVec3f ac = c.Subtract(a);
@@ -38,22 +39,22 @@ namespace DotRecast.Core
             float d = RcVec3f.Dot(qp, norm);
             if (d <= 0.0f)
             {
-                return null;
+                return false;
             }
 
             // Compute intersection t value of pq with plane of triangle. A ray
             // intersects iff 0 <= t. Segment intersects iff 0 <= t <= 1. Delay
             // dividing by d until intersection has been found to pierce triangle
             RcVec3f ap = sp.Subtract(a);
-            float t = RcVec3f.Dot(ap, norm);
+            t = RcVec3f.Dot(ap, norm);
             if (t < 0.0f)
             {
-                return null;
+                return false;
             }
 
             if (t > d)
             {
-                return null; // For segment; exclude this code line for a ray test
+                return false; // For segment; exclude this code line for a ray test
             }
 
             // Compute barycentric coordinate components and test if within bounds
@@ -61,19 +62,19 @@ namespace DotRecast.Core
             v = RcVec3f.Dot(ac, e);
             if (v < 0.0f || v > d)
             {
-                return null;
+                return false;
             }
 
             w = -RcVec3f.Dot(ab, e);
             if (w < 0.0f || v + w > d)
             {
-                return null;
+                return false;
             }
 
             // Segment/ray intersects triangle. Perform delayed division
             t /= d;
 
-            return t;
+            return true;
         }
 
         public static bool IsectSegAABB(RcVec3f sp, RcVec3f sq, RcVec3f amin, RcVec3f amax, out float tmin, out float tmax)

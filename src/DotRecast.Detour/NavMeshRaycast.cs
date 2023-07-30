@@ -79,8 +79,7 @@ namespace DotRecast.Detour
                             }
                         }
 
-                        float? intersection = Intersections.IntersectSegmentTriangle(sp, sq, verts[0], verts[1], verts[2]);
-                        if (null != intersection)
+                        if (Intersections.IntersectSegmentTriangle(sp, sq, verts[0], verts[1], verts[2], out var intersection))
                         {
                             return intersection;
                         }

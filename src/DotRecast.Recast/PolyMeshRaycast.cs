@@ -21,7 +21,6 @@ using DotRecast.Core;
 
 namespace DotRecast.Recast
 {
-
     public static class PolyMeshRaycast
     {
         public static float? Raycast(IList<RecastBuilderResult> results, RcVec3f src, RcVec3f dst)
@@ -63,8 +62,7 @@ namespace DotRecast.Recast
                             vs[k].z = meshDetail.verts[verts + meshDetail.tris[tris + j * 4 + k] * 3 + 2];
                         }
 
-                        float? intersection = Intersections.IntersectSegmentTriangle(sp, sq, vs[0], vs[1], vs[2]);
-                        if (null != intersection)
+                        if (Intersections.IntersectSegmentTriangle(sp, sq, vs[0], vs[1], vs[2], out var intersection))
                         {
                             return intersection;
                         }
