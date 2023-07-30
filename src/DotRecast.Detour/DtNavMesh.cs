@@ -58,7 +58,9 @@ namespace DotRecast.Detour
 
         /// < Origin of the tile (0,0)
         // float m_orig[3]; ///< Origin of the tile (0,0)
-        float m_tileWidth, m_tileHeight;
+        private float m_tileWidth;
+
+        private float m_tileHeight;
 
         /// < Dimensions of each tile.
         int m_maxTiles;
@@ -77,6 +79,43 @@ namespace DotRecast.Detour
         private readonly int m_maxVertPerPoly;
 
         private int m_tileCount;
+
+        public DtNavMesh(DtMeshData data, int maxVertsPerPoly, int flags)
+            : this(GetNavMeshParams(data), maxVertsPerPoly)
+        {
+            AddTile(data, flags, 0);
+        }
+
+        public DtNavMesh(DtNavMeshParams option, int maxVertsPerPoly)
+        {
+            m_params = option;
+            m_orig = option.orig;
+            m_tileWidth = option.tileWidth;
+            m_tileHeight = option.tileHeight;
+            // Init tiles
+            m_maxTiles = option.maxTiles;
+            m_maxVertPerPoly = maxVertsPerPoly;
+            m_tileLutMask = Math.Max(1, DetourCommon.NextPow2(option.maxTiles)) - 1;
+            m_tiles = new DtMeshTile[m_maxTiles];
+            for (int i = 0; i < m_maxTiles; i++)
+            {
+                m_tiles[i] = new DtMeshTile(i);
+                m_tiles[i].salt = 1;
+                availableTiles.AddLast(m_tiles[i]);
+            }
+        }
+
+        private static DtNavMeshParams GetNavMeshParams(DtMeshData data)
+        {
+            DtNavMeshParams option = new DtNavMeshParams();
+            option.orig = data.header.bmin;
+            option.tileWidth = data.header.bmax.x - data.header.bmin.x;
+            option.tileHeight = data.header.bmax.z - data.header.bmin.z;
+            option.maxTiles = 1;
+            option.maxPolys = data.header.polyCount;
+            return option;
+        }
+
 
         /**
      * The maximum number of tiles supported by the navigation mesh.
@@ -290,41 +329,6 @@ namespace DotRecast.Detour
             return m_params;
         }
 
-        public DtNavMesh(DtMeshData data, int maxVertsPerPoly, int flags)
-            : this(GetNavMeshParams(data), maxVertsPerPoly)
-        {
-            AddTile(data, flags, 0);
-        }
-
-        public DtNavMesh(DtNavMeshParams option, int maxVertsPerPoly)
-        {
-            m_params = option;
-            m_orig = option.orig;
-            m_tileWidth = option.tileWidth;
-            m_tileHeight = option.tileHeight;
-            // Init tiles
-            m_maxTiles = option.maxTiles;
-            m_maxVertPerPoly = maxVertsPerPoly;
-            m_tileLutMask = Math.Max(1, DetourCommon.NextPow2(option.maxTiles)) - 1;
-            m_tiles = new DtMeshTile[m_maxTiles];
-            for (int i = 0; i < m_maxTiles; i++)
-            {
-                m_tiles[i] = new DtMeshTile(i);
-                m_tiles[i].salt = 1;
-                availableTiles.AddLast(m_tiles[i]);
-            }
-        }
-
-        private static DtNavMeshParams GetNavMeshParams(DtMeshData data)
-        {
-            DtNavMeshParams option = new DtNavMeshParams();
-            option.orig = data.header.bmin;
-            option.tileWidth = data.header.bmax.x - data.header.bmin.x;
-            option.tileHeight = data.header.bmax.z - data.header.bmin.z;
-            option.maxTiles = 1;
-            option.maxPolys = data.header.polyCount;
-            return option;
-        }
 
         // TODO: These methods are duplicates from dtNavMeshQuery, but are needed
         // for off-mesh connection finding.
@@ -1580,6 +1584,11 @@ namespace DotRecast.Detour
             return m_tileCount;
         }
 
+        public int GetAvailableTileCount()
+        {
+            return availableTiles.Count;
+        }
+
         public DtStatus SetPolyFlags(long refs, int flags)
         {
             if (refs == 0)
@@ -1710,7 +1719,7 @@ namespace DotRecast.Detour
 
             return DtStatus.DT_SUCCSESS;
         }
-        
+
         public RcVec3f GetPolyCenter(long refs)
         {
             RcVec3f center = RcVec3f.Zero;
@@ -1760,7 +1769,5 @@ namespace DotRecast.Detour
 
             return tiles;
         }
-        
-
     }
 }

@@ -59,8 +59,15 @@ public class TileTool : IRcTool
         }
         else
         {
-            _impl.BuildTile(_hitPos, out var tileBuildTicks, out var tileTriCount, out var tileMemUsage);
-            Logger.Information($"{tileBuildTicks / (float)TimeSpan.TicksPerMillisecond}ms / {tileTriCount}Tris / {tileMemUsage}kB ");
+            bool built = _impl.BuildTile(_hitPos, out var tileBuildTicks, out var tileTriCount, out var tileMemUsage);
+            if (!built)
+            {
+                Logger.Error($"failed to build tile - check!");
+            }
+            else
+            {
+                Logger.Information($"{tileBuildTicks / (float)TimeSpan.TicksPerMillisecond}ms / {tileTriCount}Tris / {tileMemUsage}kB ");
+            }
         }
     }
 

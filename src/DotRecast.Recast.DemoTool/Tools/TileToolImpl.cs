@@ -89,6 +89,12 @@ namespace DotRecast.Recast.DemoTool.Tools
             var geom = _sample.GetInputGeom();
             var navMesh = _sample.GetNavMesh();
 
+            var availableTileCount = navMesh.GetAvailableTileCount();
+            if (0 >= availableTileCount)
+            {
+                return false;
+            }
+
             RcVec3f bmin = geom.GetMeshBoundsMin();
             RcVec3f bmax = geom.GetMeshBoundsMax();
 
