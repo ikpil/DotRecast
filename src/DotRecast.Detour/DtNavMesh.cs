@@ -1276,8 +1276,7 @@ namespace DotRecast.Detour
                         }
                     }
 
-                    float? h = DtUtils.ClosestHeightPointTriangle(pos, v[0], v[1], v[2]);
-                    if (null != h)
+                    if (DtUtils.ClosestHeightPointTriangle(pos, v[0], v[1], v[2], out var h))
                     {
                         return h;
                     }
@@ -1298,8 +1297,7 @@ namespace DotRecast.Detour
                         v[k + 1].z = tile.data.verts[poly.verts[j + k] * 3 + 2];
                     }
 
-                    float? h = DtUtils.ClosestHeightPointTriangle(pos, v[0], v[1], v[2]);
-                    if (null != h)
+                    if (DtUtils.ClosestHeightPointTriangle(pos, v[0], v[1], v[2], out var h))
                     {
                         return h;
                     }

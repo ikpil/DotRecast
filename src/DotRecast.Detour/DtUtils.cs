@@ -209,10 +209,11 @@ namespace DotRecast.Detour
             };
         }
 
-        public static float? ClosestHeightPointTriangle(RcVec3f p, RcVec3f a, RcVec3f b, RcVec3f c)
+        public static bool ClosestHeightPointTriangle(RcVec3f p, RcVec3f a, RcVec3f b, RcVec3f c, out float h)
         {
             const float EPS = 1e-6f;
 
+            h = 0;
             RcVec3f v0 = c.Subtract(a);
             RcVec3f v1 = b.Subtract(a);
             RcVec3f v2 = p.Subtract(a);
@@ -221,7 +222,7 @@ namespace DotRecast.Detour
             float denom = v0.x * v1.z - v0.z * v1.x;
             if (Math.Abs(denom) < EPS)
             {
-                return null;
+                return false;
             }
 
             float u = v1.z * v2.x - v1.x * v2.z;
@@ -237,11 +238,11 @@ namespace DotRecast.Detour
             // If point lies inside the triangle, return interpolated ycoord.
             if (u >= 0.0f && v >= 0.0f && (u + v) <= denom)
             {
-                float h = a.y + (v0.y * u + v1.y * v) / denom;
-                return h;
+                h = a.y + (v0.y * u + v1.y * v) / denom;
+                return true;
             }
 
-            return null;
+            return false;
         }
 
         public static RcVec2f ProjectPoly(RcVec3f axis, float[] poly, int npoly)
