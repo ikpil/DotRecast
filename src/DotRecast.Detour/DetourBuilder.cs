@@ -24,7 +24,7 @@ namespace DotRecast.Detour
     {
         public DtMeshData Build(DtNavMeshCreateParams option, int tileX, int tileY)
         {
-            DtMeshData data = NavMeshBuilder.CreateNavMeshData(option);
+            DtMeshData data = DtNavMeshBuilder.CreateNavMeshData(option);
             if (data != null)
             {
                 data.header.x = tileX;

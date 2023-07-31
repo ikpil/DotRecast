@@ -41,8 +41,7 @@ namespace DotRecast.Recast
                 rectangle => IntersectSphere(rectangle, center, radius * radius));
         }
 
-        public static void RasterizeCapsule(RcHeightfield hf, RcVec3f start, RcVec3f end, float radius, int area, int flagMergeThr,
-            RcTelemetry ctx)
+        public static void RasterizeCapsule(RcHeightfield hf, RcVec3f start, RcVec3f end, float radius, int area, int flagMergeThr, RcTelemetry ctx)
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_RASTERIZE_CAPSULE);
             float[] bounds =

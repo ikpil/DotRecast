@@ -105,7 +105,7 @@ public class RecastTestMeshBuilder
         option.offMeshConUserID = new int[1];
         option.offMeshConUserID[0] = 0x4567;
         option.offMeshConCount = 1;
-        meshData = NavMeshBuilder.CreateNavMeshData(option);
+        meshData = DtNavMeshBuilder.CreateNavMeshData(option);
     }
 
     public DtMeshData GetMeshData()

@@ -113,7 +113,7 @@ public class TestTiledNavMeshBuilder
             option.tileX = result.tileX;
             option.tileZ = result.tileZ;
             option.buildBvTree = true;
-            navMesh.AddTile(NavMeshBuilder.CreateNavMeshData(option), 0, 0);
+            navMesh.AddTile(DtNavMeshBuilder.CreateNavMeshData(option), 0, 0);
         }
     }
 

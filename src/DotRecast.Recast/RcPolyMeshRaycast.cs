@@ -21,7 +21,7 @@ using DotRecast.Core;
 
 namespace DotRecast.Recast
 {
-    public static class PolyMeshRaycast
+    public static class RcPolyMeshRaycast
     {
         public static float? Raycast(IList<RecastBuilderResult> results, RcVec3f src, RcVec3f dst)
         {

@@ -778,12 +778,12 @@ public class RecastDemo : IRecastDemoChannel
 
         if (!hit.HasValue && _sample.GetNavMesh() != null)
         {
-            hit = NavMeshRaycast.Raycast(_sample.GetNavMesh(), rayStart, rayEnd);
+            hit = DtNavMeshRaycast.Raycast(_sample.GetNavMesh(), rayStart, rayEnd);
         }
 
         if (!hit.HasValue && _sample.GetRecastResults() != null)
         {
-            hit = PolyMeshRaycast.Raycast(_sample.GetRecastResults(), rayStart, rayEnd);
+            hit = RcPolyMeshRaycast.Raycast(_sample.GetRecastResults(), rayStart, rayEnd);
         }
 
         RcVec3f rayDir = RcVec3f.Of(rayEnd.x - rayStart.x, rayEnd.y - rayStart.y, rayEnd.z - rayStart.z);

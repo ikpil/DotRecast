@@ -665,7 +665,7 @@ namespace DotRecast.Detour.TileCache
                 m_tmproc.Process(option);
             }
 
-            DtMeshData meshData = NavMeshBuilder.CreateNavMeshData(option);
+            DtMeshData meshData = DtNavMeshBuilder.CreateNavMeshData(option);
             // Remove existing tile.
             m_navmesh.RemoveTile(m_navmesh.GetTileRefAt(tile.header.tx, tile.header.ty, tile.header.tlayer));
             // Add new tile, or leave the location empty. if (navData) { // Let the

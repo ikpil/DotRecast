@@ -83,7 +83,7 @@ namespace DotRecast.Recast.DemoTool.Builder
         {
             DtNavMeshCreateParams option = DemoNavMeshBuilder
                 .GetNavMeshCreateParams(geom, cellSize, cellHeight, agentHeight, agentRadius, agentMaxClimb, result);
-            var meshData = NavMeshBuilder.CreateNavMeshData(option);
+            var meshData = DtNavMeshBuilder.CreateNavMeshData(option);
             if (null == meshData)
             {
                 return null;

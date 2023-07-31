@@ -57,7 +57,7 @@ namespace DotRecast.Detour.Extras
                 it.bmax[2] = Clamp((int)((bmax.z - data.header.bmin.z) * quantFactor), 0, 0x7fffffff);
             }
 
-            return NavMeshBuilder.Subdivide(items, data.header.polyCount, 0, data.header.polyCount, 0, nodes);
+            return DtNavMeshBuilder.Subdivide(items, data.header.polyCount, 0, data.header.polyCount, 0, nodes);
         }
     }
 }

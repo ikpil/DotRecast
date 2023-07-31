@@ -38,7 +38,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             option.cs = r.GetMesh().cs;
             option.ch = r.GetMesh().ch;
             option.buildBvTree = true;
-            return new DtNavMeshQuery(new DtNavMesh(NavMeshBuilder.CreateNavMeshData(option), option.nvp, 0));
+            return new DtNavMeshQuery(new DtNavMesh(DtNavMeshBuilder.CreateNavMeshData(option), option.nvp, 0));
         }
 
 

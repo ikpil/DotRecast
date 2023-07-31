@@ -51,7 +51,7 @@ namespace DotRecast.Detour.Dynamic
                 RecastBuilderResult r = BuildRecast(builder, config, voxelTile, heightfield, telemetry);
                 DtNavMeshCreateParams option = NavMeshCreateParams(voxelTile.tileX, voxelTile.tileZ, voxelTile.cellSize,
                     voxelTile.cellHeight, config, r);
-                meshData = NavMeshBuilder.CreateNavMeshData(option);
+                meshData = DtNavMeshBuilder.CreateNavMeshData(option);
                 return true;
             }
 

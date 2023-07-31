@@ -24,7 +24,7 @@ namespace DotRecast.Detour
     /**
  * Simple helper to find an intersection between a ray and a nav mesh
  */
-    public static class NavMeshRaycast
+    public static class DtNavMeshRaycast
     {
         public static float? Raycast(DtNavMesh mesh, RcVec3f src, RcVec3f dst)
         {

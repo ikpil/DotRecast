@@ -54,7 +54,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                         connection.rad = 0.1f;
                         connection.side = startTile == endTile
                             ? 0xFF
-                            : NavMeshBuilder.ClassifyOffMeshPoint(RcVec3f.Of(connection.pos, 3), startTile.header.bmin, startTile.header.bmax);
+                            : DtNavMeshBuilder.ClassifyOffMeshPoint(RcVec3f.Of(connection.pos, 3), startTile.header.bmin, startTile.header.bmax);
                         connection.userId = (int)l.linkID;
                         if (startTile.offMeshCons == null)
                         {

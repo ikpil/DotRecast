@@ -25,7 +25,7 @@ namespace DotRecast.Detour
 {
     using static DotRecast.Core.RcMath;
 
-    public static class NavMeshBuilder
+    public static class DtNavMeshBuilder
     {
         const int MESH_NULL_IDX = 0xffff;
 

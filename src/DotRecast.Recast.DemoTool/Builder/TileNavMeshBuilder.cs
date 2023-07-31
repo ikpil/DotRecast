@@ -103,7 +103,7 @@ namespace DotRecast.Recast.DemoTool.Builder
 
                 option.tileX = x;
                 option.tileZ = z;
-                DtMeshData md = NavMeshBuilder.CreateNavMeshData(option);
+                DtMeshData md = DtNavMeshBuilder.CreateNavMeshData(option);
                 if (md != null)
                 {
                     meshData.Add(DemoNavMeshBuilder.UpdateAreaAndFlags(md));
