@@ -30,7 +30,7 @@ namespace DotRecast.Recast.DemoTool.Builder
         {
         }
 
-        public NavMeshBuildResult Build(DemoInputGeomProvider geom, RcNavMeshBuildSetting settings)
+        public NavMeshBuildResult Build(DemoInputGeomProvider geom, RcNavMeshBuildSettings settings)
         {
             return Build(geom,
                 RcPartitionType.OfValue(settings.partitioning), settings.cellSize, settings.cellHeight, settings.agentHeight,
