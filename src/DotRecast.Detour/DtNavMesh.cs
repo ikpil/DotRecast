@@ -95,7 +95,7 @@ namespace DotRecast.Detour
             // Init tiles
             m_maxTiles = option.maxTiles;
             m_maxVertPerPoly = maxVertsPerPoly;
-            m_tileLutMask = Math.Max(1, DetourCommon.NextPow2(option.maxTiles)) - 1;
+            m_tileLutMask = Math.Max(1, DtUtils.NextPow2(option.maxTiles)) - 1;
             m_tiles = new DtMeshTile[m_maxTiles];
             for (int i = 0; i < m_maxTiles; i++)
             {
@@ -366,7 +366,7 @@ namespace DotRecast.Detour
                 while (nodeIndex < end)
                 {
                     DtBVNode node = tile.data.bvTree[nodeIndex];
-                    bool overlap = DetourCommon.OverlapQuantBounds(bmin, bmax, node.bmin, node.bmax);
+                    bool overlap = DtUtils.OverlapQuantBounds(bmin, bmax, node.bmin, node.bmax);
                     bool isLeafNode = node.i >= 0;
 
                     if (isLeafNode && overlap)
@@ -412,7 +412,7 @@ namespace DotRecast.Detour
                         bmax.Max(tile.data.verts, v);
                     }
 
-                    if (DetourCommon.OverlapBounds(qmin, qmax, bmin, bmax))
+                    if (DtUtils.OverlapBounds(qmin, qmax, bmin, bmax))
                     {
                         polys.Add(@base | (long)i);
                     }
@@ -549,9 +549,9 @@ namespace DotRecast.Detour
                 for (int j = 0; j < neis.Count; ++j)
                 {
                     ConnectExtLinks(tile, neis[j], i);
-                    ConnectExtLinks(neis[j], tile, DetourCommon.OppositeTile(i));
+                    ConnectExtLinks(neis[j], tile, DtUtils.OppositeTile(i));
                     ConnectExtOffMeshLinks(tile, neis[j], i);
-                    ConnectExtOffMeshLinks(neis[j], tile, DetourCommon.OppositeTile(i));
+                    ConnectExtOffMeshLinks(neis[j], tile, DtUtils.OppositeTile(i));
                 }
             }
 
@@ -755,7 +755,7 @@ namespace DotRecast.Detour
                     // Create new links
                     int va = poly.verts[j] * 3;
                     int vb = poly.verts[(j + 1) % nv] * 3;
-                    int nnei = FindConnectingPolys(tile.data.verts, va, vb, target, DetourCommon.OppositeTile(dir), ref connectPolys);
+                    int nnei = FindConnectingPolys(tile.data.verts, va, vb, target, DtUtils.OppositeTile(dir), ref connectPolys);
                     foreach (var connectPoly in connectPolys)
                     {
                         int idx = AllocLink(tile);
@@ -814,7 +814,7 @@ namespace DotRecast.Detour
 
             // Connect off-mesh links.
             // We are interested on links which land from target tile to this tile.
-            int oppositeSide = (side == -1) ? 0xff : DetourCommon.OppositeTile(side);
+            int oppositeSide = (side == -1) ? 0xff : DtUtils.OppositeTile(side);
 
             for (int i = 0; i < target.data.header.offMeshConCount; ++i)
             {
@@ -1183,7 +1183,7 @@ namespace DotRecast.Detour
                             continue;
                         }
 
-                        var d = DetourCommon.DistancePtSegSqr2D(pos, v[j], v[k], out var t);
+                        var d = DtUtils.DistancePtSegSqr2D(pos, v[j], v[k], out var t);
                         if (d < dmin)
                         {
                             dmin = d;
@@ -1207,7 +1207,7 @@ namespace DotRecast.Detour
                     v[1].y = tile.data.verts[poly.verts[k] * 3 + 1];
                     v[1].z = tile.data.verts[poly.verts[k] * 3 + 2];
 
-                    var d = DetourCommon.DistancePtSegSqr2D(pos, v[0], v[1], out var t);
+                    var d = DtUtils.DistancePtSegSqr2D(pos, v[0], v[1], out var t);
                     if (d < dmin)
                     {
                         dmin = d;
@@ -1239,7 +1239,7 @@ namespace DotRecast.Detour
                 Array.Copy(tile.data.verts, poly.verts[i] * 3, verts, i * 3, 3);
             }
 
-            if (!DetourCommon.PointInPolygon(pos, verts, nv))
+            if (!DtUtils.PointInPolygon(pos, verts, nv))
             {
                 return null;
             }
@@ -1276,7 +1276,7 @@ namespace DotRecast.Detour
                         }
                     }
 
-                    float? h = DetourCommon.ClosestHeightPointTriangle(pos, v[0], v[1], v[2]);
+                    float? h = DtUtils.ClosestHeightPointTriangle(pos, v[0], v[1], v[2]);
                     if (null != h)
                     {
                         return h;
@@ -1298,7 +1298,7 @@ namespace DotRecast.Detour
                         v[k + 1].z = tile.data.verts[poly.verts[j + k] * 3 + 2];
                     }
 
-                    float? h = DetourCommon.ClosestHeightPointTriangle(pos, v[0], v[1], v[2]);
+                    float? h = DtUtils.ClosestHeightPointTriangle(pos, v[0], v[1], v[2]);
                     if (null != h)
                     {
                         return h;
@@ -1336,7 +1336,7 @@ namespace DotRecast.Detour
                 var v0 = new RcVec3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
                 i = poly.verts[1] * 3;
                 var v1 = new RcVec3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
-                DetourCommon.DistancePtSegSqr2D(pos, v0, v1, out var t);
+                DtUtils.DistancePtSegSqr2D(pos, v0, v1, out var t);
                 closest = RcVec3f.Lerp(v0, v1, t);
                 return;
             }

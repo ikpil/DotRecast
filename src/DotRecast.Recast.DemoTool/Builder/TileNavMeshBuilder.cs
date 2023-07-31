@@ -131,7 +131,7 @@ namespace DotRecast.Recast.DemoTool.Builder
             RcUtils.CalcGridSize(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), cellSize, out var gw, out var gh);
             int tw = (gw + tileSize - 1) / tileSize;
             int th = (gh + tileSize - 1) / tileSize;
-            int tileBits = Math.Min(DetourCommon.Ilog2(DetourCommon.NextPow2(tw * th)), 14);
+            int tileBits = Math.Min(DtUtils.Ilog2(DtUtils.NextPow2(tw * th)), 14);
             return tileBits;
         }
 

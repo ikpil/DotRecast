@@ -681,7 +681,7 @@ public class TestNavmeshTool : IRcTool
                                 var v0 = s.vmin;
                                 var s3 = s.vmax;
                                 // Skip too distant segments.
-                                var distSqr = DetourCommon.DistancePtSegSqr2D(m_spos, v0, s3, out var tseg);
+                                var distSqr = DtUtils.DistancePtSegSqr2D(m_spos, v0, s3, out var tseg);
                                 if (distSqr > RcMath.Sqr(m_neighbourhoodRadius))
                                 {
                                     continue;
@@ -702,7 +702,7 @@ public class TestNavmeshTool : IRcTool
                                 else
                                 {
                                     int col = DuRGBA(192, 32, 16, 192);
-                                    if (DetourCommon.TriArea2D(m_spos, s.vmin, s3) < 0.0f)
+                                    if (DtUtils.TriArea2D(m_spos, s.vmin, s3) < 0.0f)
                                     {
                                         col = DuRGBA(96, 32, 16, 192);
                                     }

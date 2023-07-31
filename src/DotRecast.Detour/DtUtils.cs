@@ -3,7 +3,7 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
-    public static class DetourCommon
+    public static class DtUtils
     {
         private static readonly float EQUAL_THRESHOLD = RcMath.Sqr(1.0f / 16384.0f);
 

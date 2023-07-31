@@ -144,7 +144,7 @@ namespace DotRecast.Detour
                     int va = p.verts[0] * 3;
                     int vb = p.verts[j - 1] * 3;
                     int vc = p.verts[j] * 3;
-                    polyArea += DetourCommon.TriArea2D(tile.data.verts, va, vb, vc);
+                    polyArea += DtUtils.TriArea2D(tile.data.verts, va, vb, vc);
                 }
 
                 // Choose random polygon weighted by area, using reservoi sampling.
@@ -174,7 +174,7 @@ namespace DotRecast.Detour
             float s = frand.Next();
             float t = frand.Next();
 
-            var pt = DetourCommon.RandomPointInConvexPoly(verts, poly.vertCount, areas, s, t);
+            var pt = DtUtils.RandomPointInConvexPoly(verts, poly.vertCount, areas, s, t);
             ClosestPointOnPoly(polyRef, pt, out var closest, out var _);
 
             randomRef = polyRef;
@@ -297,7 +297,7 @@ namespace DotRecast.Detour
                             int va = 0;
                             int vb = (j - 1) * 3;
                             int vc = j * 3;
-                            polyArea += DetourCommon.TriArea2D(constrainedVerts, va, vb, vc);
+                            polyArea += DtUtils.TriArea2D(constrainedVerts, va, vb, vc);
                         }
 
                         // Choose random polygon weighted by area, using reservoi sampling.
@@ -347,7 +347,7 @@ namespace DotRecast.Detour
                     }
 
                     // If the circle is not touching the next polygon, skip it.
-                    var distSqr = DetourCommon.DistancePtSegSqr2D(centerPos, va, vb, out var tesg);
+                    var distSqr = DtUtils.DistancePtSegSqr2D(centerPos, va, vb, out var tesg);
                     if (distSqr > radiusSqr)
                     {
                         continue;
@@ -406,7 +406,7 @@ namespace DotRecast.Detour
             float t = frand.Next();
 
             float[] areas = new float[randomPolyVerts.Length / 3];
-            RcVec3f pt = DetourCommon.RandomPointInConvexPoly(randomPolyVerts, randomPolyVerts.Length / 3, areas, s, t);
+            RcVec3f pt = DtUtils.RandomPointInConvexPoly(randomPolyVerts, randomPolyVerts.Length / 3, areas, s, t);
             ClosestPointOnPoly(randomPolyRef, pt, out var closest, out var _);
 
             randomRef = randomPolyRef;
@@ -485,7 +485,7 @@ namespace DotRecast.Detour
                 Array.Copy(tile.data.verts, poly.verts[i] * 3, verts, i * 3, 3);
             }
 
-            if (DetourCommon.DistancePtPolyEdgesSqr(pos, verts, nv, edged, edget))
+            if (DtUtils.DistancePtPolyEdgesSqr(pos, verts, nv, edged, edget))
             {
                 closest = pos;
             }
@@ -545,7 +545,7 @@ namespace DotRecast.Detour
                 var v0 = new RcVec3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
                 i = poly.verts[1] * 3;
                 var v1 = new RcVec3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
-                DetourCommon.DistancePtSegSqr2D(pos, v0, v1, out var t);
+                DtUtils.DistancePtSegSqr2D(pos, v0, v1, out var t);
                 height = v0.y + (v1.y - v0.y) * t;
 
                 return DtStatus.DT_SUCCSESS;
@@ -624,7 +624,7 @@ namespace DotRecast.Detour
                 while (nodeIndex < end)
                 {
                     DtBVNode node = tile.data.bvTree[nodeIndex];
-                    bool overlap = DetourCommon.OverlapQuantBounds(bmin, bmax, node.bmin, node.bmax);
+                    bool overlap = DtUtils.OverlapQuantBounds(bmin, bmax, node.bmin, node.bmax);
                     bool isLeafNode = node.i >= 0;
 
                     if (isLeafNode && overlap)
@@ -678,7 +678,7 @@ namespace DotRecast.Detour
                         bmax.Max(tile.data.verts, v);
                     }
 
-                    if (DetourCommon.OverlapBounds(qmin, qmax, bmin, bmax))
+                    if (DtUtils.OverlapBounds(qmin, qmax, bmin, bmax))
                     {
                         query.Process(tile, p, refs);
                     }
@@ -1435,7 +1435,7 @@ namespace DotRecast.Detour
         protected DtStatus AppendVertex(RcVec3f pos, int flags, long refs, ref List<StraightPathItem> straightPath,
             int maxStraightPath)
         {
-            if (straightPath.Count > 0 && DetourCommon.VEqual(straightPath[straightPath.Count - 1].pos, pos))
+            if (straightPath.Count > 0 && DtUtils.VEqual(straightPath[straightPath.Count - 1].pos, pos))
             {
                 // The vertices are equal, update flags and poly.
                 straightPath[straightPath.Count - 1] = new StraightPathItem(straightPath[straightPath.Count - 1].pos, flags, refs);
@@ -1497,7 +1497,7 @@ namespace DotRecast.Detour
                 }
 
                 // Append intersection
-                if (DetourCommon.IntersectSegSeg2D(startPos, endPos, left, right, out var _, out var t))
+                if (DtUtils.IntersectSegSeg2D(startPos, endPos, left, right, out var _, out var t))
                 {
                     var pt = RcVec3f.Lerp(left, right, t);
                     stat = AppendVertex(pt, 0, path[i + 1], ref straightPath, maxStraightPath);
@@ -1622,7 +1622,7 @@ namespace DotRecast.Detour
                         // If starting really close the portal, advance.
                         if (i == 0)
                         {
-                            var distSqr = DetourCommon.DistancePtSegSqr2D(portalApex, left, right, out var t);
+                            var distSqr = DtUtils.DistancePtSegSqr2D(portalApex, left, right, out var t);
                             if (distSqr < Sqr(0.001f))
                             {
                                 continue;
@@ -1638,9 +1638,9 @@ namespace DotRecast.Detour
                     }
 
                     // Right vertex.
-                    if (DetourCommon.TriArea2D(portalApex, portalRight, right) <= 0.0f)
+                    if (DtUtils.TriArea2D(portalApex, portalRight, right) <= 0.0f)
                     {
-                        if (DetourCommon.VEqual(portalApex, portalRight) || DetourCommon.TriArea2D(portalApex, portalLeft, right) > 0.0f)
+                        if (DtUtils.VEqual(portalApex, portalRight) || DtUtils.TriArea2D(portalApex, portalLeft, right) > 0.0f)
                         {
                             portalRight = right;
                             rightPolyRef = (i + 1 < path.Count) ? path[i + 1] : 0;
@@ -1694,9 +1694,9 @@ namespace DotRecast.Detour
                     }
 
                     // Left vertex.
-                    if (DetourCommon.TriArea2D(portalApex, portalLeft, left) >= 0.0f)
+                    if (DtUtils.TriArea2D(portalApex, portalLeft, left) >= 0.0f)
                     {
-                        if (DetourCommon.VEqual(portalApex, portalLeft) || DetourCommon.TriArea2D(portalApex, portalRight, left) < 0.0f)
+                        if (DtUtils.VEqual(portalApex, portalLeft) || DtUtils.TriArea2D(portalApex, portalRight, left) < 0.0f)
                         {
                             portalLeft = left;
                             leftPolyRef = (i + 1 < path.Count) ? path[i + 1] : 0;
@@ -1853,7 +1853,7 @@ namespace DotRecast.Detour
                 }
 
                 // If target is inside the poly, stop search.
-                if (DetourCommon.PointInPolygon(endPos, verts, nverts))
+                if (DtUtils.PointInPolygon(endPos, verts, nverts))
                 {
                     bestNode = curNode;
                     bestPos = endPos;
@@ -1906,7 +1906,7 @@ namespace DotRecast.Detour
                         // Wall edge, calc distance.
                         int vj = j * 3;
                         int vi = i * 3;
-                        var distSqr = DetourCommon.DistancePtSegSqr2D(endPos, verts, vj, vi, out var tseg);
+                        var distSqr = DtUtils.DistancePtSegSqr2D(endPos, verts, vj, vi, out var tseg);
                         if (distSqr < bestDist)
                         {
                             // Update nearest distance.
@@ -1930,7 +1930,7 @@ namespace DotRecast.Detour
                             // TODO: Maybe should use GetPortalPoints(), but this one is way faster.
                             int vj = j * 3;
                             int vi = i * 3;
-                            var distSqr = DetourCommon.DistancePtSegSqr2D(searchPos, verts, vj, vi, out var _);
+                            var distSqr = DtUtils.DistancePtSegSqr2D(searchPos, verts, vj, vi, out var _);
                             if (distSqr > searchRadSqr)
                             {
                                 continue;
@@ -2124,7 +2124,7 @@ namespace DotRecast.Detour
             }
 
             float t = 0.5f;
-            if (DetourCommon.IntersectSegSeg2D(fromPos, toPos, left, right, out var _, out var t2))
+            if (DtUtils.IntersectSegSeg2D(fromPos, toPos, left, right, out var _, out var t2))
             {
                 t = Clamp(t2, 0.1f, 0.9f);
             }
@@ -2233,7 +2233,7 @@ namespace DotRecast.Detour
                     nv++;
                 }
 
-                bool intersects = DetourCommon.IntersectSegmentPoly2D(startPos, endPos, verts, nv, out var tmin, out var tmax, out var segMin, out var segMax);
+                bool intersects = DtUtils.IntersectSegmentPoly2D(startPos, endPos, verts, nv, out var tmin, out var tmax, out var segMin, out var segMax);
                 if (!intersects)
                 {
                     // Could not hit the polygon, keep the old t and report hit.
@@ -2541,7 +2541,7 @@ namespace DotRecast.Detour
                     }
 
                     // If the circle is not touching the next polygon, skip it.
-                    var distSqr = DetourCommon.DistancePtSegSqr2D(centerPos, va, vb, out var _);
+                    var distSqr = DtUtils.DistancePtSegSqr2D(centerPos, va, vb, out var _);
                     if (distSqr > radiusSqr)
                     {
                         continue;
@@ -2718,7 +2718,7 @@ namespace DotRecast.Detour
                     }
 
                     // If the poly is not touching the edge to the next polygon, skip the connection it.
-                    bool intersects = DetourCommon.IntersectSegmentPoly2D(va, vb, verts, nverts, out var tmin, out var tmax, out var segMin, out var segMax);
+                    bool intersects = DtUtils.IntersectSegmentPoly2D(va, vb, verts, nverts, out var tmin, out var tmax, out var segMin, out var segMax);
                     if (!intersects)
                     {
                         continue;
@@ -2886,7 +2886,7 @@ namespace DotRecast.Detour
                     }
 
                     // If the circle is not touching the next polygon, skip it.
-                    var distSqr = DetourCommon.DistancePtSegSqr2D(centerPos, va, vb, out var _);
+                    var distSqr = DtUtils.DistancePtSegSqr2D(centerPos, va, vb, out var _);
                     if (distSqr > radiusSqr)
                     {
                         continue;
@@ -2937,7 +2937,7 @@ namespace DotRecast.Detour
                             Array.Copy(pastTile.data.verts, pastPoly.verts[k] * 3, pb, k * 3, 3);
                         }
 
-                        if (DetourCommon.OverlapPolyPoly2D(pa, npa, pb, npb))
+                        if (DtUtils.OverlapPolyPoly2D(pa, npa, pb, npb))
                         {
                             overlap = true;
                             break;
@@ -3227,7 +3227,7 @@ namespace DotRecast.Detour
                     // Calc distance to the edge.
                     int vj = bestPoly.verts[j] * 3;
                     int vi = bestPoly.verts[i] * 3;
-                    var distSqr = DetourCommon.DistancePtSegSqr2D(centerPos, bestTile.data.verts, vj, vi, out var tseg);
+                    var distSqr = DtUtils.DistancePtSegSqr2D(centerPos, bestTile.data.verts, vj, vi, out var tseg);
 
                     // Edge is too far, skip.
                     if (distSqr > radiusSqr)
@@ -3268,7 +3268,7 @@ namespace DotRecast.Detour
                     // Calc distance to the edge.
                     int va = bestPoly.verts[link.edge] * 3;
                     int vb = bestPoly.verts[(link.edge + 1) % bestPoly.vertCount] * 3;
-                    var distSqr = DetourCommon.DistancePtSegSqr2D(centerPos, bestTile.data.verts, va, vb, out var tseg);
+                    var distSqr = DtUtils.DistancePtSegSqr2D(centerPos, bestTile.data.verts, va, vb, out var tseg);
                     // If the circle is not touching the next polygon, skip it.
                     if (distSqr > radiusSqr)
                     {

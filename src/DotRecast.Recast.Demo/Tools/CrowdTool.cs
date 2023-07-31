@@ -480,7 +480,7 @@ public class CrowdTool : IRcTool
                     RcVec3f[] s = ag.boundary.GetSegment(j);
                     RcVec3f s0 = s[0];
                     RcVec3f s3 = s[1];
-                    if (DetourCommon.TriArea2D(pos, s0, s3) < 0.0f)
+                    if (DtUtils.TriArea2D(pos, s0, s3) < 0.0f)
                         col = DuDarkenCol(col);
 
                     dd.AppendArrow(s[0].x, s[0].y + 0.2f, s[0].z, s[1].x, s[1].z + 0.2f, s[1].z, 0.0f, 0.3f, col);

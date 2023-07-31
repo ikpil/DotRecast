@@ -120,7 +120,7 @@ namespace DotRecast.Detour.TileCache
             m_tcomp = tcomp;
             m_tmproc = tmprocs;
 
-            m_tileLutSize = DetourCommon.NextPow2(m_params.maxTiles / 4);
+            m_tileLutSize = DtUtils.NextPow2(m_params.maxTiles / 4);
             if (m_tileLutSize == 0)
             {
                 m_tileLutSize = 1;
@@ -136,7 +136,7 @@ namespace DotRecast.Detour.TileCache
                 m_nextFreeTile = m_tiles[i];
             }
 
-            m_tileBits = DetourCommon.Ilog2(DetourCommon.NextPow2(m_params.maxTiles));
+            m_tileBits = DtUtils.Ilog2(DtUtils.NextPow2(m_params.maxTiles));
             m_saltBits = Math.Min(31, 32 - m_tileBits);
             if (m_saltBits < 10)
             {
@@ -458,7 +458,7 @@ namespace DotRecast.Detour.TileCache
                         RcVec3f tbmin = new RcVec3f();
                         RcVec3f tbmax = new RcVec3f();
                         CalcTightTileBounds(tile.header, ref tbmin, ref tbmax);
-                        if (DetourCommon.OverlapBounds(bmin, bmax, tbmin, tbmax))
+                        if (DtUtils.OverlapBounds(bmin, bmax, tbmin, tbmax))
                         {
                             results.Add(i);
                         }

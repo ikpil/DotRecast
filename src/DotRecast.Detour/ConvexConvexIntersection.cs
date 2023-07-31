@@ -61,8 +61,8 @@ namespace DotRecast.Detour
                 RcVec3f B = b.Subtract(b1);
 
                 float cross = B.x * A.z - A.x * B.z; // TriArea2D({0, 0}, A, B);
-                float aHB = DetourCommon.TriArea2D(b1, b, a);
-                float bHA = DetourCommon.TriArea2D(a1, a, b);
+                float aHB = DtUtils.TriArea2D(b1, b, a);
+                float bHA = DtUtils.TriArea2D(a1, a, b);
                 if (Math.Abs(cross) < EPSILON)
                 {
                     cross = 0f;
@@ -233,7 +233,7 @@ namespace DotRecast.Detour
 
         private static Intersection SegSegInt(RcVec3f a, RcVec3f b, RcVec3f c, RcVec3f d, ref RcVec3f p, ref RcVec3f q)
         {
-            if (DetourCommon.IntersectSegSeg2D(a, b, c, d, out var s, out var t))
+            if (DtUtils.IntersectSegSeg2D(a, b, c, d, out var s, out var t))
             {
                 if (s >= 0.0f && s <= 1.0f && t >= 0.0f && t <= 1.0f)
                 {

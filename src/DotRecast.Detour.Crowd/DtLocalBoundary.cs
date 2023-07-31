@@ -122,7 +122,7 @@ namespace DotRecast.Detour.Crowd
                             var s3 = s.vmax;
 
                             // Skip too distant segments.
-                            var distSqr = DetourCommon.DistancePtSegSqr2D(pos, s0, s3, out var tseg);
+                            var distSqr = DtUtils.DistancePtSegSqr2D(pos, s0, s3, out var tseg);
                             if (distSqr > Sqr(collisionQueryRange))
                             {
                                 continue;
