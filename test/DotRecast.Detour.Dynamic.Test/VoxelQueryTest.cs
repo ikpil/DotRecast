@@ -59,7 +59,7 @@ public class VoxelQueryTest
         RcVec3f end = RcVec3f.Of(320, 10, 57);
 
         // When
-        query.Raycast(start, end);
+        query.Raycast(start, end, out var hit);
         // Then
         hfProvider.Verify(mock => mock.Invoke(It.IsAny<int>(), It.IsAny<int>()), Times.Exactly(6));
         Assert.That(captorX, Is.EqualTo(new[] { 0, 1, 1, 1, 2, 2 }));
@@ -73,8 +73,8 @@ public class VoxelQueryTest
         VoxelQuery query = mesh.VoxelQuery();
         RcVec3f start = RcVec3f.Of(7.4f, 0.5f, -64.8f);
         RcVec3f end = RcVec3f.Of(31.2f, 0.5f, -75.3f);
-        float? hit = query.Raycast(start, end);
-        Assert.That(hit, Is.Null);
+        bool isHit = query.Raycast(start, end, out var hit);
+        Assert.That(isHit, Is.EqualTo(false));
     }
 
     [Test]
@@ -84,9 +84,9 @@ public class VoxelQueryTest
         VoxelQuery query = mesh.VoxelQuery();
         RcVec3f start = RcVec3f.Of(32.3f, 0.5f, 47.9f);
         RcVec3f end = RcVec3f.Of(-31.2f, 0.5f, -29.8f);
-        float? hit = query.Raycast(start, end);
-        Assert.That(hit, Is.Not.Null);
-        Assert.That(hit.Value, Is.EqualTo(0.5263836f).Within(1e-7f));
+        bool isHit = query.Raycast(start, end, out var hit);
+        Assert.That(isHit, Is.EqualTo(true));
+        Assert.That(hit, Is.EqualTo(0.5263836f).Within(1e-7f));
     }
 
     private DynamicNavMesh CreateDynaMesh()

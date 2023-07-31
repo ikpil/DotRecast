@@ -174,12 +174,12 @@ public class DynamicUpdateTool : IRcTool
                 RcVec3f sp = RcVec3f.Of(spos.x, spos.y + 1.3f, spos.z);
                 RcVec3f ep = RcVec3f.Of(epos.x, epos.y + 1.3f, epos.z);
                 long t1 = RcFrequency.Ticks;
-                float? hitPos = dynaMesh.VoxelQuery().Raycast(sp, ep);
+                bool hasHit = dynaMesh.VoxelQuery().Raycast(sp, ep, out var hitPos);
                 long t2 = RcFrequency.Ticks;
                 raycastTime = (t2 - t1) / TimeSpan.TicksPerMillisecond;
-                raycastHit = hitPos.HasValue;
-                raycastHitPos = hitPos.HasValue
-                    ? RcVec3f.Of(sp.x + hitPos.Value * (ep.x - sp.x), sp.y + hitPos.Value * (ep.y - sp.y), sp.z + hitPos.Value * (ep.z - sp.z))
+                raycastHit = hasHit;
+                raycastHitPos = hasHit
+                    ? RcVec3f.Of(sp.x + hitPos * (ep.x - sp.x), sp.y + hitPos * (ep.y - sp.y), sp.z + hitPos * (ep.z - sp.z))
                     : ep;
             }
         }

@@ -47,12 +47,12 @@ namespace DotRecast.Detour.Dynamic
      *
      * @return Optional with hit parameter (t) or empty if no hit found
      */
-        public float? Raycast(RcVec3f start, RcVec3f end)
+        public bool Raycast(RcVec3f start, RcVec3f end, out float hit)
         {
-            return TraverseTiles(start, end);
+            return TraverseTiles(start, end, out hit);
         }
 
-        private float? TraverseTiles(RcVec3f start, RcVec3f end)
+        private bool TraverseTiles(RcVec3f start, RcVec3f end, out float hit)
         {
             float relStartX = start.x - origin.x;
             float relStartZ = start.z - origin.z;
@@ -79,10 +79,10 @@ namespace DotRecast.Detour.Dynamic
             float t = 0;
             while (true)
             {
-                float? hit = TraversHeightfield(sx, sz, start, end, t, Math.Min(1, Math.Min(tMaxX, tMaxZ)));
-                if (hit.HasValue)
+                bool isHit = TraversHeightfield(sx, sz, start, end, t, Math.Min(1, Math.Min(tMaxX, tMaxZ)), out hit);
+                if (isHit)
                 {
-                    return hit;
+                    return true;
                 }
 
                 if ((dx > 0 ? sx >= ex : sx <= ex) && (dz > 0 ? sz >= ez : sz <= ez))
@@ -104,10 +104,10 @@ namespace DotRecast.Detour.Dynamic
                 }
             }
 
-            return null;
+            return false;
         }
 
-        private float? TraversHeightfield(int x, int z, RcVec3f start, RcVec3f end, float tMin, float tMax)
+        private bool TraversHeightfield(int x, int z, RcVec3f start, RcVec3f end, float tMin, float tMax, out float hit)
         {
             RcHeightfield hf = heightfieldProvider.Invoke(x, z);
             if (null != hf)
@@ -151,7 +151,8 @@ namespace DotRecast.Detour.Dynamic
                         {
                             if (span.smin <= ymin && span.smax >= ymax)
                             {
-                                return Math.Min(1, tMin + t);
+                                hit = Math.Min(1, tMin + t);
+                                return true;
                             }
 
                             span = span.next;
@@ -178,7 +179,8 @@ namespace DotRecast.Detour.Dynamic
                 }
             }
 
-            return null;
+            hit = 0.0f;
+            return false;
         }
     }
 }
