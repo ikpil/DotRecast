@@ -770,20 +770,21 @@ public class RecastDemo : IRecastDemoChannel
         if (_sample == null)
             return;
 
-        float? hit = null;
+        float hitTime = 0.0f;
+        bool hit = false;
         if (inputGeom != null)
         {
-            hit = inputGeom.RaycastMesh(rayStart, rayEnd);
+            hit = inputGeom.RaycastMesh(rayStart, rayEnd, out hitTime);
         }
 
-        if (!hit.HasValue && _sample.GetNavMesh() != null)
+        if (!hit && _sample.GetNavMesh() != null)
         {
-            hit = DtNavMeshRaycast.Raycast(_sample.GetNavMesh(), rayStart, rayEnd);
+            hit = DtNavMeshRaycast.Raycast(_sample.GetNavMesh(), rayStart, rayEnd, out hitTime);
         }
 
-        if (!hit.HasValue && _sample.GetRecastResults() != null)
+        if (!hit && _sample.GetRecastResults() != null)
         {
-            hit = RcPolyMeshRaycast.Raycast(_sample.GetRecastResults(), rayStart, rayEnd);
+            hit = RcPolyMeshRaycast.Raycast(_sample.GetRecastResults(), rayStart, rayEnd, out hitTime);
         }
 
         RcVec3f rayDir = RcVec3f.Of(rayEnd.x - rayStart.x, rayEnd.y - rayStart.y, rayEnd.z - rayStart.z);
@@ -795,9 +796,8 @@ public class RecastDemo : IRecastDemoChannel
             rayTool.HandleClickRay(rayStart, rayDir, processHitTestShift);
         }
 
-        if (hit.HasValue)
+        if (hit)
         {
-            float hitTime = hit.Value;
             if (0 != (_modState & KeyModState.Control))
             {
                 // Marker

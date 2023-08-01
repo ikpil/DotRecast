@@ -20,32 +20,32 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
-
     /**
  * Simple helper to find an intersection between a ray and a nav mesh
  */
     public static class DtNavMeshRaycast
     {
-        public static float? Raycast(DtNavMesh mesh, RcVec3f src, RcVec3f dst)
+        public static bool Raycast(DtNavMesh mesh, RcVec3f src, RcVec3f dst, out float hitTime)
         {
+            hitTime = 0.0f;
             for (int t = 0; t < mesh.GetMaxTiles(); ++t)
             {
                 DtMeshTile tile = mesh.GetTile(t);
                 if (tile != null && tile.data != null)
                 {
-                    float? intersection = Raycast(tile, src, dst);
-                    if (null != intersection)
+                    if (Raycast(tile, src, dst, out hitTime))
                     {
-                        return intersection;
+                        return true;
                     }
                 }
             }
 
-            return null;
+            return false;
         }
 
-        private static float? Raycast(DtMeshTile tile, RcVec3f sp, RcVec3f sq)
+        private static bool Raycast(DtMeshTile tile, RcVec3f sp, RcVec3f sq, out float hitTime)
         {
+            hitTime = 0.0f;
             for (int i = 0; i < tile.data.header.polyCount; ++i)
             {
                 DtPoly p = tile.data.polys[i];
@@ -79,9 +79,9 @@ namespace DotRecast.Detour
                             }
                         }
 
-                        if (Intersections.IntersectSegmentTriangle(sp, sq, verts[0], verts[1], verts[2], out var intersection))
+                        if (Intersections.IntersectSegmentTriangle(sp, sq, verts[0], verts[1], verts[2], out hitTime))
                         {
-                            return intersection;
+                            return true;
                         }
                     }
                 }
@@ -91,7 +91,7 @@ namespace DotRecast.Detour
                 }
             }
 
-            return null;
+            return false;
         }
     }
 }

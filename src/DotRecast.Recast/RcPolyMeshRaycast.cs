@@ -23,25 +23,26 @@ namespace DotRecast.Recast
 {
     public static class RcPolyMeshRaycast
     {
-        public static float? Raycast(IList<RecastBuilderResult> results, RcVec3f src, RcVec3f dst)
+        public static bool Raycast(IList<RecastBuilderResult> results, RcVec3f src, RcVec3f dst, out float hitTime)
         {
+            hitTime = 0.0f;
             foreach (RecastBuilderResult result in results)
             {
                 if (result.GetMeshDetail() != null)
                 {
-                    float? intersection = Raycast(result.GetMesh(), result.GetMeshDetail(), src, dst);
-                    if (null != intersection)
+                    if (Raycast(result.GetMesh(), result.GetMeshDetail(), src, dst, out hitTime))
                     {
-                        return intersection;
+                        return true;
                     }
                 }
             }
 
-            return null;
+            return false;
         }
 
-        private static float? Raycast(RcPolyMesh poly, RcPolyMeshDetail meshDetail, RcVec3f sp, RcVec3f sq)
+        private static bool Raycast(RcPolyMesh poly, RcPolyMeshDetail meshDetail, RcVec3f sp, RcVec3f sq, out float hitTime)
         {
+            hitTime = 0;
             if (meshDetail != null)
             {
                 for (int i = 0; i < meshDetail.nmeshes; ++i)
@@ -62,9 +63,9 @@ namespace DotRecast.Recast
                             vs[k].z = meshDetail.verts[verts + meshDetail.tris[tris + j * 4 + k] * 3 + 2];
                         }
 
-                        if (Intersections.IntersectSegmentTriangle(sp, sq, vs[0], vs[1], vs[2], out var intersection))
+                        if (Intersections.IntersectSegmentTriangle(sp, sq, vs[0], vs[1], vs[2], out hitTime))
                         {
-                            return intersection;
+                            return true;
                         }
                     }
                 }
@@ -74,7 +75,7 @@ namespace DotRecast.Recast
                 // TODO: check PolyMesh instead
             }
 
-            return null;
+            return false;
         }
     }
 }

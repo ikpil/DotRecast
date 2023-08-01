@@ -126,12 +126,14 @@ namespace DotRecast.Recast.DemoTool.Geom
             _offMeshConnections.RemoveAll(filter); // TODO : 확인 필요
         }
 
-        public float? RaycastMesh(RcVec3f src, RcVec3f dst)
+        public bool RaycastMesh(RcVec3f src, RcVec3f dst, out float tmin)
         {
+            tmin = 1.0f;
+            
             // Prune hit ray.
             if (!Intersections.IsectSegAABB(src, dst, bmin, bmax, out var btmin, out var btmax))
             {
-                return null;
+                return false;
             }
 
             float[] p = new float[2];
@@ -144,10 +146,10 @@ namespace DotRecast.Recast.DemoTool.Geom
             List<RcChunkyTriMeshNode> chunks = _mesh.chunkyTriMesh.GetChunksOverlappingSegment(p, q);
             if (0 == chunks.Count)
             {
-                return null;
+                return false;
             }
 
-            float? tmin = 1.0f;
+            tmin = 1.0f;
             bool hit = false;
             foreach (RcChunkyTriMeshNode chunk in chunks)
             {
@@ -181,9 +183,7 @@ namespace DotRecast.Recast.DemoTool.Geom
                 }
             }
 
-            return hit 
-                ? tmin
-                : null;
+            return hit;
         }
 
 
