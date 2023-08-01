@@ -28,8 +28,7 @@ namespace DotRecast.Recast.Demo.Draw;
 public class DebugDraw
 {
     private readonly GLCheckerTexture g_tex;
-    private readonly IOpenGLDraw openGlDraw;
-
+    private readonly ModernOpenGLDraw openGlDraw;
 
     public DebugDraw(GL gl)
     {
@@ -37,7 +36,7 @@ public class DebugDraw
         openGlDraw = new ModernOpenGLDraw(gl);
     }
 
-    private IOpenGLDraw GetOpenGlDraw()
+    private ModernOpenGLDraw GetOpenGlDraw()
     {
         return openGlDraw;
     }
