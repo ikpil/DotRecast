@@ -33,7 +33,7 @@ namespace DotRecast.Detour.Dynamic
         public readonly VoxelTile voxelTile;
         public DynamicTileCheckpoint checkpoint;
         public RecastBuilderResult recastResult;
-        DtMeshData meshData;
+        private DtMeshData meshData;
         private readonly ConcurrentDictionary<long, ICollider> colliders = new ConcurrentDictionary<long, ICollider>();
         private bool dirty = true;
         private long id;

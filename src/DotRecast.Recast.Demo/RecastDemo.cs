@@ -530,9 +530,7 @@ public class RecastDemo : IRecastDemoChannel
             }
             else if (_sample.GetNavMesh() != null)
             {
-                RcVec3f[] bounds = NavMeshUtils.GetNavMeshBounds(_sample.GetNavMesh());
-                bminN = bounds[0];
-                bmaxN = bounds[1];
+                _sample.GetNavMesh().ComputeBounds(out bminN, out bmaxN);
                 hasBound = true;
             }
             else if (0 < _sample.GetRecastResults().Count)
