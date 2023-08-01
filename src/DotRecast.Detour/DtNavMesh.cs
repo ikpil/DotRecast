@@ -1767,5 +1767,27 @@ namespace DotRecast.Detour
 
             return tiles;
         }
+
+        public void ComputeBounds(out RcVec3f bmin, out RcVec3f bmax)
+        {
+            bmin = RcVec3f.Of(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
+            bmax = RcVec3f.Of(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
+            for (int t = 0; t < GetMaxTiles(); ++t)
+            {
+                DtMeshTile tile = GetTile(t);
+                if (tile != null && tile.data != null)
+                {
+                    for (int i = 0; i < tile.data.verts.Length; i += 3)
+                    {
+                        bmin.x = Math.Min(bmin.x, tile.data.verts[i]);
+                        bmin.y = Math.Min(bmin.y, tile.data.verts[i + 1]);
+                        bmin.z = Math.Min(bmin.z, tile.data.verts[i + 2]);
+                        bmax.x = Math.Max(bmax.x, tile.data.verts[i]);
+                        bmax.y = Math.Max(bmax.y, tile.data.verts[i + 1]);
+                        bmax.z = Math.Max(bmax.z, tile.data.verts[i + 2]);
+                    }
+                }
+            }
+        }
     }
 }
