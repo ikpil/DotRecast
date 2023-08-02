@@ -551,11 +551,12 @@ namespace DotRecast.Detour
                 return DtStatus.DT_SUCCSESS;
             }
 
-            float? h = m_nav.GetPolyHeight(tile, poly, pos);
-            if (!h.HasValue)
+            if (!m_nav.GetPolyHeight(tile, poly, pos, out var h))
+            {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
+            }
 
-            height = h.Value;
+            height = h;
             return DtStatus.DT_SUCCSESS;
         }
 
@@ -3424,6 +3425,7 @@ namespace DotRecast.Detour
 
                 curNode = nextNode;
             } while (curNode != null);
+
             path.Reverse();
             return DtStatus.DT_SUCCSESS;
         }

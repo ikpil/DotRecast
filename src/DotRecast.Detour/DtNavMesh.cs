@@ -1221,13 +1221,15 @@ namespace DotRecast.Detour
             return RcVec3f.Lerp(pmin, pmax, tmin);
         }
 
-        public float? GetPolyHeight(DtMeshTile tile, DtPoly poly, RcVec3f pos)
+        public bool GetPolyHeight(DtMeshTile tile, DtPoly poly, RcVec3f pos, out float height)
         {
+            height = 0;
+            
             // Off-mesh connections do not have detail polys and getting height
             // over them does not make sense.
             if (poly.GetPolyType() == DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
-                return null;
+                return false;
             }
 
             int ip = poly.index;
@@ -1241,7 +1243,7 @@ namespace DotRecast.Detour
 
             if (!DtUtils.PointInPolygon(pos, verts, nv))
             {
-                return null;
+                return false;
             }
 
             // Find height at the location.
@@ -1278,7 +1280,8 @@ namespace DotRecast.Detour
 
                     if (DtUtils.ClosestHeightPointTriangle(pos, v[0], v[1], v[2], out var h))
                     {
-                        return h;
+                        height = h;
+                        return true;
                     }
                 }
             }
@@ -1299,7 +1302,8 @@ namespace DotRecast.Detour
 
                     if (DtUtils.ClosestHeightPointTriangle(pos, v[0], v[1], v[2], out var h))
                     {
-                        return h;
+                        height = h;
+                        return true;
                     }
                 }
             }
@@ -1309,7 +1313,8 @@ namespace DotRecast.Detour
             // closest. This should almost never happen so the extra iteration here is
             // ok.
             var closest = ClosestPointOnDetailEdges(tile, poly, pos, false);
-            return closest.y;
+            height = closest.y;
+            return true;
         }
 
         public void ClosestPointOnPoly(long refs, RcVec3f pos, out RcVec3f closest, out bool posOverPoly)
@@ -1317,10 +1322,9 @@ namespace DotRecast.Detour
             GetTileAndPolyByRefUnsafe(refs, out var tile, out var poly);
             closest = pos;
 
-            float? h = GetPolyHeight(tile, poly, pos);
-            if (null != h)
+            if (GetPolyHeight(tile, poly, pos, out var h))
             {
-                closest.y = h.Value;
+                closest.y = h;
                 posOverPoly = true;
                 return;
             }

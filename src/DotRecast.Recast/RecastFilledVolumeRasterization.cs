@@ -365,8 +365,7 @@ namespace DotRecast.Recast
             return s;
         }
 
-        private static float[] SlabsCylinderIntersection(float[] rectangle, RcVec3f start, RcVec3f end, RcVec3f axis, float radiusSqr,
-            float[] s)
+        private static float[] SlabsCylinderIntersection(float[] rectangle, RcVec3f start, RcVec3f end, RcVec3f axis, float radiusSqr, float[] s)
         {
             if (Math.Min(start.x, end.x) < rectangle[0])
             {
@@ -702,8 +701,7 @@ namespace DotRecast.Recast
             return null;
         }
 
-        private static float? XSlabSegmentIntersection(float[] rectangle, float x, float y, float z, float dx, float dy, float dz,
-            float slabX)
+        private static float? XSlabSegmentIntersection(float[] rectangle, float x, float y, float z, float dx, float dy, float dz, float slabX)
         {
             float x2 = x + dx;
             if ((x < slabX && x2 > slabX) || (x > slabX && x2 < slabX))
@@ -719,8 +717,7 @@ namespace DotRecast.Recast
             return null;
         }
 
-        private static float? ZSlabSegmentIntersection(float[] rectangle, float x, float y, float z, float dx, float dy, float dz,
-            float slabZ)
+        private static float? ZSlabSegmentIntersection(float[] rectangle, float x, float y, float z, float dx, float dy, float dz, float slabZ)
         {
             float z2 = z + dz;
             if ((z < slabZ && z2 > slabZ) || (z > slabZ && z2 < slabZ))
