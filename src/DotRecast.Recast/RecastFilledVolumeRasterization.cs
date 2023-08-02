@@ -566,35 +566,31 @@ namespace DotRecast.Recast
                 float dz = vertices[vj + 2] - z;
                 if (Math.Abs(dx) > EPSILON)
                 {
-                    float? iy = XSlabSegmentIntersection(rectangle, x, y, z, dx, dy, dz, rectangle[0]);
-                    if (iy != null)
+                    if (XSlabSegmentIntersection(rectangle, x, y, z, dx, dy, dz, rectangle[0], out var iy))
                     {
-                        yMin = Math.Min(yMin, iy.Value);
-                        yMax = Math.Max(yMax, iy.Value);
+                        yMin = Math.Min(yMin, iy);
+                        yMax = Math.Max(yMax, iy);
                     }
 
-                    iy = XSlabSegmentIntersection(rectangle, x, y, z, dx, dy, dz, rectangle[2]);
-                    if (iy != null)
+                    if (XSlabSegmentIntersection(rectangle, x, y, z, dx, dy, dz, rectangle[2], out iy))
                     {
-                        yMin = Math.Min(yMin, iy.Value);
-                        yMax = Math.Max(yMax, iy.Value);
+                        yMin = Math.Min(yMin, iy);
+                        yMax = Math.Max(yMax, iy);
                     }
                 }
 
                 if (Math.Abs(dz) > EPSILON)
                 {
-                    float? iy = ZSlabSegmentIntersection(rectangle, x, y, z, dx, dy, dz, rectangle[1]);
-                    if (iy != null)
+                    if (ZSlabSegmentIntersection(rectangle, x, y, z, dx, dy, dz, rectangle[1], out var iy))
                     {
-                        yMin = Math.Min(yMin, iy.Value);
-                        yMax = Math.Max(yMax, iy.Value);
+                        yMin = Math.Min(yMin, iy);
+                        yMax = Math.Max(yMax, iy);
                     }
 
-                    iy = ZSlabSegmentIntersection(rectangle, x, y, z, dx, dy, dz, rectangle[3]);
-                    if (iy != null)
+                    if (ZSlabSegmentIntersection(rectangle, x, y, z, dx, dy, dz, rectangle[3], out iy))
                     {
-                        yMin = Math.Min(yMin, iy.Value);
-                        yMax = Math.Max(yMax, iy.Value);
+                        yMin = Math.Min(yMin, iy);
+                        yMax = Math.Max(yMax, iy);
                     }
                 }
             }
@@ -645,35 +641,31 @@ namespace DotRecast.Recast
                     float dz = verts[vj + 2] - z;
                     if (Math.Abs(dx) > EPSILON)
                     {
-                        float? iy = XSlabSegmentIntersection(rectangle, x, y, z, dx, dy, dz, rectangle[0]);
-                        if (iy != null)
+                        if (XSlabSegmentIntersection(rectangle, x, y, z, dx, dy, dz, rectangle[0], out var iy))
                         {
-                            imin = Math.Min(imin, iy.Value);
-                            imax = Math.Max(imax, iy.Value);
+                            imin = Math.Min(imin, iy);
+                            imax = Math.Max(imax, iy);
                         }
 
-                        iy = XSlabSegmentIntersection(rectangle, x, y, z, dx, dy, dz, rectangle[2]);
-                        if (iy != null)
+                        if (XSlabSegmentIntersection(rectangle, x, y, z, dx, dy, dz, rectangle[2], out iy))
                         {
-                            imin = Math.Min(imin, iy.Value);
-                            imax = Math.Max(imax, iy.Value);
+                            imin = Math.Min(imin, iy);
+                            imax = Math.Max(imax, iy);
                         }
                     }
 
                     if (Math.Abs(dz) > EPSILON)
                     {
-                        float? iy = ZSlabSegmentIntersection(rectangle, x, y, z, dx, dy, dz, rectangle[1]);
-                        if (iy != null)
+                        if (ZSlabSegmentIntersection(rectangle, x, y, z, dx, dy, dz, rectangle[1], out var iy))
                         {
-                            imin = Math.Min(imin, iy.Value);
-                            imax = Math.Max(imax, iy.Value);
+                            imin = Math.Min(imin, iy);
+                            imax = Math.Max(imax, iy);
                         }
 
-                        iy = ZSlabSegmentIntersection(rectangle, x, y, z, dx, dy, dz, rectangle[3]);
-                        if (iy != null)
+                        if (ZSlabSegmentIntersection(rectangle, x, y, z, dx, dy, dz, rectangle[3], out iy))
                         {
-                            imin = Math.Min(imin, iy.Value);
-                            imax = Math.Max(imax, iy.Value);
+                            imin = Math.Min(imin, iy);
+                            imax = Math.Max(imax, iy);
                         }
                     }
                 }
@@ -684,11 +676,10 @@ namespace DotRecast.Recast
                 {
                     point.x = ((i & 1) == 0) ? rectangle[0] : rectangle[2];
                     point.z = ((i & 2) == 0) ? rectangle[1] : rectangle[3];
-                    float? y = RayTriangleIntersection(point, tri, planes);
-                    if (y != null)
+                    if (RayTriangleIntersection(point, tri, planes, out var y))
                     {
-                        imin = Math.Min(imin, y.Value);
-                        imax = Math.Max(imax, y.Value);
+                        imin = Math.Min(imin, y);
+                        imax = Math.Max(imax, y);
                     }
                 }
             }
@@ -701,7 +692,7 @@ namespace DotRecast.Recast
             return null;
         }
 
-        private static float? XSlabSegmentIntersection(float[] rectangle, float x, float y, float z, float dx, float dy, float dz, float slabX)
+        private static bool XSlabSegmentIntersection(float[] rectangle, float x, float y, float z, float dx, float dy, float dz, float slabX, out float iy)
         {
             float x2 = x + dx;
             if ((x < slabX && x2 > slabX) || (x > slabX && x2 < slabX))
@@ -710,14 +701,16 @@ namespace DotRecast.Recast
                 float iz = z + dz * t;
                 if (iz >= rectangle[1] && iz <= rectangle[3])
                 {
-                    return y + dy * t;
+                    iy = y + dy * t;
+                    return true;
                 }
             }
 
-            return null;
+            iy = 0.0f;
+            return false;
         }
 
-        private static float? ZSlabSegmentIntersection(float[] rectangle, float x, float y, float z, float dx, float dy, float dz, float slabZ)
+        private static bool ZSlabSegmentIntersection(float[] rectangle, float x, float y, float z, float dx, float dy, float dz, float slabZ, out float iy)
         {
             float z2 = z + dz;
             if ((z < slabZ && z2 > slabZ) || (z > slabZ && z2 < slabZ))
@@ -726,36 +719,40 @@ namespace DotRecast.Recast
                 float ix = x + dx * t;
                 if (ix >= rectangle[0] && ix <= rectangle[2])
                 {
-                    return y + dy * t;
+                    iy = y + dy * t;
+                    return true;
                 }
             }
 
-            return null;
+            iy = 0.0f;
+            return false;
         }
 
-        private static float? RayTriangleIntersection(RcVec3f point, int plane, float[][] planes)
+        private static bool RayTriangleIntersection(RcVec3f point, int plane, float[][] planes, out float y)
         {
+            y = 0.0f;
             float t = (planes[plane][3] - RcVec3f.Dot(planes[plane], point)) / planes[plane][1];
             float[] s = { point.x, point.y + t, point.z };
             float u = RcVec3f.Dot(s, planes[plane + 1]) - planes[plane + 1][3];
             if (u < 0.0f || u > 1.0f)
             {
-                return null;
+                return false;
             }
 
             float v = RcVec3f.Dot(s, planes[plane + 2]) - planes[plane + 2][3];
             if (v < 0.0f)
             {
-                return null;
+                return false;
             }
 
             float w = 1f - u - v;
             if (w < 0.0f)
             {
-                return null;
+                return false;
             }
 
-            return s[1];
+            y = s[1];
+            return true;
         }
 
         private static float[] MergeIntersections(float[] s1, float[] s2)
