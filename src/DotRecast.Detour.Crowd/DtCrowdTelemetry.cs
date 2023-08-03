@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Emit;
 using DotRecast.Core;
 
 namespace DotRecast.Detour.Crowd
@@ -30,8 +31,8 @@ namespace DotRecast.Detour.Crowd
         private float _maxTimeToEnqueueRequest;
         private float _maxTimeToFindPath;
 
-        private readonly Dictionary<string, long> _executionTimings = new Dictionary<string, long>();
-        private readonly Dictionary<string, List<long>> _executionTimingSamples = new Dictionary<string, List<long>>();
+        private readonly Dictionary<DtCrowdTimerLabel, long> _executionTimings = new Dictionary<DtCrowdTimerLabel, long>();
+        private readonly Dictionary<DtCrowdTimerLabel, List<long>> _executionTimingSamples = new Dictionary<DtCrowdTimerLabel, List<long>>();
 
         public float MaxTimeToEnqueueRequest()
         {
@@ -46,7 +47,7 @@ namespace DotRecast.Detour.Crowd
         public List<RcTelemetryTick> ToExecutionTimings()
         {
             return _executionTimings
-                .Select(e => new RcTelemetryTick(e.Key, e.Value))
+                .Select(e => new RcTelemetryTick(e.Key.Label, e.Value))
                 .OrderByDescending(x => x.Ticks)
                 .ToList();
         }
@@ -67,19 +68,19 @@ namespace DotRecast.Detour.Crowd
         {
             _maxTimeToFindPath = Math.Max(_maxTimeToFindPath, time);
         }
-        
-        public IDisposable ScopedTimer(string name)
+
+        public IDisposable ScopedTimer(DtCrowdTimerLabel label)
         {
-            Start(name);
-            return new RcAnonymousDisposable(() => Stop(name));
+            Start(label);
+            return new RcAnonymousDisposable(() => Stop(label));
         }
 
-        public void Start(string name)
+        public void Start(DtCrowdTimerLabel name)
         {
             _executionTimings.Add(name, RcFrequency.Ticks);
         }
 
-        public void Stop(string name)
+        public void Stop(DtCrowdTimerLabel name)
         {
             long duration = RcFrequency.Ticks - _executionTimings[name];
             if (!_executionTimingSamples.TryGetValue(name, out var s))

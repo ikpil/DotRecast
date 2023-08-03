@@ -444,7 +444,7 @@ namespace DotRecast.Detour.Crowd
 
         private void CheckPathValidity(IList<DtCrowdAgent> agents, float dt)
         {
-            using var timer = _telemetry.ScopedTimer("checkPathValidity");
+            using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.CheckPathValidity);
 
             foreach (DtCrowdAgent ag in agents)
             {
@@ -553,7 +553,7 @@ namespace DotRecast.Detour.Crowd
 
         private void UpdateMoveRequest(IList<DtCrowdAgent> agents, float dt)
         {
-            using var timer = _telemetry.ScopedTimer("updateMoveRequest");
+            using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.UpdateMoveRequest);
 
             RcSortedQueue<DtCrowdAgent> queue = new RcSortedQueue<DtCrowdAgent>((a1, a2) => a2.targetReplanTime.CompareTo(a1.targetReplanTime));
 
@@ -666,7 +666,7 @@ namespace DotRecast.Detour.Crowd
             }
 
             // Update requests.
-            using (var timer2 = _telemetry.ScopedTimer("pathQueueUpdate"))
+            using (var timer2 = _telemetry.ScopedTimer(DtCrowdTimerLabel.PathQueueUpdate))
             {
                 _pathQ.Update(_navMesh);
             }
@@ -807,7 +807,7 @@ namespace DotRecast.Detour.Crowd
 
         private void UpdateTopologyOptimization(IList<DtCrowdAgent> agents, float dt)
         {
-            using var timer = _telemetry.ScopedTimer("updateTopologyOptimization");
+            using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.UpdateTopologyOptimization);
 
             RcSortedQueue<DtCrowdAgent> queue = new RcSortedQueue<DtCrowdAgent>((a1, a2) => a2.topologyOptTime.CompareTo(a1.topologyOptTime));
 
@@ -846,7 +846,7 @@ namespace DotRecast.Detour.Crowd
 
         private void BuildProximityGrid(IList<DtCrowdAgent> agents)
         {
-            using var timer = _telemetry.ScopedTimer("buildProximityGrid");
+            using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.BuildProximityGrid);
 
             _grid = new DtProximityGrid(_config.maxAgentRadius * 3);
 
@@ -860,7 +860,7 @@ namespace DotRecast.Detour.Crowd
 
         private void BuildNeighbours(IList<DtCrowdAgent> agents)
         {
-            using var timer = _telemetry.ScopedTimer("buildNeighbours");
+            using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.BuildNeighbours);
 
             foreach (DtCrowdAgent ag in agents)
             {
@@ -921,7 +921,7 @@ namespace DotRecast.Detour.Crowd
 
         private void FindCorners(IList<DtCrowdAgent> agents, DtCrowdAgentDebugInfo debug)
         {
-            using var timer = _telemetry.ScopedTimer("findCorners");
+            using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.FindCorners);
 
             DtCrowdAgent debugAgent = debug != null ? debug.agent : null;
             foreach (DtCrowdAgent ag in agents)
@@ -969,7 +969,7 @@ namespace DotRecast.Detour.Crowd
 
         private void TriggerOffMeshConnections(IList<DtCrowdAgent> agents)
         {
-            using var timer = _telemetry.ScopedTimer("triggerOffMeshConnections");
+            using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.TriggerOffMeshConnections);
 
             foreach (DtCrowdAgent ag in agents)
             {
@@ -1017,7 +1017,7 @@ namespace DotRecast.Detour.Crowd
 
         private void CalculateSteering(IList<DtCrowdAgent> agents)
         {
-            using var timer = _telemetry.ScopedTimer("calculateSteering");
+            using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.CalculateSteering);
 
             foreach (DtCrowdAgent ag in agents)
             {
@@ -1114,7 +1114,7 @@ namespace DotRecast.Detour.Crowd
 
         private void PlanVelocity(DtCrowdAgentDebugInfo debug, IList<DtCrowdAgent> agents)
         {
-            using var timer = _telemetry.ScopedTimer("planVelocity");
+            using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.PlanVelocity);
 
             DtCrowdAgent debugAgent = debug != null ? debug.agent : null;
             foreach (DtCrowdAgent ag in agents)
@@ -1184,7 +1184,7 @@ namespace DotRecast.Detour.Crowd
 
         private void Integrate(float dt, IList<DtCrowdAgent> agents)
         {
-            using var timer = _telemetry.ScopedTimer("integrate");
+            using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.Integrate);
 
             foreach (DtCrowdAgent ag in agents)
             {
@@ -1199,7 +1199,7 @@ namespace DotRecast.Detour.Crowd
 
         private void HandleCollisions(IList<DtCrowdAgent> agents)
         {
-            using var timer = _telemetry.ScopedTimer("handleCollisions");
+            using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.HandleCollisions);
 
             for (int iter = 0; iter < 4; ++iter)
             {
@@ -1275,7 +1275,7 @@ namespace DotRecast.Detour.Crowd
 
         private void MoveAgents(IList<DtCrowdAgent> agents)
         {
-            using var timer = _telemetry.ScopedTimer("moveAgents");
+            using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.MoveAgents);
 
             foreach (DtCrowdAgent ag in agents)
             {
@@ -1301,7 +1301,7 @@ namespace DotRecast.Detour.Crowd
 
         private void UpdateOffMeshConnections(IList<DtCrowdAgent> agents, float dt)
         {
-            using var timer = _telemetry.ScopedTimer("updateOffMeshConnections");
+            using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.UpdateOffMeshConnections);
 
             foreach (DtCrowdAgent ag in agents)
             {
