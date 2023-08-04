@@ -315,13 +315,13 @@ public class CrowdProfilingTool
 
     private bool NeedsNewTarget(DtCrowdAgent ag)
     {
-        if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_NONE
-            || ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_FAILED)
+        if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_NONE
+            || ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_FAILED)
         {
             return true;
         }
 
-        if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_VALID)
+        if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_VALID)
         {
             float dx = ag.targetPos.x - ag.npos.x;
             float dy = ag.targetPos.y - ag.npos.y;
@@ -373,14 +373,14 @@ public class CrowdProfilingTool
                     col = DuRGBA(120, 80, 160, 128);
                 }
 
-                if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING
-                    || ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE)
+                if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING
+                    || ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE)
                     col = DuLerpCol(col, DuRGBA(255, 255, 32, 128), 128);
-                else if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_PATH)
+                else if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_PATH)
                     col = DuLerpCol(col, DuRGBA(255, 64, 32, 128), 128);
-                else if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_FAILED)
+                else if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_FAILED)
                     col = DuRGBA(255, 32, 16, 128);
-                else if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
+                else if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                     col = DuLerpCol(col, DuRGBA(64, 255, 0, 128), 128);
 
                 dd.DebugDrawCylinder(pos.x - radius, pos.y + radius * 0.1f, pos.z - radius, pos.x + radius, pos.y + height,

@@ -2,7 +2,7 @@
 {
     /// The type of navigation mesh polygon the agent is currently traversing.
     /// @ingroup crowd
-    public enum CrowdAgentState
+    public enum DtCrowdAgentState
     {
         DT_CROWDAGENT_STATE_INVALID,
 

@@ -538,14 +538,14 @@ public class CrowdTool : IRcTool
             RcVec3f pos = ag.npos;
 
             int col = DuRGBA(220, 220, 220, 128);
-            if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING
-                || ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE)
+            if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING
+                || ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE)
                 col = DuLerpCol(col, DuRGBA(128, 0, 255, 128), 32);
-            else if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_PATH)
+            else if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_PATH)
                 col = DuLerpCol(col, DuRGBA(128, 0, 255, 128), 128);
-            else if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_FAILED)
+            else if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_FAILED)
                 col = DuRGBA(255, 32, 16, 128);
-            else if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
+            else if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                 col = DuLerpCol(col, DuRGBA(64, 255, 0, 128), 128);
 
             dd.DebugDrawCylinder(pos.x - radius, pos.y + radius * 0.1f, pos.z - radius, pos.x + radius, pos.y + height,
@@ -597,14 +597,14 @@ public class CrowdTool : IRcTool
             RcVec3f dvel = ag.dvel;
 
             int col = DuRGBA(220, 220, 220, 192);
-            if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING
-                || ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE)
+            if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING
+                || ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE)
                 col = DuLerpCol(col, DuRGBA(128, 0, 255, 192), 48);
-            else if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_PATH)
+            else if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_PATH)
                 col = DuLerpCol(col, DuRGBA(128, 0, 255, 192), 128);
-            else if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_FAILED)
+            else if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_FAILED)
                 col = DuRGBA(255, 32, 16, 192);
-            else if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
+            else if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                 col = DuLerpCol(col, DuRGBA(64, 255, 0, 192), 128);
 
             dd.DebugDrawCircle(pos.x, pos.y + height, pos.z, radius, col, 2.0f);

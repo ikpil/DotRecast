@@ -75,12 +75,12 @@ namespace DotRecast.Detour.Crowd
             return new RcAnonymousDisposable(() => Stop(label));
         }
 
-        public void Start(DtCrowdTimerLabel name)
+        private void Start(DtCrowdTimerLabel name)
         {
             _executionTimings.Add(name, RcFrequency.Ticks);
         }
 
-        public void Stop(DtCrowdTimerLabel name)
+        private void Stop(DtCrowdTimerLabel name)
         {
             long duration = RcFrequency.Ticks - _executionTimings[name];
             if (!_executionTimingSamples.TryGetValue(name, out var s))

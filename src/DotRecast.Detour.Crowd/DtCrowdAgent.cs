@@ -31,7 +31,7 @@ namespace DotRecast.Detour.Crowd
         public readonly long idx;
 
         /// The type of mesh polygon the agent is traversing. (See: #CrowdAgentState)
-        public CrowdAgentState state;
+        public DtCrowdAgentState state;
 
         /// True if the agent has valid path (targetState == DT_CROWDAGENT_TARGET_VALID) and the path does not lead to the
         /// requested position, else false.
@@ -78,7 +78,7 @@ namespace DotRecast.Detour.Crowd
         /// The local path corridor corners for the agent.
         public List<StraightPathItem> corners = new List<StraightPathItem>();
 
-        public MoveRequestState targetState;
+        public DtMoveRequestState targetState;
 
         /// < State of the movement request.
         public long targetRef;
@@ -206,11 +206,11 @@ namespace DotRecast.Detour.Crowd
             targetPathQueryResult = null;
             if (targetRef != 0)
             {
-                targetState = MoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING;
+                targetState = DtMoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING;
             }
             else
             {
-                targetState = MoveRequestState.DT_CROWDAGENT_TARGET_FAILED;
+                targetState = DtMoveRequestState.DT_CROWDAGENT_TARGET_FAILED;
             }
         }
     }
