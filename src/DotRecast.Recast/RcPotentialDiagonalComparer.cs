@@ -4,6 +4,12 @@ namespace DotRecast.Recast
 {
     public class RcPotentialDiagonalComparer : IComparer<RcPotentialDiagonal>
     {
+        public static readonly RcPotentialDiagonalComparer Shared = new RcPotentialDiagonalComparer();
+
+        private RcPotentialDiagonalComparer()
+        {
+        }
+
         public int Compare(RcPotentialDiagonal va, RcPotentialDiagonal vb)
         {
             RcPotentialDiagonal a = va;

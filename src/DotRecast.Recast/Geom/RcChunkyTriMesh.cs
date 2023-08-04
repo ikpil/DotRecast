@@ -102,12 +102,12 @@ namespace DotRecast.Recast.Geom
 
                 if (axis == 0)
                 {
-                    Array.Sort(items, imin, imax - imin, new CompareItemX());
+                    Array.Sort(items, imin, imax - imin, BoundsItemXComparer.Shared);
                     // Sort along x-axis
                 }
                 else if (axis == 1)
                 {
-                    Array.Sort(items, imin, imax - imin, new CompareItemY());
+                    Array.Sort(items, imin, imax - imin, BoundsItemYComparer.Shared);
                     // Sort along y-axis
                 }
 

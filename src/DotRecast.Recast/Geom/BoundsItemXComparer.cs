@@ -2,8 +2,14 @@
 
 namespace DotRecast.Recast.Geom
 {
-    public class CompareItemX : IComparer<BoundsItem>
+    public class BoundsItemXComparer : IComparer<BoundsItem>
     {
+        public static readonly BoundsItemXComparer Shared = new BoundsItemXComparer();
+
+        private BoundsItemXComparer()
+        {
+        }
+
         public int Compare(BoundsItem a, BoundsItem b)
         {
             return a.bmin.x.CompareTo(b.bmin.x);
