@@ -2,7 +2,7 @@
 
 namespace DotRecast.Recast
 {
-    public class CompareDiagDist : IComparer<RcPotentialDiagonal>
+    public class RcPotentialDiagonalComparer : IComparer<RcPotentialDiagonal>
     {
         public int Compare(RcPotentialDiagonal va, RcPotentialDiagonal vb)
         {

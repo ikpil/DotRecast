@@ -619,7 +619,7 @@ namespace DotRecast.Recast
                 region.holes[i].leftmost = minleft[2];
             }
 
-            Array.Sort(region.holes, new CompareHoles());
+            Array.Sort(region.holes, new RcContourHoleComparer());
 
             int maxVerts = region.outline.nverts;
             for (int i = 0; i < region.nholes; i++)
@@ -665,7 +665,7 @@ namespace DotRecast.Recast
                     }
 
                     // Sort potential diagonals by distance, we want to make the connection as short as possible.
-                    Array.Sort(diags, 0, ndiags, new CompareDiagDist());
+                    Array.Sort(diags, 0, ndiags, new RcPotentialDiagonalComparer());
 
                     // Find a diagonal that is not intersecting the outline not the remaining holes.
                     index = -1;
