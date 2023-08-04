@@ -6,14 +6,14 @@ namespace DotRecast.Detour
     /**
      * Calculate the intersection between a polygon and a circle. A dodecagon is used as an approximation of the circle.
      */
-    public class StrictPolygonByCircleConstraint : IPolygonByCircleConstraint
+    public class DtStrictDtPolygonByCircleConstraint : IDtPolygonByCircleConstraint
     {
         private const int CIRCLE_SEGMENTS = 12;
         private static readonly float[] UnitCircle = MakeUnitCircle();
 
-        public static readonly IPolygonByCircleConstraint Strict = new StrictPolygonByCircleConstraint();
+        public static readonly IDtPolygonByCircleConstraint Strict = new DtStrictDtPolygonByCircleConstraint();
 
-        private StrictPolygonByCircleConstraint()
+        private DtStrictDtPolygonByCircleConstraint()
         {
         }
 

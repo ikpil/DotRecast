@@ -21,7 +21,7 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
-    public interface IPolygonByCircleConstraint
+    public interface IDtPolygonByCircleConstraint
     {
         float[] Apply(float[] polyVerts, RcVec3f circleCenter, float radius);
     }

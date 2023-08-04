@@ -297,9 +297,9 @@ namespace DotRecast.Recast.DemoTool.Tools
             float dz = epos.z - spos.z;
             float dist = (float)Math.Sqrt(dx * dx + dz * dz);
 
-            IPolygonByCircleConstraint constraint = constrainByCircle
-                ? StrictPolygonByCircleConstraint.Strict
-                : NoOpPolygonByCircleConstraint.Noop;
+            IDtPolygonByCircleConstraint constraint = constrainByCircle
+                ? DtStrictDtPolygonByCircleConstraint.Strict
+                : DtNoOpDtPolygonByCircleConstraint.Noop;
 
             var frand = new FRand();
             var navQuery = _sample.GetNavMeshQuery();
