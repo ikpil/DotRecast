@@ -25,10 +25,10 @@ using DotRecast.Detour;
 using DotRecast.Detour.Crowd;
 using DotRecast.Detour.Crowd.Tracking;
 
-using DotRecast.Recast.DemoTool.Builder;
+using DotRecast.Recast.Toolset.Builder;
 using DotRecast.Recast.Demo.Draw;
-using DotRecast.Recast.DemoTool;
-using DotRecast.Recast.DemoTool.Tools;
+using DotRecast.Recast.Toolset;
+using DotRecast.Recast.Toolset.Tools;
 using ImGuiNET;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;

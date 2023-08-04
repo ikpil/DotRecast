@@ -35,9 +35,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRecast.Detour.TileCache.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRecast.Recast.Demo", "src\DotRecast.Recast.Demo\DotRecast.Recast.Demo.csproj", "{023E1E6A-4895-4573-89AE-3D5D8E0B39C8}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{65754308-3C9B-4544-9D7B-F2C16A4E2486}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRecast.Recast.DemoTool", "src\DotRecast.Recast.DemoTool\DotRecast.Recast.DemoTool.csproj", "{DF987948-8C23-4337-AF83-D87D6407518D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRecast.Recast.Toolset", "src\DotRecast.Recast.Toolset\DotRecast.Recast.Toolset.csproj", "{DF987948-8C23-4337-AF83-D87D6407518D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -22,10 +22,10 @@ using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using DotRecast.Core;
 using DotRecast.Detour;
-using DotRecast.Recast.DemoTool.Builder;
-using DotRecast.Recast.DemoTool.Geom;
+using DotRecast.Recast.Toolset.Builder;
+using DotRecast.Recast.Toolset.Geom;
 using DotRecast.Recast.Demo.UI;
-using DotRecast.Recast.DemoTool;
+using DotRecast.Recast.Toolset;
 
 namespace DotRecast.Recast.Demo.Draw;
 

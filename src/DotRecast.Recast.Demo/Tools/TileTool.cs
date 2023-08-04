@@ -1,8 +1,8 @@
 ﻿using System;
 using DotRecast.Core;
 using DotRecast.Recast.Demo.Draw;
-using DotRecast.Recast.DemoTool;
-using DotRecast.Recast.DemoTool.Tools;
+using DotRecast.Recast.Toolset;
+using DotRecast.Recast.Toolset.Tools;
 using ImGuiNET;
 using Serilog;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;

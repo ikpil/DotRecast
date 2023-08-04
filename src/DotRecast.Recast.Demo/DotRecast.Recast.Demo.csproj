@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\DotRecast.Recast.DemoTool\DotRecast.Recast.DemoTool.csproj" />
+        <ProjectReference Include="..\DotRecast.Recast.Toolset\DotRecast.Recast.Toolset.csproj" />
     </ItemGroup>
 
 </Project>

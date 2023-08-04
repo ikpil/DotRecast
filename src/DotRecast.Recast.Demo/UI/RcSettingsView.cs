@@ -24,7 +24,7 @@ using System.Numerics;
 using DotRecast.Core;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Demo.Messages;
-using DotRecast.Recast.DemoTool;
+using DotRecast.Recast.Toolset;
 using ImGuiNET;
 using Serilog;
 
