@@ -2,11 +2,11 @@
 
 namespace DotRecast.Detour
 {
-    public class CompareItemX : IComparer<BVItem>
+    public class BVItemZComparer : IComparer<BVItem>
     {
         public int Compare(BVItem a, BVItem b)
         {
-            return a.bmin[0].CompareTo(b.bmin[0]);
+            return a.bmin[2].CompareTo(b.bmin[2]);
         }
     }
 }

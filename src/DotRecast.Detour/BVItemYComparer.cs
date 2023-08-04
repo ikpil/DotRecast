@@ -2,7 +2,7 @@
 
 namespace DotRecast.Detour
 {
-    public class CompareItemY : IComparer<BVItem>
+    public class BVItemYComparer : IComparer<BVItem>
     {
         public int Compare(BVItem a, BVItem b)
         {
