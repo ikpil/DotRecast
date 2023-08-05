@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 using DotRecast.Core;
+using DotRecast.Detour.TileCache.Test.Io;
 using DotRecast.Recast;
 using DotRecast.Recast.Geom;
 
@@ -107,7 +108,9 @@ public class TestTileLayerBuilder : AbstractTileLayersBuilder
                 header.maxy = layer.maxy;
                 header.hmin = layer.hmin;
                 header.hmax = layer.hmax;
-                result.Add(builder.CompressTileCacheLayer(header, layer.heights, layer.areas, layer.cons, order, cCompatibility));
+
+                var comp = DtTileCacheCompressorForTestFactory.Shared.Get(cCompatibility);
+                result.Add(builder.CompressTileCacheLayer(header, layer.heights, layer.areas, layer.cons, order, cCompatibility, comp));
             }
         }
 

@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using DotRecast.Core;
 using DotRecast.Detour.Dynamic.Io;
+using DotRecast.Detour.Dynamic.Test.Io;
 using DotRecast.Recast;
 using Moq;
 using NUnit.Framework;
@@ -96,7 +97,7 @@ public class VoxelQueryTest
         using var bis = new BinaryReader(ms);
 
         // load voxels from file
-        VoxelFileReader reader = new VoxelFileReader();
+        VoxelFileReader reader = new VoxelFileReader(DtVoxelTileLZ4ForTestCompressor.Shared);
         VoxelFile f = reader.Read(bis);
         // create dynamic navmesh
         var mesh = new DynamicNavMesh(f);

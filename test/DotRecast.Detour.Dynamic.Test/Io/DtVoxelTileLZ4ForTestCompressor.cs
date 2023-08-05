@@ -18,12 +18,19 @@ freely, subject to the following restrictions:
 
 using System;
 using DotRecast.Core;
+using DotRecast.Detour.Dynamic.Io;
 using K4os.Compression.LZ4;
 
-namespace DotRecast.Detour.Dynamic.Io
+namespace DotRecast.Detour.Dynamic.Test.Io
 {
-    public class LZ4VoxelTileCompressor : IRcCompressor
+    public class DtVoxelTileLZ4ForTestCompressor : IRcCompressor
     {
+        public static readonly DtVoxelTileLZ4ForTestCompressor Shared = new();
+
+        private DtVoxelTileLZ4ForTestCompressor()
+        {
+        }
+
         public byte[] Decompress(byte[] data)
         {
             int compressedSize = ByteUtils.GetIntBE(data, 0);

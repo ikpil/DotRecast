@@ -111,8 +111,7 @@ namespace DotRecast.Detour.TileCache
             return (int)(refs & tileMask);
         }
 
-        public DtTileCache(DtTileCacheParams option, TileCacheStorageParams storageParams, DtNavMesh navmesh,
-            IRcCompressor tcomp, IDtTileCacheMeshProcess tmprocs)
+        public DtTileCache(DtTileCacheParams option, TileCacheStorageParams storageParams, DtNavMesh navmesh, IRcCompressor tcomp, IDtTileCacheMeshProcess tmprocs)
         {
             m_params = option;
             m_storageParams = storageParams;
@@ -677,8 +676,7 @@ namespace DotRecast.Detour.TileCache
 
         public DtTileCacheLayer DecompressTile(DtCompressedTile tile)
         {
-            DtTileCacheLayer layer = builder.DecompressTileCacheLayer(m_tcomp, tile.data, m_storageParams.byteOrder,
-                m_storageParams.cCompatibility);
+            DtTileCacheLayer layer = builder.DecompressTileCacheLayer(m_tcomp, tile.data, m_storageParams.byteOrder, m_storageParams.cCompatibility);
             return layer;
         }
 

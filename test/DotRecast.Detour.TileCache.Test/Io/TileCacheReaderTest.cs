@@ -29,7 +29,7 @@ namespace DotRecast.Detour.TileCache.Test.Io;
 [Parallelizable]
 public class TileCacheReaderTest
 {
-    private readonly DtTileCacheReader reader = new DtTileCacheReader();
+    private readonly DtTileCacheReader reader = new DtTileCacheReader(DtTileCacheCompressorForTestFactory.Shared);
 
     [Test]
     public void TestNavmesh()

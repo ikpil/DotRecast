@@ -675,7 +675,7 @@ public class DynamicUpdateTool : IRcTool
         {
             using var fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
             using var br = new BinaryReader(fs);
-            VoxelFileReader reader = new VoxelFileReader();
+            VoxelFileReader reader = new VoxelFileReader(DtVoxelTileLZ4DemoCompressor.Shared);
             VoxelFile voxelFile = reader.Read(br);
             dynaMesh = new DynamicNavMesh(voxelFile);
             dynaMesh.config.keepIntermediateResults = true;
@@ -697,7 +697,7 @@ public class DynamicUpdateTool : IRcTool
         using var fs = new FileStream(filename, FileMode.CreateNew, FileAccess.Write);
         using var bw = new BinaryWriter(fs);
         VoxelFile voxelFile = VoxelFile.From(dynaMesh);
-        VoxelFileWriter writer = new VoxelFileWriter();
+        VoxelFileWriter writer = new VoxelFileWriter(DtVoxelTileLZ4DemoCompressor.Shared);
         writer.Write(bw, voxelFile, compression);
     }
 

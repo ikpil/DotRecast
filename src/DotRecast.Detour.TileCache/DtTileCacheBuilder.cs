@@ -1905,7 +1905,7 @@ namespace DotRecast.Detour.TileCache
             }
         }
 
-        public byte[] CompressTileCacheLayer(DtTileCacheLayer layer, RcByteOrder order, bool cCompatibility)
+        public byte[] CompressTileCacheLayer(IRcCompressor comp, DtTileCacheLayer layer, RcByteOrder order, bool cCompatibility)
         {
             using var ms = new MemoryStream();
             using var baos = new BinaryWriter(ms);
@@ -1922,7 +1922,8 @@ namespace DotRecast.Detour.TileCache
                     buffer[gridSize * 2 + i] = (byte)layer.cons[i];
                 }
 
-                baos.Write(DtTileCacheCompressorFactory.Get(cCompatibility).Compress(buffer));
+                var compressed = comp.Compress(buffer);
+                baos.Write(compressed);
                 return ms.ToArray();
             }
             catch (IOException e)
@@ -1931,8 +1932,7 @@ namespace DotRecast.Detour.TileCache
             }
         }
 
-        public byte[] CompressTileCacheLayer(DtTileCacheLayerHeader header, int[] heights, int[] areas, int[] cons,
-            RcByteOrder order, bool cCompatibility)
+        public byte[] CompressTileCacheLayer(DtTileCacheLayerHeader header, int[] heights, int[] areas, int[] cons, RcByteOrder order, bool cCompatibility, IRcCompressor comp)
         {
             using var ms = new MemoryStream();
             using var baos = new BinaryWriter(ms);
@@ -1949,7 +1949,8 @@ namespace DotRecast.Detour.TileCache
                     buffer[gridSize * 2 + i] = (byte)cons[i];
                 }
 
-                baos.Write(DtTileCacheCompressorFactory.Get(cCompatibility).Compress(buffer));
+                var compressed = comp.Compress(buffer);
+                baos.Write(compressed);
                 return ms.ToArray();
             }
             catch (IOException e)
@@ -1958,8 +1959,7 @@ namespace DotRecast.Detour.TileCache
             }
         }
 
-        public DtTileCacheLayer DecompressTileCacheLayer(IRcCompressor comp, byte[] compressed, RcByteOrder order,
-            bool cCompatibility)
+        public DtTileCacheLayer DecompressTileCacheLayer(IRcCompressor comp, byte[] compressed, RcByteOrder order, bool cCompatibility)
         {
             RcByteBuffer buf = new RcByteBuffer(compressed);
             buf.Order(order);

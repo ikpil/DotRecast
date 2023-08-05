@@ -19,25 +19,35 @@ freely, subject to the following restrictions:
 */
 
 using DotRecast.Core;
-using K4os.Compression.LZ4;
 
 namespace DotRecast.Detour.TileCache.Io.Compress
 {
-    public class DtLz4Compressor : IRcCompressor
+    public class DtTileCacheFastLzCompressor : IRcCompressor
     {
+        public static readonly DtTileCacheFastLzCompressor Shared = new DtTileCacheFastLzCompressor();
+
+        private DtTileCacheFastLzCompressor()
+        {
+            
+        }
+
         public byte[] Decompress(byte[] buf)
         {
-            return LZ4Pickler.Unpickle(buf);
+            return Decompress(buf, 0, buf.Length, buf.Length * 3);
         }
-        
+
         public byte[] Decompress(byte[] buf, int offset, int len, int outputlen)
         {
-            return LZ4Pickler.Unpickle(buf, offset, len);
+            byte[] output = new byte[outputlen];
+            FastLz.Decompress(buf, offset, len, output, 0, outputlen);
+            return output;
         }
 
         public byte[] Compress(byte[] buf)
         {
-            return LZ4Pickler.Pickle(buf);
+            byte[] output = new byte[FastLz.CalculateOutputBufferLength(buf.Length)];
+            int len = FastLz.Compress(buf, 0, buf.Length, output, 0, output.Length);
+            return RcArrayUtils.CopyOf(output, len);
         }
     }
 }

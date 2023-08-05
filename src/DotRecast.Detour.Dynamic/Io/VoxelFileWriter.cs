@@ -24,7 +24,12 @@ namespace DotRecast.Detour.Dynamic.Io
 {
     public class VoxelFileWriter : DtWriter
     {
-        private readonly LZ4VoxelTileCompressor compressor = new LZ4VoxelTileCompressor();
+        private readonly IRcCompressor _compressor;
+
+        public VoxelFileWriter(IRcCompressor compressor)
+        {
+            _compressor = compressor;
+        }
 
         public void Write(BinaryWriter stream, VoxelFile f, bool compression)
         {
@@ -85,7 +90,7 @@ namespace DotRecast.Detour.Dynamic.Io
             byte[] bytes = tile.spanData;
             if (compression)
             {
-                bytes = compressor.Compress(bytes);
+                bytes = _compressor.Compress(bytes);
             }
 
             Write(stream, bytes.Length, byteOrder);

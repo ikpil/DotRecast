@@ -87,12 +87,12 @@ public class VoxelFileReaderWriterTest
 
     private VoxelFile ReadWriteRead(BinaryReader bis, bool compression)
     {
-        VoxelFileReader reader = new VoxelFileReader();
+        VoxelFileReader reader = new VoxelFileReader(DtVoxelTileLZ4ForTestCompressor.Shared);
         VoxelFile f = reader.Read(bis);
 
         using var msOut = new MemoryStream();
         using var bwOut = new BinaryWriter(msOut);
-        VoxelFileWriter writer = new VoxelFileWriter();
+        VoxelFileWriter writer = new VoxelFileWriter(DtVoxelTileLZ4ForTestCompressor.Shared);
         writer.Write(bwOut, f, compression);
 
         using var msIn = new MemoryStream(msOut.ToArray());

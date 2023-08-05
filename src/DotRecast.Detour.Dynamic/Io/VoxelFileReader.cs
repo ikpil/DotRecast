@@ -24,7 +24,12 @@ namespace DotRecast.Detour.Dynamic.Io
 {
     public class VoxelFileReader
     {
-        private readonly LZ4VoxelTileCompressor compressor = new LZ4VoxelTileCompressor();
+        private readonly IRcCompressor _compressor;
+
+        public VoxelFileReader(IRcCompressor compressor)
+        {
+            _compressor = compressor;
+        }
 
         public VoxelFile Read(BinaryReader stream)
         {
@@ -127,7 +132,7 @@ namespace DotRecast.Detour.Dynamic.Io
                 byte[] bytes = buf.ReadBytes(voxelSize).ToArray();
                 if (compression)
                 {
-                    bytes = compressor.Decompress(bytes);
+                    bytes = _compressor.Decompress(bytes);
                 }
 
                 RcByteBuffer data = new RcByteBuffer(bytes);

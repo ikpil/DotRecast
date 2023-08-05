@@ -16,7 +16,7 @@
 
 using System;
 
-namespace DotRecast.Detour.TileCache.Io.Compress
+namespace DotRecast.Core
 {
     /**
      * Core of FastLZ compression algorithm.

@@ -31,8 +31,8 @@ namespace DotRecast.Detour.TileCache.Test.Io;
 [Parallelizable]
 public class TileCacheReaderWriterTest : AbstractTileCacheTest
 {
-    private readonly DtTileCacheReader reader = new DtTileCacheReader();
-    private readonly DtTileCacheWriter writer = new DtTileCacheWriter();
+    private readonly DtTileCacheReader reader = new DtTileCacheReader(DtTileCacheCompressorForTestFactory.Shared);
+    private readonly DtTileCacheWriter writer = new DtTileCacheWriter(DtTileCacheCompressorForTestFactory.Shared);
 
     [Test]
     public void TestFastLz()

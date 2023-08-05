@@ -19,17 +19,31 @@ freely, subject to the following restrictions:
 */
 
 using DotRecast.Core;
+using K4os.Compression.LZ4;
 
-namespace DotRecast.Detour.TileCache.Io.Compress
+namespace DotRecast.Detour.TileCache.Test.Io
 {
-    public static class DtTileCacheCompressorFactory
+    public class DtTileCacheLZ4ForTestCompressor : IRcCompressor
     {
-        public static IRcCompressor Get(bool cCompatibility)
-        {
-            if (cCompatibility)
-                return new DtFastLzCompressor();
+        public static readonly DtTileCacheLZ4ForTestCompressor Shared = new();
 
-            return new DtLz4Compressor();
+        private DtTileCacheLZ4ForTestCompressor()
+        {
+        }
+
+        public byte[] Decompress(byte[] buf)
+        {
+            return LZ4Pickler.Unpickle(buf);
+        }
+
+        public byte[] Decompress(byte[] buf, int offset, int len, int outputlen)
+        {
+            return LZ4Pickler.Unpickle(buf, offset, len);
+        }
+
+        public byte[] Compress(byte[] buf)
+        {
+            return LZ4Pickler.Pickle(buf);
         }
     }
 }

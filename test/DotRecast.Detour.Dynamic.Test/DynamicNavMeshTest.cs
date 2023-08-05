@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using DotRecast.Core;
 using DotRecast.Detour.Dynamic.Colliders;
 using DotRecast.Detour.Dynamic.Io;
+using DotRecast.Detour.Dynamic.Test.Io;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Dynamic.Test;
@@ -25,7 +26,7 @@ public class DynamicNavMeshTest
         using var bis = new BinaryReader(ms);
 
         // load voxels from file
-        VoxelFileReader reader = new VoxelFileReader();
+        VoxelFileReader reader = new VoxelFileReader(DtVoxelTileLZ4ForTestCompressor.Shared);
         VoxelFile f = reader.Read(bis);
         // create dynamic navmesh
         DynamicNavMesh mesh = new DynamicNavMesh(f);

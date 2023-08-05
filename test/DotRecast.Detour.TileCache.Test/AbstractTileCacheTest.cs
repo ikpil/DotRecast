@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using DotRecast.Core;
 using DotRecast.Detour.TileCache.Io.Compress;
+using DotRecast.Detour.TileCache.Test.Io;
 using DotRecast.Recast.Geom;
 using NUnit.Framework;
 using static DotRecast.Core.RcMath;
@@ -72,8 +73,8 @@ public class AbstractTileCacheTest
         navMeshParams.maxTiles = 256;
         navMeshParams.maxPolys = 16384;
         DtNavMesh navMesh = new DtNavMesh(navMeshParams, 6);
-        DtTileCache tc = new DtTileCache(option, new TileCacheStorageParams(order, cCompatibility), navMesh,
-            DtTileCacheCompressorFactory.Get(cCompatibility), new TestTileCacheMeshProcess());
+        var comp = DtTileCacheCompressorForTestFactory.Shared.Get(cCompatibility);
+        DtTileCache tc = new DtTileCache(option, new TileCacheStorageParams(order, cCompatibility), navMesh, comp, new TestTileCacheMeshProcess());
         return tc;
     }
 }
