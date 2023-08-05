@@ -20,7 +20,6 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using DotRecast.Core;
 using DotRecast.Recast.Geom;
 
@@ -107,7 +106,7 @@ namespace DotRecast.Recast.Toolset.Geom
 
         public IEnumerable<RcTriMesh> Meshes()
         {
-            return ImmutableArray.Create(_mesh);
+            return RcImmutableArray.Create(_mesh);
         }
 
         public List<DemoOffMeshConnection> GetOffMeshConnections()

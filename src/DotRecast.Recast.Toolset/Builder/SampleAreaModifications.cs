@@ -18,8 +18,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using System.Collections.Immutable;
 using System.Linq;
+using DotRecast.Core;
 
 namespace DotRecast.Recast.Toolset.Builder
 {
@@ -49,7 +49,7 @@ namespace DotRecast.Recast.Toolset.Builder
         public static readonly RcAreaModification SAMPLE_AREAMOD_DOOR = new RcAreaModification(SAMPLE_POLYAREA_TYPE_DOOR);
         public static readonly RcAreaModification SAMPLE_AREAMOD_JUMP = new RcAreaModification(SAMPLE_POLYAREA_TYPE_JUMP);
 
-        public static readonly ImmutableArray<RcAreaModification> Values = ImmutableArray.Create(
+        public static readonly RcImmutableArray<RcAreaModification> Values = RcImmutableArray.Create(
             SAMPLE_AREAMOD_WALKABLE,
             SAMPLE_AREAMOD_GROUND,
             SAMPLE_AREAMOD_WATER,

@@ -18,7 +18,6 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using DotRecast.Core;
 
 namespace DotRecast.Recast.Geom
@@ -56,12 +55,12 @@ namespace DotRecast.Recast.Geom
 
         public IEnumerable<RcTriMesh> Meshes()
         {
-            return ImmutableArray.Create(_mesh);
+            return RcImmutableArray.Create(_mesh);
         }
 
         public IList<RcConvexVolume> ConvexVolumes()
         {
-            return ImmutableArray<RcConvexVolume>.Empty;
+            return RcImmutableArray<RcConvexVolume>.Empty;
         }
     }
 }

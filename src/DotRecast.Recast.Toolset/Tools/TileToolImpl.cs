@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Collections.Immutable;
 using DotRecast.Core;
 using DotRecast.Recast.Toolset.Builder;
 
@@ -130,8 +129,7 @@ namespace DotRecast.Recast.Toolset.Tools
 
             var tb = new TileNavMeshBuilder();
             var meshData = tb.BuildMeshData(geom,
-                settings.cellSize, settings.cellHeight, settings.agentHeight, settings.agentRadius, settings.agentMaxClimb,
-                ImmutableArray.Create(result)
+                settings.cellSize, settings.cellHeight, settings.agentHeight, settings.agentRadius, settings.agentMaxClimb, RcImmutableArray.Create(result)
             ).FirstOrDefault();
 
             if (null == meshData)

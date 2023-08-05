@@ -18,7 +18,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
+using DotRecast.Core;
 using DotRecast.Detour;
 using DotRecast.Recast.Toolset.Geom;
 
@@ -55,7 +55,7 @@ namespace DotRecast.Recast.Toolset.Builder
             }
 
             var navMesh = BuildNavMesh(meshData, vertsPerPoly);
-            return new NavMeshBuildResult(ImmutableArray.Create(rcResult), navMesh);
+            return new NavMeshBuildResult(RcImmutableArray.Create(rcResult), navMesh);
         }
 
         private DtNavMesh BuildNavMesh(DtMeshData meshData, int vertsPerPoly)

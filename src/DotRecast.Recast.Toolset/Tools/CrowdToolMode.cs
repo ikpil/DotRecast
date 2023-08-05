@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+﻿using DotRecast.Core;
 
 namespace DotRecast.Recast.Toolset.Tools
 {
@@ -10,7 +10,7 @@ namespace DotRecast.Recast.Toolset.Tools
         public static readonly CrowdToolMode TOGGLE_POLYS = new CrowdToolMode(3, "Toggle Polys");
         public static readonly CrowdToolMode PROFILING = new CrowdToolMode(4, "Profiling");
 
-        public static readonly ImmutableArray<CrowdToolMode> Values = ImmutableArray.Create(
+        public static readonly RcImmutableArray<CrowdToolMode> Values = RcImmutableArray.Create(
             CREATE,
             MOVE_TARGET,
             SELECT,

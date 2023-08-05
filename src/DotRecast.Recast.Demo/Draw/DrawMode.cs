@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Immutable;
+using DotRecast.Core;
 
 namespace DotRecast.Recast.Demo.Draw;
 
@@ -43,7 +44,7 @@ public class DrawMode
     public static readonly DrawMode DRAWMODE_POLYMESH = new(16, "Poly Mesh");
     public static readonly DrawMode DRAWMODE_POLYMESH_DETAIL = new(17, "Poly Mesh Detils");
 
-    public static readonly ImmutableArray<DrawMode> Values = ImmutableArray.Create(
+    public static readonly RcImmutableArray<DrawMode> Values = RcImmutableArray.Create(
         DRAWMODE_MESH,
         DRAWMODE_NAVMESH,
         DRAWMODE_NAVMESH_INVIS,
