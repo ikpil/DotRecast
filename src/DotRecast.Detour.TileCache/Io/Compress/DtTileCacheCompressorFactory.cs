@@ -18,16 +18,18 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core;
+
 namespace DotRecast.Detour.TileCache.Io.Compress
 {
     public static class DtTileCacheCompressorFactory
     {
-        public static IDtTileCacheCompressor Get(bool cCompatibility)
+        public static IRcCompressor Get(bool cCompatibility)
         {
             if (cCompatibility)
-                return new DtTileCacheFastLzCompressor();
+                return new DtFastLzCompressor();
 
-            return new DtTileCacheLZ4Compressor();
+            return new DtLz4Compressor();
         }
     }
 }

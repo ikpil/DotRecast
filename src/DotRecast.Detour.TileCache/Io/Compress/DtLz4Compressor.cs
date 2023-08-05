@@ -18,12 +18,26 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-namespace DotRecast.Detour.TileCache
-{
-    public interface IDtTileCacheCompressor
-    {
-        byte[] Decompress(byte[] buf, int offset, int len, int outputlen);
+using DotRecast.Core;
+using K4os.Compression.LZ4;
 
-        byte[] Compress(byte[] buf);
+namespace DotRecast.Detour.TileCache.Io.Compress
+{
+    public class DtLz4Compressor : IRcCompressor
+    {
+        public byte[] Decompress(byte[] buf)
+        {
+            return LZ4Pickler.Unpickle(buf);
+        }
+        
+        public byte[] Decompress(byte[] buf, int offset, int len, int outputlen)
+        {
+            return LZ4Pickler.Unpickle(buf, offset, len);
+        }
+
+        public byte[] Compress(byte[] buf)
+        {
+            return LZ4Pickler.Pickle(buf);
+        }
     }
 }

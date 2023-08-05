@@ -22,12 +22,17 @@ using K4os.Compression.LZ4;
 
 namespace DotRecast.Detour.Dynamic.Io
 {
-    public class LZ4VoxelTileCompressor
+    public class LZ4VoxelTileCompressor : IRcCompressor
     {
         public byte[] Decompress(byte[] data)
         {
             int compressedSize = ByteUtils.GetIntBE(data, 0);
             return LZ4Pickler.Unpickle(data.AsSpan(4, compressedSize));
+        }
+
+        public byte[] Decompress(byte[] buf, int offset, int len, int outputlen)
+        {
+            return LZ4Pickler.Unpickle(buf, offset, len);
         }
 
         public byte[] Compress(byte[] data)

@@ -54,7 +54,7 @@ namespace DotRecast.Detour.TileCache
         private readonly DtTileCacheParams m_params;
         private readonly TileCacheStorageParams m_storageParams;
 
-        private readonly IDtTileCacheCompressor m_tcomp;
+        private readonly IRcCompressor m_tcomp;
         private readonly IDtTileCacheMeshProcess m_tmproc;
 
         private readonly List<DtTileCacheObstacle> m_obstacles = new List<DtTileCacheObstacle>();
@@ -112,7 +112,7 @@ namespace DotRecast.Detour.TileCache
         }
 
         public DtTileCache(DtTileCacheParams option, TileCacheStorageParams storageParams, DtNavMesh navmesh,
-            IDtTileCacheCompressor tcomp, IDtTileCacheMeshProcess tmprocs)
+            IRcCompressor tcomp, IDtTileCacheMeshProcess tmprocs)
         {
             m_params = option;
             m_storageParams = storageParams;
@@ -726,7 +726,7 @@ namespace DotRecast.Detour.TileCache
             return m_params;
         }
 
-        public IDtTileCacheCompressor GetCompressor()
+        public IRcCompressor GetCompressor()
         {
             return m_tcomp;
         }

@@ -1958,7 +1958,7 @@ namespace DotRecast.Detour.TileCache
             }
         }
 
-        public DtTileCacheLayer DecompressTileCacheLayer(IDtTileCacheCompressor comp, byte[] compressed, RcByteOrder order,
+        public DtTileCacheLayer DecompressTileCacheLayer(IRcCompressor comp, byte[] compressed, RcByteOrder order,
             bool cCompatibility)
         {
             RcByteBuffer buf = new RcByteBuffer(compressed);
