@@ -18,7 +18,7 @@ freely, subject to the following restrictions:
 
 using System.IO;
 using System.IO.Compression;
-using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace DotRecast.Detour.Extras.Unity.Astar
 {
@@ -29,13 +29,13 @@ namespace DotRecast.Detour.Extras.Unity.Astar
             ZipArchiveEntry entry = file.GetEntry(filename);
             using StreamReader reader = new StreamReader(entry.Open());
 
-            JsonSerializerOptions options = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-
+            // for unity3d
             var json = reader.ReadToEnd();
-            return JsonSerializer.Deserialize<GraphMeta>(json, options);
+            return JsonConvert.DeserializeObject<GraphMeta>(json);
+            
+            // var settings = new JsonSerializerSettings();
+            // settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            //return JsonConvert.DeserializeObject<GraphMeta>(json, settings);
         }
     }
 }

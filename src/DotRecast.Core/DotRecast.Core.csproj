@@ -4,8 +4,5 @@
         <TargetFramework>netstandard2.1</TargetFramework>
     </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="System.Text.Json" Version="7.0.3" />
-    </ItemGroup>
 
 </Project>

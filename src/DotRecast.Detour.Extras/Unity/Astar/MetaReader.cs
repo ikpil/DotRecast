@@ -19,9 +19,9 @@ freely, subject to the following restrictions:
 using System;
 using System.IO;
 using System.IO.Compression;
-using System.Text.Json;
-using System.Text.Json.Nodes;
+
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 namespace DotRecast.Detour.Extras.Unity.Astar
 {
@@ -41,7 +41,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
             var regex = new Regex(pattern);
             json = regex.Replace(json, replacement);
 
-            var meta = JsonSerializer.Deserialize<Meta>(json);
+            var meta = JsonConvert.DeserializeObject<Meta>(json);
             if (!meta.IsSupportedType())
             {
                 throw new ArgumentException("Unsupported graph type " + string.Join(", ", meta.typeNames));
