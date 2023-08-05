@@ -19,15 +19,15 @@ using System;
 namespace DotRecast.Detour.TileCache.Io.Compress
 {
     /**
- * Core of FastLZ compression algorithm.
- *
- * This class provides methods for compression and decompression of buffers and saves
- * constants which use by FastLzFrameEncoder and FastLzFrameDecoder.
- *
- * This is refactored code of <a href="https://code.google.com/p/jfastlz/">jfastlz</a>
- * library written by William Kinney.
- */
-    public class FastLz
+     * Core of FastLZ compression algorithm.
+     *
+     * This class provides methods for compression and decompression of buffers and saves
+     * constants which use by FastLzFrameEncoder and FastLzFrameDecoder.
+     *
+     * This is refactored code of <a href="https://code.google.com/p/jfastlz/">jfastlz</a>
+     * library written by William Kinney.
+     */
+    public static class FastLz
     {
         private const int MAX_DISTANCE = 8191;
         private const int MAX_FARDISTANCE = 65535 + MAX_DISTANCE - 1;
@@ -688,10 +688,6 @@ namespace DotRecast.Detour.TileCache.Io.Compress
             }
 
             return (data[offset + 1] & 0xff) << 8 | data[offset] & 0xff;
-        }
-
-        private FastLz()
-        {
         }
     }
 }
