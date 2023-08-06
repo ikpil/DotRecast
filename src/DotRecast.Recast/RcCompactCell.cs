@@ -21,12 +21,18 @@ freely, subject to the following restrictions:
 namespace DotRecast.Recast
 {
     /** Provides information on the content of a cell column in a compact heightfield. */
-    public class RcCompactCell
+    public readonly struct RcCompactCell
     {
         /** Index to the first span in the column. */
-        public int index;
+        public readonly int index;
 
         /** Number of spans in the column. */
-        public int count;
+        public readonly int count;
+
+        public RcCompactCell(int index, int count)
+        {
+            this.index = index;
+            this.count = count;
+        }
     }
 }

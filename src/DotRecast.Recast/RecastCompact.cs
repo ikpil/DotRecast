@@ -64,10 +64,6 @@ namespace DotRecast.Recast
             chf.cells = new RcCompactCell[w * h];
             chf.spans = new RcCompactSpan[spanCount];
             chf.areas = new int[spanCount];
-            for (int i = 0; i < chf.cells.Length; i++)
-            {
-                chf.cells[i] = new RcCompactCell();
-            }
 
             for (int i = 0; i < chf.spans.Length; i++)
             {
@@ -84,9 +80,9 @@ namespace DotRecast.Recast
                     // If there are no spans at this cell, just leave the data to index=0, count=0.
                     if (s == null)
                         continue;
-                    RcCompactCell c = chf.cells[x + y * w];
-                    c.index = idx;
-                    c.count = 0;
+                    
+                    int tmpIdx = idx;
+                    int tmpCount = 0;
                     while (s != null)
                     {
                         if (s.area != RC_NULL_AREA)
@@ -97,11 +93,13 @@ namespace DotRecast.Recast
                             chf.spans[idx].h = Clamp(top - bot, 0, MAX_HEIGHT);
                             chf.areas[idx] = s.area;
                             idx++;
-                            c.count++;
+                            tmpCount++;
                         }
 
                         s = s.next;
                     }
+
+                    chf.cells[x + y * w] = new RcCompactCell(tmpIdx, tmpCount);
                 }
             }
 
