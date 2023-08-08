@@ -24,8 +24,8 @@ namespace DotRecast.Recast
     {
         public const int RC_AREA_FLAGS_MASK = 0x3F;
 
-        public int Value { get; }
-        public int Mask { get; }
+        public readonly int Value;
+        public readonly int Mask;
 
         /**
          * Mask is set to all available bits, which means value is fully applied
@@ -35,7 +35,7 @@ namespace DotRecast.Recast
          */
         public RcAreaModification(int value)
         {
-            this.Value = value;
+            Value = value;
             Mask = RC_AREA_FLAGS_MASK;
         }
 
@@ -48,8 +48,8 @@ namespace DotRecast.Recast
          */
         public RcAreaModification(int value, int mask)
         {
-            this.Value = value;
-            this.Mask = mask;
+            Value = value;
+            Mask = mask;
         }
 
         public RcAreaModification(RcAreaModification other)
