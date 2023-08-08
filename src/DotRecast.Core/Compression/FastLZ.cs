@@ -16,7 +16,7 @@
 
 using System;
 
-namespace DotRecast.Core
+namespace DotRecast.Core.Compression
 {
     /**
      * Core of FastLZ compression algorithm.
@@ -27,7 +27,7 @@ namespace DotRecast.Core
      * This is refactored code of <a href="https://code.google.com/p/jfastlz/">jfastlz</a>
      * library written by William Kinney.
      */
-    public static class FastLz
+    public static class FastLZ
     {
         private const int MAX_DISTANCE = 8191;
         private const int MAX_FARDISTANCE = 65535 + MAX_DISTANCE - 1;

@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using DotRecast.Core;
+using DotRecast.Core.Compression;
 
 namespace DotRecast.Detour.TileCache.Io.Compress
 {
@@ -28,7 +29,6 @@ namespace DotRecast.Detour.TileCache.Io.Compress
 
         private DtTileCacheFastLzCompressor()
         {
-            
         }
 
         public byte[] Decompress(byte[] buf)
@@ -39,14 +39,14 @@ namespace DotRecast.Detour.TileCache.Io.Compress
         public byte[] Decompress(byte[] buf, int offset, int len, int outputlen)
         {
             byte[] output = new byte[outputlen];
-            FastLz.Decompress(buf, offset, len, output, 0, outputlen);
+            FastLZ.Decompress(buf, offset, len, output, 0, outputlen);
             return output;
         }
 
         public byte[] Compress(byte[] buf)
         {
-            byte[] output = new byte[FastLz.CalculateOutputBufferLength(buf.Length)];
-            int len = FastLz.Compress(buf, 0, buf.Length, output, 0, output.Length);
+            byte[] output = new byte[FastLZ.CalculateOutputBufferLength(buf.Length)];
+            int len = FastLZ.Compress(buf, 0, buf.Length, output, 0, output.Length);
             return RcArrayUtils.CopyOf(output, len);
         }
     }
