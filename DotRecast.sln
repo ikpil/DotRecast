@@ -19,7 +19,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRecast.Detour.Extras", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRecast.Detour.TileCache", "src\DotRecast.Detour.TileCache\DotRecast.Detour.TileCache.csproj", "{DEB16B90-CCD4-497E-A2E9-4CC66FD7EF47}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRecast.Recast.Toolset", "src\DotRecast.Recast.Toolset\DotRecast.Recast.Toolset.csproj", "{DF987948-8C23-4337-AF83-D87D6407518D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRecast.Recast.Demo", "src\DotRecast.Recast.Demo\DotRecast.Recast.Demo.csproj", "{023E1E6A-4895-4573-89AE-3D5D8E0B39C8}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{A7CB8D8B-70DA-4567-8316-0659FCAE1C73}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRecast.Core.Test", "test\DotRecast.Core.Test\DotRecast.Core.Test.csproj", "{10395C8F-DFBD-4263-8A20-EA3500A6E55A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRecast.Recast.Test", "test\DotRecast.Recast.Test\DotRecast.Recast.Test.csproj", "{88754FE2-A05A-4D4D-A81A-90418AD32362}"
 EndProject
@@ -32,10 +38,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRecast.Detour.Extras.Test", "test\DotRecast.Detour.Extras.Test\DotRecast.Detour.Extras.Test.csproj", "{7BAA69B2-EDC7-4603-B16F-BC7B24353F81}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRecast.Detour.TileCache.Test", "test\DotRecast.Detour.TileCache.Test\DotRecast.Detour.TileCache.Test.csproj", "{3CAA7306-088E-4373-A406-99755CC2B605}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRecast.Recast.Demo", "src\DotRecast.Recast.Demo\DotRecast.Recast.Demo.csproj", "{023E1E6A-4895-4573-89AE-3D5D8E0B39C8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRecast.Recast.Toolset", "src\DotRecast.Recast.Toolset\DotRecast.Recast.Toolset.csproj", "{DF987948-8C23-4337-AF83-D87D6407518D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -106,6 +108,10 @@ Global
 		{DF987948-8C23-4337-AF83-D87D6407518D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF987948-8C23-4337-AF83-D87D6407518D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF987948-8C23-4337-AF83-D87D6407518D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10395C8F-DFBD-4263-8A20-EA3500A6E55A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10395C8F-DFBD-4263-8A20-EA3500A6E55A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10395C8F-DFBD-4263-8A20-EA3500A6E55A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10395C8F-DFBD-4263-8A20-EA3500A6E55A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FFE40BBF-843B-41FA-8504-F4ABD166762E} = {8ED75CF7-A3D6-423D-8499-9316DD413DAD}
@@ -123,5 +129,6 @@ Global
 		{3CAA7306-088E-4373-A406-99755CC2B605} = {A7CB8D8B-70DA-4567-8316-0659FCAE1C73}
 		{023E1E6A-4895-4573-89AE-3D5D8E0B39C8} = {8ED75CF7-A3D6-423D-8499-9316DD413DAD}
 		{DF987948-8C23-4337-AF83-D87D6407518D} = {8ED75CF7-A3D6-423D-8499-9316DD413DAD}
+		{10395C8F-DFBD-4263-8A20-EA3500A6E55A} = {A7CB8D8B-70DA-4567-8316-0659FCAE1C73}
 	EndGlobalSection
 EndGlobal

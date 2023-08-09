@@ -19,14 +19,9 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="K4os.Compression.LZ4" Version="1.3.5" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\DotRecast.Core.Test\DotRecast.Core.Test.csproj" />
-        <ProjectReference Include="..\..\src\DotRecast.Detour.Dynamic\DotRecast.Detour.Dynamic.csproj"/>
-        <ProjectReference Include="..\..\src\DotRecast.Detour\DotRecast.Detour.csproj"/>
-        <ProjectReference Include="..\..\src\DotRecast.Recast\DotRecast.Recast.csproj"/>
+        <ProjectReference Include="..\..\src\DotRecast.Core\DotRecast.Core.csproj"/>
     </ItemGroup>
-
 </Project>
