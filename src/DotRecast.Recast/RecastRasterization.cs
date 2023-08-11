@@ -59,29 +59,17 @@ namespace DotRecast.Recast
         }
 
 
-        /**
-     * Adds a span to the heightfield. If the new span overlaps existing spans, it will merge the new span with the
-     * existing ones. The span addition can be set to favor flags. If the span is merged to another span and the new
-     * spanMax is within flagMergeThreshold units from the existing span, the span flags are merged.
-     *
-     * @param heightfield
-     *            An initialized heightfield.
-     * @param x
-     *            The width index where the span is to be added. [Limits: 0 <= value < Heightfield::width]
-     * @param y
-     *            The height index where the span is to be added. [Limits: 0 <= value < Heightfield::height]
-     * @param spanMin
-     *            The minimum height of the span. [Limit: < spanMax] [Units: vx]
-     * @param spanMax
-     *            The minimum height of the span. [Limit: <= RecastConstants.SPAN_MAX_HEIGHT] [Units: vx]
-     * @param areaId
-     *            The area id of the span. [Limit: <= WALKABLE_AREA)
-     * @param flagMergeThreshold
-     *            The merge theshold. [Limit: >= 0] [Units: vx]
-     * @see Heightfield, Span.
-     */
-        public static void AddSpan(RcHeightfield heightfield, int x, int y, int spanMin, int spanMax, int areaId,
-            int flagMergeThreshold)
+        /// Adds a span to the heightfield.  If the new span overlaps existing spans,
+        /// it will merge the new span with the existing ones.
+        ///
+        /// @param[in]	heightfield					Heightfield to add spans to
+        /// @param[in]	x					The new span's column cell x index
+        /// @param[in]	z					The new span's column cell z index
+        /// @param[in]	min					The new span's minimum cell index
+        /// @param[in]	max					The new span's maximum cell index
+        /// @param[in]	areaID				The new span's area type ID
+        /// @param[in]	flagMergeThreshold	How close two spans maximum extents need to be to merge area type IDs
+        public static void AddSpan(RcHeightfield heightfield, int x, int y, int spanMin, int spanMax, int areaId, int flagMergeThreshold)
         {
             int idx = x + y * heightfield.width;
 
@@ -225,41 +213,30 @@ namespace DotRecast.Recast
             outVerts2Count = poly2Vert;
         }
 
-        /**
-     * Rasterize a single triangle to the heightfield. This code is extremely hot, so much care should be given to
-     * maintaining maximum perf here.
-     *
-     * @param verts
-     *            An array with vertex coordinates [(x, y, z) * N]
-     * @param v0
-     *            Index of triangle vertex 0, will be multiplied by 3 to get vertex coordinates
-     * @param v1
-     *            Triangle vertex 1 index
-     * @param v2
-     *            Triangle vertex 2 index
-     * @param area
-     *            The area ID to assign to the rasterized spans
-     * @param hf
-     *            Heightfield to rasterize into
-     * @param hfBBMin
-     *            The min extents of the heightfield bounding box
-     * @param hfBBMax
-     *            The max extents of the heightfield bounding box
-     * @param cellSize
-     *            The x and z axis size of a voxel in the heightfield
-     * @param inverseCellSize
-     *            1 / cellSize
-     * @param inverseCellHeight
-     *            1 / cellHeight
-     * @param flagMergeThreshold
-     *            The threshold in which area flags will be merged
-     */
-        private static void RasterizeTri(float[] verts, int v0, int v1, int v2, int area, RcHeightfield hf, RcVec3f hfBBMin,
-            RcVec3f hfBBMax, float cellSize, float inverseCellSize, float inverseCellHeight, int flagMergeThreshold)
+        ///	Rasterize a single triangle to the heightfield.
+        ///
+        ///	This code is extremely hot, so much care should be given to maintaining maximum perf here.
+        /// 
+        /// @param[in] 	v0					Triangle vertex 0
+        /// @param[in] 	v1					Triangle vertex 1
+        /// @param[in] 	v2					Triangle vertex 2
+        /// @param[in] 	areaID				The area ID to assign to the rasterized spans
+        /// @param[in] 	heightfield			Heightfield to rasterize into
+        /// @param[in] 	heightfieldBBMin	The min extents of the heightfield bounding box
+        /// @param[in] 	heightfieldBBMax	The max extents of the heightfield bounding box
+        /// @param[in] 	cellSize			The x and z axis size of a voxel in the heightfield
+        /// @param[in] 	inverseCellSize		1 / cellSize
+        /// @param[in] 	inverseCellHeight	1 / cellHeight
+        /// @param[in] 	flagMergeThreshold	The threshold in which area flags will be merged 
+        /// @returns true if the operation completes successfully.  false if there was an error adding spans to the heightfield.
+        private static void RasterizeTri(float[] verts, int v0, int v1, int v2, int area, RcHeightfield heightfield, 
+            RcVec3f heightfieldBBMin, RcVec3f heightfieldBBMax, 
+            float cellSize, float inverseCellSize, float inverseCellHeight, 
+            int flagMergeThreshold)
         {
             RcVec3f tmin = new RcVec3f();
             RcVec3f tmax = new RcVec3f();
-            float by = hfBBMax.y - hfBBMin.y;
+            float by = heightfieldBBMax.y - heightfieldBBMin.y;
 
             // Calculate the bounding box of the triangle.
             RcVec3f.Copy(ref tmin, verts, v0 * 3);
@@ -270,15 +247,15 @@ namespace DotRecast.Recast
             tmax.Max(verts, v2 * 3);
 
             // If the triangle does not touch the bbox of the heightfield, skip the triagle.
-            if (!OverlapBounds(hfBBMin, hfBBMax, tmin, tmax))
+            if (!OverlapBounds(heightfieldBBMin, heightfieldBBMax, tmin, tmax))
                 return;
 
             // Calculate the footprint of the triangle on the grid's y-axis
-            int z0 = (int)((tmin.z - hfBBMin.z) * inverseCellSize);
-            int z1 = (int)((tmax.z - hfBBMin.z) * inverseCellSize);
+            int z0 = (int)((tmin.z - heightfieldBBMin.z) * inverseCellSize);
+            int z1 = (int)((tmax.z - heightfieldBBMin.z) * inverseCellSize);
 
-            int w = hf.width;
-            int h = hf.height;
+            int w = heightfield.width;
+            int h = heightfield.height;
             // use -1 rather than 0 to cut the polygon properly at the start of the tile
             z0 = Clamp(z0, -1, h - 1);
             z1 = Clamp(z1, 0, h - 1);
@@ -298,7 +275,7 @@ namespace DotRecast.Recast
             for (int z = z0; z <= z1; ++z)
             {
                 // Clip polygon to row. Store the remaining polygon as well
-                float cellZ = hfBBMin.z + z * cellSize;
+                float cellZ = heightfieldBBMin.z + z * cellSize;
                 DividePoly(buf, @in, nvIn, inRow, out nvRow, p1, out nvIn, cellZ + cellSize, 2);
                 (@in, p1) = (p1, @in);
 
@@ -319,8 +296,8 @@ namespace DotRecast.Recast
                     maxX = Math.Max(maxX, v);
                 }
 
-                int x0 = (int)((minX - hfBBMin.x) * inverseCellSize);
-                int x1 = (int)((maxX - hfBBMin.x) * inverseCellSize);
+                int x0 = (int)((minX - heightfieldBBMin.x) * inverseCellSize);
+                int x1 = (int)((maxX - heightfieldBBMin.x) * inverseCellSize);
                 if (x1 < 0 || x0 >= w)
                 {
                     continue;
@@ -333,7 +310,7 @@ namespace DotRecast.Recast
                 for (int x = x0; x <= x1; ++x)
                 {
                     // Clip polygon to column. store the remaining polygon as well
-                    float cx = hfBBMin.x + x * cellSize;
+                    float cx = heightfieldBBMin.x + x * cellSize;
                     DividePoly(buf, inRow, nv2, p1, out nv, p2, out nv2, cx + cellSize, 0);
                     (inRow, p2) = (p2, inRow);
 
@@ -354,8 +331,8 @@ namespace DotRecast.Recast
                         spanMax = Math.Max(spanMax, buf[p1 + i * 3 + 1]);
                     }
 
-                    spanMin -= hfBBMin.y;
-                    spanMax -= hfBBMin.y;
+                    spanMin -= heightfieldBBMin.y;
+                    spanMax -= heightfieldBBMin.y;
                     // Skip the span if it is outside the heightfield bbox
                     if (spanMax < 0.0f)
                         continue;
@@ -371,7 +348,7 @@ namespace DotRecast.Recast
                     int spanMinCellIndex = Clamp((int)Math.Floor(spanMin * inverseCellHeight), 0, SPAN_MAX_HEIGHT);
                     int spanMaxCellIndex = Clamp((int)Math.Ceiling(spanMax * inverseCellHeight), spanMinCellIndex + 1, SPAN_MAX_HEIGHT);
 
-                    AddSpan(hf, x, z, spanMinCellIndex, spanMaxCellIndex, area, flagMergeThreshold);
+                    AddSpan(heightfield, x, z, spanMinCellIndex, spanMaxCellIndex, area, flagMergeThreshold);
                 }
             }
         }
