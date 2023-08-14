@@ -21,6 +21,7 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -398,11 +399,14 @@ public class RecastDemo : IRecastDemoChannel
         var version = _gl.GetStringS(GLEnum.Version);
         var renderGl = _gl.GetStringS(GLEnum.Renderer);
         var glslString = _gl.GetStringS(GLEnum.ShadingLanguageVersion);
-
+        var currentCulture = CultureInfo.CurrentCulture;
 
         var workingDirectory = Directory.GetCurrentDirectory();
-        Logger.Information($"working directory - {workingDirectory}");
+        Logger.Information($"Working directory - {workingDirectory}");
         Logger.Information($"ImGui.Net version - {ImGui.GetVersion()}");
+        Logger.Information($"Culture - {currentCulture.Name}");
+        Logger.Information($"Dotnet Version - {Environment.Version.ToString()}");
+        Logger.Information($"OS Version - {Environment.OSVersion}");
         Logger.Information(vendor);
         Logger.Information(version);
         Logger.Information(renderGl);
@@ -442,9 +446,9 @@ public class RecastDemo : IRecastDemoChannel
     private void OnWindowUpdate(double dt)
     {
         /*
-          * try (MemoryStack stack = StackPush()) { int[] w = stack.MallocInt(1); int[] h =
-          * stack.MallocInt(1); GlfwGetWindowSize(win, w, h); width = w.x; height = h.x; }
-       */
+         * try (MemoryStack stack = StackPush()) { int[] w = stack.MallocInt(1); int[] h =
+         * stack.MallocInt(1); GlfwGetWindowSize(win, w, h); width = w.x; height = h.x; }
+         */
         if (_sample.GetInputGeom() != null)
         {
             var settings = _sample.GetSettings();

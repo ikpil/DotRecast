@@ -6,7 +6,6 @@ namespace DotRecast.Core
     public static class CollectionExtensions
     {
         /// Sorts the given data in-place using insertion sort.
-
         ///
         /// @param	data		The data to sort
         /// @param	dataLength	The number of elements in @p data
