@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Detour.TileCache.Io
 {
-    public class DtTileCacheSetHeader
+    public struct DtTileCacheSetHeader
     {
         public const int TILECACHESET_MAGIC = 'T' << 24 | 'S' << 16 | 'E' << 8 | 'T'; // 'TSET';
         public const int TILECACHESET_VERSION = 1;
@@ -29,7 +29,7 @@ namespace DotRecast.Detour.TileCache.Io
         public int magic;
         public int version;
         public int numTiles;
-        public DtNavMeshParams meshParams = new DtNavMeshParams();
-        public DtTileCacheParams cacheParams = new DtTileCacheParams();
+        public DtNavMeshParams meshParams;
+        public DtTileCacheParams cacheParams;
     }
 }

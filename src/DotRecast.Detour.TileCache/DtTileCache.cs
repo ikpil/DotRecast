@@ -22,16 +22,15 @@ using System;
 using System.Collections.Generic;
 using DotRecast.Core;
 using DotRecast.Detour.TileCache.Io;
-using static DotRecast.Core.RcMath;
 
 namespace DotRecast.Detour.TileCache
 {
     public class DtTileCache
     {
-        int m_tileLutSize;
+        private int m_tileLutSize;
 
         /// < Tile hash lookup size (must be pot).
-        int m_tileLutMask;
+        private int m_tileLutMask;
 
         /// < Tile hash lookup mask.
         private readonly DtCompressedTile[] m_posLookup;
@@ -719,9 +718,9 @@ namespace DotRecast.Detour.TileCache
             }
         }
 
-        public DtTileCacheParams GetParams()
+        public ref readonly DtTileCacheParams GetParams()
         {
-            return m_params;
+            return ref m_params;
         }
 
         public IRcCompressor GetCompressor()

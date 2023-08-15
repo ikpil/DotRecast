@@ -22,9 +22,9 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour.TileCache
 {
-    public class DtTileCacheParams
+    public struct DtTileCacheParams
     {
-        public RcVec3f orig = new RcVec3f();
+        public RcVec3f orig;
         public float cs, ch;
         public int width, height;
         public float walkableHeight;

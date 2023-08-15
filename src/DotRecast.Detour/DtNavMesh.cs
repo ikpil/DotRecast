@@ -324,9 +324,9 @@ namespace DotRecast.Detour
             return true;
         }
 
-        public DtNavMeshParams GetParams()
+        public ref readonly DtNavMeshParams GetParams()
         {
-            return m_params;
+            return ref m_params;
         }
 
 
