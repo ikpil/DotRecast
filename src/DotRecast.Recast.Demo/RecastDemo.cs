@@ -397,20 +397,19 @@ public class RecastDemo : IRecastDemoChannel
 
         var vendor = _gl.GetStringS(GLEnum.Vendor);
         var version = _gl.GetStringS(GLEnum.Version);
-        var renderGl = _gl.GetStringS(GLEnum.Renderer);
+        var rendererGl = _gl.GetStringS(GLEnum.Renderer);
         var glslString = _gl.GetStringS(GLEnum.ShadingLanguageVersion);
         var currentCulture = CultureInfo.CurrentCulture;
+        string bitness = Environment.Is64BitOperatingSystem ? "64-bit" : "32-bit";
 
         var workingDirectory = Directory.GetCurrentDirectory();
         Logger.Information($"Working directory - {workingDirectory}");
         Logger.Information($"ImGui.Net version - {ImGui.GetVersion()}");
-        Logger.Information($"Culture - {currentCulture.Name}");
-        Logger.Information($"Dotnet Version - {Environment.Version.ToString()}");
-        Logger.Information($"OS Version - {Environment.OSVersion}");
-        Logger.Information(vendor);
-        Logger.Information(version);
-        Logger.Information(renderGl);
-        Logger.Information(glslString);
+        Logger.Information($"Dotnet - {Environment.Version.ToString()} culture({currentCulture.Name})");
+        Logger.Information($"OS Version - {Environment.OSVersion} {bitness}");
+        Logger.Information($"{vendor} {rendererGl}");
+        Logger.Information($"gl version - {version}");
+        Logger.Information($"gl lang version - {glslString}");
     }
 
     private void UpdateKeyboard(float dt)
