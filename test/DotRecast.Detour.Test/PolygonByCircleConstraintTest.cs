@@ -24,7 +24,7 @@ namespace DotRecast.Detour.Test;
 [Parallelizable]
 public class PolygonByCircleConstraintTest
 {
-    private readonly IDtPolygonByCircleConstraint _constraint = DtStrictDtPolygonByCircleConstraint.Strict;
+    private readonly IDtPolygonByCircleConstraint _constraint = DtStrictDtPolygonByCircleConstraint.Shared;
 
     [Test]
     public void ShouldHandlePolygonFullyInsideCircle()

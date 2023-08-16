@@ -11,7 +11,7 @@ namespace DotRecast.Detour
         private const int CIRCLE_SEGMENTS = 12;
         private static readonly float[] UnitCircle = MakeUnitCircle();
 
-        public static readonly IDtPolygonByCircleConstraint Strict = new DtStrictDtPolygonByCircleConstraint();
+        public static readonly IDtPolygonByCircleConstraint Shared = new DtStrictDtPolygonByCircleConstraint();
 
         private DtStrictDtPolygonByCircleConstraint()
         {

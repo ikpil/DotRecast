@@ -4,7 +4,7 @@ namespace DotRecast.Detour
 {
     public class DtNoOpDtPolygonByCircleConstraint : IDtPolygonByCircleConstraint
     {
-        public static readonly DtNoOpDtPolygonByCircleConstraint Noop = new DtNoOpDtPolygonByCircleConstraint();
+        public static readonly DtNoOpDtPolygonByCircleConstraint Shared = new DtNoOpDtPolygonByCircleConstraint();
 
         private DtNoOpDtPolygonByCircleConstraint()
         {

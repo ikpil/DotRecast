@@ -56,12 +56,11 @@ public class FindNearestPolyTest : AbstractDetourTest
     [Test]
     public void ShouldReturnStartPosWhenNoPolyIsValid()
     {
-        var filter = new DtQueryEmptyFilter();
         RcVec3f extents = RcVec3f.Of(2, 4, 2);
         for (int i = 0; i < startRefs.Length; i++)
         {
             RcVec3f startPos = startPoss[i];
-            var status = query.FindNearestPoly(startPos, extents, filter, out var nearestRef, out var nearestPt, out var _);
+            var status = query.FindNearestPoly(startPos, extents, DtQueryEmptyFilter.Shared, out var nearestRef, out var nearestPt, out var _);
             Assert.That(status.Succeeded(), Is.True);
             Assert.That(nearestRef, Is.EqualTo(0L));
             for (int v = 0; v < POLY_POS[i].Length; v++)

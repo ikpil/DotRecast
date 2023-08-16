@@ -298,8 +298,8 @@ namespace DotRecast.Recast.Toolset.Tools
             float dist = (float)Math.Sqrt(dx * dx + dz * dz);
 
             IDtPolygonByCircleConstraint constraint = constrainByCircle
-                ? DtStrictDtPolygonByCircleConstraint.Strict
-                : DtNoOpDtPolygonByCircleConstraint.Noop;
+                ? DtStrictDtPolygonByCircleConstraint.Shared
+                : DtNoOpDtPolygonByCircleConstraint.Shared;
 
             var frand = new FRand();
             var navQuery = _sample.GetNavMeshQuery();

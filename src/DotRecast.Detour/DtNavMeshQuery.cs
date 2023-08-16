@@ -200,7 +200,7 @@ namespace DotRecast.Detour
         public DtStatus FindRandomPointAroundCircle(long startRef, RcVec3f centerPos, float maxRadius,
             IDtQueryFilter filter, IRcRand frand, out long randomRef, out RcVec3f randomPt)
         {
-            return FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, DtNoOpDtPolygonByCircleConstraint.Noop, out randomRef, out randomPt);
+            return FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, DtNoOpDtPolygonByCircleConstraint.Shared, out randomRef, out randomPt);
         }
 
         /**
@@ -221,7 +221,7 @@ namespace DotRecast.Detour
         public DtStatus FindRandomPointWithinCircle(long startRef, RcVec3f centerPos, float maxRadius,
             IDtQueryFilter filter, IRcRand frand, out long randomRef, out RcVec3f randomPt)
         {
-            return FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, DtStrictDtPolygonByCircleConstraint.Strict, out randomRef, out randomPt);
+            return FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, DtStrictDtPolygonByCircleConstraint.Shared, out randomRef, out randomPt);
         }
 
         public DtStatus FindRandomPointAroundCircle(long startRef, RcVec3f centerPos, float maxRadius,

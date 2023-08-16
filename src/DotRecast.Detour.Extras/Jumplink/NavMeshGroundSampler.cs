@@ -7,8 +7,6 @@ namespace DotRecast.Detour.Extras.Jumplink
 {
     class NavMeshGroundSampler : AbstractGroundSampler
     {
-        private readonly IDtQueryFilter filter = new DtQueryNoOpFilter();
-
         public override void Sample(JumpLinkBuilderConfig acfg, RecastBuilderResult result, EdgeSampler es)
         {
             DtNavMeshQuery navMeshQuery = CreateNavMesh(result, acfg.agentRadius, acfg.agentHeight, acfg.agentClimb);
@@ -51,7 +49,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             RcAtomicBoolean found = new RcAtomicBoolean();
             RcAtomicFloat minHeight = new RcAtomicFloat(pt.y);
 
-            navMeshQuery.QueryPolygons(pt, halfExtents, filter, new PolyQueryInvoker((tile, poly, refs) =>
+            navMeshQuery.QueryPolygons(pt, halfExtents, DtQueryNoOpFilter.Shared, new PolyQueryInvoker((tile, poly, refs) =>
             {
                 var status = navMeshQuery.GetPolyHeight(refs, pt, out var h);
                 if (status.Succeeded())
