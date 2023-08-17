@@ -346,12 +346,12 @@ namespace DotRecast.Detour
             out int segMin, out int segMax)
         {
             const float EPS = 0.000001f;
-            
+
             tmin = 0;
             tmax = 1;
             segMin = -1;
             segMax = -1;
-            
+
             var dir = p1.Subtract(p0);
 
             var p0v = p0;
