@@ -91,7 +91,7 @@ namespace DotRecast.Detour.Crowd
  * @var dtCrowdAgentParams::pathOptimizationRange
  * @par
  *
- * 		Only applicalbe if #updateFlags includes the #DT_CROWD_OPTIMIZE_VIS flag.
+ * 		Only applicable if #updateFlags includes the #DT_CROWD_OPTIMIZE_VIS flag.
  *
  *      This value is often based on the agent radius. E.g. radius * 30
  *
@@ -235,7 +235,7 @@ namespace DotRecast.Detour.Crowd
      * @param pos
      *            The requested position of the agent. [(x, y, z)]
      * @param params
-     *            The configutation of the agent.
+     *            The configuration of the agent.
      * @return The newly created agent object
      */
         public DtCrowdAgent AddAgent(RcVec3f pos, DtCrowdAgentParams option)

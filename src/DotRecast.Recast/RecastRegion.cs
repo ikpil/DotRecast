@@ -1466,7 +1466,7 @@ namespace DotRecast.Recast
         /// re-assigned to the zero (null) region.
         ///
         /// Partitioning can result in smaller than necessary regions. @p mergeRegionArea helps
-        /// reduce unecessarily small regions.
+        /// reduce unnecessarily small regions.
         ///
         /// See the #rcConfig documentation for more information on the configuration parameters.
         ///
@@ -1645,7 +1645,7 @@ namespace DotRecast.Recast
         /// re-assigned to the zero (null) region.
         ///
         /// Watershed partitioning can result in smaller than necessary regions, especially in diagonal corridors.
-        /// @p mergeRegionArea helps reduce unecessarily small regions.
+        /// @p mergeRegionArea helps reduce unnecessarily small regions.
         ///
         /// See the #rcConfig documentation for more information on the configuration parameters.
         ///
@@ -1759,7 +1759,7 @@ namespace DotRecast.Recast
 
             ctx.StartTimer(RcTimerLabel.RC_TIMER_BUILD_REGIONS_FILTER);
 
-            // Merge regions and filter out smalle regions.
+            // Merge regions and filter out small regions.
             List<int> overlaps = new List<int>();
             chf.maxRegions = MergeAndFilterRegions(ctx, minRegionArea, mergeRegionArea, regionId, chf, srcReg, overlaps);
 

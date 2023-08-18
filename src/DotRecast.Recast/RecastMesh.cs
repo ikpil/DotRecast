@@ -199,7 +199,7 @@ namespace DotRecast.Recast
         }
 
         // Returns T iff (a,b,c) are collinear and point c lies
-        // on the closed segement ab.
+        // on the closed segment ab.
         private static bool Between(int[] verts, int a, int b, int c)
         {
             if (!Collinear(verts, a, b, c))
@@ -961,7 +961,7 @@ namespace DotRecast.Recast
         /// @par
         ///
         /// @note If the mesh data is to be used to construct a Detour navigation mesh, then the upper
-        /// limit must be retricted to <= #DT_VERTS_PER_POLYGON.
+        /// limit must be restricted to <= #DT_VERTS_PER_POLYGON.
         ///
         /// @see rcAllocPolyMesh, rcContourSet, rcPolyMesh, rcConfig
         public static RcPolyMesh BuildPolyMesh(RcTelemetry ctx, RcContourSet cset, int nvp)

@@ -1005,7 +1005,7 @@ namespace DotRecast.Detour.TileCache
         }
 
         // Returns T iff (a,b,c) are collinear and point c lies
-        // on the closed segement ab.
+        // on the closed segment ab.
         private bool Between(int[] verts, int a, int b, int c)
         {
             if (!Collinear(verts, a, b, c))

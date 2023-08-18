@@ -407,7 +407,7 @@ namespace DotRecast.Recast
                         if (dx * dx + dz * dz > maxEdgeLen * maxEdgeLen)
                         {
                             // Round based on the segments in lexilogical order so that the
-                            // max tesselation is consistent regardles in which direction
+                            // max tesselation is consistent regardless in which direction
                             // segments are traversed.
                             int n = bi < ai ? (bi + pn - ai) : (bi - ai);
                             if (n > 1)
@@ -643,7 +643,7 @@ namespace DotRecast.Recast
                 for (int iter = 0; iter < hole.nverts; iter++)
                 {
                     // Find potential diagonals.
-                    // The 'best' vertex must be in the cone described by 3 cosequtive vertices of the outline.
+                    // The 'best' vertex must be in the cone described by 3 consecutive vertices of the outline.
                     // ..o j-1
                     // |
                     // | * best

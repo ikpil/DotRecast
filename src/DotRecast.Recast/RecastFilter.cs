@@ -32,7 +32,7 @@ namespace DotRecast.Recast
         /// Allows the formation of walkable regions that will flow over low lying
         /// objects such as curbs, and up structures such as stairways.
         ///
-        /// Two neighboring spans are walkable if: <tt>RcAbs(currentSpan.smax - neighborSpan.smax) < waklableClimb</tt>
+        /// Two neighboring spans are walkable if: <tt>RcAbs(currentSpan.smax - neighborSpan.smax) < walkableClimb</tt>
         ///
         /// @warning Will override the effect of #rcFilterLedgeSpans. So if both filters are used, call
         /// #rcFilterLedgeSpans after calling this filter.

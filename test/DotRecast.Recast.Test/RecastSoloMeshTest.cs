@@ -169,7 +169,7 @@ public class RecastSoloMeshTest
 
         // Partition the heightfield so that we can use simple algorithm later
         // to triangulate the walkable areas.
-        // There are 3 martitioning methods, each with some pros and cons:
+        // There are 3 partitioning methods, each with some pros and cons:
         // 1) Watershed partitioning
         // - the classic Recast partitioning
         // - creates the nicest tessellation
@@ -182,7 +182,7 @@ public class RecastSoloMeshTest
         // (triangulation can handle this)
         // - overlaps may occur if you have narrow spiral corridors (i.e
         // stairs), this make triangulation to fail
-        // * generally the best choice if you precompute the nacmesh, use this
+        // * generally the best choice if you precompute the navmesh, use this
         // if you have large open areas
         // 2) Monotone partioning
         // - fastest

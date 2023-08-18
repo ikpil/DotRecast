@@ -345,7 +345,7 @@ namespace DotRecast.Detour
                 }
             }
 
-            // Off-mesh connectionss are stored as polygons, adjust values.
+            // Off-mesh connections are stored as polygons, adjust values.
             int totPolyCount = option.polyCount + storedOffMeshConCount;
             int totVertCount = option.vertCount + storedOffMeshConCount * 2;
 

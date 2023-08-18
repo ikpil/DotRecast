@@ -5,12 +5,11 @@ namespace DotRecast.Detour
     public class DtQueryNoOpFilter : IDtQueryFilter
     {
         public static readonly DtQueryNoOpFilter Shared = new DtQueryNoOpFilter();
-        
+
         private DtQueryNoOpFilter()
         {
-            
         }
-        
+
         public bool PassFilter(long refs, DtMeshTile tile, DtPoly poly)
         {
             return true;

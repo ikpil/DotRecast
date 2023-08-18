@@ -23,52 +23,34 @@ using DotRecast.Core;
 namespace DotRecast.Detour
 {
     /// Represents the source data used to build an navigation mesh tile.
+    /// @ingroup detour
     public class DtNavMeshCreateParams
     {
         /// @name Polygon Mesh Attributes
         /// Used to create the base navigation graph.
         /// See #rcPolyMesh for details related to these attributes.
         /// @{
-        public int[] verts;
+        public int[] verts; // < The polygon mesh vertices. [(x, y, z) * #vertCount] [Unit: vx]
 
-        /// < The polygon mesh vertices. [(x, y, z) * #vertCount] [Unit: vx]
-        public int vertCount;
+        public int vertCount; // < The number vertices in the polygon mesh. [Limit: >= 3]
+        public int[] polys; // < The polygon data. [Size: #polyCount * 2 * #nvp]
+        public int[] polyFlags; // < The user defined flags assigned to each polygon. [Size: #polyCount]
+        public int[] polyAreas; // < The user defined area ids assigned to each polygon. [Size: #polyCount]
+        public int polyCount; // < Number of polygons in the mesh. [Limit: >= 1]
+        public int nvp; // < Number maximum number of vertices per polygon. [Limit: >= 3]
 
-        /// < The number vertices in the polygon mesh. [Limit: >= 3]
-        public int[] polys;
-
-        /// < The polygon data. [Size: #polyCount * 2 * #nvp]
-        public int[] polyFlags;
-
-        /// < The user defined flags assigned to each polygon. [Size: #polyCount]
-        public int[] polyAreas;
-
-        /// < The user defined area ids assigned to each polygon. [Size: #polyCount]
-        public int polyCount;
-
-        /// < Number of polygons in the mesh. [Limit: >= 1]
-        public int nvp;
-
-        /// < Number maximum number of vertices per polygon. [Limit: >= 3]
         /// @}
         /// @name Height Detail Attributes (Optional)
         /// See #rcPolyMeshDetail for details related to these attributes.
         /// @{
-        public int[] detailMeshes;
+        /// 
+        public int[] detailMeshes; // < The height detail sub-mesh data. [Size: 4 * #polyCount]
 
-        /// < The height detail sub-mesh data. [Size: 4 * #polyCount]
-        public float[] detailVerts;
+        public float[] detailVerts; // < The detail mesh vertices. [Size: 3 * #detailVertsCount] [Unit: wu]
+        public int detailVertsCount; // < The number of vertices in the detail mesh.
+        public int[] detailTris; // < The detail mesh triangles. [Size: 4 * #detailTriCount]
+        public int detailTriCount; // < The number of triangles in the detail mesh.
 
-        /// < The detail mesh vertices. [Size: 3 * #detailVertsCount] [Unit: wu]
-        public int detailVertsCount;
-
-        /// < The number of vertices in the detail mesh.
-        public int[] detailTris;
-
-        /// < The detail mesh triangles. [Size: 4 * #detailTriCount]
-        public int detailTriCount;
-
-        /// < The number of triangles in the detail mesh.
         /// @}
         /// @name Off-Mesh Connections Attributes (Optional)
         /// Used to define a custom point-to-point edge within the navigation graph, an
@@ -103,24 +85,14 @@ namespace DotRecast.Detour
         /// @name Tile Attributes
         /// @note The tile grid/layer data can be left at zero if the destination is a single tile mesh.
         /// @{
-        public int userId;
+        public int userId; // < The user defined id of the tile.
 
-        /// < The user defined id of the tile.
-        public int tileX;
+        public int tileX; // < The tile's x-grid location within the multi-tile destination mesh. (Along the x-axis.)
+        public int tileZ; // < The tile's y-grid location within the multi-tile destination mesh. (Along the z-axis.)
+        public int tileLayer; // < The tile's layer within the layered destination mesh. [Limit: >= 0] (Along the y-axis.)
+        public RcVec3f bmin; // < The minimum bounds of the tile. [(x, y, z)] [Unit: wu]
+        public RcVec3f bmax; // < The maximum bounds of the tile. [(x, y, z)] [Unit: wu]
 
-        /// < The tile's x-grid location within the multi-tile destination mesh. (Along the x-axis.)
-        public int tileZ;
-
-        /// < The tile's y-grid location within the multi-tile desitation mesh. (Along the z-axis.)
-        public int tileLayer;
-
-        /// < The tile's layer within the layered destination mesh. [Limit: >= 0] (Along the y-axis.)
-        public RcVec3f bmin;
-
-        /// < The minimum bounds of the tile. [(x, y, z)] [Unit: wu]
-        public RcVec3f bmax;
-
-        /// < The maximum bounds of the tile. [(x, y, z)] [Unit: wu]
         /// @}
         /// @name General Configuration Attributes
         /// @{

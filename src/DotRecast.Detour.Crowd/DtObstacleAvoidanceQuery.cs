@@ -222,7 +222,7 @@ namespace DotRecast.Detour.Crowd
             float vcpen = m_params.weightCurVel * (RcVec3f.Dist2D(vcand, vel) * m_invVmax);
 
             // find the threshold hit time to bail out based on the early out penalty
-            // (see how the penalty is calculated below to understnad)
+            // (see how the penalty is calculated below to understand)
             float minPen = minPenalty - vpen - vcpen;
             float tThresold = (m_params.weightToi / minPen - 0.1f) * m_params.horizTime;
             if (tThresold - m_params.horizTime > -float.MinValue)

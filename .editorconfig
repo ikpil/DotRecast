@@ -20,3 +20,6 @@ dotnet_sort_system_directives_first = true
 csharp_preserve_single_line_statements = false
 csharp_preserve_single_line_blocks = true
 
+#
+resharper_csharp_space_before_trailing_comment = true
+resharper_csharp_space_after_operator_keyword = true

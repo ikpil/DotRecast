@@ -98,7 +98,7 @@ namespace DotRecast.Detour
                     continue;
                 }
 
-                // Choose random tile using reservoi sampling.
+                // Choose random tile using reservoir sampling.
                 float area = 1.0f; // Could be tile area too.
                 tsum += area;
                 float u = frand.Next();
@@ -145,7 +145,7 @@ namespace DotRecast.Detour
                     polyArea += DtUtils.TriArea2D(tile.data.verts, va, vb, vc);
                 }
 
-                // Choose random polygon weighted by area, using reservoi sampling.
+                // Choose random polygon weighted by area, using reservoir sampling.
                 areaSum += polyArea;
                 float u = frand.Next();
                 if (u * areaSum <= polyArea)
@@ -271,7 +271,7 @@ namespace DotRecast.Detour
                 bestNode.flags &= ~DT_NODE_OPEN;
                 bestNode.flags |= DT_NODE_CLOSED;
                 // Get poly and tile.
-                // The API input has been cheked already, skip checking internal data.
+                // The API input has been checked already, skip checking internal data.
                 long bestRef = bestNode.id;
                 m_nav.GetTileAndPolyByRefUnsafe(bestRef, out var bestTile, out var bestPoly);
 
@@ -298,7 +298,7 @@ namespace DotRecast.Detour
                             polyArea += DtUtils.TriArea2D(constrainedVerts, va, vb, vc);
                         }
 
-                        // Choose random polygon weighted by area, using reservoi sampling.
+                        // Choose random polygon weighted by area, using reservoir sampling.
                         areaSum += polyArea;
                         float u = frand.Next();
                         if (u * areaSum <= polyArea)
@@ -752,7 +752,7 @@ namespace DotRecast.Detour
      * The start and end positions are used to calculate traversal costs. (The y-values impact the result.)
      *
      * @param startRef
-     *            The refrence id of the start polygon.
+     *            The reference id of the start polygon.
      * @param endRef
      *            The reference id of the end polygon.
      * @param startPos
@@ -829,7 +829,7 @@ namespace DotRecast.Detour
                 }
 
                 // Get current poly and tile.
-                // The API input has been cheked already, skip checking internal data.
+                // The API input has been checked already, skip checking internal data.
                 long bestRef = bestNode.id;
                 m_nav.GetTileAndPolyByRefUnsafe(bestRef, out var bestTile, out var bestPoly);
 
@@ -875,7 +875,7 @@ namespace DotRecast.Detour
                     }
 
                     // Get neighbour poly and tile.
-                    // The API input has been cheked already, skip checking internal data.
+                    // The API input has been checked already, skip checking internal data.
                     m_nav.GetTileAndPolyByRefUnsafe(neighbourRef, out var neighbourTile, out var neighbourPoly);
 
                     if (!filter.PassFilter(neighbourRef, neighbourTile, neighbourPoly))
@@ -1130,7 +1130,7 @@ namespace DotRecast.Detour
                 }
 
                 // Get current poly and tile.
-                // The API input has been cheked already, skip checking internal
+                // The API input has been checked already, skip checking internal
                 // data.
                 long bestRef = bestNode.id;
                 var status = m_nav.GetTileAndPolyByRef(bestRef, out var bestTile, out var bestPoly);
@@ -1194,7 +1194,7 @@ namespace DotRecast.Detour
                     }
 
                     // Get neighbour poly and tile.
-                    // The API input has been cheked already, skip checking internal
+                    // The API input has been checked already, skip checking internal
                     // data.
                     m_nav.GetTileAndPolyByRefUnsafe(neighbourRef, out var neighbourTile, out var neighbourPoly);
 
@@ -1840,7 +1840,7 @@ namespace DotRecast.Detour
                 stack.RemoveFirst();
 
                 // Get poly and tile.
-                // The API input has been cheked already, skip checking internal data.
+                // The API input has been checked already, skip checking internal data.
                 long curRef = curNode.id;
                 m_nav.GetTileAndPolyByRefUnsafe(curRef, out var curTile, out var curPoly);
 
@@ -2490,7 +2490,7 @@ namespace DotRecast.Detour
                 bestNode.flags |= DtNode.DT_NODE_CLOSED;
 
                 // Get poly and tile.
-                // The API input has been cheked already, skip checking internal data.
+                // The API input has been checked already, skip checking internal data.
                 long bestRef = bestNode.id;
                 m_nav.GetTileAndPolyByRefUnsafe(bestRef, out var bestTile, out var bestPoly);
 
@@ -2667,7 +2667,7 @@ namespace DotRecast.Detour
                 bestNode.flags |= DtNode.DT_NODE_CLOSED;
 
                 // Get poly and tile.
-                // The API input has been cheked already, skip checking internal data.
+                // The API input has been checked already, skip checking internal data.
                 long bestRef = bestNode.id;
                 m_nav.GetTileAndPolyByRefUnsafe(bestRef, out var bestTile, out var bestPoly);
 
@@ -2840,7 +2840,7 @@ namespace DotRecast.Detour
                 stack.RemoveFirst();
 
                 // Get poly and tile.
-                // The API input has been cheked already, skip checking internal data.
+                // The API input has been checked already, skip checking internal data.
                 long curRef = curNode.id;
                 m_nav.GetTileAndPolyByRefUnsafe(curRef, out var curTile, out var curPoly);
 
@@ -3170,7 +3170,7 @@ namespace DotRecast.Detour
                 bestNode.flags |= DtNode.DT_NODE_CLOSED;
 
                 // Get poly and tile.
-                // The API input has been cheked already, skip checking internal data.
+                // The API input has been checked already, skip checking internal data.
                 long bestRef = bestNode.id;
                 m_nav.GetTileAndPolyByRefUnsafe(bestRef, out var bestTile, out var bestPoly);
 

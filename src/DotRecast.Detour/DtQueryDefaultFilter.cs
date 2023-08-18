@@ -50,9 +50,9 @@ namespace DotRecast.Detour
  */
     public class DtQueryDefaultFilter : IDtQueryFilter
     {
-        private int m_excludeFlags;
-        private int m_includeFlags;
-        private readonly float[] m_areaCost = new float[DtNavMesh.DT_MAX_AREAS];
+        private readonly float[] m_areaCost = new float[DtNavMesh.DT_MAX_AREAS]; //< Cost per area type. (Used by default implementation.)
+        private int m_includeFlags; //< Flags for polygons that can be visited. (Used by default implementation.) 
+        private int m_excludeFlags; //< Flags for polygons that should not be visited. (Used by default implementation.) 
 
         public DtQueryDefaultFilter()
         {
