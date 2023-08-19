@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using System.Linq;
 using DotRecast.Core;
 using DotRecast.Detour.TileCache.Io.Compress;
 using DotRecast.Detour.TileCache.Test.Io;
@@ -70,6 +71,9 @@ public class TestTileLayerBuilder : DtTileCacheLayerBuilder
 
     public List<byte[]> Build(RcByteOrder order, bool cCompatibility, int threads)
     {
-        return Build(_geom, _cfg, order, cCompatibility, threads, tw, th);
+        var results = Build(_geom, _cfg, order, cCompatibility, threads, tw, th);
+        return results
+            .SelectMany(x => x.layers)
+            .ToList();
     }
 }

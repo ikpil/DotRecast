@@ -3,17 +3,17 @@ using System.Threading.Tasks;
 
 namespace DotRecast.Detour.TileCache
 {
-    public class DtTileCacheBuildResult
+    public class DtTileCacheLayerBuildResult
     {
         public readonly int tx;
         public readonly int ty;
-        public readonly Task<List<byte[]>> task;
+        public readonly List<byte[]> layers;
 
-        public DtTileCacheBuildResult(int tx, int ty, Task<List<byte[]>> task)
+        public DtTileCacheLayerBuildResult(int tx, int ty, List<byte[]> layers)
         {
             this.tx = tx;
             this.ty = ty;
-            this.task = task;
+            this.layers = layers;
         }
     }
 }

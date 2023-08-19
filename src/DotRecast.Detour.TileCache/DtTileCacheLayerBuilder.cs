@@ -39,7 +39,7 @@ namespace DotRecast.Detour.TileCache
             _compFactory = compFactory;
         }
 
-        public List<byte[]> Build(IInputGeomProvider geom, RcConfig cfg, RcByteOrder order, bool cCompatibility, int threads, int tw, int th)
+        public List<DtTileCacheLayerBuildResult> Build(IInputGeomProvider geom, RcConfig cfg, RcByteOrder order, bool cCompatibility, int threads, int tw, int th)
         {
             if (threads == 1)
             {
@@ -49,25 +49,25 @@ namespace DotRecast.Detour.TileCache
             return BuildMultiThread(geom, cfg, order, cCompatibility, tw, th, threads);
         }
 
-        private List<byte[]> BuildSingleThread(IInputGeomProvider geom, RcConfig cfg, RcByteOrder order, bool cCompatibility, int tw, int th)
+        private List<DtTileCacheLayerBuildResult> BuildSingleThread(IInputGeomProvider geom, RcConfig cfg, RcByteOrder order, bool cCompatibility, int tw, int th)
         {
-            List<byte[]> layers = new List<byte[]>();
+            var results = new List<DtTileCacheLayerBuildResult>();
             for (int y = 0; y < th; ++y)
             {
                 for (int x = 0; x < tw; ++x)
                 {
-                    var list = BuildTileCacheLayer(geom, cfg, x, y, order, cCompatibility);
-                    layers.AddRange(list);
+                    var result = BuildTileCacheLayer(geom, cfg, x, y, order, cCompatibility);
+                    results.Add(result);
                 }
             }
 
-            return layers;
+            return results;
         }
 
 
-        private List<byte[]> BuildMultiThread(IInputGeomProvider geom, RcConfig cfg, RcByteOrder order, bool cCompatibility, int tw, int th, int threads)
+        private List<DtTileCacheLayerBuildResult> BuildMultiThread(IInputGeomProvider geom, RcConfig cfg, RcByteOrder order, bool cCompatibility, int tw, int th, int threads)
         {
-            var results = new List<DtTileCacheBuildResult>();
+            var results = new List<Task<DtTileCacheLayerBuildResult>>();
             for (int y = 0; y < th; ++y)
             {
                 for (int x = 0; x < tw; ++x)
@@ -75,12 +75,12 @@ namespace DotRecast.Detour.TileCache
                     int tx = x;
                     int ty = y;
                     var task = Task.Run(() => BuildTileCacheLayer(geom, cfg, tx, ty, order, cCompatibility));
-                    results.Add(new DtTileCacheBuildResult(tx, ty, task));
+                    results.Add(task);
                 }
             }
 
             return results
-                .SelectMany(x => x.task.Result)
+                .Select(x => x.Result)
                 .ToList();
         }
 
@@ -94,7 +94,7 @@ namespace DotRecast.Detour.TileCache
             return lset;
         }
 
-        protected virtual List<byte[]> BuildTileCacheLayer(IInputGeomProvider geom, RcConfig cfg, int tx, int ty, RcByteOrder order, bool cCompatibility)
+        protected virtual DtTileCacheLayerBuildResult BuildTileCacheLayer(IInputGeomProvider geom, RcConfig cfg, int tx, int ty, RcByteOrder order, bool cCompatibility)
         {
             RcHeightfieldLayerSet lset = BuildHeightfieldLayerSet(geom, cfg, tx, ty);
             List<byte[]> result = new List<byte[]>();
@@ -133,7 +133,7 @@ namespace DotRecast.Detour.TileCache
                 }
             }
 
-            return result;
+            return new DtTileCacheLayerBuildResult(tx, ty, result);
         }
     }
 }
