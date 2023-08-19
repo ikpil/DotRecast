@@ -19,31 +19,31 @@ freely, subject to the following restrictions:
 */
 
 using DotRecast.Core;
-using DotRecast.Detour;
+using K4os.Compression.LZ4;
 
-namespace DotRecast.Recast.Toolset.Geom
+namespace DotRecast.Recast.Demo
 {
-    public class DemoOffMeshConnection
+    public class DtTileCacheLZ4DemoCompressor : IRcCompressor
     {
-        public readonly float[] verts;
-        public readonly float radius;
-        public readonly bool bidir;
-        public readonly int area;
-        public readonly int flags;
+        public static readonly DtTileCacheLZ4DemoCompressor Shared = new();
 
-        public DemoOffMeshConnection(RcVec3f start, RcVec3f end, float radius, bool bidir, int area, int flags)
+        private DtTileCacheLZ4DemoCompressor()
         {
-            verts = new float[6];
-            verts[0] = start.x;
-            verts[1] = start.y;
-            verts[2] = start.z;
-            verts[3] = end.x;
-            verts[4] = end.y;
-            verts[5] = end.z;
-            this.radius = radius;
-            this.bidir = bidir;
-            this.area = area;
-            this.flags = flags;
+        }
+
+        public byte[] Decompress(byte[] buf)
+        {
+            return LZ4Pickler.Unpickle(buf);
+        }
+
+        public byte[] Decompress(byte[] buf, int offset, int len, int outputlen)
+        {
+            return LZ4Pickler.Unpickle(buf, offset, len);
+        }
+
+        public byte[] Compress(byte[] buf)
+        {
+            return LZ4Pickler.Pickle(buf);
         }
     }
 }

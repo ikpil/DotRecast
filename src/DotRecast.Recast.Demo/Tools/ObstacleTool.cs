@@ -16,7 +16,7 @@ public class ObstacleTool : IRcTool
 
     public ObstacleTool()
     {
-        _impl = new();
+        _impl = new(DtTileCacheCompressorDemoFactory.Shared);
     }
 
     public ISampleTool GetTool()
@@ -30,9 +30,9 @@ public class ObstacleTool : IRcTool
 
     public void Layout()
     {
-        if (ImGui.Button("Remove All"))
+        if (ImGui.Button("Remove All Temp Obstacles"))
         {
-            //m_sample->clearAllTempObstacles();
+            _impl.ClearAllTempObstacles();
         }
 
         ImGui.Separator();
