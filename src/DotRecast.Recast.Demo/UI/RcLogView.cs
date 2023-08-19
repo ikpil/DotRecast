@@ -68,7 +68,7 @@ public class RcLogView : IRcView
             ImGui.End();
             return;
         }
-        
+
         // size reset
         var size = ImGui.GetItemRectSize();
         if (32 >= size.X && 32 >= size.Y)
@@ -78,7 +78,7 @@ public class RcLogView : IRcView
             var width = _canvas.Size.X - (otherWidth * 2);
             //var posX = _canvas.Size.X - width;
             // ImGui.SetNextWindowPos(new Vector2(otherWidth1, _canvas.Size.Y - height));
-             ImGui.SetWindowSize(new Vector2(width, height));
+            ImGui.SetWindowSize(new Vector2(width, height));
         }
 
 

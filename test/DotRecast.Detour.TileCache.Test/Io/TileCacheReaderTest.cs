@@ -22,6 +22,7 @@ using System;
 using System.IO;
 using DotRecast.Core;
 using DotRecast.Detour.TileCache.Io;
+using DotRecast.Detour.TileCache.Io.Compress;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.TileCache.Test.Io;
@@ -29,7 +30,7 @@ namespace DotRecast.Detour.TileCache.Test.Io;
 [Parallelizable]
 public class TileCacheReaderTest
 {
-    private readonly DtTileCacheReader reader = new DtTileCacheReader(DtTileCacheCompressorForTestFactory.Shared);
+    private readonly DtTileCacheReader reader = new DtTileCacheReader(DtTileCacheCompressorFactory.Shared);
 
     [Test]
     public void TestNavmesh()

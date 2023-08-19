@@ -14,14 +14,14 @@ public class BoxGizmo : IColliderGizmo
 
     private static readonly RcVec3f[] VERTS =
     {
-        RcVec3f.Of( -1f, -1f, -1f),
-        RcVec3f.Of( 1f, -1f, -1f),
-        RcVec3f.Of( 1f, -1f, 1f),
-        RcVec3f.Of( -1f, -1f, 1f),
-        RcVec3f.Of( -1f, 1f, -1f),
-        RcVec3f.Of( 1f, 1f, -1f),
-        RcVec3f.Of( 1f, 1f, 1f),
-        RcVec3f.Of( -1f, 1f, 1f),
+        RcVec3f.Of(-1f, -1f, -1f),
+        RcVec3f.Of(1f, -1f, -1f),
+        RcVec3f.Of(1f, -1f, 1f),
+        RcVec3f.Of(-1f, -1f, 1f),
+        RcVec3f.Of(-1f, 1f, -1f),
+        RcVec3f.Of(1f, 1f, -1f),
+        RcVec3f.Of(1f, 1f, 1f),
+        RcVec3f.Of(-1f, 1f, 1f),
     };
 
     private readonly float[] vertices = new float[8 * 3];

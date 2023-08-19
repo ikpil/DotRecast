@@ -34,7 +34,7 @@ public class RcCanvas
     private readonly IWindow _window;
     private readonly IRcView[] _views;
     private bool _mouseOver;
-    
+
     public bool IsMouseOver() => _mouseOver;
 
     public Vector2D<int> Size => _window.Size;

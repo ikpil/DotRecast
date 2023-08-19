@@ -56,7 +56,7 @@ public class TestTileLayerBuilder : DtTileCacheLayerBuilder
     public readonly int tw;
     public readonly int th;
 
-    public TestTileLayerBuilder(IInputGeomProvider geom) : base(DtTileCacheCompressorForTestFactory.Shared)
+    public TestTileLayerBuilder(IInputGeomProvider geom) : base(DtTileCacheCompressorFactory.Shared)
     {
         _geom = geom;
         _cfg = new RcConfig(true, m_tileSize, m_tileSize, RcConfig.CalcBorder(AgentRadius, CellSize),

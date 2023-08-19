@@ -63,7 +63,7 @@ namespace DotRecast.Detour.TileCache.Io
                 Write(stream, (int)cache.GetTileRef(tile), order);
                 byte[] data = tile.data;
                 DtTileCacheLayer layer = cache.DecompressTile(tile);
-                var comp = _compFactory.Get(cCompatibility);
+                var comp = _compFactory.Create(cCompatibility ? 0 : 1);
                 data = builder.CompressTileCacheLayer(comp, layer, order, cCompatibility);
                 Write(stream, data.Length, order);
                 stream.Write(data);

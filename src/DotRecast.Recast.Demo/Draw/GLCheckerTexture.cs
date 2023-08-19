@@ -31,7 +31,7 @@ public class GLCheckerTexture
     {
         _gl = gl;
     }
-    
+
     public void Release()
     {
         if (m_texId != 0)

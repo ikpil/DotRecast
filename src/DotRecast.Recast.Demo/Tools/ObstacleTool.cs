@@ -1,4 +1,5 @@
 ﻿using DotRecast.Core;
+using DotRecast.Detour.TileCache.Io.Compress;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Toolset;
 using DotRecast.Recast.Toolset.Tools;
@@ -16,7 +17,7 @@ public class ObstacleTool : IRcTool
 
     public ObstacleTool()
     {
-        _impl = new(DtTileCacheCompressorDemoFactory.Shared);
+        _impl = new(DtTileCacheCompressorFactory.Shared);
     }
 
     public ISampleTool GetTool()

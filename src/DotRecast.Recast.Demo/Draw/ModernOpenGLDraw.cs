@@ -39,34 +39,34 @@ public class ModernOpenGLDraw : IOpenGLDraw
     {
         string SHADER_VERSION = "#version 400\n";
         string vertex_shader = SHADER_VERSION + "uniform mat4 ProjMtx;\n" //
-                                                 + "uniform mat4 ViewMtx;\n" //
-                                                 + "in vec3 Position;\n" //
-                                                 + "in vec2 TexCoord;\n" //
-                                                 + "in vec4 Color;\n" //
-                                                 + "out vec2 Frag_UV;\n" //
-                                                 + "out vec4 Frag_Color;\n" //
-                                                 + "out float Frag_Depth;\n" //
-                                                 + "void main() {\n" //
-                                                 + "   Frag_UV = TexCoord;\n" //
-                                                 + "   Frag_Color = Color;\n" //
-                                                 + "   vec4 VSPosition = ViewMtx * vec4(Position, 1);\n" //
-                                                 + "   Frag_Depth = -VSPosition.z;\n" //
-                                                 + "   gl_Position = ProjMtx * VSPosition;\n" //
-                                                 + "}\n";
+                                              + "uniform mat4 ViewMtx;\n" //
+                                              + "in vec3 Position;\n" //
+                                              + "in vec2 TexCoord;\n" //
+                                              + "in vec4 Color;\n" //
+                                              + "out vec2 Frag_UV;\n" //
+                                              + "out vec4 Frag_Color;\n" //
+                                              + "out float Frag_Depth;\n" //
+                                              + "void main() {\n" //
+                                              + "   Frag_UV = TexCoord;\n" //
+                                              + "   Frag_Color = Color;\n" //
+                                              + "   vec4 VSPosition = ViewMtx * vec4(Position, 1);\n" //
+                                              + "   Frag_Depth = -VSPosition.z;\n" //
+                                              + "   gl_Position = ProjMtx * VSPosition;\n" //
+                                              + "}\n";
         string fragment_shader = SHADER_VERSION + "precision mediump float;\n" //
-                                                   + "uniform sampler2D Texture;\n" //
-                                                   + "uniform float UseTexture;\n" //
-                                                   + "uniform float EnableFog;\n" //
-                                                   + "uniform float FogStart;\n" //
-                                                   + "uniform float FogEnd;\n" //
-                                                   + "const vec4 FogColor = vec4(0.3f, 0.3f, 0.32f, 1.0f);\n" //
-                                                   + "in vec2 Frag_UV;\n" //
-                                                   + "in vec4 Frag_Color;\n" //
-                                                   + "in float Frag_Depth;\n" //
-                                                   + "out vec4 Out_Color;\n" //
-                                                   + "void main(){\n" //
-                                                   + "   Out_Color = mix(FogColor, Frag_Color * mix(vec4(1), texture(Texture, Frag_UV.st), UseTexture), 1.0 - EnableFog * clamp( (Frag_Depth - FogStart) / (FogEnd - FogStart), 0.0, 1.0) );\n" //
-                                                   + "}\n";
+                                                + "uniform sampler2D Texture;\n" //
+                                                + "uniform float UseTexture;\n" //
+                                                + "uniform float EnableFog;\n" //
+                                                + "uniform float FogStart;\n" //
+                                                + "uniform float FogEnd;\n" //
+                                                + "const vec4 FogColor = vec4(0.3f, 0.3f, 0.32f, 1.0f);\n" //
+                                                + "in vec2 Frag_UV;\n" //
+                                                + "in vec4 Frag_Color;\n" //
+                                                + "in float Frag_Depth;\n" //
+                                                + "out vec4 Out_Color;\n" //
+                                                + "void main(){\n" //
+                                                + "   Out_Color = mix(FogColor, Frag_Color * mix(vec4(1), texture(Texture, Frag_UV.st), UseTexture), 1.0 - EnableFog * clamp( (Frag_Depth - FogStart) / (FogEnd - FogStart), 0.0, 1.0) );\n" //
+                                                + "}\n";
 
         program = _gl.CreateProgram();
         uint vert_shdr = _gl.CreateShader(GLEnum.VertexShader);
@@ -285,7 +285,7 @@ public class ModernOpenGLDraw : IOpenGLDraw
     {
         vertices.Add(new OpenGLVertex(pos, color));
     }
-    
+
     public void Vertex(RcVec3f pos, int color)
     {
         vertices.Add(new OpenGLVertex(pos, color));

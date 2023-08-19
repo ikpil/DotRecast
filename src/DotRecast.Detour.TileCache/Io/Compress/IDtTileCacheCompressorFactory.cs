@@ -24,6 +24,6 @@ namespace DotRecast.Detour.TileCache.Io.Compress
 {
     public interface IDtTileCacheCompressorFactory
     {
-        IRcCompressor Get(bool cCompatibility);
+        IRcCompressor Create(int compatibility);
     }
 }

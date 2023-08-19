@@ -8,12 +8,23 @@ namespace DotRecast.Recast.Demo.Draw;
 [StructLayout(LayoutKind.Explicit, Pack = 1)]
 public struct OpenGLVertex
 {
-    [FieldOffset(0)] private readonly float x;
-    [FieldOffset(4)] private readonly float y;
-    [FieldOffset(8)] private readonly float z;
-    [FieldOffset(12)] private readonly float u;
-    [FieldOffset(16)] private readonly float v;
-    [FieldOffset(20)] private readonly int color;
+    [FieldOffset(0)]
+    private readonly float x;
+
+    [FieldOffset(4)]
+    private readonly float y;
+
+    [FieldOffset(8)]
+    private readonly float z;
+
+    [FieldOffset(12)]
+    private readonly float u;
+
+    [FieldOffset(16)]
+    private readonly float v;
+
+    [FieldOffset(20)]
+    private readonly int color;
 
     public OpenGLVertex(RcVec3f pos, RcVec2f uv, int color) :
         this(pos.x, pos.y, pos.z, uv.x, uv.y, color)
@@ -24,7 +35,7 @@ public struct OpenGLVertex
         this(pos[0], pos[1], pos[2], 0f, 0f, color)
     {
     }
-    
+
     public OpenGLVertex(RcVec3f pos, int color) :
         this(pos.x, pos.y, pos.z, 0f, 0f, color)
     {
@@ -54,7 +65,7 @@ public struct OpenGLVertex
         // writer.Write(BitConverter.GetBytes(u));
         // writer.Write(BitConverter.GetBytes(v));
         // writer.Write(BitConverter.GetBytes(color));
-        
+
         writer.Write(x);
         writer.Write(y);
         writer.Write(z);

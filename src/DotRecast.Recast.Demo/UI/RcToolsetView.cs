@@ -56,7 +56,7 @@ public class RcToolsetView : IRcView
     public void Draw(double dt)
     {
         ImGui.Begin("Tools");
-        
+
         // size reset
         var size = ImGui.GetItemRectSize();
         if (32 >= size.X && 32 >= size.Y)
@@ -65,7 +65,7 @@ public class RcToolsetView : IRcView
             //ImGui.SetWindowPos(new Vector2(0, 0));
             ImGui.SetWindowSize(new Vector2(width, _canvas.Size.Y));
         }
-        
+
         _isHovered = ImGui.IsWindowHovered(ImGuiHoveredFlags.RectOnly | ImGuiHoveredFlags.RootAndChildWindows);
 
         for (int i = 0; i < tools.Length; ++i)

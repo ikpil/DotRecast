@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using System.Numerics;
 using DotRecast.Core;
 using DotRecast.Detour;
-
 using DotRecast.Recast.Toolset.Builder;
 using Silk.NET.OpenGL;
 

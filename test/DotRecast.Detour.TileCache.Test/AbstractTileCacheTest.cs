@@ -67,7 +67,7 @@ public class AbstractTileCacheTest
         navMeshParams.maxPolys = 16384;
 
         var navMesh = new DtNavMesh(navMeshParams, 6);
-        var comp = DtTileCacheCompressorForTestFactory.Shared.Get(cCompatibility);
+        var comp = DtTileCacheCompressorFactory.Shared.Create(cCompatibility ? 0 : 1);
         var storageParams = new DtTileCacheStorageParams(order, cCompatibility);
         var process = new TestTileCacheMeshProcess();
         DtTileCache tc = new DtTileCache(option, storageParams, navMesh, comp, process);

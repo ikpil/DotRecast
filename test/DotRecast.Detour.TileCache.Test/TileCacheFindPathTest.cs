@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.IO;
 using DotRecast.Core;
 using DotRecast.Detour.TileCache.Io;
+using DotRecast.Detour.TileCache.Io.Compress;
 using DotRecast.Detour.TileCache.Test.Io;
 using NUnit.Framework;
 
@@ -39,7 +40,7 @@ public class TileCacheFindPathTest : AbstractTileCacheTest
     {
         using var msis = new MemoryStream(Loader.ToBytes("dungeon_all_tiles_tilecache.bin"));
         using var @is = new BinaryReader(msis);
-        DtTileCache tcC = new DtTileCacheReader(DtTileCacheCompressorForTestFactory.Shared).Read(@is, 6, new TestTileCacheMeshProcess());
+        DtTileCache tcC = new DtTileCacheReader(DtTileCacheCompressorFactory.Shared).Read(@is, 6, new TestTileCacheMeshProcess());
         navmesh = tcC.GetNavMesh();
         query = new DtNavMeshQuery(navmesh);
     }

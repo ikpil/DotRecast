@@ -17,7 +17,7 @@ public interface IOpenGLDraw
 
     void Vertex(float[] pos, int color);
     void Vertex(RcVec3f pos, int color);
-    
+
     void Vertex(RcVec3f pos, int color, RcVec2f uv);
 
     void Vertex(float x, float y, float z, int color, float u, float v);
