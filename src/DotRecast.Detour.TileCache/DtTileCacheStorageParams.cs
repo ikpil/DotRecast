@@ -22,15 +22,15 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour.TileCache
 {
-    public class TileCacheStorageParams
+    public readonly struct DtTileCacheStorageParams
     {
-        public readonly RcByteOrder byteOrder;
-        public readonly bool cCompatibility;
+        public readonly RcByteOrder Order;
+        public readonly bool Compatibility;
 
-        public TileCacheStorageParams(RcByteOrder byteOrder, bool cCompatibility)
+        public DtTileCacheStorageParams(RcByteOrder order, bool compatibility)
         {
-            this.byteOrder = byteOrder;
-            this.cCompatibility = cCompatibility;
+            Order = order;
+            Compatibility = compatibility;
         }
     }
 }

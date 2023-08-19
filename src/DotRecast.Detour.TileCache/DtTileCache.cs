@@ -51,7 +51,7 @@ namespace DotRecast.Detour.TileCache
         private readonly DtNavMesh m_navmesh;
 
         private readonly DtTileCacheParams m_params;
-        private readonly TileCacheStorageParams m_storageParams;
+        private readonly DtTileCacheStorageParams m_storageParams;
 
         private readonly IRcCompressor m_tcomp;
         private readonly IDtTileCacheMeshProcess m_tmproc;
@@ -110,7 +110,7 @@ namespace DotRecast.Detour.TileCache
             return (int)(refs & tileMask);
         }
 
-        public DtTileCache(DtTileCacheParams option, TileCacheStorageParams storageParams, DtNavMesh navmesh, IRcCompressor tcomp, IDtTileCacheMeshProcess tmprocs)
+        public DtTileCache(DtTileCacheParams option, DtTileCacheStorageParams storageParams, DtNavMesh navmesh, IRcCompressor tcomp, IDtTileCacheMeshProcess tmprocs)
         {
             m_params = option;
             m_storageParams = storageParams;
@@ -252,8 +252,8 @@ namespace DotRecast.Detour.TileCache
         {
             // Make sure the data is in right format.
             RcByteBuffer buf = new RcByteBuffer(data);
-            buf.Order(m_storageParams.byteOrder);
-            DtTileCacheLayerHeader header = tileReader.Read(buf, m_storageParams.cCompatibility);
+            buf.Order(m_storageParams.Order);
+            DtTileCacheLayerHeader header = tileReader.Read(buf, m_storageParams.Compatibility);
             // Make sure the location is free.
             if (GetTileAt(header.tx, header.ty, header.tlayer) != null)
             {
@@ -675,7 +675,7 @@ namespace DotRecast.Detour.TileCache
 
         public DtTileCacheLayer DecompressTile(DtCompressedTile tile)
         {
-            DtTileCacheLayer layer = builder.DecompressTileCacheLayer(m_tcomp, tile.data, m_storageParams.byteOrder, m_storageParams.cCompatibility);
+            DtTileCacheLayer layer = builder.DecompressTileCacheLayer(m_tcomp, tile.data, m_storageParams.Order, m_storageParams.Compatibility);
             return layer;
         }
 

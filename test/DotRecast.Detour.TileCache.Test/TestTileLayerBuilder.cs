@@ -71,7 +71,8 @@ public class TestTileLayerBuilder : DtTileCacheLayerBuilder
 
     public List<byte[]> Build(RcByteOrder order, bool cCompatibility, int threads)
     {
-        var results = Build(_geom, _cfg, order, cCompatibility, threads, tw, th);
+        var storageParams = new DtTileCacheStorageParams(order, cCompatibility);
+        var results = Build(_geom, _cfg, storageParams, threads, tw, th);
         return results
             .SelectMany(x => x.layers)
             .ToList();

@@ -39,24 +39,24 @@ namespace DotRecast.Detour.TileCache
             _compFactory = compFactory;
         }
 
-        public List<DtTileCacheLayerBuildResult> Build(IInputGeomProvider geom, RcConfig cfg, RcByteOrder order, bool cCompatibility, int threads, int tw, int th)
+        public List<DtTileCacheLayerBuildResult> Build(IInputGeomProvider geom, RcConfig cfg, DtTileCacheStorageParams storageParams, int threads, int tw, int th)
         {
             if (threads == 1)
             {
-                return BuildSingleThread(geom, cfg, order, cCompatibility, tw, th);
+                return BuildSingleThread(geom, cfg, storageParams, tw, th);
             }
 
-            return BuildMultiThread(geom, cfg, order, cCompatibility, tw, th, threads);
+            return BuildMultiThread(geom, cfg, storageParams, tw, th, threads);
         }
 
-        private List<DtTileCacheLayerBuildResult> BuildSingleThread(IInputGeomProvider geom, RcConfig cfg, RcByteOrder order, bool cCompatibility, int tw, int th)
+        private List<DtTileCacheLayerBuildResult> BuildSingleThread(IInputGeomProvider geom, RcConfig cfg, DtTileCacheStorageParams storageParams, int tw, int th)
         {
             var results = new List<DtTileCacheLayerBuildResult>();
             for (int y = 0; y < th; ++y)
             {
                 for (int x = 0; x < tw; ++x)
                 {
-                    var result = BuildTileCacheLayer(geom, cfg, x, y, order, cCompatibility);
+                    var result = BuildTileCacheLayer(geom, cfg, x, y, storageParams);
                     results.Add(result);
                 }
             }
@@ -65,7 +65,7 @@ namespace DotRecast.Detour.TileCache
         }
 
 
-        private List<DtTileCacheLayerBuildResult> BuildMultiThread(IInputGeomProvider geom, RcConfig cfg, RcByteOrder order, bool cCompatibility, int tw, int th, int threads)
+        private List<DtTileCacheLayerBuildResult> BuildMultiThread(IInputGeomProvider geom, RcConfig cfg, DtTileCacheStorageParams storageParams, int tw, int th, int threads)
         {
             var results = new List<Task<DtTileCacheLayerBuildResult>>();
             for (int y = 0; y < th; ++y)
@@ -74,7 +74,7 @@ namespace DotRecast.Detour.TileCache
                 {
                     int tx = x;
                     int ty = y;
-                    var task = Task.Run(() => BuildTileCacheLayer(geom, cfg, tx, ty, order, cCompatibility));
+                    var task = Task.Run(() => BuildTileCacheLayer(geom, cfg, tx, ty, storageParams));
                     results.Add(task);
                 }
             }
@@ -94,7 +94,7 @@ namespace DotRecast.Detour.TileCache
             return lset;
         }
 
-        protected virtual DtTileCacheLayerBuildResult BuildTileCacheLayer(IInputGeomProvider geom, RcConfig cfg, int tx, int ty, RcByteOrder order, bool cCompatibility)
+        protected virtual DtTileCacheLayerBuildResult BuildTileCacheLayer(IInputGeomProvider geom, RcConfig cfg, int tx, int ty, DtTileCacheStorageParams storageParams)
         {
             RcHeightfieldLayerSet lset = BuildHeightfieldLayerSet(geom, cfg, tx, ty);
             List<byte[]> result = new List<byte[]>();
@@ -127,8 +127,8 @@ namespace DotRecast.Detour.TileCache
                     header.hmin = layer.hmin;
                     header.hmax = layer.hmax;
 
-                    var comp = _compFactory.Get(cCompatibility);
-                    var bytes = builder.CompressTileCacheLayer(header, layer.heights, layer.areas, layer.cons, order, cCompatibility, comp);
+                    var comp = _compFactory.Get(storageParams.Compatibility);
+                    var bytes = builder.CompressTileCacheLayer(header, layer.heights, layer.areas, layer.cons, storageParams.Order, storageParams.Compatibility, comp);
                     result.Add(bytes);
                 }
             }
