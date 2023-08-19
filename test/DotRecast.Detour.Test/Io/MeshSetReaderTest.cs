@@ -34,8 +34,8 @@ public class MeshSetReaderTest
     {
         byte[] @is = Loader.ToBytes("all_tiles_navmesh.bin");
         using var ms = new MemoryStream(@is);
-        using var bris = new BinaryReader(ms);
-        DtNavMesh mesh = reader.Read(bris, 6);
+        using var br = new BinaryReader(ms);
+        DtNavMesh mesh = reader.Read(br, 6);
         Assert.That(mesh.GetMaxTiles(), Is.EqualTo(128));
         Assert.That(mesh.GetParams().maxPolys, Is.EqualTo(0x8000));
         Assert.That(mesh.GetParams().tileWidth, Is.EqualTo(9.6f).Within(0.001f));
@@ -62,9 +62,9 @@ public class MeshSetReaderTest
     {
         byte[] @is = Loader.ToBytes("dungeon_all_tiles_navmesh.bin");
         using var ms = new MemoryStream(@is);
-        using var bris = new BinaryReader(ms);
+        using var br = new BinaryReader(ms);
 
-        DtNavMesh mesh = reader.Read(bris, 6);
+        DtNavMesh mesh = reader.Read(br, 6);
         Assert.That(mesh.GetMaxTiles(), Is.EqualTo(128));
         Assert.That(mesh.GetParams().maxPolys, Is.EqualTo(0x8000));
         Assert.That(mesh.GetParams().tileWidth, Is.EqualTo(9.6f).Within(0.001f));
@@ -91,9 +91,9 @@ public class MeshSetReaderTest
     {
         byte[] @is = Loader.ToBytes("dungeon_all_tiles_navmesh_32bit.bin");
         using var ms = new MemoryStream(@is);
-        using var bris = new BinaryReader(ms);
+        using var br = new BinaryReader(ms);
 
-        DtNavMesh mesh = reader.Read32Bit(bris, 6);
+        DtNavMesh mesh = reader.Read32Bit(br, 6);
         Assert.That(mesh.GetMaxTiles(), Is.EqualTo(128));
         Assert.That(mesh.GetParams().maxPolys, Is.EqualTo(0x8000));
         Assert.That(mesh.GetParams().tileWidth, Is.EqualTo(9.6f).Within(0.001f));

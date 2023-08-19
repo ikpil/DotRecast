@@ -68,13 +68,13 @@ namespace DotRecast.Detour.Io
 
                 NavMeshTileHeader tileHeader = new NavMeshTileHeader();
                 tileHeader.tileRef = mesh.GetTileRef(tile);
-                using MemoryStream bb = new MemoryStream();
-                using BinaryWriter baos = new BinaryWriter(bb);
-                writer.Write(baos, tile.data, order, cCompatibility);
-                baos.Flush();
-                baos.Close();
+                using MemoryStream msw = new MemoryStream();
+                using BinaryWriter bw = new BinaryWriter(msw);
+                writer.Write(bw, tile.data, order, cCompatibility);
+                bw.Flush();
+                bw.Close();
 
-                byte[] ba = bb.ToArray();
+                byte[] ba = msw.ToArray();
                 tileHeader.dataSize = ba.Length;
                 Write(stream, tileHeader.tileRef, order);
                 Write(stream, tileHeader.dataSize, order);

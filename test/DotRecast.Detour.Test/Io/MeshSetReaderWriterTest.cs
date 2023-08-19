@@ -91,12 +91,12 @@ public class MeshSetReaderWriterTest
         }
 
         using var ms = new MemoryStream();
-        using var os = new BinaryWriter(ms);
-        writer.Write(os, mesh, RcByteOrder.LITTLE_ENDIAN, true);
+        using var bw = new BinaryWriter(ms);
+        writer.Write(bw, mesh, RcByteOrder.LITTLE_ENDIAN, true);
         ms.Seek(0, SeekOrigin.Begin);
 
-        using var @is = new BinaryReader(ms);
-        mesh = reader.Read(@is, 6);
+        using var br = new BinaryReader(ms);
+        mesh = reader.Read(br, 6);
         Assert.That(mesh.GetMaxTiles(), Is.EqualTo(128));
         Assert.That(mesh.GetParams().maxPolys, Is.EqualTo(0x8000));
         Assert.That(mesh.GetParams().tileWidth, Is.EqualTo(9.6f).Within(0.001f));

@@ -29,8 +29,8 @@ namespace DotRecast.Detour.Extras.Unity.Astar
         {
             ZipArchiveEntry graphReferences = file.GetEntry(filename);
             using var entryStream = graphReferences.Open();
-            using var bis = new BinaryReader(entryStream);
-            RcByteBuffer buffer = IOUtils.ToByteBuffer(bis);
+            using var br = new BinaryReader(entryStream);
+            RcByteBuffer buffer = IOUtils.ToByteBuffer(br);
             buffer.Order(RcByteOrder.LITTLE_ENDIAN);
             return buffer;
         }

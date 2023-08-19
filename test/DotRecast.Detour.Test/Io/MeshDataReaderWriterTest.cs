@@ -63,15 +63,15 @@ public class MeshDataReaderWriterTest
     public void Test(bool cCompatibility, RcByteOrder order)
     {
         using var ms = new MemoryStream();
-        using var bwos = new BinaryWriter(ms);
+        using var bw = new BinaryWriter(ms);
 
         DtMeshDataWriter writer = new DtMeshDataWriter();
-        writer.Write(bwos, meshData, order, cCompatibility);
+        writer.Write(bw, meshData, order, cCompatibility);
         ms.Seek(0, SeekOrigin.Begin);
 
-        using var bris = new BinaryReader(ms);
+        using var br = new BinaryReader(ms);
         DtMeshDataReader reader = new DtMeshDataReader();
-        DtMeshData readData = reader.Read(bris, VERTS_PER_POLYGON);
+        DtMeshData readData = reader.Read(br, VERTS_PER_POLYGON);
 
         Assert.That(readData.header.vertCount, Is.EqualTo(meshData.header.vertCount));
         Assert.That(readData.header.polyCount, Is.EqualTo(meshData.header.polyCount));

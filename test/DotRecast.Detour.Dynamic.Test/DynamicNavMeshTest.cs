@@ -23,11 +23,11 @@ public class DynamicNavMeshTest
     {
         byte[] bytes = Loader.ToBytes("test_tiles.voxels");
         using var ms = new MemoryStream(bytes);
-        using var bis = new BinaryReader(ms);
+        using var br = new BinaryReader(ms);
 
         // load voxels from file
         VoxelFileReader reader = new VoxelFileReader(DtVoxelTileLZ4ForTestCompressor.Shared);
-        VoxelFile f = reader.Read(bis);
+        VoxelFile f = reader.Read(br);
         // create dynamic navmesh
         DynamicNavMesh mesh = new DynamicNavMesh(f);
         // build navmesh asynchronously using multiple threads

@@ -137,7 +137,7 @@ public class UnityAStarPathfindingImporterTest
         string filename = $"all_tiles_navmesh_{filePostfix}.bin";
         string filepath = Path.Combine("test-output", filename);
         using var fs = new FileStream(filename, FileMode.Create);
-        using var os = new BinaryWriter(fs);
-        writer.Write(os, mesh, RcByteOrder.LITTLE_ENDIAN, true);
+        using var bw = new BinaryWriter(fs);
+        writer.Write(bw, mesh, RcByteOrder.LITTLE_ENDIAN, true);
     }
 }

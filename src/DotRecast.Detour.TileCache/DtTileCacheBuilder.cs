@@ -1908,11 +1908,11 @@ namespace DotRecast.Detour.TileCache
         public byte[] CompressTileCacheLayer(IRcCompressor comp, DtTileCacheLayer layer, RcByteOrder order, bool cCompatibility)
         {
             using var ms = new MemoryStream();
-            using var baos = new BinaryWriter(ms);
+            using var bw = new BinaryWriter(ms);
             DtTileCacheLayerHeaderWriter hw = new DtTileCacheLayerHeaderWriter();
             try
             {
-                hw.Write(baos, layer.header, order, cCompatibility);
+                hw.Write(bw, layer.header, order, cCompatibility);
                 int gridSize = layer.header.width * layer.header.height;
                 byte[] buffer = new byte[gridSize * 3];
                 for (int i = 0; i < gridSize; i++)
@@ -1923,7 +1923,7 @@ namespace DotRecast.Detour.TileCache
                 }
 
                 var compressed = comp.Compress(buffer);
-                baos.Write(compressed);
+                bw.Write(compressed);
                 return ms.ToArray();
             }
             catch (IOException e)

@@ -37,15 +37,15 @@ namespace DotRecast.Detour.Io
 
         public static byte[] ToByteArray(BinaryReader inputStream)
         {
-            using var baos = new MemoryStream();
+            using var msw = new MemoryStream();
             byte[] buffer = new byte[4096];
             int l;
             while ((l = inputStream.Read(buffer)) > 0)
             {
-                baos.Write(buffer, 0, l);
+                msw.Write(buffer, 0, l);
             }
 
-            return baos.ToArray();
+            return msw.ToArray();
         }
 
 

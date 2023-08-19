@@ -36,8 +36,8 @@ public class TileCacheReaderTest
     public void TestNavmesh()
     {
         using var ms = new MemoryStream(Loader.ToBytes("all_tiles_tilecache.bin"));
-        using var @is = new BinaryReader(ms);
-        DtTileCache tc = reader.Read(@is, 6, null);
+        using var br = new BinaryReader(ms);
+        DtTileCache tc = reader.Read(br, 6, null);
         Assert.That(tc.GetNavMesh().GetMaxTiles(), Is.EqualTo(256));
         Assert.That(tc.GetNavMesh().GetParams().maxPolys, Is.EqualTo(16384));
         Assert.That(tc.GetNavMesh().GetParams().tileWidth, Is.EqualTo(14.4f).Within(0.001f));
@@ -134,8 +134,8 @@ public class TileCacheReaderTest
     public void TestDungeon()
     {
         using var ms = new MemoryStream(Loader.ToBytes("dungeon_all_tiles_tilecache.bin"));
-        using var @is = new BinaryReader(ms);
-        DtTileCache tc = reader.Read(@is, 6, null);
+        using var br = new BinaryReader(ms);
+        DtTileCache tc = reader.Read(br, 6, null);
         Assert.That(tc.GetNavMesh().GetMaxTiles(), Is.EqualTo(256));
         Assert.That(tc.GetNavMesh().GetParams().maxPolys, Is.EqualTo(16384));
         Assert.That(tc.GetNavMesh().GetParams().tileWidth, Is.EqualTo(14.4f).Within(0.001f));

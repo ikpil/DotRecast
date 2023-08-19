@@ -61,13 +61,13 @@ public class TileCacheReaderWriterTest : AbstractTileCacheTest
             tc.BuildNavMeshTile(refs);
         }
 
-        using var msout = new MemoryStream();
-        using var baos = new BinaryWriter(msout);
-        writer.Write(baos, tc, RcByteOrder.LITTLE_ENDIAN, cCompatibility);
+        using var msw = new MemoryStream();
+        using var bw = new BinaryWriter(msw);
+        writer.Write(bw, tc, RcByteOrder.LITTLE_ENDIAN, cCompatibility);
 
-        using var msis = new MemoryStream(msout.ToArray());
-        using var bais = new BinaryReader(msis);
-        tc = reader.Read(bais, 6, null);
+        using var msr = new MemoryStream(msw.ToArray());
+        using var br = new BinaryReader(msr);
+        tc = reader.Read(br, 6, null);
         Assert.That(tc.GetNavMesh().GetMaxTiles(), Is.EqualTo(256));
         Assert.That(tc.GetNavMesh().GetParams().maxPolys, Is.EqualTo(16384));
         Assert.That(tc.GetNavMesh().GetParams().tileWidth, Is.EqualTo(14.4f).Within(0.001f));

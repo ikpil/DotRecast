@@ -212,15 +212,15 @@ public class ModernOpenGLDraw : IOpenGLDraw
             if (currentPrim == DebugDrawPrimitives.QUADS)
             {
                 using var unmanagedElems = new UnmanagedMemoryStream(pElems, eboSize, eboSize, FileAccess.Write);
-                using var elems = new BinaryWriter(unmanagedElems);
+                using var bw = new BinaryWriter(unmanagedElems);
                 for (int i = 0; i < vertices.Count; i += 4)
                 {
-                    elems.Write(i);
-                    elems.Write(i + 1);
-                    elems.Write(i + 2);
-                    elems.Write(i);
-                    elems.Write(i + 2);
-                    elems.Write(i + 3);
+                    bw.Write(i);
+                    bw.Write(i + 1);
+                    bw.Write(i + 2);
+                    bw.Write(i);
+                    bw.Write(i + 2);
+                    bw.Write(i + 3);
                 }
             }
             else
