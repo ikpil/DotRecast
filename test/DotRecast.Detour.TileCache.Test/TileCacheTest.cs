@@ -178,10 +178,12 @@ public class TileCacheTest : AbstractTileCacheTest
     [Test]
     public void TestPerformance()
     {
-        int threads = 4;
+        int threads = Environment.ProcessorCount;
         RcByteOrder order = RcByteOrder.LITTLE_ENDIAN;
         bool cCompatibility = false;
-        IInputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("dungeon.obj"));
+
+        var objBytes = Loader.ToBytes("dungeon.obj");
+        IInputGeomProvider geom = ObjImporter.Load(objBytes);
         TestTileLayerBuilder layerBuilder = new TestTileLayerBuilder(geom);
         for (int i = 0; i < 4; i++)
         {

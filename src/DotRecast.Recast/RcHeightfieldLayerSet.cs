@@ -27,6 +27,6 @@ namespace DotRecast.Recast
     /// @see rcAllocHeightfieldLayerSet, rcFreeHeightfieldLayerSet
     public class RcHeightfieldLayerSet
     {
-        public RcHeightfieldLayer[] layers; /// < The layers in the set. [Size: #nlayers]
+        public RcHeightfieldLayer[] layers; // < The layers in the set. [Size: #nlayers]
     }
 }

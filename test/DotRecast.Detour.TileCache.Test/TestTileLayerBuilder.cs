@@ -20,110 +20,56 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 using DotRecast.Core;
+using DotRecast.Detour.TileCache.Io.Compress;
 using DotRecast.Detour.TileCache.Test.Io;
 using DotRecast.Recast;
 using DotRecast.Recast.Geom;
 
 namespace DotRecast.Detour.TileCache.Test;
 
-public class TestTileLayerBuilder : AbstractTileLayersBuilder
+public class TestTileLayerBuilder : DtTileCacheLayerBuilder
 {
-    private const float m_cellSize = 0.3f;
-    private const float m_cellHeight = 0.2f;
-    private const float m_agentHeight = 2.0f;
-    private const float m_agentRadius = 0.6f;
-    private const float m_agentMaxClimb = 0.9f;
-    private const float m_agentMaxSlope = 45.0f;
-    private const int m_regionMinSize = 8;
-    private const int m_regionMergeSize = 20;
-    private const float m_regionMinArea = m_regionMinSize * m_regionMinSize * m_cellSize * m_cellSize;
-    private const float m_regionMergeArea = m_regionMergeSize * m_regionMergeSize * m_cellSize * m_cellSize;
-    private const float m_edgeMaxLen = 12.0f;
-    private const float m_edgeMaxError = 1.3f;
-    private const int m_vertsPerPoly = 6;
-    private const float m_detailSampleDist = 6.0f;
-    private const float m_detailSampleMaxError = 1.0f;
-    private readonly RcConfig rcConfig;
-    private const int m_tileSize = 48;
-    protected readonly IInputGeomProvider geom;
-    private readonly int tw;
-    private readonly int th;
+    private const float CellSize = 0.3f;
+    private const float CellHeight = 0.2f;
 
-    public TestTileLayerBuilder(IInputGeomProvider geom)
+    private const float AgentHeight = 2.0f;
+    private const float AgentRadius = 0.6f;
+    private const float AgentMaxClimb = 0.9f;
+    private const float AgentMaxSlope = 45.0f;
+
+    private const int RegionMinSize = 8;
+    private const int RegionMergeSize = 20;
+    private const float RegionMinArea = RegionMinSize * RegionMinSize * CellSize * CellSize;
+    private const float RegionMergeArea = RegionMergeSize * RegionMergeSize * CellSize * CellSize;
+
+    private const float EdgeMaxLen = 12.0f;
+    private const float EdgeMaxError = 1.3f;
+    private const int VertsPerPoly = 6;
+    private const float DetailSampleDist = 6.0f;
+    private const float DetailSampleMaxError = 1.0f;
+
+    private readonly RcConfig _cfg;
+    private const int m_tileSize = 48;
+
+    private readonly IInputGeomProvider _geom;
+    public readonly int tw;
+    public readonly int th;
+
+    public TestTileLayerBuilder(IInputGeomProvider geom) : base(DtTileCacheCompressorForTestFactory.Shared)
     {
-        this.geom = geom;
-        rcConfig = new RcConfig(true, m_tileSize, m_tileSize, RcConfig.CalcBorder(m_agentRadius, m_cellSize),
-            RcPartition.WATERSHED, m_cellSize, m_cellHeight, m_agentMaxSlope, true, true, true, m_agentHeight,
-            m_agentRadius, m_agentMaxClimb, m_regionMinArea, m_regionMergeArea, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly,
-            true, m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
+        _geom = geom;
+        _cfg = new RcConfig(true, m_tileSize, m_tileSize, RcConfig.CalcBorder(AgentRadius, CellSize),
+            RcPartition.WATERSHED, CellSize, CellHeight, AgentMaxSlope, true, true, true, AgentHeight,
+            AgentRadius, AgentMaxClimb, RegionMinArea, RegionMergeArea, EdgeMaxLen, EdgeMaxError, VertsPerPoly,
+            true, DetailSampleDist, DetailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
+
         RcVec3f bmin = geom.GetMeshBoundsMin();
         RcVec3f bmax = geom.GetMeshBoundsMax();
-        Recast.RcUtils.CalcTileCount(bmin, bmax, m_cellSize, m_tileSize, m_tileSize, out tw, out th);
+        RcUtils.CalcTileCount(bmin, bmax, CellSize, m_tileSize, m_tileSize, out tw, out th);
     }
 
     public List<byte[]> Build(RcByteOrder order, bool cCompatibility, int threads)
     {
-        return Build(order, cCompatibility, threads, tw, th);
-    }
-
-    public int GetTw()
-    {
-        return tw;
-    }
-
-    public int GetTh()
-    {
-        return th;
-    }
-
-    protected override List<byte[]> Build(int tx, int ty, RcByteOrder order, bool cCompatibility)
-    {
-        RcHeightfieldLayerSet lset = GetHeightfieldSet(tx, ty);
-        List<byte[]> result = new();
-        if (lset != null)
-        {
-            DtTileCacheBuilder builder = new DtTileCacheBuilder();
-            for (int i = 0; i < lset.layers.Length; ++i)
-            {
-                RcHeightfieldLayer layer = lset.layers[i];
-
-                // Store header
-                DtTileCacheLayerHeader header = new DtTileCacheLayerHeader();
-                header.magic = DtTileCacheLayerHeader.DT_TILECACHE_MAGIC;
-                header.version = DtTileCacheLayerHeader.DT_TILECACHE_VERSION;
-
-                // Tile layer location in the navmesh.
-                header.tx = tx;
-                header.ty = ty;
-                header.tlayer = i;
-                header.bmin = layer.bmin;
-                header.bmax = layer.bmax;
-
-                // Tile info.
-                header.width = layer.width;
-                header.height = layer.height;
-                header.minx = layer.minx;
-                header.maxx = layer.maxx;
-                header.miny = layer.miny;
-                header.maxy = layer.maxy;
-                header.hmin = layer.hmin;
-                header.hmax = layer.hmax;
-
-                var comp = DtTileCacheCompressorForTestFactory.Shared.Get(cCompatibility);
-                result.Add(builder.CompressTileCacheLayer(header, layer.heights, layer.areas, layer.cons, order, cCompatibility, comp));
-            }
-        }
-
-        return result;
-    }
-
-    protected RcHeightfieldLayerSet GetHeightfieldSet(int tx, int ty)
-    {
-        RecastBuilder rcBuilder = new RecastBuilder();
-        RcVec3f bmin = geom.GetMeshBoundsMin();
-        RcVec3f bmax = geom.GetMeshBoundsMax();
-        RecastBuilderConfig cfg = new RecastBuilderConfig(rcConfig, bmin, bmax, tx, ty);
-        RcHeightfieldLayerSet lset = rcBuilder.BuildLayers(geom, cfg);
-        return lset;
+        return Build(_geom, _cfg, order, cCompatibility, threads, tw, th);
     }
 }

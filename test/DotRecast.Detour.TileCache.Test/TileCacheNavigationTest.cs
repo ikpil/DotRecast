@@ -64,9 +64,9 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
             tc.AddTile(data, 0);
         }
 
-        for (int y = 0; y < layerBuilder.GetTh(); ++y)
+        for (int y = 0; y < layerBuilder.th; ++y)
         {
-            for (int x = 0; x < layerBuilder.GetTw(); ++x)
+            for (int x = 0; x < layerBuilder.tw; ++x)
             {
                 foreach (long refs in tc.GetTilesAt(x, y))
                 {
