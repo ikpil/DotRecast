@@ -33,6 +33,7 @@ namespace DotRecast.Detour.TileCache.Test;
 public class AbstractTileCacheTest
 {
     private const int EXPECTED_LAYERS_PER_TILE = 4;
+    
     private readonly float m_cellSize = 0.3f;
     private readonly float m_cellHeight = 0.2f;
     private readonly float m_agentHeight = 2.0f;
@@ -57,13 +58,15 @@ public class AbstractTileCacheTest
         option.maxSimplificationError = m_edgeMaxError;
         option.maxTiles = tw * th * EXPECTED_LAYERS_PER_TILE;
         option.maxObstacles = 128;
+
         DtNavMeshParams navMeshParams = new DtNavMeshParams();
         navMeshParams.orig = geom.GetMeshBoundsMin();
         navMeshParams.tileWidth = m_tileSize * m_cellSize;
         navMeshParams.tileHeight = m_tileSize * m_cellSize;
         navMeshParams.maxTiles = 256;
         navMeshParams.maxPolys = 16384;
-        DtNavMesh navMesh = new DtNavMesh(navMeshParams, 6);
+
+        var navMesh = new DtNavMesh(navMeshParams, 6);
         var comp = DtTileCacheCompressorForTestFactory.Shared.Get(cCompatibility);
         var storageParams = new DtTileCacheStorageParams(order, cCompatibility);
         var process = new TestTileCacheMeshProcess();
