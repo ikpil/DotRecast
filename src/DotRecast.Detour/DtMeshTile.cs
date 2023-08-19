@@ -23,8 +23,8 @@ using System.Collections.Generic;
 namespace DotRecast.Detour
 {
     /**
- * Defines a navigation mesh tile.
- */
+     * Defines a navigation mesh tile.
+     */
     public class DtMeshTile
     {
         public readonly int index;
