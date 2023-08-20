@@ -20,7 +20,7 @@ public class TestNavmeshSampleTool : ISampleTool
     private const int MAX_POLYS = 256;
 
     private DemoSample _sample;
-    private readonly RcTestNavMeshTool _impl;
+    private readonly RcTestNavMeshTool _tool;
 
     private bool m_sposSet;
     private bool m_eposSet;
@@ -49,7 +49,7 @@ public class TestNavmeshSampleTool : ISampleTool
 
     public TestNavmeshSampleTool()
     {
-        _impl = new();
+        _tool = new();
         m_filter = new DtQueryDefaultFilter(
             SampleAreaModifications.SAMPLE_POLYFLAGS_ALL,
             SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED,
@@ -59,7 +59,7 @@ public class TestNavmeshSampleTool : ISampleTool
 
     public IRcToolable GetTool()
     {
-        return _impl;
+        return _tool;
     }
 
     public void SetSample(DemoSample sample)
@@ -91,7 +91,7 @@ public class TestNavmeshSampleTool : ISampleTool
 
     public void Layout()
     {
-        var option = _impl.GetOption();
+        var option = _tool.GetOption();
         var previousToolMode = option.mode;
         int previousStraightPathOptions = option.straightPathOptions;
         int previousIncludeFlags = m_filter.GetIncludeFlags();
@@ -197,7 +197,7 @@ public class TestNavmeshSampleTool : ISampleTool
             m_endRef = 0;
         }
 
-        var option = _impl.GetOption();
+        var option = _tool.GetOption();
 
         if (option.mode == RcTestNavmeshToolMode.PATHFIND_FOLLOW)
         {
@@ -206,7 +206,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 var polys = new List<long>();
                 var smoothPath = new List<RcVec3f>();
 
-                var status = _impl.FindFollowPath(navMesh, navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, option.enableRaycast,
+                var status = _tool.FindFollowPath(navMesh, navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, option.enableRaycast,
                     ref polys, ref smoothPath);
 
                 if (status.Succeeded())
@@ -227,7 +227,7 @@ public class TestNavmeshSampleTool : ISampleTool
             {
                 var polys = new List<long>();
                 var straightPath = new List<StraightPathItem>();
-                var status = _impl.FindStraightPath(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, option.enableRaycast,
+                var status = _tool.FindStraightPath(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, option.enableRaycast,
                     ref polys, ref straightPath, option.straightPathOptions);
 
                 if (status.Succeeded())
@@ -248,7 +248,7 @@ public class TestNavmeshSampleTool : ISampleTool
 
             if (m_sposSet && m_eposSet && m_startRef != 0 && m_endRef != 0)
             {
-                m_pathFindStatus = _impl.InitSlicedFindPath(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, option.enableRaycast);
+                m_pathFindStatus = _tool.InitSlicedFindPath(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, option.enableRaycast);
             }
         }
         else if (option.mode == RcTestNavmeshToolMode.RAYCAST)
@@ -258,7 +258,7 @@ public class TestNavmeshSampleTool : ISampleTool
             {
                 var polys = new List<long>();
                 var straightPath = new List<StraightPathItem>();
-                var status = _impl.Raycast(navQuery, m_startRef, m_spos, m_epos, m_filter,
+                var status = _tool.Raycast(navQuery, m_startRef, m_spos, m_epos, m_filter,
                     ref polys, ref straightPath, out var hitPos, out var hitNormal, out var hitResult);
 
                 if (status.Succeeded())
@@ -292,7 +292,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 List<long> refs = new();
                 List<long> parentRefs = new();
 
-                var status = _impl.FindPolysAroundCircle(navQuery, m_startRef, m_spos, m_epos, m_filter, ref refs, ref parentRefs);
+                var status = _tool.FindPolysAroundCircle(navQuery, m_startRef, m_spos, m_epos, m_filter, ref refs, ref parentRefs);
                 if (status.Succeeded())
                 {
                     m_polys = refs;
@@ -307,7 +307,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 var refs = new List<long>();
                 var parentRefs = new List<long>();
 
-                var status = _impl.FindPolysAroundShape(navQuery, settings, m_startRef, m_spos, m_epos, m_filter, ref refs, ref parentRefs, out var queryPoly);
+                var status = _tool.FindPolysAroundShape(navQuery, settings, m_startRef, m_spos, m_epos, m_filter, ref refs, ref parentRefs, out var queryPoly);
                 if (status.Succeeded())
                 {
                     m_queryPoly = queryPoly;
@@ -337,7 +337,7 @@ public class TestNavmeshSampleTool : ISampleTool
             if (m_sposSet && m_startRef != 0 && m_eposSet)
             {
                 var points = new List<RcVec3f>();
-                _impl.FindRandomPointAroundCircle(navQuery, m_startRef, m_spos, m_epos, m_filter, option.constrainByCircle, 500, ref points);
+                _tool.FindRandomPointAroundCircle(navQuery, m_startRef, m_spos, m_epos, m_filter, option.constrainByCircle, 500, ref points);
                 randomPoints.AddRange(points);
             }
         }
@@ -373,7 +373,7 @@ public class TestNavmeshSampleTool : ISampleTool
             return;
         }
 
-        var option = _impl.GetOption();
+        var option = _tool.GetOption();
         if (option.mode == RcTestNavmeshToolMode.PATHFIND_FOLLOW)
         {
             dd.DebugDrawNavMeshPoly(m_navMesh, m_startRef, startCol);
@@ -791,7 +791,7 @@ public class TestNavmeshSampleTool : ISampleTool
     public void HandleUpdate(float dt)
     {
         // TODO Auto-generated method stub
-        var option = _impl.GetOption();
+        var option = _tool.GetOption();
         if (option.mode == RcTestNavmeshToolMode.PATHFIND_SLICED)
         {
             DtNavMeshQuery m_navQuery = _sample.GetNavMeshQuery();

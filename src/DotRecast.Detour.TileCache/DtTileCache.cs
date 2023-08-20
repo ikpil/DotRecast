@@ -436,7 +436,7 @@ namespace DotRecast.Detour.TileCache
             return o;
         }
 
-        List<long> QueryTiles(RcVec3f bmin, RcVec3f bmax)
+        private List<long> QueryTiles(RcVec3f bmin, RcVec3f bmax)
         {
             List<long> results = new List<long>();
             float tw = m_params.width * m_params.cs;
@@ -468,12 +468,12 @@ namespace DotRecast.Detour.TileCache
         }
 
         /**
-     * Updates the tile cache by rebuilding tiles touched by unfinished obstacle requests.
-     *
-     * @return Returns true if the tile cache is fully up to date with obstacle requests and tile rebuilds. If the tile
-     *         cache is up to date another (immediate) call to update will have no effect; otherwise another call will
-     *         continue processing obstacle requests and tile rebuilds.
-     */
+         * Updates the tile cache by rebuilding tiles touched by unfinished obstacle requests.
+         *
+         * @return Returns true if the tile cache is fully up to date with obstacle requests and tile rebuilds. If the tile
+         *         cache is up to date another (immediate) call to update will have no effect; otherwise another call will
+         *         continue processing obstacle requests and tile rebuilds.
+         */
         public bool Update()
         {
             if (0 == m_update.Count)

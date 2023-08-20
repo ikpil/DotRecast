@@ -45,7 +45,7 @@ public class DynamicUpdateSampleTool : ISampleTool
     private static readonly ILogger Logger = Log.ForContext<DynamicUpdateSampleTool>();
 
     private DemoSample _sample;
-    private readonly RcDynamicUpdateTool _impl;
+    private readonly RcDynamicUpdateTool _tool;
     private int toolModeIdx = DynamicUpdateToolMode.BUILD.Idx;
     private DynamicUpdateToolMode mode = DynamicUpdateToolMode.BUILD;
     private float cellSize = 0.3f;
@@ -91,7 +91,7 @@ public class DynamicUpdateSampleTool : ISampleTool
 
     public DynamicUpdateSampleTool()
     {
-        _impl = new();
+        _tool = new();
         executor = Task.Factory;
         bridgeGeom = DemoObjImporter.Load(Loader.ToBytes("bridge.obj"));
         houseGeom = DemoObjImporter.Load(Loader.ToBytes("house.obj"));
@@ -100,7 +100,7 @@ public class DynamicUpdateSampleTool : ISampleTool
 
     public IRcToolable GetTool()
     {
-        return _impl;
+        return _tool;
     }
 
     public void SetSample(DemoSample sample)

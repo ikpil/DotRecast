@@ -11,23 +11,23 @@ namespace DotRecast.Recast.Demo.Tools;
 public class ObstacleSampleTool : ISampleTool
 {
     private static readonly ILogger Logger = Log.ForContext<ObstacleSampleTool>();
-    
+
     private DemoSample _sample;
 
-    private readonly RcObstacleTool _impl;
+    private readonly RcObstacleTool _tool;
     private bool _hitPosSet;
     private RcVec3f _hitPos;
 
     public ObstacleSampleTool()
     {
-        _impl = new(DtTileCacheCompressorFactory.Shared);
+        _tool = new(DtTileCacheCompressorFactory.Shared);
     }
 
     public IRcToolable GetTool()
     {
-        return _impl;
+        return _tool;
     }
-    
+
     public void SetSample(DemoSample sample)
     {
         _sample = sample;
@@ -39,9 +39,17 @@ public class ObstacleSampleTool : ISampleTool
 
     public void Layout()
     {
+        if (ImGui.Button("Build Tile Cache"))
+        {
+            var geom = _sample.GetInputGeom();
+            var settings = _sample.GetSettings();
+
+            _tool.Build(geom, settings, RcByteOrder.LITTLE_ENDIAN, true);
+        }
+
         if (ImGui.Button("Remove All Temp Obstacles"))
         {
-            _impl.ClearAllTempObstacles();
+            _tool.ClearAllTempObstacles();
         }
 
         ImGui.Separator();
@@ -57,11 +65,11 @@ public class ObstacleSampleTool : ISampleTool
 
         if (shift)
         {
-            _impl.RemoveTempObstacle(s, p);
+            _tool.RemoveTempObstacle(s, p);
         }
         else
         {
-            _impl.AddTempObstacle(_hitPos);
+            _tool.AddTempObstacle(_hitPos);
         }
     }
 

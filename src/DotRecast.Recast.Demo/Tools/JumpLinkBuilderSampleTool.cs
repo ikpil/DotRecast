@@ -33,18 +33,18 @@ public class JumpLinkBuilderSampleTool : ISampleTool
     private static readonly ILogger Logger = Log.ForContext<JumpLinkBuilderSampleTool>();
     private DemoSample _sample;
 
-    private readonly RcJumpLinkBuilderTool _impl;
+    private readonly RcJumpLinkBuilderTool _tool;
     private readonly RcJumpLinkBuilderToolOption _option;
 
     public JumpLinkBuilderSampleTool()
     {
-        _impl = new();
+        _tool = new();
         _option = new();
     }
 
     public IRcToolable GetTool()
     {
-        return _impl;
+        return _tool;
     }
 
     public void SetSample(DemoSample sample)
@@ -54,7 +54,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
 
     public void OnSampleChanged()
     {
-        _impl.Clear();
+        _tool.Clear();
     }
 
 
@@ -69,13 +69,13 @@ public class JumpLinkBuilderSampleTool : ISampleTool
         RecastDebugDraw dd = renderer.GetDebugDraw();
         dd.DepthMask(false);
 
-        var annotationBuilder = _impl.GetAnnotationBuilder();
+        var annotationBuilder = _tool.GetAnnotationBuilder();
 
         if ((_option.flags & RcJumpLinkBuilderToolOption.DRAW_WALKABLE_BORDER) != 0)
         {
             if (annotationBuilder != null)
             {
-                var selEdge = _impl.GetSelEdge();
+                var selEdge = _tool.GetSelEdge();
 
                 foreach (JumpEdge[] edges in annotationBuilder.GetEdges())
                 {
@@ -132,7 +132,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
         if ((_option.flags & RcJumpLinkBuilderToolOption.DRAW_ANNOTATIONS) != 0)
         {
             dd.Begin(QUADS);
-            foreach (JumpLink link in _impl.GetLinks())
+            foreach (JumpLink link in _tool.GetLinks())
             {
                 for (int j = 0; j < link.nspine - 1; ++j)
                 {
@@ -149,7 +149,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
 
             dd.End();
             dd.Begin(LINES, 3.0f);
-            foreach (JumpLink link in _impl.GetLinks())
+            foreach (JumpLink link in _tool.GetLinks())
             {
                 for (int j = 0; j < link.nspine - 1; ++j)
                 {
@@ -178,7 +178,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
 
         if (annotationBuilder != null)
         {
-            foreach (JumpLink link in _impl.GetLinks())
+            foreach (JumpLink link in _tool.GetLinks())
             {
                 if ((_option.flags & RcJumpLinkBuilderToolOption.DRAW_ANIM_TRAJECTORY) != 0)
                 {
@@ -389,7 +389,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
             var geom = _sample.GetInputGeom();
             var settings = _sample.GetSettings();
 
-            _impl.Build(
+            _tool.Build(
                 geom, settings, _sample.GetRecastResults(),
                 buildOffMeshConnections,
                 _option.buildTypes,

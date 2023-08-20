@@ -40,7 +40,7 @@ public class CrowdSampleTool : ISampleTool
     private static readonly ILogger Logger = Log.ForContext<CrowdSampleTool>();
 
     private DemoSample _sample;
-    private readonly RcCrowdTool _impl;
+    private readonly RcCrowdTool _tool;
     private readonly CrowdToolParams toolParams = new CrowdToolParams();
     private DtNavMesh m_nav;
     private DtCrowd crowd;
@@ -58,12 +58,12 @@ public class CrowdSampleTool : ISampleTool
     {
         m_agentDebug.vod = new DtObstacleAvoidanceDebugData(2048);
         profilingTool = new CrowdProfilingTool(GetAgentParams);
-        _impl = new();
+        _tool = new();
     }
 
     public IRcToolable GetTool()
     {
-        return _impl;
+        return _tool;
     }
 
     public void SetSample(DemoSample sample)

@@ -36,18 +36,18 @@ public class OffMeshConnectionSampleTool : ISampleTool
 
     private DemoSample _sample;
 
-    private readonly RcOffMeshConnectionTool _impl;
+    private readonly RcOffMeshConnectionTool _tool;
     private bool hitPosSet;
     private RcVec3f hitPos;
 
     public OffMeshConnectionSampleTool()
     {
-        _impl = new();
+        _tool = new();
     }
 
     public IRcToolable GetTool()
     {
-        return _impl;
+        return _tool;
     }
 
     public void SetSample(DemoSample sample)
@@ -72,7 +72,7 @@ public class OffMeshConnectionSampleTool : ISampleTool
 
         if (shift)
         {
-            _impl.Remove(geom, settings, p);
+            _tool.Remove(geom, settings, p);
         }
         else
         {
@@ -84,7 +84,7 @@ public class OffMeshConnectionSampleTool : ISampleTool
             }
             else
             {
-                _impl.Add(geom, settings, hitPos, p);
+                _tool.Add(geom, settings, hitPos, p);
                 hitPosSet = false;
             }
         }
@@ -111,7 +111,7 @@ public class OffMeshConnectionSampleTool : ISampleTool
 
     public void Layout()
     {
-        var options = _impl.GetOption();
+        var options = _tool.GetOption();
         ImGui.RadioButton("One Way", ref options.bidir, 0);
         ImGui.RadioButton("Bidirectional", ref options.bidir, 1);
     }

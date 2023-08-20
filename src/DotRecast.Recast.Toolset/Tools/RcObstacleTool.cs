@@ -24,19 +24,33 @@ namespace DotRecast.Recast.Toolset.Tools
             return "Create Temp Obstacles";
         }
 
+        public void Build(IInputGeomProvider geom, RcNavMeshBuildSettings setting, RcByteOrder order, bool cCompatibility)
+        {
+            _tc = CreateTileCache(geom, setting, order, cCompatibility);
+        }
+
         public void ClearAllTempObstacles()
         {
+            if (null == _tc)
+                return;
         }
 
         public void RemoveTempObstacle(RcVec3f sp, RcVec3f sq)
         {
-            // ..
+            if (null == _tc)
+                return;
+
+            //DtObstacleRef refs = hitTestObstacle(m_tileCache, sp, sq);
+            //_tc.RemoveObstacle(refs);
         }
 
-        public void AddTempObstacle(RcVec3f pos)
+        public void AddTempObstacle(RcVec3f p)
         {
-            //p[1] -= 0.5f;
-            //m_tileCache->addObstacle(p, 1.0f, 2.0f, 0);
+            if (null == _tc)
+                return;
+            
+            p.y -= 0.5f;
+            _tc.AddObstacle(p, 1.0f, 2.0f);
         }
 
         public DtTileCache CreateTileCache(IInputGeomProvider geom, RcNavMeshBuildSettings setting, RcByteOrder order, bool cCompatibility)

@@ -39,7 +39,7 @@ public class ConvexVolumeSampleTool : ISampleTool
     private static readonly ILogger Logger = Log.ForContext<ConvexVolumeSampleTool>();
 
     private DemoSample _sample;
-    private readonly RcConvexVolumeTool _impl;
+    private readonly RcConvexVolumeTool _tool;
 
     private int areaTypeValue = SampleAreaModifications.SAMPLE_AREAMOD_GRASS.Value;
     private RcAreaModification areaType = SampleAreaModifications.SAMPLE_AREAMOD_GRASS;
@@ -51,12 +51,12 @@ public class ConvexVolumeSampleTool : ISampleTool
 
     public ConvexVolumeSampleTool()
     {
-        _impl = new RcConvexVolumeTool();
+        _tool = new RcConvexVolumeTool();
     }
 
     public IRcToolable GetTool()
     {
-        return _impl;
+        return _tool;
     }
 
     public void SetSample(DemoSample sample)
@@ -78,7 +78,7 @@ public class ConvexVolumeSampleTool : ISampleTool
 
         if (shift)
         {
-            _impl.RemoveByPos(geom, p);
+            _tool.RemoveByPos(geom, p);
         }
         else
         {
@@ -90,7 +90,7 @@ public class ConvexVolumeSampleTool : ISampleTool
                 var vol = RcConvexVolumeTool.CreateConvexVolume(pts, hull, areaType, boxDescent, boxHeight, polyOffset);
                 if (null != vol)
                 {
-                    _impl.Add(geom, vol);
+                    _tool.Add(geom, vol);
                 }
 
                 pts.Clear();

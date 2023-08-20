@@ -15,19 +15,19 @@ public class TileSampleTool : ISampleTool
     private static readonly ILogger Logger = Log.ForContext<TileSampleTool>();
 
     private DemoSample _sample;
-    private readonly RcTileTool _impl;
+    private readonly RcTileTool _tool;
 
     private bool _hitPosSet;
     private RcVec3f _hitPos;
 
     public TileSampleTool()
     {
-        _impl = new();
+        _tool = new();
     }
 
     public IRcToolable GetTool()
     {
-        return _impl;
+        return _tool;
     }
 
     public void SetSample(DemoSample sample)
@@ -47,12 +47,12 @@ public class TileSampleTool : ISampleTool
         
         if (ImGui.Button("Create All Tile"))
         {
-            _impl.BuildAllTiles(geom, settings, navMesh);
+            _tool.BuildAllTiles(geom, settings, navMesh);
         }
 
         if (ImGui.Button("Remove All Tile"))
         {
-            _impl.RemoveAllTiles(geom, settings, navMesh);
+            _tool.RemoveAllTiles(geom, settings, navMesh);
         }
     }
 
@@ -67,11 +67,11 @@ public class TileSampleTool : ISampleTool
 
         if (shift)
         {
-            _impl.RemoveTile(geom, settings, navMesh, _hitPos);
+            _tool.RemoveTile(geom, settings, navMesh, _hitPos);
         }
         else
         {
-            bool built = _impl.BuildTile(geom, settings, navMesh, _hitPos, out var tileBuildTicks, out var tileTriCount, out var tileMemUsage);
+            bool built = _tool.BuildTile(geom, settings, navMesh, _hitPos, out var tileBuildTicks, out var tileTriCount, out var tileMemUsage);
             if (!built)
             {
                 Logger.Error($"failed to build tile - check!");
