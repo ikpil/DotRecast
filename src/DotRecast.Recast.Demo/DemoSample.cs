@@ -21,11 +21,12 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using DotRecast.Detour;
+using DotRecast.Recast.Toolset;
 using DotRecast.Recast.Toolset.Geom;
 
-namespace DotRecast.Recast.Toolset
+namespace DotRecast.Recast.Demo
 {
-    public class Sample
+    public class DemoSample
     {
         private DemoInputGeomProvider _inputGeom;
         private DtNavMesh _navMesh;
@@ -34,7 +35,7 @@ namespace DotRecast.Recast.Toolset
         private IList<RecastBuilderResult> _recastResults;
         private bool _changed;
 
-        public Sample(DemoInputGeomProvider inputGeom, IList<RecastBuilderResult> recastResults, DtNavMesh navMesh)
+        public DemoSample(DemoInputGeomProvider inputGeom, IList<RecastBuilderResult> recastResults, DtNavMesh navMesh)
         {
             _inputGeom = inputGeom;
             _recastResults = recastResults;
@@ -93,7 +94,7 @@ namespace DotRecast.Recast.Toolset
             SetQuery(navMesh);
 
             _changed = true;
-            
+
             // // by update
             // _inputGeom.ClearConvexVolumes();
             // _inputGeom.RemoveOffMeshConnections(x => true);

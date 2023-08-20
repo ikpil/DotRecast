@@ -1,34 +1,20 @@
 ﻿using System.Linq;
 using DotRecast.Core;
+using DotRecast.Detour;
+using DotRecast.Recast.Geom;
 using DotRecast.Recast.Toolset.Builder;
 
 namespace DotRecast.Recast.Toolset.Tools
 {
-    public class TileToolImpl : ISampleTool
+    public class TileToolImpl : IRcToolable
     {
-        private Sample _sample;
-
         public string GetName()
         {
             return "Create Tiles";
         }
 
-        public void SetSample(Sample sample)
+        public void RemoveAllTiles(IInputGeomProvider geom, RcNavMeshBuildSettings settings, DtNavMesh navMesh)
         {
-            _sample = sample;
-        }
-
-        public Sample GetSample()
-        {
-            return _sample;
-        }
-
-        public void RemoveAllTiles()
-        {
-            var settings = _sample.GetSettings();
-            var geom = _sample.GetInputGeom();
-            var navMesh = _sample.GetNavMesh();
-
             if (null == settings || null == geom || navMesh == null)
                 return;
 
@@ -51,12 +37,8 @@ namespace DotRecast.Recast.Toolset.Tools
             }
         }
 
-        public void BuildAllTiles()
+        public void BuildAllTiles(IInputGeomProvider geom, RcNavMeshBuildSettings settings, DtNavMesh navMesh)
         {
-            var settings = _sample.GetSettings();
-            var geom = _sample.GetInputGeom();
-            var navMesh = _sample.GetNavMesh();
-
             if (null == settings || null == geom || navMesh == null)
                 return;
 
@@ -73,20 +55,16 @@ namespace DotRecast.Recast.Toolset.Tools
             {
                 for (int x = 0; x < tw; ++x)
                 {
-                    BuildTile(x, y, out var tileBuildTicks, out var tileTriCount, out var tileMemUsage);
+                    BuildTile(geom, settings, navMesh, x, y, out var tileBuildTicks, out var tileTriCount, out var tileMemUsage);
                 }
             }
         }
 
-        public bool BuildTile(int tx, int ty, out long tileBuildTicks, out int tileTriCount, out int tileMemUsage)
+        public bool BuildTile(IInputGeomProvider geom, RcNavMeshBuildSettings settings, DtNavMesh navMesh, int tx, int ty, out long tileBuildTicks, out int tileTriCount, out int tileMemUsage)
         {
             tileBuildTicks = 0;
             tileTriCount = 0; // ...
             tileMemUsage = 0; // ...
-
-            var settings = _sample.GetSettings();
-            var geom = _sample.GetInputGeom();
-            var navMesh = _sample.GetNavMesh();
 
             var availableTileCount = navMesh.GetAvailableTileCount();
             if (0 >= availableTileCount)
@@ -128,8 +106,7 @@ namespace DotRecast.Recast.Toolset.Tools
             var result = rb.BuildTile(geom, cfg, bmin, bmax, tx, ty, new RcAtomicInteger(0), 1);
 
             var tb = new TileNavMeshBuilder();
-            var meshData = tb.BuildMeshData(geom,
-                settings.cellSize, settings.cellHeight, settings.agentHeight, settings.agentRadius, settings.agentMaxClimb, RcImmutableArray.Create(result)
+            var meshData = tb.BuildMeshData(geom, settings.cellSize, settings.cellHeight, settings.agentHeight, settings.agentRadius, settings.agentMaxClimb, RcImmutableArray.Create(result)
             ).FirstOrDefault();
 
             if (null == meshData)
@@ -144,12 +121,8 @@ namespace DotRecast.Recast.Toolset.Tools
             return true;
         }
 
-        public bool BuildTile(RcVec3f pos, out long tileBuildTicks, out int tileTriCount, out int tileMemUsage)
+        public bool BuildTile(IInputGeomProvider geom, RcNavMeshBuildSettings settings, DtNavMesh navMesh, RcVec3f pos, out long tileBuildTicks, out int tileTriCount, out int tileMemUsage)
         {
-            var settings = _sample.GetSettings();
-            var geom = _sample.GetInputGeom();
-            var navMesh = _sample.GetNavMesh();
-
             tileBuildTicks = 0;
             tileTriCount = 0;
             tileMemUsage = 0;
@@ -165,15 +138,11 @@ namespace DotRecast.Recast.Toolset.Tools
             int tx = (int)((pos.x - bmin[0]) / ts);
             int ty = (int)((pos.z - bmin[2]) / ts);
 
-            return BuildTile(tx, ty, out tileBuildTicks, out tileTriCount, out tileMemUsage);
+            return BuildTile(geom, settings, navMesh, tx, ty, out tileBuildTicks, out tileTriCount, out tileMemUsage);
         }
 
-        public bool RemoveTile(RcVec3f pos)
+        public bool RemoveTile(IInputGeomProvider geom, RcNavMeshBuildSettings settings, DtNavMesh navMesh, RcVec3f pos)
         {
-            var settings = _sample.GetSettings();
-            var geom = _sample.GetInputGeom();
-            var navMesh = _sample.GetNavMesh();
-
             if (null == settings || null == geom || navMesh == null)
                 return false;
 

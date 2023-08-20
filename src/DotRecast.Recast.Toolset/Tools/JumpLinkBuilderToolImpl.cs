@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
 using DotRecast.Core;
 using DotRecast.Detour.Extras.Jumplink;
+using DotRecast.Recast.Geom;
 using DotRecast.Recast.Toolset.Builder;
 using DotRecast.Recast.Toolset.Geom;
 
 namespace DotRecast.Recast.Toolset.Tools
 {
-    public class JumpLinkBuilderToolImpl : ISampleTool
+    public class JumpLinkBuilderToolImpl : IRcToolable
     {
-        private Sample _sample;
-
         private readonly List<JumpLink> _links;
         private JumpLinkBuilder _annotationBuilder;
         private readonly int _selEdge = -1;
@@ -25,15 +24,6 @@ namespace DotRecast.Recast.Toolset.Tools
             return "Annotation Builder";
         }
 
-        public void SetSample(Sample sample)
-        {
-            _sample = sample;
-        }
-
-        public Sample GetSample()
-        {
-            return _sample;
-        }
 
         public void Clear()
         {
@@ -55,22 +45,22 @@ namespace DotRecast.Recast.Toolset.Tools
             return _links;
         }
 
-        public void Build(bool buildOffMeshConnections, int buildTypes,
+        public void Build(IInputGeomProvider geom, RcNavMeshBuildSettings settings, IList<RecastBuilderResult> results,
+            bool buildOffMeshConnections, int buildTypes,
             float groundTolerance, float climbDownDistance, float climbDownMaxHeight, float climbDownMinHeight,
             float edgeJumpEndDistance, float edgeJumpHeight, float edgeJumpDownMaxHeight, float edgeJumpUpMaxHeight)
         {
             if (_annotationBuilder == null)
             {
-                if (_sample != null && 0 < _sample.GetRecastResults().Count)
+                if (0 < results.Count)
                 {
-                    _annotationBuilder = new JumpLinkBuilder(_sample.GetRecastResults());
+                    _annotationBuilder = new JumpLinkBuilder(results);
                 }
             }
 
             _links.Clear();
             if (_annotationBuilder != null)
             {
-                var settings = _sample.GetSettings();
                 float cellSize = settings.cellSize;
                 float agentHeight = settings.agentHeight;
                 float agentRadius = settings.agentRadius;
@@ -115,18 +105,14 @@ namespace DotRecast.Recast.Toolset.Tools
 
                 if (buildOffMeshConnections)
                 {
-                    DemoInputGeomProvider geom = _sample.GetInputGeom();
-                    if (geom != null)
-                    {
-                        int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP_AUTO;
-                        geom.RemoveOffMeshConnections(c => c.area == area);
-                        _links.ForEach(l => AddOffMeshLink(l, geom, agentRadius));
-                    }
+                    int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP_AUTO;
+                    geom.RemoveOffMeshConnections(c => c.area == area);
+                    _links.ForEach(l => AddOffMeshLink(l, geom, agentRadius));
                 }
             }
         }
 
-        private void AddOffMeshLink(JumpLink link, DemoInputGeomProvider geom, float agentRadius)
+        private void AddOffMeshLink(JumpLink link, IInputGeomProvider geom, float agentRadius)
         {
             int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP_AUTO;
             int flags = SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP;

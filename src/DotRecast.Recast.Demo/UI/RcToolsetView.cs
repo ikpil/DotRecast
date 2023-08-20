@@ -31,15 +31,15 @@ public class RcToolsetView : IRcView
 {
     //private readonly NkColor white = NkColor.Create();
     private int _currentToolIdx = 0;
-    private IRcTool currentTool;
+    private IRcDemoTool _currentDemoTool;
     private bool enabled;
-    private readonly IRcTool[] tools;
+    private readonly IRcDemoTool[] tools;
     private bool _isHovered;
     public bool IsHovered() => _isHovered;
 
     private RcCanvas _canvas;
 
-    public RcToolsetView(params IRcTool[] tools)
+    public RcToolsetView(params IRcDemoTool[] tools)
     {
         this.tools = tools;
     }
@@ -82,10 +82,10 @@ public class RcToolsetView : IRcView
             return;
         }
 
-        currentTool = tools[_currentToolIdx];
-        ImGui.Text(currentTool.GetTool().GetName());
+        _currentDemoTool = tools[_currentToolIdx];
+        ImGui.Text(_currentDemoTool.GetTool().GetName());
         ImGui.Separator();
-        currentTool.Layout();
+        _currentDemoTool.Layout();
 
         ImGui.End();
     }
@@ -95,14 +95,14 @@ public class RcToolsetView : IRcView
         this.enabled = enabled;
     }
 
-    public IRcTool GetTool()
+    public IRcDemoTool GetTool()
     {
-        return currentTool;
+        return _currentDemoTool;
     }
 
-    public void SetSample(Sample sample)
+    public void SetSample(DemoSample sample)
     {
-        tools.ForEach(t => t.GetTool().SetSample(sample));
+        tools.ForEach(t => t.SetSample(sample));
         tools.ForEach(t => t.OnSampleChanged());
     }
 

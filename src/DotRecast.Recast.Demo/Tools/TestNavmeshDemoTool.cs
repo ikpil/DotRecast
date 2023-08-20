@@ -7,15 +7,19 @@ using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Toolset;
 using DotRecast.Recast.Toolset.Tools;
 using ImGuiNET;
+using Serilog;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class TestNavmeshTool : IRcTool
+public class TestNavmeshDemoTool : IRcDemoTool
 {
+    private static readonly ILogger Logger = Log.ForContext<TestNavmeshDemoTool>();
+
     private const int MAX_POLYS = 256;
 
+    private DemoSample _sample;
     private readonly TestNavmeshToolImpl _impl;
 
     private bool m_sposSet;
@@ -43,7 +47,7 @@ public class TestNavmeshTool : IRcTool
     private DtStatus m_pathFindStatus = DtStatus.DT_FAILURE;
     private readonly List<RcVec3f> randomPoints = new();
 
-    public TestNavmeshTool()
+    public TestNavmeshDemoTool()
     {
         _impl = new();
         m_filter = new DtQueryDefaultFilter(
@@ -53,9 +57,14 @@ public class TestNavmeshTool : IRcTool
         );
     }
 
-    public ISampleTool GetTool()
+    public IRcToolable GetTool()
     {
         return _impl;
+    }
+
+    public void SetSample(DemoSample sample)
+    {
+        _sample = sample;
     }
 
     public void OnSampleChanged()
@@ -162,15 +171,17 @@ public class TestNavmeshTool : IRcTool
 
     private void Recalc()
     {
-        if (_impl.GetSample().GetNavMesh() == null)
-        {
+        var geom = _sample.GetInputGeom();
+        var settings = _sample.GetSettings();
+        var navMesh = _sample.GetNavMesh();
+        var navQuery = _sample.GetNavMeshQuery();
+        
+        if (null == geom || null == navQuery)
             return;
-        }
 
-        DtNavMeshQuery m_navQuery = _impl.GetSample().GetNavMeshQuery();
         if (m_sposSet)
         {
-            m_navQuery.FindNearestPoly(m_spos, m_polyPickExt, m_filter, out m_startRef, out var _, out var _);
+            navQuery.FindNearestPoly(m_spos, m_polyPickExt, m_filter, out m_startRef, out var _, out var _);
         }
         else
         {
@@ -179,7 +190,7 @@ public class TestNavmeshTool : IRcTool
 
         if (m_eposSet)
         {
-            m_navQuery.FindNearestPoly(m_epos, m_polyPickExt, m_filter, out m_endRef, out var _, out var _);
+            navQuery.FindNearestPoly(m_epos, m_polyPickExt, m_filter, out m_endRef, out var _, out var _);
         }
         else
         {
@@ -194,7 +205,8 @@ public class TestNavmeshTool : IRcTool
             {
                 var polys = new List<long>();
                 var smoothPath = new List<RcVec3f>();
-                var status = _impl.FindFollowPath(m_startRef, m_endRef, m_spos, m_epos, m_filter, option.enableRaycast,
+
+                var status = _impl.FindFollowPath(navMesh, navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, option.enableRaycast,
                     ref polys, ref smoothPath);
 
                 if (status.Succeeded())
@@ -215,7 +227,7 @@ public class TestNavmeshTool : IRcTool
             {
                 var polys = new List<long>();
                 var straightPath = new List<StraightPathItem>();
-                var status = _impl.FindStraightPath(m_startRef, m_endRef, m_spos, m_epos, m_filter, option.enableRaycast,
+                var status = _impl.FindStraightPath(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, option.enableRaycast,
                     ref polys, ref straightPath, option.straightPathOptions);
 
                 if (status.Succeeded())
@@ -236,7 +248,7 @@ public class TestNavmeshTool : IRcTool
 
             if (m_sposSet && m_eposSet && m_startRef != 0 && m_endRef != 0)
             {
-                m_pathFindStatus = _impl.InitSlicedFindPath(m_startRef, m_endRef, m_spos, m_epos, m_filter, option.enableRaycast);
+                m_pathFindStatus = _impl.InitSlicedFindPath(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, option.enableRaycast);
             }
         }
         else if (option.mode == TestNavmeshToolMode.RAYCAST)
@@ -246,7 +258,7 @@ public class TestNavmeshTool : IRcTool
             {
                 var polys = new List<long>();
                 var straightPath = new List<StraightPathItem>();
-                var status = _impl.Raycast(m_startRef, m_spos, m_epos, m_filter,
+                var status = _impl.Raycast(navQuery, m_startRef, m_spos, m_epos, m_filter,
                     ref polys, ref straightPath, out var hitPos, out var hitNormal, out var hitResult);
 
                 if (status.Succeeded())
@@ -264,7 +276,7 @@ public class TestNavmeshTool : IRcTool
             m_distanceToWall = 0;
             if (m_sposSet && m_startRef != 0)
             {
-                var result = m_navQuery.FindDistanceToWall(m_startRef, m_spos, 100.0f, m_filter, out var hitDist, out var hitPos, out var hitNormal);
+                var result = navQuery.FindDistanceToWall(m_startRef, m_spos, 100.0f, m_filter, out var hitDist, out var hitPos, out var hitNormal);
                 if (result.Succeeded())
                 {
                     m_distanceToWall = hitDist;
@@ -280,7 +292,7 @@ public class TestNavmeshTool : IRcTool
                 List<long> refs = new();
                 List<long> parentRefs = new();
 
-                var status = _impl.FindPolysAroundCircle(m_startRef, m_spos, m_epos, m_filter, ref refs, ref parentRefs);
+                var status = _impl.FindPolysAroundCircle(navQuery, m_startRef, m_spos, m_epos, m_filter, ref refs, ref parentRefs);
                 if (status.Succeeded())
                 {
                     m_polys = refs;
@@ -295,7 +307,7 @@ public class TestNavmeshTool : IRcTool
                 var refs = new List<long>();
                 var parentRefs = new List<long>();
 
-                var status = _impl.FindPolysAroundShape(m_startRef, m_spos, m_epos, m_filter, ref refs, ref parentRefs, out var queryPoly);
+                var status = _impl.FindPolysAroundShape(navQuery, settings, m_startRef, m_spos, m_epos, m_filter, ref refs, ref parentRefs, out var queryPoly);
                 if (status.Succeeded())
                 {
                     m_queryPoly = queryPoly;
@@ -308,10 +320,10 @@ public class TestNavmeshTool : IRcTool
         {
             if (m_sposSet && m_startRef != 0)
             {
-                m_neighbourhoodRadius = _impl.GetSample().GetSettings().agentRadius * 20.0f;
+                m_neighbourhoodRadius = settings.agentRadius * 20.0f;
                 List<long> resultRef = new();
                 List<long> resultParent = new();
-                var status = m_navQuery.FindLocalNeighbourhood(m_startRef, m_spos, m_neighbourhoodRadius, m_filter, ref resultRef, ref resultParent);
+                var status = navQuery.FindLocalNeighbourhood(m_startRef, m_spos, m_neighbourhoodRadius, m_filter, ref resultRef, ref resultParent);
                 if (status.Succeeded())
                 {
                     m_polys = resultRef;
@@ -325,7 +337,7 @@ public class TestNavmeshTool : IRcTool
             if (m_sposSet && m_startRef != 0 && m_eposSet)
             {
                 var points = new List<RcVec3f>();
-                _impl.FindRandomPointAroundCircle(m_startRef, m_spos, m_epos, m_filter, option.constrainByCircle, 500, ref points);
+                _impl.FindRandomPointAroundCircle(navQuery, m_startRef, m_spos, m_epos, m_filter, option.constrainByCircle, 500, ref points);
                 randomPoints.AddRange(points);
             }
         }
@@ -333,19 +345,15 @@ public class TestNavmeshTool : IRcTool
 
     public void HandleRender(NavMeshRenderer renderer)
     {
-        if (_impl.GetSample() == null)
-        {
-            return;
-        }
-
         RecastDebugDraw dd = renderer.GetDebugDraw();
         int startCol = DuRGBA(128, 25, 0, 192);
         int endCol = DuRGBA(51, 102, 0, 129);
         int pathCol = DuRGBA(0, 0, 0, 64);
 
-        float agentRadius = _impl.GetSample().GetSettings().agentRadius;
-        float agentHeight = _impl.GetSample().GetSettings().agentHeight;
-        float agentClimb = _impl.GetSample().GetSettings().agentMaxClimb;
+        var settings = _sample.GetSettings();
+        float agentRadius = settings.agentRadius;
+        float agentHeight = settings.agentHeight;
+        float agentClimb = settings.agentMaxClimb;
 
         if (m_sposSet)
         {
@@ -359,7 +367,7 @@ public class TestNavmeshTool : IRcTool
 
         dd.DepthMask(true);
 
-        DtNavMesh m_navMesh = _impl.GetSample().GetNavMesh();
+        DtNavMesh m_navMesh = _sample.GetNavMesh();
         if (m_navMesh == null)
         {
             return;
@@ -666,9 +674,9 @@ public class TestNavmeshTool : IRcTool
                     }
 
                     dd.DepthMask(true);
-                    if (_impl.GetSample().GetNavMeshQuery() != null)
+                    if (_sample.GetNavMeshQuery() != null)
                     {
-                        var result = _impl.GetSample()
+                        var result = _sample
                             .GetNavMeshQuery()
                             .GetPolyWallSegments(m_polys[i], false, m_filter, ref segmentVerts, ref segmentRefs);
 
@@ -759,9 +767,10 @@ public class TestNavmeshTool : IRcTool
 
     private void DrawAgent(RecastDebugDraw dd, RcVec3f pos, int col)
     {
-        float r = _impl.GetSample().GetSettings().agentRadius;
-        float h = _impl.GetSample().GetSettings().agentHeight;
-        float c = _impl.GetSample().GetSettings().agentMaxClimb;
+        var settings = _sample.GetSettings();
+        float r = settings.agentRadius;
+        float h = settings.agentHeight;
+        float c = settings.agentMaxClimb;
         dd.DepthMask(false);
         // Agent dimensions.
         dd.DebugDrawCylinderWire(pos.x - r, pos.y + 0.02f, pos.z - r, pos.x + r, pos.y + h, pos.z + r, col, 2.0f);
@@ -785,7 +794,7 @@ public class TestNavmeshTool : IRcTool
         var option = _impl.GetOption();
         if (option.mode == TestNavmeshToolMode.PATHFIND_SLICED)
         {
-            DtNavMeshQuery m_navQuery = _impl.GetSample().GetNavMeshQuery();
+            DtNavMeshQuery m_navQuery = _sample.GetNavMeshQuery();
             if (m_pathFindStatus.InProgress())
             {
                 m_pathFindStatus = m_navQuery.UpdateSlicedFindPath(1, out var _);

@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
 using System.Collections.Generic;
 using DotRecast.Core;
 
@@ -30,5 +31,11 @@ namespace DotRecast.Recast.Geom
         RcVec3f GetMeshBoundsMax();
 
         IEnumerable<RcTriMesh> Meshes();
+
+        // off mesh connections
+        public List<DtOffMeshConnectionParam> GetOffMeshConnections();
+        public void AddOffMeshConnection(RcVec3f start, RcVec3f end, float radius, bool bidir, int area, int flags);
+        public void RemoveOffMeshConnections(Predicate<DtOffMeshConnectionParam> filter);
+
     }
 }

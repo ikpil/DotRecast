@@ -16,40 +16,47 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using System.Collections.Generic;
 using DotRecast.Core;
 using DotRecast.Detour.Extras.Jumplink;
-using DotRecast.Recast.Toolset.Builder;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Toolset;
-using DotRecast.Recast.Toolset.Geom;
 using DotRecast.Recast.Toolset.Tools;
 using ImGuiNET;
+using Serilog;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class JumpLinkBuilderTool : IRcTool
+public class JumpLinkBuilderDemoTool : IRcDemoTool
 {
+    private static readonly ILogger Logger = Log.ForContext<JumpLinkBuilderDemoTool>();
+    private DemoSample _sample;
+
     private readonly JumpLinkBuilderToolImpl _impl;
     private readonly JumpLinkBuilderToolOption _option;
 
-    public JumpLinkBuilderTool()
+    public JumpLinkBuilderDemoTool()
     {
         _impl = new();
         _option = new();
     }
 
-    public ISampleTool GetTool()
+    public IRcToolable GetTool()
     {
         return _impl;
+    }
+
+    public void SetSample(DemoSample sample)
+    {
+        _sample = sample;
     }
 
     public void OnSampleChanged()
     {
         _impl.Clear();
     }
+
 
     public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
@@ -336,7 +343,7 @@ public class JumpLinkBuilderTool : IRcTool
 
     public void Layout()
     {
-        if (0 >= _impl.GetSample().GetRecastResults().Count)
+        if (0 >= _sample.GetRecastResults().Count)
             return;
 
         ImGui.Text("Options");
@@ -379,7 +386,12 @@ public class JumpLinkBuilderTool : IRcTool
 
         if (build || buildOffMeshConnections)
         {
-            _impl.Build(buildOffMeshConnections,
+            var geom = _sample.GetInputGeom();
+            var settings = _sample.GetSettings();
+
+            _impl.Build(
+                geom, settings, _sample.GetRecastResults(),
+                buildOffMeshConnections,
                 _option.buildTypes,
                 _option.groundTolerance,
                 _option.climbDownDistance,

@@ -20,30 +20,39 @@ freely, subject to the following restrictions:
 
 using System;
 using DotRecast.Core;
-using DotRecast.Recast.Toolset.Builder;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Toolset;
 using DotRecast.Recast.Toolset.Geom;
 using DotRecast.Recast.Toolset.Tools;
 using ImGuiNET;
+using Serilog;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class OffMeshConnectionTool : IRcTool
+public class OffMeshConnectionDemoTool : IRcDemoTool
 {
+    private static readonly ILogger Logger = Log.ForContext<OffMeshConnectionDemoTool>();
+
+    private DemoSample _sample;
+
     private readonly OffMeshConnectionToolImpl _impl;
     private bool hitPosSet;
     private RcVec3f hitPos;
 
-    public OffMeshConnectionTool()
+    public OffMeshConnectionDemoTool()
     {
         _impl = new();
     }
 
-    public ISampleTool GetTool()
+    public IRcToolable GetTool()
     {
         return _impl;
+    }
+
+    public void SetSample(DemoSample sample)
+    {
+        _sample = sample;
     }
 
     public void OnSampleChanged()
@@ -53,15 +62,17 @@ public class OffMeshConnectionTool : IRcTool
 
     public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
-        DemoInputGeomProvider geom = _impl.GetSample().GetInputGeom();
+        DemoInputGeomProvider geom = _sample.GetInputGeom();
         if (geom == null)
         {
             return;
         }
 
+        var settings = _sample.GetSettings();
+
         if (shift)
         {
-            _impl.Remove(p);
+            _impl.Remove(geom, settings, p);
         }
         else
         {
@@ -73,7 +84,7 @@ public class OffMeshConnectionTool : IRcTool
             }
             else
             {
-                _impl.Add(hitPos, p);
+                _impl.Add(geom, settings, hitPos, p);
                 hitPosSet = false;
             }
         }
@@ -81,20 +92,17 @@ public class OffMeshConnectionTool : IRcTool
 
     public void HandleRender(NavMeshRenderer renderer)
     {
-        if (_impl.GetSample() == null)
-        {
-            return;
-        }
-
         RecastDebugDraw dd = renderer.GetDebugDraw();
-        float s = _impl.GetSample().GetSettings().agentRadius;
+
+        var settings = _sample.GetSettings();
+        float s = settings.agentRadius;
 
         if (hitPosSet)
         {
             dd.DebugDrawCross(hitPos.x, hitPos.y + 0.1f, hitPos.z, s, DuRGBA(0, 0, 0, 128), 2.0f);
         }
 
-        DemoInputGeomProvider geom = _impl.GetSample().GetInputGeom();
+        DemoInputGeomProvider geom = _sample.GetInputGeom();
         if (geom != null)
         {
             renderer.DrawOffMeshConnections(geom, true);

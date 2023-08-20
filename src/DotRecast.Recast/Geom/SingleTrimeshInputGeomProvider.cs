@@ -59,9 +59,29 @@ namespace DotRecast.Recast.Geom
             return RcImmutableArray.Create(_mesh);
         }
 
+        public List<DtOffMeshConnectionParam> GetOffMeshConnections()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddOffMeshConnection(RcVec3f start, RcVec3f end, float radius, bool bidir, int area, int flags)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveOffMeshConnections(Predicate<DtOffMeshConnectionParam> filter)
+        {
+            throw new NotImplementedException();
+        }
+
         public IList<RcConvexVolume> ConvexVolumes()
         {
             return RcImmutableArray<RcConvexVolume>.Empty;
+        }
+
+        public void AddConvexVolume(RcConvexVolume convexVolume)
+        {
+            throw new NotImplementedException();
         }
     }
 }

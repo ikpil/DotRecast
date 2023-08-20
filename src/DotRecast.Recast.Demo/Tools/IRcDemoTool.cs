@@ -19,31 +19,20 @@ freely, subject to the following restrictions:
 */
 
 using DotRecast.Core;
-using DotRecast.Detour;
+using DotRecast.Recast.Demo.Draw;
+using DotRecast.Recast.Toolset;
 
-namespace DotRecast.Recast.Toolset.Geom
+namespace DotRecast.Recast.Demo.Tools;
+
+public interface IRcDemoTool
 {
-    public class DemoOffMeshConnection
-    {
-        public readonly float[] verts;
-        public readonly float radius;
-        public readonly bool bidir;
-        public readonly int area;
-        public readonly int flags;
+    void SetSample(DemoSample sample);
+    void OnSampleChanged();
 
-        public DemoOffMeshConnection(RcVec3f start, RcVec3f end, float radius, bool bidir, int area, int flags)
-        {
-            verts = new float[6];
-            verts[0] = start.x;
-            verts[1] = start.y;
-            verts[2] = start.z;
-            verts[3] = end.x;
-            verts[4] = end.y;
-            verts[5] = end.z;
-            this.radius = radius;
-            this.bidir = bidir;
-            this.area = area;
-            this.flags = flags;
-        }
-    }
+    IRcToolable GetTool();
+    void Layout();
+    void HandleClick(RcVec3f s, RcVec3f p, bool shift);
+    void HandleRender(NavMeshRenderer renderer);
+    void HandleUpdate(float dt);
+    void HandleClickRay(RcVec3f start, RcVec3f direction, bool shift);
 }

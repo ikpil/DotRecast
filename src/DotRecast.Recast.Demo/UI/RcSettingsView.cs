@@ -47,7 +47,7 @@ public class RcSettingsView : IRcView
     private bool _isHovered;
     public bool IsHovered() => _isHovered;
 
-    private Sample _sample;
+    private DemoSample _sample;
     private RcCanvas _canvas;
 
     public RcSettingsView(IRecastDemoChannel channel)
@@ -55,7 +55,7 @@ public class RcSettingsView : IRcView
         _channel = channel;
     }
 
-    public void SetSample(Sample sample)
+    public void SetSample(DemoSample sample)
     {
         _sample = sample;
     }

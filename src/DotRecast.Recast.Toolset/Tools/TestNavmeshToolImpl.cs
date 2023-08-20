@@ -5,12 +5,11 @@ using DotRecast.Detour;
 
 namespace DotRecast.Recast.Toolset.Tools
 {
-    public class TestNavmeshToolImpl : ISampleTool
+    public class TestNavmeshToolImpl : IRcToolable
     {
         public const int MAX_POLYS = 256;
         public const int MAX_SMOOTH = 2048;
 
-        private Sample _sample;
         private readonly TestNavmeshToolOption _option;
 
         public TestNavmeshToolImpl()
@@ -23,28 +22,14 @@ namespace DotRecast.Recast.Toolset.Tools
             return "Test Navmesh";
         }
 
-
-        public void SetSample(Sample sample)
-        {
-            _sample = sample;
-        }
-
-        public Sample GetSample()
-        {
-            return _sample;
-        }
-
         public TestNavmeshToolOption GetOption()
         {
             return _option;
         }
 
-        public DtStatus FindFollowPath(long startRef, long endRef, RcVec3f startPt, RcVec3f endPt, IDtQueryFilter filter, bool enableRaycast,
+        public DtStatus FindFollowPath(DtNavMesh navMesh, DtNavMeshQuery navQuery, long startRef, long endRef, RcVec3f startPt, RcVec3f endPt, IDtQueryFilter filter, bool enableRaycast,
             ref List<long> polys, ref List<RcVec3f> smoothPath)
         {
-            var navMesh = _sample.GetNavMesh();
-            var navQuery = _sample.GetNavMeshQuery();
-
             navQuery.FindPath(startRef, endRef, startPt, endPt, filter, ref polys,
                 new DtFindPathOption(enableRaycast ? DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue));
 
@@ -171,11 +156,9 @@ namespace DotRecast.Recast.Toolset.Tools
             return DtStatus.DT_SUCCSESS;
         }
 
-        public DtStatus FindStraightPath(long startRef, long endRef, RcVec3f startPt, RcVec3f endPt, IDtQueryFilter filter, bool enableRaycast,
+        public DtStatus FindStraightPath(DtNavMeshQuery navQuery, long startRef, long endRef, RcVec3f startPt, RcVec3f endPt, IDtQueryFilter filter, bool enableRaycast,
             ref List<long> polys, ref List<StraightPathItem> straightPath, int straightPathOptions)
         {
-            var navQuery = _sample.GetNavMeshQuery();
-
             navQuery.FindPath(startRef, endRef, startPt, endPt, filter, ref polys,
                 new DtFindPathOption(enableRaycast ? DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue));
 
@@ -198,23 +181,21 @@ namespace DotRecast.Recast.Toolset.Tools
             return DtStatus.DT_SUCCSESS;
         }
 
-        public DtStatus InitSlicedFindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f m_epos, IDtQueryFilter filter, bool enableRaycast)
+        public DtStatus InitSlicedFindPath(DtNavMeshQuery navQuery, long startRef, long endRef, RcVec3f startPos, RcVec3f m_epos, IDtQueryFilter filter, bool enableRaycast)
         {
-            var navQuery = _sample.GetNavMeshQuery();
             return navQuery.InitSlicedFindPath(startRef, endRef, startPos, m_epos, filter,
                 enableRaycast ? DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0,
                 float.MaxValue
             );
         }
 
-        public DtStatus Raycast(long startRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter,
+        public DtStatus Raycast(DtNavMeshQuery navQuery, long startRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter,
             ref List<long> polys, ref List<StraightPathItem> straightPath, out RcVec3f hitPos, out RcVec3f hitNormal, out bool hitResult)
         {
             hitPos = RcVec3f.Zero;
             hitNormal = RcVec3f.Zero;
             hitResult = false;
 
-            var navQuery = _sample.GetNavMeshQuery();
             var status = navQuery.Raycast(startRef, startPos, endPos, filter, 0, 0, out var rayHit);
             if (!status.Succeeded())
                 return status;
@@ -251,23 +232,21 @@ namespace DotRecast.Recast.Toolset.Tools
             return status;
         }
 
-        public DtStatus FindPolysAroundCircle(long startRef, RcVec3f spos, RcVec3f epos, IDtQueryFilter filter, ref List<long> resultRef, ref List<long> resultParent)
+        public DtStatus FindPolysAroundCircle(DtNavMeshQuery navQuery, long startRef, RcVec3f spos, RcVec3f epos, IDtQueryFilter filter, ref List<long> resultRef, ref List<long> resultParent)
         {
             float dx = epos.x - spos.x;
             float dz = epos.z - spos.z;
             float dist = (float)Math.Sqrt(dx * dx + dz * dz);
 
             List<float> costs = new List<float>();
-            var navQuery = _sample.GetNavMeshQuery();
-
             return navQuery.FindPolysAroundCircle(startRef, spos, dist, filter, ref resultRef, ref resultParent, ref costs);
         }
 
-        public DtStatus FindPolysAroundShape(long startRef, RcVec3f spos, RcVec3f epos, IDtQueryFilter filter, ref List<long> resultRef, ref List<long> resultParent, out RcVec3f[] queryPoly)
+        public DtStatus FindPolysAroundShape(DtNavMeshQuery navQuery, RcNavMeshBuildSettings settings, long startRef, RcVec3f spos, RcVec3f epos, IDtQueryFilter filter, ref List<long> resultRef, ref List<long> resultParent, out RcVec3f[] queryPoly)
         {
             float nx = (epos.z - spos.z) * 0.25f;
             float nz = -(epos.x - spos.x) * 0.25f;
-            float agentHeight = GetSample() != null ? GetSample().GetSettings().agentHeight : 0;
+            float agentHeight = settings != null ? settings.agentHeight : 0;
 
             queryPoly = new RcVec3f[4];
             queryPoly[0].x = spos.x + nx * 1.2f;
@@ -287,11 +266,10 @@ namespace DotRecast.Recast.Toolset.Tools
             queryPoly[3].z = epos.z + nz;
 
             var costs = new List<float>();
-            var navQuery = _sample.GetNavMeshQuery();
             return navQuery.FindPolysAroundShape(startRef, queryPoly, filter, ref resultRef, ref resultParent, ref costs);
         }
 
-        public DtStatus FindRandomPointAroundCircle(long startRef, RcVec3f spos, RcVec3f epos, IDtQueryFilter filter, bool constrainByCircle, int count, ref List<RcVec3f> points)
+        public DtStatus FindRandomPointAroundCircle(DtNavMeshQuery navQuery, long startRef, RcVec3f spos, RcVec3f epos, IDtQueryFilter filter, bool constrainByCircle, int count, ref List<RcVec3f> points)
         {
             float dx = epos.x - spos.x;
             float dz = epos.z - spos.z;
@@ -302,8 +280,6 @@ namespace DotRecast.Recast.Toolset.Tools
                 : DtNoOpDtPolygonByCircleConstraint.Shared;
 
             var frand = new FRand();
-            var navQuery = _sample.GetNavMeshQuery();
-
             int prevCnt = points.Count;
 
             while (0 < count && points.Count < prevCnt + count)

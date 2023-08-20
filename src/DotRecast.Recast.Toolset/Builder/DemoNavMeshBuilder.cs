@@ -6,7 +6,7 @@ namespace DotRecast.Recast.Toolset.Builder
 {
     public static class DemoNavMeshBuilder
     {
-        public static DtNavMeshCreateParams GetNavMeshCreateParams(DemoInputGeomProvider geom, float cellSize,
+        public static DtNavMeshCreateParams GetNavMeshCreateParams(IInputGeomProvider geom, float cellSize,
             float cellHeight, float agentHeight, float agentRadius, float agentMaxClimb,
             RecastBuilderResult rcResult)
         {
@@ -52,7 +52,7 @@ namespace DotRecast.Recast.Toolset.Builder
             option.offMeshConUserID = new int[option.offMeshConCount];
             for (int i = 0; i < option.offMeshConCount; i++)
             {
-                DemoOffMeshConnection offMeshCon = geom.GetOffMeshConnections()[i];
+                DtOffMeshConnectionParam offMeshCon = geom.GetOffMeshConnections()[i];
                 for (int j = 0; j < 6; j++)
                 {
                     option.offMeshConVerts[6 * i + j] = offMeshCon.verts[j];

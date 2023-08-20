@@ -8,21 +8,29 @@ using Serilog;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class ObstacleTool : IRcTool
+public class ObstacleDemoTool : IRcDemoTool
 {
-    private static readonly ILogger Logger = Log.ForContext<ObstacleTool>();
+    private static readonly ILogger Logger = Log.ForContext<ObstacleDemoTool>();
+    
+    private DemoSample _sample;
+
     private readonly ObstacleToolImpl _impl;
     private bool _hitPosSet;
     private RcVec3f _hitPos;
 
-    public ObstacleTool()
+    public ObstacleDemoTool()
     {
         _impl = new(DtTileCacheCompressorFactory.Shared);
     }
 
-    public ISampleTool GetTool()
+    public IRcToolable GetTool()
     {
         return _impl;
+    }
+    
+    public void SetSample(DemoSample sample)
+    {
+        _sample = sample;
     }
 
     public void OnSampleChanged()

@@ -23,17 +23,22 @@ using System.Collections.Generic;
 using DotRecast.Core;
 using DotRecast.Recast.Toolset.Builder;
 using DotRecast.Recast.Demo.Draw;
+using DotRecast.Recast.Geom;
 using DotRecast.Recast.Toolset;
 using DotRecast.Recast.Toolset.Geom;
 using DotRecast.Recast.Toolset.Tools;
 using ImGuiNET;
+using Serilog;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class ConvexVolumeTool : IRcTool
+public class ConvexVolumeDemoTool : IRcDemoTool
 {
+    private static readonly ILogger Logger = Log.ForContext<ConvexVolumeDemoTool>();
+
+    private DemoSample _sample;
     private readonly ConvexVolumeToolImpl _impl;
 
     private int areaTypeValue = SampleAreaModifications.SAMPLE_AREAMOD_GRASS.Value;
@@ -44,15 +49,21 @@ public class ConvexVolumeTool : IRcTool
     private readonly List<RcVec3f> pts = new();
     private readonly List<int> hull = new();
 
-    public ConvexVolumeTool()
+    public ConvexVolumeDemoTool()
     {
         _impl = new ConvexVolumeToolImpl();
     }
 
-    public ISampleTool GetTool()
+    public IRcToolable GetTool()
     {
         return _impl;
     }
+
+    public void SetSample(DemoSample sample)
+    {
+        _sample = sample;
+    }
+
 
     public void OnSampleChanged()
     {
@@ -61,15 +72,13 @@ public class ConvexVolumeTool : IRcTool
 
     public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
-        DemoInputGeomProvider geom = _impl.GetSample().GetInputGeom();
-        if (geom == null)
-        {
-            return;
-        }
+        var geom = _sample.GetInputGeom();
+        var settings = _sample.GetSettings();
+        var navMesh = _sample.GetNavMesh();
 
         if (shift)
         {
-            _impl.RemoveByPos(p);
+            _impl.RemoveByPos(geom, p);
         }
         else
         {
@@ -80,7 +89,9 @@ public class ConvexVolumeTool : IRcTool
             {
                 var vol = ConvexVolumeToolImpl.CreateConvexVolume(pts, hull, areaType, boxDescent, boxHeight, polyOffset);
                 if (null != vol)
-                    _impl.Add(vol);
+                {
+                    _impl.Add(geom, vol);
+                }
 
                 pts.Clear();
                 hull.Clear();
@@ -181,7 +192,7 @@ public class ConvexVolumeTool : IRcTool
             hull.Clear();
             pts.Clear();
 
-            DemoInputGeomProvider geom = _impl.GetSample().GetInputGeom();
+            var geom = _sample.GetInputGeom();
             if (geom != null)
             {
                 geom.ClearConvexVolumes();

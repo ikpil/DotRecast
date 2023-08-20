@@ -2,6 +2,7 @@
 using DotRecast.Core;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Toolset;
+using DotRecast.Recast.Toolset.Builder;
 using DotRecast.Recast.Toolset.Tools;
 using ImGuiNET;
 using Serilog;
@@ -9,22 +10,29 @@ using static DotRecast.Recast.Demo.Draw.DebugDraw;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class TileTool : IRcTool
+public class TileDemoTool : IRcDemoTool
 {
-    private static readonly ILogger Logger = Log.ForContext<TileTool>();
+    private static readonly ILogger Logger = Log.ForContext<TileDemoTool>();
+
+    private DemoSample _sample;
     private readonly TileToolImpl _impl;
 
     private bool _hitPosSet;
     private RcVec3f _hitPos;
 
-    public TileTool()
+    public TileDemoTool()
     {
         _impl = new();
     }
 
-    public ISampleTool GetTool()
+    public IRcToolable GetTool()
     {
         return _impl;
+    }
+
+    public void SetSample(DemoSample sample)
+    {
+        _sample = sample;
     }
 
     public void OnSampleChanged()
@@ -33,14 +41,18 @@ public class TileTool : IRcTool
 
     public void Layout()
     {
+        var geom = _sample.GetInputGeom();
+        var settings = _sample.GetSettings();
+        var navMesh = _sample.GetNavMesh();
+        
         if (ImGui.Button("Create All Tile"))
         {
-            _impl.BuildAllTiles();
+            _impl.BuildAllTiles(geom, settings, navMesh);
         }
 
         if (ImGui.Button("Remove All Tile"))
         {
-            _impl.RemoveAllTiles();
+            _impl.RemoveAllTiles(geom, settings, navMesh);
         }
     }
 
@@ -49,17 +61,17 @@ public class TileTool : IRcTool
         _hitPosSet = true;
         _hitPos = p;
 
-        var sample = _impl.GetSample();
-        if (null == sample)
-            return;
+        var geom = _sample.GetInputGeom();
+        var settings = _sample.GetSettings();
+        var navMesh = _sample.GetNavMesh();
 
         if (shift)
         {
-            _impl.RemoveTile(_hitPos);
+            _impl.RemoveTile(geom, settings, navMesh, _hitPos);
         }
         else
         {
-            bool built = _impl.BuildTile(_hitPos, out var tileBuildTicks, out var tileTriCount, out var tileMemUsage);
+            bool built = _impl.BuildTile(geom, settings, navMesh, _hitPos, out var tileBuildTicks, out var tileTriCount, out var tileMemUsage);
             if (!built)
             {
                 Logger.Error($"failed to build tile - check!");
@@ -73,11 +85,9 @@ public class TileTool : IRcTool
 
     public void HandleRender(NavMeshRenderer renderer)
     {
-        var sample = _impl.GetSample();
-        if (null == sample)
-            return;
+        var geom = _sample.GetInputGeom();
+        var settings = _sample.GetSettings();
 
-        var geom = sample.GetInputGeom();
         if (null == geom)
             return;
 
@@ -87,7 +97,6 @@ public class TileTool : IRcTool
             var bmin = geom.GetMeshBoundsMin();
             var bmax = geom.GetMeshBoundsMax();
 
-            var settings = sample.GetSettings();
             var s = settings.agentRadius;
 
             float ts = settings.tileSize * settings.cellSize;

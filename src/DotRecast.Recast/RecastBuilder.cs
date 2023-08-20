@@ -166,8 +166,7 @@ namespace DotRecast.Recast
             return Build(builderCfg.tileX, builderCfg.tileZ, geom, cfg, solid, ctx);
         }
 
-        public RecastBuilderResult Build(int tileX, int tileZ, IConvexVolumeProvider geom, RcConfig cfg, RcHeightfield solid,
-            RcTelemetry ctx)
+        public RecastBuilderResult Build(int tileX, int tileZ, IConvexVolumeProvider geom, RcConfig cfg, RcHeightfield solid, RcTelemetry ctx)
         {
             FilterHeightfield(solid, cfg, ctx);
             RcCompactHeightfield chf = BuildCompactHeightfield(geom, cfg, ctx, solid);

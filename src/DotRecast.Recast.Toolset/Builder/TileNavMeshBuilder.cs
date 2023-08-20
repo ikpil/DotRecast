@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DotRecast.Detour;
+using DotRecast.Recast.Geom;
 using DotRecast.Recast.Toolset.Geom;
 
 namespace DotRecast.Recast.Toolset.Builder
@@ -89,7 +90,7 @@ namespace DotRecast.Recast.Toolset.Builder
             return navMesh;
         }
 
-        public List<DtMeshData> BuildMeshData(DemoInputGeomProvider geom, float cellSize, float cellHeight, float agentHeight,
+        public List<DtMeshData> BuildMeshData(IInputGeomProvider geom, float cellSize, float cellHeight, float agentHeight,
             float agentRadius, float agentMaxClimb, IList<RecastBuilderResult> results)
         {
             // Add tiles to nav mesh

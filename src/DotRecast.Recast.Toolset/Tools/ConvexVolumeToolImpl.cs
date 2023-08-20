@@ -1,32 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using DotRecast.Core;
+using DotRecast.Recast.Geom;
 
 namespace DotRecast.Recast.Toolset.Tools
 {
-    public class ConvexVolumeToolImpl : ISampleTool
+    public class ConvexVolumeToolImpl : IRcToolable
     {
-        private Sample _sample;
-
         public string GetName()
         {
             return "Create Convex Volumes";
         }
 
-        public void SetSample(Sample sample)
+        public RcConvexVolume RemoveByPos(IInputGeomProvider geom, RcVec3f pos)
         {
-            _sample = sample;
-        }
-
-        public Sample GetSample()
-        {
-            return _sample;
-        }
-
-        public RcConvexVolume RemoveByPos(RcVec3f pos)
-        {
-            var geom = _sample.GetInputGeom();
-
             // Delete
             int nearestIndex = -1;
             IList<RcConvexVolume> vols = geom.ConvexVolumes();
@@ -48,9 +35,8 @@ namespace DotRecast.Recast.Toolset.Tools
             return removal;
         }
 
-        public void Add(RcConvexVolume volume)
+        public void Add(IInputGeomProvider geom, RcConvexVolume volume)
         {
-            var geom = _sample.GetInputGeom();
             geom.AddConvexVolume(volume);
         }
 
@@ -58,7 +44,9 @@ namespace DotRecast.Recast.Toolset.Tools
         {
             // 
             if (hull.Count <= 2)
+            {
                 return null;
+            }
 
             // Create shape.
             float[] verts = new float[hull.Count * 3];
