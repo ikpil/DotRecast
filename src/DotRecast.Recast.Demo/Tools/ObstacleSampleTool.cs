@@ -14,7 +14,7 @@ public class ObstacleSampleTool : ISampleTool
     
     private DemoSample _sample;
 
-    private readonly ObstacleToolImpl _impl;
+    private readonly RcObstacleTool _impl;
     private bool _hitPosSet;
     private RcVec3f _hitPos;
 

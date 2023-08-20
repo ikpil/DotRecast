@@ -1,10 +1,10 @@
 ﻿namespace DotRecast.Recast.Toolset.Tools
 {
-    public class CrowdToolImpl : IRcToolable
+    public class RcDynamicUpdateTool : IRcToolable
     {
         public string GetName()
         {
-            return "Create Crowd";
+            return "Dynamic Updates";
         }
     }
 }

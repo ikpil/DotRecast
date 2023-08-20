@@ -40,7 +40,7 @@ public class CrowdSampleTool : ISampleTool
     private static readonly ILogger Logger = Log.ForContext<CrowdSampleTool>();
 
     private DemoSample _sample;
-    private readonly CrowdToolImpl _impl;
+    private readonly RcCrowdTool _impl;
     private readonly CrowdToolParams toolParams = new CrowdToolParams();
     private DtNavMesh m_nav;
     private DtCrowd crowd;

@@ -36,7 +36,7 @@ public class OffMeshConnectionSampleTool : ISampleTool
 
     private DemoSample _sample;
 
-    private readonly OffMeshConnectionToolImpl _impl;
+    private readonly RcOffMeshConnectionTool _impl;
     private bool hitPosSet;
     private RcVec3f hitPos;
 

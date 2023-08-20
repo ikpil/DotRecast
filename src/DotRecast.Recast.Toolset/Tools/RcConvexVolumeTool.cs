@@ -5,7 +5,7 @@ using DotRecast.Recast.Geom;
 
 namespace DotRecast.Recast.Toolset.Tools
 {
-    public class ConvexVolumeToolImpl : IRcToolable
+    public class RcConvexVolumeTool : IRcToolable
     {
         public string GetName()
         {

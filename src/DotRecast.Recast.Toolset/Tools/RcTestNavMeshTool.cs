@@ -5,16 +5,16 @@ using DotRecast.Detour;
 
 namespace DotRecast.Recast.Toolset.Tools
 {
-    public class TestNavmeshToolImpl : IRcToolable
+    public class RcTestNavMeshTool : IRcToolable
     {
         public const int MAX_POLYS = 256;
         public const int MAX_SMOOTH = 2048;
 
-        private readonly TestNavmeshToolOption _option;
+        private readonly RcTestNavmeshToolOption _option;
 
-        public TestNavmeshToolImpl()
+        public RcTestNavMeshTool()
         {
-            _option = new TestNavmeshToolOption();
+            _option = new RcTestNavmeshToolOption();
         }
 
         public string GetName()
@@ -22,7 +22,7 @@ namespace DotRecast.Recast.Toolset.Tools
             return "Test Navmesh";
         }
 
-        public TestNavmeshToolOption GetOption()
+        public RcTestNavmeshToolOption GetOption()
         {
             return _option;
         }

@@ -2,10 +2,10 @@
 
 namespace DotRecast.Recast.Toolset.Tools
 {
-    public class TestNavmeshToolOption
+    public class RcTestNavmeshToolOption
     {
-        public int modeIdx = TestNavmeshToolMode.PATHFIND_FOLLOW.Idx;
-        public TestNavmeshToolMode mode => TestNavmeshToolMode.Values[modeIdx];
+        public int modeIdx = RcTestNavmeshToolMode.PATHFIND_FOLLOW.Idx;
+        public RcTestNavmeshToolMode mode => RcTestNavmeshToolMode.Values[modeIdx];
 
         public int straightPathOptions;
         public bool constrainByCircle;

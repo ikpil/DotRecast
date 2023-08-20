@@ -33,8 +33,8 @@ public class JumpLinkBuilderSampleTool : ISampleTool
     private static readonly ILogger Logger = Log.ForContext<JumpLinkBuilderSampleTool>();
     private DemoSample _sample;
 
-    private readonly JumpLinkBuilderToolImpl _impl;
-    private readonly JumpLinkBuilderToolOption _option;
+    private readonly RcJumpLinkBuilderTool _impl;
+    private readonly RcJumpLinkBuilderToolOption _option;
 
     public JumpLinkBuilderSampleTool()
     {
@@ -71,7 +71,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
 
         var annotationBuilder = _impl.GetAnnotationBuilder();
 
-        if ((_option.flags & JumpLinkBuilderToolOption.DRAW_WALKABLE_BORDER) != 0)
+        if ((_option.flags & RcJumpLinkBuilderToolOption.DRAW_WALKABLE_BORDER) != 0)
         {
             if (annotationBuilder != null)
             {
@@ -129,7 +129,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
             }
         }
 
-        if ((_option.flags & JumpLinkBuilderToolOption.DRAW_ANNOTATIONS) != 0)
+        if ((_option.flags & RcJumpLinkBuilderToolOption.DRAW_ANNOTATIONS) != 0)
         {
             dd.Begin(QUADS);
             foreach (JumpLink link in _impl.GetLinks())
@@ -180,7 +180,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
         {
             foreach (JumpLink link in _impl.GetLinks())
             {
-                if ((_option.flags & JumpLinkBuilderToolOption.DRAW_ANIM_TRAJECTORY) != 0)
+                if ((_option.flags & RcJumpLinkBuilderToolOption.DRAW_ANIM_TRAJECTORY) != 0)
                 {
                     float r = link.start.height;
 
@@ -246,7 +246,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
                     dd.End();
                 }
 
-                if ((_option.flags & JumpLinkBuilderToolOption.DRAW_LAND_SAMPLES) != 0)
+                if ((_option.flags & RcJumpLinkBuilderToolOption.DRAW_LAND_SAMPLES) != 0)
                 {
                     dd.Begin(POINTS, 8.0f);
                     for (int i = 0; i < link.start.gsamples.Length; ++i)
@@ -407,11 +407,11 @@ public class JumpLinkBuilderSampleTool : ISampleTool
         ImGui.Text("Debug Draw Options");
         ImGui.Separator();
         //int newFlags = 0;
-        ImGui.CheckboxFlags("Walkable Border", ref _option.flags, JumpLinkBuilderToolOption.DRAW_WALKABLE_BORDER);
-        ImGui.CheckboxFlags("Selected Edge", ref _option.flags, JumpLinkBuilderToolOption.DRAW_SELECTED_EDGE);
-        ImGui.CheckboxFlags("Anim Trajectory", ref _option.flags, JumpLinkBuilderToolOption.DRAW_ANIM_TRAJECTORY);
-        ImGui.CheckboxFlags("Land Samples", ref _option.flags, JumpLinkBuilderToolOption.DRAW_LAND_SAMPLES);
-        ImGui.CheckboxFlags("All Annotations", ref _option.flags, JumpLinkBuilderToolOption.DRAW_ANNOTATIONS);
+        ImGui.CheckboxFlags("Walkable Border", ref _option.flags, RcJumpLinkBuilderToolOption.DRAW_WALKABLE_BORDER);
+        ImGui.CheckboxFlags("Selected Edge", ref _option.flags, RcJumpLinkBuilderToolOption.DRAW_SELECTED_EDGE);
+        ImGui.CheckboxFlags("Anim Trajectory", ref _option.flags, RcJumpLinkBuilderToolOption.DRAW_ANIM_TRAJECTORY);
+        ImGui.CheckboxFlags("Land Samples", ref _option.flags, RcJumpLinkBuilderToolOption.DRAW_LAND_SAMPLES);
+        ImGui.CheckboxFlags("All Annotations", ref _option.flags, RcJumpLinkBuilderToolOption.DRAW_ANNOTATIONS);
         //option.flags = newFlags;
     }
 

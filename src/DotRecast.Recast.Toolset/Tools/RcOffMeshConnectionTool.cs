@@ -2,17 +2,16 @@
 using DotRecast.Core;
 using DotRecast.Recast.Geom;
 using DotRecast.Recast.Toolset.Builder;
-using DotRecast.Recast.Toolset.Geom;
 
 namespace DotRecast.Recast.Toolset.Tools
 {
-    public class OffMeshConnectionToolImpl : IRcToolable
+    public class RcOffMeshConnectionTool : IRcToolable
     {
-        private readonly OffMeshConnectionToolOption _option;
+        private readonly RcOffMeshConnectionToolOption _option;
 
-        public OffMeshConnectionToolImpl()
+        public RcOffMeshConnectionTool()
         {
-            _option = new OffMeshConnectionToolOption();
+            _option = new RcOffMeshConnectionToolOption();
         }
 
         public string GetName()
@@ -20,7 +19,7 @@ namespace DotRecast.Recast.Toolset.Tools
             return "Create Off-Mesh Links";
         }
 
-        public OffMeshConnectionToolOption GetOption()
+        public RcOffMeshConnectionToolOption GetOption()
         {
             return _option;
         }

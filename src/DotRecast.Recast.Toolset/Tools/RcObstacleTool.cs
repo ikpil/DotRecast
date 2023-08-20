@@ -7,13 +7,13 @@ using DotRecast.Recast.Toolset.Geom;
 
 namespace DotRecast.Recast.Toolset.Tools
 {
-    public class ObstacleToolImpl : IRcToolable
+    public class RcObstacleTool : IRcToolable
     {
         private readonly IDtTileCacheCompressorFactory _compFactory;
         private readonly IDtTileCacheMeshProcess _proc;
         private DtTileCache _tc;
 
-        public ObstacleToolImpl(IDtTileCacheCompressorFactory compFactory, IDtTileCacheMeshProcess meshProcessor = null)
+        public RcObstacleTool(IDtTileCacheCompressorFactory compFactory, IDtTileCacheMeshProcess meshProcessor = null)
         {
             _compFactory = compFactory;
             _proc = meshProcessor ?? new DemoDtTileCacheMeshProcess();

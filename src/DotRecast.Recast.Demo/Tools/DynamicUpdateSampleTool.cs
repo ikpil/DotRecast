@@ -45,7 +45,7 @@ public class DynamicUpdateSampleTool : ISampleTool
     private static readonly ILogger Logger = Log.ForContext<DynamicUpdateSampleTool>();
 
     private DemoSample _sample;
-    private readonly DynamicUpdateToolImpl _impl;
+    private readonly RcDynamicUpdateTool _impl;
     private int toolModeIdx = DynamicUpdateToolMode.BUILD.Idx;
     private DynamicUpdateToolMode mode = DynamicUpdateToolMode.BUILD;
     private float cellSize = 0.3f;

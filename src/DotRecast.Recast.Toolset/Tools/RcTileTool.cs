@@ -6,7 +6,7 @@ using DotRecast.Recast.Toolset.Builder;
 
 namespace DotRecast.Recast.Toolset.Tools
 {
-    public class TileToolImpl : IRcToolable
+    public class RcTileTool : IRcToolable
     {
         public string GetName()
         {

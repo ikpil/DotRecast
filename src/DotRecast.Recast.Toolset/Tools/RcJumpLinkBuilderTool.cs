@@ -3,17 +3,16 @@ using DotRecast.Core;
 using DotRecast.Detour.Extras.Jumplink;
 using DotRecast.Recast.Geom;
 using DotRecast.Recast.Toolset.Builder;
-using DotRecast.Recast.Toolset.Geom;
 
 namespace DotRecast.Recast.Toolset.Tools
 {
-    public class JumpLinkBuilderToolImpl : IRcToolable
+    public class RcJumpLinkBuilderTool : IRcToolable
     {
         private readonly List<JumpLink> _links;
         private JumpLinkBuilder _annotationBuilder;
         private readonly int _selEdge = -1;
 
-        public JumpLinkBuilderToolImpl()
+        public RcJumpLinkBuilderTool()
         {
             _links = new List<JumpLink>();
         }

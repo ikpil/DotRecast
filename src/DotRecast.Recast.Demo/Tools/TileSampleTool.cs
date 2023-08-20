@@ -15,7 +15,7 @@ public class TileSampleTool : ISampleTool
     private static readonly ILogger Logger = Log.ForContext<TileSampleTool>();
 
     private DemoSample _sample;
-    private readonly TileToolImpl _impl;
+    private readonly RcTileTool _impl;
 
     private bool _hitPosSet;
     private RcVec3f _hitPos;

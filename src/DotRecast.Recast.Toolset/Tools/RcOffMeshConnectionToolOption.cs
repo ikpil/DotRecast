@@ -1,6 +1,6 @@
 ﻿namespace DotRecast.Recast.Toolset.Tools
 {
-    public class OffMeshConnectionToolOption
+    public class RcOffMeshConnectionToolOption
     {
         public int bidir;
     }

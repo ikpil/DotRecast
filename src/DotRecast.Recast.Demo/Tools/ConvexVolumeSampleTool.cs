@@ -39,7 +39,7 @@ public class ConvexVolumeSampleTool : ISampleTool
     private static readonly ILogger Logger = Log.ForContext<ConvexVolumeSampleTool>();
 
     private DemoSample _sample;
-    private readonly ConvexVolumeToolImpl _impl;
+    private readonly RcConvexVolumeTool _impl;
 
     private int areaTypeValue = SampleAreaModifications.SAMPLE_AREAMOD_GRASS.Value;
     private RcAreaModification areaType = SampleAreaModifications.SAMPLE_AREAMOD_GRASS;
@@ -51,7 +51,7 @@ public class ConvexVolumeSampleTool : ISampleTool
 
     public ConvexVolumeSampleTool()
     {
-        _impl = new ConvexVolumeToolImpl();
+        _impl = new RcConvexVolumeTool();
     }
 
     public IRcToolable GetTool()
@@ -87,7 +87,7 @@ public class ConvexVolumeSampleTool : ISampleTool
             // If clicked on that last pt, create the shape.
             if (pts.Count > 0 && RcVec3f.DistSqr(p, pts[pts.Count - 1]) < 0.2f * 0.2f)
             {
-                var vol = ConvexVolumeToolImpl.CreateConvexVolume(pts, hull, areaType, boxDescent, boxHeight, polyOffset);
+                var vol = RcConvexVolumeTool.CreateConvexVolume(pts, hull, areaType, boxDescent, boxHeight, polyOffset);
                 if (null != vol)
                 {
                     _impl.Add(geom, vol);

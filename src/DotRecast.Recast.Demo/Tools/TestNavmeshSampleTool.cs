@@ -20,7 +20,7 @@ public class TestNavmeshSampleTool : ISampleTool
     private const int MAX_POLYS = 256;
 
     private DemoSample _sample;
-    private readonly TestNavmeshToolImpl _impl;
+    private readonly RcTestNavMeshTool _impl;
 
     private bool m_sposSet;
     private bool m_eposSet;
@@ -100,15 +100,15 @@ public class TestNavmeshSampleTool : ISampleTool
 
         ImGui.Text("Mode");
         ImGui.Separator();
-        ImGui.RadioButton(TestNavmeshToolMode.PATHFIND_FOLLOW.Label, ref option.modeIdx, TestNavmeshToolMode.PATHFIND_FOLLOW.Idx);
-        ImGui.RadioButton(TestNavmeshToolMode.PATHFIND_STRAIGHT.Label, ref option.modeIdx, TestNavmeshToolMode.PATHFIND_STRAIGHT.Idx);
-        ImGui.RadioButton(TestNavmeshToolMode.PATHFIND_SLICED.Label, ref option.modeIdx, TestNavmeshToolMode.PATHFIND_SLICED.Idx);
-        ImGui.RadioButton(TestNavmeshToolMode.DISTANCE_TO_WALL.Label, ref option.modeIdx, TestNavmeshToolMode.DISTANCE_TO_WALL.Idx);
-        ImGui.RadioButton(TestNavmeshToolMode.RAYCAST.Label, ref option.modeIdx, TestNavmeshToolMode.RAYCAST.Idx);
-        ImGui.RadioButton(TestNavmeshToolMode.FIND_POLYS_IN_CIRCLE.Label, ref option.modeIdx, TestNavmeshToolMode.FIND_POLYS_IN_CIRCLE.Idx);
-        ImGui.RadioButton(TestNavmeshToolMode.FIND_POLYS_IN_SHAPE.Label, ref option.modeIdx, TestNavmeshToolMode.FIND_POLYS_IN_SHAPE.Idx);
-        ImGui.RadioButton(TestNavmeshToolMode.FIND_LOCAL_NEIGHBOURHOOD.Label, ref option.modeIdx, TestNavmeshToolMode.FIND_LOCAL_NEIGHBOURHOOD.Idx);
-        ImGui.RadioButton(TestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE.Label, ref option.modeIdx, TestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE.Idx);
+        ImGui.RadioButton(RcTestNavmeshToolMode.PATHFIND_FOLLOW.Label, ref option.modeIdx, RcTestNavmeshToolMode.PATHFIND_FOLLOW.Idx);
+        ImGui.RadioButton(RcTestNavmeshToolMode.PATHFIND_STRAIGHT.Label, ref option.modeIdx, RcTestNavmeshToolMode.PATHFIND_STRAIGHT.Idx);
+        ImGui.RadioButton(RcTestNavmeshToolMode.PATHFIND_SLICED.Label, ref option.modeIdx, RcTestNavmeshToolMode.PATHFIND_SLICED.Idx);
+        ImGui.RadioButton(RcTestNavmeshToolMode.DISTANCE_TO_WALL.Label, ref option.modeIdx, RcTestNavmeshToolMode.DISTANCE_TO_WALL.Idx);
+        ImGui.RadioButton(RcTestNavmeshToolMode.RAYCAST.Label, ref option.modeIdx, RcTestNavmeshToolMode.RAYCAST.Idx);
+        ImGui.RadioButton(RcTestNavmeshToolMode.FIND_POLYS_IN_CIRCLE.Label, ref option.modeIdx, RcTestNavmeshToolMode.FIND_POLYS_IN_CIRCLE.Idx);
+        ImGui.RadioButton(RcTestNavmeshToolMode.FIND_POLYS_IN_SHAPE.Label, ref option.modeIdx, RcTestNavmeshToolMode.FIND_POLYS_IN_SHAPE.Idx);
+        ImGui.RadioButton(RcTestNavmeshToolMode.FIND_LOCAL_NEIGHBOURHOOD.Label, ref option.modeIdx, RcTestNavmeshToolMode.FIND_LOCAL_NEIGHBOURHOOD.Idx);
+        ImGui.RadioButton(RcTestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE.Label, ref option.modeIdx, RcTestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE.Idx);
         ImGui.NewLine();
 
         // selecting mode
@@ -116,11 +116,11 @@ public class TestNavmeshSampleTool : ISampleTool
         ImGui.Separator();
         ImGui.NewLine();
 
-        if (option.mode == TestNavmeshToolMode.PATHFIND_FOLLOW)
+        if (option.mode == RcTestNavmeshToolMode.PATHFIND_FOLLOW)
         {
         }
 
-        if (option.mode == TestNavmeshToolMode.PATHFIND_STRAIGHT)
+        if (option.mode == RcTestNavmeshToolMode.PATHFIND_STRAIGHT)
         {
             ImGui.Text("Vertices at crossings");
             ImGui.Separator();
@@ -129,7 +129,7 @@ public class TestNavmeshSampleTool : ISampleTool
             ImGui.RadioButton("All", ref option.straightPathOptions, DtNavMeshQuery.DT_STRAIGHTPATH_ALL_CROSSINGS);
         }
 
-        if (option.mode == TestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE)
+        if (option.mode == RcTestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE)
         {
             ImGui.Checkbox("Constrained", ref option.constrainByCircle);
         }
@@ -199,7 +199,7 @@ public class TestNavmeshSampleTool : ISampleTool
 
         var option = _impl.GetOption();
 
-        if (option.mode == TestNavmeshToolMode.PATHFIND_FOLLOW)
+        if (option.mode == RcTestNavmeshToolMode.PATHFIND_FOLLOW)
         {
             if (m_sposSet && m_eposSet && m_startRef != 0 && m_endRef != 0)
             {
@@ -221,7 +221,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 m_smoothPath = null;
             }
         }
-        else if (option.mode == TestNavmeshToolMode.PATHFIND_STRAIGHT)
+        else if (option.mode == RcTestNavmeshToolMode.PATHFIND_STRAIGHT)
         {
             if (m_sposSet && m_eposSet && m_startRef != 0 && m_endRef != 0)
             {
@@ -241,7 +241,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 m_straightPath = null;
             }
         }
-        else if (option.mode == TestNavmeshToolMode.PATHFIND_SLICED)
+        else if (option.mode == RcTestNavmeshToolMode.PATHFIND_SLICED)
         {
             m_polys = null;
             m_straightPath = null;
@@ -251,7 +251,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 m_pathFindStatus = _impl.InitSlicedFindPath(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, option.enableRaycast);
             }
         }
-        else if (option.mode == TestNavmeshToolMode.RAYCAST)
+        else if (option.mode == RcTestNavmeshToolMode.RAYCAST)
         {
             m_straightPath = null;
             if (m_sposSet && m_eposSet && m_startRef != 0)
@@ -271,7 +271,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 }
             }
         }
-        else if (option.mode == TestNavmeshToolMode.DISTANCE_TO_WALL)
+        else if (option.mode == RcTestNavmeshToolMode.DISTANCE_TO_WALL)
         {
             m_distanceToWall = 0;
             if (m_sposSet && m_startRef != 0)
@@ -285,7 +285,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 }
             }
         }
-        else if (option.mode == TestNavmeshToolMode.FIND_POLYS_IN_CIRCLE)
+        else if (option.mode == RcTestNavmeshToolMode.FIND_POLYS_IN_CIRCLE)
         {
             if (m_sposSet && m_startRef != 0 && m_eposSet)
             {
@@ -300,7 +300,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 }
             }
         }
-        else if (option.mode == TestNavmeshToolMode.FIND_POLYS_IN_SHAPE)
+        else if (option.mode == RcTestNavmeshToolMode.FIND_POLYS_IN_SHAPE)
         {
             if (m_sposSet && m_startRef != 0 && m_eposSet)
             {
@@ -316,7 +316,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 }
             }
         }
-        else if (option.mode == TestNavmeshToolMode.FIND_LOCAL_NEIGHBOURHOOD)
+        else if (option.mode == RcTestNavmeshToolMode.FIND_LOCAL_NEIGHBOURHOOD)
         {
             if (m_sposSet && m_startRef != 0)
             {
@@ -331,7 +331,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 }
             }
         }
-        else if (option.mode == TestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE)
+        else if (option.mode == RcTestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE)
         {
             randomPoints.Clear();
             if (m_sposSet && m_startRef != 0 && m_eposSet)
@@ -374,7 +374,7 @@ public class TestNavmeshSampleTool : ISampleTool
         }
 
         var option = _impl.GetOption();
-        if (option.mode == TestNavmeshToolMode.PATHFIND_FOLLOW)
+        if (option.mode == RcTestNavmeshToolMode.PATHFIND_FOLLOW)
         {
             dd.DebugDrawNavMeshPoly(m_navMesh, m_startRef, startCol);
             dd.DebugDrawNavMeshPoly(m_navMesh, m_endRef, endCol);
@@ -440,7 +440,7 @@ public class TestNavmeshSampleTool : ISampleTool
             }
             */
         }
-        else if (option.mode == TestNavmeshToolMode.PATHFIND_STRAIGHT || option.mode == TestNavmeshToolMode.PATHFIND_SLICED)
+        else if (option.mode == RcTestNavmeshToolMode.PATHFIND_STRAIGHT || option.mode == RcTestNavmeshToolMode.PATHFIND_SLICED)
         {
             dd.DebugDrawNavMeshPoly(m_navMesh, m_startRef, startCol);
             dd.DebugDrawNavMeshPoly(m_navMesh, m_endRef, endCol);
@@ -510,7 +510,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 dd.DepthMask(true);
             }
         }
-        else if (option.mode == TestNavmeshToolMode.RAYCAST)
+        else if (option.mode == RcTestNavmeshToolMode.RAYCAST)
         {
             dd.DebugDrawNavMeshPoly(m_navMesh, m_startRef, startCol);
 
@@ -562,7 +562,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 dd.DepthMask(true);
             }
         }
-        else if (option.mode == TestNavmeshToolMode.DISTANCE_TO_WALL)
+        else if (option.mode == RcTestNavmeshToolMode.DISTANCE_TO_WALL)
         {
             dd.DebugDrawNavMeshPoly(m_navMesh, m_startRef, startCol);
             dd.DepthMask(false);
@@ -582,7 +582,7 @@ public class TestNavmeshSampleTool : ISampleTool
 
             dd.DepthMask(true);
         }
-        else if (option.mode == TestNavmeshToolMode.FIND_POLYS_IN_CIRCLE)
+        else if (option.mode == RcTestNavmeshToolMode.FIND_POLYS_IN_CIRCLE)
         {
             if (m_polys != null)
             {
@@ -615,7 +615,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 dd.DepthMask(true);
             }
         }
-        else if (option.mode == TestNavmeshToolMode.FIND_POLYS_IN_SHAPE)
+        else if (option.mode == RcTestNavmeshToolMode.FIND_POLYS_IN_SHAPE)
         {
             if (m_polys != null)
             {
@@ -652,7 +652,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 dd.DepthMask(true);
             }
         }
-        else if (option.mode == TestNavmeshToolMode.FIND_LOCAL_NEIGHBOURHOOD)
+        else if (option.mode == RcTestNavmeshToolMode.FIND_LOCAL_NEIGHBOURHOOD)
         {
             if (m_polys != null)
             {
@@ -739,7 +739,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 }
             }
         }
-        else if (option.mode == TestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE)
+        else if (option.mode == RcTestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE)
         {
             dd.DepthMask(false);
             dd.Begin(POINTS, 4.0f);
@@ -792,7 +792,7 @@ public class TestNavmeshSampleTool : ISampleTool
     {
         // TODO Auto-generated method stub
         var option = _impl.GetOption();
-        if (option.mode == TestNavmeshToolMode.PATHFIND_SLICED)
+        if (option.mode == RcTestNavmeshToolMode.PATHFIND_SLICED)
         {
             DtNavMeshQuery m_navQuery = _sample.GetNavMeshQuery();
             if (m_pathFindStatus.InProgress())
