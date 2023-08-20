@@ -24,13 +24,17 @@ using DotRecast.Core;
 
 namespace DotRecast.Recast.Geom
 {
-    public interface IInputGeomProvider : IConvexVolumeProvider
+    public interface IInputGeomProvider
     {
         RcVec3f GetMeshBoundsMin();
 
         RcVec3f GetMeshBoundsMax();
 
         IEnumerable<RcTriMesh> Meshes();
+        
+        // convex volume
+        void AddConvexVolume(RcConvexVolume convexVolume);
+        IList<RcConvexVolume> ConvexVolumes();
 
         // off mesh connections
         public List<DtOffMeshConnectionParam> GetOffMeshConnections();

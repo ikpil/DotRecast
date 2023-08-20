@@ -166,7 +166,7 @@ namespace DotRecast.Recast
             return Build(builderCfg.tileX, builderCfg.tileZ, geom, cfg, solid, ctx);
         }
 
-        public RecastBuilderResult Build(int tileX, int tileZ, IConvexVolumeProvider geom, RcConfig cfg, RcHeightfield solid, RcTelemetry ctx)
+        public RecastBuilderResult Build(int tileX, int tileZ, IInputGeomProvider geom, RcConfig cfg, RcHeightfield solid, RcTelemetry ctx)
         {
             FilterHeightfield(solid, cfg, ctx);
             RcCompactHeightfield chf = BuildCompactHeightfield(geom, cfg, ctx, solid);
@@ -280,7 +280,7 @@ namespace DotRecast.Recast
         /*
          * Step 3. Partition walkable surface to simple regions.
          */
-        private RcCompactHeightfield BuildCompactHeightfield(IConvexVolumeProvider volumeProvider, RcConfig cfg, RcTelemetry ctx,
+        private RcCompactHeightfield BuildCompactHeightfield(IInputGeomProvider geom, RcConfig cfg, RcTelemetry ctx,
             RcHeightfield solid)
         {
             // Compact the heightfield so that it is faster to handle from now on.
@@ -291,9 +291,9 @@ namespace DotRecast.Recast
             // Erode the walkable area by agent radius.
             RecastArea.ErodeWalkableArea(ctx, cfg.WalkableRadius, chf);
             // (Optional) Mark areas.
-            if (volumeProvider != null)
+            if (geom != null)
             {
-                foreach (RcConvexVolume vol in volumeProvider.ConvexVolumes())
+                foreach (RcConvexVolume vol in geom.ConvexVolumes())
                 {
                     RecastArea.MarkConvexPolyArea(ctx, vol.verts, vol.hmin, vol.hmax, vol.areaMod, chf);
                 }
