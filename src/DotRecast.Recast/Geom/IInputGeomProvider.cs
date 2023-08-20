@@ -37,9 +37,9 @@ namespace DotRecast.Recast.Geom
         IList<RcConvexVolume> ConvexVolumes();
 
         // off mesh connections
-        public List<DtOffMeshConnectionParam> GetOffMeshConnections();
+        public List<RcOffMeshConnection> GetOffMeshConnections();
         public void AddOffMeshConnection(RcVec3f start, RcVec3f end, float radius, bool bidir, int area, int flags);
-        public void RemoveOffMeshConnections(Predicate<DtOffMeshConnectionParam> filter);
+        public void RemoveOffMeshConnections(Predicate<RcOffMeshConnection> filter);
 
     }
 }

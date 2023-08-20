@@ -52,7 +52,7 @@ namespace DotRecast.Recast.Toolset.Builder
             option.offMeshConUserID = new int[option.offMeshConCount];
             for (int i = 0; i < option.offMeshConCount; i++)
             {
-                DtOffMeshConnectionParam offMeshCon = geom.GetOffMeshConnections()[i];
+                RcOffMeshConnection offMeshCon = geom.GetOffMeshConnections()[i];
                 for (int j = 0; j < 6; j++)
                 {
                     option.offMeshConVerts[6 * i + j] = offMeshCon.verts[j];

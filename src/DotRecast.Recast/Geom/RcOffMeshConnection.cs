@@ -22,7 +22,7 @@ using DotRecast.Core;
 
 namespace DotRecast.Recast.Geom
 {
-    public class DtOffMeshConnectionParam
+    public class RcOffMeshConnection
     {
         public readonly float[] verts;
         public readonly float radius;
@@ -32,7 +32,7 @@ namespace DotRecast.Recast.Geom
 
         public readonly int flags;
 
-        public DtOffMeshConnectionParam(RcVec3f start, RcVec3f end, float radius, bool bidir, int area, int flags)
+        public RcOffMeshConnection(RcVec3f start, RcVec3f end, float radius, bool bidir, int area, int flags)
         {
             verts = new float[6];
             verts[0] = start.x;

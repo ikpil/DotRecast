@@ -59,7 +59,7 @@ namespace DotRecast.Recast.Geom
             return RcImmutableArray.Create(_mesh);
         }
 
-        public List<DtOffMeshConnectionParam> GetOffMeshConnections()
+        public List<RcOffMeshConnection> GetOffMeshConnections()
         {
             throw new NotImplementedException();
         }
@@ -69,7 +69,7 @@ namespace DotRecast.Recast.Geom
             throw new NotImplementedException();
         }
 
-        public void RemoveOffMeshConnections(Predicate<DtOffMeshConnectionParam> filter)
+        public void RemoveOffMeshConnections(Predicate<RcOffMeshConnection> filter)
         {
             throw new NotImplementedException();
         }

@@ -26,9 +26,9 @@ namespace DotRecast.Recast.Geom
 {
     public class RcChunkyTriMesh
     {
-        List<RcChunkyTriMeshNode> nodes;
-        int ntris;
-        int maxTrisPerChunk;
+        private List<RcChunkyTriMeshNode> nodes;
+        private int ntris;
+        private int maxTrisPerChunk;
 
         private void CalcExtends(BoundsItem[] items, int imin, int imax, ref RcVec2f bmin, ref RcVec2f bmax)
         {
