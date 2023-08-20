@@ -10,9 +10,9 @@ using static DotRecast.Recast.Demo.Draw.DebugDraw;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class TileDemoTool : IRcDemoTool
+public class TileSampleTool : ISampleTool
 {
-    private static readonly ILogger Logger = Log.ForContext<TileDemoTool>();
+    private static readonly ILogger Logger = Log.ForContext<TileSampleTool>();
 
     private DemoSample _sample;
     private readonly TileToolImpl _impl;
@@ -20,7 +20,7 @@ public class TileDemoTool : IRcDemoTool
     private bool _hitPosSet;
     private RcVec3f _hitPos;
 
-    public TileDemoTool()
+    public TileSampleTool()
     {
         _impl = new();
     }

@@ -28,15 +28,15 @@ using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class JumpLinkBuilderDemoTool : IRcDemoTool
+public class JumpLinkBuilderSampleTool : ISampleTool
 {
-    private static readonly ILogger Logger = Log.ForContext<JumpLinkBuilderDemoTool>();
+    private static readonly ILogger Logger = Log.ForContext<JumpLinkBuilderSampleTool>();
     private DemoSample _sample;
 
     private readonly JumpLinkBuilderToolImpl _impl;
     private readonly JumpLinkBuilderToolOption _option;
 
-    public JumpLinkBuilderDemoTool()
+    public JumpLinkBuilderSampleTool()
     {
         _impl = new();
         _option = new();

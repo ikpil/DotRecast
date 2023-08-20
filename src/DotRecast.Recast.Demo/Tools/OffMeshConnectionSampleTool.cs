@@ -30,9 +30,9 @@ using static DotRecast.Recast.Demo.Draw.DebugDraw;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class OffMeshConnectionDemoTool : IRcDemoTool
+public class OffMeshConnectionSampleTool : ISampleTool
 {
-    private static readonly ILogger Logger = Log.ForContext<OffMeshConnectionDemoTool>();
+    private static readonly ILogger Logger = Log.ForContext<OffMeshConnectionSampleTool>();
 
     private DemoSample _sample;
 
@@ -40,7 +40,7 @@ public class OffMeshConnectionDemoTool : IRcDemoTool
     private bool hitPosSet;
     private RcVec3f hitPos;
 
-    public OffMeshConnectionDemoTool()
+    public OffMeshConnectionSampleTool()
     {
         _impl = new();
     }

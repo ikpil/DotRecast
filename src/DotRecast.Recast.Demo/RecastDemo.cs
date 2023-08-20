@@ -381,14 +381,14 @@ public class RecastDemo : IRecastDemoChannel
         settingsView.SetSample(_sample);
 
         toolset = new RcToolsetView(
-            new TestNavmeshDemoTool(),
-            new TileDemoTool(),
-            new ObstacleDemoTool(),
-            new OffMeshConnectionDemoTool(),
-            new ConvexVolumeDemoTool(),
-            new CrowdDemoTool(),
-            new JumpLinkBuilderDemoTool(),
-            new DynamicUpdateDemoTool()
+            new TestNavmeshSampleTool(),
+            new TileSampleTool(),
+            new ObstacleSampleTool(),
+            new OffMeshConnectionSampleTool(),
+            new ConvexVolumeSampleTool(),
+            new CrowdSampleTool(),
+            new JumpLinkBuilderSampleTool(),
+            new DynamicUpdateSampleTool()
         );
         toolset.SetEnabled(true);
         logView = new RcLogView();
@@ -610,10 +610,10 @@ public class RecastDemo : IRecastDemoChannel
         dd.Fog(camr * 0.1f, camr * 1.25f);
         renderer.Render(_sample, settingsView.GetDrawMode());
 
-        IRcDemoTool demoTool = toolset.GetTool();
-        if (demoTool != null)
+        ISampleTool sampleTool = toolset.GetTool();
+        if (sampleTool != null)
         {
-            demoTool.HandleRender(renderer);
+            sampleTool.HandleRender(renderer);
         }
 
         dd.Fog(false);
@@ -788,12 +788,12 @@ public class RecastDemo : IRecastDemoChannel
         }
 
         RcVec3f rayDir = RcVec3f.Of(rayEnd.x - rayStart.x, rayEnd.y - rayStart.y, rayEnd.z - rayStart.z);
-        IRcDemoTool rayDemoTool = toolset.GetTool();
+        ISampleTool raySampleTool = toolset.GetTool();
         rayDir.Normalize();
-        if (rayDemoTool != null)
+        if (raySampleTool != null)
         {
-            Logger.Information($"click ray - tool({rayDemoTool.GetTool().GetName()}) rayStart({rayStart.x:0.#},{rayStart.y:0.#},{rayStart.z:0.#}) pos({rayDir.x:0.#},{rayDir.y:0.#},{rayDir.z:0.#}) shift({processHitTestShift})");
-            rayDemoTool.HandleClickRay(rayStart, rayDir, processHitTestShift);
+            Logger.Information($"click ray - tool({raySampleTool.GetTool().GetName()}) rayStart({rayStart.x:0.#},{rayStart.y:0.#},{rayStart.z:0.#}) pos({rayDir.x:0.#},{rayDir.y:0.#},{rayDir.z:0.#}) shift({processHitTestShift})");
+            raySampleTool.HandleClickRay(rayStart, rayDir, processHitTestShift);
         }
 
         if (hit)
@@ -812,10 +812,10 @@ public class RecastDemo : IRecastDemoChannel
                 pos.x = rayStart.x + (rayEnd.x - rayStart.x) * hitTime;
                 pos.y = rayStart.y + (rayEnd.y - rayStart.y) * hitTime;
                 pos.z = rayStart.z + (rayEnd.z - rayStart.z) * hitTime;
-                if (rayDemoTool != null)
+                if (raySampleTool != null)
                 {
-                    Logger.Information($"click - tool({rayDemoTool.GetTool().GetName()}) rayStart({rayStart.x:0.#},{rayStart.y:0.#},{rayStart.z:0.#}) pos({pos.x:0.#},{pos.y:0.#},{pos.z:0.#}) shift({processHitTestShift})");
-                    rayDemoTool.HandleClick(rayStart, pos, processHitTestShift);
+                    Logger.Information($"click - tool({raySampleTool.GetTool().GetName()}) rayStart({rayStart.x:0.#},{rayStart.y:0.#},{rayStart.z:0.#}) pos({pos.x:0.#},{pos.y:0.#},{pos.z:0.#}) shift({processHitTestShift})");
+                    raySampleTool.HandleClick(rayStart, pos, processHitTestShift);
                 }
             }
         }

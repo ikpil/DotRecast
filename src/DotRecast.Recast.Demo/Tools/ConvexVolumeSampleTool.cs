@@ -34,9 +34,9 @@ using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class ConvexVolumeDemoTool : IRcDemoTool
+public class ConvexVolumeSampleTool : ISampleTool
 {
-    private static readonly ILogger Logger = Log.ForContext<ConvexVolumeDemoTool>();
+    private static readonly ILogger Logger = Log.ForContext<ConvexVolumeSampleTool>();
 
     private DemoSample _sample;
     private readonly ConvexVolumeToolImpl _impl;
@@ -49,7 +49,7 @@ public class ConvexVolumeDemoTool : IRcDemoTool
     private readonly List<RcVec3f> pts = new();
     private readonly List<int> hull = new();
 
-    public ConvexVolumeDemoTool()
+    public ConvexVolumeSampleTool()
     {
         _impl = new ConvexVolumeToolImpl();
     }

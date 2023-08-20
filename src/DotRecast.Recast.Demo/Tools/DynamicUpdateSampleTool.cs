@@ -40,9 +40,9 @@ using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class DynamicUpdateDemoTool : IRcDemoTool
+public class DynamicUpdateSampleTool : ISampleTool
 {
-    private static readonly ILogger Logger = Log.ForContext<DynamicUpdateDemoTool>();
+    private static readonly ILogger Logger = Log.ForContext<DynamicUpdateSampleTool>();
 
     private DemoSample _sample;
     private readonly DynamicUpdateToolImpl _impl;
@@ -89,7 +89,7 @@ public class DynamicUpdateDemoTool : IRcDemoTool
     private bool raycastHit;
     private RcVec3f raycastHitPos;
 
-    public DynamicUpdateDemoTool()
+    public DynamicUpdateSampleTool()
     {
         _impl = new();
         executor = Task.Factory;

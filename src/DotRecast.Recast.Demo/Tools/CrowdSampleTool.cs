@@ -35,9 +35,9 @@ using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class CrowdDemoTool : IRcDemoTool
+public class CrowdSampleTool : ISampleTool
 {
-    private static readonly ILogger Logger = Log.ForContext<CrowdDemoTool>();
+    private static readonly ILogger Logger = Log.ForContext<CrowdSampleTool>();
 
     private DemoSample _sample;
     private readonly CrowdToolImpl _impl;
@@ -54,7 +54,7 @@ public class CrowdDemoTool : IRcDemoTool
     private int m_modeIdx = CrowdToolMode.CREATE.Idx;
     private long crowdUpdateTime;
 
-    public CrowdDemoTool()
+    public CrowdSampleTool()
     {
         m_agentDebug.vod = new DtObstacleAvoidanceDebugData(2048);
         profilingTool = new CrowdProfilingTool(GetAgentParams);

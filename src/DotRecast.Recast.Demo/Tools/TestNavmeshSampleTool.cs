@@ -13,9 +13,9 @@ using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class TestNavmeshDemoTool : IRcDemoTool
+public class TestNavmeshSampleTool : ISampleTool
 {
-    private static readonly ILogger Logger = Log.ForContext<TestNavmeshDemoTool>();
+    private static readonly ILogger Logger = Log.ForContext<TestNavmeshSampleTool>();
 
     private const int MAX_POLYS = 256;
 
@@ -47,7 +47,7 @@ public class TestNavmeshDemoTool : IRcDemoTool
     private DtStatus m_pathFindStatus = DtStatus.DT_FAILURE;
     private readonly List<RcVec3f> randomPoints = new();
 
-    public TestNavmeshDemoTool()
+    public TestNavmeshSampleTool()
     {
         _impl = new();
         m_filter = new DtQueryDefaultFilter(

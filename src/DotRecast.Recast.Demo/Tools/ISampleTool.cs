@@ -24,7 +24,7 @@ using DotRecast.Recast.Toolset;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public interface IRcDemoTool
+public interface ISampleTool
 {
     void SetSample(DemoSample sample);
     void OnSampleChanged();
