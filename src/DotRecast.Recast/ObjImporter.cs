@@ -26,18 +26,18 @@ namespace DotRecast.Recast
 {
     public static class ObjImporter
     {
-        public static IInputGeomProvider Load(byte[] chunck)
+        public static IInputGeomProvider Load(byte[] chunk)
         {
-            var context = LoadContext(chunck);
+            var context = LoadContext(chunk);
             return new SimpleInputGeomProvider(context.vertexPositions, context.meshFaces);
         }
 
-        public static ObjImporterContext LoadContext(byte[] chunck)
+        public static ObjImporterContext LoadContext(byte[] chunk)
         {
             ObjImporterContext context = new ObjImporterContext();
             try
             {
-                using StreamReader reader = new StreamReader(new MemoryStream(chunck));
+                using StreamReader reader = new StreamReader(new MemoryStream(chunk));
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {
