@@ -472,10 +472,8 @@ public class TestNavmeshSampleTool : ISampleTool
                         col = spathCol;
                     }
 
-                    dd.Vertex(straightPathItem.pos.x, straightPathItem.pos.y + 0.4f,
-                        straightPathItem.pos.z, col);
-                    dd.Vertex(straightPathItem2.pos.x, straightPathItem2.pos.y + 0.4f,
-                        straightPathItem2.pos.z, col);
+                    dd.Vertex(straightPathItem.pos.x, straightPathItem.pos.y + 0.4f, straightPathItem.pos.z, col);
+                    dd.Vertex(straightPathItem2.pos.x, straightPathItem2.pos.y + 0.4f, straightPathItem2.pos.z, col);
                 }
 
                 dd.End();
@@ -501,8 +499,7 @@ public class TestNavmeshSampleTool : ISampleTool
                         col = spathCol;
                     }
 
-                    dd.Vertex(straightPathItem.pos.x, straightPathItem.pos.y + 0.4f,
-                        straightPathItem.pos.z, col);
+                    dd.Vertex(straightPathItem.pos.x, straightPathItem.pos.y + 0.4f, straightPathItem.pos.z, col);
                 }
 
                 dd.End();
@@ -793,34 +790,10 @@ public class TestNavmeshSampleTool : ISampleTool
         if (_option.mode == RcTestNavmeshToolMode.PATHFIND_SLICED)
         {
             DtNavMeshQuery navQuery = _sample.GetNavMeshQuery();
+            
             if (m_pathFindStatus.InProgress())
             {
-                m_pathFindStatus = navQuery.UpdateSlicedFindPath(1, out var _);
-            }
-
-            if (m_pathFindStatus.Succeeded())
-            {
-                navQuery.FinalizeSlicedFindPath(ref m_polys);
-                m_straightPath = null;
-                if (m_polys != null)
-                {
-                    // In case of partial path, make sure the end point is clamped to the last polygon.
-                    RcVec3f epos = new RcVec3f();
-                    epos = m_epos;
-                    if (m_polys[m_polys.Count - 1] != m_endRef)
-                    {
-                        var result = navQuery.ClosestPointOnPoly(m_polys[m_polys.Count - 1], m_epos, out var closest, out var _);
-                        if (result.Succeeded())
-                        {
-                            epos = closest;
-                        }
-                    }
-
-                    m_straightPath = new(MAX_POLYS);
-                    navQuery.FindStraightPath(m_spos, epos, m_polys, ref m_straightPath, MAX_POLYS, DtNavMeshQuery.DT_STRAIGHTPATH_ALL_CROSSINGS);
-                }
-
-                m_pathFindStatus = DtStatus.DT_FAILURE;
+                m_pathFindStatus = _tool.UpdateSlicedFindPath(navQuery, 1, m_endRef, m_spos, m_epos, ref m_polys, ref m_straightPath);
             }
         }
     }

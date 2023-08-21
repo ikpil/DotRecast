@@ -174,13 +174,47 @@ namespace DotRecast.Recast.Toolset.Tools
             return DtStatus.DT_SUCCSESS;
         }
 
-        public DtStatus InitSlicedFindPath(DtNavMeshQuery navQuery, long startRef, long endRef, RcVec3f startPos, RcVec3f m_epos, IDtQueryFilter filter, bool enableRaycast)
+        public DtStatus InitSlicedFindPath(DtNavMeshQuery navQuery, long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter, bool enableRaycast)
         {
-            return navQuery.InitSlicedFindPath(startRef, endRef, startPos, m_epos, filter,
+            return navQuery.InitSlicedFindPath(startRef, endRef, startPos, endPos, filter,
                 enableRaycast ? DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0,
                 float.MaxValue
             );
         }
+
+        public DtStatus UpdateSlicedFindPath(DtNavMeshQuery navQuery, int maxIter, long endRef, RcVec3f startPos,  RcVec3f endPos,
+            ref List<long> path, ref List<StraightPathItem> straightPath)
+        {
+            var status = navQuery.UpdateSlicedFindPath(maxIter, out _);
+
+            if (!status.Succeeded())
+            {
+                return status;
+            }
+
+            navQuery.FinalizeSlicedFindPath(ref path);
+
+            straightPath?.Clear();
+            if (path != null)
+            {
+                // In case of partial path, make sure the end point is clamped to the last polygon.
+                RcVec3f epos = endPos;
+                if (path[path.Count - 1] != endRef)
+                {
+                    var result = navQuery.ClosestPointOnPoly(path[path.Count - 1], endPos, out var closest, out var _);
+                    if (result.Succeeded())
+                    {
+                        epos = closest;
+                    }
+                }
+
+                straightPath = new List<StraightPathItem>(MAX_POLYS);
+                navQuery.FindStraightPath(startPos, epos, path, ref straightPath, MAX_POLYS, DtNavMeshQuery.DT_STRAIGHTPATH_ALL_CROSSINGS);
+            }
+
+            return DtStatus.DT_SUCCSESS;
+        }
+
 
         public DtStatus Raycast(DtNavMeshQuery navQuery, long startRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter,
             ref List<long> polys, ref List<StraightPathItem> straightPath, out RcVec3f hitPos, out RcVec3f hitNormal, out bool hitResult)
