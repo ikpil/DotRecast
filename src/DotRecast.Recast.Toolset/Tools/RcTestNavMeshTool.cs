@@ -10,21 +10,14 @@ namespace DotRecast.Recast.Toolset.Tools
         public const int MAX_POLYS = 256;
         public const int MAX_SMOOTH = 2048;
 
-        private readonly RcTestNavmeshToolOption _option;
 
         public RcTestNavMeshTool()
         {
-            _option = new RcTestNavmeshToolOption();
         }
 
         public string GetName()
         {
             return "Test Navmesh";
-        }
-
-        public RcTestNavmeshToolOption GetOption()
-        {
-            return _option;
         }
 
         public DtStatus FindFollowPath(DtNavMesh navMesh, DtNavMeshQuery navQuery, long startRef, long endRef, RcVec3f startPt, RcVec3f endPt, IDtQueryFilter filter, bool enableRaycast,
