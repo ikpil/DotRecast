@@ -139,10 +139,8 @@ public class JumpLinkBuilderSampleTool : ISampleTool
                     int u = (j * 255) / link.nspine;
                     int col = DuTransCol(DuLerpCol(col0, col1, u), 128);
                     dd.Vertex(link.spine1[j * 3], link.spine1[j * 3 + 1], link.spine1[j * 3 + 2], col);
-                    dd.Vertex(link.spine1[(j + 1) * 3], link.spine1[(j + 1) * 3 + 1], link.spine1[(j + 1) * 3 + 2],
-                        col);
-                    dd.Vertex(link.spine0[(j + 1) * 3], link.spine0[(j + 1) * 3 + 1], link.spine0[(j + 1) * 3 + 2],
-                        col);
+                    dd.Vertex(link.spine1[(j + 1) * 3], link.spine1[(j + 1) * 3 + 1], link.spine1[(j + 1) * 3 + 2], col);
+                    dd.Vertex(link.spine0[(j + 1) * 3], link.spine0[(j + 1) * 3 + 1], link.spine0[(j + 1) * 3 + 2], col);
                     dd.Vertex(link.spine0[j * 3], link.spine0[j * 3 + 1], link.spine0[j * 3 + 2], col);
                 }
             }
@@ -157,20 +155,16 @@ public class JumpLinkBuilderSampleTool : ISampleTool
                     int col = DuTransCol(DuDarkenCol(col1) /*DuDarkenCol(DuLerpCol(col0,col1,u))*/, 128);
 
                     dd.Vertex(link.spine0[j * 3], link.spine0[j * 3 + 1], link.spine0[j * 3 + 2], col);
-                    dd.Vertex(link.spine0[(j + 1) * 3], link.spine0[(j + 1) * 3 + 1], link.spine0[(j + 1) * 3 + 2],
-                        col);
+                    dd.Vertex(link.spine0[(j + 1) * 3], link.spine0[(j + 1) * 3 + 1], link.spine0[(j + 1) * 3 + 2], col);
                     dd.Vertex(link.spine1[j * 3], link.spine1[j * 3 + 1], link.spine1[j * 3 + 2], col);
-                    dd.Vertex(link.spine1[(j + 1) * 3], link.spine1[(j + 1) * 3 + 1], link.spine1[(j + 1) * 3 + 2],
-                        col);
+                    dd.Vertex(link.spine1[(j + 1) * 3], link.spine1[(j + 1) * 3 + 1], link.spine1[(j + 1) * 3 + 2], col);
                 }
 
                 dd.Vertex(link.spine0[0], link.spine0[1], link.spine0[2], DuDarkenCol(col1));
                 dd.Vertex(link.spine1[0], link.spine1[1], link.spine1[2], DuDarkenCol(col1));
 
-                dd.Vertex(link.spine0[(link.nspine - 1) * 3], link.spine0[(link.nspine - 1) * 3 + 1],
-                    link.spine0[(link.nspine - 1) * 3 + 2], DuDarkenCol(col1));
-                dd.Vertex(link.spine1[(link.nspine - 1) * 3], link.spine1[(link.nspine - 1) * 3 + 1],
-                    link.spine1[(link.nspine - 1) * 3 + 2], DuDarkenCol(col1));
+                dd.Vertex(link.spine0[(link.nspine - 1) * 3], link.spine0[(link.nspine - 1) * 3 + 1], link.spine0[(link.nspine - 1) * 3 + 2], DuDarkenCol(col1));
+                dd.Vertex(link.spine1[(link.nspine - 1) * 3], link.spine1[(link.nspine - 1) * 3 + 1], link.spine1[(link.nspine - 1) * 3 + 2], DuDarkenCol(col1));
             }
 
             dd.End();
@@ -184,8 +178,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
                 {
                     float r = link.start.height;
 
-                    int col = DuLerpCol(DuRGBA(255, 192, 0, 255),
-                        DuRGBA(255, 255, 255, 255), 64);
+                    int col = DuLerpCol(DuRGBA(255, 192, 0, 255), DuRGBA(255, 255, 255, 255), 64);
                     int cola = DuTransCol(col, 192);
                     int colb = DuRGBA(255, 255, 255, 255);
 
