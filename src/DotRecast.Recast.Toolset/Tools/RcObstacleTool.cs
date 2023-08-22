@@ -33,6 +33,15 @@ namespace DotRecast.Recast.Toolset.Tools
         {
             if (null == _tc)
                 return;
+
+            for (int i = 0; i < _tc.GetObstacleCount(); ++i)
+            {
+                DtTileCacheObstacle ob = _tc.GetObstacle(i);
+                if (ob.state == DtObstacleState.DT_OBSTACLE_EMPTY)
+                    continue;
+
+                _tc.RemoveObstacle(_tc.GetObstacleRef(ob));
+            }
         }
 
         public void RemoveTempObstacle(RcVec3f sp, RcVec3f sq)
@@ -48,7 +57,7 @@ namespace DotRecast.Recast.Toolset.Tools
         {
             if (null == _tc)
                 return 0;
-            
+
             p.y -= 0.5f;
             return _tc.AddObstacle(p, 1.0f, 2.0f);
         }
