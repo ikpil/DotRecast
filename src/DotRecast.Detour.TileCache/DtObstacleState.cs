@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Detour.TileCache
 {
-    public enum ObstacleState
+    public enum DtObstacleState
     {
         DT_OBSTACLE_EMPTY,
         DT_OBSTACLE_PROCESSING,

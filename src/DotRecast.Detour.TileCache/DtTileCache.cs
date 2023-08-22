@@ -27,27 +27,15 @@ namespace DotRecast.Detour.TileCache
 {
     public class DtTileCache
     {
-        private int m_tileLutSize;
+        private int m_tileLutSize; // < Tile hash lookup size (must be pot).
+        private int m_tileLutMask; // < Tile hash lookup mask.
+        private readonly DtCompressedTile[] m_posLookup; // < Tile hash lookup.
 
-        /// < Tile hash lookup size (must be pot).
-        private int m_tileLutMask;
+        private DtCompressedTile m_nextFreeTile; // < Freelist of tiles.
+        private readonly DtCompressedTile[] m_tiles; // < List of tiles. // TODO: (PP) replace with list
 
-        /// < Tile hash lookup mask.
-        private readonly DtCompressedTile[] m_posLookup;
-
-        /// < Tile hash lookup.
-        private DtCompressedTile m_nextFreeTile;
-
-        /// < Freelist of tiles.
-        private readonly DtCompressedTile[] m_tiles;
-
-        /// < List of tiles. // TODO: (PP) replace with list
-        private readonly int m_saltBits;
-
-        /// < Number of salt bits in the tile ID.
-        private readonly int m_tileBits;
-
-        /// < Number of tile bits in the tile ID.
+        private readonly int m_saltBits; // < Number of salt bits in the tile ID.
+        private readonly int m_tileBits; // < Number of tile bits in the tile ID.
         private readonly DtNavMesh m_navmesh;
 
         private readonly DtTileCacheParams m_params;
@@ -64,6 +52,38 @@ namespace DotRecast.Detour.TileCache
 
         private readonly DtTileCacheBuilder builder = new DtTileCacheBuilder();
         private readonly DtTileCacheLayerHeaderReader tileReader = new DtTileCacheLayerHeaderReader();
+
+        public DtTileCache(DtTileCacheParams option, DtTileCacheStorageParams storageParams, DtNavMesh navmesh, IRcCompressor tcomp, IDtTileCacheMeshProcess tmprocs)
+        {
+            m_params = option;
+            m_storageParams = storageParams;
+            m_navmesh = navmesh;
+            m_tcomp = tcomp;
+            m_tmproc = tmprocs;
+
+            m_tileLutSize = DtUtils.NextPow2(m_params.maxTiles / 4);
+            if (m_tileLutSize == 0)
+            {
+                m_tileLutSize = 1;
+            }
+
+            m_tileLutMask = m_tileLutSize - 1;
+            m_tiles = new DtCompressedTile[m_params.maxTiles];
+            m_posLookup = new DtCompressedTile[m_tileLutSize];
+            for (int i = m_params.maxTiles - 1; i >= 0; --i)
+            {
+                m_tiles[i] = new DtCompressedTile(i);
+                m_tiles[i].next = m_nextFreeTile;
+                m_nextFreeTile = m_tiles[i];
+            }
+
+            m_tileBits = DtUtils.Ilog2(DtUtils.NextPow2(m_params.maxTiles));
+            m_saltBits = Math.Min(31, 32 - m_tileBits);
+            if (m_saltBits < 10)
+            {
+                throw new Exception("Too few salt bits: " + m_saltBits);
+            }
+        }
 
         private bool Contains(List<long> a, long v)
         {
@@ -110,37 +130,6 @@ namespace DotRecast.Detour.TileCache
             return (int)(refs & tileMask);
         }
 
-        public DtTileCache(DtTileCacheParams option, DtTileCacheStorageParams storageParams, DtNavMesh navmesh, IRcCompressor tcomp, IDtTileCacheMeshProcess tmprocs)
-        {
-            m_params = option;
-            m_storageParams = storageParams;
-            m_navmesh = navmesh;
-            m_tcomp = tcomp;
-            m_tmproc = tmprocs;
-
-            m_tileLutSize = DtUtils.NextPow2(m_params.maxTiles / 4);
-            if (m_tileLutSize == 0)
-            {
-                m_tileLutSize = 1;
-            }
-
-            m_tileLutMask = m_tileLutSize - 1;
-            m_tiles = new DtCompressedTile[m_params.maxTiles];
-            m_posLookup = new DtCompressedTile[m_tileLutSize];
-            for (int i = m_params.maxTiles - 1; i >= 0; --i)
-            {
-                m_tiles[i] = new DtCompressedTile(i);
-                m_tiles[i].next = m_nextFreeTile;
-                m_nextFreeTile = m_tiles[i];
-            }
-
-            m_tileBits = DtUtils.Ilog2(DtUtils.NextPow2(m_params.maxTiles));
-            m_saltBits = Math.Min(31, 32 - m_tileBits);
-            if (m_saltBits < 10)
-            {
-                throw new Exception("Too few salt bits: " + m_saltBits);
-            }
-        }
 
         public DtCompressedTile GetTileByRef(long refs)
         {
@@ -429,11 +418,26 @@ namespace DotRecast.Detour.TileCache
                 m_nextFreeObstacle = o.next;
             }
 
-            o.state = ObstacleState.DT_OBSTACLE_PROCESSING;
+            o.state = DtObstacleState.DT_OBSTACLE_PROCESSING;
             o.touched.Clear();
             o.pending.Clear();
             o.next = null;
             return o;
+        }
+
+        public int GetObstacleCount()
+        {
+            return m_obstacles.Count;
+        }
+
+        public DtTileCacheObstacle GetObstacle(int i)
+        {
+            if (0 > i || i >= m_obstacles.Count)
+            {
+                return null;
+            }
+
+            return m_obstacles[i];
         }
 
         private List<long> QueryTiles(RcVec3f bmin, RcVec3f bmax)
@@ -516,7 +520,7 @@ namespace DotRecast.Detour.TileCache
                     else if (req.action == ObstacleRequestAction.REQUEST_REMOVE)
                     {
                         // Prepare to remove obstacle.
-                        ob.state = ObstacleState.DT_OBSTACLE_REMOVING;
+                        ob.state = DtObstacleState.DT_OBSTACLE_REMOVING;
                         // Add tiles to update list.
                         ob.pending.Clear();
                         foreach (long j in ob.touched)
@@ -546,8 +550,8 @@ namespace DotRecast.Detour.TileCache
                 for (int i = 0; i < m_obstacles.Count; ++i)
                 {
                     DtTileCacheObstacle ob = m_obstacles[i];
-                    if (ob.state == ObstacleState.DT_OBSTACLE_PROCESSING
-                        || ob.state == ObstacleState.DT_OBSTACLE_REMOVING)
+                    if (ob.state == DtObstacleState.DT_OBSTACLE_PROCESSING
+                        || ob.state == DtObstacleState.DT_OBSTACLE_REMOVING)
                     {
                         // Remove handled tile from pending list.
                         ob.pending.Remove(refs);
@@ -555,13 +559,13 @@ namespace DotRecast.Detour.TileCache
                         // If all pending tiles processed, change state.
                         if (0 == ob.pending.Count)
                         {
-                            if (ob.state == ObstacleState.DT_OBSTACLE_PROCESSING)
+                            if (ob.state == DtObstacleState.DT_OBSTACLE_PROCESSING)
                             {
-                                ob.state = ObstacleState.DT_OBSTACLE_PROCESSED;
+                                ob.state = DtObstacleState.DT_OBSTACLE_PROCESSED;
                             }
-                            else if (ob.state == ObstacleState.DT_OBSTACLE_REMOVING)
+                            else if (ob.state == DtObstacleState.DT_OBSTACLE_REMOVING)
                             {
-                                ob.state = ObstacleState.DT_OBSTACLE_EMPTY;
+                                ob.state = DtObstacleState.DT_OBSTACLE_EMPTY;
                                 // Update salt, salt should never be zero.
                                 ob.salt = (ob.salt + 1) & ((1 << 16) - 1);
                                 if (ob.salt == 0)
@@ -605,7 +609,7 @@ namespace DotRecast.Detour.TileCache
             for (int i = 0; i < m_obstacles.Count; ++i)
             {
                 DtTileCacheObstacle ob = m_obstacles[i];
-                if (ob.state == ObstacleState.DT_OBSTACLE_EMPTY || ob.state == ObstacleState.DT_OBSTACLE_REMOVING)
+                if (ob.state == DtObstacleState.DT_OBSTACLE_EMPTY || ob.state == DtObstacleState.DT_OBSTACLE_REMOVING)
                 {
                     continue;
                 }
@@ -690,7 +694,7 @@ namespace DotRecast.Detour.TileCache
             bmax.z = header.bmin.z + (header.maxy + 1) * cs;
         }
 
-        void GetObstacleBounds(DtTileCacheObstacle ob, ref RcVec3f bmin, ref RcVec3f bmax)
+        public void GetObstacleBounds(DtTileCacheObstacle ob, ref RcVec3f bmin, ref RcVec3f bmax)
         {
             if (ob.type == TileCacheObstacleType.CYLINDER)
             {

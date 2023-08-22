@@ -44,13 +44,18 @@ namespace DotRecast.Recast.Toolset.Tools
             //_tc.RemoveObstacle(refs);
         }
 
-        public void AddTempObstacle(RcVec3f p)
+        public long AddTempObstacle(RcVec3f p)
         {
             if (null == _tc)
-                return;
+                return 0;
             
             p.y -= 0.5f;
-            _tc.AddObstacle(p, 1.0f, 2.0f);
+            return _tc.AddObstacle(p, 1.0f, 2.0f);
+        }
+
+        public DtTileCache GetTileCache()
+        {
+            return _tc;
         }
 
         public DtTileCache CreateTileCache(IInputGeomProvider geom, RcNavMeshBuildSettings setting, RcByteOrder order, bool cCompatibility)

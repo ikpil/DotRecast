@@ -37,7 +37,7 @@ namespace DotRecast.Detour.TileCache
         public List<long> touched = new List<long>();
         public readonly List<long> pending = new List<long>();
         public int salt;
-        public ObstacleState state = ObstacleState.DT_OBSTACLE_EMPTY;
+        public DtObstacleState state = DtObstacleState.DT_OBSTACLE_EMPTY;
         public DtTileCacheObstacle next;
 
         public DtTileCacheObstacle(int index)
