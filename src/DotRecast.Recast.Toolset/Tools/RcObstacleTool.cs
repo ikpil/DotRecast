@@ -26,7 +26,38 @@ namespace DotRecast.Recast.Toolset.Tools
 
         public void Build(IInputGeomProvider geom, RcNavMeshBuildSettings setting, RcByteOrder order, bool cCompatibility)
         {
-            _tc = CreateTileCache(geom, setting, order, cCompatibility);
+            RcUtils.CalcTileCount(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(),
+                setting.cellSize, setting.tileSize, setting.tileSize,
+                out var tw, out var th
+            );
+
+            _tc = CreateTileCache(geom, setting, tw, th, order, cCompatibility);
+
+            for (int y = 0; y < th; ++y)
+            {
+                for (int x = 0; x < tw; ++x)
+                {
+                    // TileCacheData tiles[MAX_LAYERS];
+                    // memset(tiles, 0, sizeof(tiles));
+                    // int ntiles = rasterizeTileLayers(x, y, cfg, tiles, MAX_LAYERS);
+                    //
+                    // for (int i = 0; i < ntiles; ++i)
+                    // {
+                    //     TileCacheData* tile = &tiles[i];
+                    //     status = m_tileCache->addTile(tile->data, tile->dataSize, DT_COMPRESSEDTILE_FREE_DATA, 0);
+                    //     if (dtStatusFailed(status))
+                    //     {
+                    //         dtFree(tile->data);
+                    //         tile->data = 0;
+                    //         continue;
+                    //     }
+                    //
+                    //     m_cacheLayerCount++;
+                    //     m_cacheCompressedSize += tile->dataSize;
+                    //     m_cacheRawSize += calcLayerBufferSize(tcparams.width, tcparams.height);
+                    // }
+                }
+            }
         }
 
         public void ClearAllTempObstacles()
@@ -67,13 +98,8 @@ namespace DotRecast.Recast.Toolset.Tools
             return _tc;
         }
 
-        public DtTileCache CreateTileCache(IInputGeomProvider geom, RcNavMeshBuildSettings setting, RcByteOrder order, bool cCompatibility)
+        public DtTileCache CreateTileCache(IInputGeomProvider geom, RcNavMeshBuildSettings setting, int tw, int th, RcByteOrder order, bool cCompatibility)
         {
-            RcUtils.CalcTileCount(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(),
-                setting.cellSize, setting.tileSize, setting.tileSize,
-                out var tw, out var th
-            );
-
             DtTileCacheParams option = new DtTileCacheParams();
             option.ch = setting.cellHeight;
             option.cs = setting.cellSize;
