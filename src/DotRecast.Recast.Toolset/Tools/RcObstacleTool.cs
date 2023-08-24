@@ -9,14 +9,14 @@ namespace DotRecast.Recast.Toolset.Tools
 {
     public class RcObstacleTool : IRcToolable
     {
-        private readonly IDtTileCacheCompressorFactory _compFactory;
-        private readonly IDtTileCacheMeshProcess _proc;
+        private readonly IDtTileCacheCompressorFactory _comp;
+        private readonly DemoDtTileCacheMeshProcess _proc;
         private DtTileCache _tc;
 
-        public RcObstacleTool(IDtTileCacheCompressorFactory compFactory, IDtTileCacheMeshProcess meshProcessor = null)
+        public RcObstacleTool(IDtTileCacheCompressorFactory comp)
         {
-            _compFactory = compFactory;
-            _proc = meshProcessor ?? new DemoDtTileCacheMeshProcess();
+            _comp = comp;
+            _proc = new DemoDtTileCacheMeshProcess();
         }
 
         public string GetName()
@@ -24,12 +24,47 @@ namespace DotRecast.Recast.Toolset.Tools
             return "Create Temp Obstacles";
         }
 
-        public void Build(IInputGeomProvider geom, RcNavMeshBuildSettings setting, RcByteOrder order, bool cCompatibility)
+        public bool Build(IInputGeomProvider geom, RcNavMeshBuildSettings setting, RcByteOrder order, bool cCompatibility)
         {
-            RcUtils.CalcTileCount(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(),
-                setting.cellSize, setting.tileSize, setting.tileSize,
-                out var tw, out var th
-            );
+            DtStatus status;
+
+            if (null == geom || null == geom.GetMesh())
+            {
+                //m_ctx->log(RC_LOG_ERROR, "buildTiledNavigation: No vertices and triangles.");
+                return false;
+            }
+            
+            _proc.Init(geom);
+            
+            // Init cache
+            var bmin = geom.GetMeshBoundsMin();
+            var bmax = geom.GetMeshBoundsMax();
+            RcUtils.CalcGridSize(bmin, bmax, setting.cellSize, out var gw, out var gh);
+            int ts = setting.tileSize;
+            int tw = (gw + ts-1) / ts;
+            int th = (gh + ts-1) / ts;
+            
+            // Generation params.
+            // RcConfig cfg = new RcConfig();
+            // cfg.cs = m_cellSize;
+            // cfg.ch = m_cellHeight;
+            // cfg.walkableSlopeAngle = m_agentMaxSlope;
+            // cfg.walkableHeight = (int)ceilf(m_agentHeight / cfg.ch);
+            // cfg.walkableClimb = (int)floorf(m_agentMaxClimb / cfg.ch);
+            // cfg.walkableRadius = (int)ceilf(m_agentRadius / cfg.cs);
+            // cfg.maxEdgeLen = (int)(m_edgeMaxLen / m_cellSize);
+            // cfg.maxSimplificationError = m_edgeMaxError;
+            // cfg.minRegionArea = (int)rcSqr(m_regionMinSize);		// Note: area = size*size
+            // cfg.mergeRegionArea = (int)rcSqr(m_regionMergeSize);	// Note: area = size*size
+            // cfg.maxVertsPerPoly = (int)m_vertsPerPoly;
+            // cfg.tileSize = (int)m_tileSize;
+            // cfg.borderSize = cfg.walkableRadius + 3; // Reserve enough padding.
+            // cfg.width = cfg.tileSize + cfg.borderSize*2;
+            // cfg.height = cfg.tileSize + cfg.borderSize*2;
+            // cfg.detailSampleDist = m_detailSampleDist < 0.9f ? 0 : m_cellSize * m_detailSampleDist;
+            // cfg.detailSampleMaxError = m_cellHeight * m_detailSampleMaxError;
+            // rcVcopy(cfg.bmin, bmin);
+            // rcVcopy(cfg.bmax, bmax);
 
             _tc = CreateTileCache(geom, setting, tw, th, order, cCompatibility);
 
@@ -58,6 +93,8 @@ namespace DotRecast.Recast.Toolset.Tools
                     // }
                 }
             }
+
+            return true;
         }
 
         public void ClearAllTempObstacles()
@@ -121,7 +158,7 @@ namespace DotRecast.Recast.Toolset.Tools
             navMeshParams.maxPolys = 16384;
 
             var navMesh = new DtNavMesh(navMeshParams, 6);
-            var comp = _compFactory.Create(cCompatibility ? 0 : 1);
+            var comp = _comp.Create(cCompatibility ? 0 : 1);
             var storageParams = new DtTileCacheStorageParams(order, cCompatibility);
             DtTileCache tc = new DtTileCache(option, storageParams, navMesh, comp, _proc);
             return tc;
