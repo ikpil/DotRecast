@@ -32,7 +32,7 @@ namespace DotRecast.Recast.Toolset.Geom
         public readonly float[] normals;
         private readonly RcVec3f bmin;
         private readonly RcVec3f bmax;
-        
+
         private readonly List<RcConvexVolume> _convexVolumes = new List<RcConvexVolume>();
         private readonly List<RcOffMeshConnection> _offMeshConnections = new List<RcOffMeshConnection>();
         private readonly RcTriMesh _mesh;
@@ -59,6 +59,11 @@ namespace DotRecast.Recast.Toolset.Geom
             }
 
             _mesh = new RcTriMesh(vertices, faces);
+        }
+
+        public RcTriMesh GetMesh()
+        {
+            return _mesh;
         }
 
         public RcVec3f GetMeshBoundsMin()
@@ -129,7 +134,7 @@ namespace DotRecast.Recast.Toolset.Geom
         public bool RaycastMesh(RcVec3f src, RcVec3f dst, out float tmin)
         {
             tmin = 1.0f;
-            
+
             // Prune hit ray.
             if (!Intersections.IsectSegAABB(src, dst, bmin, bmax, out var btmin, out var btmax))
             {
@@ -196,7 +201,7 @@ namespace DotRecast.Recast.Toolset.Geom
             volume.areaMod = areaMod;
             AddConvexVolume(volume);
         }
-        
+
         public void AddConvexVolume(RcConvexVolume volume)
         {
             _convexVolumes.Add(volume);
@@ -206,7 +211,7 @@ namespace DotRecast.Recast.Toolset.Geom
         {
             _convexVolumes.Clear();
         }
-        
+
         private static int[] MapFaces(List<int> meshFaces)
         {
             int[] faces = new int[meshFaces.Count];

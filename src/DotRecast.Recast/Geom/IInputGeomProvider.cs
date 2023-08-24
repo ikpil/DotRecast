@@ -26,6 +26,7 @@ namespace DotRecast.Recast.Geom
 {
     public interface IInputGeomProvider
     {
+        RcTriMesh GetMesh();
         RcVec3f GetMeshBoundsMin();
 
         RcVec3f GetMeshBoundsMax();

@@ -81,6 +81,11 @@ namespace DotRecast.Recast.Geom
             _mesh = new RcTriMesh(vertices, faces);
         }
 
+        public RcTriMesh GetMesh()
+        {
+            return _mesh;
+        }
+
         public RcVec3f GetMeshBoundsMin()
         {
             return bmin;
