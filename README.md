@@ -38,6 +38,9 @@ You can find a comprehensive demo project in the `DotRecast.Recast.Demo` folder.
 
 `DotRecast.Recast.Demo` uses [dotnet 7](https://dotnet.microsoft.com/) to build platform specific projects. Download it and make sure it's available on your path, or specify the path to it.
 
+#### Windows
+- need to install [microsoft visual c++ redistributable package](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist)
+
 #### Linux & macOS & Windows
 
 - Navigate to the `DotRecast.Recast.Demo` folder and run `dotnet run`
