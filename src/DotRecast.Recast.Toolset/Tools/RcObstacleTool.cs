@@ -33,18 +33,20 @@ namespace DotRecast.Recast.Toolset.Tools
                 //m_ctx->log(RC_LOG_ERROR, "buildTiledNavigation: No vertices and triangles.");
                 return false;
             }
-            
+
             _proc.Init(geom);
-            
+
             // Init cache
             var bmin = geom.GetMeshBoundsMin();
             var bmax = geom.GetMeshBoundsMax();
             RcUtils.CalcGridSize(bmin, bmax, setting.cellSize, out var gw, out var gh);
             int ts = setting.tileSize;
-            int tw = (gw + ts-1) / ts;
-            int th = (gh + ts-1) / ts;
-            
+            int tw = (gw + ts - 1) / ts;
+            int th = (gh + ts - 1) / ts;
+
             // Generation params.
+            var cfg = RcConfig.NewBuilder()
+                .Build();
             // RcConfig cfg = new RcConfig();
             // cfg.cs = m_cellSize;
             // cfg.ch = m_cellHeight;

@@ -114,7 +114,12 @@ namespace DotRecast.Recast
         public readonly float WalkableClimbWorld;
         public readonly float WalkableRadiusWorld;
         public readonly float MaxEdgeLenWorld;
-        
+
+        public static RcConfigBuilder NewBuilder()
+        {
+            return new RcConfigBuilder();
+        }
+
         /**
          * Non-tiled build configuration
          */
