@@ -385,9 +385,7 @@ namespace DotRecast.Detour.TileCache
 
         private ObstacleRequest AddObstacleRequest(DtTileCacheObstacle ob)
         {
-            ObstacleRequest req = new ObstacleRequest();
-            req.action = ObstacleRequestAction.REQUEST_ADD;
-            req.refs = GetObstacleRef(ob);
+            ObstacleRequest req = new ObstacleRequest(ObstacleRequestAction.REQUEST_ADD, GetObstacleRef(ob));
             m_reqs.Add(req);
             return req;
         }
@@ -399,9 +397,7 @@ namespace DotRecast.Detour.TileCache
                 return;
             }
 
-            ObstacleRequest req = new ObstacleRequest();
-            req.action = ObstacleRequestAction.REQUEST_REMOVE;
-            req.refs = refs;
+            ObstacleRequest req = new ObstacleRequest(ObstacleRequestAction.REQUEST_REMOVE, refs);
             m_reqs.Add(req);
         }
 
