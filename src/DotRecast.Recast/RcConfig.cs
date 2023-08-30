@@ -72,8 +72,7 @@ namespace DotRecast.Recast
         public readonly int MinRegionArea;
 
         /**
-         * Any regions with a span count smaller than this value will, if possible, be merged with larger regions. [Limit:
-         * &gt;=0] [Units: vx]
+         * Any regions with a span count smaller than this value will, if possible, be merged with larger regions. [Limit:&gt;=0] [Units: vx]
          **/
         public readonly int MergeRegionArea;
 
@@ -84,8 +83,7 @@ namespace DotRecast.Recast
         public readonly int MaxVertsPerPoly;
 
         /**
-         * Sets the sampling distance to use when generating the detail mesh. (For height detail only.) [Limits: 0 or >=
-         * 0.9] [Units: wu]
+         * Sets the sampling distance to use when generating the detail mesh. (For height detail only.) [Limits: 0 or >= 0.9] [Units: wu]
          **/
         public readonly float DetailSampleDist;
 

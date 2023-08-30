@@ -60,8 +60,8 @@ namespace DotRecast.Recast
                 this.bmin.z += tileZ * tsz;
                 this.bmax.x = this.bmin.x + tsx;
                 this.bmax.z = this.bmin.z + tsz;
-                // Expand the heighfield bounding box by border size to find the extents of geometry we need to build this
-                // tile.
+                
+                // Expand the heighfield bounding box by border size to find the extents of geometry we need to build this tile.
                 //
                 // This is done in order to make sure that the navmesh tiles connect correctly at the borders,
                 // and the obstacles close to the border work correctly with the dilation process.
@@ -69,20 +69,20 @@ namespace DotRecast.Recast
                 //
                 // IMPORTANT!
                 //
-                // :''''''''':
-                // : +-----+ :
-                // : | | :
-                // : | |<--- tile to build
-                // : | | :
-                // : +-----+ :<-- geometry needed
-                // :.........:
+                //   :''''''''':
+                //   : +-----+ :
+                //   : |     | :
+                //   : |     |<--- tile to build
+                //   : |     | :  
+                //   : +-----+ :<-- geometry needed
+                //   :.........:
                 //
                 // You should use this bounding box to query your input geometry.
                 //
                 // For example if you build a navmesh for terrain, and want the navmesh tiles to match the terrain tile size
-                // you will need to pass in data from neighbour terrain tiles too! In a simple case, just pass in all the 8
-                // neighbours,
+                // you will need to pass in data from neighbour terrain tiles too! In a simple case, just pass in all the 8 neighbours,
                 // or use the bounding box below to only pass in a sliver of each of the 8 neighbours.
+                
                 this.bmin.x -= cfg.BorderSize * cfg.Cs;
                 this.bmin.z -= cfg.BorderSize * cfg.Cs;
                 this.bmax.x += cfg.BorderSize * cfg.Cs;
