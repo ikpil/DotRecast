@@ -19,9 +19,9 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using Silk.NET.OpenGL;
 using DotRecast.Core;
 using DotRecast.Recast.Toolset.Builder;
-using Silk.NET.OpenGL;
 
 namespace DotRecast.Recast.Demo.Draw;
 

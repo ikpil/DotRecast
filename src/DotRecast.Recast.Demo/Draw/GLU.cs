@@ -18,7 +18,6 @@ freely, subject to the following restrictions:
 
 using System;
 using DotRecast.Core;
-using Silk.NET.OpenGL;
 
 namespace DotRecast.Recast.Demo.Draw;
 
