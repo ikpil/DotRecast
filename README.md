@@ -1,5 +1,6 @@
 [![License: Zlib](https://img.shields.io/badge/License-Zlib-lightgrey.svg)](https://opensource.org/licenses/Zlib)
 [![.NET](https://github.com/ikpil/DotRecast/actions/workflows/dotnet.yml/badge.svg)](https://github.com/ikpil/DotRecast/actions/workflows/dotnet.yml)
+[![CodeQL](https://github.com/ikpil/DotRecast/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/ikpil/DotRecast/actions/workflows/github-code-scanning/codeql)
 
 ![DotRecast of a navmesh baked with the sample program](/resources/screenshot.gif?raw=true)
 
