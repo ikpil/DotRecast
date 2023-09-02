@@ -18,7 +18,7 @@ namespace DotRecast.Core
 
         private sealed class EnumeratorObject : IEnumerator<T>
         {
-            private static readonly IEnumerator<T> EmptyEnumerator = Create(Empty._array!);
+            private static readonly IEnumerator<T> EmptyEnumerator = new EnumeratorObject(Empty._array!);
             private readonly T[] _array;
             private int _index;
 
