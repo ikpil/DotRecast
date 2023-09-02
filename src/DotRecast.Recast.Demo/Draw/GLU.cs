@@ -21,7 +21,7 @@ using DotRecast.Core;
 
 namespace DotRecast.Recast.Demo.Draw;
 
-public class GLU
+public static class GLU
 {
     public static float[] GluPerspective(float fovy, float aspect, float near, float far)
     {
