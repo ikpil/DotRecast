@@ -45,8 +45,6 @@ namespace DotRecast.Recast.Toolset.Tools
             int th = (gh + ts - 1) / ts;
 
             // Generation params.
-            var cfg = RcConfig.NewBuilder()
-                .Build();
             // RcConfig cfg = new RcConfig();
             // cfg.cs = m_cellSize;
             // cfg.ch = m_cellHeight;
