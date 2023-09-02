@@ -66,10 +66,17 @@ namespace DotRecast.Detour.Dynamic.Io
             bool filterLowHangingObstacles, bool filterLedgeSpans, bool filterWalkableLowHeightSpans,
             RcAreaModification walkbableAreaMod, bool buildMeshDetail, float detailSampleDist, float detailSampleMaxError)
         {
-            return new RcConfig(useTiles, tileSizeX, tileSizeZ, tile.borderSize, partitionType, cellSize, tile.cellHeight,
-                walkableSlopeAngle, filterLowHangingObstacles, filterLedgeSpans, filterWalkableLowHeightSpans, walkableHeight,
-                walkableRadius, walkableClimb, minRegionArea, regionMergeArea, maxEdgeLen, maxSimplificationError, maxPolyVerts,
-                buildMeshDetail, detailSampleDist, detailSampleMaxError, walkbableAreaMod);
+            return new RcConfig(useTiles, tileSizeX, tileSizeZ,
+                tile.borderSize,
+                partitionType,
+                cellSize, tile.cellHeight,
+                walkableSlopeAngle, walkableHeight, walkableRadius, walkableClimb,
+                minRegionArea, regionMergeArea,
+                maxEdgeLen, maxSimplificationError,
+                maxPolyVerts,
+                detailSampleDist, detailSampleMaxError,
+                filterLowHangingObstacles, filterLedgeSpans, filterWalkableLowHeightSpans,
+                walkbableAreaMod, buildMeshDetail);
         }
 
         public static VoxelFile From(RcConfig config, List<RecastBuilderResult> results)

@@ -60,10 +60,17 @@ public class RecastTileMeshTest
     {
         IInputGeomProvider geom = ObjImporter.Load(Loader.ToBytes(filename));
         RecastBuilder builder = new RecastBuilder();
-        RcConfig cfg = new RcConfig(true, m_tileSize, m_tileSize, RcConfig.CalcBorder(m_agentRadius, m_cellSize),
-            m_partitionType, m_cellSize, m_cellHeight, m_agentMaxSlope, true, true, true, m_agentHeight, m_agentRadius,
-            m_agentMaxClimb, m_regionMinArea, m_regionMergeArea, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, true,
-            m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
+        RcConfig cfg = new RcConfig(
+            true, m_tileSize, m_tileSize, RcConfig.CalcBorder(m_agentRadius, m_cellSize),
+            m_partitionType,
+            m_cellSize, m_cellHeight,
+            m_agentMaxSlope, m_agentHeight, m_agentRadius, m_agentMaxClimb,
+            m_regionMinArea, m_regionMergeArea,
+            m_edgeMaxLen, m_edgeMaxError,
+            m_vertsPerPoly,
+            m_detailSampleDist, m_detailSampleMaxError,
+            true, true, true,
+            SampleAreaModifications.SAMPLE_AREAMOD_GROUND, true);
         RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), 7, 8);
         RecastBuilderResult rcResult = builder.Build(geom, bcfg);
         Assert.That(rcResult.GetMesh().npolys, Is.EqualTo(1));
@@ -95,10 +102,18 @@ public class RecastTileMeshTest
     {
         IInputGeomProvider geom = ObjImporter.Load(Loader.ToBytes("dungeon.obj"));
         RecastBuilder builder = new RecastBuilder();
-        RcConfig cfg = new RcConfig(true, m_tileSize, m_tileSize, RcConfig.CalcBorder(m_agentRadius, m_cellSize),
-            m_partitionType, m_cellSize, m_cellHeight, m_agentMaxSlope, true, true, true, m_agentHeight, m_agentRadius,
-            m_agentMaxClimb, m_regionMinArea, m_regionMergeArea, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, true,
-            m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
+        RcConfig cfg = new RcConfig(
+            true, m_tileSize, m_tileSize,
+            RcConfig.CalcBorder(m_agentRadius, m_cellSize),
+            m_partitionType,
+            m_cellSize, m_cellHeight,
+            m_agentMaxSlope, m_agentHeight, m_agentRadius, m_agentMaxClimb,
+            m_regionMinArea, m_regionMergeArea,
+            m_edgeMaxLen, m_edgeMaxError,
+            m_vertsPerPoly,
+            m_detailSampleDist, m_detailSampleMaxError,
+            true, true, true,
+            SampleAreaModifications.SAMPLE_AREAMOD_GROUND, true);
         for (int i = 0; i < 4; i++)
         {
             Build(geom, builder, cfg, 1, true);

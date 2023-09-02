@@ -76,29 +76,18 @@ namespace DotRecast.Recast.Toolset.Tools
             RcVec3f bmax = geom.GetMeshBoundsMax();
 
             RcConfig cfg = new RcConfig(
-                true,
-                settings.tileSize,
-                settings.tileSize,
+                true, settings.tileSize, settings.tileSize,
                 RcConfig.CalcBorder(settings.agentRadius, settings.cellSize),
                 RcPartitionType.OfValue(settings.partitioning),
-                settings.cellSize,
-                settings.cellHeight,
-                settings.agentMaxSlope,
-                settings.filterLowHangingObstacles,
-                settings.filterLedgeSpans,
-                settings.filterWalkableLowHeightSpans,
-                settings.agentHeight,
-                settings.agentRadius,
-                settings.agentMaxClimb,
+                settings.cellSize, settings.cellHeight,
+                settings.agentMaxSlope, settings.agentHeight, settings.agentRadius, settings.agentMaxClimb,
                 settings.minRegionSize * settings.minRegionSize * settings.cellSize * settings.cellSize,
                 settings.mergedRegionSize * settings.mergedRegionSize * settings.cellSize * settings.cellSize,
-                settings.edgeMaxLen,
-                settings.edgeMaxError,
+                settings.edgeMaxLen, settings.edgeMaxError,
                 settings.vertsPerPoly,
-                true,
-                settings.detailSampleDist,
-                settings.detailSampleMaxError,
-                SampleAreaModifications.SAMPLE_AREAMOD_WALKABLE
+                settings.detailSampleDist, settings.detailSampleMaxError,
+                settings.filterLowHangingObstacles, settings.filterLedgeSpans, settings.filterWalkableLowHeightSpans,
+                SampleAreaModifications.SAMPLE_AREAMOD_WALKABLE, true
             );
 
             var beginTick = RcFrequency.Ticks;

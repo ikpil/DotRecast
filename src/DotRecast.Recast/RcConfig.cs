@@ -116,35 +116,41 @@ namespace DotRecast.Recast
         /**
          * Non-tiled build configuration
          */
-        public RcConfig(RcPartition partitionType, float cellSize, float cellHeight, float agentHeight, float agentRadius,
-            float agentMaxClimb, float agentMaxSlope, int regionMinSize, int regionMergeSize, float edgeMaxLen,
-            float edgeMaxError, int vertsPerPoly, float detailSampleDist, float detailSampleMaxError,
-            RcAreaModification walkableAreaMod) : this(partitionType, cellSize, cellHeight, agentMaxSlope, true, true, true, agentHeight, agentRadius, agentMaxClimb,
-            regionMinSize, regionMergeSize, edgeMaxLen, edgeMaxError, vertsPerPoly, detailSampleDist, detailSampleMaxError,
-            walkableAreaMod, true)
-        {
-        }
-
-        /**
-         * Non-tiled build configuration
-         */
-        public RcConfig(RcPartition partitionType, float cellSize, float cellHeight, float agentMaxSlope,
-            bool filterLowHangingObstacles, bool filterLedgeSpans, bool filterWalkableLowHeightSpans, float agentHeight,
-            float agentRadius, float agentMaxClimb, int regionMinSize, int regionMergeSize, float edgeMaxLen, float edgeMaxError,
-            int vertsPerPoly, float detailSampleDist, float detailSampleMaxError, RcAreaModification walkableAreaMod,
-            bool buildMeshDetail) : this(false, 0, 0, 0, partitionType, cellSize, cellHeight, agentMaxSlope, filterLowHangingObstacles, filterLedgeSpans,
-            filterWalkableLowHeightSpans, agentHeight, agentRadius, agentMaxClimb,
-            regionMinSize * regionMinSize * cellSize * cellSize, regionMergeSize * regionMergeSize * cellSize * cellSize,
-            edgeMaxLen, edgeMaxError, vertsPerPoly, buildMeshDetail, detailSampleDist, detailSampleMaxError, walkableAreaMod)
+        public RcConfig(
+            RcPartition partitionType,
+            float cellSize, float cellHeight,
+            float agentMaxSlope, float agentHeight, float agentRadius, float agentMaxClimb,
+            int regionMinSize, int regionMergeSize,
+            float edgeMaxLen, float edgeMaxError,
+            int vertsPerPoly,
+            float detailSampleDist, float detailSampleMaxError,
+            bool filterLowHangingObstacles, bool filterLedgeSpans, bool filterWalkableLowHeightSpans,
+            RcAreaModification walkableAreaMod, bool buildMeshDetail)
+            : this(false, 0, 0, 0,
+                partitionType,
+                cellSize, cellHeight,
+                agentMaxSlope, agentHeight, agentRadius, agentMaxClimb,
+                regionMinSize * regionMinSize * cellSize * cellSize, regionMergeSize * regionMergeSize * cellSize * cellSize,
+                edgeMaxLen, edgeMaxError,
+                vertsPerPoly,
+                detailSampleDist, detailSampleMaxError,
+                filterLowHangingObstacles, filterLedgeSpans, filterWalkableLowHeightSpans,
+                walkableAreaMod, buildMeshDetail)
         {
             // Note: area = size*size in [Units: wu]
         }
 
-        public RcConfig(bool useTiles, int tileSizeX, int tileSizeZ, int borderSize, RcPartition partition,
-            float cellSize, float cellHeight, float agentMaxSlope, bool filterLowHangingObstacles, bool filterLedgeSpans,
-            bool filterWalkableLowHeightSpans, float agentHeight, float agentRadius, float agentMaxClimb, float minRegionArea,
-            float mergeRegionArea, float edgeMaxLen, float edgeMaxError, int vertsPerPoly, bool buildMeshDetail,
-            float detailSampleDist, float detailSampleMaxError, RcAreaModification walkableAreaMod)
+        public RcConfig(
+            bool useTiles, int tileSizeX, int tileSizeZ,
+            int borderSize,
+            RcPartition partition,
+            float cellSize, float cellHeight,
+            float agentMaxSlope, float agentHeight, float agentRadius, float agentMaxClimb,
+            float minRegionArea, float mergeRegionArea,
+            float edgeMaxLen, float edgeMaxError, int vertsPerPoly,
+            float detailSampleDist, float detailSampleMaxError,
+            bool filterLowHangingObstacles, bool filterLedgeSpans, bool filterWalkableLowHeightSpans,
+            RcAreaModification walkableAreaMod, bool buildMeshDetail)
         {
             UseTiles = useTiles;
             TileSizeX = tileSizeX;

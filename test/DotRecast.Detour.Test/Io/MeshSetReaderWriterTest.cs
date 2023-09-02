@@ -75,10 +75,16 @@ public class MeshSetReaderWriterTest
             for (int x = 0; x < tw; ++x)
             {
                 RcConfig cfg = new RcConfig(true, m_tileSize, m_tileSize,
-                    RcConfig.CalcBorder(m_agentRadius, m_cellSize), RcPartition.WATERSHED, m_cellSize, m_cellHeight,
-                    m_agentMaxSlope, true, true, true, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_regionMinArea,
-                    m_regionMergeArea, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, true, m_detailSampleDist,
-                    m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
+                    RcConfig.CalcBorder(m_agentRadius, m_cellSize),
+                    RcPartition.WATERSHED,
+                    m_cellSize, m_cellHeight,
+                    m_agentMaxSlope, m_agentHeight, m_agentRadius, m_agentMaxClimb,
+                    m_regionMinArea, m_regionMergeArea,
+                    m_edgeMaxLen, m_edgeMaxError,
+                    m_vertsPerPoly,
+                    m_detailSampleDist, m_detailSampleMaxError,
+                    true, true, true,
+                    SampleAreaModifications.SAMPLE_AREAMOD_GROUND, true);
                 RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, bmin, bmax, x, y);
                 TestDetourBuilder db = new TestDetourBuilder();
                 DtMeshData data = db.Build(geom, bcfg, m_agentHeight, m_agentRadius, m_agentMaxClimb, x, y, true);

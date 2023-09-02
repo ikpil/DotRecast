@@ -90,12 +90,16 @@ namespace DotRecast.Detour.Dynamic
             RcHeightfield heightfield, RcTelemetry telemetry)
         {
             RcConfig rcConfig = new RcConfig(
-                config.useTiles, config.tileSizeX, config.tileSizeZ, vt.borderSize,
-                RcPartitionType.OfValue(config.partition), vt.cellSize, vt.cellHeight, config.walkableSlopeAngle, true, true, true,
-                config.walkableHeight, config.walkableRadius, config.walkableClimb, config.minRegionArea, config.regionMergeArea,
+                config.useTiles, config.tileSizeX, config.tileSizeZ,
+                vt.borderSize,
+                RcPartitionType.OfValue(config.partition),
+                vt.cellSize, vt.cellHeight,
+                config.walkableSlopeAngle, config.walkableHeight, config.walkableRadius, config.walkableClimb,
+                config.minRegionArea, config.regionMergeArea,
                 config.maxEdgeLen, config.maxSimplificationError,
-                Math.Min(DynamicNavMesh.MAX_VERTS_PER_POLY, config.vertsPerPoly), true, config.detailSampleDistance,
-                config.detailSampleMaxError, null);
+                Math.Min(DynamicNavMesh.MAX_VERTS_PER_POLY, config.vertsPerPoly),
+                config.detailSampleDistance, config.detailSampleMaxError,
+                true, true, true, null, true);
             RecastBuilderResult r = builder.Build(vt.tileX, vt.tileZ, null, rcConfig, heightfield, telemetry);
             if (config.keepIntermediateResults)
             {

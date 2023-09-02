@@ -29,24 +29,36 @@ namespace DotRecast.Recast.Toolset.Builder
         public NavMeshBuildResult Build(DemoInputGeomProvider geom, RcNavMeshBuildSettings settings)
         {
             return Build(geom,
-                RcPartitionType.OfValue(settings.partitioning), settings.cellSize, settings.cellHeight, settings.agentHeight,
-                settings.agentRadius, settings.agentMaxClimb, settings.agentMaxSlope,
+                RcPartitionType.OfValue(settings.partitioning),
+                settings.cellSize, settings.cellHeight,
+                settings.agentMaxSlope, settings.agentHeight, settings.agentRadius, settings.agentMaxClimb,
                 settings.minRegionSize, settings.mergedRegionSize,
                 settings.edgeMaxLen, settings.edgeMaxError,
-                settings.vertsPerPoly, settings.detailSampleDist, settings.detailSampleMaxError,
+                settings.vertsPerPoly,
+                settings.detailSampleDist, settings.detailSampleMaxError,
                 settings.filterLowHangingObstacles, settings.filterLedgeSpans, settings.filterWalkableLowHeightSpans);
         }
 
-        public NavMeshBuildResult Build(DemoInputGeomProvider geom, RcPartition partitionType,
-            float cellSize, float cellHeight, float agentHeight, float agentRadius, float agentMaxClimb,
-            float agentMaxSlope, int regionMinSize, int regionMergeSize, float edgeMaxLen, float edgeMaxError,
-            int vertsPerPoly, float detailSampleDist, float detailSampleMaxError, bool filterLowHangingObstacles,
-            bool filterLedgeSpans, bool filterWalkableLowHeightSpans)
+        public NavMeshBuildResult Build(DemoInputGeomProvider geom,
+            RcPartition partitionType,
+            float cellSize, float cellHeight,
+            float agentMaxSlope, float agentHeight, float agentRadius, float agentMaxClimb,
+            int regionMinSize, int regionMergeSize,
+            float edgeMaxLen, float edgeMaxError,
+            int vertsPerPoly,
+            float detailSampleDist, float detailSampleMaxError,
+            bool filterLowHangingObstacles, bool filterLedgeSpans, bool filterWalkableLowHeightSpans)
         {
-            RecastBuilderResult rcResult = BuildRecastResult(geom, partitionType, cellSize, cellHeight, agentHeight,
-                agentRadius, agentMaxClimb, agentMaxSlope, regionMinSize, regionMergeSize, edgeMaxLen, edgeMaxError,
-                vertsPerPoly, detailSampleDist, detailSampleMaxError, filterLowHangingObstacles, filterLedgeSpans,
-                filterWalkableLowHeightSpans);
+            RecastBuilderResult rcResult = BuildRecastResult(
+                geom,
+                partitionType,
+                cellSize, cellHeight,
+                agentMaxSlope, agentHeight, agentRadius, agentMaxClimb,
+                regionMinSize, regionMergeSize,
+                edgeMaxLen, edgeMaxError,
+                vertsPerPoly,
+                detailSampleDist, detailSampleMaxError,
+                filterLowHangingObstacles, filterLedgeSpans, filterWalkableLowHeightSpans);
 
             var meshData = BuildMeshData(geom, cellSize, cellHeight, agentHeight, agentRadius, agentMaxClimb, rcResult);
             if (null == meshData)
@@ -63,23 +75,35 @@ namespace DotRecast.Recast.Toolset.Builder
             return new DtNavMesh(meshData, vertsPerPoly, 0);
         }
 
-        private RecastBuilderResult BuildRecastResult(DemoInputGeomProvider geom, RcPartition partitionType, float cellSize,
-            float cellHeight, float agentHeight, float agentRadius, float agentMaxClimb, float agentMaxSlope,
-            int regionMinSize, int regionMergeSize, float edgeMaxLen, float edgeMaxError, int vertsPerPoly,
-            float detailSampleDist, float detailSampleMaxError, bool filterLowHangingObstacles, bool filterLedgeSpans,
-            bool filterWalkableLowHeightSpans)
+        private RecastBuilderResult BuildRecastResult(DemoInputGeomProvider geom,
+            RcPartition partitionType,
+            float cellSize, float cellHeight,
+            float agentMaxSlope, float agentHeight, float agentRadius, float agentMaxClimb,
+            int regionMinSize, int regionMergeSize,
+            float edgeMaxLen, float edgeMaxError,
+            int vertsPerPoly,
+            float detailSampleDist, float detailSampleMaxError,
+            bool filterLowHangingObstacles, bool filterLedgeSpans, bool filterWalkableLowHeightSpans)
         {
-            RcConfig cfg = new RcConfig(partitionType, cellSize, cellHeight, agentMaxSlope, filterLowHangingObstacles,
-                filterLedgeSpans, filterWalkableLowHeightSpans, agentHeight, agentRadius, agentMaxClimb, regionMinSize,
-                regionMergeSize, edgeMaxLen, edgeMaxError, vertsPerPoly, detailSampleDist, detailSampleMaxError,
+            RcConfig cfg = new RcConfig(
+                partitionType,
+                cellSize, cellHeight,
+                agentMaxSlope, agentHeight, agentRadius, agentMaxClimb,
+                regionMinSize, regionMergeSize,
+                edgeMaxLen, edgeMaxError,
+                vertsPerPoly,
+                detailSampleDist, detailSampleMaxError,
+                filterLowHangingObstacles, filterLedgeSpans, filterWalkableLowHeightSpans,
                 SampleAreaModifications.SAMPLE_AREAMOD_WALKABLE, true);
             RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax());
             RecastBuilder rcBuilder = new RecastBuilder();
             return rcBuilder.Build(geom, bcfg);
         }
 
-        public DtMeshData BuildMeshData(DemoInputGeomProvider geom, float cellSize, float cellHeight, float agentHeight,
-            float agentRadius, float agentMaxClimb, RecastBuilderResult result)
+        public DtMeshData BuildMeshData(DemoInputGeomProvider geom,
+            float cellSize, float cellHeight,
+            float agentHeight, float agentRadius, float agentMaxClimb,
+            RecastBuilderResult result)
         {
             DtNavMeshCreateParams option = DemoNavMeshBuilder
                 .GetNavMeshCreateParams(geom, cellSize, cellHeight, agentHeight, agentRadius, agentMaxClimb, result);

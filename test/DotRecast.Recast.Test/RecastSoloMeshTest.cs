@@ -106,9 +106,16 @@ public class RecastSoloMeshTest
         //
 
         // Init build configuration from GUI
-        RcConfig cfg = new RcConfig(partitionType, m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius,
-            m_agentMaxClimb, m_agentMaxSlope, m_regionMinSize, m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError,
-            m_vertsPerPoly, m_detailSampleDist, m_detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
+        RcConfig cfg = new RcConfig(
+            partitionType,
+            m_cellSize, m_cellHeight,
+            m_agentMaxSlope, m_agentHeight, m_agentRadius, m_agentMaxClimb,
+            m_regionMinSize, m_regionMergeSize,
+            m_edgeMaxLen, m_edgeMaxError,
+            m_vertsPerPoly,
+            m_detailSampleDist, m_detailSampleMaxError,
+            true, true, true,
+            SampleAreaModifications.SAMPLE_AREAMOD_GROUND, true);
         RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, bmin, bmax);
 
         //

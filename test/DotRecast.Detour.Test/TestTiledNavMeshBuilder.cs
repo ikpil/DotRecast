@@ -68,9 +68,15 @@ public class TestTiledNavMeshBuilder
 
         // Build all tiles
         RcConfig cfg = new RcConfig(true, tileSize, tileSize, RcConfig.CalcBorder(agentRadius, cellSize),
-            partitionType, cellSize, cellHeight, agentMaxSlope, true, true, true, agentHeight, agentRadius,
-            agentMaxClimb, m_regionMinArea, m_regionMergeArea, edgeMaxLen, edgeMaxError, vertsPerPoly, true,
-            detailSampleDist, detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
+            partitionType,
+            cellSize, cellHeight,
+            agentMaxSlope, agentHeight, agentRadius, agentMaxClimb,
+            m_regionMinArea, m_regionMergeArea,
+            edgeMaxLen, edgeMaxError,
+            vertsPerPoly,
+            detailSampleDist, detailSampleMaxError,
+            true, true, true,
+            SampleAreaModifications.SAMPLE_AREAMOD_GROUND, true);
         RecastBuilder rcBuilder = new RecastBuilder();
         List<RecastBuilderResult> rcResult = rcBuilder.BuildTiles(geom, cfg, null);
 

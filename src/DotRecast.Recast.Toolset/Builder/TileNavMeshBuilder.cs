@@ -64,12 +64,17 @@ namespace DotRecast.Recast.Toolset.Builder
             int vertsPerPoly, float detailSampleDist, float detailSampleMaxError, bool filterLowHangingObstacles,
             bool filterLedgeSpans, bool filterWalkableLowHeightSpans, int tileSize)
         {
-            RcConfig cfg = new RcConfig(true, tileSize, tileSize, RcConfig.CalcBorder(agentRadius, cellSize),
-                partitionType, cellSize, cellHeight, agentMaxSlope, filterLowHangingObstacles, filterLedgeSpans,
-                filterWalkableLowHeightSpans, agentHeight, agentRadius, agentMaxClimb,
-                regionMinSize * regionMinSize * cellSize * cellSize,
-                regionMergeSize * regionMergeSize * cellSize * cellSize, edgeMaxLen, edgeMaxError, vertsPerPoly,
-                true, detailSampleDist, detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_WALKABLE);
+            RcConfig cfg = new RcConfig(true, tileSize, tileSize,
+                RcConfig.CalcBorder(agentRadius, cellSize),
+                partitionType,
+                cellSize, cellHeight,
+                agentMaxSlope, agentHeight, agentRadius, agentMaxClimb,
+                regionMinSize * regionMinSize * cellSize * cellSize, regionMergeSize * regionMergeSize * cellSize * cellSize,
+                edgeMaxLen, edgeMaxError,
+                vertsPerPoly,
+                detailSampleDist, detailSampleMaxError,
+                filterLowHangingObstacles, filterLedgeSpans, filterWalkableLowHeightSpans,
+                SampleAreaModifications.SAMPLE_AREAMOD_WALKABLE, true);
             RecastBuilder rcBuilder = new RecastBuilder();
             return rcBuilder.BuildTiles(geom, cfg, Task.Factory);
         }

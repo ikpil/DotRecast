@@ -59,10 +59,17 @@ public class TestTileLayerBuilder : DtTileCacheLayerBuilder
     public TestTileLayerBuilder(IInputGeomProvider geom) : base(DtTileCacheCompressorFactory.Shared)
     {
         _geom = geom;
-        _cfg = new RcConfig(true, m_tileSize, m_tileSize, RcConfig.CalcBorder(AgentRadius, CellSize),
-            RcPartition.WATERSHED, CellSize, CellHeight, AgentMaxSlope, true, true, true, AgentHeight,
-            AgentRadius, AgentMaxClimb, RegionMinArea, RegionMergeArea, EdgeMaxLen, EdgeMaxError, VertsPerPoly,
-            true, DetailSampleDist, DetailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
+        _cfg = new RcConfig(true, m_tileSize, m_tileSize,
+            RcConfig.CalcBorder(AgentRadius, CellSize),
+            RcPartition.WATERSHED,
+            CellSize, CellHeight,
+            AgentMaxSlope, AgentHeight, AgentRadius, AgentMaxClimb,
+            RegionMinArea, RegionMergeArea,
+            EdgeMaxLen, EdgeMaxError,
+            VertsPerPoly,
+            DetailSampleDist, DetailSampleMaxError,
+            true, true, true,
+            SampleAreaModifications.SAMPLE_AREAMOD_GROUND, true);
 
         RcVec3f bmin = geom.GetMeshBoundsMin();
         RcVec3f bmax = geom.GetMeshBoundsMax();

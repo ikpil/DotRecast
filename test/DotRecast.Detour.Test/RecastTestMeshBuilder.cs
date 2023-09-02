@@ -39,22 +39,37 @@ public class RecastTestMeshBuilder
     private const float m_detailSampleDist = 6.0f;
     private const float m_detailSampleMaxError = 1.0f;
 
-    public RecastTestMeshBuilder() :
-        this(ObjImporter.Load(Loader.ToBytes("dungeon.obj")),
-            RcPartition.WATERSHED, m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_agentMaxSlope,
-            m_regionMinSize, m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, m_detailSampleDist,
-            m_detailSampleMaxError)
+    public RecastTestMeshBuilder()
+        : this(ObjImporter.Load(Loader.ToBytes("dungeon.obj")),
+            RcPartition.WATERSHED,
+            m_cellSize, m_cellHeight,
+            m_agentMaxSlope, m_agentHeight, m_agentRadius, m_agentMaxClimb,
+            m_regionMinSize, m_regionMergeSize,
+            m_edgeMaxLen, m_edgeMaxError,
+            m_vertsPerPoly,
+            m_detailSampleDist, m_detailSampleMaxError)
     {
     }
 
-    public RecastTestMeshBuilder(IInputGeomProvider geom, RcPartition partition, float cellSize,
-        float cellHeight, float agentHeight, float agentRadius, float agentMaxClimb, float agentMaxSlope,
-        int regionMinSize, int regionMergeSize, float edgeMaxLen, float edgeMaxError, int vertsPerPoly,
+    public RecastTestMeshBuilder(IInputGeomProvider geom,
+        RcPartition partition,
+        float cellSize, float cellHeight,
+        float agentMaxSlope, float agentHeight, float agentRadius, float agentMaxClimb,
+        int regionMinSize, int regionMergeSize,
+        float edgeMaxLen, float edgeMaxError,
+        int vertsPerPoly,
         float detailSampleDist, float detailSampleMaxError)
     {
-        RcConfig cfg = new RcConfig(partition, cellSize, cellHeight, agentHeight, agentRadius,
-            agentMaxClimb, agentMaxSlope, regionMinSize, regionMergeSize, edgeMaxLen, edgeMaxError,
-            vertsPerPoly, detailSampleDist, detailSampleMaxError, SampleAreaModifications.SAMPLE_AREAMOD_GROUND);
+        RcConfig cfg = new RcConfig(
+            partition,
+            cellSize, cellHeight,
+            agentMaxSlope, agentHeight, agentRadius, agentMaxClimb,
+            regionMinSize, regionMergeSize,
+            edgeMaxLen, edgeMaxError,
+            vertsPerPoly,
+            detailSampleDist, detailSampleMaxError,
+            true, true, true,
+            SampleAreaModifications.SAMPLE_AREAMOD_GROUND, true);
         RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax());
         RecastBuilder rcBuilder = new RecastBuilder();
         RecastBuilderResult rcResult = rcBuilder.Build(geom, bcfg);
