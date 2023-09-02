@@ -32,7 +32,7 @@ namespace DotRecast.Detour.TileCache
 {
     public class DtTileCacheLayerBuilder
     {
-        private IDtTileCacheCompressorFactory _compFactory;
+        private readonly IDtTileCacheCompressorFactory _compFactory;
 
         public DtTileCacheLayerBuilder(IDtTileCacheCompressorFactory compFactory)
         {

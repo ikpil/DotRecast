@@ -1,8 +1,12 @@
-﻿using DotRecast.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using DotRecast.Core;
 using DotRecast.Detour;
 using DotRecast.Detour.TileCache;
 using DotRecast.Detour.TileCache.Io.Compress;
 using DotRecast.Recast.Geom;
+using DotRecast.Recast.Toolset.Builder;
 using DotRecast.Recast.Toolset.Geom;
 
 namespace DotRecast.Recast.Toolset.Tools
@@ -24,14 +28,14 @@ namespace DotRecast.Recast.Toolset.Tools
             return "Create Temp Obstacles";
         }
 
-        public bool Build(IInputGeomProvider geom, RcNavMeshBuildSettings setting, RcByteOrder order, bool cCompatibility)
+        public NavMeshBuildResult Build(IInputGeomProvider geom, RcNavMeshBuildSettings setting, RcByteOrder order, bool cCompatibility)
         {
             DtStatus status;
 
             if (null == geom || null == geom.GetMesh())
             {
                 //m_ctx->log(RC_LOG_ERROR, "buildTiledNavigation: No vertices and triangles.");
-                return false;
+                return new NavMeshBuildResult();
             }
 
             _proc.Init(geom);
@@ -45,56 +49,37 @@ namespace DotRecast.Recast.Toolset.Tools
             int th = (gh + ts - 1) / ts;
 
             // Generation params.
-            // RcConfig cfg = new RcConfig();
-            // cfg.cs = m_cellSize;
-            // cfg.ch = m_cellHeight;
-            // cfg.walkableSlopeAngle = m_agentMaxSlope;
-            // cfg.walkableHeight = (int)ceilf(m_agentHeight / cfg.ch);
-            // cfg.walkableClimb = (int)floorf(m_agentMaxClimb / cfg.ch);
-            // cfg.walkableRadius = (int)ceilf(m_agentRadius / cfg.cs);
-            // cfg.maxEdgeLen = (int)(m_edgeMaxLen / m_cellSize);
-            // cfg.maxSimplificationError = m_edgeMaxError;
-            // cfg.minRegionArea = (int)rcSqr(m_regionMinSize);		// Note: area = size*size
-            // cfg.mergeRegionArea = (int)rcSqr(m_regionMergeSize);	// Note: area = size*size
-            // cfg.maxVertsPerPoly = (int)m_vertsPerPoly;
-            // cfg.tileSize = (int)m_tileSize;
-            // cfg.borderSize = cfg.walkableRadius + 3; // Reserve enough padding.
-            // cfg.width = cfg.tileSize + cfg.borderSize*2;
-            // cfg.height = cfg.tileSize + cfg.borderSize*2;
-            // cfg.detailSampleDist = m_detailSampleDist < 0.9f ? 0 : m_cellSize * m_detailSampleDist;
-            // cfg.detailSampleMaxError = m_cellHeight * m_detailSampleMaxError;
-            // rcVcopy(cfg.bmin, bmin);
-            // rcVcopy(cfg.bmax, bmax);
+            var walkableRadius = (int)Math.Ceiling(setting.agentRadius / setting.cellSize); // Reserve enough padding.
+            RcConfig cfg = new RcConfig(
+                true, setting.tileSize, setting.tileSize,
+                walkableRadius + 3,
+                RcPartitionType.OfValue(setting.partitioning),
+                setting.cellSize, setting.cellHeight,
+                setting.agentMaxSlope, setting.agentHeight, setting.agentRadius, setting.agentMaxClimb,
+                (int)RcMath.Sqr(setting.minRegionSize), (int)RcMath.Sqr(setting.mergedRegionSize), // Note: area = size*size
+                (int)(setting.edgeMaxLen / setting.cellSize), setting.edgeMaxError,
+                setting.vertsPerPoly,
+                setting.detailSampleDist, setting.detailSampleMaxError,
+                true, true, true,
+                SampleAreaModifications.SAMPLE_AREAMOD_WALKABLE, true);
+
+            var builder = new DtTileCacheLayerBuilder(DtTileCacheCompressorFactory.Shared);
+            var storageParams = new DtTileCacheStorageParams(order, cCompatibility);
+            var results = builder.Build(geom, cfg, storageParams, 8, tw, th);
+            var layers = results
+                .SelectMany(x => x.layers)
+                .ToList();
 
             _tc = CreateTileCache(geom, setting, tw, th, order, cCompatibility);
 
-            for (int y = 0; y < th; ++y)
+            for (int i = 0; i < layers.Count; ++i)
             {
-                for (int x = 0; x < tw; ++x)
-                {
-                    // TileCacheData tiles[MAX_LAYERS];
-                    // memset(tiles, 0, sizeof(tiles));
-                    // int ntiles = rasterizeTileLayers(x, y, cfg, tiles, MAX_LAYERS);
-                    //
-                    // for (int i = 0; i < ntiles; ++i)
-                    // {
-                    //     TileCacheData* tile = &tiles[i];
-                    //     status = m_tileCache->addTile(tile->data, tile->dataSize, DT_COMPRESSEDTILE_FREE_DATA, 0);
-                    //     if (dtStatusFailed(status))
-                    //     {
-                    //         dtFree(tile->data);
-                    //         tile->data = 0;
-                    //         continue;
-                    //     }
-                    //
-                    //     m_cacheLayerCount++;
-                    //     m_cacheCompressedSize += tile->dataSize;
-                    //     m_cacheRawSize += calcLayerBufferSize(tcparams.width, tcparams.height);
-                    // }
-                }
+                var layer = layers[i];
+                var refs = _tc.AddTile(layer, 0);
+                _tc.BuildNavMeshTile(refs);
             }
 
-            return true;
+            return new NavMeshBuildResult(RcImmutableArray<RecastBuilderResult>.Empty, _tc.GetNavMesh());
         }
 
         public void ClearAllTempObstacles()
@@ -117,8 +102,8 @@ namespace DotRecast.Recast.Toolset.Tools
             if (null == _tc)
                 return;
 
-            //DtObstacleRef refs = hitTestObstacle(m_tileCache, sp, sq);
-            //_tc.RemoveObstacle(refs);
+            long refs = HitTestObstacle(sp, sq);
+            _tc.RemoveObstacle(refs);
         }
 
         public long AddTempObstacle(RcVec3f p)
@@ -162,6 +147,34 @@ namespace DotRecast.Recast.Toolset.Tools
             var storageParams = new DtTileCacheStorageParams(order, cCompatibility);
             DtTileCache tc = new DtTileCache(option, storageParams, navMesh, comp, _proc);
             return tc;
+        }
+
+        public long HitTestObstacle(RcVec3f sp, RcVec3f sq)
+        {
+            float tmin = float.MaxValue;
+            DtTileCacheObstacle obmin = null;
+
+            for (int i = 0; i < _tc.GetObstacleCount(); ++i)
+            {
+                DtTileCacheObstacle ob = _tc.GetObstacle(i);
+                if (ob.state == DtObstacleState.DT_OBSTACLE_EMPTY)
+                    continue;
+
+                RcVec3f bmin = RcVec3f.Zero;
+                RcVec3f bmax = RcVec3f.Zero;
+                _tc.GetObstacleBounds(ob, ref bmin, ref bmax);
+
+                if (Intersections.IsectSegAABB(sp, sq, bmin, bmax, out var t0, out var t1))
+                {
+                    if (t0 < tmin)
+                    {
+                        tmin = t0;
+                        obmin = ob;
+                    }
+                }
+            }
+
+            return _tc.GetObstacleRef(obmin);
         }
     }
 }
