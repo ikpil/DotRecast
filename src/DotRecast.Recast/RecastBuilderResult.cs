@@ -6,6 +6,7 @@ namespace DotRecast.Recast
     {
         public readonly int tileX;
         public readonly int tileZ;
+        
         private readonly RcCompactHeightfield chf;
         private readonly RcContourSet cs;
         private readonly RcPolyMesh pmesh;

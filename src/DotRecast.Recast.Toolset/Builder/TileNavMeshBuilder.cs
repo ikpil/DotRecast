@@ -31,38 +31,59 @@ namespace DotRecast.Recast.Toolset.Builder
         {
         }
 
-        public NavMeshBuildResult Build(DemoInputGeomProvider geom, RcNavMeshBuildSettings settings)
+        public NavMeshBuildResult Build(IInputGeomProvider geom, RcNavMeshBuildSettings settings)
         {
             return Build(geom,
-                RcPartitionType.OfValue(settings.partitioning), settings.cellSize, settings.cellHeight, settings.agentHeight,
-                settings.agentRadius, settings.agentMaxClimb, settings.agentMaxSlope,
+                settings.tileSize,
+                RcPartitionType.OfValue(settings.partitioning),
+                settings.cellSize, settings.cellHeight,
+                settings.agentMaxSlope, settings.agentHeight, settings.agentRadius, settings.agentMaxClimb,
                 settings.minRegionSize, settings.mergedRegionSize,
                 settings.edgeMaxLen, settings.edgeMaxError,
                 settings.vertsPerPoly, settings.detailSampleDist, settings.detailSampleMaxError,
-                settings.filterLowHangingObstacles, settings.filterLedgeSpans, settings.filterWalkableLowHeightSpans,
-                settings.tileSize);
+                settings.filterLowHangingObstacles, settings.filterLedgeSpans, settings.filterWalkableLowHeightSpans);
         }
 
-        public NavMeshBuildResult Build(DemoInputGeomProvider geom, RcPartition partitionType,
-            float cellSize, float cellHeight, float agentHeight, float agentRadius, float agentMaxClimb,
-            float agentMaxSlope, int regionMinSize, int regionMergeSize, float edgeMaxLen, float edgeMaxError,
-            int vertsPerPoly, float detailSampleDist, float detailSampleMaxError, bool filterLowHangingObstacles,
-            bool filterLedgeSpans, bool filterWalkableLowHeightSpans, int tileSize)
+        public NavMeshBuildResult Build(IInputGeomProvider geom,
+            int tileSize,
+            RcPartition partitionType,
+            float cellSize, float cellHeight,
+            float agentMaxSlope, float agentHeight, float agentRadius, float agentMaxClimb,
+            int regionMinSize, int regionMergeSize,
+            float edgeMaxLen, float edgeMaxError,
+            int vertsPerPoly,
+            float detailSampleDist, float detailSampleMaxError,
+            bool filterLowHangingObstacles, bool filterLedgeSpans, bool filterWalkableLowHeightSpans)
         {
-            List<RecastBuilderResult> results = BuildRecastResult(geom, partitionType, cellSize, cellHeight, agentHeight,
-                agentRadius, agentMaxClimb, agentMaxSlope, regionMinSize, regionMergeSize, edgeMaxLen, edgeMaxError,
-                vertsPerPoly, detailSampleDist, detailSampleMaxError, filterLowHangingObstacles, filterLedgeSpans,
-                filterWalkableLowHeightSpans, tileSize);
+            List<RecastBuilderResult> results = BuildRecastResult(
+                geom,
+                tileSize,
+                partitionType,
+                cellSize, cellHeight,
+                agentMaxSlope, agentHeight, agentRadius, agentMaxClimb,
+                regionMinSize, regionMergeSize,
+                edgeMaxLen, edgeMaxError,
+                vertsPerPoly,
+                detailSampleDist, detailSampleMaxError,
+                filterLowHangingObstacles, filterLedgeSpans, filterWalkableLowHeightSpans
+            );
+
             var tileMeshData = BuildMeshData(geom, cellSize, cellHeight, agentHeight, agentRadius, agentMaxClimb, results);
             var tileNavMesh = BuildNavMesh(geom, tileMeshData, cellSize, tileSize, vertsPerPoly);
             return new NavMeshBuildResult(results, tileNavMesh);
         }
 
-        public List<RecastBuilderResult> BuildRecastResult(DemoInputGeomProvider geom, RcPartition partitionType,
-            float cellSize, float cellHeight, float agentHeight, float agentRadius, float agentMaxClimb,
-            float agentMaxSlope, int regionMinSize, int regionMergeSize, float edgeMaxLen, float edgeMaxError,
-            int vertsPerPoly, float detailSampleDist, float detailSampleMaxError, bool filterLowHangingObstacles,
-            bool filterLedgeSpans, bool filterWalkableLowHeightSpans, int tileSize)
+        public List<RecastBuilderResult> BuildRecastResult(IInputGeomProvider geom,
+            int tileSize,
+            RcPartition partitionType,
+            float cellSize, float cellHeight,
+            float agentMaxSlope, float agentHeight, float agentRadius, float agentMaxClimb,
+            int regionMinSize, int regionMergeSize,
+            float edgeMaxLen, float edgeMaxError,
+            int vertsPerPoly,
+            float detailSampleDist, float detailSampleMaxError,
+            bool filterLowHangingObstacles, bool filterLedgeSpans, bool filterWalkableLowHeightSpans)
+
         {
             RcConfig cfg = new RcConfig(true, tileSize, tileSize,
                 RcConfig.CalcBorder(agentRadius, cellSize),
@@ -79,7 +100,7 @@ namespace DotRecast.Recast.Toolset.Builder
             return rcBuilder.BuildTiles(geom, cfg, Task.Factory);
         }
 
-        public DtNavMesh BuildNavMesh(DemoInputGeomProvider geom, List<DtMeshData> meshData, float cellSize, int tileSize, int vertsPerPoly)
+        public DtNavMesh BuildNavMesh(IInputGeomProvider geom, List<DtMeshData> meshData, float cellSize, int tileSize, int vertsPerPoly)
         {
             DtNavMeshParams navMeshParams = new DtNavMeshParams();
             navMeshParams.orig = geom.GetMeshBoundsMin();
@@ -120,19 +141,19 @@ namespace DotRecast.Recast.Toolset.Builder
         }
 
 
-        public int GetMaxTiles(DemoInputGeomProvider geom, float cellSize, int tileSize)
+        public int GetMaxTiles(IInputGeomProvider geom, float cellSize, int tileSize)
         {
             int tileBits = GetTileBits(geom, cellSize, tileSize);
             return 1 << tileBits;
         }
 
-        public int GetMaxPolysPerTile(DemoInputGeomProvider geom, float cellSize, int tileSize)
+        public int GetMaxPolysPerTile(IInputGeomProvider geom, float cellSize, int tileSize)
         {
             int polyBits = 22 - GetTileBits(geom, cellSize, tileSize);
             return 1 << polyBits;
         }
 
-        private int GetTileBits(DemoInputGeomProvider geom, float cellSize, int tileSize)
+        private int GetTileBits(IInputGeomProvider geom, float cellSize, int tileSize)
         {
             RcUtils.CalcGridSize(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), cellSize, out var gw, out var gh);
             int tw = (gw + tileSize - 1) / tileSize;
