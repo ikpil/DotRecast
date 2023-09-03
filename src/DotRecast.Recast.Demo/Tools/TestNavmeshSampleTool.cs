@@ -126,9 +126,9 @@ public class TestNavmeshSampleTool : ISampleTool
         {
             ImGui.Text("Vertices at crossings");
             ImGui.Separator();
-            ImGui.RadioButton("None", ref _option.straightPathOptions, 0);
-            ImGui.RadioButton("Area", ref _option.straightPathOptions, DtNavMeshQuery.DT_STRAIGHTPATH_AREA_CROSSINGS);
-            ImGui.RadioButton("All", ref _option.straightPathOptions, DtNavMeshQuery.DT_STRAIGHTPATH_ALL_CROSSINGS);
+            ImGui.RadioButton("None", ref _option.straightPathOptions, DtStraightPathOption.None.Value);
+            ImGui.RadioButton("Area", ref _option.straightPathOptions, DtStraightPathOption.AreaCrossings.Value);
+            ImGui.RadioButton("All", ref _option.straightPathOptions, DtStraightPathOption.AllCrossings.Value);
         }
 
         if (_option.mode == RcTestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE)
