@@ -62,19 +62,17 @@ namespace DotRecast.Detour.Dynamic.Io
             tiles.Add(tile);
         }
 
-        public RcConfig GetConfig(VoxelTile tile, RcPartition partitionType, int maxPolyVerts, int regionMergeSize,
-            bool filterLowHangingObstacles, bool filterLedgeSpans, bool filterWalkableLowHeightSpans,
-            RcAreaModification walkbableAreaMod, bool buildMeshDetail, float detailSampleDist, float detailSampleMaxError)
+        public RcConfig GetConfig(VoxelTile tile, RcAreaModification walkbableAreaMod, bool buildMeshDetail)
         {
             return new RcConfig(useTiles, tileSizeX, tileSizeZ,
                 tile.borderSize,
-                partitionType,
+                RcPartitionType.OfValue(partition),
                 cellSize, tile.cellHeight,
                 walkableSlopeAngle, walkableHeight, walkableRadius, walkableClimb,
                 minRegionArea, regionMergeArea,
                 maxEdgeLen, maxSimplificationError,
-                maxPolyVerts,
-                detailSampleDist, detailSampleMaxError,
+                vertsPerPoly,
+                detailSampleDistance, detailSampleMaxError,
                 filterLowHangingObstacles, filterLedgeSpans, filterWalkableLowHeightSpans,
                 walkbableAreaMod, buildMeshDetail);
         }
