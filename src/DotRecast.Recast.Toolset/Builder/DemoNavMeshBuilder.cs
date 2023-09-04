@@ -43,7 +43,8 @@ namespace DotRecast.Recast.Toolset.Builder
             option.ch = cellHeight;
             option.buildBvTree = true;
 
-            option.offMeshConCount = geom.GetOffMeshConnections().Count;
+            var offMeshConnections = geom.GetOffMeshConnections();
+            option.offMeshConCount = offMeshConnections.Count;
             option.offMeshConVerts = new float[option.offMeshConCount * 6];
             option.offMeshConRad = new float[option.offMeshConCount];
             option.offMeshConDir = new int[option.offMeshConCount];
@@ -52,7 +53,7 @@ namespace DotRecast.Recast.Toolset.Builder
             option.offMeshConUserID = new int[option.offMeshConCount];
             for (int i = 0; i < option.offMeshConCount; i++)
             {
-                RcOffMeshConnection offMeshCon = geom.GetOffMeshConnections()[i];
+                RcOffMeshConnection offMeshCon = offMeshConnections[i];
                 for (int j = 0; j < 6; j++)
                 {
                     option.offMeshConVerts[6 * i + j] = offMeshCon.verts[j];
@@ -62,6 +63,7 @@ namespace DotRecast.Recast.Toolset.Builder
                 option.offMeshConDir[i] = offMeshCon.bidir ? 1 : 0;
                 option.offMeshConAreas[i] = offMeshCon.area;
                 option.offMeshConFlags[i] = offMeshCon.flags;
+                // option.offMeshConUserID[i] = offMeshCon.userId;
             }
 
             return option;

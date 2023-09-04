@@ -31,6 +31,7 @@ namespace DotRecast.Recast.Geom
         public readonly int area;
 
         public readonly int flags;
+        public readonly int userId;
 
         public RcOffMeshConnection(RcVec3f start, RcVec3f end, float radius, bool bidir, int area, int flags)
         {

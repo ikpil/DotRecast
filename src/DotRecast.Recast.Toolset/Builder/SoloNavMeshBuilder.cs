@@ -49,8 +49,7 @@ namespace DotRecast.Recast.Toolset.Builder
             float detailSampleDist, float detailSampleMaxError,
             bool filterLowHangingObstacles, bool filterLedgeSpans, bool filterWalkableLowHeightSpans)
         {
-            RecastBuilderResult rcResult = BuildRecastResult(
-                geom,
+            RcConfig cfg = new RcConfig(
                 partitionType,
                 cellSize, cellHeight,
                 agentMaxSlope, agentHeight, agentRadius, agentMaxClimb,
@@ -58,8 +57,10 @@ namespace DotRecast.Recast.Toolset.Builder
                 edgeMaxLen, edgeMaxError,
                 vertsPerPoly,
                 detailSampleDist, detailSampleMaxError,
-                filterLowHangingObstacles, filterLedgeSpans, filterWalkableLowHeightSpans);
+                filterLowHangingObstacles, filterLedgeSpans, filterWalkableLowHeightSpans,
+                SampleAreaModifications.SAMPLE_AREAMOD_WALKABLE, true);
 
+            RecastBuilderResult rcResult = BuildRecastResult(geom, cfg);
             var meshData = BuildMeshData(geom, cellSize, cellHeight, agentHeight, agentRadius, agentMaxClimb, rcResult);
             if (null == meshData)
             {
@@ -75,26 +76,8 @@ namespace DotRecast.Recast.Toolset.Builder
             return new DtNavMesh(meshData, vertsPerPoly, 0);
         }
 
-        private RecastBuilderResult BuildRecastResult(DemoInputGeomProvider geom,
-            RcPartition partitionType,
-            float cellSize, float cellHeight,
-            float agentMaxSlope, float agentHeight, float agentRadius, float agentMaxClimb,
-            int regionMinSize, int regionMergeSize,
-            float edgeMaxLen, float edgeMaxError,
-            int vertsPerPoly,
-            float detailSampleDist, float detailSampleMaxError,
-            bool filterLowHangingObstacles, bool filterLedgeSpans, bool filterWalkableLowHeightSpans)
+        private RecastBuilderResult BuildRecastResult(DemoInputGeomProvider geom, RcConfig cfg)
         {
-            RcConfig cfg = new RcConfig(
-                partitionType,
-                cellSize, cellHeight,
-                agentMaxSlope, agentHeight, agentRadius, agentMaxClimb,
-                regionMinSize, regionMergeSize,
-                edgeMaxLen, edgeMaxError,
-                vertsPerPoly,
-                detailSampleDist, detailSampleMaxError,
-                filterLowHangingObstacles, filterLedgeSpans, filterWalkableLowHeightSpans,
-                SampleAreaModifications.SAMPLE_AREAMOD_WALKABLE, true);
             RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax());
             RecastBuilder rcBuilder = new RecastBuilder();
             return rcBuilder.Build(geom, bcfg);
