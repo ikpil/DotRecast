@@ -489,8 +489,8 @@ namespace DotRecast.Recast
 
                 p0 = 8;
                 p1 = 12;
-                if (RecastMesh.Vequal(pverts, d0, p0) || RecastMesh.Vequal(pverts, d1, p0)
-                                                      || RecastMesh.Vequal(pverts, d0, p1) || RecastMesh.Vequal(pverts, d1, p1))
+                if (RecastMesh.VEqual(pverts, d0, p0) || RecastMesh.VEqual(pverts, d1, p0) ||
+                    RecastMesh.VEqual(pverts, d0, p1) || RecastMesh.VEqual(pverts, d1, p1))
                     continue;
 
                 if (RecastMesh.Intersect(pverts, d0, d1, p0, p1))

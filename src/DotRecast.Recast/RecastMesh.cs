@@ -204,13 +204,14 @@ namespace DotRecast.Recast
         {
             if (!Collinear(verts, a, b, c))
                 return false;
+
             // If ab not vertical, check betweenness on x; else on y.
             if (verts[a + 0] != verts[b + 0])
-                return ((verts[a + 0] <= verts[c + 0]) && (verts[c + 0] <= verts[b + 0]))
-                       || ((verts[a + 0] >= verts[c + 0]) && (verts[c + 0] >= verts[b + 0]));
-            else
-                return ((verts[a + 2] <= verts[c + 2]) && (verts[c + 2] <= verts[b + 2]))
-                       || ((verts[a + 2] >= verts[c + 2]) && (verts[c + 2] >= verts[b + 2]));
+                return ((verts[a + 0] <= verts[c + 0]) && (verts[c + 0] <= verts[b + 0])) ||
+                       ((verts[a + 0] >= verts[c + 0]) && (verts[c + 0] >= verts[b + 0]));
+
+            return ((verts[a + 2] <= verts[c + 2]) && (verts[c + 2] <= verts[b + 2])) ||
+                   ((verts[a + 2] >= verts[c + 2]) && (verts[c + 2] >= verts[b + 2]));
         }
 
         // Returns true iff segments ab and cd intersect, properly or improperly.
@@ -218,14 +219,15 @@ namespace DotRecast.Recast
         {
             if (IntersectProp(verts, a, b, c, d))
                 return true;
-            else if (Between(verts, a, b, c) || Between(verts, a, b, d) || Between(verts, c, d, a)
-                     || Between(verts, c, d, b))
+
+            if (Between(verts, a, b, c) || Between(verts, a, b, d) ||
+                Between(verts, c, d, a) || Between(verts, c, d, b))
                 return true;
-            else
-                return false;
+
+            return false;
         }
 
-        public static bool Vequal(int[] verts, int a, int b)
+        public static bool VEqual(int[] verts, int a, int b)
         {
             return verts[a + 0] == verts[b + 0] && verts[a + 2] == verts[b + 2];
         }
@@ -247,7 +249,7 @@ namespace DotRecast.Recast
                     int p0 = (indices[k] & 0x0fffffff) * 4;
                     int p1 = (indices[k1] & 0x0fffffff) * 4;
 
-                    if (Vequal(verts, d0, p0) || Vequal(verts, d1, p0) || Vequal(verts, d0, p1) || Vequal(verts, d1, p1))
+                    if (VEqual(verts, d0, p0) || VEqual(verts, d1, p0) || VEqual(verts, d0, p1) || VEqual(verts, d1, p1))
                         continue;
 
                     if (Intersect(verts, d0, d1, p0, p1))
@@ -299,7 +301,7 @@ namespace DotRecast.Recast
                     int p0 = (indices[k] & 0x0fffffff) * 4;
                     int p1 = (indices[k1] & 0x0fffffff) * 4;
 
-                    if (Vequal(verts, d0, p0) || Vequal(verts, d1, p0) || Vequal(verts, d0, p1) || Vequal(verts, d1, p1))
+                    if (VEqual(verts, d0, p0) || VEqual(verts, d1, p0) || VEqual(verts, d0, p1) || VEqual(verts, d1, p1))
                         continue;
 
                     if (IntersectProp(verts, d0, d1, p0, p1))
