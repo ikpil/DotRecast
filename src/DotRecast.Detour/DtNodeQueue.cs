@@ -36,14 +36,14 @@ namespace DotRecast.Detour
             m_heap.Clear();
         }
 
-        public DtNode Top()
+        public DtNode Peek()
         {
-            return m_heap.Top();
+            return m_heap.Peek();
         }
 
         public DtNode Pop()
         {
-            var node = Top();
+            var node = Peek();
             m_heap.Remove(node);
             return node;
         }

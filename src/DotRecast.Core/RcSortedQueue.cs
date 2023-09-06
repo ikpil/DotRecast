@@ -45,20 +45,24 @@ namespace DotRecast.Core
             _items.Clear();
         }
 
-        public T Top()
+        private void Balance()
         {
             if (_dirty)
             {
                 _items.Sort(_comparison); // reverse
                 _dirty = false;
             }
+        }
 
+        public T Peek()
+        {
+            Balance();
             return _items[_items.Count - 1];
         }
 
         public T Dequeue()
         {
-            var node = Top();
+            var node = Peek();
             _items.Remove(node);
             return node;
         }
@@ -81,6 +85,14 @@ namespace DotRecast.Core
         public bool IsEmpty()
         {
             return 0 == _items.Count;
+        }
+
+        public List<T> ToList()
+        {
+            Balance();
+            var temp = new List<T>(_items);
+            temp.Reverse();
+            return temp;
         }
     }
 }
