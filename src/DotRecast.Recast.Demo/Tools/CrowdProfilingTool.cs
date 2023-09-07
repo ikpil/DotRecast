@@ -77,53 +77,7 @@ public class CrowdProfilingTool
 
         if (ImGui.Button("Start Crowd Profiling"))
         {
-            if (navMesh != null)
-            {
-                rnd = new FRand(randomSeed);
-                CreateCrowd();
-                CreateZones();
-                DtNavMeshQuery navquery = new DtNavMeshQuery(navMesh);
-                IDtQueryFilter filter = new DtQueryDefaultFilter();
-                for (int i = 0; i < agents; i++)
-                {
-                    float tr = rnd.Next();
-                    CrowdAgentType type = CrowdAgentType.MOB;
-                    float mobsPcnt = percentMobs / 100f;
-                    if (tr > mobsPcnt)
-                    {
-                        tr = rnd.Next();
-                        float travellerPcnt = percentTravellers / 100f;
-                        if (tr > travellerPcnt)
-                        {
-                            type = CrowdAgentType.VILLAGER;
-                        }
-                        else
-                        {
-                            type = CrowdAgentType.TRAVELLER;
-                        }
-                    }
-
-                    var status = DtStatus.DT_FAILURE;
-                    var randomPt = RcVec3f.Zero;
-                    switch (type)
-                    {
-                        case CrowdAgentType.MOB:
-                            status = GetMobPosition(navquery, filter, out randomPt);
-                            break;
-                        case CrowdAgentType.VILLAGER:
-                            status = GetVillagerPosition(navquery, filter, out randomPt);
-                            break;
-                        case CrowdAgentType.TRAVELLER:
-                            status = GetVillagerPosition(navquery, filter, out randomPt);
-                            break;
-                    }
-
-                    if (status.Succeeded())
-                    {
-                        AddAgent(randomPt, type);
-                    }
-                }
-            }
+            StartProfiling();
         }
 
         ImGui.Text("Times");
@@ -132,9 +86,7 @@ public class CrowdProfilingTool
         {
             ImGui.Text($"Max time to enqueue request: {crowd.Telemetry().MaxTimeToEnqueueRequest()} s");
             ImGui.Text($"Max time to find path: {crowd.Telemetry().MaxTimeToFindPath()} s");
-            var timings = crowd.Telemetry()
-                .ToExecutionTimings();
-
+            var timings = crowd.Telemetry().ToExecutionTimings();
             foreach (var rtt in timings)
             {
                 ImGui.Text($"{rtt.Key}: {rtt.Micros} us");
@@ -224,6 +176,57 @@ public class CrowdProfilingTool
         option.adaptiveRings = 3;
         option.adaptiveDepth = 3;
         crowd.SetObstacleAvoidanceParams(3, option);
+    }
+
+    public void StartProfiling()
+    {
+        if (null == navMesh)
+            return;
+
+        rnd = new FRand(randomSeed);
+        CreateCrowd();
+        CreateZones();
+        DtNavMeshQuery navquery = new DtNavMeshQuery(navMesh);
+        IDtQueryFilter filter = new DtQueryDefaultFilter();
+        for (int i = 0; i < agents; i++)
+        {
+            float tr = rnd.Next();
+            CrowdAgentType type = CrowdAgentType.MOB;
+            float mobsPcnt = percentMobs / 100f;
+            if (tr > mobsPcnt)
+            {
+                tr = rnd.Next();
+                float travellerPcnt = percentTravellers / 100f;
+                if (tr > travellerPcnt)
+                {
+                    type = CrowdAgentType.VILLAGER;
+                }
+                else
+                {
+                    type = CrowdAgentType.TRAVELLER;
+                }
+            }
+
+            var status = DtStatus.DT_FAILURE;
+            var randomPt = RcVec3f.Zero;
+            switch (type)
+            {
+                case CrowdAgentType.MOB:
+                    status = GetMobPosition(navquery, filter, out randomPt);
+                    break;
+                case CrowdAgentType.VILLAGER:
+                    status = GetVillagerPosition(navquery, filter, out randomPt);
+                    break;
+                case CrowdAgentType.TRAVELLER:
+                    status = GetVillagerPosition(navquery, filter, out randomPt);
+                    break;
+            }
+
+            if (status.Succeeded())
+            {
+                AddAgent(randomPt, type);
+            }
+        }
     }
 
     public void Update(float dt)
