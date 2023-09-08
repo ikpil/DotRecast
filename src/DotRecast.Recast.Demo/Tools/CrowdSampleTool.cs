@@ -741,7 +741,7 @@ public class CrowdSampleTool : ISampleTool
 
             ImGui.Text("Debug Draw");
             ImGui.Separator();
-            ImGui.Checkbox("Show Prox Grid", ref toolParams.m_showGrid);
+            ImGui.Checkbox("Show Proximity Grid", ref toolParams.m_showGrid);
             ImGui.Checkbox("Show Nodes", ref toolParams.m_showNodes);
             ImGui.Text($"Update Time: {crowdUpdateTime} ms");
         }
