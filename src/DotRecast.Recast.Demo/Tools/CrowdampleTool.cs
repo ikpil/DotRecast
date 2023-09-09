@@ -35,16 +35,15 @@ using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class CrowdSampleTool : ISampleTool
+public class CrowdampleTool : ISampleTool
 {
-    private static readonly ILogger Logger = Log.ForContext<CrowdSampleTool>();
+    private static readonly ILogger Logger = Log.ForContext<CrowdampleTool>();
 
     private DemoSample _sample;
     private readonly RcCrowdTool _tool;
     private readonly CrowdToolParams toolParams = new CrowdToolParams();
     private DtNavMesh m_nav;
     private DtCrowd crowd;
-    private readonly CrowdProfilingTool profilingTool;
     private readonly DtCrowdAgentDebugInfo m_agentDebug = new DtCrowdAgentDebugInfo();
 
     private readonly Dictionary<long, CrowdAgentTrail> m_trails = new();
@@ -54,10 +53,9 @@ public class CrowdSampleTool : ISampleTool
     private int m_modeIdx = CrowdToolMode.CREATE.Idx;
     private long crowdUpdateTime;
 
-    public CrowdSampleTool()
+    public CrowdampleTool()
     {
         m_agentDebug.vod = new DtObstacleAvoidanceDebugData(2048);
-        profilingTool = new CrowdProfilingTool(GetAgentParams);
         _tool = new();
     }
 
@@ -118,18 +116,11 @@ public class CrowdSampleTool : ISampleTool
             option.adaptiveDepth = 3;
 
             crowd.SetObstacleAvoidanceParams(3, option);
-
-            profilingTool.Setup(settings.agentRadius, m_nav);
         }
     }
 
     public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
-        if (m_mode == CrowdToolMode.PROFILING)
-        {
-            return;
-        }
-
         if (crowd == null)
         {
             return;
@@ -326,12 +317,6 @@ public class CrowdSampleTool : ISampleTool
 
     public void HandleRender(NavMeshRenderer renderer)
     {
-        if (m_mode == CrowdToolMode.PROFILING)
-        {
-            profilingTool.HandleRender(renderer);
-            return;
-        }
-
         RecastDebugDraw dd = renderer.GetDebugDraw();
         var settings = _sample.GetSettings();
         float rad = settings.agentRadius;
@@ -639,14 +624,9 @@ public class CrowdSampleTool : ISampleTool
 
     private void UpdateTick(float dt)
     {
-        if (m_mode == CrowdToolMode.PROFILING)
-        {
-            profilingTool.Update(dt);
-            return;
-        }
-
         if (crowd == null)
             return;
+
         DtNavMesh nav = _sample.GetNavMesh();
         if (nav == null)
             return;
@@ -686,7 +666,6 @@ public class CrowdSampleTool : ISampleTool
         ImGui.RadioButton(CrowdToolMode.MOVE_TARGET.Label, ref m_modeIdx, CrowdToolMode.MOVE_TARGET.Idx);
         ImGui.RadioButton(CrowdToolMode.SELECT.Label, ref m_modeIdx, CrowdToolMode.SELECT.Idx);
         ImGui.RadioButton(CrowdToolMode.TOGGLE_POLYS.Label, ref m_modeIdx, CrowdToolMode.TOGGLE_POLYS.Idx);
-        ImGui.RadioButton(CrowdToolMode.PROFILING.Label, ref m_modeIdx, CrowdToolMode.PROFILING.Idx);
         ImGui.NewLine();
 
         if (previousToolMode.Idx != m_modeIdx)
@@ -722,29 +701,21 @@ public class CrowdSampleTool : ISampleTool
         }
 
 
-        if (m_mode == CrowdToolMode.PROFILING)
-        {
-            profilingTool.Layout();
-        }
+        ImGui.Text("Selected Debug Draw");
+        ImGui.Separator();
+        ImGui.Checkbox("Show Corners", ref toolParams.m_showCorners);
+        ImGui.Checkbox("Show Collision Segs", ref toolParams.m_showCollisionSegments);
+        ImGui.Checkbox("Show Path", ref toolParams.m_showPath);
+        ImGui.Checkbox("Show VO", ref toolParams.m_showVO);
+        ImGui.Checkbox("Show Path Optimization", ref toolParams.m_showOpt);
+        ImGui.Checkbox("Show Neighbours", ref toolParams.m_showNeis);
+        ImGui.NewLine();
 
-        if (m_mode != CrowdToolMode.PROFILING)
-        {
-            ImGui.Text("Selected Debug Draw");
-            ImGui.Separator();
-            ImGui.Checkbox("Show Corners", ref toolParams.m_showCorners);
-            ImGui.Checkbox("Show Collision Segs", ref toolParams.m_showCollisionSegments);
-            ImGui.Checkbox("Show Path", ref toolParams.m_showPath);
-            ImGui.Checkbox("Show VO", ref toolParams.m_showVO);
-            ImGui.Checkbox("Show Path Optimization", ref toolParams.m_showOpt);
-            ImGui.Checkbox("Show Neighbours", ref toolParams.m_showNeis);
-            ImGui.NewLine();
-
-            ImGui.Text("Debug Draw");
-            ImGui.Separator();
-            ImGui.Checkbox("Show Proximity Grid", ref toolParams.m_showGrid);
-            ImGui.Checkbox("Show Nodes", ref toolParams.m_showNodes);
-            ImGui.Text($"Update Time: {crowdUpdateTime} ms");
-        }
+        ImGui.Text("Debug Draw");
+        ImGui.Separator();
+        ImGui.Checkbox("Show Proximity Grid", ref toolParams.m_showGrid);
+        ImGui.Checkbox("Show Nodes", ref toolParams.m_showNodes);
+        ImGui.Text($"Update Time: {crowdUpdateTime} ms");
     }
 
     private void UpdateAgentParams()
@@ -755,7 +726,6 @@ public class CrowdSampleTool : ISampleTool
         }
 
         int updateFlags = GetUpdateFlags();
-        profilingTool.UpdateAgentParams(updateFlags, toolParams.m_obstacleAvoidanceType, toolParams.m_separationWeight);
         foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
         {
             DtCrowdAgentParams option = new DtCrowdAgentParams();

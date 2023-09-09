@@ -9,7 +9,7 @@ namespace DotRecast.Recast.Toolset.Tools
     {
         public string GetName()
         {
-            return "Create Convex Volumes";
+            return "Convex Volumes";
         }
 
         public RcConvexVolume RemoveByPos(IInputGeomProvider geom, RcVec3f pos)

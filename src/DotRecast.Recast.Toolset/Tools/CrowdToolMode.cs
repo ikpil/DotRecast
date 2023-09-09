@@ -8,14 +8,12 @@ namespace DotRecast.Recast.Toolset.Tools
         public static readonly CrowdToolMode MOVE_TARGET = new CrowdToolMode(1, "Move Target");
         public static readonly CrowdToolMode SELECT = new CrowdToolMode(2, "Select Agent");
         public static readonly CrowdToolMode TOGGLE_POLYS = new CrowdToolMode(3, "Toggle Polys");
-        public static readonly CrowdToolMode PROFILING = new CrowdToolMode(4, "Profiling");
 
         public static readonly RcImmutableArray<CrowdToolMode> Values = RcImmutableArray.Create(
             CREATE,
             MOVE_TARGET,
             SELECT,
-            TOGGLE_POLYS,
-            PROFILING
+            TOGGLE_POLYS
         );
 
         public int Idx { get; }

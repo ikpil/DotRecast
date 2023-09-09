@@ -25,7 +25,7 @@ namespace DotRecast.Recast.Toolset.Tools
 
         public string GetName()
         {
-            return "Create Temp Obstacles";
+            return "Temp Obstacles";
         }
 
         public NavMeshBuildResult Build(IInputGeomProvider geom, RcNavMeshBuildSettings setting, RcByteOrder order, bool cCompatibility)

@@ -1,10 +1,10 @@
 ﻿namespace DotRecast.Recast.Toolset.Tools
 {
-    public class RcCrowdTool : IRcToolable
+    public class RcCrowdProfilingTool : IRcToolable
     {
         public string GetName()
         {
-            return "Crowd Control";
+            return "Crowd Profiling";
         }
     }
 }

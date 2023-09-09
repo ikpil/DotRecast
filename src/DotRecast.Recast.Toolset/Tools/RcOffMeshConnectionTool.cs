@@ -16,7 +16,7 @@ namespace DotRecast.Recast.Toolset.Tools
 
         public string GetName()
         {
-            return "Create Off-Mesh Links";
+            return "Off-Mesh Links";
         }
 
         public RcOffMeshConnectionToolOption GetOption()

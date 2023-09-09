@@ -28,13 +28,21 @@ using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Toolset;
 using DotRecast.Recast.Toolset.Tools;
 using ImGuiNET;
+using Serilog;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class CrowdProfilingTool
+public class CrowdProfilingSampleTool : ISampleTool
 {
-    private readonly Func<DtCrowdAgentParams> agentParamsSupplier;
+    private static readonly ILogger Logger = Log.ForContext<CrowdProfilingSampleTool>();
+
+    private DemoSample _sample;
+    private DtNavMesh m_nav;
+
+    private readonly CrowdToolParams toolParams = new CrowdToolParams();
+    private RcCrowdProfilingTool _tool;
+
     private int expandSimOptions = 1;
     private int expandCrowdOptions = 1;
     private int agents = 1000;
@@ -52,13 +60,113 @@ public class CrowdProfilingTool
     private readonly List<DtPolyPoint> _polyPoints = new();
     private long crowdUpdateTime;
 
-    public CrowdProfilingTool(Func<DtCrowdAgentParams> agentParamsSupplier)
+    public CrowdProfilingSampleTool()
     {
-        this.agentParamsSupplier = agentParamsSupplier;
+        _tool = new();
+    }
+
+    public void SetSample(DemoSample sample)
+    {
+        _sample = sample;
+    }
+
+    public void OnSampleChanged()
+    {
+        var geom = _sample.GetInputGeom();
+        var settings = _sample.GetSettings();
+        var navMesh = _sample.GetNavMesh();
+
+        if (navMesh != null && m_nav != navMesh)
+        {
+            m_nav = navMesh;
+            Setup(settings.agentRadius, m_nav);
+        }
+    }
+
+    private DtCrowdAgentParams GetAgentParams()
+    {
+        var settings = _sample.GetSettings();
+
+        DtCrowdAgentParams ap = new DtCrowdAgentParams();
+        ap.radius = settings.agentRadius;
+        ap.height = settings.agentHeight;
+        ap.maxAcceleration = settings.agentMaxAcceleration;
+        ap.maxSpeed = settings.agentMaxSpeed;
+        ap.collisionQueryRange = ap.radius * 12.0f;
+        ap.pathOptimizationRange = ap.radius * 30.0f;
+        ap.updateFlags = GetUpdateFlags();
+        ap.obstacleAvoidanceType = toolParams.m_obstacleAvoidanceType;
+        ap.separationWeight = toolParams.m_separationWeight;
+        return ap;
+    }
+
+
+    private int GetUpdateFlags()
+    {
+        int updateFlags = 0;
+        if (toolParams.m_anticipateTurns)
+        {
+            updateFlags |= DtCrowdAgentParams.DT_CROWD_ANTICIPATE_TURNS;
+        }
+
+        if (toolParams.m_optimizeVis)
+        {
+            updateFlags |= DtCrowdAgentParams.DT_CROWD_OPTIMIZE_VIS;
+        }
+
+        if (toolParams.m_optimizeTopo)
+        {
+            updateFlags |= DtCrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO;
+        }
+
+        if (toolParams.m_obstacleAvoidance)
+        {
+            updateFlags |= DtCrowdAgentParams.DT_CROWD_OBSTACLE_AVOIDANCE;
+        }
+
+        if (toolParams.m_separation)
+        {
+            updateFlags |= DtCrowdAgentParams.DT_CROWD_SEPARATION;
+        }
+
+        return updateFlags;
+    }
+
+
+    public IRcToolable GetTool()
+    {
+        return _tool;
     }
 
     public void Layout()
     {
+        ImGui.Text("Options");
+        ImGui.Separator();
+        bool m_optimizeVis = toolParams.m_optimizeVis;
+        bool m_optimizeTopo = toolParams.m_optimizeTopo;
+        bool m_anticipateTurns = toolParams.m_anticipateTurns;
+        bool m_obstacleAvoidance = toolParams.m_obstacleAvoidance;
+        bool m_separation = toolParams.m_separation;
+        int m_obstacleAvoidanceType = toolParams.m_obstacleAvoidanceType;
+        float m_separationWeight = toolParams.m_separationWeight;
+        ImGui.Checkbox("Optimize Visibility", ref toolParams.m_optimizeVis);
+        ImGui.Checkbox("Optimize Topology", ref toolParams.m_optimizeTopo);
+        ImGui.Checkbox("Anticipate Turns", ref toolParams.m_anticipateTurns);
+        ImGui.Checkbox("Obstacle Avoidance", ref toolParams.m_obstacleAvoidance);
+        ImGui.SliderInt("Avoidance Quality", ref toolParams.m_obstacleAvoidanceType, 0, 3);
+        ImGui.Checkbox("Separation", ref toolParams.m_separation);
+        ImGui.SliderFloat("Separation Weight", ref toolParams.m_separationWeight, 0f, 20f, "%.2f");
+        ImGui.NewLine();
+
+        if (m_optimizeVis != toolParams.m_optimizeVis || m_optimizeTopo != toolParams.m_optimizeTopo
+                                                      || m_anticipateTurns != toolParams.m_anticipateTurns || m_obstacleAvoidance != toolParams.m_obstacleAvoidance
+                                                      || m_separation != toolParams.m_separation
+                                                      || m_obstacleAvoidanceType != toolParams.m_obstacleAvoidanceType
+                                                      || m_separationWeight != toolParams.m_separationWeight)
+        {
+            UpdateAgentParams();
+        }
+
         ImGui.Text("Simulation Options");
         ImGui.Separator();
         ImGui.SliderInt("Agents", ref agents, 0, 10000);
@@ -80,6 +188,16 @@ public class CrowdProfilingTool
             StartProfiling();
         }
 
+        if (m_optimizeVis != toolParams.m_optimizeVis || m_optimizeTopo != toolParams.m_optimizeTopo
+                                                      || m_anticipateTurns != toolParams.m_anticipateTurns || m_obstacleAvoidance != toolParams.m_obstacleAvoidance
+                                                      || m_separation != toolParams.m_separation
+                                                      || m_obstacleAvoidanceType != toolParams.m_obstacleAvoidanceType
+                                                      || m_separationWeight != toolParams.m_separationWeight)
+        {
+            UpdateAgentParams();
+        }
+
+
         ImGui.Text("Times");
         ImGui.Separator();
         if (crowd != null)
@@ -94,6 +212,11 @@ public class CrowdProfilingTool
 
             ImGui.Text($"Update Time: {crowdUpdateTime} ms");
         }
+    }
+
+    public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
+    {
+        //throw new NotImplementedException();
     }
 
     private DtStatus GetMobPosition(DtNavMeshQuery navquery, IDtQueryFilter filter, out RcVec3f randomPt)
@@ -395,15 +518,26 @@ public class CrowdProfilingTool
         dd.DepthMask(true);
     }
 
+    public void HandleUpdate(float dt)
+    {
+        Update(dt);
+    }
+
+    public void HandleClickRay(RcVec3f start, RcVec3f direction, bool shift)
+    {
+        //throw new NotImplementedException();
+    }
+
     private DtCrowdAgent AddAgent(RcVec3f p, CrowdAgentType type)
     {
-        DtCrowdAgentParams ap = agentParamsSupplier.Invoke();
+        DtCrowdAgentParams ap = GetAgentParams();
         ap.userData = new CrowdAgentData(type, p);
         return crowd.AddAgent(p, ap);
     }
 
-    public void UpdateAgentParams(int updateFlags, int obstacleAvoidanceType, float separationWeight)
+    private void UpdateAgentParams()
     {
+        int updateFlags = GetUpdateFlags();
         if (crowd != null)
         {
             foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
@@ -418,8 +552,8 @@ public class CrowdProfilingTool
                 option.queryFilterType = ag.option.queryFilterType;
                 option.userData = ag.option.userData;
                 option.updateFlags = updateFlags;
-                option.obstacleAvoidanceType = obstacleAvoidanceType;
-                option.separationWeight = separationWeight;
+                option.obstacleAvoidanceType = toolParams.m_obstacleAvoidanceType;
+                option.separationWeight = toolParams.m_separationWeight;
                 crowd.UpdateAgentParameters(ag, option);
             }
         }

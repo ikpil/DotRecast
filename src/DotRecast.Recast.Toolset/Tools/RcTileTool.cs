@@ -10,7 +10,7 @@ namespace DotRecast.Recast.Toolset.Tools
     {
         public string GetName()
         {
-            return "Create Tiles";
+            return "Tiles";
         }
 
         public void RemoveAllTiles(IInputGeomProvider geom, RcNavMeshBuildSettings settings, DtNavMesh navMesh)
