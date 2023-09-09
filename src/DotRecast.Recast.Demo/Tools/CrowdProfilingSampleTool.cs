@@ -94,44 +94,11 @@ public class CrowdProfilingSampleTool : ISampleTool
         ap.maxSpeed = settings.agentMaxSpeed;
         ap.collisionQueryRange = ap.radius * 12.0f;
         ap.pathOptimizationRange = ap.radius * 30.0f;
-        ap.updateFlags = GetUpdateFlags();
+        ap.updateFlags = _option.GetUpdateFlags();
         ap.obstacleAvoidanceType = _option.obstacleAvoidanceType;
         ap.separationWeight = _option.separationWeight;
         return ap;
     }
-
-
-    private int GetUpdateFlags()
-    {
-        int updateFlags = 0;
-        if (_option.anticipateTurns)
-        {
-            updateFlags |= DtCrowdAgentParams.DT_CROWD_ANTICIPATE_TURNS;
-        }
-
-        if (_option.optimizeVis)
-        {
-            updateFlags |= DtCrowdAgentParams.DT_CROWD_OPTIMIZE_VIS;
-        }
-
-        if (_option.optimizeTopo)
-        {
-            updateFlags |= DtCrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO;
-        }
-
-        if (_option.obstacleAvoidance)
-        {
-            updateFlags |= DtCrowdAgentParams.DT_CROWD_OBSTACLE_AVOIDANCE;
-        }
-
-        if (_option.separation)
-        {
-            updateFlags |= DtCrowdAgentParams.DT_CROWD_SEPARATION;
-        }
-
-        return updateFlags;
-    }
-
 
     public IRcToolable GetTool()
     {
@@ -537,7 +504,6 @@ public class CrowdProfilingSampleTool : ISampleTool
 
     private void UpdateAgentParams()
     {
-        int updateFlags = GetUpdateFlags();
         if (crowd != null)
         {
             foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
@@ -551,7 +517,7 @@ public class CrowdProfilingSampleTool : ISampleTool
                 option.pathOptimizationRange = ag.option.pathOptimizationRange;
                 option.queryFilterType = ag.option.queryFilterType;
                 option.userData = ag.option.userData;
-                option.updateFlags = updateFlags;
+                option.updateFlags = _option.GetUpdateFlags();
                 option.obstacleAvoidanceType = _option.obstacleAvoidanceType;
                 option.separationWeight = _option.separationWeight;
                 crowd.UpdateAgentParameters(ag, option);

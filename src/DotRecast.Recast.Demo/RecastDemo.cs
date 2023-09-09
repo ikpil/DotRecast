@@ -386,7 +386,7 @@ public class RecastDemo : IRecastDemoChannel
             new ObstacleSampleTool(),
             new OffMeshConnectionSampleTool(),
             new ConvexVolumeSampleTool(),
-            new CrowdampleTool(),
+            new CrowdSampleTool(),
             new CrowdProfilingSampleTool(),
             new JumpLinkBuilderSampleTool(),
             new DynamicUpdateSampleTool()

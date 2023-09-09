@@ -35,9 +35,9 @@ using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class CrowdampleTool : ISampleTool
+public class CrowdSampleTool : ISampleTool
 {
-    private static readonly ILogger Logger = Log.ForContext<CrowdampleTool>();
+    private static readonly ILogger Logger = Log.ForContext<CrowdSampleTool>();
 
     private DemoSample _sample;
     private readonly RcCrowdTool _tool;
@@ -69,7 +69,7 @@ public class CrowdampleTool : ISampleTool
     private bool m_showDetailAll;
 
 
-    public CrowdampleTool()
+    public CrowdSampleTool()
     {
         m_agentDebug.vod = new DtObstacleAvoidanceDebugData(2048);
         _tool = new();
@@ -237,7 +237,7 @@ public class CrowdampleTool : ISampleTool
         ap.maxSpeed = settings.agentMaxSpeed;
         ap.collisionQueryRange = ap.radius * 12.0f;
         ap.pathOptimizationRange = ap.radius * 30.0f;
-        ap.updateFlags = GetUpdateFlags();
+        ap.updateFlags = _option.GetUpdateFlags();
         ap.obstacleAvoidanceType = _option.obstacleAvoidanceType;
         ap.separationWeight = _option.separationWeight;
         return ap;
@@ -709,10 +709,10 @@ public class CrowdampleTool : ISampleTool
         ImGui.NewLine();
 
         if (m_optimizeVis != _option.optimizeVis || m_optimizeTopo != _option.optimizeTopo
-                                                      || m_anticipateTurns != _option.anticipateTurns || m_obstacleAvoidance != _option.obstacleAvoidance
-                                                      || m_separation != _option.separation
-                                                      || m_obstacleAvoidanceType != _option.obstacleAvoidanceType
-                                                      || m_separationWeight != _option.separationWeight)
+                                                 || m_anticipateTurns != _option.anticipateTurns || m_obstacleAvoidance != _option.obstacleAvoidance
+                                                 || m_separation != _option.separation
+                                                 || m_obstacleAvoidanceType != _option.obstacleAvoidanceType
+                                                 || m_separationWeight != _option.separationWeight)
         {
             UpdateAgentParams();
         }
@@ -742,7 +742,6 @@ public class CrowdampleTool : ISampleTool
             return;
         }
 
-        int updateFlags = GetUpdateFlags();
         foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
         {
             DtCrowdAgentParams option = new DtCrowdAgentParams();
@@ -755,42 +754,11 @@ public class CrowdampleTool : ISampleTool
             option.obstacleAvoidanceType = ag.option.obstacleAvoidanceType;
             option.queryFilterType = ag.option.queryFilterType;
             option.userData = ag.option.userData;
-            option.updateFlags = updateFlags;
+            option.updateFlags = _option.GetUpdateFlags();
             option.obstacleAvoidanceType = _option.obstacleAvoidanceType;
             option.separationWeight = _option.separationWeight;
             crowd.UpdateAgentParameters(ag, option);
         }
-    }
-
-    private int GetUpdateFlags()
-    {
-        int updateFlags = 0;
-        if (_option.anticipateTurns)
-        {
-            updateFlags |= DtCrowdAgentParams.DT_CROWD_ANTICIPATE_TURNS;
-        }
-
-        if (_option.optimizeVis)
-        {
-            updateFlags |= DtCrowdAgentParams.DT_CROWD_OPTIMIZE_VIS;
-        }
-
-        if (_option.optimizeTopo)
-        {
-            updateFlags |= DtCrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO;
-        }
-
-        if (_option.obstacleAvoidance)
-        {
-            updateFlags |= DtCrowdAgentParams.DT_CROWD_OBSTACLE_AVOIDANCE;
-        }
-
-        if (_option.separation)
-        {
-            updateFlags |= DtCrowdAgentParams.DT_CROWD_SEPARATION;
-        }
-
-        return updateFlags;
     }
 
 
