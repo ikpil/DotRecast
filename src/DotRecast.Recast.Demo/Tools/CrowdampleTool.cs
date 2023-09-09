@@ -41,7 +41,7 @@ public class CrowdampleTool : ISampleTool
 
     private DemoSample _sample;
     private readonly RcCrowdTool _tool;
-    private readonly CrowdToolParams toolParams = new CrowdToolParams();
+    private readonly CrowdOption _option = new CrowdOption();
     private DtNavMesh m_nav;
     private DtCrowd crowd;
     private readonly DtCrowdAgentDebugInfo m_agentDebug = new DtCrowdAgentDebugInfo();
@@ -52,6 +52,22 @@ public class CrowdampleTool : ISampleTool
     private CrowdToolMode m_mode = CrowdToolMode.CREATE;
     private int m_modeIdx = CrowdToolMode.CREATE.Idx;
     private long crowdUpdateTime;
+
+    private int m_expandSelectedDebugDraw = 1;
+    private bool m_showCorners;
+    private bool m_showCollisionSegments;
+    private bool m_showPath;
+    private bool m_showVO;
+    private bool m_showOpt;
+    private bool m_showNeis;
+
+    private int m_expandDebugDraw = 0;
+    private bool m_showLabels;
+    private bool m_showGrid;
+    private bool m_showNodes;
+    private bool m_showPerfGraph;
+    private bool m_showDetailAll;
+
 
     public CrowdampleTool()
     {
@@ -222,8 +238,8 @@ public class CrowdampleTool : ISampleTool
         ap.collisionQueryRange = ap.radius * 12.0f;
         ap.pathOptimizationRange = ap.radius * 30.0f;
         ap.updateFlags = GetUpdateFlags();
-        ap.obstacleAvoidanceType = toolParams.m_obstacleAvoidanceType;
-        ap.separationWeight = toolParams.m_separationWeight;
+        ap.obstacleAvoidanceType = _option.obstacleAvoidanceType;
+        ap.separationWeight = _option.separationWeight;
         return ap;
     }
 
@@ -324,7 +340,7 @@ public class CrowdampleTool : ISampleTool
         if (nav == null || crowd == null)
             return;
 
-        if (toolParams.m_showNodes && crowd.GetPathQueue() != null)
+        if (m_showNodes && crowd.GetPathQueue() != null)
         {
 //            NavMeshQuery navquery = crowd.GetPathQueue().GetNavQuery();
 //            if (navquery != null) {
@@ -335,12 +351,13 @@ public class CrowdampleTool : ISampleTool
         dd.DepthMask(false);
 
         // Draw paths
-        if (toolParams.m_showPath)
+        if (m_showPath)
         {
             foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
             {
-                if (!toolParams.m_showDetailAll && ag != m_agentDebug.agent)
+                if (!m_showDetailAll && ag != m_agentDebug.agent)
                     continue;
+
                 List<long> path = ag.corridor.GetPath();
                 int npath = ag.corridor.GetPathCount();
                 for (int j = 0; j < npath; ++j)
@@ -354,7 +371,7 @@ public class CrowdampleTool : ISampleTool
             dd.DebugDrawCross(m_targetPos.x, m_targetPos.y + 0.1f, m_targetPos.z, rad, DuRGBA(255, 255, 255, 192), 2.0f);
 
         // Occupancy grid.
-        if (toolParams.m_showGrid)
+        if (m_showGrid)
         {
             float gridy = -float.MaxValue;
             foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
@@ -411,13 +428,13 @@ public class CrowdampleTool : ISampleTool
         // Corners & co
         foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
         {
-            if (toolParams.m_showDetailAll == false && ag != m_agentDebug.agent)
+            if (m_showDetailAll == false && ag != m_agentDebug.agent)
                 continue;
 
             float radius = ag.option.radius;
             RcVec3f pos = ag.npos;
 
-            if (toolParams.m_showCorners)
+            if (m_showCorners)
             {
                 if (0 < ag.corners.Count)
                 {
@@ -440,7 +457,7 @@ public class CrowdampleTool : ISampleTool
 
                     dd.End();
 
-                    if (toolParams.m_anticipateTurns)
+                    if (_option.anticipateTurns)
                     {
                         /*                  float dvel[3], pos[3];
                          CalcSmoothSteerDirection(ag.pos, ag.cornerVerts, ag.ncorners, dvel);
@@ -465,7 +482,7 @@ public class CrowdampleTool : ISampleTool
                 }
             }
 
-            if (toolParams.m_showCollisionSegments)
+            if (m_showCollisionSegments)
             {
                 RcVec3f center = ag.boundary.GetCenter();
                 dd.DebugDrawCross(center.x, center.y + radius, center.z, 0.2f, DuRGBA(192, 0, 128, 255), 2.0f);
@@ -487,7 +504,7 @@ public class CrowdampleTool : ISampleTool
                 dd.End();
             }
 
-            if (toolParams.m_showNeis)
+            if (m_showNeis)
             {
                 dd.DebugDrawCircle(pos.x, pos.y + radius, pos.z, ag.option.collisionQueryRange, DuRGBA(0, 192, 128, 128),
                     2.0f);
@@ -506,7 +523,7 @@ public class CrowdampleTool : ISampleTool
                 dd.End();
             }
 
-            if (toolParams.m_showOpt)
+            if (m_showOpt)
             {
                 dd.Begin(LINES, 2.0f);
                 dd.Vertex(m_agentDebug.optStart.x, m_agentDebug.optStart.y + 0.3f, m_agentDebug.optStart.z,
@@ -550,11 +567,11 @@ public class CrowdampleTool : ISampleTool
                 pos.z + radius, col);
         }
 
-        if (toolParams.m_showVO)
+        if (m_showVO)
         {
             foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
             {
-                if (toolParams.m_showDetailAll == false && ag != m_agentDebug.agent)
+                if (m_showDetailAll == false && ag != m_agentDebug.agent)
                     continue;
 
                 // Draw detail about agent sela
@@ -675,27 +692,27 @@ public class CrowdampleTool : ISampleTool
 
         ImGui.Text("Options");
         ImGui.Separator();
-        bool m_optimizeVis = toolParams.m_optimizeVis;
-        bool m_optimizeTopo = toolParams.m_optimizeTopo;
-        bool m_anticipateTurns = toolParams.m_anticipateTurns;
-        bool m_obstacleAvoidance = toolParams.m_obstacleAvoidance;
-        bool m_separation = toolParams.m_separation;
-        int m_obstacleAvoidanceType = toolParams.m_obstacleAvoidanceType;
-        float m_separationWeight = toolParams.m_separationWeight;
-        ImGui.Checkbox("Optimize Visibility", ref toolParams.m_optimizeVis);
-        ImGui.Checkbox("Optimize Topology", ref toolParams.m_optimizeTopo);
-        ImGui.Checkbox("Anticipate Turns", ref toolParams.m_anticipateTurns);
-        ImGui.Checkbox("Obstacle Avoidance", ref toolParams.m_obstacleAvoidance);
-        ImGui.SliderInt("Avoidance Quality", ref toolParams.m_obstacleAvoidanceType, 0, 3);
-        ImGui.Checkbox("Separation", ref toolParams.m_separation);
-        ImGui.SliderFloat("Separation Weight", ref toolParams.m_separationWeight, 0f, 20f, "%.2f");
+        bool m_optimizeVis = _option.optimizeVis;
+        bool m_optimizeTopo = _option.optimizeTopo;
+        bool m_anticipateTurns = _option.anticipateTurns;
+        bool m_obstacleAvoidance = _option.obstacleAvoidance;
+        bool m_separation = _option.separation;
+        int m_obstacleAvoidanceType = _option.obstacleAvoidanceType;
+        float m_separationWeight = _option.separationWeight;
+        ImGui.Checkbox("Optimize Visibility", ref _option.optimizeVis);
+        ImGui.Checkbox("Optimize Topology", ref _option.optimizeTopo);
+        ImGui.Checkbox("Anticipate Turns", ref _option.anticipateTurns);
+        ImGui.Checkbox("Obstacle Avoidance", ref _option.obstacleAvoidance);
+        ImGui.SliderInt("Avoidance Quality", ref _option.obstacleAvoidanceType, 0, 3);
+        ImGui.Checkbox("Separation", ref _option.separation);
+        ImGui.SliderFloat("Separation Weight", ref _option.separationWeight, 0f, 20f, "%.2f");
         ImGui.NewLine();
 
-        if (m_optimizeVis != toolParams.m_optimizeVis || m_optimizeTopo != toolParams.m_optimizeTopo
-                                                      || m_anticipateTurns != toolParams.m_anticipateTurns || m_obstacleAvoidance != toolParams.m_obstacleAvoidance
-                                                      || m_separation != toolParams.m_separation
-                                                      || m_obstacleAvoidanceType != toolParams.m_obstacleAvoidanceType
-                                                      || m_separationWeight != toolParams.m_separationWeight)
+        if (m_optimizeVis != _option.optimizeVis || m_optimizeTopo != _option.optimizeTopo
+                                                      || m_anticipateTurns != _option.anticipateTurns || m_obstacleAvoidance != _option.obstacleAvoidance
+                                                      || m_separation != _option.separation
+                                                      || m_obstacleAvoidanceType != _option.obstacleAvoidanceType
+                                                      || m_separationWeight != _option.separationWeight)
         {
             UpdateAgentParams();
         }
@@ -703,18 +720,18 @@ public class CrowdampleTool : ISampleTool
 
         ImGui.Text("Selected Debug Draw");
         ImGui.Separator();
-        ImGui.Checkbox("Show Corners", ref toolParams.m_showCorners);
-        ImGui.Checkbox("Show Collision Segs", ref toolParams.m_showCollisionSegments);
-        ImGui.Checkbox("Show Path", ref toolParams.m_showPath);
-        ImGui.Checkbox("Show VO", ref toolParams.m_showVO);
-        ImGui.Checkbox("Show Path Optimization", ref toolParams.m_showOpt);
-        ImGui.Checkbox("Show Neighbours", ref toolParams.m_showNeis);
+        ImGui.Checkbox("Show Corners", ref m_showCorners);
+        ImGui.Checkbox("Show Collision Segs", ref m_showCollisionSegments);
+        ImGui.Checkbox("Show Path", ref m_showPath);
+        ImGui.Checkbox("Show VO", ref m_showVO);
+        ImGui.Checkbox("Show Path Optimization", ref m_showOpt);
+        ImGui.Checkbox("Show Neighbours", ref m_showNeis);
         ImGui.NewLine();
 
         ImGui.Text("Debug Draw");
         ImGui.Separator();
-        ImGui.Checkbox("Show Proximity Grid", ref toolParams.m_showGrid);
-        ImGui.Checkbox("Show Nodes", ref toolParams.m_showNodes);
+        ImGui.Checkbox("Show Proximity Grid", ref m_showGrid);
+        ImGui.Checkbox("Show Nodes", ref m_showNodes);
         ImGui.Text($"Update Time: {crowdUpdateTime} ms");
     }
 
@@ -739,8 +756,8 @@ public class CrowdampleTool : ISampleTool
             option.queryFilterType = ag.option.queryFilterType;
             option.userData = ag.option.userData;
             option.updateFlags = updateFlags;
-            option.obstacleAvoidanceType = toolParams.m_obstacleAvoidanceType;
-            option.separationWeight = toolParams.m_separationWeight;
+            option.obstacleAvoidanceType = _option.obstacleAvoidanceType;
+            option.separationWeight = _option.separationWeight;
             crowd.UpdateAgentParameters(ag, option);
         }
     }
@@ -748,27 +765,27 @@ public class CrowdampleTool : ISampleTool
     private int GetUpdateFlags()
     {
         int updateFlags = 0;
-        if (toolParams.m_anticipateTurns)
+        if (_option.anticipateTurns)
         {
             updateFlags |= DtCrowdAgentParams.DT_CROWD_ANTICIPATE_TURNS;
         }
 
-        if (toolParams.m_optimizeVis)
+        if (_option.optimizeVis)
         {
             updateFlags |= DtCrowdAgentParams.DT_CROWD_OPTIMIZE_VIS;
         }
 
-        if (toolParams.m_optimizeTopo)
+        if (_option.optimizeTopo)
         {
             updateFlags |= DtCrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO;
         }
 
-        if (toolParams.m_obstacleAvoidance)
+        if (_option.obstacleAvoidance)
         {
             updateFlags |= DtCrowdAgentParams.DT_CROWD_OBSTACLE_AVOIDANCE;
         }
 
-        if (toolParams.m_separation)
+        if (_option.separation)
         {
             updateFlags |= DtCrowdAgentParams.DT_CROWD_SEPARATION;
         }

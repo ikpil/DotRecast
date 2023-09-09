@@ -40,7 +40,7 @@ public class CrowdProfilingSampleTool : ISampleTool
     private DemoSample _sample;
     private DtNavMesh m_nav;
 
-    private readonly CrowdToolParams toolParams = new CrowdToolParams();
+    private readonly CrowdOption _option = new CrowdOption();
     private RcCrowdProfilingTool _tool;
 
     private int expandSimOptions = 1;
@@ -95,8 +95,8 @@ public class CrowdProfilingSampleTool : ISampleTool
         ap.collisionQueryRange = ap.radius * 12.0f;
         ap.pathOptimizationRange = ap.radius * 30.0f;
         ap.updateFlags = GetUpdateFlags();
-        ap.obstacleAvoidanceType = toolParams.m_obstacleAvoidanceType;
-        ap.separationWeight = toolParams.m_separationWeight;
+        ap.obstacleAvoidanceType = _option.obstacleAvoidanceType;
+        ap.separationWeight = _option.separationWeight;
         return ap;
     }
 
@@ -104,27 +104,27 @@ public class CrowdProfilingSampleTool : ISampleTool
     private int GetUpdateFlags()
     {
         int updateFlags = 0;
-        if (toolParams.m_anticipateTurns)
+        if (_option.anticipateTurns)
         {
             updateFlags |= DtCrowdAgentParams.DT_CROWD_ANTICIPATE_TURNS;
         }
 
-        if (toolParams.m_optimizeVis)
+        if (_option.optimizeVis)
         {
             updateFlags |= DtCrowdAgentParams.DT_CROWD_OPTIMIZE_VIS;
         }
 
-        if (toolParams.m_optimizeTopo)
+        if (_option.optimizeTopo)
         {
             updateFlags |= DtCrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO;
         }
 
-        if (toolParams.m_obstacleAvoidance)
+        if (_option.obstacleAvoidance)
         {
             updateFlags |= DtCrowdAgentParams.DT_CROWD_OBSTACLE_AVOIDANCE;
         }
 
-        if (toolParams.m_separation)
+        if (_option.separation)
         {
             updateFlags |= DtCrowdAgentParams.DT_CROWD_SEPARATION;
         }
@@ -142,27 +142,27 @@ public class CrowdProfilingSampleTool : ISampleTool
     {
         ImGui.Text("Options");
         ImGui.Separator();
-        bool m_optimizeVis = toolParams.m_optimizeVis;
-        bool m_optimizeTopo = toolParams.m_optimizeTopo;
-        bool m_anticipateTurns = toolParams.m_anticipateTurns;
-        bool m_obstacleAvoidance = toolParams.m_obstacleAvoidance;
-        bool m_separation = toolParams.m_separation;
-        int m_obstacleAvoidanceType = toolParams.m_obstacleAvoidanceType;
-        float m_separationWeight = toolParams.m_separationWeight;
-        ImGui.Checkbox("Optimize Visibility", ref toolParams.m_optimizeVis);
-        ImGui.Checkbox("Optimize Topology", ref toolParams.m_optimizeTopo);
-        ImGui.Checkbox("Anticipate Turns", ref toolParams.m_anticipateTurns);
-        ImGui.Checkbox("Obstacle Avoidance", ref toolParams.m_obstacleAvoidance);
-        ImGui.SliderInt("Avoidance Quality", ref toolParams.m_obstacleAvoidanceType, 0, 3);
-        ImGui.Checkbox("Separation", ref toolParams.m_separation);
-        ImGui.SliderFloat("Separation Weight", ref toolParams.m_separationWeight, 0f, 20f, "%.2f");
+        bool m_optimizeVis = _option.optimizeVis;
+        bool m_optimizeTopo = _option.optimizeTopo;
+        bool m_anticipateTurns = _option.anticipateTurns;
+        bool m_obstacleAvoidance = _option.obstacleAvoidance;
+        bool m_separation = _option.separation;
+        int m_obstacleAvoidanceType = _option.obstacleAvoidanceType;
+        float m_separationWeight = _option.separationWeight;
+        ImGui.Checkbox("Optimize Visibility", ref _option.optimizeVis);
+        ImGui.Checkbox("Optimize Topology", ref _option.optimizeTopo);
+        ImGui.Checkbox("Anticipate Turns", ref _option.anticipateTurns);
+        ImGui.Checkbox("Obstacle Avoidance", ref _option.obstacleAvoidance);
+        ImGui.SliderInt("Avoidance Quality", ref _option.obstacleAvoidanceType, 0, 3);
+        ImGui.Checkbox("Separation", ref _option.separation);
+        ImGui.SliderFloat("Separation Weight", ref _option.separationWeight, 0f, 20f, "%.2f");
         ImGui.NewLine();
 
-        if (m_optimizeVis != toolParams.m_optimizeVis || m_optimizeTopo != toolParams.m_optimizeTopo
-                                                      || m_anticipateTurns != toolParams.m_anticipateTurns || m_obstacleAvoidance != toolParams.m_obstacleAvoidance
-                                                      || m_separation != toolParams.m_separation
-                                                      || m_obstacleAvoidanceType != toolParams.m_obstacleAvoidanceType
-                                                      || m_separationWeight != toolParams.m_separationWeight)
+        if (m_optimizeVis != _option.optimizeVis || m_optimizeTopo != _option.optimizeTopo
+                                                      || m_anticipateTurns != _option.anticipateTurns || m_obstacleAvoidance != _option.obstacleAvoidance
+                                                      || m_separation != _option.separation
+                                                      || m_obstacleAvoidanceType != _option.obstacleAvoidanceType
+                                                      || m_separationWeight != _option.separationWeight)
         {
             UpdateAgentParams();
         }
@@ -188,11 +188,11 @@ public class CrowdProfilingSampleTool : ISampleTool
             StartProfiling();
         }
 
-        if (m_optimizeVis != toolParams.m_optimizeVis || m_optimizeTopo != toolParams.m_optimizeTopo
-                                                      || m_anticipateTurns != toolParams.m_anticipateTurns || m_obstacleAvoidance != toolParams.m_obstacleAvoidance
-                                                      || m_separation != toolParams.m_separation
-                                                      || m_obstacleAvoidanceType != toolParams.m_obstacleAvoidanceType
-                                                      || m_separationWeight != toolParams.m_separationWeight)
+        if (m_optimizeVis != _option.optimizeVis || m_optimizeTopo != _option.optimizeTopo
+                                                      || m_anticipateTurns != _option.anticipateTurns || m_obstacleAvoidance != _option.obstacleAvoidance
+                                                      || m_separation != _option.separation
+                                                      || m_obstacleAvoidanceType != _option.obstacleAvoidanceType
+                                                      || m_separationWeight != _option.separationWeight)
         {
             UpdateAgentParams();
         }
@@ -552,8 +552,8 @@ public class CrowdProfilingSampleTool : ISampleTool
                 option.queryFilterType = ag.option.queryFilterType;
                 option.userData = ag.option.userData;
                 option.updateFlags = updateFlags;
-                option.obstacleAvoidanceType = toolParams.m_obstacleAvoidanceType;
-                option.separationWeight = toolParams.m_separationWeight;
+                option.obstacleAvoidanceType = _option.obstacleAvoidanceType;
+                option.separationWeight = _option.separationWeight;
                 crowd.UpdateAgentParameters(ag, option);
             }
         }
