@@ -2,7 +2,8 @@
 [![.NET](https://github.com/ikpil/DotRecast/actions/workflows/dotnet.yml/badge.svg)](https://github.com/ikpil/DotRecast/actions/workflows/dotnet.yml)
 [![CodeQL](https://github.com/ikpil/DotRecast/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/ikpil/DotRecast/actions/workflows/github-code-scanning/codeql)
 
-![DotRecast of a navmesh baked with the sample program](/resources/screenshot.gif?raw=true)
+# Screenshot
+![screenshot](https://github.com/ikpil/DotRecast/assets/313821/8cf67832-1206-4b58-8c1f-7205210cbf22)
 
 # Introduction
 1. DotRecast is a port of C++'s [recastnavigation](https://github.com/recastnavigation/recastnavigation) and Java's [recast4j](https://github.com/ppiastucki/recast4j) to the C# language.
