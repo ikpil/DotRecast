@@ -24,20 +24,6 @@ public class ObstacleSampleTool : ISampleTool
         _tool = new(DtTileCacheCompressorFactory.Shared);
     }
 
-    public IRcToolable GetTool()
-    {
-        return _tool;
-    }
-
-    public void SetSample(DemoSample sample)
-    {
-        _sample = sample;
-    }
-
-    public void OnSampleChanged()
-    {
-    }
-
     public void Layout()
     {
         if (ImGui.Button("Build Tile Cache"))
@@ -45,13 +31,12 @@ public class ObstacleSampleTool : ISampleTool
             var geom = _sample.GetInputGeom();
             var settings = _sample.GetSettings();
 
-            var buildResult =_tool.Build(geom, settings, RcByteOrder.LITTLE_ENDIAN, true);
+            var buildResult = _tool.Build(geom, settings, RcByteOrder.LITTLE_ENDIAN, true);
             if (buildResult.Success)
             {
                 _sample.Update(_sample.GetInputGeom(), buildResult.RecastBuilderResults, buildResult.NavMesh);
                 _sample.SetChanged(false);
             }
-                
         }
 
         if (ImGui.Button("Remove All Temp Obstacles"))
@@ -63,21 +48,6 @@ public class ObstacleSampleTool : ISampleTool
 
         ImGui.Text("Click LMB to create an obstacle.");
         ImGui.Text("Shift+LMB to remove an obstacle.");
-    }
-
-    public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
-    {
-        _hitPosSet = true;
-        _hitPos = p;
-
-        if (shift)
-        {
-            _tool.RemoveTempObstacle(s, p);
-        }
-        else
-        {
-            _tool.AddTempObstacle(_hitPos);
-        }
     }
 
     public void HandleRender(NavMeshRenderer renderer)
@@ -115,6 +85,37 @@ public class ObstacleSampleTool : ISampleTool
             dd.DebugDrawCylinderWire(bmin[0], bmin[1], bmin[2], bmax[0], bmax[1], bmax[2], DebugDraw.DuDarkenCol(col), 2);
         }
     }
+
+    public IRcToolable GetTool()
+    {
+        return _tool;
+    }
+
+    public void SetSample(DemoSample sample)
+    {
+        _sample = sample;
+    }
+
+    public void OnSampleChanged()
+    {
+    }
+
+
+    public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
+    {
+        _hitPosSet = true;
+        _hitPos = p;
+
+        if (shift)
+        {
+            _tool.RemoveTempObstacle(s, p);
+        }
+        else
+        {
+            _tool.AddTempObstacle(_hitPos);
+        }
+    }
+
 
     public void HandleUpdate(float dt)
     {

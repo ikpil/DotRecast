@@ -98,6 +98,243 @@ public class DynamicUpdateSampleTool : ISampleTool
         convexGeom = DemoObjImporter.Load(Loader.ToBytes("convex.obj"));
     }
 
+    public void Layout()
+    {
+        ImGui.Text($"Dynamic Update Tool Modes");
+        ImGui.Separator();
+
+        var prevMode = mode;
+        ImGui.RadioButton(DynamicUpdateToolMode.BUILD.Label, ref toolModeIdx, DynamicUpdateToolMode.BUILD.Idx);
+        ImGui.RadioButton(DynamicUpdateToolMode.COLLIDERS.Label, ref toolModeIdx, DynamicUpdateToolMode.COLLIDERS.Idx);
+        ImGui.RadioButton(DynamicUpdateToolMode.RAYCAST.Label, ref toolModeIdx, DynamicUpdateToolMode.RAYCAST.Idx);
+        ImGui.NewLine();
+
+        if (prevMode.Idx != toolModeIdx)
+        {
+            mode = DynamicUpdateToolMode.Values[toolModeIdx];
+        }
+
+        ImGui.Text($"Selected mode - {mode.Label}");
+        ImGui.Separator();
+
+        if (mode == DynamicUpdateToolMode.BUILD)
+        {
+            var loadVoxelPopupStrId = "Load Voxels Popup";
+            bool isLoadVoxelPopup = true;
+            if (ImGui.Button("Load Voxels..."))
+            {
+                ImGui.OpenPopup(loadVoxelPopupStrId);
+            }
+
+            if (ImGui.BeginPopupModal(loadVoxelPopupStrId, ref isLoadVoxelPopup, ImGuiWindowFlags.NoTitleBar))
+            {
+                var picker = ImFilePicker.GetFilePicker(loadVoxelPopupStrId, Path.Combine(Environment.CurrentDirectory), ".voxels");
+                if (picker.Draw())
+                {
+                    Load(picker.SelectedFile);
+                    ImFilePicker.RemoveFilePicker(loadVoxelPopupStrId);
+                }
+
+                ImGui.EndPopup();
+            }
+
+            var saveVoxelPopupStrId = "Save Voxels Popup";
+            bool isSaveVoxelPopup = true;
+            if (dynaMesh != null)
+            {
+                ImGui.Checkbox("Compression", ref compression);
+                if (ImGui.Button("Save Voxels..."))
+                {
+                    ImGui.BeginPopup(saveVoxelPopupStrId);
+                }
+
+                if (ImGui.BeginPopupModal(saveVoxelPopupStrId, ref isSaveVoxelPopup, ImGuiWindowFlags.NoTitleBar))
+                {
+                    var picker = ImFilePicker.GetFilePicker(saveVoxelPopupStrId, Path.Combine(Environment.CurrentDirectory), ".voxels");
+                    if (picker.Draw())
+                    {
+                        if (string.IsNullOrEmpty(picker.SelectedFile))
+                            Save(picker.SelectedFile);
+
+                        ImFilePicker.RemoveFilePicker(saveVoxelPopupStrId);
+                    }
+
+                    ImGui.EndPopup();
+                }
+            }
+
+            ImGui.NewLine();
+
+            ImGui.Text("Rasterization");
+            ImGui.Separator();
+            ImGui.Text($"Cell Size - {cellSize}");
+            ImGui.NewLine();
+
+            ImGui.Text("Agent");
+            ImGui.Separator();
+            ImGui.SliderFloat("Height", ref walkableHeight, 0f, 5f, "%.2f");
+            ImGui.SliderFloat("Radius", ref walkableRadius, 0f, 10f, "%.2f");
+            ImGui.SliderFloat("Max Climb", ref walkableClimb, 0f, 10f, "%.2f");
+            ImGui.Text($"Max Slope : {walkableSlopeAngle}");
+            ImGui.NewLine();
+
+            ImGui.Text("Partitioning");
+            ImGui.Separator();
+            RcPartitionType.Values.ForEach(partition =>
+            {
+                var label = partition.Name.Substring(0, 1).ToUpper()
+                            + partition.Name.Substring(1).ToLower();
+                ImGui.RadioButton(label, ref partitioning, partition.Value);
+            });
+            ImGui.NewLine();
+
+            ImGui.Text("Filtering");
+            ImGui.Separator();
+            ImGui.Checkbox("Low Hanging Obstacles", ref filterLowHangingObstacles);
+            ImGui.Checkbox("Ledge Spans", ref filterLedgeSpans);
+            ImGui.Checkbox("Walkable Low Height Spans", ref filterWalkableLowHeightSpans);
+            ImGui.NewLine();
+
+            ImGui.Text("Region");
+            ImGui.Separator();
+            ImGui.SliderFloat("Min Region Size", ref minRegionArea, 0, 150, "%.1f");
+            ImGui.SliderFloat("Merged Region Size", ref regionMergeSize, 0, 400, "%.1f");
+            ImGui.NewLine();
+
+            ImGui.Text("Polygonization");
+            ImGui.Separator();
+            ImGui.SliderFloat("Max Edge Length", ref maxEdgeLen, 0f, 50f, "%.1f");
+            ImGui.SliderFloat("Max Edge Error", ref maxSimplificationError, 0.1f, 10f, "%.1f");
+            ImGui.SliderInt("Verts Per Poly", ref vertsPerPoly, 3, 12);
+            ImGui.NewLine();
+
+            ImGui.Text("Detail Mesh");
+            ImGui.Separator();
+            ImGui.Checkbox("Enable", ref buildDetailMesh);
+            ImGui.SliderFloat("Sample Distance", ref detailSampleDist, 0f, 16f, "%.1f");
+            ImGui.SliderFloat("Max Sample Error", ref detailSampleMaxError, 0f, 16f, "%.1f");
+            ImGui.NewLine();
+
+            if (ImGui.Button("Build Dynamic mesh"))
+            {
+                if (dynaMesh != null)
+                {
+                    BuildDynaMesh();
+                    _sample.SetChanged(false);
+                }
+            }
+        }
+
+        if (mode == DynamicUpdateToolMode.COLLIDERS)
+        {
+            ImGui.Text("Colliders");
+            ImGui.Separator();
+            var prev = colliderShape;
+            ImGui.Checkbox("Show", ref showColliders);
+            ImGui.RadioButton("Sphere", ref colliderShapeIdx, (int)DynamicColliderShape.SPHERE);
+            ImGui.RadioButton("Capsule", ref colliderShapeIdx, (int)DynamicColliderShape.CAPSULE);
+            ImGui.RadioButton("Box", ref colliderShapeIdx, (int)DynamicColliderShape.BOX);
+            ImGui.RadioButton("Cylinder", ref colliderShapeIdx, (int)DynamicColliderShape.CYLINDER);
+            ImGui.RadioButton("Composite", ref colliderShapeIdx, (int)DynamicColliderShape.COMPOSITE);
+            ImGui.RadioButton("Convex Trimesh", ref colliderShapeIdx, (int)DynamicColliderShape.CONVEX);
+            ImGui.RadioButton("Trimesh Bridge", ref colliderShapeIdx, (int)DynamicColliderShape.TRIMESH_BRIDGE);
+            ImGui.RadioButton("Trimesh House", ref colliderShapeIdx, (int)DynamicColliderShape.TRIMESH_HOUSE);
+            ImGui.NewLine();
+
+            if ((int)prev != colliderShapeIdx)
+            {
+                colliderShape = (DynamicColliderShape)colliderShapeIdx;
+            }
+        }
+
+        if (mode == DynamicUpdateToolMode.RAYCAST)
+        {
+            ImGui.Text($"Raycast Time: {raycastTime} ms");
+            ImGui.Separator();
+            if (sposSet)
+            {
+                ImGui.Text($"Start: {spos.x}, {spos.y + 1.3f}, {spos.z}");
+            }
+
+            if (eposSet)
+            {
+                ImGui.Text($"End: {epos.x}, {epos.y + 1.3f}, {epos.z}");
+            }
+
+            if (raycastHit)
+            {
+                ImGui.Text($"Hit: {raycastHitPos.x}, {raycastHitPos.y}, {raycastHitPos.z}");
+            }
+
+            ImGui.NewLine();
+        }
+        else
+        {
+            ImGui.Text($"Build Time: {buildTime} ms");
+        }
+    }
+
+    public void HandleRender(NavMeshRenderer renderer)
+    {
+        if (mode == DynamicUpdateToolMode.COLLIDERS)
+        {
+            if (showColliders)
+            {
+                colliderGizmos.Values.ForEach(g => g.Render(renderer.GetDebugDraw()));
+            }
+        }
+
+        if (mode == DynamicUpdateToolMode.RAYCAST)
+        {
+            RecastDebugDraw dd = renderer.GetDebugDraw();
+            int startCol = DuRGBA(128, 25, 0, 192);
+            int endCol = DuRGBA(51, 102, 0, 129);
+            if (sposSet)
+            {
+                DrawAgent(dd, spos, startCol);
+            }
+
+            if (eposSet)
+            {
+                DrawAgent(dd, epos, endCol);
+            }
+
+            dd.DepthMask(false);
+            if (raycastHitPos != RcVec3f.Zero)
+            {
+                int spathCol = raycastHit ? DuRGBA(128, 32, 16, 220) : DuRGBA(64, 128, 240, 220);
+                dd.Begin(LINES, 2.0f);
+                dd.Vertex(spos.x, spos.y + 1.3f, spos.z, spathCol);
+                dd.Vertex(raycastHitPos.x, raycastHitPos.y, raycastHitPos.z, spathCol);
+                dd.End();
+            }
+
+            dd.DepthMask(true);
+        }
+    }
+
+    private void DrawAgent(RecastDebugDraw dd, RcVec3f pos, int col)
+    {
+        var settings = _sample.GetSettings();
+        float r = settings.agentRadius;
+        float h = settings.agentHeight;
+        float c = settings.agentMaxClimb;
+        dd.DepthMask(false);
+        // Agent dimensions.
+        dd.DebugDrawCylinderWire(pos.x - r, pos.y + 0.02f, pos.z - r, pos.x + r, pos.y + h, pos.z + r, col, 2.0f);
+        dd.DebugDrawCircle(pos.x, pos.y + c, pos.z, r, DuRGBA(0, 0, 0, 64), 1.0f);
+        int colb = DuRGBA(0, 0, 0, 196);
+        dd.Begin(LINES);
+        dd.Vertex(pos.x, pos.y - c, pos.z, colb);
+        dd.Vertex(pos.x, pos.y + c, pos.z, colb);
+        dd.Vertex(pos.x - r / 2, pos.y + 0.02f, pos.z, colb);
+        dd.Vertex(pos.x + r / 2, pos.y + 0.02f, pos.z, colb);
+        dd.Vertex(pos.x, pos.y + 0.02f, pos.z - r / 2, colb);
+        dd.Vertex(pos.x, pos.y + 0.02f, pos.z + r / 2, colb);
+        dd.End();
+        dd.DepthMask(true);
+    }
+
     public IRcToolable GetTool()
     {
         return _tool;
@@ -415,66 +652,6 @@ public class DynamicUpdateSampleTool : ISampleTool
         return disc >= 0.0f;
     }
 
-    public void HandleRender(NavMeshRenderer renderer)
-    {
-        if (mode == DynamicUpdateToolMode.COLLIDERS)
-        {
-            if (showColliders)
-            {
-                colliderGizmos.Values.ForEach(g => g.Render(renderer.GetDebugDraw()));
-            }
-        }
-
-        if (mode == DynamicUpdateToolMode.RAYCAST)
-        {
-            RecastDebugDraw dd = renderer.GetDebugDraw();
-            int startCol = DuRGBA(128, 25, 0, 192);
-            int endCol = DuRGBA(51, 102, 0, 129);
-            if (sposSet)
-            {
-                DrawAgent(dd, spos, startCol);
-            }
-
-            if (eposSet)
-            {
-                DrawAgent(dd, epos, endCol);
-            }
-
-            dd.DepthMask(false);
-            if (raycastHitPos != RcVec3f.Zero)
-            {
-                int spathCol = raycastHit ? DuRGBA(128, 32, 16, 220) : DuRGBA(64, 128, 240, 220);
-                dd.Begin(LINES, 2.0f);
-                dd.Vertex(spos.x, spos.y + 1.3f, spos.z, spathCol);
-                dd.Vertex(raycastHitPos.x, raycastHitPos.y, raycastHitPos.z, spathCol);
-                dd.End();
-            }
-
-            dd.DepthMask(true);
-        }
-    }
-
-    private void DrawAgent(RecastDebugDraw dd, RcVec3f pos, int col)
-    {
-        var settings = _sample.GetSettings();
-        float r = settings.agentRadius;
-        float h = settings.agentHeight;
-        float c = settings.agentMaxClimb;
-        dd.DepthMask(false);
-        // Agent dimensions.
-        dd.DebugDrawCylinderWire(pos.x - r, pos.y + 0.02f, pos.z - r, pos.x + r, pos.y + h, pos.z + r, col, 2.0f);
-        dd.DebugDrawCircle(pos.x, pos.y + c, pos.z, r, DuRGBA(0, 0, 0, 64), 1.0f);
-        int colb = DuRGBA(0, 0, 0, 196);
-        dd.Begin(LINES);
-        dd.Vertex(pos.x, pos.y - c, pos.z, colb);
-        dd.Vertex(pos.x, pos.y + c, pos.z, colb);
-        dd.Vertex(pos.x - r / 2, pos.y + 0.02f, pos.z, colb);
-        dd.Vertex(pos.x + r / 2, pos.y + 0.02f, pos.z, colb);
-        dd.Vertex(pos.x, pos.y + 0.02f, pos.z - r / 2, colb);
-        dd.Vertex(pos.x, pos.y + 0.02f, pos.z + r / 2, colb);
-        dd.End();
-        dd.DepthMask(true);
-    }
 
     public void HandleUpdate(float dt)
     {
@@ -500,182 +677,6 @@ public class DynamicUpdateSampleTool : ISampleTool
         catch (Exception e)
         {
             Console.WriteLine(e);
-        }
-    }
-
-    public void Layout()
-    {
-        ImGui.Text($"Dynamic Update Tool Modes");
-        ImGui.Separator();
-
-        var prevMode = mode;
-        ImGui.RadioButton(DynamicUpdateToolMode.BUILD.Label, ref toolModeIdx, DynamicUpdateToolMode.BUILD.Idx);
-        ImGui.RadioButton(DynamicUpdateToolMode.COLLIDERS.Label, ref toolModeIdx, DynamicUpdateToolMode.COLLIDERS.Idx);
-        ImGui.RadioButton(DynamicUpdateToolMode.RAYCAST.Label, ref toolModeIdx, DynamicUpdateToolMode.RAYCAST.Idx);
-        ImGui.NewLine();
-
-        if (prevMode.Idx != toolModeIdx)
-        {
-            mode = DynamicUpdateToolMode.Values[toolModeIdx];
-        }
-
-        ImGui.Text($"Selected mode - {mode.Label}");
-        ImGui.Separator();
-
-        if (mode == DynamicUpdateToolMode.BUILD)
-        {
-            var loadVoxelPopupStrId = "Load Voxels Popup";
-            bool isLoadVoxelPopup = true;
-            if (ImGui.Button("Load Voxels..."))
-            {
-                ImGui.OpenPopup(loadVoxelPopupStrId);
-            }
-
-            if (ImGui.BeginPopupModal(loadVoxelPopupStrId, ref isLoadVoxelPopup, ImGuiWindowFlags.NoTitleBar))
-            {
-                var picker = ImFilePicker.GetFilePicker(loadVoxelPopupStrId, Path.Combine(Environment.CurrentDirectory), ".voxels");
-                if (picker.Draw())
-                {
-                    Load(picker.SelectedFile);
-                    ImFilePicker.RemoveFilePicker(loadVoxelPopupStrId);
-                }
-
-                ImGui.EndPopup();
-            }
-
-            var saveVoxelPopupStrId = "Save Voxels Popup";
-            bool isSaveVoxelPopup = true;
-            if (dynaMesh != null)
-            {
-                ImGui.Checkbox("Compression", ref compression);
-                if (ImGui.Button("Save Voxels..."))
-                {
-                    ImGui.BeginPopup(saveVoxelPopupStrId);
-                }
-
-                if (ImGui.BeginPopupModal(saveVoxelPopupStrId, ref isSaveVoxelPopup, ImGuiWindowFlags.NoTitleBar))
-                {
-                    var picker = ImFilePicker.GetFilePicker(saveVoxelPopupStrId, Path.Combine(Environment.CurrentDirectory), ".voxels");
-                    if (picker.Draw())
-                    {
-                        if (string.IsNullOrEmpty(picker.SelectedFile))
-                            Save(picker.SelectedFile);
-
-                        ImFilePicker.RemoveFilePicker(saveVoxelPopupStrId);
-                    }
-
-                    ImGui.EndPopup();
-                }
-            }
-
-            ImGui.NewLine();
-
-            ImGui.Text("Rasterization");
-            ImGui.Separator();
-            ImGui.Text($"Cell Size - {cellSize}");
-            ImGui.NewLine();
-
-            ImGui.Text("Agent");
-            ImGui.Separator();
-            ImGui.SliderFloat("Height", ref walkableHeight, 0f, 5f, "%.2f");
-            ImGui.SliderFloat("Radius", ref walkableRadius, 0f, 10f, "%.2f");
-            ImGui.SliderFloat("Max Climb", ref walkableClimb, 0f, 10f, "%.2f");
-            ImGui.Text($"Max Slope : {walkableSlopeAngle}");
-            ImGui.NewLine();
-
-            ImGui.Text("Partitioning");
-            ImGui.Separator();
-            RcPartitionType.Values.ForEach(partition =>
-            {
-                var label = partition.Name.Substring(0, 1).ToUpper()
-                            + partition.Name.Substring(1).ToLower();
-                ImGui.RadioButton(label, ref partitioning, partition.Value);
-            });
-            ImGui.NewLine();
-
-            ImGui.Text("Filtering");
-            ImGui.Separator();
-            ImGui.Checkbox("Low Hanging Obstacles", ref filterLowHangingObstacles);
-            ImGui.Checkbox("Ledge Spans", ref filterLedgeSpans);
-            ImGui.Checkbox("Walkable Low Height Spans", ref filterWalkableLowHeightSpans);
-            ImGui.NewLine();
-
-            ImGui.Text("Region");
-            ImGui.Separator();
-            ImGui.SliderFloat("Min Region Size", ref minRegionArea, 0, 150, "%.1f");
-            ImGui.SliderFloat("Merged Region Size", ref regionMergeSize, 0, 400, "%.1f");
-            ImGui.NewLine();
-
-            ImGui.Text("Polygonization");
-            ImGui.Separator();
-            ImGui.SliderFloat("Max Edge Length", ref maxEdgeLen, 0f, 50f, "%.1f");
-            ImGui.SliderFloat("Max Edge Error", ref maxSimplificationError, 0.1f, 10f, "%.1f");
-            ImGui.SliderInt("Verts Per Poly", ref vertsPerPoly, 3, 12);
-            ImGui.NewLine();
-
-            ImGui.Text("Detail Mesh");
-            ImGui.Separator();
-            ImGui.Checkbox("Enable", ref buildDetailMesh);
-            ImGui.SliderFloat("Sample Distance", ref detailSampleDist, 0f, 16f, "%.1f");
-            ImGui.SliderFloat("Max Sample Error", ref detailSampleMaxError, 0f, 16f, "%.1f");
-            ImGui.NewLine();
-
-            if (ImGui.Button("Build Dynamic mesh"))
-            {
-                if (dynaMesh != null)
-                {
-                    BuildDynaMesh();
-                    _sample.SetChanged(false);
-                }
-            }
-        }
-
-        if (mode == DynamicUpdateToolMode.COLLIDERS)
-        {
-            ImGui.Text("Colliders");
-            ImGui.Separator();
-            var prev = colliderShape;
-            ImGui.Checkbox("Show", ref showColliders);
-            ImGui.RadioButton("Sphere", ref colliderShapeIdx, (int)DynamicColliderShape.SPHERE);
-            ImGui.RadioButton("Capsule", ref colliderShapeIdx, (int)DynamicColliderShape.CAPSULE);
-            ImGui.RadioButton("Box", ref colliderShapeIdx, (int)DynamicColliderShape.BOX);
-            ImGui.RadioButton("Cylinder", ref colliderShapeIdx, (int)DynamicColliderShape.CYLINDER);
-            ImGui.RadioButton("Composite", ref colliderShapeIdx, (int)DynamicColliderShape.COMPOSITE);
-            ImGui.RadioButton("Convex Trimesh", ref colliderShapeIdx, (int)DynamicColliderShape.CONVEX);
-            ImGui.RadioButton("Trimesh Bridge", ref colliderShapeIdx, (int)DynamicColliderShape.TRIMESH_BRIDGE);
-            ImGui.RadioButton("Trimesh House", ref colliderShapeIdx, (int)DynamicColliderShape.TRIMESH_HOUSE);
-            ImGui.NewLine();
-
-            if ((int)prev != colliderShapeIdx)
-            {
-                colliderShape = (DynamicColliderShape)colliderShapeIdx;
-            }
-        }
-
-        if (mode == DynamicUpdateToolMode.RAYCAST)
-        {
-            ImGui.Text($"Raycast Time: {raycastTime} ms");
-            ImGui.Separator();
-            if (sposSet)
-            {
-                ImGui.Text($"Start: {spos.x}, {spos.y + 1.3f}, {spos.z}");
-            }
-
-            if (eposSet)
-            {
-                ImGui.Text($"End: {epos.x}, {epos.y + 1.3f}, {epos.z}");
-            }
-
-            if (raycastHit)
-            {
-                ImGui.Text($"Hit: {raycastHitPos.x}, {raycastHitPos.y}, {raycastHitPos.z}");
-            }
-
-            ImGui.NewLine();
-        }
-        else
-        {
-            ImGui.Text($"Build Time: {buildTime} ms");
         }
     }
 

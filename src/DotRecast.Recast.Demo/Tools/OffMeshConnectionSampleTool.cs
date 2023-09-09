@@ -45,6 +45,33 @@ public class OffMeshConnectionSampleTool : ISampleTool
         _tool = new();
     }
 
+    public void Layout()
+    {
+        var options = _tool.GetOption();
+        ImGui.RadioButton("One Way", ref options.bidir, 0);
+        ImGui.RadioButton("Bidirectional", ref options.bidir, 1);
+    }
+
+    public void HandleRender(NavMeshRenderer renderer)
+    {
+        RecastDebugDraw dd = renderer.GetDebugDraw();
+
+        var settings = _sample.GetSettings();
+        float s = settings.agentRadius;
+
+        if (hitPosSet)
+        {
+            dd.DebugDrawCross(hitPos.x, hitPos.y + 0.1f, hitPos.z, s, DuRGBA(0, 0, 0, 128), 2.0f);
+        }
+
+        DemoInputGeomProvider geom = _sample.GetInputGeom();
+        if (geom != null)
+        {
+            renderer.DrawOffMeshConnections(geom, true);
+        }
+    }
+
+
     public IRcToolable GetTool()
     {
         return _tool;
@@ -88,32 +115,6 @@ public class OffMeshConnectionSampleTool : ISampleTool
                 hitPosSet = false;
             }
         }
-    }
-
-    public void HandleRender(NavMeshRenderer renderer)
-    {
-        RecastDebugDraw dd = renderer.GetDebugDraw();
-
-        var settings = _sample.GetSettings();
-        float s = settings.agentRadius;
-
-        if (hitPosSet)
-        {
-            dd.DebugDrawCross(hitPos.x, hitPos.y + 0.1f, hitPos.z, s, DuRGBA(0, 0, 0, 128), 2.0f);
-        }
-
-        DemoInputGeomProvider geom = _sample.GetInputGeom();
-        if (geom != null)
-        {
-            renderer.DrawOffMeshConnections(geom, true);
-        }
-    }
-
-    public void Layout()
-    {
-        var options = _tool.GetOption();
-        ImGui.RadioButton("One Way", ref options.bidir, 0);
-        ImGui.RadioButton("Bidirectional", ref options.bidir, 1);
     }
 
 

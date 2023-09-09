@@ -54,6 +54,91 @@ public class ConvexVolumeSampleTool : ISampleTool
         _tool = new RcConvexVolumeTool();
     }
 
+    public void Layout()
+    {
+        ImGui.SliderFloat("Shape Height", ref boxHeight, 0.1f, 20f, "%.1f");
+        ImGui.SliderFloat("Shape Descent", ref boxDescent, 0.1f, 20f, "%.1f");
+        ImGui.SliderFloat("Poly Offset", ref polyOffset, 0.1f, 10f, "%.1f");
+        ImGui.NewLine();
+
+        ImGui.Text("Area Type");
+        ImGui.Separator();
+        int prevAreaTypeValue = areaTypeValue;
+        ImGui.RadioButton("Ground", ref areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_GROUND.Value);
+        ImGui.RadioButton("Water", ref areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_WATER.Value);
+        ImGui.RadioButton("Road", ref areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_ROAD.Value);
+        ImGui.RadioButton("Door", ref areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_DOOR.Value);
+        ImGui.RadioButton("Grass", ref areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_GRASS.Value);
+        ImGui.RadioButton("Jump", ref areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_JUMP.Value);
+        ImGui.NewLine();
+
+        if (prevAreaTypeValue != areaTypeValue)
+        {
+            areaType = SampleAreaModifications.OfValue(areaTypeValue);
+        }
+
+        if (ImGui.Button("Clear Shape"))
+        {
+            hull.Clear();
+            pts.Clear();
+        }
+
+        if (ImGui.Button("Remove All"))
+        {
+            hull.Clear();
+            pts.Clear();
+
+            var geom = _sample.GetInputGeom();
+            if (geom != null)
+            {
+                geom.ClearConvexVolumes();
+            }
+        }
+    }
+
+    public void HandleRender(NavMeshRenderer renderer)
+    {
+        RecastDebugDraw dd = renderer.GetDebugDraw();
+        // Find height extent of the shape.
+        float minh = float.MaxValue, maxh = 0;
+        for (int i = 0; i < pts.Count; ++i)
+        {
+            minh = Math.Min(minh, pts[i].y);
+        }
+
+        minh -= boxDescent;
+        maxh = minh + boxHeight;
+
+        dd.Begin(POINTS, 4.0f);
+        for (int i = 0; i < pts.Count; ++i)
+        {
+            int col = DuRGBA(255, 255, 255, 255);
+            if (i == pts.Count - 1)
+            {
+                col = DuRGBA(240, 32, 16, 255);
+            }
+
+            dd.Vertex(pts[i].x, pts[i].y + 0.1f, pts[i].z, col);
+        }
+
+        dd.End();
+
+        dd.Begin(LINES, 2.0f);
+        for (int i = 0, j = hull.Count - 1; i < hull.Count; j = i++)
+        {
+            int vi = hull[j];
+            int vj = hull[i];
+            dd.Vertex(pts[vj].x, minh, pts[vj].z, DuRGBA(255, 255, 255, 64));
+            dd.Vertex(pts[vi].x, minh, pts[vi].z, DuRGBA(255, 255, 255, 64));
+            dd.Vertex(pts[vj].x, maxh, pts[vj].z, DuRGBA(255, 255, 255, 64));
+            dd.Vertex(pts[vi].x, maxh, pts[vi].z, DuRGBA(255, 255, 255, 64));
+            dd.Vertex(pts[vj].x, minh, pts[vj].z, DuRGBA(255, 255, 255, 64));
+            dd.Vertex(pts[vj].x, maxh, pts[vj].z, DuRGBA(255, 255, 255, 64));
+        }
+
+        dd.End();
+    }
+
     public IRcToolable GetTool()
     {
         return _tool;
@@ -115,90 +200,6 @@ public class ConvexVolumeSampleTool : ISampleTool
         }
     }
 
-    public void HandleRender(NavMeshRenderer renderer)
-    {
-        RecastDebugDraw dd = renderer.GetDebugDraw();
-        // Find height extent of the shape.
-        float minh = float.MaxValue, maxh = 0;
-        for (int i = 0; i < pts.Count; ++i)
-        {
-            minh = Math.Min(minh, pts[i].y);
-        }
-
-        minh -= boxDescent;
-        maxh = minh + boxHeight;
-
-        dd.Begin(POINTS, 4.0f);
-        for (int i = 0; i < pts.Count; ++i)
-        {
-            int col = DuRGBA(255, 255, 255, 255);
-            if (i == pts.Count - 1)
-            {
-                col = DuRGBA(240, 32, 16, 255);
-            }
-
-            dd.Vertex(pts[i].x, pts[i].y + 0.1f, pts[i].z, col);
-        }
-
-        dd.End();
-
-        dd.Begin(LINES, 2.0f);
-        for (int i = 0, j = hull.Count - 1; i < hull.Count; j = i++)
-        {
-            int vi = hull[j];
-            int vj = hull[i];
-            dd.Vertex(pts[vj].x, minh, pts[vj].z, DuRGBA(255, 255, 255, 64));
-            dd.Vertex(pts[vi].x, minh, pts[vi].z, DuRGBA(255, 255, 255, 64));
-            dd.Vertex(pts[vj].x, maxh, pts[vj].z, DuRGBA(255, 255, 255, 64));
-            dd.Vertex(pts[vi].x, maxh, pts[vi].z, DuRGBA(255, 255, 255, 64));
-            dd.Vertex(pts[vj].x, minh, pts[vj].z, DuRGBA(255, 255, 255, 64));
-            dd.Vertex(pts[vj].x, maxh, pts[vj].z, DuRGBA(255, 255, 255, 64));
-        }
-
-        dd.End();
-    }
-
-    public void Layout()
-    {
-        ImGui.SliderFloat("Shape Height", ref boxHeight, 0.1f, 20f, "%.1f");
-        ImGui.SliderFloat("Shape Descent", ref boxDescent, 0.1f, 20f, "%.1f");
-        ImGui.SliderFloat("Poly Offset", ref polyOffset, 0.1f, 10f, "%.1f");
-        ImGui.NewLine();
-
-        ImGui.Text("Area Type");
-        ImGui.Separator();
-        int prevAreaTypeValue = areaTypeValue;
-        ImGui.RadioButton("Ground", ref areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_GROUND.Value);
-        ImGui.RadioButton("Water", ref areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_WATER.Value);
-        ImGui.RadioButton("Road", ref areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_ROAD.Value);
-        ImGui.RadioButton("Door", ref areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_DOOR.Value);
-        ImGui.RadioButton("Grass", ref areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_GRASS.Value);
-        ImGui.RadioButton("Jump", ref areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_JUMP.Value);
-        ImGui.NewLine();
-
-        if (prevAreaTypeValue != areaTypeValue)
-        {
-            areaType = SampleAreaModifications.OfValue(areaTypeValue);
-        }
-
-        if (ImGui.Button("Clear Shape"))
-        {
-            hull.Clear();
-            pts.Clear();
-        }
-
-        if (ImGui.Button("Remove All"))
-        {
-            hull.Clear();
-            pts.Clear();
-
-            var geom = _sample.GetInputGeom();
-            if (geom != null)
-            {
-                geom.ClearConvexVolumes();
-            }
-        }
-    }
 
     public void HandleUpdate(float dt)
     {

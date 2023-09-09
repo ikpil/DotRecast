@@ -42,24 +42,78 @@ public class JumpLinkBuilderSampleTool : ISampleTool
         _option = new();
     }
 
-    public IRcToolable GetTool()
+    public void Layout()
     {
-        return _tool;
-    }
+        if (0 >= _sample.GetRecastResults().Count)
+            return;
 
-    public void SetSample(DemoSample sample)
-    {
-        _sample = sample;
-    }
+        ImGui.Text("Options");
+        ImGui.Separator();
+        ImGui.SliderFloat("Ground Tolerance", ref _option.groundTolerance, 0f, 2f, "%.2f");
+        ImGui.NewLine();
 
-    public void OnSampleChanged()
-    {
-        _tool.Clear();
-    }
+        ImGui.Text("Climb Down");
+        ImGui.Separator();
+        ImGui.SliderFloat("Distance", ref _option.climbDownDistance, 0f, 5f, "%.2f");
+        ImGui.SliderFloat("Min Cliff Height", ref _option.climbDownMinHeight, 0f, 10f, "%.2f");
+        ImGui.SliderFloat("Max Cliff Height", ref _option.climbDownMaxHeight, 0f, 10f, "%.2f");
+        ImGui.NewLine();
 
+        ImGui.Text("Jump Down");
+        ImGui.Separator();
+        ImGui.SliderFloat("Max Distance", ref _option.edgeJumpEndDistance, 0f, 10f, "%.2f");
+        ImGui.SliderFloat("Jump Height", ref _option.edgeJumpHeight, 0f, 10f, "%.2f");
+        ImGui.SliderFloat("Max Jump Down", ref _option.edgeJumpDownMaxHeight, 0f, 10f, "%.2f");
+        ImGui.SliderFloat("Max Jump Up", ref _option.edgeJumpUpMaxHeight, 0f, 10f, "%.2f");
+        ImGui.NewLine();
 
-    public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
-    {
+        ImGui.Text("Mode");
+        ImGui.Separator();
+        //int buildTypes = 0;
+        ImGui.CheckboxFlags("Climb Down", ref _option.buildTypes, JumpLinkType.EDGE_CLIMB_DOWN.Bit);
+        ImGui.CheckboxFlags("Edge Jump", ref _option.buildTypes, JumpLinkType.EDGE_JUMP.Bit);
+        //option.buildTypes = buildTypes;
+        bool build = false;
+        bool buildOffMeshConnections = false;
+        if (ImGui.Button("Build Jump Link"))
+        {
+            build = true;
+        }
+
+        if (ImGui.Button("Build Off-Mesh Links"))
+        {
+            buildOffMeshConnections = true;
+        }
+
+        if (build || buildOffMeshConnections)
+        {
+            var geom = _sample.GetInputGeom();
+            var settings = _sample.GetSettings();
+
+            _tool.Build(
+                geom, settings, _sample.GetRecastResults(),
+                buildOffMeshConnections,
+                _option.buildTypes,
+                _option.groundTolerance,
+                _option.climbDownDistance,
+                _option.climbDownMaxHeight,
+                _option.climbDownMinHeight,
+                _option.edgeJumpEndDistance,
+                _option.edgeJumpHeight,
+                _option.edgeJumpDownMaxHeight,
+                _option.edgeJumpUpMaxHeight
+            );
+        }
+
+        ImGui.Text("Debug Draw Options");
+        ImGui.Separator();
+        //int newFlags = 0;
+        ImGui.CheckboxFlags("Walkable Border", ref _option.flags, RcJumpLinkBuilderToolOption.DRAW_WALKABLE_BORDER);
+        ImGui.CheckboxFlags("Selected Edge", ref _option.flags, RcJumpLinkBuilderToolOption.DRAW_SELECTED_EDGE);
+        ImGui.CheckboxFlags("Anim Trajectory", ref _option.flags, RcJumpLinkBuilderToolOption.DRAW_ANIM_TRAJECTORY);
+        ImGui.CheckboxFlags("Land Samples", ref _option.flags, RcJumpLinkBuilderToolOption.DRAW_LAND_SAMPLES);
+        ImGui.CheckboxFlags("All Annotations", ref _option.flags, RcJumpLinkBuilderToolOption.DRAW_ANNOTATIONS);
+        //option.flags = newFlags;
     }
 
     public void HandleRender(NavMeshRenderer renderer)
@@ -326,86 +380,34 @@ public class JumpLinkBuilderSampleTool : ISampleTool
         dd.DepthMask(true);
     }
 
+
+    public IRcToolable GetTool()
+    {
+        return _tool;
+    }
+
+    public void SetSample(DemoSample sample)
+    {
+        _sample = sample;
+    }
+
+    public void OnSampleChanged()
+    {
+        _tool.Clear();
+    }
+
+
+    public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
+    {
+    }
+
+
     private void DrawTrajectory(RecastDebugDraw dd, JumpLink link, RcVec3f pa, RcVec3f pb, Trajectory tra, int cola)
     {
     }
 
     public void HandleUpdate(float dt)
     {
-    }
-
-    public void Layout()
-    {
-        if (0 >= _sample.GetRecastResults().Count)
-            return;
-
-        ImGui.Text("Options");
-        ImGui.Separator();
-        ImGui.SliderFloat("Ground Tolerance", ref _option.groundTolerance, 0f, 2f, "%.2f");
-        ImGui.NewLine();
-
-        ImGui.Text("Climb Down");
-        ImGui.Separator();
-        ImGui.SliderFloat("Distance", ref _option.climbDownDistance, 0f, 5f, "%.2f");
-        ImGui.SliderFloat("Min Cliff Height", ref _option.climbDownMinHeight, 0f, 10f, "%.2f");
-        ImGui.SliderFloat("Max Cliff Height", ref _option.climbDownMaxHeight, 0f, 10f, "%.2f");
-        ImGui.NewLine();
-
-        ImGui.Text("Jump Down");
-        ImGui.Separator();
-        ImGui.SliderFloat("Max Distance", ref _option.edgeJumpEndDistance, 0f, 10f, "%.2f");
-        ImGui.SliderFloat("Jump Height", ref _option.edgeJumpHeight, 0f, 10f, "%.2f");
-        ImGui.SliderFloat("Max Jump Down", ref _option.edgeJumpDownMaxHeight, 0f, 10f, "%.2f");
-        ImGui.SliderFloat("Max Jump Up", ref _option.edgeJumpUpMaxHeight, 0f, 10f, "%.2f");
-        ImGui.NewLine();
-
-        ImGui.Text("Mode");
-        ImGui.Separator();
-        //int buildTypes = 0;
-        ImGui.CheckboxFlags("Climb Down", ref _option.buildTypes, JumpLinkType.EDGE_CLIMB_DOWN.Bit);
-        ImGui.CheckboxFlags("Edge Jump", ref _option.buildTypes, JumpLinkType.EDGE_JUMP.Bit);
-        //option.buildTypes = buildTypes;
-        bool build = false;
-        bool buildOffMeshConnections = false;
-        if (ImGui.Button("Build Jump Link"))
-        {
-            build = true;
-        }
-
-        if (ImGui.Button("Build Off-Mesh Links"))
-        {
-            buildOffMeshConnections = true;
-        }
-
-        if (build || buildOffMeshConnections)
-        {
-            var geom = _sample.GetInputGeom();
-            var settings = _sample.GetSettings();
-
-            _tool.Build(
-                geom, settings, _sample.GetRecastResults(),
-                buildOffMeshConnections,
-                _option.buildTypes,
-                _option.groundTolerance,
-                _option.climbDownDistance,
-                _option.climbDownMaxHeight,
-                _option.climbDownMinHeight,
-                _option.edgeJumpEndDistance,
-                _option.edgeJumpHeight,
-                _option.edgeJumpDownMaxHeight,
-                _option.edgeJumpUpMaxHeight
-            );
-        }
-
-        ImGui.Text("Debug Draw Options");
-        ImGui.Separator();
-        //int newFlags = 0;
-        ImGui.CheckboxFlags("Walkable Border", ref _option.flags, RcJumpLinkBuilderToolOption.DRAW_WALKABLE_BORDER);
-        ImGui.CheckboxFlags("Selected Edge", ref _option.flags, RcJumpLinkBuilderToolOption.DRAW_SELECTED_EDGE);
-        ImGui.CheckboxFlags("Anim Trajectory", ref _option.flags, RcJumpLinkBuilderToolOption.DRAW_ANIM_TRAJECTORY);
-        ImGui.CheckboxFlags("Land Samples", ref _option.flags, RcJumpLinkBuilderToolOption.DRAW_LAND_SAMPLES);
-        ImGui.CheckboxFlags("All Annotations", ref _option.flags, RcJumpLinkBuilderToolOption.DRAW_ANNOTATIONS);
-        //option.flags = newFlags;
     }
 
 

@@ -65,6 +65,124 @@ public class CrowdProfilingSampleTool : ISampleTool
         _tool = new();
     }
 
+    public void Layout()
+    {
+        var prevOptimizeVis = _option.optimizeVis;
+        var prevOptimizeTopo = _option.optimizeTopo;
+        var prevAnticipateTurns = _option.anticipateTurns;
+        var prevObstacleAvoidance = _option.obstacleAvoidance;
+        var prevSeparation = _option.separation;
+        var prevObstacleAvoidanceType = _option.obstacleAvoidanceType;
+        var prevSeparationWeight = _option.separationWeight;
+
+        ImGui.Text("Options");
+        ImGui.Separator();
+        ImGui.Checkbox("Optimize Visibility", ref _option.optimizeVis);
+        ImGui.Checkbox("Optimize Topology", ref _option.optimizeTopo);
+        ImGui.Checkbox("Anticipate Turns", ref _option.anticipateTurns);
+        ImGui.Checkbox("Obstacle Avoidance", ref _option.obstacleAvoidance);
+        ImGui.SliderInt("Avoidance Quality", ref _option.obstacleAvoidanceType, 0, 3);
+        ImGui.Checkbox("Separation", ref _option.separation);
+        ImGui.SliderFloat("Separation Weight", ref _option.separationWeight, 0f, 20f, "%.2f");
+        ImGui.NewLine();
+
+        if (prevOptimizeVis != _option.optimizeVis || prevOptimizeTopo != _option.optimizeTopo
+                                                   || prevAnticipateTurns != _option.anticipateTurns
+                                                   || prevObstacleAvoidance != _option.obstacleAvoidance
+                                                   || prevSeparation != _option.separation
+                                                   || prevObstacleAvoidanceType != _option.obstacleAvoidanceType
+                                                   || !prevSeparationWeight.Equals(_option.separationWeight))
+        {
+            UpdateAgentParams();
+        }
+
+        ImGui.Text("Simulation Options");
+        ImGui.Separator();
+        ImGui.SliderInt("Agents", ref agents, 0, 10000);
+        ImGui.SliderInt("Random Seed", ref randomSeed, 0, 1024);
+        ImGui.SliderInt("Number of Zones", ref numberOfZones, 0, 10);
+        ImGui.SliderFloat("Zone Radius", ref zoneRadius, 0, 100, "%.0f");
+        ImGui.SliderFloat("Mobs %", ref percentMobs, 0, 100, "%.0f");
+        ImGui.SliderFloat("Travellers %", ref percentTravellers, 0, 100, "%.0f");
+        ImGui.NewLine();
+
+        ImGui.Text("Crowd Options");
+        ImGui.Separator();
+        ImGui.SliderInt("Path Queue Size", ref pathQueueSize, 0, 1024);
+        ImGui.SliderInt("Max Iterations", ref maxIterations, 0, 4000);
+        ImGui.NewLine();
+
+        if (ImGui.Button("Start Crowd Profiling"))
+        {
+            StartProfiling();
+        }
+
+        ImGui.Text("Times");
+        ImGui.Separator();
+        if (crowd != null)
+        {
+            ImGui.Text($"Max time to enqueue request: {crowd.Telemetry().MaxTimeToEnqueueRequest()} s");
+            ImGui.Text($"Max time to find path: {crowd.Telemetry().MaxTimeToFindPath()} s");
+            var timings = crowd.Telemetry().ToExecutionTimings();
+            foreach (var rtt in timings)
+            {
+                ImGui.Text($"{rtt.Key}: {rtt.Micros} us");
+            }
+
+            ImGui.Text($"Update Time: {crowdUpdateTime} ms");
+        }
+    }
+
+    public void HandleRender(NavMeshRenderer renderer)
+    {
+        RecastDebugDraw dd = renderer.GetDebugDraw();
+        dd.DepthMask(false);
+        if (crowd != null)
+        {
+            foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
+            {
+                float radius = ag.option.radius;
+                RcVec3f pos = ag.npos;
+                dd.DebugDrawCircle(pos.x, pos.y, pos.z, radius, DuRGBA(0, 0, 0, 32), 2.0f);
+            }
+
+            foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
+            {
+                CrowdAgentData crowAgentData = (CrowdAgentData)ag.option.userData;
+
+                float height = ag.option.height;
+                float radius = ag.option.radius;
+                RcVec3f pos = ag.npos;
+
+                int col = DuRGBA(220, 220, 220, 128);
+                if (crowAgentData.type == CrowdAgentType.TRAVELLER)
+                {
+                    col = DuRGBA(100, 160, 100, 128);
+                }
+
+                if (crowAgentData.type == CrowdAgentType.VILLAGER)
+                {
+                    col = DuRGBA(120, 80, 160, 128);
+                }
+
+                if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING
+                    || ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE)
+                    col = DuLerpCol(col, DuRGBA(255, 255, 32, 128), 128);
+                else if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_PATH)
+                    col = DuLerpCol(col, DuRGBA(255, 64, 32, 128), 128);
+                else if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_FAILED)
+                    col = DuRGBA(255, 32, 16, 128);
+                else if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
+                    col = DuLerpCol(col, DuRGBA(64, 255, 0, 128), 128);
+
+                dd.DebugDrawCylinder(pos.x - radius, pos.y + radius * 0.1f, pos.z - radius, pos.x + radius, pos.y + height,
+                    pos.z + radius, col);
+            }
+        }
+
+        dd.DepthMask(true);
+    }
+
     public void SetSample(DemoSample sample)
     {
         _sample = sample;
@@ -105,81 +223,6 @@ public class CrowdProfilingSampleTool : ISampleTool
         return _tool;
     }
 
-    public void Layout()
-    {
-        ImGui.Text("Options");
-        ImGui.Separator();
-        bool m_optimizeVis = _option.optimizeVis;
-        bool m_optimizeTopo = _option.optimizeTopo;
-        bool m_anticipateTurns = _option.anticipateTurns;
-        bool m_obstacleAvoidance = _option.obstacleAvoidance;
-        bool m_separation = _option.separation;
-        int m_obstacleAvoidanceType = _option.obstacleAvoidanceType;
-        float m_separationWeight = _option.separationWeight;
-        ImGui.Checkbox("Optimize Visibility", ref _option.optimizeVis);
-        ImGui.Checkbox("Optimize Topology", ref _option.optimizeTopo);
-        ImGui.Checkbox("Anticipate Turns", ref _option.anticipateTurns);
-        ImGui.Checkbox("Obstacle Avoidance", ref _option.obstacleAvoidance);
-        ImGui.SliderInt("Avoidance Quality", ref _option.obstacleAvoidanceType, 0, 3);
-        ImGui.Checkbox("Separation", ref _option.separation);
-        ImGui.SliderFloat("Separation Weight", ref _option.separationWeight, 0f, 20f, "%.2f");
-        ImGui.NewLine();
-
-        if (m_optimizeVis != _option.optimizeVis || m_optimizeTopo != _option.optimizeTopo
-                                                      || m_anticipateTurns != _option.anticipateTurns || m_obstacleAvoidance != _option.obstacleAvoidance
-                                                      || m_separation != _option.separation
-                                                      || m_obstacleAvoidanceType != _option.obstacleAvoidanceType
-                                                      || m_separationWeight != _option.separationWeight)
-        {
-            UpdateAgentParams();
-        }
-
-        ImGui.Text("Simulation Options");
-        ImGui.Separator();
-        ImGui.SliderInt("Agents", ref agents, 0, 10000);
-        ImGui.SliderInt("Random Seed", ref randomSeed, 0, 1024);
-        ImGui.SliderInt("Number of Zones", ref numberOfZones, 0, 10);
-        ImGui.SliderFloat("Zone Radius", ref zoneRadius, 0, 100, "%.0f");
-        ImGui.SliderFloat("Mobs %", ref percentMobs, 0, 100, "%.0f");
-        ImGui.SliderFloat("Travellers %", ref percentTravellers, 0, 100, "%.0f");
-        ImGui.NewLine();
-
-        ImGui.Text("Crowd Options");
-        ImGui.Separator();
-        ImGui.SliderInt("Path Queue Size", ref pathQueueSize, 0, 1024);
-        ImGui.SliderInt("Max Iterations", ref maxIterations, 0, 4000);
-        ImGui.NewLine();
-
-        if (ImGui.Button("Start Crowd Profiling"))
-        {
-            StartProfiling();
-        }
-
-        if (m_optimizeVis != _option.optimizeVis || m_optimizeTopo != _option.optimizeTopo
-                                                      || m_anticipateTurns != _option.anticipateTurns || m_obstacleAvoidance != _option.obstacleAvoidance
-                                                      || m_separation != _option.separation
-                                                      || m_obstacleAvoidanceType != _option.obstacleAvoidanceType
-                                                      || m_separationWeight != _option.separationWeight)
-        {
-            UpdateAgentParams();
-        }
-
-
-        ImGui.Text("Times");
-        ImGui.Separator();
-        if (crowd != null)
-        {
-            ImGui.Text($"Max time to enqueue request: {crowd.Telemetry().MaxTimeToEnqueueRequest()} s");
-            ImGui.Text($"Max time to find path: {crowd.Telemetry().MaxTimeToFindPath()} s");
-            var timings = crowd.Telemetry().ToExecutionTimings();
-            foreach (var rtt in timings)
-            {
-                ImGui.Text($"{rtt.Key}: {rtt.Micros} us");
-            }
-
-            ImGui.Text($"Update Time: {crowdUpdateTime} ms");
-        }
-    }
 
     public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
@@ -435,55 +478,6 @@ public class CrowdProfilingSampleTool : ISampleTool
         }
     }
 
-    public void HandleRender(NavMeshRenderer renderer)
-    {
-        RecastDebugDraw dd = renderer.GetDebugDraw();
-        dd.DepthMask(false);
-        if (crowd != null)
-        {
-            foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
-            {
-                float radius = ag.option.radius;
-                RcVec3f pos = ag.npos;
-                dd.DebugDrawCircle(pos.x, pos.y, pos.z, radius, DuRGBA(0, 0, 0, 32), 2.0f);
-            }
-
-            foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
-            {
-                CrowdAgentData crowAgentData = (CrowdAgentData)ag.option.userData;
-
-                float height = ag.option.height;
-                float radius = ag.option.radius;
-                RcVec3f pos = ag.npos;
-
-                int col = DuRGBA(220, 220, 220, 128);
-                if (crowAgentData.type == CrowdAgentType.TRAVELLER)
-                {
-                    col = DuRGBA(100, 160, 100, 128);
-                }
-
-                if (crowAgentData.type == CrowdAgentType.VILLAGER)
-                {
-                    col = DuRGBA(120, 80, 160, 128);
-                }
-
-                if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING
-                    || ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE)
-                    col = DuLerpCol(col, DuRGBA(255, 255, 32, 128), 128);
-                else if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_PATH)
-                    col = DuLerpCol(col, DuRGBA(255, 64, 32, 128), 128);
-                else if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_FAILED)
-                    col = DuRGBA(255, 32, 16, 128);
-                else if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
-                    col = DuLerpCol(col, DuRGBA(64, 255, 0, 128), 128);
-
-                dd.DebugDrawCylinder(pos.x - radius, pos.y + radius * 0.1f, pos.z - radius, pos.x + radius, pos.y + height,
-                    pos.z + radius, col);
-            }
-        }
-
-        dd.DepthMask(true);
-    }
 
     public void HandleUpdate(float dt)
     {

@@ -25,26 +25,12 @@ public class TileSampleTool : ISampleTool
         _tool = new();
     }
 
-    public IRcToolable GetTool()
-    {
-        return _tool;
-    }
-
-    public void SetSample(DemoSample sample)
-    {
-        _sample = sample;
-    }
-
-    public void OnSampleChanged()
-    {
-    }
-
     public void Layout()
     {
         var geom = _sample.GetInputGeom();
         var settings = _sample.GetSettings();
         var navMesh = _sample.GetNavMesh();
-        
+
         if (ImGui.Button("Create All Tile"))
         {
             _tool.BuildAllTiles(geom, settings, navMesh);
@@ -53,33 +39,6 @@ public class TileSampleTool : ISampleTool
         if (ImGui.Button("Remove All Tile"))
         {
             _tool.RemoveAllTiles(geom, settings, navMesh);
-        }
-    }
-
-    public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
-    {
-        _hitPosSet = true;
-        _hitPos = p;
-
-        var geom = _sample.GetInputGeom();
-        var settings = _sample.GetSettings();
-        var navMesh = _sample.GetNavMesh();
-
-        if (shift)
-        {
-            _tool.RemoveTile(geom, settings, navMesh, _hitPos);
-        }
-        else
-        {
-            bool built = _tool.BuildTile(geom, settings, navMesh, _hitPos, out var tileBuildTicks, out var tileTriCount, out var tileMemUsage);
-            if (!built)
-            {
-                Logger.Error($"failed to build tile - check!");
-            }
-            else
-            {
-                Logger.Information($"{tileBuildTicks / (float)TimeSpan.TicksPerMillisecond}ms / {tileTriCount}Tris / {tileMemUsage}kB ");
-            }
         }
     }
 
@@ -123,6 +82,49 @@ public class TileSampleTool : ISampleTool
             // 표기
         }
     }
+
+    public IRcToolable GetTool()
+    {
+        return _tool;
+    }
+
+    public void SetSample(DemoSample sample)
+    {
+        _sample = sample;
+    }
+
+    public void OnSampleChanged()
+    {
+    }
+
+
+    public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
+    {
+        _hitPosSet = true;
+        _hitPos = p;
+
+        var geom = _sample.GetInputGeom();
+        var settings = _sample.GetSettings();
+        var navMesh = _sample.GetNavMesh();
+
+        if (shift)
+        {
+            _tool.RemoveTile(geom, settings, navMesh, _hitPos);
+        }
+        else
+        {
+            bool built = _tool.BuildTile(geom, settings, navMesh, _hitPos, out var tileBuildTicks, out var tileTriCount, out var tileMemUsage);
+            if (!built)
+            {
+                Logger.Error($"failed to build tile - check!");
+            }
+            else
+            {
+                Logger.Information($"{tileBuildTicks / (float)TimeSpan.TicksPerMillisecond}ms / {tileTriCount}Tris / {tileMemUsage}kB ");
+            }
+        }
+    }
+
 
     public void HandleUpdate(float dt)
     {
