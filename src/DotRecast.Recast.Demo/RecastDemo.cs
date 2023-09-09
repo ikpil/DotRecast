@@ -497,7 +497,11 @@ public class RecastDemo : IRecastDemoChannel
             timeAcc -= DELTA_TIME;
             if (simIter < 5 && _sample != null)
             {
-                toolset.HandleUpdate(DELTA_TIME);
+                var tool = toolset.GetTool();
+                if (null != tool)
+                {
+                    tool.HandleUpdate(DELTA_TIME);
+                }
             }
 
             simIter++;
