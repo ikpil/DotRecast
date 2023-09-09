@@ -1,8 +1,6 @@
-using DotRecast.Detour.Crowd;
-
-namespace DotRecast.Recast.Toolset.Tools
+﻿namespace DotRecast.Detour.Crowd
 {
-    public class CrowdConfig
+    public class DtCrowdAgentConfig
     {
         public int expandOptions = 1;
         public bool anticipateTurns = true;

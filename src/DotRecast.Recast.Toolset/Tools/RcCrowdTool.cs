@@ -10,7 +10,7 @@ namespace DotRecast.Recast.Toolset.Tools
 {
     public class RcCrowdTool : IRcToolable
     {
-        private readonly CrowdConfig _cfg;
+        private readonly DtCrowdAgentConfig _agCfg;
         private DtCrowd crowd;
         private readonly DtCrowdAgentDebugInfo _agentDebug;
         private long crowdUpdateTime;
@@ -20,7 +20,7 @@ namespace DotRecast.Recast.Toolset.Tools
 
         public RcCrowdTool()
         {
-            _cfg = new CrowdConfig();
+            _agCfg = new DtCrowdAgentConfig();
             _agentDebug = new DtCrowdAgentDebugInfo();
             _agentDebug.vod = new DtObstacleAvoidanceDebugData(2048);
             _trails = new Dictionary<long, CrowdAgentTrail>();
@@ -32,9 +32,9 @@ namespace DotRecast.Recast.Toolset.Tools
             return "Crowd Control";
         }
 
-        public CrowdConfig GetCrowdConfig()
+        public DtCrowdAgentConfig GetCrowdConfig()
         {
-            return _cfg;
+            return _agCfg;
         }
 
         public DtCrowdAgentDebugInfo GetCrowdAgentDebugInfo()
@@ -119,9 +119,9 @@ namespace DotRecast.Recast.Toolset.Tools
                 agOption.obstacleAvoidanceType = ag.option.obstacleAvoidanceType;
                 agOption.queryFilterType = ag.option.queryFilterType;
                 agOption.userData = ag.option.userData;
-                agOption.updateFlags = _cfg.GetUpdateFlags();
-                agOption.obstacleAvoidanceType = _cfg.obstacleAvoidanceType;
-                agOption.separationWeight = _cfg.separationWeight;
+                agOption.updateFlags = _agCfg.GetUpdateFlags();
+                agOption.obstacleAvoidanceType = _agCfg.obstacleAvoidanceType;
+                agOption.separationWeight = _agCfg.separationWeight;
                 crowd.UpdateAgentParameters(ag, agOption);
             }
         }
@@ -206,9 +206,9 @@ namespace DotRecast.Recast.Toolset.Tools
             ap.maxSpeed = agentMaxSpeed;
             ap.collisionQueryRange = ap.radius * 12.0f;
             ap.pathOptimizationRange = ap.radius * 30.0f;
-            ap.updateFlags = _cfg.GetUpdateFlags();
-            ap.obstacleAvoidanceType = _cfg.obstacleAvoidanceType;
-            ap.separationWeight = _cfg.separationWeight;
+            ap.updateFlags = _agCfg.GetUpdateFlags();
+            ap.obstacleAvoidanceType = _agCfg.obstacleAvoidanceType;
+            ap.separationWeight = _agCfg.separationWeight;
             return ap;
         }
 
