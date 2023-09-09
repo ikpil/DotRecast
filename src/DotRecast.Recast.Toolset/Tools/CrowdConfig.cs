@@ -2,7 +2,7 @@ using DotRecast.Detour.Crowd;
 
 namespace DotRecast.Recast.Toolset.Tools
 {
-    public class CrowdOption
+    public class CrowdConfig
     {
         public int expandOptions = 1;
         public bool anticipateTurns = true;

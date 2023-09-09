@@ -1,10 +1,313 @@
-﻿namespace DotRecast.Recast.Toolset.Tools
+﻿using System;
+using System.Collections.Generic;
+using DotRecast.Core;
+using DotRecast.Detour;
+using DotRecast.Detour.Crowd;
+using DotRecast.Detour.Crowd.Tracking;
+using DotRecast.Recast.Toolset.Builder;
+
+namespace DotRecast.Recast.Toolset.Tools
 {
     public class RcCrowdTool : IRcToolable
     {
+        private readonly CrowdConfig _cfg;
+        private DtCrowd crowd;
+        private readonly DtCrowdAgentDebugInfo _agentDebug;
+        private long crowdUpdateTime;
+        private readonly Dictionary<long, CrowdAgentTrail> _trails;
+        private long _moveTargetRef;
+        private RcVec3f _moveTargetPos;
+
+        public RcCrowdTool()
+        {
+            _cfg = new CrowdConfig();
+            _agentDebug = new DtCrowdAgentDebugInfo();
+            _agentDebug.vod = new DtObstacleAvoidanceDebugData(2048);
+            _trails = new Dictionary<long, CrowdAgentTrail>();
+        }
+
+
         public string GetName()
         {
             return "Crowd Control";
+        }
+
+        public CrowdConfig GetCrowdConfig()
+        {
+            return _cfg;
+        }
+
+        public DtCrowdAgentDebugInfo GetCrowdAgentDebugInfo()
+        {
+            return _agentDebug;
+        }
+
+        public Dictionary<long, CrowdAgentTrail> GetCrowdAgentTrails()
+        {
+            return _trails;
+        }
+
+        public long GetMoveTargetRef()
+        {
+            return _moveTargetRef;
+        }
+
+        public RcVec3f GetMoveTargetPos()
+        {
+            return _moveTargetPos;
+        }
+
+        public void Setup(float agentRadius, DtNavMesh navMesh)
+        {
+            DtCrowdConfig config = new DtCrowdConfig(agentRadius);
+            crowd = new DtCrowd(config, navMesh, __ => new DtQueryDefaultFilter(
+                SampleAreaModifications.SAMPLE_POLYFLAGS_ALL,
+                SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED,
+                new float[] { 1f, 10f, 1f, 1f, 2f, 1.5f })
+            );
+
+            // Setup local avoidance option to different qualities.
+            // Use mostly default settings, copy from dtCrowd.
+            DtObstacleAvoidanceParams option = new DtObstacleAvoidanceParams(crowd.GetObstacleAvoidanceParams(0));
+
+            // Low (11)
+            option.velBias = 0.5f;
+            option.adaptiveDivs = 5;
+            option.adaptiveRings = 2;
+            option.adaptiveDepth = 1;
+            crowd.SetObstacleAvoidanceParams(0, option);
+
+            // Medium (22)
+            option.velBias = 0.5f;
+            option.adaptiveDivs = 5;
+            option.adaptiveRings = 2;
+            option.adaptiveDepth = 2;
+            crowd.SetObstacleAvoidanceParams(1, option);
+
+            // Good (45)
+            option.velBias = 0.5f;
+            option.adaptiveDivs = 7;
+            option.adaptiveRings = 2;
+            option.adaptiveDepth = 3;
+            crowd.SetObstacleAvoidanceParams(2, option);
+
+            // High (66)
+            option.velBias = 0.5f;
+            option.adaptiveDivs = 7;
+            option.adaptiveRings = 3;
+            option.adaptiveDepth = 3;
+
+            crowd.SetObstacleAvoidanceParams(3, option);
+        }
+
+        public void UpdateAgentParams()
+        {
+            if (crowd == null)
+            {
+                return;
+            }
+
+            foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
+            {
+                DtCrowdAgentParams agOption = new DtCrowdAgentParams();
+                agOption.radius = ag.option.radius;
+                agOption.height = ag.option.height;
+                agOption.maxAcceleration = ag.option.maxAcceleration;
+                agOption.maxSpeed = ag.option.maxSpeed;
+                agOption.collisionQueryRange = ag.option.collisionQueryRange;
+                agOption.pathOptimizationRange = ag.option.pathOptimizationRange;
+                agOption.obstacleAvoidanceType = ag.option.obstacleAvoidanceType;
+                agOption.queryFilterType = ag.option.queryFilterType;
+                agOption.userData = ag.option.userData;
+                agOption.updateFlags = _cfg.GetUpdateFlags();
+                agOption.obstacleAvoidanceType = _cfg.obstacleAvoidanceType;
+                agOption.separationWeight = _cfg.separationWeight;
+                crowd.UpdateAgentParameters(ag, agOption);
+            }
+        }
+
+        public DtCrowd GetCrowd()
+        {
+            return crowd;
+        }
+
+        public void Update(float dt)
+        {
+            if (crowd == null)
+                return;
+
+            DtNavMesh nav = crowd.GetNavMesh();
+            if (nav == null)
+                return;
+
+            long startTime = RcFrequency.Ticks;
+            crowd.Update(dt, _agentDebug);
+            long endTime = RcFrequency.Ticks;
+
+            // Update agent trails
+            foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
+            {
+                CrowdAgentTrail trail = _trails[ag.idx];
+                // Update agent movement trail.
+                trail.htrail = (trail.htrail + 1) % CrowdAgentTrail.AGENT_MAX_TRAIL;
+                trail.trail[trail.htrail * 3] = ag.npos.x;
+                trail.trail[trail.htrail * 3 + 1] = ag.npos.y;
+                trail.trail[trail.htrail * 3 + 2] = ag.npos.z;
+            }
+
+            _agentDebug.vod.NormalizeSamples();
+
+            // m_crowdSampleCount.addSample((float) crowd.GetVelocitySampleCount());
+            crowdUpdateTime = (endTime - startTime) / TimeSpan.TicksPerMillisecond;
+        }
+
+        public void RemoveAgent(DtCrowdAgent agent)
+        {
+            crowd.RemoveAgent(agent);
+            if (agent == _agentDebug.agent)
+            {
+                _agentDebug.agent = null;
+            }
+        }
+
+        public void AddAgent(RcVec3f p, float agentRadius, float agentHeight, float agentMaxAcceleration, float agentMaxSpeed)
+        {
+            DtCrowdAgentParams ap = CreateAgentParams(agentRadius, agentHeight, agentMaxAcceleration, agentMaxSpeed);
+            DtCrowdAgent ag = crowd.AddAgent(p, ap);
+            if (ag != null)
+            {
+                if (_moveTargetRef != 0)
+                    crowd.RequestMoveTarget(ag, _moveTargetRef, _moveTargetPos);
+
+                // Init trail
+                if (!_trails.TryGetValue(ag.idx, out var trail))
+                {
+                    trail = new CrowdAgentTrail();
+                    _trails.Add(ag.idx, trail);
+                }
+
+                for (int i = 0; i < CrowdAgentTrail.AGENT_MAX_TRAIL; ++i)
+                {
+                    trail.trail[i * 3] = p.x;
+                    trail.trail[i * 3 + 1] = p.y;
+                    trail.trail[i * 3 + 2] = p.z;
+                }
+
+                trail.htrail = 0;
+            }
+        }
+
+        private DtCrowdAgentParams CreateAgentParams(float agentRadius, float agentHeight, float agentMaxAcceleration, float agentMaxSpeed)
+        {
+            DtCrowdAgentParams ap = new DtCrowdAgentParams();
+            ap.radius = agentRadius;
+            ap.height = agentHeight;
+            ap.maxAcceleration = agentMaxAcceleration;
+            ap.maxSpeed = agentMaxSpeed;
+            ap.collisionQueryRange = ap.radius * 12.0f;
+            ap.pathOptimizationRange = ap.radius * 30.0f;
+            ap.updateFlags = _cfg.GetUpdateFlags();
+            ap.obstacleAvoidanceType = _cfg.obstacleAvoidanceType;
+            ap.separationWeight = _cfg.separationWeight;
+            return ap;
+        }
+
+        public DtCrowdAgent HitTestAgents(RcVec3f s, RcVec3f p)
+        {
+            DtCrowdAgent isel = null;
+            float tsel = float.MaxValue;
+
+            foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
+            {
+                RcVec3f bmin = new RcVec3f();
+                RcVec3f bmax = new RcVec3f();
+                GetAgentBounds(ag, ref bmin, ref bmax);
+                if (Intersections.IsectSegAABB(s, p, bmin, bmax, out var tmin, out var tmax))
+                {
+                    if (tmin > 0 && tmin < tsel)
+                    {
+                        isel = ag;
+                        tsel = tmin;
+                    }
+                }
+            }
+
+            return isel;
+        }
+
+        private void GetAgentBounds(DtCrowdAgent ag, ref RcVec3f bmin, ref RcVec3f bmax)
+        {
+            RcVec3f p = ag.npos;
+            float r = ag.option.radius;
+            float h = ag.option.height;
+            bmin.x = p.x - r;
+            bmin.y = p.y;
+            bmin.z = p.z - r;
+            bmax.x = p.x + r;
+            bmax.y = p.y + h;
+            bmax.z = p.z + r;
+        }
+
+        public void SetMoveTarget(RcVec3f p, bool adjust)
+        {
+            if (crowd == null)
+                return;
+
+            // Find nearest point on navmesh and set move request to that location.
+            DtNavMeshQuery navquery = crowd.GetNavMeshQuery();
+            IDtQueryFilter filter = crowd.GetFilter(0);
+            RcVec3f halfExtents = crowd.GetQueryExtents();
+
+            if (adjust)
+            {
+                // Request velocity
+                if (_agentDebug.agent != null)
+                {
+                    RcVec3f vel = CalcVel(_agentDebug.agent.npos, p, _agentDebug.agent.option.maxSpeed);
+                    crowd.RequestMoveVelocity(_agentDebug.agent, vel);
+                }
+                else
+                {
+                    foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
+                    {
+                        RcVec3f vel = CalcVel(ag.npos, p, ag.option.maxSpeed);
+                        crowd.RequestMoveVelocity(ag, vel);
+                    }
+                }
+            }
+            else
+            {
+                navquery.FindNearestPoly(p, halfExtents, filter, out _moveTargetRef, out _moveTargetPos, out var _);
+                if (_agentDebug.agent != null)
+                {
+                    crowd.RequestMoveTarget(_agentDebug.agent, _moveTargetRef, _moveTargetPos);
+                }
+                else
+                {
+                    foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
+                    {
+                        crowd.RequestMoveTarget(ag, _moveTargetRef, _moveTargetPos);
+                    }
+                }
+            }
+        }
+
+        private RcVec3f CalcVel(RcVec3f pos, RcVec3f tgt, float speed)
+        {
+            RcVec3f vel = tgt.Subtract(pos);
+            vel.y = 0.0f;
+            vel.Normalize();
+            return vel.Scale(speed);
+        }
+
+        public long GetCrowdUpdateTime()
+        {
+            return crowdUpdateTime;
+        }
+
+        public void HighlightAgent(DtCrowdAgent agent)
+        {
+            _agentDebug.agent = agent;
         }
     }
 }

@@ -185,14 +185,23 @@ namespace DotRecast.Detour.Crowd
             _agents = new List<DtCrowdAgent>();
 
             // The navQuery is mostly used for local searches, no need for large node pool.
-            _navMesh = nav;
-            _navQuery = new DtNavMeshQuery(nav);
+            SetNavMesh(nav);
         }
 
         public void SetNavMesh(DtNavMesh nav)
         {
             _navMesh = nav;
             _navQuery = new DtNavMeshQuery(nav);
+        }
+
+        public DtNavMesh GetNavMesh()
+        {
+            return _navMesh;
+        }
+
+        public DtNavMeshQuery GetNavMeshQuery()
+        {
+            return _navQuery;
         }
 
         /// Sets the shared avoidance configuration for the specified index.

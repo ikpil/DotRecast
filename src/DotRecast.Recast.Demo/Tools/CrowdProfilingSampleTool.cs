@@ -40,7 +40,7 @@ public class CrowdProfilingSampleTool : ISampleTool
     private DemoSample _sample;
     private DtNavMesh m_nav;
 
-    private readonly CrowdOption _option = new CrowdOption();
+    private readonly CrowdConfig _option = new CrowdConfig();
     private RcCrowdProfilingTool _tool;
 
     private int expandSimOptions = 1;
