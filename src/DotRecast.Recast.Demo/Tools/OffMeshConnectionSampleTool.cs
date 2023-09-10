@@ -37,6 +37,8 @@ public class OffMeshConnectionSampleTool : ISampleTool
     private DemoSample _sample;
 
     private readonly RcOffMeshConnectionTool _tool;
+    
+    public int bidir;
     private bool hitPosSet;
     private RcVec3f hitPos;
 
@@ -47,9 +49,8 @@ public class OffMeshConnectionSampleTool : ISampleTool
 
     public void Layout()
     {
-        var options = _tool.GetOption();
-        ImGui.RadioButton("One Way", ref options.bidir, 0);
-        ImGui.RadioButton("Bidirectional", ref options.bidir, 1);
+        ImGui.RadioButton("One Way", ref bidir, 0);
+        ImGui.RadioButton("Bidirectional", ref bidir, 1);
     }
 
     public void HandleRender(NavMeshRenderer renderer)
@@ -111,7 +112,7 @@ public class OffMeshConnectionSampleTool : ISampleTool
             }
             else
             {
-                _tool.Add(geom, settings, hitPos, p);
+                _tool.Add(geom, settings, hitPos, p, 1 == bidir);
                 hitPosSet = false;
             }
         }

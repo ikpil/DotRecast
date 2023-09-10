@@ -7,11 +7,8 @@ namespace DotRecast.Recast.Toolset.Tools
 {
     public class RcOffMeshConnectionTool : IRcToolable
     {
-        private readonly RcOffMeshConnectionToolOption _option;
-
         public RcOffMeshConnectionTool()
         {
-            _option = new RcOffMeshConnectionToolOption();
         }
 
         public string GetName()
@@ -19,19 +16,14 @@ namespace DotRecast.Recast.Toolset.Tools
             return "Off-Mesh Links";
         }
 
-        public RcOffMeshConnectionToolOption GetOption()
-        {
-            return _option;
-        }
-
-        public void Add(IInputGeomProvider geom, RcNavMeshBuildSettings settings, RcVec3f start, RcVec3f end)
+        public void Add(IInputGeomProvider geom, RcNavMeshBuildSettings settings, RcVec3f start, RcVec3f end, bool bidir)
         {
             if (null == geom)
                 return;
 
             int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP;
             int flags = SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP;
-            geom.AddOffMeshConnection(start, end, settings.agentRadius, 0 == _option.bidir, area, flags);
+            geom.AddOffMeshConnection(start, end, settings.agentRadius, bidir, area, flags);
         }
 
         public void Remove(IInputGeomProvider geom, RcNavMeshBuildSettings settings, RcVec3f p)

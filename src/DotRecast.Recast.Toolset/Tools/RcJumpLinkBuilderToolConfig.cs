@@ -20,17 +20,11 @@ using DotRecast.Detour.Extras.Jumplink;
 
 namespace DotRecast.Recast.Toolset.Tools
 {
-    public class RcJumpLinkBuilderToolOption
+    public class RcJumpLinkBuilderToolConfig
     {
-        public const int DRAW_WALKABLE_SURFACE = 1 << 0;
-        public const int DRAW_WALKABLE_BORDER = 1 << 1;
-        public const int DRAW_SELECTED_EDGE = 1 << 2;
-        public const int DRAW_ANIM_TRAJECTORY = 1 << 3;
-        public const int DRAW_LAND_SAMPLES = 1 << 4;
-        public const int DRAW_COLLISION_SLICES = 1 << 5;
-        public const int DRAW_ANNOTATIONS = 1 << 6;
-
-        public int flags = DRAW_WALKABLE_SURFACE | DRAW_WALKABLE_BORDER | DRAW_SELECTED_EDGE | DRAW_ANIM_TRAJECTORY | DRAW_LAND_SAMPLES | DRAW_ANNOTATIONS;
+        public int buildTypes = JumpLinkType.EDGE_CLIMB_DOWN.Bit | JumpLinkType.EDGE_JUMP.Bit;
+        public bool buildOffMeshConnections = false;
+        
         public float groundTolerance = 0.3f;
         public float climbDownDistance = 0.4f;
         public float climbDownMaxHeight = 3.2f;
@@ -39,6 +33,5 @@ namespace DotRecast.Recast.Toolset.Tools
         public float edgeJumpHeight = 0.4f;
         public float edgeJumpDownMaxHeight = 2.5f;
         public float edgeJumpUpMaxHeight = 0.3f;
-        public int buildTypes = JumpLinkType.EDGE_CLIMB_DOWN.Bit | JumpLinkType.EDGE_JUMP.Bit;
     }
 }
