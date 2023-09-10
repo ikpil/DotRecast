@@ -664,23 +664,8 @@ public class TestNavmeshSampleTool : ISampleTool
         }
         else if (_mode == RcTestNavmeshToolMode.PATHFIND_STRAIGHT)
         {
-            if (m_sposSet && m_eposSet && m_startRef != 0 && m_endRef != 0)
-            {
-                var polys = new List<long>();
-                var straightPath = new List<StraightPathItem>();
-                var status = _tool.FindStraightPath(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, _enableRaycast,
-                    ref polys, ref straightPath, _straightPathOption);
-
-                if (status.Succeeded())
-                {
-                    m_polys = polys;
-                    m_straightPath = straightPath;
-                }
-            }
-            else
-            {
-                m_straightPath = null;
-            }
+            _tool.FindStraightPath(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, _enableRaycast,
+                ref m_polys, ref m_straightPath, _straightPathOption);
         }
         else if (_mode == RcTestNavmeshToolMode.PATHFIND_SLICED)
         {

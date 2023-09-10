@@ -165,8 +165,19 @@ namespace DotRecast.Recast.Toolset.Tools
         public DtStatus FindStraightPath(DtNavMeshQuery navQuery, long startRef, long endRef, RcVec3f startPt, RcVec3f endPt, IDtQueryFilter filter, bool enableRaycast,
             ref List<long> polys, ref List<StraightPathItem> straightPath, int straightPathOptions)
         {
-            navQuery.FindPath(startRef, endRef, startPt, endPt, filter, ref polys,
-                new DtFindPathOption(enableRaycast ? DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue));
+            if (startRef == 0 || endRef == 0)
+            {
+                return DtStatus.DT_FAILURE;
+            }
+
+            polys ??= new List<long>();
+            straightPath ??= new List<StraightPathItem>();
+
+            polys.Clear();
+            straightPath.Clear();
+
+            var opt = new DtFindPathOption(enableRaycast ? DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue);
+            navQuery.FindPath(startRef, endRef, startPt, endPt, filter, ref polys, opt);
 
             if (0 >= polys.Count)
                 return DtStatus.DT_FAILURE;
