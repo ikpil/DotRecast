@@ -37,12 +37,14 @@ public class TestNavmeshSampleTool : ISampleTool
     // for random point in circle mode
     private bool _constrainByCircle;
 
+    // 
     private bool m_sposSet;
-    private bool m_eposSet;
-    private RcVec3f m_spos;
-    private RcVec3f m_epos;
     private long m_startRef;
+    private RcVec3f m_spos;
+
+    private bool m_eposSet;
     private long m_endRef;
+    private RcVec3f m_epos;
 
     private readonly DtQueryDefaultFilter m_filter;
     private readonly RcVec3f m_polyPickExt = RcVec3f.Of(2, 4, 2);
@@ -51,7 +53,6 @@ public class TestNavmeshSampleTool : ISampleTool
     private RcVec3f m_hitPos;
     private RcVec3f m_hitNormal;
     private bool m_hitResult;
-
 
     private float m_distanceToWall;
     private List<StraightPathItem> m_straightPath;
@@ -153,10 +154,10 @@ public class TestNavmeshSampleTool : ISampleTool
 
         ImGui.Checkbox("Raycast shortcuts", ref _enableRaycast);
 
-        if (prevMode != _mode || prevStraightPathOption != _straightPathOption
-                              || prevIncludeFlags != _includeFlags
+        if (prevMode != _mode || prevIncludeFlags != _includeFlags
                               || prevExcludeFlags != _excludeFlags
                               || prevEnableRaycast != _enableRaycast
+                              || prevStraightPathOption != _straightPathOption
                               || prevConstrainByCircle != _constrainByCircle)
         {
             Recalc();
@@ -347,10 +348,8 @@ public class TestNavmeshSampleTool : ISampleTool
                 {
                     StraightPathItem straightPathItem = m_straightPath[i];
                     StraightPathItem straightPathItem2 = m_straightPath[i + 1];
-                    dd.Vertex(straightPathItem.pos.x, straightPathItem.pos.y + 0.4f,
-                        straightPathItem.pos.z, spathCol);
-                    dd.Vertex(straightPathItem2.pos.x, straightPathItem2.pos.y + 0.4f,
-                        straightPathItem2.pos.z, spathCol);
+                    dd.Vertex(straightPathItem.pos.x, straightPathItem.pos.y + 0.4f, straightPathItem.pos.z, spathCol);
+                    dd.Vertex(straightPathItem2.pos.x, straightPathItem2.pos.y + 0.4f, straightPathItem2.pos.z, spathCol);
                 }
 
                 dd.End();
@@ -358,8 +357,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 for (int i = 0; i < m_straightPath.Count; ++i)
                 {
                     StraightPathItem straightPathItem = m_straightPath[i];
-                    dd.Vertex(straightPathItem.pos.x, straightPathItem.pos.y + 0.4f,
-                        straightPathItem.pos.z, spathCol);
+                    dd.Vertex(straightPathItem.pos.x, straightPathItem.pos.y + 0.4f, straightPathItem.pos.z, spathCol);
                 }
 
                 dd.End();
@@ -369,9 +367,7 @@ public class TestNavmeshSampleTool : ISampleTool
                     int hitCol = DuRGBA(0, 0, 0, 128);
                     dd.Begin(LINES, 2.0f);
                     dd.Vertex(m_hitPos.x, m_hitPos.y + 0.4f, m_hitPos.z, hitCol);
-                    dd.Vertex(m_hitPos.x + m_hitNormal.x * agentRadius,
-                        m_hitPos.y + 0.4f + m_hitNormal.y * agentRadius,
-                        m_hitPos.z + m_hitNormal.z * agentRadius, hitCol);
+                    dd.Vertex(m_hitPos.x + m_hitNormal.x * agentRadius, m_hitPos.y + 0.4f + m_hitNormal.y * agentRadius, m_hitPos.z + m_hitNormal.z * agentRadius, hitCol);
                     dd.End();
                 }
 
@@ -384,8 +380,7 @@ public class TestNavmeshSampleTool : ISampleTool
             dd.DepthMask(false);
             if (m_spos != RcVec3f.Zero)
             {
-                dd.DebugDrawCircle(m_spos.x, m_spos.y + agentHeight / 2, m_spos.z, m_distanceToWall,
-                    DuRGBA(64, 16, 0, 220), 2.0f);
+                dd.DebugDrawCircle(m_spos.x, m_spos.y + agentHeight / 2, m_spos.z, m_distanceToWall, DuRGBA(64, 16, 0, 220), 2.0f);
             }
 
             if (m_hitPos != RcVec3f.Zero)
@@ -411,8 +406,7 @@ public class TestNavmeshSampleTool : ISampleTool
                         dd.DepthMask(false);
                         RcVec3f p0 = m_navMesh.GetPolyCenter(m_parent[i]);
                         RcVec3f p1 = m_navMesh.GetPolyCenter(m_polys[i]);
-                        dd.DebugDrawArc(p0.x, p0.y, p0.z, p1.x, p1.y, p1.z, 0.25f, 0.0f, 0.4f,
-                            DuRGBA(0, 0, 0, 128), 2.0f);
+                        dd.DebugDrawArc(p0.x, p0.y, p0.z, p1.x, p1.y, p1.z, 0.25f, 0.0f, 0.4f, DuRGBA(0, 0, 0, 128), 2.0f);
                         dd.DepthMask(true);
                     }
 
@@ -426,8 +420,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 float dx = m_epos.x - m_spos.x;
                 float dz = m_epos.z - m_spos.z;
                 float dist = (float)Math.Sqrt(dx * dx + dz * dz);
-                dd.DebugDrawCircle(m_spos.x, m_spos.y + agentHeight / 2, m_spos.z, dist, DuRGBA(64, 16, 0, 220),
-                    2.0f);
+                dd.DebugDrawCircle(m_spos.x, m_spos.y + agentHeight / 2, m_spos.z, dist, DuRGBA(64, 16, 0, 220), 2.0f);
                 dd.DepthMask(true);
             }
         }
@@ -444,8 +437,7 @@ public class TestNavmeshSampleTool : ISampleTool
                         dd.DepthMask(false);
                         RcVec3f p0 = m_navMesh.GetPolyCenter(m_parent[i]);
                         RcVec3f p1 = m_navMesh.GetPolyCenter(m_polys[i]);
-                        dd.DebugDrawArc(p0.x, p0.y, p0.z, p1.x, p1.y, p1.z, 0.25f, 0.0f, 0.4f,
-                            DuRGBA(0, 0, 0, 128), 2.0f);
+                        dd.DebugDrawArc(p0.x, p0.y, p0.z, p1.x, p1.y, p1.z, 0.25f, 0.0f, 0.4f, DuRGBA(0, 0, 0, 128), 2.0f);
                         dd.DepthMask(true);
                     }
 
@@ -484,8 +476,7 @@ public class TestNavmeshSampleTool : ISampleTool
                         dd.DepthMask(false);
                         RcVec3f p0 = m_navMesh.GetPolyCenter(m_parent[i]);
                         RcVec3f p1 = m_navMesh.GetPolyCenter(m_polys[i]);
-                        dd.DebugDrawArc(p0.x, p0.y, p0.z, p1.x, p1.y, p1.z, 0.25f, 0.0f, 0.4f,
-                            DuRGBA(0, 0, 0, 128), 2.0f);
+                        dd.DebugDrawArc(p0.x, p0.y, p0.z, p1.x, p1.y, p1.z, 0.25f, 0.0f, 0.4f, DuRGBA(0, 0, 0, 128), 2.0f);
                         dd.DepthMask(true);
                     }
 
@@ -549,8 +540,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 if (m_sposSet)
                 {
                     dd.DepthMask(false);
-                    dd.DebugDrawCircle(m_spos.x, m_spos.y + agentHeight / 2, m_spos.z, m_neighbourhoodRadius,
-                        DuRGBA(64, 16, 0, 220), 2.0f);
+                    dd.DebugDrawCircle(m_spos.x, m_spos.y + agentHeight / 2, m_spos.z, m_neighbourhoodRadius, DuRGBA(64, 16, 0, 220), 2.0f);
                     dd.DepthMask(true);
                 }
             }
@@ -572,8 +562,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 float dx = m_epos.x - m_spos.x;
                 float dz = m_epos.z - m_spos.z;
                 float dist = (float)Math.Sqrt(dx * dx + dz * dz);
-                dd.DebugDrawCircle(m_spos.x, m_spos.y + agentHeight / 2, m_spos.z, dist, DuRGBA(64, 16, 0, 220),
-                    2.0f);
+                dd.DebugDrawCircle(m_spos.x, m_spos.y + agentHeight / 2, m_spos.z, dist, DuRGBA(64, 16, 0, 220), 2.0f);
                 dd.DepthMask(true);
             }
 
