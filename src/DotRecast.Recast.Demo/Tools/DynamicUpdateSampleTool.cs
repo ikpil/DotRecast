@@ -46,7 +46,7 @@ public class DynamicUpdateSampleTool : ISampleTool
 
     private DemoSample _sample;
     private readonly RcDynamicUpdateTool _tool;
-    private int toolModeIdx = DynamicUpdateToolMode.BUILD.Idx;
+
     private DynamicUpdateToolMode mode = DynamicUpdateToolMode.BUILD;
     private float cellSize = 0.3f;
 
@@ -71,7 +71,6 @@ public class DynamicUpdateSampleTool : ISampleTool
     private long buildTime;
     private long raycastTime;
 
-    private int colliderShapeIdx = (int)DynamicColliderShape.SPHERE;
     private DynamicColliderShape colliderShape = DynamicColliderShape.SPHERE;
 
     private DynamicNavMesh dynaMesh;
@@ -100,18 +99,18 @@ public class DynamicUpdateSampleTool : ISampleTool
 
     public void Layout()
     {
+        var prevModeIdx = mode.Idx;
+        
         ImGui.Text($"Dynamic Update Tool Modes");
         ImGui.Separator();
-
-        var prevMode = mode;
-        ImGui.RadioButton(DynamicUpdateToolMode.BUILD.Label, ref toolModeIdx, DynamicUpdateToolMode.BUILD.Idx);
-        ImGui.RadioButton(DynamicUpdateToolMode.COLLIDERS.Label, ref toolModeIdx, DynamicUpdateToolMode.COLLIDERS.Idx);
-        ImGui.RadioButton(DynamicUpdateToolMode.RAYCAST.Label, ref toolModeIdx, DynamicUpdateToolMode.RAYCAST.Idx);
+        ImGui.RadioButton(DynamicUpdateToolMode.BUILD.Label, ref prevModeIdx, DynamicUpdateToolMode.BUILD.Idx);
+        ImGui.RadioButton(DynamicUpdateToolMode.COLLIDERS.Label, ref prevModeIdx, DynamicUpdateToolMode.COLLIDERS.Idx);
+        ImGui.RadioButton(DynamicUpdateToolMode.RAYCAST.Label, ref prevModeIdx, DynamicUpdateToolMode.RAYCAST.Idx);
         ImGui.NewLine();
 
-        if (prevMode.Idx != toolModeIdx)
+        if (prevModeIdx != mode.Idx)
         {
-            mode = DynamicUpdateToolMode.Values[toolModeIdx];
+            mode = DynamicUpdateToolMode.Values[prevModeIdx];
         }
 
         ImGui.Text($"Selected mode - {mode.Label}");
@@ -227,23 +226,24 @@ public class DynamicUpdateSampleTool : ISampleTool
 
         if (mode == DynamicUpdateToolMode.COLLIDERS)
         {
+            var prevColliderShape = (int)colliderShape;
+
             ImGui.Text("Colliders");
             ImGui.Separator();
-            var prev = colliderShape;
             ImGui.Checkbox("Show", ref showColliders);
-            ImGui.RadioButton("Sphere", ref colliderShapeIdx, (int)DynamicColliderShape.SPHERE);
-            ImGui.RadioButton("Capsule", ref colliderShapeIdx, (int)DynamicColliderShape.CAPSULE);
-            ImGui.RadioButton("Box", ref colliderShapeIdx, (int)DynamicColliderShape.BOX);
-            ImGui.RadioButton("Cylinder", ref colliderShapeIdx, (int)DynamicColliderShape.CYLINDER);
-            ImGui.RadioButton("Composite", ref colliderShapeIdx, (int)DynamicColliderShape.COMPOSITE);
-            ImGui.RadioButton("Convex Trimesh", ref colliderShapeIdx, (int)DynamicColliderShape.CONVEX);
-            ImGui.RadioButton("Trimesh Bridge", ref colliderShapeIdx, (int)DynamicColliderShape.TRIMESH_BRIDGE);
-            ImGui.RadioButton("Trimesh House", ref colliderShapeIdx, (int)DynamicColliderShape.TRIMESH_HOUSE);
+            ImGui.RadioButton("Sphere", ref prevColliderShape, (int)DynamicColliderShape.SPHERE);
+            ImGui.RadioButton("Capsule", ref prevColliderShape, (int)DynamicColliderShape.CAPSULE);
+            ImGui.RadioButton("Box", ref prevColliderShape, (int)DynamicColliderShape.BOX);
+            ImGui.RadioButton("Cylinder", ref prevColliderShape, (int)DynamicColliderShape.CYLINDER);
+            ImGui.RadioButton("Composite", ref prevColliderShape, (int)DynamicColliderShape.COMPOSITE);
+            ImGui.RadioButton("Convex Trimesh", ref prevColliderShape, (int)DynamicColliderShape.CONVEX);
+            ImGui.RadioButton("Trimesh Bridge", ref prevColliderShape, (int)DynamicColliderShape.TRIMESH_BRIDGE);
+            ImGui.RadioButton("Trimesh House", ref prevColliderShape, (int)DynamicColliderShape.TRIMESH_HOUSE);
             ImGui.NewLine();
 
-            if ((int)prev != colliderShapeIdx)
+            if (prevColliderShape != (int)colliderShape)
             {
-                colliderShape = (DynamicColliderShape)colliderShapeIdx;
+                colliderShape = (DynamicColliderShape)prevColliderShape;
             }
         }
 
