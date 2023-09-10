@@ -14,10 +14,7 @@ public class ObstacleSampleTool : ISampleTool
     private static readonly ILogger Logger = Log.ForContext<ObstacleSampleTool>();
 
     private DemoSample _sample;
-
     private readonly RcObstacleTool _tool;
-    private bool _hitPosSet;
-    private RcVec3f _hitPos;
 
     public ObstacleSampleTool()
     {
@@ -103,16 +100,13 @@ public class ObstacleSampleTool : ISampleTool
 
     public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
-        _hitPosSet = true;
-        _hitPos = p;
-
         if (shift)
         {
             _tool.RemoveTempObstacle(s, p);
         }
         else
         {
-            _tool.AddTempObstacle(_hitPos);
+            _tool.AddTempObstacle(p);
         }
     }
 
