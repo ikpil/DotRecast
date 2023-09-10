@@ -182,7 +182,7 @@ namespace DotRecast.Recast.Toolset.Tools
             );
         }
 
-        public DtStatus UpdateSlicedFindPath(DtNavMeshQuery navQuery, int maxIter, long endRef, RcVec3f startPos,  RcVec3f endPos,
+        public DtStatus UpdateSlicedFindPath(DtNavMeshQuery navQuery, int maxIter, long endRef, RcVec3f startPos, RcVec3f endPos,
             ref List<long> path, ref List<StraightPathItem> straightPath)
         {
             var status = navQuery.UpdateSlicedFindPath(maxIter, out _);
@@ -259,40 +259,70 @@ namespace DotRecast.Recast.Toolset.Tools
             return status;
         }
 
-        public DtStatus FindPolysAroundCircle(DtNavMeshQuery navQuery, long startRef, RcVec3f spos, RcVec3f epos, IDtQueryFilter filter, ref List<long> resultRef, ref List<long> resultParent)
+        public DtStatus FindPolysAroundCircle(DtNavMeshQuery navQuery, long startRef, long endRef, RcVec3f spos, RcVec3f epos, IDtQueryFilter filter, ref List<long> resultRef, ref List<long> resultParent)
         {
+            if (startRef == 0 || endRef == 0)
+            {
+                return DtStatus.DT_FAILURE;
+            }
+
             float dx = epos.x - spos.x;
             float dz = epos.z - spos.z;
             float dist = (float)Math.Sqrt(dx * dx + dz * dz);
 
-            List<float> costs = new List<float>();
-            return navQuery.FindPolysAroundCircle(startRef, spos, dist, filter, ref resultRef, ref resultParent, ref costs);
+            List<long> tempResultRefs = new List<long>();
+            List<long> tempParentRefs = new List<long>();
+            List<float> tempCosts = new List<float>();
+            var status = navQuery.FindPolysAroundCircle(startRef, spos, dist, filter, ref tempResultRefs, ref tempParentRefs, ref tempCosts);
+            if (status.Succeeded())
+            {
+                resultRef = tempResultRefs;
+                resultParent = tempParentRefs;
+            }
+
+            return status;
         }
 
-        public DtStatus FindPolysAroundShape(DtNavMeshQuery navQuery, float agentHeight, long startRef, RcVec3f spos, RcVec3f epos, IDtQueryFilter filter, ref List<long> resultRef, ref List<long> resultParent, out RcVec3f[] queryPoly)
+        public DtStatus FindPolysAroundShape(DtNavMeshQuery navQuery, float agentHeight, long startRef, long endRef, RcVec3f spos, RcVec3f epos, IDtQueryFilter filter,
+            ref List<long> resultRefs, ref List<long> resultParents, ref RcVec3f[] queryPoly)
         {
+            if (startRef == 0 || endRef == 0)
+            {
+                return DtStatus.DT_FAILURE;
+            }
+
             float nx = (epos.z - spos.z) * 0.25f;
             float nz = -(epos.x - spos.x) * 0.25f;
 
-            queryPoly = new RcVec3f[4];
-            queryPoly[0].x = spos.x + nx * 1.2f;
-            queryPoly[0].y = spos.y + agentHeight / 2;
-            queryPoly[0].z = spos.z + nz * 1.2f;
+            var tempQueryPoly = new RcVec3f[4];
+            tempQueryPoly[0].x = spos.x + nx * 1.2f;
+            tempQueryPoly[0].y = spos.y + agentHeight / 2;
+            tempQueryPoly[0].z = spos.z + nz * 1.2f;
 
-            queryPoly[1].x = spos.x - nx * 1.3f;
-            queryPoly[1].y = spos.y + agentHeight / 2;
-            queryPoly[1].z = spos.z - nz * 1.3f;
+            tempQueryPoly[1].x = spos.x - nx * 1.3f;
+            tempQueryPoly[1].y = spos.y + agentHeight / 2;
+            tempQueryPoly[1].z = spos.z - nz * 1.3f;
 
-            queryPoly[2].x = epos.x - nx * 0.8f;
-            queryPoly[2].y = epos.y + agentHeight / 2;
-            queryPoly[2].z = epos.z - nz * 0.8f;
+            tempQueryPoly[2].x = epos.x - nx * 0.8f;
+            tempQueryPoly[2].y = epos.y + agentHeight / 2;
+            tempQueryPoly[2].z = epos.z - nz * 0.8f;
 
-            queryPoly[3].x = epos.x + nx;
-            queryPoly[3].y = epos.y + agentHeight / 2;
-            queryPoly[3].z = epos.z + nz;
+            tempQueryPoly[3].x = epos.x + nx;
+            tempQueryPoly[3].y = epos.y + agentHeight / 2;
+            tempQueryPoly[3].z = epos.z + nz;
 
-            var costs = new List<float>();
-            return navQuery.FindPolysAroundShape(startRef, queryPoly, filter, ref resultRef, ref resultParent, ref costs);
+            var tempResultRefs = new List<long>();
+            var tempResultParents = new List<long>();
+            var tempCosts = new List<float>();
+            var status = navQuery.FindPolysAroundShape(startRef, tempQueryPoly, filter, ref tempResultRefs, ref tempResultParents, ref tempCosts);
+            if (status.Succeeded())
+            {
+                resultRefs = tempResultRefs;
+                resultParents = tempResultParents;
+                queryPoly = tempQueryPoly;
+            }
+
+            return status;
         }
 
         public DtStatus FindRandomPointAroundCircle(DtNavMeshQuery navQuery, long startRef, RcVec3f spos, RcVec3f epos, IDtQueryFilter filter, bool constrainByCircle, int count, ref List<RcVec3f> points)

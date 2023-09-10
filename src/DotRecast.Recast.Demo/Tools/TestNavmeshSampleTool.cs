@@ -743,34 +743,11 @@ public class TestNavmeshSampleTool : ISampleTool
         }
         else if (_mode == RcTestNavmeshToolMode.FIND_POLYS_IN_CIRCLE)
         {
-            if (m_sposSet && m_startRef != 0 && m_eposSet)
-            {
-                List<long> refs = new();
-                List<long> parentRefs = new();
-
-                var status = _tool.FindPolysAroundCircle(navQuery, m_startRef, m_spos, m_epos, m_filter, ref refs, ref parentRefs);
-                if (status.Succeeded())
-                {
-                    m_polys = refs;
-                    m_parent = parentRefs;
-                }
-            }
+            _tool.FindPolysAroundCircle(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, ref m_polys, ref m_parent);
         }
         else if (_mode == RcTestNavmeshToolMode.FIND_POLYS_IN_SHAPE)
         {
-            if (m_sposSet && m_startRef != 0 && m_eposSet)
-            {
-                var refs = new List<long>();
-                var parentRefs = new List<long>();
-
-                var status = _tool.FindPolysAroundShape(navQuery, settings.agentHeight, m_startRef, m_spos, m_epos, m_filter, ref refs, ref parentRefs, out var queryPoly);
-                if (status.Succeeded())
-                {
-                    m_queryPoly = queryPoly;
-                    m_polys = refs;
-                    m_parent = parentRefs;
-                }
-            }
+            _tool.FindPolysAroundShape(navQuery, settings.agentHeight, m_startRef, m_endRef, m_spos, m_epos, m_filter, ref m_polys, ref m_parent, ref m_queryPoly);
         }
         else if (_mode == RcTestNavmeshToolMode.FIND_LOCAL_NEIGHBOURHOOD)
         {
