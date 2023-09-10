@@ -338,6 +338,27 @@ namespace DotRecast.Recast.Toolset.Tools
             return status;
         }
 
+        public DtStatus FindLocalNeighbourhood(DtNavMeshQuery navQuery, long startRef, RcVec3f spos, float radius, IDtQueryFilter filter,
+            ref List<long> resultRef, ref List<long> resultParent)
+        {
+            if (startRef == 0)
+            {
+                resultRef?.Clear();
+                resultParent?.Clear();
+                return DtStatus.DT_FAILURE;
+            }
+
+            resultRef ??= new List<long>();
+            resultParent ??= new List<long>();
+
+            resultRef.Clear();
+            resultParent.Clear();
+
+            var status = navQuery.FindLocalNeighbourhood(startRef, spos, radius, filter, ref resultRef, ref resultParent);
+            return status;
+        }
+
+
         public DtStatus FindPolysAroundShape(DtNavMeshQuery navQuery, float agentHeight, long startRef, long endRef, RcVec3f spos, RcVec3f epos, IDtQueryFilter filter,
             ref List<long> resultRefs, ref List<long> resultParents, ref RcVec3f[] queryPoly)
         {

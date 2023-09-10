@@ -696,18 +696,8 @@ public class TestNavmeshSampleTool : ISampleTool
         }
         else if (_mode == RcTestNavmeshToolMode.FIND_LOCAL_NEIGHBOURHOOD)
         {
-            if (m_sposSet && m_startRef != 0)
-            {
-                m_neighbourhoodRadius = settings.agentRadius * 20.0f;
-                List<long> resultRef = new();
-                List<long> resultParent = new();
-                var status = navQuery.FindLocalNeighbourhood(m_startRef, m_spos, m_neighbourhoodRadius, m_filter, ref resultRef, ref resultParent);
-                if (status.Succeeded())
-                {
-                    m_polys = resultRef;
-                    m_parent = resultParent;
-                }
-            }
+            m_neighbourhoodRadius = settings.agentRadius * 20.0f;
+            _tool.FindLocalNeighbourhood(navQuery, m_startRef, m_spos, m_neighbourhoodRadius, m_filter, ref m_polys, ref m_parent);
         }
         else if (_mode == RcTestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE)
         {
