@@ -29,7 +29,7 @@ using DotRecast.Detour.Dynamic.Io;
 using DotRecast.Recast.Toolset.Builder;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Toolset.Geom;
-using DotRecast.Recast.Demo.Tools.Gizmos;
+using DotRecast.Recast.Toolset.Tools.Gizmos;
 using DotRecast.Recast.Demo.UI;
 using DotRecast.Recast.Toolset;
 using DotRecast.Recast.Toolset.Tools;
@@ -75,8 +75,7 @@ public class DynamicUpdateSampleTool : ISampleTool
 
     private DynamicNavMesh dynaMesh;
     private readonly TaskFactory executor;
-    private readonly Dictionary<long, ICollider> colliders = new();
-    private readonly Dictionary<long, IColliderGizmo> colliderGizmos = new();
+    private readonly Dictionary<long, ColliderWithGizmo> colliderGizmos = new();
     private readonly Random random = Random.Shared;
     private readonly DemoInputGeomProvider bridgeGeom;
     private readonly DemoInputGeomProvider houseGeom;
@@ -100,7 +99,7 @@ public class DynamicUpdateSampleTool : ISampleTool
     public void Layout()
     {
         var prevModeIdx = mode.Idx;
-        
+
         ImGui.Text($"Dynamic Update Tool Modes");
         ImGui.Separator();
         ImGui.RadioButton(DynamicUpdateToolMode.BUILD.Label, ref prevModeIdx, DynamicUpdateToolMode.BUILD.Idx);
@@ -280,7 +279,10 @@ public class DynamicUpdateSampleTool : ISampleTool
         {
             if (showColliders)
             {
-                colliderGizmos.Values.ForEach(g => g.Render(renderer.GetDebugDraw()));
+                colliderGizmos.Values.ForEach(g =>
+                {
+                    g.Render(renderer.GetDebugDraw());
+                });
             }
         }
 
@@ -397,8 +399,7 @@ public class DynamicUpdateSampleTool : ISampleTool
                 if (colliderWithGizmo != null)
                 {
                     long id = dynaMesh.AddCollider(colliderWithGizmo.Collider);
-                    colliders.Add(id, colliderWithGizmo.Collider);
-                    colliderGizmos.Add(id, colliderWithGizmo.Gizmo);
+                    colliderGizmos.Add(id, colliderWithGizmo);
                 }
             }
         }
@@ -525,11 +526,11 @@ public class DynamicUpdateSampleTool : ISampleTool
         SphereCollider crown = new SphereCollider(crownCenter, 4f, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GRASS,
             dynaMesh.config.walkableClimb);
         CompositeCollider collider = new CompositeCollider(@base, roof, trunk, crown);
-        IColliderGizmo baseGizmo = GizmoFactory.Box(baseCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(baseUp, forward, baseExtent));
-        IColliderGizmo roofGizmo = GizmoFactory.Box(roofCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(roofUp, forward, roofExtent));
-        IColliderGizmo trunkGizmo = GizmoFactory.Capsule(trunkStart, trunkEnd, 0.5f);
-        IColliderGizmo crownGizmo = GizmoFactory.Sphere(crownCenter, 4f);
-        IColliderGizmo gizmo = GizmoFactory.Composite(baseGizmo, roofGizmo, trunkGizmo, crownGizmo);
+        IRcGizmoMeshFilter baseGizmo = GizmoFactory.Box(baseCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(baseUp, forward, baseExtent));
+        IRcGizmoMeshFilter roofGizmo = GizmoFactory.Box(roofCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(roofUp, forward, roofExtent));
+        IRcGizmoMeshFilter trunkGizmo = GizmoFactory.Capsule(trunkStart, trunkEnd, 0.5f);
+        IRcGizmoMeshFilter crownGizmo = GizmoFactory.Sphere(crownCenter, 4f);
+        IRcGizmoMeshFilter gizmo = GizmoFactory.Composite(baseGizmo, roofGizmo, trunkGizmo, crownGizmo);
         return new ColliderWithGizmo(collider, gizmo);
     }
 
@@ -610,12 +611,11 @@ public class DynamicUpdateSampleTool : ISampleTool
         {
             if (shift)
             {
-                foreach (var e in colliders)
+                foreach (var e in colliderGizmos)
                 {
-                    if (Hit(start, dir, e.Value.Bounds()))
+                    if (Hit(start, dir, e.Value.Collider.Bounds()))
                     {
                         dynaMesh.RemoveCollider(e.Key);
-                        colliders.Remove(e.Key);
                         colliderGizmos.Remove(e.Key);
                         break;
                     }
@@ -691,10 +691,11 @@ public class DynamicUpdateSampleTool : ISampleTool
             VoxelFile voxelFile = reader.Read(br);
             dynaMesh = new DynamicNavMesh(voxelFile);
             dynaMesh.config.keepIntermediateResults = true;
+
             UpdateUI();
             BuildDynaMesh();
 
-            colliders.Clear();
+            colliderGizmos.Clear();
         }
         catch (Exception e)
         {
