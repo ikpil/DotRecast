@@ -30,8 +30,6 @@ namespace DotRecast.Recast.Toolset.Tools
 
         public NavMeshBuildResult Build(IInputGeomProvider geom, RcNavMeshBuildSettings setting, RcByteOrder order, bool cCompatibility)
         {
-            DtStatus status;
-
             if (null == geom || null == geom.GetMesh())
             {
                 //m_ctx->log(RC_LOG_ERROR, "buildTiledNavigation: No vertices and triangles.");

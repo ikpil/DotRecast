@@ -624,7 +624,7 @@ public class DebugDraw
 
     public static int DuDarkenCol(int col)
     {
-        return (int)(((col >> 1) & 0x007f7f7f) | (col & 0xff000000));
+        return (int)((uint)((col >> 1) & 0x007f7f7f) | (col & 0xff000000));
     }
 
 
