@@ -35,6 +35,7 @@ public class TestNavmeshSampleTool : ISampleTool
     private int _straightPathOption;
 
     // for random point in circle mode
+    private int _randomPointCount = 300;
     private bool _constrainByCircle;
 
     // 
@@ -126,6 +127,7 @@ public class TestNavmeshSampleTool : ISampleTool
 
         if (_mode == RcTestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE)
         {
+            ImGui.SliderInt("Random point count", ref _randomPointCount, 0, 10000);
             ImGui.Checkbox("Constrained", ref _constrainByCircle);
         }
 
@@ -761,7 +763,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 var refs = new List<long>();
                 var parentRefs = new List<long>();
 
-                var status = _tool.FindPolysAroundShape(navQuery, settings, m_startRef, m_spos, m_epos, m_filter, ref refs, ref parentRefs, out var queryPoly);
+                var status = _tool.FindPolysAroundShape(navQuery, settings.agentHeight, m_startRef, m_spos, m_epos, m_filter, ref refs, ref parentRefs, out var queryPoly);
                 if (status.Succeeded())
                 {
                     m_queryPoly = queryPoly;
@@ -791,7 +793,7 @@ public class TestNavmeshSampleTool : ISampleTool
             if (m_sposSet && m_startRef != 0 && m_eposSet)
             {
                 var points = new List<RcVec3f>();
-                _tool.FindRandomPointAroundCircle(navQuery, m_startRef, m_spos, m_epos, m_filter, _constrainByCircle, 500, ref points);
+                _tool.FindRandomPointAroundCircle(navQuery, m_startRef, m_spos, m_epos, m_filter, _constrainByCircle, _randomPointCount, ref points);
                 randomPoints.AddRange(points);
             }
         }

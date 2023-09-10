@@ -269,11 +269,10 @@ namespace DotRecast.Recast.Toolset.Tools
             return navQuery.FindPolysAroundCircle(startRef, spos, dist, filter, ref resultRef, ref resultParent, ref costs);
         }
 
-        public DtStatus FindPolysAroundShape(DtNavMeshQuery navQuery, RcNavMeshBuildSettings settings, long startRef, RcVec3f spos, RcVec3f epos, IDtQueryFilter filter, ref List<long> resultRef, ref List<long> resultParent, out RcVec3f[] queryPoly)
+        public DtStatus FindPolysAroundShape(DtNavMeshQuery navQuery, float agentHeight, long startRef, RcVec3f spos, RcVec3f epos, IDtQueryFilter filter, ref List<long> resultRef, ref List<long> resultParent, out RcVec3f[] queryPoly)
         {
             float nx = (epos.z - spos.z) * 0.25f;
             float nz = -(epos.x - spos.x) * 0.25f;
-            float agentHeight = settings != null ? settings.agentHeight : 0;
 
             queryPoly = new RcVec3f[4];
             queryPoly[0].x = spos.x + nx * 1.2f;
