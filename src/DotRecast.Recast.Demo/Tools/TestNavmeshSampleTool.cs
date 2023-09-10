@@ -669,13 +669,9 @@ public class TestNavmeshSampleTool : ISampleTool
         }
         else if (_mode == RcTestNavmeshToolMode.PATHFIND_SLICED)
         {
-            m_polys = null;
-            m_straightPath = null;
-
-            if (m_sposSet && m_eposSet && m_startRef != 0 && m_endRef != 0)
-            {
-                m_pathFindStatus = _tool.InitSlicedFindPath(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, _enableRaycast);
-            }
+            m_polys?.Clear();
+            m_straightPath?.Clear();
+            m_pathFindStatus = _tool.InitSlicedFindPath(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, _enableRaycast);
         }
         else if (_mode == RcTestNavmeshToolMode.RAYCAST)
         {
@@ -708,7 +704,6 @@ public class TestNavmeshSampleTool : ISampleTool
 
     public void HandleUpdate(float dt)
     {
-        // TODO Auto-generated method stub
         if (_mode == RcTestNavmeshToolMode.PATHFIND_SLICED)
         {
             DtNavMeshQuery navQuery = _sample.GetNavMeshQuery();

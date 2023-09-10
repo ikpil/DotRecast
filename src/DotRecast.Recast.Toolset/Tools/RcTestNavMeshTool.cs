@@ -200,6 +200,11 @@ namespace DotRecast.Recast.Toolset.Tools
 
         public DtStatus InitSlicedFindPath(DtNavMeshQuery navQuery, long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter, bool enableRaycast)
         {
+            if (startRef == 0 || endRef == 0)
+            {
+                return DtStatus.DT_FAILURE;
+            }
+
             return navQuery.InitSlicedFindPath(startRef, endRef, startPos, endPos, filter,
                 enableRaycast ? DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0,
                 float.MaxValue
