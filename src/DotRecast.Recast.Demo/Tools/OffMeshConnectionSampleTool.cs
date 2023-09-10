@@ -37,10 +37,10 @@ public class OffMeshConnectionSampleTool : ISampleTool
     private DemoSample _sample;
 
     private readonly RcOffMeshConnectionTool _tool;
-    
-    public int bidir;
-    private bool hitPosSet;
-    private RcVec3f hitPos;
+
+    private int _bidir;
+    private bool _hasStartPt;
+    private RcVec3f _startPt;
 
     public OffMeshConnectionSampleTool()
     {
@@ -49,8 +49,8 @@ public class OffMeshConnectionSampleTool : ISampleTool
 
     public void Layout()
     {
-        ImGui.RadioButton("One Way", ref bidir, 0);
-        ImGui.RadioButton("Bidirectional", ref bidir, 1);
+        ImGui.RadioButton("One Way", ref _bidir, 0);
+        ImGui.RadioButton("Bidirectional", ref _bidir, 1);
     }
 
     public void HandleRender(NavMeshRenderer renderer)
@@ -60,9 +60,9 @@ public class OffMeshConnectionSampleTool : ISampleTool
         var settings = _sample.GetSettings();
         float s = settings.agentRadius;
 
-        if (hitPosSet)
+        if (_hasStartPt)
         {
-            dd.DebugDrawCross(hitPos.x, hitPos.y + 0.1f, hitPos.z, s, DuRGBA(0, 0, 0, 128), 2.0f);
+            dd.DebugDrawCross(_startPt.x, _startPt.y + 0.1f, _startPt.z, s, DuRGBA(0, 0, 0, 128), 2.0f);
         }
 
         DemoInputGeomProvider geom = _sample.GetInputGeom();
@@ -105,15 +105,15 @@ public class OffMeshConnectionSampleTool : ISampleTool
         else
         {
             // Create
-            if (!hitPosSet)
+            if (!_hasStartPt)
             {
-                hitPos = p;
-                hitPosSet = true;
+                _startPt = p;
+                _hasStartPt = true;
             }
             else
             {
-                _tool.Add(geom, settings, hitPos, p, 1 == bidir);
-                hitPosSet = false;
+                _tool.Add(geom, settings, _startPt, p, 1 == _bidir);
+                _hasStartPt = false;
             }
         }
     }
