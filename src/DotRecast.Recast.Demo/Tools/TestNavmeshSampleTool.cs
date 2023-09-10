@@ -63,7 +63,7 @@ public class TestNavmeshSampleTool : ISampleTool
     private RcVec3f[] m_queryPoly = new RcVec3f[4];
     private List<RcVec3f> m_smoothPath;
     private DtStatus m_pathFindStatus = DtStatus.DT_FAILURE;
-    private readonly List<RcVec3f> randomPoints = new();
+    private List<RcVec3f> _randomPoints = new();
 
     public TestNavmeshSampleTool()
     {
@@ -552,7 +552,7 @@ public class TestNavmeshSampleTool : ISampleTool
             dd.DepthMask(false);
             dd.Begin(POINTS, 4.0f);
             int col = DuRGBA(64, 16, 0, 220);
-            foreach (RcVec3f point in randomPoints)
+            foreach (RcVec3f point in _randomPoints)
             {
                 dd.Vertex(point.x, point.y + 0.1f, point.z, col);
             }
@@ -766,13 +766,7 @@ public class TestNavmeshSampleTool : ISampleTool
         }
         else if (_mode == RcTestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE)
         {
-            randomPoints.Clear();
-            if (m_sposSet && m_startRef != 0 && m_eposSet)
-            {
-                var points = new List<RcVec3f>();
-                _tool.FindRandomPointAroundCircle(navQuery, m_startRef, m_spos, m_epos, m_filter, _constrainByCircle, _randomPointCount, ref points);
-                randomPoints.AddRange(points);
-            }
+            _tool.FindRandomPointAroundCircle(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, _constrainByCircle, _randomPointCount, ref _randomPoints);
         }
     }
 

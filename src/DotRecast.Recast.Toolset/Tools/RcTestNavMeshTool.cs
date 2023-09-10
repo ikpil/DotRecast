@@ -325,8 +325,14 @@ namespace DotRecast.Recast.Toolset.Tools
             return status;
         }
 
-        public DtStatus FindRandomPointAroundCircle(DtNavMeshQuery navQuery, long startRef, RcVec3f spos, RcVec3f epos, IDtQueryFilter filter, bool constrainByCircle, int count, ref List<RcVec3f> points)
+        public DtStatus FindRandomPointAroundCircle(DtNavMeshQuery navQuery, long startRef, long endRef, RcVec3f spos, RcVec3f epos, IDtQueryFilter filter, bool constrainByCircle, int count,
+            ref List<RcVec3f> points)
         {
+            if (startRef == 0 || endRef == 0)
+            {
+                return DtStatus.DT_FAILURE;
+            }
+
             float dx = epos.x - spos.x;
             float dz = epos.z - spos.z;
             float dist = (float)Math.Sqrt(dx * dx + dz * dz);
@@ -338,6 +344,7 @@ namespace DotRecast.Recast.Toolset.Tools
             var frand = new FRand();
             int prevCnt = points.Count;
 
+            points = new List<RcVec3f>();
             while (0 < count && points.Count < prevCnt + count)
             {
                 var status = navQuery.FindRandomPointAroundCircle(startRef, spos, dist, filter, frand, constraint,
