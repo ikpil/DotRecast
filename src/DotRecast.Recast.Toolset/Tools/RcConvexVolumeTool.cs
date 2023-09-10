@@ -7,10 +7,71 @@ namespace DotRecast.Recast.Toolset.Tools
 {
     public class RcConvexVolumeTool : IRcToolable
     {
+        private readonly List<RcVec3f> _pts;
+        private readonly List<int> _hull;
+
+        public RcConvexVolumeTool()
+        {
+            _pts = new List<RcVec3f>();
+            _hull = new List<int>();
+        }
+
         public string GetName()
         {
             return "Convex Volumes";
         }
+
+        public List<RcVec3f> GetShapePoint()
+        {
+            return _pts;
+        }
+
+        public List<int> GetShapeHull()
+        {
+            return _hull;
+        }
+
+        public void ClearShape()
+        {
+            _pts.Clear();
+            _hull.Clear();
+        }
+
+        public bool PlottingShape(RcVec3f p, out List<RcVec3f> pts, out List<int> hull)
+        {
+            pts = null;
+            hull = null;
+
+            // Create
+            // If clicked on that last pt, create the shape.
+            if (_pts.Count > 0 && RcVec3f.DistSqr(p, _pts[_pts.Count - 1]) < 0.2f * 0.2f)
+            {
+                pts = new List<RcVec3f>(_pts);
+                hull = new List<int>(_hull);
+
+                _pts.Clear();
+                _hull.Clear();
+
+                return true;
+            }
+
+            // Add new point
+            _pts.Add(p);
+
+            // Update hull.
+            if (_pts.Count > 3)
+            {
+                _hull.Clear();
+                _hull.AddRange(RcConvexUtils.Convexhull(_pts));
+            }
+            else
+            {
+                _hull.Clear();
+            }
+
+            return false;
+        }
+
 
         public RcConvexVolume RemoveByPos(IInputGeomProvider geom, RcVec3f pos)
         {

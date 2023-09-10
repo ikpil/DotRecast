@@ -19,13 +19,10 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using System.Collections.Generic;
 using DotRecast.Core;
 using DotRecast.Recast.Toolset.Builder;
 using DotRecast.Recast.Demo.Draw;
-using DotRecast.Recast.Geom;
 using DotRecast.Recast.Toolset;
-using DotRecast.Recast.Toolset.Geom;
 using DotRecast.Recast.Toolset.Tools;
 using ImGuiNET;
 using Serilog;
@@ -41,13 +38,13 @@ public class ConvexVolumeSampleTool : ISampleTool
     private DemoSample _sample;
     private readonly RcConvexVolumeTool _tool;
 
-    private int areaTypeValue = SampleAreaModifications.SAMPLE_AREAMOD_GRASS.Value;
-    private RcAreaModification areaType = SampleAreaModifications.SAMPLE_AREAMOD_GRASS;
-    private float boxHeight = 6f;
-    private float boxDescent = 1f;
-    private float polyOffset = 0f;
-    private readonly List<RcVec3f> pts = new();
-    private readonly List<int> hull = new();
+    private float _boxHeight = 6f;
+    private float _boxDescent = 1f;
+    private float _polyOffset = 0f;
+
+    private int _areaTypeValue = SampleAreaModifications.SAMPLE_AREAMOD_GRASS.Value;
+    private RcAreaModification _areaType = SampleAreaModifications.SAMPLE_AREAMOD_GRASS;
+
 
     public ConvexVolumeSampleTool()
     {
@@ -56,37 +53,36 @@ public class ConvexVolumeSampleTool : ISampleTool
 
     public void Layout()
     {
-        ImGui.SliderFloat("Shape Height", ref boxHeight, 0.1f, 20f, "%.1f");
-        ImGui.SliderFloat("Shape Descent", ref boxDescent, 0.1f, 20f, "%.1f");
-        ImGui.SliderFloat("Poly Offset", ref polyOffset, 0.1f, 10f, "%.1f");
+        ImGui.SliderFloat("Shape Height", ref _boxHeight, 0.1f, 20f, "%.1f");
+        ImGui.SliderFloat("Shape Descent", ref _boxDescent, 0.1f, 20f, "%.1f");
+        ImGui.SliderFloat("Poly Offset", ref _polyOffset, 0.1f, 10f, "%.1f");
         ImGui.NewLine();
+
+        int prevAreaTypeValue = _areaTypeValue;
 
         ImGui.Text("Area Type");
         ImGui.Separator();
-        int prevAreaTypeValue = areaTypeValue;
-        ImGui.RadioButton("Ground", ref areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_GROUND.Value);
-        ImGui.RadioButton("Water", ref areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_WATER.Value);
-        ImGui.RadioButton("Road", ref areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_ROAD.Value);
-        ImGui.RadioButton("Door", ref areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_DOOR.Value);
-        ImGui.RadioButton("Grass", ref areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_GRASS.Value);
-        ImGui.RadioButton("Jump", ref areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_JUMP.Value);
+        ImGui.RadioButton("Ground", ref _areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_GROUND.Value);
+        ImGui.RadioButton("Water", ref _areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_WATER.Value);
+        ImGui.RadioButton("Road", ref _areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_ROAD.Value);
+        ImGui.RadioButton("Door", ref _areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_DOOR.Value);
+        ImGui.RadioButton("Grass", ref _areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_GRASS.Value);
+        ImGui.RadioButton("Jump", ref _areaTypeValue, SampleAreaModifications.SAMPLE_AREAMOD_JUMP.Value);
         ImGui.NewLine();
 
-        if (prevAreaTypeValue != areaTypeValue)
+        if (prevAreaTypeValue != _areaTypeValue)
         {
-            areaType = SampleAreaModifications.OfValue(areaTypeValue);
+            _areaType = SampleAreaModifications.OfValue(_areaTypeValue);
         }
 
         if (ImGui.Button("Clear Shape"))
         {
-            hull.Clear();
-            pts.Clear();
+            _tool.ClearShape();
         }
 
         if (ImGui.Button("Remove All"))
         {
-            hull.Clear();
-            pts.Clear();
+            _tool.ClearShape();
 
             var geom = _sample.GetInputGeom();
             if (geom != null)
@@ -99,6 +95,10 @@ public class ConvexVolumeSampleTool : ISampleTool
     public void HandleRender(NavMeshRenderer renderer)
     {
         RecastDebugDraw dd = renderer.GetDebugDraw();
+
+        var pts = _tool.GetShapePoint();
+        var hull = _tool.GetShapeHull();
+
         // Find height extent of the shape.
         float minh = float.MaxValue, maxh = 0;
         for (int i = 0; i < pts.Count; ++i)
@@ -106,8 +106,8 @@ public class ConvexVolumeSampleTool : ISampleTool
             minh = Math.Min(minh, pts[i].y);
         }
 
-        minh -= boxDescent;
-        maxh = minh + boxHeight;
+        minh -= _boxDescent;
+        maxh = minh + _boxHeight;
 
         dd.Begin(POINTS, 4.0f);
         for (int i = 0; i < pts.Count; ++i)
@@ -158,44 +158,16 @@ public class ConvexVolumeSampleTool : ISampleTool
     public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
         var geom = _sample.GetInputGeom();
-        var settings = _sample.GetSettings();
-        var navMesh = _sample.GetNavMesh();
-
         if (shift)
         {
             _tool.RemoveByPos(geom, p);
         }
         else
         {
-            // Create
-
-            // If clicked on that last pt, create the shape.
-            if (pts.Count > 0 && RcVec3f.DistSqr(p, pts[pts.Count - 1]) < 0.2f * 0.2f)
+            if (_tool.PlottingShape(p, out var pts, out var hull))
             {
-                var vol = RcConvexVolumeTool.CreateConvexVolume(pts, hull, areaType, boxDescent, boxHeight, polyOffset);
-                if (null != vol)
-                {
-                    _tool.Add(geom, vol);
-                }
-
-                pts.Clear();
-                hull.Clear();
-            }
-            else
-            {
-                // Add new point
-                pts.Add(p);
-
-                // Update hull.
-                if (pts.Count > 3)
-                {
-                    hull.Clear();
-                    hull.AddRange(RcConvexUtils.Convexhull(pts));
-                }
-                else
-                {
-                    hull.Clear();
-                }
+                var vol = RcConvexVolumeTool.CreateConvexVolume(pts, hull, _areaType, _boxDescent, _boxHeight, _polyOffset);
+                _tool.Add(geom, vol);
             }
         }
     }
