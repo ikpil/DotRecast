@@ -63,6 +63,8 @@ public class TestNavmeshSampleTool : ISampleTool
     private RcVec3f[] m_queryPoly = new RcVec3f[4];
     private List<RcVec3f> m_smoothPath;
     private DtStatus m_pathFindStatus = DtStatus.DT_FAILURE;
+
+    // for mode RANDOM_POINTS_IN_CIRCLE
     private List<RcVec3f> _randomPoints = new();
 
     public TestNavmeshSampleTool()
@@ -709,23 +711,9 @@ public class TestNavmeshSampleTool : ISampleTool
         }
         else if (_mode == RcTestNavmeshToolMode.RAYCAST)
         {
-            m_straightPath = null;
-            if (m_sposSet && m_eposSet && m_startRef != 0)
-            {
-                var polys = new List<long>();
-                var straightPath = new List<StraightPathItem>();
-                var status = _tool.Raycast(navQuery, m_startRef, m_spos, m_epos, m_filter,
-                    ref polys, ref straightPath, out var hitPos, out var hitNormal, out var hitResult);
-
-                if (status.Succeeded())
-                {
-                    m_polys = polys;
-                    m_straightPath = straightPath;
-                    m_hitPos = hitPos;
-                    m_hitNormal = hitNormal;
-                    m_hitResult = hitResult;
-                }
-            }
+            m_straightPath?.Clear();
+            _tool.Raycast(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter,
+                ref m_polys, ref m_straightPath, ref m_hitPos, ref m_hitNormal, ref m_hitResult);
         }
         else if (_mode == RcTestNavmeshToolMode.DISTANCE_TO_WALL)
         {

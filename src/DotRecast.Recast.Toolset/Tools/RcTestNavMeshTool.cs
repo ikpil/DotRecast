@@ -216,18 +216,23 @@ namespace DotRecast.Recast.Toolset.Tools
         }
 
 
-        public DtStatus Raycast(DtNavMeshQuery navQuery, long startRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter,
-            ref List<long> polys, ref List<StraightPathItem> straightPath, out RcVec3f hitPos, out RcVec3f hitNormal, out bool hitResult)
+        public DtStatus Raycast(DtNavMeshQuery navQuery, long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter,
+            ref List<long> polys, ref List<StraightPathItem> straightPath, ref RcVec3f hitPos, ref RcVec3f hitNormal, ref bool hitResult)
         {
-            hitPos = RcVec3f.Zero;
-            hitNormal = RcVec3f.Zero;
-            hitResult = false;
+            if (startRef == 0 || endRef == 0)
+            {
+                return DtStatus.DT_FAILURE;
+            }
 
             var status = navQuery.Raycast(startRef, startPos, endPos, filter, 0, 0, out var rayHit);
             if (!status.Succeeded())
+            {
                 return status;
-
+            }
+            
+            // results ...
             polys = rayHit.path;
+
             if (rayHit.t > 1)
             {
                 // No hit
@@ -252,6 +257,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 }
             }
 
+            straightPath ??= new List<StraightPathItem>();
             straightPath.Clear();
             straightPath.Add(new StraightPathItem(startPos, 0, 0));
             straightPath.Add(new StraightPathItem(hitPos, 0, 0));
