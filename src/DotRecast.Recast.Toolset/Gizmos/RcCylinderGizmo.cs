@@ -1,18 +1,18 @@
 using DotRecast.Core;
 using static DotRecast.Core.RcMath;
-using static DotRecast.Recast.Toolset.Tools.Gizmos.GizmoHelper;
+using static DotRecast.Recast.Toolset.Gizmos.GizmoHelper;
 
 
-namespace DotRecast.Recast.Toolset.Tools.Gizmos
+namespace DotRecast.Recast.Toolset.Gizmos
 {
-    public class CylinderGizmo : IRcGizmoMeshFilter
+    public class RcCylinderGizmo : IRcGizmoMeshFilter
     {
         public readonly float[] vertices;
         public readonly int[] triangles;
         public readonly RcVec3f center;
         public readonly float[] gradient;
 
-        public CylinderGizmo(RcVec3f start, RcVec3f end, float radius)
+        public RcCylinderGizmo(RcVec3f start, RcVec3f end, float radius)
         {
             center = RcVec3f.Of(
                 0.5f * (start.x + end.x), 0.5f * (start.y + end.y),

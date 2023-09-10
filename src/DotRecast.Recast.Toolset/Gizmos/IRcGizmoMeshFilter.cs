@@ -1,6 +1,6 @@
 //using DotRecast.Recast.Demo.Draw;
 
-namespace DotRecast.Recast.Toolset.Tools.Gizmos
+namespace DotRecast.Recast.Toolset.Gizmos
 {
     public interface IRcGizmoMeshFilter
     {

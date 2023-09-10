@@ -29,7 +29,7 @@ using DotRecast.Detour.Dynamic.Io;
 using DotRecast.Recast.Toolset.Builder;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Toolset.Geom;
-using DotRecast.Recast.Toolset.Tools.Gizmos;
+using DotRecast.Recast.Toolset.Gizmos;
 using DotRecast.Recast.Demo.UI;
 using DotRecast.Recast.Toolset;
 using DotRecast.Recast.Toolset.Tools;
@@ -75,7 +75,7 @@ public class DynamicUpdateSampleTool : ISampleTool
 
     private DynamicNavMesh dynaMesh;
     private readonly TaskFactory executor;
-    private readonly Dictionary<long, ColliderWithGizmo> colliderGizmos = new();
+    private readonly Dictionary<long, RcGizmo> colliderGizmos = new();
     private readonly Random random = Random.Shared;
     private readonly DemoInputGeomProvider bridgeGeom;
     private readonly DemoInputGeomProvider houseGeom;
@@ -281,7 +281,7 @@ public class DynamicUpdateSampleTool : ISampleTool
             {
                 colliderGizmos.Values.ForEach(g =>
                 {
-                    g.Render(renderer.GetDebugDraw());
+                    GizmoRenderer.Render(renderer.GetDebugDraw(), g.Gizmo);
                 });
             }
         }
@@ -359,7 +359,7 @@ public class DynamicUpdateSampleTool : ISampleTool
         {
             if (!shift)
             {
-                ColliderWithGizmo colliderWithGizmo = null;
+                RcGizmo colliderWithGizmo = null;
                 if (dynaMesh != null)
                 {
                     if (colliderShape == DynamicColliderShape.SPHERE)
@@ -433,16 +433,16 @@ public class DynamicUpdateSampleTool : ISampleTool
         }
     }
 
-    private ColliderWithGizmo SphereCollider(RcVec3f p)
+    private RcGizmo SphereCollider(RcVec3f p)
     {
         float radius = 1 + (float)random.NextDouble() * 10;
         var collider = new SphereCollider(p, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb);
         var gizmo = GizmoFactory.Sphere(p, radius);
 
-        return new ColliderWithGizmo(collider, gizmo);
+        return new RcGizmo(collider, gizmo);
     }
 
-    private ColliderWithGizmo CapsuleCollider(RcVec3f p)
+    private RcGizmo CapsuleCollider(RcVec3f p)
     {
         float radius = 0.4f + (float)random.NextDouble() * 4f;
         RcVec3f a = RcVec3f.Of(
@@ -459,10 +459,10 @@ public class DynamicUpdateSampleTool : ISampleTool
         RcVec3f end = RcVec3f.Of(p.x + a.x, p.y + a.y, p.z + a.z);
         var collider = new CapsuleCollider(start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb);
         var gizmo = GizmoFactory.Capsule(start, end, radius);
-        return new ColliderWithGizmo(collider, gizmo);
+        return new RcGizmo(collider, gizmo);
     }
 
-    private ColliderWithGizmo BoxCollider(RcVec3f p)
+    private RcGizmo BoxCollider(RcVec3f p)
     {
         RcVec3f extent = RcVec3f.Of(
             0.5f + (float)random.NextDouble() * 6f,
@@ -474,10 +474,10 @@ public class DynamicUpdateSampleTool : ISampleTool
         RcVec3f[] halfEdges = Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(up, forward, extent);
         var collider = new BoxCollider(p, halfEdges, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb);
         var gizmo = GizmoFactory.Box(p, halfEdges);
-        return new ColliderWithGizmo(collider, gizmo);
+        return new RcGizmo(collider, gizmo);
     }
 
-    private ColliderWithGizmo CylinderCollider(RcVec3f p)
+    private RcGizmo CylinderCollider(RcVec3f p)
     {
         float radius = 0.7f + (float)random.NextDouble() * 4f;
         RcVec3f a = RcVec3f.Of(1f - 2 * (float)random.NextDouble(), 0.01f + (float)random.NextDouble(), 1f - 2 * (float)random.NextDouble());
@@ -491,10 +491,10 @@ public class DynamicUpdateSampleTool : ISampleTool
         var collider = new CylinderCollider(start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb);
         var gizmo = GizmoFactory.Cylinder(start, end, radius);
 
-        return new ColliderWithGizmo(collider, gizmo);
+        return new RcGizmo(collider, gizmo);
     }
 
-    private ColliderWithGizmo CompositeCollider(RcVec3f p)
+    private RcGizmo CompositeCollider(RcVec3f p)
     {
         RcVec3f baseExtent = RcVec3f.Of(5, 3, 8);
         RcVec3f baseCenter = RcVec3f.Of(p.x, p.y + 3, p.z);
@@ -531,36 +531,36 @@ public class DynamicUpdateSampleTool : ISampleTool
         IRcGizmoMeshFilter trunkGizmo = GizmoFactory.Capsule(trunkStart, trunkEnd, 0.5f);
         IRcGizmoMeshFilter crownGizmo = GizmoFactory.Sphere(crownCenter, 4f);
         IRcGizmoMeshFilter gizmo = GizmoFactory.Composite(baseGizmo, roofGizmo, trunkGizmo, crownGizmo);
-        return new ColliderWithGizmo(collider, gizmo);
+        return new RcGizmo(collider, gizmo);
     }
 
-    private ColliderWithGizmo TrimeshBridge(RcVec3f p)
+    private RcGizmo TrimeshBridge(RcVec3f p)
     {
         return TrimeshCollider(p, bridgeGeom);
     }
 
-    private ColliderWithGizmo TrimeshHouse(RcVec3f p)
+    private RcGizmo TrimeshHouse(RcVec3f p)
     {
         return TrimeshCollider(p, houseGeom);
     }
 
-    private ColliderWithGizmo ConvexTrimesh(RcVec3f p)
+    private RcGizmo ConvexTrimesh(RcVec3f p)
     {
         float[] verts = TransformVertices(p, convexGeom, 360);
         var collider = new ConvexTrimeshCollider(verts, convexGeom.faces,
             SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, dynaMesh.config.walkableClimb * 10);
         var gizmo = GizmoFactory.Trimesh(verts, convexGeom.faces);
-        return new ColliderWithGizmo(collider, gizmo);
+        return new RcGizmo(collider, gizmo);
     }
 
-    private ColliderWithGizmo TrimeshCollider(RcVec3f p, DemoInputGeomProvider geom)
+    private RcGizmo TrimeshCollider(RcVec3f p, DemoInputGeomProvider geom)
     {
         float[] verts = TransformVertices(p, geom, 0);
         var collider = new TrimeshCollider(verts, geom.faces, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD,
             dynaMesh.config.walkableClimb * 10);
         var gizmo = GizmoFactory.Trimesh(verts, geom.faces);
 
-        return new ColliderWithGizmo(collider, gizmo);
+        return new RcGizmo(collider, gizmo);
     }
 
     private float[] TransformVertices(RcVec3f p, DemoInputGeomProvider geom, float ax)

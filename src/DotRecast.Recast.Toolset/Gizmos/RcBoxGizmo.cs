@@ -1,9 +1,9 @@
 using DotRecast.Core;
 using DotRecast.Detour.Dynamic.Colliders;
 
-namespace DotRecast.Recast.Toolset.Tools.Gizmos
+namespace DotRecast.Recast.Toolset.Gizmos
 {
-    public class BoxGizmo : IRcGizmoMeshFilter
+    public class RcBoxGizmo : IRcGizmoMeshFilter
     {
         public static readonly int[] TRIANLGES =
         {
@@ -27,12 +27,12 @@ namespace DotRecast.Recast.Toolset.Tools.Gizmos
         public readonly RcVec3f center;
         public readonly RcVec3f[] halfEdges;
 
-        public BoxGizmo(RcVec3f center, RcVec3f extent, RcVec3f forward, RcVec3f up) :
+        public RcBoxGizmo(RcVec3f center, RcVec3f extent, RcVec3f forward, RcVec3f up) :
             this(center, BoxCollider.GetHalfEdges(up, forward, extent))
         {
         }
 
-        public BoxGizmo(RcVec3f center, RcVec3f[] halfEdges)
+        public RcBoxGizmo(RcVec3f center, RcVec3f[] halfEdges)
         {
             this.center = center;
             this.halfEdges = halfEdges;

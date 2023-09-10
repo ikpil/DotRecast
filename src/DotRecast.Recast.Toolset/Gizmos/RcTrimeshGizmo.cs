@@ -1,11 +1,11 @@
-﻿namespace DotRecast.Recast.Toolset.Tools.Gizmos
+﻿namespace DotRecast.Recast.Toolset.Gizmos
 {
-    public class TrimeshGizmo : IRcGizmoMeshFilter
+    public class RcTrimeshGizmo : IRcGizmoMeshFilter
     {
         public readonly float[] vertices;
         public readonly int[] triangles;
 
-        public TrimeshGizmo(float[] vertices, int[] triangles)
+        public RcTrimeshGizmo(float[] vertices, int[] triangles)
         {
             this.vertices = vertices;
             this.triangles = triangles;

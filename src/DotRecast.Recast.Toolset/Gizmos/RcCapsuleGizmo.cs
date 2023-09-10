@@ -1,17 +1,17 @@
 using DotRecast.Core;
 using static DotRecast.Core.RcMath;
-using static DotRecast.Recast.Toolset.Tools.Gizmos.GizmoHelper;
+using static DotRecast.Recast.Toolset.Gizmos.GizmoHelper;
 
-namespace DotRecast.Recast.Toolset.Tools.Gizmos
+namespace DotRecast.Recast.Toolset.Gizmos
 {
-    public class CapsuleGizmo : IRcGizmoMeshFilter
+    public class RcCapsuleGizmo : IRcGizmoMeshFilter
     {
         public readonly float[] vertices;
         public readonly int[] triangles;
         public readonly float[] center;
         public readonly float[] gradient;
 
-        public CapsuleGizmo(RcVec3f start, RcVec3f end, float radius)
+        public RcCapsuleGizmo(RcVec3f start, RcVec3f end, float radius)
         {
             center = new float[]
             {

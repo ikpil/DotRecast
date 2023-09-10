@@ -1,50 +1,35 @@
 ﻿using DotRecast.Core;
-using DotRecast.Detour.Dynamic.Colliders;
-using DotRecast.Recast.Toolset.Tools.Gizmos;
 using DotRecast.Recast.Demo.Draw;
+using DotRecast.Recast.Toolset.Gizmos;
 using static DotRecast.Core.RcMath;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class ColliderWithGizmo
+public static class GizmoRenderer
 {
-    public readonly IRcGizmoMeshFilter Gizmo;
-    public readonly ICollider Collider;
-
-    public ColliderWithGizmo(ICollider collider, IRcGizmoMeshFilter gizmo)
-    {
-        Collider = collider;
-        Gizmo = gizmo;
-    }
-
-    public void Render(RecastDebugDraw dd)
-    {
-        Render(dd, Gizmo);
-    }
-
     public static void Render(RecastDebugDraw dd, IRcGizmoMeshFilter gizmo)
     {
-        if (gizmo is BoxGizmo box)
+        if (gizmo is RcBoxGizmo box)
         {
             RenderBox(dd, box);
         }
-        else if (gizmo is CapsuleGizmo capsule)
+        else if (gizmo is RcCapsuleGizmo capsule)
         {
             RenderCapsule(dd, capsule);
         }
-        else if (gizmo is TrimeshGizmo trimesh)
+        else if (gizmo is RcTrimeshGizmo trimesh)
         {
             RenderTrimesh(dd, trimesh);
         }
-        else if (gizmo is CylinderGizmo cylinder)
+        else if (gizmo is RcCylinderGizmo cylinder)
         {
             RenderCylinder(dd, cylinder);
         }
-        else if (gizmo is SphereGizmo sphere)
+        else if (gizmo is RcSphereGizmo sphere)
         {
             RenderSphere(dd, sphere);
         }
-        else if (gizmo is CompositeGizmo composite)
+        else if (gizmo is RcCompositeGizmo composite)
         {
             RenderComposite(dd, composite);
         }
@@ -74,7 +59,7 @@ public class ColliderWithGizmo
         return col;
     }
 
-    public static void RenderBox(RecastDebugDraw debugDraw, BoxGizmo box)
+    public static void RenderBox(RecastDebugDraw debugDraw, RcBoxGizmo box)
     {
         var trX = RcVec3f.Of(box.halfEdges[0].x, box.halfEdges[1].x, box.halfEdges[2].x);
         var trY = RcVec3f.Of(box.halfEdges[0].y, box.halfEdges[1].y, box.halfEdges[2].y);
@@ -82,9 +67,9 @@ public class ColliderWithGizmo
         float[] vertices = new float[8 * 3];
         for (int i = 0; i < 8; i++)
         {
-            vertices[i * 3 + 0] = RcVec3f.Dot(BoxGizmo.VERTS[i], trX) + box.center.x;
-            vertices[i * 3 + 1] = RcVec3f.Dot(BoxGizmo.VERTS[i], trY) + box.center.y;
-            vertices[i * 3 + 2] = RcVec3f.Dot(BoxGizmo.VERTS[i], trZ) + box.center.z;
+            vertices[i * 3 + 0] = RcVec3f.Dot(RcBoxGizmo.VERTS[i], trX) + box.center.x;
+            vertices[i * 3 + 1] = RcVec3f.Dot(RcBoxGizmo.VERTS[i], trY) + box.center.y;
+            vertices[i * 3 + 2] = RcVec3f.Dot(RcBoxGizmo.VERTS[i], trZ) + box.center.z;
         }
 
         debugDraw.Begin(DebugDrawPrimitives.TRIS);
@@ -102,7 +87,7 @@ public class ColliderWithGizmo
 
             for (int j = 0; j < 3; j++)
             {
-                int v = BoxGizmo.TRIANLGES[i * 3 + j] * 3;
+                int v = RcBoxGizmo.TRIANLGES[i * 3 + j] * 3;
                 debugDraw.Vertex(vertices[v], vertices[v + 1], vertices[v + 2], col);
             }
         }
@@ -110,7 +95,7 @@ public class ColliderWithGizmo
         debugDraw.End();
     }
 
-    public static void RenderCapsule(RecastDebugDraw debugDraw, CapsuleGizmo capsule)
+    public static void RenderCapsule(RecastDebugDraw debugDraw, RcCapsuleGizmo capsule)
     {
         debugDraw.Begin(DebugDrawPrimitives.TRIS);
         for (int i = 0; i < capsule.triangles.Length; i += 3)
@@ -128,7 +113,7 @@ public class ColliderWithGizmo
         debugDraw.End();
     }
 
-    public static void RenderCylinder(RecastDebugDraw debugDraw, CylinderGizmo cylinder)
+    public static void RenderCylinder(RecastDebugDraw debugDraw, RcCylinderGizmo cylinder)
     {
         debugDraw.Begin(DebugDrawPrimitives.TRIS);
         for (int i = 0; i < cylinder.triangles.Length; i += 3)
@@ -146,7 +131,7 @@ public class ColliderWithGizmo
         debugDraw.End();
     }
 
-    public static void RenderSphere(RecastDebugDraw debugDraw, SphereGizmo sphere)
+    public static void RenderSphere(RecastDebugDraw debugDraw, RcSphereGizmo sphere)
     {
         debugDraw.Begin(DebugDrawPrimitives.TRIS);
         for (int i = 0; i < sphere.triangles.Length; i += 3)
@@ -169,7 +154,7 @@ public class ColliderWithGizmo
         debugDraw.End();
     }
 
-    public static void RenderTrimesh(RecastDebugDraw debugDraw, TrimeshGizmo trimesh)
+    public static void RenderTrimesh(RecastDebugDraw debugDraw, RcTrimeshGizmo trimesh)
     {
         debugDraw.Begin(DebugDrawPrimitives.TRIS);
         for (int i = 0; i < trimesh.triangles.Length; i += 3)
@@ -186,7 +171,7 @@ public class ColliderWithGizmo
         debugDraw.End();
     }
 
-    public static void RenderComposite(RecastDebugDraw debugDraw, CompositeGizmo composite)
+    public static void RenderComposite(RecastDebugDraw debugDraw, RcCompositeGizmo composite)
     {
         composite.gizmoMeshes.ForEach(g => Render(debugDraw, g));
     }

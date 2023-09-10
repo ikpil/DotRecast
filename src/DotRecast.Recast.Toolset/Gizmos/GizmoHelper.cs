@@ -1,6 +1,6 @@
 using System;
 
-namespace DotRecast.Recast.Toolset.Tools.Gizmos
+namespace DotRecast.Recast.Toolset.Gizmos
 {
     public static class GizmoHelper
     {
