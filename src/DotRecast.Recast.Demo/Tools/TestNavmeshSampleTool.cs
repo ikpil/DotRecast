@@ -659,25 +659,8 @@ public class TestNavmeshSampleTool : ISampleTool
 
         if (_mode == RcTestNavmeshToolMode.PATHFIND_FOLLOW)
         {
-            if (m_sposSet && m_eposSet && m_startRef != 0 && m_endRef != 0)
-            {
-                var polys = new List<long>();
-                var smoothPath = new List<RcVec3f>();
-
-                var status = _tool.FindFollowPath(navMesh, navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, _enableRaycast,
-                    ref polys, ref smoothPath);
-
-                if (status.Succeeded())
-                {
-                    m_polys = polys;
-                    m_smoothPath = smoothPath;
-                }
-            }
-            else
-            {
-                m_polys = null;
-                m_smoothPath = null;
-            }
+            _tool.FindFollowPath(navMesh, navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, _enableRaycast,
+                ref m_polys, ref m_smoothPath);
         }
         else if (_mode == RcTestNavmeshToolMode.PATHFIND_STRAIGHT)
         {

@@ -23,9 +23,22 @@ namespace DotRecast.Recast.Toolset.Tools
         public DtStatus FindFollowPath(DtNavMesh navMesh, DtNavMeshQuery navQuery, long startRef, long endRef, RcVec3f startPt, RcVec3f endPt, IDtQueryFilter filter, bool enableRaycast,
             ref List<long> polys, ref List<RcVec3f> smoothPath)
         {
-            navQuery.FindPath(startRef, endRef, startPt, endPt, filter, ref polys,
-                new DtFindPathOption(enableRaycast ? DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue));
+            if (startRef == 0 || endRef == 0)
+            {
+                polys?.Clear();
+                smoothPath?.Clear();
 
+                return DtStatus.DT_FAILURE;
+            }
+
+            polys ??= new List<long>();
+            smoothPath ??= new List<RcVec3f>();
+
+            polys.Clear();
+            smoothPath.Clear();
+
+            var opt = new DtFindPathOption(enableRaycast ? DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue);
+            navQuery.FindPath(startRef, endRef, startPt, endPt, filter, ref polys, opt);
             if (0 >= polys.Count)
                 return DtStatus.DT_FAILURE;
 
@@ -229,7 +242,7 @@ namespace DotRecast.Recast.Toolset.Tools
             {
                 return status;
             }
-            
+
             // results ...
             polys = rayHit.path;
 
