@@ -679,23 +679,12 @@ public class TestNavmeshSampleTool : ISampleTool
         }
         else if (_mode == RcTestNavmeshToolMode.RAYCAST)
         {
-            m_straightPath?.Clear();
             _tool.Raycast(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter,
                 ref m_polys, ref m_straightPath, ref m_hitPos, ref m_hitNormal, ref m_hitResult);
         }
         else if (_mode == RcTestNavmeshToolMode.DISTANCE_TO_WALL)
         {
-            m_distanceToWall = 0;
-            if (m_sposSet && m_startRef != 0)
-            {
-                var result = navQuery.FindDistanceToWall(m_startRef, m_spos, 100.0f, m_filter, out var hitDist, out var hitPos, out var hitNormal);
-                if (result.Succeeded())
-                {
-                    m_distanceToWall = hitDist;
-                    m_hitPos = hitPos;
-                    m_hitNormal = hitNormal;
-                }
-            }
+            _tool.FindDistanceToWall(navQuery, m_startRef, m_spos, 100.0f, m_filter, ref m_distanceToWall, ref m_hitPos, ref m_hitNormal);
         }
         else if (_mode == RcTestNavmeshToolMode.FIND_POLYS_IN_CIRCLE)
         {

@@ -245,6 +245,9 @@ namespace DotRecast.Recast.Toolset.Tools
         {
             if (startRef == 0 || endRef == 0)
             {
+                polys?.Clear();
+                straightPath?.Clear();
+
                 return DtStatus.DT_FAILURE;
             }
 
@@ -288,6 +291,28 @@ namespace DotRecast.Recast.Toolset.Tools
 
             return status;
         }
+
+        public DtStatus FindDistanceToWall(DtNavMeshQuery navQuery, long startRef, RcVec3f spos, float maxRadius, IDtQueryFilter filter,
+            ref float hitDist, ref RcVec3f hitPos, ref RcVec3f hitNormal)
+        {
+            if (0 == startRef)
+            {
+                return DtStatus.DT_FAILURE;
+            }
+
+            var status = navQuery.FindDistanceToWall(startRef, spos, maxRadius, filter,
+                out var tempHitDist, out var tempHitPos, out var tempHitNormal);
+
+            if (status.Succeeded())
+            {
+                hitDist = tempHitDist;
+                hitPos = tempHitPos;
+                hitNormal = tempHitNormal;
+            }
+
+            return status;
+        }
+
 
         public DtStatus FindPolysAroundCircle(DtNavMeshQuery navQuery, long startRef, long endRef, RcVec3f spos, RcVec3f epos, IDtQueryFilter filter, ref List<long> resultRef, ref List<long> resultParent)
         {
