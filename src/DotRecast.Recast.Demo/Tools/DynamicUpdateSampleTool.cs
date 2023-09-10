@@ -50,23 +50,30 @@ public class DynamicUpdateSampleTool : ISampleTool
     private DynamicUpdateToolMode mode = DynamicUpdateToolMode.BUILD;
     private float cellSize = 0.3f;
 
+    // build config
     private int partitioning = RcPartitionType.WATERSHED.Value;
-    private bool filterLowHangingObstacles = true;
-    private bool filterLedgeSpans = true;
-    private bool filterWalkableLowHeightSpans = true;
+    private float walkableSlopeAngle = 45f;
     private float walkableHeight = 2f;
     private float walkableRadius = 0.6f;
     private float walkableClimb = 0.9f;
-    private float walkableSlopeAngle = 45f;
+    
     private float minRegionArea = 6f;
     private float regionMergeSize = 36f;
+    
     private float maxEdgeLen = 12f;
     private float maxSimplificationError = 1.3f;
     private int vertsPerPoly = 6;
-    private bool buildDetailMesh = true;
-    private bool compression = true;
+    
     private float detailSampleDist = 6f;
     private float detailSampleMaxError = 1f;
+    
+    private bool filterLowHangingObstacles = true;
+    private bool filterLedgeSpans = true;
+    private bool filterWalkableLowHeightSpans = true;
+    
+    private bool buildDetailMesh = true;
+    
+    private bool compression = true;
     private bool showColliders = false;
     private long buildTime;
     private long raycastTime;
