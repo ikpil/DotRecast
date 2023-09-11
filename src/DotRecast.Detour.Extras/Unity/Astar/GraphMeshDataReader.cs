@@ -18,7 +18,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.IO.Compression;
-using System.Numerics;
+
 using DotRecast.Core;
 
 namespace DotRecast.Detour.Extras.Unity.Astar

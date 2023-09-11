@@ -28,15 +28,15 @@ namespace DotRecast.Detour.Dynamic.Colliders
         private readonly float[] vertices;
         private readonly int[] triangles;
 
-        public ConvexTrimeshCollider(float[] vertices, int[] triangles, int area, float flagMergeThreshold) :
-            base(area, flagMergeThreshold, TrimeshCollider.ComputeBounds(vertices))
+        public ConvexTrimeshCollider(float[] vertices, int[] triangles, int area, float flagMergeThreshold)
+            : base(area, flagMergeThreshold, TrimeshCollider.ComputeBounds(vertices))
         {
             this.vertices = vertices;
             this.triangles = triangles;
         }
 
-        public ConvexTrimeshCollider(float[] vertices, int[] triangles, float[] bounds, int area, float flagMergeThreshold) :
-            base(area, flagMergeThreshold, bounds)
+        public ConvexTrimeshCollider(float[] vertices, int[] triangles, float[] bounds, int area, float flagMergeThreshold)
+            : base(area, flagMergeThreshold, bounds)
         {
             this.vertices = vertices;
             this.triangles = triangles;

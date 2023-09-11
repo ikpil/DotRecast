@@ -29,8 +29,8 @@ namespace DotRecast.Detour.Dynamic.Colliders
         private readonly RcVec3f end;
         private readonly float radius;
 
-        public CapsuleCollider(RcVec3f start, RcVec3f end, float radius, int area, float flagMergeThreshold) :
-            base(area, flagMergeThreshold, Bounds(start, end, radius))
+        public CapsuleCollider(RcVec3f start, RcVec3f end, float radius, int area, float flagMergeThreshold)
+            : base(area, flagMergeThreshold, Bounds(start, end, radius))
         {
             this.start = start;
             this.end = end;
