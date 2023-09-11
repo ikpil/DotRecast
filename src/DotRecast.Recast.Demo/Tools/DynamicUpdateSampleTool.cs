@@ -56,23 +56,23 @@ public class DynamicUpdateSampleTool : ISampleTool
     private float walkableHeight = 2f;
     private float walkableRadius = 0.6f;
     private float walkableClimb = 0.9f;
-    
+
     private float minRegionArea = 6f;
     private float regionMergeSize = 36f;
-    
+
     private float maxEdgeLen = 12f;
     private float maxSimplificationError = 1.3f;
     private int vertsPerPoly = 6;
-    
+
     private float detailSampleDist = 6f;
     private float detailSampleMaxError = 1f;
-    
+
     private bool filterLowHangingObstacles = true;
     private bool filterLedgeSpans = true;
     private bool filterWalkableLowHeightSpans = true;
-    
+
     private bool buildDetailMesh = true;
-    
+
     private bool compression = true;
     private bool showColliders = false;
     private long buildTime;
@@ -692,10 +692,7 @@ public class DynamicUpdateSampleTool : ISampleTool
     {
         try
         {
-            using var fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
-            using var br = new BinaryReader(fs);
-            VoxelFileReader reader = new VoxelFileReader(DtVoxelTileLZ4DemoCompressor.Shared);
-            VoxelFile voxelFile = reader.Read(br);
+            var voxelFile = _tool.Load(filename, DtVoxelTileLZ4DemoCompressor.Shared);
             dynaMesh = new DynamicNavMesh(voxelFile);
             dynaMesh.config.keepIntermediateResults = true;
 
@@ -714,11 +711,8 @@ public class DynamicUpdateSampleTool : ISampleTool
 
     private void Save(string filename)
     {
-        using var fs = new FileStream(filename, FileMode.CreateNew, FileAccess.Write);
-        using var bw = new BinaryWriter(fs);
         VoxelFile voxelFile = VoxelFile.From(dynaMesh);
-        VoxelFileWriter writer = new VoxelFileWriter(DtVoxelTileLZ4DemoCompressor.Shared);
-        writer.Write(bw, voxelFile, compression);
+        _tool.Save(filename, voxelFile, compression, DtVoxelTileLZ4DemoCompressor.Shared);
     }
 
     private void BuildDynaMesh()
