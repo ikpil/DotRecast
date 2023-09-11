@@ -1,6 +1,6 @@
 ﻿namespace DotRecast.Core
 {
-    public struct RcMatrix4X4
+    public struct RcMatrix4x4
     {
         public float m11;
         public float m12;
