@@ -83,10 +83,7 @@ public class DynamicUpdateSampleTool : ISampleTool
     private DynamicNavMesh dynaMesh;
     private readonly TaskFactory executor;
     private readonly Dictionary<long, RcGizmo> colliderGizmos = new();
-    private readonly Random random = Random.Shared;
-    private readonly DemoInputGeomProvider bridgeGeom;
-    private readonly DemoInputGeomProvider houseGeom;
-    private readonly DemoInputGeomProvider convexGeom;
+
     private bool sposSet;
     private bool eposSet;
     private RcVec3f spos;
@@ -96,11 +93,11 @@ public class DynamicUpdateSampleTool : ISampleTool
 
     public DynamicUpdateSampleTool()
     {
-        _tool = new();
+        var bridgeGeom = DemoObjImporter.Load(Loader.ToBytes("bridge.obj"));
+        var houseGeom = DemoObjImporter.Load(Loader.ToBytes("house.obj"));
+        var convexGeom = DemoObjImporter.Load(Loader.ToBytes("convex.obj"));
+        _tool = new(Random.Shared, bridgeGeom, houseGeom, convexGeom);
         executor = Task.Factory;
-        bridgeGeom = DemoObjImporter.Load(Loader.ToBytes("bridge.obj"));
-        houseGeom = DemoObjImporter.Load(Loader.ToBytes("house.obj"));
-        convexGeom = DemoObjImporter.Load(Loader.ToBytes("convex.obj"));
     }
 
     public void Layout()
@@ -371,35 +368,35 @@ public class DynamicUpdateSampleTool : ISampleTool
                 {
                     if (colliderShape == DynamicColliderShape.SPHERE)
                     {
-                        colliderWithGizmo = SphereCollider(p);
+                        colliderWithGizmo = _tool.SphereCollider(p, dynaMesh.config.walkableClimb);
                     }
                     else if (colliderShape == DynamicColliderShape.CAPSULE)
                     {
-                        colliderWithGizmo = CapsuleCollider(p);
+                        colliderWithGizmo = _tool.CapsuleCollider(p, dynaMesh.config.walkableClimb);
                     }
                     else if (colliderShape == DynamicColliderShape.BOX)
                     {
-                        colliderWithGizmo = BoxCollider(p);
+                        colliderWithGizmo = _tool.BoxCollider(p, dynaMesh.config.walkableClimb);
                     }
                     else if (colliderShape == DynamicColliderShape.CYLINDER)
                     {
-                        colliderWithGizmo = CylinderCollider(p);
+                        colliderWithGizmo = _tool.CylinderCollider(p, dynaMesh.config.walkableClimb);
                     }
                     else if (colliderShape == DynamicColliderShape.COMPOSITE)
                     {
-                        colliderWithGizmo = CompositeCollider(p);
+                        colliderWithGizmo = _tool.CompositeCollider(p, dynaMesh.config.walkableClimb);
                     }
                     else if (colliderShape == DynamicColliderShape.TRIMESH_BRIDGE)
                     {
-                        colliderWithGizmo = TrimeshBridge(p);
+                        colliderWithGizmo = _tool.TrimeshBridge(p, dynaMesh.config.walkableClimb);
                     }
                     else if (colliderShape == DynamicColliderShape.TRIMESH_HOUSE)
                     {
-                        colliderWithGizmo = TrimeshHouse(p);
+                        colliderWithGizmo = _tool.TrimeshHouse(p, dynaMesh.config.walkableClimb);
                     }
                     else if (colliderShape == DynamicColliderShape.CONVEX)
                     {
-                        colliderWithGizmo = ConvexTrimesh(p);
+                        colliderWithGizmo = _tool.ConvexTrimesh(p, dynaMesh.config.walkableClimb);
                     }
                 }
 
@@ -438,177 +435,6 @@ public class DynamicUpdateSampleTool : ISampleTool
                     : ep;
             }
         }
-    }
-
-    private RcGizmo SphereCollider(RcVec3f p)
-    {
-        float radius = 1 + (float)random.NextDouble() * 10;
-        var collider = new SphereCollider(p, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb);
-        var gizmo = GizmoFactory.Sphere(p, radius);
-
-        return new RcGizmo(collider, gizmo);
-    }
-
-    private RcGizmo CapsuleCollider(RcVec3f p)
-    {
-        float radius = 0.4f + (float)random.NextDouble() * 4f;
-        RcVec3f a = RcVec3f.Of(
-            (1f - 2 * (float)random.NextDouble()),
-            0.01f + (float)random.NextDouble(),
-            (1f - 2 * (float)random.NextDouble())
-        );
-        a.Normalize();
-        float len = 1f + (float)random.NextDouble() * 20f;
-        a.x *= len;
-        a.y *= len;
-        a.z *= len;
-        RcVec3f start = RcVec3f.Of(p.x, p.y, p.z);
-        RcVec3f end = RcVec3f.Of(p.x + a.x, p.y + a.y, p.z + a.z);
-        var collider = new CapsuleCollider(start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb);
-        var gizmo = GizmoFactory.Capsule(start, end, radius);
-        return new RcGizmo(collider, gizmo);
-    }
-
-    private RcGizmo BoxCollider(RcVec3f p)
-    {
-        RcVec3f extent = RcVec3f.Of(
-            0.5f + (float)random.NextDouble() * 6f,
-            0.5f + (float)random.NextDouble() * 6f,
-            0.5f + (float)random.NextDouble() * 6f
-        );
-        RcVec3f forward = RcVec3f.Of((1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()));
-        RcVec3f up = RcVec3f.Of((1f - 2 * (float)random.NextDouble()), 0.01f + (float)random.NextDouble(), (1f - 2 * (float)random.NextDouble()));
-        RcVec3f[] halfEdges = Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(up, forward, extent);
-        var collider = new BoxCollider(p, halfEdges, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb);
-        var gizmo = GizmoFactory.Box(p, halfEdges);
-        return new RcGizmo(collider, gizmo);
-    }
-
-    private RcGizmo CylinderCollider(RcVec3f p)
-    {
-        float radius = 0.7f + (float)random.NextDouble() * 4f;
-        RcVec3f a = RcVec3f.Of(1f - 2 * (float)random.NextDouble(), 0.01f + (float)random.NextDouble(), 1f - 2 * (float)random.NextDouble());
-        a.Normalize();
-        float len = 2f + (float)random.NextDouble() * 20f;
-        a[0] *= len;
-        a[1] *= len;
-        a[2] *= len;
-        RcVec3f start = RcVec3f.Of(p.x, p.y, p.z);
-        RcVec3f end = RcVec3f.Of(p.x + a.x, p.y + a.y, p.z + a.z);
-        var collider = new CylinderCollider(start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, dynaMesh.config.walkableClimb);
-        var gizmo = GizmoFactory.Cylinder(start, end, radius);
-
-        return new RcGizmo(collider, gizmo);
-    }
-
-    private RcGizmo CompositeCollider(RcVec3f p)
-    {
-        RcVec3f baseExtent = RcVec3f.Of(5, 3, 8);
-        RcVec3f baseCenter = RcVec3f.Of(p.x, p.y + 3, p.z);
-        RcVec3f baseUp = RcVec3f.Of(0, 1, 0);
-        RcVec3f forward = RcVec3f.Of((1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()));
-        forward.Normalize();
-        RcVec3f side = RcVec3f.Cross(forward, baseUp);
-        BoxCollider @base = new BoxCollider(baseCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(baseUp, forward, baseExtent),
-            SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, dynaMesh.config.walkableClimb);
-        var roofUp = RcVec3f.Zero;
-        RcVec3f roofExtent = RcVec3f.Of(4.5f, 4.5f, 8f);
-        float[] rx = GLU.Build_4x4_rotation_matrix(45, forward.x, forward.y, forward.z);
-        roofUp = MulMatrixVector(ref roofUp, rx, baseUp);
-        RcVec3f roofCenter = RcVec3f.Of(p.x, p.y + 6, p.z);
-        BoxCollider roof = new BoxCollider(roofCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(roofUp, forward, roofExtent),
-            SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, dynaMesh.config.walkableClimb);
-        RcVec3f trunkStart = RcVec3f.Of(
-            baseCenter.x - forward.x * 15 + side.x * 6,
-            p.y,
-            baseCenter.z - forward.z * 15 + side.z * 6
-        );
-        RcVec3f trunkEnd = RcVec3f.Of(trunkStart.x, trunkStart.y + 10, trunkStart.z);
-        CapsuleCollider trunk = new CapsuleCollider(trunkStart, trunkEnd, 0.5f, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD,
-            dynaMesh.config.walkableClimb);
-        RcVec3f crownCenter = RcVec3f.Of(
-            baseCenter.x - forward.x * 15 + side.x * 6, p.y + 10,
-            baseCenter.z - forward.z * 15 + side.z * 6
-        );
-        SphereCollider crown = new SphereCollider(crownCenter, 4f, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GRASS,
-            dynaMesh.config.walkableClimb);
-        CompositeCollider collider = new CompositeCollider(@base, roof, trunk, crown);
-        IRcGizmoMeshFilter baseGizmo = GizmoFactory.Box(baseCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(baseUp, forward, baseExtent));
-        IRcGizmoMeshFilter roofGizmo = GizmoFactory.Box(roofCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(roofUp, forward, roofExtent));
-        IRcGizmoMeshFilter trunkGizmo = GizmoFactory.Capsule(trunkStart, trunkEnd, 0.5f);
-        IRcGizmoMeshFilter crownGizmo = GizmoFactory.Sphere(crownCenter, 4f);
-        IRcGizmoMeshFilter gizmo = GizmoFactory.Composite(baseGizmo, roofGizmo, trunkGizmo, crownGizmo);
-        return new RcGizmo(collider, gizmo);
-    }
-
-    private RcGizmo TrimeshBridge(RcVec3f p)
-    {
-        return TrimeshCollider(p, bridgeGeom);
-    }
-
-    private RcGizmo TrimeshHouse(RcVec3f p)
-    {
-        return TrimeshCollider(p, houseGeom);
-    }
-
-    private RcGizmo ConvexTrimesh(RcVec3f p)
-    {
-        float[] verts = TransformVertices(p, convexGeom, 360);
-        var collider = new ConvexTrimeshCollider(verts, convexGeom.faces,
-            SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, dynaMesh.config.walkableClimb * 10);
-        var gizmo = GizmoFactory.Trimesh(verts, convexGeom.faces);
-        return new RcGizmo(collider, gizmo);
-    }
-
-    private RcGizmo TrimeshCollider(RcVec3f p, DemoInputGeomProvider geom)
-    {
-        float[] verts = TransformVertices(p, geom, 0);
-        var collider = new TrimeshCollider(verts, geom.faces, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD,
-            dynaMesh.config.walkableClimb * 10);
-        var gizmo = GizmoFactory.Trimesh(verts, geom.faces);
-
-        return new RcGizmo(collider, gizmo);
-    }
-
-    private float[] TransformVertices(RcVec3f p, DemoInputGeomProvider geom, float ax)
-    {
-        float[] rx = GLU.Build_4x4_rotation_matrix((float)random.NextDouble() * ax, 1, 0, 0);
-        float[] ry = GLU.Build_4x4_rotation_matrix((float)random.NextDouble() * 360, 0, 1, 0);
-        float[] m = GLU.Mul(rx, ry);
-        float[] verts = new float[geom.vertices.Length];
-        RcVec3f v = new RcVec3f();
-        RcVec3f vr = new RcVec3f();
-        for (int i = 0; i < geom.vertices.Length; i += 3)
-        {
-            v.x = geom.vertices[i];
-            v.y = geom.vertices[i + 1];
-            v.z = geom.vertices[i + 2];
-            MulMatrixVector(ref vr, m, v);
-            vr.x += p.x;
-            vr.y += p.y - 0.1f;
-            vr.z += p.z;
-            verts[i] = vr.x;
-            verts[i + 1] = vr.y;
-            verts[i + 2] = vr.z;
-        }
-
-        return verts;
-    }
-
-    private float[] MulMatrixVector(float[] resultvector, float[] matrix, float[] pvector)
-    {
-        resultvector[0] = matrix[0] * pvector[0] + matrix[4] * pvector[1] + matrix[8] * pvector[2];
-        resultvector[1] = matrix[1] * pvector[0] + matrix[5] * pvector[1] + matrix[9] * pvector[2];
-        resultvector[2] = matrix[2] * pvector[0] + matrix[6] * pvector[1] + matrix[10] * pvector[2];
-        return resultvector;
-    }
-
-    private RcVec3f MulMatrixVector(ref RcVec3f resultvector, float[] matrix, RcVec3f pvector)
-    {
-        resultvector.x = matrix[0] * pvector.x + matrix[4] * pvector.y + matrix[8] * pvector.z;
-        resultvector.y = matrix[1] * pvector.x + matrix[5] * pvector.y + matrix[9] * pvector.z;
-        resultvector.z = matrix[2] * pvector.x + matrix[6] * pvector.y + matrix[10] * pvector.z;
-        return resultvector;
     }
 
 
