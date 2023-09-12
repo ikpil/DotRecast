@@ -119,7 +119,7 @@ namespace DotRecast.Recast.Demo
             //                 int b = 3;
             //             }
             //             
-            //             Console.WriteLine($"tileIdx({ti}) polyIdx({pi}) polyType({polyType} polyArea({polyArea})");
+            //             Logger.Error($"tileIdx({ti}) polyIdx({pi}) polyType({polyType} polyArea({polyArea})");
             //         }
             //         
             //     }

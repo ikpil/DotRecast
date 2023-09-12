@@ -24,15 +24,12 @@ using System.IO;
 using System.Threading.Tasks;
 using DotRecast.Core;
 using DotRecast.Detour.Dynamic;
-using DotRecast.Detour.Dynamic.Colliders;
 using DotRecast.Detour.Dynamic.Io;
-using DotRecast.Recast.Toolset.Builder;
-using DotRecast.Recast.Demo.Draw;
-using DotRecast.Recast.Toolset.Geom;
-using DotRecast.Recast.Toolset.Gizmos;
-using DotRecast.Recast.Demo.UI;
 using DotRecast.Recast.Toolset;
+using DotRecast.Recast.Toolset.Gizmos;
 using DotRecast.Recast.Toolset.Tools;
+using DotRecast.Recast.Demo.Draw;
+using DotRecast.Recast.Demo.UI;
 using ImGuiNET;
 using Serilog;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
@@ -509,7 +506,7 @@ public class DynamicUpdateSampleTool : ISampleTool
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Logger.Error(e, "");
         }
     }
 
@@ -522,14 +519,14 @@ public class DynamicUpdateSampleTool : ISampleTool
             dynaMesh = new DynamicNavMesh(voxelFile);
             dynaMesh.config.keepIntermediateResults = true;
 
-            UpdateUI();
+            UpdateFrom(dynaMesh.config);
             BuildDynaMesh();
 
             colliderGizmos.Clear();
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Logger.Error(e, "");
             dynaMesh = null;
         }
     }
@@ -543,7 +540,7 @@ public class DynamicUpdateSampleTool : ISampleTool
 
     private void BuildDynaMesh()
     {
-        ConfigDynaMesh();
+        UpdateTo(dynaMesh.config);
         long t = RcFrequency.Ticks;
         try
         {
@@ -551,51 +548,51 @@ public class DynamicUpdateSampleTool : ISampleTool
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Logger.Error(e, "");
         }
 
         buildTime = (RcFrequency.Ticks - t) / TimeSpan.TicksPerMillisecond;
         _sample.Update(null, dynaMesh.RecastResults(), dynaMesh.NavMesh());
     }
 
-    private void ConfigDynaMesh()
+    private void UpdateTo(DynamicNavMeshConfig config)
     {
-        dynaMesh.config.partition = partitioning;
-        dynaMesh.config.walkableHeight = walkableHeight;
-        dynaMesh.config.walkableSlopeAngle = walkableSlopeAngle;
-        dynaMesh.config.walkableRadius = walkableRadius;
-        dynaMesh.config.walkableClimb = walkableClimb;
-        dynaMesh.config.filterLowHangingObstacles = filterLowHangingObstacles;
-        dynaMesh.config.filterLedgeSpans = filterLedgeSpans;
-        dynaMesh.config.filterWalkableLowHeightSpans = filterWalkableLowHeightSpans;
-        dynaMesh.config.minRegionArea = minRegionArea;
-        dynaMesh.config.regionMergeArea = regionMergeSize;
-        dynaMesh.config.maxEdgeLen = maxEdgeLen;
-        dynaMesh.config.maxSimplificationError = maxSimplificationError;
-        dynaMesh.config.vertsPerPoly = vertsPerPoly;
-        dynaMesh.config.buildDetailMesh = buildDetailMesh;
-        dynaMesh.config.detailSampleDistance = detailSampleDist;
-        dynaMesh.config.detailSampleMaxError = detailSampleMaxError;
+        config.partition = partitioning;
+        config.walkableHeight = walkableHeight;
+        config.walkableSlopeAngle = walkableSlopeAngle;
+        config.walkableRadius = walkableRadius;
+        config.walkableClimb = walkableClimb;
+        config.filterLowHangingObstacles = filterLowHangingObstacles;
+        config.filterLedgeSpans = filterLedgeSpans;
+        config.filterWalkableLowHeightSpans = filterWalkableLowHeightSpans;
+        config.minRegionArea = minRegionArea;
+        config.regionMergeArea = regionMergeSize;
+        config.maxEdgeLen = maxEdgeLen;
+        config.maxSimplificationError = maxSimplificationError;
+        config.vertsPerPoly = vertsPerPoly;
+        config.buildDetailMesh = buildDetailMesh;
+        config.detailSampleDistance = detailSampleDist;
+        config.detailSampleMaxError = detailSampleMaxError;
     }
 
-    private void UpdateUI()
+    private void UpdateFrom(DynamicNavMeshConfig config)
     {
-        cellSize = dynaMesh.config.cellSize;
-        partitioning = (int)dynaMesh.config.partition;
-        walkableHeight = dynaMesh.config.walkableHeight;
-        walkableSlopeAngle = dynaMesh.config.walkableSlopeAngle;
-        walkableRadius = dynaMesh.config.walkableRadius;
-        walkableClimb = dynaMesh.config.walkableClimb;
-        minRegionArea = dynaMesh.config.minRegionArea;
-        regionMergeSize = dynaMesh.config.regionMergeArea;
-        maxEdgeLen = dynaMesh.config.maxEdgeLen;
-        maxSimplificationError = dynaMesh.config.maxSimplificationError;
-        vertsPerPoly = dynaMesh.config.vertsPerPoly;
-        buildDetailMesh = dynaMesh.config.buildDetailMesh;
-        detailSampleDist = dynaMesh.config.detailSampleDistance;
-        detailSampleMaxError = dynaMesh.config.detailSampleMaxError;
-        filterLowHangingObstacles = dynaMesh.config.filterLowHangingObstacles;
-        filterLedgeSpans = dynaMesh.config.filterLedgeSpans;
-        filterWalkableLowHeightSpans = dynaMesh.config.filterWalkableLowHeightSpans;
+        cellSize = config.cellSize;
+        partitioning = config.partition;
+        walkableHeight = config.walkableHeight;
+        walkableSlopeAngle = config.walkableSlopeAngle;
+        walkableRadius = config.walkableRadius;
+        walkableClimb = config.walkableClimb;
+        minRegionArea = config.minRegionArea;
+        regionMergeSize = config.regionMergeArea;
+        maxEdgeLen = config.maxEdgeLen;
+        maxSimplificationError = config.maxSimplificationError;
+        vertsPerPoly = config.vertsPerPoly;
+        buildDetailMesh = config.buildDetailMesh;
+        detailSampleDist = config.detailSampleDistance;
+        detailSampleMaxError = config.detailSampleMaxError;
+        filterLowHangingObstacles = config.filterLowHangingObstacles;
+        filterLedgeSpans = config.filterLedgeSpans;
+        filterWalkableLowHeightSpans = config.filterWalkableLowHeightSpans;
     }
 }
