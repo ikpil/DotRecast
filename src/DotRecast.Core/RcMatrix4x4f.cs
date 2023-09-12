@@ -1,4 +1,6 @@
-﻿namespace DotRecast.Core
+﻿using System;
+
+namespace DotRecast.Core
 {
     public struct RcMatrix4x4f
     {
@@ -101,6 +103,45 @@
             dest.M44 = m44;
 
             return dest;
+        }
+
+        public static RcMatrix4x4f Rotate(float a, float x, float y, float z)
+        {
+            var matrix = new RcMatrix4x4f();
+            a = (float)(a * Math.PI / 180.0); // convert to radians
+            float s = (float)Math.Sin(a);
+            float c = (float)Math.Cos(a);
+            float t = 1.0f - c;
+
+            float tx = t * x;
+            float ty = t * y;
+            float tz = t * z;
+
+            float sz = s * z;
+            float sy = s * y;
+            float sx = s * x;
+
+            matrix.M11 = tx * x + c;
+            matrix.M12 = tx * y + sz;
+            matrix.M13 = tx * z - sy;
+            matrix.M14 = 0;
+
+            matrix.M21 = tx * y - sz;
+            matrix.M22 = ty * y + c;
+            matrix.M23 = ty * z + sx;
+            matrix.M24 = 0;
+
+            matrix.M31 = tx * z + sy;
+            matrix.M32 = ty * z - sx;
+            matrix.M33 = tz * z + c;
+            matrix.M34 = 0;
+
+            matrix.M41 = 0;
+            matrix.M42 = 0;
+            matrix.M43 = 0;
+            matrix.M44 = 1;
+
+            return matrix;
         }
     }
 }

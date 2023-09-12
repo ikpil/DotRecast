@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-
+using System.Threading.Tasks;
 using DotRecast.Core;
+using DotRecast.Detour.Dynamic;
 using DotRecast.Detour.Dynamic.Colliders;
 using DotRecast.Detour.Dynamic.Io;
 using DotRecast.Recast.Toolset.Builder;
@@ -12,6 +14,9 @@ namespace DotRecast.Recast.Toolset.Tools
 {
     public class RcDynamicUpdateTool : IRcToolable
     {
+        private DynamicNavMesh dynaMesh;
+        private readonly Dictionary<long, RcGizmo> colliderGizmos;
+
         private readonly Random random;
         private readonly DemoInputGeomProvider bridgeGeom;
         private readonly DemoInputGeomProvider houseGeom;
@@ -19,10 +24,16 @@ namespace DotRecast.Recast.Toolset.Tools
 
         public RcDynamicUpdateTool(Random rand, DemoInputGeomProvider bridgeGeom, DemoInputGeomProvider houseGeom, DemoInputGeomProvider convexGeom)
         {
+            this.colliderGizmos = new Dictionary<long, RcGizmo>();
             this.random = rand;
             this.bridgeGeom = bridgeGeom;
             this.houseGeom = houseGeom;
             this.convexGeom = convexGeom;
+        }
+
+        public IEnumerable<RcGizmo> GetGizmos()
+        {
+            return colliderGizmos.Values;
         }
 
         public string GetName()
@@ -30,18 +41,123 @@ namespace DotRecast.Recast.Toolset.Tools
             return "Dynamic Updates";
         }
 
-        public VoxelFile Load(string filename, IRcCompressor compressor)
+        public DynamicNavMesh GetDynamicNavMesh()
+        {
+            return dynaMesh;
+        }
+
+        public void RemoveShape(RcVec3f start, RcVec3f dir)
+        {
+            foreach (var e in colliderGizmos)
+            {
+                if (Hit(start, dir, e.Value.Collider.Bounds()))
+                {
+                    dynaMesh.RemoveCollider(e.Key);
+                    colliderGizmos.Remove(e.Key);
+                    break;
+                }
+            }
+        }
+
+        private bool Hit(RcVec3f point, RcVec3f dir, float[] bounds)
+        {
+            float cx = 0.5f * (bounds[0] + bounds[3]);
+            float cy = 0.5f * (bounds[1] + bounds[4]);
+            float cz = 0.5f * (bounds[2] + bounds[5]);
+            float dx = 0.5f * (bounds[3] - bounds[0]);
+            float dy = 0.5f * (bounds[4] - bounds[1]);
+            float dz = 0.5f * (bounds[5] - bounds[2]);
+            float rSqr = dx * dx + dy * dy + dz * dz;
+            float mx = point.x - cx;
+            float my = point.y - cy;
+            float mz = point.z - cz;
+            float c = mx * mx + my * my + mz * mz - rSqr;
+            if (c <= 0.0f)
+            {
+                return true;
+            }
+
+            float b = mx * dir.x + my * dir.y + mz * dir.z;
+            if (b > 0.0f)
+            {
+                return false;
+            }
+
+            float disc = b * b - c;
+            return disc >= 0.0f;
+        }
+
+
+        public RcGizmo AddShape(DynamicColliderShape colliderShape, RcVec3f p)
+        {
+            if (dynaMesh == null)
+            {
+                return null;
+            }
+
+            RcGizmo colliderWithGizmo = null;
+            {
+                if (colliderShape == DynamicColliderShape.SPHERE)
+                {
+                    colliderWithGizmo = SphereCollider(p, dynaMesh.config.walkableClimb);
+                }
+                else if (colliderShape == DynamicColliderShape.CAPSULE)
+                {
+                    colliderWithGizmo = CapsuleCollider(p, dynaMesh.config.walkableClimb);
+                }
+                else if (colliderShape == DynamicColliderShape.BOX)
+                {
+                    colliderWithGizmo = BoxCollider(p, dynaMesh.config.walkableClimb);
+                }
+                else if (colliderShape == DynamicColliderShape.CYLINDER)
+                {
+                    colliderWithGizmo = CylinderCollider(p, dynaMesh.config.walkableClimb);
+                }
+                else if (colliderShape == DynamicColliderShape.COMPOSITE)
+                {
+                    colliderWithGizmo = CompositeCollider(p, dynaMesh.config.walkableClimb);
+                }
+                else if (colliderShape == DynamicColliderShape.TRIMESH_BRIDGE)
+                {
+                    colliderWithGizmo = TrimeshBridge(p, dynaMesh.config.walkableClimb);
+                }
+                else if (colliderShape == DynamicColliderShape.TRIMESH_HOUSE)
+                {
+                    colliderWithGizmo = TrimeshHouse(p, dynaMesh.config.walkableClimb);
+                }
+                else if (colliderShape == DynamicColliderShape.CONVEX)
+                {
+                    colliderWithGizmo = ConvexTrimesh(p, dynaMesh.config.walkableClimb);
+                }
+            }
+
+            if (colliderWithGizmo != null)
+            {
+                long id = dynaMesh.AddCollider(colliderWithGizmo.Collider);
+                colliderGizmos.Add(id, colliderWithGizmo);
+            }
+
+            return colliderWithGizmo;
+        }
+
+        public DynamicNavMesh Load(string filename, IRcCompressor compressor)
         {
             using var fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
             using var br = new BinaryReader(fs);
             VoxelFileReader reader = new VoxelFileReader(compressor);
             VoxelFile voxelFile = reader.Read(br);
 
-            return voxelFile;
+            dynaMesh = new DynamicNavMesh(voxelFile);
+            dynaMesh.config.keepIntermediateResults = true;
+
+            colliderGizmos.Clear();
+
+            return dynaMesh;
         }
 
-        public void Save(string filename, VoxelFile voxelFile, bool compression, IRcCompressor compressor)
+        public void Save(string filename, bool compression, IRcCompressor compressor)
         {
+            VoxelFile voxelFile = VoxelFile.From(dynaMesh);
             using var fs = new FileStream(filename, FileMode.CreateNew, FileAccess.Write);
             using var bw = new BinaryWriter(fs);
             VoxelFileWriter writer = new VoxelFileWriter(compressor);
@@ -122,7 +238,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, walkableClimb);
             var roofUp = RcVec3f.Zero;
             RcVec3f roofExtent = RcVec3f.Of(4.5f, 4.5f, 8f);
-            var rx = Matrix(45, forward.x, forward.y, forward.z);
+            var rx = RcMatrix4x4f.Rotate(45, forward.x, forward.y, forward.z);
             roofUp = MulMatrixVector(ref roofUp, rx, baseUp);
             RcVec3f roofCenter = RcVec3f.Of(p.x, p.y + 6, p.z);
             BoxCollider roof = new BoxCollider(roofCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(roofUp, forward, roofExtent),
@@ -181,8 +297,8 @@ namespace DotRecast.Recast.Toolset.Tools
 
         private float[] TransformVertices(RcVec3f p, DemoInputGeomProvider geom, float ax)
         {
-            var rx = Matrix((float)random.NextDouble() * ax, 1, 0, 0);
-            var ry = Matrix((float)random.NextDouble() * 360, 0, 1, 0);
+            var rx = RcMatrix4x4f.Rotate((float)random.NextDouble() * ax, 1, 0, 0);
+            var ry = RcMatrix4x4f.Rotate((float)random.NextDouble() * 360, 0, 1, 0);
             var m = RcMatrix4x4f.Mul(rx, ry);
             float[] verts = new float[geom.vertices.Length];
             RcVec3f v = new RcVec3f();
@@ -220,43 +336,33 @@ namespace DotRecast.Recast.Toolset.Tools
             return resultvector;
         }
 
-        public static RcMatrix4x4f Matrix(float a, float x, float y, float z)
+        public bool UpdateDynaMesh(TaskFactory executor)
         {
-            var matrix = new RcMatrix4x4f();
-            a = (float)(a * Math.PI / 180.0); // convert to radians
-            float s = (float)Math.Sin(a);
-            float c = (float)Math.Cos(a);
-            float t = 1.0f - c;
+            if (dynaMesh == null)
+            {
+                return false;
+            }
 
-            float tx = t * x;
-            float ty = t * y;
-            float tz = t * z;
+            bool updated = dynaMesh.Update(executor).Result;
+            if (updated)
+            {
+                return false;
+            }
 
-            float sz = s * z;
-            float sy = s * y;
-            float sx = s * x;
+            return true;
+        }
 
-            matrix.M11 = tx * x + c;
-            matrix.M12 = tx * y + sz;
-            matrix.M13 = tx * z - sy;
-            matrix.M14 = 0;
+        public bool Raycast(RcVec3f spos, RcVec3f epos, out float hitPos, out RcVec3f raycastHitPos)
+        {
+            RcVec3f sp = RcVec3f.Of(spos.x, spos.y + 1.3f, spos.z);
+            RcVec3f ep = RcVec3f.Of(epos.x, epos.y + 1.3f, epos.z);
 
-            matrix.M21 = tx * y - sz;
-            matrix.M22 = ty * y + c;
-            matrix.M23 = ty * z + sx;
-            matrix.M24 = 0;
+            bool hasHit = dynaMesh.VoxelQuery().Raycast(sp, ep, out hitPos);
+            raycastHitPos = hasHit
+                ? RcVec3f.Of(sp.x + hitPos * (ep.x - sp.x), sp.y + hitPos * (ep.y - sp.y), sp.z + hitPos * (ep.z - sp.z))
+                : ep;
 
-            matrix.M31 = tx * z + sy;
-            matrix.M32 = ty * z - sx;
-            matrix.M33 = tz * z + c;
-            matrix.M34 = 0;
-
-            matrix.M41 = 0;
-            matrix.M42 = 0;
-            matrix.M43 = 0;
-            matrix.M44 = 1;
-
-            return matrix;
+            return hasHit;
         }
     }
 }

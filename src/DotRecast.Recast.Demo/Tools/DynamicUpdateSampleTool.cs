@@ -77,9 +77,7 @@ public class DynamicUpdateSampleTool : ISampleTool
 
     private DynamicColliderShape colliderShape = DynamicColliderShape.SPHERE;
 
-    private DynamicNavMesh dynaMesh;
     private readonly TaskFactory executor;
-    private readonly Dictionary<long, RcGizmo> colliderGizmos = new();
 
     private bool sposSet;
     private bool eposSet;
@@ -139,6 +137,8 @@ public class DynamicUpdateSampleTool : ISampleTool
 
             var saveVoxelPopupStrId = "Save Voxels Popup";
             bool isSaveVoxelPopup = true;
+
+            var dynaMesh = _tool.GetDynamicNavMesh();
             if (dynaMesh != null)
             {
                 ImGui.Checkbox("Compression", ref compression);
@@ -280,10 +280,10 @@ public class DynamicUpdateSampleTool : ISampleTool
         {
             if (showColliders)
             {
-                colliderGizmos.Values.ForEach(g =>
+                foreach (var gizmo in _tool.GetGizmos())
                 {
-                    GizmoRenderer.Render(renderer.GetDebugDraw(), g.Gizmo);
-                });
+                    GizmoRenderer.Render(renderer.GetDebugDraw(), gizmo.Gizmo);
+                }
             }
         }
 
@@ -360,48 +360,7 @@ public class DynamicUpdateSampleTool : ISampleTool
         {
             if (!shift)
             {
-                RcGizmo colliderWithGizmo = null;
-                if (dynaMesh != null)
-                {
-                    if (colliderShape == DynamicColliderShape.SPHERE)
-                    {
-                        colliderWithGizmo = _tool.SphereCollider(p, dynaMesh.config.walkableClimb);
-                    }
-                    else if (colliderShape == DynamicColliderShape.CAPSULE)
-                    {
-                        colliderWithGizmo = _tool.CapsuleCollider(p, dynaMesh.config.walkableClimb);
-                    }
-                    else if (colliderShape == DynamicColliderShape.BOX)
-                    {
-                        colliderWithGizmo = _tool.BoxCollider(p, dynaMesh.config.walkableClimb);
-                    }
-                    else if (colliderShape == DynamicColliderShape.CYLINDER)
-                    {
-                        colliderWithGizmo = _tool.CylinderCollider(p, dynaMesh.config.walkableClimb);
-                    }
-                    else if (colliderShape == DynamicColliderShape.COMPOSITE)
-                    {
-                        colliderWithGizmo = _tool.CompositeCollider(p, dynaMesh.config.walkableClimb);
-                    }
-                    else if (colliderShape == DynamicColliderShape.TRIMESH_BRIDGE)
-                    {
-                        colliderWithGizmo = _tool.TrimeshBridge(p, dynaMesh.config.walkableClimb);
-                    }
-                    else if (colliderShape == DynamicColliderShape.TRIMESH_HOUSE)
-                    {
-                        colliderWithGizmo = _tool.TrimeshHouse(p, dynaMesh.config.walkableClimb);
-                    }
-                    else if (colliderShape == DynamicColliderShape.CONVEX)
-                    {
-                        colliderWithGizmo = _tool.ConvexTrimesh(p, dynaMesh.config.walkableClimb);
-                    }
-                }
-
-                if (colliderWithGizmo != null)
-                {
-                    long id = dynaMesh.AddCollider(colliderWithGizmo.Collider);
-                    colliderGizmos.Add(id, colliderWithGizmo);
-                }
+                _tool.AddShape(colliderShape, p);
             }
         }
 
@@ -418,18 +377,14 @@ public class DynamicUpdateSampleTool : ISampleTool
                 epos = p;
             }
 
+            var dynaMesh = _tool.GetDynamicNavMesh();
             if (sposSet && eposSet && dynaMesh != null)
             {
-                RcVec3f sp = RcVec3f.Of(spos.x, spos.y + 1.3f, spos.z);
-                RcVec3f ep = RcVec3f.Of(epos.x, epos.y + 1.3f, epos.z);
                 long t1 = RcFrequency.Ticks;
-                bool hasHit = dynaMesh.VoxelQuery().Raycast(sp, ep, out var hitPos);
+                bool hasHit = _tool.Raycast(spos, epos, out var hitPos, out raycastHitPos);
                 long t2 = RcFrequency.Ticks;
                 raycastTime = (t2 - t1) / TimeSpan.TicksPerMillisecond;
                 raycastHit = hasHit;
-                raycastHitPos = hasHit
-                    ? RcVec3f.Of(sp.x + hitPos * (ep.x - sp.x), sp.y + hitPos * (ep.y - sp.y), sp.z + hitPos * (ep.z - sp.z))
-                    : ep;
             }
         }
     }
@@ -441,65 +396,21 @@ public class DynamicUpdateSampleTool : ISampleTool
         {
             if (shift)
             {
-                foreach (var e in colliderGizmos)
-                {
-                    if (Hit(start, dir, e.Value.Collider.Bounds()))
-                    {
-                        dynaMesh.RemoveCollider(e.Key);
-                        colliderGizmos.Remove(e.Key);
-                        break;
-                    }
-                }
+                _tool.RemoveShape(start, dir);
             }
         }
     }
 
-    private bool Hit(RcVec3f point, RcVec3f dir, float[] bounds)
-    {
-        float cx = 0.5f * (bounds[0] + bounds[3]);
-        float cy = 0.5f * (bounds[1] + bounds[4]);
-        float cz = 0.5f * (bounds[2] + bounds[5]);
-        float dx = 0.5f * (bounds[3] - bounds[0]);
-        float dy = 0.5f * (bounds[4] - bounds[1]);
-        float dz = 0.5f * (bounds[5] - bounds[2]);
-        float rSqr = dx * dx + dy * dy + dz * dz;
-        float mx = point.x - cx;
-        float my = point.y - cy;
-        float mz = point.z - cz;
-        float c = mx * mx + my * my + mz * mz - rSqr;
-        if (c <= 0.0f)
-        {
-            return true;
-        }
-
-        float b = mx * dir.x + my * dir.y + mz * dir.z;
-        if (b > 0.0f)
-        {
-            return false;
-        }
-
-        float disc = b * b - c;
-        return disc >= 0.0f;
-    }
-
-
     public void HandleUpdate(float dt)
-    {
-        if (dynaMesh != null)
-        {
-            UpdateDynaMesh();
-        }
-    }
-
-    private void UpdateDynaMesh()
     {
         long t = RcFrequency.Ticks;
         try
         {
-            bool updated = dynaMesh.Update(executor).Result;
+            bool updated = _tool.UpdateDynaMesh(executor);
             if (updated)
             {
                 buildTime = (RcFrequency.Ticks - t) / TimeSpan.TicksPerMillisecond;
+                var dynaMesh = _tool.GetDynamicNavMesh();
                 _sample.Update(null, dynaMesh.RecastResults(), dynaMesh.NavMesh());
                 _sample.SetChanged(false);
             }
@@ -515,31 +426,26 @@ public class DynamicUpdateSampleTool : ISampleTool
     {
         try
         {
-            var voxelFile = _tool.Load(filename, DtVoxelTileLZ4DemoCompressor.Shared);
-            dynaMesh = new DynamicNavMesh(voxelFile);
-            dynaMesh.config.keepIntermediateResults = true;
+            var dynaMesh = _tool.Load(filename, DtVoxelTileLZ4DemoCompressor.Shared);
 
             UpdateFrom(dynaMesh.config);
             BuildDynaMesh();
-
-            colliderGizmos.Clear();
         }
         catch (Exception e)
         {
             Logger.Error(e, "");
-            dynaMesh = null;
         }
     }
 
 
     private void Save(string filename)
     {
-        VoxelFile voxelFile = VoxelFile.From(dynaMesh);
-        _tool.Save(filename, voxelFile, compression, DtVoxelTileLZ4DemoCompressor.Shared);
+        _tool.Save(filename, compression, DtVoxelTileLZ4DemoCompressor.Shared);
     }
 
     private void BuildDynaMesh()
     {
+        var dynaMesh = _tool.GetDynamicNavMesh();
         UpdateTo(dynaMesh.config);
         long t = RcFrequency.Ticks;
         try
