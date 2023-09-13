@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using System.Numerics;
 using Silk.NET.OpenGL;
 using DotRecast.Core;
 using DotRecast.Recast.Toolset.Builder;
@@ -638,15 +639,17 @@ public class DebugDraw
 
     public float[] ViewMatrix(RcVec3f cameraPos, float[] cameraEulers)
     {
-        float[] rx = GLU.Build_4x4_rotation_matrix(cameraEulers[0], 1, 0, 0);
-        float[] ry = GLU.Build_4x4_rotation_matrix(cameraEulers[1], 0, 1, 0);
-        float[] r = GLU.Mul(rx, ry);
-        float[] t = new float[16];
-        t[0] = t[5] = t[10] = t[15] = 1;
-        t[12] = -cameraPos.x;
-        t[13] = -cameraPos.y;
-        t[14] = -cameraPos.z;
-        _viewMatrix = GLU.Mul(r, t);
+        var rx = RcMatrix4x4f.CreateFromRotate(cameraEulers[0], 1, 0, 0);
+        var ry = RcMatrix4x4f.CreateFromRotate(cameraEulers[1], 0, 1, 0);
+        var r = RcMatrix4x4f.Mul(rx, ry);
+
+        var t = new RcMatrix4x4f();
+        t.M11 = t.M22 = t.M33 = t.M44 = 1;
+        t.M41 = -cameraPos.x;
+        t.M42 = -cameraPos.y;
+        t.M43 = -cameraPos.z;
+        var mul = RcMatrix4x4f.Mul(r, t);
+        mul.CopyTo(_viewMatrix);
         GetOpenGlDraw().ViewMatrix(_viewMatrix);
         UpdateFrustum();
         return _viewMatrix;
@@ -665,19 +668,13 @@ public class DebugDraw
 
     private void UpdateFrustum()
     {
-        float[] vpm = GLU.Mul(_projectionMatrix, _viewMatrix);
-        // left
-        NormalizePlane(vpm[0 + 3] + vpm[0 + 0], vpm[4 + 3] + vpm[4 + 0], vpm[8 + 3] + vpm[8 + 0], vpm[12 + 3] + vpm[12 + 0], ref frustumPlanes[0]);
-        // right
-        NormalizePlane(vpm[0 + 3] - vpm[0 + 0], vpm[4 + 3] - vpm[4 + 0], vpm[8 + 3] - vpm[8 + 0], vpm[12 + 3] - vpm[12 + 0], ref frustumPlanes[1]);
-        // top
-        NormalizePlane(vpm[0 + 3] - vpm[0 + 1], vpm[4 + 3] - vpm[4 + 1], vpm[8 + 3] - vpm[8 + 1], vpm[12 + 3] - vpm[12 + 1], ref frustumPlanes[2]);
-        // bottom
-        NormalizePlane(vpm[0 + 3] + vpm[0 + 1], vpm[4 + 3] + vpm[4 + 1], vpm[8 + 3] + vpm[8 + 1], vpm[12 + 3] + vpm[12 + 1], ref frustumPlanes[3]);
-        // near
-        NormalizePlane(vpm[0 + 3] + vpm[0 + 2], vpm[4 + 3] + vpm[4 + 2], vpm[8 + 3] + vpm[8 + 2], vpm[12 + 3] + vpm[12 + 2], ref frustumPlanes[4]);
-        // far
-        NormalizePlane(vpm[0 + 3] - vpm[0 + 2], vpm[4 + 3] - vpm[4 + 2], vpm[8 + 3] - vpm[8 + 2], vpm[12 + 3] - vpm[12 + 2], ref frustumPlanes[5]);
+        var vpm = RcMatrix4x4f.Mul(_projectionMatrix, _viewMatrix);
+        NormalizePlane(vpm.M14 + vpm.M11, vpm.M24 + vpm.M21, vpm.M34 + vpm.M31, vpm.M44 + vpm.M41, ref frustumPlanes[0]); // left
+        NormalizePlane(vpm.M14 - vpm.M11, vpm.M24 - vpm.M21, vpm.M34 - vpm.M31, vpm.M44 - vpm.M41, ref frustumPlanes[1]); // right
+        NormalizePlane(vpm.M14 - vpm.M12, vpm.M24 - vpm.M22, vpm.M34 - vpm.M32, vpm.M44 - vpm.M42, ref frustumPlanes[2]); // top
+        NormalizePlane(vpm.M14 + vpm.M12, vpm.M24 + vpm.M22, vpm.M34 + vpm.M32, vpm.M44 + vpm.M42, ref frustumPlanes[3]); // bottom
+        NormalizePlane(vpm.M14 + vpm.M13, vpm.M24 + vpm.M23, vpm.M34 + vpm.M33, vpm.M44 + vpm.M43, ref frustumPlanes[4]); // near
+        NormalizePlane(vpm.M14 - vpm.M13, vpm.M24 - vpm.M23, vpm.M34 - vpm.M33, vpm.M44 - vpm.M43, ref frustumPlanes[5]); // far
     }
 
     private void NormalizePlane(float px, float py, float pz, float pw, ref float[] plane)

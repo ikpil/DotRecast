@@ -238,7 +238,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, walkableClimb);
             var roofUp = RcVec3f.Zero;
             RcVec3f roofExtent = RcVec3f.Of(4.5f, 4.5f, 8f);
-            var rx = RcMatrix4x4f.Rotate(45, forward.x, forward.y, forward.z);
+            var rx = RcMatrix4x4f.CreateFromRotate(45, forward.x, forward.y, forward.z);
             roofUp = MulMatrixVector(ref roofUp, rx, baseUp);
             RcVec3f roofCenter = RcVec3f.Of(p.x, p.y + 6, p.z);
             BoxCollider roof = new BoxCollider(roofCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(roofUp, forward, roofExtent),
@@ -297,8 +297,8 @@ namespace DotRecast.Recast.Toolset.Tools
 
         private float[] TransformVertices(RcVec3f p, DemoInputGeomProvider geom, float ax)
         {
-            var rx = RcMatrix4x4f.Rotate((float)random.NextDouble() * ax, 1, 0, 0);
-            var ry = RcMatrix4x4f.Rotate((float)random.NextDouble() * 360, 0, 1, 0);
+            var rx = RcMatrix4x4f.CreateFromRotate((float)random.NextDouble() * ax, 1, 0, 0);
+            var ry = RcMatrix4x4f.CreateFromRotate((float)random.NextDouble() * 360, 0, 1, 0);
             var m = RcMatrix4x4f.Mul(rx, ry);
             float[] verts = new float[geom.vertices.Length];
             RcVec3f v = new RcVec3f();

@@ -31,8 +31,7 @@ public static class GLU
         return projectionMatrix;
     }
 
-    public static void GlhPerspectivef2(float[] matrix, float fovyInDegrees, float aspectRatio, float znear,
-        float zfar)
+    public static void GlhPerspectivef2(float[] matrix, float fovyInDegrees, float aspectRatio, float znear, float zfar)
     {
         float ymax, xmax;
         ymax = (float)(znear * Math.Tan(fovyInDegrees * Math.PI / 360.0));
@@ -40,8 +39,7 @@ public static class GLU
         GlhFrustumf2(matrix, -xmax, xmax, -ymax, ymax, znear, zfar);
     }
 
-    private static void GlhFrustumf2(float[] matrix, float left, float right, float bottom, float top, float znear,
-        float zfar)
+    private static void GlhFrustumf2(float[] matrix, float left, float right, float bottom, float top, float znear, float zfar)
     {
         float temp, temp2, temp3, temp4;
         temp = 2.0f * znear;
@@ -367,44 +365,6 @@ public static class GLU
     static void MAT(float[] m, int r, int c, float v)
     {
         m[(c) * 4 + (r)] = v;
-    }
-
-    public static float[] Build_4x4_rotation_matrix(float a, float x, float y, float z)
-    {
-        float[] matrix = new float[16];
-        a = (float)(a * Math.PI / 180.0); // convert to radians
-        float s = (float)Math.Sin(a);
-        float c = (float)Math.Cos(a);
-        float t = 1.0f - c;
-
-        float tx = t * x;
-        float ty = t * y;
-        float tz = t * z;
-
-        float sz = s * z;
-        float sy = s * y;
-        float sx = s * x;
-
-        matrix[0] = tx * x + c;
-        matrix[1] = tx * y + sz;
-        matrix[2] = tx * z - sy;
-        matrix[3] = 0;
-
-        matrix[4] = tx * y - sz;
-        matrix[5] = ty * y + c;
-        matrix[6] = ty * z + sx;
-        matrix[7] = 0;
-
-        matrix[8] = tx * z + sy;
-        matrix[9] = ty * z - sx;
-        matrix[10] = tz * z + c;
-        matrix[11] = 0;
-
-        matrix[12] = 0;
-        matrix[13] = 0;
-        matrix[14] = 0;
-        matrix[15] = 1;
-        return matrix;
     }
 
     public static float[] Mul(float[] left, float[] right)

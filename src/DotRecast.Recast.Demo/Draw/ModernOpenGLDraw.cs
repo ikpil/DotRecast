@@ -317,12 +317,12 @@ public class ModernOpenGLDraw : IOpenGLDraw
 
     public void ProjectionMatrix(float[] projectionMatrix)
     {
-        this._projectionMatrix = projectionMatrix;
+        _projectionMatrix = projectionMatrix;
     }
 
     public void ViewMatrix(float[] viewMatrix)
     {
-        this._viewMatrix = viewMatrix;
+        _viewMatrix = viewMatrix;
     }
 
     public void Fog(float start, float end)
