@@ -17,14 +17,11 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Numerics;
 using DotRecast.Core;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Demo.Messages;
-using DotRecast.Recast.Toolset;
 using ImGuiNET;
 using Serilog;
 

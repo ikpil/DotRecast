@@ -18,11 +18,9 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using System;
 using System.Numerics;
 using DotRecast.Core;
 using DotRecast.Recast.Demo.Tools;
-using DotRecast.Recast.Toolset;
 using ImGuiNET;
 
 namespace DotRecast.Recast.Demo.UI;

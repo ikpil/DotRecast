@@ -19,7 +19,6 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using System.Numerics;
 using Silk.NET.OpenGL;
 using DotRecast.Core;
 using DotRecast.Recast.Toolset.Builder;
