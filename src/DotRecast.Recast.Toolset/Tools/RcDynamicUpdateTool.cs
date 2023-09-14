@@ -299,7 +299,7 @@ namespace DotRecast.Recast.Toolset.Tools
         {
             var rx = RcMatrix4x4f.CreateFromRotate((float)random.NextDouble() * ax, 1, 0, 0);
             var ry = RcMatrix4x4f.CreateFromRotate((float)random.NextDouble() * 360, 0, 1, 0);
-            var m = RcMatrix4x4f.Mul(rx, ry);
+            var m = RcMatrix4x4f.Mul(ref rx, ref ry);
             float[] verts = new float[geom.vertices.Length];
             RcVec3f v = new RcVec3f();
             RcVec3f vr = new RcVec3f();

@@ -607,7 +607,7 @@ public class RecastDemo : IRecastDemoChannel
     {
         // Clear the screen
         dd.Clear();
-        projectionMatrix = dd.ProjectionMatrix(50f, (float)width / (float)height, 1.0f, camr);
+        dd.ProjectionMatrix(50f, (float)width / (float)height, 1.0f, camr).CopyTo(projectionMatrix);
         dd.ViewMatrix(cameraPos, cameraEulers).CopyTo(modelviewMatrix);
 
         dd.Fog(camr * 0.1f, camr * 1.25f);

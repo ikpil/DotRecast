@@ -23,45 +23,45 @@ namespace DotRecast.Recast.Demo.Draw;
 
 public static class GLU
 {
-    public static float[] GluPerspective(float fovy, float aspect, float near, float far)
+    public static RcMatrix4x4f GluPerspective(float fovy, float aspect, float near, float far)
     {
-        float[] projectionMatrix = new float[16];
-        GlhPerspectivef2(projectionMatrix, fovy, aspect, near, far);
+        var projectionMatrix = new RcMatrix4x4f();
+        GlhPerspectivef2(ref projectionMatrix, fovy, aspect, near, far);
         //GlLoadMatrixf(projectionMatrix);
         return projectionMatrix;
     }
 
-    public static void GlhPerspectivef2(float[] matrix, float fovyInDegrees, float aspectRatio, float znear, float zfar)
+    public static void GlhPerspectivef2(ref RcMatrix4x4f matrix, float fovyInDegrees, float aspectRatio, float znear, float zfar)
     {
         float ymax, xmax;
         ymax = (float)(znear * Math.Tan(fovyInDegrees * Math.PI / 360.0));
         xmax = ymax * aspectRatio;
-        GlhFrustumf2(matrix, -xmax, xmax, -ymax, ymax, znear, zfar);
+        GlhFrustumf2(ref matrix, -xmax, xmax, -ymax, ymax, znear, zfar);
     }
 
-    private static void GlhFrustumf2(float[] matrix, float left, float right, float bottom, float top, float znear, float zfar)
+    private static void GlhFrustumf2(ref RcMatrix4x4f matrix, float left, float right, float bottom, float top, float znear, float zfar)
     {
         float temp, temp2, temp3, temp4;
         temp = 2.0f * znear;
         temp2 = right - left;
         temp3 = top - bottom;
         temp4 = zfar - znear;
-        matrix[0] = temp / temp2;
-        matrix[1] = 0.0f;
-        matrix[2] = 0.0f;
-        matrix[3] = 0.0f;
-        matrix[4] = 0.0f;
-        matrix[5] = temp / temp3;
-        matrix[6] = 0.0f;
-        matrix[7] = 0.0f;
-        matrix[8] = (right + left) / temp2;
-        matrix[9] = (top + bottom) / temp3;
-        matrix[10] = (-zfar - znear) / temp4;
-        matrix[11] = -1.0f;
-        matrix[12] = 0.0f;
-        matrix[13] = 0.0f;
-        matrix[14] = (-temp * zfar) / temp4;
-        matrix[15] = 0.0f;
+        matrix.M11 = temp / temp2;
+        matrix.M12 = 0.0f;
+        matrix.M13 = 0.0f;
+        matrix.M14 = 0.0f;
+        matrix.M21 = 0.0f;
+        matrix.M22 = temp / temp3;
+        matrix.M23 = 0.0f;
+        matrix.M24 = 0.0f;
+        matrix.M31 = (right + left) / temp2;
+        matrix.M32 = (top + bottom) / temp3;
+        matrix.M33 = (-zfar - znear) / temp4;
+        matrix.M34 = -1.0f;
+        matrix.M41 = 0.0f;
+        matrix.M42 = 0.0f;
+        matrix.M43 = (-temp * zfar) / temp4;
+        matrix.M44 = 0.0f;
     }
 
     public static int GlhUnProjectf(float winx, float winy, float winz, float[] modelview, float[] projection, int[] viewport, ref RcVec3f objectCoordinate)

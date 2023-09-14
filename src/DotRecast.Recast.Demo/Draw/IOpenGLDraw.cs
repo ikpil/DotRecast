@@ -27,7 +27,7 @@ public interface IOpenGLDraw
 
     void Texture(GLCheckerTexture g_tex, bool state);
 
-    void ProjectionMatrix(float[] projectionMatrix);
+    void ProjectionMatrix(ref RcMatrix4x4f projectionMatrix);
 
     void ViewMatrix(ref RcMatrix4x4f viewMatrix);
 

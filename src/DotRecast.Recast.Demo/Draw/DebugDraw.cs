@@ -303,8 +303,8 @@ public class DebugDraw
     private bool circleInit = false;
     private const int CIRCLE_NUM_SEG = 40;
     private readonly float[] circeDir = new float[CIRCLE_NUM_SEG * 2];
-    private float[] _viewMatrix = new float[16];
-    private readonly float[] _projectionMatrix = new float[16];
+    private RcMatrix4x4f _viewMatrix = new();
+    private RcMatrix4x4f _projectionMatrix = new();
 
     public void AppendCircle(float x, float y, float z, float r, int col)
     {
@@ -628,10 +628,10 @@ public class DebugDraw
     }
 
 
-    public float[] ProjectionMatrix(float fovy, float aspect, float near, float far)
+    public RcMatrix4x4f ProjectionMatrix(float fovy, float aspect, float near, float far)
     {
-        GLU.GlhPerspectivef2(_projectionMatrix, fovy, aspect, near, far);
-        GetOpenGlDraw().ProjectionMatrix(_projectionMatrix);
+        GLU.GlhPerspectivef2(ref _projectionMatrix, fovy, aspect, near, far);
+        GetOpenGlDraw().ProjectionMatrix(ref _projectionMatrix);
         UpdateFrustum();
         return _projectionMatrix;
     }
@@ -640,18 +640,17 @@ public class DebugDraw
     {
         var rx = RcMatrix4x4f.CreateFromRotate(cameraEulers[0], 1, 0, 0);
         var ry = RcMatrix4x4f.CreateFromRotate(cameraEulers[1], 0, 1, 0);
-        var r = RcMatrix4x4f.Mul(rx, ry);
+        var r = RcMatrix4x4f.Mul(ref rx, ref ry);
 
         var t = new RcMatrix4x4f();
         t.M11 = t.M22 = t.M33 = t.M44 = 1;
         t.M41 = -cameraPos.x;
         t.M42 = -cameraPos.y;
         t.M43 = -cameraPos.z;
-        var mul = RcMatrix4x4f.Mul(r, t);
-        mul.CopyTo(_viewMatrix);
-        GetOpenGlDraw().ViewMatrix(ref mul);
+        _viewMatrix = RcMatrix4x4f.Mul(ref r, ref t);
+        GetOpenGlDraw().ViewMatrix(ref _viewMatrix);
         UpdateFrustum();
-        return mul;
+        return _viewMatrix;
     }
 
 
@@ -667,7 +666,7 @@ public class DebugDraw
 
     private void UpdateFrustum()
     {
-        var vpm = RcMatrix4x4f.Mul(_projectionMatrix, _viewMatrix);
+        var vpm = RcMatrix4x4f.Mul(ref _projectionMatrix, ref _viewMatrix);
         NormalizePlane(vpm.M14 + vpm.M11, vpm.M24 + vpm.M21, vpm.M34 + vpm.M31, vpm.M44 + vpm.M41, ref frustumPlanes[0]); // left
         NormalizePlane(vpm.M14 - vpm.M11, vpm.M24 - vpm.M21, vpm.M34 - vpm.M31, vpm.M44 - vpm.M41, ref frustumPlanes[1]); // right
         NormalizePlane(vpm.M14 - vpm.M12, vpm.M24 - vpm.M22, vpm.M34 - vpm.M32, vpm.M44 - vpm.M42, ref frustumPlanes[2]); // top
