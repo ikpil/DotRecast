@@ -147,10 +147,10 @@ public class RecastDemo : IRecastDemoChannel
             }
         }
 
-        float[] modelviewMatrix = dd.ViewMatrix(cameraPos, cameraEulers);
-        cameraPos.x += scrollZoom * 2.0f * modelviewMatrix[2];
-        cameraPos.y += scrollZoom * 2.0f * modelviewMatrix[6];
-        cameraPos.z += scrollZoom * 2.0f * modelviewMatrix[10];
+        var modelviewMatrix = dd.ViewMatrix(cameraPos, cameraEulers);
+        cameraPos.x += scrollZoom * 2.0f * modelviewMatrix.M13;
+        cameraPos.y += scrollZoom * 2.0f * modelviewMatrix.M23;
+        cameraPos.z += scrollZoom * 2.0f * modelviewMatrix.M33;
         scrollZoom = 0;
     }
 
@@ -172,16 +172,16 @@ public class RecastDemo : IRecastDemoChannel
 
         if (pan)
         {
-            float[] modelviewMatrix = dd.ViewMatrix(cameraPos, cameraEulers);
+            var modelviewMatrix = dd.ViewMatrix(cameraPos, cameraEulers);
             cameraPos = origCameraPos;
 
-            cameraPos.x -= 0.1f * dx * modelviewMatrix[0];
-            cameraPos.y -= 0.1f * dx * modelviewMatrix[4];
-            cameraPos.z -= 0.1f * dx * modelviewMatrix[8];
+            cameraPos.x -= 0.1f * dx * modelviewMatrix.M11;
+            cameraPos.y -= 0.1f * dx * modelviewMatrix.M21;
+            cameraPos.z -= 0.1f * dx * modelviewMatrix.M31;
 
-            cameraPos.x += 0.1f * dy * modelviewMatrix[1];
-            cameraPos.y += 0.1f * dy * modelviewMatrix[5];
-            cameraPos.z += 0.1f * dy * modelviewMatrix[9];
+            cameraPos.x += 0.1f * dy * modelviewMatrix.M12;
+            cameraPos.y += 0.1f * dy * modelviewMatrix.M22;
+            cameraPos.z += 0.1f * dy * modelviewMatrix.M32;
             if (dx * dx + dy * dy > 3 * 3)
             {
                 movedDuringPan = true;
@@ -574,9 +574,7 @@ public class RecastDemo : IRecastDemoChannel
                 RcVec3f bmin = bminN;
                 RcVec3f bmax = bmaxN;
 
-                camr = (float)(Math.Sqrt(
-                                   Sqr(bmax.x - bmin.x) + Sqr(bmax.y - bmin.y) + Sqr(bmax.z - bmin.z))
-                               / 2);
+                camr = (float)(Math.Sqrt(Sqr(bmax.x - bmin.x) + Sqr(bmax.y - bmin.y) + Sqr(bmax.z - bmin.z)) / 2);
                 cameraPos.x = (bmax.x + bmin.x) / 2 + camr;
                 cameraPos.y = (bmax.y + bmin.y) / 2 + camr;
                 cameraPos.z = (bmax.z + bmin.z) / 2 + camr;
@@ -610,7 +608,7 @@ public class RecastDemo : IRecastDemoChannel
         // Clear the screen
         dd.Clear();
         projectionMatrix = dd.ProjectionMatrix(50f, (float)width / (float)height, 1.0f, camr);
-        modelviewMatrix = dd.ViewMatrix(cameraPos, cameraEulers);
+        dd.ViewMatrix(cameraPos, cameraEulers).CopyTo(modelviewMatrix);
 
         dd.Fog(camr * 0.1f, camr * 1.25f);
         renderer.Render(_sample, settingsView.GetDrawMode());

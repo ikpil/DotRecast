@@ -636,7 +636,7 @@ public class DebugDraw
         return _projectionMatrix;
     }
 
-    public float[] ViewMatrix(RcVec3f cameraPos, float[] cameraEulers)
+    public RcMatrix4x4f ViewMatrix(RcVec3f cameraPos, float[] cameraEulers)
     {
         var rx = RcMatrix4x4f.CreateFromRotate(cameraEulers[0], 1, 0, 0);
         var ry = RcMatrix4x4f.CreateFromRotate(cameraEulers[1], 0, 1, 0);
@@ -648,10 +648,9 @@ public class DebugDraw
         t.M42 = -cameraPos.y;
         t.M43 = -cameraPos.z;
         var mul = RcMatrix4x4f.Mul(r, t);
-        mul.CopyTo(_viewMatrix);
-        GetOpenGlDraw().ViewMatrix(_viewMatrix);
+        GetOpenGlDraw().ViewMatrix(ref mul);
         UpdateFrustum();
-        return _viewMatrix;
+        return mul;
     }
 
 

@@ -22,7 +22,7 @@ public class ModernOpenGLDraw : IOpenGLDraw
     private readonly ArrayBuffer<OpenGLVertex> vertices = new();
     private readonly ArrayBuffer<int> elements = new();
     private GLCheckerTexture _texture;
-    private float[] _viewMatrix;
+    private float[] _viewMatrix = new float[16];
     private float[] _projectionMatrix;
     private int uniformUseTexture;
     private int uniformFog;
@@ -320,9 +320,9 @@ public class ModernOpenGLDraw : IOpenGLDraw
         _projectionMatrix = projectionMatrix;
     }
 
-    public void ViewMatrix(float[] viewMatrix)
+    public void ViewMatrix(ref RcMatrix4x4f viewMatrix)
     {
-        _viewMatrix = viewMatrix;
+        viewMatrix.CopyTo(_viewMatrix);
     }
 
     public void Fog(float start, float end)

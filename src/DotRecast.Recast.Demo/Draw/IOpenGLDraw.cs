@@ -29,7 +29,7 @@ public interface IOpenGLDraw
 
     void ProjectionMatrix(float[] projectionMatrix);
 
-    void ViewMatrix(float[] viewMatrix);
+    void ViewMatrix(ref RcMatrix4x4f viewMatrix);
 
     void Fog(float start, float end);
 }
