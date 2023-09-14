@@ -648,6 +648,7 @@ public class DebugDraw
         t.M42 = -cameraPos.y;
         t.M43 = -cameraPos.z;
         var mul = RcMatrix4x4f.Mul(r, t);
+        mul.CopyTo(_viewMatrix);
         GetOpenGlDraw().ViewMatrix(ref mul);
         UpdateFrustum();
         return mul;
