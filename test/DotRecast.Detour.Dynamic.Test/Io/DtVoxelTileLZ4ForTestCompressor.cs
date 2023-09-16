@@ -34,7 +34,7 @@ namespace DotRecast.Detour.Dynamic.Test.Io
 
         public byte[] Decompress(byte[] data)
         {
-            int compressedSize = ByteUtils.GetIntBE(data, 0);
+            int compressedSize = RcByteUtils.GetIntBE(data, 0);
             return LZ4Pickler.Unpickle(data.AsSpan(4, compressedSize));
         }
 
@@ -47,7 +47,7 @@ namespace DotRecast.Detour.Dynamic.Test.Io
         {
             byte[] compressed = LZ4Pickler.Pickle(data, LZ4Level.L12_MAX);
             byte[] result = new byte[4 + compressed.Length];
-            ByteUtils.PutInt(compressed.Length, result, 0, RcByteOrder.BIG_ENDIAN);
+            RcByteUtils.PutInt(compressed.Length, result, 0, RcByteOrder.BIG_ENDIAN);
             Array.Copy(compressed, 0, result, 4, compressed.Length);
             return result;
         }

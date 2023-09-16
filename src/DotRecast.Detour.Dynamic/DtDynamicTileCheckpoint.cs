@@ -22,12 +22,12 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic
 {
-    public class DynamicTileCheckpoint
+    public class DtDynamicTileCheckpoint
     {
         public readonly RcHeightfield heightfield;
         public readonly ISet<long> colliders;
 
-        public DynamicTileCheckpoint(RcHeightfield heightfield, ISet<long> colliders)
+        public DtDynamicTileCheckpoint(RcHeightfield heightfield, ISet<long> colliders)
         {
             this.colliders = colliders;
             this.heightfield = Clone(heightfield);

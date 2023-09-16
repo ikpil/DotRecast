@@ -14,7 +14,7 @@ namespace DotRecast.Recast.Toolset.Tools
 {
     public class RcDynamicUpdateTool : IRcToolable
     {
-        private DynamicNavMesh dynaMesh;
+        private DtDynamicNavMesh dynaMesh;
         private readonly Dictionary<long, RcGizmo> colliderGizmos;
 
         private readonly Random random;
@@ -41,7 +41,7 @@ namespace DotRecast.Recast.Toolset.Tools
             return "Dynamic Updates";
         }
 
-        public DynamicNavMesh GetDynamicNavMesh()
+        public DtDynamicNavMesh GetDynamicNavMesh()
         {
             return dynaMesh;
         }
@@ -140,14 +140,14 @@ namespace DotRecast.Recast.Toolset.Tools
             return colliderWithGizmo;
         }
 
-        public DynamicNavMesh Load(string filename, IRcCompressor compressor)
+        public DtDynamicNavMesh Load(string filename, IRcCompressor compressor)
         {
             using var fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
             using var br = new BinaryReader(fs);
-            VoxelFileReader reader = new VoxelFileReader(compressor);
-            VoxelFile voxelFile = reader.Read(br);
+            DtVoxelFileReader reader = new DtVoxelFileReader(compressor);
+            DtVoxelFile voxelFile = reader.Read(br);
 
-            dynaMesh = new DynamicNavMesh(voxelFile);
+            dynaMesh = new DtDynamicNavMesh(voxelFile);
             dynaMesh.config.keepIntermediateResults = true;
 
             colliderGizmos.Clear();
@@ -157,10 +157,10 @@ namespace DotRecast.Recast.Toolset.Tools
 
         public void Save(string filename, bool compression, IRcCompressor compressor)
         {
-            VoxelFile voxelFile = VoxelFile.From(dynaMesh);
+            DtVoxelFile voxelFile = DtVoxelFile.From(dynaMesh);
             using var fs = new FileStream(filename, FileMode.CreateNew, FileAccess.Write);
             using var bw = new BinaryWriter(fs);
-            VoxelFileWriter writer = new VoxelFileWriter(compressor);
+            DtVoxelFileWriter writer = new DtVoxelFileWriter(compressor);
             writer.Write(bw, voxelFile, compression);
         }
 
@@ -168,7 +168,7 @@ namespace DotRecast.Recast.Toolset.Tools
         public RcGizmo SphereCollider(RcVec3f p, float walkableClimb)
         {
             float radius = 1 + (float)random.NextDouble() * 10;
-            var collider = new SphereCollider(p, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, walkableClimb);
+            var collider = new DtSphereCollider(p, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, walkableClimb);
             var gizmo = GizmoFactory.Sphere(p, radius);
 
             return new RcGizmo(collider, gizmo);
@@ -189,7 +189,7 @@ namespace DotRecast.Recast.Toolset.Tools
             a.z *= len;
             RcVec3f start = RcVec3f.Of(p.x, p.y, p.z);
             RcVec3f end = RcVec3f.Of(p.x + a.x, p.y + a.y, p.z + a.z);
-            var collider = new CapsuleCollider(start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, walkableClimb);
+            var collider = new DtCapsuleCollider(start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, walkableClimb);
             var gizmo = GizmoFactory.Capsule(start, end, radius);
             return new RcGizmo(collider, gizmo);
         }
@@ -203,8 +203,8 @@ namespace DotRecast.Recast.Toolset.Tools
             );
             RcVec3f forward = RcVec3f.Of((1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()));
             RcVec3f up = RcVec3f.Of((1f - 2 * (float)random.NextDouble()), 0.01f + (float)random.NextDouble(), (1f - 2 * (float)random.NextDouble()));
-            RcVec3f[] halfEdges = Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(up, forward, extent);
-            var collider = new BoxCollider(p, halfEdges, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, walkableClimb);
+            RcVec3f[] halfEdges = Detour.Dynamic.Colliders.DtBoxCollider.GetHalfEdges(up, forward, extent);
+            var collider = new DtBoxCollider(p, halfEdges, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, walkableClimb);
             var gizmo = GizmoFactory.Box(p, halfEdges);
             return new RcGizmo(collider, gizmo);
         }
@@ -220,7 +220,7 @@ namespace DotRecast.Recast.Toolset.Tools
             a[2] *= len;
             RcVec3f start = RcVec3f.Of(p.x, p.y, p.z);
             RcVec3f end = RcVec3f.Of(p.x + a.x, p.y + a.y, p.z + a.z);
-            var collider = new CylinderCollider(start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, walkableClimb);
+            var collider = new DtCylinderCollider(start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, walkableClimb);
             var gizmo = GizmoFactory.Cylinder(start, end, radius);
 
             return new RcGizmo(collider, gizmo);
@@ -234,14 +234,14 @@ namespace DotRecast.Recast.Toolset.Tools
             RcVec3f forward = RcVec3f.Of((1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()));
             forward.Normalize();
             RcVec3f side = RcVec3f.Cross(forward, baseUp);
-            BoxCollider @base = new BoxCollider(baseCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(baseUp, forward, baseExtent),
+            DtBoxCollider @base = new DtBoxCollider(baseCenter, Detour.Dynamic.Colliders.DtBoxCollider.GetHalfEdges(baseUp, forward, baseExtent),
                 SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, walkableClimb);
             var roofUp = RcVec3f.Zero;
             RcVec3f roofExtent = RcVec3f.Of(4.5f, 4.5f, 8f);
             var rx = RcMatrix4x4f.CreateFromRotate(45, forward.x, forward.y, forward.z);
             roofUp = MulMatrixVector(ref roofUp, rx, baseUp);
             RcVec3f roofCenter = RcVec3f.Of(p.x, p.y + 6, p.z);
-            BoxCollider roof = new BoxCollider(roofCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(roofUp, forward, roofExtent),
+            DtBoxCollider roof = new DtBoxCollider(roofCenter, Detour.Dynamic.Colliders.DtBoxCollider.GetHalfEdges(roofUp, forward, roofExtent),
                 SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, walkableClimb);
             RcVec3f trunkStart = RcVec3f.Of(
                 baseCenter.x - forward.x * 15 + side.x * 6,
@@ -249,17 +249,17 @@ namespace DotRecast.Recast.Toolset.Tools
                 baseCenter.z - forward.z * 15 + side.z * 6
             );
             RcVec3f trunkEnd = RcVec3f.Of(trunkStart.x, trunkStart.y + 10, trunkStart.z);
-            CapsuleCollider trunk = new CapsuleCollider(trunkStart, trunkEnd, 0.5f, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD,
+            DtCapsuleCollider trunk = new DtCapsuleCollider(trunkStart, trunkEnd, 0.5f, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD,
                 walkableClimb);
             RcVec3f crownCenter = RcVec3f.Of(
                 baseCenter.x - forward.x * 15 + side.x * 6, p.y + 10,
                 baseCenter.z - forward.z * 15 + side.z * 6
             );
-            SphereCollider crown = new SphereCollider(crownCenter, 4f, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GRASS,
+            DtSphereCollider crown = new DtSphereCollider(crownCenter, 4f, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GRASS,
                 walkableClimb);
-            CompositeCollider collider = new CompositeCollider(@base, roof, trunk, crown);
-            IRcGizmoMeshFilter baseGizmo = GizmoFactory.Box(baseCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(baseUp, forward, baseExtent));
-            IRcGizmoMeshFilter roofGizmo = GizmoFactory.Box(roofCenter, Detour.Dynamic.Colliders.BoxCollider.GetHalfEdges(roofUp, forward, roofExtent));
+            DtCompositeCollider collider = new DtCompositeCollider(@base, roof, trunk, crown);
+            IRcGizmoMeshFilter baseGizmo = GizmoFactory.Box(baseCenter, Detour.Dynamic.Colliders.DtBoxCollider.GetHalfEdges(baseUp, forward, baseExtent));
+            IRcGizmoMeshFilter roofGizmo = GizmoFactory.Box(roofCenter, Detour.Dynamic.Colliders.DtBoxCollider.GetHalfEdges(roofUp, forward, roofExtent));
             IRcGizmoMeshFilter trunkGizmo = GizmoFactory.Capsule(trunkStart, trunkEnd, 0.5f);
             IRcGizmoMeshFilter crownGizmo = GizmoFactory.Sphere(crownCenter, 4f);
             IRcGizmoMeshFilter gizmo = GizmoFactory.Composite(baseGizmo, roofGizmo, trunkGizmo, crownGizmo);
@@ -279,7 +279,7 @@ namespace DotRecast.Recast.Toolset.Tools
         public RcGizmo ConvexTrimesh(RcVec3f p, float walkableClimb)
         {
             float[] verts = TransformVertices(p, convexGeom, 360);
-            var collider = new ConvexTrimeshCollider(verts, convexGeom.faces,
+            var collider = new DtConvexTrimeshCollider(verts, convexGeom.faces,
                 SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, walkableClimb * 10);
             var gizmo = GizmoFactory.Trimesh(verts, convexGeom.faces);
             return new RcGizmo(collider, gizmo);
@@ -288,7 +288,7 @@ namespace DotRecast.Recast.Toolset.Tools
         private RcGizmo TrimeshCollider(RcVec3f p, DemoInputGeomProvider geom, float walkableClimb)
         {
             float[] verts = TransformVertices(p, geom, 0);
-            var collider = new TrimeshCollider(verts, geom.faces, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD,
+            var collider = new DtTrimeshCollider(verts, geom.faces, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD,
                 walkableClimb * 10);
             var gizmo = GizmoFactory.Trimesh(verts, geom.faces);
 

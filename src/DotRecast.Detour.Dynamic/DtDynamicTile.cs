@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+
 using System.Linq;
 using DotRecast.Core;
 using DotRecast.Detour.Dynamic.Colliders;
@@ -29,22 +29,22 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic
 {
-    public class DynamicTile
+    public class DtDynamicTile
     {
-        public readonly VoxelTile voxelTile;
-        public DynamicTileCheckpoint checkpoint;
+        public readonly DtVoxelTile voxelTile;
+        public DtDynamicTileCheckpoint checkpoint;
         public RecastBuilderResult recastResult;
         private DtMeshData meshData;
-        private readonly ConcurrentDictionary<long, ICollider> colliders = new ConcurrentDictionary<long, ICollider>();
+        private readonly ConcurrentDictionary<long, IDtCollider> colliders = new ConcurrentDictionary<long, IDtCollider>();
         private bool dirty = true;
         private long id;
 
-        public DynamicTile(VoxelTile voxelTile)
+        public DtDynamicTile(DtVoxelTile voxelTile)
         {
             this.voxelTile = voxelTile;
         }
 
-        public bool Build(RecastBuilder builder, DynamicNavMeshConfig config, RcTelemetry telemetry)
+        public bool Build(RecastBuilder builder, DtDynamicNavMeshConfig config, RcTelemetry telemetry)
         {
             if (dirty)
             {
@@ -59,7 +59,7 @@ namespace DotRecast.Detour.Dynamic
             return false;
         }
 
-        private RcHeightfield BuildHeightfield(DynamicNavMeshConfig config, RcTelemetry telemetry)
+        private RcHeightfield BuildHeightfield(DtDynamicNavMeshConfig config, RcTelemetry telemetry)
         {
             ICollection<long> rasterizedColliders = checkpoint != null
                 ? checkpoint.colliders as ICollection<long>
@@ -80,13 +80,13 @@ namespace DotRecast.Detour.Dynamic
 
             if (config.enableCheckpoints)
             {
-                checkpoint = new DynamicTileCheckpoint(heightfield, colliders.Keys.ToHashSet());
+                checkpoint = new DtDynamicTileCheckpoint(heightfield, colliders.Keys.ToHashSet());
             }
 
             return heightfield;
         }
 
-        private RecastBuilderResult BuildRecast(RecastBuilder builder, DynamicNavMeshConfig config, VoxelTile vt,
+        private RecastBuilderResult BuildRecast(RecastBuilder builder, DtDynamicNavMeshConfig config, DtVoxelTile vt,
             RcHeightfield heightfield, RcTelemetry telemetry)
         {
             RcConfig rcConfig = new RcConfig(
@@ -97,7 +97,7 @@ namespace DotRecast.Detour.Dynamic
                 config.walkableSlopeAngle, config.walkableHeight, config.walkableRadius, config.walkableClimb,
                 config.minRegionArea, config.regionMergeArea,
                 config.maxEdgeLen, config.maxSimplificationError,
-                Math.Min(DynamicNavMesh.MAX_VERTS_PER_POLY, config.vertsPerPoly),
+                Math.Min(DtDynamicNavMesh.MAX_VERTS_PER_POLY, config.vertsPerPoly),
                 config.detailSampleDistance, config.detailSampleMaxError,
                 true, true, true, null, true);
             RecastBuilderResult r = builder.Build(vt.tileX, vt.tileZ, null, rcConfig, heightfield, telemetry);
@@ -109,7 +109,7 @@ namespace DotRecast.Detour.Dynamic
             return r;
         }
 
-        public void AddCollider(long cid, ICollider collider)
+        public void AddCollider(long cid, IDtCollider collider)
         {
             colliders[cid] = collider;
             dirty = true;
@@ -130,7 +130,7 @@ namespace DotRecast.Detour.Dynamic
         }
 
         private DtNavMeshCreateParams NavMeshCreateParams(int tilex, int tileZ, float cellSize, float cellHeight,
-            DynamicNavMeshConfig config, RecastBuilderResult rcResult)
+            DtDynamicNavMeshConfig config, RecastBuilderResult rcResult)
         {
             RcPolyMesh m_pmesh = rcResult.GetMesh();
             RcPolyMeshDetail m_dmesh = rcResult.GetMeshDetail();

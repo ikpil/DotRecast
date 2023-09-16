@@ -22,7 +22,7 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic.Io
 {
-    public class VoxelTile
+    public class DtVoxelTile
     {
         private const int SERIALIZED_SPAN_COUNT_BYTES = 2;
         private const int SERIALIZED_SPAN_BYTES = 12;
@@ -37,7 +37,7 @@ namespace DotRecast.Detour.Dynamic.Io
         public float cellHeight;
         public readonly byte[] spanData;
 
-        public VoxelTile(int tileX, int tileZ, int width, int depth, RcVec3f boundsMin, RcVec3f boundsMax, float cellSize,
+        public DtVoxelTile(int tileX, int tileZ, int width, int depth, RcVec3f boundsMin, RcVec3f boundsMax, float cellSize,
             float cellHeight, int borderSize, RcByteBuffer buffer)
         {
             this.tileX = tileX;
@@ -49,10 +49,10 @@ namespace DotRecast.Detour.Dynamic.Io
             this.cellSize = cellSize;
             this.cellHeight = cellHeight;
             this.borderSize = borderSize;
-            spanData = ToByteArray(buffer, width, depth, VoxelFile.PREFERRED_BYTE_ORDER);
+            spanData = ToByteArray(buffer, width, depth, DtVoxelFile.PREFERRED_BYTE_ORDER);
         }
 
-        public VoxelTile(int tileX, int tileZ, RcHeightfield heightfield)
+        public DtVoxelTile(int tileX, int tileZ, RcHeightfield heightfield)
         {
             this.tileX = tileX;
             this.tileZ = tileZ;
@@ -63,12 +63,12 @@ namespace DotRecast.Detour.Dynamic.Io
             cellSize = heightfield.cs;
             cellHeight = heightfield.ch;
             borderSize = heightfield.borderSize;
-            spanData = SerializeSpans(heightfield, VoxelFile.PREFERRED_BYTE_ORDER);
+            spanData = SerializeSpans(heightfield, DtVoxelFile.PREFERRED_BYTE_ORDER);
         }
 
         public RcHeightfield Heightfield()
         {
-            return VoxelFile.PREFERRED_BYTE_ORDER == RcByteOrder.BIG_ENDIAN ? HeightfieldBE() : HeightfieldLE();
+            return DtVoxelFile.PREFERRED_BYTE_ORDER == RcByteOrder.BIG_ENDIAN ? HeightfieldBE() : HeightfieldLE();
         }
 
         private RcHeightfield HeightfieldBE()
@@ -80,16 +80,16 @@ namespace DotRecast.Detour.Dynamic.Io
                 for (int x = 0; x < width; x++)
                 {
                     RcSpan prev = null;
-                    int spanCount = ByteUtils.GetShortBE(spanData, position);
+                    int spanCount = RcByteUtils.GetShortBE(spanData, position);
                     position += 2;
                     for (int s = 0; s < spanCount; s++)
                     {
                         RcSpan span = new RcSpan();
-                        span.smin = ByteUtils.GetIntBE(spanData, position);
+                        span.smin = RcByteUtils.GetIntBE(spanData, position);
                         position += 4;
-                        span.smax = ByteUtils.GetIntBE(spanData, position);
+                        span.smax = RcByteUtils.GetIntBE(spanData, position);
                         position += 4;
-                        span.area = ByteUtils.GetIntBE(spanData, position);
+                        span.area = RcByteUtils.GetIntBE(spanData, position);
                         position += 4;
                         if (prev == null)
                         {
@@ -117,16 +117,16 @@ namespace DotRecast.Detour.Dynamic.Io
                 for (int x = 0; x < width; x++)
                 {
                     RcSpan prev = null;
-                    int spanCount = ByteUtils.GetShortLE(spanData, position);
+                    int spanCount = RcByteUtils.GetShortLE(spanData, position);
                     position += 2;
                     for (int s = 0; s < spanCount; s++)
                     {
                         RcSpan span = new RcSpan();
-                        span.smin = ByteUtils.GetIntLE(spanData, position);
+                        span.smin = RcByteUtils.GetIntLE(spanData, position);
                         position += 4;
-                        span.smax = ByteUtils.GetIntLE(spanData, position);
+                        span.smax = RcByteUtils.GetIntLE(spanData, position);
                         position += 4;
-                        span.area = ByteUtils.GetIntLE(spanData, position);
+                        span.area = RcByteUtils.GetIntLE(spanData, position);
                         position += 4;
                         if (prev == null)
                         {
@@ -169,13 +169,13 @@ namespace DotRecast.Detour.Dynamic.Io
             {
                 for (int x = 0; x < heightfield.width; x++)
                 {
-                    position = ByteUtils.PutShort(counts[pz + x], data, position, order);
+                    position = RcByteUtils.PutShort(counts[pz + x], data, position, order);
                     RcSpan span = heightfield.spans[pz + x];
                     while (span != null)
                     {
-                        position = ByteUtils.PutInt(span.smin, data, position, order);
-                        position = ByteUtils.PutInt(span.smax, data, position, order);
-                        position = ByteUtils.PutInt(span.area, data, position, order);
+                        position = RcByteUtils.PutInt(span.smin, data, position, order);
+                        position = RcByteUtils.PutInt(span.smax, data, position, order);
+                        position = RcByteUtils.PutInt(span.area, data, position, order);
                         span = span.next;
                     }
                 }
@@ -199,15 +199,15 @@ namespace DotRecast.Detour.Dynamic.Io
                 for (int i = 0; i < l; i++)
                 {
                     int count = buf.GetShort();
-                    ByteUtils.PutShort(count, data, position, order);
+                    RcByteUtils.PutShort(count, data, position, order);
                     position += 2;
                     for (int j = 0; j < count; j++)
                     {
-                        ByteUtils.PutInt(buf.GetInt(), data, position, order);
+                        RcByteUtils.PutInt(buf.GetInt(), data, position, order);
                         position += 4;
-                        ByteUtils.PutInt(buf.GetInt(), data, position, order);
+                        RcByteUtils.PutInt(buf.GetInt(), data, position, order);
                         position += 4;
-                        ByteUtils.PutInt(buf.GetInt(), data, position, order);
+                        RcByteUtils.PutInt(buf.GetInt(), data, position, order);
                         position += 4;
                     }
                 }

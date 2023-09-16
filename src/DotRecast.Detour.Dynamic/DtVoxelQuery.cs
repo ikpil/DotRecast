@@ -28,14 +28,14 @@ namespace DotRecast.Detour.Dynamic
  *
  * "A Fast Voxel Traversal Algorithm for Ray Tracing" by John Amanatides and Andrew Woo
  */
-    public class VoxelQuery
+    public class DtVoxelQuery
     {
         private readonly RcVec3f origin;
         private readonly float tileWidth;
         private readonly float tileDepth;
         private readonly Func<int, int, RcHeightfield> heightfieldProvider;
 
-        public VoxelQuery(RcVec3f origin, float tileWidth, float tileDepth, Func<int, int, RcHeightfield> heightfieldProvider)
+        public DtVoxelQuery(RcVec3f origin, float tileWidth, float tileDepth, Func<int, int, RcHeightfield> heightfieldProvider)
         {
             this.origin = origin;
             this.tileWidth = tileWidth;

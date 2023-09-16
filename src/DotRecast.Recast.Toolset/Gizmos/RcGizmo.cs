@@ -6,9 +6,9 @@ namespace DotRecast.Recast.Toolset.Gizmos
     public class RcGizmo
     {
         public readonly IRcGizmoMeshFilter Gizmo;
-        public readonly ICollider Collider;
+        public readonly IDtCollider Collider;
 
-        public RcGizmo(ICollider collider, IRcGizmoMeshFilter gizmo)
+        public RcGizmo(IDtCollider collider, IRcGizmoMeshFilter gizmo)
         {
             Collider = collider;
             Gizmo = gizmo;

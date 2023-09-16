@@ -17,32 +17,14 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using System.Collections.Generic;
-using DotRecast.Detour.Dynamic.Colliders;
+using DotRecast.Core;
+using DotRecast.Recast;
 
-namespace DotRecast.Detour.Dynamic
+namespace DotRecast.Detour.Dynamic.Colliders
 {
-    public class AddColliderQueueItem : IUpdateQueueItem
+    public interface IDtCollider
     {
-        private readonly long colliderId;
-        private readonly ICollider collider;
-        private readonly ICollection<DynamicTile> _affectedTiles;
-
-        public AddColliderQueueItem(long colliderId, ICollider collider, ICollection<DynamicTile> affectedTiles)
-        {
-            this.colliderId = colliderId;
-            this.collider = collider;
-            _affectedTiles = affectedTiles;
-        }
-
-        public ICollection<DynamicTile> AffectedTiles()
-        {
-            return _affectedTiles;
-        }
-
-        public void Process(DynamicTile tile)
-        {
-            tile.AddCollider(colliderId, collider);
-        }
+        float[] Bounds();
+        void Rasterize(RcHeightfield hf, RcTelemetry telemetry);
     }
 }

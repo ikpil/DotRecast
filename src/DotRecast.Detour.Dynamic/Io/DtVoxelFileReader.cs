@@ -23,24 +23,24 @@ using DotRecast.Detour.Io;
 
 namespace DotRecast.Detour.Dynamic.Io
 {
-    public class VoxelFileReader
+    public class DtVoxelFileReader
     {
         private readonly IRcCompressor _compressor;
 
-        public VoxelFileReader(IRcCompressor compressor)
+        public DtVoxelFileReader(IRcCompressor compressor)
         {
             _compressor = compressor;
         }
 
-        public VoxelFile Read(BinaryReader stream)
+        public DtVoxelFile Read(BinaryReader stream)
         {
             RcByteBuffer buf = IOUtils.ToByteBuffer(stream);
-            VoxelFile file = new VoxelFile();
+            DtVoxelFile file = new DtVoxelFile();
             int magic = buf.GetInt();
-            if (magic != VoxelFile.MAGIC)
+            if (magic != DtVoxelFile.MAGIC)
             {
                 magic = IOUtils.SwapEndianness(magic);
-                if (magic != VoxelFile.MAGIC)
+                if (magic != DtVoxelFile.MAGIC)
                 {
                     throw new IOException("Invalid magic");
                 }
@@ -49,8 +49,8 @@ namespace DotRecast.Detour.Dynamic.Io
             }
 
             file.version = buf.GetInt();
-            bool isExportedFromAstar = (file.version & VoxelFile.VERSION_EXPORTER_MASK) == 0;
-            bool compression = (file.version & VoxelFile.VERSION_COMPRESSION_MASK) == VoxelFile.VERSION_COMPRESSION_LZ4;
+            bool isExportedFromAstar = (file.version & DtVoxelFile.VERSION_EXPORTER_MASK) == 0;
+            bool compression = (file.version & DtVoxelFile.VERSION_COMPRESSION_MASK) == DtVoxelFile.VERSION_COMPRESSION_LZ4;
             file.walkableRadius = buf.GetFloat();
             file.walkableHeight = buf.GetFloat();
             file.walkableClimb = buf.GetFloat();
@@ -138,7 +138,7 @@ namespace DotRecast.Detour.Dynamic.Io
 
                 RcByteBuffer data = new RcByteBuffer(bytes);
                 data.Order(buf.Order());
-                file.AddTile(new VoxelTile(tileX, tileZ, width, depth, boundsMin, boundsMax, cellSize, cellHeight, borderSize, data));
+                file.AddTile(new DtVoxelTile(tileX, tileZ, width, depth, boundsMin, boundsMax, cellSize, cellHeight, borderSize, data));
                 buf.Position(position + voxelSize);
             }
 

@@ -23,24 +23,24 @@ using DotRecast.Detour.Io;
 
 namespace DotRecast.Detour.Dynamic.Io
 {
-    public class VoxelFileWriter : DtWriter
+    public class DtVoxelFileWriter : DtWriter
     {
         private readonly IRcCompressor _compressor;
 
-        public VoxelFileWriter(IRcCompressor compressor)
+        public DtVoxelFileWriter(IRcCompressor compressor)
         {
             _compressor = compressor;
         }
 
-        public void Write(BinaryWriter stream, VoxelFile f, bool compression)
+        public void Write(BinaryWriter stream, DtVoxelFile f, bool compression)
         {
-            Write(stream, f, VoxelFile.PREFERRED_BYTE_ORDER, compression);
+            Write(stream, f, DtVoxelFile.PREFERRED_BYTE_ORDER, compression);
         }
 
-        public void Write(BinaryWriter stream, VoxelFile f, RcByteOrder byteOrder, bool compression)
+        public void Write(BinaryWriter stream, DtVoxelFile f, RcByteOrder byteOrder, bool compression)
         {
-            Write(stream, VoxelFile.MAGIC, byteOrder);
-            Write(stream, VoxelFile.VERSION_EXPORTER_RECAST4J | (compression ? VoxelFile.VERSION_COMPRESSION_LZ4 : 0), byteOrder);
+            Write(stream, DtVoxelFile.MAGIC, byteOrder);
+            Write(stream, DtVoxelFile.VERSION_EXPORTER_RECAST4J | (compression ? DtVoxelFile.VERSION_COMPRESSION_LZ4 : 0), byteOrder);
             Write(stream, f.walkableRadius, byteOrder);
             Write(stream, f.walkableHeight, byteOrder);
             Write(stream, f.walkableClimb, byteOrder);
@@ -67,13 +67,13 @@ namespace DotRecast.Detour.Dynamic.Io
             Write(stream, f.bounds[4], byteOrder);
             Write(stream, f.bounds[5], byteOrder);
             Write(stream, f.tiles.Count, byteOrder);
-            foreach (VoxelTile t in f.tiles)
+            foreach (DtVoxelTile t in f.tiles)
             {
                 WriteTile(stream, t, byteOrder, compression);
             }
         }
 
-        public void WriteTile(BinaryWriter stream, VoxelTile tile, RcByteOrder byteOrder, bool compression)
+        public void WriteTile(BinaryWriter stream, DtVoxelTile tile, RcByteOrder byteOrder, bool compression)
         {
             Write(stream, tile.tileX, byteOrder);
             Write(stream, tile.tileZ, byteOrder);

@@ -17,14 +17,14 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using DotRecast.Core;
-using DotRecast.Recast;
+using System.Collections.Generic;
 
-namespace DotRecast.Detour.Dynamic.Colliders
+namespace DotRecast.Detour.Dynamic
 {
-    public interface ICollider
+    public interface IDtDaynmicTileJob
     {
-        float[] Bounds();
-        void Rasterize(RcHeightfield hf, RcTelemetry telemetry);
+        ICollection<DtDynamicTile> AffectedTiles();
+
+        void Process(DtDynamicTile tile);
     }
 }

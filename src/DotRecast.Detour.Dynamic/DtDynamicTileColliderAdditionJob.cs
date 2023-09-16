@@ -18,28 +18,31 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using DotRecast.Detour.Dynamic.Colliders;
 
 namespace DotRecast.Detour.Dynamic
 {
-    public class RemoveColliderQueueItem : IUpdateQueueItem
+    public class DtDynamicTileColliderAdditionJob : IDtDaynmicTileJob
     {
-        private readonly long colliderId;
-        private readonly ICollection<DynamicTile> _affectedTiles;
+        private readonly long _colliderId;
+        private readonly IDtCollider _collider;
+        private readonly ICollection<DtDynamicTile> _affectedTiles;
 
-        public RemoveColliderQueueItem(long colliderId, ICollection<DynamicTile> affectedTiles)
+        public DtDynamicTileColliderAdditionJob(long colliderId, IDtCollider collider, ICollection<DtDynamicTile> affectedTiles)
         {
-            this.colliderId = colliderId;
-            this._affectedTiles = affectedTiles;
+            _colliderId = colliderId;
+            _collider = collider;
+            _affectedTiles = affectedTiles;
         }
 
-        public ICollection<DynamicTile> AffectedTiles()
+        public ICollection<DtDynamicTile> AffectedTiles()
         {
             return _affectedTiles;
         }
 
-        public void Process(DynamicTile tile)
+        public void Process(DtDynamicTile tile)
         {
-            tile.RemoveCollider(colliderId);
+            tile.AddCollider(_colliderId, _collider);
         }
     }
 }

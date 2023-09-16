@@ -35,7 +35,7 @@ public class VoxelFileReaderWriterTest
         using var ms = new MemoryStream(bytes);
         using var br = new BinaryReader(ms);
 
-        VoxelFile f = ReadWriteRead(br, compression);
+        DtVoxelFile f = ReadWriteRead(br, compression);
         Assert.That(f.useTiles, Is.False);
         Assert.That(f.bounds, Is.EqualTo(new[] { -100.0f, 0f, -100f, 100f, 5f, 100f }));
         Assert.That(f.cellSize, Is.EqualTo(0.25f));
@@ -63,7 +63,7 @@ public class VoxelFileReaderWriterTest
         using var ms = new MemoryStream(bytes);
         using var br = new BinaryReader(ms);
 
-        VoxelFile f = ReadWriteRead(br, compression);
+        DtVoxelFile f = ReadWriteRead(br, compression);
 
         Assert.That(f.useTiles, Is.True);
         Assert.That(f.bounds, Is.EqualTo(new[] { -100.0f, 0f, -100f, 100f, 5f, 100f }));
@@ -86,14 +86,14 @@ public class VoxelFileReaderWriterTest
         Assert.That(f.tiles[0].boundsMax, Is.EqualTo(RcVec3f.Of(-78.75f, 5.0f, -78.75f)));
     }
 
-    private VoxelFile ReadWriteRead(BinaryReader bis, bool compression)
+    private DtVoxelFile ReadWriteRead(BinaryReader bis, bool compression)
     {
-        VoxelFileReader reader = new VoxelFileReader(DtVoxelTileLZ4ForTestCompressor.Shared);
-        VoxelFile f = reader.Read(bis);
+        DtVoxelFileReader reader = new DtVoxelFileReader(DtVoxelTileLZ4ForTestCompressor.Shared);
+        DtVoxelFile f = reader.Read(bis);
 
         using var msw = new MemoryStream();
         using var bw = new BinaryWriter(msw);
-        VoxelFileWriter writer = new VoxelFileWriter(DtVoxelTileLZ4ForTestCompressor.Shared);
+        DtVoxelFileWriter writer = new DtVoxelFileWriter(DtVoxelTileLZ4ForTestCompressor.Shared);
         writer.Write(bw, f, compression);
 
         using var msr = new MemoryStream(msw.ToArray());

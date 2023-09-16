@@ -461,7 +461,7 @@ public class DynamicUpdateSampleTool : ISampleTool
         _sample.Update(null, dynaMesh.RecastResults(), dynaMesh.NavMesh());
     }
 
-    private void UpdateTo(DynamicNavMeshConfig config)
+    private void UpdateTo(DtDynamicNavMeshConfig config)
     {
         config.partition = partitioning;
         config.walkableHeight = walkableHeight;
@@ -481,7 +481,7 @@ public class DynamicUpdateSampleTool : ISampleTool
         config.detailSampleMaxError = detailSampleMaxError;
     }
 
-    private void UpdateFrom(DynamicNavMeshConfig config)
+    private void UpdateFrom(DtDynamicNavMeshConfig config)
     {
         cellSize = config.cellSize;
         partitioning = config.partition;

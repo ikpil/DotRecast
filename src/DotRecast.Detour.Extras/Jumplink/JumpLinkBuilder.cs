@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using DotRecast.Core;
 using DotRecast.Recast;
-using static DotRecast.Core.RcMath;
 
 namespace DotRecast.Detour.Extras.Jumplink
 {

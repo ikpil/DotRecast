@@ -20,7 +20,6 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using DotRecast.Core;
@@ -30,22 +29,22 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic
 {
-    public class DynamicNavMesh
+    public class DtDynamicNavMesh
     {
         public const int MAX_VERTS_PER_POLY = 6;
-        public readonly DynamicNavMeshConfig config;
+        public readonly DtDynamicNavMeshConfig config;
         private readonly RecastBuilder builder;
-        private readonly Dictionary<long, DynamicTile> _tiles = new Dictionary<long, DynamicTile>();
+        private readonly Dictionary<long, DtDynamicTile> _tiles = new Dictionary<long, DtDynamicTile>();
         private readonly RcTelemetry telemetry;
         private readonly DtNavMeshParams navMeshParams;
-        private readonly BlockingCollection<IUpdateQueueItem> updateQueue = new BlockingCollection<IUpdateQueueItem>();
+        private readonly BlockingCollection<IDtDaynmicTileJob> updateQueue = new BlockingCollection<IDtDaynmicTileJob>();
         private readonly RcAtomicLong currentColliderId = new RcAtomicLong(0);
         private DtNavMesh _navMesh;
         private bool dirty = true;
 
-        public DynamicNavMesh(VoxelFile voxelFile)
+        public DtDynamicNavMesh(DtVoxelFile voxelFile)
         {
-            config = new DynamicNavMeshConfig(voxelFile.useTiles, voxelFile.tileSizeX, voxelFile.tileSizeZ, voxelFile.cellSize);
+            config = new DtDynamicNavMeshConfig(voxelFile.useTiles, voxelFile.tileSizeX, voxelFile.tileSizeZ, voxelFile.cellSize);
             config.walkableHeight = voxelFile.walkableHeight;
             config.walkableRadius = voxelFile.walkableRadius;
             config.walkableClimb = voxelFile.walkableClimb;
@@ -69,7 +68,7 @@ namespace DotRecast.Detour.Dynamic
             navMeshParams.maxPolys = 0x8000;
             foreach (var t in voxelFile.tiles)
             {
-                _tiles.Add(LookupKey(t.tileX, t.tileZ), new DynamicTile(t));
+                _tiles.Add(LookupKey(t.tileX, t.tileZ), new DtDynamicTile(t));
             }
 
             ;
@@ -84,9 +83,9 @@ namespace DotRecast.Detour.Dynamic
         /**
      * Voxel queries require checkpoints to be enabled in {@link DynamicNavMeshConfig}
      */
-        public VoxelQuery VoxelQuery()
+        public DtVoxelQuery VoxelQuery()
         {
-            return new VoxelQuery(navMeshParams.orig, navMeshParams.tileWidth, navMeshParams.tileHeight, LookupHeightfield);
+            return new DtVoxelQuery(navMeshParams.orig, navMeshParams.tileWidth, navMeshParams.tileHeight, LookupHeightfield);
         }
 
         private RcHeightfield LookupHeightfield(int x, int z)
@@ -94,16 +93,16 @@ namespace DotRecast.Detour.Dynamic
             return GetTileAt(x, z)?.checkpoint.heightfield;
         }
 
-        public long AddCollider(ICollider collider)
+        public long AddCollider(IDtCollider collider)
         {
             long cid = currentColliderId.IncrementAndGet();
-            updateQueue.Add(new AddColliderQueueItem(cid, collider, GetTiles(collider.Bounds())));
+            updateQueue.Add(new DtDynamicTileColliderAdditionJob(cid, collider, GetTiles(collider.Bounds())));
             return cid;
         }
 
         public void RemoveCollider(long colliderId)
         {
-            updateQueue.Add(new RemoveColliderQueueItem(colliderId, GetTilesByCollider(colliderId)));
+            updateQueue.Add(new DtDynamicTileColliderRemovalJob(colliderId, GetTilesByCollider(colliderId)));
         }
 
         /**
@@ -123,14 +122,14 @@ namespace DotRecast.Detour.Dynamic
             return Rebuild(ProcessQueue());
         }
 
-        private bool Rebuild(ICollection<DynamicTile> stream)
+        private bool Rebuild(ICollection<DtDynamicTile> stream)
         {
             foreach (var dynamicTile in stream)
                 Rebuild(dynamicTile);
             return UpdateNavMesh();
         }
 
-        private HashSet<DynamicTile> ProcessQueue()
+        private HashSet<DtDynamicTile> ProcessQueue()
         {
             var items = ConsumeQueue();
             foreach (var item in items)
@@ -141,9 +140,9 @@ namespace DotRecast.Detour.Dynamic
             return items.SelectMany(i => i.AffectedTiles()).ToHashSet();
         }
 
-        private List<IUpdateQueueItem> ConsumeQueue()
+        private List<IDtDaynmicTileJob> ConsumeQueue()
         {
-            List<IUpdateQueueItem> items = new List<IUpdateQueueItem>();
+            List<IDtDaynmicTileJob> items = new List<IDtDaynmicTileJob>();
             while (updateQueue.TryTake(out var item))
             {
                 items.Add(item);
@@ -152,7 +151,7 @@ namespace DotRecast.Detour.Dynamic
             return items;
         }
 
-        private void Process(IUpdateQueueItem item)
+        private void Process(IDtDaynmicTileJob item)
         {
             foreach (var tile in item.AffectedTiles())
             {
@@ -177,13 +176,13 @@ namespace DotRecast.Detour.Dynamic
             return Rebuild(ProcessQueue(), executor);
         }
 
-        private Task<bool> Rebuild(ICollection<DynamicTile> tiles, TaskFactory executor)
+        private Task<bool> Rebuild(ICollection<DtDynamicTile> tiles, TaskFactory executor)
         {
             var tasks = tiles.Select(tile => executor.StartNew(() => Rebuild(tile))).ToArray();
             return Task.WhenAll(tasks).ContinueWith(k => UpdateNavMesh());
         }
 
-        private ICollection<DynamicTile> GetTiles(float[] bounds)
+        private ICollection<DtDynamicTile> GetTiles(float[] bounds)
         {
             if (bounds == null)
             {
@@ -194,12 +193,12 @@ namespace DotRecast.Detour.Dynamic
             int minz = (int)Math.Floor((bounds[2] - navMeshParams.orig.z) / navMeshParams.tileHeight);
             int maxx = (int)Math.Floor((bounds[3] - navMeshParams.orig.x) / navMeshParams.tileWidth);
             int maxz = (int)Math.Floor((bounds[5] - navMeshParams.orig.z) / navMeshParams.tileHeight);
-            List<DynamicTile> tiles = new List<DynamicTile>();
+            List<DtDynamicTile> tiles = new List<DtDynamicTile>();
             for (int z = minz; z <= maxz; ++z)
             {
                 for (int x = minx; x <= maxx; ++x)
                 {
-                    DynamicTile tile = GetTileAt(x, z);
+                    DtDynamicTile tile = GetTileAt(x, z);
                     if (tile != null)
                     {
                         tiles.Add(tile);
@@ -210,12 +209,12 @@ namespace DotRecast.Detour.Dynamic
             return tiles;
         }
 
-        private List<DynamicTile> GetTilesByCollider(long cid)
+        private List<DtDynamicTile> GetTilesByCollider(long cid)
         {
             return _tiles.Values.Where(t => t.ContainsCollider(cid)).ToList();
         }
 
-        private void Rebuild(DynamicTile tile)
+        private void Rebuild(DtDynamicTile tile)
         {
             DtNavMeshCreateParams option = new DtNavMeshCreateParams();
             option.walkableHeight = config.walkableHeight;
@@ -238,7 +237,7 @@ namespace DotRecast.Detour.Dynamic
             return false;
         }
 
-        private DynamicTile GetTileAt(int x, int z)
+        private DtDynamicTile GetTileAt(int x, int z)
         {
             return _tiles.TryGetValue(LookupKey(x, z), out var tile)
                 ? tile
@@ -250,7 +249,7 @@ namespace DotRecast.Detour.Dynamic
             return (z << 32) | x;
         }
 
-        public List<VoxelTile> VoxelTiles()
+        public List<DtVoxelTile> VoxelTiles()
         {
             return _tiles.Values.Select(t => t.voxelTile).ToList();
         }

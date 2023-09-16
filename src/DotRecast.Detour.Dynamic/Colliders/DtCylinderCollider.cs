@@ -23,34 +23,33 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic.Colliders
 {
-    public class SphereCollider : AbstractCollider
+    public class DtCylinderCollider : DtCollider
     {
-        private readonly RcVec3f center;
+        private readonly RcVec3f start;
+        private readonly RcVec3f end;
         private readonly float radius;
 
-        public SphereCollider(RcVec3f center, float radius, int area, float flagMergeThreshold)
-            : base(area, flagMergeThreshold, Bounds(center, radius))
+        public DtCylinderCollider(RcVec3f start, RcVec3f end, float radius, int area, float flagMergeThreshold) :
+            base(area, flagMergeThreshold, Bounds(start, end, radius))
         {
-            this.center = center;
+            this.start = start;
+            this.end = end;
             this.radius = radius;
         }
 
         public override void Rasterize(RcHeightfield hf, RcTelemetry telemetry)
         {
-            RecastFilledVolumeRasterization.RasterizeSphere(hf, center, radius, area, (int)Math.Floor(flagMergeThreshold / hf.ch),
+            RecastFilledVolumeRasterization.RasterizeCylinder(hf, start, end, radius, area, (int)Math.Floor(flagMergeThreshold / hf.ch),
                 telemetry);
         }
 
-        private static float[] Bounds(RcVec3f center, float radius)
+        private static float[] Bounds(RcVec3f start, RcVec3f end, float radius)
         {
             return new float[]
             {
-                center.x - radius,
-                center.y - radius,
-                center.z - radius,
-                center.x + radius,
-                center.y + radius,
-                center.z + radius
+                Math.Min(start.x, end.x) - radius, Math.Min(start.y, end.y) - radius,
+                Math.Min(start.z, end.z) - radius, Math.Max(start.x, end.x) + radius, Math.Max(start.y, end.y) + radius,
+                Math.Max(start.z, end.z) + radius
             };
         }
     }

@@ -17,11 +17,9 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using DotRecast.Core;
-
-namespace DotRecast.Detour.Dynamic.Io
+namespace DotRecast.Core
 {
-    public static class ByteUtils
+    public static class RcByteUtils
     {
         public static int GetInt(byte[] data, int position, RcByteOrder order)
         {
@@ -30,13 +28,17 @@ namespace DotRecast.Detour.Dynamic.Io
 
         public static int GetIntBE(byte[] data, int position)
         {
-            return ((data[position] & 0xff) << 24) | ((data[position + 1] & 0xff) << 16) | ((data[position + 2] & 0xff) << 8)
+            return ((data[position] & 0xff) << 24)
+                   | ((data[position + 1] & 0xff) << 16)
+                   | ((data[position + 2] & 0xff) << 8)
                    | (data[position + 3] & 0xff);
         }
 
         public static int GetIntLE(byte[] data, int position)
         {
-            return ((data[position + 3] & 0xff) << 24) | ((data[position + 2] & 0xff) << 16) | ((data[position + 1] & 0xff) << 8)
+            return ((data[position + 3] & 0xff) << 24)
+                   | ((data[position + 2] & 0xff) << 16)
+                   | ((data[position + 1] & 0xff) << 8)
                    | (data[position] & 0xff);
         }
 

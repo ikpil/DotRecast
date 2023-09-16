@@ -22,13 +22,13 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic.Colliders
 {
-    public abstract class AbstractCollider : ICollider
+    public abstract class DtCollider : IDtCollider
     {
         protected readonly int area;
         protected readonly float flagMergeThreshold;
         protected readonly float[] _bounds;
 
-        public AbstractCollider(int area, float flagMergeThreshold, float[] bounds)
+        public DtCollider(int area, float flagMergeThreshold, float[] bounds)
         {
             this.area = area;
             this.flagMergeThreshold = flagMergeThreshold;

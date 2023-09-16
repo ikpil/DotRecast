@@ -23,19 +23,19 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic.Colliders
 {
-    public class TrimeshCollider : AbstractCollider
+    public class DtTrimeshCollider : DtCollider
     {
         private readonly float[] vertices;
         private readonly int[] triangles;
 
-        public TrimeshCollider(float[] vertices, int[] triangles, int area, float flagMergeThreshold)
+        public DtTrimeshCollider(float[] vertices, int[] triangles, int area, float flagMergeThreshold)
             : base(area, flagMergeThreshold, ComputeBounds(vertices))
         {
             this.vertices = vertices;
             this.triangles = triangles;
         }
 
-        public TrimeshCollider(float[] vertices, int[] triangles, float[] bounds, int area, float flagMergeThreshold) :
+        public DtTrimeshCollider(float[] vertices, int[] triangles, float[] bounds, int area, float flagMergeThreshold) :
             base(area, flagMergeThreshold, bounds)
         {
             this.vertices = vertices;

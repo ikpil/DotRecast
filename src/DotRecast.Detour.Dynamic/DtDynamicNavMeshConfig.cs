@@ -21,7 +21,7 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic
 {
-    public class DynamicNavMeshConfig
+    public class DtDynamicNavMeshConfig
     {
         public readonly bool useTiles;
         public readonly int tileSizeX;
@@ -47,7 +47,7 @@ namespace DotRecast.Detour.Dynamic
         public bool enableCheckpoints = true;
         public bool keepIntermediateResults = false;
 
-        public DynamicNavMeshConfig(bool useTiles, int tileSizeX, int tileSizeZ, float cellSize)
+        public DtDynamicNavMeshConfig(bool useTiles, int tileSizeX, int tileSizeZ, float cellSize)
         {
             this.useTiles = useTiles;
             this.tileSizeX = tileSizeX;

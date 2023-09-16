@@ -34,8 +34,8 @@ public class VoxelFileReaderTest
         using var ms = new MemoryStream(bytes);
         using var br = new BinaryReader(ms);
 
-        VoxelFileReader reader = new VoxelFileReader(DtVoxelTileLZ4ForTestCompressor.Shared);
-        VoxelFile f = reader.Read(br);
+        DtVoxelFileReader reader = new DtVoxelFileReader(DtVoxelTileLZ4ForTestCompressor.Shared);
+        DtVoxelFile f = reader.Read(br);
         Assert.That(f.useTiles, Is.False);
         Assert.That(f.bounds, Is.EqualTo(new float[] { -100.0f, 0f, -100f, 100f, 5f, 100f }));
         Assert.That(f.cellSize, Is.EqualTo(0.25f));
@@ -60,8 +60,8 @@ public class VoxelFileReaderTest
         using var ms = new MemoryStream(bytes);
         using var br = new BinaryReader(ms);
 
-        VoxelFileReader reader = new VoxelFileReader(DtVoxelTileLZ4ForTestCompressor.Shared);
-        VoxelFile f = reader.Read(br);
+        DtVoxelFileReader reader = new DtVoxelFileReader(DtVoxelTileLZ4ForTestCompressor.Shared);
+        DtVoxelFile f = reader.Read(br);
 
         Assert.That(f.useTiles, Is.True);
         Assert.That(f.bounds, Is.EqualTo(new float[] { -100.0f, 0f, -100f, 100f, 5f, 100f }));

@@ -28,7 +28,7 @@ namespace DotRecast.Recast.Toolset.Gizmos
         public readonly RcVec3f[] halfEdges;
 
         public RcBoxGizmo(RcVec3f center, RcVec3f extent, RcVec3f forward, RcVec3f up) :
-            this(center, BoxCollider.GetHalfEdges(up, forward, extent))
+            this(center, DtBoxCollider.GetHalfEdges(up, forward, extent))
         {
         }
 

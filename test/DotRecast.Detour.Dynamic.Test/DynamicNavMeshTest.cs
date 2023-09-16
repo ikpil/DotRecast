@@ -26,10 +26,10 @@ public class DynamicNavMeshTest
         using var br = new BinaryReader(ms);
 
         // load voxels from file
-        VoxelFileReader reader = new VoxelFileReader(DtVoxelTileLZ4ForTestCompressor.Shared);
-        VoxelFile f = reader.Read(br);
+        DtVoxelFileReader reader = new DtVoxelFileReader(DtVoxelTileLZ4ForTestCompressor.Shared);
+        DtVoxelFile f = reader.Read(br);
         // create dynamic navmesh
-        DynamicNavMesh mesh = new DynamicNavMesh(f);
+        DtDynamicNavMesh mesh = new DtDynamicNavMesh(f);
         // build navmesh asynchronously using multiple threads
         Task<bool> future = mesh.Build(Task.Factory);
         // wait for build to complete
@@ -49,7 +49,7 @@ public class DynamicNavMeshTest
         Assert.That(path.Count, Is.EqualTo(16));
 
         // place obstacle
-        ICollider colldier = new SphereCollider(SPHERE_POS, 20, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GROUND, 0.1f);
+        IDtCollider colldier = new DtSphereCollider(SPHERE_POS, 20, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GROUND, 0.1f);
         long colliderId = mesh.AddCollider(colldier);
 
         // update navmesh asynchronously

@@ -24,7 +24,7 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic.Io
 {
-    public class VoxelFile
+    public class DtVoxelFile
     {
         public static readonly RcByteOrder PREFERRED_BYTE_ORDER = RcByteOrder.BIG_ENDIAN;
         public const int MAGIC = 'V' << 24 | 'O' << 16 | 'X' << 8 | 'L';
@@ -55,14 +55,14 @@ namespace DotRecast.Detour.Dynamic.Io
         public int tileSizeZ;
         public RcVec3f rotation = new RcVec3f();
         public float[] bounds = new float[6];
-        public readonly List<VoxelTile> tiles = new List<VoxelTile>();
+        public readonly List<DtVoxelTile> tiles = new List<DtVoxelTile>();
 
-        public void AddTile(VoxelTile tile)
+        public void AddTile(DtVoxelTile tile)
         {
             tiles.Add(tile);
         }
 
-        public RcConfig GetConfig(VoxelTile tile, RcAreaModification walkbableAreaMod, bool buildMeshDetail)
+        public RcConfig GetConfig(DtVoxelTile tile, RcAreaModification walkbableAreaMod, bool buildMeshDetail)
         {
             return new RcConfig(useTiles, tileSizeX, tileSizeZ,
                 tile.borderSize,
@@ -77,9 +77,9 @@ namespace DotRecast.Detour.Dynamic.Io
                 walkbableAreaMod, buildMeshDetail);
         }
 
-        public static VoxelFile From(RcConfig config, List<RecastBuilderResult> results)
+        public static DtVoxelFile From(RcConfig config, List<RecastBuilderResult> results)
         {
-            VoxelFile f = new VoxelFile();
+            DtVoxelFile f = new DtVoxelFile();
             f.version = 1;
             f.partition = config.Partition;
             f.filterLowHangingObstacles = config.FilterLowHangingObstacles;
@@ -108,7 +108,7 @@ namespace DotRecast.Detour.Dynamic.Io
             };
             foreach (RecastBuilderResult r in results)
             {
-                f.tiles.Add(new VoxelTile(r.tileX, r.tileZ, r.GetSolidHeightfield()));
+                f.tiles.Add(new DtVoxelTile(r.tileX, r.tileZ, r.GetSolidHeightfield()));
                 f.bounds[0] = Math.Min(f.bounds[0], r.GetSolidHeightfield().bmin.x);
                 f.bounds[1] = Math.Min(f.bounds[1], r.GetSolidHeightfield().bmin.y);
                 f.bounds[2] = Math.Min(f.bounds[2], r.GetSolidHeightfield().bmin.z);
@@ -120,11 +120,11 @@ namespace DotRecast.Detour.Dynamic.Io
             return f;
         }
 
-        public static VoxelFile From(DynamicNavMesh mesh)
+        public static DtVoxelFile From(DtDynamicNavMesh mesh)
         {
-            VoxelFile f = new VoxelFile();
+            DtVoxelFile f = new DtVoxelFile();
             f.version = 1;
-            DynamicNavMeshConfig config = mesh.config;
+            DtDynamicNavMeshConfig config = mesh.config;
             f.partition = config.partition;
             f.filterLowHangingObstacles = config.filterLowHangingObstacles;
             f.filterLedgeSpans = config.filterLedgeSpans;
@@ -150,10 +150,10 @@ namespace DotRecast.Detour.Dynamic.Io
                 float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity,
                 float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity
             };
-            foreach (VoxelTile vt in mesh.VoxelTiles())
+            foreach (DtVoxelTile vt in mesh.VoxelTiles())
             {
                 RcHeightfield heightfield = vt.Heightfield();
-                f.tiles.Add(new VoxelTile(vt.tileX, vt.tileZ, heightfield));
+                f.tiles.Add(new DtVoxelTile(vt.tileX, vt.tileZ, heightfield));
                 f.bounds[0] = Math.Min(f.bounds[0], vt.boundsMin.x);
                 f.bounds[1] = Math.Min(f.bounds[1], vt.boundsMin.y);
                 f.bounds[2] = Math.Min(f.bounds[2], vt.boundsMin.z);

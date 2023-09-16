@@ -23,12 +23,12 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic.Colliders
 {
-    public class BoxCollider : AbstractCollider
+    public class DtBoxCollider : DtCollider
     {
         private readonly RcVec3f center;
         private readonly RcVec3f[] halfEdges;
 
-        public BoxCollider(RcVec3f center, RcVec3f[] halfEdges, int area, float flagMergeThreshold) :
+        public DtBoxCollider(RcVec3f center, RcVec3f[] halfEdges, int area, float flagMergeThreshold) :
             base(area, flagMergeThreshold, Bounds(center, halfEdges))
         {
             this.center = center;

@@ -56,7 +56,7 @@ public class VoxelQueryTest
                 captorZ.Add(z);
             });
 
-        VoxelQuery query = new VoxelQuery(ORIGIN, TILE_WIDTH, TILE_DEPTH, hfProvider.Object);
+        DtVoxelQuery query = new DtVoxelQuery(ORIGIN, TILE_WIDTH, TILE_DEPTH, hfProvider.Object);
         RcVec3f start = RcVec3f.Of(120, 10, 365);
         RcVec3f end = RcVec3f.Of(320, 10, 57);
 
@@ -71,8 +71,8 @@ public class VoxelQueryTest
     [Test]
     public void ShouldHandleRaycastWithoutObstacles()
     {
-        DynamicNavMesh mesh = CreateDynaMesh();
-        VoxelQuery query = mesh.VoxelQuery();
+        DtDynamicNavMesh mesh = CreateDynaMesh();
+        DtVoxelQuery query = mesh.VoxelQuery();
         RcVec3f start = RcVec3f.Of(7.4f, 0.5f, -64.8f);
         RcVec3f end = RcVec3f.Of(31.2f, 0.5f, -75.3f);
         bool isHit = query.Raycast(start, end, out var hit);
@@ -82,8 +82,8 @@ public class VoxelQueryTest
     [Test]
     public void ShouldHandleRaycastWithObstacles()
     {
-        DynamicNavMesh mesh = CreateDynaMesh();
-        VoxelQuery query = mesh.VoxelQuery();
+        DtDynamicNavMesh mesh = CreateDynaMesh();
+        DtVoxelQuery query = mesh.VoxelQuery();
         RcVec3f start = RcVec3f.Of(32.3f, 0.5f, 47.9f);
         RcVec3f end = RcVec3f.Of(-31.2f, 0.5f, -29.8f);
         bool isHit = query.Raycast(start, end, out var hit);
@@ -91,17 +91,17 @@ public class VoxelQueryTest
         Assert.That(hit, Is.EqualTo(0.5263836f).Within(1e-7f));
     }
 
-    private DynamicNavMesh CreateDynaMesh()
+    private DtDynamicNavMesh CreateDynaMesh()
     {
         var bytes = Loader.ToBytes("test_tiles.voxels");
         using var ms = new MemoryStream(bytes);
         using var br = new BinaryReader(ms);
 
         // load voxels from file
-        VoxelFileReader reader = new VoxelFileReader(DtVoxelTileLZ4ForTestCompressor.Shared);
-        VoxelFile f = reader.Read(br);
+        DtVoxelFileReader reader = new DtVoxelFileReader(DtVoxelTileLZ4ForTestCompressor.Shared);
+        DtVoxelFile f = reader.Read(br);
         // create dynamic navmesh
-        var mesh = new DynamicNavMesh(f);
+        var mesh = new DtDynamicNavMesh(f);
         // build navmesh asynchronously using multiple threads
         Task<bool> future = mesh.Build(Task.Factory);
         // wait for build to complete
