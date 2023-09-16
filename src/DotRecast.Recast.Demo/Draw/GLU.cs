@@ -366,44 +366,4 @@ public static class GLU
     {
         m[(c) * 4 + (r)] = v;
     }
-
-    public static float[] Mul(float[] left, float[] right)
-    {
-        float m00 = left[0] * right[0] + left[4] * right[1] + left[8] * right[2] + left[12] * right[3];
-        float m01 = left[1] * right[0] + left[5] * right[1] + left[9] * right[2] + left[13] * right[3];
-        float m02 = left[2] * right[0] + left[6] * right[1] + left[10] * right[2] + left[14] * right[3];
-        float m03 = left[3] * right[0] + left[7] * right[1] + left[11] * right[2] + left[15] * right[3];
-        float m10 = left[0] * right[4] + left[4] * right[5] + left[8] * right[6] + left[12] * right[7];
-        float m11 = left[1] * right[4] + left[5] * right[5] + left[9] * right[6] + left[13] * right[7];
-        float m12 = left[2] * right[4] + left[6] * right[5] + left[10] * right[6] + left[14] * right[7];
-        float m13 = left[3] * right[4] + left[7] * right[5] + left[11] * right[6] + left[15] * right[7];
-        float m20 = left[0] * right[8] + left[4] * right[9] + left[8] * right[10] + left[12] * right[11];
-        float m21 = left[1] * right[8] + left[5] * right[9] + left[9] * right[10] + left[13] * right[11];
-        float m22 = left[2] * right[8] + left[6] * right[9] + left[10] * right[10] + left[14] * right[11];
-        float m23 = left[3] * right[8] + left[7] * right[9] + left[11] * right[10] + left[15] * right[11];
-        float m30 = left[0] * right[12] + left[4] * right[13] + left[8] * right[14] + left[12] * right[15];
-        float m31 = left[1] * right[12] + left[5] * right[13] + left[9] * right[14] + left[13] * right[15];
-        float m32 = left[2] * right[12] + left[6] * right[13] + left[10] * right[14] + left[14] * right[15];
-        float m33 = left[3] * right[12] + left[7] * right[13] + left[11] * right[14] + left[15] * right[15];
-
-        float[] dest = new float[16];
-        dest[0] = m00;
-        dest[1] = m01;
-        dest[2] = m02;
-        dest[3] = m03;
-        dest[4] = m10;
-        dest[5] = m11;
-        dest[6] = m12;
-        dest[7] = m13;
-        dest[8] = m20;
-        dest[9] = m21;
-        dest[10] = m22;
-        dest[11] = m23;
-        dest[12] = m30;
-        dest[13] = m31;
-        dest[14] = m32;
-        dest[15] = m33;
-
-        return dest;
-    }
 }
