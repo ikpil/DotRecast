@@ -26,7 +26,7 @@ namespace DotRecast.Detour.TileCache
     public class DtTileCacheObstacle
     {
         public readonly int index;
-        public TileCacheObstacleType type;
+        public DtTileCacheObstacleType type;
         public RcVec3f pos = new RcVec3f();
         public RcVec3f bmin = new RcVec3f();
         public RcVec3f bmax = new RcVec3f();

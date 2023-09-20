@@ -1,6 +1,6 @@
 ﻿namespace DotRecast.Detour.TileCache
 {
-    public enum TileCacheObstacleType
+    public enum DtTileCacheObstacleType
     {
         CYLINDER,
         BOX,

@@ -20,9 +20,15 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Detour.TileCache
 {
-    public enum ObstacleRequestAction
+    public readonly struct DtObstacleRequest
     {
-        REQUEST_ADD,
-        REQUEST_REMOVE
+        public readonly DtObstacleRequestAction action;
+        public readonly long refs;
+
+        public DtObstacleRequest(DtObstacleRequestAction action, long refs)
+        {
+            this.action = action;
+            this.refs = refs;
+        }
     }
 }
