@@ -37,11 +37,10 @@ public static class Program
 
     private static void InitializeWorkingDirectory()
     {
-        var path = Loader.FindParentPath("dungeon.obj");
-        path = Path.GetDirectoryName(path);
+        var path = RcDirectory.SearchDirectory("resources/dungeon.obj");
         if (!string.IsNullOrEmpty(path))
         {
-            var workingDirectory = Path.Combine(path, "..");
+            var workingDirectory = Path.GetDirectoryName(path) ?? string.Empty;
             workingDirectory = Path.GetFullPath(workingDirectory);
             Directory.SetCurrentDirectory(workingDirectory);
         }

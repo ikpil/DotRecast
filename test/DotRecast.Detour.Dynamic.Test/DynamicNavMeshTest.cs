@@ -21,7 +21,7 @@ public class DynamicNavMeshTest
     [Test]
     public void E2eTest()
     {
-        byte[] bytes = Loader.ToBytes("test_tiles.voxels");
+        byte[] bytes = RcResources.Load("test_tiles.voxels");
         using var ms = new MemoryStream(bytes);
         using var br = new BinaryReader(ms);
 

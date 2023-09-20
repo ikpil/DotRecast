@@ -142,7 +142,7 @@ namespace DotRecast.Recast.Toolset.Tools
 
         public DtDynamicNavMesh Load(string filename, IRcCompressor compressor)
         {
-            using var fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
+            using var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
             using var br = new BinaryReader(fs);
             DtVoxelFileReader reader = new DtVoxelFileReader(compressor);
             DtVoxelFile voxelFile = reader.Read(br);

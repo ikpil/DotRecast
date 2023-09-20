@@ -88,9 +88,9 @@ public class DynamicUpdateSampleTool : ISampleTool
 
     public DynamicUpdateSampleTool()
     {
-        var bridgeGeom = DemoObjImporter.Load(Loader.ToBytes("bridge.obj"));
-        var houseGeom = DemoObjImporter.Load(Loader.ToBytes("house.obj"));
-        var convexGeom = DemoObjImporter.Load(Loader.ToBytes("convex.obj"));
+        var bridgeGeom = DemoObjImporter.Load(RcResources.Load("bridge.obj"));
+        var houseGeom = DemoObjImporter.Load(RcResources.Load("house.obj"));
+        var convexGeom = DemoObjImporter.Load(RcResources.Load("convex.obj"));
         _tool = new(Random.Shared, bridgeGeom, houseGeom, convexGeom);
         executor = Task.Factory;
     }

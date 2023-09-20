@@ -31,7 +31,7 @@ public class VoxelFileReaderWriterTest
     [TestCase(true)]
     public void ShouldReadSingleTileFile(bool compression)
     {
-        byte[] bytes = Loader.ToBytes("test.voxels");
+        byte[] bytes = RcResources.Load("test.voxels");
         using var ms = new MemoryStream(bytes);
         using var br = new BinaryReader(ms);
 
@@ -59,7 +59,7 @@ public class VoxelFileReaderWriterTest
     [TestCase(true)]
     public void ShouldReadMultiTileFile(bool compression)
     {
-        byte[] bytes = Loader.ToBytes("test_tiles.voxels");
+        byte[] bytes = RcResources.Load("test_tiles.voxels");
         using var ms = new MemoryStream(bytes);
         using var br = new BinaryReader(ms);
 

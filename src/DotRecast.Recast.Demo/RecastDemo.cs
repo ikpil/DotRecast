@@ -298,7 +298,7 @@ public class RecastDemo : IRecastDemoChannel
 
     private DemoInputGeomProvider LoadInputMesh(string filename)
     {
-        var bytes = Loader.ToBytes(filename);
+        var bytes = RcResources.Load(filename);
         DemoInputGeomProvider geom = DemoObjImporter.Load(bytes);
 
         _lastGeomFileName = filename;
@@ -754,7 +754,7 @@ public class RecastDemo : IRecastDemoChannel
 
         try
         {
-            using FileStream fs = new FileStream(args.FilePath, FileMode.Open, FileAccess.Read);
+            using FileStream fs = new FileStream(args.FilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             LoadNavMesh(fs, args.FilePath);
         }
         catch (Exception e)
