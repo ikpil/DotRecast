@@ -1,6 +1,6 @@
 ﻿namespace DotRecast.Recast.Toolset.Tools
 {
-    public enum DynamicColliderShape
+    public enum RcDynamicColliderShape
     {
         SPHERE,
         CAPSULE,

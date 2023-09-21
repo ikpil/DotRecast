@@ -1,6 +1,6 @@
 ﻿namespace DotRecast.Recast.Toolset.Tools
 {
-    public class CrowdProfilingToolConfig
+    public class RcCrowdAgentProfilingToolConfig
     {
         public int expandSimOptions = 1;
         public int expandCrowdOptions = 1;

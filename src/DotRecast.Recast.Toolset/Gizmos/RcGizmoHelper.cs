@@ -2,7 +2,7 @@ using System;
 
 namespace DotRecast.Recast.Toolset.Gizmos
 {
-    public static class GizmoHelper
+    public static class RcGizmoHelper
     {
         private static readonly int SEGMENTS = 16;
         private static readonly int RINGS = 8;

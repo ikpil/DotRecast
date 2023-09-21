@@ -2,7 +2,7 @@
 
 namespace DotRecast.Recast.Toolset.Gizmos
 {
-    public static class GizmoFactory
+    public static class RcGizmoFactory
     {
         public static RcBoxGizmo Box(RcVec3f center, RcVec3f[] halfEdges)
         {

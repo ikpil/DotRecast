@@ -44,8 +44,8 @@ public class CrowdSampleTool : ISampleTool
 
     private DtNavMesh m_nav;
 
-    private CrowdToolMode m_mode = CrowdToolMode.CREATE;
-    private int m_modeIdx = CrowdToolMode.CREATE.Idx;
+    private RcCrowdToolMode m_mode = RcCrowdToolMode.CREATE;
+    private int m_modeIdx = RcCrowdToolMode.CREATE.Idx;
 
     private int _expandSelectedDebugDraw = 1;
     private bool _showCorners = true;
@@ -71,16 +71,16 @@ public class CrowdSampleTool : ISampleTool
     {
         ImGui.Text($"Crowd Tool Mode");
         ImGui.Separator();
-        CrowdToolMode previousToolMode = m_mode;
-        ImGui.RadioButton(CrowdToolMode.CREATE.Label, ref m_modeIdx, CrowdToolMode.CREATE.Idx);
-        ImGui.RadioButton(CrowdToolMode.MOVE_TARGET.Label, ref m_modeIdx, CrowdToolMode.MOVE_TARGET.Idx);
-        ImGui.RadioButton(CrowdToolMode.SELECT.Label, ref m_modeIdx, CrowdToolMode.SELECT.Idx);
-        ImGui.RadioButton(CrowdToolMode.TOGGLE_POLYS.Label, ref m_modeIdx, CrowdToolMode.TOGGLE_POLYS.Idx);
+        RcCrowdToolMode previousToolMode = m_mode;
+        ImGui.RadioButton(RcCrowdToolMode.CREATE.Label, ref m_modeIdx, RcCrowdToolMode.CREATE.Idx);
+        ImGui.RadioButton(RcCrowdToolMode.MOVE_TARGET.Label, ref m_modeIdx, RcCrowdToolMode.MOVE_TARGET.Idx);
+        ImGui.RadioButton(RcCrowdToolMode.SELECT.Label, ref m_modeIdx, RcCrowdToolMode.SELECT.Idx);
+        ImGui.RadioButton(RcCrowdToolMode.TOGGLE_POLYS.Label, ref m_modeIdx, RcCrowdToolMode.TOGGLE_POLYS.Idx);
         ImGui.NewLine();
 
         if (previousToolMode.Idx != m_modeIdx)
         {
-            m_mode = CrowdToolMode.Values[m_modeIdx];
+            m_mode = RcCrowdToolMode.Values[m_modeIdx];
         }
 
         var crowdCfg = _tool.GetCrowdConfig();
@@ -219,18 +219,18 @@ public class CrowdSampleTool : ISampleTool
         // Trail
         foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
         {
-            CrowdAgentTrail trail = agentTrails[ag.idx];
+            RcCrowdAgentTrail trail = agentTrails[ag.idx];
             RcVec3f pos = ag.npos;
 
             dd.Begin(LINES, 3.0f);
             RcVec3f prev = new RcVec3f();
             float preva = 1;
             prev = pos;
-            for (int j = 0; j < CrowdAgentTrail.AGENT_MAX_TRAIL - 1; ++j)
+            for (int j = 0; j < RcCrowdAgentTrail.AGENT_MAX_TRAIL - 1; ++j)
             {
-                int idx = (trail.htrail + CrowdAgentTrail.AGENT_MAX_TRAIL - j) % CrowdAgentTrail.AGENT_MAX_TRAIL;
+                int idx = (trail.htrail + RcCrowdAgentTrail.AGENT_MAX_TRAIL - j) % RcCrowdAgentTrail.AGENT_MAX_TRAIL;
                 int v = idx * 3;
-                float a = 1 - j / (float)CrowdAgentTrail.AGENT_MAX_TRAIL;
+                float a = 1 - j / (float)RcCrowdAgentTrail.AGENT_MAX_TRAIL;
                 dd.Vertex(prev.x, prev.y + 0.1f, prev.z, DuRGBA(0, 0, 0, (int)(128 * preva)));
                 dd.Vertex(trail.trail[v], trail.trail[v + 1] + 0.1f, trail.trail[v + 2], DuRGBA(0, 0, 0, (int)(128 * a)));
                 preva = a;
@@ -480,7 +480,7 @@ public class CrowdSampleTool : ISampleTool
             return;
         }
 
-        if (m_mode == CrowdToolMode.CREATE)
+        if (m_mode == RcCrowdToolMode.CREATE)
         {
             if (shift)
             {
@@ -498,17 +498,17 @@ public class CrowdSampleTool : ISampleTool
                 _tool.AddAgent(p, settings.agentRadius, settings.agentHeight, settings.agentMaxAcceleration, settings.agentMaxSpeed);
             }
         }
-        else if (m_mode == CrowdToolMode.MOVE_TARGET)
+        else if (m_mode == RcCrowdToolMode.MOVE_TARGET)
         {
             _tool.SetMoveTarget(p, shift);
         }
-        else if (m_mode == CrowdToolMode.SELECT)
+        else if (m_mode == RcCrowdToolMode.SELECT)
         {
             // Highlight
             DtCrowdAgent ahit = _tool.HitTestAgents(s, p);
             _tool.HighlightAgent(ahit);
         }
-        else if (m_mode == CrowdToolMode.TOGGLE_POLYS)
+        else if (m_mode == RcCrowdToolMode.TOGGLE_POLYS)
         {
             DtNavMesh nav = _sample.GetNavMesh();
             DtNavMeshQuery navquery = _sample.GetNavMeshQuery();

@@ -14,7 +14,7 @@ namespace DotRecast.Recast.Toolset.Tools
         private DtCrowd crowd;
         private readonly DtCrowdAgentDebugInfo _agentDebug;
         private long crowdUpdateTime;
-        private readonly Dictionary<long, CrowdAgentTrail> _trails;
+        private readonly Dictionary<long, RcCrowdAgentTrail> _trails;
         private long _moveTargetRef;
         private RcVec3f _moveTargetPos;
 
@@ -23,7 +23,7 @@ namespace DotRecast.Recast.Toolset.Tools
             _agCfg = new DtCrowdAgentConfig();
             _agentDebug = new DtCrowdAgentDebugInfo();
             _agentDebug.vod = new DtObstacleAvoidanceDebugData(2048);
-            _trails = new Dictionary<long, CrowdAgentTrail>();
+            _trails = new Dictionary<long, RcCrowdAgentTrail>();
         }
 
 
@@ -42,7 +42,7 @@ namespace DotRecast.Recast.Toolset.Tools
             return _agentDebug;
         }
 
-        public Dictionary<long, CrowdAgentTrail> GetCrowdAgentTrails()
+        public Dictionary<long, RcCrowdAgentTrail> GetCrowdAgentTrails()
         {
             return _trails;
         }
@@ -147,9 +147,9 @@ namespace DotRecast.Recast.Toolset.Tools
             // Update agent trails
             foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
             {
-                CrowdAgentTrail trail = _trails[ag.idx];
+                RcCrowdAgentTrail trail = _trails[ag.idx];
                 // Update agent movement trail.
-                trail.htrail = (trail.htrail + 1) % CrowdAgentTrail.AGENT_MAX_TRAIL;
+                trail.htrail = (trail.htrail + 1) % RcCrowdAgentTrail.AGENT_MAX_TRAIL;
                 trail.trail[trail.htrail * 3] = ag.npos.x;
                 trail.trail[trail.htrail * 3 + 1] = ag.npos.y;
                 trail.trail[trail.htrail * 3 + 2] = ag.npos.z;
@@ -182,11 +182,11 @@ namespace DotRecast.Recast.Toolset.Tools
                 // Init trail
                 if (!_trails.TryGetValue(ag.idx, out var trail))
                 {
-                    trail = new CrowdAgentTrail();
+                    trail = new RcCrowdAgentTrail();
                     _trails.Add(ag.idx, trail);
                 }
 
-                for (int i = 0; i < CrowdAgentTrail.AGENT_MAX_TRAIL; ++i)
+                for (int i = 0; i < RcCrowdAgentTrail.AGENT_MAX_TRAIL; ++i)
                 {
                     trail.trail[i * 3] = p.x;
                     trail.trail[i * 3 + 1] = p.y;

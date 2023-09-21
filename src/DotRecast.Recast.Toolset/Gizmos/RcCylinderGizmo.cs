@@ -1,6 +1,6 @@
 using DotRecast.Core;
 using static DotRecast.Core.RcMath;
-using static DotRecast.Recast.Toolset.Gizmos.GizmoHelper;
+using static DotRecast.Recast.Toolset.Gizmos.RcGizmoHelper;
 
 
 namespace DotRecast.Recast.Toolset.Gizmos

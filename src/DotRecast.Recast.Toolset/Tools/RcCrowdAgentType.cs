@@ -1,6 +1,6 @@
 ﻿namespace DotRecast.Recast.Toolset.Tools
 {
-    public enum CrowdAgentType
+    public enum RcCrowdAgentType
     {
         VILLAGER,
         TRAVELLER,

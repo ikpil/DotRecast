@@ -7,9 +7,9 @@ using DotRecast.Recast.Toolset.Builder;
 
 namespace DotRecast.Recast.Toolset.Tools
 {
-    public class RcCrowdProfilingTool : IRcToolable
+    public class RcCrowdAgentProfilingTool : IRcToolable
     {
-        private CrowdProfilingToolConfig _cfg;
+        private RcCrowdAgentProfilingToolConfig _cfg;
 
         private DtCrowdConfig _crowdCfg;
         private DtCrowd crowd;
@@ -21,19 +21,19 @@ namespace DotRecast.Recast.Toolset.Tools
         private readonly List<DtPolyPoint> _polyPoints;
         private long crowdUpdateTime;
 
-        public RcCrowdProfilingTool()
+        public RcCrowdAgentProfilingTool()
         {
-            _cfg = new CrowdProfilingToolConfig();
+            _cfg = new RcCrowdAgentProfilingToolConfig();
             _agCfg = new DtCrowdAgentConfig();
             _polyPoints = new List<DtPolyPoint>();
         }
 
         public string GetName()
         {
-            return "Crowd Profiling";
+            return "Crowd Agent Profiling";
         }
 
-        public CrowdProfilingToolConfig GetToolConfig()
+        public RcCrowdAgentProfilingToolConfig GetToolConfig()
         {
             return _cfg;
         }
@@ -170,7 +170,7 @@ namespace DotRecast.Recast.Toolset.Tools
             for (int i = 0; i < _cfg.agents; i++)
             {
                 float tr = rnd.Next();
-                CrowdAgentType type = CrowdAgentType.MOB;
+                RcCrowdAgentType type = RcCrowdAgentType.MOB;
                 float mobsPcnt = _cfg.percentMobs / 100f;
                 if (tr > mobsPcnt)
                 {
@@ -178,11 +178,11 @@ namespace DotRecast.Recast.Toolset.Tools
                     float travellerPcnt = _cfg.percentTravellers / 100f;
                     if (tr > travellerPcnt)
                     {
-                        type = CrowdAgentType.VILLAGER;
+                        type = RcCrowdAgentType.VILLAGER;
                     }
                     else
                     {
-                        type = CrowdAgentType.TRAVELLER;
+                        type = RcCrowdAgentType.TRAVELLER;
                     }
                 }
 
@@ -190,13 +190,13 @@ namespace DotRecast.Recast.Toolset.Tools
                 var randomPt = RcVec3f.Zero;
                 switch (type)
                 {
-                    case CrowdAgentType.MOB:
+                    case RcCrowdAgentType.MOB:
                         status = GetMobPosition(navquery, filter, out randomPt);
                         break;
-                    case CrowdAgentType.VILLAGER:
+                    case RcCrowdAgentType.VILLAGER:
                         status = GetVillagerPosition(navquery, filter, out randomPt);
                         break;
-                    case CrowdAgentType.TRAVELLER:
+                    case RcCrowdAgentType.TRAVELLER:
                         status = GetVillagerPosition(navquery, filter, out randomPt);
                         break;
                 }
@@ -227,16 +227,16 @@ namespace DotRecast.Recast.Toolset.Tools
                 {
                     if (NeedsNewTarget(ag))
                     {
-                        CrowdAgentData crowAgentData = (CrowdAgentData)ag.option.userData;
+                        RcCrowdAgentData crowAgentData = (RcCrowdAgentData)ag.option.userData;
                         switch (crowAgentData.type)
                         {
-                            case CrowdAgentType.MOB:
+                            case RcCrowdAgentType.MOB:
                                 MoveMob(navquery, filter, ag, crowAgentData);
                                 break;
-                            case CrowdAgentType.VILLAGER:
+                            case RcCrowdAgentType.VILLAGER:
                                 MoveVillager(navquery, filter, ag, crowAgentData);
                                 break;
-                            case CrowdAgentType.TRAVELLER:
+                            case RcCrowdAgentType.TRAVELLER:
                                 MoveTraveller(navquery, filter, ag, crowAgentData);
                                 break;
                         }
@@ -247,7 +247,7 @@ namespace DotRecast.Recast.Toolset.Tools
             crowdUpdateTime = (endTime - startTime) / TimeSpan.TicksPerMillisecond;
         }
 
-        private void MoveMob(DtNavMeshQuery navquery, IDtQueryFilter filter, DtCrowdAgent ag, CrowdAgentData crowAgentData)
+        private void MoveMob(DtNavMeshQuery navquery, IDtQueryFilter filter, DtCrowdAgent ag, RcCrowdAgentData crowAgentData)
         {
             // Move somewhere
             var status = navquery.FindNearestPoly(ag.npos, crowd.GetQueryExtents(), filter, out var nearestRef, out var nearestPt, out var _);
@@ -262,7 +262,7 @@ namespace DotRecast.Recast.Toolset.Tools
             }
         }
 
-        private void MoveVillager(DtNavMeshQuery navquery, IDtQueryFilter filter, DtCrowdAgent ag, CrowdAgentData crowAgentData)
+        private void MoveVillager(DtNavMeshQuery navquery, IDtQueryFilter filter, DtCrowdAgent ag, RcCrowdAgentData crowAgentData)
         {
             // Move somewhere close
             var status = navquery.FindNearestPoly(ag.npos, crowd.GetQueryExtents(), filter, out var nearestRef, out var nearestPt, out var _);
@@ -277,7 +277,7 @@ namespace DotRecast.Recast.Toolset.Tools
             }
         }
 
-        private void MoveTraveller(DtNavMeshQuery navquery, IDtQueryFilter filter, DtCrowdAgent ag, CrowdAgentData crowAgentData)
+        private void MoveTraveller(DtNavMeshQuery navquery, IDtQueryFilter filter, DtCrowdAgent ag, RcCrowdAgentData crowAgentData)
         {
             // Move to another zone
             List<DtPolyPoint> potentialTargets = new List<DtPolyPoint>();
@@ -315,10 +315,10 @@ namespace DotRecast.Recast.Toolset.Tools
             return false;
         }
 
-        private DtCrowdAgent AddAgent(RcVec3f p, CrowdAgentType type, float agentRadius, float agentHeight, float agentMaxAcceleration, float agentMaxSpeed)
+        private DtCrowdAgent AddAgent(RcVec3f p, RcCrowdAgentType type, float agentRadius, float agentHeight, float agentMaxAcceleration, float agentMaxSpeed)
         {
             DtCrowdAgentParams ap = GetAgentParams(agentRadius, agentHeight, agentMaxAcceleration, agentMaxSpeed);
-            ap.userData = new CrowdAgentData(type, p);
+            ap.userData = new RcCrowdAgentData(type, p);
             return crowd.AddAgent(p, ap);
         }
 

@@ -44,7 +44,7 @@ public class DynamicUpdateSampleTool : ISampleTool
     private DemoSample _sample;
     private readonly RcDynamicUpdateTool _tool;
 
-    private DynamicUpdateToolMode mode = DynamicUpdateToolMode.BUILD;
+    private RcDynamicUpdateToolMode mode = RcDynamicUpdateToolMode.BUILD;
     private float cellSize = 0.3f;
 
     // build config
@@ -75,7 +75,7 @@ public class DynamicUpdateSampleTool : ISampleTool
     private long buildTime;
     private long raycastTime;
 
-    private DynamicColliderShape colliderShape = DynamicColliderShape.SPHERE;
+    private RcDynamicColliderShape colliderShape = RcDynamicColliderShape.SPHERE;
 
     private readonly TaskFactory executor;
 
@@ -101,20 +101,20 @@ public class DynamicUpdateSampleTool : ISampleTool
 
         ImGui.Text($"Dynamic Update Tool Modes");
         ImGui.Separator();
-        ImGui.RadioButton(DynamicUpdateToolMode.BUILD.Label, ref prevModeIdx, DynamicUpdateToolMode.BUILD.Idx);
-        ImGui.RadioButton(DynamicUpdateToolMode.COLLIDERS.Label, ref prevModeIdx, DynamicUpdateToolMode.COLLIDERS.Idx);
-        ImGui.RadioButton(DynamicUpdateToolMode.RAYCAST.Label, ref prevModeIdx, DynamicUpdateToolMode.RAYCAST.Idx);
+        ImGui.RadioButton(RcDynamicUpdateToolMode.BUILD.Label, ref prevModeIdx, RcDynamicUpdateToolMode.BUILD.Idx);
+        ImGui.RadioButton(RcDynamicUpdateToolMode.COLLIDERS.Label, ref prevModeIdx, RcDynamicUpdateToolMode.COLLIDERS.Idx);
+        ImGui.RadioButton(RcDynamicUpdateToolMode.RAYCAST.Label, ref prevModeIdx, RcDynamicUpdateToolMode.RAYCAST.Idx);
         ImGui.NewLine();
 
         if (prevModeIdx != mode.Idx)
         {
-            mode = DynamicUpdateToolMode.Values[prevModeIdx];
+            mode = RcDynamicUpdateToolMode.Values[prevModeIdx];
         }
 
         ImGui.Text($"Selected mode - {mode.Label}");
         ImGui.Separator();
 
-        if (mode == DynamicUpdateToolMode.BUILD)
+        if (mode == RcDynamicUpdateToolMode.BUILD)
         {
             var loadVoxelPopupStrId = "Load Voxels Popup";
             bool isLoadVoxelPopup = true;
@@ -224,30 +224,30 @@ public class DynamicUpdateSampleTool : ISampleTool
             }
         }
 
-        if (mode == DynamicUpdateToolMode.COLLIDERS)
+        if (mode == RcDynamicUpdateToolMode.COLLIDERS)
         {
             var prevColliderShape = (int)colliderShape;
 
             ImGui.Text("Colliders");
             ImGui.Separator();
             ImGui.Checkbox("Show", ref showColliders);
-            ImGui.RadioButton("Sphere", ref prevColliderShape, (int)DynamicColliderShape.SPHERE);
-            ImGui.RadioButton("Capsule", ref prevColliderShape, (int)DynamicColliderShape.CAPSULE);
-            ImGui.RadioButton("Box", ref prevColliderShape, (int)DynamicColliderShape.BOX);
-            ImGui.RadioButton("Cylinder", ref prevColliderShape, (int)DynamicColliderShape.CYLINDER);
-            ImGui.RadioButton("Composite", ref prevColliderShape, (int)DynamicColliderShape.COMPOSITE);
-            ImGui.RadioButton("Convex Trimesh", ref prevColliderShape, (int)DynamicColliderShape.CONVEX);
-            ImGui.RadioButton("Trimesh Bridge", ref prevColliderShape, (int)DynamicColliderShape.TRIMESH_BRIDGE);
-            ImGui.RadioButton("Trimesh House", ref prevColliderShape, (int)DynamicColliderShape.TRIMESH_HOUSE);
+            ImGui.RadioButton("Sphere", ref prevColliderShape, (int)RcDynamicColliderShape.SPHERE);
+            ImGui.RadioButton("Capsule", ref prevColliderShape, (int)RcDynamicColliderShape.CAPSULE);
+            ImGui.RadioButton("Box", ref prevColliderShape, (int)RcDynamicColliderShape.BOX);
+            ImGui.RadioButton("Cylinder", ref prevColliderShape, (int)RcDynamicColliderShape.CYLINDER);
+            ImGui.RadioButton("Composite", ref prevColliderShape, (int)RcDynamicColliderShape.COMPOSITE);
+            ImGui.RadioButton("Convex Trimesh", ref prevColliderShape, (int)RcDynamicColliderShape.CONVEX);
+            ImGui.RadioButton("Trimesh Bridge", ref prevColliderShape, (int)RcDynamicColliderShape.TRIMESH_BRIDGE);
+            ImGui.RadioButton("Trimesh House", ref prevColliderShape, (int)RcDynamicColliderShape.TRIMESH_HOUSE);
             ImGui.NewLine();
 
             if (prevColliderShape != (int)colliderShape)
             {
-                colliderShape = (DynamicColliderShape)prevColliderShape;
+                colliderShape = (RcDynamicColliderShape)prevColliderShape;
             }
         }
 
-        if (mode == DynamicUpdateToolMode.RAYCAST)
+        if (mode == RcDynamicUpdateToolMode.RAYCAST)
         {
             ImGui.Text($"Raycast Time: {raycastTime} ms");
             ImGui.Separator();
@@ -276,7 +276,7 @@ public class DynamicUpdateSampleTool : ISampleTool
 
     public void HandleRender(NavMeshRenderer renderer)
     {
-        if (mode == DynamicUpdateToolMode.COLLIDERS)
+        if (mode == RcDynamicUpdateToolMode.COLLIDERS)
         {
             if (showColliders)
             {
@@ -287,7 +287,7 @@ public class DynamicUpdateSampleTool : ISampleTool
             }
         }
 
-        if (mode == DynamicUpdateToolMode.RAYCAST)
+        if (mode == RcDynamicUpdateToolMode.RAYCAST)
         {
             RecastDebugDraw dd = renderer.GetDebugDraw();
             int startCol = DuRGBA(128, 25, 0, 192);
@@ -356,7 +356,7 @@ public class DynamicUpdateSampleTool : ISampleTool
 
     public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
-        if (mode == DynamicUpdateToolMode.COLLIDERS)
+        if (mode == RcDynamicUpdateToolMode.COLLIDERS)
         {
             if (!shift)
             {
@@ -364,7 +364,7 @@ public class DynamicUpdateSampleTool : ISampleTool
             }
         }
 
-        if (mode == DynamicUpdateToolMode.RAYCAST)
+        if (mode == RcDynamicUpdateToolMode.RAYCAST)
         {
             if (shift)
             {
@@ -392,7 +392,7 @@ public class DynamicUpdateSampleTool : ISampleTool
 
     public void HandleClickRay(RcVec3f start, RcVec3f dir, bool shift)
     {
-        if (mode == DynamicUpdateToolMode.COLLIDERS)
+        if (mode == RcDynamicUpdateToolMode.COLLIDERS)
         {
             if (shift)
             {

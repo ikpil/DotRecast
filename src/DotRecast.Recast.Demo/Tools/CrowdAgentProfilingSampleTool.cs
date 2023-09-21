@@ -33,17 +33,17 @@ using static DotRecast.Recast.Demo.Draw.DebugDraw;
 
 namespace DotRecast.Recast.Demo.Tools;
 
-public class CrowdProfilingSampleTool : ISampleTool
+public class CrowdAgentProfilingSampleTool : ISampleTool
 {
-    private static readonly ILogger Logger = Log.ForContext<CrowdProfilingSampleTool>();
+    private static readonly ILogger Logger = Log.ForContext<CrowdAgentProfilingSampleTool>();
 
     private DemoSample _sample;
     private DtNavMesh m_nav;
 
-    private readonly RcCrowdProfilingTool _tool;
+    private readonly RcCrowdAgentProfilingTool _tool;
 
 
-    public CrowdProfilingSampleTool()
+    public CrowdAgentProfilingSampleTool()
     {
         _tool = new();
     }
@@ -139,19 +139,19 @@ public class CrowdProfilingSampleTool : ISampleTool
 
             foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
             {
-                CrowdAgentData crowAgentData = (CrowdAgentData)ag.option.userData;
+                RcCrowdAgentData crowAgentData = (RcCrowdAgentData)ag.option.userData;
 
                 float height = ag.option.height;
                 float radius = ag.option.radius;
                 RcVec3f pos = ag.npos;
 
                 int col = DuRGBA(220, 220, 220, 128);
-                if (crowAgentData.type == CrowdAgentType.TRAVELLER)
+                if (crowAgentData.type == RcCrowdAgentType.TRAVELLER)
                 {
                     col = DuRGBA(100, 160, 100, 128);
                 }
 
-                if (crowAgentData.type == CrowdAgentType.VILLAGER)
+                if (crowAgentData.type == RcCrowdAgentType.VILLAGER)
                 {
                     col = DuRGBA(120, 80, 160, 128);
                 }
