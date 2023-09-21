@@ -34,13 +34,13 @@ namespace DotRecast.Core
         public static string SearchDirectory(string dirname, int depth = 10)
         {
             var searchingPath = SearchPath(dirname, depth, out var isDir);
-            if (!isDir)
+            if (isDir)
             {
-                var path = Path.GetDirectoryName(searchingPath) ?? string.Empty;
-                return path;
+                return searchingPath;
             }
 
-            return string.Empty;
+            var path = Path.GetDirectoryName(searchingPath) ?? string.Empty;
+            return path;
         }
 
         public static string SearchFile(string filename, int depth = 10)
