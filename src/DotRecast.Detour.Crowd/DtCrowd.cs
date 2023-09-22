@@ -1351,7 +1351,7 @@ namespace DotRecast.Detour.Crowd
 
         private float Tween(float t, float t0, float t1)
         {
-            return RcMath.Clamp((t - t0) / (t1 - t0), 0.0f, 1.0f);
+            return Math.Clamp((t - t0) / (t1 - t0), 0.0f, 1.0f);
         }
     }
 }

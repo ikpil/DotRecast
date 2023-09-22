@@ -433,13 +433,13 @@ public class RecastDemo : IRecastDemoChannel
             _modState |= 0 < tempMoveAccel ? (int)KeyModState.Shift : (int)KeyModState.None;
 
             //Logger.Information($"{_modState}");
-            _moveFront = RcMath.Clamp(_moveFront + tempMoveFront * dt * 4.0f, 0, 2.0f);
-            _moveLeft = RcMath.Clamp(_moveLeft + tempMoveLeft * dt * 4.0f, 0, 2.0f);
-            _moveBack = RcMath.Clamp(_moveBack + tempMoveBack * dt * 4.0f, 0, 2.0f);
-            _moveRight = RcMath.Clamp(_moveRight + tempMoveRight * dt * 4.0f, 0, 2.0f);
-            _moveUp = RcMath.Clamp(_moveUp + tempMoveUp * dt * 4.0f, 0, 2.0f);
-            _moveDown = RcMath.Clamp(_moveDown + tempMoveDown * dt * 4.0f, 0, 2.0f);
-            _moveAccel = RcMath.Clamp(_moveAccel + tempMoveAccel * dt * 4.0f, 0, 2.0f);
+            _moveFront = Math.Clamp(_moveFront + tempMoveFront * dt * 4.0f, 0, 2.0f);
+            _moveLeft = Math.Clamp(_moveLeft + tempMoveLeft * dt * 4.0f, 0, 2.0f);
+            _moveBack = Math.Clamp(_moveBack + tempMoveBack * dt * 4.0f, 0, 2.0f);
+            _moveRight = Math.Clamp(_moveRight + tempMoveRight * dt * 4.0f, 0, 2.0f);
+            _moveUp = Math.Clamp(_moveUp + tempMoveUp * dt * 4.0f, 0, 2.0f);
+            _moveDown = Math.Clamp(_moveDown + tempMoveDown * dt * 4.0f, 0, 2.0f);
+            _moveAccel = Math.Clamp(_moveAccel + tempMoveAccel * dt * 4.0f, 0, 2.0f);
         }
     }
 
@@ -490,7 +490,7 @@ public class RecastDemo : IRecastDemoChannel
         // Update sample simulation.
         float SIM_RATE = 20;
         float DELTA_TIME = 1.0f / SIM_RATE;
-        timeAcc = RcMath.Clamp((float)(timeAcc + dt), -1.0f, 1.0f);
+        timeAcc = Math.Clamp((float)(timeAcc + dt), -1.0f, 1.0f);
         int simIter = 0;
         while (timeAcc > DELTA_TIME)
         {

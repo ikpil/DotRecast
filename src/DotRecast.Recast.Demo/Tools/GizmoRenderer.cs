@@ -1,4 +1,5 @@
-﻿using DotRecast.Core;
+﻿using System;
+using DotRecast.Core;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Toolset.Gizmos;
 
@@ -50,7 +51,7 @@ public static class GizmoRenderer
         normal.y = e0.z * e1.x - e0.x * e1.z;
         normal.z = e0.x * e1.y - e0.y * e1.x;
         RcVec3f.Normalize(ref normal);
-        float c = RcMath.Clamp(0.57735026f * (normal.x + normal.y + normal.z), -1, 1);
+        float c = Math.Clamp(0.57735026f * (normal.x + normal.y + normal.z), -1, 1);
         int col = DebugDraw.DuLerpCol(
             DebugDraw.DuRGBA(32, 32, 0, 160),
             DebugDraw.DuRGBA(220, 220, 0, 160),
@@ -139,7 +140,7 @@ public static class GizmoRenderer
             for (int j = 0; j < 3; j++)
             {
                 int v = sphere.triangles[i + j] * 3;
-                float c = RcMath.Clamp(0.57735026f * (sphere.vertices[v] + sphere.vertices[v + 1] + sphere.vertices[v + 2]), -1, 1);
+                float c = Math.Clamp(0.57735026f * (sphere.vertices[v] + sphere.vertices[v + 1] + sphere.vertices[v + 2]), -1, 1);
                 int col = DebugDraw.DuLerpCol(DebugDraw.DuRGBA(32, 32, 0, 160), DebugDraw.DuRGBA(220, 220, 0, 160), (int)(127 * (1 + c)));
 
                 debugDraw.Vertex(

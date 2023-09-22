@@ -258,8 +258,8 @@ namespace DotRecast.Recast
             int w = heightfield.width;
             int h = heightfield.height;
             // use -1 rather than 0 to cut the polygon properly at the start of the tile
-            z0 = RcMath.Clamp(z0, -1, h - 1);
-            z1 = RcMath.Clamp(z1, 0, h - 1);
+            z0 = Math.Clamp(z0, -1, h - 1);
+            z1 = Math.Clamp(z1, 0, h - 1);
 
             // Clip the triangle into all grid cells it touches.
             float[] buf = new float[7 * 3 * 4];
@@ -304,8 +304,8 @@ namespace DotRecast.Recast
                     continue;
                 }
 
-                x0 = RcMath.Clamp(x0, -1, w - 1);
-                x1 = RcMath.Clamp(x1, 0, w - 1);
+                x0 = Math.Clamp(x0, -1, w - 1);
+                x1 = Math.Clamp(x1, 0, w - 1);
 
                 int nv, nv2 = nvRow;
                 for (int x = x0; x <= x1; ++x)
@@ -346,8 +346,8 @@ namespace DotRecast.Recast
                         spanMax = by;
 
                     // Snap the span to the heightfield height grid.
-                    int spanMinCellIndex = RcMath.Clamp((int)Math.Floor(spanMin * inverseCellHeight), 0, SPAN_MAX_HEIGHT);
-                    int spanMaxCellIndex = RcMath.Clamp((int)Math.Ceiling(spanMax * inverseCellHeight), spanMinCellIndex + 1, SPAN_MAX_HEIGHT);
+                    int spanMinCellIndex = Math.Clamp((int)Math.Floor(spanMin * inverseCellHeight), 0, SPAN_MAX_HEIGHT);
+                    int spanMaxCellIndex = Math.Clamp((int)Math.Ceiling(spanMax * inverseCellHeight), spanMinCellIndex + 1, SPAN_MAX_HEIGHT);
 
                     AddSpan(heightfield, x, z, spanMinCellIndex, spanMaxCellIndex, area, flagMergeThreshold);
                 }

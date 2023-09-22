@@ -346,12 +346,12 @@ namespace DotRecast.Detour
                 int[] bmin = new int[3];
                 int[] bmax = new int[3];
                 // dtClamp query box to world box.
-                float minx = RcMath.Clamp(qmin.x, tbmin.x, tbmax.x) - tbmin.x;
-                float miny = RcMath.Clamp(qmin.y, tbmin.y, tbmax.y) - tbmin.y;
-                float minz = RcMath.Clamp(qmin.z, tbmin.z, tbmax.z) - tbmin.z;
-                float maxx = RcMath.Clamp(qmax.x, tbmin.x, tbmax.x) - tbmin.x;
-                float maxy = RcMath.Clamp(qmax.y, tbmin.y, tbmax.y) - tbmin.y;
-                float maxz = RcMath.Clamp(qmax.z, tbmin.z, tbmax.z) - tbmin.z;
+                float minx = Math.Clamp(qmin.x, tbmin.x, tbmax.x) - tbmin.x;
+                float miny = Math.Clamp(qmin.y, tbmin.y, tbmax.y) - tbmin.y;
+                float minz = Math.Clamp(qmin.z, tbmin.z, tbmax.z) - tbmin.z;
+                float maxx = Math.Clamp(qmax.x, tbmin.x, tbmax.x) - tbmin.x;
+                float maxy = Math.Clamp(qmax.y, tbmin.y, tbmax.y) - tbmin.y;
+                float maxz = Math.Clamp(qmax.z, tbmin.z, tbmax.z) - tbmin.z;
                 // Quantize
                 bmin[0] = (int)(qfac * minx) & 0x7ffffffe;
                 bmin[1] = (int)(qfac * miny) & 0x7ffffffe;
@@ -781,8 +781,8 @@ namespace DotRecast.Detour
                                 tmax = temp;
                             }
 
-                            link.bmin = (int)Math.Round(RcMath.Clamp(tmin, 0.0f, 1.0f) * 255.0f);
-                            link.bmax = (int)Math.Round(RcMath.Clamp(tmax, 0.0f, 1.0f) * 255.0f);
+                            link.bmin = (int)Math.Round(Math.Clamp(tmin, 0.0f, 1.0f) * 255.0f);
+                            link.bmax = (int)Math.Round(Math.Clamp(tmax, 0.0f, 1.0f) * 255.0f);
                         }
                         else if (dir == 2 || dir == 6)
                         {
@@ -797,8 +797,8 @@ namespace DotRecast.Detour
                                 tmax = temp;
                             }
 
-                            link.bmin = (int)Math.Round(RcMath.Clamp(tmin, 0.0f, 1.0f) * 255.0f);
-                            link.bmax = (int)Math.Round(RcMath.Clamp(tmax, 0.0f, 1.0f) * 255.0f);
+                            link.bmin = (int)Math.Round(Math.Clamp(tmin, 0.0f, 1.0f) * 255.0f);
+                            link.bmax = (int)Math.Round(Math.Clamp(tmax, 0.0f, 1.0f) * 255.0f);
                         }
                     }
                 }

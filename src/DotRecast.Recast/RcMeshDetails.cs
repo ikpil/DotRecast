@@ -352,8 +352,8 @@ namespace DotRecast.Recast
         {
             int ix = (int)Math.Floor(fx * ics + 0.01f);
             int iz = (int)Math.Floor(fz * ics + 0.01f);
-            ix = RcMath.Clamp(ix - hp.xmin, 0, hp.width - 1);
-            iz = RcMath.Clamp(iz - hp.ymin, 0, hp.height - 1);
+            ix = Math.Clamp(ix - hp.xmin, 0, hp.width - 1);
+            iz = Math.Clamp(iz - hp.ymin, 0, hp.height - 1);
             int h = hp.data[ix + iz * hp.width];
             if (h == RC_UNSET_HEIGHT)
             {

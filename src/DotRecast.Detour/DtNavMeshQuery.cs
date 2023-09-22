@@ -603,12 +603,12 @@ namespace DotRecast.Detour
                 int[] bmin = new int[3];
                 int[] bmax = new int[3];
                 // dtClamp query box to world box.
-                float minx = RcMath.Clamp(qmin.x, tbmin.x, tbmax.x) - tbmin.x;
-                float miny = RcMath.Clamp(qmin.y, tbmin.y, tbmax.y) - tbmin.y;
-                float minz = RcMath.Clamp(qmin.z, tbmin.z, tbmax.z) - tbmin.z;
-                float maxx = RcMath.Clamp(qmax.x, tbmin.x, tbmax.x) - tbmin.x;
-                float maxy = RcMath.Clamp(qmax.y, tbmin.y, tbmax.y) - tbmin.y;
-                float maxz = RcMath.Clamp(qmax.z, tbmin.z, tbmax.z) - tbmin.z;
+                float minx = Math.Clamp(qmin.x, tbmin.x, tbmax.x) - tbmin.x;
+                float miny = Math.Clamp(qmin.y, tbmin.y, tbmax.y) - tbmin.y;
+                float minz = Math.Clamp(qmin.z, tbmin.z, tbmax.z) - tbmin.z;
+                float maxx = Math.Clamp(qmax.x, tbmin.x, tbmax.x) - tbmin.x;
+                float maxy = Math.Clamp(qmax.y, tbmin.y, tbmax.y) - tbmin.y;
+                float maxz = Math.Clamp(qmax.z, tbmin.z, tbmax.z) - tbmin.z;
                 // Quantize
                 bmin[0] = (int)(qfac * minx) & 0x7ffffffe;
                 bmin[1] = (int)(qfac * miny) & 0x7ffffffe;
@@ -2125,7 +2125,7 @@ namespace DotRecast.Detour
             float t = 0.5f;
             if (DtUtils.IntersectSegSeg2D(fromPos, toPos, left, right, out var _, out var t2))
             {
-                t = RcMath.Clamp(t2, 0.1f, 0.9f);
+                t = Math.Clamp(t2, 0.1f, 0.9f);
             }
 
             pt = RcVec3f.Lerp(left, right, t);
