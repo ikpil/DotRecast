@@ -77,12 +77,12 @@ public class TestTiledNavMeshBuilder
             detailSampleDist, detailSampleMaxError,
             true, true, true,
             SampleAreaModifications.SAMPLE_AREAMOD_GROUND, true);
-        RecastBuilder rcBuilder = new RecastBuilder();
-        List<RecastBuilderResult> rcResult = rcBuilder.BuildTiles(geom, cfg, null);
+        RcBuilder rcBuilder = new RcBuilder();
+        List<RcBuilderResult> rcResult = rcBuilder.BuildTiles(geom, cfg, null);
 
         // Add tiles to nav mesh
 
-        foreach (RecastBuilderResult result in rcResult)
+        foreach (RcBuilderResult result in rcResult)
         {
             RcPolyMesh pmesh = result.GetMesh();
             if (pmesh.npolys == 0)

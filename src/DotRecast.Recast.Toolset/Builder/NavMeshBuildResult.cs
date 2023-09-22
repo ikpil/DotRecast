@@ -7,17 +7,17 @@ namespace DotRecast.Recast.Toolset.Builder
     public class NavMeshBuildResult
     {
         public readonly bool Success;
-        public readonly IList<RecastBuilderResult> RecastBuilderResults;
+        public readonly IList<RcBuilderResult> RecastBuilderResults;
         public readonly DtNavMesh NavMesh;
 
         public NavMeshBuildResult()
         {
             Success = false;
-            RecastBuilderResults = Array.Empty<RecastBuilderResult>();
+            RecastBuilderResults = Array.Empty<RcBuilderResult>();
             NavMesh = null;
         }
         
-        public NavMeshBuildResult(IList<RecastBuilderResult> recastBuilderResults, DtNavMesh navMesh)
+        public NavMeshBuildResult(IList<RcBuilderResult> recastBuilderResults, DtNavMesh navMesh)
         {
             Success = true;
             RecastBuilderResults = recastBuilderResults;

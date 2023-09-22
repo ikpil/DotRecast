@@ -41,7 +41,7 @@ namespace DotRecast.Recast.Toolset.Tools
             // Init cache
             var bmin = geom.GetMeshBoundsMin();
             var bmax = geom.GetMeshBoundsMax();
-            RcUtils.CalcGridSize(bmin, bmax, setting.cellSize, out var gw, out var gh);
+            RcCommons.CalcGridSize(bmin, bmax, setting.cellSize, out var gw, out var gh);
             int ts = setting.tileSize;
             int tw = (gw + ts - 1) / ts;
             int th = (gh + ts - 1) / ts;
@@ -77,7 +77,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 _tc.BuildNavMeshTile(refs);
             }
 
-            return new NavMeshBuildResult(RcImmutableArray<RecastBuilderResult>.Empty, _tc.GetNavMesh());
+            return new NavMeshBuildResult(RcImmutableArray<RcBuilderResult>.Empty, _tc.GetNavMesh());
         }
 
         public void ClearAllTempObstacles()

@@ -324,7 +324,7 @@ public class RecastDemo : IRecastDemoChannel
 
             if (null != mesh)
             {
-                _sample.Update(_sample.GetInputGeom(), ImmutableArray<RecastBuilderResult>.Empty, mesh);
+                _sample.Update(_sample.GetInputGeom(), ImmutableArray<RcBuilderResult>.Empty, mesh);
                 toolset.SetEnabled(true);
             }
         }
@@ -375,7 +375,7 @@ public class RecastDemo : IRecastDemoChannel
         _imgui = new ImGuiController(_gl, window, _input, imGuiFontConfig);
 
         DemoInputGeomProvider geom = LoadInputMesh("nav_test.obj");
-        _sample = new DemoSample(geom, ImmutableArray<RecastBuilderResult>.Empty, null);
+        _sample = new DemoSample(geom, ImmutableArray<RcBuilderResult>.Empty, null);
 
         settingsView = new RcSettingsView(this);
         settingsView.SetSample(_sample);
@@ -454,7 +454,7 @@ public class RecastDemo : IRecastDemoChannel
             var settings = _sample.GetSettings();
             RcVec3f bmin = _sample.GetInputGeom().GetMeshBoundsMin();
             RcVec3f bmax = _sample.GetInputGeom().GetMeshBoundsMax();
-            RcUtils.CalcGridSize(bmin, bmax, settings.cellSize, out var gw, out var gh);
+            RcCommons.CalcGridSize(bmin, bmax, settings.cellSize, out var gw, out var gh);
             settingsView.SetVoxels(gw, gh);
             settingsView.SetTiles(tileNavMeshBuilder.GetTiles(_sample.GetInputGeom(), settings.cellSize, settings.tileSize));
             settingsView.SetMaxTiles(tileNavMeshBuilder.GetMaxTiles(_sample.GetInputGeom(), settings.cellSize, settings.tileSize));
@@ -542,7 +542,7 @@ public class RecastDemo : IRecastDemoChannel
             }
             else if (0 < _sample.GetRecastResults().Count)
             {
-                foreach (RecastBuilderResult result in _sample.GetRecastResults())
+                foreach (RcBuilderResult result in _sample.GetRecastResults())
                 {
                     if (result.GetSolidHeightfield() != null)
                     {
@@ -662,7 +662,7 @@ public class RecastDemo : IRecastDemoChannel
     {
         var geom = LoadInputMesh(args.FilePath);
 
-        _sample.Update(geom, ImmutableArray<RecastBuilderResult>.Empty, null);
+        _sample.Update(geom, ImmutableArray<RcBuilderResult>.Empty, null);
     }
 
     private void OnNavMeshBuildBegan(NavMeshBuildBeganEvent args)

@@ -23,9 +23,9 @@ using DotRecast.Recast.Geom;
 
 namespace DotRecast.Recast
 {
-    public static class RecastVoxelization
+    public static class RcVoxelizations
     {
-        public static RcHeightfield BuildSolidHeightfield(IInputGeomProvider geomProvider, RecastBuilderConfig builderCfg, RcTelemetry ctx)
+        public static RcHeightfield BuildSolidHeightfield(IInputGeomProvider geomProvider, RcBuilderConfig builderCfg, RcTelemetry ctx)
         {
             RcConfig cfg = builderCfg.cfg;
 
@@ -58,16 +58,16 @@ namespace DotRecast.Recast
                     {
                         int[] tris = node.tris;
                         int ntris = tris.Length / 3;
-                        int[] m_triareas = RcUtils.MarkWalkableTriangles(ctx, cfg.WalkableSlopeAngle, verts, tris, ntris, cfg.WalkableAreaMod);
-                        RecastRasterization.RasterizeTriangles(solid, verts, tris, m_triareas, ntris, cfg.WalkableClimb, ctx);
+                        int[] m_triareas = RcCommons.MarkWalkableTriangles(ctx, cfg.WalkableSlopeAngle, verts, tris, ntris, cfg.WalkableAreaMod);
+                        RcRasterizations.RasterizeTriangles(solid, verts, tris, m_triareas, ntris, cfg.WalkableClimb, ctx);
                     }
                 }
                 else
                 {
                     int[] tris = geom.GetTris();
                     int ntris = tris.Length / 3;
-                    int[] m_triareas = RcUtils.MarkWalkableTriangles(ctx, cfg.WalkableSlopeAngle, verts, tris, ntris, cfg.WalkableAreaMod);
-                    RecastRasterization.RasterizeTriangles(solid, verts, tris, m_triareas, ntris, cfg.WalkableClimb, ctx);
+                    int[] m_triareas = RcCommons.MarkWalkableTriangles(ctx, cfg.WalkableSlopeAngle, verts, tris, ntris, cfg.WalkableAreaMod);
+                    RcRasterizations.RasterizeTriangles(solid, verts, tris, m_triareas, ntris, cfg.WalkableClimb, ctx);
                 }
             }
 

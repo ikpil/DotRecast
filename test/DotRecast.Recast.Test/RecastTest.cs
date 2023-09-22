@@ -39,18 +39,18 @@ public class RecastTest
         RcTelemetry ctx = new RcTelemetry();
         {
             int[] areas = { 42 };
-            RcUtils.ClearUnwalkableTriangles(ctx, walkableSlopeAngle, verts, nv, unwalkable_tri, nt, areas);
+            RcCommons.ClearUnwalkableTriangles(ctx, walkableSlopeAngle, verts, nv, unwalkable_tri, nt, areas);
             Assert.That(areas[0], Is.EqualTo(RC_NULL_AREA), "Sets area ID of unwalkable triangle to RC_NULL_AREA");
         }
         {
             int[] areas = { 42 };
-            RcUtils.ClearUnwalkableTriangles(ctx, walkableSlopeAngle, verts, nv, walkable_tri, nt, areas);
+            RcCommons.ClearUnwalkableTriangles(ctx, walkableSlopeAngle, verts, nv, walkable_tri, nt, areas);
             Assert.That(areas[0], Is.EqualTo(42), "Does not modify walkable triangle aread ID's");
         }
         {
             int[] areas = { 42 };
             walkableSlopeAngle = 0;
-            RcUtils.ClearUnwalkableTriangles(ctx, walkableSlopeAngle, verts, nv, walkable_tri, nt, areas);
+            RcCommons.ClearUnwalkableTriangles(ctx, walkableSlopeAngle, verts, nv, walkable_tri, nt, areas);
             Assert.That(areas[0], Is.EqualTo(RC_NULL_AREA), "Slopes equal to the max slope are considered unwalkable.");
         }
     }

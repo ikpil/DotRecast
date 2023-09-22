@@ -25,8 +25,9 @@ using DotRecast.Core;
 namespace DotRecast.Recast
 {
     using static RcConstants;
+    using static RcCommons;
 
-    public static class RecastContour
+    public static class RcContours
     {
         private static int GetCornerHeight(int x, int y, int i, int dir, RcCompactHeightfield chf, out bool isBorderVertex)
         {
@@ -45,38 +46,38 @@ namespace DotRecast.Recast
             // border vertices which are in between two areas to be removed.
             regs[0] = chf.spans[i].reg | (chf.areas[i] << 16);
 
-            if (RecastCommon.GetCon(s, dir) != RC_NOT_CONNECTED)
+            if (GetCon(s, dir) != RC_NOT_CONNECTED)
             {
-                int ax = x + RecastCommon.GetDirOffsetX(dir);
-                int ay = y + RecastCommon.GetDirOffsetY(dir);
-                int ai = chf.cells[ax + ay * chf.width].index + RecastCommon.GetCon(s, dir);
+                int ax = x + GetDirOffsetX(dir);
+                int ay = y + GetDirOffsetY(dir);
+                int ai = chf.cells[ax + ay * chf.width].index + GetCon(s, dir);
                 RcCompactSpan @as = chf.spans[ai];
                 ch = Math.Max(ch, @as.y);
                 regs[1] = chf.spans[ai].reg | (chf.areas[ai] << 16);
-                if (RecastCommon.GetCon(@as, dirp) != RC_NOT_CONNECTED)
+                if (GetCon(@as, dirp) != RC_NOT_CONNECTED)
                 {
-                    int ax2 = ax + RecastCommon.GetDirOffsetX(dirp);
-                    int ay2 = ay + RecastCommon.GetDirOffsetY(dirp);
-                    int ai2 = chf.cells[ax2 + ay2 * chf.width].index + RecastCommon.GetCon(@as, dirp);
+                    int ax2 = ax + GetDirOffsetX(dirp);
+                    int ay2 = ay + GetDirOffsetY(dirp);
+                    int ai2 = chf.cells[ax2 + ay2 * chf.width].index + GetCon(@as, dirp);
                     RcCompactSpan as2 = chf.spans[ai2];
                     ch = Math.Max(ch, as2.y);
                     regs[2] = chf.spans[ai2].reg | (chf.areas[ai2] << 16);
                 }
             }
 
-            if (RecastCommon.GetCon(s, dirp) != RC_NOT_CONNECTED)
+            if (GetCon(s, dirp) != RC_NOT_CONNECTED)
             {
-                int ax = x + RecastCommon.GetDirOffsetX(dirp);
-                int ay = y + RecastCommon.GetDirOffsetY(dirp);
-                int ai = chf.cells[ax + ay * chf.width].index + RecastCommon.GetCon(s, dirp);
+                int ax = x + GetDirOffsetX(dirp);
+                int ay = y + GetDirOffsetY(dirp);
+                int ai = chf.cells[ax + ay * chf.width].index + GetCon(s, dirp);
                 RcCompactSpan @as = chf.spans[ai];
                 ch = Math.Max(ch, @as.y);
                 regs[3] = chf.spans[ai].reg | (chf.areas[ai] << 16);
-                if (RecastCommon.GetCon(@as, dir) != RC_NOT_CONNECTED)
+                if (GetCon(@as, dir) != RC_NOT_CONNECTED)
                 {
-                    int ax2 = ax + RecastCommon.GetDirOffsetX(dir);
-                    int ay2 = ay + RecastCommon.GetDirOffsetY(dir);
-                    int ai2 = chf.cells[ax2 + ay2 * chf.width].index + RecastCommon.GetCon(@as, dir);
+                    int ax2 = ax + GetDirOffsetX(dir);
+                    int ay2 = ay + GetDirOffsetY(dir);
+                    int ai2 = chf.cells[ax2 + ay2 * chf.width].index + GetCon(@as, dir);
                     RcCompactSpan as2 = chf.spans[ai2];
                     ch = Math.Max(ch, as2.y);
                     regs[2] = chf.spans[ai2].reg | (chf.areas[ai2] << 16);
@@ -146,11 +147,11 @@ namespace DotRecast.Recast
 
                     int r = 0;
                     RcCompactSpan s = chf.spans[i];
-                    if (RecastCommon.GetCon(s, dir) != RC_NOT_CONNECTED)
+                    if (GetCon(s, dir) != RC_NOT_CONNECTED)
                     {
-                        int ax = x + RecastCommon.GetDirOffsetX(dir);
-                        int ay = y + RecastCommon.GetDirOffsetY(dir);
-                        int ai = chf.cells[ax + ay * chf.width].index + RecastCommon.GetCon(s, dir);
+                        int ax = x + GetDirOffsetX(dir);
+                        int ay = y + GetDirOffsetY(dir);
+                        int ai = chf.cells[ax + ay * chf.width].index + GetCon(s, dir);
                         r = chf.spans[ai].reg;
                         if (area != chf.areas[ai])
                             isAreaBorder = true;
@@ -171,13 +172,13 @@ namespace DotRecast.Recast
                 else
                 {
                     int ni = -1;
-                    int nx = x + RecastCommon.GetDirOffsetX(dir);
-                    int ny = y + RecastCommon.GetDirOffsetY(dir);
+                    int nx = x + GetDirOffsetX(dir);
+                    int ny = y + GetDirOffsetY(dir);
                     RcCompactSpan s = chf.spans[i];
-                    if (RecastCommon.GetCon(s, dir) != RC_NOT_CONNECTED)
+                    if (GetCon(s, dir) != RC_NOT_CONNECTED)
                     {
                         RcCompactCell nc = chf.cells[nx + ny * chf.width];
-                        ni = nc.index + RecastCommon.GetCon(s, dir);
+                        ni = nc.index + GetCon(s, dir);
                     }
 
                     if (ni == -1)
@@ -475,7 +476,7 @@ namespace DotRecast.Recast
             d1 = 4;
             for (int k = 0; k < n; k++)
             {
-                int k1 = RecastMesh.Next(k, n);
+                int k1 = RcMeshs.Next(k, n);
                 // Skip edges incident to i.
                 if (i == k || i == k1)
                     continue;
@@ -489,11 +490,11 @@ namespace DotRecast.Recast
 
                 p0 = 8;
                 p1 = 12;
-                if (RecastMesh.VEqual(pverts, d0, p0) || RecastMesh.VEqual(pverts, d1, p0) ||
-                    RecastMesh.VEqual(pverts, d0, p1) || RecastMesh.VEqual(pverts, d1, p1))
+                if (RcMeshs.VEqual(pverts, d0, p0) || RcMeshs.VEqual(pverts, d1, p0) ||
+                    RcMeshs.VEqual(pverts, d0, p1) || RcMeshs.VEqual(pverts, d1, p1))
                     continue;
 
-                if (RecastMesh.Intersect(pverts, d0, d1, p0, p1))
+                if (RcMeshs.Intersect(pverts, d0, d1, p0, p1))
                     return true;
             }
 
@@ -503,8 +504,8 @@ namespace DotRecast.Recast
         private static bool InCone(int i, int n, int[] verts, int pj, int[] vertpj)
         {
             int pi = i * 4;
-            int pi1 = RecastMesh.Next(i, n) * 4;
-            int pin1 = RecastMesh.Prev(i, n) * 4;
+            int pi1 = RcMeshs.Next(i, n) * 4;
+            int pin1 = RcMeshs.Prev(i, n) * 4;
             int[] pverts = new int[4 * 4];
             for (int g = 0; g < 4; g++)
             {
@@ -519,11 +520,11 @@ namespace DotRecast.Recast
             pin1 = 8;
             pj = 12;
             // If P[i] is a convex vertex [ i+1 left or on (i-1,i) ].
-            if (RecastMesh.LeftOn(pverts, pin1, pi, pi1))
-                return RecastMesh.Left(pverts, pi, pj, pin1) && RecastMesh.Left(pverts, pj, pi, pi1);
+            if (RcMeshs.LeftOn(pverts, pin1, pi, pi1))
+                return RcMeshs.Left(pverts, pi, pj, pin1) && RcMeshs.Left(pverts, pj, pi, pi1);
             // Assume (i-1,i,i+1) not collinear.
             // else P[i] is reflex.
-            return !(RecastMesh.LeftOn(pverts, pi, pj, pi1) && RecastMesh.LeftOn(pverts, pj, pi, pin1));
+            return !(RcMeshs.LeftOn(pverts, pi, pj, pi1) && RcMeshs.LeftOn(pverts, pj, pi, pin1));
         }
 
         private static void RemoveDegenerateSegments(List<int> simplified)
@@ -533,7 +534,7 @@ namespace DotRecast.Recast
             int npts = simplified.Count / 4;
             for (int i = 0; i < npts; ++i)
             {
-                int ni = RecastMesh.Next(i, npts);
+                int ni = RcMeshs.Next(i, npts);
 
                 // if (Vequal(&simplified[i*4], &simplified[ni*4]))
                 if (simplified[i * 4] == simplified[ni * 4]
@@ -766,11 +767,11 @@ namespace DotRecast.Recast
                         for (int dir = 0; dir < 4; ++dir)
                         {
                             int r = 0;
-                            if (RecastCommon.GetCon(s, dir) != RC_NOT_CONNECTED)
+                            if (GetCon(s, dir) != RC_NOT_CONNECTED)
                             {
-                                int ax = x + RecastCommon.GetDirOffsetX(dir);
-                                int ay = y + RecastCommon.GetDirOffsetY(dir);
-                                int ai = chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, dir);
+                                int ax = x + GetDirOffsetX(dir);
+                                int ay = y + GetDirOffsetY(dir);
+                                int ai = chf.cells[ax + ay * w].index + GetCon(s, dir);
                                 r = chf.spans[ai].reg;
                             }
 

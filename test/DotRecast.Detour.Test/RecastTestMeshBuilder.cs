@@ -70,9 +70,9 @@ public class RecastTestMeshBuilder
             detailSampleDist, detailSampleMaxError,
             true, true, true,
             SampleAreaModifications.SAMPLE_AREAMOD_GROUND, true);
-        RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax());
-        RecastBuilder rcBuilder = new RecastBuilder();
-        RecastBuilderResult rcResult = rcBuilder.Build(geom, bcfg);
+        RcBuilderConfig bcfg = new RcBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax());
+        RcBuilder rcBuilder = new RcBuilder();
+        RcBuilderResult rcResult = rcBuilder.Build(geom, bcfg);
         RcPolyMesh m_pmesh = rcResult.GetMesh();
         for (int i = 0; i < m_pmesh.npolys; ++i)
         {

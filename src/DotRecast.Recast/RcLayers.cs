@@ -24,10 +24,10 @@ using DotRecast.Core;
 
 namespace DotRecast.Recast
 {
-    using static RecastCommon;
     using static RcConstants;
+    using static RcCommons;
 
-    public static class RecastLayers
+    public static class RcLayers
     {
         const int RC_MAX_LAYERS = RcConstants.RC_NOT_CONNECTED;
         const int RC_MAX_NEIS = 16;

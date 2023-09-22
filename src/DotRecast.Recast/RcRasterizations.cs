@@ -25,7 +25,7 @@ using static DotRecast.Recast.RcConstants;
 
 namespace DotRecast.Recast
 {
-    public static class RecastRasterization
+    public static class RcRasterizations
     {
         /**
      * Check whether two bounding boxes overlap

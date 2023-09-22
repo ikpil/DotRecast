@@ -33,7 +33,7 @@ namespace DotRecast.Detour.Dynamic
     {
         public readonly DtVoxelTile voxelTile;
         public DtDynamicTileCheckpoint checkpoint;
-        public RecastBuilderResult recastResult;
+        public RcBuilderResult recastResult;
         private DtMeshData meshData;
         private readonly ConcurrentDictionary<long, IDtCollider> colliders = new ConcurrentDictionary<long, IDtCollider>();
         private bool dirty = true;
@@ -44,12 +44,12 @@ namespace DotRecast.Detour.Dynamic
             this.voxelTile = voxelTile;
         }
 
-        public bool Build(RecastBuilder builder, DtDynamicNavMeshConfig config, RcTelemetry telemetry)
+        public bool Build(RcBuilder builder, DtDynamicNavMeshConfig config, RcTelemetry telemetry)
         {
             if (dirty)
             {
                 RcHeightfield heightfield = BuildHeightfield(config, telemetry);
-                RecastBuilderResult r = BuildRecast(builder, config, voxelTile, heightfield, telemetry);
+                RcBuilderResult r = BuildRecast(builder, config, voxelTile, heightfield, telemetry);
                 DtNavMeshCreateParams option = NavMeshCreateParams(voxelTile.tileX, voxelTile.tileZ, voxelTile.cellSize,
                     voxelTile.cellHeight, config, r);
                 meshData = DtNavMeshBuilder.CreateNavMeshData(option);
@@ -86,7 +86,7 @@ namespace DotRecast.Detour.Dynamic
             return heightfield;
         }
 
-        private RecastBuilderResult BuildRecast(RecastBuilder builder, DtDynamicNavMeshConfig config, DtVoxelTile vt,
+        private RcBuilderResult BuildRecast(RcBuilder builder, DtDynamicNavMeshConfig config, DtVoxelTile vt,
             RcHeightfield heightfield, RcTelemetry telemetry)
         {
             RcConfig rcConfig = new RcConfig(
@@ -100,7 +100,7 @@ namespace DotRecast.Detour.Dynamic
                 Math.Min(DtDynamicNavMesh.MAX_VERTS_PER_POLY, config.vertsPerPoly),
                 config.detailSampleDistance, config.detailSampleMaxError,
                 true, true, true, null, true);
-            RecastBuilderResult r = builder.Build(vt.tileX, vt.tileZ, null, rcConfig, heightfield, telemetry);
+            RcBuilderResult r = builder.Build(vt.tileX, vt.tileZ, null, rcConfig, heightfield, telemetry);
             if (config.keepIntermediateResults)
             {
                 recastResult = r;
@@ -130,7 +130,7 @@ namespace DotRecast.Detour.Dynamic
         }
 
         private DtNavMeshCreateParams NavMeshCreateParams(int tilex, int tileZ, float cellSize, float cellHeight,
-            DtDynamicNavMeshConfig config, RecastBuilderResult rcResult)
+            DtDynamicNavMeshConfig config, RcBuilderResult rcResult)
         {
             RcPolyMesh m_pmesh = rcResult.GetMesh();
             RcPolyMeshDetail m_dmesh = rcResult.GetMeshDetail();

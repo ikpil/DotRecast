@@ -73,7 +73,7 @@ public class TestTileLayerBuilder : DtTileCacheLayerBuilder
 
         RcVec3f bmin = geom.GetMeshBoundsMin();
         RcVec3f bmax = geom.GetMeshBoundsMax();
-        RcUtils.CalcTileCount(bmin, bmax, CellSize, m_tileSize, m_tileSize, out tw, out th);
+        RcCommons.CalcTileCount(bmin, bmax, CellSize, m_tileSize, m_tileSize, out tw, out th);
     }
 
     public List<byte[]> Build(RcByteOrder order, bool cCompatibility, int threads)

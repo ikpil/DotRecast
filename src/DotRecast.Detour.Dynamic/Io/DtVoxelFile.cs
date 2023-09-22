@@ -77,7 +77,7 @@ namespace DotRecast.Detour.Dynamic.Io
                 walkbableAreaMod, buildMeshDetail);
         }
 
-        public static DtVoxelFile From(RcConfig config, List<RecastBuilderResult> results)
+        public static DtVoxelFile From(RcConfig config, List<RcBuilderResult> results)
         {
             DtVoxelFile f = new DtVoxelFile();
             f.version = 1;
@@ -106,7 +106,7 @@ namespace DotRecast.Detour.Dynamic.Io
                 float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity,
                 float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity
             };
-            foreach (RecastBuilderResult r in results)
+            foreach (RcBuilderResult r in results)
             {
                 f.tiles.Add(new DtVoxelTile(r.tileX, r.tileZ, r.GetSolidHeightfield()));
                 f.bounds[0] = Math.Min(f.bounds[0], r.GetSolidHeightfield().bmin.x);

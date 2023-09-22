@@ -15,9 +15,9 @@ namespace DotRecast.Detour.Extras.Jumplink
         private readonly JumpSegmentBuilder jumpSegmentBuilder = new JumpSegmentBuilder();
 
         private readonly List<JumpEdge[]> edges;
-        private readonly IList<RecastBuilderResult> results;
+        private readonly IList<RcBuilderResult> results;
 
-        public JumpLinkBuilder(IList<RecastBuilderResult> results)
+        public JumpLinkBuilder(IList<RcBuilderResult> results)
         {
             this.results = results;
             edges = results.Select(r => edgeExtractor.ExtractEdges(r.GetMesh())).ToList();
@@ -38,7 +38,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             return links;
         }
 
-        private List<JumpLink> ProcessEdge(JumpLinkBuilderConfig acfg, RecastBuilderResult result, JumpLinkType type, JumpEdge edge)
+        private List<JumpLink> ProcessEdge(JumpLinkBuilderConfig acfg, RcBuilderResult result, JumpLinkType type, JumpEdge edge)
         {
             EdgeSampler es = edgeSamplerFactory.Get(acfg, type, edge);
             groundSampler.Sample(acfg, result, es);

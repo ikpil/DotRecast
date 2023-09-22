@@ -25,7 +25,9 @@ using static DotRecast.Recast.RcConstants;
 
 namespace DotRecast.Recast
 {
-    public static class RecastCompact
+    using static RcCommons;
+    
+    public static class RcCompacts
     {
         private const int MAX_LAYERS = RC_NOT_CONNECTED - 1;
         private const int MAX_HEIGHT = RcConstants.SPAN_MAX_HEIGHT;
@@ -117,9 +119,9 @@ namespace DotRecast.Recast
 
                         for (int dir = 0; dir < 4; ++dir)
                         {
-                            RecastCommon.SetCon(s, dir, RC_NOT_CONNECTED);
-                            int nx = x + RecastCommon.GetDirOffsetX(dir);
-                            int ny = y + RecastCommon.GetDirOffsetY(dir);
+                            SetCon(s, dir, RC_NOT_CONNECTED);
+                            int nx = x + GetDirOffsetX(dir);
+                            int ny = y + GetDirOffsetY(dir);
                             // First check that the neighbour cell is in bounds.
                             if (nx < 0 || ny < 0 || nx >= w || ny >= h)
                                 continue;
@@ -145,7 +147,7 @@ namespace DotRecast.Recast
                                         continue;
                                     }
 
-                                    RecastCommon.SetCon(s, dir, lidx);
+                                    SetCon(s, dir, lidx);
                                     break;
                                 }
                             }

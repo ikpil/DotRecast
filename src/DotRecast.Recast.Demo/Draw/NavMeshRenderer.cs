@@ -23,6 +23,7 @@ using DotRecast.Core;
 using DotRecast.Detour;
 using DotRecast.Recast.Toolset.Builder;
 using DotRecast.Recast.Toolset.Geom;
+using static DotRecast.Recast.RcCommons;
 
 namespace DotRecast.Recast.Demo.Draw;
 
@@ -50,7 +51,7 @@ public class NavMeshRenderer
 
         DtNavMeshQuery navQuery = sample.GetNavMeshQuery();
         DemoInputGeomProvider geom = sample.GetInputGeom();
-        IList<RecastBuilderResult> rcBuilderResults = sample.GetRecastResults();
+        IList<RcBuilderResult> rcBuilderResults = sample.GetRecastResults();
         DtNavMesh navMesh = sample.GetNavMesh();
         var settings = sample.GetSettings();
         _debugDraw.Fog(true);
@@ -81,7 +82,7 @@ public class NavMeshRenderer
             int gw = 0, gh = 0;
             RcVec3f bmin = geom.GetMeshBoundsMin();
             RcVec3f bmax = geom.GetMeshBoundsMax();
-            RcUtils.CalcGridSize(bmin, bmax, settings.cellSize, out gw, out gh);
+            CalcGridSize(bmin, bmax, settings.cellSize, out gw, out gh);
             int tw = (gw + settings.tileSize - 1) / settings.tileSize;
             int th = (gh + settings.tileSize - 1) / settings.tileSize;
             float s = settings.tileSize * settings.cellSize;
@@ -120,7 +121,7 @@ public class NavMeshRenderer
 
         _debugDraw.DepthMask(true);
 
-        foreach (RecastBuilderResult rcBuilderResult in rcBuilderResults)
+        foreach (RcBuilderResult rcBuilderResult in rcBuilderResults)
         {
             if (rcBuilderResult.GetCompactHeightfield() != null && drawMode == DrawMode.DRAWMODE_COMPACT)
             {

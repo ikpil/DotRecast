@@ -86,10 +86,10 @@ namespace DotRecast.Detour.TileCache
 
         protected virtual RcHeightfieldLayerSet BuildHeightfieldLayerSet(IInputGeomProvider geom, RcConfig cfg, int tx, int ty)
         {
-            RecastBuilder rcBuilder = new RecastBuilder();
+            RcBuilder rcBuilder = new RcBuilder();
             RcVec3f bmin = geom.GetMeshBoundsMin();
             RcVec3f bmax = geom.GetMeshBoundsMax();
-            RecastBuilderConfig builderCfg = new RecastBuilderConfig(cfg, bmin, bmax, tx, ty);
+            RcBuilderConfig builderCfg = new RcBuilderConfig(cfg, bmin, bmax, tx, ty);
             RcHeightfieldLayerSet lset = rcBuilder.BuildLayers(geom, builderCfg);
             return lset;
         }

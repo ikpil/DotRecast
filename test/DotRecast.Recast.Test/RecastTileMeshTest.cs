@@ -59,7 +59,7 @@ public class RecastTileMeshTest
     public void TestBuild(string filename)
     {
         IInputGeomProvider geom = ObjImporter.Load(RcResources.Load(filename));
-        RecastBuilder builder = new RecastBuilder();
+        RcBuilder builder = new RcBuilder();
         RcConfig cfg = new RcConfig(
             true, m_tileSize, m_tileSize, RcConfig.CalcBorder(m_agentRadius, m_cellSize),
             m_partitionType,
@@ -71,27 +71,27 @@ public class RecastTileMeshTest
             m_detailSampleDist, m_detailSampleMaxError,
             true, true, true,
             SampleAreaModifications.SAMPLE_AREAMOD_GROUND, true);
-        RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), 7, 8);
-        RecastBuilderResult rcResult = builder.Build(geom, bcfg);
+        RcBuilderConfig bcfg = new RcBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), 7, 8);
+        RcBuilderResult rcResult = builder.Build(geom, bcfg);
         Assert.That(rcResult.GetMesh().npolys, Is.EqualTo(1));
         Assert.That(rcResult.GetMesh().nverts, Is.EqualTo(5));
-        bcfg = new RecastBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), 6, 9);
+        bcfg = new RcBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), 6, 9);
         rcResult = builder.Build(geom, bcfg);
         Assert.That(rcResult.GetMesh().npolys, Is.EqualTo(2));
         Assert.That(rcResult.GetMesh().nverts, Is.EqualTo(7));
-        bcfg = new RecastBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), 2, 9);
+        bcfg = new RcBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), 2, 9);
         rcResult = builder.Build(geom, bcfg);
         Assert.That(rcResult.GetMesh().npolys, Is.EqualTo(2));
         Assert.That(rcResult.GetMesh().nverts, Is.EqualTo(9));
-        bcfg = new RecastBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), 4, 3);
+        bcfg = new RcBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), 4, 3);
         rcResult = builder.Build(geom, bcfg);
         Assert.That(rcResult.GetMesh().npolys, Is.EqualTo(3));
         Assert.That(rcResult.GetMesh().nverts, Is.EqualTo(6));
-        bcfg = new RecastBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), 2, 8);
+        bcfg = new RcBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), 2, 8);
         rcResult = builder.Build(geom, bcfg);
         Assert.That(rcResult.GetMesh().npolys, Is.EqualTo(5));
         Assert.That(rcResult.GetMesh().nverts, Is.EqualTo(17));
-        bcfg = new RecastBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), 0, 8);
+        bcfg = new RcBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), 0, 8);
         rcResult = builder.Build(geom, bcfg);
         Assert.That(rcResult.GetMesh().npolys, Is.EqualTo(6));
         Assert.That(rcResult.GetMesh().nverts, Is.EqualTo(15));
@@ -101,7 +101,7 @@ public class RecastTileMeshTest
     public void TestPerformance()
     {
         IInputGeomProvider geom = ObjImporter.Load(RcResources.Load("dungeon.obj"));
-        RecastBuilder builder = new RecastBuilder();
+        RcBuilder builder = new RcBuilder();
         RcConfig cfg = new RcConfig(
             true, m_tileSize, m_tileSize,
             RcConfig.CalcBorder(m_agentRadius, m_cellSize),
@@ -137,14 +137,14 @@ public class RecastTileMeshTest
         Console.WriteLine(" Time MT : " + (t3 - t2) / TimeSpan.TicksPerMillisecond);
     }
 
-    private void Build(IInputGeomProvider geom, RecastBuilder builder, RcConfig cfg, int threads, bool validate)
+    private void Build(IInputGeomProvider geom, RcBuilder builder, RcConfig cfg, int threads, bool validate)
     {
         CancellationTokenSource cts = new CancellationTokenSource();
-        List<RecastBuilderResult> tiles = new();
+        List<RcBuilderResult> tiles = new();
         var task = builder.BuildTilesAsync(geom, cfg, threads, tiles, Task.Factory, cts.Token);
         if (validate)
         {
-            RecastBuilderResult rcResult = GetTile(tiles, 7, 8);
+            RcBuilderResult rcResult = GetTile(tiles, 7, 8);
             Assert.That(rcResult.GetMesh().npolys, Is.EqualTo(1));
             Assert.That(rcResult.GetMesh().nverts, Is.EqualTo(5));
             rcResult = GetTile(tiles, 6, 9);
@@ -175,7 +175,7 @@ public class RecastTileMeshTest
         }
     }
 
-    private RecastBuilderResult GetTile(List<RecastBuilderResult> tiles, int x, int z)
+    private RcBuilderResult GetTile(List<RcBuilderResult> tiles, int x, int z)
     {
         return tiles.FirstOrDefault(tile => tile.tileX == x && tile.tileZ == z);
     }

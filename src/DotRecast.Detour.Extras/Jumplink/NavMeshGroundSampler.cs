@@ -7,13 +7,13 @@ namespace DotRecast.Detour.Extras.Jumplink
 {
     class NavMeshGroundSampler : AbstractGroundSampler
     {
-        public override void Sample(JumpLinkBuilderConfig acfg, RecastBuilderResult result, EdgeSampler es)
+        public override void Sample(JumpLinkBuilderConfig acfg, RcBuilderResult result, EdgeSampler es)
         {
             DtNavMeshQuery navMeshQuery = CreateNavMesh(result, acfg.agentRadius, acfg.agentHeight, acfg.agentClimb);
             SampleGround(acfg, es, (RcVec3f pt, float heightRange, out float height) => GetNavMeshHeight(navMeshQuery, pt, acfg.cellSize, heightRange, out height));
         }
 
-        private DtNavMeshQuery CreateNavMesh(RecastBuilderResult r, float agentRadius, float agentHeight, float agentClimb)
+        private DtNavMeshQuery CreateNavMesh(RcBuilderResult r, float agentRadius, float agentHeight, float agentClimb)
         {
             DtNavMeshCreateParams option = new DtNavMeshCreateParams();
             option.verts = r.GetMesh().verts;

@@ -23,11 +23,11 @@ namespace DotRecast.Detour.Test;
 
 public class TestDetourBuilder : DetourBuilder
 {
-    public DtMeshData Build(IInputGeomProvider geom, RecastBuilderConfig rcConfig, float agentHeight, float agentRadius,
+    public DtMeshData Build(IInputGeomProvider geom, RcBuilderConfig rcConfig, float agentHeight, float agentRadius,
         float agentMaxClimb, int x, int y, bool applyRecastDemoFlags)
     {
-        RecastBuilder rcBuilder = new RecastBuilder();
-        RecastBuilderResult rcResult = rcBuilder.Build(geom, rcConfig);
+        RcBuilder rcBuilder = new RcBuilder();
+        RcBuilderResult rcResult = rcBuilder.Build(geom, rcConfig);
         RcPolyMesh pmesh = rcResult.GetMesh();
 
         if (applyRecastDemoFlags)

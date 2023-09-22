@@ -33,7 +33,7 @@ namespace DotRecast.Detour.Dynamic
     {
         public const int MAX_VERTS_PER_POLY = 6;
         public readonly DtDynamicNavMeshConfig config;
-        private readonly RecastBuilder builder;
+        private readonly RcBuilder builder;
         private readonly Dictionary<long, DtDynamicTile> _tiles = new Dictionary<long, DtDynamicTile>();
         private readonly RcTelemetry telemetry;
         private readonly DtNavMeshParams navMeshParams;
@@ -57,7 +57,7 @@ namespace DotRecast.Detour.Dynamic
             config.buildDetailMesh = voxelFile.buildMeshDetail;
             config.detailSampleDistance = voxelFile.detailSampleDistance;
             config.detailSampleMaxError = voxelFile.detailSampleMaxError;
-            builder = new RecastBuilder();
+            builder = new RcBuilder();
             navMeshParams = new DtNavMeshParams();
             navMeshParams.orig.x = voxelFile.bounds[0];
             navMeshParams.orig.y = voxelFile.bounds[1];
@@ -254,7 +254,7 @@ namespace DotRecast.Detour.Dynamic
             return _tiles.Values.Select(t => t.voxelTile).ToList();
         }
 
-        public List<RecastBuilderResult> RecastResults()
+        public List<RcBuilderResult> RecastResults()
         {
             return _tiles.Values.Select(t => t.recastResult).ToList();
         }

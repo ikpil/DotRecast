@@ -24,8 +24,9 @@ using DotRecast.Core;
 namespace DotRecast.Recast
 {
     using static RcConstants;
+    using static RcCommons;
 
-    public static class RecastFilter
+    public static class RcFilters
     {
         /// @par
         ///
@@ -113,8 +114,8 @@ namespace DotRecast.Recast
 
                         for (int dir = 0; dir < 4; ++dir)
                         {
-                            int dx = x + RecastCommon.GetDirOffsetX(dir);
-                            int dy = y + RecastCommon.GetDirOffsetY(dir);
+                            int dx = x + GetDirOffsetX(dir);
+                            int dy = y + GetDirOffsetY(dir);
                             // Skip neighbours which are out of bounds.
                             if (dx < 0 || dy < 0 || dx >= w || dy >= h)
                             {

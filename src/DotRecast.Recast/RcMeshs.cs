@@ -25,7 +25,7 @@ namespace DotRecast.Recast
 {
     using static RcConstants;
 
-    public static class RecastMesh
+    public static class RcMeshs
     {
         public const int MAX_MESH_VERTS_POLY = 0xffff;
         public const int VERTEX_BUCKET_COUNT = (1 << 12);

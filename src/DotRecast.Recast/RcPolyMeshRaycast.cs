@@ -24,10 +24,10 @@ namespace DotRecast.Recast
 {
     public static class RcPolyMeshRaycast
     {
-        public static bool Raycast(IList<RecastBuilderResult> results, RcVec3f src, RcVec3f dst, out float hitTime)
+        public static bool Raycast(IList<RcBuilderResult> results, RcVec3f src, RcVec3f dst, out float hitTime)
         {
             hitTime = 0.0f;
-            foreach (RecastBuilderResult result in results)
+            foreach (RcBuilderResult result in results)
             {
                 if (result.GetMeshDetail() != null)
                 {

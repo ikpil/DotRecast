@@ -60,7 +60,7 @@ namespace DotRecast.Recast.Toolset.Builder
                 filterLowHangingObstacles, filterLedgeSpans, filterWalkableLowHeightSpans,
                 SampleAreaModifications.SAMPLE_AREAMOD_WALKABLE, true);
 
-            RecastBuilderResult rcResult = BuildRecastResult(geom, cfg);
+            RcBuilderResult rcResult = BuildRecastResult(geom, cfg);
             var meshData = BuildMeshData(geom, cellSize, cellHeight, agentHeight, agentRadius, agentMaxClimb, rcResult);
             if (null == meshData)
             {
@@ -76,17 +76,17 @@ namespace DotRecast.Recast.Toolset.Builder
             return new DtNavMesh(meshData, vertsPerPoly, 0);
         }
 
-        private RecastBuilderResult BuildRecastResult(DemoInputGeomProvider geom, RcConfig cfg)
+        private RcBuilderResult BuildRecastResult(DemoInputGeomProvider geom, RcConfig cfg)
         {
-            RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax());
-            RecastBuilder rcBuilder = new RecastBuilder();
+            RcBuilderConfig bcfg = new RcBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax());
+            RcBuilder rcBuilder = new RcBuilder();
             return rcBuilder.Build(geom, bcfg);
         }
 
         public DtMeshData BuildMeshData(DemoInputGeomProvider geom,
             float cellSize, float cellHeight,
             float agentHeight, float agentRadius, float agentMaxClimb,
-            RecastBuilderResult result)
+            RcBuilderResult result)
         {
             DtNavMeshCreateParams option = DemoNavMeshBuilder
                 .GetNavMeshCreateParams(geom, cellSize, cellHeight, agentHeight, agentRadius, agentMaxClimb, result);

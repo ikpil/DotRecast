@@ -80,7 +80,7 @@ namespace DotRecast.Recast.Toolset.Tools
             IList<RcConvexVolume> vols = geom.ConvexVolumes();
             for (int i = 0; i < vols.Count; ++i)
             {
-                if (PolyUtils.PointInPoly(vols[i].verts, pos) && pos.y >= vols[i].hmin
+                if (RcAreas.PointInPoly(vols[i].verts, pos) && pos.y >= vols[i].hmin
                                                               && pos.y <= vols[i].hmax)
                 {
                     nearestIndex = i;
@@ -130,7 +130,7 @@ namespace DotRecast.Recast.Toolset.Tools
             if (polyOffset > 0.01f)
             {
                 float[] offset = new float[verts.Length * 2];
-                int noffset = PolyUtils.OffsetPoly(verts, hull.Count, polyOffset, offset, offset.Length);
+                int noffset = RcAreas.OffsetPoly(verts, hull.Count, polyOffset, offset, offset.Length);
                 if (noffset > 0)
                 {
                     verts = RcArrayUtils.CopyOf(offset, 0, noffset * 3);

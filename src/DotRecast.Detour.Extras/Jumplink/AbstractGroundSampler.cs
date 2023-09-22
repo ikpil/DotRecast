@@ -1,7 +1,6 @@
 using System;
 using DotRecast.Core;
 using DotRecast.Recast;
-using static DotRecast.Core.RcMath;
 
 namespace DotRecast.Detour.Extras.Jumplink
 {
@@ -22,7 +21,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             }
         }
 
-        public abstract void Sample(JumpLinkBuilderConfig acfg, RecastBuilderResult result, EdgeSampler es);
+        public abstract void Sample(JumpLinkBuilderConfig acfg, RcBuilderResult result, EdgeSampler es);
 
         protected void SampleGroundSegment(ComputeNavMeshHeight heightFunc, GroundSegment seg, int nsamples)
         {

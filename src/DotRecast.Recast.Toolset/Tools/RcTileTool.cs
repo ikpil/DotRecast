@@ -21,7 +21,7 @@ namespace DotRecast.Recast.Toolset.Tools
             var bmin = geom.GetMeshBoundsMin();
             var bmax = geom.GetMeshBoundsMax();
             int gw = 0, gh = 0;
-            RcUtils.CalcGridSize(bmin, bmax, settings.cellSize, out gw, out gh);
+            RcCommons.CalcGridSize(bmin, bmax, settings.cellSize, out gw, out gh);
 
             int ts = settings.tileSize;
             int tw = (gw + ts - 1) / ts;
@@ -45,7 +45,7 @@ namespace DotRecast.Recast.Toolset.Tools
             var bmin = geom.GetMeshBoundsMin();
             var bmax = geom.GetMeshBoundsMax();
             int gw = 0, gh = 0;
-            RcUtils.CalcGridSize(bmin, bmax, settings.cellSize, out gw, out gh);
+            RcCommons.CalcGridSize(bmin, bmax, settings.cellSize, out gw, out gh);
 
             int ts = settings.tileSize;
             int tw = (gw + ts - 1) / ts;
@@ -91,7 +91,7 @@ namespace DotRecast.Recast.Toolset.Tools
             );
 
             var beginTick = RcFrequency.Ticks;
-            var rb = new RecastBuilder();
+            var rb = new RcBuilder();
             var result = rb.BuildTile(geom, cfg, bmin, bmax, tx, ty, new RcAtomicInteger(0), 1);
 
             var tb = new TileNavMeshBuilder();

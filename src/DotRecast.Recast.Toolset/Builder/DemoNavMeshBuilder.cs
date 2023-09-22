@@ -8,7 +8,7 @@ namespace DotRecast.Recast.Toolset.Builder
     {
         public static DtNavMeshCreateParams GetNavMeshCreateParams(IInputGeomProvider geom, float cellSize,
             float cellHeight, float agentHeight, float agentRadius, float agentMaxClimb,
-            RecastBuilderResult rcResult)
+            RcBuilderResult rcResult)
         {
             RcPolyMesh pmesh = rcResult.GetMesh();
             RcPolyMeshDetail dmesh = rcResult.GetMeshDetail();

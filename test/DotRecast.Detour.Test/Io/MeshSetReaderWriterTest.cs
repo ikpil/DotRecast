@@ -69,7 +69,7 @@ public class MeshSetReaderWriterTest
 
         RcVec3f bmin = geom.GetMeshBoundsMin();
         RcVec3f bmax = geom.GetMeshBoundsMax();
-        RcUtils.CalcTileCount(bmin, bmax, m_cellSize, m_tileSize, m_tileSize, out var tw, out var th);
+        RcCommons.CalcTileCount(bmin, bmax, m_cellSize, m_tileSize, m_tileSize, out var tw, out var th);
         for (int y = 0; y < th; ++y)
         {
             for (int x = 0; x < tw; ++x)
@@ -85,7 +85,7 @@ public class MeshSetReaderWriterTest
                     m_detailSampleDist, m_detailSampleMaxError,
                     true, true, true,
                     SampleAreaModifications.SAMPLE_AREAMOD_GROUND, true);
-                RecastBuilderConfig bcfg = new RecastBuilderConfig(cfg, bmin, bmax, x, y);
+                RcBuilderConfig bcfg = new RcBuilderConfig(cfg, bmin, bmax, x, y);
                 TestDetourBuilder db = new TestDetourBuilder();
                 DtMeshData data = db.Build(geom, bcfg, m_agentHeight, m_agentRadius, m_agentMaxClimb, x, y, true);
                 if (data != null)

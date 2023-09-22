@@ -4,6 +4,6 @@ namespace DotRecast.Detour.Extras.Jumplink
 {
     public interface IGroundSampler
     {
-        void Sample(JumpLinkBuilderConfig acfg, RecastBuilderResult result, EdgeSampler es);
+        void Sample(JumpLinkBuilderConfig acfg, RcBuilderResult result, EdgeSampler es);
     }
 }

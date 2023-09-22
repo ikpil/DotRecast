@@ -2,7 +2,7 @@
 
 namespace DotRecast.Recast
 {
-    public class RecastBuilderResult
+    public class RcBuilderResult
     {
         public readonly int tileX;
         public readonly int tileZ;
@@ -14,7 +14,7 @@ namespace DotRecast.Recast
         private readonly RcHeightfield solid;
         private readonly RcTelemetry telemetry;
 
-        public RecastBuilderResult(int tileX, int tileZ, RcHeightfield solid, RcCompactHeightfield chf, RcContourSet cs, RcPolyMesh pmesh, RcPolyMeshDetail dmesh, RcTelemetry ctx)
+        public RcBuilderResult(int tileX, int tileZ, RcHeightfield solid, RcCompactHeightfield chf, RcContourSet cs, RcPolyMesh pmesh, RcPolyMeshDetail dmesh, RcTelemetry ctx)
         {
             this.tileX = tileX;
             this.tileZ = tileZ;

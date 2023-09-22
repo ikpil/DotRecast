@@ -22,7 +22,7 @@ using DotRecast.Core;
 
 namespace DotRecast.Recast
 {
-    public class RecastBuilderConfig
+    public class RcBuilderConfig
     {
         public readonly RcConfig cfg;
 
@@ -41,11 +41,11 @@ namespace DotRecast.Recast
         /** The maximum bounds of the field's AABB. [(x, y, z)] [Units: wu] **/
         public readonly RcVec3f bmax = new RcVec3f();
 
-        public RecastBuilderConfig(RcConfig cfg, RcVec3f bmin, RcVec3f bmax) : this(cfg, bmin, bmax, 0, 0)
+        public RcBuilderConfig(RcConfig cfg, RcVec3f bmin, RcVec3f bmax) : this(cfg, bmin, bmax, 0, 0)
         {
         }
 
-        public RecastBuilderConfig(RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tileX, int tileZ)
+        public RcBuilderConfig(RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tileX, int tileZ)
         {
             this.tileX = tileX;
             this.tileZ = tileZ;
@@ -92,7 +92,7 @@ namespace DotRecast.Recast
             }
             else
             {
-                RcUtils.CalcGridSize(this.bmin, this.bmax, cfg.Cs, out width, out height);
+                RcCommons.CalcGridSize(this.bmin, this.bmax, cfg.Cs, out width, out height);
             }
         }
     }
