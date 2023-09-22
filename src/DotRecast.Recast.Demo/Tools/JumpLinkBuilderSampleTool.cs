@@ -54,9 +54,6 @@ public class JumpLinkBuilderSampleTool : ISampleTool
 
     public void Layout()
     {
-        if (0 >= _sample.GetRecastResults().Count)
-            return;
-
         ImGui.Text("Options");
         ImGui.Separator();
         ImGui.SliderFloat("Ground Tolerance", ref _cfg.groundTolerance, 0f, 2f, "%.2f");
@@ -82,6 +79,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
         //int buildTypes = 0;
         ImGui.CheckboxFlags("Climb Down", ref _cfg.buildTypes, JumpLinkType.EDGE_CLIMB_DOWN.Bit);
         ImGui.CheckboxFlags("Edge Jump", ref _cfg.buildTypes, JumpLinkType.EDGE_JUMP.Bit);
+        ImGui.NewLine();
         //option.buildTypes = buildTypes;
 
         bool build = false;
@@ -98,11 +96,16 @@ public class JumpLinkBuilderSampleTool : ISampleTool
 
         if (build || _cfg.buildOffMeshConnections)
         {
-            var geom = _sample.GetInputGeom();
-            var settings = _sample.GetSettings();
+            if (0 < _sample.GetRecastResults().Count)
+            {
+                var geom = _sample.GetInputGeom();
+                var settings = _sample.GetSettings();
 
-            _tool.Build(geom, settings, _sample.GetRecastResults(), _cfg);
+                _tool.Build(geom, settings, _sample.GetRecastResults(), _cfg);
+            }
         }
+
+        ImGui.NewLine();
 
         ImGui.Text("Debug Draw Options");
         ImGui.Separator();

@@ -23,7 +23,6 @@ namespace DotRecast.Recast.Toolset.Tools
             return "Annotation Builder";
         }
 
-
         public void Clear()
         {
             _annotationBuilder = null;
