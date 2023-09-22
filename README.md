@@ -1,6 +1,8 @@
 [![License: Zlib](https://img.shields.io/badge/License-Zlib-lightgrey.svg)](https://opensource.org/licenses/Zlib)
 [![.NET](https://github.com/ikpil/DotRecast/actions/workflows/dotnet.yml/badge.svg)](https://github.com/ikpil/DotRecast/actions/workflows/dotnet.yml)
 [![CodeQL](https://github.com/ikpil/DotRecast/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/ikpil/DotRecast/actions/workflows/github-code-scanning/codeql)
+![Repo Size](https://img.shields.io/github/repo-size/ikpil/DotRecast.svg?colorB=lightgray)
+![Languages](https://img.shields.io/github/languages/top/ikpil/DotRecast)
 
 # Screenshot
 ![screenshot](https://github.com/ikpil/DotRecast/assets/313821/8cf67832-1206-4b58-8c1f-7205210cbf22)
