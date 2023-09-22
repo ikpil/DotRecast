@@ -24,7 +24,7 @@ using System.IO;
 using DotRecast.Core;
 using DotRecast.Detour.TileCache.Io;
 using DotRecast.Detour.TileCache.Io.Compress;
-using static DotRecast.Core.RcMath;
+
 
 namespace DotRecast.Detour.TileCache
 {
@@ -1810,7 +1810,7 @@ namespace DotRecast.Detour.TileCache
             bmax.x = pos.x + radius;
             bmax.y = pos.y + height;
             bmax.z = pos.z + radius;
-            float r2 = Sqr(radius / cs + 0.5f);
+            float r2 = RcMath.Sqr(radius / cs + 0.5f);
 
             int w = layer.header.width;
             int h = layer.header.height;

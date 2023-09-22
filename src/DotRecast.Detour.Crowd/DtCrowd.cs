@@ -21,7 +21,6 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-
 using System.Linq;
 using DotRecast.Core;
 using DotRecast.Detour.Crowd.Tracking;
@@ -29,7 +28,7 @@ using DotRecast.Detour.Crowd.Tracking;
 
 namespace DotRecast.Detour.Crowd
 {
-    using static DotRecast.Core.RcMath;
+    
 
     /**
  * Members in this module implement local steering and dynamic avoidance features.
@@ -881,7 +880,7 @@ namespace DotRecast.Detour.Crowd
                 // Update the collision boundary after certain distance has been passed or
                 // if it has become invalid.
                 float updateThr = ag.option.collisionQueryRange * 0.25f;
-                if (RcVec3f.Dist2DSqr(ag.npos, ag.boundary.GetCenter()) > Sqr(updateThr)
+                if (RcVec3f.Dist2DSqr(ag.npos, ag.boundary.GetCenter()) > RcMath.Sqr(updateThr)
                     || !ag.boundary.IsValid(_navQuery, _filters[ag.option.queryFilterType]))
                 {
                     ag.boundary.Update(ag.corridor.GetFirstPoly(), ag.npos, ag.option.collisionQueryRange, _navQuery,
@@ -916,7 +915,7 @@ namespace DotRecast.Detour.Crowd
 
                 diff.y = 0;
                 float distSqr = RcVec3f.LenSqr(diff);
-                if (distSqr > Sqr(range))
+                if (distSqr > RcMath.Sqr(range))
                 {
                     continue;
                 }
@@ -1090,13 +1089,13 @@ namespace DotRecast.Detour.Crowd
                             continue;
                         }
 
-                        if (distSqr > Sqr(separationDist))
+                        if (distSqr > RcMath.Sqr(separationDist))
                         {
                             continue;
                         }
 
                         float dist = (float)Math.Sqrt(distSqr);
-                        float weight = separationWeight * (1.0f - Sqr(dist * invSeparationDist));
+                        float weight = separationWeight * (1.0f - RcMath.Sqr(dist * invSeparationDist));
 
                         disp = RcVec3f.Mad(disp, diff, weight / dist);
                         w += 1.0f;
@@ -1108,7 +1107,7 @@ namespace DotRecast.Detour.Crowd
                         dvel = RcVec3f.Mad(dvel, disp, 1.0f / w);
                         // Clamp desired velocity to desired speed.
                         float speedSqr = RcVec3f.LenSqr(dvel);
-                        float desiredSqr = Sqr(ag.desiredSpeed);
+                        float desiredSqr = RcMath.Sqr(ag.desiredSpeed);
                         if (speedSqr > desiredSqr)
                         {
                             dvel = dvel.Scale(desiredSqr / speedSqr);
@@ -1232,7 +1231,7 @@ namespace DotRecast.Detour.Crowd
                         diff.y = 0;
 
                         float dist = RcVec3f.LenSqr(diff);
-                        if (dist > Sqr(ag.option.radius + nei.option.radius))
+                        if (dist > RcMath.Sqr(ag.option.radius + nei.option.radius))
                         {
                             continue;
                         }
@@ -1352,7 +1351,7 @@ namespace DotRecast.Detour.Crowd
 
         private float Tween(float t, float t0, float t1)
         {
-            return Clamp((t - t0) / (t1 - t0), 0.0f, 1.0f);
+            return RcMath.Clamp((t - t0) / (t1 - t0), 0.0f, 1.0f);
         }
     }
 }

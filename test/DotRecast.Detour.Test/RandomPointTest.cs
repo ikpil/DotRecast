@@ -21,7 +21,7 @@ using System.Diagnostics;
 using DotRecast.Core;
 
 using NUnit.Framework;
-using static DotRecast.Core.RcMath;
+
 
 namespace DotRecast.Detour.Test;
 

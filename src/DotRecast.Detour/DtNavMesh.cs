@@ -24,7 +24,7 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
-    using static RcMath;
+    
 
     public class DtNavMesh
     {
@@ -346,12 +346,12 @@ namespace DotRecast.Detour
                 int[] bmin = new int[3];
                 int[] bmax = new int[3];
                 // dtClamp query box to world box.
-                float minx = Clamp(qmin.x, tbmin.x, tbmax.x) - tbmin.x;
-                float miny = Clamp(qmin.y, tbmin.y, tbmax.y) - tbmin.y;
-                float minz = Clamp(qmin.z, tbmin.z, tbmax.z) - tbmin.z;
-                float maxx = Clamp(qmax.x, tbmin.x, tbmax.x) - tbmin.x;
-                float maxy = Clamp(qmax.y, tbmin.y, tbmax.y) - tbmin.y;
-                float maxz = Clamp(qmax.z, tbmin.z, tbmax.z) - tbmin.z;
+                float minx = RcMath.Clamp(qmin.x, tbmin.x, tbmax.x) - tbmin.x;
+                float miny = RcMath.Clamp(qmin.y, tbmin.y, tbmax.y) - tbmin.y;
+                float minz = RcMath.Clamp(qmin.z, tbmin.z, tbmax.z) - tbmin.z;
+                float maxx = RcMath.Clamp(qmax.x, tbmin.x, tbmax.x) - tbmin.x;
+                float maxy = RcMath.Clamp(qmax.y, tbmin.y, tbmax.y) - tbmin.y;
+                float maxz = RcMath.Clamp(qmax.z, tbmin.z, tbmax.z) - tbmin.z;
                 // Quantize
                 bmin[0] = (int)(qfac * minx) & 0x7ffffffe;
                 bmin[1] = (int)(qfac * miny) & 0x7ffffffe;
@@ -781,8 +781,8 @@ namespace DotRecast.Detour
                                 tmax = temp;
                             }
 
-                            link.bmin = (int)Math.Round(Clamp(tmin, 0.0f, 1.0f) * 255.0f);
-                            link.bmax = (int)Math.Round(Clamp(tmax, 0.0f, 1.0f) * 255.0f);
+                            link.bmin = (int)Math.Round(RcMath.Clamp(tmin, 0.0f, 1.0f) * 255.0f);
+                            link.bmax = (int)Math.Round(RcMath.Clamp(tmax, 0.0f, 1.0f) * 255.0f);
                         }
                         else if (dir == 2 || dir == 6)
                         {
@@ -797,8 +797,8 @@ namespace DotRecast.Detour
                                 tmax = temp;
                             }
 
-                            link.bmin = (int)Math.Round(Clamp(tmin, 0.0f, 1.0f) * 255.0f);
-                            link.bmax = (int)Math.Round(Clamp(tmax, 0.0f, 1.0f) * 255.0f);
+                            link.bmin = (int)Math.Round(RcMath.Clamp(tmin, 0.0f, 1.0f) * 255.0f);
+                            link.bmax = (int)Math.Round(RcMath.Clamp(tmax, 0.0f, 1.0f) * 255.0f);
                         }
                     }
                 }
@@ -853,7 +853,7 @@ namespace DotRecast.Detour
                 // findNearestPoly may return too optimistic results, further check
                 // to make sure.
 
-                if (Sqr(nearestPt.x - p.x) + Sqr(nearestPt.z - p.z) > Sqr(targetCon.rad))
+                if (RcMath.Sqr(nearestPt.x - p.x) + RcMath.Sqr(nearestPt.z - p.z) > RcMath.Sqr(targetCon.rad))
                 {
                     continue;
                 }
@@ -1083,7 +1083,7 @@ namespace DotRecast.Detour
                 float[] p = con.pos; // First vertex
                 // findNearestPoly may return too optimistic results, further check
                 // to make sure.
-                if (Sqr(nearestPt.x - p[0]) + Sqr(nearestPt.z - p[2]) > Sqr(con.rad))
+                if (RcMath.Sqr(nearestPt.x - p[0]) + RcMath.Sqr(nearestPt.z - p[2]) > RcMath.Sqr(con.rad))
                 {
                     continue;
                 }

@@ -24,7 +24,7 @@ using DotRecast.Detour.TileCache.Test.Io;
 using DotRecast.Recast;
 using DotRecast.Recast.Geom;
 using NUnit.Framework;
-using static DotRecast.Core.RcMath;
+
 
 
 namespace DotRecast.Detour.TileCache.Test;

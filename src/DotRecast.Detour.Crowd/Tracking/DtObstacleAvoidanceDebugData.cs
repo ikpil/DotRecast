@@ -23,7 +23,7 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour.Crowd.Tracking
 {
-    using static RcMath;
+    
 
     public class DtObstacleAvoidanceDebugData
     {
@@ -68,7 +68,7 @@ namespace DotRecast.Detour.Crowd.Tracking
             float penRange = maxPen - minPen;
             float s = penRange > 0.001f ? (1.0f / penRange) : 1;
             for (int i = 0; i < n; ++i)
-                arr[i] = Clamp((arr[i] - minPen) * s, 0.0f, 1.0f);
+                arr[i] = RcMath.Clamp((arr[i] - minPen) * s, 0.0f, 1.0f);
         }
 
         public void NormalizeSamples()

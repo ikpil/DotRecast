@@ -24,7 +24,7 @@ using DotRecast.Detour.Crowd.Tracking;
 
 namespace DotRecast.Detour.Crowd
 {
-    using static RcMath;
+    
 
     public class DtObstacleAvoidanceQuery
     {
@@ -151,7 +151,7 @@ namespace DotRecast.Detour.Crowd
                 // Precalc if the agent is really close to the segment.
                 float r = 0.01f;
                 var distSqr = DtUtils.DistancePtSegSqr2D(pos, seg.p, seg.q, out var t);
-                seg.touch = distSqr < Sqr(r);
+                seg.touch = distSqr < RcMath.Sqr(r);
             }
         }
 
@@ -243,7 +243,7 @@ namespace DotRecast.Detour.Crowd
                 vab = vab.Subtract(cir.vel);
 
                 // Side
-                side += Clamp(Math.Min(cir.dp.Dot2D(vab) * 0.5f + 0.5f, cir.np.Dot2D(vab) * 2), 0.0f, 1.0f);
+                side += RcMath.Clamp(Math.Min(cir.dp.Dot2D(vab) * 0.5f + 0.5f, cir.np.Dot2D(vab) * 2), 0.0f, 1.0f);
                 nside++;
 
                 if (!SweepCircleCircle(pos, rad, vab, cir.p, cir.rad, out var htmin, out var htmax))
@@ -346,7 +346,7 @@ namespace DotRecast.Detour.Crowd
                 for (int x = 0; x < m_params.gridSize; ++x)
                 {
                     RcVec3f vcand = RcVec3f.Of(cvx + x * cs - half, 0f, cvz + y * cs - half);
-                    if (Sqr(vcand.x) + Sqr(vcand.z) > Sqr(vmax + cs / 2))
+                    if (RcMath.Sqr(vcand.x) + RcMath.Sqr(vcand.z) > RcMath.Sqr(vmax + cs / 2))
                         continue;
 
                     float penalty = ProcessSample(vcand, cs, pos, rad, vel, dvel, minPenalty, debug);
@@ -410,8 +410,8 @@ namespace DotRecast.Detour.Crowd
             int nrings = m_params.adaptiveRings;
             int depth = m_params.adaptiveDepth;
 
-            int nd = Clamp(ndivs, 1, DT_MAX_PATTERN_DIVS);
-            int nr = Clamp(nrings, 1, DT_MAX_PATTERN_RINGS);
+            int nd = RcMath.Clamp(ndivs, 1, DT_MAX_PATTERN_DIVS);
+            int nr = RcMath.Clamp(nrings, 1, DT_MAX_PATTERN_RINGS);
             float da = (1.0f / nd) * DT_PI * 2;
             float ca = (float)Math.Cos(da);
             float sa = (float)Math.Sin(da);
@@ -476,7 +476,7 @@ namespace DotRecast.Detour.Crowd
                 for (int i = 0; i < npat; ++i)
                 {
                     RcVec3f vcand = RcVec3f.Of(res.x + pat[i * 2 + 0] * cr, 0f, res.z + pat[i * 2 + 1] * cr);
-                    if (Sqr(vcand.x) + Sqr(vcand.z) > Sqr(vmax + 0.001f))
+                    if (RcMath.Sqr(vcand.x) + RcMath.Sqr(vcand.z) > RcMath.Sqr(vmax + 0.001f))
                         continue;
 
                     float penalty = ProcessSample(vcand, cr / 10, pos, rad, vel, dvel, minPenalty, debug);

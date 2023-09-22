@@ -43,7 +43,7 @@ using DotRecast.Recast.Toolset.Geom;
 using DotRecast.Recast.Demo.Tools;
 using DotRecast.Recast.Demo.UI;
 using DotRecast.Recast.Toolset;
-using static DotRecast.Core.RcMath;
+
 using MouseButton = Silk.NET.Input.MouseButton;
 using Window = Silk.NET.Windowing.Window;
 
@@ -433,13 +433,13 @@ public class RecastDemo : IRecastDemoChannel
             _modState |= 0 < tempMoveAccel ? (int)KeyModState.Shift : (int)KeyModState.None;
 
             //Logger.Information($"{_modState}");
-            _moveFront = Clamp(_moveFront + tempMoveFront * dt * 4.0f, 0, 2.0f);
-            _moveLeft = Clamp(_moveLeft + tempMoveLeft * dt * 4.0f, 0, 2.0f);
-            _moveBack = Clamp(_moveBack + tempMoveBack * dt * 4.0f, 0, 2.0f);
-            _moveRight = Clamp(_moveRight + tempMoveRight * dt * 4.0f, 0, 2.0f);
-            _moveUp = Clamp(_moveUp + tempMoveUp * dt * 4.0f, 0, 2.0f);
-            _moveDown = Clamp(_moveDown + tempMoveDown * dt * 4.0f, 0, 2.0f);
-            _moveAccel = Clamp(_moveAccel + tempMoveAccel * dt * 4.0f, 0, 2.0f);
+            _moveFront = RcMath.Clamp(_moveFront + tempMoveFront * dt * 4.0f, 0, 2.0f);
+            _moveLeft = RcMath.Clamp(_moveLeft + tempMoveLeft * dt * 4.0f, 0, 2.0f);
+            _moveBack = RcMath.Clamp(_moveBack + tempMoveBack * dt * 4.0f, 0, 2.0f);
+            _moveRight = RcMath.Clamp(_moveRight + tempMoveRight * dt * 4.0f, 0, 2.0f);
+            _moveUp = RcMath.Clamp(_moveUp + tempMoveUp * dt * 4.0f, 0, 2.0f);
+            _moveDown = RcMath.Clamp(_moveDown + tempMoveDown * dt * 4.0f, 0, 2.0f);
+            _moveAccel = RcMath.Clamp(_moveAccel + tempMoveAccel * dt * 4.0f, 0, 2.0f);
         }
     }
 
@@ -490,7 +490,7 @@ public class RecastDemo : IRecastDemoChannel
         // Update sample simulation.
         float SIM_RATE = 20;
         float DELTA_TIME = 1.0f / SIM_RATE;
-        timeAcc = Clamp((float)(timeAcc + dt), -1.0f, 1.0f);
+        timeAcc = RcMath.Clamp((float)(timeAcc + dt), -1.0f, 1.0f);
         int simIter = 0;
         while (timeAcc > DELTA_TIME)
         {
@@ -574,7 +574,7 @@ public class RecastDemo : IRecastDemoChannel
                 RcVec3f bmin = bminN;
                 RcVec3f bmax = bmaxN;
 
-                camr = (float)(Math.Sqrt(Sqr(bmax.x - bmin.x) + Sqr(bmax.y - bmin.y) + Sqr(bmax.z - bmin.z)) / 2);
+                camr = (float)(Math.Sqrt(RcMath.Sqr(bmax.x - bmin.x) + RcMath.Sqr(bmax.y - bmin.y) + RcMath.Sqr(bmax.z - bmin.z)) / 2);
                 cameraPos.x = (bmax.x + bmin.x) / 2 + camr;
                 cameraPos.y = (bmax.y + bmin.y) / 2 + camr;
                 cameraPos.z = (bmax.z + bmin.z) / 2 + camr;

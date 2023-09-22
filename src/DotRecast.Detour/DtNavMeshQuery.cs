@@ -24,7 +24,7 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
-    using static RcMath;
+    
     using static DtNode;
 
     public class DtNavMeshQuery
@@ -603,12 +603,12 @@ namespace DotRecast.Detour
                 int[] bmin = new int[3];
                 int[] bmax = new int[3];
                 // dtClamp query box to world box.
-                float minx = Clamp(qmin.x, tbmin.x, tbmax.x) - tbmin.x;
-                float miny = Clamp(qmin.y, tbmin.y, tbmax.y) - tbmin.y;
-                float minz = Clamp(qmin.z, tbmin.z, tbmax.z) - tbmin.z;
-                float maxx = Clamp(qmax.x, tbmin.x, tbmax.x) - tbmin.x;
-                float maxy = Clamp(qmax.y, tbmin.y, tbmax.y) - tbmin.y;
-                float maxz = Clamp(qmax.z, tbmin.z, tbmax.z) - tbmin.z;
+                float minx = RcMath.Clamp(qmin.x, tbmin.x, tbmax.x) - tbmin.x;
+                float miny = RcMath.Clamp(qmin.y, tbmin.y, tbmax.y) - tbmin.y;
+                float minz = RcMath.Clamp(qmin.z, tbmin.z, tbmax.z) - tbmin.z;
+                float maxx = RcMath.Clamp(qmax.x, tbmin.x, tbmax.x) - tbmin.x;
+                float maxy = RcMath.Clamp(qmax.y, tbmin.y, tbmax.y) - tbmin.y;
+                float maxz = RcMath.Clamp(qmax.z, tbmin.z, tbmax.z) - tbmin.z;
                 // Quantize
                 bmin[0] = (int)(qfac * minx) & 0x7ffffffe;
                 bmin[1] = (int)(qfac * miny) & 0x7ffffffe;
@@ -780,7 +780,7 @@ namespace DotRecast.Detour
             var raycastLimit = fpo.raycastLimit;
             var options = fpo.options;
 
-            float raycastLimitSqr = Sqr(raycastLimit);
+            float raycastLimitSqr = RcMath.Sqr(raycastLimit);
 
             // trade quality with performance?
             if ((options & DT_FINDPATH_ANY_ANGLE) != 0 && raycastLimit < 0f)
@@ -789,7 +789,7 @@ namespace DotRecast.Detour
                 // so it is enough to compute it from the first tile.
                 DtMeshTile tile = m_nav.GetTileByRef(startRef);
                 float agentRadius = tile.data.header.walkableRadius;
-                raycastLimitSqr = Sqr(agentRadius * DtNavMesh.DT_RAY_CAST_LIMIT_PROPORTIONS);
+                raycastLimitSqr = RcMath.Sqr(agentRadius * DtNavMesh.DT_RAY_CAST_LIMIT_PROPORTIONS);
             }
 
             if (startRef == endRef)
@@ -1044,7 +1044,7 @@ namespace DotRecast.Detour
             m_query.filter = filter;
             m_query.options = options;
             m_query.heuristic = heuristic;
-            m_query.raycastLimitSqr = Sqr(raycastLimit);
+            m_query.raycastLimitSqr = RcMath.Sqr(raycastLimit);
 
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !RcVec3f.IsFinite(startPos) || !RcVec3f.IsFinite(endPos) || null == filter)
@@ -1059,7 +1059,7 @@ namespace DotRecast.Detour
                 // so it is enough to compute it from the first tile.
                 DtMeshTile tile = m_nav.GetTileByRef(startRef);
                 float agentRadius = tile.data.header.walkableRadius;
-                m_query.raycastLimitSqr = Sqr(agentRadius * DtNavMesh.DT_RAY_CAST_LIMIT_PROPORTIONS);
+                m_query.raycastLimitSqr = RcMath.Sqr(agentRadius * DtNavMesh.DT_RAY_CAST_LIMIT_PROPORTIONS);
             }
 
             if (startRef == endRef)
@@ -1622,7 +1622,7 @@ namespace DotRecast.Detour
                         if (i == 0)
                         {
                             var distSqr = DtUtils.DistancePtSegSqr2D(portalApex, left, right, out var t);
-                            if (distSqr < Sqr(0.001f))
+                            if (distSqr < RcMath.Sqr(0.001f))
                             {
                                 continue;
                             }
@@ -1829,7 +1829,7 @@ namespace DotRecast.Detour
 
             // Search constraints
             var searchPos = RcVec3f.Lerp(startPos, endPos, 0.5f);
-            float searchRadSqr = Sqr(RcVec3f.Distance(startPos, endPos) / 2.0f + 0.001f);
+            float searchRadSqr = RcMath.Sqr(RcVec3f.Distance(startPos, endPos) / 2.0f + 0.001f);
 
             float[] verts = new float[m_nav.GetMaxVertsPerPoly() * 3];
 
@@ -2125,7 +2125,7 @@ namespace DotRecast.Detour
             float t = 0.5f;
             if (DtUtils.IntersectSegSeg2D(fromPos, toPos, left, right, out var _, out var t2))
             {
-                t = Clamp(t2, 0.1f, 0.9f);
+                t = RcMath.Clamp(t2, 0.1f, 0.9f);
             }
 
             pt = RcVec3f.Lerp(left, right, t);
@@ -2371,7 +2371,7 @@ namespace DotRecast.Detour
                     var e2 = verts[(segMax + 1) % nv];
                     var eDir = e2.Subtract(e1);
                     var diff = curPos.Subtract(e1);
-                    float s = Sqr(eDir.x) > Sqr(eDir.z) ? diff.x / eDir.x : diff.z / eDir.z;
+                    float s = RcMath.Sqr(eDir.x) > RcMath.Sqr(eDir.z) ? diff.x / eDir.x : diff.z / eDir.z;
                     curPos.y = e1.y + eDir.y * s;
 
                     hit.pathCost += filter.GetCost(lastPos, curPos, prevRef, prevTile, prevPoly, curRef, tile, poly,
@@ -2481,7 +2481,7 @@ namespace DotRecast.Detour
             startNode.flags = DtNode.DT_NODE_OPEN;
             m_openList.Push(startNode);
 
-            float radiusSqr = Sqr(radius);
+            float radiusSqr = RcMath.Sqr(radius);
 
             while (!m_openList.IsEmpty())
             {
@@ -2828,7 +2828,7 @@ namespace DotRecast.Detour
             resultRef.Add(startNode.id);
             resultParent.Add(0L);
 
-            float radiusSqr = Sqr(radius);
+            float radiusSqr = RcMath.Sqr(radius);
 
             float[] pa = new float[m_nav.GetMaxVertsPerPoly() * 3];
             float[] pb = new float[m_nav.GetMaxVertsPerPoly() * 3];
@@ -3156,7 +3156,7 @@ namespace DotRecast.Detour
             startNode.flags = DtNode.DT_NODE_OPEN;
             m_openList.Push(startNode);
 
-            float radiusSqr = Sqr(maxRadius);
+            float radiusSqr = RcMath.Sqr(maxRadius);
 
             var hasBestV = false;
             var bestvj = RcVec3f.Zero;

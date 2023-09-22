@@ -25,7 +25,7 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour.Crowd
 {
-    using static RcMath;
+    
 
     public class DtLocalBoundary
     {
@@ -123,7 +123,7 @@ namespace DotRecast.Detour.Crowd
 
                             // Skip too distant segments.
                             var distSqr = DtUtils.DistancePtSegSqr2D(pos, s0, s3, out var tseg);
-                            if (distSqr > Sqr(collisionQueryRange))
+                            if (distSqr > RcMath.Sqr(collisionQueryRange))
                             {
                                 continue;
                             }

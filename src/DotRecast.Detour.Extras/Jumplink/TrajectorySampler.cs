@@ -1,7 +1,7 @@
 using System;
 using DotRecast.Core;
 using DotRecast.Recast;
-using static DotRecast.Core.RcMath;
+
 
 namespace DotRecast.Detour.Extras.Jumplink
 {

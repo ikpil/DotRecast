@@ -23,7 +23,7 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
-    using static DotRecast.Core.RcMath;
+    
 
     public static class DtNavMeshBuilder
     {
@@ -171,13 +171,13 @@ namespace DotRecast.Detour
                     }
 
                     // BV-tree uses cs for all dimensions
-                    it.bmin[0] = Clamp((int)((bmin.x - option.bmin.x) * quantFactor), 0, int.MaxValue);
-                    it.bmin[1] = Clamp((int)((bmin.y - option.bmin.y) * quantFactor), 0, int.MaxValue);
-                    it.bmin[2] = Clamp((int)((bmin.z - option.bmin.z) * quantFactor), 0, int.MaxValue);
+                    it.bmin[0] = RcMath.Clamp((int)((bmin.x - option.bmin.x) * quantFactor), 0, int.MaxValue);
+                    it.bmin[1] = RcMath.Clamp((int)((bmin.y - option.bmin.y) * quantFactor), 0, int.MaxValue);
+                    it.bmin[2] = RcMath.Clamp((int)((bmin.z - option.bmin.z) * quantFactor), 0, int.MaxValue);
 
-                    it.bmax[0] = Clamp((int)((bmax.x - option.bmin.x) * quantFactor), 0, int.MaxValue);
-                    it.bmax[1] = Clamp((int)((bmax.y - option.bmin.y) * quantFactor), 0, int.MaxValue);
-                    it.bmax[2] = Clamp((int)((bmax.z - option.bmin.z) * quantFactor), 0, int.MaxValue);
+                    it.bmax[0] = RcMath.Clamp((int)((bmax.x - option.bmin.x) * quantFactor), 0, int.MaxValue);
+                    it.bmax[1] = RcMath.Clamp((int)((bmax.y - option.bmin.y) * quantFactor), 0, int.MaxValue);
+                    it.bmax[2] = RcMath.Clamp((int)((bmax.z - option.bmin.z) * quantFactor), 0, int.MaxValue);
                 }
                 else
                 {

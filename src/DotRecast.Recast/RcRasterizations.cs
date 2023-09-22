@@ -20,26 +20,27 @@ freely, subject to the following restrictions:
 
 using System;
 using DotRecast.Core;
-using static DotRecast.Core.RcMath;
 using static DotRecast.Recast.RcConstants;
 
 namespace DotRecast.Recast
 {
+    
+
     public static class RcRasterizations
     {
         /**
-     * Check whether two bounding boxes overlap
-     *
-     * @param amin
-     *            Min axis extents of bounding box A
-     * @param amax
-     *            Max axis extents of bounding box A
-     * @param bmin
-     *            Min axis extents of bounding box B
-     * @param bmax
-     *            Max axis extents of bounding box B
-     * @returns true if the two bounding boxes overlap. False otherwise
-     */
+         * Check whether two bounding boxes overlap
+         *
+         * @param amin
+         *            Min axis extents of bounding box A
+         * @param amax
+         *            Max axis extents of bounding box A
+         * @param bmin
+         *            Min axis extents of bounding box B
+         * @param bmax
+         *            Max axis extents of bounding box B
+         * @returns true if the two bounding boxes overlap. False otherwise
+         */
         private static bool OverlapBounds(float[] amin, float[] amax, float[] bmin, float[] bmax)
         {
             bool overlap = true;
@@ -229,9 +230,9 @@ namespace DotRecast.Recast
         /// @param[in] 	inverseCellHeight	1 / cellHeight
         /// @param[in] 	flagMergeThreshold	The threshold in which area flags will be merged 
         /// @returns true if the operation completes successfully.  false if there was an error adding spans to the heightfield.
-        private static void RasterizeTri(float[] verts, int v0, int v1, int v2, int area, RcHeightfield heightfield, 
-            RcVec3f heightfieldBBMin, RcVec3f heightfieldBBMax, 
-            float cellSize, float inverseCellSize, float inverseCellHeight, 
+        private static void RasterizeTri(float[] verts, int v0, int v1, int v2, int area, RcHeightfield heightfield,
+            RcVec3f heightfieldBBMin, RcVec3f heightfieldBBMax,
+            float cellSize, float inverseCellSize, float inverseCellHeight,
             int flagMergeThreshold)
         {
             RcVec3f tmin = new RcVec3f();
@@ -257,8 +258,8 @@ namespace DotRecast.Recast
             int w = heightfield.width;
             int h = heightfield.height;
             // use -1 rather than 0 to cut the polygon properly at the start of the tile
-            z0 = Clamp(z0, -1, h - 1);
-            z1 = Clamp(z1, 0, h - 1);
+            z0 = RcMath.Clamp(z0, -1, h - 1);
+            z1 = RcMath.Clamp(z1, 0, h - 1);
 
             // Clip the triangle into all grid cells it touches.
             float[] buf = new float[7 * 3 * 4];
@@ -303,8 +304,8 @@ namespace DotRecast.Recast
                     continue;
                 }
 
-                x0 = Clamp(x0, -1, w - 1);
-                x1 = Clamp(x1, 0, w - 1);
+                x0 = RcMath.Clamp(x0, -1, w - 1);
+                x1 = RcMath.Clamp(x1, 0, w - 1);
 
                 int nv, nv2 = nvRow;
                 for (int x = x0; x <= x1; ++x)
@@ -345,8 +346,8 @@ namespace DotRecast.Recast
                         spanMax = by;
 
                     // Snap the span to the heightfield height grid.
-                    int spanMinCellIndex = Clamp((int)Math.Floor(spanMin * inverseCellHeight), 0, SPAN_MAX_HEIGHT);
-                    int spanMaxCellIndex = Clamp((int)Math.Ceiling(spanMax * inverseCellHeight), spanMinCellIndex + 1, SPAN_MAX_HEIGHT);
+                    int spanMinCellIndex = RcMath.Clamp((int)Math.Floor(spanMin * inverseCellHeight), 0, SPAN_MAX_HEIGHT);
+                    int spanMaxCellIndex = RcMath.Clamp((int)Math.Ceiling(spanMax * inverseCellHeight), spanMinCellIndex + 1, SPAN_MAX_HEIGHT);
 
                     AddSpan(heightfield, x, z, spanMinCellIndex, spanMaxCellIndex, area, flagMergeThreshold);
                 }

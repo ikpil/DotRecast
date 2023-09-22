@@ -23,7 +23,7 @@ using DotRecast.Detour.Io;
 using DotRecast.Recast;
 using DotRecast.Recast.Geom;
 using NUnit.Framework;
-using static DotRecast.Core.RcMath;
+
 
 namespace DotRecast.Detour.Test.Io;
 
