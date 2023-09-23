@@ -1,0 +1,37 @@
+﻿name-template: '$RESOLVED_VERSION'
+tag-template: '$RESOLVED_VERSION'
+template: |
+  # What's Changed
+
+  $CHANGES
+
+  **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...$RESOLVED_VERSION
+
+categories:
+  - title: 'Changes'
+    labels:
+      - 'feature'
+      - 'feat'
+
+  - title: 'Bug Fixes'
+    labels:
+      - 'bug'
+      - 'fix'
+
+version-resolver:
+  major:
+    labels:
+      - 'type: breaking'
+  minor:
+    labels:
+      - 'type: feature'
+  patch:
+    labels:
+      - 'type: bug'
+      - 'type: maintenance'
+      - 'type: docs'
+      - 'type: dependencies'
+      - 'type: security'
+
+exclude-labels:
+  - 'skip-changelog'

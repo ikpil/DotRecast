@@ -1,0 +1,67 @@
+﻿name: Release
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./dotnet-workflow
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Dotnet
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.x'
+
+      - name: restore dependencies
+        working-directory: ${{ env.working-directory }}
+        run: dotnet restore
+
+      - name: build
+        working-directory: ${{ env.working-directory }}
+        run: dotnet build -c Release --no-restore
+
+      - name: publish
+        working-directory: ${{ env.working-directory }}
+        run: dotnet publish src/DotRecast.Recast.Demo -c Release --no-restore --no-self-contained --output working-temp
+
+      - name: version
+        id: version
+        run: |
+          tag=${GITHUB_REF/refs\/tags\//}
+          version=${tag}
+          major=${version%%.*}
+          echo "tag=${tag}" >> $GITHUB_OUTPUT
+          echo "version=${version}" >> $GITHUB_OUTPUT
+          echo "major=${major}" >> $GITHUB_OUTPUT
+
+      - name: Zip
+        working-directory: ${{ env.working-directory }}
+        run: |
+          cd working-temp
+          echo "dotnet DotRecast.Recast.Demo.dll" > run.bat
+          zip -r ../DotRecast.Recast.Demo-${{ steps.version.outputs.version}}.zip ./
+        if: success()
+
+      - uses: release-drafter/release-drafter@master
+        with:
+          version: ${{ steps.version.outputs.version }}
+          publish: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: zip Upload
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ${{ env.working-directory }}/DotRecast.Recast.Demo-${{ steps.version.outputs.version}}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        
