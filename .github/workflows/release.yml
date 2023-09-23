@@ -7,8 +7,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      working-directory: ./dotnet-workflow
 
     steps:
       - name: Checkout
@@ -20,15 +18,12 @@ jobs:
           dotnet-version: '7.x'
 
       - name: restore dependencies
-        working-directory: ${{ env.working-directory }}
         run: dotnet restore
 
       - name: build
-        working-directory: ${{ env.working-directory }}
         run: dotnet build -c Release --no-restore
 
       - name: publish
-        working-directory: ${{ env.working-directory }}
         run: dotnet publish src/DotRecast.Recast.Demo -c Release --no-restore --no-self-contained --output working-temp
 
       - name: version
@@ -44,6 +39,7 @@ jobs:
       - name: Zip
         working-directory: ${{ env.working-directory }}
         run: |
+          cp -rfv resources working-temp
           cd working-temp
           echo "dotnet DotRecast.Recast.Demo.dll" > run.bat
           zip -r ../DotRecast.Recast.Demo-${{ steps.version.outputs.version}}.zip ./
@@ -60,7 +56,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            ${{ env.working-directory }}/DotRecast.Recast.Demo-${{ steps.version.outputs.version}}.zip
+            DotRecast.Recast.Demo-${{ steps.version.outputs.version}}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
