@@ -32,16 +32,16 @@ namespace DotRecast.Recast
 
     public class RcBuilder
     {
-        private readonly IRecastBuilderProgressListener progressListener;
+        private readonly IRcBuilderProgressListener _progressListener;
 
         public RcBuilder()
         {
-            progressListener = null;
+            _progressListener = null;
         }
 
-        public RcBuilder(IRecastBuilderProgressListener progressListener)
+        public RcBuilder(IRcBuilderProgressListener progressListener)
         {
-            this.progressListener = progressListener;
+            _progressListener = progressListener;
         }
 
         public List<RcBuilderResult> BuildTiles(IInputGeomProvider geom, RcConfig cfg, TaskFactory taskFactory)
@@ -150,9 +150,9 @@ namespace DotRecast.Recast
             int ty, RcAtomicInteger counter, int total)
         {
             RcBuilderResult result = Build(geom, new RcBuilderConfig(cfg, bmin, bmax, tx, ty));
-            if (progressListener != null)
+            if (_progressListener != null)
             {
-                progressListener.OnProgress(counter.IncrementAndGet(), total);
+                _progressListener.OnProgress(counter.IncrementAndGet(), total);
             }
 
             return result;
@@ -237,8 +237,7 @@ namespace DotRecast.Recast
             //
 
             // Create contours.
-            RcContourSet cset = RcContours.BuildContours(ctx, chf, cfg.MaxSimplificationError, cfg.MaxEdgeLen,
-                RcConstants.RC_CONTOUR_TESS_WALL_EDGES);
+            RcContourSet cset = RcContours.BuildContours(ctx, chf, cfg.MaxSimplificationError, cfg.MaxEdgeLen, RcConstants.RC_CONTOUR_TESS_WALL_EDGES);
 
             //
             // Step 6. Build polygons mesh from contours.
@@ -283,8 +282,7 @@ namespace DotRecast.Recast
         /*
          * Step 3. Partition walkable surface to simple regions.
          */
-        private RcCompactHeightfield BuildCompactHeightfield(IInputGeomProvider geom, RcConfig cfg, RcTelemetry ctx,
-            RcHeightfield solid)
+        private RcCompactHeightfield BuildCompactHeightfield(IInputGeomProvider geom, RcConfig cfg, RcTelemetry ctx, RcHeightfield solid)
         {
             // Compact the heightfield so that it is faster to handle from now on.
             // This will result more cache coherent data as well as the neighbours

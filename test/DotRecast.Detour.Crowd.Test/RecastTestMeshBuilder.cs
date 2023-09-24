@@ -40,7 +40,7 @@ public class RecastTestMeshBuilder
     public const float m_detailSampleMaxError = 1.0f;
 
     public RecastTestMeshBuilder()
-        : this(ObjImporter.Load(RcResources.Load("dungeon.obj")),
+        : this(SimpleInputGeomProvider.LoadFile("dungeon.obj"),
             RcPartition.WATERSHED,
             m_cellSize, m_cellHeight,
             m_agentMaxSlope, m_agentHeight, m_agentRadius, m_agentMaxClimb,

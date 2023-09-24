@@ -43,7 +43,6 @@ using DotRecast.Recast.Toolset.Geom;
 using DotRecast.Recast.Demo.Tools;
 using DotRecast.Recast.Demo.UI;
 using DotRecast.Recast.Toolset;
-
 using MouseButton = Silk.NET.Input.MouseButton;
 using Window = Silk.NET.Windowing.Window;
 
@@ -298,9 +297,7 @@ public class RecastDemo : IRecastDemoChannel
 
     private DemoInputGeomProvider LoadInputMesh(string filename)
     {
-        var bytes = RcResources.Load(filename);
-        DemoInputGeomProvider geom = DemoObjImporter.Load(bytes);
-
+        DemoInputGeomProvider geom = DemoInputGeomProvider.LoadFile(filename);
         _lastGeomFileName = filename;
         return geom;
     }

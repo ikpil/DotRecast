@@ -37,6 +37,13 @@ namespace DotRecast.Recast.Toolset.Geom
         private readonly List<RcOffMeshConnection> _offMeshConnections = new List<RcOffMeshConnection>();
         private readonly RcTriMesh _mesh;
 
+        public static DemoInputGeomProvider LoadFile(string objFilePath)
+        {
+            byte[] chunk = RcResources.Load(objFilePath);
+            var context = RcObjImporter.LoadContext(chunk);
+            return new DemoInputGeomProvider(context.vertexPositions, context.meshFaces);
+        }
+
         public DemoInputGeomProvider(List<float> vertexPositions, List<int> meshFaces) :
             this(MapVertices(vertexPositions), MapFaces(meshFaces))
         {

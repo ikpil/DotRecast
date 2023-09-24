@@ -35,6 +35,13 @@ namespace DotRecast.Recast.Geom
         private readonly List<RcConvexVolume> volumes = new List<RcConvexVolume>();
         private readonly RcTriMesh _mesh;
 
+        public static SimpleInputGeomProvider LoadFile(string objFilePath)
+        {
+            byte[] chunk = RcResources.Load(objFilePath);
+            var context = RcObjImporter.LoadContext(chunk);
+            return new SimpleInputGeomProvider(context.vertexPositions, context.meshFaces);
+        }
+
         public SimpleInputGeomProvider(List<float> vertexPositions, List<int> meshFaces)
             : this(MapVertices(vertexPositions), MapFaces(meshFaces))
         {

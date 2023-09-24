@@ -30,6 +30,7 @@ using DotRecast.Recast.Toolset.Gizmos;
 using DotRecast.Recast.Toolset.Tools;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Demo.UI;
+using DotRecast.Recast.Toolset.Geom;
 using ImGuiNET;
 using Serilog;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
@@ -88,9 +89,9 @@ public class DynamicUpdateSampleTool : ISampleTool
 
     public DynamicUpdateSampleTool()
     {
-        var bridgeGeom = DemoObjImporter.Load(RcResources.Load("bridge.obj"));
-        var houseGeom = DemoObjImporter.Load(RcResources.Load("house.obj"));
-        var convexGeom = DemoObjImporter.Load(RcResources.Load("convex.obj"));
+        var bridgeGeom = DemoInputGeomProvider.LoadFile("bridge.obj");
+        var houseGeom = DemoInputGeomProvider.LoadFile("house.obj");
+        var convexGeom = DemoInputGeomProvider.LoadFile("convex.obj");
         _tool = new(Random.Shared, bridgeGeom, houseGeom, convexGeom);
         executor = Task.Factory;
     }

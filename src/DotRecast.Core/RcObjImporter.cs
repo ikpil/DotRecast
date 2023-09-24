@@ -1,5 +1,6 @@
 /*
 recast4j Copyright (c) 2015-2019 Piotr Piastucki piotr@jtilia.org
+DotRecast Copyright (c) 2023 Choi Ikpil ikpil@naver.com
 
 This software is provided 'as-is', without any express or implied
 warranty.  In no event will the authors be held liable for any damages
@@ -17,24 +18,16 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using DotRecast.Recast.Geom;
 
-namespace DotRecast.Recast
+namespace DotRecast.Core
 {
-    public static class ObjImporter
+    public static class RcObjImporter
     {
-        public static IInputGeomProvider Load(byte[] chunk)
+        public static RcObjImporterContext LoadContext(byte[] chunk)
         {
-            var context = LoadContext(chunk);
-            return new SimpleInputGeomProvider(context.vertexPositions, context.meshFaces);
-        }
-
-        public static ObjImporterContext LoadContext(byte[] chunk)
-        {
-            ObjImporterContext context = new ObjImporterContext();
+            RcObjImporterContext context = new RcObjImporterContext();
             try
             {
                 using StreamReader reader = new StreamReader(new MemoryStream(chunk));
@@ -54,7 +47,7 @@ namespace DotRecast.Recast
         }
 
 
-        public static void ReadLine(string line, ObjImporterContext context)
+        public static void ReadLine(string line, RcObjImporterContext context)
         {
             if (line.StartsWith("v"))
             {
@@ -66,7 +59,7 @@ namespace DotRecast.Recast
             }
         }
 
-        private static void ReadVertex(string line, ObjImporterContext context)
+        private static void ReadVertex(string line, RcObjImporterContext context)
         {
             if (line.StartsWith("v "))
             {
@@ -89,13 +82,13 @@ namespace DotRecast.Recast
             // fix - https://github.com/ikpil/DotRecast/issues/7
             return new float[]
             {
-                float.Parse(v[1], CultureInfo.InvariantCulture), 
-                float.Parse(v[2], CultureInfo.InvariantCulture), 
+                float.Parse(v[1], CultureInfo.InvariantCulture),
+                float.Parse(v[2], CultureInfo.InvariantCulture),
                 float.Parse(v[3], CultureInfo.InvariantCulture)
             };
         }
 
-        private static void ReadFace(string line, ObjImporterContext context)
+        private static void ReadFace(string line, RcObjImporterContext context)
         {
             string[] v = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             if (v.Length < 4)
@@ -113,7 +106,7 @@ namespace DotRecast.Recast
             }
         }
 
-        private static int ReadFaceVertex(string face, ObjImporterContext context)
+        private static int ReadFaceVertex(string face, RcObjImporterContext context)
         {
             string[] v = face.Split("/");
             return GetIndex(int.Parse(v[0]), context.vertexPositions.Count);

@@ -1,6 +1,6 @@
 ﻿namespace DotRecast.Recast
 {
-    public interface IRecastBuilderProgressListener
+    public interface IRcBuilderProgressListener
     {
         void OnProgress(int completed, int total);
     }

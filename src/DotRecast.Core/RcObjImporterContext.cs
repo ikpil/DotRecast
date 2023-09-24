@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace DotRecast.Recast
+namespace DotRecast.Core
 {
-    public class ObjImporterContext
+    public class RcObjImporterContext
     {
         public List<float> vertexPositions = new List<float>();
         public List<int> meshFaces = new List<int>();
