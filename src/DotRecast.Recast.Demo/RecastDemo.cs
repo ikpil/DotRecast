@@ -368,6 +368,8 @@ public class RecastDemo : IRecastDemoChannel
 
         dd.Init(camr);
 
+        // for windows : Microsoft Visual C++ Redistributable Package
+        // link - https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist
         ImGuiFontConfig imGuiFontConfig = new(Path.Combine("resources\\fonts", "DroidSans.ttf"), 16, null);
         _imgui = new ImGuiController(_gl, window, _input, imGuiFontConfig);
 
