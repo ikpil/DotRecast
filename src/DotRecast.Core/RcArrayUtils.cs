@@ -15,7 +15,7 @@ namespace DotRecast.Core
             return deatArr;
         }
 
-        public static T[] CopyOf<T>(T[] source, int length)
+        public static T[] CopyOf<T>(T[] source, long length)
         {
             var deatArr = new T[length];
             var count = Math.Max(0, Math.Min(source.Length, length));
