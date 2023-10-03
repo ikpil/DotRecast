@@ -5,6 +5,8 @@
 ![Languages](https://img.shields.io/github/languages/top/ikpil/DotRecast)
 
 # Screenshot
+https://user-images.githubusercontent.com/313821/266782992-32a72a43-8f02-4214-8f1e-86b06952c8b7.mp4
+
 ![screenshot](https://github.com/ikpil/DotRecast/assets/313821/8cf67832-1206-4b58-8c1f-7205210cbf22)
 
 # Introduction
