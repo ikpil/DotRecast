@@ -1,0 +1,55 @@
+name: Nuget Publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: version
+        required: true
+        type: string
+
+jobs:
+  publish-to-nuget:
+    runs-on: ubuntu-latest
+    steps:
+      - name: version pattern
+        id: check-version
+        run: |
+          version="${{ github.event.inputs.version }}"
+          if [[ $version =~ [0-9]+\.[0-9]+\.[0-9]+ ]]; then
+            echo "Input matches pattern: $version"
+          else
+            echo "Input does not match pattern: $version"
+          exit 1
+          fi
+
+      - name: version check
+        if: success()
+        run: echo ok
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Get all history to allow automatic versioning using MinVer
+
+      - name: Setup Dotnet
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.x'
+
+      - name: restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build -c Release --no-restore
+
+      - name: Test
+        run: dotnet test -c Release --no-build --verbosity normal
+
+      - name: Pack
+        run: dotnet pack -p:PackageVersion=${{ github.event.inputs.version }} -c Release --nologo --output working-nuget
+
+      - name: Publish the package to nuget.org
+        run: dotnet nuget push ./working-nuget/*.nupkg -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.NUGET_TOKEN }}
