@@ -163,7 +163,7 @@ namespace DotRecast.Recast.Toolset.Tools
         }
 
         public DtStatus FindStraightPath(DtNavMeshQuery navQuery, long startRef, long endRef, RcVec3f startPt, RcVec3f endPt, IDtQueryFilter filter, bool enableRaycast,
-            ref List<long> polys, ref List<StraightPathItem> straightPath, int straightPathOptions)
+            ref List<long> polys, ref List<DtStraightPath> straightPath, int straightPathOptions)
         {
             if (startRef == 0 || endRef == 0)
             {
@@ -171,7 +171,7 @@ namespace DotRecast.Recast.Toolset.Tools
             }
 
             polys ??= new List<long>();
-            straightPath ??= new List<StraightPathItem>();
+            straightPath ??= new List<DtStraightPath>();
 
             polys.Clear();
             straightPath.Clear();
@@ -212,7 +212,7 @@ namespace DotRecast.Recast.Toolset.Tools
         }
 
         public DtStatus UpdateSlicedFindPath(DtNavMeshQuery navQuery, int maxIter, long endRef, RcVec3f startPos, RcVec3f endPos,
-            ref List<long> path, ref List<StraightPathItem> straightPath)
+            ref List<long> path, ref List<DtStraightPath> straightPath)
         {
             var status = navQuery.UpdateSlicedFindPath(maxIter, out _);
 
@@ -237,7 +237,7 @@ namespace DotRecast.Recast.Toolset.Tools
                     }
                 }
 
-                straightPath = new List<StraightPathItem>(MAX_POLYS);
+                straightPath = new List<DtStraightPath>(MAX_POLYS);
                 navQuery.FindStraightPath(startPos, epos, path, ref straightPath, MAX_POLYS, DtNavMeshQuery.DT_STRAIGHTPATH_ALL_CROSSINGS);
             }
 
@@ -246,7 +246,7 @@ namespace DotRecast.Recast.Toolset.Tools
 
 
         public DtStatus Raycast(DtNavMeshQuery navQuery, long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter,
-            ref List<long> polys, ref List<StraightPathItem> straightPath, ref RcVec3f hitPos, ref RcVec3f hitNormal, ref bool hitResult)
+            ref List<long> polys, ref List<DtStraightPath> straightPath, ref RcVec3f hitPos, ref RcVec3f hitNormal, ref bool hitResult)
         {
             if (startRef == 0 || endRef == 0)
             {
@@ -289,10 +289,10 @@ namespace DotRecast.Recast.Toolset.Tools
                 }
             }
 
-            straightPath ??= new List<StraightPathItem>();
+            straightPath ??= new List<DtStraightPath>();
             straightPath.Clear();
-            straightPath.Add(new StraightPathItem(startPos, 0, 0));
-            straightPath.Add(new StraightPathItem(hitPos, 0, 0));
+            straightPath.Add(new DtStraightPath(startPos, 0, 0));
+            straightPath.Add(new DtStraightPath(hitPos, 0, 0));
 
             return status;
         }

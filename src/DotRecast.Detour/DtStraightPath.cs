@@ -23,13 +23,13 @@ using DotRecast.Core;
 namespace DotRecast.Detour
 {
     //TODO: (PP) Add comments
-    public readonly struct StraightPathItem
+    public readonly struct DtStraightPath
     {
         public readonly RcVec3f pos;
         public readonly int flags;
         public readonly long refs;
 
-        public StraightPathItem(RcVec3f pos, int flags, long refs)
+        public DtStraightPath(RcVec3f pos, int flags, long refs)
         {
             this.pos = pos;
             this.flags = flags;

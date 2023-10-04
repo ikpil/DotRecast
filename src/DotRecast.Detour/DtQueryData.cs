@@ -34,6 +34,6 @@ namespace DotRecast.Detour
         public IDtQueryFilter filter;
         public int options;
         public float raycastLimitSqr;
-        public IQueryHeuristic heuristic;
+        public IDtQueryHeuristic heuristic;
     }
 }

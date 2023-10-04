@@ -1,6 +1,6 @@
 ﻿namespace DotRecast.Detour
 {
-    public enum Intersection
+    public enum DtConvexConvexIntersection
     {
         None,
         Single,

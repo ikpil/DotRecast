@@ -76,7 +76,7 @@ namespace DotRecast.Detour.Crowd
         public DtCrowdAgentParams option;
 
         /// The local path corridor corners for the agent.
-        public List<StraightPathItem> corners = new List<StraightPathItem>();
+        public List<DtStraightPath> corners = new List<DtStraightPath>();
 
         public DtMoveRequestState targetState;
 

@@ -51,7 +51,7 @@ namespace DotRecast.Detour
             }
 
             float[] qCircle = Circle(center, radius);
-            float[] intersection = ConvexConvexIntersection.Intersect(verts, qCircle);
+            float[] intersection = DtConvexConvexIntersections.Intersect(verts, qCircle);
             if (intersection == null && DtUtils.PointInPolygon(center, verts, verts.Length / 3))
             {
                 // circle inside polygon

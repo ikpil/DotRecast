@@ -29,7 +29,7 @@ public class ConvexConvexIntersectionTest
     {
         float[] p = { -4, 0, 0, -3, 0, 3, 2, 0, 3, 3, 0, -3, -2, 0, -4 };
         float[] q = { -4, 0, 0, -3, 0, 3, 2, 0, 3, 3, 0, -3, -2, 0, -4 };
-        float[] intersection = ConvexConvexIntersection.Intersect(p, q);
+        float[] intersection = DtConvexConvexIntersections.Intersect(p, q);
         Assert.That(intersection.Length, Is.EqualTo(5 * 3));
         Assert.That(intersection, Is.EqualTo(p));
     }
@@ -39,7 +39,7 @@ public class ConvexConvexIntersectionTest
     {
         float[] p = { -5, 0, -5, -5, 0, 4, 1, 0, 4, 1, 0, -5 };
         float[] q = { -4, 0, 0, -3, 0, 3, 2, 0, 3, 3, 0, -3, -2, 0, -4 };
-        float[] intersection = ConvexConvexIntersection.Intersect(p, q);
+        float[] intersection = DtConvexConvexIntersections.Intersect(p, q);
         Assert.That(intersection.Length, Is.EqualTo(5 * 3));
         Assert.That(intersection, Is.EqualTo(new[] { 1, 0, 3, 1, 0, -3.4f, -2, 0, -4, -4, 0, 0, -3, 0, 3 }));
     }

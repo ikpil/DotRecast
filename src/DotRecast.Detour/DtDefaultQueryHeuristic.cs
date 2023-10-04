@@ -19,10 +19,24 @@ freely, subject to the following restrictions:
 
 using DotRecast.Core;
 
+
 namespace DotRecast.Detour
 {
-    public interface IQueryHeuristic
+    public class DtDefaultQueryHeuristic : IDtQueryHeuristic
     {
-        float GetCost(RcVec3f neighbourPos, RcVec3f endPos);
+        public const float H_SCALE = 0.999f; // Search heuristic scale.
+        public static readonly DtDefaultQueryHeuristic Default = new DtDefaultQueryHeuristic(H_SCALE);
+
+        private readonly float scale;
+
+        public DtDefaultQueryHeuristic(float scale)
+        {
+            this.scale = scale;
+        }
+
+        public float GetCost(RcVec3f neighbourPos, RcVec3f endPos)
+        {
+            return RcVec3f.Distance(neighbourPos, endPos) * scale;
+        }
     }
 }

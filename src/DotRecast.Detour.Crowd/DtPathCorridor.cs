@@ -114,14 +114,14 @@ namespace DotRecast.Detour.Crowd
      * @param[in] navquery The query object used to build the corridor.
      * @return Corners
      */
-        public int FindCorners(ref List<StraightPathItem> corners, int maxCorners, DtNavMeshQuery navquery, IDtQueryFilter filter)
+        public int FindCorners(ref List<DtStraightPath> corners, int maxCorners, DtNavMeshQuery navquery, IDtQueryFilter filter)
         {
             var result = navquery.FindStraightPath(m_pos, m_target, m_path, ref corners, maxCorners, 0);
             if (result.Succeeded())
             {
                 // Prune points in the beginning of the path which are too close.
                 int start = 0;
-                foreach (StraightPathItem spi in corners)
+                foreach (DtStraightPath spi in corners)
                 {
                     if ((spi.flags & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0
                         || RcVec3f.Dist2DSqr(spi.pos, m_pos) > MIN_TARGET_DIST)
@@ -136,7 +136,7 @@ namespace DotRecast.Detour.Crowd
                 // Prune points after an off-mesh connection.
                 for (int i = start; i < corners.Count; i++)
                 {
-                    StraightPathItem spi = corners[i];
+                    DtStraightPath spi = corners[i];
                     if ((spi.flags & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
                     {
                         end = i + 1;

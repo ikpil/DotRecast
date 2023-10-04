@@ -25,7 +25,7 @@ namespace DotRecast.Detour
     /**
  * Convex-convex intersection based on "Computational Geometry in C" by Joseph O'Rourke
  */
-    public static class ConvexConvexIntersection
+    public static class DtConvexConvexIntersections
     {
         private static readonly float EPSILON = 0.0001f;
 
@@ -46,8 +46,8 @@ namespace DotRecast.Detour
             int ai = 0;
             int bi = 0;
 
-            InFlag f = InFlag.Unknown;
-            bool FirstPoint = true;
+            DtConvexConvexInFlag f = DtConvexConvexInFlag.Unknown;
+            bool firstPoint = true;
             RcVec3f ip = new RcVec3f();
             RcVec3f iq = new RcVec3f();
 
@@ -70,13 +70,13 @@ namespace DotRecast.Detour
                 }
 
                 bool parallel = cross == 0f;
-                Intersection code = parallel ? ParallelInt(a1, a, b1, b, ref ip, ref iq) : SegSegInt(a1, a, b1, b, ref ip, ref iq);
+                DtConvexConvexIntersection code = parallel ? ParallelInt(a1, a, b1, b, ref ip, ref iq) : SegSegInt(a1, a, b1, b, ref ip, ref iq);
 
-                if (code == Intersection.Single)
+                if (code == DtConvexConvexIntersection.Single)
                 {
-                    if (FirstPoint)
+                    if (firstPoint)
                     {
-                        FirstPoint = false;
+                        firstPoint = false;
                         aa = ba = 0;
                     }
 
@@ -87,7 +87,7 @@ namespace DotRecast.Detour
                 /*-----Advance rules-----*/
 
                 /* Special case: A & B overlap and oppositely oriented. */
-                if (code == Intersection.Overlap && A.Dot2D(B) < 0)
+                if (code == DtConvexConvexIntersection.Overlap && A.Dot2D(B) < 0)
                 {
                     ii = AddVertex(inters, ii, ip);
                     ii = AddVertex(inters, ii, iq);
@@ -103,7 +103,7 @@ namespace DotRecast.Detour
                 else if (parallel && Math.Abs(aHB) < EPSILON && Math.Abs(bHA) < EPSILON)
                 {
                     /* Advance but do not output point. */
-                    if (f == InFlag.Pin)
+                    if (f == DtConvexConvexInFlag.Pin)
                     {
                         ba++;
                         bi++;
@@ -119,7 +119,7 @@ namespace DotRecast.Detour
                 {
                     if (bHA > 0)
                     {
-                        if (f == InFlag.Pin)
+                        if (f == DtConvexConvexInFlag.Pin)
                         {
                             ii = AddVertex(inters, ii, a);
                         }
@@ -129,7 +129,7 @@ namespace DotRecast.Detour
                     }
                     else
                     {
-                        if (f == InFlag.Qin)
+                        if (f == DtConvexConvexInFlag.Qin)
                         {
                             ii = AddVertex(inters, ii, b);
                         }
@@ -142,7 +142,7 @@ namespace DotRecast.Detour
                 {
                     if (aHB > 0)
                     {
-                        if (f == InFlag.Qin)
+                        if (f == DtConvexConvexInFlag.Qin)
                         {
                             ii = AddVertex(inters, ii, b);
                         }
@@ -152,7 +152,7 @@ namespace DotRecast.Detour
                     }
                     else
                     {
-                        if (f == InFlag.Pin)
+                        if (f == DtConvexConvexInFlag.Pin)
                         {
                             ii = AddVertex(inters, ii, a);
                         }
@@ -165,7 +165,7 @@ namespace DotRecast.Detour
             } while ((aa < n || ba < m) && aa < 2 * n && ba < 2 * m);
 
             /* Deal with special cases: not implemented. */
-            if (f == InFlag.Unknown)
+            if (f == DtConvexConvexInFlag.Unknown)
             {
                 return null;
             }
@@ -173,27 +173,6 @@ namespace DotRecast.Detour
             float[] copied = new float[ii];
             Array.Copy(inters, copied, ii);
             return copied;
-        }
-
-        private static int AddVertex(float[] inters, int ii, float[] p)
-        {
-            if (ii > 0)
-            {
-                if (inters[ii - 3] == p[0] && inters[ii - 2] == p[1] && inters[ii - 1] == p[2])
-                {
-                    return ii;
-                }
-
-                if (inters[0] == p[0] && inters[1] == p[1] && inters[2] == p[2])
-                {
-                    return ii;
-                }
-            }
-
-            inters[ii] = p[0];
-            inters[ii + 1] = p[1];
-            inters[ii + 2] = p[2];
-            return ii + 3;
         }
 
         private static int AddVertex(float[] inters, int ii, RcVec3f p)
@@ -218,21 +197,21 @@ namespace DotRecast.Detour
         }
 
 
-        private static InFlag InOut(InFlag inflag, float aHB, float bHA)
+        private static DtConvexConvexInFlag InOut(DtConvexConvexInFlag inflag, float aHB, float bHA)
         {
             if (aHB > 0)
             {
-                return InFlag.Pin;
+                return DtConvexConvexInFlag.Pin;
             }
             else if (bHA > 0)
             {
-                return InFlag.Qin;
+                return DtConvexConvexInFlag.Qin;
             }
 
             return inflag;
         }
 
-        private static Intersection SegSegInt(RcVec3f a, RcVec3f b, RcVec3f c, RcVec3f d, ref RcVec3f p, ref RcVec3f q)
+        private static DtConvexConvexIntersection SegSegInt(RcVec3f a, RcVec3f b, RcVec3f c, RcVec3f d, ref RcVec3f p, ref RcVec3f q)
         {
             if (DtUtils.IntersectSegSeg2D(a, b, c, d, out var s, out var t))
             {
@@ -241,58 +220,58 @@ namespace DotRecast.Detour
                     p.x = a.x + (b.x - a.x) * s;
                     p.y = a.y + (b.y - a.y) * s;
                     p.z = a.z + (b.z - a.z) * s;
-                    return Intersection.Single;
+                    return DtConvexConvexIntersection.Single;
                 }
             }
 
-            return Intersection.None;
+            return DtConvexConvexIntersection.None;
         }
 
-        private static Intersection ParallelInt(RcVec3f a, RcVec3f b, RcVec3f c, RcVec3f d, ref RcVec3f p, ref RcVec3f q)
+        private static DtConvexConvexIntersection ParallelInt(RcVec3f a, RcVec3f b, RcVec3f c, RcVec3f d, ref RcVec3f p, ref RcVec3f q)
         {
             if (Between(a, b, c) && Between(a, b, d))
             {
                 p = c;
                 q = d;
-                return Intersection.Overlap;
+                return DtConvexConvexIntersection.Overlap;
             }
 
             if (Between(c, d, a) && Between(c, d, b))
             {
                 p = a;
                 q = b;
-                return Intersection.Overlap;
+                return DtConvexConvexIntersection.Overlap;
             }
 
             if (Between(a, b, c) && Between(c, d, b))
             {
                 p = c;
                 q = b;
-                return Intersection.Overlap;
+                return DtConvexConvexIntersection.Overlap;
             }
 
             if (Between(a, b, c) && Between(c, d, a))
             {
                 p = c;
                 q = a;
-                return Intersection.Overlap;
+                return DtConvexConvexIntersection.Overlap;
             }
 
             if (Between(a, b, d) && Between(c, d, b))
             {
                 p = d;
                 q = b;
-                return Intersection.Overlap;
+                return DtConvexConvexIntersection.Overlap;
             }
 
             if (Between(a, b, d) && Between(c, d, a))
             {
                 p = d;
                 q = a;
-                return Intersection.Overlap;
+                return DtConvexConvexIntersection.Overlap;
             }
 
-            return Intersection.None;
+            return DtConvexConvexIntersection.None;
         }
 
         private static bool Between(RcVec3f a, RcVec3f b, RcVec3f c)

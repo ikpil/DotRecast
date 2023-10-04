@@ -1024,15 +1024,15 @@ namespace DotRecast.Detour
      */
         public DtStatus InitSlicedFindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter, int options)
         {
-            return InitSlicedFindPath(startRef, endRef, startPos, endPos, filter, options, DefaultQueryHeuristic.Default, -1.0f);
+            return InitSlicedFindPath(startRef, endRef, startPos, endPos, filter, options, DtDefaultQueryHeuristic.Default, -1.0f);
         }
 
         public DtStatus InitSlicedFindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter, int options, float raycastLimit)
         {
-            return InitSlicedFindPath(startRef, endRef, startPos, endPos, filter, options, DefaultQueryHeuristic.Default, raycastLimit);
+            return InitSlicedFindPath(startRef, endRef, startPos, endPos, filter, options, DtDefaultQueryHeuristic.Default, raycastLimit);
         }
 
-        public DtStatus InitSlicedFindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter, int options, IQueryHeuristic heuristic, float raycastLimit)
+        public DtStatus InitSlicedFindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter, int options, IDtQueryHeuristic heuristic, float raycastLimit)
         {
             // Init path state.
             m_query = new DtQueryData();
@@ -1431,20 +1431,20 @@ namespace DotRecast.Detour
             return DtStatus.DT_SUCCSESS | details;
         }
 
-        protected DtStatus AppendVertex(RcVec3f pos, int flags, long refs, ref List<StraightPathItem> straightPath,
+        protected DtStatus AppendVertex(RcVec3f pos, int flags, long refs, ref List<DtStraightPath> straightPath,
             int maxStraightPath)
         {
             if (straightPath.Count > 0 && DtUtils.VEqual(straightPath[straightPath.Count - 1].pos, pos))
             {
                 // The vertices are equal, update flags and poly.
-                straightPath[straightPath.Count - 1] = new StraightPathItem(straightPath[straightPath.Count - 1].pos, flags, refs);
+                straightPath[straightPath.Count - 1] = new DtStraightPath(straightPath[straightPath.Count - 1].pos, flags, refs);
             }
             else
             {
                 if (straightPath.Count < maxStraightPath)
                 {
                     // Append new vertex.
-                    straightPath.Add(new StraightPathItem(pos, flags, refs));
+                    straightPath.Add(new DtStraightPath(pos, flags, refs));
                 }
 
                 // If reached end of path or there is no space to append more vertices, return.
@@ -1458,7 +1458,7 @@ namespace DotRecast.Detour
         }
 
         protected DtStatus AppendPortals(int startIdx, int endIdx, RcVec3f endPos, List<long> path,
-            ref List<StraightPathItem> straightPath, int maxStraightPath, int options)
+            ref List<DtStraightPath> straightPath, int maxStraightPath, int options)
         {
             var startPos = straightPath[straightPath.Count - 1].pos;
             // Append or update last vertex
@@ -1537,7 +1537,7 @@ namespace DotRecast.Detour
         ///  @param[in]		options				Query options. (see: #dtStraightPathOptions)
         /// @returns The status flags for the query.
         public virtual DtStatus FindStraightPath(RcVec3f startPos, RcVec3f endPos, List<long> path,
-            ref List<StraightPathItem> straightPath,
+            ref List<DtStraightPath> straightPath,
             int maxStraightPath, int options)
         {
             if (!RcVec3f.IsFinite(startPos) || !RcVec3f.IsFinite(endPos) || null == straightPath

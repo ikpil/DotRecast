@@ -56,7 +56,7 @@ public class TestNavmeshSampleTool : ISampleTool
     private bool m_hitResult;
 
     private float m_distanceToWall;
-    private List<StraightPathItem> m_straightPath;
+    private List<DtStraightPath> m_straightPath;
     private List<long> m_polys;
     private List<long> m_parent;
     private float m_neighbourhoodRadius;
@@ -285,8 +285,8 @@ public class TestNavmeshSampleTool : ISampleTool
                 dd.Begin(LINES, 2.0f);
                 for (int i = 0; i < m_straightPath.Count - 1; ++i)
                 {
-                    StraightPathItem straightPathItem = m_straightPath[i];
-                    StraightPathItem straightPathItem2 = m_straightPath[i + 1];
+                    DtStraightPath straightPathItem = m_straightPath[i];
+                    DtStraightPath straightPathItem2 = m_straightPath[i + 1];
                     int col;
                     if ((straightPathItem.flags & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
                     {
@@ -305,7 +305,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 dd.Begin(POINTS, 6.0f);
                 for (int i = 0; i < m_straightPath.Count; ++i)
                 {
-                    StraightPathItem straightPathItem = m_straightPath[i];
+                    DtStraightPath straightPathItem = m_straightPath[i];
                     int col;
                     if ((straightPathItem.flags & DtNavMeshQuery.DT_STRAIGHTPATH_START) != 0)
                     {
@@ -350,8 +350,8 @@ public class TestNavmeshSampleTool : ISampleTool
                 dd.Begin(LINES, 2.0f);
                 for (int i = 0; i < m_straightPath.Count - 1; ++i)
                 {
-                    StraightPathItem straightPathItem = m_straightPath[i];
-                    StraightPathItem straightPathItem2 = m_straightPath[i + 1];
+                    DtStraightPath straightPathItem = m_straightPath[i];
+                    DtStraightPath straightPathItem2 = m_straightPath[i + 1];
                     dd.Vertex(straightPathItem.pos.x, straightPathItem.pos.y + 0.4f, straightPathItem.pos.z, spathCol);
                     dd.Vertex(straightPathItem2.pos.x, straightPathItem2.pos.y + 0.4f, straightPathItem2.pos.z, spathCol);
                 }
@@ -360,7 +360,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 dd.Begin(POINTS, 4.0f);
                 for (int i = 0; i < m_straightPath.Count; ++i)
                 {
-                    StraightPathItem straightPathItem = m_straightPath[i];
+                    DtStraightPath straightPathItem = m_straightPath[i];
                     dd.Vertex(straightPathItem.pos.x, straightPathItem.pos.y + 0.4f, straightPathItem.pos.z, spathCol);
                 }
 
