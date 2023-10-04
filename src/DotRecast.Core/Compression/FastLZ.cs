@@ -1,693 +1,663 @@
 /*
- * Copyright 2014 The Netty Project
- *
- * The Netty Project licenses this file to you under the Apache License,
- * version 2.0 (the "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at:
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations
- * under the License.
- */
+  FastLZ - Byte-aligned LZ77 compression library
+  Copyright (C) 2005-2020 Ariya Hidayat <ariya.hidayat@gmail.com>
+  Copyright (C) 2023 Choi Ikpil <ikpil@naver.com> https://github.com/ikpil/DotFastLZ
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  THE SOFTWARE.
+*/
 
 using System;
 
 namespace DotRecast.Core.Compression
 {
-    /**
-     * Core of FastLZ compression algorithm.
-     *
-     * This class provides methods for compression and decompression of buffers and saves
-     * constants which use by FastLzFrameEncoder and FastLzFrameDecoder.
-     *
-     * This is refactored code of <a href="https://code.google.com/p/jfastlz/">jfastlz</a>
-     * library written by William Kinney.
-     */
     public static class FastLZ
     {
-        private const int MAX_DISTANCE = 8191;
-        private const int MAX_FARDISTANCE = 65535 + MAX_DISTANCE - 1;
+        public const int FASTLZ_VERSION = 0x000500;
+        public const int FASTLZ_VERSION_MAJOR = 0;
+        public const int FASTLZ_VERSION_MINOR = 5;
+        public const int FASTLZ_VERSION_REVISION = 0;
+        public const string FASTLZ_VERSION_STRING = "0.5.0";
 
-        private const int HASH_LOG = 13;
-        private const int HASH_SIZE = 1 << HASH_LOG; // 8192
-        private const int HASH_MASK = HASH_SIZE - 1;
-
-        private const int MAX_COPY = 32;
-        private const int MAX_LEN = 256 + 8;
-
-        private const int MIN_RECOMENDED_LENGTH_FOR_LEVEL_2 = 1024 * 64;
-
-        private const int MAGIC_NUMBER = 'F' << 16 | 'L' << 8 | 'Z';
-
-        private const byte BLOCK_TYPE_NON_COMPRESSED = 0x00;
-        private const byte BLOCK_TYPE_COMPRESSED = 0x01;
-        private const byte BLOCK_WITHOUT_CHECKSUM = 0x00;
-        private const byte BLOCK_WITH_CHECKSUM = 0x10;
-
-        private const int OPTIONS_OFFSET = 3;
-        private const int CHECKSUM_OFFSET = 4;
-
-        private const int MAX_CHUNK_LENGTH = 0xFFFF;
+        public const int MAX_COPY = 32;
+        public const int MAX_LEN = 264; /* 256 + 8 */
+        public const int MAX_L1_DISTANCE = 8192;
+        public const int MAX_L2_DISTANCE = 8191;
+        public const int MAX_FARDISTANCE = (65535 + MAX_L2_DISTANCE - 1);
+        public const int HASH_LOG = 13;
+        public const int HASH_SIZE = (1 << HASH_LOG);
+        public const int HASH_MASK = (HASH_SIZE - 1);
 
         /**
-     * Do not call {@link #Compress(byte[], int, int, byte[], int, int)} for input buffers
-     * which length less than this value.
-     */
-        private const int MIN_LENGTH_TO_COMPRESSION = 32;
+          Compress a block of data in the input buffer and returns the size of
+          compressed block. The size of input buffer is specified by length. The
+          minimum input buffer size is 16.
 
-        /**
-     * In this case {@link #Compress(byte[], int, int, byte[], int, int)} will choose level
-     * automatically depending on the length of the input buffer. If length less than
-     * {@link #MIN_RECOMENDED_LENGTH_FOR_LEVEL_2} {@link #LEVEL_1} will be choosen,
-     * otherwise {@link #LEVEL_2}.
-     */
-        private const int LEVEL_AUTO = 0;
+          The output buffer must be at least 5% larger than the input buffer
+          and can not be smaller than 66 bytes.
 
-        /**
-     * Level 1 is the fastest compression and generally useful for short data.
-     */
-        private const int LEVEL_1 = 1;
+          If the input is not compressible, the return value might be larger than
+          length (input buffer size).
 
-        /**
-     * Level 2 is slightly slower but it gives better compression ratio.
-     */
-        private const int LEVEL_2 = 2;
+          The input buffer and the output buffer can not overlap.
 
-        /**
-     * The output buffer must be at least 6% larger than the input buffer and can not be smaller than 66 bytes.
-     * @param inputLength length of input buffer
-     * @return Maximum output buffer length
-     */
-        public static int CalculateOutputBufferLength(int inputLength)
+          Compression level can be specified in parameter level. At the moment,
+          only level 1 and level 2 are supported.
+          Level 1 is the fastest compression and generally useful for short data.
+          Level 2 is slightly slower but it gives better compression ratio.
+
+          Note that the compressed data, regardless of the level, can always be
+          decompressed using the function fastlz_decompress below.
+        */
+        // fastlz_compress
+        public static long CompressLevel(int level, byte[] input, long length, byte[] output)
         {
-            int tempOutputLength = (int)(inputLength * 1.06);
-            return Math.Max(tempOutputLength, 66);
+            return CompressLevel(level, input, 0, length, output);
         }
 
-        /**
-     * Compress a block of data in the input buffer and returns the size of compressed block.
-     * The size of input buffer is specified by length. The minimum input buffer size is 32.
-     *
-     * If the input is not compressible, the return value might be larger than length (input buffer size).
-     */
-        public static int Compress(byte[] input, int inOffset, int inLength,
-            byte[] output, int outOffset, int proposedLevel)
+        public static long CompressLevel(int level, byte[] input, long inputOffset, long length, byte[] output)
         {
-            int level;
-            if (proposedLevel == LEVEL_AUTO)
+            if (level == 1)
             {
-                level = inLength < MIN_RECOMENDED_LENGTH_FOR_LEVEL_2 ? LEVEL_1 : LEVEL_2;
-            }
-            else
-            {
-                level = proposedLevel;
+                return CompressLevel1(input, inputOffset, length, output);
             }
 
-            int ip = 0;
-            int ipBound = ip + inLength - 2;
-            int ipLimit = ip + inLength - 12;
-
-            int op = 0;
-
-            // const flzuint8* htab[HASH_SIZE];
-            int[] htab = new int[HASH_SIZE];
-            // const flzuint8** hslot;
-            int hslot;
-            // flzuint32 hval;
-            // int OK b/c address starting from 0
-            int hval;
-            // flzuint32 copy;
-            // int OK b/c address starting from 0
-            int copy;
-
-            /* sanity check */
-            if (inLength < 4)
+            if (level == 2)
             {
-                if (inLength != 0)
+                return CompressLevel2(input, inputOffset, length, output);
+            }
+
+            throw new Exception($"invalid level: {level} (expected: 1 or 2)");
+        }
+
+        // fastlz1_compress
+        public static long CompressLevel1(byte[] input, long inputOffset, long length, byte[] output)
+        {
+            long ip = inputOffset;
+            long ip_start = ip;
+            long ip_bound = ip + length - 4;
+            long ip_limit = ip + length - 12 - 1;
+
+            long op = 0;
+
+            long[] htab = new long[HASH_SIZE];
+            long seq, hash;
+
+            // Initializes hash table
+            for (hash = 0; hash < HASH_SIZE; ++hash)
+            {
+                htab[hash] = 0;
+            }
+
+            // We start with literal copy
+            long anchor = ip;
+            ip += 2;
+
+            // Main loop
+            while (ip < ip_limit)
+            {
+                long refIdx;
+                long distance, cmp;
+
+                // Find potential match
+                do
                 {
-                    // *op++ = length-1;
-                    output[outOffset + op++] = (byte)(inLength - 1);
-                    ipBound++;
-                    while (ip <= ipBound)
+                    seq = ReadUInt32(input, ip) & 0xffffff;
+                    hash = Hash(seq);
+                    refIdx = ip_start + htab[hash];
+                    htab[hash] = ip - ip_start;
+                    distance = ip - refIdx;
+                    cmp = distance < MAX_L1_DISTANCE
+                        ? ReadUInt32(input, refIdx) & 0xffffff
+                        : 0x1000000;
+
+                    if (ip >= ip_limit)
                     {
-                        output[outOffset + op++] = input[inOffset + ip++];
+                        break;
                     }
 
-                    return inLength + 1;
+                    ++ip;
+                } while (seq != cmp);
+
+                if (ip >= ip_limit)
+                {
+                    break;
                 }
 
-                // else
-                return 0;
+                --ip;
+
+                if (ip > anchor)
+                {
+                    op = Literals(ip - anchor, input, anchor, output, op);
+                }
+
+                long len = MemCompare(input, refIdx + 3, input, ip + 3, ip_bound);
+                op = MatchLevel1(len, distance, output, op);
+
+                // Update the hash at the match boundary
+                ip += len;
+                seq = ReadUInt32(input, ip);
+                hash = Hash(seq & 0xffffff);
+                htab[hash] = ip++ - ip_start;
+                seq >>= 8;
+                hash = Hash(seq);
+                htab[hash] = ip++ - ip_start;
+
+                anchor = ip;
             }
 
+            long copy = length - anchor;
+            op = Literals(copy, input, anchor, output, op);
+            return op;
+        }
+
+        // fastlz2_compress
+        public static long CompressLevel2(byte[] input, long inputOffset, long length, byte[] output)
+        {
+            long ip = inputOffset;
+            long ip_start = ip;
+            long ip_bound = ip + length - 4; /* because readU32 */
+            long ip_limit = ip + length - 12 - 1;
+
+            long op = 0;
+
+            long[] htab = new long[HASH_SIZE];
+            long seq, hash;
+
             /* initializes hash table */
-            //  for (hslot = htab; hslot < htab + HASH_SIZE; hslot++)
-            for (hslot = 0; hslot < HASH_SIZE; hslot++)
+            for (hash = 0; hash < HASH_SIZE; ++hash)
             {
-                //*hslot = ip;
-                htab[hslot] = ip;
+                htab[hash] = 0;
             }
 
             /* we start with literal copy */
-            copy = 2;
-            output[outOffset + op++] = (byte)(MAX_COPY - 1);
-            output[outOffset + op++] = input[inOffset + ip++];
-            output[outOffset + op++] = input[inOffset + ip++];
+            long anchor = ip;
+            ip += 2;
 
             /* main loop */
-            while (ip < ipLimit)
+            while (ip < ip_limit)
             {
-                int refs = 0;
+                long refs;
+                long distance, cmp;
 
-                long distance = 0;
-
-                /* minimum match length */
-                // flzuint32 len = 3;
-                // int OK b/c len is 0 and octal based
-                int len = 3;
-
-                /* comparison starting-point */
-                int anchor = ip;
-
-                bool matchLabel = false;
-
-                /* check for a run */
-                if (level == LEVEL_2)
+                /* find potential match */
+                do
                 {
-                    //If(ip[0] == ip[-1] && FASTLZ_READU16(ip-1)==FASTLZ_READU16(ip+1))
-                    if (input[inOffset + ip] == input[inOffset + ip - 1] &&
-                        ReadU16(input, inOffset + ip - 1) == ReadU16(input, inOffset + ip + 1))
+                    seq = ReadUInt32(input, ip) & 0xffffff;
+                    hash = Hash(seq);
+                    refs = ip_start + htab[hash];
+                    htab[hash] = ip - ip_start;
+                    distance = ip - refs;
+                    cmp = distance < MAX_FARDISTANCE
+                        ? ReadUInt32(input, refs) & 0xffffff
+                        : 0x1000000;
+
+                    if (ip >= ip_limit)
                     {
-                        distance = 1;
-                        ip += 3;
-                        refs = anchor - 1 + 3;
-
-                        /*
-                         * goto match;
-                         */
-                        matchLabel = true;
-                    }
-                }
-
-                if (!matchLabel)
-                {
-                    /* find potential match */
-                    // HASH_FUNCTION(hval,ip);
-                    hval = HashFunction(input, inOffset + ip);
-                    // hslot = htab + hval;
-                    hslot = hval;
-                    // refs = htab[hval];
-                    refs = htab[hval];
-
-                    /* calculate distance to the match */
-                    distance = anchor - refs;
-
-                    /* update hash table */
-                    //*hslot = anchor;
-                    htab[hslot] = anchor;
-
-                    /* is this a match? check the first 3 bytes */
-                    if (distance == 0
-                        || (level == LEVEL_1 ? distance >= MAX_DISTANCE : distance >= MAX_FARDISTANCE)
-                        || input[inOffset + refs++] != input[inOffset + ip++]
-                        || input[inOffset + refs++] != input[inOffset + ip++]
-                        || input[inOffset + refs++] != input[inOffset + ip++])
-                    {
-                        /*
-                         * goto literal;
-                         */
-                        output[outOffset + op++] = input[inOffset + anchor++];
-                        ip = anchor;
-                        copy++;
-                        if (copy == MAX_COPY)
-                        {
-                            copy = 0;
-                            output[outOffset + op++] = (byte)(MAX_COPY - 1);
-                        }
-
-                        continue;
-                    }
-
-                    if (level == LEVEL_2)
-                    {
-                        /* far, needs at least 5-byte match */
-                        if (distance >= MAX_DISTANCE)
-                        {
-                            if (input[inOffset + ip++] != input[inOffset + refs++]
-                                || input[inOffset + ip++] != input[inOffset + refs++])
-                            {
-                                /*
-                                 * goto literal;
-                                 */
-                                output[outOffset + op++] = input[inOffset + anchor++];
-                                ip = anchor;
-                                copy++;
-                                if (copy == MAX_COPY)
-                                {
-                                    copy = 0;
-                                    output[outOffset + op++] = (byte)(MAX_COPY - 1);
-                                }
-
-                                continue;
-                            }
-
-                            len += 2;
-                        }
-                    }
-                } // end If(!matchLabel)
-
-                /*
-                 * match:
-                 */
-                /* last matched byte */
-                ip = anchor + len;
-
-                /* distance is biased */
-                distance--;
-
-                if (distance == 0)
-                {
-                    /* zero distance means a run */
-                    //flzuint8 x = ip[-1];
-                    byte x = input[inOffset + ip - 1];
-                    while (ip < ipBound)
-                    {
-                        if (input[inOffset + refs++] != x)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            ip++;
-                        }
-                    }
-                }
-                else
-                {
-                    for (;;)
-                    {
-                        /* safe because the outer check against ip limit */
-                        if (input[inOffset + refs++] != input[inOffset + ip++])
-                        {
-                            break;
-                        }
-
-                        if (input[inOffset + refs++] != input[inOffset + ip++])
-                        {
-                            break;
-                        }
-
-                        if (input[inOffset + refs++] != input[inOffset + ip++])
-                        {
-                            break;
-                        }
-
-                        if (input[inOffset + refs++] != input[inOffset + ip++])
-                        {
-                            break;
-                        }
-
-                        if (input[inOffset + refs++] != input[inOffset + ip++])
-                        {
-                            break;
-                        }
-
-                        if (input[inOffset + refs++] != input[inOffset + ip++])
-                        {
-                            break;
-                        }
-
-                        if (input[inOffset + refs++] != input[inOffset + ip++])
-                        {
-                            break;
-                        }
-
-                        if (input[inOffset + refs++] != input[inOffset + ip++])
-                        {
-                            break;
-                        }
-
-                        while (ip < ipBound)
-                        {
-                            if (input[inOffset + refs++] != input[inOffset + ip++])
-                            {
-                                break;
-                            }
-                        }
-
                         break;
                     }
-                }
 
-                /* if we have copied something, adjust the copy count */
-                if (copy != 0)
+                    ++ip;
+                } while (seq != cmp);
+
+                if (ip >= ip_limit)
                 {
-                    /* copy is biased, '0' means 1 byte copy */
-                    // *(op-copy-1) = copy-1;
-                    output[outOffset + op - copy - 1] = (byte)(copy - 1);
+                    break;
                 }
-                else
+
+                --ip;
+
+                /* far, needs at least 5-byte match */
+                if (distance >= MAX_L2_DISTANCE)
                 {
-                    /* back, to overwrite the copy count */
-                    op--;
+                    if (input[refs + 3] != input[ip + 3] || input[refs + 4] != input[ip + 4])
+                    {
+                        ++ip;
+                        continue;
+                    }
                 }
 
-                /* reset literal counter */
-                copy = 0;
-
-                /* length is biased, '1' means a match of 3 bytes */
-                ip -= 3;
-                len = ip - anchor;
-
-                /* encode the match */
-                if (level == LEVEL_2)
+                if (ip > anchor)
                 {
-                    if (distance < MAX_DISTANCE)
-                    {
-                        if (len < 7)
-                        {
-                            output[outOffset + op++] = (byte)((len << 5) + (int)((ulong)distance >> 8));
-                            output[outOffset + op++] = (byte)(distance & 255);
-                        }
-                        else
-                        {
-                            output[outOffset + op++] = (byte)((7 << 5) + ((ulong)distance >> 8));
-                            for (len -= 7; len >= 255; len -= 255)
-                            {
-                                output[outOffset + op++] = (byte)255;
-                            }
-
-                            output[outOffset + op++] = (byte)len;
-                            output[outOffset + op++] = (byte)(distance & 255);
-                        }
-                    }
-                    else
-                    {
-                        /* far away, but not yet in the another galaxy... */
-                        if (len < 7)
-                        {
-                            distance -= MAX_DISTANCE;
-                            output[outOffset + op++] = (byte)((len << 5) + 31);
-                            output[outOffset + op++] = (byte)255;
-                            output[outOffset + op++] = (byte)((ulong)distance >> 8);
-                            output[outOffset + op++] = (byte)(distance & 255);
-                        }
-                        else
-                        {
-                            distance -= MAX_DISTANCE;
-                            output[outOffset + op++] = (byte)((7 << 5) + 31);
-                            for (len -= 7; len >= 255; len -= 255)
-                            {
-                                output[outOffset + op++] = (byte)255;
-                            }
-
-                            output[outOffset + op++] = (byte)len;
-                            output[outOffset + op++] = (byte)255;
-                            output[outOffset + op++] = (byte)((ulong)distance >> 8);
-                            output[outOffset + op++] = (byte)(distance & 255);
-                        }
-                    }
+                    op = Literals(ip - anchor, input, anchor, output, op);
                 }
-                else
-                {
-                    if (len > MAX_LEN - 2)
-                    {
-                        while (len > MAX_LEN - 2)
-                        {
-                            output[outOffset + op++] = (byte)((7 << 5) + ((ulong)distance >> 8));
-                            output[outOffset + op++] = (byte)(MAX_LEN - 2 - 7 - 2);
-                            output[outOffset + op++] = (byte)(distance & 255);
-                            len -= MAX_LEN - 2;
-                        }
-                    }
 
-                    if (len < 7)
-                    {
-                        output[outOffset + op++] = (byte)((len << 5) + (int)((ulong)distance >> 8));
-                        output[outOffset + op++] = (byte)(distance & 255);
-                    }
-                    else
-                    {
-                        output[outOffset + op++] = (byte)((7 << 5) + (int)((ulong)distance >> 8));
-                        output[outOffset + op++] = (byte)(len - 7);
-                        output[outOffset + op++] = (byte)(distance & 255);
-                    }
-                }
+                long len = MemCompare(input, refs + 3, input, ip + 3, ip_bound);
+                op = MatchLevel2(len, distance, output, op);
 
                 /* update the hash at match boundary */
-                //HASH_FUNCTION(hval,ip);
-                hval = HashFunction(input, inOffset + ip);
-                htab[hval] = ip++;
+                ip += len;
+                seq = ReadUInt32(input, ip);
+                hash = Hash(seq & 0xffffff);
+                htab[hash] = ip++ - ip_start;
+                seq >>= 8;
+                hash = Hash(seq);
+                htab[hash] = ip++ - ip_start;
 
-                //HASH_FUNCTION(hval,ip);
-                hval = HashFunction(input, inOffset + ip);
-                htab[hval] = ip++;
-
-                /* assuming literal copy */
-                output[outOffset + op++] = (byte)(MAX_COPY - 1);
-
-                continue;
-
-                // Moved to be inline, with a 'continue'
-                /*
-                 * literal:
-                 *
-                  output[outOffset + op++] = input[inOffset + anchor++];
-                  ip = anchor;
-                  copy++;
-                  If(copy == MAX_COPY){
-                    copy = 0;
-                    output[outOffset + op++] = MAX_COPY-1;
-                  }
-                */
+                anchor = ip;
             }
 
-            /* left-over as literal copy */
-            ipBound++;
-            while (ip <= ipBound)
-            {
-                output[outOffset + op++] = input[inOffset + ip++];
-                copy++;
-                if (copy == MAX_COPY)
-                {
-                    copy = 0;
-                    output[outOffset + op++] = (byte)(MAX_COPY - 1);
-                }
-            }
+            long copy = length - anchor;
+            op = Literals(copy, input, anchor, output, op);
 
-            /* if we have copied something, adjust the copy length */
-            if (copy != 0)
-            {
-                //*(op-copy-1) = copy-1;
-                output[outOffset + op - copy - 1] = (byte)(copy - 1);
-            }
-            else
-            {
-                op--;
-            }
-
-            if (level == LEVEL_2)
-            {
-                /* marker for fastlz2 */
-                output[outOffset] |= 1 << 5;
-            }
+            /* marker for fastlz2 */
+            output[inputOffset] |= (1 << 5);
 
             return op;
         }
 
         /**
-     * Decompress a block of compressed data and returns the size of the decompressed block.
-     * If error occurs, e.g. the compressed data is corrupted or the output buffer is not large
-     * enough, then 0 (zero) will be returned instead.
-     *
-     * Decompression is memory safe and guaranteed not to write the output buffer
-     * more than what is specified in outLength.
-     */
-        public static int Decompress(byte[] input, int inOffset, int inLength,
-            byte[] output, int outOffset, int outLength)
+          Decompress a block of compressed data and returns the size of the
+          decompressed block. If error occurs, e.g. the compressed data is
+          corrupted or the output buffer is not large enough, then 0 (zero)
+          will be returned instead.
+
+          The input buffer and the output buffer can not overlap.
+
+          Decompression is memory safe and guaranteed not to write the output buffer
+          more than what is specified in maxout.
+
+          Note that the decompression will always work, regardless of the
+          compression level specified in fastlz_compress_level above (when
+          producing the compressed block).
+         */
+        // fastlz_decompress
+        public static long Decompress(byte[] input, long length, byte[] output, long maxout)
         {
-            //int level = ((*(const flzuint8*)input) >> 5) + 1;
-            int level = (input[inOffset] >> 5) + 1;
-            if (level != LEVEL_1 && level != LEVEL_2)
+            return Decompress(input, 0, length, output, 0, maxout);
+        }
+
+        public static long Decompress(byte[] input, long inputOffset, long length, byte[] output, long outputOffset, long maxout)
+        {
+            /* magic identifier for compression level */
+            int level = (input[inputOffset] >> 5) + 1;
+
+            if (level == 1)
             {
-                throw new Exception($"invalid level: {level} (expected: {LEVEL_1} or {LEVEL_2})");
+                return DecompressLevel1(input, inputOffset, length, output, outputOffset, maxout);
             }
 
-            // const flzuint8* ip = (const flzuint8*) input;
-            int ip = 0;
-            // flzuint8* op = (flzuint8*) output;
-            int op = 0;
-            // flzuint32 ctrl = (*ip++) & 31;
-            long ctrl = input[inOffset + ip++] & 31;
-
-            int loop = 1;
-            do
+            if (level == 2)
             {
-                //  const flzuint8* refs = op;
-                int refs = op;
-                // flzuint32 len = ctrl >> 5;
-                long len = ctrl >> 5;
-                // flzuint32 ofs = (ctrl & 31) << 8;
-                long ofs = (ctrl & 31) << 8;
+                return DecompressLevel2(input, inputOffset, length, output, outputOffset, maxout);
+            }
 
+            throw new Exception($"invalid level: {level} (expected: 1 or 2)");
+        }
+
+        // fastlz1_decompress
+        public static long DecompressLevel1(byte[] input, long inputOffset, long length, byte[] output, long outputOffset, long maxout)
+        {
+            long ip = inputOffset;
+            long ip_limit = ip + length;
+            long ip_bound = ip_limit - 2;
+
+            long op = outputOffset;
+            long op_limit = op + maxout;
+            long ctrl = input[ip++] & 31;
+
+            while (true)
+            {
                 if (ctrl >= 32)
                 {
-                    len--;
-                    // refs -= ofs;
-                    refs -= (int)ofs;
-
-                    int code;
-                    if (len == 6)
+                    long len = (ctrl >> 5) - 1;
+                    long ofs = (ctrl & 31) << 8;
+                    long refs = op - ofs - 1;
+                    if (len == 7 - 1)
                     {
-                        if (level == LEVEL_1)
+                        if (!(ip <= ip_bound))
                         {
-                            // len += *ip++;
-                            len += input[inOffset + ip++] & 0xFF;
+                            return 0;
                         }
-                        else
-                        {
-                            do
-                            {
-                                code = input[inOffset + ip++] & 0xFF;
-                                len += code;
-                            } while (code == 255);
-                        }
+
+                        len += input[ip++];
                     }
 
-                    if (level == LEVEL_1)
-                    {
-                        //  refs -= *ip++;
-                        refs -= input[inOffset + ip++] & 0xFF;
-                    }
-                    else
-                    {
-                        code = input[inOffset + ip++] & 0xFF;
-                        refs -= code;
-
-                        /* match from 16-bit distance */
-                        // If(FASTLZ_UNEXPECT_CONDITIONAL(code==255))
-                        // If(FASTLZ_EXPECT_CONDITIONAL(ofs==(31 << 8)))
-                        if (code == 255 && ofs == 31 << 8)
-                        {
-                            ofs = (input[inOffset + ip++] & 0xFF) << 8;
-                            ofs += input[inOffset + ip++] & 0xFF;
-
-                            refs = (int)(op - ofs - MAX_DISTANCE);
-                        }
-                    }
-
-                    // if the output index + length of Block(?) + 3(?) is over the output limit?
-                    if (op + len + 3 > outLength)
+                    refs -= input[ip++];
+                    len += 3;
+                    if (!(op + len <= op_limit))
                     {
                         return 0;
                     }
 
-                    // if (FASTLZ_UNEXPECT_CONDITIONAL(refs-1 < (flzuint8 *)output))
-                    // if the address space of refs-1 is < the address of output?
-                    // if we are still at the beginning of the output address?
-                    if (refs - 1 < 0)
+                    if (!(refs >= outputOffset))
                     {
                         return 0;
                     }
 
-                    if (ip < inLength)
-                    {
-                        ctrl = input[inOffset + ip++] & 0xFF;
-                    }
-                    else
-                    {
-                        loop = 0;
-                    }
-
-                    if (refs == op)
-                    {
-                        /* optimize copy for a run */
-                        // flzuint8 b = refs[-1];
-                        byte b = output[outOffset + refs - 1];
-                        output[outOffset + op++] = b;
-                        output[outOffset + op++] = b;
-                        output[outOffset + op++] = b;
-                        while (len != 0)
-                        {
-                            output[outOffset + op++] = b;
-                            --len;
-                        }
-                    }
-                    else
-                    {
-                        /* copy from reference */
-                        refs--;
-
-                        // *op++ = *refs++;
-                        output[outOffset + op++] = output[outOffset + refs++];
-                        output[outOffset + op++] = output[outOffset + refs++];
-                        output[outOffset + op++] = output[outOffset + refs++];
-
-                        while (len != 0)
-                        {
-                            output[outOffset + op++] = output[outOffset + refs++];
-                            --len;
-                        }
-                    }
+                    MemMove(output, op, output, refs, len);
+                    op += len;
                 }
                 else
                 {
                     ctrl++;
-
-                    if (op + ctrl > outLength)
+                    if (!(op + ctrl <= op_limit))
                     {
                         return 0;
                     }
 
-                    if (ip + ctrl > inLength)
+                    if (!(ip + ctrl <= ip_limit))
                     {
                         return 0;
                     }
 
-                    //*op++ = *ip++;
-                    output[outOffset + op++] = input[inOffset + ip++];
-
-                    for (--ctrl; ctrl != 0; ctrl--)
-                    {
-                        // *op++ = *ip++;
-                        output[outOffset + op++] = input[inOffset + ip++];
-                    }
-
-                    loop = ip < inLength ? 1 : 0;
-                    if (loop != 0)
-                    {
-                        //  ctrl = *ip++;
-                        ctrl = input[inOffset + ip++] & 0xFF;
-                    }
+                    Array.Copy(input, ip, output, op, ctrl);
+                    ip += ctrl;
+                    op += ctrl;
                 }
 
-                // While(FASTLZ_EXPECT_CONDITIONAL(loop));
-            } while (loop != 0);
+                if (ip > ip_bound)
+                {
+                    break;
+                }
 
-            //  return op - (flzuint8*)output;
+                ctrl = input[ip++];
+            }
+
             return op;
         }
 
-        private static int HashFunction(byte[] p, int offset)
+        // fastlz2_decompress
+        public static long DecompressLevel2(byte[] input, long inputOffset, long length, byte[] output, long outputOffset, long maxout)
         {
-            int v = ReadU16(p, offset);
-            v ^= ReadU16(p, offset + 1) ^ v >> 16 - HASH_LOG;
-            v &= HASH_MASK;
-            return v;
-        }
+            long ip = inputOffset;
+            long ip_limit = ip + length;
+            long ip_bound = ip_limit - 2;
 
-        private static int ReadU16(byte[] data, int offset)
-        {
-            if (offset + 1 >= data.Length)
+            long op = outputOffset;
+            long op_limit = op + maxout;
+            long ctrl = input[ip++] & 31;
+
+            while (true)
             {
-                return data[offset] & 0xff;
+                if (ctrl >= 32)
+                {
+                    long len = (ctrl >> 5) - 1;
+                    long ofs = (ctrl & 31) << 8;
+                    long refIdx = op - ofs - 1;
+
+                    long code;
+                    if (len == 7 - 1)
+                    {
+                        do
+                        {
+                            if (!(ip <= ip_bound))
+                            {
+                                return 0;
+                            }
+
+                            code = input[ip++];
+                            len += code;
+                        } while (code == 255);
+                    }
+
+                    code = input[ip++];
+                    refIdx -= code;
+                    len += 3;
+
+                    /* match from 16-bit distance */
+                    if (code == 255)
+                    {
+                        if (ofs == (31 << 8))
+                        {
+                            if (!(ip < ip_bound))
+                            {
+                                return 0;
+                            }
+
+                            ofs = input[ip++] << 8;
+                            ofs += input[ip++];
+                            refIdx = op - ofs - MAX_L2_DISTANCE - 1;
+                        }
+                    }
+
+                    if (!(op + len <= op_limit))
+                    {
+                        return 0;
+                    }
+
+                    if (!(refIdx >= outputOffset))
+                    {
+                        return 0;
+                    }
+
+                    MemMove(output, op, output, refIdx, len);
+                    op += len;
+                }
+                else
+                {
+                    ctrl++;
+                    if (!(op + ctrl <= op_limit))
+                    {
+                        return 0;
+                    }
+
+                    if (!(ip + ctrl <= ip_limit))
+                    {
+                        return 0;
+                    }
+
+                    Array.Copy(input, ip, output, op, ctrl);
+                    ip += ctrl;
+                    op += ctrl;
+                }
+
+                if (ip >= ip_limit)
+                {
+                    break;
+                }
+
+                ctrl = input[ip++];
             }
 
-            return (data[offset + 1] & 0xff) << 8 | data[offset] & 0xff;
+            return op;
+        }
+
+        // flz_readu32
+        public static uint ReadUInt32(byte[] data, long offset)
+        {
+            return ((uint)data[offset + 3] & 0xff) << 24 |
+                   ((uint)data[offset + 2] & 0xff) << 16 |
+                   ((uint)data[offset + 1] & 0xff) << 8 |
+                   ((uint)data[offset + 0] & 0xff);
+        }
+
+        public static ushort ReadUInt16(byte[] data, long offset)
+        {
+            var u16 = ((uint)data[offset + 1] << 8) |
+                      ((uint)data[offset + 0]);
+            return (ushort)u16;
+        }
+
+        // flz_hash
+        public static ushort Hash(long v)
+        {
+            ulong h = ((ulong)v * 2654435769UL) >> (32 - HASH_LOG);
+            return (ushort)(h & HASH_MASK);
+        }
+
+        // special case of memcpy: at most MAX_COPY bytes
+        // flz_smallcopy
+        public static void SmallCopy(byte[] dest, long destOffset, byte[] src, long srcOffset, long count)
+        {
+            // if (count >= 4)
+            // {
+            //     count -= count % 4;
+            //     Array.Copy(src, srcOffset, dest, destOffset, count);
+            // }
+            Array.Copy(src, srcOffset, dest, destOffset, count);
+        }
+
+        // special case of memcpy: exactly MAX_COPY bytes
+        // flz_maxcopy
+        static void MaxCopy(byte[] dest, long destOffset, byte[] src, long secOffset)
+        {
+            Array.Copy(src, secOffset, dest, destOffset, MAX_COPY);
+        }
+
+        // flz_literals
+        public static long Literals(long runs, byte[] src, long srcOffset, byte[] dest, long destOffset)
+        {
+            while (runs >= MAX_COPY)
+            {
+                dest[destOffset++] = MAX_COPY - 1;
+                MaxCopy(dest, destOffset, src, srcOffset);
+                srcOffset += MAX_COPY;
+                destOffset += MAX_COPY;
+                runs -= MAX_COPY;
+            }
+
+            if (runs > 0)
+            {
+                dest[destOffset++] = (byte)(runs - 1);
+                SmallCopy(dest, destOffset, src, srcOffset, runs);
+                destOffset += runs;
+            }
+
+            return destOffset;
+        }
+
+        // flz1_match
+        public static long MatchLevel1(long len, long distance, byte[] output, long op)
+        {
+            --distance;
+            if (len > MAX_LEN - 2)
+            {
+                while (len > MAX_LEN - 2)
+                {
+                    output[op++] = (byte)((7 << 5) + (distance >> 8));
+                    output[op++] = (byte)(MAX_LEN - 2 - 7 - 2);
+                    output[op++] = (byte)(distance & 255);
+                    len -= MAX_LEN - 2;
+                }
+            }
+
+            if (len < 7)
+            {
+                output[op++] = (byte)((len << 5) + (distance >> 8));
+                output[op++] = (byte)(distance & 255);
+            }
+            else
+            {
+                output[op++] = (byte)((7 << 5) + (distance >> 8));
+                output[op++] = (byte)(len - 7);
+                output[op++] = (byte)((distance & 255));
+            }
+
+            return op;
+        }
+
+        // flz2_match
+        public static long MatchLevel2(long len, long distance, byte[] output, long op)
+        {
+            --distance;
+            if (distance < MAX_L2_DISTANCE)
+            {
+                if (len < 7)
+                {
+                    output[op++] = (byte)((len << 5) + (distance >> 8));
+                    output[op++] = (byte)((distance & 255));
+                }
+                else
+                {
+                    output[op++] = (byte)((7 << 5) + (distance >> 8));
+                    for (len -= 7; len >= 255; len -= 255)
+                    {
+                        output[op++] = 255;
+                    }
+
+                    output[op++] = (byte)(len);
+                    output[op++] = (byte)((distance & 255));
+                }
+            }
+            else
+            {
+                /* far away, but not yet in the another galaxy... */
+                if (len < 7)
+                {
+                    distance -= MAX_L2_DISTANCE;
+                    output[op++] = (byte)((len << 5) + 31);
+                    output[op++] = (byte)(255);
+                    output[op++] = (byte)(distance >> 8);
+                    output[op++] = (byte)(distance & 255);
+                }
+                else
+                {
+                    distance -= MAX_L2_DISTANCE;
+                    output[op++] = (7 << 5) + 31;
+                    for (len -= 7; len >= 255; len -= 255)
+                    {
+                        output[op++] = 255;
+                    }
+
+                    output[op++] = (byte)(len);
+                    output[op++] = (byte)(255);
+                    output[op++] = (byte)(distance >> 8);
+                    output[op++] = (byte)(distance & 255);
+                }
+            }
+
+            return op;
+        }
+
+        // flz_cmp
+        public static long MemCompare(byte[] p, long pOffset, byte[] q, long qOffset, long r)
+        {
+            long start = pOffset;
+
+            if (4 <= r && ReadUInt32(p, pOffset) == ReadUInt32(q, qOffset))
+            {
+                pOffset += 4;
+                qOffset += 4;
+            }
+
+            while (qOffset < r)
+            {
+                if (p[pOffset++] != q[qOffset++])
+                    break;
+            }
+
+            return pOffset - start;
+        }
+
+        // fastlz_memmove
+        public static void MemMove(byte[] dest, long destOffset, byte[] src, long srcOffset, long count)
+        {
+            if (dest.Length < destOffset + count)
+            {
+                throw new IndexOutOfRangeException($"{dest.Length} < {destOffset} + {count}");
+            }
+
+            if (src.Length < srcOffset + count)
+            {
+                throw new IndexOutOfRangeException($"{src.Length} < {srcOffset} + {count}");
+            }
+
+            for (long i = 0; i < count; ++i)
+            {
+                dest[destOffset + i] = src[srcOffset + i];
+            }
+        }
+
+        public static long EstimateCompressedSize(long size)
+        {
+            long estimatedSize = (long)Math.Ceiling(size * 1.06f);
+            return Math.Max(estimatedSize, 66);
         }
     }
 }

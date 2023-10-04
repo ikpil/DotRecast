@@ -45,8 +45,8 @@ namespace DotRecast.Detour.TileCache.Io.Compress
 
         public byte[] Compress(byte[] buf)
         {
-            byte[] output = new byte[FastLZ.CalculateOutputBufferLength(buf.Length)];
-            int len = FastLZ.Compress(buf, 0, buf.Length, output, 0, output.Length);
+            byte[] output = new byte[FastLZ.EstimateCompressedSize(buf.Length)];
+            long len = FastLZ.CompressLevel(2, buf, 0, buf.Length, output);
             return RcArrayUtils.CopyOf(output, len);
         }
     }
