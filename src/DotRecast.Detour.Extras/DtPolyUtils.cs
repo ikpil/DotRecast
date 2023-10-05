@@ -16,6 +16,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
+
 namespace DotRecast.Detour.Extras
 {
     public static class DtPolyUtils
@@ -62,7 +64,7 @@ namespace DotRecast.Detour.Extras
         {
             for (int i = 0; i < 3; i++)
             {
-                if (verts[3 * v + i] != verts2[3 * v2 + 1])
+                if (Math.Abs(verts[3 * v + i] - verts2[3 * v2 + 1]) > float.Epsilon)
                 {
                     return false;
                 }
