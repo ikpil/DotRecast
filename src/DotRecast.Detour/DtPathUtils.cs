@@ -24,7 +24,7 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
-    public static class PathUtils
+    public static class DtPathUtils
     {
         private const int MAX_STEER_POINTS = 3;
 

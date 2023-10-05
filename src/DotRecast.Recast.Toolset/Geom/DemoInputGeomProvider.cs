@@ -143,7 +143,7 @@ namespace DotRecast.Recast.Toolset.Geom
             tmin = 1.0f;
 
             // Prune hit ray.
-            if (!Intersections.IsectSegAABB(src, dst, bmin, bmax, out var btmin, out var btmax))
+            if (!RcIntersections.IsectSegAABB(src, dst, bmin, bmax, out var btmin, out var btmax))
             {
                 return false;
             }
@@ -183,7 +183,7 @@ namespace DotRecast.Recast.Toolset.Geom
                         vertices[tris[j + 2] * 3 + 1],
                         vertices[tris[j + 2] * 3 + 2]
                     );
-                    if (Intersections.IntersectSegmentTriangle(src, dst, v1, v2, v3, out var t))
+                    if (RcIntersections.IntersectSegmentTriangle(src, dst, v1, v2, v3, out var t))
                     {
                         if (t < tmin)
                         {

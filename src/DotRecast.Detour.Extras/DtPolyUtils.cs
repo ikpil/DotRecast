@@ -18,11 +18,9 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Detour.Extras
 {
-    public static class PolyUtils
+    public static class DtPolyUtils
     {
-        /**
-     * Find edge shared by 2 polygons within the same tile
-     */
+        // Find edge shared by 2 polygons within the same tile
         public static int FindEdge(DtPoly node, DtPoly neighbour, DtMeshData tile, DtMeshData neighbourTile)
         {
             // Compare indices first assuming there are no duplicate vertices
@@ -73,9 +71,7 @@ namespace DotRecast.Detour.Extras
             return true;
         }
 
-        /**
-     * Find edge closest to the given coordinate
-     */
+        // Find edge closest to the given coordinate
         public static int FindEdge(DtPoly node, DtMeshData tile, float value, int comp)
         {
             float error = float.MaxValue;

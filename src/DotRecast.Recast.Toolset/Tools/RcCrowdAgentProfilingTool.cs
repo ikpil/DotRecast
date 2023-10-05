@@ -17,7 +17,7 @@ namespace DotRecast.Recast.Toolset.Tools
 
         private DtNavMesh navMesh;
 
-        private FRand rnd;
+        private RcRand rnd;
         private readonly List<DtPolyPoint> _polyPoints;
         private long crowdUpdateTime;
 
@@ -162,7 +162,7 @@ namespace DotRecast.Recast.Toolset.Tools
             if (null == navMesh)
                 return;
 
-            rnd = new FRand(_cfg.randomSeed);
+            rnd = new RcRand(_cfg.randomSeed);
             CreateCrowd();
             CreateZones();
             DtNavMeshQuery navquery = new DtNavMeshQuery(navMesh);

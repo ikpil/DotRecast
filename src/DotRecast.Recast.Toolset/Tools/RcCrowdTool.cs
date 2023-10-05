@@ -222,7 +222,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 RcVec3f bmin = new RcVec3f();
                 RcVec3f bmax = new RcVec3f();
                 GetAgentBounds(ag, ref bmin, ref bmax);
-                if (Intersections.IsectSegAABB(s, p, bmin, bmax, out var tmin, out var tmax))
+                if (RcIntersections.IsectSegAABB(s, p, bmin, bmax, out var tmin, out var tmax))
                 {
                     if (tmin > 0 && tmin < tsel)
                     {

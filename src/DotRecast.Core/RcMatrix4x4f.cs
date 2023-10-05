@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace DotRecast.Core
 {
@@ -107,6 +108,7 @@ namespace DotRecast.Core
             M31 == 0f && M32 == 0f && M34 == 0f &&
             M41 == 0f && M42 == 0f && M43 == 0f;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static RcMatrix4x4f Mul(ref RcMatrix4x4f left, ref RcMatrix4x4f right)
         {
             float m11 = left.M11 * right.M11 + left.M21 * right.M12 + left.M31 * right.M13 + left.M41 * right.M14;
@@ -147,6 +149,7 @@ namespace DotRecast.Core
             return dest;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static RcMatrix4x4f Mul(float[] left, float[] right)
         {
             float m00 = left[0] * right[0] + left[4] * right[1] + left[8] * right[2] + left[12] * right[3];
@@ -174,6 +177,7 @@ namespace DotRecast.Core
             );
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static RcMatrix4x4f CreateFromRotate(float a, float x, float y, float z)
         {
             var matrix = new RcMatrix4x4f();

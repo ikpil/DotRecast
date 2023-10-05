@@ -22,7 +22,7 @@ using System;
 
 namespace DotRecast.Core
 {
-    public static class Intersections
+    public static class RcIntersections
     {
         public static bool IntersectSegmentTriangle(RcVec3f sp, RcVec3f sq, RcVec3f a, RcVec3f b, RcVec3f c, out float t)
         {

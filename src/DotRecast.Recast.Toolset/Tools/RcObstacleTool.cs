@@ -162,7 +162,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 RcVec3f bmax = RcVec3f.Zero;
                 _tc.GetObstacleBounds(ob, ref bmin, ref bmax);
 
-                if (Intersections.IsectSegAABB(sp, sq, bmin, bmax, out var t0, out var t1))
+                if (RcIntersections.IsectSegAABB(sp, sq, bmin, bmax, out var t0, out var t1))
                 {
                     if (t0 < tmin)
                     {

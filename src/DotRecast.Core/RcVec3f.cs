@@ -554,11 +554,13 @@ namespace DotRecast.Core
         }
 
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Copy(ref RcVec3f @out, float[] @in, int i)
         {
             Copy(ref @out, 0, @in, i);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Copy(float[] @out, int n, float[] @in, int m)
         {
             @out[n] = @in[m];
@@ -566,6 +568,7 @@ namespace DotRecast.Core
             @out[n + 2] = @in[m + 2];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Copy(float[] @out, int n, RcVec3f @in, int m)
         {
             @out[n] = @in[m];
@@ -573,6 +576,7 @@ namespace DotRecast.Core
             @out[n + 2] = @in[m + 2];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Copy(ref RcVec3f @out, int n, float[] @in, int m)
         {
             @out[n] = @in[m];
@@ -580,6 +584,7 @@ namespace DotRecast.Core
             @out[n + 2] = @in[m + 2];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Add(ref RcVec3f e0, RcVec3f a, float[] verts, int i)
         {
             e0.x = a.x + verts[i];
@@ -588,6 +593,7 @@ namespace DotRecast.Core
         }
 
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Sub(ref RcVec3f e0, float[] verts, int i, int j)
         {
             e0.x = verts[i] - verts[j];
@@ -596,6 +602,7 @@ namespace DotRecast.Core
         }
 
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Sub(ref RcVec3f e0, RcVec3f i, float[] verts, int j)
         {
             e0.x = i.x - verts[j];
@@ -604,6 +611,7 @@ namespace DotRecast.Core
         }
 
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Cross(float[] dest, float[] v1, float[] v2)
         {
             dest[0] = v1[1] * v2[2] - v1[2] * v2[1];
@@ -611,6 +619,7 @@ namespace DotRecast.Core
             dest[2] = v1[0] * v2[1] - v1[1] * v2[0];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Cross(float[] dest, RcVec3f v1, RcVec3f v2)
         {
             dest[0] = v1.y * v2.z - v1.z * v2.y;
@@ -618,6 +627,7 @@ namespace DotRecast.Core
             dest[2] = v1.x * v2.y - v1.y * v2.x;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Cross(ref RcVec3f dest, RcVec3f v1, RcVec3f v2)
         {
             dest.x = v1.y * v2.z - v1.z * v2.y;
@@ -626,14 +636,7 @@ namespace DotRecast.Core
         }
 
 
-        public static void Normalize(float[] v)
-        {
-            float d = (float)(1.0f / Math.Sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]));
-            v[0] *= d;
-            v[1] *= d;
-            v[2] *= d;
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Normalize(ref RcVec3f v)
         {
             float d = (float)(1.0f / Math.Sqrt(v.x * v.x + v.y * v.y + v.z * v.z));

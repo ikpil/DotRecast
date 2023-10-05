@@ -58,7 +58,7 @@ namespace DotRecast.Recast.Toolset.Tools
             while (0 < polys.Count && smoothPath.Count < MAX_SMOOTH)
             {
                 // Find location to steer towards.
-                if (!PathUtils.GetSteerTarget(navQuery, iterPos, targetPos, SLOP,
+                if (!DtPathUtils.GetSteerTarget(navQuery, iterPos, targetPos, SLOP,
                         polys, out var steerPos, out var steerPosFlag, out var steerPosRef))
                 {
                     break;
@@ -91,8 +91,8 @@ namespace DotRecast.Recast.Toolset.Tools
 
                 iterPos = result;
 
-                polys = PathUtils.MergeCorridorStartMoved(polys, visited);
-                polys = PathUtils.FixupShortcuts(polys, navQuery);
+                polys = DtPathUtils.MergeCorridorStartMoved(polys, visited);
+                polys = DtPathUtils.FixupShortcuts(polys, navQuery);
 
                 var status = navQuery.GetPolyHeight(polys[0], result, out var h);
                 if (status.Succeeded())
@@ -101,7 +101,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 }
 
                 // Handle end of path and off-mesh links when close enough.
-                if (endOfPath && PathUtils.InRange(iterPos, steerPos, SLOP, 1.0f))
+                if (endOfPath && DtPathUtils.InRange(iterPos, steerPos, SLOP, 1.0f))
                 {
                     // Reached end of path.
                     iterPos = targetPos;
@@ -112,7 +112,7 @@ namespace DotRecast.Recast.Toolset.Tools
 
                     break;
                 }
-                else if (offMeshConnection && PathUtils.InRange(iterPos, steerPos, SLOP, 1.0f))
+                else if (offMeshConnection && DtPathUtils.InRange(iterPos, steerPos, SLOP, 1.0f))
                 {
                     // Reached off-mesh connection.
                     RcVec3f startPos = RcVec3f.Zero;
@@ -422,7 +422,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 ? DtStrictDtPolygonByCircleConstraint.Shared
                 : DtNoOpDtPolygonByCircleConstraint.Shared;
 
-            var frand = new FRand();
+            var frand = new RcRand();
             int prevCnt = points.Count;
 
             points = new List<RcVec3f>();

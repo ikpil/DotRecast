@@ -80,7 +80,7 @@ namespace DotRecast.Detour
                             }
                         }
 
-                        if (Intersections.IntersectSegmentTriangle(sp, sq, verts[0], verts[1], verts[2], out hitTime))
+                        if (RcIntersections.IntersectSegmentTriangle(sp, sq, verts[0], verts[1], verts[2], out hitTime))
                         {
                             return true;
                         }

@@ -201,7 +201,7 @@ namespace DotRecast.Detour.Crowd
             {
                 if (rayHit.path.Count > 1 && rayHit.t > 0.99f)
                 {
-                    m_path = PathUtils.MergeCorridorStartShortcut(m_path, rayHit.path);
+                    m_path = DtPathUtils.MergeCorridorStartShortcut(m_path, rayHit.path);
                 }
             }
         }
@@ -236,7 +236,7 @@ namespace DotRecast.Detour.Crowd
 
             if (status.Succeeded() && res.Count > 0)
             {
-                m_path = PathUtils.MergeCorridorStartShortcut(m_path, res);
+                m_path = DtPathUtils.MergeCorridorStartShortcut(m_path, res);
                 return true;
             }
 
@@ -307,7 +307,7 @@ namespace DotRecast.Detour.Crowd
             var status = navquery.MoveAlongSurface(m_path[0], m_pos, npos, filter, out var result, ref visited);
             if (status.Succeeded())
             {
-                m_path = PathUtils.MergeCorridorStartMoved(m_path, visited);
+                m_path = DtPathUtils.MergeCorridorStartMoved(m_path, visited);
 
                 // Adjust the position to stay on top of the navmesh.
                 m_pos = result;
@@ -347,7 +347,7 @@ namespace DotRecast.Detour.Crowd
             var status = navquery.MoveAlongSurface(m_path[m_path.Count - 1], m_target, npos, filter, out var result, ref visited);
             if (status.Succeeded())
             {
-                m_path = PathUtils.MergeCorridorEndMoved(m_path, visited);
+                m_path = DtPathUtils.MergeCorridorEndMoved(m_path, visited);
                 // TODO: should we do that?
                 // Adjust the position to stay on top of the navmesh.
                 /*

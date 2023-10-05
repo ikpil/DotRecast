@@ -2,16 +2,16 @@
 
 namespace DotRecast.Core
 {
-    public class FRand : IRcRand
+    public class RcRand : IRcRand
     {
         private readonly Random _r;
 
-        public FRand()
+        public RcRand()
         {
             _r = new Random();
         }
 
-        public FRand(long seed)
+        public RcRand(long seed)
         {
             _r = new Random((int)seed); // TODO : 랜덤 시드 확인 필요
         }

@@ -64,7 +64,7 @@ namespace DotRecast.Recast
                             vs[k].z = meshDetail.verts[verts + meshDetail.tris[tris + j * 4 + k] * 3 + 2];
                         }
 
-                        if (Intersections.IntersectSegmentTriangle(sp, sq, vs[0], vs[1], vs[2], out hitTime))
+                        if (RcIntersections.IntersectSegmentTriangle(sp, sq, vs[0], vs[1], vs[2], out hitTime))
                         {
                             return true;
                         }
