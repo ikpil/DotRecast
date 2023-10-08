@@ -37,7 +37,7 @@ namespace DotRecast.Recast.Toolset.Tools
             polys.Clear();
             smoothPath.Clear();
 
-            var opt = new DtFindPathOption(enableRaycast ? DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue);
+            var opt = new DtFindPathOption(enableRaycast ? DtFindPathOptions.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue);
             navQuery.FindPath(startRef, endRef, startPt, endPt, filter, ref polys, opt);
             if (0 >= polys.Count)
                 return DtStatus.DT_FAILURE;
@@ -176,7 +176,7 @@ namespace DotRecast.Recast.Toolset.Tools
             polys.Clear();
             straightPath.Clear();
 
-            var opt = new DtFindPathOption(enableRaycast ? DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue);
+            var opt = new DtFindPathOption(enableRaycast ? DtFindPathOptions.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue);
             navQuery.FindPath(startRef, endRef, startPt, endPt, filter, ref polys, opt);
 
             if (0 >= polys.Count)
@@ -206,7 +206,7 @@ namespace DotRecast.Recast.Toolset.Tools
             }
 
             return navQuery.InitSlicedFindPath(startRef, endRef, startPos, endPos, filter,
-                enableRaycast ? DtNavMeshQuery.DT_FINDPATH_ANY_ANGLE : 0,
+                enableRaycast ? DtFindPathOptions.DT_FINDPATH_ANY_ANGLE : 0,
                 float.MaxValue
             );
         }

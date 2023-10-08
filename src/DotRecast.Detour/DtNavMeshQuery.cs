@@ -24,20 +24,10 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
-    
     using static DtNode;
 
     public class DtNavMeshQuery
     {
-        /**
-     * Use raycasts during pathfind to "shortcut" (raycast still consider costs) Options for
-     * NavMeshQuery::initSlicedFindPath and updateSlicedFindPath
-     */
-        public const int DT_FINDPATH_ANY_ANGLE = 0x02;
-
-        /** Raycast should calculate movement cost along the ray and fill RaycastHit::cost */
-        public const int DT_RAYCAST_USE_COSTS = 0x01;
-
         /// < Add a vertex at every polygon edge crossing.
         protected readonly DtNavMesh m_nav;
 
@@ -766,7 +756,7 @@ namespace DotRecast.Detour
             float raycastLimitSqr = RcMath.Sqr(raycastLimit);
 
             // trade quality with performance?
-            if ((options & DT_FINDPATH_ANY_ANGLE) != 0 && raycastLimit < 0f)
+            if ((options & DtFindPathOptions.DT_FINDPATH_ANY_ANGLE) != 0 && raycastLimit < 0f)
             {
                 // limiting to several times the character radius yields nice results. It is not sensitive
                 // so it is enough to compute it from the first tile.
@@ -838,7 +828,7 @@ namespace DotRecast.Detour
 
                 // decide whether to test raycast to previous nodes
                 bool tryLOS = false;
-                if ((options & DT_FINDPATH_ANY_ANGLE) != 0)
+                if ((options & DtFindPathOptions.DT_FINDPATH_ANY_ANGLE) != 0)
                 {
                     if ((parentRef != 0) && (raycastLimitSqr >= float.MaxValue
                                              || RcVec3f.DistSqr(parentNode.pos, bestNode.pos) < raycastLimitSqr))
@@ -896,7 +886,7 @@ namespace DotRecast.Detour
                     if (tryLOS)
                     {
                         var rayStatus = Raycast(parentRef, parentNode.pos, neighbourPos, filter,
-                            DT_RAYCAST_USE_COSTS, grandpaRef, out var rayHit);
+                            DtRaycastOptions.DT_RAYCAST_USE_COSTS, grandpaRef, out var rayHit);
                         if (rayStatus.Succeeded())
                         {
                             foundShortCut = rayHit.t >= 1.0f;
@@ -1036,7 +1026,7 @@ namespace DotRecast.Detour
             }
 
             // trade quality with performance?
-            if ((options & DT_FINDPATH_ANY_ANGLE) != 0 && raycastLimit < 0f)
+            if ((options & DtFindPathOptions.DT_FINDPATH_ANY_ANGLE) != 0 && raycastLimit < 0f)
             {
                 // limiting to several times the character radius yields nice results. It is not sensitive
                 // so it is enough to compute it from the first tile.
@@ -1156,7 +1146,7 @@ namespace DotRecast.Detour
 
                 // decide whether to test raycast to previous nodes
                 bool tryLOS = false;
-                if ((m_query.options & DT_FINDPATH_ANY_ANGLE) != 0)
+                if ((m_query.options & DtFindPathOptions.DT_FINDPATH_ANY_ANGLE) != 0)
                 {
                     if ((parentRef != 0) && (m_query.raycastLimitSqr >= float.MaxValue
                                              || RcVec3f.DistSqr(parentNode.pos, bestNode.pos) < m_query.raycastLimitSqr))
@@ -1216,7 +1206,8 @@ namespace DotRecast.Detour
                     List<long> shortcut = null;
                     if (tryLOS)
                     {
-                        status = Raycast(parentRef, parentNode.pos, neighbourPos, m_query.filter, DT_RAYCAST_USE_COSTS, grandpaRef, out var rayHit);
+                        status = Raycast(parentRef, parentNode.pos, neighbourPos, m_query.filter,
+                            DtRaycastOptions.DT_RAYCAST_USE_COSTS, grandpaRef, out var rayHit);
                         if (status.Succeeded())
                         {
                             foundShortCut = rayHit.t >= 1.0f;
@@ -2239,7 +2230,7 @@ namespace DotRecast.Detour
                     hit.t = float.MaxValue;
 
                     // add the cost
-                    if ((options & DT_RAYCAST_USE_COSTS) != 0)
+                    if ((options & DtRaycastOptions.DT_RAYCAST_USE_COSTS) != 0)
                     {
                         hit.pathCost += filter.GetCost(curPos, endPos, prevRef, prevTile, prevPoly, curRef, tile, poly,
                             curRef, tile, poly);
@@ -2344,7 +2335,7 @@ namespace DotRecast.Detour
                 }
 
                 // add the cost
-                if ((options & DT_RAYCAST_USE_COSTS) != 0)
+                if ((options & DtRaycastOptions.DT_RAYCAST_USE_COSTS) != 0)
                 {
                     // compute the intersection point at the furthest end of the polygon
                     // and correct the height (since the raycast moves in 2d)
