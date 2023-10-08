@@ -84,13 +84,6 @@ namespace DotRecast.Recast
         /// @see rcPolyMesh::polys
         public const int RC_MESH_NULL_IDX = 0xffff;
 
-        public const int RC_CONTOUR_TESS_WALL_EDGES = 0x01;
-
-        /// < Tessellate solid (impassable) edges during contour
-        /// simplification.
-        public const int RC_CONTOUR_TESS_AREA_EDGES = 0x02;
-
-
         public const int RC_LOG_WARNING = 1;
     }
 }

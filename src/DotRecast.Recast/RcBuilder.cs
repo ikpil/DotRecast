@@ -237,7 +237,7 @@ namespace DotRecast.Recast
             //
 
             // Create contours.
-            RcContourSet cset = RcContours.BuildContours(ctx, chf, cfg.MaxSimplificationError, cfg.MaxEdgeLen, RcConstants.RC_CONTOUR_TESS_WALL_EDGES);
+            RcContourSet cset = RcContours.BuildContours(ctx, chf, cfg.MaxSimplificationError, cfg.MaxEdgeLen, RcBuildContoursFlags.RC_CONTOUR_TESS_WALL_EDGES);
 
             //
             // Step 6. Build polygons mesh from contours.

@@ -374,7 +374,7 @@ namespace DotRecast.Recast
             }
 
             // Split too long edges.
-            if (maxEdgeLen > 0 && (buildFlags & (RC_CONTOUR_TESS_WALL_EDGES | RC_CONTOUR_TESS_AREA_EDGES)) != 0)
+            if (maxEdgeLen > 0 && (buildFlags & (RcBuildContoursFlags.RC_CONTOUR_TESS_WALL_EDGES | RcBuildContoursFlags.RC_CONTOUR_TESS_AREA_EDGES)) != 0)
             {
                 for (int i = 0; i < simplified.Count / 4;)
                 {
@@ -395,11 +395,16 @@ namespace DotRecast.Recast
                     // Tessellate only outer edges or edges between areas.
                     bool tess = false;
                     // Wall edges.
-                    if ((buildFlags & RC_CONTOUR_TESS_WALL_EDGES) != 0 && (points[ci * 4 + 3] & RC_CONTOUR_REG_MASK) == 0)
+                    if ((buildFlags & RcBuildContoursFlags.RC_CONTOUR_TESS_WALL_EDGES) != 0 && (points[ci * 4 + 3] & RC_CONTOUR_REG_MASK) == 0)
+                    {
                         tess = true;
+                    }
+
                     // Edges between areas.
-                    if ((buildFlags & RC_CONTOUR_TESS_AREA_EDGES) != 0 && (points[ci * 4 + 3] & RC_AREA_BORDER) != 0)
+                    if ((buildFlags & RcBuildContoursFlags.RC_CONTOUR_TESS_AREA_EDGES) != 0 && (points[ci * 4 + 3] & RC_AREA_BORDER) != 0)
+                    {
                         tess = true;
+                    }
 
                     if (tess)
                     {
