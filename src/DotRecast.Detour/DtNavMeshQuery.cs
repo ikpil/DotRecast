@@ -96,7 +96,7 @@ namespace DotRecast.Detour
             {
                 DtPoly p = tile.data.polys[i];
                 // Do not return off-mesh connection polygons.
-                if (p.GetPolyType() != DtPoly.DT_POLYTYPE_GROUND)
+                if (p.GetPolyType() != DtPolyTypes.DT_POLYTYPE_GROUND)
                 {
                     continue;
                 }
@@ -249,7 +249,7 @@ namespace DotRecast.Detour
                 m_nav.GetTileAndPolyByRefUnsafe(bestRef, out var bestTile, out var bestPoly);
 
                 // Place random locations on on ground.
-                if (bestPoly.GetPolyType() == DtPoly.DT_POLYTYPE_GROUND)
+                if (bestPoly.GetPolyType() == DtPolyTypes.DT_POLYTYPE_GROUND)
                 {
                     // Calc area of the polygon.
                     float polyArea = 0.0f;
@@ -510,7 +510,7 @@ namespace DotRecast.Detour
             // We used to return success for offmesh connections, but the
             // getPolyHeight in DetourNavMesh does not do this, so special
             // case it here.
-            if (poly.GetPolyType() == DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
+            if (poly.GetPolyType() == DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
                 int i = poly.verts[0] * 3;
                 var v0 = new RcVec3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
@@ -628,7 +628,7 @@ namespace DotRecast.Detour
                 {
                     DtPoly p = tile.data.polys[i];
                     // Do not return off-mesh connection polygons.
-                    if (p.GetPolyType() == DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
+                    if (p.GetPolyType() == DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION)
                     {
                         continue;
                     }
@@ -1607,7 +1607,7 @@ namespace DotRecast.Detour
                         // End of the path.
                         left = closestEndPos;
                         right = closestEndPos;
-                        toType = DtPoly.DT_POLYTYPE_GROUND;
+                        toType = DtPolyTypes.DT_POLYTYPE_GROUND;
                     }
 
                     // Right vertex.
@@ -1640,7 +1640,7 @@ namespace DotRecast.Detour
                             {
                                 flags = DtStraightPathFlags.DT_STRAIGHTPATH_END;
                             }
-                            else if (leftPolyType == DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
+                            else if (leftPolyType == DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION)
                             {
                                 flags = DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION;
                             }
@@ -1696,7 +1696,7 @@ namespace DotRecast.Detour
                             {
                                 flags = DtStraightPathFlags.DT_STRAIGHTPATH_END;
                             }
-                            else if (rightPolyType == DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
+                            else if (rightPolyType == DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION)
                             {
                                 flags = DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION;
                             }
@@ -1996,7 +1996,7 @@ namespace DotRecast.Detour
             }
 
             // Handle off-mesh connections.
-            if (fromPoly.GetPolyType() == DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
+            if (fromPoly.GetPolyType() == DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
                 // Find link that points to first vertex.
                 for (int i = fromTile.polyLinks[fromPoly.index]; i != DtNavMesh.DT_NULL_LINK; i = fromTile.links[i].next)
@@ -2019,7 +2019,7 @@ namespace DotRecast.Detour
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            if (toPoly.GetPolyType() == DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
+            if (toPoly.GetPolyType() == DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
                 for (int i = toTile.polyLinks[toPoly.index]; i != DtNavMesh.DT_NULL_LINK; i = toTile.links[i].next)
                 {
@@ -2256,7 +2256,7 @@ namespace DotRecast.Detour
                     m_nav.GetTileAndPolyByRefUnsafe(link.refs, out nextTile, out nextPoly);
 
                     // Skip off-mesh connections.
-                    if (nextPoly.GetPolyType() == DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
+                    if (nextPoly.GetPolyType() == DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION)
                     {
                         continue;
                     }
@@ -2839,7 +2839,7 @@ namespace DotRecast.Detour
                     m_nav.GetTileAndPolyByRefUnsafe(neighbourRef, out var neighbourTile, out var neighbourPoly);
 
                     // Skip off-mesh connections.
-                    if (neighbourPoly.GetPolyType() == DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
+                    if (neighbourPoly.GetPolyType() == DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION)
                     {
                         continue;
                     }
@@ -3233,7 +3233,7 @@ namespace DotRecast.Detour
                     m_nav.GetTileAndPolyByRefUnsafe(neighbourRef, out var neighbourTile, out var neighbourPoly);
 
                     // Skip off-mesh connections.
-                    if (neighbourPoly.GetPolyType() == DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
+                    if (neighbourPoly.GetPolyType() == DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION)
                     {
                         continue;
                     }

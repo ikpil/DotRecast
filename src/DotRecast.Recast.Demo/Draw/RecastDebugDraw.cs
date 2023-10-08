@@ -124,7 +124,7 @@ public class RecastDebugDraw : DebugDraw
         for (int i = 0; i < tile.data.header.polyCount; ++i)
         {
             DtPoly p = tile.data.polys[i];
-            if (p.GetPolyType() == DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
+            if (p.GetPolyType() == DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
                 continue;
             }
@@ -171,7 +171,7 @@ public class RecastDebugDraw : DebugDraw
             {
                 DtPoly p = tile.data.polys[i];
 
-                if (p.GetPolyType() != DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
+                if (p.GetPolyType() != DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION)
                 {
                     continue;
                 }
@@ -305,7 +305,7 @@ public class RecastDebugDraw : DebugDraw
         {
             DtPoly p = tile.data.polys[i];
 
-            if (p.GetPolyType() == DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
+            if (p.GetPolyType() == DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
                 continue;
             }
@@ -1290,7 +1290,7 @@ public class RecastDebugDraw : DebugDraw
         int c = DuTransCol(col, 64);
         int ip = poly.index;
 
-        if (poly.GetPolyType() == DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
+        if (poly.GetPolyType() == DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION)
         {
             DtOffMeshConnection con = tile.data.offMeshCons[ip - tile.data.header.offMeshBase];
 

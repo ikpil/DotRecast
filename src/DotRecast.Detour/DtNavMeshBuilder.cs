@@ -487,7 +487,7 @@ namespace DotRecast.Detour
                 p.vertCount = 0;
                 p.flags = option.polyFlags[i];
                 p.SetArea(option.polyAreas[i]);
-                p.SetPolyType(DtPoly.DT_POLYTYPE_GROUND);
+                p.SetPolyType(DtPolyTypes.DT_POLYTYPE_GROUND);
                 for (int j = 0; j < nvp; ++j)
                 {
                     if (option.polys[src + j] == MESH_NULL_IDX)
@@ -534,7 +534,7 @@ namespace DotRecast.Detour
                     p.verts[1] = offMeshVertsBase + n * 2 + 1;
                     p.flags = option.offMeshConFlags[i];
                     p.SetArea(option.offMeshConAreas[i]);
-                    p.SetPolyType(DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION);
+                    p.SetPolyType(DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION);
                     n++;
                 }
             }

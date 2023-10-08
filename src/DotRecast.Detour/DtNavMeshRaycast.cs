@@ -50,7 +50,7 @@ namespace DotRecast.Detour
             for (int i = 0; i < tile.data.header.polyCount; ++i)
             {
                 DtPoly p = tile.data.polys[i];
-                if (p.GetPolyType() == DtPoly.DT_POLYTYPE_OFFMESH_CONNECTION)
+                if (p.GetPolyType() == DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION)
                 {
                     continue;
                 }
