@@ -16,27 +16,27 @@
             int updateFlags = 0;
             if (anticipateTurns)
             {
-                updateFlags |= DtCrowdAgentParams.DT_CROWD_ANTICIPATE_TURNS;
+                updateFlags |= DtCrowdAgentUpdateFlags.DT_CROWD_ANTICIPATE_TURNS;
             }
 
             if (optimizeVis)
             {
-                updateFlags |= DtCrowdAgentParams.DT_CROWD_OPTIMIZE_VIS;
+                updateFlags |= DtCrowdAgentUpdateFlags.DT_CROWD_OPTIMIZE_VIS;
             }
 
             if (optimizeTopo)
             {
-                updateFlags |= DtCrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO;
+                updateFlags |= DtCrowdAgentUpdateFlags.DT_CROWD_OPTIMIZE_TOPO;
             }
 
             if (obstacleAvoidance)
             {
-                updateFlags |= DtCrowdAgentParams.DT_CROWD_OBSTACLE_AVOIDANCE;
+                updateFlags |= DtCrowdAgentUpdateFlags.DT_CROWD_OBSTACLE_AVOIDANCE;
             }
 
             if (separation)
             {
-                updateFlags |= DtCrowdAgentParams.DT_CROWD_SEPARATION;
+                updateFlags |= DtCrowdAgentUpdateFlags.DT_CROWD_SEPARATION;
             }
 
             return updateFlags;

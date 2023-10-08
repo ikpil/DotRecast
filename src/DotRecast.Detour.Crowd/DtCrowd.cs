@@ -832,7 +832,7 @@ namespace DotRecast.Detour.Crowd
                     continue;
                 }
 
-                if ((ag.option.updateFlags & DtCrowdAgentParams.DT_CROWD_OPTIMIZE_TOPO) == 0)
+                if ((ag.option.updateFlags & DtCrowdAgentUpdateFlags.DT_CROWD_OPTIMIZE_TOPO) == 0)
                 {
                     continue;
                 }
@@ -950,7 +950,7 @@ namespace DotRecast.Detour.Crowd
 
                 // Check to see if the corner after the next corner is directly visible,
                 // and short cut to there.
-                if ((ag.option.updateFlags & DtCrowdAgentParams.DT_CROWD_OPTIMIZE_VIS) != 0 && ag.corners.Count > 0)
+                if ((ag.option.updateFlags & DtCrowdAgentUpdateFlags.DT_CROWD_OPTIMIZE_VIS) != 0 && ag.corners.Count > 0)
                 {
                     RcVec3f target = ag.corners[Math.Min(1, ag.corners.Count - 1)].pos;
                     ag.corridor.OptimizePathVisibility(target, ag.option.pathOptimizationRange, _navQuery,
@@ -1049,7 +1049,7 @@ namespace DotRecast.Detour.Crowd
                 else
                 {
                     // Calculate steering direction.
-                    if ((ag.option.updateFlags & DtCrowdAgentParams.DT_CROWD_ANTICIPATE_TURNS) != 0)
+                    if ((ag.option.updateFlags & DtCrowdAgentUpdateFlags.DT_CROWD_ANTICIPATE_TURNS) != 0)
                     {
                         dvel = ag.CalcSmoothSteerDirection();
                     }
@@ -1067,7 +1067,7 @@ namespace DotRecast.Detour.Crowd
                 }
 
                 // Separation
-                if ((ag.option.updateFlags & DtCrowdAgentParams.DT_CROWD_SEPARATION) != 0)
+                if ((ag.option.updateFlags & DtCrowdAgentUpdateFlags.DT_CROWD_SEPARATION) != 0)
                 {
                     float separationDist = ag.option.collisionQueryRange;
                     float invSeparationDist = 1.0f / separationDist;
@@ -1132,7 +1132,7 @@ namespace DotRecast.Detour.Crowd
                     continue;
                 }
 
-                if ((ag.option.updateFlags & DtCrowdAgentParams.DT_CROWD_OBSTACLE_AVOIDANCE) != 0)
+                if ((ag.option.updateFlags & DtCrowdAgentUpdateFlags.DT_CROWD_OBSTACLE_AVOIDANCE) != 0)
                 {
                     _obstacleQuery.Reset();
 

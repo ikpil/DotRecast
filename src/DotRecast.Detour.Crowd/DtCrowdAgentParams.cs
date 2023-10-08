@@ -45,18 +45,6 @@ namespace DotRecast.Detour.Crowd
         /// How aggresive the agent manager should be at avoiding collisions with this agent. [Limit: >= 0]
         public float separationWeight;
 
-        /// Crowd agent update flags.
-        public const int DT_CROWD_ANTICIPATE_TURNS = 1;
-
-        public const int DT_CROWD_OBSTACLE_AVOIDANCE = 2;
-        public const int DT_CROWD_SEPARATION = 4;
-        public const int DT_CROWD_OPTIMIZE_VIS = 8;
-
-        /// < Use #dtPathCorridor::OptimizePathVisibility() to optimize
-        /// the agent path.
-        public const int DT_CROWD_OPTIMIZE_TOPO = 16;
-
-        /// < Use dtPathCorridor::OptimizePathTopology() to optimize
         /// the agent path.
         /// Flags that impact steering behavior. (See: #UpdateFlags)
         public int updateFlags;
