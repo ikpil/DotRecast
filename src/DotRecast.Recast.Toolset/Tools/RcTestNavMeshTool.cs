@@ -64,10 +64,10 @@ namespace DotRecast.Recast.Toolset.Tools
                     break;
                 }
 
-                bool endOfPath = (steerPosFlag & DtNavMeshQuery.DT_STRAIGHTPATH_END) != 0
+                bool endOfPath = (steerPosFlag & DtStraightPathFlags.DT_STRAIGHTPATH_END) != 0
                     ? true
                     : false;
-                bool offMeshConnection = (steerPosFlag & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0
+                bool offMeshConnection = (steerPosFlag & DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0
                     ? true
                     : false;
 
@@ -238,7 +238,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 }
 
                 straightPath = new List<DtStraightPath>(MAX_POLYS);
-                navQuery.FindStraightPath(startPos, epos, path, ref straightPath, MAX_POLYS, DtNavMeshQuery.DT_STRAIGHTPATH_ALL_CROSSINGS);
+                navQuery.FindStraightPath(startPos, epos, path, ref straightPath, MAX_POLYS, DtStraightPathOptions.DT_STRAIGHTPATH_ALL_CROSSINGS);
             }
 
             return DtStatus.DT_SUCCSESS;

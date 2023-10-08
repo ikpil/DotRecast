@@ -50,7 +50,7 @@ namespace DotRecast.Detour
             while (ns < straightPath.Count)
             {
                 // Stop at Off-Mesh link or when point is further than slop away.
-                if (((straightPath[ns].flags & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
+                if (((straightPath[ns].flags & DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
                     || !InRange(straightPath[ns].pos, startPos, minTargetDist, 1000.0f))
                     break;
                 ns++;

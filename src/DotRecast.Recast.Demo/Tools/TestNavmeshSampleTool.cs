@@ -288,7 +288,7 @@ public class TestNavmeshSampleTool : ISampleTool
                     DtStraightPath straightPathItem = m_straightPath[i];
                     DtStraightPath straightPathItem2 = m_straightPath[i + 1];
                     int col;
-                    if ((straightPathItem.flags & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
+                    if ((straightPathItem.flags & DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
                     {
                         col = offMeshCol;
                     }
@@ -307,15 +307,15 @@ public class TestNavmeshSampleTool : ISampleTool
                 {
                     DtStraightPath straightPathItem = m_straightPath[i];
                     int col;
-                    if ((straightPathItem.flags & DtNavMeshQuery.DT_STRAIGHTPATH_START) != 0)
+                    if ((straightPathItem.flags & DtStraightPathFlags.DT_STRAIGHTPATH_START) != 0)
                     {
                         col = startCol;
                     }
-                    else if ((straightPathItem.flags & DtNavMeshQuery.DT_STRAIGHTPATH_END) != 0)
+                    else if ((straightPathItem.flags & DtStraightPathFlags.DT_STRAIGHTPATH_END) != 0)
                     {
                         col = endCol;
                     }
-                    else if ((straightPathItem.flags & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
+                    else if ((straightPathItem.flags & DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
                     {
                         col = offMeshCol;
                     }

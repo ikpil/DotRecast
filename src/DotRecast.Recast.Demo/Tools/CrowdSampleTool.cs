@@ -263,7 +263,7 @@ public class CrowdSampleTool : ISampleTool
                     }
 
                     if ((ag.corners[ag.corners.Count - 1].flags
-                         & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
+                         & DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
                     {
                         RcVec3f v = ag.corners[ag.corners.Count - 1].pos;
                         dd.Vertex(v.x, v.y, v.z, DuRGBA(192, 0, 0, 192));

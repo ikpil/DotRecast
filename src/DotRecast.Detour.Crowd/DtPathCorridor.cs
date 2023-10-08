@@ -123,7 +123,7 @@ namespace DotRecast.Detour.Crowd
                 int start = 0;
                 foreach (DtStraightPath spi in corners)
                 {
-                    if ((spi.flags & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0
+                    if ((spi.flags & DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0
                         || RcVec3f.Dist2DSqr(spi.pos, m_pos) > MIN_TARGET_DIST)
                     {
                         break;
@@ -137,7 +137,7 @@ namespace DotRecast.Detour.Crowd
                 for (int i = start; i < corners.Count; i++)
                 {
                     DtStraightPath spi = corners[i];
-                    if ((spi.flags & DtNavMeshQuery.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
+                    if ((spi.flags & DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
                     {
                         end = i + 1;
                         break;
