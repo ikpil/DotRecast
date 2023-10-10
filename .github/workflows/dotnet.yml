@@ -8,9 +8,9 @@ on:
   pull_request:
     branches: [ main ]
     paths:
-      - '**.cs'
-      - '**.csproj'
-      - '**.sln'
+      - '**/*.cs'
+      - '**/*.csproj'
+      - '**/*.sln'
 
 jobs:
   build-and-test:
