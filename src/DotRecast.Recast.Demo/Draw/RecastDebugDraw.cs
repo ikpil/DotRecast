@@ -395,7 +395,7 @@ public class RecastDebugDraw : DebugDraw
 
                         for (int m = 0, n = 2; m < 3; n = m++)
                         {
-                            if ((DtNavMesh.GetDetailTriEdgeFlags(tile.data.detailTris[t + 3], n) & DtNavMesh.DT_DETAIL_EDGE_BOUNDARY) == 0)
+                            if ((DtNavMesh.GetDetailTriEdgeFlags(tile.data.detailTris[t + 3], n) & DtDetailTriEdgeFlags.DT_DETAIL_EDGE_BOUNDARY) == 0)
                                 continue;
 
                             if (((tile.data.detailTris[t + 3] >> (n * 2)) & 0x3) == 0)

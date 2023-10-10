@@ -24,14 +24,11 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
-    
-
     public class DtNavMesh
     {
         public const int DT_SALT_BITS = 16;
         public const int DT_TILE_BITS = 28;
         public const int DT_POLY_BITS = 20;
-        public const int DT_DETAIL_EDGE_BOUNDARY = 0x01;
 
         /// A flag that indicates that an entity links to an external entity.
         /// (E.g. A polygon edge is a portal that links to another polygon.)
@@ -1128,8 +1125,9 @@ namespace DotRecast.Detour
      */
         RcVec3f ClosestPointOnDetailEdges(DtMeshTile tile, DtPoly poly, RcVec3f pos, bool onlyBoundary)
         {
-            int ANY_BOUNDARY_EDGE = (DT_DETAIL_EDGE_BOUNDARY << 0) | (DT_DETAIL_EDGE_BOUNDARY << 2)
-                                                                   | (DT_DETAIL_EDGE_BOUNDARY << 4);
+            int ANY_BOUNDARY_EDGE = (DtDetailTriEdgeFlags.DT_DETAIL_EDGE_BOUNDARY << 0) |
+                                    (DtDetailTriEdgeFlags.DT_DETAIL_EDGE_BOUNDARY << 2) |
+                                    (DtDetailTriEdgeFlags.DT_DETAIL_EDGE_BOUNDARY << 4);
             int ip = poly.index;
             float dmin = float.MaxValue;
             float tmin = 0;
@@ -1175,7 +1173,7 @@ namespace DotRecast.Detour
 
                     for (int k = 0, j = 2; k < 3; j = k++)
                     {
-                        if ((GetDetailTriEdgeFlags(tris[ti + 3], j) & DT_DETAIL_EDGE_BOUNDARY) == 0
+                        if ((GetDetailTriEdgeFlags(tris[ti + 3], j) & DtDetailTriEdgeFlags.DT_DETAIL_EDGE_BOUNDARY) == 0
                             && (onlyBoundary || tris[ti + j] < tris[ti + k]))
                         {
                             // Only looking at boundary edges and this is internal, or
@@ -1224,7 +1222,7 @@ namespace DotRecast.Detour
         public bool GetPolyHeight(DtMeshTile tile, DtPoly poly, RcVec3f pos, out float height)
         {
             height = 0;
-            
+
             // Off-mesh connections do not have detail polys and getting height
             // over them does not make sense.
             if (poly.GetPolyType() == DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION)
