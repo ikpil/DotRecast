@@ -34,6 +34,7 @@ namespace DotRecast.Detour.TileCache
         public RcVec3f center = new RcVec3f();
         public RcVec3f extents = new RcVec3f();
         public readonly float[] rotAux = new float[2]; // { Cos(0.5f*angle)*Sin(-0.5f*angle); Cos(0.5f*angle)*Cos(0.5f*angle) - 0.5 }
+        
         public List<long> touched = new List<long>();
         public readonly List<long> pending = new List<long>();
         public int salt;

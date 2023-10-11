@@ -23,9 +23,7 @@ namespace DotRecast.Detour.TileCache
     public class DtCompressedTile
     {
         public readonly int index;
-        public int salt;
-
-        /// < Counter describing modifications to the tile.
+        public int salt; // Counter describing modifications to the tile.
         public DtTileCacheLayerHeader header;
 
         public byte[] data;
