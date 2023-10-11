@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using DotRecast.Core;
 using DotRecast.Detour;
 using DotRecast.Detour.Crowd;
-using DotRecast.Detour.Crowd.Tracking;
+
 using DotRecast.Recast.Toolset.Builder;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Toolset;

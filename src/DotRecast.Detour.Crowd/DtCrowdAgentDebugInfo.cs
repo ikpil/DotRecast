@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 
 using DotRecast.Core;
 
-namespace DotRecast.Detour.Crowd.Tracking
+namespace DotRecast.Detour.Crowd
 {
     public class DtCrowdAgentDebugInfo
     {

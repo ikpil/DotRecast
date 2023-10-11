@@ -21,10 +21,8 @@ freely, subject to the following restrictions:
 using System;
 using DotRecast.Core;
 
-namespace DotRecast.Detour.Crowd.Tracking
+namespace DotRecast.Detour.Crowd
 {
-    
-
     public class DtObstacleAvoidanceDebugData
     {
         private int m_nsamples;
