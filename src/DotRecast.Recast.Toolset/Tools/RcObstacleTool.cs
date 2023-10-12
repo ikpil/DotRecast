@@ -109,7 +109,7 @@ namespace DotRecast.Recast.Toolset.Tools
             if (null == _tc)
                 return 0;
 
-            p.y -= 0.5f;
+            p.Y -= 0.5f;
             return _tc.AddObstacle(p, 1.0f, 2.0f);
         }
 

@@ -82,9 +82,9 @@ namespace DotRecast.Detour
         public static bool OverlapBounds(RcVec3f amin, RcVec3f amax, RcVec3f bmin, RcVec3f bmax)
         {
             bool overlap = true;
-            overlap = (amin.x > bmax.x || amax.x < bmin.x) ? false : overlap;
-            overlap = (amin.y > bmax.y || amax.y < bmin.y) ? false : overlap;
-            overlap = (amin.z > bmax.z || amax.z < bmin.z) ? false : overlap;
+            overlap = (amin.X > bmax.X || amax.X < bmin.X) ? false : overlap;
+            overlap = (amin.Y > bmax.Y || amax.Y < bmin.Y) ? false : overlap;
+            overlap = (amin.Z > bmax.Z || amax.Z < bmin.Z) ? false : overlap;
             return overlap;
         }
 
@@ -108,7 +108,7 @@ namespace DotRecast.Detour
 
                 RcVec2f aminmax = ProjectPoly(n, polya, npolya);
                 RcVec2f bminmax = ProjectPoly(n, polyb, npolyb);
-                if (!OverlapRange(aminmax.x, aminmax.y, bminmax.x, bminmax.y, eps))
+                if (!OverlapRange(aminmax.X, aminmax.Y, bminmax.X, bminmax.Y, eps))
                 {
                     // Found separating axis
                     return false;
@@ -124,7 +124,7 @@ namespace DotRecast.Detour
 
                 RcVec2f aminmax = ProjectPoly(n, polya, npolya);
                 RcVec2f bminmax = ProjectPoly(n, polyb, npolyb);
-                if (!OverlapRange(aminmax.x, aminmax.y, bminmax.x, bminmax.y, eps))
+                if (!OverlapRange(aminmax.X, aminmax.Y, bminmax.X, bminmax.Y, eps))
                 {
                     // Found separating axis
                     return false;
@@ -155,10 +155,10 @@ namespace DotRecast.Detour
 
         public static float TriArea2D(RcVec3f a, RcVec3f b, RcVec3f c)
         {
-            float abx = b.x - a.x;
-            float abz = b.z - a.z;
-            float acx = c.x - a.x;
-            float acz = c.z - a.z;
+            float abx = b.X - a.X;
+            float abz = b.Z - a.Z;
+            float acx = c.X - a.X;
+            float acz = c.Z - a.Z;
             return acx * abz - abx * acz;
         }
 
@@ -203,9 +203,9 @@ namespace DotRecast.Detour
 
             return new RcVec3f()
             {
-                x = a * pts[pa] + b * pts[pb] + c * pts[pc],
-                y = a * pts[pa + 1] + b * pts[pb + 1] + c * pts[pc + 1],
-                z = a * pts[pa + 2] + b * pts[pb + 2] + c * pts[pc + 2]
+                X = a * pts[pa] + b * pts[pb] + c * pts[pc],
+                Y = a * pts[pa + 1] + b * pts[pb + 1] + c * pts[pc + 1],
+                Z = a * pts[pa + 2] + b * pts[pb + 2] + c * pts[pc + 2]
             };
         }
 
@@ -219,14 +219,14 @@ namespace DotRecast.Detour
             RcVec3f v2 = p.Subtract(a);
 
             // Compute scaled barycentric coordinates
-            float denom = v0.x * v1.z - v0.z * v1.x;
+            float denom = v0.X * v1.Z - v0.Z * v1.X;
             if (Math.Abs(denom) < EPS)
             {
                 return false;
             }
 
-            float u = v1.z * v2.x - v1.x * v2.z;
-            float v = v0.x * v2.z - v0.z * v2.x;
+            float u = v1.Z * v2.X - v1.X * v2.Z;
+            float v = v0.X * v2.Z - v0.Z * v2.X;
 
             if (denom < 0)
             {
@@ -238,7 +238,7 @@ namespace DotRecast.Detour
             // If point lies inside the triangle, return interpolated ycoord.
             if (u >= 0.0f && v >= 0.0f && (u + v) <= denom)
             {
-                h = a.y + (v0.y * u + v1.y * v) / denom;
+                h = a.Y + (v0.Y * u + v1.Y * v) / denom;
                 return true;
             }
 
@@ -258,8 +258,8 @@ namespace DotRecast.Detour
 
             return new RcVec2f
             {
-                x = rmin,
-                y = rmax,
+                X = rmin,
+                Y = rmax,
             };
         }
 
@@ -275,8 +275,8 @@ namespace DotRecast.Detour
             {
                 int vi = i * 3;
                 int vj = j * 3;
-                if (((verts[vi + 2] > pt.z) != (verts[vj + 2] > pt.z)) && (pt.x < (verts[vj + 0] - verts[vi + 0])
-                        * (pt.z - verts[vi + 2]) / (verts[vj + 2] - verts[vi + 2]) + verts[vi + 0]))
+                if (((verts[vi + 2] > pt.Z) != (verts[vj + 2] > pt.Z)) && (pt.X < (verts[vj + 0] - verts[vi + 0])
+                        * (pt.Z - verts[vi + 2]) / (verts[vj + 2] - verts[vi + 2]) + verts[vi + 0]))
                 {
                     c = !c;
                 }
@@ -294,8 +294,8 @@ namespace DotRecast.Detour
             {
                 int vi = i * 3;
                 int vj = j * 3;
-                if (((verts[vi + 2] > pt.z) != (verts[vj + 2] > pt.z)) &&
-                    (pt.x < (verts[vj + 0] - verts[vi + 0]) * (pt.z - verts[vi + 2]) / (verts[vj + 2] - verts[vi + 2]) + verts[vi + 0]))
+                if (((verts[vi + 2] > pt.Z) != (verts[vj + 2] > pt.Z)) &&
+                    (pt.X < (verts[vj + 0] - verts[vi + 0]) * (pt.Z - verts[vi + 2]) / (verts[vj + 2] - verts[vi + 2]) + verts[vi + 0]))
                 {
                     c = !c;
                 }
@@ -315,10 +315,10 @@ namespace DotRecast.Detour
 
         public static float DistancePtSegSqr2D(RcVec3f pt, RcVec3f p, RcVec3f q, out float t)
         {
-            float pqx = q.x - p.x;
-            float pqz = q.z - p.z;
-            float dx = pt.x - p.x;
-            float dz = pt.z - p.z;
+            float pqx = q.X - p.X;
+            float pqz = q.Z - p.Z;
+            float dx = pt.X - p.X;
+            float dz = pt.Z - p.Z;
             float d = pqx * pqx + pqz * pqz;
             t = pqx * dx + pqz * dz;
             if (d > 0)
@@ -335,8 +335,8 @@ namespace DotRecast.Detour
                 t = 1;
             }
 
-            dx = p.x + t * pqx - pt.x;
-            dz = p.z + t * pqz - pt.z;
+            dx = p.X + t * pqx - pt.X;
+            dz = p.Z + t * pqz - pt.Z;
             return dx * dx + dz * dz;
         }
 

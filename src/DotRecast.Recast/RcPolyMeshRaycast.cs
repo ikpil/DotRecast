@@ -59,9 +59,9 @@ namespace DotRecast.Recast
                         RcVec3f[] vs = new RcVec3f[3];
                         for (int k = 0; k < 3; ++k)
                         {
-                            vs[k].x = meshDetail.verts[verts + meshDetail.tris[tris + j * 4 + k] * 3];
-                            vs[k].y = meshDetail.verts[verts + meshDetail.tris[tris + j * 4 + k] * 3 + 1];
-                            vs[k].z = meshDetail.verts[verts + meshDetail.tris[tris + j * 4 + k] * 3 + 2];
+                            vs[k].X = meshDetail.verts[verts + meshDetail.tris[tris + j * 4 + k] * 3];
+                            vs[k].Y = meshDetail.verts[verts + meshDetail.tris[tris + j * 4 + k] * 3 + 1];
+                            vs[k].Z = meshDetail.verts[verts + meshDetail.tris[tris + j * 4 + k] * 3 + 2];
                         }
 
                         if (RcIntersections.IntersectSegmentTriangle(sp, sq, vs[0], vs[1], vs[2], out hitTime))

@@ -84,9 +84,9 @@ namespace DotRecast.Core
             const float EPS = 1e-6f;
 
             RcVec3f d = new RcVec3f();
-            d.x = sq.x - sp.x;
-            d.y = sq.y - sp.y;
-            d.z = sq.z - sp.z;
+            d.X = sq.X - sp.X;
+            d.Y = sq.Y - sp.Y;
+            d.Z = sq.Z - sp.Z;
             tmin = 0.0f;
             tmax = float.MaxValue;
 

@@ -34,12 +34,12 @@ namespace DotRecast.Detour.TileCache.Io
             Write(stream, header.ty, order);
             Write(stream, header.tlayer, order);
             
-            Write(stream, header.bmin.x, order);
-            Write(stream, header.bmin.y, order);
-            Write(stream, header.bmin.z, order);
-            Write(stream, header.bmax.x, order);
-            Write(stream, header.bmax.y, order);
-            Write(stream, header.bmax.z, order);
+            Write(stream, header.bmin.X, order);
+            Write(stream, header.bmin.Y, order);
+            Write(stream, header.bmin.Z, order);
+            Write(stream, header.bmax.X, order);
+            Write(stream, header.bmax.Y, order);
+            Write(stream, header.bmax.Z, order);
 
             Write(stream, (short)header.hmin, order);
             Write(stream, (short)header.hmax, order);

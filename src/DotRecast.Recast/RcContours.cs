@@ -736,10 +736,10 @@ namespace DotRecast.Recast
             {
                 // If the heightfield was build with bordersize, remove the offset.
                 float pad = borderSize * chf.cs;
-                cset.bmin.x += pad;
-                cset.bmin.z += pad;
-                cset.bmax.x -= pad;
-                cset.bmax.z -= pad;
+                cset.bmin.X += pad;
+                cset.bmin.Z += pad;
+                cset.bmax.X -= pad;
+                cset.bmax.Z -= pad;
             }
 
             cset.cs = chf.cs;

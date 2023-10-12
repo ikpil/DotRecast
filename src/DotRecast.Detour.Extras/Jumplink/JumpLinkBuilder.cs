@@ -72,14 +72,14 @@ namespace DotRecast.Detour.Extras.Jumplink
                     {
                         float u = ((float)j) / (link.nspine - 1);
                         RcVec3f p = es.trajectory.Apply(sp, ep, u);
-                        link.spine0[j * 3] = p.x;
-                        link.spine0[j * 3 + 1] = p.y;
-                        link.spine0[j * 3 + 2] = p.z;
+                        link.spine0[j * 3] = p.X;
+                        link.spine0[j * 3 + 1] = p.Y;
+                        link.spine0[j * 3 + 2] = p.Z;
 
                         p = es.trajectory.Apply(sq, eq, u);
-                        link.spine1[j * 3] = p.x;
-                        link.spine1[j * 3 + 1] = p.y;
-                        link.spine1[j * 3 + 2] = p.z;
+                        link.spine1[j * 3] = p.X;
+                        link.spine1[j * 3 + 1] = p.Y;
+                        link.spine1[j * 3 + 2] = p.Z;
                     }
                 }
             }

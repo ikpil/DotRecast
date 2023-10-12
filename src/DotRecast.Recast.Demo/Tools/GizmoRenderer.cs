@@ -47,11 +47,11 @@ public static class GizmoRenderer
             e1[j] = vertices[v2 + j] - vertices[v0 + j];
         }
 
-        normal.x = e0.y * e1.z - e0.z * e1.y;
-        normal.y = e0.z * e1.x - e0.x * e1.z;
-        normal.z = e0.x * e1.y - e0.y * e1.x;
+        normal.X = e0.Y * e1.Z - e0.Z * e1.Y;
+        normal.Y = e0.Z * e1.X - e0.X * e1.Z;
+        normal.Z = e0.X * e1.Y - e0.Y * e1.X;
         RcVec3f.Normalize(ref normal);
-        float c = Math.Clamp(0.57735026f * (normal.x + normal.y + normal.z), -1, 1);
+        float c = Math.Clamp(0.57735026f * (normal.X + normal.Y + normal.Z), -1, 1);
         int col = DebugDraw.DuLerpCol(
             DebugDraw.DuRGBA(32, 32, 0, 160),
             DebugDraw.DuRGBA(220, 220, 0, 160),
@@ -62,15 +62,15 @@ public static class GizmoRenderer
 
     public static void RenderBox(RecastDebugDraw debugDraw, RcBoxGizmo box)
     {
-        var trX = RcVec3f.Of(box.halfEdges[0].x, box.halfEdges[1].x, box.halfEdges[2].x);
-        var trY = RcVec3f.Of(box.halfEdges[0].y, box.halfEdges[1].y, box.halfEdges[2].y);
-        var trZ = RcVec3f.Of(box.halfEdges[0].z, box.halfEdges[1].z, box.halfEdges[2].z);
+        var trX = RcVec3f.Of(box.halfEdges[0].X, box.halfEdges[1].X, box.halfEdges[2].X);
+        var trY = RcVec3f.Of(box.halfEdges[0].Y, box.halfEdges[1].Y, box.halfEdges[2].Y);
+        var trZ = RcVec3f.Of(box.halfEdges[0].Z, box.halfEdges[1].Z, box.halfEdges[2].Z);
         float[] vertices = new float[8 * 3];
         for (int i = 0; i < 8; i++)
         {
-            vertices[i * 3 + 0] = RcVec3f.Dot(RcBoxGizmo.VERTS[i], trX) + box.center.x;
-            vertices[i * 3 + 1] = RcVec3f.Dot(RcBoxGizmo.VERTS[i], trY) + box.center.y;
-            vertices[i * 3 + 2] = RcVec3f.Dot(RcBoxGizmo.VERTS[i], trZ) + box.center.z;
+            vertices[i * 3 + 0] = RcVec3f.Dot(RcBoxGizmo.VERTS[i], trX) + box.center.X;
+            vertices[i * 3 + 1] = RcVec3f.Dot(RcBoxGizmo.VERTS[i], trY) + box.center.Y;
+            vertices[i * 3 + 2] = RcVec3f.Dot(RcBoxGizmo.VERTS[i], trZ) + box.center.Z;
         }
 
         debugDraw.Begin(DebugDrawPrimitives.TRIS);
@@ -144,9 +144,9 @@ public static class GizmoRenderer
                 int col = DebugDraw.DuLerpCol(DebugDraw.DuRGBA(32, 32, 0, 160), DebugDraw.DuRGBA(220, 220, 0, 160), (int)(127 * (1 + c)));
 
                 debugDraw.Vertex(
-                    sphere.radius * sphere.vertices[v] + sphere.center.x,
-                    sphere.radius * sphere.vertices[v + 1] + sphere.center.y,
-                    sphere.radius * sphere.vertices[v + 2] + sphere.center.z,
+                    sphere.radius * sphere.vertices[v] + sphere.center.X,
+                    sphere.radius * sphere.vertices[v + 1] + sphere.center.Y,
+                    sphere.radius * sphere.vertices[v + 2] + sphere.center.Z,
                     col
                 );
             }

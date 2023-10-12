@@ -44,10 +44,10 @@ namespace DotRecast.Detour.Extras.Jumplink
         {
             height = default;
 
-            RcVec3f halfExtents = new RcVec3f { x = cs, y = heightRange, z = cs };
-            float maxHeight = pt.y + heightRange;
+            RcVec3f halfExtents = new RcVec3f { X = cs, Y = heightRange, Z = cs };
+            float maxHeight = pt.Y + heightRange;
             RcAtomicBoolean found = new RcAtomicBoolean();
-            RcAtomicFloat minHeight = new RcAtomicFloat(pt.y);
+            RcAtomicFloat minHeight = new RcAtomicFloat(pt.Y);
 
             navMeshQuery.QueryPolygons(pt, halfExtents, DtQueryNoOpFilter.Shared, new PolyQueryInvoker((tile, poly, refs) =>
             {
@@ -68,7 +68,7 @@ namespace DotRecast.Detour.Extras.Jumplink
                 return true;
             }
 
-            height = pt.y;
+            height = pt.Y;
             return false;
         }
     }

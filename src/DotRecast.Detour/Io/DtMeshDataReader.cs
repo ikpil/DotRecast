@@ -92,13 +92,13 @@ namespace DotRecast.Detour.Io
             header.walkableRadius = buf.GetFloat();
             header.walkableClimb = buf.GetFloat();
             
-            header.bmin.x = buf.GetFloat();
-            header.bmin.y = buf.GetFloat();
-            header.bmin.z = buf.GetFloat();
+            header.bmin.X = buf.GetFloat();
+            header.bmin.Y = buf.GetFloat();
+            header.bmin.Z = buf.GetFloat();
 
-            header.bmax.x = buf.GetFloat();
-            header.bmax.y = buf.GetFloat();
-            header.bmax.z = buf.GetFloat();
+            header.bmax.X = buf.GetFloat();
+            header.bmax.Y = buf.GetFloat();
+            header.bmax.Z = buf.GetFloat();
 
             header.bvQuantFactor = buf.GetFloat();
             data.verts = ReadVerts(buf, header.vertCount);

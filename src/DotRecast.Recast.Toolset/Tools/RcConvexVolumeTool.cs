@@ -80,8 +80,8 @@ namespace DotRecast.Recast.Toolset.Tools
             IList<RcConvexVolume> vols = geom.ConvexVolumes();
             for (int i = 0; i < vols.Count; ++i)
             {
-                if (RcAreas.PointInPoly(vols[i].verts, pos) && pos.y >= vols[i].hmin
-                                                              && pos.y <= vols[i].hmax)
+                if (RcAreas.PointInPoly(vols[i].verts, pos) && pos.Y >= vols[i].hmin
+                                                              && pos.Y <= vols[i].hmax)
                 {
                     nearestIndex = i;
                 }
@@ -113,9 +113,9 @@ namespace DotRecast.Recast.Toolset.Tools
             float[] verts = new float[hull.Count * 3];
             for (int i = 0; i < hull.Count; ++i)
             {
-                verts[i * 3] = pts[hull[i]].x;
-                verts[i * 3 + 1] = pts[hull[i]].y;
-                verts[i * 3 + 2] = pts[hull[i]].z;
+                verts[i * 3] = pts[hull[i]].X;
+                verts[i * 3 + 1] = pts[hull[i]].Y;
+                verts[i * 3 + 2] = pts[hull[i]].Z;
             }
 
             float minh = float.MaxValue, maxh = 0;

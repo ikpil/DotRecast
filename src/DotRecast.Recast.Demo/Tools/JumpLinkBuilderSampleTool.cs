@@ -245,14 +245,14 @@ public class JumpLinkBuilderSampleTool : ISampleTool
                     dd.End();
 
                     dd.Begin(LINES, 1.0f);
-                    dd.Vertex(link.start.p.x, link.start.p.y, link.start.p.z, colb);
-                    dd.Vertex(link.start.p.x, link.start.p.y + r, link.start.p.z, colb);
-                    dd.Vertex(link.start.p.x, link.start.p.y + r, link.start.p.z, colb);
-                    dd.Vertex(link.start.q.x, link.start.q.y + r, link.start.q.z, colb);
-                    dd.Vertex(link.start.q.x, link.start.q.y + r, link.start.q.z, colb);
-                    dd.Vertex(link.start.q.x, link.start.q.y, link.start.q.z, colb);
-                    dd.Vertex(link.start.q.x, link.start.q.y, link.start.q.z, colb);
-                    dd.Vertex(link.start.p.x, link.start.p.y, link.start.p.z, colb);
+                    dd.Vertex(link.start.p.X, link.start.p.Y, link.start.p.Z, colb);
+                    dd.Vertex(link.start.p.X, link.start.p.Y + r, link.start.p.Z, colb);
+                    dd.Vertex(link.start.p.X, link.start.p.Y + r, link.start.p.Z, colb);
+                    dd.Vertex(link.start.q.X, link.start.q.Y + r, link.start.q.Z, colb);
+                    dd.Vertex(link.start.q.X, link.start.q.Y + r, link.start.q.Z, colb);
+                    dd.Vertex(link.start.q.X, link.start.q.Y, link.start.q.Z, colb);
+                    dd.Vertex(link.start.q.X, link.start.q.Y, link.start.q.Z, colb);
+                    dd.Vertex(link.start.p.X, link.start.p.Y, link.start.p.Z, colb);
                     dd.End();
 
                     GroundSegment end = link.end;
@@ -264,14 +264,14 @@ public class JumpLinkBuilderSampleTool : ISampleTool
                     dd.End();
 
                     dd.Begin(LINES, 1.0f);
-                    dd.Vertex(end.p.x, end.p.y, end.p.z, colb);
-                    dd.Vertex(end.p.x, end.p.y + r, end.p.z, colb);
-                    dd.Vertex(end.p.x, end.p.y + r, end.p.z, colb);
-                    dd.Vertex(end.q.x, end.q.y + r, end.q.z, colb);
-                    dd.Vertex(end.q.x, end.q.y + r, end.q.z, colb);
-                    dd.Vertex(end.q.x, end.q.y, end.q.z, colb);
-                    dd.Vertex(end.q.x, end.q.y, end.q.z, colb);
-                    dd.Vertex(end.p.x, end.p.y, end.p.z, colb);
+                    dd.Vertex(end.p.X, end.p.Y, end.p.Z, colb);
+                    dd.Vertex(end.p.X, end.p.Y + r, end.p.Z, colb);
+                    dd.Vertex(end.p.X, end.p.Y + r, end.p.Z, colb);
+                    dd.Vertex(end.q.X, end.q.Y + r, end.q.Z, colb);
+                    dd.Vertex(end.q.X, end.q.Y + r, end.q.Z, colb);
+                    dd.Vertex(end.q.X, end.q.Y, end.q.Z, colb);
+                    dd.Vertex(end.q.X, end.q.Y, end.q.Z, colb);
+                    dd.Vertex(end.p.X, end.p.Y, end.p.Z, colb);
                     dd.End();
 
                     dd.Begin(LINES, 4.0f);
@@ -311,7 +311,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
                             col = DuRGBA(220, 32, 32, 255);
                         }
 
-                        spt.y = s.p.y + off;
+                        spt.Y = s.p.Y + off;
                         dd.Vertex(spt, col);
                     }
 
@@ -330,7 +330,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
                             off = 0.1f;
                         }
 
-                        spt.y = s.p.y + off;
+                        spt.Y = s.p.Y + off;
                         dd.Vertex(spt, col);
                     }
 
@@ -351,7 +351,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
                                 col = DuRGBA(220, 32, 32, 255);
                             }
 
-                            spt.y = s.p.y + off;
+                            spt.Y = s.p.Y + off;
                             dd.Vertex(spt, col);
                         }
 
@@ -369,7 +369,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
                                 off = 0.1f;
                             }
 
-                            spt.y = s.p.y + off;
+                            spt.Y = s.p.Y + off;
                             dd.Vertex(spt, col);
                         }
 

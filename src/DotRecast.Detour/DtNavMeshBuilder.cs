@@ -171,13 +171,13 @@ namespace DotRecast.Detour
                     }
 
                     // BV-tree uses cs for all dimensions
-                    it.bmin[0] = Math.Clamp((int)((bmin.x - option.bmin.x) * quantFactor), 0, int.MaxValue);
-                    it.bmin[1] = Math.Clamp((int)((bmin.y - option.bmin.y) * quantFactor), 0, int.MaxValue);
-                    it.bmin[2] = Math.Clamp((int)((bmin.z - option.bmin.z) * quantFactor), 0, int.MaxValue);
+                    it.bmin[0] = Math.Clamp((int)((bmin.X - option.bmin.X) * quantFactor), 0, int.MaxValue);
+                    it.bmin[1] = Math.Clamp((int)((bmin.Y - option.bmin.Y) * quantFactor), 0, int.MaxValue);
+                    it.bmin[2] = Math.Clamp((int)((bmin.Z - option.bmin.Z) * quantFactor), 0, int.MaxValue);
 
-                    it.bmax[0] = Math.Clamp((int)((bmax.x - option.bmin.x) * quantFactor), 0, int.MaxValue);
-                    it.bmax[1] = Math.Clamp((int)((bmax.y - option.bmin.y) * quantFactor), 0, int.MaxValue);
-                    it.bmax[2] = Math.Clamp((int)((bmax.z - option.bmin.z) * quantFactor), 0, int.MaxValue);
+                    it.bmax[0] = Math.Clamp((int)((bmax.X - option.bmin.X) * quantFactor), 0, int.MaxValue);
+                    it.bmax[1] = Math.Clamp((int)((bmax.Y - option.bmin.Y) * quantFactor), 0, int.MaxValue);
+                    it.bmax[2] = Math.Clamp((int)((bmax.Z - option.bmin.Z) * quantFactor), 0, int.MaxValue);
                 }
                 else
                 {
@@ -226,10 +226,10 @@ namespace DotRecast.Detour
         public static int ClassifyOffMeshPoint(RcVec3f pt, RcVec3f bmin, RcVec3f bmax)
         {
             int outcode = 0;
-            outcode |= (pt.x >= bmax.x) ? XP : 0;
-            outcode |= (pt.z >= bmax.z) ? ZP : 0;
-            outcode |= (pt.x < bmin.x) ? XM : 0;
-            outcode |= (pt.z < bmin.z) ? ZM : 0;
+            outcode |= (pt.X >= bmax.X) ? XP : 0;
+            outcode |= (pt.Z >= bmax.Z) ? ZP : 0;
+            outcode |= (pt.X < bmin.X) ? XM : 0;
+            outcode |= (pt.Z < bmin.Z) ? ZM : 0;
 
             switch (outcode)
             {
@@ -302,7 +302,7 @@ namespace DotRecast.Detour
                     for (int i = 0; i < option.vertCount; ++i)
                     {
                         int iv = i * 3;
-                        float h = option.bmin.y + option.verts[iv + 1] * option.ch;
+                        float h = option.bmin.Y + option.verts[iv + 1] * option.ch;
                         hmin = Math.Min(hmin, h);
                         hmax = Math.Max(hmax, h);
                     }
@@ -314,8 +314,8 @@ namespace DotRecast.Detour
                 RcVec3f bmax = new RcVec3f();
                 bmin = option.bmin;
                 bmax = option.bmax;
-                bmin.y = hmin;
-                bmax.y = hmax;
+                bmin.Y = hmin;
+                bmax.Y = hmax;
 
                 for (int i = 0; i < option.offMeshConCount; ++i)
                 {
@@ -329,7 +329,7 @@ namespace DotRecast.Detour
                     // potentially touching the mesh.
                     if (offMeshConClass[i * 2 + 0] == 0xff)
                     {
-                        if (p0.y < bmin.y || p0.y > bmax.y)
+                        if (p0.Y < bmin.Y || p0.Y > bmax.Y)
                             offMeshConClass[i * 2 + 0] = 0;
                     }
 
@@ -458,9 +458,9 @@ namespace DotRecast.Detour
             {
                 int iv = i * 3;
                 int v = i * 3;
-                navVerts[v] = option.bmin.x + option.verts[iv] * option.cs;
-                navVerts[v + 1] = option.bmin.y + option.verts[iv + 1] * option.ch;
-                navVerts[v + 2] = option.bmin.z + option.verts[iv + 2] * option.cs;
+                navVerts[v] = option.bmin.X + option.verts[iv] * option.cs;
+                navVerts[v + 1] = option.bmin.Y + option.verts[iv + 1] * option.ch;
+                navVerts[v + 2] = option.bmin.Z + option.verts[iv + 2] * option.cs;
             }
 
             // Off-mesh link vertices.

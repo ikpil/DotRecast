@@ -254,17 +254,17 @@ public class DynamicUpdateSampleTool : ISampleTool
             ImGui.Separator();
             if (sposSet)
             {
-                ImGui.Text($"Start: {spos.x}, {spos.y + 1.3f}, {spos.z}");
+                ImGui.Text($"Start: {spos.X}, {spos.Y + 1.3f}, {spos.Z}");
             }
 
             if (eposSet)
             {
-                ImGui.Text($"End: {epos.x}, {epos.y + 1.3f}, {epos.z}");
+                ImGui.Text($"End: {epos.X}, {epos.Y + 1.3f}, {epos.Z}");
             }
 
             if (raycastHit)
             {
-                ImGui.Text($"Hit: {raycastHitPos.x}, {raycastHitPos.y}, {raycastHitPos.z}");
+                ImGui.Text($"Hit: {raycastHitPos.X}, {raycastHitPos.Y}, {raycastHitPos.Z}");
             }
 
             ImGui.NewLine();
@@ -308,8 +308,8 @@ public class DynamicUpdateSampleTool : ISampleTool
             {
                 int spathCol = raycastHit ? DuRGBA(128, 32, 16, 220) : DuRGBA(64, 128, 240, 220);
                 dd.Begin(LINES, 2.0f);
-                dd.Vertex(spos.x, spos.y + 1.3f, spos.z, spathCol);
-                dd.Vertex(raycastHitPos.x, raycastHitPos.y, raycastHitPos.z, spathCol);
+                dd.Vertex(spos.X, spos.Y + 1.3f, spos.Z, spathCol);
+                dd.Vertex(raycastHitPos.X, raycastHitPos.Y, raycastHitPos.Z, spathCol);
                 dd.End();
             }
 
@@ -325,16 +325,16 @@ public class DynamicUpdateSampleTool : ISampleTool
         float c = settings.agentMaxClimb;
         dd.DepthMask(false);
         // Agent dimensions.
-        dd.DebugDrawCylinderWire(pos.x - r, pos.y + 0.02f, pos.z - r, pos.x + r, pos.y + h, pos.z + r, col, 2.0f);
-        dd.DebugDrawCircle(pos.x, pos.y + c, pos.z, r, DuRGBA(0, 0, 0, 64), 1.0f);
+        dd.DebugDrawCylinderWire(pos.X - r, pos.Y + 0.02f, pos.Z - r, pos.X + r, pos.Y + h, pos.Z + r, col, 2.0f);
+        dd.DebugDrawCircle(pos.X, pos.Y + c, pos.Z, r, DuRGBA(0, 0, 0, 64), 1.0f);
         int colb = DuRGBA(0, 0, 0, 196);
         dd.Begin(LINES);
-        dd.Vertex(pos.x, pos.y - c, pos.z, colb);
-        dd.Vertex(pos.x, pos.y + c, pos.z, colb);
-        dd.Vertex(pos.x - r / 2, pos.y + 0.02f, pos.z, colb);
-        dd.Vertex(pos.x + r / 2, pos.y + 0.02f, pos.z, colb);
-        dd.Vertex(pos.x, pos.y + 0.02f, pos.z - r / 2, colb);
-        dd.Vertex(pos.x, pos.y + 0.02f, pos.z + r / 2, colb);
+        dd.Vertex(pos.X, pos.Y - c, pos.Z, colb);
+        dd.Vertex(pos.X, pos.Y + c, pos.Z, colb);
+        dd.Vertex(pos.X - r / 2, pos.Y + 0.02f, pos.Z, colb);
+        dd.Vertex(pos.X + r / 2, pos.Y + 0.02f, pos.Z, colb);
+        dd.Vertex(pos.X, pos.Y + 0.02f, pos.Z - r / 2, colb);
+        dd.Vertex(pos.X, pos.Y + 0.02f, pos.Z + r / 2, colb);
         dd.End();
         dd.DepthMask(true);
     }

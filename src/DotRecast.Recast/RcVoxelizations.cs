@@ -49,10 +49,10 @@ namespace DotRecast.Recast
                 {
                     float[] tbmin = new float[2];
                     float[] tbmax = new float[2];
-                    tbmin[0] = builderCfg.bmin.x;
-                    tbmin[1] = builderCfg.bmin.z;
-                    tbmax[0] = builderCfg.bmax.x;
-                    tbmax[1] = builderCfg.bmax.z;
+                    tbmin[0] = builderCfg.bmin.X;
+                    tbmin[1] = builderCfg.bmin.Z;
+                    tbmax[0] = builderCfg.bmax.X;
+                    tbmax[1] = builderCfg.bmax.Z;
                     List<RcChunkyTriMeshNode> nodes = geom.GetChunksOverlappingRect(tbmin, tbmax);
                     foreach (RcChunkyTriMeshNode node in nodes)
                     {

@@ -62,7 +62,7 @@ public class OffMeshConnectionSampleTool : ISampleTool
 
         if (_hasStartPt)
         {
-            dd.DebugDrawCross(_startPt.x, _startPt.y + 0.1f, _startPt.z, s, DuRGBA(0, 0, 0, 128), 2.0f);
+            dd.DebugDrawCross(_startPt.X, _startPt.Y + 0.1f, _startPt.Z, s, DuRGBA(0, 0, 0, 128), 2.0f);
         }
 
         DemoInputGeomProvider geom = _sample.GetInputGeom();

@@ -121,9 +121,9 @@ public class AbstractCrowdTest
             for (int j = 0; j < size; j++)
             {
                 RcVec3f pos = new RcVec3f();
-                pos.x = startPos.x + i * distance;
-                pos.y = startPos.y;
-                pos.z = startPos.z + j * distance;
+                pos.X = startPos.X + i * distance;
+                pos.Y = startPos.Y;
+                pos.Z = startPos.Z + j * distance;
                 agents.Add(crowd.AddAgent(pos, ap));
             }
         }
@@ -154,7 +154,7 @@ public class AbstractCrowdTest
     protected RcVec3f CalcVel(RcVec3f pos, RcVec3f tgt, float speed)
     {
         RcVec3f vel = tgt.Subtract(pos);
-        vel.y = 0.0f;
+        vel.Y = 0.0f;
         vel.Normalize();
         vel = vel.Scale(speed);
         return vel;
@@ -166,8 +166,8 @@ public class AbstractCrowdTest
         foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
         {
             Console.WriteLine(ag.state + ", " + ag.targetState);
-            Console.WriteLine(ag.npos.x + ", " + ag.npos.y + ", " + ag.npos.z);
-            Console.WriteLine(ag.nvel.x + ", " + ag.nvel.y + ", " + ag.nvel.z);
+            Console.WriteLine(ag.npos.X + ", " + ag.npos.Y + ", " + ag.npos.Z);
+            Console.WriteLine(ag.nvel.X + ", " + ag.nvel.Y + ", " + ag.nvel.Z);
         }
     }
 }

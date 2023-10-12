@@ -55,8 +55,8 @@ public class RecastDebugDraw : DebugDraw
             RcVec3f norm = RcVec3f.Of(normals[i], normals[i + 1], normals[i + 2]);
 
             int color;
-            char a = (char)(220 * (2 + norm.x + norm.y) / 4);
-            if (norm.y < walkableThr)
+            char a = (char)(220 * (2 + norm.X + norm.Y) / 4);
+            if (norm.Y < walkableThr)
             {
                 color = DuLerpCol(DuRGBA(a, a, a, 255), unwalkable, 64);
             }
@@ -70,12 +70,12 @@ public class RecastDebugDraw : DebugDraw
             RcVec3f vc = RcVec3f.Of(verts[tris[i + 2] * 3], verts[tris[i + 2] * 3 + 1], verts[tris[i + 2] * 3 + 2]);
 
             int ax = 0, ay = 0;
-            if (Math.Abs(norm.y) > Math.Abs(norm[ax]))
+            if (Math.Abs(norm.Y) > Math.Abs(norm[ax]))
             {
                 ax = 1;
             }
 
-            if (Math.Abs(norm.z) > Math.Abs(norm[ax]))
+            if (Math.Abs(norm.Z) > Math.Abs(norm[ax]))
             {
                 ax = 2;
             }
@@ -83,12 +83,12 @@ public class RecastDebugDraw : DebugDraw
             ax = (1 << ax) & 3; // +1 mod 3
             ay = (1 << ax) & 3; // +1 mod 3
 
-            uva.x = va[ax] * texScale;
-            uva.y = va[ay] * texScale;
-            uvb.x = vb[ax] * texScale;
-            uvb.y = vb[ay] * texScale;
-            uvc.x = vc[ax] * texScale;
-            uvc.y = vc[ay] * texScale;
+            uva.X = va[ax] * texScale;
+            uva.Y = va[ay] * texScale;
+            uvb.X = vb[ax] * texScale;
+            uvb.Y = vb[ay] * texScale;
+            uvc.X = vc[ax] * texScale;
+            uvc.Y = vc[ay] * texScale;
 
             Vertex(va, color, uva);
             Vertex(vb, color, uvb);
@@ -213,12 +213,12 @@ public class RecastDebugDraw : DebugDraw
                 }
 
                 // End points and their on-mesh locations.
-                Vertex(va.x, va.y, va.z, col);
+                Vertex(va.X, va.Y, va.Z, col);
                 Vertex(con.pos[0], con.pos[1], con.pos[2], col);
                 col2 = startSet ? col : DuRGBA(220, 32, 16, 196);
                 AppendCircle(con.pos[0], con.pos[1] + 0.1f, con.pos[2], con.rad, col2);
 
-                Vertex(vb.x, vb.y, vb.z, col);
+                Vertex(vb.X, vb.Y, vb.Z, col);
                 Vertex(con.pos[3], con.pos[4], con.pos[5], col);
                 col2 = endSet ? col : DuRGBA(220, 32, 16, 196);
                 AppendCircle(con.pos[3], con.pos[4] + 0.1f, con.pos[5], con.rad, col2);
@@ -424,10 +424,10 @@ public class RecastDebugDraw : DebugDraw
 
     static float DistancePtLine2d(RcVec3f pt, RcVec3f p, RcVec3f q)
     {
-        float pqx = q.x - p.x;
-        float pqz = q.z - p.z;
-        float dx = pt.x - p.x;
-        float dz = pt.z - p.z;
+        float pqx = q.X - p.X;
+        float pqz = q.Z - p.Z;
+        float dx = pt.X - p.X;
+        float dz = pt.Z - p.Z;
         float d = pqx * pqx + pqz * pqz;
         float t = pqx * dx + pqz * dz;
         if (d != 0)
@@ -435,8 +435,8 @@ public class RecastDebugDraw : DebugDraw
             t /= d;
         }
 
-        dx = p.x + t * pqx - pt.x;
-        dz = p.z + t * pqz - pt.z;
+        dx = p.X + t * pqx - pt.X;
+        dz = p.Z + t * pqz - pt.Z;
         return dx * dx + dz * dz;
     }
 
@@ -465,9 +465,9 @@ public class RecastDebugDraw : DebugDraw
                 continue;
             }
 
-            AppendBoxWire(tile.data.header.bmin.x + n.bmin[0] * cs, tile.data.header.bmin.y + n.bmin[1] * cs,
-                tile.data.header.bmin.z + n.bmin[2] * cs, tile.data.header.bmin.x + n.bmax[0] * cs,
-                tile.data.header.bmin.y + n.bmax[1] * cs, tile.data.header.bmin.z + n.bmax[2] * cs,
+            AppendBoxWire(tile.data.header.bmin.X + n.bmin[0] * cs, tile.data.header.bmin.Y + n.bmin[1] * cs,
+                tile.data.header.bmin.Z + n.bmin[2] * cs, tile.data.header.bmin.X + n.bmax[0] * cs,
+                tile.data.header.bmin.Y + n.bmax[1] * cs, tile.data.header.bmin.Z + n.bmax[2] * cs,
                 DuRGBA(255, 255, 255, 128));
         }
 
@@ -485,8 +485,8 @@ public class RecastDebugDraw : DebugDraw
         {
             for (int x = 0; x < chf.width; ++x)
             {
-                float fx = chf.bmin.x + x * cs;
-                float fz = chf.bmin.z + y * cs;
+                float fx = chf.bmin.X + x * cs;
+                float fz = chf.bmin.Z + y * cs;
                 RcCompactCell c = chf.cells[x + y * chf.width];
 
                 for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
@@ -508,7 +508,7 @@ public class RecastDebugDraw : DebugDraw
                         color = AreaToCol(area);
                     }
 
-                    float fy = chf.bmin.y + (s.y + 1) * ch;
+                    float fy = chf.bmin.Y + (s.y + 1) * ch;
                     Vertex(fx, fy, fz, color);
                     Vertex(fx, fy, fz + cs, color);
                     Vertex(fx + cs, fy, fz + cs, color);
@@ -548,7 +548,7 @@ public class RecastDebugDraw : DebugDraw
                 if (cont2 != null)
                 {
                     RcVec3f pos2 = GetContourCenter(cont2, orig, cs, ch);
-                    AppendArc(pos.x, pos.y, pos.z, pos2.x, pos2.y, pos2.z, 0.25f, 0.6f, 0.6f, color);
+                    AppendArc(pos.X, pos.Y, pos.Z, pos2.X, pos2.Y, pos2.Z, 0.25f, 0.6f, 0.6f, color);
                 }
             }
         }
@@ -573,9 +573,9 @@ public class RecastDebugDraw : DebugDraw
     private RcVec3f GetContourCenter(RcContour cont, RcVec3f orig, float cs, float ch)
     {
         RcVec3f center = new RcVec3f();
-        center.x = 0;
-        center.y = 0;
-        center.z = 0;
+        center.X = 0;
+        center.Y = 0;
+        center.Z = 0;
         if (cont.nverts == 0)
         {
             return center;
@@ -584,18 +584,18 @@ public class RecastDebugDraw : DebugDraw
         for (int i = 0; i < cont.nverts; ++i)
         {
             int v = i * 4;
-            center.x += cont.verts[v + 0];
-            center.y += cont.verts[v + 1];
-            center.z += cont.verts[v + 2];
+            center.X += cont.verts[v + 0];
+            center.Y += cont.verts[v + 1];
+            center.Z += cont.verts[v + 2];
         }
 
         float s = 1.0f / cont.nverts;
-        center.x *= s * cs;
-        center.y *= s * ch;
-        center.z *= s * cs;
-        center.x += orig.x;
-        center.y += orig.y + 4 * ch;
-        center.z += orig.z;
+        center.X *= s * cs;
+        center.Y *= s * ch;
+        center.Z *= s * cs;
+        center.X += orig.X;
+        center.Y += orig.Y + 4 * ch;
+        center.Z += orig.Z;
         return center;
     }
 
@@ -632,9 +632,9 @@ public class RecastDebugDraw : DebugDraw
                 int v0 = c.rverts[j * 4];
                 int v1 = c.rverts[j * 4 + 1];
                 int v2 = c.rverts[j * 4 + 2];
-                float fx = orig.x + v0 * cs;
-                float fy = orig.y + (v1 + 1 + (i & 1)) * ch;
-                float fz = orig.z + v2 * cs;
+                float fx = orig.X + v0 * cs;
+                float fy = orig.Y + (v1 + 1 + (i & 1)) * ch;
+                float fz = orig.Z + v2 * cs;
                 Vertex(fx, fy, fz, color);
                 if (j > 0)
                 {
@@ -647,9 +647,9 @@ public class RecastDebugDraw : DebugDraw
                 int v0 = c.rverts[0];
                 int v1 = c.rverts[1];
                 int v2 = c.rverts[2];
-                float fx = orig.x + v0 * cs;
-                float fy = orig.y + (v1 + 1 + (i & 1)) * ch;
-                float fz = orig.z + v2 * cs;
+                float fx = orig.X + v0 * cs;
+                float fy = orig.Y + (v1 + 1 + (i & 1)) * ch;
+                float fz = orig.Z + v2 * cs;
                 Vertex(fx, fy, fz, color);
             }
         }
@@ -677,9 +677,9 @@ public class RecastDebugDraw : DebugDraw
                     off = ch * 2;
                 }
 
-                float fx = orig.x + v0 * cs;
-                float fy = orig.y + (v1 + 1 + (i & 1)) * ch + off;
-                float fz = orig.z + v2 * cs;
+                float fx = orig.X + v0 * cs;
+                float fy = orig.Y + (v1 + 1 + (i & 1)) * ch + off;
+                float fz = orig.Z + v2 * cs;
                 Vertex(fx, fy, fz, colv);
             }
         }
@@ -720,14 +720,14 @@ public class RecastDebugDraw : DebugDraw
                 int vb2 = c.verts[j * 4 + 2];
                 int col = (va3 & RcConstants.RC_AREA_BORDER) != 0 ? bcolor : color;
 
-                float fx = orig.x + va0 * cs;
-                float fy = orig.y + (va1 + 1 + (i & 1)) * ch;
-                float fz = orig.z + va2 * cs;
+                float fx = orig.X + va0 * cs;
+                float fy = orig.Y + (va1 + 1 + (i & 1)) * ch;
+                float fz = orig.Z + va2 * cs;
                 Vertex(fx, fy, fz, col);
 
-                fx = orig.x + vb0 * cs;
-                fy = orig.y + (vb1 + 1 + (i & 1)) * ch;
-                fz = orig.z + vb2 * cs;
+                fx = orig.X + vb0 * cs;
+                fy = orig.Y + (vb1 + 1 + (i & 1)) * ch;
+                fz = orig.Z + vb2 * cs;
                 Vertex(fx, fy, fz, col);
             }
         }
@@ -755,9 +755,9 @@ public class RecastDebugDraw : DebugDraw
                     off = ch * 2;
                 }
 
-                float fx = orig.x + v0 * cs;
-                float fy = orig.y + (v1 + 1 + (i & 1)) * ch + off;
-                float fz = orig.z + v2 * cs;
+                float fx = orig.X + v0 * cs;
+                float fy = orig.Y + (v1 + 1 + (i & 1)) * ch + off;
+                float fz = orig.Z + v2 * cs;
                 Vertex(fx, fy, fz, colv);
             }
         }
@@ -788,12 +788,12 @@ public class RecastDebugDraw : DebugDraw
         {
             for (int x = 0; x < w; ++x)
             {
-                float fx = orig.x + x * cs;
-                float fz = orig.z + y * cs;
+                float fx = orig.X + x * cs;
+                float fz = orig.Z + y * cs;
                 RcSpan s = hf.spans[x + y * w];
                 while (s != null)
                 {
-                    AppendBox(fx, orig.y + s.smin * ch, fz, fx + cs, orig.y + s.smax * ch, fz + cs, fcol);
+                    AppendBox(fx, orig.Y + s.smin * ch, fz, fx + cs, orig.Y + s.smax * ch, fz + cs, fcol);
                     s = s.next;
                 }
             }
@@ -820,8 +820,8 @@ public class RecastDebugDraw : DebugDraw
         {
             for (int x = 0; x < w; ++x)
             {
-                float fx = orig.x + x * cs;
-                float fz = orig.z + y * cs;
+                float fx = orig.X + x * cs;
+                float fz = orig.Z + y * cs;
                 RcSpan s = hf.spans[x + y * w];
                 while (s != null)
                 {
@@ -838,7 +838,7 @@ public class RecastDebugDraw : DebugDraw
                         fcol[0] = DuMultCol(AreaToCol(s.area), 200);
                     }
 
-                    AppendBox(fx, orig.y + s.smin * ch, fz, fx + cs, orig.y + s.smax * ch, fz + cs, fcol);
+                    AppendBox(fx, orig.Y + s.smin * ch, fz, fx + cs, orig.Y + s.smax * ch, fz + cs, fcol);
                     s = s.next;
                 }
             }
@@ -858,14 +858,14 @@ public class RecastDebugDraw : DebugDraw
         {
             for (int x = 0; x < chf.width; ++x)
             {
-                float fx = chf.bmin.x + x * cs;
-                float fz = chf.bmin.z + y * cs;
+                float fx = chf.bmin.X + x * cs;
+                float fz = chf.bmin.Z + y * cs;
                 RcCompactCell c = chf.cells[x + y * chf.width];
 
                 for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                 {
                     RcCompactSpan s = chf.spans[i];
-                    float fy = chf.bmin.y + (s.y) * ch;
+                    float fy = chf.bmin.Y + (s.y) * ch;
                     int color;
                     if (s.reg != 0)
                     {
@@ -911,14 +911,14 @@ public class RecastDebugDraw : DebugDraw
         {
             for (int x = 0; x < chf.width; ++x)
             {
-                float fx = chf.bmin.x + x * cs;
-                float fz = chf.bmin.z + y * cs;
+                float fx = chf.bmin.X + x * cs;
+                float fz = chf.bmin.Z + y * cs;
                 RcCompactCell c = chf.cells[x + y * chf.width];
 
                 for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                 {
                     RcCompactSpan s = chf.spans[i];
-                    float fy = chf.bmin.y + (s.y + 1) * ch;
+                    float fy = chf.bmin.Y + (s.y + 1) * ch;
                     char cd = (char)(chf.dist[i] * dscale);
                     int color = DuRGBA(cd, cd, cd, 255);
                     Vertex(fx, fy, fz, color);
@@ -976,9 +976,9 @@ public class RecastDebugDraw : DebugDraw
                     int v0 = mesh.verts[vi[k] * 3];
                     int v1 = mesh.verts[vi[k] * 3 + 1];
                     int v2 = mesh.verts[vi[k] * 3 + 2];
-                    float x = orig.x + v0 * cs;
-                    float y = orig.y + (v1 + 1) * ch;
-                    float z = orig.z + v2 * cs;
+                    float x = orig.X + v0 * cs;
+                    float y = orig.Y + (v1 + 1) * ch;
+                    float z = orig.Z + v2 * cs;
                     Vertex(x, y, z, color);
                 }
             }
@@ -1010,9 +1010,9 @@ public class RecastDebugDraw : DebugDraw
                 for (int k = 0; k < 2; ++k)
                 {
                     int v = vi[k] * 3;
-                    float x = orig.x + mesh.verts[v] * cs;
-                    float y = orig.y + (mesh.verts[v + 1] + 1) * ch + 0.1f;
-                    float z = orig.z + mesh.verts[v + 2] * cs;
+                    float x = orig.X + mesh.verts[v] * cs;
+                    float y = orig.Y + (mesh.verts[v + 1] + 1) * ch + 0.1f;
+                    float z = orig.Z + mesh.verts[v + 2] * cs;
                     Vertex(x, y, z, coln);
                 }
             }
@@ -1050,9 +1050,9 @@ public class RecastDebugDraw : DebugDraw
                 for (int k = 0; k < 2; ++k)
                 {
                     int v = vi[k] * 3;
-                    float x = orig.x + mesh.verts[v] * cs;
-                    float y = orig.y + (mesh.verts[v + 1] + 1) * ch + 0.1f;
-                    float z = orig.z + mesh.verts[v + 2] * cs;
+                    float x = orig.X + mesh.verts[v] * cs;
+                    float y = orig.Y + (mesh.verts[v + 1] + 1) * ch + 0.1f;
+                    float z = orig.Z + mesh.verts[v + 2] * cs;
                     Vertex(x, y, z, col);
                 }
             }
@@ -1065,9 +1065,9 @@ public class RecastDebugDraw : DebugDraw
         for (int i = 0; i < mesh.nverts; ++i)
         {
             int v = i * 3;
-            float x = orig.x + mesh.verts[v] * cs;
-            float y = orig.y + (mesh.verts[v + 1] + 1) * ch + 0.1f;
-            float z = orig.z + mesh.verts[v + 2] * cs;
+            float x = orig.X + mesh.verts[v] * cs;
+            float y = orig.Y + (mesh.verts[v + 1] + 1) * ch + 0.1f;
+            float z = orig.Z + mesh.verts[v + 2] * cs;
             Vertex(x, y, z, colv);
         }
 
@@ -1211,7 +1211,7 @@ public class RecastDebugDraw : DebugDraw
                         continue;
                     }
 
-                    Vertex(node.pos.x, node.pos.y + off, node.pos.z, DuRGBA(255, 192, 0, 255));
+                    Vertex(node.pos.X, node.pos.Y + off, node.pos.Z, DuRGBA(255, 192, 0, 255));
                 }
             }
 
@@ -1238,8 +1238,8 @@ public class RecastDebugDraw : DebugDraw
                         continue;
                     }
 
-                    Vertex(node.pos.x, node.pos.y + off, node.pos.z, DuRGBA(255, 192, 0, 128));
-                    Vertex(parent.pos.x, parent.pos.y + off, parent.pos.z, DuRGBA(255, 192, 0, 128));
+                    Vertex(node.pos.X, node.pos.Y + off, node.pos.Z, DuRGBA(255, 192, 0, 128));
+                    Vertex(parent.pos.X, parent.pos.Y + off, parent.pos.Z, DuRGBA(255, 192, 0, 128));
                 }
             }
 
@@ -1362,37 +1362,37 @@ public class RecastDebugDraw : DebugDraw
                     {
                         int col = side == 0 ? DuRGBA(128, 0, 0, 128) : DuRGBA(128, 0, 128, 128);
 
-                        float x = va.x + ((side == 0) ? -padx : padx);
+                        float x = va.X + ((side == 0) ? -padx : padx);
 
-                        Vertex(x, va.y - pady, va.z, col);
-                        Vertex(x, va.y + pady, va.z, col);
+                        Vertex(x, va.Y - pady, va.Z, col);
+                        Vertex(x, va.Y + pady, va.Z, col);
 
-                        Vertex(x, va.y + pady, va.z, col);
-                        Vertex(x, vb.y + pady, vb.z, col);
+                        Vertex(x, va.Y + pady, va.Z, col);
+                        Vertex(x, vb.Y + pady, vb.Z, col);
 
-                        Vertex(x, vb.y + pady, vb.z, col);
-                        Vertex(x, vb.y - pady, vb.z, col);
+                        Vertex(x, vb.Y + pady, vb.Z, col);
+                        Vertex(x, vb.Y - pady, vb.Z, col);
 
-                        Vertex(x, vb.y - pady, vb.z, col);
-                        Vertex(x, va.y - pady, va.z, col);
+                        Vertex(x, vb.Y - pady, vb.Z, col);
+                        Vertex(x, va.Y - pady, va.Z, col);
                     }
                     else if (side == 2 || side == 6)
                     {
                         int col = side == 2 ? DuRGBA(0, 128, 0, 128) : DuRGBA(0, 128, 128, 128);
 
-                        float z = va.z + ((side == 2) ? -padx : padx);
+                        float z = va.Z + ((side == 2) ? -padx : padx);
 
-                        Vertex(va.x, va.y - pady, z, col);
-                        Vertex(va.x, va.y + pady, z, col);
+                        Vertex(va.X, va.Y - pady, z, col);
+                        Vertex(va.X, va.Y + pady, z, col);
 
-                        Vertex(va.x, va.y + pady, z, col);
-                        Vertex(vb.x, vb.y + pady, z, col);
+                        Vertex(va.X, va.Y + pady, z, col);
+                        Vertex(vb.X, vb.Y + pady, z, col);
 
-                        Vertex(vb.x, vb.y + pady, z, col);
-                        Vertex(vb.x, vb.y - pady, z, col);
+                        Vertex(vb.X, vb.Y + pady, z, col);
+                        Vertex(vb.X, vb.Y - pady, z, col);
 
-                        Vertex(vb.x, vb.y - pady, z, col);
-                        Vertex(va.x, va.y - pady, z, col);
+                        Vertex(vb.X, vb.Y - pady, z, col);
+                        Vertex(va.X, va.Y - pady, z, col);
                     }
                 }
             }

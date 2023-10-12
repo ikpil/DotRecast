@@ -27,7 +27,7 @@ public struct OpenGLVertex
     private readonly int color;
 
     public OpenGLVertex(RcVec3f pos, RcVec2f uv, int color) :
-        this(pos.x, pos.y, pos.z, uv.x, uv.y, color)
+        this(pos.X, pos.Y, pos.Z, uv.X, uv.Y, color)
     {
     }
 
@@ -37,7 +37,7 @@ public struct OpenGLVertex
     }
 
     public OpenGLVertex(RcVec3f pos, int color) :
-        this(pos.x, pos.y, pos.z, 0f, 0f, color)
+        this(pos.X, pos.Y, pos.Z, 0f, 0f, color)
     {
     }
 

@@ -180,7 +180,7 @@ public class CrowdSampleTool : ISampleTool
         }
 
         if (moveTargetRef != 0)
-            dd.DebugDrawCross(moveTargetPos.x, moveTargetPos.y + 0.1f, moveTargetPos.z, rad, DuRGBA(255, 255, 255, 192), 2.0f);
+            dd.DebugDrawCross(moveTargetPos.X, moveTargetPos.Y + 0.1f, moveTargetPos.Z, rad, DuRGBA(255, 255, 255, 192), 2.0f);
 
         // Occupancy grid.
         if (_showGrid)
@@ -189,7 +189,7 @@ public class CrowdSampleTool : ISampleTool
             foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
             {
                 RcVec3f pos = ag.corridor.GetPos();
-                gridy = Math.Max(gridy, pos.y);
+                gridy = Math.Max(gridy, pos.Y);
             }
 
             gridy += 1.0f;
@@ -231,7 +231,7 @@ public class CrowdSampleTool : ISampleTool
                 int idx = (trail.htrail + RcCrowdAgentTrail.AGENT_MAX_TRAIL - j) % RcCrowdAgentTrail.AGENT_MAX_TRAIL;
                 int v = idx * 3;
                 float a = 1 - j / (float)RcCrowdAgentTrail.AGENT_MAX_TRAIL;
-                dd.Vertex(prev.x, prev.y + 0.1f, prev.z, DuRGBA(0, 0, 0, (int)(128 * preva)));
+                dd.Vertex(prev.X, prev.Y + 0.1f, prev.Z, DuRGBA(0, 0, 0, (int)(128 * preva)));
                 dd.Vertex(trail.trail[v], trail.trail[v + 1] + 0.1f, trail.trail[v + 2], DuRGBA(0, 0, 0, (int)(128 * a)));
                 preva = a;
                 prev.Set(trail.trail, v);
@@ -258,16 +258,16 @@ public class CrowdSampleTool : ISampleTool
                     {
                         RcVec3f va = j == 0 ? pos : ag.corners[j - 1].pos;
                         RcVec3f vb = ag.corners[j].pos;
-                        dd.Vertex(va.x, va.y + radius, va.z, DuRGBA(128, 0, 0, 192));
-                        dd.Vertex(vb.x, vb.y + radius, vb.z, DuRGBA(128, 0, 0, 192));
+                        dd.Vertex(va.X, va.Y + radius, va.Z, DuRGBA(128, 0, 0, 192));
+                        dd.Vertex(vb.X, vb.Y + radius, vb.Z, DuRGBA(128, 0, 0, 192));
                     }
 
                     if ((ag.corners[ag.corners.Count - 1].flags
                          & DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
                     {
                         RcVec3f v = ag.corners[ag.corners.Count - 1].pos;
-                        dd.Vertex(v.x, v.y, v.z, DuRGBA(192, 0, 0, 192));
-                        dd.Vertex(v.x, v.y + radius * 2, v.z, DuRGBA(192, 0, 0, 192));
+                        dd.Vertex(v.X, v.Y, v.Z, DuRGBA(192, 0, 0, 192));
+                        dd.Vertex(v.X, v.Y + radius * 2, v.Z, DuRGBA(192, 0, 0, 192));
                     }
 
                     dd.End();
@@ -300,8 +300,8 @@ public class CrowdSampleTool : ISampleTool
             if (_showCollisionSegments)
             {
                 RcVec3f center = ag.boundary.GetCenter();
-                dd.DebugDrawCross(center.x, center.y + radius, center.z, 0.2f, DuRGBA(192, 0, 128, 255), 2.0f);
-                dd.DebugDrawCircle(center.x, center.y + radius, center.z, ag.option.collisionQueryRange, DuRGBA(192, 0, 128, 128), 2.0f);
+                dd.DebugDrawCross(center.X, center.Y + radius, center.Z, 0.2f, DuRGBA(192, 0, 128, 255), 2.0f);
+                dd.DebugDrawCircle(center.X, center.Y + radius, center.Z, ag.option.collisionQueryRange, DuRGBA(192, 0, 128, 128), 2.0f);
 
                 dd.Begin(LINES, 3.0f);
                 for (int j = 0; j < ag.boundary.GetSegmentCount(); ++j)
@@ -313,7 +313,7 @@ public class CrowdSampleTool : ISampleTool
                     if (DtUtils.TriArea2D(pos, s0, s3) < 0.0f)
                         col = DuDarkenCol(col);
 
-                    dd.AppendArrow(s[0].x, s[0].y + 0.2f, s[0].z, s[1].x, s[1].z + 0.2f, s[1].z, 0.0f, 0.3f, col);
+                    dd.AppendArrow(s[0].X, s[0].Y + 0.2f, s[0].Z, s[1].X, s[1].Z + 0.2f, s[1].Z, 0.0f, 0.3f, col);
                 }
 
                 dd.End();
@@ -321,7 +321,7 @@ public class CrowdSampleTool : ISampleTool
 
             if (_showNeis)
             {
-                dd.DebugDrawCircle(pos.x, pos.y + radius, pos.z, ag.option.collisionQueryRange, DuRGBA(0, 192, 128, 128),
+                dd.DebugDrawCircle(pos.X, pos.Y + radius, pos.Z, ag.option.collisionQueryRange, DuRGBA(0, 192, 128, 128),
                     2.0f);
 
                 dd.Begin(LINES, 2.0f);
@@ -330,8 +330,8 @@ public class CrowdSampleTool : ISampleTool
                     DtCrowdAgent nei = ag.neis[j].agent;
                     if (nei != null)
                     {
-                        dd.Vertex(pos.x, pos.y + radius, pos.z, DuRGBA(0, 192, 128, 128));
-                        dd.Vertex(nei.npos.x, nei.npos.y + radius, nei.npos.z, DuRGBA(0, 192, 128, 128));
+                        dd.Vertex(pos.X, pos.Y + radius, pos.Z, DuRGBA(0, 192, 128, 128));
+                        dd.Vertex(nei.npos.X, nei.npos.Y + radius, nei.npos.Z, DuRGBA(0, 192, 128, 128));
                     }
                 }
 
@@ -341,9 +341,9 @@ public class CrowdSampleTool : ISampleTool
             if (_showOpt)
             {
                 dd.Begin(LINES, 2.0f);
-                dd.Vertex(agentDebug.optStart.x, agentDebug.optStart.y + 0.3f, agentDebug.optStart.z,
+                dd.Vertex(agentDebug.optStart.X, agentDebug.optStart.Y + 0.3f, agentDebug.optStart.Z,
                     DuRGBA(0, 128, 0, 192));
-                dd.Vertex(agentDebug.optEnd.x, agentDebug.optEnd.y + 0.3f, agentDebug.optEnd.z, DuRGBA(0, 128, 0, 192));
+                dd.Vertex(agentDebug.optEnd.X, agentDebug.optEnd.Y + 0.3f, agentDebug.optEnd.Z, DuRGBA(0, 128, 0, 192));
                 dd.End();
             }
         }
@@ -358,7 +358,7 @@ public class CrowdSampleTool : ISampleTool
             if (agentDebug.agent == ag)
                 col = DuRGBA(255, 0, 0, 128);
 
-            dd.DebugDrawCircle(pos.x, pos.y, pos.z, radius, col, 2.0f);
+            dd.DebugDrawCircle(pos.X, pos.Y, pos.Z, radius, col, 2.0f);
         }
 
         foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
@@ -378,8 +378,8 @@ public class CrowdSampleTool : ISampleTool
             else if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                 col = DuLerpCol(col, DuRGBA(64, 255, 0, 128), 128);
 
-            dd.DebugDrawCylinder(pos.x - radius, pos.y + radius * 0.1f, pos.z - radius, pos.x + radius, pos.y + height,
-                pos.z + radius, col);
+            dd.DebugDrawCylinder(pos.X - radius, pos.Y + radius * 0.1f, pos.Z - radius, pos.X + radius, pos.Y + height,
+                pos.Z + radius, col);
         }
 
         if (_showVO)
@@ -392,9 +392,9 @@ public class CrowdSampleTool : ISampleTool
                 // Draw detail about agent sela
                 DtObstacleAvoidanceDebugData vod = agentDebug.vod;
 
-                float dx = ag.npos.x;
-                float dy = ag.npos.y + ag.option.height;
-                float dz = ag.npos.z;
+                float dx = ag.npos.X;
+                float dy = ag.npos.Y + ag.option.height;
+                float dz = ag.npos.Z;
 
                 dd.DebugDrawCircle(dx, dy, dz, ag.option.maxSpeed, DuRGBA(255, 255, 255, 64), 2.0f);
 
@@ -407,10 +407,10 @@ public class CrowdSampleTool : ISampleTool
                     float pen2 = vod.GetSamplePreferredSidePenalty(j);
                     int col = DuLerpCol(DuRGBA(255, 255, 255, 220), DuRGBA(128, 96, 0, 220), (int)(pen * 255));
                     col = DuLerpCol(col, DuRGBA(128, 0, 0, 220), (int)(pen2 * 128));
-                    dd.Vertex(dx + p.x - sr, dy, dz + p.z - sr, col);
-                    dd.Vertex(dx + p.x - sr, dy, dz + p.z + sr, col);
-                    dd.Vertex(dx + p.x + sr, dy, dz + p.z + sr, col);
-                    dd.Vertex(dx + p.x + sr, dy, dz + p.z - sr, col);
+                    dd.Vertex(dx + p.X - sr, dy, dz + p.Z - sr, col);
+                    dd.Vertex(dx + p.X - sr, dy, dz + p.Z + sr, col);
+                    dd.Vertex(dx + p.X + sr, dy, dz + p.Z + sr, col);
+                    dd.Vertex(dx + p.X + sr, dy, dz + p.Z - sr, col);
                 }
 
                 dd.End();
@@ -437,12 +437,12 @@ public class CrowdSampleTool : ISampleTool
             else if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                 col = DuLerpCol(col, DuRGBA(64, 255, 0, 192), 128);
 
-            dd.DebugDrawCircle(pos.x, pos.y + height, pos.z, radius, col, 2.0f);
+            dd.DebugDrawCircle(pos.X, pos.Y + height, pos.Z, radius, col, 2.0f);
 
-            dd.DebugDrawArrow(pos.x, pos.y + height, pos.z, pos.x + dvel.x, pos.y + height + dvel.y, pos.z + dvel.z,
+            dd.DebugDrawArrow(pos.X, pos.Y + height, pos.Z, pos.X + dvel.X, pos.Y + height + dvel.Y, pos.Z + dvel.Z,
                 0.0f, 0.4f, DuRGBA(0, 192, 255, 192), agentDebug.agent == ag ? 2.0f : 1.0f);
 
-            dd.DebugDrawArrow(pos.x, pos.y + height, pos.z, pos.x + vel.x, pos.y + height + vel.y, pos.z + vel.z, 0.0f,
+            dd.DebugDrawArrow(pos.X, pos.Y + height, pos.Z, pos.X + vel.X, pos.Y + height + vel.Y, pos.Z + vel.Z, 0.0f,
                 0.4f, DuRGBA(0, 0, 0, 160), 2.0f);
         }
 

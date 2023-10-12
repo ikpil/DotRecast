@@ -40,12 +40,12 @@ namespace DotRecast.Detour.TileCache.Io
             header.ty = data.GetInt();
             header.tlayer = data.GetInt();
             
-            header.bmin.x = data.GetFloat();
-            header.bmin.y = data.GetFloat();
-            header.bmin.z = data.GetFloat();
-            header.bmax.x = data.GetFloat();
-            header.bmax.y = data.GetFloat();
-            header.bmax.z = data.GetFloat();
+            header.bmin.X = data.GetFloat();
+            header.bmin.Y = data.GetFloat();
+            header.bmin.Z = data.GetFloat();
+            header.bmax.X = data.GetFloat();
+            header.bmax.Y = data.GetFloat();
+            header.bmax.Z = data.GetFloat();
 
             header.hmin = data.GetShort() & 0xFFFF;
             header.hmax = data.GetShort() & 0xFFFF;

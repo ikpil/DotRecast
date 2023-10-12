@@ -35,9 +35,9 @@ namespace DotRecast.Detour.Extras.Jumplink
                 seg.gsamples[i] = s;
                 RcVec3f pt = RcVec3f.Lerp(seg.p, seg.q, u);
                 bool success = heightFunc.Invoke(pt, seg.height, out var height);
-                s.p.x = pt.x;
-                s.p.y = height;
-                s.p.z = pt.z;
+                s.p.X = pt.X;
+                s.p.Y = height;
+                s.p.Z = pt.Z;
 
                 if (!success)
                 {

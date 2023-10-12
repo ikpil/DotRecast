@@ -68,15 +68,15 @@ namespace DotRecast.Detour
                             int v = tile.data.detailTris[t + k];
                             if (v < p.vertCount)
                             {
-                                verts[k].x = tile.data.verts[p.verts[v] * 3];
-                                verts[k].y = tile.data.verts[p.verts[v] * 3 + 1];
-                                verts[k].z = tile.data.verts[p.verts[v] * 3 + 2];
+                                verts[k].X = tile.data.verts[p.verts[v] * 3];
+                                verts[k].Y = tile.data.verts[p.verts[v] * 3 + 1];
+                                verts[k].Z = tile.data.verts[p.verts[v] * 3 + 2];
                             }
                             else
                             {
-                                verts[k].x = tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3];
-                                verts[k].y = tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3 + 1];
-                                verts[k].z = tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3 + 2];
+                                verts[k].X = tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3];
+                                verts[k].Y = tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3 + 1];
+                                verts[k].Z = tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3 + 2];
                             }
                         }
 

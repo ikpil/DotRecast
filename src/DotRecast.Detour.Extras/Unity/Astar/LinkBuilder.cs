@@ -63,21 +63,21 @@ namespace DotRecast.Detour.Extras.Unity.Astar
         // In case of external link to other tiles we must find the direction
         private void BuildExternalLink(DtMeshData tile, DtPoly node, DtMeshData neighbourTile)
         {
-            if (neighbourTile.header.bmin.x > tile.header.bmin.x)
+            if (neighbourTile.header.bmin.X > tile.header.bmin.X)
             {
-                node.neis[DtPolyUtils.FindEdge(node, tile, neighbourTile.header.bmin.x, 0)] = DtNavMesh.DT_EXT_LINK;
+                node.neis[DtPolyUtils.FindEdge(node, tile, neighbourTile.header.bmin.X, 0)] = DtNavMesh.DT_EXT_LINK;
             }
-            else if (neighbourTile.header.bmin.x < tile.header.bmin.x)
+            else if (neighbourTile.header.bmin.X < tile.header.bmin.X)
             {
-                node.neis[DtPolyUtils.FindEdge(node, tile, tile.header.bmin.x, 0)] = DtNavMesh.DT_EXT_LINK | 4;
+                node.neis[DtPolyUtils.FindEdge(node, tile, tile.header.bmin.X, 0)] = DtNavMesh.DT_EXT_LINK | 4;
             }
-            else if (neighbourTile.header.bmin.z > tile.header.bmin.z)
+            else if (neighbourTile.header.bmin.Z > tile.header.bmin.Z)
             {
-                node.neis[DtPolyUtils.FindEdge(node, tile, neighbourTile.header.bmin.z, 2)] = DtNavMesh.DT_EXT_LINK | 2;
+                node.neis[DtPolyUtils.FindEdge(node, tile, neighbourTile.header.bmin.Z, 2)] = DtNavMesh.DT_EXT_LINK | 2;
             }
             else
             {
-                node.neis[DtPolyUtils.FindEdge(node, tile, tile.header.bmin.z, 2)] = DtNavMesh.DT_EXT_LINK | 6;
+                node.neis[DtPolyUtils.FindEdge(node, tile, tile.header.bmin.Z, 2)] = DtNavMesh.DT_EXT_LINK | 6;
             }
         }
     }

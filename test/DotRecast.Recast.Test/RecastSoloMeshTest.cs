@@ -281,9 +281,9 @@ public class RecastSoloMeshTest
             using StreamWriter fw = new StreamWriter(path);
             for (int v = 0; v < mesh.nverts; v++)
             {
-                fw.Write("v " + (mesh.bmin.x + mesh.verts[v * 3] * mesh.cs) + " "
-                         + (mesh.bmin.y + mesh.verts[v * 3 + 1] * mesh.ch) + " "
-                         + (mesh.bmin.z + mesh.verts[v * 3 + 2] * mesh.cs) + "\n");
+                fw.Write("v " + (mesh.bmin.X + mesh.verts[v * 3] * mesh.cs) + " "
+                         + (mesh.bmin.Y + mesh.verts[v * 3 + 1] * mesh.ch) + " "
+                         + (mesh.bmin.Z + mesh.verts[v * 3 + 2] * mesh.cs) + "\n");
             }
 
             for (int i = 0; i < mesh.npolys; i++)

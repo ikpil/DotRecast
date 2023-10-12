@@ -134,7 +134,7 @@ public class CrowdAgentProfilingSampleTool : ISampleTool
             {
                 float radius = ag.option.radius;
                 RcVec3f pos = ag.npos;
-                dd.DebugDrawCircle(pos.x, pos.y, pos.z, radius, DuRGBA(0, 0, 0, 32), 2.0f);
+                dd.DebugDrawCircle(pos.X, pos.Y, pos.Z, radius, DuRGBA(0, 0, 0, 32), 2.0f);
             }
 
             foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
@@ -166,8 +166,8 @@ public class CrowdAgentProfilingSampleTool : ISampleTool
                 else if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                     col = DuLerpCol(col, DuRGBA(64, 255, 0, 128), 128);
 
-                dd.DebugDrawCylinder(pos.x - radius, pos.y + radius * 0.1f, pos.z - radius, pos.x + radius, pos.y + height,
-                    pos.z + radius, col);
+                dd.DebugDrawCylinder(pos.X - radius, pos.Y + radius * 0.1f, pos.Z - radius, pos.X + radius, pos.Y + height,
+                    pos.Z + radius, col);
             }
         }
 

@@ -97,7 +97,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 var status = navQuery.GetPolyHeight(polys[0], result, out var h);
                 if (status.Succeeded())
                 {
-                    iterPos.y = h;
+                    iterPos.Y = h;
                 }
 
                 // Handle end of path and off-mesh links when close enough.
@@ -148,7 +148,7 @@ namespace DotRecast.Recast.Toolset.Tools
                         // Move position at the other side of the off-mesh link.
                         iterPos = endPos;
                         navQuery.GetPolyHeight(polys[0], iterPos, out var eh);
-                        iterPos.y = eh;
+                        iterPos.Y = eh;
                     }
                 }
 
@@ -183,7 +183,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 return DtStatus.DT_FAILURE;
 
             // In case of partial path, make sure the end point is clamped to the last polygon.
-            var epos = RcVec3f.Of(endPt.x, endPt.y, endPt.z);
+            var epos = RcVec3f.Of(endPt.X, endPt.Y, endPt.Z);
             if (polys[polys.Count - 1] != endRef)
             {
                 var result = navQuery.ClosestPointOnPoly(polys[polys.Count - 1], endPt, out var closest, out var _);
@@ -285,7 +285,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 var result = navQuery.GetPolyHeight(rayHit.path[rayHit.path.Count - 1], hitPos, out var h);
                 if (result.Succeeded())
                 {
-                    hitPos.y = h;
+                    hitPos.Y = h;
                 }
             }
 
@@ -326,8 +326,8 @@ namespace DotRecast.Recast.Toolset.Tools
                 return DtStatus.DT_FAILURE;
             }
 
-            float dx = epos.x - spos.x;
-            float dz = epos.z - spos.z;
+            float dx = epos.X - spos.X;
+            float dz = epos.Z - spos.Z;
             float dist = (float)Math.Sqrt(dx * dx + dz * dz);
 
             List<long> tempResultRefs = new List<long>();
@@ -372,25 +372,25 @@ namespace DotRecast.Recast.Toolset.Tools
                 return DtStatus.DT_FAILURE;
             }
 
-            float nx = (epos.z - spos.z) * 0.25f;
-            float nz = -(epos.x - spos.x) * 0.25f;
+            float nx = (epos.Z - spos.Z) * 0.25f;
+            float nz = -(epos.X - spos.X) * 0.25f;
 
             var tempQueryPoly = new RcVec3f[4];
-            tempQueryPoly[0].x = spos.x + nx * 1.2f;
-            tempQueryPoly[0].y = spos.y + agentHeight / 2;
-            tempQueryPoly[0].z = spos.z + nz * 1.2f;
+            tempQueryPoly[0].X = spos.X + nx * 1.2f;
+            tempQueryPoly[0].Y = spos.Y + agentHeight / 2;
+            tempQueryPoly[0].Z = spos.Z + nz * 1.2f;
 
-            tempQueryPoly[1].x = spos.x - nx * 1.3f;
-            tempQueryPoly[1].y = spos.y + agentHeight / 2;
-            tempQueryPoly[1].z = spos.z - nz * 1.3f;
+            tempQueryPoly[1].X = spos.X - nx * 1.3f;
+            tempQueryPoly[1].Y = spos.Y + agentHeight / 2;
+            tempQueryPoly[1].Z = spos.Z - nz * 1.3f;
 
-            tempQueryPoly[2].x = epos.x - nx * 0.8f;
-            tempQueryPoly[2].y = epos.y + agentHeight / 2;
-            tempQueryPoly[2].z = epos.z - nz * 0.8f;
+            tempQueryPoly[2].X = epos.X - nx * 0.8f;
+            tempQueryPoly[2].Y = epos.Y + agentHeight / 2;
+            tempQueryPoly[2].Z = epos.Z - nz * 0.8f;
 
-            tempQueryPoly[3].x = epos.x + nx;
-            tempQueryPoly[3].y = epos.y + agentHeight / 2;
-            tempQueryPoly[3].z = epos.z + nz;
+            tempQueryPoly[3].X = epos.X + nx;
+            tempQueryPoly[3].Y = epos.Y + agentHeight / 2;
+            tempQueryPoly[3].Z = epos.Z + nz;
 
             var tempResultRefs = new List<long>();
             var tempResultParents = new List<long>();
@@ -414,8 +414,8 @@ namespace DotRecast.Recast.Toolset.Tools
                 return DtStatus.DT_FAILURE;
             }
 
-            float dx = epos.x - spos.x;
-            float dz = epos.z - spos.z;
+            float dx = epos.X - spos.X;
+            float dz = epos.Z - spos.Z;
             float dist = (float)Math.Sqrt(dx * dx + dz * dz);
 
             IDtPolygonByCircleConstraint constraint = constrainByCircle

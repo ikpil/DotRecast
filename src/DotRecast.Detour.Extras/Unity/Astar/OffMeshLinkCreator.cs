@@ -48,8 +48,8 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                         connection.poly = poly;
                         connection.pos = new float[]
                         {
-                            l.clamped1.x, l.clamped1.y, l.clamped1.z,
-                            l.clamped2.x, l.clamped2.y, l.clamped2.z
+                            l.clamped1.X, l.clamped1.Y, l.clamped1.Z,
+                            l.clamped2.X, l.clamped2.Y, l.clamped2.Z
                         };
                         connection.rad = 0.1f;
                         connection.side = startTile == endTile

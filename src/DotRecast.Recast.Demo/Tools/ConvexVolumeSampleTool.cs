@@ -103,7 +103,7 @@ public class ConvexVolumeSampleTool : ISampleTool
         float minh = float.MaxValue, maxh = 0;
         for (int i = 0; i < pts.Count; ++i)
         {
-            minh = Math.Min(minh, pts[i].y);
+            minh = Math.Min(minh, pts[i].Y);
         }
 
         minh -= _boxDescent;
@@ -118,7 +118,7 @@ public class ConvexVolumeSampleTool : ISampleTool
                 col = DuRGBA(240, 32, 16, 255);
             }
 
-            dd.Vertex(pts[i].x, pts[i].y + 0.1f, pts[i].z, col);
+            dd.Vertex(pts[i].X, pts[i].Y + 0.1f, pts[i].Z, col);
         }
 
         dd.End();
@@ -128,12 +128,12 @@ public class ConvexVolumeSampleTool : ISampleTool
         {
             int vi = hull[j];
             int vj = hull[i];
-            dd.Vertex(pts[vj].x, minh, pts[vj].z, DuRGBA(255, 255, 255, 64));
-            dd.Vertex(pts[vi].x, minh, pts[vi].z, DuRGBA(255, 255, 255, 64));
-            dd.Vertex(pts[vj].x, maxh, pts[vj].z, DuRGBA(255, 255, 255, 64));
-            dd.Vertex(pts[vi].x, maxh, pts[vi].z, DuRGBA(255, 255, 255, 64));
-            dd.Vertex(pts[vj].x, minh, pts[vj].z, DuRGBA(255, 255, 255, 64));
-            dd.Vertex(pts[vj].x, maxh, pts[vj].z, DuRGBA(255, 255, 255, 64));
+            dd.Vertex(pts[vj].X, minh, pts[vj].Z, DuRGBA(255, 255, 255, 64));
+            dd.Vertex(pts[vi].X, minh, pts[vi].Z, DuRGBA(255, 255, 255, 64));
+            dd.Vertex(pts[vj].X, maxh, pts[vj].Z, DuRGBA(255, 255, 255, 64));
+            dd.Vertex(pts[vi].X, maxh, pts[vi].Z, DuRGBA(255, 255, 255, 64));
+            dd.Vertex(pts[vj].X, minh, pts[vj].Z, DuRGBA(255, 255, 255, 64));
+            dd.Vertex(pts[vj].X, maxh, pts[vj].Z, DuRGBA(255, 255, 255, 64));
         }
 
         dd.End();

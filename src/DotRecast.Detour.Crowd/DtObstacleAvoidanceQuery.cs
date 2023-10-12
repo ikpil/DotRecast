@@ -132,13 +132,13 @@ namespace DotRecast.Detour.Crowd
                 float a = DtUtils.TriArea2D(orig, cir.dp, dv);
                 if (a < 0.01f)
                 {
-                    cir.np.x = -cir.dp.z;
-                    cir.np.z = cir.dp.x;
+                    cir.np.X = -cir.dp.Z;
+                    cir.np.Z = cir.dp.X;
                 }
                 else
                 {
-                    cir.np.x = cir.dp.z;
-                    cir.np.z = -cir.dp.x;
+                    cir.np.X = cir.dp.Z;
+                    cir.np.Z = -cir.dp.X;
                 }
             }
 
@@ -276,8 +276,8 @@ namespace DotRecast.Detour.Crowd
                     // Special case when the agent is very close to the segment.
                     RcVec3f sdir = seg.q.Subtract(seg.p);
                     RcVec3f snorm = new RcVec3f();
-                    snorm.x = -sdir.z;
-                    snorm.z = sdir.x;
+                    snorm.X = -sdir.Z;
+                    snorm.Z = sdir.X;
                     // If the velocity is pointing towards the segment, no collision.
                     if (snorm.Dot2D(vcand) < 0.0f)
                         continue;
@@ -331,8 +331,8 @@ namespace DotRecast.Detour.Crowd
             if (debug != null)
                 debug.Reset();
 
-            float cvx = dvel.x * m_params.velBias;
-            float cvz = dvel.z * m_params.velBias;
+            float cvx = dvel.X * m_params.velBias;
+            float cvz = dvel.Z * m_params.velBias;
             float cs = vmax * 2 * (1 - m_params.velBias) / (m_params.gridSize - 1);
             float half = (m_params.gridSize - 1) * cs * 0.5f;
 
@@ -344,7 +344,7 @@ namespace DotRecast.Detour.Crowd
                 for (int x = 0; x < m_params.gridSize; ++x)
                 {
                     RcVec3f vcand = RcVec3f.Of(cvx + x * cs - half, 0f, cvz + y * cs - half);
-                    if (RcMath.Sqr(vcand.x) + RcMath.Sqr(vcand.z) > RcMath.Sqr(vmax + cs / 2))
+                    if (RcMath.Sqr(vcand.X) + RcMath.Sqr(vcand.Z) > RcMath.Sqr(vmax + cs / 2))
                         continue;
 
                     float penalty = ProcessSample(vcand, cs, pos, rad, vel, dvel, minPenalty, debug);
@@ -377,9 +377,9 @@ namespace DotRecast.Detour.Crowd
             RcVec3f dest = new RcVec3f();
             float c = (float)Math.Cos(ang);
             float s = (float)Math.Sin(ang);
-            dest.x = v[0] * c - v[2] * s;
-            dest.z = v[0] * s + v[2] * c;
-            dest.y = v[1];
+            dest.X = v[0] * c - v[2] * s;
+            dest.Z = v[0] * s + v[2] * c;
+            dest.Y = v[1];
             return dest;
         }
 
@@ -416,14 +416,14 @@ namespace DotRecast.Detour.Crowd
 
             // desired direction
             float[] ddir = new float[6];
-            ddir[0] = dvel.x;
-            ddir[1] = dvel.y;
-            ddir[2] = dvel.z;
+            ddir[0] = dvel.X;
+            ddir[1] = dvel.Y;
+            ddir[2] = dvel.Z;
             DtNormalize2D(ddir);
             RcVec3f rotated = DtRotate2D(ddir, da * 0.5f); // rotated by da/2
-            ddir[3] = rotated.x;
-            ddir[4] = rotated.y;
-            ddir[5] = rotated.z;
+            ddir[3] = rotated.X;
+            ddir[4] = rotated.Y;
+            ddir[5] = rotated.Z;
 
             // Always add sample at zero
             pat[npat * 2 + 0] = 0;
@@ -463,7 +463,7 @@ namespace DotRecast.Detour.Crowd
 
             // Start sampling.
             float cr = vmax * (1.0f - m_params.velBias);
-            RcVec3f res = RcVec3f.Of(dvel.x * m_params.velBias, 0, dvel.z * m_params.velBias);
+            RcVec3f res = RcVec3f.Of(dvel.X * m_params.velBias, 0, dvel.Z * m_params.velBias);
             int ns = 0;
             for (int k = 0; k < depth; ++k)
             {
@@ -473,8 +473,8 @@ namespace DotRecast.Detour.Crowd
 
                 for (int i = 0; i < npat; ++i)
                 {
-                    RcVec3f vcand = RcVec3f.Of(res.x + pat[i * 2 + 0] * cr, 0f, res.z + pat[i * 2 + 1] * cr);
-                    if (RcMath.Sqr(vcand.x) + RcMath.Sqr(vcand.z) > RcMath.Sqr(vmax + 0.001f))
+                    RcVec3f vcand = RcVec3f.Of(res.X + pat[i * 2 + 0] * cr, 0f, res.Z + pat[i * 2 + 1] * cr);
+                    if (RcMath.Sqr(vcand.X) + RcMath.Sqr(vcand.Z) > RcMath.Sqr(vmax + 0.001f))
                         continue;
 
                     float penalty = ProcessSample(vcand, cr / 10, pos, rad, vel, dvel, minPenalty, debug);

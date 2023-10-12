@@ -7,9 +7,9 @@ namespace DotRecast.Detour.Io
         public DtNavMeshParams Read(RcByteBuffer bb)
         {
             DtNavMeshParams option = new DtNavMeshParams();
-            option.orig.x = bb.GetFloat();
-            option.orig.y = bb.GetFloat();
-            option.orig.z = bb.GetFloat();
+            option.orig.X = bb.GetFloat();
+            option.orig.Y = bb.GetFloat();
+            option.orig.Z = bb.GetFloat();
             option.tileWidth = bb.GetFloat();
             option.tileHeight = bb.GetFloat();
             option.maxTiles = bb.GetInt();

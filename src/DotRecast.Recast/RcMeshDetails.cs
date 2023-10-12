@@ -47,7 +47,7 @@ namespace DotRecast.Recast
 
         private static float Vdot2(RcVec3f a, RcVec3f b)
         {
-            return a.x * b.x + a.z * b.z;
+            return a.X * b.X + a.Z * b.Z;
         }
 
 
@@ -72,16 +72,16 @@ namespace DotRecast.Recast
 
         private static float VdistSq2(float[] p, RcVec3f q)
         {
-            float dx = q.x - p[0];
-            float dy = q.z - p[2];
+            float dx = q.X - p[0];
+            float dy = q.Z - p[2];
             return dx * dx + dy * dy;
         }
 
 
         private static float VdistSq2(RcVec3f p, RcVec3f q)
         {
-            float dx = q.x - p.x;
-            float dy = q.z - p.z;
+            float dx = q.X - p.X;
+            float dy = q.Z - p.Z;
             return dx * dx + dy * dy;
         }
 
@@ -111,8 +111,8 @@ namespace DotRecast.Recast
 
         private static float VdistSq2(RcVec3f p, float[] verts, int q)
         {
-            float dx = verts[q + 0] - p.x;
-            float dy = verts[q + 2] - p.z;
+            float dx = verts[q + 0] - p.X;
+            float dy = verts[q + 2] - p.Z;
             return dx * dx + dy * dy;
         }
 
@@ -148,10 +148,10 @@ namespace DotRecast.Recast
 
         private static float Vcross2(RcVec3f p1, RcVec3f p2, RcVec3f p3)
         {
-            float u1 = p2.x - p1.x;
-            float v1 = p2.z - p1.z;
-            float u2 = p3.x - p1.x;
-            float v2 = p3.z - p1.z;
+            float u1 = p2.X - p1.X;
+            float v1 = p2.Z - p1.Z;
+            float u2 = p3.X - p1.X;
+            float v2 = p3.Z - p1.Z;
             return u1 * v2 - v1 * u2;
         }
 
@@ -172,9 +172,9 @@ namespace DotRecast.Recast
                 float v1Sq = Vdot2(v1, v1);
                 float v2Sq = Vdot2(v2, v2);
                 float v3Sq = Vdot2(v3, v3);
-                c.x = (v1Sq * (v2.z - v3.z) + v2Sq * (v3.z - v1.z) + v3Sq * (v1.z - v2.z)) / (2 * cp);
-                c.y = 0;
-                c.z = (v1Sq * (v3.x - v2.x) + v2Sq * (v1.x - v3.x) + v3Sq * (v2.x - v1.x)) / (2 * cp);
+                c.X = (v1Sq * (v2.Z - v3.Z) + v2Sq * (v3.Z - v1.Z) + v3Sq * (v1.Z - v2.Z)) / (2 * cp);
+                c.Y = 0;
+                c.Z = (v1Sq * (v3.X - v2.X) + v2Sq * (v1.X - v3.X) + v3Sq * (v2.X - v1.X)) / (2 * cp);
                 r.Exchange(Vdist2(c, v1));
                 RcVec3f.Add(ref c, c, verts, p1);
                 return true;
@@ -209,8 +209,8 @@ namespace DotRecast.Recast
             const float EPS = 1e-4f;
             if (u >= -EPS && v >= -EPS && (u + v) <= 1 + EPS)
             {
-                float y = verts[a + 1] + v0.y * u + v1.y * v;
-                return Math.Abs(y - p.y);
+                float y = verts[a + 1] + v0.Y * u + v1.Y * v;
+                return Math.Abs(y - p.Y);
             }
 
             return float.MaxValue;
@@ -251,8 +251,8 @@ namespace DotRecast.Recast
         {
             float pqx = poly[q + 0] - poly[p + 0];
             float pqz = poly[q + 2] - poly[p + 2];
-            float dx = verts.x - poly[p + 0];
-            float dz = verts.z - poly[p + 2];
+            float dx = verts.X - poly[p + 0];
+            float dz = verts.Z - poly[p + 2];
             float d = pqx * pqx + pqz * pqz;
             float t = pqx * dx + pqz * dz;
             if (d > 0)
@@ -269,8 +269,8 @@ namespace DotRecast.Recast
                 t = 1;
             }
 
-            dx = poly[p + 0] + t * pqx - verts.x;
-            dz = poly[p + 2] + t * pqz - verts.z;
+            dx = poly[p + 0] + t * pqx - verts.X;
+            dz = poly[p + 2] + t * pqz - verts.Z;
 
             return dx * dx + dz * dz;
         }
@@ -335,8 +335,8 @@ namespace DotRecast.Recast
             {
                 int vi = i * 3;
                 int vj = j * 3;
-                if (((verts[vi + 2] > p.z) != (verts[vj + 2] > p.z)) && (p.x < (verts[vj + 0] - verts[vi + 0])
-                        * (p.z - verts[vi + 2]) / (verts[vj + 2] - verts[vi + 2]) + verts[vi + 0]))
+                if (((verts[vi + 2] > p.Z) != (verts[vj + 2] > p.Z)) && (p.X < (verts[vj + 0] - verts[vi + 0])
+                        * (p.Z - verts[vi + 2]) / (verts[vj + 2] - verts[vi + 2]) + verts[vi + 0]))
                 {
                     c = !c;
                 }
@@ -1015,19 +1015,19 @@ namespace DotRecast.Recast
                     bmax.Max(@in, i * 3);
                 }
 
-                int x0 = (int)Math.Floor(bmin.x / sampleDist);
-                int x1 = (int)Math.Ceiling(bmax.x / sampleDist);
-                int z0 = (int)Math.Floor(bmin.z / sampleDist);
-                int z1 = (int)Math.Ceiling(bmax.z / sampleDist);
+                int x0 = (int)Math.Floor(bmin.X / sampleDist);
+                int x1 = (int)Math.Ceiling(bmax.X / sampleDist);
+                int z0 = (int)Math.Floor(bmin.Z / sampleDist);
+                int z1 = (int)Math.Ceiling(bmax.Z / sampleDist);
                 samples.Clear();
                 for (int z = z0; z < z1; ++z)
                 {
                     for (int x = x0; x < x1; ++x)
                     {
                         RcVec3f pt = new RcVec3f();
-                        pt.x = x * sampleDist;
-                        pt.y = (bmax.y + bmin.y) * 0.5f;
-                        pt.z = z * sampleDist;
+                        pt.X = x * sampleDist;
+                        pt.Y = (bmax.Y + bmin.Y) * 0.5f;
+                        pt.Z = z * sampleDist;
                         // Make sure the samples are not too close to the edges.
                         if (DistToPoly(nin, @in, pt) > -sampleDist / 2)
                         {
@@ -1035,7 +1035,7 @@ namespace DotRecast.Recast
                         }
 
                         samples.Add(x);
-                        samples.Add(GetHeight(pt.x, pt.y, pt.z, cs, ics, chf.ch, heightSearchRadius, hp));
+                        samples.Add(GetHeight(pt.X, pt.Y, pt.Z, cs, ics, chf.ch, heightSearchRadius, hp));
                         samples.Add(z);
                         samples.Add(0); // Not added
                     }
@@ -1067,9 +1067,9 @@ namespace DotRecast.Recast
                         RcVec3f pt = new RcVec3f();
                         // The sample location is jittered to get rid of some bad triangulations
                         // which are cause by symmetrical data from the grid structure.
-                        pt.x = samples[s + 0] * sampleDist + GetJitterX(i) * cs * 0.1f;
-                        pt.y = samples[s + 1] * chf.ch;
-                        pt.z = samples[s + 2] * sampleDist + GetJitterY(i) * cs * 0.1f;
+                        pt.X = samples[s + 0] * sampleDist + GetJitterX(i) * cs * 0.1f;
+                        pt.Y = samples[s + 1] * chf.ch;
+                        pt.Z = samples[s + 2] * sampleDist + GetJitterY(i) * cs * 0.1f;
                         float d = DistToTriMesh(pt, verts, nverts, tris, tris.Count / 4);
                         if (d < 0)
                         {
@@ -1536,18 +1536,18 @@ namespace DotRecast.Recast
                 // Move detail verts to world space.
                 for (int j = 0; j < nverts; ++j)
                 {
-                    verts[j * 3 + 0] += orig.x;
-                    verts[j * 3 + 1] += orig.y + chf.ch; // Is this offset necessary? See
+                    verts[j * 3 + 0] += orig.X;
+                    verts[j * 3 + 1] += orig.Y + chf.ch; // Is this offset necessary? See
                     // https://groups.google.com/d/msg/recastnavigation/UQFN6BGCcV0/-1Ny4koOBpkJ
-                    verts[j * 3 + 2] += orig.z;
+                    verts[j * 3 + 2] += orig.Z;
                 }
 
                 // Offset poly too, will be used to flag checking.
                 for (int j = 0; j < npoly; ++j)
                 {
-                    poly[j * 3 + 0] += orig.x;
-                    poly[j * 3 + 1] += orig.y;
-                    poly[j * 3 + 2] += orig.z;
+                    poly[j * 3 + 0] += orig.X;
+                    poly[j * 3 + 1] += orig.Y;
+                    poly[j * 3 + 2] += orig.Z;
                 }
 
                 // Store detail submesh.

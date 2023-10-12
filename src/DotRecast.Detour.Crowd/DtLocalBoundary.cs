@@ -38,12 +38,12 @@ namespace DotRecast.Detour.Crowd
 
         public DtLocalBoundary()
         {
-            m_center.x = m_center.y = m_center.z = float.MaxValue;
+            m_center.X = m_center.Y = m_center.Z = float.MaxValue;
         }
 
         public void Reset()
         {
-            m_center.x = m_center.y = m_center.z = float.MaxValue;
+            m_center.X = m_center.Y = m_center.Z = float.MaxValue;
             m_polys.Clear();
             m_segs.Clear();
         }

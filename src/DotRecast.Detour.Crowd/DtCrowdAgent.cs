@@ -169,17 +169,17 @@ namespace DotRecast.Detour.Crowd
 
                 var dir0 = p0.Subtract(npos);
                 var dir1 = p1.Subtract(npos);
-                dir0.y = 0;
-                dir1.y = 0;
+                dir0.Y = 0;
+                dir1.Y = 0;
 
                 float len0 = dir0.Length();
                 float len1 = dir1.Length();
                 if (len1 > 0.001f)
                     dir1 = dir1.Scale(1.0f / len1);
 
-                dir.x = dir0.x - dir1.x * len0 * 0.5f;
-                dir.y = 0;
-                dir.z = dir0.z - dir1.z * len0 * 0.5f;
+                dir.X = dir0.X - dir1.X * len0 * 0.5f;
+                dir.Y = 0;
+                dir.Z = dir0.Z - dir1.Z * len0 * 0.5f;
                 dir.Normalize();
             }
 
@@ -192,7 +192,7 @@ namespace DotRecast.Detour.Crowd
             if (0 < corners.Count)
             {
                 dir = corners[0].pos.Subtract(npos);
-                dir.y = 0;
+                dir.Y = 0;
                 dir.Normalize();
             }
 

@@ -44,12 +44,12 @@ namespace DotRecast.Detour.Io
             Write(stream, header.walkableHeight, order);
             Write(stream, header.walkableRadius, order);
             Write(stream, header.walkableClimb, order);
-            Write(stream, header.bmin.x, order);
-            Write(stream, header.bmin.y, order);
-            Write(stream, header.bmin.z, order);
-            Write(stream, header.bmax.x, order);
-            Write(stream, header.bmax.y, order);
-            Write(stream, header.bmax.z, order);
+            Write(stream, header.bmin.X, order);
+            Write(stream, header.bmin.Y, order);
+            Write(stream, header.bmin.Z, order);
+            Write(stream, header.bmax.X, order);
+            Write(stream, header.bmax.Y, order);
+            Write(stream, header.bmax.Z, order);
             Write(stream, header.bvQuantFactor, order);
             WriteVerts(stream, data.verts, header.vertCount, order);
             WritePolys(stream, data, order, cCompatibility);

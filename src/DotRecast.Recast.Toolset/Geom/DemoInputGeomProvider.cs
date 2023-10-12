@@ -98,9 +98,9 @@ namespace DotRecast.Recast.Toolset.Geom
                     e1[j] = vertices[v2 + j] - vertices[v0 + j];
                 }
 
-                normals[i] = e0.y * e1.z - e0.z * e1.y;
-                normals[i + 1] = e0.z * e1.x - e0.x * e1.z;
-                normals[i + 2] = e0.x * e1.y - e0.y * e1.x;
+                normals[i] = e0.Y * e1.Z - e0.Z * e1.Y;
+                normals[i + 1] = e0.Z * e1.X - e0.X * e1.Z;
+                normals[i + 2] = e0.X * e1.Y - e0.Y * e1.X;
                 float d = (float)Math.Sqrt(normals[i] * normals[i] + normals[i + 1] * normals[i + 1] + normals[i + 2] * normals[i + 2]);
                 if (d > 0)
                 {
@@ -150,10 +150,10 @@ namespace DotRecast.Recast.Toolset.Geom
 
             float[] p = new float[2];
             float[] q = new float[2];
-            p[0] = src.x + (dst.x - src.x) * btmin;
-            p[1] = src.z + (dst.z - src.z) * btmin;
-            q[0] = src.x + (dst.x - src.x) * btmax;
-            q[1] = src.z + (dst.z - src.z) * btmax;
+            p[0] = src.X + (dst.X - src.X) * btmin;
+            p[1] = src.Z + (dst.Z - src.Z) * btmin;
+            q[0] = src.X + (dst.X - src.X) * btmax;
+            q[1] = src.Z + (dst.Z - src.Z) * btmax;
 
             List<RcChunkyTriMeshNode> chunks = _mesh.chunkyTriMesh.GetChunksOverlappingSegment(p, q);
             if (0 == chunks.Count)

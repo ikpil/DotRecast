@@ -79,9 +79,9 @@ namespace DotRecast.Detour.Dynamic.Io
             file.useTiles = buf.Get() != 0;
             file.tileSizeX = buf.GetInt();
             file.tileSizeZ = buf.GetInt();
-            file.rotation.x = buf.GetFloat();
-            file.rotation.y = buf.GetFloat();
-            file.rotation.z = buf.GetFloat();
+            file.rotation.X = buf.GetFloat();
+            file.rotation.Y = buf.GetFloat();
+            file.rotation.Z = buf.GetFloat();
             file.bounds[0] = buf.GetFloat();
             file.bounds[1] = buf.GetFloat();
             file.bounds[2] = buf.GetFloat();
@@ -108,22 +108,22 @@ namespace DotRecast.Detour.Dynamic.Io
                 int depth = buf.GetInt();
                 int borderSize = buf.GetInt();
                 RcVec3f boundsMin = new RcVec3f();
-                boundsMin.x = buf.GetFloat();
-                boundsMin.y = buf.GetFloat();
-                boundsMin.z = buf.GetFloat();
+                boundsMin.X = buf.GetFloat();
+                boundsMin.Y = buf.GetFloat();
+                boundsMin.Z = buf.GetFloat();
                 RcVec3f boundsMax = new RcVec3f();
-                boundsMax.x = buf.GetFloat();
-                boundsMax.y = buf.GetFloat();
-                boundsMax.z = buf.GetFloat();
+                boundsMax.X = buf.GetFloat();
+                boundsMax.Y = buf.GetFloat();
+                boundsMax.Z = buf.GetFloat();
                 if (isExportedFromAstar)
                 {
                     // bounds are local
-                    boundsMin.x += file.bounds[0];
-                    boundsMin.y += file.bounds[1];
-                    boundsMin.z += file.bounds[2];
-                    boundsMax.x += file.bounds[0];
-                    boundsMax.y += file.bounds[1];
-                    boundsMax.z += file.bounds[2];
+                    boundsMin.X += file.bounds[0];
+                    boundsMin.Y += file.bounds[1];
+                    boundsMin.Z += file.bounds[2];
+                    boundsMax.X += file.bounds[0];
+                    boundsMax.Y += file.bounds[1];
+                    boundsMax.Z += file.bounds[2];
                 }
 
                 float cellSize = buf.GetFloat();

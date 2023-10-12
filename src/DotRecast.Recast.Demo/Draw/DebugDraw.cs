@@ -343,11 +343,11 @@ public class DebugDraw
             float u = PAD + i * ARC_PTS_SCALE;
             RcVec3f pt = new RcVec3f();
             EvalArc(x0, y0, z0, dx, dy, dz, len * h, u, ref pt);
-            Vertex(prev.x, prev.y, prev.z, col);
-            Vertex(pt.x, pt.y, pt.z, col);
-            prev.x = pt.x;
-            prev.y = pt.y;
-            prev.z = pt.z;
+            Vertex(prev.X, prev.Y, prev.Z, col);
+            Vertex(pt.X, pt.Y, pt.Z, col);
+            prev.X = pt.X;
+            prev.Y = pt.Y;
+            prev.Z = pt.Z;
         }
 
         // End arrows
@@ -372,9 +372,9 @@ public class DebugDraw
 
     private void EvalArc(float x0, float y0, float z0, float dx, float dy, float dz, float h, float u, ref RcVec3f res)
     {
-        res.x = x0 + dx * u;
-        res.y = y0 + dy * u + h * (1 - (u * 2 - 1) * (u * 2 - 1));
-        res.z = z0 + dz * u;
+        res.X = x0 + dx * u;
+        res.Y = y0 + dy * u + h * (1 - (u * 2 - 1) * (u * 2 - 1));
+        res.Z = z0 + dz * u;
     }
 
     public void DebugDrawCross(float x, float y, float z, float size, int col, float lineWidth)
@@ -488,40 +488,40 @@ public class DebugDraw
 
         Vertex(p, col);
         // Vertex(p.x+az.x*s+ay.x*s/2, p.y+az.y*s+ay.y*s/2, p.z+az.z*s+ay.z*s/2, col);
-        Vertex(p.x + az.x * s + ax.x * s / 3, p.y + az.y * s + ax.y * s / 3, p.z + az.z * s + ax.z * s / 3, col);
+        Vertex(p.X + az.X * s + ax.X * s / 3, p.Y + az.Y * s + ax.Y * s / 3, p.Z + az.Z * s + ax.Z * s / 3, col);
 
         Vertex(p, col);
         // Vertex(p.x+az.x*s-ay.x*s/2, p.y+az.y*s-ay.y*s/2, p.z+az.z*s-ay.z*s/2, col);
-        Vertex(p.x + az.x * s - ax.x * s / 3, p.y + az.y * s - ax.y * s / 3, p.z + az.z * s - ax.z * s / 3, col);
+        Vertex(p.X + az.X * s - ax.X * s / 3, p.Y + az.Y * s - ax.Y * s / 3, p.Z + az.Z * s - ax.Z * s / 3, col);
     }
 
     public void Vcross(ref RcVec3f dest, RcVec3f v1, RcVec3f v2)
     {
-        dest.x = v1.y * v2.z - v1.z * v2.y;
-        dest.y = v1.z * v2.x - v1.x * v2.z;
-        dest.z = v1.x * v2.y - v1.y * v2.x;
+        dest.X = v1.Y * v2.Z - v1.Z * v2.Y;
+        dest.Y = v1.Z * v2.X - v1.X * v2.Z;
+        dest.Z = v1.X * v2.Y - v1.Y * v2.X;
     }
 
     public void Vnormalize(ref RcVec3f v)
     {
-        float d = (float)(1.0f / Math.Sqrt(v.x * v.x + v.y * v.y + v.z * v.z));
-        v.x *= d;
-        v.y *= d;
-        v.z *= d;
+        float d = (float)(1.0f / Math.Sqrt(v.X * v.X + v.Y * v.Y + v.Z * v.Z));
+        v.X *= d;
+        v.Y *= d;
+        v.Z *= d;
     }
 
     public void Vsub(ref RcVec3f dest, RcVec3f v1, RcVec3f v2)
     {
-        dest.x = v1.x - v2.x;
-        dest.y = v1.y - v2.y;
-        dest.z = v1.z - v2.z;
+        dest.X = v1.X - v2.X;
+        dest.Y = v1.Y - v2.Y;
+        dest.Z = v1.Z - v2.Z;
     }
 
     public float VdistSqr(RcVec3f v1, RcVec3f v2)
     {
-        float x = v1.x - v2.x;
-        float y = v1.y - v2.y;
-        float z = v1.z - v2.z;
+        float x = v1.X - v2.X;
+        float y = v1.Y - v2.Y;
+        float z = v1.Z - v2.Z;
         return x * x + y * y + z * z;
     }
 
@@ -644,9 +644,9 @@ public class DebugDraw
 
         var t = new RcMatrix4x4f();
         t.M11 = t.M22 = t.M33 = t.M44 = 1;
-        t.M41 = -cameraPos.x;
-        t.M42 = -cameraPos.y;
-        t.M43 = -cameraPos.z;
+        t.M41 = -cameraPos.X;
+        t.M42 = -cameraPos.Y;
+        t.M43 = -cameraPos.Z;
         _viewMatrix = RcMatrix4x4f.Mul(ref r, ref t);
         GetOpenGlDraw().ViewMatrix(ref _viewMatrix);
         UpdateFrustum();
@@ -747,6 +747,6 @@ public class DebugDraw
 
     public bool FrustumTest(RcVec3f bmin, RcVec3f bmax)
     {
-        return FrustumTest(new float[] { bmin.x, bmin.y, bmin.z, bmax.x, bmax.y, bmax.z });
+        return FrustumTest(new float[] { bmin.X, bmin.Y, bmin.Z, bmax.X, bmax.Y, bmax.Z });
     }
 }

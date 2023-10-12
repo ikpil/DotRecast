@@ -61,7 +61,7 @@ namespace DotRecast.Detour
                 RcVec3f A = a.Subtract(a1);
                 RcVec3f B = b.Subtract(b1);
 
-                float cross = B.x * A.z - A.x * B.z; // TriArea2D({0, 0}, A, B);
+                float cross = B.X * A.Z - A.X * B.Z; // TriArea2D({0, 0}, A, B);
                 float aHB = DtUtils.TriArea2D(b1, b, a);
                 float bHA = DtUtils.TriArea2D(a1, a, b);
                 if (Math.Abs(cross) < EPSILON)
@@ -179,20 +179,20 @@ namespace DotRecast.Detour
         {
             if (ii > 0)
             {
-                if (inters[ii - 3] == p.x && inters[ii - 2] == p.y && inters[ii - 1] == p.z)
+                if (inters[ii - 3] == p.X && inters[ii - 2] == p.Y && inters[ii - 1] == p.Z)
                 {
                     return ii;
                 }
 
-                if (inters[0] == p.x && inters[1] == p.y && inters[2] == p.z)
+                if (inters[0] == p.X && inters[1] == p.Y && inters[2] == p.Z)
                 {
                     return ii;
                 }
             }
 
-            inters[ii] = p.x;
-            inters[ii + 1] = p.y;
-            inters[ii + 2] = p.z;
+            inters[ii] = p.X;
+            inters[ii + 1] = p.Y;
+            inters[ii + 2] = p.Z;
             return ii + 3;
         }
 
@@ -217,9 +217,9 @@ namespace DotRecast.Detour
             {
                 if (s >= 0.0f && s <= 1.0f && t >= 0.0f && t <= 1.0f)
                 {
-                    p.x = a.x + (b.x - a.x) * s;
-                    p.y = a.y + (b.y - a.y) * s;
-                    p.z = a.z + (b.z - a.z) * s;
+                    p.X = a.X + (b.X - a.X) * s;
+                    p.Y = a.Y + (b.Y - a.Y) * s;
+                    p.Z = a.Z + (b.Z - a.Z) * s;
                     return DtConvexConvexIntersection.Single;
                 }
             }
@@ -276,13 +276,13 @@ namespace DotRecast.Detour
 
         private static bool Between(RcVec3f a, RcVec3f b, RcVec3f c)
         {
-            if (Math.Abs(a.x - b.x) > Math.Abs(a.z - b.z))
+            if (Math.Abs(a.X - b.X) > Math.Abs(a.Z - b.Z))
             {
-                return ((a.x <= c.x) && (c.x <= b.x)) || ((a.x >= c.x) && (c.x >= b.x));
+                return ((a.X <= c.X) && (c.X <= b.X)) || ((a.X >= c.X) && (c.X >= b.X));
             }
             else
             {
-                return ((a.z <= c.z) && (c.z <= b.z)) || ((a.z >= c.z) && (c.z >= b.z));
+                return ((a.Z <= c.Z) && (c.Z <= b.Z)) || ((a.Z >= c.Z) && (c.Z >= b.Z));
             }
         }
     }

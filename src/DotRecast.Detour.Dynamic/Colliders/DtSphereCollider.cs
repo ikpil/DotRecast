@@ -45,12 +45,12 @@ namespace DotRecast.Detour.Dynamic.Colliders
         {
             return new float[]
             {
-                center.x - radius,
-                center.y - radius,
-                center.z - radius,
-                center.x + radius,
-                center.y + radius,
-                center.z + radius
+                center.X - radius,
+                center.Y - radius,
+                center.Z - radius,
+                center.X + radius,
+                center.Y + radius,
+                center.Z + radius
             };
         }
     }

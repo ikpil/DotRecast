@@ -152,17 +152,17 @@ namespace DotRecast.Recast.Geom
 
                 var e0 = new RcVec3f();
                 var e1 = new RcVec3f();
-                e0.x = vertices[v1 + 0] - vertices[v0 + 0];
-                e0.y = vertices[v1 + 1] - vertices[v0 + 1];
-                e0.z = vertices[v1 + 2] - vertices[v0 + 2];
+                e0.X = vertices[v1 + 0] - vertices[v0 + 0];
+                e0.Y = vertices[v1 + 1] - vertices[v0 + 1];
+                e0.Z = vertices[v1 + 2] - vertices[v0 + 2];
 
-                e1.x = vertices[v2 + 0] - vertices[v0 + 0];
-                e1.y = vertices[v2 + 1] - vertices[v0 + 1];
-                e1.z = vertices[v2 + 2] - vertices[v0 + 2];
+                e1.X = vertices[v2 + 0] - vertices[v0 + 0];
+                e1.Y = vertices[v2 + 1] - vertices[v0 + 1];
+                e1.Z = vertices[v2 + 2] - vertices[v0 + 2];
 
-                normals[i] = e0.y * e1.z - e0.z * e1.y;
-                normals[i + 1] = e0.z * e1.x - e0.x * e1.z;
-                normals[i + 2] = e0.x * e1.y - e0.y * e1.x;
+                normals[i] = e0.Y * e1.Z - e0.Z * e1.Y;
+                normals[i + 1] = e0.Z * e1.X - e0.X * e1.Z;
+                normals[i + 2] = e0.X * e1.Y - e0.Y * e1.X;
                 float d = (float)Math.Sqrt(normals[i] * normals[i] + normals[i + 1] * normals[i + 1] + normals[i + 2] * normals[i + 2]);
                 if (d > 0)
                 {

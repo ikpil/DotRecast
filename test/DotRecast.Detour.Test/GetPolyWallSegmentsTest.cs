@@ -93,12 +93,12 @@ public class GetPolyWallSegmentsTest : AbstractDetourTest
             Assert.That(segmentRefs.Count, Is.EqualTo(REFS[i].Length));
             for (int v = 0; v < VERTICES[i].Length / 6; v++)
             {
-                Assert.That(segmentVerts[v].vmin.x, Is.EqualTo(VERTICES[i][v].vmin.x).Within(0.001f));
-                Assert.That(segmentVerts[v].vmin.y, Is.EqualTo(VERTICES[i][v].vmin.y).Within(0.001f));
-                Assert.That(segmentVerts[v].vmin.z, Is.EqualTo(VERTICES[i][v].vmin.z).Within(0.001f));
-                Assert.That(segmentVerts[v].vmax.x, Is.EqualTo(VERTICES[i][v].vmax.x).Within(0.001f));
-                Assert.That(segmentVerts[v].vmax.y, Is.EqualTo(VERTICES[i][v].vmax.y).Within(0.001f));
-                Assert.That(segmentVerts[v].vmax.z, Is.EqualTo(VERTICES[i][v].vmax.z).Within(0.001f));
+                Assert.That(segmentVerts[v].vmin.X, Is.EqualTo(VERTICES[i][v].vmin.X).Within(0.001f));
+                Assert.That(segmentVerts[v].vmin.Y, Is.EqualTo(VERTICES[i][v].vmin.Y).Within(0.001f));
+                Assert.That(segmentVerts[v].vmin.Z, Is.EqualTo(VERTICES[i][v].vmin.Z).Within(0.001f));
+                Assert.That(segmentVerts[v].vmax.X, Is.EqualTo(VERTICES[i][v].vmax.X).Within(0.001f));
+                Assert.That(segmentVerts[v].vmax.Y, Is.EqualTo(VERTICES[i][v].vmax.Y).Within(0.001f));
+                Assert.That(segmentVerts[v].vmax.Z, Is.EqualTo(VERTICES[i][v].vmax.Z).Within(0.001f));
             }
 
             for (int v = 0; v < REFS[i].Length; v++)

@@ -150,9 +150,9 @@ namespace DotRecast.Recast.Toolset.Tools
                 RcCrowdAgentTrail trail = _trails[ag.idx];
                 // Update agent movement trail.
                 trail.htrail = (trail.htrail + 1) % RcCrowdAgentTrail.AGENT_MAX_TRAIL;
-                trail.trail[trail.htrail * 3] = ag.npos.x;
-                trail.trail[trail.htrail * 3 + 1] = ag.npos.y;
-                trail.trail[trail.htrail * 3 + 2] = ag.npos.z;
+                trail.trail[trail.htrail * 3] = ag.npos.X;
+                trail.trail[trail.htrail * 3 + 1] = ag.npos.Y;
+                trail.trail[trail.htrail * 3 + 2] = ag.npos.Z;
             }
 
             _agentDebug.vod.NormalizeSamples();
@@ -188,9 +188,9 @@ namespace DotRecast.Recast.Toolset.Tools
 
                 for (int i = 0; i < RcCrowdAgentTrail.AGENT_MAX_TRAIL; ++i)
                 {
-                    trail.trail[i * 3] = p.x;
-                    trail.trail[i * 3 + 1] = p.y;
-                    trail.trail[i * 3 + 2] = p.z;
+                    trail.trail[i * 3] = p.X;
+                    trail.trail[i * 3 + 1] = p.Y;
+                    trail.trail[i * 3 + 2] = p.Z;
                 }
 
                 trail.htrail = 0;
@@ -240,12 +240,12 @@ namespace DotRecast.Recast.Toolset.Tools
             RcVec3f p = ag.npos;
             float r = ag.option.radius;
             float h = ag.option.height;
-            bmin.x = p.x - r;
-            bmin.y = p.y;
-            bmin.z = p.z - r;
-            bmax.x = p.x + r;
-            bmax.y = p.y + h;
-            bmax.z = p.z + r;
+            bmin.X = p.X - r;
+            bmin.Y = p.Y;
+            bmin.Z = p.Z - r;
+            bmax.X = p.X + r;
+            bmax.Y = p.Y + h;
+            bmax.Z = p.Z + r;
         }
 
         public void SetMoveTarget(RcVec3f p, bool adjust)
@@ -295,7 +295,7 @@ namespace DotRecast.Recast.Toolset.Tools
         private RcVec3f CalcVel(RcVec3f pos, RcVec3f tgt, float speed)
         {
             RcVec3f vel = tgt.Subtract(pos);
-            vel.y = 0.0f;
+            vel.Y = 0.0f;
             vel.Normalize();
             return vel.Scale(speed);
         }

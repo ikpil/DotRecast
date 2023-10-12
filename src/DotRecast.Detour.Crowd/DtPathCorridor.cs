@@ -314,7 +314,7 @@ namespace DotRecast.Detour.Crowd
                 status = navquery.GetPolyHeight(m_path[0], result, out var h);
                 if (status.Succeeded())
                 {
-                    m_pos.y = h;
+                    m_pos.Y = h;
                 }
 
                 return true;

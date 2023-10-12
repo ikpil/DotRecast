@@ -61,7 +61,7 @@ namespace DotRecast.Detour
                 return false;
 
             steerPos = straightPath[ns].pos;
-            steerPos.y = startPos.y;
+            steerPos.Y = startPos.Y;
             steerPosFlag = straightPath[ns].flags;
             steerPosRef = straightPath[ns].refs;
 
@@ -70,9 +70,9 @@ namespace DotRecast.Detour
 
         public static bool InRange(RcVec3f v1, RcVec3f v2, float r, float h)
         {
-            float dx = v2.x - v1.x;
-            float dy = v2.y - v1.y;
-            float dz = v2.z - v1.z;
+            float dx = v2.X - v1.X;
+            float dy = v2.Y - v1.Y;
+            float dz = v2.Z - v1.Z;
             return (dx * dx + dz * dz) < r * r && Math.Abs(dy) < h;
         }
 

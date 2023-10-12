@@ -857,7 +857,7 @@ namespace DotRecast.Detour.Crowd
             {
                 RcVec3f p = ag.npos;
                 float r = ag.option.radius;
-                _grid.AddItem(ag, p.x - r, p.z - r, p.x + r, p.z + r);
+                _grid.AddItem(ag, p.X - r, p.Z - r, p.X + r, p.Z + r);
             }
         }
 
@@ -893,7 +893,7 @@ namespace DotRecast.Detour.Crowd
             result.Clear();
 
             var proxAgents = new HashSet<DtCrowdAgent>();
-            int nids = grid.QueryItems(pos.x - range, pos.z - range, pos.x + range, pos.z + range, ref proxAgents);
+            int nids = grid.QueryItems(pos.X - range, pos.Z - range, pos.X + range, pos.Z + range, ref proxAgents);
             foreach (DtCrowdAgent ag in proxAgents)
             {
                 if (ag == skip)
@@ -903,12 +903,12 @@ namespace DotRecast.Detour.Crowd
 
                 // Check for overlap.
                 RcVec3f diff = pos.Subtract(ag.npos);
-                if (Math.Abs(diff.y) >= (height + ag.option.height) / 2.0f)
+                if (Math.Abs(diff.Y) >= (height + ag.option.height) / 2.0f)
                 {
                     continue;
                 }
 
-                diff.y = 0;
+                diff.Y = 0;
                 float distSqr = RcVec3f.LenSqr(diff);
                 if (distSqr > RcMath.Sqr(range))
                 {
@@ -1076,7 +1076,7 @@ namespace DotRecast.Detour.Crowd
                         DtCrowdAgent nei = ag.neis[j].agent;
 
                         RcVec3f diff = ag.npos.Subtract(nei.npos);
-                        diff.y = 0;
+                        diff.Y = 0;
 
                         float distSqr = RcVec3f.LenSqr(diff);
                         if (distSqr < 0.00001f)
@@ -1223,7 +1223,7 @@ namespace DotRecast.Detour.Crowd
                         DtCrowdAgent nei = ag.neis[j].agent;
                         long idx1 = nei.idx;
                         RcVec3f diff = ag.npos.Subtract(nei.npos);
-                        diff.y = 0;
+                        diff.Y = 0;
 
                         float dist = RcVec3f.LenSqr(diff);
                         if (dist > RcMath.Sqr(ag.option.radius + nei.option.radius))
@@ -1238,11 +1238,11 @@ namespace DotRecast.Detour.Crowd
                             // Agents on top of each other, try to choose diverging separation directions.
                             if (idx0 > idx1)
                             {
-                                diff.Set(-ag.dvel.z, 0, ag.dvel.x);
+                                diff.Set(-ag.dvel.Z, 0, ag.dvel.X);
                             }
                             else
                             {
-                                diff.Set(ag.dvel.z, 0, -ag.dvel.x);
+                                diff.Set(ag.dvel.Z, 0, -ag.dvel.X);
                             }
 
                             pen = 0.01f;

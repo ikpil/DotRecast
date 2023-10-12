@@ -36,12 +36,12 @@ namespace DotRecast.Recast.Geom
         public RcOffMeshConnection(RcVec3f start, RcVec3f end, float radius, bool bidir, int area, int flags)
         {
             verts = new float[6];
-            verts[0] = start.x;
-            verts[1] = start.y;
-            verts[2] = start.z;
-            verts[3] = end.x;
-            verts[4] = end.y;
-            verts[5] = end.z;
+            verts[0] = start.X;
+            verts[1] = start.Y;
+            verts[2] = start.Z;
+            verts[3] = end.X;
+            verts[4] = end.Y;
+            verts[5] = end.Z;
             this.radius = radius;
             this.bidir = bidir;
             this.area = area;

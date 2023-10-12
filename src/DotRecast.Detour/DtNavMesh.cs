@@ -106,8 +106,8 @@ namespace DotRecast.Detour
         {
             DtNavMeshParams option = new DtNavMeshParams();
             option.orig = data.header.bmin;
-            option.tileWidth = data.header.bmax.x - data.header.bmin.x;
-            option.tileHeight = data.header.bmax.z - data.header.bmin.z;
+            option.tileWidth = data.header.bmax.X - data.header.bmin.X;
+            option.tileHeight = data.header.bmax.Z - data.header.bmin.Z;
             option.maxTiles = 1;
             option.maxPolys = data.header.polyCount;
             return option;
@@ -241,8 +241,8 @@ namespace DotRecast.Detour
      */
         public void CalcTileLoc(RcVec3f pos, out int tx, out int ty)
         {
-            tx = (int)Math.Floor((pos.x - m_orig.x) / m_tileWidth);
-            ty = (int)Math.Floor((pos.z - m_orig.z) / m_tileHeight);
+            tx = (int)Math.Floor((pos.X - m_orig.X) / m_tileWidth);
+            ty = (int)Math.Floor((pos.Z - m_orig.Z) / m_tileHeight);
         }
 
         /// Gets the tile and polygon for the specified polygon reference.
@@ -343,12 +343,12 @@ namespace DotRecast.Detour
                 int[] bmin = new int[3];
                 int[] bmax = new int[3];
                 // dtClamp query box to world box.
-                float minx = Math.Clamp(qmin.x, tbmin.x, tbmax.x) - tbmin.x;
-                float miny = Math.Clamp(qmin.y, tbmin.y, tbmax.y) - tbmin.y;
-                float minz = Math.Clamp(qmin.z, tbmin.z, tbmax.z) - tbmin.z;
-                float maxx = Math.Clamp(qmax.x, tbmin.x, tbmax.x) - tbmin.x;
-                float maxy = Math.Clamp(qmax.y, tbmin.y, tbmax.y) - tbmin.y;
-                float maxz = Math.Clamp(qmax.z, tbmin.z, tbmax.z) - tbmin.z;
+                float minx = Math.Clamp(qmin.X, tbmin.X, tbmax.X) - tbmin.X;
+                float miny = Math.Clamp(qmin.Y, tbmin.Y, tbmax.Y) - tbmin.Y;
+                float minz = Math.Clamp(qmin.Z, tbmin.Z, tbmax.Z) - tbmin.Z;
+                float maxx = Math.Clamp(qmax.X, tbmin.X, tbmax.X) - tbmin.X;
+                float maxy = Math.Clamp(qmax.Y, tbmin.Y, tbmax.Y) - tbmin.Y;
+                float maxz = Math.Clamp(qmax.Z, tbmin.Z, tbmax.Z) - tbmin.Z;
                 // Quantize
                 bmin[0] = (int)(qfac * minx) & 0x7ffffffe;
                 bmin[1] = (int)(qfac * miny) & 0x7ffffffe;
@@ -831,16 +831,16 @@ namespace DotRecast.Detour
 
                 var ext = new RcVec3f()
                 {
-                    x = targetCon.rad,
-                    y = target.data.header.walkableClimb,
-                    z = targetCon.rad
+                    X = targetCon.rad,
+                    Y = target.data.header.walkableClimb,
+                    Z = targetCon.rad
                 };
 
                 // Find polygon to connect to.
                 RcVec3f p = new RcVec3f();
-                p.x = targetCon.pos[3];
-                p.y = targetCon.pos[4];
-                p.z = targetCon.pos[5];
+                p.X = targetCon.pos[3];
+                p.Y = targetCon.pos[4];
+                p.Z = targetCon.pos[5];
                 var refs = FindNearestPolyInTile(tile, p, ext, out var nearestPt);
                 if (refs == 0)
                 {
@@ -850,15 +850,15 @@ namespace DotRecast.Detour
                 // findNearestPoly may return too optimistic results, further check
                 // to make sure.
 
-                if (RcMath.Sqr(nearestPt.x - p.x) + RcMath.Sqr(nearestPt.z - p.z) > RcMath.Sqr(targetCon.rad))
+                if (RcMath.Sqr(nearestPt.X - p.X) + RcMath.Sqr(nearestPt.Z - p.Z) > RcMath.Sqr(targetCon.rad))
                 {
                     continue;
                 }
 
                 // Make sure the location is on current mesh.
-                target.data.verts[targetPoly.verts[1] * 3] = nearestPt.x;
-                target.data.verts[targetPoly.verts[1] * 3 + 1] = nearestPt.y;
-                target.data.verts[targetPoly.verts[1] * 3 + 2] = nearestPt.z;
+                target.data.verts[targetPoly.verts[1] * 3] = nearestPt.X;
+                target.data.verts[targetPoly.verts[1] * 3 + 1] = nearestPt.Y;
+                target.data.verts[targetPoly.verts[1] * 3 + 2] = nearestPt.Z;
 
                 // Link off-mesh connection to target poly.
                 int idx = AllocLink(target);
@@ -940,8 +940,8 @@ namespace DotRecast.Detour
 
                     // Add return value.
                     long refs = @base | (long)i;
-                    float tmin = Math.Max(amin.x, bmin.x);
-                    float tmax = Math.Min(amax.x, bmax.x);
+                    float tmin = Math.Max(amin.X, bmin.X);
+                    float tmax = Math.Min(amax.X, bmax.X);
                     cons.Add(new DtConnectPoly(refs, tmin, tmax));
                     n++;
                     break;
@@ -971,34 +971,34 @@ namespace DotRecast.Detour
             {
                 if (verts[va + 2] < verts[vb + 2])
                 {
-                    bmin.x = verts[va + 2];
-                    bmin.y = verts[va + 1];
-                    bmax.x = verts[vb + 2];
-                    bmax.y = verts[vb + 1];
+                    bmin.X = verts[va + 2];
+                    bmin.Y = verts[va + 1];
+                    bmax.X = verts[vb + 2];
+                    bmax.Y = verts[vb + 1];
                 }
                 else
                 {
-                    bmin.x = verts[vb + 2];
-                    bmin.y = verts[vb + 1];
-                    bmax.x = verts[va + 2];
-                    bmax.y = verts[va + 1];
+                    bmin.X = verts[vb + 2];
+                    bmin.Y = verts[vb + 1];
+                    bmax.X = verts[va + 2];
+                    bmax.Y = verts[va + 1];
                 }
             }
             else if (side == 2 || side == 6)
             {
                 if (verts[va + 0] < verts[vb + 0])
                 {
-                    bmin.x = verts[va + 0];
-                    bmin.y = verts[va + 1];
-                    bmax.x = verts[vb + 0];
-                    bmax.y = verts[vb + 1];
+                    bmin.X = verts[va + 0];
+                    bmin.Y = verts[va + 1];
+                    bmax.X = verts[vb + 0];
+                    bmax.Y = verts[vb + 1];
                 }
                 else
                 {
-                    bmin.x = verts[vb + 0];
-                    bmin.y = verts[vb + 1];
-                    bmax.x = verts[va + 0];
-                    bmax.y = verts[va + 1];
+                    bmin.X = verts[vb + 0];
+                    bmin.Y = verts[vb + 1];
+                    bmax.X = verts[va + 0];
+                    bmax.Y = verts[va + 1];
                 }
             }
         }
@@ -1008,18 +1008,18 @@ namespace DotRecast.Detour
             // Check for horizontal overlap.
             // The segment is shrunken a little so that slabs which touch
             // at end points are not connected.
-            float minx = Math.Max(amin.x + px, bmin.x + px);
-            float maxx = Math.Min(amax.x - px, bmax.x - px);
+            float minx = Math.Max(amin.X + px, bmin.X + px);
+            float maxx = Math.Min(amax.X - px, bmax.X - px);
             if (minx > maxx)
             {
                 return false;
             }
 
             // Check vertical overlap.
-            float ad = (amax.y - amin.y) / (amax.x - amin.x);
-            float ak = amin.y - ad * amin.x;
-            float bd = (bmax.y - bmin.y) / (bmax.x - bmin.x);
-            float bk = bmin.y - bd * bmin.x;
+            float ad = (amax.Y - amin.Y) / (amax.X - amin.X);
+            float ak = amin.Y - ad * amin.X;
+            float bd = (bmax.Y - bmin.Y) / (bmax.X - bmin.X);
+            float bk = bmin.Y - bd * bmin.X;
             float aminy = ad * minx + ak;
             float amaxy = ad * maxx + ak;
             float bminy = bd * minx + bk;
@@ -1065,9 +1065,9 @@ namespace DotRecast.Detour
 
                 var ext = new RcVec3f()
                 {
-                    x = con.rad,
-                    y = tile.data.header.walkableClimb,
-                    z = con.rad,
+                    X = con.rad,
+                    Y = tile.data.header.walkableClimb,
+                    Z = con.rad,
                 };
 
                 // Find polygon to connect to.
@@ -1080,15 +1080,15 @@ namespace DotRecast.Detour
                 float[] p = con.pos; // First vertex
                 // findNearestPoly may return too optimistic results, further check
                 // to make sure.
-                if (RcMath.Sqr(nearestPt.x - p[0]) + RcMath.Sqr(nearestPt.z - p[2]) > RcMath.Sqr(con.rad))
+                if (RcMath.Sqr(nearestPt.X - p[0]) + RcMath.Sqr(nearestPt.Z - p[2]) > RcMath.Sqr(con.rad))
                 {
                     continue;
                 }
 
                 // Make sure the location is on current mesh.
-                tile.data.verts[poly.verts[0] * 3] = nearestPt.x;
-                tile.data.verts[poly.verts[0] * 3 + 1] = nearestPt.y;
-                tile.data.verts[poly.verts[0] * 3 + 2] = nearestPt.z;
+                tile.data.verts[poly.verts[0] * 3] = nearestPt.X;
+                tile.data.verts[poly.verts[0] * 3 + 1] = nearestPt.Y;
+                tile.data.verts[poly.verts[0] * 3 + 2] = nearestPt.Z;
 
                 // Link off-mesh connection to target poly.
                 int idx = AllocLink(tile);
@@ -1154,9 +1154,9 @@ namespace DotRecast.Detour
                             int index = poly.verts[tris[ti + j]] * 3;
                             v[j] = new RcVec3f
                             {
-                                x = tile.data.verts[index],
-                                y = tile.data.verts[index + 1],
-                                z = tile.data.verts[index + 2]
+                                X = tile.data.verts[index],
+                                Y = tile.data.verts[index + 1],
+                                Z = tile.data.verts[index + 2]
                             };
                         }
                         else
@@ -1164,9 +1164,9 @@ namespace DotRecast.Detour
                             int index = (pd.vertBase + (tris[ti + j] - poly.vertCount)) * 3;
                             v[j] = new RcVec3f
                             {
-                                x = tile.data.detailVerts[index],
-                                y = tile.data.detailVerts[index + 1],
-                                z = tile.data.detailVerts[index + 2]
+                                X = tile.data.detailVerts[index],
+                                Y = tile.data.detailVerts[index + 1],
+                                Z = tile.data.detailVerts[index + 2]
                             };
                         }
                     }
@@ -1198,12 +1198,12 @@ namespace DotRecast.Detour
                 for (int j = 0; j < poly.vertCount; ++j)
                 {
                     int k = (j + 1) % poly.vertCount;
-                    v[0].x = tile.data.verts[poly.verts[j] * 3];
-                    v[0].y = tile.data.verts[poly.verts[j] * 3 + 1];
-                    v[0].z = tile.data.verts[poly.verts[j] * 3 + 2];
-                    v[1].x = tile.data.verts[poly.verts[k] * 3];
-                    v[1].y = tile.data.verts[poly.verts[k] * 3 + 1];
-                    v[1].z = tile.data.verts[poly.verts[k] * 3 + 2];
+                    v[0].X = tile.data.verts[poly.verts[j] * 3];
+                    v[0].Y = tile.data.verts[poly.verts[j] * 3 + 1];
+                    v[0].Z = tile.data.verts[poly.verts[j] * 3 + 2];
+                    v[1].X = tile.data.verts[poly.verts[k] * 3];
+                    v[1].Y = tile.data.verts[poly.verts[k] * 3 + 1];
+                    v[1].Z = tile.data.verts[poly.verts[k] * 3 + 2];
 
                     var d = DtUtils.DistancePtSegSqr2D(pos, v[0], v[1], out var t);
                     if (d < dmin)
@@ -1259,9 +1259,9 @@ namespace DotRecast.Detour
                             int index = poly.verts[tile.data.detailTris[t + k]] * 3;
                             v[k] = new RcVec3f
                             {
-                                x = tile.data.verts[index],
-                                y = tile.data.verts[index + 1],
-                                z = tile.data.verts[index + 2]
+                                X = tile.data.verts[index],
+                                Y = tile.data.verts[index + 1],
+                                Z = tile.data.verts[index + 2]
                             };
                         }
                         else
@@ -1269,9 +1269,9 @@ namespace DotRecast.Detour
                             int index = (pd.vertBase + (tile.data.detailTris[t + k] - poly.vertCount)) * 3;
                             v[k] = new RcVec3f
                             {
-                                x = tile.data.detailVerts[index],
-                                y = tile.data.detailVerts[index + 1],
-                                z = tile.data.detailVerts[index + 2]
+                                X = tile.data.detailVerts[index],
+                                Y = tile.data.detailVerts[index + 1],
+                                Z = tile.data.detailVerts[index + 2]
                             };
                         }
                     }
@@ -1286,16 +1286,16 @@ namespace DotRecast.Detour
             else
             {
                 RcVec3f[] v = new RcVec3f[3];
-                v[0].x = tile.data.verts[poly.verts[0] * 3];
-                v[0].y = tile.data.verts[poly.verts[0] * 3 + 1];
-                v[0].z = tile.data.verts[poly.verts[0] * 3 + 2];
+                v[0].X = tile.data.verts[poly.verts[0] * 3];
+                v[0].Y = tile.data.verts[poly.verts[0] * 3 + 1];
+                v[0].Z = tile.data.verts[poly.verts[0] * 3 + 2];
                 for (int j = 1; j < poly.vertCount - 1; ++j)
                 {
                     for (int k = 0; k < 2; ++k)
                     {
-                        v[k + 1].x = tile.data.verts[poly.verts[j + k] * 3];
-                        v[k + 1].y = tile.data.verts[poly.verts[j + k] * 3 + 1];
-                        v[k + 1].z = tile.data.verts[poly.verts[j + k] * 3 + 2];
+                        v[k + 1].X = tile.data.verts[poly.verts[j + k] * 3];
+                        v[k + 1].Y = tile.data.verts[poly.verts[j + k] * 3 + 1];
+                        v[k + 1].Z = tile.data.verts[poly.verts[j + k] * 3 + 2];
                     }
 
                     if (DtUtils.ClosestHeightPointTriangle(pos, v[0], v[1], v[2], out var h))
@@ -1311,7 +1311,7 @@ namespace DotRecast.Detour
             // closest. This should almost never happen so the extra iteration here is
             // ok.
             var closest = ClosestPointOnDetailEdges(tile, poly, pos, false);
-            height = closest.y;
+            height = closest.Y;
             return true;
         }
 
@@ -1322,7 +1322,7 @@ namespace DotRecast.Detour
 
             if (GetPolyHeight(tile, poly, pos, out var h))
             {
-                closest.y = h;
+                closest.Y = h;
                 posOverPoly = true;
                 return;
             }
@@ -1333,9 +1333,9 @@ namespace DotRecast.Detour
             if (poly.GetPolyType() == DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
                 int i = poly.verts[0] * 3;
-                var v0 = new RcVec3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
+                var v0 = new RcVec3f { X = tile.data.verts[i], Y = tile.data.verts[i + 1], Z = tile.data.verts[i + 2] };
                 i = poly.verts[1] * 3;
-                var v1 = new RcVec3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
+                var v1 = new RcVec3f { X = tile.data.verts[i], Y = tile.data.verts[i + 1], Z = tile.data.verts[i + 2] };
                 DtUtils.DistancePtSegSqr2D(pos, v0, v1, out var t);
                 closest = RcVec3f.Lerp(v0, v1, t);
                 return;
@@ -1371,7 +1371,7 @@ namespace DotRecast.Detour
                 RcVec3f diff = center.Subtract(closestPtPoly);
                 if (posOverPoly)
                 {
-                    d = Math.Abs(diff.y) - tile.data.header.walkableClimb;
+                    d = Math.Abs(diff.Y) - tile.data.header.walkableClimb;
                     d = d > 0 ? d * d : 0;
                 }
                 else
@@ -1730,15 +1730,15 @@ namespace DotRecast.Detour
                 for (int i = 0; i < poly.vertCount; ++i)
                 {
                     int v = poly.verts[i] * 3;
-                    center.x += tile.data.verts[v];
-                    center.y += tile.data.verts[v + 1];
-                    center.z += tile.data.verts[v + 2];
+                    center.X += tile.data.verts[v];
+                    center.Y += tile.data.verts[v + 1];
+                    center.Z += tile.data.verts[v + 2];
                 }
 
                 float s = 1.0f / poly.vertCount;
-                center.x *= s;
-                center.y *= s;
-                center.z *= s;
+                center.X *= s;
+                center.Y *= s;
+                center.Z *= s;
             }
 
             return center;
@@ -1781,12 +1781,12 @@ namespace DotRecast.Detour
                 {
                     for (int i = 0; i < tile.data.verts.Length; i += 3)
                     {
-                        bmin.x = Math.Min(bmin.x, tile.data.verts[i]);
-                        bmin.y = Math.Min(bmin.y, tile.data.verts[i + 1]);
-                        bmin.z = Math.Min(bmin.z, tile.data.verts[i + 2]);
-                        bmax.x = Math.Max(bmax.x, tile.data.verts[i]);
-                        bmax.y = Math.Max(bmax.y, tile.data.verts[i + 1]);
-                        bmax.z = Math.Max(bmax.z, tile.data.verts[i + 2]);
+                        bmin.X = Math.Min(bmin.X, tile.data.verts[i]);
+                        bmin.Y = Math.Min(bmin.Y, tile.data.verts[i + 1]);
+                        bmin.Z = Math.Min(bmin.Z, tile.data.verts[i + 2]);
+                        bmax.X = Math.Max(bmax.X, tile.data.verts[i]);
+                        bmax.Y = Math.Max(bmax.Y, tile.data.verts[i + 1]);
+                        bmax.Z = Math.Max(bmax.Z, tile.data.verts[i + 2]);
                     }
                 }
             }

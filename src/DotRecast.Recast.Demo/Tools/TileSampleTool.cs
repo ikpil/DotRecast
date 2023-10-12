@@ -59,8 +59,8 @@ public class TileSampleTool : ISampleTool
             var s = settings.agentRadius;
 
             float ts = settings.tileSize * settings.cellSize;
-            int tx = (int)((_hitPos.x - bmin[0]) / ts);
-            int ty = (int)((_hitPos.z - bmin[2]) / ts);
+            int tx = (int)((_hitPos.X - bmin[0]) / ts);
+            int ty = (int)((_hitPos.Z - bmin[2]) / ts);
 
             RcVec3f lastBuiltTileBmin = RcVec3f.Zero;
             RcVec3f lastBuiltTileBmax = RcVec3f.Zero;
@@ -73,10 +73,10 @@ public class TileSampleTool : ISampleTool
             lastBuiltTileBmax[1] = bmax[1];
             lastBuiltTileBmax[2] = bmin[2] + (ty + 1) * ts;
 
-            dd.DebugDrawCross(_hitPos.x, _hitPos.y + 0.1f, _hitPos.z, s, DuRGBA(0, 0, 0, 128), 2.0f);
+            dd.DebugDrawCross(_hitPos.X, _hitPos.Y + 0.1f, _hitPos.Z, s, DuRGBA(0, 0, 0, 128), 2.0f);
             dd.DebugDrawBoxWire(
-                lastBuiltTileBmin.x, lastBuiltTileBmin.y, lastBuiltTileBmin.z,
-                lastBuiltTileBmax.x, lastBuiltTileBmax.y, lastBuiltTileBmax.z,
+                lastBuiltTileBmin.X, lastBuiltTileBmin.Y, lastBuiltTileBmin.Z,
+                lastBuiltTileBmax.X, lastBuiltTileBmax.Y, lastBuiltTileBmax.Z,
                 DuRGBA(255, 255, 255, 64), 1.0f);
 
             // 표기

@@ -16,9 +16,9 @@ namespace DotRecast.Detour.Extras.Jumplink
         {
             return new RcVec3f
             {
-                x = Lerp(start.x, end.x, u), 
-                y = InterpolateHeight(start.y, end.y, u),
-                z = Lerp(start.z, end.z, u)
+                X = Lerp(start.X, end.X, u), 
+                Y = InterpolateHeight(start.Y, end.Y, u),
+                Z = Lerp(start.Z, end.Z, u)
             };
         }
 

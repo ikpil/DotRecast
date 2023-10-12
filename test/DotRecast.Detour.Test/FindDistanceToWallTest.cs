@@ -56,13 +56,13 @@ public class FindDistanceToWallTest : AbstractDetourTest
                 out var hitDist, out var hitPos, out var hitNormal);
             Assert.That(hitDist, Is.EqualTo(DISTANCES_TO_WALL[i]).Within(0.001f));
 
-            Assert.That(hitPos.x, Is.EqualTo(HIT_POSITION[i].x).Within(0.001f));
-            Assert.That(hitPos.y, Is.EqualTo(HIT_POSITION[i].y).Within(0.001f));
-            Assert.That(hitPos.z, Is.EqualTo(HIT_POSITION[i].z).Within(0.001f));
+            Assert.That(hitPos.X, Is.EqualTo(HIT_POSITION[i].X).Within(0.001f));
+            Assert.That(hitPos.Y, Is.EqualTo(HIT_POSITION[i].Y).Within(0.001f));
+            Assert.That(hitPos.Z, Is.EqualTo(HIT_POSITION[i].Z).Within(0.001f));
 
-            Assert.That(hitNormal.x, Is.EqualTo(HIT_NORMAL[i].x).Within(0.001f));
-            Assert.That(hitNormal.y, Is.EqualTo(HIT_NORMAL[i].y).Within(0.001f));
-            Assert.That(hitNormal.z, Is.EqualTo(HIT_NORMAL[i].z).Within(0.001f));
+            Assert.That(hitNormal.X, Is.EqualTo(HIT_NORMAL[i].X).Within(0.001f));
+            Assert.That(hitNormal.Y, Is.EqualTo(HIT_NORMAL[i].Y).Within(0.001f));
+            Assert.That(hitNormal.Z, Is.EqualTo(HIT_NORMAL[i].Z).Within(0.001f));
         }
     }
 }

@@ -99,8 +99,8 @@ namespace DotRecast.Recast
 
         public static void CalcGridSize(RcVec3f bmin, RcVec3f bmax, float cs, out int sizeX, out int sizeZ)
         {
-            sizeX = (int)((bmax.x - bmin.x) / cs + 0.5f);
-            sizeZ = (int)((bmax.z - bmin.z) / cs + 0.5f);
+            sizeX = (int)((bmax.X - bmin.X) / cs + 0.5f);
+            sizeZ = (int)((bmax.Z - bmin.Z) / cs + 0.5f);
         }
 
 
@@ -128,7 +128,7 @@ namespace DotRecast.Recast
                 int tri = i * 3;
                 CalcTriNormal(verts, tris[tri], tris[tri + 1], tris[tri + 2], ref norm);
                 // Check if the face is walkable.
-                if (norm.y > walkableThr)
+                if (norm.Y > walkableThr)
                     areas[i] = areaMod.Apply(areas[i]);
             }
 
@@ -165,7 +165,7 @@ namespace DotRecast.Recast
                 int tri = i * 3;
                 CalcTriNormal(verts, tris[tri], tris[tri + 1], tris[tri + 2], ref norm);
                 // Check if the face is walkable.
-                if (norm.y <= walkableThr)
+                if (norm.Y <= walkableThr)
                     areas[i] = RC_NULL_AREA;
             }
         }

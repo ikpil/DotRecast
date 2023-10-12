@@ -31,7 +31,7 @@ namespace DotRecast.Detour
             RcVec3f diff = _center.Subtract(closestPtPoly);
             if (posOverPoly)
             {
-                d = Math.Abs(diff.y) - tile.data.header.walkableClimb;
+                d = Math.Abs(diff.Y) - tile.data.header.walkableClimb;
                 d = d > 0 ? d * d : 0;
             }
             else

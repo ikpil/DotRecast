@@ -32,33 +32,33 @@ namespace DotRecast.Recast.Geom
 
         private void CalcExtends(BoundsItem[] items, int imin, int imax, ref RcVec2f bmin, ref RcVec2f bmax)
         {
-            bmin.x = items[imin].bmin.x;
-            bmin.y = items[imin].bmin.y;
+            bmin.X = items[imin].bmin.X;
+            bmin.Y = items[imin].bmin.Y;
 
-            bmax.x = items[imin].bmax.x;
-            bmax.y = items[imin].bmax.y;
+            bmax.X = items[imin].bmax.X;
+            bmax.Y = items[imin].bmax.Y;
 
             for (int i = imin + 1; i < imax; ++i)
             {
                 BoundsItem it = items[i];
-                if (it.bmin.x < bmin.x)
+                if (it.bmin.X < bmin.X)
                 {
-                    bmin.x = it.bmin.x;
+                    bmin.X = it.bmin.X;
                 }
 
-                if (it.bmin.y < bmin.y)
+                if (it.bmin.Y < bmin.Y)
                 {
-                    bmin.y = it.bmin.y;
+                    bmin.Y = it.bmin.Y;
                 }
 
-                if (it.bmax.x > bmax.x)
+                if (it.bmax.X > bmax.X)
                 {
-                    bmax.x = it.bmax.x;
+                    bmax.X = it.bmax.X;
                 }
 
-                if (it.bmax.y > bmax.y)
+                if (it.bmax.Y > bmax.Y)
                 {
-                    bmax.y = it.bmax.y;
+                    bmax.Y = it.bmax.Y;
                 }
             }
         }
@@ -98,7 +98,7 @@ namespace DotRecast.Recast.Geom
                 // Split
                 CalcExtends(items, imin, imax, ref node.bmin, ref node.bmax);
 
-                int axis = LongestAxis(node.bmax.x - node.bmin.x, node.bmax.y - node.bmin.y);
+                int axis = LongestAxis(node.bmax.X - node.bmin.X, node.bmax.Y - node.bmin.Y);
 
                 if (axis == 0)
                 {
@@ -139,29 +139,29 @@ namespace DotRecast.Recast.Geom
                 BoundsItem it = items[i] = new BoundsItem();
                 it.i = i;
                 // Calc triangle XZ bounds.
-                it.bmin.x = it.bmax.x = verts[tris[t] * 3 + 0];
-                it.bmin.y = it.bmax.y = verts[tris[t] * 3 + 2];
+                it.bmin.X = it.bmax.X = verts[tris[t] * 3 + 0];
+                it.bmin.Y = it.bmax.Y = verts[tris[t] * 3 + 2];
                 for (int j = 1; j < 3; ++j)
                 {
                     int v = tris[t + j] * 3;
-                    if (verts[v] < it.bmin.x)
+                    if (verts[v] < it.bmin.X)
                     {
-                        it.bmin.x = verts[v];
+                        it.bmin.X = verts[v];
                     }
 
-                    if (verts[v + 2] < it.bmin.y)
+                    if (verts[v + 2] < it.bmin.Y)
                     {
-                        it.bmin.y = verts[v + 2];
+                        it.bmin.Y = verts[v + 2];
                     }
 
-                    if (verts[v] > it.bmax.x)
+                    if (verts[v] > it.bmax.X)
                     {
-                        it.bmax.x = verts[v];
+                        it.bmax.X = verts[v];
                     }
 
-                    if (verts[v + 2] > it.bmax.y)
+                    if (verts[v + 2] > it.bmax.Y)
                     {
-                        it.bmax.y = verts[v + 2];
+                        it.bmax.Y = verts[v + 2];
                     }
                 }
             }
@@ -188,8 +188,8 @@ namespace DotRecast.Recast.Geom
         private bool CheckOverlapRect(float[] amin, float[] amax, RcVec2f bmin, RcVec2f bmax)
         {
             bool overlap = true;
-            overlap = (amin[0] > bmax.x || amax[0] < bmin.x) ? false : overlap;
-            overlap = (amin[1] > bmax.y || amax[1] < bmin.y) ? false : overlap;
+            overlap = (amin[0] > bmax.X || amax[0] < bmin.X) ? false : overlap;
+            overlap = (amin[1] > bmax.Y || amax[1] < bmin.Y) ? false : overlap;
             return overlap;
         }
 

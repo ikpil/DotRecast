@@ -5,19 +5,19 @@ namespace DotRecast.Core
 {
     public struct RcVec2f
     {
-        public float x;
-        public float y;
+        public float X;
+        public float Y;
 
-        public static RcVec2f Zero { get; } = new RcVec2f { x = 0, y = 0 };
+        public static RcVec2f Zero { get; } = new RcVec2f { X = 0, Y = 0 };
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float Get(int idx)
         {
             if (0 == idx)
-                return x;
+                return X;
 
             if (1 == idx)
-                return y;
+                return Y;
 
             throw new IndexOutOfRangeException("vector2f index out of range");
         }
@@ -33,15 +33,15 @@ namespace DotRecast.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(RcVec2f other)
         {
-            return x.Equals(other.x) &&
-                   y.Equals(other.y);
+            return X.Equals(other.X) &&
+                   Y.Equals(other.Y);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode()
         {
-            int hash = x.GetHashCode();
-            hash = RcHashCodes.CombineHashCodes(hash, y.GetHashCode());
+            int hash = X.GetHashCode();
+            hash = RcHashCodes.CombineHashCodes(hash, Y.GetHashCode());
             return hash;
         }
 
@@ -56,11 +56,11 @@ namespace DotRecast.Core
         {
             return !left.Equals(right);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override string ToString()
         {
-            return $"{x}, {y}";
+            return $"{X}, {Y}";
         }
     }
 }

@@ -147,9 +147,9 @@ public class RecastDemo : IRecastDemoChannel
         }
 
         var modelviewMatrix = dd.ViewMatrix(cameraPos, cameraEulers);
-        cameraPos.x += scrollZoom * 2.0f * modelviewMatrix.M13;
-        cameraPos.y += scrollZoom * 2.0f * modelviewMatrix.M23;
-        cameraPos.z += scrollZoom * 2.0f * modelviewMatrix.M33;
+        cameraPos.X += scrollZoom * 2.0f * modelviewMatrix.M13;
+        cameraPos.Y += scrollZoom * 2.0f * modelviewMatrix.M23;
+        cameraPos.Z += scrollZoom * 2.0f * modelviewMatrix.M33;
         scrollZoom = 0;
     }
 
@@ -174,13 +174,13 @@ public class RecastDemo : IRecastDemoChannel
             var modelviewMatrix = dd.ViewMatrix(cameraPos, cameraEulers);
             cameraPos = origCameraPos;
 
-            cameraPos.x -= 0.1f * dx * modelviewMatrix.M11;
-            cameraPos.y -= 0.1f * dx * modelviewMatrix.M21;
-            cameraPos.z -= 0.1f * dx * modelviewMatrix.M31;
+            cameraPos.X -= 0.1f * dx * modelviewMatrix.M11;
+            cameraPos.Y -= 0.1f * dx * modelviewMatrix.M21;
+            cameraPos.Z -= 0.1f * dx * modelviewMatrix.M31;
 
-            cameraPos.x += 0.1f * dy * modelviewMatrix.M12;
-            cameraPos.y += 0.1f * dy * modelviewMatrix.M22;
-            cameraPos.z += 0.1f * dy * modelviewMatrix.M32;
+            cameraPos.X += 0.1f * dy * modelviewMatrix.M12;
+            cameraPos.Y += 0.1f * dy * modelviewMatrix.M22;
+            cameraPos.Z += 0.1f * dy * modelviewMatrix.M32;
             if (dx * dx + dy * dy > 3 * 3)
             {
                 movedDuringPan = true;
@@ -214,9 +214,9 @@ public class RecastDemo : IRecastDemoChannel
                     movedDuringPan = false;
                     origMousePos[0] = mousePos[0];
                     origMousePos[1] = mousePos[1];
-                    origCameraPos.x = cameraPos.x;
-                    origCameraPos.y = cameraPos.y;
-                    origCameraPos.z = cameraPos.z;
+                    origCameraPos.X = cameraPos.X;
+                    origCameraPos.Y = cameraPos.Y;
+                    origCameraPos.Z = cameraPos.Z;
                 }
             }
         }
@@ -473,15 +473,15 @@ public class RecastDemo : IRecastDemoChannel
         double movey = (_moveBack - _moveFront) * keySpeed * dt + scrollZoom * 2.0f;
         scrollZoom = 0;
 
-        cameraPos.x += (float)(movex * modelviewMatrix[0]);
-        cameraPos.y += (float)(movex * modelviewMatrix[4]);
-        cameraPos.z += (float)(movex * modelviewMatrix[8]);
+        cameraPos.X += (float)(movex * modelviewMatrix[0]);
+        cameraPos.Y += (float)(movex * modelviewMatrix[4]);
+        cameraPos.Z += (float)(movex * modelviewMatrix[8]);
 
-        cameraPos.x += (float)(movey * modelviewMatrix[2]);
-        cameraPos.y += (float)(movey * modelviewMatrix[6]);
-        cameraPos.z += (float)(movey * modelviewMatrix[10]);
+        cameraPos.X += (float)(movey * modelviewMatrix[2]);
+        cameraPos.Y += (float)(movey * modelviewMatrix[6]);
+        cameraPos.Z += (float)(movey * modelviewMatrix[10]);
 
-        cameraPos.y += (float)((_moveUp - _moveDown) * keySpeed * dt);
+        cameraPos.Y += (float)((_moveUp - _moveDown) * keySpeed * dt);
 
         long time = RcFrequency.Ticks;
         prevFrameTime = time;
@@ -552,15 +552,15 @@ public class RecastDemo : IRecastDemoChannel
                         }
 
                         bminN = RcVec3f.Of(
-                            Math.Min(bminN.x, result.GetSolidHeightfield().bmin.x),
-                            Math.Min(bminN.y, result.GetSolidHeightfield().bmin.y),
-                            Math.Min(bminN.z, result.GetSolidHeightfield().bmin.z)
+                            Math.Min(bminN.X, result.GetSolidHeightfield().bmin.X),
+                            Math.Min(bminN.Y, result.GetSolidHeightfield().bmin.Y),
+                            Math.Min(bminN.Z, result.GetSolidHeightfield().bmin.Z)
                         );
 
                         bmaxN = RcVec3f.Of(
-                            Math.Max(bmaxN.x, result.GetSolidHeightfield().bmax.x),
-                            Math.Max(bmaxN.y, result.GetSolidHeightfield().bmax.y),
-                            Math.Max(bmaxN.z, result.GetSolidHeightfield().bmax.z)
+                            Math.Max(bmaxN.X, result.GetSolidHeightfield().bmax.X),
+                            Math.Max(bmaxN.Y, result.GetSolidHeightfield().bmax.Y),
+                            Math.Max(bmaxN.Z, result.GetSolidHeightfield().bmax.Z)
                         );
 
                         hasBound = true;
@@ -573,10 +573,10 @@ public class RecastDemo : IRecastDemoChannel
                 RcVec3f bmin = bminN;
                 RcVec3f bmax = bmaxN;
 
-                camr = (float)(Math.Sqrt(RcMath.Sqr(bmax.x - bmin.x) + RcMath.Sqr(bmax.y - bmin.y) + RcMath.Sqr(bmax.z - bmin.z)) / 2);
-                cameraPos.x = (bmax.x + bmin.x) / 2 + camr;
-                cameraPos.y = (bmax.y + bmin.y) / 2 + camr;
-                cameraPos.z = (bmax.z + bmin.z) / 2 + camr;
+                camr = (float)(Math.Sqrt(RcMath.Sqr(bmax.X - bmin.X) + RcMath.Sqr(bmax.Y - bmin.Y) + RcMath.Sqr(bmax.Z - bmin.Z)) / 2);
+                cameraPos.X = (bmax.X + bmin.X) / 2 + camr;
+                cameraPos.Y = (bmax.Y + bmin.Y) / 2 + camr;
+                cameraPos.Z = (bmax.Z + bmin.Z) / 2 + camr;
                 camr *= 5;
                 cameraEulers[0] = 45;
                 cameraEulers[1] = -45;
@@ -789,12 +789,12 @@ public class RecastDemo : IRecastDemoChannel
             hit = RcPolyMeshRaycast.Raycast(_sample.GetRecastResults(), rayStart, rayEnd, out hitTime);
         }
 
-        RcVec3f rayDir = RcVec3f.Of(rayEnd.x - rayStart.x, rayEnd.y - rayStart.y, rayEnd.z - rayStart.z);
+        RcVec3f rayDir = RcVec3f.Of(rayEnd.X - rayStart.X, rayEnd.Y - rayStart.Y, rayEnd.Z - rayStart.Z);
         ISampleTool raySampleTool = toolset.GetTool();
         rayDir.Normalize();
         if (raySampleTool != null)
         {
-            Logger.Information($"click ray - tool({raySampleTool.GetTool().GetName()}) rayStart({rayStart.x:0.#},{rayStart.y:0.#},{rayStart.z:0.#}) pos({rayDir.x:0.#},{rayDir.y:0.#},{rayDir.z:0.#}) shift({processHitTestShift})");
+            Logger.Information($"click ray - tool({raySampleTool.GetTool().GetName()}) rayStart({rayStart.X:0.#},{rayStart.Y:0.#},{rayStart.Z:0.#}) pos({rayDir.X:0.#},{rayDir.Y:0.#},{rayDir.Z:0.#}) shift({processHitTestShift})");
             raySampleTool.HandleClickRay(rayStart, rayDir, processHitTestShift);
         }
 
@@ -804,19 +804,19 @@ public class RecastDemo : IRecastDemoChannel
             {
                 // Marker
                 markerPositionSet = true;
-                markerPosition.x = rayStart.x + (rayEnd.x - rayStart.x) * hitTime;
-                markerPosition.y = rayStart.y + (rayEnd.y - rayStart.y) * hitTime;
-                markerPosition.z = rayStart.z + (rayEnd.z - rayStart.z) * hitTime;
+                markerPosition.X = rayStart.X + (rayEnd.X - rayStart.X) * hitTime;
+                markerPosition.Y = rayStart.Y + (rayEnd.Y - rayStart.Y) * hitTime;
+                markerPosition.Z = rayStart.Z + (rayEnd.Z - rayStart.Z) * hitTime;
             }
             else
             {
                 RcVec3f pos = new RcVec3f();
-                pos.x = rayStart.x + (rayEnd.x - rayStart.x) * hitTime;
-                pos.y = rayStart.y + (rayEnd.y - rayStart.y) * hitTime;
-                pos.z = rayStart.z + (rayEnd.z - rayStart.z) * hitTime;
+                pos.X = rayStart.X + (rayEnd.X - rayStart.X) * hitTime;
+                pos.Y = rayStart.Y + (rayEnd.Y - rayStart.Y) * hitTime;
+                pos.Z = rayStart.Z + (rayEnd.Z - rayStart.Z) * hitTime;
                 if (raySampleTool != null)
                 {
-                    Logger.Information($"click - tool({raySampleTool.GetTool().GetName()}) rayStart({rayStart.x:0.#},{rayStart.y:0.#},{rayStart.z:0.#}) pos({pos.x:0.#},{pos.y:0.#},{pos.z:0.#}) shift({processHitTestShift})");
+                    Logger.Information($"click - tool({raySampleTool.GetTool().GetName()}) rayStart({rayStart.X:0.#},{rayStart.Y:0.#},{rayStart.Z:0.#}) pos({pos.X:0.#},{pos.Y:0.#},{pos.Z:0.#}) shift({processHitTestShift})");
                     raySampleTool.HandleClick(rayStart, pos, processHitTestShift);
                 }
             }

@@ -66,22 +66,22 @@ namespace DotRecast.Core
         // Returns true if 'a' is more lower-left than 'b'.
         private static bool Cmppt(RcVec3f a, RcVec3f b)
         {
-            if (a.x < b.x)
+            if (a.X < b.X)
             {
                 return true;
             }
 
-            if (a.x > b.x)
+            if (a.X > b.X)
             {
                 return false;
             }
 
-            if (a.z < b.z)
+            if (a.Z < b.Z)
             {
                 return true;
             }
 
-            if (a.z > b.z)
+            if (a.Z > b.Z)
             {
                 return false;
             }
@@ -92,10 +92,10 @@ namespace DotRecast.Core
         // Returns true if 'c' is left of line 'a'-'b'.
         private static bool Left(RcVec3f a, RcVec3f b, RcVec3f c)
         {
-            float u1 = b.x - a.x;
-            float v1 = b.z - a.z;
-            float u2 = c.x - a.x;
-            float v2 = c.z - a.z;
+            float u1 = b.X - a.X;
+            float v1 = b.Z - a.Z;
+            float u2 = c.X - a.X;
+            float v2 = c.Z - a.Z;
             return u1 * v2 - v1 * u2 < 0;
         }
     }

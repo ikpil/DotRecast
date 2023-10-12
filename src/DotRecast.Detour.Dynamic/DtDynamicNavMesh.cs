@@ -59,9 +59,9 @@ namespace DotRecast.Detour.Dynamic
             config.detailSampleMaxError = voxelFile.detailSampleMaxError;
             builder = new RcBuilder();
             navMeshParams = new DtNavMeshParams();
-            navMeshParams.orig.x = voxelFile.bounds[0];
-            navMeshParams.orig.y = voxelFile.bounds[1];
-            navMeshParams.orig.z = voxelFile.bounds[2];
+            navMeshParams.orig.X = voxelFile.bounds[0];
+            navMeshParams.orig.Y = voxelFile.bounds[1];
+            navMeshParams.orig.Z = voxelFile.bounds[2];
             navMeshParams.tileWidth = voxelFile.cellSize * voxelFile.tileSizeX;
             navMeshParams.tileHeight = voxelFile.cellSize * voxelFile.tileSizeZ;
             navMeshParams.maxTiles = voxelFile.tiles.Count;
@@ -189,10 +189,10 @@ namespace DotRecast.Detour.Dynamic
                 return _tiles.Values;
             }
 
-            int minx = (int)Math.Floor((bounds[0] - navMeshParams.orig.x) / navMeshParams.tileWidth);
-            int minz = (int)Math.Floor((bounds[2] - navMeshParams.orig.z) / navMeshParams.tileHeight);
-            int maxx = (int)Math.Floor((bounds[3] - navMeshParams.orig.x) / navMeshParams.tileWidth);
-            int maxz = (int)Math.Floor((bounds[5] - navMeshParams.orig.z) / navMeshParams.tileHeight);
+            int minx = (int)Math.Floor((bounds[0] - navMeshParams.orig.X) / navMeshParams.tileWidth);
+            int minz = (int)Math.Floor((bounds[2] - navMeshParams.orig.Z) / navMeshParams.tileHeight);
+            int maxx = (int)Math.Floor((bounds[3] - navMeshParams.orig.X) / navMeshParams.tileWidth);
+            int maxz = (int)Math.Floor((bounds[5] - navMeshParams.orig.Z) / navMeshParams.tileHeight);
             List<DtDynamicTile> tiles = new List<DtDynamicTile>();
             for (int z = minz; z <= maxz; ++z)
             {

@@ -56,10 +56,10 @@ namespace DotRecast.Recast
             {
                 float tsx = cfg.TileSizeX * cfg.Cs;
                 float tsz = cfg.TileSizeZ * cfg.Cs;
-                this.bmin.x += tileX * tsx;
-                this.bmin.z += tileZ * tsz;
-                this.bmax.x = this.bmin.x + tsx;
-                this.bmax.z = this.bmin.z + tsz;
+                this.bmin.X += tileX * tsx;
+                this.bmin.Z += tileZ * tsz;
+                this.bmax.X = this.bmin.X + tsx;
+                this.bmax.Z = this.bmin.Z + tsz;
                 
                 // Expand the heighfield bounding box by border size to find the extents of geometry we need to build this tile.
                 //
@@ -83,10 +83,10 @@ namespace DotRecast.Recast
                 // you will need to pass in data from neighbour terrain tiles too! In a simple case, just pass in all the 8 neighbours,
                 // or use the bounding box below to only pass in a sliver of each of the 8 neighbours.
                 
-                this.bmin.x -= cfg.BorderSize * cfg.Cs;
-                this.bmin.z -= cfg.BorderSize * cfg.Cs;
-                this.bmax.x += cfg.BorderSize * cfg.Cs;
-                this.bmax.z += cfg.BorderSize * cfg.Cs;
+                this.bmin.X -= cfg.BorderSize * cfg.Cs;
+                this.bmin.Z -= cfg.BorderSize * cfg.Cs;
+                this.bmax.X += cfg.BorderSize * cfg.Cs;
+                this.bmax.Z += cfg.BorderSize * cfg.Cs;
                 width = cfg.TileSizeX + cfg.BorderSize * 2;
                 height = cfg.TileSizeZ + cfg.BorderSize * 2;
             }

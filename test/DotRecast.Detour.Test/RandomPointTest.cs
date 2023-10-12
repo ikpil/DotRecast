@@ -50,10 +50,10 @@ public class RandomPointTest : AbstractDetourTest
                 bmax[1] = j == 0 ? tile.data.verts[v + 2] : Math.Max(bmax[1], tile.data.verts[v + 2]);
             }
 
-            Assert.That(randomPt.x >= bmin[0], Is.True);
-            Assert.That(randomPt.x <= bmax[0], Is.True);
-            Assert.That(randomPt.z >= bmin[1], Is.True);
-            Assert.That(randomPt.z <= bmax[1], Is.True);
+            Assert.That(randomPt.X >= bmin[0], Is.True);
+            Assert.That(randomPt.X <= bmax[0], Is.True);
+            Assert.That(randomPt.Z >= bmin[1], Is.True);
+            Assert.That(randomPt.Z <= bmax[1], Is.True);
         }
     }
 
@@ -84,10 +84,10 @@ public class RandomPointTest : AbstractDetourTest
                 bmax[1] = j == 0 ? tile.data.verts[v + 2] : Math.Max(bmax[1], tile.data.verts[v + 2]);
             }
 
-            Assert.That(randomPt.x >= bmin[0], Is.True);
-            Assert.That(randomPt.x <= bmax[0], Is.True);
-            Assert.That(randomPt.z >= bmin[1], Is.True);
-            Assert.That(randomPt.z <= bmax[1], Is.True);
+            Assert.That(randomPt.X >= bmin[0], Is.True);
+            Assert.That(randomPt.X <= bmax[0], Is.True);
+            Assert.That(randomPt.Z >= bmin[1], Is.True);
+            Assert.That(randomPt.Z <= bmax[1], Is.True);
         }
     }
 

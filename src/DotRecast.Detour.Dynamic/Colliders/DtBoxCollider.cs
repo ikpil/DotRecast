@@ -47,9 +47,9 @@ namespace DotRecast.Detour.Dynamic.Colliders
                 float s0 = (i & 1) != 0 ? 1f : -1f;
                 float s1 = (i & 2) != 0 ? 1f : -1f;
                 float s2 = (i & 4) != 0 ? 1f : -1f;
-                float vx = center.x + s0 * halfEdges[0].x + s1 * halfEdges[1].x + s2 * halfEdges[2].x;
-                float vy = center.y + s0 * halfEdges[0].y + s1 * halfEdges[1].y + s2 * halfEdges[2].y;
-                float vz = center.z + s0 * halfEdges[0].z + s1 * halfEdges[1].z + s2 * halfEdges[2].z;
+                float vx = center.X + s0 * halfEdges[0].X + s1 * halfEdges[1].X + s2 * halfEdges[2].X;
+                float vy = center.Y + s0 * halfEdges[0].Y + s1 * halfEdges[1].Y + s2 * halfEdges[2].Y;
+                float vz = center.Z + s0 * halfEdges[0].Z + s1 * halfEdges[1].Z + s2 * halfEdges[2].Z;
                 bounds[0] = Math.Min(bounds[0], vx);
                 bounds[1] = Math.Min(bounds[1], vy);
                 bounds[2] = Math.Min(bounds[2], vz);
@@ -72,7 +72,7 @@ namespace DotRecast.Detour.Dynamic.Colliders
             RcVec3f[] halfEdges =
             {
                 RcVec3f.Zero,
-                RcVec3f.Of(up.x, up.y, up.z),
+                RcVec3f.Of(up.X, up.Y, up.Z),
                 RcVec3f.Zero
             };
             RcVec3f.Normalize(ref halfEdges[1]);
@@ -80,15 +80,15 @@ namespace DotRecast.Detour.Dynamic.Colliders
             RcVec3f.Normalize(ref halfEdges[0]);
             RcVec3f.Cross(ref halfEdges[2], halfEdges[0], up);
             RcVec3f.Normalize(ref halfEdges[2]);
-            halfEdges[0].x *= extent.x;
-            halfEdges[0].y *= extent.x;
-            halfEdges[0].z *= extent.x;
-            halfEdges[1].x *= extent.y;
-            halfEdges[1].y *= extent.y;
-            halfEdges[1].z *= extent.y;
-            halfEdges[2].x *= extent.z;
-            halfEdges[2].y *= extent.z;
-            halfEdges[2].z *= extent.z;
+            halfEdges[0].X *= extent.X;
+            halfEdges[0].Y *= extent.X;
+            halfEdges[0].Z *= extent.X;
+            halfEdges[1].X *= extent.Y;
+            halfEdges[1].Y *= extent.Y;
+            halfEdges[1].Z *= extent.Y;
+            halfEdges[2].X *= extent.Z;
+            halfEdges[2].Y *= extent.Z;
+            halfEdges[2].Z *= extent.Z;
             return halfEdges;
         }
     }

@@ -36,13 +36,13 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                 int connectedNode1 = buffer.GetInt();
                 int connectedNode2 = buffer.GetInt();
                 RcVec3f clamped1 = new RcVec3f();
-                clamped1.x = buffer.GetFloat();
-                clamped1.y = buffer.GetFloat();
-                clamped1.z = buffer.GetFloat();
+                clamped1.X = buffer.GetFloat();
+                clamped1.Y = buffer.GetFloat();
+                clamped1.Z = buffer.GetFloat();
                 RcVec3f clamped2 = new RcVec3f();
-                clamped2.x = buffer.GetFloat();
-                clamped2.y = buffer.GetFloat();
-                clamped2.z = buffer.GetFloat();
+                clamped2.X = buffer.GetFloat();
+                clamped2.Y = buffer.GetFloat();
+                clamped2.Z = buffer.GetFloat();
                 bool postScanCalled = buffer.Get() != 0;
                 links[i] = new NodeLink2(linkID, startNode, endNode, clamped1, clamped2);
             }

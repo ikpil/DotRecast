@@ -306,9 +306,9 @@ namespace DotRecast.Recast.Toolset.Tools
 
             if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_VALID)
             {
-                float dx = ag.targetPos.x - ag.npos.x;
-                float dy = ag.targetPos.y - ag.npos.y;
-                float dz = ag.targetPos.z - ag.npos.z;
+                float dx = ag.targetPos.X - ag.npos.X;
+                float dy = ag.targetPos.Y - ag.npos.Y;
+                float dz = ag.targetPos.Z - ag.npos.Z;
                 return dx * dx + dy * dy + dz * dz < 0.3f;
             }
 

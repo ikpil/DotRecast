@@ -53,9 +53,9 @@ namespace DotRecast.Recast
         private static bool OverlapBounds(RcVec3f amin, RcVec3f amax, RcVec3f bmin, RcVec3f bmax)
         {
             bool overlap = true;
-            overlap = (amin.x > bmax.x || amax.x < bmin.x) ? false : overlap;
-            overlap = (amin.y > bmax.y || amax.y < bmin.y) ? false : overlap;
-            overlap = (amin.z > bmax.z || amax.z < bmin.z) ? false : overlap;
+            overlap = (amin.X > bmax.X || amax.X < bmin.X) ? false : overlap;
+            overlap = (amin.Y > bmax.Y || amax.Y < bmin.Y) ? false : overlap;
+            overlap = (amin.Z > bmax.Z || amax.Z < bmin.Z) ? false : overlap;
             return overlap;
         }
 
@@ -237,7 +237,7 @@ namespace DotRecast.Recast
         {
             RcVec3f tmin = new RcVec3f();
             RcVec3f tmax = new RcVec3f();
-            float by = heightfieldBBMax.y - heightfieldBBMin.y;
+            float by = heightfieldBBMax.Y - heightfieldBBMin.Y;
 
             // Calculate the bounding box of the triangle.
             RcVec3f.Copy(ref tmin, verts, v0 * 3);
@@ -252,8 +252,8 @@ namespace DotRecast.Recast
                 return;
 
             // Calculate the footprint of the triangle on the grid's y-axis
-            int z0 = (int)((tmin.z - heightfieldBBMin.z) * inverseCellSize);
-            int z1 = (int)((tmax.z - heightfieldBBMin.z) * inverseCellSize);
+            int z0 = (int)((tmin.Z - heightfieldBBMin.Z) * inverseCellSize);
+            int z1 = (int)((tmax.Z - heightfieldBBMin.Z) * inverseCellSize);
 
             int w = heightfield.width;
             int h = heightfield.height;
@@ -276,7 +276,7 @@ namespace DotRecast.Recast
             for (int z = z0; z <= z1; ++z)
             {
                 // Clip polygon to row. Store the remaining polygon as well
-                float cellZ = heightfieldBBMin.z + z * cellSize;
+                float cellZ = heightfieldBBMin.Z + z * cellSize;
                 DividePoly(buf, @in, nvIn, inRow, out nvRow, p1, out nvIn, cellZ + cellSize, 2);
                 (@in, p1) = (p1, @in);
 
@@ -297,8 +297,8 @@ namespace DotRecast.Recast
                     maxX = Math.Max(maxX, v);
                 }
 
-                int x0 = (int)((minX - heightfieldBBMin.x) * inverseCellSize);
-                int x1 = (int)((maxX - heightfieldBBMin.x) * inverseCellSize);
+                int x0 = (int)((minX - heightfieldBBMin.X) * inverseCellSize);
+                int x1 = (int)((maxX - heightfieldBBMin.X) * inverseCellSize);
                 if (x1 < 0 || x0 >= w)
                 {
                     continue;
@@ -311,7 +311,7 @@ namespace DotRecast.Recast
                 for (int x = x0; x <= x1; ++x)
                 {
                     // Clip polygon to column. store the remaining polygon as well
-                    float cx = heightfieldBBMin.x + x * cellSize;
+                    float cx = heightfieldBBMin.X + x * cellSize;
                     DividePoly(buf, inRow, nv2, p1, out nv, p2, out nv2, cx + cellSize, 0);
                     (inRow, p2) = (p2, inRow);
 
@@ -332,8 +332,8 @@ namespace DotRecast.Recast
                         spanMax = Math.Max(spanMax, buf[p1 + i * 3 + 1]);
                     }
 
-                    spanMin -= heightfieldBBMin.y;
-                    spanMax -= heightfieldBBMin.y;
+                    spanMin -= heightfieldBBMin.Y;
+                    spanMax -= heightfieldBBMin.Y;
                     // Skip the span if it is outside the heightfield bbox
                     if (spanMax < 0.0f)
                         continue;

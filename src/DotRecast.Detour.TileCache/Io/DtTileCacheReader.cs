@@ -98,9 +98,9 @@ namespace DotRecast.Detour.TileCache.Io
         {
             DtTileCacheParams option = new DtTileCacheParams();
 
-            option.orig.x = bb.GetFloat();
-            option.orig.y = bb.GetFloat();
-            option.orig.z = bb.GetFloat();
+            option.orig.X = bb.GetFloat();
+            option.orig.Y = bb.GetFloat();
+            option.orig.Z = bb.GetFloat();
 
             option.cs = bb.GetFloat();
             option.ch = bb.GetFloat();

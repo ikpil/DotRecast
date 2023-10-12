@@ -513,11 +513,11 @@ namespace DotRecast.Detour
             if (poly.GetPolyType() == DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
                 int i = poly.verts[0] * 3;
-                var v0 = new RcVec3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
+                var v0 = new RcVec3f { X = tile.data.verts[i], Y = tile.data.verts[i + 1], Z = tile.data.verts[i + 2] };
                 i = poly.verts[1] * 3;
-                var v1 = new RcVec3f { x = tile.data.verts[i], y = tile.data.verts[i + 1], z = tile.data.verts[i + 2] };
+                var v1 = new RcVec3f { X = tile.data.verts[i], Y = tile.data.verts[i + 1], Z = tile.data.verts[i + 2] };
                 DtUtils.DistancePtSegSqr2D(pos, v0, v1, out var t);
-                height = v0.y + (v1.y - v0.y) * t;
+                height = v0.Y + (v1.Y - v0.Y) * t;
 
                 return DtStatus.DT_SUCCSESS;
             }
@@ -576,12 +576,12 @@ namespace DotRecast.Detour
                 int[] bmin = new int[3];
                 int[] bmax = new int[3];
                 // dtClamp query box to world box.
-                float minx = Math.Clamp(qmin.x, tbmin.x, tbmax.x) - tbmin.x;
-                float miny = Math.Clamp(qmin.y, tbmin.y, tbmax.y) - tbmin.y;
-                float minz = Math.Clamp(qmin.z, tbmin.z, tbmax.z) - tbmin.z;
-                float maxx = Math.Clamp(qmax.x, tbmin.x, tbmax.x) - tbmin.x;
-                float maxy = Math.Clamp(qmax.y, tbmin.y, tbmax.y) - tbmin.y;
-                float maxz = Math.Clamp(qmax.z, tbmin.z, tbmax.z) - tbmin.z;
+                float minx = Math.Clamp(qmin.X, tbmin.X, tbmax.X) - tbmin.X;
+                float miny = Math.Clamp(qmin.Y, tbmin.Y, tbmax.Y) - tbmin.Y;
+                float minz = Math.Clamp(qmin.Z, tbmin.Z, tbmax.Z) - tbmin.Z;
+                float maxx = Math.Clamp(qmax.X, tbmin.X, tbmax.X) - tbmin.X;
+                float maxy = Math.Clamp(qmax.Y, tbmin.Y, tbmax.Y) - tbmin.Y;
+                float maxz = Math.Clamp(qmax.Z, tbmin.Z, tbmax.Z) - tbmin.Z;
                 // Quantize
                 bmin[0] = (int)(qfac * minx) & 0x7ffffffe;
                 bmin[1] = (int)(qfac * miny) & 0x7ffffffe;
@@ -2004,13 +2004,13 @@ namespace DotRecast.Detour
                     if (fromTile.links[i].refs == to)
                     {
                         int v = fromTile.links[i].edge;
-                        left.x = fromTile.data.verts[fromPoly.verts[v] * 3];
-                        left.y = fromTile.data.verts[fromPoly.verts[v] * 3 + 1];
-                        left.z = fromTile.data.verts[fromPoly.verts[v] * 3 + 2];
+                        left.X = fromTile.data.verts[fromPoly.verts[v] * 3];
+                        left.Y = fromTile.data.verts[fromPoly.verts[v] * 3 + 1];
+                        left.Z = fromTile.data.verts[fromPoly.verts[v] * 3 + 2];
 
-                        right.x = fromTile.data.verts[fromPoly.verts[v] * 3];
-                        right.y = fromTile.data.verts[fromPoly.verts[v] * 3 + 1];
-                        right.z = fromTile.data.verts[fromPoly.verts[v] * 3 + 2];
+                        right.X = fromTile.data.verts[fromPoly.verts[v] * 3];
+                        right.Y = fromTile.data.verts[fromPoly.verts[v] * 3 + 1];
+                        right.Z = fromTile.data.verts[fromPoly.verts[v] * 3 + 2];
 
                         return DtStatus.DT_SUCCSESS;
                     }
@@ -2026,13 +2026,13 @@ namespace DotRecast.Detour
                     if (toTile.links[i].refs == from)
                     {
                         int v = toTile.links[i].edge;
-                        left.x = toTile.data.verts[toPoly.verts[v] * 3];
-                        left.y = toTile.data.verts[toPoly.verts[v] * 3 + 1];
-                        left.z = toTile.data.verts[toPoly.verts[v] * 3 + 2];
+                        left.X = toTile.data.verts[toPoly.verts[v] * 3];
+                        left.Y = toTile.data.verts[toPoly.verts[v] * 3 + 1];
+                        left.Z = toTile.data.verts[toPoly.verts[v] * 3 + 2];
 
-                        right.x = toTile.data.verts[toPoly.verts[v] * 3];
-                        right.y = toTile.data.verts[toPoly.verts[v] * 3 + 1];
-                        right.z = toTile.data.verts[toPoly.verts[v] * 3 + 2];
+                        right.X = toTile.data.verts[toPoly.verts[v] * 3];
+                        right.Y = toTile.data.verts[toPoly.verts[v] * 3 + 1];
+                        right.Z = toTile.data.verts[toPoly.verts[v] * 3 + 2];
 
                         return DtStatus.DT_SUCCSESS;
                     }
@@ -2044,13 +2044,13 @@ namespace DotRecast.Detour
             // Find portal vertices.
             int v0 = fromPoly.verts[link.edge];
             int v1 = fromPoly.verts[(link.edge + 1) % fromPoly.vertCount];
-            left.x = fromTile.data.verts[v0 * 3];
-            left.y = fromTile.data.verts[v0 * 3 + 1];
-            left.z = fromTile.data.verts[v0 * 3 + 2];
+            left.X = fromTile.data.verts[v0 * 3];
+            left.Y = fromTile.data.verts[v0 * 3 + 1];
+            left.Z = fromTile.data.verts[v0 * 3 + 2];
 
-            right.x = fromTile.data.verts[v1 * 3];
-            right.y = fromTile.data.verts[v1 * 3 + 1];
-            right.z = fromTile.data.verts[v1 * 3 + 2];
+            right.X = fromTile.data.verts[v1 * 3];
+            right.Y = fromTile.data.verts[v1 * 3 + 1];
+            right.Z = fromTile.data.verts[v1 * 3 + 2];
 
             // If the link is at tile boundary, dtClamp the vertices to
             // the link width.
@@ -2079,9 +2079,9 @@ namespace DotRecast.Detour
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            mid.x = (left.x + right.x) * 0.5f;
-            mid.y = (left.y + right.y) * 0.5f;
-            mid.z = (left.z + right.z) * 0.5f;
+            mid.X = (left.X + right.X) * 0.5f;
+            mid.Y = (left.Y + right.Y) * 0.5f;
+            mid.Z = (left.Z + right.Z) * 0.5f;
 
             return DtStatus.DT_SUCCSESS;
         }
@@ -2304,7 +2304,7 @@ namespace DotRecast.Detour
                         }
 
                         // Find Z intersection.
-                        float z = startPos.z + (endPos.z - startPos.z) * tmax;
+                        float z = startPos.Z + (endPos.Z - startPos.Z) * tmax;
                         if (z >= lmin && z <= lmax)
                         {
                             nextRef = link.refs;
@@ -2325,7 +2325,7 @@ namespace DotRecast.Detour
                         }
 
                         // Find X intersection.
-                        float x = startPos.x + (endPos.x - startPos.x) * tmax;
+                        float x = startPos.X + (endPos.X - startPos.X) * tmax;
                         if (x >= lmin && x <= lmax)
                         {
                             nextRef = link.refs;
@@ -2345,8 +2345,8 @@ namespace DotRecast.Detour
                     var e2 = verts[(segMax + 1) % nv];
                     var eDir = e2.Subtract(e1);
                     var diff = curPos.Subtract(e1);
-                    float s = RcMath.Sqr(eDir.x) > RcMath.Sqr(eDir.z) ? diff.x / eDir.x : diff.z / eDir.z;
-                    curPos.y = e1.y + eDir.y * s;
+                    float s = RcMath.Sqr(eDir.X) > RcMath.Sqr(eDir.Z) ? diff.X / eDir.X : diff.Z / eDir.Z;
+                    curPos.Y = e1.Y + eDir.Y * s;
 
                     hit.pathCost += filter.GetCost(lastPos, curPos, prevRef, prevTile, prevPoly, curRef, tile, poly,
                         nextRef, nextTile, nextPoly);
@@ -2361,11 +2361,11 @@ namespace DotRecast.Detour
                     int b = segMax + 1 < nv ? segMax + 1 : 0;
                     // int va = a * 3;
                     // int vb = b * 3;
-                    float dx = verts[b].x - verts[a].x;
-                    float dz = verts[b].z - verts[a].x;
-                    hit.hitNormal.x = dz;
-                    hit.hitNormal.y = 0;
-                    hit.hitNormal.z = -dx;
+                    float dx = verts[b].X - verts[a].X;
+                    float dz = verts[b].Z - verts[a].X;
+                    hit.hitNormal.X = dz;
+                    hit.hitNormal.Y = 0;
+                    hit.hitNormal.Z = -dx;
                     hit.hitNormal.Normalize();
                     return DtStatus.DT_SUCCSESS;
                 }
@@ -2621,9 +2621,9 @@ namespace DotRecast.Detour
             }
 
             float scale = 1.0f / nverts;
-            centerPos.x *= scale;
-            centerPos.y *= scale;
-            centerPos.z *= scale;
+            centerPos.X *= scale;
+            centerPos.Y *= scale;
+            centerPos.Z *= scale;
 
             DtNode startNode = m_nodePool.GetNode(startRef);
             startNode.pos = centerPos;
@@ -3211,9 +3211,9 @@ namespace DotRecast.Detour
                     // Hit wall, update radius.
                     radiusSqr = distSqr;
                     // Calculate hit pos.
-                    hitPos.x = bestTile.data.verts[vj + 0] + (bestTile.data.verts[vi + 0] - bestTile.data.verts[vj + 0]) * tseg;
-                    hitPos.y = bestTile.data.verts[vj + 1] + (bestTile.data.verts[vi + 1] - bestTile.data.verts[vj + 1]) * tseg;
-                    hitPos.z = bestTile.data.verts[vj + 2] + (bestTile.data.verts[vi + 2] - bestTile.data.verts[vj + 2]) * tseg;
+                    hitPos.X = bestTile.data.verts[vj + 0] + (bestTile.data.verts[vi + 0] - bestTile.data.verts[vj + 0]) * tseg;
+                    hitPos.Y = bestTile.data.verts[vj + 1] + (bestTile.data.verts[vi + 1] - bestTile.data.verts[vj + 1]) * tseg;
+                    hitPos.Z = bestTile.data.verts[vj + 2] + (bestTile.data.verts[vi + 2] - bestTile.data.verts[vj + 2]) * tseg;
                     hasBestV = true;
                     bestvj = RcVec3f.Of(bestTile.data.verts, vj);
                     bestvi = RcVec3f.Of(bestTile.data.verts, vi);
@@ -3302,9 +3302,9 @@ namespace DotRecast.Detour
             if (hasBestV)
             {
                 var tangent = bestvi.Subtract(bestvj);
-                hitNormal.x = tangent.z;
-                hitNormal.y = 0;
-                hitNormal.z = -tangent.x;
+                hitNormal.X = tangent.Z;
+                hitNormal.Y = 0;
+                hitNormal.Z = -tangent.X;
                 hitNormal.Normalize();
             }
 
