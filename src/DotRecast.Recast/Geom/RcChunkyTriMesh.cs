@@ -253,7 +253,7 @@ namespace DotRecast.Recast.Geom
 
         private bool CheckOverlapSegment(float[] p, float[] q, RcVec2f bmin, RcVec2f bmax)
         {
-            float EPSILON = 1e-6f;
+            const float EPSILON = 1e-6f;
 
             float tmin = 0;
             float tmax = 1;
