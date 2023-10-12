@@ -78,7 +78,7 @@ public class RecastDemo : IRecastDemoChannel
     private bool processHitTestShift;
     private int _modState;
 
-    private readonly float[] mousePos = new float[2];
+    private RcVec2f mousePos = new RcVec2f();
 
     private bool _mouseOverMenu;
     private bool pan;
@@ -86,11 +86,11 @@ public class RecastDemo : IRecastDemoChannel
     private bool rotate;
     private bool movedDuringRotate;
     private float scrollZoom;
-    private readonly float[] origMousePos = new float[2];
-    private readonly float[] origCameraEulers = new float[2];
+    private RcVec2f origMousePos = new RcVec2f();
+    private RcVec2f origCameraEulers = new RcVec2f();
     private RcVec3f origCameraPos = new RcVec3f();
 
-    private readonly float[] cameraEulers = { 45, -45 };
+    private RcVec2f cameraEulers = new RcVec2f(45, -45);
     private RcVec3f cameraPos = RcVec3f.Of(0, 0, 0);
 
 
@@ -155,14 +155,14 @@ public class RecastDemo : IRecastDemoChannel
 
     public void OnMouseMoved(IMouse mouse, Vector2 position)
     {
-        mousePos[0] = (float)position.X;
-        mousePos[1] = (float)position.Y;
-        int dx = (int)(mousePos[0] - origMousePos[0]);
-        int dy = (int)(mousePos[1] - origMousePos[1]);
+        mousePos.X = position.X;
+        mousePos.Y = position.Y;
+        int dx = (int)(mousePos.X - origMousePos.X);
+        int dy = (int)(mousePos.Y - origMousePos.Y);
         if (rotate)
         {
-            cameraEulers[0] = origCameraEulers[0] + dy * 0.25f;
-            cameraEulers[1] = origCameraEulers[1] + dx * 0.25f;
+            cameraEulers.X = origCameraEulers.X + dy * 0.25f;
+            cameraEulers.Y = origCameraEulers.Y + dx * 0.25f;
             if (dx * dx + dy * dy > 3 * 3)
             {
                 movedDuringRotate = true;
@@ -199,10 +199,8 @@ public class RecastDemo : IRecastDemoChannel
                     // Rotate view
                     rotate = true;
                     movedDuringRotate = false;
-                    origMousePos[0] = mousePos[0];
-                    origMousePos[1] = mousePos[1];
-                    origCameraEulers[0] = cameraEulers[0];
-                    origCameraEulers[1] = cameraEulers[1];
+                    origMousePos = mousePos;
+                    origCameraEulers = cameraEulers;
                 }
             }
             else if (button == MouseButton.Middle)
@@ -212,11 +210,8 @@ public class RecastDemo : IRecastDemoChannel
                     // Pan view
                     pan = true;
                     movedDuringPan = false;
-                    origMousePos[0] = mousePos[0];
-                    origMousePos[1] = mousePos[1];
-                    origCameraPos.X = cameraPos.X;
-                    origCameraPos.Y = cameraPos.Y;
-                    origCameraPos.Z = cameraPos.Z;
+                    origMousePos = mousePos;
+                    origCameraPos = cameraPos;
                 }
             }
         }
@@ -513,8 +508,8 @@ public class RecastDemo : IRecastDemoChannel
             RcVec3f rayStart = new RcVec3f();
             RcVec3f rayEnd = new RcVec3f();
 
-            GLU.GlhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 0.0f, modelviewMatrix, projectionMatrix, viewport, ref rayStart);
-            GLU.GlhUnProjectf(mousePos[0], viewport[3] - 1 - mousePos[1], 1.0f, modelviewMatrix, projectionMatrix, viewport, ref rayEnd);
+            GLU.GlhUnProjectf(mousePos.X, viewport[3] - 1 - mousePos.Y, 0.0f, modelviewMatrix, projectionMatrix, viewport, ref rayStart);
+            GLU.GlhUnProjectf(mousePos.X, viewport[3] - 1 - mousePos.Y, 1.0f, modelviewMatrix, projectionMatrix, viewport, ref rayEnd);
 
             SendMessage(new RaycastEvent()
             {
@@ -578,8 +573,8 @@ public class RecastDemo : IRecastDemoChannel
                 cameraPos.Y = (bmax.Y + bmin.Y) / 2 + camr;
                 cameraPos.Z = (bmax.Z + bmin.Z) / 2 + camr;
                 camr *= 5;
-                cameraEulers[0] = 45;
-                cameraEulers[1] = -45;
+                cameraEulers.X = 45;
+                cameraEulers.Y = -45;
             }
 
             _sample.SetChanged(false);

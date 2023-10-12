@@ -636,10 +636,10 @@ public class DebugDraw
         return _projectionMatrix;
     }
 
-    public RcMatrix4x4f ViewMatrix(RcVec3f cameraPos, float[] cameraEulers)
+    public RcMatrix4x4f ViewMatrix(RcVec3f cameraPos, RcVec2f cameraEulers)
     {
-        var rx = RcMatrix4x4f.CreateFromRotate(cameraEulers[0], 1, 0, 0);
-        var ry = RcMatrix4x4f.CreateFromRotate(cameraEulers[1], 0, 1, 0);
+        var rx = RcMatrix4x4f.CreateFromRotate(cameraEulers.X, 1, 0, 0);
+        var ry = RcMatrix4x4f.CreateFromRotate(cameraEulers.Y, 0, 1, 0);
         var r = RcMatrix4x4f.Mul(ref rx, ref ry);
 
         var t = new RcMatrix4x4f();

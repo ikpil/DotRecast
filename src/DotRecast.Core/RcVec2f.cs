@@ -10,6 +10,12 @@ namespace DotRecast.Core
 
         public static RcVec2f Zero { get; } = new RcVec2f { X = 0, Y = 0 };
 
+        public RcVec2f(float x, float y)
+        {
+            X = x;
+            Y = y;
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float Get(int idx)
         {
