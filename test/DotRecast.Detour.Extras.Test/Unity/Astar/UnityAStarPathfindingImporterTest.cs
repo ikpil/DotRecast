@@ -34,8 +34,8 @@ public class UnityAStarPathfindingImporterTest
     public void Test_v4_0_6()
     {
         DtNavMesh mesh = LoadNavMesh("graph.zip");
-        RcVec3f startPos = RcVec3f.Of(8.200293f, 2.155071f, -26.176147f);
-        RcVec3f endPos = RcVec3f.Of(11.971109f, 0.000000f, 8.663261f);
+        RcVec3f startPos = new RcVec3f(8.200293f, 2.155071f, -26.176147f);
+        RcVec3f endPos = new RcVec3f(11.971109f, 0.000000f, 8.663261f);
         var path = new List<long>();
         var status = FindPath(mesh, startPos, endPos, ref path);
         Assert.That(status, Is.EqualTo(DtStatus.DT_SUCCSESS));
@@ -47,8 +47,8 @@ public class UnityAStarPathfindingImporterTest
     public void Test_v4_1_16()
     {
         DtNavMesh mesh = LoadNavMesh("graph_v4_1_16.zip");
-        RcVec3f startPos = RcVec3f.Of(22.93f, -2.37f, -5.11f);
-        RcVec3f endPos = RcVec3f.Of(16.81f, -2.37f, 25.52f);
+        RcVec3f startPos = new RcVec3f(22.93f, -2.37f, -5.11f);
+        RcVec3f endPos = new RcVec3f(16.81f, -2.37f, 25.52f);
         var path = new List<long>();
         var status = FindPath(mesh, startPos, endPos, ref path);
         Assert.That(status.Succeeded(), Is.True);
@@ -60,7 +60,7 @@ public class UnityAStarPathfindingImporterTest
     public void TestBoundsTree()
     {
         DtNavMesh mesh = LoadNavMesh("test_boundstree.zip");
-        RcVec3f position = RcVec3f.Of(387.52988f, 19.997f, 368.86282f);
+        RcVec3f position = new RcVec3f(387.52988f, 19.997f, 368.86282f);
 
         mesh.CalcTileLoc(position, out var tileX, out var tileY);
         long tileRef = mesh.GetTileRefAt(tileX, tileY, 0);
@@ -105,7 +105,7 @@ public class UnityAStarPathfindingImporterTest
     {
         DtNavMeshQuery query = new DtNavMeshQuery(mesh);
         IDtQueryFilter filter = new DtQueryDefaultFilter();
-        RcVec3f extents = RcVec3f.Of(0.1f, 0.1f, 0.1f);
+        RcVec3f extents = new RcVec3f(0.1f, 0.1f, 0.1f);
 
         var results = new DtPolyPoint[positions.Length];
         for (int i = 0; i < results.Length; i++)

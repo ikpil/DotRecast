@@ -461,8 +461,8 @@ public class DebugDraw
         Vertex(x1, y1, z1, col);
 
         // End arrows
-        RcVec3f p = RcVec3f.Of(x0, y0, z0);
-        RcVec3f q = RcVec3f.Of(x1, y1, z1);
+        RcVec3f p = new RcVec3f(x0, y0, z0);
+        RcVec3f q = new RcVec3f(x1, y1, z1);
         if (as0 > 0.001f)
             AppendArrowHead(p, q, as0, col);
         if (as1 > 0.001f)
@@ -478,7 +478,7 @@ public class DebugDraw
         }
 
         RcVec3f ax = new RcVec3f();
-        RcVec3f ay = RcVec3f.Of(0, 1, 0);
+        RcVec3f ay = new RcVec3f(0, 1, 0);
         RcVec3f az = new RcVec3f();
         Vsub(ref az, q, p);
         Vnormalize(ref az);

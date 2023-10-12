@@ -168,17 +168,17 @@ namespace DotRecast.Recast.Toolset.Geom
                 int[] tris = chunk.tris;
                 for (int j = 0; j < chunk.tris.Length; j += 3)
                 {
-                    RcVec3f v1 = RcVec3f.Of(
+                    RcVec3f v1 = new RcVec3f(
                         vertices[tris[j] * 3],
                         vertices[tris[j] * 3 + 1],
                         vertices[tris[j] * 3 + 2]
                     );
-                    RcVec3f v2 = RcVec3f.Of(
+                    RcVec3f v2 = new RcVec3f(
                         vertices[tris[j + 1] * 3],
                         vertices[tris[j + 1] * 3 + 1],
                         vertices[tris[j + 1] * 3 + 2]
                     );
-                    RcVec3f v3 = RcVec3f.Of(
+                    RcVec3f v3 = new RcVec3f(
                         vertices[tris[j + 2] * 3],
                         vertices[tris[j + 2] * 3 + 1],
                         vertices[tris[j + 2] * 3 + 2]

@@ -343,7 +343,7 @@ namespace DotRecast.Detour.Crowd
             {
                 for (int x = 0; x < m_params.gridSize; ++x)
                 {
-                    RcVec3f vcand = RcVec3f.Of(cvx + x * cs - half, 0f, cvz + y * cs - half);
+                    RcVec3f vcand = new RcVec3f(cvx + x * cs - half, 0f, cvz + y * cs - half);
                     if (RcMath.Sqr(vcand.X) + RcMath.Sqr(vcand.Z) > RcMath.Sqr(vmax + cs / 2))
                         continue;
 
@@ -463,7 +463,7 @@ namespace DotRecast.Detour.Crowd
 
             // Start sampling.
             float cr = vmax * (1.0f - m_params.velBias);
-            RcVec3f res = RcVec3f.Of(dvel.X * m_params.velBias, 0, dvel.Z * m_params.velBias);
+            RcVec3f res = new RcVec3f(dvel.X * m_params.velBias, 0, dvel.Z * m_params.velBias);
             int ns = 0;
             for (int k = 0; k < depth; ++k)
             {
@@ -473,7 +473,7 @@ namespace DotRecast.Detour.Crowd
 
                 for (int i = 0; i < npat; ++i)
                 {
-                    RcVec3f vcand = RcVec3f.Of(res.X + pat[i * 2 + 0] * cr, 0f, res.Z + pat[i * 2 + 1] * cr);
+                    RcVec3f vcand = new RcVec3f(res.X + pat[i * 2 + 0] * cr, 0f, res.Z + pat[i * 2 + 1] * cr);
                     if (RcMath.Sqr(vcand.X) + RcMath.Sqr(vcand.Z) > RcMath.Sqr(vmax + 0.001f))
                         continue;
 

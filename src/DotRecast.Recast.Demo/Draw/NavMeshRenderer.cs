@@ -260,8 +260,8 @@ public class NavMeshRenderer
             int col = DebugDraw.DuTransCol(DebugDraw.AreaToCol(vol.areaMod.GetMaskedValue()), 32);
             for (int j = 0, k = vol.verts.Length - 3; j < vol.verts.Length; k = j, j += 3)
             {
-                var va = RcVec3f.Of(vol.verts[k], vol.verts[k + 1], vol.verts[k + 2]);
-                var vb = RcVec3f.Of(vol.verts[j], vol.verts[j + 1], vol.verts[j + 2]);
+                var va = new RcVec3f(vol.verts[k], vol.verts[k + 1], vol.verts[k + 2]);
+                var vb = new RcVec3f(vol.verts[j], vol.verts[j + 1], vol.verts[j + 2]);
 
                 _debugDraw.Vertex(vol.verts[0], vol.hmax, vol.verts[2], col);
                 _debugDraw.Vertex(vb.X, vol.hmax, vb.Z, col);
@@ -285,8 +285,8 @@ public class NavMeshRenderer
             int col = DebugDraw.DuTransCol(DebugDraw.AreaToCol(vol.areaMod.GetMaskedValue()), 220);
             for (int j = 0, k = vol.verts.Length - 3; j < vol.verts.Length; k = j, j += 3)
             {
-                var va = RcVec3f.Of(vol.verts[k], vol.verts[k + 1], vol.verts[k + 2]);
-                var vb = RcVec3f.Of(vol.verts[j], vol.verts[j + 1], vol.verts[j + 2]);
+                var va = new RcVec3f(vol.verts[k], vol.verts[k + 1], vol.verts[k + 2]);
+                var vb = new RcVec3f(vol.verts[j], vol.verts[j + 1], vol.verts[j + 2]);
                 _debugDraw.Vertex(va.X, vol.hmin, va.Z, DebugDraw.DuDarkenCol(col));
                 _debugDraw.Vertex(vb.X, vol.hmin, vb.Z, DebugDraw.DuDarkenCol(col));
                 _debugDraw.Vertex(va.X, vol.hmax, va.Z, col);

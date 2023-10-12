@@ -13,14 +13,14 @@ namespace DotRecast.Recast.Toolset.Gizmos
 
         public static readonly RcVec3f[] VERTS =
         {
-            RcVec3f.Of(-1f, -1f, -1f),
-            RcVec3f.Of(1f, -1f, -1f),
-            RcVec3f.Of(1f, -1f, 1f),
-            RcVec3f.Of(-1f, -1f, 1f),
-            RcVec3f.Of(-1f, 1f, -1f),
-            RcVec3f.Of(1f, 1f, -1f),
-            RcVec3f.Of(1f, 1f, 1f),
-            RcVec3f.Of(-1f, 1f, 1f),
+            new RcVec3f(-1f, -1f, -1f),
+            new RcVec3f(1f, -1f, -1f),
+            new RcVec3f(1f, -1f, 1f),
+            new RcVec3f(-1f, -1f, 1f),
+            new RcVec3f(-1f, 1f, -1f),
+            new RcVec3f(1f, 1f, -1f),
+            new RcVec3f(1f, 1f, 1f),
+            new RcVec3f(-1f, 1f, 1f),
         };
 
         public readonly float[] vertices = new float[8 * 3];

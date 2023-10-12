@@ -29,20 +29,20 @@ public class FindDistanceToWallTest : AbstractDetourTest
 
     private static readonly RcVec3f[] HIT_POSITION =
     {
-        RcVec3f.Of(23.177608f, 10.197294f, -45.742954f),
-        RcVec3f.Of(22.331268f, 10.197294f, -4.241272f),
-        RcVec3f.Of(18.108675f, 15.743596f, -73.236839f),
-        RcVec3f.Of(1.984785f, 10.197294f, -8.441269f),
-        RcVec3f.Of(-22.315216f, 4.997294f, -11.441269f),
+        new RcVec3f(23.177608f, 10.197294f, -45.742954f),
+        new RcVec3f(22.331268f, 10.197294f, -4.241272f),
+        new RcVec3f(18.108675f, 15.743596f, -73.236839f),
+        new RcVec3f(1.984785f, 10.197294f, -8.441269f),
+        new RcVec3f(-22.315216f, 4.997294f, -11.441269f),
     };
 
     private static readonly RcVec3f[] HIT_NORMAL =
     {
-        RcVec3f.Of(-0.955779f, 0.0f, -0.29408592f),
-        RcVec3f.Of(0.0f, 0.0f, 1.0f),
-        RcVec3f.Of(0.97014254f, 0.0f, 0.24253564f),
-        RcVec3f.Of(-1.0f, 0.0f, 0.0f),
-        RcVec3f.Of(1.0f, 0.0f, 0.0f),
+        new RcVec3f(-0.955779f, 0.0f, -0.29408592f),
+        new RcVec3f(0.0f, 0.0f, 1.0f),
+        new RcVec3f(0.97014254f, 0.0f, 0.24253564f),
+        new RcVec3f(-1.0f, 0.0f, 0.0f),
+        new RcVec3f(1.0f, 0.0f, 0.0f),
     };
 
     [Test]

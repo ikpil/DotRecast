@@ -75,59 +75,59 @@ public class FindPathTest : AbstractDetourTest
     {
         new[]
         {
-            new DtStraightPath(RcVec3f.Of(22.606520f, 10.197294f, -45.918674f), 1, 281474976710696L),
-            new DtStraightPath(RcVec3f.Of(3.484785f, 10.197294f, -34.241272f), 0, 281474976710713L),
-            new DtStraightPath(RcVec3f.Of(1.984785f, 10.197294f, -31.241272f), 0, 281474976710712L),
-            new DtStraightPath(RcVec3f.Of(1.984785f, 10.197294f, -29.741272f), 0, 281474976710727L),
-            new DtStraightPath(RcVec3f.Of(2.584784f, 10.197294f, -27.941273f), 0, 281474976710730L),
-            new DtStraightPath(RcVec3f.Of(6.457663f, 10.197294f, -18.334061f), 2, 0L)
+            new DtStraightPath(new RcVec3f(22.606520f, 10.197294f, -45.918674f), 1, 281474976710696L),
+            new DtStraightPath(new RcVec3f(3.484785f, 10.197294f, -34.241272f), 0, 281474976710713L),
+            new DtStraightPath(new RcVec3f(1.984785f, 10.197294f, -31.241272f), 0, 281474976710712L),
+            new DtStraightPath(new RcVec3f(1.984785f, 10.197294f, -29.741272f), 0, 281474976710727L),
+            new DtStraightPath(new RcVec3f(2.584784f, 10.197294f, -27.941273f), 0, 281474976710730L),
+            new DtStraightPath(new RcVec3f(6.457663f, 10.197294f, -18.334061f), 2, 0L)
         },
 
         new[]
         {
-            new DtStraightPath(RcVec3f.Of(22.331268f, 10.197294f, -1.040187f), 1, 281474976710773L),
-            new DtStraightPath(RcVec3f.Of(9.784786f, 10.197294f, -2.141273f), 0, 281474976710755L),
-            new DtStraightPath(RcVec3f.Of(7.984783f, 10.197294f, -2.441269f), 0, 281474976710753L),
-            new DtStraightPath(RcVec3f.Of(1.984785f, 10.197294f, -8.441269f), 0, 281474976710752L),
-            new DtStraightPath(RcVec3f.Of(-4.315216f, 10.197294f, -15.341270f), 0, 281474976710724L),
-            new DtStraightPath(RcVec3f.Of(-8.215216f, 10.197294f, -17.441269f), 0, 281474976710728L),
-            new DtStraightPath(RcVec3f.Of(-10.015216f, 10.197294f, -17.741272f), 0, 281474976710738L),
-            new DtStraightPath(RcVec3f.Of(-11.815216f, 9.997294f, -17.441269f), 0, 281474976710736L),
-            new DtStraightPath(RcVec3f.Of(-17.815216f, 5.197294f, -11.441269f), 0, 281474976710735L),
-            new DtStraightPath(RcVec3f.Of(-17.815216f, 5.197294f, -8.441269f), 0, 281474976710746L),
-            new DtStraightPath(RcVec3f.Of(-11.815216f, 0.197294f, 3.008419f), 2, 0L)
+            new DtStraightPath(new RcVec3f(22.331268f, 10.197294f, -1.040187f), 1, 281474976710773L),
+            new DtStraightPath(new RcVec3f(9.784786f, 10.197294f, -2.141273f), 0, 281474976710755L),
+            new DtStraightPath(new RcVec3f(7.984783f, 10.197294f, -2.441269f), 0, 281474976710753L),
+            new DtStraightPath(new RcVec3f(1.984785f, 10.197294f, -8.441269f), 0, 281474976710752L),
+            new DtStraightPath(new RcVec3f(-4.315216f, 10.197294f, -15.341270f), 0, 281474976710724L),
+            new DtStraightPath(new RcVec3f(-8.215216f, 10.197294f, -17.441269f), 0, 281474976710728L),
+            new DtStraightPath(new RcVec3f(-10.015216f, 10.197294f, -17.741272f), 0, 281474976710738L),
+            new DtStraightPath(new RcVec3f(-11.815216f, 9.997294f, -17.441269f), 0, 281474976710736L),
+            new DtStraightPath(new RcVec3f(-17.815216f, 5.197294f, -11.441269f), 0, 281474976710735L),
+            new DtStraightPath(new RcVec3f(-17.815216f, 5.197294f, -8.441269f), 0, 281474976710746L),
+            new DtStraightPath(new RcVec3f(-11.815216f, 0.197294f, 3.008419f), 2, 0L)
         },
 
         new[]
         {
-            new DtStraightPath(RcVec3f.Of(18.694363f, 15.803535f, -73.090416f), 1, 281474976710680L),
-            new DtStraightPath(RcVec3f.Of(17.584785f, 10.197294f, -49.841274f), 0, 281474976710697L),
-            new DtStraightPath(RcVec3f.Of(17.284786f, 10.197294f, -48.041275f), 0, 281474976710695L),
-            new DtStraightPath(RcVec3f.Of(16.084785f, 10.197294f, -45.341274f), 0, 281474976710694L),
-            new DtStraightPath(RcVec3f.Of(3.484785f, 10.197294f, -34.241272f), 0, 281474976710713L),
-            new DtStraightPath(RcVec3f.Of(1.984785f, 10.197294f, -31.241272f), 0, 281474976710712L),
-            new DtStraightPath(RcVec3f.Of(1.984785f, 10.197294f, -8.441269f), 0, 281474976710753L),
-            new DtStraightPath(RcVec3f.Of(7.984783f, 10.197294f, -2.441269f), 0, 281474976710755L),
-            new DtStraightPath(RcVec3f.Of(9.784786f, 10.197294f, -2.141273f), 0, 281474976710768L),
-            new DtStraightPath(RcVec3f.Of(38.423977f, 10.197294f, -0.116067f), 2, 0L)
+            new DtStraightPath(new RcVec3f(18.694363f, 15.803535f, -73.090416f), 1, 281474976710680L),
+            new DtStraightPath(new RcVec3f(17.584785f, 10.197294f, -49.841274f), 0, 281474976710697L),
+            new DtStraightPath(new RcVec3f(17.284786f, 10.197294f, -48.041275f), 0, 281474976710695L),
+            new DtStraightPath(new RcVec3f(16.084785f, 10.197294f, -45.341274f), 0, 281474976710694L),
+            new DtStraightPath(new RcVec3f(3.484785f, 10.197294f, -34.241272f), 0, 281474976710713L),
+            new DtStraightPath(new RcVec3f(1.984785f, 10.197294f, -31.241272f), 0, 281474976710712L),
+            new DtStraightPath(new RcVec3f(1.984785f, 10.197294f, -8.441269f), 0, 281474976710753L),
+            new DtStraightPath(new RcVec3f(7.984783f, 10.197294f, -2.441269f), 0, 281474976710755L),
+            new DtStraightPath(new RcVec3f(9.784786f, 10.197294f, -2.141273f), 0, 281474976710768L),
+            new DtStraightPath(new RcVec3f(38.423977f, 10.197294f, -0.116067f), 2, 0L)
         },
 
         new[]
         {
-            new DtStraightPath(RcVec3f.Of(0.745335f, 10.197294f, -5.940050f), 1, 281474976710753L),
-            new DtStraightPath(RcVec3f.Of(0.863553f, 10.197294f, -10.310320f), 2, 0L)
+            new DtStraightPath(new RcVec3f(0.745335f, 10.197294f, -5.940050f), 1, 281474976710753L),
+            new DtStraightPath(new RcVec3f(0.863553f, 10.197294f, -10.310320f), 2, 0L)
         },
 
         new[]
         {
-            new DtStraightPath(RcVec3f.Of(-20.651257f, 5.904126f, -13.712508f), 1, 281474976710733L),
-            new DtStraightPath(RcVec3f.Of(-11.815216f, 9.997294f, -17.441269f), 0, 281474976710738L),
-            new DtStraightPath(RcVec3f.Of(-10.015216f, 10.197294f, -17.741272f), 0, 281474976710728L),
-            new DtStraightPath(RcVec3f.Of(-8.215216f, 10.197294f, -17.441269f), 0, 281474976710724L),
-            new DtStraightPath(RcVec3f.Of(-4.315216f, 10.197294f, -15.341270f), 0, 281474976710729L),
-            new DtStraightPath(RcVec3f.Of(1.984785f, 10.197294f, -8.441269f), 0, 281474976710753L),
-            new DtStraightPath(RcVec3f.Of(7.984783f, 10.197294f, -2.441269f), 0, 281474976710755L),
-            new DtStraightPath(RcVec3f.Of(18.784092f, 10.197294f, 3.054368f), 2, 0L)
+            new DtStraightPath(new RcVec3f(-20.651257f, 5.904126f, -13.712508f), 1, 281474976710733L),
+            new DtStraightPath(new RcVec3f(-11.815216f, 9.997294f, -17.441269f), 0, 281474976710738L),
+            new DtStraightPath(new RcVec3f(-10.015216f, 10.197294f, -17.741272f), 0, 281474976710728L),
+            new DtStraightPath(new RcVec3f(-8.215216f, 10.197294f, -17.441269f), 0, 281474976710724L),
+            new DtStraightPath(new RcVec3f(-4.315216f, 10.197294f, -15.341270f), 0, 281474976710729L),
+            new DtStraightPath(new RcVec3f(1.984785f, 10.197294f, -8.441269f), 0, 281474976710753L),
+            new DtStraightPath(new RcVec3f(7.984783f, 10.197294f, -2.441269f), 0, 281474976710755L),
+            new DtStraightPath(new RcVec3f(18.784092f, 10.197294f, 3.054368f), 2, 0L)
         }
     };
 

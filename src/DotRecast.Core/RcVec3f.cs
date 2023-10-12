@@ -40,20 +40,15 @@ namespace DotRecast.Core
 
         public static RcVec3f Of(float[] f, int idx)
         {
-            return Of(f[idx + 0], f[idx + 1], f[idx + 2]);
-        }
-
-        public static RcVec3f Of(float x, float y, float z)
-        {
-            return new RcVec3f(x, y, z);
+            return new RcVec3f(f[idx + 0], f[idx + 1], f[idx + 2]);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public RcVec3f(float x, float y, float z)
         {
-            this.X = x;
-            this.Y = y;
-            this.Z = z;
+            X = x;
+            Y = y;
+            Z = z;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

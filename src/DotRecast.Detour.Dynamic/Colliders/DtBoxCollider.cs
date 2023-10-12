@@ -72,7 +72,7 @@ namespace DotRecast.Detour.Dynamic.Colliders
             RcVec3f[] halfEdges =
             {
                 RcVec3f.Zero,
-                RcVec3f.Of(up.X, up.Y, up.Z),
+                new RcVec3f(up.X, up.Y, up.Z),
                 RcVec3f.Zero
             };
             RcVec3f.Normalize(ref halfEdges[1]);

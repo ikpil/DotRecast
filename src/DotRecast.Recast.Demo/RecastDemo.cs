@@ -91,7 +91,7 @@ public class RecastDemo : IRecastDemoChannel
     private RcVec3f origCameraPos = new RcVec3f();
 
     private RcVec2f cameraEulers = new RcVec2f(45, -45);
-    private RcVec3f cameraPos = RcVec3f.Of(0, 0, 0);
+    private RcVec3f cameraPos = new RcVec3f(0, 0, 0);
 
 
     private float[] projectionMatrix = new float[16];
@@ -542,17 +542,17 @@ public class RecastDemo : IRecastDemoChannel
                     {
                         if (!hasBound)
                         {
-                            bminN = RcVec3f.Of(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
-                            bmaxN = RcVec3f.Of(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
+                            bminN = new RcVec3f(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
+                            bmaxN = new RcVec3f(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
                         }
 
-                        bminN = RcVec3f.Of(
+                        bminN = new RcVec3f(
                             Math.Min(bminN.X, result.GetSolidHeightfield().bmin.X),
                             Math.Min(bminN.Y, result.GetSolidHeightfield().bmin.Y),
                             Math.Min(bminN.Z, result.GetSolidHeightfield().bmin.Z)
                         );
 
-                        bmaxN = RcVec3f.Of(
+                        bmaxN = new RcVec3f(
                             Math.Max(bmaxN.X, result.GetSolidHeightfield().bmax.X),
                             Math.Max(bmaxN.Y, result.GetSolidHeightfield().bmax.Y),
                             Math.Max(bmaxN.Z, result.GetSolidHeightfield().bmax.Z)
@@ -784,7 +784,7 @@ public class RecastDemo : IRecastDemoChannel
             hit = RcPolyMeshRaycast.Raycast(_sample.GetRecastResults(), rayStart, rayEnd, out hitTime);
         }
 
-        RcVec3f rayDir = RcVec3f.Of(rayEnd.X - rayStart.X, rayEnd.Y - rayStart.Y, rayEnd.Z - rayStart.Z);
+        RcVec3f rayDir = new RcVec3f(rayEnd.X - rayStart.X, rayEnd.Y - rayStart.Y, rayEnd.Z - rayStart.Z);
         ISampleTool raySampleTool = toolset.GetTool();
         rayDir.Normalize();
         if (raySampleTool != null)

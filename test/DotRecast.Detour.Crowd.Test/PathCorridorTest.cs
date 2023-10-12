@@ -34,17 +34,17 @@ public class PathCorridorTest
     [SetUp]
     public void SetUp()
     {
-        corridor.Reset(0, RcVec3f.Of(10, 20, 30));
+        corridor.Reset(0, new RcVec3f(10, 20, 30));
     }
 
     [Test]
     public void ShouldKeepOriginalPathInFindCornersWhenNothingCanBePruned()
     {
         List<DtStraightPath> straightPath = new();
-        straightPath.Add(new DtStraightPath(RcVec3f.Of(11, 20, 30.00001f), 0, 0));
-        straightPath.Add(new DtStraightPath(RcVec3f.Of(12, 20, 30.00002f), 0, 0));
-        straightPath.Add(new DtStraightPath(RcVec3f.Of(11f, 21, 32f), 0, 0));
-        straightPath.Add(new DtStraightPath(RcVec3f.Of(11f, 21, 32f), 0, 0));
+        straightPath.Add(new DtStraightPath(new RcVec3f(11, 20, 30.00001f), 0, 0));
+        straightPath.Add(new DtStraightPath(new RcVec3f(12, 20, 30.00002f), 0, 0));
+        straightPath.Add(new DtStraightPath(new RcVec3f(11f, 21, 32f), 0, 0));
+        straightPath.Add(new DtStraightPath(new RcVec3f(11f, 21, 32f), 0, 0));
         var mockQuery = new Mock<DtNavMeshQuery>(It.IsAny<DtNavMesh>());
         mockQuery.Setup(q => q.FindStraightPath(
                 It.IsAny<RcVec3f>(),
@@ -71,11 +71,11 @@ public class PathCorridorTest
     public void ShouldPrunePathInFindCorners()
     {
         List<DtStraightPath> straightPath = new();
-        straightPath.Add(new DtStraightPath(RcVec3f.Of(10, 20, 30.00001f), 0, 0)); // too close
-        straightPath.Add(new DtStraightPath(RcVec3f.Of(10, 20, 30.00002f), 0, 0)); // too close
-        straightPath.Add(new DtStraightPath(RcVec3f.Of(11f, 21, 32f), 0, 0));
-        straightPath.Add(new DtStraightPath(RcVec3f.Of(12f, 22, 33f), DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION, 0)); // offmesh
-        straightPath.Add(new DtStraightPath(RcVec3f.Of(11f, 21, 32f), DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION, 0)); // offmesh
+        straightPath.Add(new DtStraightPath(new RcVec3f(10, 20, 30.00001f), 0, 0)); // too close
+        straightPath.Add(new DtStraightPath(new RcVec3f(10, 20, 30.00002f), 0, 0)); // too close
+        straightPath.Add(new DtStraightPath(new RcVec3f(11f, 21, 32f), 0, 0));
+        straightPath.Add(new DtStraightPath(new RcVec3f(12f, 22, 33f), DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION, 0)); // offmesh
+        straightPath.Add(new DtStraightPath(new RcVec3f(11f, 21, 32f), DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION, 0)); // offmesh
 
         var mockQuery = new Mock<DtNavMeshQuery>(It.IsAny<DtNavMesh>());
         mockQuery.Setup(q => q.FindStraightPath(

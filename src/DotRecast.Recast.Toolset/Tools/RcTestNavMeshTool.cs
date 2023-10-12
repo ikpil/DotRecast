@@ -183,7 +183,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 return DtStatus.DT_FAILURE;
 
             // In case of partial path, make sure the end point is clamped to the last polygon.
-            var epos = RcVec3f.Of(endPt.X, endPt.Y, endPt.Z);
+            var epos = new RcVec3f(endPt.X, endPt.Y, endPt.Z);
             if (polys[polys.Count - 1] != endRef)
             {
                 var result = navQuery.ClosestPointOnPoly(polys[polys.Count - 1], endPt, out var closest, out var _);

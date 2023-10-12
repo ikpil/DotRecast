@@ -48,7 +48,7 @@ public class TempObstaclesTest : AbstractTileCacheTest
         DtMeshTile tile = tiles[0];
         Assert.That(tile.data.header.vertCount, Is.EqualTo(16));
         Assert.That(tile.data.header.polyCount, Is.EqualTo(6));
-        long o = tc.AddObstacle(RcVec3f.Of(-1.815208f, 9.998184f, -20.307983f), 1f, 2f);
+        long o = tc.AddObstacle(new RcVec3f(-1.815208f, 9.998184f, -20.307983f), 1f, 2f);
         bool upToDate = tc.Update();
         Assert.That(upToDate, Is.True);
         tiles = tc.GetNavMesh().GetTilesAt(1, 4);
@@ -83,8 +83,8 @@ public class TempObstaclesTest : AbstractTileCacheTest
         Assert.That(tile.data.header.vertCount, Is.EqualTo(16));
         Assert.That(tile.data.header.polyCount, Is.EqualTo(6));
         long o = tc.AddBoxObstacle(
-            RcVec3f.Of(-2.315208f, 9.998184f, -20.807983f),
-            RcVec3f.Of(-1.315208f, 11.998184f, -19.807983f)
+            new RcVec3f(-2.315208f, 9.998184f, -20.807983f),
+            new RcVec3f(-1.315208f, 11.998184f, -19.807983f)
         );
         bool upToDate = tc.Update();
         Assert.That(upToDate, Is.True);

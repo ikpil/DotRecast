@@ -19,18 +19,18 @@ namespace DotRecast.Recast.Toolset.Gizmos
                 0.5f * (start.X + end.X), 0.5f * (start.Y + end.Y),
                 0.5f * (start.Z + end.Z)
             };
-            RcVec3f axis = RcVec3f.Of(end.X - start.X, end.Y - start.Y, end.Z - start.Z);
+            RcVec3f axis = new RcVec3f(end.X - start.X, end.Y - start.Y, end.Z - start.Z);
             RcVec3f[] normals = new RcVec3f[3];
-            normals[1] = RcVec3f.Of(end.X - start.X, end.Y - start.Y, end.Z - start.Z);
+            normals[1] = new RcVec3f(end.X - start.X, end.Y - start.Y, end.Z - start.Z);
             RcVec3f.Normalize(ref normals[1]);
             normals[0] = GetSideVector(axis);
             normals[2] = RcVec3f.Zero;
             RcVec3f.Cross(ref normals[2], normals[0], normals[1]);
             RcVec3f.Normalize(ref normals[2]);
             triangles = GenerateSphericalTriangles();
-            var trX = RcVec3f.Of(normals[0].X, normals[1].X, normals[2].X);
-            var trY = RcVec3f.Of(normals[0].Y, normals[1].Y, normals[2].Y);
-            var trZ = RcVec3f.Of(normals[0].Z, normals[1].Z, normals[2].Z);
+            var trX = new RcVec3f(normals[0].X, normals[1].X, normals[2].X);
+            var trY = new RcVec3f(normals[0].Y, normals[1].Y, normals[2].Y);
+            var trZ = new RcVec3f(normals[0].Z, normals[1].Z, normals[2].Z);
             float[] spVertices = GenerateSphericalVertices();
             float halfLength = 0.5f * axis.Length();
             vertices = new float[spVertices.Length];
@@ -55,10 +55,10 @@ namespace DotRecast.Recast.Toolset.Gizmos
 
         private RcVec3f GetSideVector(RcVec3f axis)
         {
-            RcVec3f side = RcVec3f.Of(1, 0, 0);
+            RcVec3f side = new RcVec3f(1, 0, 0);
             if (axis.X > 0.8)
             {
-                side = RcVec3f.Of(0, 0, 1);
+                side = new RcVec3f(0, 0, 1);
             }
 
             RcVec3f forward = new RcVec3f();

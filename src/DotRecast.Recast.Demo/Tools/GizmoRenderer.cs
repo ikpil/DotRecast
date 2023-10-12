@@ -62,9 +62,9 @@ public static class GizmoRenderer
 
     public static void RenderBox(RecastDebugDraw debugDraw, RcBoxGizmo box)
     {
-        var trX = RcVec3f.Of(box.halfEdges[0].X, box.halfEdges[1].X, box.halfEdges[2].X);
-        var trY = RcVec3f.Of(box.halfEdges[0].Y, box.halfEdges[1].Y, box.halfEdges[2].Y);
-        var trZ = RcVec3f.Of(box.halfEdges[0].Z, box.halfEdges[1].Z, box.halfEdges[2].Z);
+        var trX = new RcVec3f(box.halfEdges[0].X, box.halfEdges[1].X, box.halfEdges[2].X);
+        var trY = new RcVec3f(box.halfEdges[0].Y, box.halfEdges[1].Y, box.halfEdges[2].Y);
+        var trZ = new RcVec3f(box.halfEdges[0].Z, box.halfEdges[1].Z, box.halfEdges[2].Z);
         float[] vertices = new float[8 * 3];
         for (int i = 0; i < 8; i++)
         {

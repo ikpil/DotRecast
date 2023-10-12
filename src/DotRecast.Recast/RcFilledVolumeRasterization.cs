@@ -52,7 +52,7 @@ namespace DotRecast.Recast
                 Math.Min(start.Z, end.Z) - radius, Math.Max(start.X, end.X) + radius, Math.Max(start.Y, end.Y) + radius,
                 Math.Max(start.Z, end.Z) + radius
             };
-            RcVec3f axis = RcVec3f.Of(end.X - start.X, end.Y - start.Y, end.Z - start.Z);
+            RcVec3f axis = new RcVec3f(end.X - start.X, end.Y - start.Y, end.Z - start.Z);
             RasterizationFilledShape(hf, bounds, area, flagMergeThr,
                 rectangle => IntersectCapsule(rectangle, start, end, axis, radius * radius));
         }
@@ -66,7 +66,7 @@ namespace DotRecast.Recast
                 Math.Min(start.Z, end.Z) - radius, Math.Max(start.X, end.X) + radius, Math.Max(start.Y, end.Y) + radius,
                 Math.Max(start.Z, end.Z) + radius
             };
-            RcVec3f axis = RcVec3f.Of(end.X - start.X, end.Y - start.Y, end.Z - start.Z);
+            RcVec3f axis = new RcVec3f(end.X - start.X, end.Y - start.Y, end.Z - start.Z);
             RasterizationFilledShape(hf, bounds, area, flagMergeThr,
                 rectangle => IntersectCylinder(rectangle, start, end, axis, radius * radius));
         }
@@ -76,9 +76,9 @@ namespace DotRecast.Recast
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_RASTERIZE_BOX);
             RcVec3f[] normals =
             {
-                RcVec3f.Of(halfEdges[0].X, halfEdges[0].Y, halfEdges[0].Z),
-                RcVec3f.Of(halfEdges[1].X, halfEdges[1].Y, halfEdges[1].Z),
-                RcVec3f.Of(halfEdges[2].X, halfEdges[2].Y, halfEdges[2].Z),
+                new RcVec3f(halfEdges[0].X, halfEdges[0].Y, halfEdges[0].Z),
+                new RcVec3f(halfEdges[1].X, halfEdges[1].Y, halfEdges[1].Z),
+                new RcVec3f(halfEdges[2].X, halfEdges[2].Y, halfEdges[2].Z),
             };
             RcVec3f.Normalize(ref normals[0]);
             RcVec3f.Normalize(ref normals[1]);
@@ -281,11 +281,11 @@ namespace DotRecast.Recast
         private static float[] IntersectCylinder(float[] rectangle, RcVec3f start, RcVec3f end, RcVec3f axis, float radiusSqr)
         {
             float[] s = MergeIntersections(
-                RayCylinderIntersection(RcVec3f.Of(
+                RayCylinderIntersection(new RcVec3f(
                     Math.Clamp(start.X, rectangle[0], rectangle[2]), rectangle[4],
                     Math.Clamp(start.Z, rectangle[1], rectangle[3])
                 ), start, axis, radiusSqr),
-                RayCylinderIntersection(RcVec3f.Of(
+                RayCylinderIntersection(new RcVec3f(
                     Math.Clamp(end.X, rectangle[0], rectangle[2]), rectangle[4],
                     Math.Clamp(end.Z, rectangle[1], rectangle[3])
                 ), start, axis, radiusSqr));
@@ -305,7 +305,7 @@ namespace DotRecast.Recast
                 {
                     float x = rectangle[(i + 1) & 2];
                     float z = rectangle[(i & 2) + 1];
-                    RcVec3f a = RcVec3f.Of(x, rectangle[4], z);
+                    RcVec3f a = new RcVec3f(x, rectangle[4], z);
                     float dotAxisA = RcVec3f.Dot(axis, a);
                     float t = (ds - dotAxisA) / axis.Y;
                     rectangleOnStartPlane[i].X = x;
@@ -331,12 +331,12 @@ namespace DotRecast.Recast
         {
             int j = (i + 1) % 4;
             // Ray against sphere intersection
-            var m = RcVec3f.Of(
+            var m = new RcVec3f(
                 rectangleOnPlane[i].X - start.X,
                 rectangleOnPlane[i].Y - start.Y,
                 rectangleOnPlane[i].Z - start.Z
             );
-            var d = RcVec3f.Of(
+            var d = new RcVec3f(
                 rectangleOnPlane[j].X - rectangleOnPlane[i].X,
                 rectangleOnPlane[j].Y - rectangleOnPlane[i].Y,
                 rectangleOnPlane[j].Z - rectangleOnPlane[i].Z
@@ -399,7 +399,7 @@ namespace DotRecast.Recast
             // 2d intersection of plane and segment
             float t = (x - start.X) / direction.X;
             float z = Math.Clamp(start.Z + t * direction.Z, rectangle[1], rectangle[3]);
-            return RcVec3f.Of(x, rectangle[4], z);
+            return new RcVec3f(x, rectangle[4], z);
         }
 
         private static float[] ZSlabCylinderIntersection(float[] rectangle, RcVec3f start, RcVec3f axis, float radiusSqr, float z)
@@ -412,14 +412,14 @@ namespace DotRecast.Recast
             // 2d intersection of plane and segment
             float t = (z - start.Z) / direction.Z;
             float x = Math.Clamp(start.X + t * direction.X, rectangle[0], rectangle[2]);
-            return RcVec3f.Of(x, rectangle[4], z);
+            return new RcVec3f(x, rectangle[4], z);
         }
 
         // Based on Christer Ericsons's "Real-Time Collision Detection"
         private static float[] RayCylinderIntersection(RcVec3f point, RcVec3f start, RcVec3f axis, float radiusSqr)
         {
             RcVec3f d = axis;
-            RcVec3f m = RcVec3f.Of(point.X - start.X, point.Y - start.Y, point.Z - start.Z);
+            RcVec3f m = new RcVec3f(point.X - start.X, point.Y - start.Y, point.Z - start.Z);
             // float[] n = { 0, 1, 0 };
             float md = RcVec3f.Dot(m, d);
             // float nd = Dot(n, d);
@@ -517,7 +517,7 @@ namespace DotRecast.Recast
             }
 
             // check intersection with rays starting in rectangle vertices
-            var point = RcVec3f.Of(0, rectangle[1], 0);
+            var point = new RcVec3f(0, rectangle[1], 0);
             for (int i = 0; i < 4; i++)
             {
                 point.X = ((i & 1) == 0) ? rectangle[0] : rectangle[2];
@@ -670,7 +670,7 @@ namespace DotRecast.Recast
                 }
 
                 // rectangle vertex
-                var point = RcVec3f.Of(0, rectangle[1], 0);
+                var point = new RcVec3f(0, rectangle[1], 0);
                 for (int i = 0; i < 4; i++)
                 {
                     point.X = ((i & 1) == 0) ? rectangle[0] : rectangle[2];

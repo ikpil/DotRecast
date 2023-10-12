@@ -38,7 +38,7 @@ public class FindNearestPolyTest : AbstractDetourTest
     public void TestFindNearestPoly()
     {
         IDtQueryFilter filter = new DtQueryDefaultFilter();
-        RcVec3f extents = RcVec3f.Of(2, 4, 2);
+        RcVec3f extents = new RcVec3f(2, 4, 2);
         for (int i = 0; i < startRefs.Length; i++)
         {
             RcVec3f startPos = startPoss[i];
@@ -56,7 +56,7 @@ public class FindNearestPolyTest : AbstractDetourTest
     [Test]
     public void ShouldReturnStartPosWhenNoPolyIsValid()
     {
-        RcVec3f extents = RcVec3f.Of(2, 4, 2);
+        RcVec3f extents = new RcVec3f(2, 4, 2);
         for (int i = 0; i < startRefs.Length; i++)
         {
             RcVec3f startPos = startPoss[i];

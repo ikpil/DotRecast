@@ -43,8 +43,8 @@ public class TiledFindPathTest
 
     protected static readonly long[] START_REFS = { 281475015507969L };
     protected static readonly long[] END_REFS = { 281474985099266L };
-    protected static readonly RcVec3f[] START_POS = { RcVec3f.Of(39.447338f, 9.998177f, -0.784811f) };
-    protected static readonly RcVec3f[] END_POS = { RcVec3f.Of(19.292645f, 11.611748f, -57.750366f) };
+    protected static readonly RcVec3f[] START_POS = { new RcVec3f(39.447338f, 9.998177f, -0.784811f) };
+    protected static readonly RcVec3f[] END_POS = { new RcVec3f(19.292645f, 11.611748f, -57.750366f) };
 
     protected DtNavMeshQuery query;
     protected DtNavMesh navmesh;

@@ -177,7 +177,7 @@ namespace DotRecast.Recast.Toolset.Tools
         public RcGizmo CapsuleCollider(RcVec3f p, float walkableClimb)
         {
             float radius = 0.4f + (float)random.NextDouble() * 4f;
-            RcVec3f a = RcVec3f.Of(
+            RcVec3f a = new RcVec3f(
                 (1f - 2 * (float)random.NextDouble()),
                 0.01f + (float)random.NextDouble(),
                 (1f - 2 * (float)random.NextDouble())
@@ -187,8 +187,8 @@ namespace DotRecast.Recast.Toolset.Tools
             a.X *= len;
             a.Y *= len;
             a.Z *= len;
-            RcVec3f start = RcVec3f.Of(p.X, p.Y, p.Z);
-            RcVec3f end = RcVec3f.Of(p.X + a.X, p.Y + a.Y, p.Z + a.Z);
+            RcVec3f start = new RcVec3f(p.X, p.Y, p.Z);
+            RcVec3f end = new RcVec3f(p.X + a.X, p.Y + a.Y, p.Z + a.Z);
             var collider = new DtCapsuleCollider(start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, walkableClimb);
             var gizmo = RcGizmoFactory.Capsule(start, end, radius);
             return new RcGizmo(collider, gizmo);
@@ -196,13 +196,13 @@ namespace DotRecast.Recast.Toolset.Tools
 
         public RcGizmo BoxCollider(RcVec3f p, float walkableClimb)
         {
-            RcVec3f extent = RcVec3f.Of(
+            RcVec3f extent = new RcVec3f(
                 0.5f + (float)random.NextDouble() * 6f,
                 0.5f + (float)random.NextDouble() * 6f,
                 0.5f + (float)random.NextDouble() * 6f
             );
-            RcVec3f forward = RcVec3f.Of((1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()));
-            RcVec3f up = RcVec3f.Of((1f - 2 * (float)random.NextDouble()), 0.01f + (float)random.NextDouble(), (1f - 2 * (float)random.NextDouble()));
+            RcVec3f forward = new RcVec3f((1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()));
+            RcVec3f up = new RcVec3f((1f - 2 * (float)random.NextDouble()), 0.01f + (float)random.NextDouble(), (1f - 2 * (float)random.NextDouble()));
             RcVec3f[] halfEdges = Detour.Dynamic.Colliders.DtBoxCollider.GetHalfEdges(up, forward, extent);
             var collider = new DtBoxCollider(p, halfEdges, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, walkableClimb);
             var gizmo = RcGizmoFactory.Box(p, halfEdges);
@@ -212,14 +212,14 @@ namespace DotRecast.Recast.Toolset.Tools
         public RcGizmo CylinderCollider(RcVec3f p, float walkableClimb)
         {
             float radius = 0.7f + (float)random.NextDouble() * 4f;
-            RcVec3f a = RcVec3f.Of(1f - 2 * (float)random.NextDouble(), 0.01f + (float)random.NextDouble(), 1f - 2 * (float)random.NextDouble());
+            RcVec3f a = new RcVec3f(1f - 2 * (float)random.NextDouble(), 0.01f + (float)random.NextDouble(), 1f - 2 * (float)random.NextDouble());
             a.Normalize();
             float len = 2f + (float)random.NextDouble() * 20f;
             a[0] *= len;
             a[1] *= len;
             a[2] *= len;
-            RcVec3f start = RcVec3f.Of(p.X, p.Y, p.Z);
-            RcVec3f end = RcVec3f.Of(p.X + a.X, p.Y + a.Y, p.Z + a.Z);
+            RcVec3f start = new RcVec3f(p.X, p.Y, p.Z);
+            RcVec3f end = new RcVec3f(p.X + a.X, p.Y + a.Y, p.Z + a.Z);
             var collider = new DtCylinderCollider(start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, walkableClimb);
             var gizmo = RcGizmoFactory.Cylinder(start, end, radius);
 
@@ -228,30 +228,30 @@ namespace DotRecast.Recast.Toolset.Tools
 
         public RcGizmo CompositeCollider(RcVec3f p, float walkableClimb)
         {
-            RcVec3f baseExtent = RcVec3f.Of(5, 3, 8);
-            RcVec3f baseCenter = RcVec3f.Of(p.X, p.Y + 3, p.Z);
-            RcVec3f baseUp = RcVec3f.Of(0, 1, 0);
-            RcVec3f forward = RcVec3f.Of((1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()));
+            RcVec3f baseExtent = new RcVec3f(5, 3, 8);
+            RcVec3f baseCenter = new RcVec3f(p.X, p.Y + 3, p.Z);
+            RcVec3f baseUp = new RcVec3f(0, 1, 0);
+            RcVec3f forward = new RcVec3f((1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()));
             forward.Normalize();
             RcVec3f side = RcVec3f.Cross(forward, baseUp);
             DtBoxCollider @base = new DtBoxCollider(baseCenter, Detour.Dynamic.Colliders.DtBoxCollider.GetHalfEdges(baseUp, forward, baseExtent),
                 SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, walkableClimb);
             var roofUp = RcVec3f.Zero;
-            RcVec3f roofExtent = RcVec3f.Of(4.5f, 4.5f, 8f);
+            RcVec3f roofExtent = new RcVec3f(4.5f, 4.5f, 8f);
             var rx = RcMatrix4x4f.CreateFromRotate(45, forward.X, forward.Y, forward.Z);
             roofUp = MulMatrixVector(ref roofUp, rx, baseUp);
-            RcVec3f roofCenter = RcVec3f.Of(p.X, p.Y + 6, p.Z);
+            RcVec3f roofCenter = new RcVec3f(p.X, p.Y + 6, p.Z);
             DtBoxCollider roof = new DtBoxCollider(roofCenter, Detour.Dynamic.Colliders.DtBoxCollider.GetHalfEdges(roofUp, forward, roofExtent),
                 SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, walkableClimb);
-            RcVec3f trunkStart = RcVec3f.Of(
+            RcVec3f trunkStart = new RcVec3f(
                 baseCenter.X - forward.X * 15 + side.X * 6,
                 p.Y,
                 baseCenter.Z - forward.Z * 15 + side.Z * 6
             );
-            RcVec3f trunkEnd = RcVec3f.Of(trunkStart.X, trunkStart.Y + 10, trunkStart.Z);
+            RcVec3f trunkEnd = new RcVec3f(trunkStart.X, trunkStart.Y + 10, trunkStart.Z);
             DtCapsuleCollider trunk = new DtCapsuleCollider(trunkStart, trunkEnd, 0.5f, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD,
                 walkableClimb);
-            RcVec3f crownCenter = RcVec3f.Of(
+            RcVec3f crownCenter = new RcVec3f(
                 baseCenter.X - forward.X * 15 + side.X * 6, p.Y + 10,
                 baseCenter.Z - forward.Z * 15 + side.Z * 6
             );
@@ -354,12 +354,12 @@ namespace DotRecast.Recast.Toolset.Tools
 
         public bool Raycast(RcVec3f spos, RcVec3f epos, out float hitPos, out RcVec3f raycastHitPos)
         {
-            RcVec3f sp = RcVec3f.Of(spos.X, spos.Y + 1.3f, spos.Z);
-            RcVec3f ep = RcVec3f.Of(epos.X, epos.Y + 1.3f, epos.Z);
+            RcVec3f sp = new RcVec3f(spos.X, spos.Y + 1.3f, spos.Z);
+            RcVec3f ep = new RcVec3f(epos.X, epos.Y + 1.3f, epos.Z);
 
             bool hasHit = dynaMesh.VoxelQuery().Raycast(sp, ep, out hitPos);
             raycastHitPos = hasHit
-                ? RcVec3f.Of(sp.X + hitPos * (ep.X - sp.X), sp.Y + hitPos * (ep.Y - sp.Y), sp.Z + hitPos * (ep.Z - sp.Z))
+                ? new RcVec3f(sp.X + hitPos * (ep.X - sp.X), sp.Y + hitPos * (ep.Y - sp.Y), sp.Z + hitPos * (ep.Z - sp.Z))
                 : ep;
 
             return hasHit;

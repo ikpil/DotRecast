@@ -1772,8 +1772,8 @@ namespace DotRecast.Detour
 
         public void ComputeBounds(out RcVec3f bmin, out RcVec3f bmax)
         {
-            bmin = RcVec3f.Of(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
-            bmax = RcVec3f.Of(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
+            bmin = new RcVec3f(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
+            bmax = new RcVec3f(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
             for (int t = 0; t < GetMaxTiles(); ++t)
             {
                 DtMeshTile tile = GetTile(t);

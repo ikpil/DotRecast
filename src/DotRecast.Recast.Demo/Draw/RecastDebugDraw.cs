@@ -52,7 +52,7 @@ public class RecastDebugDraw : DebugDraw
         Begin(DebugDrawPrimitives.TRIS);
         for (int i = 0; i < tris.Length; i += 3)
         {
-            RcVec3f norm = RcVec3f.Of(normals[i], normals[i + 1], normals[i + 2]);
+            RcVec3f norm = new RcVec3f(normals[i], normals[i + 1], normals[i + 2]);
 
             int color;
             char a = (char)(220 * (2 + norm.X + norm.Y) / 4);
@@ -65,9 +65,9 @@ public class RecastDebugDraw : DebugDraw
                 color = DuRGBA(a, a, a, 255);
             }
 
-            RcVec3f va = RcVec3f.Of(verts[tris[i] * 3], verts[tris[i] * 3 + 1], verts[tris[i] * 3 + 2]);
-            RcVec3f vb = RcVec3f.Of(verts[tris[i + 1] * 3], verts[tris[i + 1] * 3 + 1], verts[tris[i + 1] * 3 + 2]);
-            RcVec3f vc = RcVec3f.Of(verts[tris[i + 2] * 3], verts[tris[i + 2] * 3 + 1], verts[tris[i + 2] * 3 + 2]);
+            RcVec3f va = new RcVec3f(verts[tris[i] * 3], verts[tris[i] * 3 + 1], verts[tris[i] * 3 + 2]);
+            RcVec3f vb = new RcVec3f(verts[tris[i + 1] * 3], verts[tris[i + 1] * 3 + 1], verts[tris[i + 1] * 3 + 2]);
+            RcVec3f vc = new RcVec3f(verts[tris[i + 2] * 3], verts[tris[i + 2] * 3 + 1], verts[tris[i + 2] * 3 + 2]);
 
             int ax = 0, ay = 0;
             if (Math.Abs(norm.Y) > Math.Abs(norm[ax]))
@@ -187,11 +187,11 @@ public class RecastDebugDraw : DebugDraw
                 }
 
                 DtOffMeshConnection con = tile.data.offMeshCons[i - tile.data.header.offMeshBase];
-                RcVec3f va = RcVec3f.Of(
+                RcVec3f va = new RcVec3f(
                     tile.data.verts[p.verts[0] * 3], tile.data.verts[p.verts[0] * 3 + 1],
                     tile.data.verts[p.verts[0] * 3 + 2]
                 );
-                RcVec3f vb = RcVec3f.Of(
+                RcVec3f vb = new RcVec3f(
                     tile.data.verts[p.verts[1] * 3], tile.data.verts[p.verts[1] * 3 + 1],
                     tile.data.verts[p.verts[1] * 3 + 2]
                 );
@@ -354,11 +354,11 @@ public class RecastDebugDraw : DebugDraw
                     }
                 }
 
-                var v0 = RcVec3f.Of(
+                var v0 = new RcVec3f(
                     tile.data.verts[p.verts[j] * 3], tile.data.verts[p.verts[j] * 3 + 1],
                     tile.data.verts[p.verts[j] * 3 + 2]
                 );
-                var v1 = RcVec3f.Of(
+                var v1 = new RcVec3f(
                     tile.data.verts[p.verts[(j + 1) % nj] * 3],
                     tile.data.verts[p.verts[(j + 1) % nj] * 3 + 1],
                     tile.data.verts[p.verts[(j + 1) % nj] * 3 + 2]
@@ -378,14 +378,14 @@ public class RecastDebugDraw : DebugDraw
                             int v = tile.data.detailTris[t + m];
                             if (v < p.vertCount)
                             {
-                                tv[m] = RcVec3f.Of(
+                                tv[m] = new RcVec3f(
                                     tile.data.verts[p.verts[v] * 3], tile.data.verts[p.verts[v] * 3 + 1],
                                     tile.data.verts[p.verts[v] * 3 + 2]
                                 );
                             }
                             else
                             {
-                                tv[m] = RcVec3f.Of(
+                                tv[m] = new RcVec3f(
                                     tile.data.detailVerts[(pd.vertBase + (v - p.vertCount)) * 3],
                                     tile.data.detailVerts[(pd.vertBase + (v - p.vertCount)) * 3 + 1],
                                     tile.data.detailVerts[(pd.vertBase + (v - p.vertCount)) * 3 + 2]
@@ -1348,11 +1348,11 @@ public class RecastDebugDraw : DebugDraw
                         continue;
 
                     // Create new links
-                    var va = RcVec3f.Of(
+                    var va = new RcVec3f(
                         tile.data.verts[poly.verts[j] * 3],
                         tile.data.verts[poly.verts[j] * 3 + 1], tile.data.verts[poly.verts[j] * 3 + 2]
                     );
-                    var vb = RcVec3f.Of(
+                    var vb = new RcVec3f(
                         tile.data.verts[poly.verts[(j + 1) % nv] * 3],
                         tile.data.verts[poly.verts[(j + 1) % nv] * 3 + 1],
                         tile.data.verts[poly.verts[(j + 1) % nv] * 3 + 2]

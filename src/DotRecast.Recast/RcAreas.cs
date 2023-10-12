@@ -708,8 +708,8 @@ namespace DotRecast.Recast
             bool inPoly = false;
             for (int i = 0, j = verts.Length / 3 - 1; i < verts.Length / 3; j = i++)
             {
-                RcVec3f vi = RcVec3f.Of(verts[i * 3], verts[i * 3 + 1], verts[i * 3 + 2]);
-                RcVec3f vj = RcVec3f.Of(verts[j * 3], verts[j * 3 + 1], verts[j * 3 + 2]);
+                RcVec3f vi = new RcVec3f(verts[i * 3], verts[i * 3 + 1], verts[i * 3 + 2]);
+                RcVec3f vj = new RcVec3f(verts[j * 3], verts[j * 3 + 1], verts[j * 3 + 2]);
                 if (vi.Z > point.Z == vj.Z > point.Z)
                 {
                     continue;
