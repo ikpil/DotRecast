@@ -1071,7 +1071,7 @@ namespace DotRecast.Detour
                 };
 
                 // Find polygon to connect to.
-                var refs = FindNearestPolyInTile(tile, RcVec3f.Of(con.pos), ext, out var nearestPt);
+                var refs = FindNearestPolyInTile(tile, new RcVec3f(con.pos[0], con.pos[1], con.pos[2]), ext, out var nearestPt);
                 if (refs == 0)
                 {
                     continue;
