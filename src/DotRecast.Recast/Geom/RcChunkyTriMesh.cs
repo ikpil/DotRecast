@@ -222,7 +222,7 @@ namespace DotRecast.Recast.Geom
             return ids;
         }
 
-        public List<RcChunkyTriMeshNode> GetChunksOverlappingSegment(float[] p, float[] q)
+        public List<RcChunkyTriMeshNode> GetChunksOverlappingSegment(RcVec2f p, RcVec2f q)
         {
             // Traverse tree
             List<RcChunkyTriMeshNode> ids = new List<RcChunkyTriMeshNode>();
@@ -251,30 +251,30 @@ namespace DotRecast.Recast.Geom
             return ids;
         }
 
-        private bool CheckOverlapSegment(float[] p, float[] q, RcVec2f bmin, RcVec2f bmax)
+        private bool CheckOverlapSegment(RcVec2f p, RcVec2f q, RcVec2f bmin, RcVec2f bmax)
         {
             const float EPSILON = 1e-6f;
 
             float tmin = 0;
             float tmax = 1;
-            float[] d = new float[2];
-            d[0] = q[0] - p[0];
-            d[1] = q[1] - p[1];
+            var d = new RcVec2f();
+            d.X = q.X - p.X;
+            d.Y = q.Y - p.Y;
 
             for (int i = 0; i < 2; i++)
             {
-                if (Math.Abs(d[i]) < EPSILON)
+                if (Math.Abs(d.Get(i)) < EPSILON)
                 {
                     // Ray is parallel to slab. No hit if origin not within slab
-                    if (p[i] < bmin.Get(i) || p[i] > bmax.Get(i))
+                    if (p.Get(i) < bmin.Get(i) || p.Get(i) > bmax.Get(i))
                         return false;
                 }
                 else
                 {
                     // Compute intersection t value of ray with near and far plane of slab
-                    float ood = 1.0f / d[i];
-                    float t1 = (bmin.Get(i) - p[i]) * ood;
-                    float t2 = (bmax.Get(i) - p[i]) * ood;
+                    float ood = 1.0f / d.Get(i);
+                    float t1 = (bmin.Get(i) - p.Get(i)) * ood;
+                    float t2 = (bmax.Get(i) - p.Get(i)) * ood;
                     if (t1 > t2)
                     {
                         (t1, t2) = (t2, t1);

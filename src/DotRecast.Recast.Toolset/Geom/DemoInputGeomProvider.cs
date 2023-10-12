@@ -148,12 +148,12 @@ namespace DotRecast.Recast.Toolset.Geom
                 return false;
             }
 
-            float[] p = new float[2];
-            float[] q = new float[2];
-            p[0] = src.X + (dst.X - src.X) * btmin;
-            p[1] = src.Z + (dst.Z - src.Z) * btmin;
-            q[0] = src.X + (dst.X - src.X) * btmax;
-            q[1] = src.Z + (dst.Z - src.Z) * btmax;
+            var p = new RcVec2f();
+            var q = new RcVec2f();
+            p.X = src.X + (dst.X - src.X) * btmin;
+            p.Y = src.Z + (dst.Z - src.Z) * btmin;
+            q.X = src.X + (dst.X - src.X) * btmax;
+            q.Y = src.Z + (dst.Z - src.Z) * btmax;
 
             List<RcChunkyTriMeshNode> chunks = _mesh.chunkyTriMesh.GetChunksOverlappingSegment(p, q);
             if (0 == chunks.Count)
