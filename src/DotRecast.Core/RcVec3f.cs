@@ -33,11 +33,6 @@ namespace DotRecast.Core
         public static RcVec3f UnitY { get; } = new RcVec3f(0.0f, 1.0f, 0.0f);
         public static RcVec3f UnitZ { get; } = new RcVec3f(0.0f, 0.0f, 1.0f);
 
-        public static RcVec3f Of(float[] f, int idx)
-        {
-            return new RcVec3f(f[idx + 0], f[idx + 1], f[idx + 2]);
-        }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public RcVec3f(float x, float y, float z)
         {

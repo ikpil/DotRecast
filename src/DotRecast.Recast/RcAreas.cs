@@ -753,9 +753,9 @@ namespace DotRecast.Recast
                 int vertIndexB = vertIndex;
                 int vertIndexC = (vertIndex + 1) % numVerts;
 
-                RcVec3f vertA = RcVec3f.Of(verts, vertIndexA * 3);
-                RcVec3f vertB = RcVec3f.Of(verts, vertIndexB * 3);
-                RcVec3f vertC = RcVec3f.Of(verts, vertIndexC * 3);
+                RcVec3f vertA = new RcVec3f(verts.AsSpan(vertIndexA * 3));
+                RcVec3f vertB = new RcVec3f(verts.AsSpan(vertIndexB * 3));
+                RcVec3f vertC = new RcVec3f(verts.AsSpan(vertIndexC * 3));
 
                 // From A to B on the x/z plane
                 RcVec3f prevSegmentDir = vertB.Subtract(vertA);

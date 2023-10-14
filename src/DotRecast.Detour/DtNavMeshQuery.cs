@@ -2202,7 +2202,7 @@ namespace DotRecast.Detour
                 int nv = 0;
                 for (int i = 0; i < poly.vertCount; ++i)
                 {
-                    verts[nv] = RcVec3f.Of(tile.data.verts, poly.verts[i] * 3);
+                    verts[nv] = new RcVec3f(tile.data.verts.AsSpan(poly.verts[i] * 3));
                     nv++;
                 }
 
@@ -3215,8 +3215,8 @@ namespace DotRecast.Detour
                     hitPos.Y = bestTile.data.verts[vj + 1] + (bestTile.data.verts[vi + 1] - bestTile.data.verts[vj + 1]) * tseg;
                     hitPos.Z = bestTile.data.verts[vj + 2] + (bestTile.data.verts[vi + 2] - bestTile.data.verts[vj + 2]) * tseg;
                     hasBestV = true;
-                    bestvj = RcVec3f.Of(bestTile.data.verts, vj);
-                    bestvi = RcVec3f.Of(bestTile.data.verts, vi);
+                    bestvj = new RcVec3f(bestTile.data.verts.AsSpan(vj));
+                    bestvi = new RcVec3f(bestTile.data.verts.AsSpan(vi));
                 }
 
                 for (int i = bestTile.polyLinks[bestPoly.index]; i != DtNavMesh.DT_NULL_LINK; i = bestTile.links[i].next)

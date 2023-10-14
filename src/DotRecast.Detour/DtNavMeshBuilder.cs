@@ -319,8 +319,8 @@ namespace DotRecast.Detour
 
                 for (int i = 0; i < option.offMeshConCount; ++i)
                 {
-                    var p0 = RcVec3f.Of(option.offMeshConVerts, (i * 2 + 0) * 3);
-                    var p1 = RcVec3f.Of(option.offMeshConVerts, (i * 2 + 1) * 3);
+                    var p0 = new RcVec3f(option.offMeshConVerts.AsSpan((i * 2 + 0) * 3));
+                    var p1 = new RcVec3f(option.offMeshConVerts.AsSpan((i * 2 + 1) * 3));
 
                     offMeshConClass[i * 2 + 0] = ClassifyOffMeshPoint(p0, bmin, bmax);
                     offMeshConClass[i * 2 + 1] = ClassifyOffMeshPoint(p1, bmin, bmax);

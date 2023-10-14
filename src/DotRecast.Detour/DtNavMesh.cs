@@ -1568,8 +1568,8 @@ namespace DotRecast.Detour
                 }
             }
 
-            startPos = RcVec3f.Of(tile.data.verts, poly.verts[idx0] * 3);
-            endPos = RcVec3f.Of(tile.data.verts, poly.verts[idx1] * 3);
+            startPos = new RcVec3f(tile.data.verts.AsSpan(poly.verts[idx0] * 3));
+            endPos = new RcVec3f(tile.data.verts.AsSpan(poly.verts[idx1] * 3));
 
             return DtStatus.DT_SUCCSESS;
         }
