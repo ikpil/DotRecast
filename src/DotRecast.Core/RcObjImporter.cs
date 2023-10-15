@@ -63,15 +63,14 @@ namespace DotRecast.Core
         {
             if (line.StartsWith("v "))
             {
-                float[] vert = ReadVector3f(line);
-                foreach (float vp in vert)
-                {
-                    context.vertexPositions.Add(vp);
-                }
+                var vert = ReadVector3f(line);
+                context.vertexPositions.Add(vert.X);
+                context.vertexPositions.Add(vert.Y);
+                context.vertexPositions.Add(vert.Z);
             }
         }
 
-        private static float[] ReadVector3f(string line)
+        private static RcVec3f ReadVector3f(string line)
         {
             string[] v = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             if (v.Length < 4)
@@ -80,12 +79,11 @@ namespace DotRecast.Core
             }
 
             // fix - https://github.com/ikpil/DotRecast/issues/7
-            return new float[]
-            {
+            return new RcVec3f(
                 float.Parse(v[1], CultureInfo.InvariantCulture),
                 float.Parse(v[2], CultureInfo.InvariantCulture),
                 float.Parse(v[3], CultureInfo.InvariantCulture)
-            };
+            );
         }
 
         private static void ReadFace(string line, RcObjImporterContext context)
