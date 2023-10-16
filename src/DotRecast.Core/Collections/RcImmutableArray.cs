@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DotRecast.Core
+namespace DotRecast.Core.Collections
 {
     public static class RcImmutableArray
     {

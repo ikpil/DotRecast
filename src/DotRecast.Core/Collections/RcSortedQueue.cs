@@ -21,7 +21,7 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 
-namespace DotRecast.Core
+namespace DotRecast.Core.Collections
 {
     public class RcSortedQueue<T>
     {

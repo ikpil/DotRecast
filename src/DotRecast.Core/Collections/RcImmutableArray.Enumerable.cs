@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DotRecast.Core
+namespace DotRecast.Core.Collections
 {
     public readonly partial struct RcImmutableArray<T>
     {

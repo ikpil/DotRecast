@@ -19,7 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Linq;
-using DotRecast.Core;
+using DotRecast.Core.Collections;
 
 namespace DotRecast.Recast.Toolset.Builder
 {

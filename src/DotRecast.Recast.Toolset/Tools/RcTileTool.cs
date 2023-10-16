@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using DotRecast.Core;
+using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour;
 using DotRecast.Recast.Geom;

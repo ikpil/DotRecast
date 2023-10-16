@@ -1,5 +1,5 @@
 ﻿using System;
-using DotRecast.Core;
+using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Toolset.Gizmos;

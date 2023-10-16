@@ -19,8 +19,7 @@ freely, subject to the following restrictions:
 using System;
 using System.IO;
 using System.Numerics;
-using DotRecast.Core;
-using DotRecast.Core.Numerics;
+using DotRecast.Core.Collections;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Demo.Messages;
 using ImGuiNET;
