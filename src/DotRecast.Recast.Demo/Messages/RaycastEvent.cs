@@ -1,4 +1,4 @@
-﻿using DotRecast.Core;
+﻿using DotRecast.Core.Numerics;
 
 namespace DotRecast.Recast.Demo.Messages;
 

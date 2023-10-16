@@ -21,11 +21,10 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using DotRecast.Core;
+using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
 {
-    using static DtNode;
-
     public class DtNavMeshQuery
     {
         /// < Add a vertex at every polygon edge crossing.

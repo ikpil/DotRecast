@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 using System;
 using System.Globalization;
 using System.IO;
+using DotRecast.Core.Numerics;
 
 namespace DotRecast.Core
 {

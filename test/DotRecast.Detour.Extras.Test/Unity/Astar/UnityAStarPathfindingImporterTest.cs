@@ -16,13 +16,12 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using System.Collections.Generic;
 using DotRecast.Core;
+using DotRecast.Core.Numerics;
 using DotRecast.Detour.Extras.Unity.Astar;
 using DotRecast.Detour.Io;
-
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Extras.Test.Unity.Astar;

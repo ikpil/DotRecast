@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using DotRecast.Core;
+using DotRecast.Core.Numerics;
 using DotRecast.Detour.Extras.Jumplink;
 using DotRecast.Recast.Geom;
 using DotRecast.Recast.Toolset.Builder;

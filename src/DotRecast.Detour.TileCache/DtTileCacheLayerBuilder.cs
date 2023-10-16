@@ -23,7 +23,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DotRecast.Core;
+using DotRecast.Core.Numerics;
 using DotRecast.Detour.TileCache.Io.Compress;
 using DotRecast.Recast;
 using DotRecast.Recast.Geom;

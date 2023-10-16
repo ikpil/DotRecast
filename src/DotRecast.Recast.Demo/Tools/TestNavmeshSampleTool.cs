@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DotRecast.Core;
+using DotRecast.Core.Numerics;
 using DotRecast.Detour;
 using DotRecast.Recast.Toolset.Builder;
 using DotRecast.Recast.Demo.Draw;

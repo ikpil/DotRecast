@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 using System.Collections.Generic;
 using System.IO;
 using DotRecast.Core;
+using DotRecast.Core.Numerics;
 using DotRecast.Detour.Io;
 using DotRecast.Recast;
 using DotRecast.Recast.Geom;

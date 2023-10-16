@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using DotRecast.Core;
+using DotRecast.Core.Numerics;
 using DotRecast.Detour.Dynamic;
 using DotRecast.Detour.Dynamic.Colliders;
 using DotRecast.Detour.Dynamic.Io;

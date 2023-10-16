@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 */
 
 using DotRecast.Core;
+using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
 {

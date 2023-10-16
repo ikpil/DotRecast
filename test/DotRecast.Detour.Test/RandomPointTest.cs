@@ -17,8 +17,8 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using System.Diagnostics;
 using DotRecast.Core;
+using DotRecast.Core.Numerics;
 
 using NUnit.Framework;
 

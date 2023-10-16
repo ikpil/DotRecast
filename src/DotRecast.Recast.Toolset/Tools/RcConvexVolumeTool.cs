@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using DotRecast.Core;
+using DotRecast.Core.Numerics;
 using DotRecast.Recast.Geom;
 
 namespace DotRecast.Recast.Toolset.Tools
@@ -81,7 +82,7 @@ namespace DotRecast.Recast.Toolset.Tools
             for (int i = 0; i < vols.Count; ++i)
             {
                 if (RcAreas.PointInPoly(vols[i].verts, pos) && pos.Y >= vols[i].hmin
-                                                              && pos.Y <= vols[i].hmax)
+                                                            && pos.Y <= vols[i].hmax)
                 {
                     nearestIndex = i;
                 }

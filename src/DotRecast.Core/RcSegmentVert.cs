@@ -1,4 +1,6 @@
-﻿namespace DotRecast.Core
+﻿using DotRecast.Core.Numerics;
+
+namespace DotRecast.Core
 {
     public struct RcSegmentVert
     {

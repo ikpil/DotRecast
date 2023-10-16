@@ -19,15 +19,14 @@ freely, subject to the following restrictions:
 
 using System;
 using DotRecast.Core;
-
 using static DotRecast.Recast.RcConstants;
 
 
 namespace DotRecast.Recast
 {
     using static RcCommons;
-    
-    
+
+
     public static class RcCompacts
     {
         private const int MAX_LAYERS = RC_NOT_CONNECTED - 1;
@@ -84,7 +83,7 @@ namespace DotRecast.Recast
                     // If there are no spans at this cell, just leave the data to index=0, count=0.
                     if (s == null)
                         continue;
-                    
+
                     int tmpIdx = idx;
                     int tmpCount = 0;
                     while (s != null)

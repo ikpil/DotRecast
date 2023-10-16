@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using DotRecast.Core;
+using DotRecast.Core.Numerics;
 using DotRecast.Recast.Geom;
 
 namespace DotRecast.Recast

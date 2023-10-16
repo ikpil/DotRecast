@@ -1,4 +1,5 @@
 ﻿using DotRecast.Core;
+using DotRecast.Core.Numerics;
 using DotRecast.Detour.TileCache;
 using DotRecast.Detour.TileCache.Io.Compress;
 using DotRecast.Recast.Demo.Draw;

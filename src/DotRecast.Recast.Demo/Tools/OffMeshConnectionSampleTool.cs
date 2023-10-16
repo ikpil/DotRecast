@@ -19,7 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using DotRecast.Core;
+using DotRecast.Core.Numerics;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Toolset;
 using DotRecast.Recast.Toolset.Geom;

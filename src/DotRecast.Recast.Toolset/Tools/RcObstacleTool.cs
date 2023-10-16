@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using DotRecast.Core;
+using DotRecast.Core.Numerics;
 using DotRecast.Detour;
 using DotRecast.Detour.TileCache;
 using DotRecast.Detour.TileCache.Io.Compress;

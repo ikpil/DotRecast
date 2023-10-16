@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using DotRecast.Core.Numerics;
 
 namespace DotRecast.Core
 {

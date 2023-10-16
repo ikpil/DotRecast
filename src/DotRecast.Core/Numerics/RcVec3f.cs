@@ -19,7 +19,7 @@ freely, subject to the following restrictions:
 using System;
 using System.Runtime.CompilerServices;
 
-namespace DotRecast.Core
+namespace DotRecast.Core.Numerics
 {
     public struct RcVec3f
     {

@@ -18,7 +18,6 @@ freely, subject to the following restrictions:
 
 using System;
 using System.IO.Compression;
-
 using DotRecast.Core;
 
 namespace DotRecast.Detour.Extras.Unity.Astar
@@ -127,15 +126,15 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                     header.detailTriCount = nodeCount;
                     header.maxLinkCount = nodeCount * 3 * 2; // XXX: Needed by Recast, not needed by recast4j
                     header.bmin.X = meta.forcedBoundsCenter.x - 0.5f * meta.forcedBoundsSize.x
-                                     + meta.cellSize * meta.tileSizeX * x;
+                                    + meta.cellSize * meta.tileSizeX * x;
                     header.bmin.Y = ymin;
                     header.bmin.Z = meta.forcedBoundsCenter.z - 0.5f * meta.forcedBoundsSize.z
-                                     + meta.cellSize * meta.tileSizeZ * z;
+                                    + meta.cellSize * meta.tileSizeZ * z;
                     header.bmax.X = meta.forcedBoundsCenter.x - 0.5f * meta.forcedBoundsSize.x
-                                     + meta.cellSize * meta.tileSizeX * (x + 1);
+                                    + meta.cellSize * meta.tileSizeX * (x + 1);
                     header.bmax.Y = ymax;
                     header.bmax.Z = meta.forcedBoundsCenter.z - 0.5f * meta.forcedBoundsSize.z
-                                     + meta.cellSize * meta.tileSizeZ * (z + 1);
+                                    + meta.cellSize * meta.tileSizeZ * (z + 1);
                     header.bvQuantFactor = 1.0f / meta.cellSize;
                     header.offMeshBase = nodeCount;
                     header.walkableClimb = meta.walkableClimb;

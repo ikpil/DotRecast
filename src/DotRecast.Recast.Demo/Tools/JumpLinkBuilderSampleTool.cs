@@ -16,7 +16,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using DotRecast.Core;
+using DotRecast.Core.Numerics;
 using DotRecast.Detour.Extras.Jumplink;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Toolset;

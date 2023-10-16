@@ -21,8 +21,8 @@ freely, subject to the following restrictions:
 using System.Collections.Generic;
 using System.Linq;
 using DotRecast.Core;
+using DotRecast.Core.Numerics;
 using DotRecast.Detour.TileCache.Io.Compress;
-using DotRecast.Detour.TileCache.Test.Io;
 using DotRecast.Recast;
 using DotRecast.Recast.Geom;
 

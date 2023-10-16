@@ -19,7 +19,6 @@ freely, subject to the following restrictions:
 
 using System;
 using DotRecast.Core;
-using DotRecast.Detour.Dynamic.Io;
 using K4os.Compression.LZ4;
 
 namespace DotRecast.Detour.Dynamic.Test.Io

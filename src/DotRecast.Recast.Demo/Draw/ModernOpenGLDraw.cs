@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using Silk.NET.OpenGL;
-using DotRecast.Core;
+using DotRecast.Core.Numerics;
 
 namespace DotRecast.Recast.Demo.Draw;
 

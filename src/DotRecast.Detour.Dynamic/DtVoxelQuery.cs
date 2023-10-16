@@ -18,7 +18,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using DotRecast.Core;
+using DotRecast.Core.Numerics;
 using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic

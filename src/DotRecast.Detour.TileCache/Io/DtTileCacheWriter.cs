@@ -30,7 +30,7 @@ namespace DotRecast.Detour.TileCache.Io
         private readonly DtNavMeshParamWriter paramWriter = new DtNavMeshParamWriter();
         private readonly DtTileCacheBuilder builder = new DtTileCacheBuilder();
         private readonly IDtTileCacheCompressorFactory _compFactory;
-        
+
         public DtTileCacheWriter(IDtTileCacheCompressorFactory compFactory)
         {
             _compFactory = compFactory;

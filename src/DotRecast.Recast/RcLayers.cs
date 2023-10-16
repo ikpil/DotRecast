@@ -21,6 +21,7 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using DotRecast.Core;
+using DotRecast.Core.Numerics;
 
 namespace DotRecast.Recast
 {
@@ -54,7 +55,7 @@ namespace DotRecast.Recast
         public static RcHeightfieldLayerSet BuildHeightfieldLayers(RcTelemetry ctx, RcCompactHeightfield chf, int walkableHeight)
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_LAYERS);
-            
+
             int w = chf.width;
             int h = chf.height;
             int borderSize = chf.borderSize;

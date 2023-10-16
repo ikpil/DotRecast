@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace DotRecast.Core
+namespace DotRecast.Core.Numerics
 {
     public struct RcVec2f
     {

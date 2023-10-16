@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using DotRecast.Core;
+using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour.Extras.Jumplink
 {

@@ -21,12 +21,11 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using DotRecast.Core;
+using DotRecast.Core.Numerics;
 
 
 namespace DotRecast.Detour.Crowd
 {
-    
-
     /**
      * Represents a dynamic polygon corridor used to plan agent movement.
      *

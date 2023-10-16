@@ -1,4 +1,4 @@
-using DotRecast.Core;
+using DotRecast.Core.Numerics;
 using DotRecast.Detour.Dynamic.Colliders;
 
 namespace DotRecast.Recast.Toolset.Gizmos

@@ -20,8 +20,7 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 using DotRecast.Core;
-using DotRecast.Detour.TileCache.Test.Io;
-using DotRecast.Recast;
+using DotRecast.Core.Numerics;
 using DotRecast.Recast.Geom;
 using NUnit.Framework;
 

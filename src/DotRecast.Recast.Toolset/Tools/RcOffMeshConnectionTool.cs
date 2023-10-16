@@ -1,5 +1,5 @@
 ﻿using System;
-using DotRecast.Core;
+using DotRecast.Core.Numerics;
 using DotRecast.Recast.Geom;
 using DotRecast.Recast.Toolset.Builder;
 

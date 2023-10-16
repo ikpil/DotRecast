@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using Silk.NET.OpenGL;
-using DotRecast.Core;
+using DotRecast.Core.Numerics;
 using DotRecast.Recast.Toolset.Builder;
 
 namespace DotRecast.Recast.Demo.Draw;

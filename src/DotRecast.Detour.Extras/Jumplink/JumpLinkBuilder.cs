@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DotRecast.Core;
+using DotRecast.Core.Numerics;
 using DotRecast.Recast;
 
 namespace DotRecast.Detour.Extras.Jumplink

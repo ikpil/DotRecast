@@ -18,7 +18,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.IO;
-using DotRecast.Core;
+using DotRecast.Core.Numerics;
 using DotRecast.Recast.Geom;
 using NUnit.Framework;
 

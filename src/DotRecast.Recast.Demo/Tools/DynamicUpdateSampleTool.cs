@@ -19,14 +19,12 @@ freely, subject to the following restrictions:
 
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using DotRecast.Core;
+using DotRecast.Core.Numerics;
 using DotRecast.Detour.Dynamic;
-using DotRecast.Detour.Dynamic.Io;
 using DotRecast.Recast.Toolset;
-using DotRecast.Recast.Toolset.Gizmos;
 using DotRecast.Recast.Toolset.Tools;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Demo.UI;

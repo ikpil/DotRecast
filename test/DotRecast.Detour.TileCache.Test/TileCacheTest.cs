@@ -20,9 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using DotRecast.Core;
-using DotRecast.Recast;
 using DotRecast.Recast.Geom;
 using NUnit.Framework;
 

@@ -20,11 +20,9 @@ freely, subject to the following restrictions:
 
 using DotRecast.Core;
 using DotRecast.Detour.TileCache.Io.Compress;
-using DotRecast.Detour.TileCache.Test.Io;
 using DotRecast.Recast;
 using DotRecast.Recast.Geom;
 using NUnit.Framework;
-
 
 
 namespace DotRecast.Detour.TileCache.Test;
@@ -33,7 +31,7 @@ namespace DotRecast.Detour.TileCache.Test;
 public class AbstractTileCacheTest
 {
     private const int EXPECTED_LAYERS_PER_TILE = 4;
-    
+
     private readonly float m_cellSize = 0.3f;
     private readonly float m_cellHeight = 0.2f;
     private readonly float m_agentHeight = 2.0f;

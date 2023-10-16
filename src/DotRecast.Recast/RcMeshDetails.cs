@@ -21,12 +21,12 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using DotRecast.Core;
+using DotRecast.Core.Numerics;
 using static DotRecast.Recast.RcConstants;
 
 namespace DotRecast.Recast
 {
     using static RcCommons;
-    
 
 
     public static class RcMeshDetails
