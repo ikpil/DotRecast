@@ -16,18 +16,6 @@ namespace DotRecast.Core.Numerics
             Y = y;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float Get(int idx)
-        {
-            if (0 == idx)
-                return X;
-
-            if (1 == idx)
-                return Y;
-
-            throw new IndexOutOfRangeException("vector2f index out of range");
-        }
-
         public override bool Equals(object obj)
         {
             if (!(obj is RcVec2f))
