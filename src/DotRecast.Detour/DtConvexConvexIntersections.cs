@@ -58,8 +58,8 @@ namespace DotRecast.Detour
                 a1.Set(p, 3 * ((ai + n - 1) % n)); // prev a
                 b1.Set(q, 3 * ((bi + m - 1) % m)); // prev b
 
-                RcVec3f A = a.Subtract(a1);
-                RcVec3f B = b.Subtract(b1);
+                RcVec3f A = RcVec3f.Subtract(a, a1);
+                RcVec3f B = RcVec3f.Subtract(b, b1);
 
                 float cross = B.X * A.Z - A.X * B.Z; // TriArea2D({0, 0}, A, B);
                 float aHB = DtUtils.TriArea2D(b1, b, a);

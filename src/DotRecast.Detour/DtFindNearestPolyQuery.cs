@@ -28,7 +28,7 @@ namespace DotRecast.Detour
             // If a point is directly over a polygon and closer than
             // climb height, favor that instead of straight line nearest point.
             float d = 0;
-            RcVec3f diff = _center.Subtract(closestPtPoly);
+            RcVec3f diff = RcVec3f.Subtract(_center, closestPtPoly);
             if (posOverPoly)
             {
                 d = Math.Abs(diff.Y) - tile.data.header.walkableClimb;

@@ -16,5 +16,17 @@ namespace DotRecast.Core.Numerics
                 default: throw new IndexOutOfRangeException("vector2f index out of range");
             }
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Get(this RcVec3f v, int i)
+        {
+            switch (i)
+            {
+                case 0: return v.X;
+                case 1: return v.Y;
+                case 2: return v.Z;
+                default: throw new IndexOutOfRangeException("vector3f index out of range");
+            }
+        }
     }
 }

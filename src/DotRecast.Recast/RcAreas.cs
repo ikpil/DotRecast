@@ -760,12 +760,12 @@ namespace DotRecast.Recast
                 RcVec3f vertC = new RcVec3f(verts.AsSpan(vertIndexC * 3));
 
                 // From A to B on the x/z plane
-                RcVec3f prevSegmentDir = vertB.Subtract(vertA);
+                RcVec3f prevSegmentDir = RcVec3f.Subtract(vertB, vertA);
                 prevSegmentDir.Y = 0; // Squash onto x/z plane
                 prevSegmentDir.SafeNormalize();
 
                 // From B to C on the x/z plane
-                RcVec3f currSegmentDir = vertC.Subtract(vertB);
+                RcVec3f currSegmentDir = RcVec3f.Subtract(vertC, vertB);
                 currSegmentDir.Y = 0; // Squash onto x/z plane
                 currSegmentDir.SafeNormalize();
 

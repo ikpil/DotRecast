@@ -29,9 +29,9 @@ namespace DotRecast.Core
         {
             t = 0;
             float v, w;
-            RcVec3f ab = b.Subtract(a);
-            RcVec3f ac = c.Subtract(a);
-            RcVec3f qp = sp.Subtract(sq);
+            RcVec3f ab = RcVec3f.Subtract(b, a);
+            RcVec3f ac = RcVec3f.Subtract(c, a);
+            RcVec3f qp = RcVec3f.Subtract(sp, sq);
 
             // Compute triangle normal. Can be precalculated or cached if
             // intersecting multiple segments against the same triangle
@@ -48,7 +48,7 @@ namespace DotRecast.Core
             // Compute intersection t value of pq with plane of triangle. A ray
             // intersects iff 0 <= t. Segment intersects iff 0 <= t <= 1. Delay
             // dividing by d until intersection has been found to pierce triangle
-            RcVec3f ap = sp.Subtract(a);
+            RcVec3f ap = RcVec3f.Subtract(sp, a);
             t = RcVec3f.Dot(ap, norm);
             if (t < 0.0f)
             {
@@ -93,18 +93,18 @@ namespace DotRecast.Core
 
             for (int i = 0; i < 3; i++)
             {
-                if (Math.Abs(d[i]) < EPS)
+                if (Math.Abs(d.Get(i)) < EPS)
                 {
-                    if (sp[i] < amin[i] || sp[i] > amax[i])
+                    if (sp.Get(i) < amin.Get(i) || sp.Get(i) > amax.Get(i))
                     {
                         return false;
                     }
                 }
                 else
                 {
-                    float ood = 1.0f / d[i];
-                    float t1 = (amin[i] - sp[i]) * ood;
-                    float t2 = (amax[i] - sp[i]) * ood;
+                    float ood = 1.0f / d.Get(i);
+                    float t1 = (amin.Get(i) - sp.Get(i)) * ood;
+                    float t2 = (amax.Get(i) - sp.Get(i)) * ood;
 
                     if (t1 > t2)
                     {

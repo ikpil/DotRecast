@@ -215,9 +215,9 @@ namespace DotRecast.Detour
             const float EPS = 1e-6f;
 
             h = 0;
-            RcVec3f v0 = c.Subtract(a);
-            RcVec3f v1 = b.Subtract(a);
-            RcVec3f v2 = p.Subtract(a);
+            RcVec3f v0 = RcVec3f.Subtract(c, a);
+            RcVec3f v1 = RcVec3f.Subtract(b, a);
+            RcVec3f v2 = RcVec3f.Subtract(p, a);
 
             // Compute scaled barycentric coordinates
             float denom = v0.X * v1.Z - v0.Z * v1.X;
@@ -353,15 +353,15 @@ namespace DotRecast.Detour
             segMin = -1;
             segMax = -1;
 
-            var dir = p1.Subtract(p0);
+            var dir = RcVec3f.Subtract(p1, p0);
 
             var p0v = p0;
             for (int i = 0, j = nverts - 1; i < nverts; j = i++)
             {
                 RcVec3f vpj = verts[j];
                 RcVec3f vpi = verts[i];
-                var edge = vpi.Subtract(vpj);
-                var diff = p0v.Subtract(vpj);
+                var edge = RcVec3f.Subtract(vpi, vpj);
+                var diff = RcVec3f.Subtract(p0v, vpj);
                 float n = RcVec3f.Perp2D(edge, diff);
                 float d = RcVec3f.Perp2D(dir, edge);
                 if (Math.Abs(d) < EPS)
@@ -422,9 +422,9 @@ namespace DotRecast.Detour
             s = 0;
             t = 0;
 
-            RcVec3f u = aq.Subtract(ap);
-            RcVec3f v = bq.Subtract(bp);
-            RcVec3f w = ap.Subtract(bp);
+            RcVec3f u = RcVec3f.Subtract(aq, ap);
+            RcVec3f v = RcVec3f.Subtract(bq, bp);
+            RcVec3f w = RcVec3f.Subtract(ap, bp);
             float d = RcVec3f.PerpXZ(u, v);
             if (Math.Abs(d) < 1e-6f)
             {

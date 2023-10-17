@@ -679,7 +679,7 @@ namespace DotRecast.Detour
             }
 
             // Find tiles the query touches.
-            RcVec3f bmin = center.Subtract(halfExtents);
+            RcVec3f bmin = RcVec3f.Subtract(center, halfExtents);
             RcVec3f bmax = center.Add(halfExtents);
             foreach (var t in QueryTiles(center, halfExtents))
             {
@@ -699,7 +699,7 @@ namespace DotRecast.Detour
                 return RcImmutableArray<DtMeshTile>.Empty;
             }
 
-            RcVec3f bmin = center.Subtract(halfExtents);
+            RcVec3f bmin = RcVec3f.Subtract(center, halfExtents);
             RcVec3f bmax = center.Add(halfExtents);
             m_nav.CalcTileLoc(bmin, out var minx, out var miny);
             m_nav.CalcTileLoc(bmax, out var maxx, out var maxy);
@@ -2179,7 +2179,7 @@ namespace DotRecast.Detour
             RcVec3f lastPos = RcVec3f.Zero;
 
             curPos = startPos;
-            var dir = endPos.Subtract(startPos);
+            var dir = RcVec3f.Subtract(endPos, startPos);
 
             DtMeshTile prevTile, tile, nextTile;
             DtPoly prevPoly, poly, nextPoly;
@@ -2343,8 +2343,8 @@ namespace DotRecast.Detour
                     curPos = RcVec3f.Mad(startPos, dir, hit.t);
                     var e1 = verts[segMax];
                     var e2 = verts[(segMax + 1) % nv];
-                    var eDir = e2.Subtract(e1);
-                    var diff = curPos.Subtract(e1);
+                    var eDir = RcVec3f.Subtract(e2, e1);
+                    var diff = RcVec3f.Subtract(curPos, e1);
                     float s = RcMath.Sqr(eDir.X) > RcMath.Sqr(eDir.Z) ? diff.X / eDir.X : diff.Z / eDir.Z;
                     curPos.Y = e1.Y + eDir.Y * s;
 
@@ -3301,7 +3301,7 @@ namespace DotRecast.Detour
             // Calc hit normal.
             if (hasBestV)
             {
-                var tangent = bestvi.Subtract(bestvj);
+                var tangent = RcVec3f.Subtract(bestvi, bestvj);
                 hitNormal.X = tangent.Z;
                 hitNormal.Y = 0;
                 hitNormal.Z = -tangent.X;

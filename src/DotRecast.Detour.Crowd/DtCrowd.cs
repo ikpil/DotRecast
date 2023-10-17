@@ -904,7 +904,7 @@ namespace DotRecast.Detour.Crowd
                 }
 
                 // Check for overlap.
-                RcVec3f diff = pos.Subtract(ag.npos);
+                RcVec3f diff = RcVec3f.Subtract(pos, ag.npos);
                 if (Math.Abs(diff.Y) >= (height + ag.option.height) / 2.0f)
                 {
                     continue;
@@ -1077,7 +1077,7 @@ namespace DotRecast.Detour.Crowd
                     {
                         DtCrowdAgent nei = ag.neis[j].agent;
 
-                        RcVec3f diff = ag.npos.Subtract(nei.npos);
+                        RcVec3f diff = RcVec3f.Subtract(ag.npos, nei.npos);
                         diff.Y = 0;
 
                         float distSqr = RcVec3f.LenSqr(diff);
@@ -1224,7 +1224,7 @@ namespace DotRecast.Detour.Crowd
                     {
                         DtCrowdAgent nei = ag.neis[j].agent;
                         long idx1 = nei.idx;
-                        RcVec3f diff = ag.npos.Subtract(nei.npos);
+                        RcVec3f diff = RcVec3f.Subtract(ag.npos, nei.npos);
                         diff.Y = 0;
 
                         float dist = RcVec3f.LenSqr(diff);

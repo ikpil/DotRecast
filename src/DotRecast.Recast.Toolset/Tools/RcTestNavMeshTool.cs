@@ -73,7 +73,7 @@ namespace DotRecast.Recast.Toolset.Tools
                     : false;
 
                 // Find movement delta.
-                RcVec3f delta = steerPos.Subtract(iterPos);
+                RcVec3f delta = RcVec3f.Subtract(steerPos, iterPos);
                 float len = (float)Math.Sqrt(RcVec3f.Dot(delta, delta));
                 // If the steer target is end of path or off-mesh link, do not move past the location.
                 if ((endOfPath || offMeshConnection) && len < STEP_SIZE)

@@ -153,7 +153,7 @@ public class AbstractCrowdTest
 
     protected RcVec3f CalcVel(RcVec3f pos, RcVec3f tgt, float speed)
     {
-        RcVec3f vel = tgt.Subtract(pos);
+        RcVec3f vel = RcVec3f.Subtract(tgt, pos);
         vel.Y = 0.0f;
         vel.Normalize();
         vel = vel.Scale(speed);

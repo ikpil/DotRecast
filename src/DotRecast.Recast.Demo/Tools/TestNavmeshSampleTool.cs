@@ -507,7 +507,7 @@ public class TestNavmeshSampleTool : ISampleTool
                                     continue;
                                 }
 
-                                RcVec3f delta = s3.Subtract(s.vmin);
+                                RcVec3f delta = RcVec3f.Subtract(s3, s.vmin);
                                 RcVec3f p0 = RcVec3f.Mad(s.vmin, delta, 0.5f);
                                 RcVec3f norm = new RcVec3f(delta.Z, 0, -delta.X);
                                 norm.Normalize();

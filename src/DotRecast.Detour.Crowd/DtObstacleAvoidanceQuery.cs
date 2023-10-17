@@ -126,9 +126,9 @@ namespace DotRecast.Detour.Crowd
 
                 RcVec3f orig = new RcVec3f();
                 RcVec3f dv = new RcVec3f();
-                cir.dp = pb.Subtract(pa);
+                cir.dp = RcVec3f.Subtract(pb, pa);
                 cir.dp.Normalize();
-                dv = cir.dvel.Subtract(dvel);
+                dv = RcVec3f.Subtract(cir.dvel, dvel);
 
                 float a = DtUtils.TriArea2D(orig, cir.dp, dv);
                 if (a < 0.01f)
@@ -161,7 +161,7 @@ namespace DotRecast.Detour.Crowd
             tmin = 0;
             tmax = 0;
 
-            RcVec3f s = c1.Subtract(c0);
+            RcVec3f s = RcVec3f.Subtract(c1, c0);
             float r = r0 + r1;
             float c = s.Dot2D(s) - r * r;
             float a = v.Dot2D(v);
@@ -185,8 +185,8 @@ namespace DotRecast.Detour.Crowd
 
         private bool IsectRaySeg(RcVec3f ap, RcVec3f u, RcVec3f bp, RcVec3f bq, ref float t)
         {
-            RcVec3f v = bq.Subtract(bp);
-            RcVec3f w = ap.Subtract(bp);
+            RcVec3f v = RcVec3f.Subtract(bq, bp);
+            RcVec3f w = RcVec3f.Subtract(ap, bp);
             float d = RcVec3f.Perp2D(u, v);
             if (Math.Abs(d) < 1e-6f)
                 return false;
@@ -238,8 +238,8 @@ namespace DotRecast.Detour.Crowd
 
                 // RVO
                 RcVec3f vab = vcand.Scale(2);
-                vab = vab.Subtract(vel);
-                vab = vab.Subtract(cir.vel);
+                vab = RcVec3f.Subtract(vab, vel);
+                vab = RcVec3f.Subtract(vab, cir.vel);
 
                 // Side
                 side += Math.Clamp(Math.Min(cir.dp.Dot2D(vab) * 0.5f + 0.5f, cir.np.Dot2D(vab) * 2), 0.0f, 1.0f);
@@ -275,7 +275,7 @@ namespace DotRecast.Detour.Crowd
                 if (seg.touch)
                 {
                     // Special case when the agent is very close to the segment.
-                    RcVec3f sdir = seg.q.Subtract(seg.p);
+                    RcVec3f sdir = RcVec3f.Subtract(seg.q, seg.p);
                     RcVec3f snorm = new RcVec3f();
                     snorm.X = -sdir.Z;
                     snorm.Z = sdir.X;
