@@ -1273,7 +1273,7 @@ namespace DotRecast.Detour.Crowd
                         continue;
                     }
 
-                    ag.npos = ag.npos.Add(ag.disp);
+                    ag.npos = RcVec3f.Add(ag.npos, ag.disp);
                 }
             }
         }

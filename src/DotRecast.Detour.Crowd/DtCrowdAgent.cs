@@ -117,7 +117,7 @@ namespace DotRecast.Detour.Crowd
             float ds = dv.Length();
             if (ds > maxDelta)
                 dv = dv.Scale(maxDelta / ds);
-            vel = vel.Add(dv);
+            vel = RcVec3f.Add(vel, dv);
 
             // Integrate
             if (vel.Length() > 0.0001f)

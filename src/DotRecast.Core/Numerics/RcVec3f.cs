@@ -109,13 +109,9 @@ namespace DotRecast.Core.Numerics
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly RcVec3f Add(RcVec3f v2)
+        public static RcVec3f Add(RcVec3f left, RcVec3f right)
         {
-            return new RcVec3f(
-                X + v2.X,
-                Y + v2.Y,
-                Z + v2.Z
-            );
+            return left + right;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -270,7 +266,11 @@ namespace DotRecast.Core.Numerics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static RcVec3f operator +(RcVec3f left, RcVec3f right)
         {
-            return left.Add(right);
+            return new RcVec3f(
+                left.X + right.X,
+                left.Y + right.Y,
+                left.Z + right.Z
+            );
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

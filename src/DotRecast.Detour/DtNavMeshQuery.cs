@@ -680,7 +680,7 @@ namespace DotRecast.Detour
 
             // Find tiles the query touches.
             RcVec3f bmin = RcVec3f.Subtract(center, halfExtents);
-            RcVec3f bmax = center.Add(halfExtents);
+            RcVec3f bmax = RcVec3f.Add(center, halfExtents);
             foreach (var t in QueryTiles(center, halfExtents))
             {
                 QueryPolygonsInTile(t, bmin, bmax, filter, query);
@@ -700,7 +700,7 @@ namespace DotRecast.Detour
             }
 
             RcVec3f bmin = RcVec3f.Subtract(center, halfExtents);
-            RcVec3f bmax = center.Add(halfExtents);
+            RcVec3f bmax = RcVec3f.Add(center, halfExtents);
             m_nav.CalcTileLoc(bmin, out var minx, out var miny);
             m_nav.CalcTileLoc(bmax, out var maxx, out var maxy);
 

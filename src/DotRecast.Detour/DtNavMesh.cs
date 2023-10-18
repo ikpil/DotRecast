@@ -1353,7 +1353,7 @@ namespace DotRecast.Detour
 
             bool overPoly = false;
             RcVec3f bmin = RcVec3f.Subtract(center, halfExtents);
-            RcVec3f bmax = center.Add(halfExtents);
+            RcVec3f bmax = RcVec3f.Add(center, halfExtents);
 
             // Get nearby polygons from proximity grid.
             List<long> polys = QueryPolygonsInTile(tile, bmin, bmax);
