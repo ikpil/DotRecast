@@ -18,9 +18,9 @@ namespace DotRecast.Detour.Extras.Jumplink
             this.trajectory = trajectory;
             ax = RcVec3f.Subtract(edge.sq, edge.sp);
             ax.Normalize();
-            az.Set(ax.Z, 0, -ax.X);
+            az = new RcVec3f(ax.Z, 0, -ax.X);
             az.Normalize();
-            ay.Set(0, 1, 0);
+            ay = new RcVec3f(0, 1, 0);
         }
     }
 }

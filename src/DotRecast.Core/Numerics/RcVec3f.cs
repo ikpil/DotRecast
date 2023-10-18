@@ -96,20 +96,6 @@ namespace DotRecast.Core.Numerics
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Set(float a, float b, float c)
-        {
-            X = a;
-            Y = b;
-            Z = c;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Set(float[] @in)
-        {
-            Set(@in, 0);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set(float[] @in, int i)
         {
             X = @in[i];
@@ -432,24 +418,6 @@ namespace DotRecast.Core.Numerics
             return dx * dx + dy * dy + dz * dz;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float DistSqr(float[] v, int i, int j)
-        {
-            float dx = v[i] - v[j];
-            float dy = v[i + 1] - v[j + 1];
-            float dz = v[i + 2] - v[j + 2];
-            return dx * dx + dy * dy + dz * dz;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float DistSqr(float[] v1, float[] v2)
-        {
-            float dx = v2[0] - v1[0];
-            float dy = v2[1] - v1[1];
-            float dz = v2[2] - v1[2];
-            return dx * dx + dy * dy + dz * dz;
-        }
-
         /// Derives the distance between the specified points on the xz-plane.
         /// @param[in] v1 A point. [(x, y, z)]
         /// @param[in] v2 A point. [(x, y, z)]
@@ -458,28 +426,11 @@ namespace DotRecast.Core.Numerics
         /// The vectors are projected onto the xz-plane, so the y-values are
         /// ignored.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Dist2D(float[] v1, float[] v2)
-        {
-            float dx = v2[0] - v1[0];
-            float dz = v2[2] - v1[2];
-            return (float)Math.Sqrt(dx * dx + dz * dz);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Dist2D(RcVec3f v1, RcVec3f v2)
         {
             float dx = v2.X - v1.X;
             float dz = v2.Z - v1.Z;
             return (float)Math.Sqrt(dx * dx + dz * dz);
-        }
-
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Dist2DSqr(float[] v1, float[] v2)
-        {
-            float dx = v2[0] - v1[0];
-            float dz = v2[2] - v1[2];
-            return dx * dx + dz * dz;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -606,21 +557,12 @@ namespace DotRecast.Core.Numerics
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Cross(float[] dest, RcVec3f v1, RcVec3f v2)
-        {
-            dest[0] = v1.Y * v2.Z - v1.Z * v2.Y;
-            dest[1] = v1.Z * v2.X - v1.X * v2.Z;
-            dest[2] = v1.X * v2.Y - v1.Y * v2.X;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Cross(ref RcVec3f dest, RcVec3f v1, RcVec3f v2)
         {
             dest.X = v1.Y * v2.Z - v1.Z * v2.Y;
             dest.Y = v1.Z * v2.X - v1.X * v2.Z;
             dest.Z = v1.X * v2.Y - v1.Y * v2.X;
         }
-
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Normalize(ref RcVec3f v)

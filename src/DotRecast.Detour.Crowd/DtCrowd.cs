@@ -161,7 +161,7 @@ namespace DotRecast.Detour.Crowd
         public DtCrowd(DtCrowdConfig config, DtNavMesh nav, Func<int, IDtQueryFilter> queryFilterFactory)
         {
             _config = config;
-            _ext.Set(config.maxAgentRadius * 2.0f, config.maxAgentRadius * 1.5f, config.maxAgentRadius * 2.0f);
+            _ext = new RcVec3f(config.maxAgentRadius * 2.0f, config.maxAgentRadius * 1.5f, config.maxAgentRadius * 2.0f);
 
             _obstacleQuery = new DtObstacleAvoidanceQuery(config.maxObstacleAvoidanceCircles, config.maxObstacleAvoidanceSegments);
 
@@ -1240,11 +1240,11 @@ namespace DotRecast.Detour.Crowd
                             // Agents on top of each other, try to choose diverging separation directions.
                             if (idx0 > idx1)
                             {
-                                diff.Set(-ag.dvel.Z, 0, ag.dvel.X);
+                                diff = new RcVec3f(-ag.dvel.Z, 0, ag.dvel.X);
                             }
                             else
                             {
-                                diff.Set(ag.dvel.Z, 0, -ag.dvel.X);
+                                diff = new RcVec3f(ag.dvel.Z, 0, -ag.dvel.X);
                             }
 
                             pen = 0.01f;

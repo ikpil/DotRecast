@@ -412,7 +412,7 @@ namespace DotRecast.Detour.Crowd
             else if (n == 0)
             {
                 // The first polyref is bad, use current safe values.
-                m_pos.Set(safePos);
+                m_pos = new RcVec3f(safePos);
                 m_path.Clear();
                 m_path.Add(safeRef);
             }
