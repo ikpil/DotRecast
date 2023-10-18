@@ -159,11 +159,9 @@ namespace DotRecast.Detour
                 {
                     int vb = option.detailMeshes[i * 4 + 0];
                     int ndv = option.detailMeshes[i * 4 + 1];
-                    RcVec3f bmin = new RcVec3f();
-                    RcVec3f bmax = new RcVec3f();
                     int dv = vb * 3;
-                    bmin.Set(option.detailVerts, dv);
-                    bmax.Set(option.detailVerts, dv);
+                    var bmin = new RcVec3f(option.detailVerts.AsSpan(dv));
+                    var bmax = new RcVec3f(option.detailVerts.AsSpan(dv));
                     for (int j = 1; j < ndv; j++)
                     {
                         bmin.Min(option.detailVerts, dv + j * 3);

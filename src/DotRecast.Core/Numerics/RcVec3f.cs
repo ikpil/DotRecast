@@ -96,15 +96,6 @@ namespace DotRecast.Core.Numerics
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Set(float[] @in, int i)
-        {
-            X = @in[i];
-            Y = @in[i + 1];
-            Z = @in[i + 2];
-        }
-
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly float Length()
         {
             return (float)Math.Sqrt(X * X + Y * Y + Z * Z);

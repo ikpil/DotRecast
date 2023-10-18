@@ -20,7 +20,6 @@ freely, subject to the following restrictions:
 using System;
 using DotRecast.Core.Numerics;
 
-
 namespace DotRecast.Detour.Extras
 {
     public class BVTreeBuilder
@@ -41,10 +40,8 @@ namespace DotRecast.Detour.Extras
                 BVItem it = new BVItem();
                 items[i] = it;
                 it.i = i;
-                RcVec3f bmin = new RcVec3f();
-                RcVec3f bmax = new RcVec3f();
-                bmin.Set(data.verts, data.polys[i].verts[0] * 3);
-                bmax.Set(data.verts, data.polys[i].verts[0] * 3);
+                RcVec3f bmin = new RcVec3f(data.verts.AsSpan(data.polys[i].verts[0] * 3));
+                RcVec3f bmax = new RcVec3f(data.verts.AsSpan(data.polys[i].verts[0] * 3));
                 for (int j = 1; j < data.polys[i].vertCount; j++)
                 {
                     bmin.Min(data.verts, data.polys[i].verts[j] * 3);
