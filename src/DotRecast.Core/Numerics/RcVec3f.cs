@@ -98,7 +98,14 @@ namespace DotRecast.Core.Numerics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly float Length()
         {
-            return (float)Math.Sqrt(X * X + Y * Y + Z * Z);
+            float lengthSquared = LengthSquared();
+            return MathF.Sqrt(lengthSquared);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly float LengthSquared()
+        {
+            return Dot(this, this);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -114,15 +121,7 @@ namespace DotRecast.Core.Numerics
             return left + right;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly RcVec3f Scale(float scale)
-        {
-            return new RcVec3f(
-                X * scale,
-                Y * scale,
-                Z * scale
-            );
-        }
+
 
 
         /// Derives the dot product of two vectors on the xz-plane. (@p u . @p v)
@@ -331,14 +330,17 @@ namespace DotRecast.Core.Numerics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Dot(RcVec3f v1, RcVec3f v2)
         {
-            return (v1.X * v2.X) + (v1.Y * v2.Y)
-                                 + (v1.Z * v2.Z);
+            return (v1.X * v2.X)
+                   + (v1.Y * v2.Y)
+                   + (v1.Z * v2.Z);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Dot(float[] v1, float[] v2)
         {
-            return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
+            return v1[0] * v2[0]
+                   + v1[1] * v2[1]
+                   + v1[2] * v2[2];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
