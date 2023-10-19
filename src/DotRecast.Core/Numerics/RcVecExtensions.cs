@@ -32,11 +32,7 @@ namespace DotRecast.Core.Numerics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static RcVec3f Scale(this RcVec3f v, float scale)
         {
-            return new RcVec3f(
-                v.X * scale,
-                v.Y * scale,
-                v.Z * scale
-            );
+            return v * scale;
         }
     }
 }
