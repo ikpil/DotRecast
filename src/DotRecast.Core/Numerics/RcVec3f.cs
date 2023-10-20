@@ -122,28 +122,6 @@ namespace DotRecast.Core.Numerics
         }
 
 
-
-
-        /// Derives the dot product of two vectors on the xz-plane. (@p u . @p v)
-        /// @param[in] u A vector [(x, y, z)]
-        /// @param[in] v A vector [(x, y, z)]
-        /// @return The dot product on the xz-plane.
-        ///
-        /// The vectors are projected onto the xz-plane, so the y-values are
-        /// ignored.
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly float Dot2D(RcVec3f v)
-        {
-            return X * v.X + Z * v.Z;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly float Dot2D(float[] v, int vi)
-        {
-            return X * v[vi] + Z * v[vi + 2];
-        }
-
-
         public override bool Equals(object obj)
         {
             if (!(obj is RcVec3f))
