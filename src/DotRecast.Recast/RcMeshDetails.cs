@@ -160,11 +160,9 @@ namespace DotRecast.Recast
         {
             const float EPS = 1e-6f;
             // Calculate the circle relative to p1, to avoid some precision issues.
-            RcVec3f v1 = new RcVec3f();
-            RcVec3f v2 = new RcVec3f();
-            RcVec3f v3 = new RcVec3f();
-            RcVec3f.Sub(ref v2, verts, p2, p1);
-            RcVec3f.Sub(ref v3, verts, p3, p1);
+            var v1 = new RcVec3f();
+            var v2 = RcVecUtils.Subtract(verts, p2, p1);
+            var v3 = RcVecUtils.Subtract(verts, p3, p1);
 
             float cp = Vcross2(v1, v2, v3);
             if (Math.Abs(cp) > EPS)
@@ -176,7 +174,7 @@ namespace DotRecast.Recast
                 c.Y = 0;
                 c.Z = (v1Sq * (v3.X - v2.X) + v2Sq * (v1.X - v3.X) + v3Sq * (v2.X - v1.X)) / (2 * cp);
                 r.Exchange(Vdist2(c, v1));
-                RcVec3f.Add(ref c, c, verts, p1);
+                c = RcVecUtils.Add(c, verts, p1);
                 return true;
             }
 
@@ -187,12 +185,9 @@ namespace DotRecast.Recast
 
         private static float DistPtTri(RcVec3f p, float[] verts, int a, int b, int c)
         {
-            RcVec3f v0 = new RcVec3f();
-            RcVec3f v1 = new RcVec3f();
-            RcVec3f v2 = new RcVec3f();
-            RcVec3f.Sub(ref v0, verts, c, a);
-            RcVec3f.Sub(ref v1, verts, b, a);
-            RcVec3f.Sub(ref v2, p, verts, a);
+            var v0 = RcVecUtils.Subtract(verts, c, a);
+            var v1 = RcVecUtils.Subtract(verts, b, a);
+            var v2 = RcVecUtils.Subtract(p, verts, a);
 
             float dot00 = Vdot2(v0, v0);
             float dot01 = Vdot2(v0, v1);

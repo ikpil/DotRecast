@@ -470,32 +470,6 @@ namespace DotRecast.Core.Numerics
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Add(ref RcVec3f e0, RcVec3f a, float[] verts, int i)
-        {
-            e0.X = a.X + verts[i];
-            e0.Y = a.Y + verts[i + 1];
-            e0.Z = a.Z + verts[i + 2];
-        }
-
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Sub(ref RcVec3f e0, float[] verts, int i, int j)
-        {
-            e0.X = verts[i] - verts[j];
-            e0.Y = verts[i + 1] - verts[j + 1];
-            e0.Z = verts[i + 2] - verts[j + 2];
-        }
-
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Sub(ref RcVec3f e0, RcVec3f i, float[] verts, int j)
-        {
-            e0.X = i.X - verts[j];
-            e0.Y = i.Y - verts[j + 1];
-            e0.Z = i.Z - verts[j + 2];
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static RcVec3f Cross(RcVec3f v1, RcVec3f v2)
         {
             return new RcVec3f(

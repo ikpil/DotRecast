@@ -138,10 +138,8 @@ namespace DotRecast.Recast
 
         public static void CalcTriNormal(float[] verts, int v0, int v1, int v2, ref RcVec3f norm)
         {
-            RcVec3f e0 = new RcVec3f();
-            RcVec3f e1 = new RcVec3f();
-            RcVec3f.Sub(ref e0, verts, v1 * 3, v0 * 3);
-            RcVec3f.Sub(ref e1, verts, v2 * 3, v0 * 3);
+            var e0 = RcVecUtils.Subtract(verts, v1 * 3, v0 * 3);
+            var e1 = RcVecUtils.Subtract(verts, v2 * 3, v0 * 3);
             norm = RcVec3f.Cross(e0, e1);
             norm = RcVec3f.Normalize(norm);
         }

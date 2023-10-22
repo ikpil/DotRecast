@@ -55,7 +55,40 @@ namespace DotRecast.Core.Numerics
             return @this.X * v[vi] +
                    @this.Z * v[vi + 2];
         }
-        
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static RcVec3f Add(RcVec3f a, float[] verts, int i)
+        {
+            return new RcVec3f(
+                a.X + verts[i],
+                a.Y + verts[i + 1],
+                a.Z + verts[i + 2]
+            );
+        }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static RcVec3f Subtract(float[] verts, int i, int j)
+        {
+            return new RcVec3f(
+                verts[i] - verts[j],
+                verts[i + 1] - verts[j + 1],
+                verts[i + 2] - verts[j + 2]
+            );
+        }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static RcVec3f Subtract(RcVec3f i, float[] verts, int j)
+        {
+            return new RcVec3f(
+                i.X - verts[j],
+                i.Y - verts[j + 1],
+                i.Z - verts[j + 2]
+            );
+        }
+
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Cross(float[] dest, float[] v1, float[] v2)
         {
