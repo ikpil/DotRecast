@@ -260,16 +260,6 @@ namespace DotRecast.Core.Numerics
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static RcVec3f Cross(RcVec3f v1, RcVec3f v2)
-        {
-            return new RcVec3f(
-                (v1.Y * v2.Z) - (v1.Z * v2.Y),
-                (v1.Z * v2.X) - (v1.X * v2.Z),
-                (v1.X * v2.Y) - (v1.Y * v2.X)
-            );
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static RcVec3f Lerp(RcVec3f v1, RcVec3f v2, float t)
         {
             return new RcVec3f(
@@ -505,21 +495,14 @@ namespace DotRecast.Core.Numerics
             e0.Z = i.Z - verts[j + 2];
         }
 
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Cross(float[] dest, float[] v1, float[] v2)
+        public static RcVec3f Cross(RcVec3f v1, RcVec3f v2)
         {
-            dest[0] = v1[1] * v2[2] - v1[2] * v2[1];
-            dest[1] = v1[2] * v2[0] - v1[0] * v2[2];
-            dest[2] = v1[0] * v2[1] - v1[1] * v2[0];
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Cross(ref RcVec3f dest, RcVec3f v1, RcVec3f v2)
-        {
-            dest.X = v1.Y * v2.Z - v1.Z * v2.Y;
-            dest.Y = v1.Z * v2.X - v1.X * v2.Z;
-            dest.Z = v1.X * v2.Y - v1.Y * v2.X;
+            return new RcVec3f(
+                (v1.Y * v2.Z) - (v1.Z * v2.Y),
+                (v1.Z * v2.X) - (v1.X * v2.Z),
+                (v1.X * v2.Y) - (v1.Y * v2.X)
+            );
         }
 
         /// Normalizes the vector.

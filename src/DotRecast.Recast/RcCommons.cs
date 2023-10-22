@@ -142,7 +142,7 @@ namespace DotRecast.Recast
             RcVec3f e1 = new RcVec3f();
             RcVec3f.Sub(ref e0, verts, v1 * 3, v0 * 3);
             RcVec3f.Sub(ref e1, verts, v2 * 3, v0 * 3);
-            RcVec3f.Cross(ref norm, e0, e1);
+            norm = RcVec3f.Cross(e0, e1);
             norm = RcVec3f.Normalize(norm);
         }
 

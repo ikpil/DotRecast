@@ -1,6 +1,5 @@
 using System;
 using DotRecast.Core.Numerics;
-
 using static DotRecast.Recast.Toolset.Gizmos.RcGizmoHelper;
 
 namespace DotRecast.Recast.Toolset.Gizmos
@@ -25,7 +24,7 @@ namespace DotRecast.Recast.Toolset.Gizmos
             normals[1] = RcVec3f.Normalize(normals[1]);
             normals[0] = GetSideVector(axis);
             normals[2] = RcVec3f.Zero;
-            RcVec3f.Cross(ref normals[2], normals[0], normals[1]);
+            normals[2] = RcVec3f.Cross(normals[0], normals[1]);
             normals[2] = RcVec3f.Normalize(normals[2]);
             triangles = GenerateSphericalTriangles();
             var trX = new RcVec3f(normals[0].X, normals[1].X, normals[2].X);
@@ -55,15 +54,14 @@ namespace DotRecast.Recast.Toolset.Gizmos
 
         private RcVec3f GetSideVector(RcVec3f axis)
         {
-            RcVec3f side = new RcVec3f(1, 0, 0);
+            var side = new RcVec3f(1, 0, 0);
             if (axis.X > 0.8)
             {
                 side = new RcVec3f(0, 0, 1);
             }
 
-            RcVec3f forward = new RcVec3f();
-            RcVec3f.Cross(ref forward, side, axis);
-            RcVec3f.Cross(ref side, axis, forward);
+            var forward = RcVec3f.Cross(side, axis);
+            side = RcVec3f.Cross(axis, forward);
             side = RcVec3f.Normalize(side);
             return side;
         }

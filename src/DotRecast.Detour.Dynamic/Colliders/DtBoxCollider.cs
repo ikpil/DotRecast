@@ -76,11 +76,11 @@ namespace DotRecast.Detour.Dynamic.Colliders
                 new RcVec3f(up.X, up.Y, up.Z),
                 RcVec3f.Zero
             };
-            
+
             halfEdges[1] = RcVec3f.Normalize(halfEdges[1]);
-            RcVec3f.Cross(ref halfEdges[0], up, forward);
+            halfEdges[0] = RcVec3f.Cross(up, forward);
             halfEdges[0] = RcVec3f.Normalize(halfEdges[0]);
-            RcVec3f.Cross(ref halfEdges[2], halfEdges[0], up);
+            halfEdges[2] = RcVec3f.Cross(halfEdges[0], up);
             halfEdges[2] = RcVec3f.Normalize(halfEdges[2]);
             halfEdges[0].X *= extent.X;
             halfEdges[0].Y *= extent.X;
