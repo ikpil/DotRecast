@@ -22,11 +22,11 @@ namespace DotRecast.Recast.Toolset.Gizmos
             RcVec3f axis = new RcVec3f(end.X - start.X, end.Y - start.Y, end.Z - start.Z);
             RcVec3f[] normals = new RcVec3f[3];
             normals[1] = new RcVec3f(end.X - start.X, end.Y - start.Y, end.Z - start.Z);
-            RcVec3f.Normalize(ref normals[1]);
+            normals[1] = RcVec3f.Normalize(normals[1]);
             normals[0] = GetSideVector(axis);
             normals[2] = RcVec3f.Zero;
             RcVec3f.Cross(ref normals[2], normals[0], normals[1]);
-            RcVec3f.Normalize(ref normals[2]);
+            normals[2] = RcVec3f.Normalize(normals[2]);
             triangles = GenerateCylindricalTriangles();
             RcVec3f trX = new RcVec3f(normals[0].X, normals[1].X, normals[2].X);
             RcVec3f trY = new RcVec3f(normals[0].Y, normals[1].Y, normals[2].Y);
@@ -53,7 +53,7 @@ namespace DotRecast.Recast.Toolset.Gizmos
                     v.X = vertices[i] - center.X;
                     v.Y = vertices[i + 1] - center.Y;
                     v.Z = vertices[i + 2] - center.Z;
-                    RcVec3f.Normalize(ref v);
+                    v = RcVec3f.Normalize(v);
                     gradient[i / 3] = Math.Clamp(0.57735026f * (v.X + v.Y + v.Z), -1, 1);
                 }
             }
@@ -70,7 +70,7 @@ namespace DotRecast.Recast.Toolset.Gizmos
             RcVec3f forward = new RcVec3f();
             RcVec3f.Cross(ref forward, side, axis);
             RcVec3f.Cross(ref side, axis, forward);
-            RcVec3f.Normalize(ref side);
+            side = RcVec3f.Normalize(side);
             return side;
         }
     }

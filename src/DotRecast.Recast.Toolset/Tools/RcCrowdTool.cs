@@ -296,7 +296,7 @@ namespace DotRecast.Recast.Toolset.Tools
         {
             RcVec3f vel = RcVec3f.Subtract(tgt, pos);
             vel.Y = 0.0f;
-            vel.Normalize();
+            vel = RcVec3f.Normalize(vel);
             return vel.Scale(speed);
         }
 

@@ -23,6 +23,8 @@ namespace DotRecast.Core.Numerics
 {
     public struct RcVec3f
     {
+        public const float EPSILON = 1e-6f;
+
         public float X;
         public float Y;
         public float Z;
@@ -148,21 +150,6 @@ namespace DotRecast.Core.Numerics
             return hash;
         }
 
-        /// Normalizes the vector.
-        /// @param[in,out] v The vector to normalize. [(x, y, z)]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Normalize()
-        {
-            float d = (float)(1.0f / Math.Sqrt(RcMath.Sqr(X) + RcMath.Sqr(Y) + RcMath.Sqr(Z)));
-            if (d != 0)
-            {
-                X *= d;
-                Y *= d;
-                Z *= d;
-            }
-        }
-
-        public const float EPSILON = 1e-6f;
 
         /// Normalizes the vector if the length is greater than zero.
         /// If the magnitude is zero, the vector is unchanged.
@@ -535,13 +522,23 @@ namespace DotRecast.Core.Numerics
             dest.Z = v1.X * v2.Y - v1.Y * v2.X;
         }
 
+        /// Normalizes the vector.
+        /// @param[in,out] v The vector to normalize. [(x, y, z)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Normalize(ref RcVec3f v)
+        public static RcVec3f Normalize(RcVec3f v)
         {
-            float d = (float)(1.0f / Math.Sqrt(v.X * v.X + v.Y * v.Y + v.Z * v.Z));
-            v.X *= d;
-            v.Y *= d;
-            v.Z *= d;
+            float d = (float)(1.0f / Math.Sqrt(RcMath.Sqr(v.X) + RcMath.Sqr(v.Y) + RcMath.Sqr(v.Z)));
+
+            if (d != 0)
+            {
+                return new RcVec3f(
+                    v.X *= d,
+                    v.Y *= d,
+                    v.Z *= d
+                );
+            }
+
+            return v;
         }
     }
 }

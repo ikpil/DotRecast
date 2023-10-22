@@ -180,7 +180,7 @@ namespace DotRecast.Detour.Crowd
                 dir.X = dir0.X - dir1.X * len0 * 0.5f;
                 dir.Y = 0;
                 dir.Z = dir0.Z - dir1.Z * len0 * 0.5f;
-                dir.Normalize();
+                dir = RcVec3f.Normalize(dir);
             }
 
             return dir;
@@ -193,7 +193,7 @@ namespace DotRecast.Detour.Crowd
             {
                 dir = RcVec3f.Subtract(corners[0].pos, npos);
                 dir.Y = 0;
-                dir.Normalize();
+                dir = RcVec3f.Normalize(dir);
             }
 
             return dir;

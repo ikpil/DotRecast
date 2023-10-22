@@ -79,9 +79,9 @@ namespace DotRecast.Recast
                 new RcVec3f(halfEdges[1].X, halfEdges[1].Y, halfEdges[1].Z),
                 new RcVec3f(halfEdges[2].X, halfEdges[2].Y, halfEdges[2].Z),
             };
-            RcVec3f.Normalize(ref normals[0]);
-            RcVec3f.Normalize(ref normals[1]);
-            RcVec3f.Normalize(ref normals[2]);
+            normals[0] = RcVec3f.Normalize(normals[0]);
+            normals[1] = RcVec3f.Normalize(normals[1]);
+            normals[2] = RcVec3f.Normalize(normals[2]);
 
             float[] vertices = new float[8 * 3];
             float[] bounds = new float[]

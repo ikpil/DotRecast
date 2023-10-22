@@ -183,7 +183,8 @@ namespace DotRecast.Recast.Toolset.Tools
                 0.01f + (float)random.NextDouble(),
                 (1f - 2 * (float)random.NextDouble())
             );
-            a.Normalize();
+            a = RcVec3f.Normalize(a);
+            
             float len = 1f + (float)random.NextDouble() * 20f;
             a.X *= len;
             a.Y *= len;
@@ -214,7 +215,7 @@ namespace DotRecast.Recast.Toolset.Tools
         {
             float radius = 0.7f + (float)random.NextDouble() * 4f;
             RcVec3f a = new RcVec3f(1f - 2 * (float)random.NextDouble(), 0.01f + (float)random.NextDouble(), 1f - 2 * (float)random.NextDouble());
-            a.Normalize();
+            a = RcVec3f.Normalize(a);
             float len = 2f + (float)random.NextDouble() * 20f;
             a[0] *= len;
             a[1] *= len;
@@ -233,7 +234,8 @@ namespace DotRecast.Recast.Toolset.Tools
             RcVec3f baseCenter = new RcVec3f(p.X, p.Y + 3, p.Z);
             RcVec3f baseUp = new RcVec3f(0, 1, 0);
             RcVec3f forward = new RcVec3f((1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()));
-            forward.Normalize();
+            forward = RcVec3f.Normalize(forward);
+            
             RcVec3f side = RcVec3f.Cross(forward, baseUp);
             DtBoxCollider @base = new DtBoxCollider(baseCenter, Detour.Dynamic.Colliders.DtBoxCollider.GetHalfEdges(baseUp, forward, baseExtent),
                 SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, walkableClimb);

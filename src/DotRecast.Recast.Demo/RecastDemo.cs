@@ -786,8 +786,10 @@ public class RecastDemo : IRecastDemoChannel
         }
 
         RcVec3f rayDir = new RcVec3f(rayEnd.X - rayStart.X, rayEnd.Y - rayStart.Y, rayEnd.Z - rayStart.Z);
+        rayDir = RcVec3f.Normalize(rayDir);
+        
         ISampleTool raySampleTool = toolset.GetTool();
-        rayDir.Normalize();
+        
         if (raySampleTool != null)
         {
             Logger.Information($"click ray - tool({raySampleTool.GetTool().GetName()}) rayStart({rayStart.X:0.#},{rayStart.Y:0.#},{rayStart.Z:0.#}) pos({rayDir.X:0.#},{rayDir.Y:0.#},{rayDir.Z:0.#}) shift({processHitTestShift})");

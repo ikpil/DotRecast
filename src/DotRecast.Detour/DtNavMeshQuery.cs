@@ -2363,10 +2363,7 @@ namespace DotRecast.Detour
                     // int vb = b * 3;
                     float dx = verts[b].X - verts[a].X;
                     float dz = verts[b].Z - verts[a].X;
-                    hit.hitNormal.X = dz;
-                    hit.hitNormal.Y = 0;
-                    hit.hitNormal.Z = -dx;
-                    hit.hitNormal.Normalize();
+                    hit.hitNormal = RcVec3f.Normalize(new RcVec3f(dz, 0, -dx));
                     return DtStatus.DT_SUCCSESS;
                 }
 
@@ -3302,10 +3299,7 @@ namespace DotRecast.Detour
             if (hasBestV)
             {
                 var tangent = RcVec3f.Subtract(bestvi, bestvj);
-                hitNormal.X = tangent.Z;
-                hitNormal.Y = 0;
-                hitNormal.Z = -tangent.X;
-                hitNormal.Normalize();
+                hitNormal = RcVec3f.Normalize(new RcVec3f(tangent.Z, 0, -tangent.X));
             }
 
             hitDist = (float)Math.Sqrt(radiusSqr);

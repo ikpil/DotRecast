@@ -127,7 +127,7 @@ namespace DotRecast.Detour.Crowd
                 RcVec3f orig = new RcVec3f();
                 RcVec3f dv = new RcVec3f();
                 cir.dp = RcVec3f.Subtract(pb, pa);
-                cir.dp.Normalize();
+                cir.dp = RcVec3f.Normalize(cir.dp);
                 dv = RcVec3f.Subtract(cir.dvel, dvel);
 
                 float a = DtUtils.TriArea2D(orig, cir.dp, dv);

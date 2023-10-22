@@ -21,12 +21,9 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using DotRecast.Core.Numerics;
-
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Crowd.Test;
-
-
 
 [Parallelizable]
 public class AbstractCrowdTest
@@ -155,7 +152,7 @@ public class AbstractCrowdTest
     {
         RcVec3f vel = RcVec3f.Subtract(tgt, pos);
         vel.Y = 0.0f;
-        vel.Normalize();
+        vel = RcVec3f.Normalize(vel);
         vel = vel.Scale(speed);
         return vel;
     }

@@ -50,7 +50,7 @@ public static class GizmoRenderer
         normal.X = e0.Y * e1.Z - e0.Z * e1.Y;
         normal.Y = e0.Z * e1.X - e0.X * e1.Z;
         normal.Z = e0.X * e1.Y - e0.Y * e1.X;
-        RcVec3f.Normalize(ref normal);
+        normal = RcVec3f.Normalize(normal);
         float c = Math.Clamp(0.57735026f * (normal.X + normal.Y + normal.Z), -1, 1);
         int col = DebugDraw.DuLerpCol(
             DebugDraw.DuRGBA(32, 32, 0, 160),
