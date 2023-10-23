@@ -178,7 +178,7 @@ namespace DotRecast.Recast
                 return true;
             }
 
-            RcVec3f.Copy(ref c, verts, p1);
+            c = new RcVec3f(verts.AsSpan(p1));
             r.Exchange(0f);
             return false;
         }
@@ -842,7 +842,7 @@ namespace DotRecast.Recast
 
             for (int i = 0; i < nin; ++i)
             {
-                RcVec3f.Copy(verts, i * 3, @in, i * 3);
+                RcVecUtils.Copy(verts, i * 3, @in, i * 3);
             }
 
             tris.Clear();
@@ -961,7 +961,7 @@ namespace DotRecast.Recast
                     {
                         for (int k = nidx - 2; k > 0; --k)
                         {
-                            RcVec3f.Copy(verts, nverts * 3, edge, idx[k] * 3);
+                            RcVecUtils.Copy(verts, nverts * 3, edge, idx[k] * 3);
                             hull[nhull++] = nverts;
                             nverts++;
                         }
@@ -970,7 +970,7 @@ namespace DotRecast.Recast
                     {
                         for (int k = 1; k < nidx - 1; ++k)
                         {
-                            RcVec3f.Copy(verts, nverts * 3, edge, idx[k] * 3);
+                            RcVecUtils.Copy(verts, nverts * 3, edge, idx[k] * 3);
                             hull[nhull++] = nverts;
                             nverts++;
                         }
@@ -1000,10 +1000,8 @@ namespace DotRecast.Recast
             if (sampleDist > 0)
             {
                 // Create sample locations in a grid.
-                RcVec3f bmin = new RcVec3f();
-                RcVec3f bmax = new RcVec3f();
-                RcVec3f.Copy(ref bmin, @in, 0);
-                RcVec3f.Copy(ref bmax, @in, 0);
+                RcVec3f bmin = new RcVec3f(@in);
+                RcVec3f bmax = new RcVec3f(@in);
                 for (int i = 1; i < nin; ++i)
                 {
                     bmin.Min(@in, i * 3);
@@ -1662,7 +1660,7 @@ namespace DotRecast.Recast
 
                 for (int k = 0; k < dm.nverts; ++k)
                 {
-                    RcVec3f.Copy(mesh.verts, mesh.nverts * 3, dm.verts, k * 3);
+                    RcVecUtils.Copy(mesh.verts, mesh.nverts * 3, dm.verts, k * 3);
                     mesh.nverts++;
                 }
 

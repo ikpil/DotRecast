@@ -457,10 +457,8 @@ namespace DotRecast.Recast
             int zStride = xSize; // For readability
 
             // Compute the bounding box of the polygon
-            RcVec3f bmin = new RcVec3f();
-            RcVec3f bmax = new RcVec3f();
-            RcVec3f.Copy(ref bmin, verts, 0);
-            RcVec3f.Copy(ref bmax, verts, 0);
+            RcVec3f bmin = new RcVec3f(verts);
+            RcVec3f bmax = new RcVec3f(verts);
             for (int i = 3; i < verts.Length; i += 3)
             {
                 bmin.Min(verts, i);

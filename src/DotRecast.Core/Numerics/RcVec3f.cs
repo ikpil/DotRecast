@@ -438,23 +438,6 @@ namespace DotRecast.Core.Numerics
             return float.IsFinite(v.X) && float.IsFinite(v.Z);
         }
 
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Copy(ref RcVec3f @out, float[] @in, int i)
-        {
-            @out.X = @in[i + 0];
-            @out.Y = @in[i + 1];
-            @out.Z = @in[i + 2];
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Copy(float[] @out, int n, float[] @in, int m)
-        {
-            @out[n] = @in[m];
-            @out[n + 1] = @in[m + 1];
-            @out[n + 2] = @in[m + 2];
-        }
-        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly void CopyTo(float[] array)
         {
