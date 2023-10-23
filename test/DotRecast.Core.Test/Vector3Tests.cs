@@ -8,7 +8,7 @@ namespace DotRecast.Core.Test;
 public class Vector3Tests
 {
     [Test]
-    [Repeat(10000)]
+    [Repeat(100000)]
     public void TestVectorLength()
     {
         var v1 = new Vector3(Random.Shared.NextSingle(), Random.Shared.NextSingle(), Random.Shared.NextSingle());
@@ -19,7 +19,7 @@ public class Vector3Tests
     }
 
     [Test]
-    [Repeat(10000)]
+    [Repeat(100000)]
     public void TestVectorSubtract()
     {
         var v1 = new Vector3(Random.Shared.NextSingle(), Random.Shared.NextSingle(), Random.Shared.NextSingle());
@@ -41,7 +41,7 @@ public class Vector3Tests
 
 
     [Test]
-    [Repeat(10000)]
+    [Repeat(100000)]
     public void TestVectorAdd()
     {
         var v1 = new Vector3(Random.Shared.NextSingle(), Random.Shared.NextSingle(), Random.Shared.NextSingle());
@@ -62,7 +62,7 @@ public class Vector3Tests
     }
 
     [Test]
-    [Repeat(10000)]
+    [Repeat(100000)]
     public void TestVectorNormalize()
     {
         var v1 = new Vector3(Random.Shared.NextSingle(), Random.Shared.NextSingle(), Random.Shared.NextSingle());
@@ -77,7 +77,7 @@ public class Vector3Tests
     }
 
     [Test]
-    [Repeat(10000)]
+    [Repeat(100000)]
     public void TestVectorCross()
     {
         var v1 = new Vector3(Random.Shared.NextSingle(), Random.Shared.NextSingle(), Random.Shared.NextSingle());

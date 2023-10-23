@@ -442,7 +442,9 @@ namespace DotRecast.Core.Numerics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Copy(ref RcVec3f @out, float[] @in, int i)
         {
-            Copy(ref @out, 0, @in, i);
+            @out.X = @in[i + 0];
+            @out.Y = @in[i + 1];
+            @out.Z = @in[i + 2];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -454,19 +456,11 @@ namespace DotRecast.Core.Numerics
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Copy(float[] @out, int n, RcVec3f @in, int m)
+        public static void Copy(float[] @out, int n, RcVec3f @in)
         {
-            @out[n] = @in[m];
-            @out[n + 1] = @in[m + 1];
-            @out[n + 2] = @in[m + 2];
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Copy(ref RcVec3f @out, int n, float[] @in, int m)
-        {
-            @out[n] = @in[m];
-            @out[n + 1] = @in[m + 1];
-            @out[n + 2] = @in[m + 2];
+            @out[n + 0] = @in.X;
+            @out[n + 1] = @in.Y;
+            @out[n + 2] = @in.Z;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

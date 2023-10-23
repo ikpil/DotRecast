@@ -1088,7 +1088,7 @@ namespace DotRecast.Recast
                     // Mark sample as added.
                     samples[besti * 4 + 3] = 1;
                     // Add the new sample point.
-                    RcVec3f.Copy(verts, nverts * 3, bestpt, 0);
+                    RcVec3f.Copy(verts, nverts * 3, bestpt);
                     nverts++;
 
                     // Create new triangulation.
