@@ -91,5 +91,22 @@ public class Vector3Tests
         Assert.That(v3.X, Is.EqualTo(v33.X));
         Assert.That(v3.Y, Is.EqualTo(v33.Y));
         Assert.That(v3.Z, Is.EqualTo(v33.Z));
+        
     }
+
+    [Test]
+    [Repeat(100000)]
+    public void TestVectorCopyTo()
+    {
+        var v1 = new Vector3(Random.Shared.NextSingle(), Random.Shared.NextSingle(), Random.Shared.NextSingle());
+        var array1 = new float[3];
+        v1.CopyTo(array1);
+        
+        var v11 = new RcVec3f(v1.X, v1.Y, v1.Z);
+        var array11 = new float[3];
+        v11.CopyTo(array11);
+        
+        Assert.That(array1, Is.EqualTo(array11));
+    }
+
 }

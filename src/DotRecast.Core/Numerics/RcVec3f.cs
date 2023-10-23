@@ -454,13 +454,19 @@ namespace DotRecast.Core.Numerics
             @out[n + 1] = @in[m + 1];
             @out[n + 2] = @in[m + 2];
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly void CopyTo(float[] array)
+        {
+            CopyTo(array, 0);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Copy(float[] @out, int n, RcVec3f @in)
+        public readonly void CopyTo(float[] array, int n)
         {
-            @out[n + 0] = @in.X;
-            @out[n + 1] = @in.Y;
-            @out[n + 2] = @in.Z;
+            array[n + 0] = X;
+            array[n + 1] = Y;
+            array[n + 2] = Z;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
