@@ -274,12 +274,17 @@ namespace DotRecast.Core.Numerics
         /// @param[in] v2 A point. [(x, y, z)]
         /// @return The distance between the two points.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Distance(RcVec3f v1, RcVec3f v2)
+        public static float Distance(RcVec3f value1, RcVec3f value2)
         {
-            float dx = v2.X - v1.X;
-            float dy = v2.Y - v1.Y;
-            float dz = v2.Z - v1.Z;
-            return (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
+            float distanceSquared = DistanceSquared(value1, value2);
+            return MathF.Sqrt(distanceSquared);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float DistanceSquared(RcVec3f value1, RcVec3f value2)
+        {
+            var difference = value1 - value2;
+            return Dot(difference, difference);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
