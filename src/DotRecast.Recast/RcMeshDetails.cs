@@ -165,7 +165,7 @@ namespace DotRecast.Recast
             var v3 = RcVecUtils.Subtract(verts, p3, p1);
 
             float cp = Vcross2(v1, v2, v3);
-            if (Math.Abs(cp) > EPS)
+            if (MathF.Abs(cp) > EPS)
             {
                 float v1Sq = Vdot2(v1, v1);
                 float v2Sq = Vdot2(v2, v2);
@@ -205,7 +205,7 @@ namespace DotRecast.Recast
             if (u >= -EPS && v >= -EPS && (u + v) <= 1 + EPS)
             {
                 float y = verts[a + 1] + v0.Y * u + v1.Y * v;
-                return Math.Abs(y - p.Y);
+                return MathF.Abs(y - p.Y);
             }
 
             return float.MaxValue;
@@ -345,8 +345,8 @@ namespace DotRecast.Recast
         private static int GetHeight(float fx, float fy, float fz, float cs, float ics, float ch, int radius,
             RcHeightPatch hp)
         {
-            int ix = (int)Math.Floor(fx * ics + 0.01f);
-            int iz = (int)Math.Floor(fz * ics + 0.01f);
+            int ix = (int)MathF.Floor(fx * ics + 0.01f);
+            int iz = (int)MathF.Floor(fz * ics + 0.01f);
             ix = Math.Clamp(ix - hp.xmin, 0, hp.width - 1);
             iz = Math.Clamp(iz - hp.ymin, 0, hp.height - 1);
             int h = hp.data[ix + iz * hp.width];
@@ -373,7 +373,7 @@ namespace DotRecast.Recast
                         int nh = hp.data[nx + nz * hp.width];
                         if (nh != RC_UNSET_HEIGHT)
                         {
-                            float d = Math.Abs(nh * ch - fy);
+                            float d = MathF.Abs(nh * ch - fy);
                             if (d < dmin)
                             {
                                 h = nh;
@@ -865,7 +865,7 @@ namespace DotRecast.Recast
                     bool swapped = false;
                     // Make sure the segments are always handled in same order
                     // using lexological sort or else there will be seams.
-                    if (Math.Abs(@in[vj + 0] - @in[vi + 0]) < 1e-6f)
+                    if (MathF.Abs(@in[vj + 0] - @in[vi + 0]) < 1e-6f)
                     {
                         if (@in[vj + 2] > @in[vi + 2])
                         {
@@ -891,7 +891,7 @@ namespace DotRecast.Recast
                     float dy = @in[vi + 1] - @in[vj + 1];
                     float dz = @in[vi + 2] - @in[vj + 2];
                     float d = MathF.Sqrt(dx * dx + dz * dz);
-                    int nn = 1 + (int)Math.Floor(d / sampleDist);
+                    int nn = 1 + (int)MathF.Floor(d / sampleDist);
                     if (nn >= MAX_VERTS_PER_EDGE)
                     {
                         nn = MAX_VERTS_PER_EDGE - 1;
@@ -1008,10 +1008,10 @@ namespace DotRecast.Recast
                     bmax.Max(@in, i * 3);
                 }
 
-                int x0 = (int)Math.Floor(bmin.X / sampleDist);
-                int x1 = (int)Math.Ceiling(bmax.X / sampleDist);
-                int z0 = (int)Math.Floor(bmin.Z / sampleDist);
-                int z1 = (int)Math.Ceiling(bmax.Z / sampleDist);
+                int x0 = (int)MathF.Floor(bmin.X / sampleDist);
+                int x1 = (int)MathF.Ceiling(bmax.X / sampleDist);
+                int z0 = (int)MathF.Floor(bmin.Z / sampleDist);
+                int z1 = (int)MathF.Ceiling(bmax.Z / sampleDist);
                 samples.Clear();
                 for (int z = z0; z < z1; ++z)
                 {
@@ -1433,7 +1433,7 @@ namespace DotRecast.Recast
             float ch = mesh.ch;
             RcVec3f orig = mesh.bmin;
             int borderSize = mesh.borderSize;
-            int heightSearchRadius = (int)Math.Max(1, Math.Ceiling(mesh.maxEdgeError));
+            int heightSearchRadius = (int)Math.Max(1, MathF.Ceiling(mesh.maxEdgeError));
 
             List<int> tris = new List<int>(512);
             float[] verts = new float[256 * 3];

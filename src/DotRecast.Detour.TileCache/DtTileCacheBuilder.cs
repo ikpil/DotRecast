@@ -259,7 +259,7 @@ namespace DotRecast.Detour.TileCache
         {
             if (layer.areas[ia] != layer.areas[ib])
                 return false;
-            if (Math.Abs(layer.heights[ia] - layer.heights[ib]) > walkableClimb)
+            if (MathF.Abs(layer.heights[ia] - layer.heights[ib]) > walkableClimb)
                 return false;
             return true;
         }
@@ -606,7 +606,7 @@ namespace DotRecast.Detour.TileCache
                     {
                         int idx = px + pz * w;
                         int lh = layer.heights[idx];
-                        if (Math.Abs(lh - y) <= walkableClimb && layer.areas[idx] != DT_TILECACHE_NULL_AREA)
+                        if (MathF.Abs(lh - y) <= walkableClimb && layer.areas[idx] != DT_TILECACHE_NULL_AREA)
                         {
                             height = Math.Max(height, (char)lh);
                             portal &= (layer.cons[idx] >> 4);
@@ -727,7 +727,7 @@ namespace DotRecast.Detour.TileCache
             while (i != DT_TILECACHE_NULL_IDX)
             {
                 int tv = i * 3;
-                if (verts[tv] == x && verts[tv + 2] == z && (Math.Abs(verts[tv + 1] - y) <= 2))
+                if (verts[tv] == x && verts[tv + 2] == z && (MathF.Abs(verts[tv + 1] - y) <= 2))
                     return i;
                 i = nextVert[i]; // next
             }
@@ -1821,12 +1821,12 @@ namespace DotRecast.Detour.TileCache
             float px = (pos.X - orig.X) * ics;
             float pz = (pos.Z - orig.Z) * ics;
 
-            int minx = (int)Math.Floor((bmin.X - orig.X) * ics);
-            int miny = (int)Math.Floor((bmin.Y - orig.Y) * ich);
-            int minz = (int)Math.Floor((bmin.Z - orig.Z) * ics);
-            int maxx = (int)Math.Floor((bmax.X - orig.X) * ics);
-            int maxy = (int)Math.Floor((bmax.Y - orig.Y) * ich);
-            int maxz = (int)Math.Floor((bmax.Z - orig.Z) * ics);
+            int minx = (int)MathF.Floor((bmin.X - orig.X) * ics);
+            int miny = (int)MathF.Floor((bmin.Y - orig.Y) * ich);
+            int minz = (int)MathF.Floor((bmin.Z - orig.Z) * ics);
+            int maxx = (int)MathF.Floor((bmax.X - orig.X) * ics);
+            int maxy = (int)MathF.Floor((bmax.Y - orig.Y) * ich);
+            int maxz = (int)MathF.Floor((bmax.Z - orig.Z) * ics);
 
             if (maxx < 0)
                 return;
@@ -1869,12 +1869,12 @@ namespace DotRecast.Detour.TileCache
             float ics = 1.0f / cs;
             float ich = 1.0f / ch;
 
-            int minx = (int)Math.Floor((bmin.X - orig.X) * ics);
-            int miny = (int)Math.Floor((bmin.Y - orig.Y) * ich);
-            int minz = (int)Math.Floor((bmin.Z - orig.Z) * ics);
-            int maxx = (int)Math.Floor((bmax.X - orig.X) * ics);
-            int maxy = (int)Math.Floor((bmax.Y - orig.Y) * ich);
-            int maxz = (int)Math.Floor((bmax.Z - orig.Z) * ics);
+            int minx = (int)MathF.Floor((bmin.X - orig.X) * ics);
+            int miny = (int)MathF.Floor((bmin.Y - orig.Y) * ich);
+            int minz = (int)MathF.Floor((bmin.Z - orig.Z) * ics);
+            int maxx = (int)MathF.Floor((bmax.X - orig.X) * ics);
+            int maxy = (int)MathF.Floor((bmax.Y - orig.Y) * ich);
+            int maxz = (int)MathF.Floor((bmax.Z - orig.Z) * ics);
 
             if (maxx < 0)
                 return;
@@ -2002,12 +2002,12 @@ namespace DotRecast.Detour.TileCache
             float cz = (center.Z - orig.Z) * ics;
 
             float maxr = 1.41f * Math.Max(extents.X, extents.Z);
-            int minx = (int)Math.Floor(cx - maxr * ics);
-            int maxx = (int)Math.Floor(cx + maxr * ics);
-            int minz = (int)Math.Floor(cz - maxr * ics);
-            int maxz = (int)Math.Floor(cz + maxr * ics);
-            int miny = (int)Math.Floor((center.Y - extents.Y - orig.Y) * ich);
-            int maxy = (int)Math.Floor((center.Y + extents.Y - orig.Y) * ich);
+            int minx = (int)MathF.Floor(cx - maxr * ics);
+            int maxx = (int)MathF.Floor(cx + maxr * ics);
+            int minz = (int)MathF.Floor(cz - maxr * ics);
+            int maxz = (int)MathF.Floor(cz + maxr * ics);
+            int miny = (int)MathF.Floor((center.Y - extents.Y - orig.Y) * ich);
+            int maxy = (int)MathF.Floor((center.Y + extents.Y - orig.Y) * ich);
 
             if (maxx < 0)
                 return;

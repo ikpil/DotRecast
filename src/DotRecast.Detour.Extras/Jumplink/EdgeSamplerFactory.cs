@@ -36,7 +36,7 @@ namespace DotRecast.Detour.Extras.Jumplink
 
             float dx = acfg.endDistance - 2 * acfg.agentRadius;
             float cs = acfg.cellSize;
-            int nsamples = Math.Max(2, (int)Math.Ceiling(dx / cs));
+            int nsamples = Math.Max(2, (int)MathF.Ceiling(dx / cs));
 
             for (int j = 0; j < nsamples; ++j)
             {

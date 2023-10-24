@@ -48,7 +48,7 @@ namespace DotRecast.Recast.Toolset.Tools
             int th = (gh + ts - 1) / ts;
 
             // Generation params.
-            var walkableRadius = (int)Math.Ceiling(setting.agentRadius / setting.cellSize); // Reserve enough padding.
+            var walkableRadius = (int)MathF.Ceiling(setting.agentRadius / setting.cellSize); // Reserve enough padding.
             RcConfig cfg = new RcConfig(
                 true, setting.tileSize, setting.tileSize,
                 walkableRadius + 3,

@@ -23,8 +23,6 @@ using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
 {
-    
-
     public static class DtNavMeshBuilder
     {
         const int MESH_NULL_IDX = 0xffff;
@@ -208,8 +206,8 @@ namespace DotRecast.Detour
                     }
 
                     // Remap y
-                    it.bmin[1] = (int)Math.Floor(it.bmin[1] * option.ch * quantFactor);
-                    it.bmax[1] = (int)Math.Ceiling(it.bmax[1] * option.ch * quantFactor);
+                    it.bmin[1] = (int)MathF.Floor(it.bmin[1] * option.ch * quantFactor);
+                    it.bmax[1] = (int)MathF.Ceiling(it.bmax[1] * option.ch * quantFactor);
                 }
             }
 

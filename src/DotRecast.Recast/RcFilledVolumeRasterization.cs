@@ -217,8 +217,8 @@ namespace DotRecast.Recast
                     float[] h = intersection.Invoke(rectangle);
                     if (h != null)
                     {
-                        int smin = (int)Math.Floor((h[0] - hf.bmin.Y) * ich);
-                        int smax = (int)Math.Ceiling((h[1] - hf.bmin.Y) * ich);
+                        int smin = (int)MathF.Floor((h[0] - hf.bmin.Y) * ich);
+                        int smax = (int)MathF.Ceiling((h[1] - hf.bmin.Y) * ich);
                         if (smin != smax)
                         {
                             int ismin = Math.Clamp(smin, 0, SPAN_MAX_HEIGHT);
@@ -433,7 +433,7 @@ namespace DotRecast.Recast
             float a = dd - nd * nd;
             float k = RcVec3f.Dot(m, m) - radiusSqr;
             float c = dd * k - md * md;
-            if (Math.Abs(a) < EPSILON)
+            if (MathF.Abs(a) < EPSILON)
             {
                 // Segment runs parallel to cylinder axis
                 if (c > 0.0f)
@@ -523,7 +523,7 @@ namespace DotRecast.Recast
                 point.Z = ((i & 2) == 0) ? rectangle[1] : rectangle[3];
                 for (int j = 0; j < 6; j++)
                 {
-                    if (Math.Abs(planes[j][1]) > EPSILON)
+                    if (MathF.Abs(planes[j][1]) > EPSILON)
                     {
                         float dotNormalPoint = RcVecUtils.Dot(planes[j], point);
                         float t = (planes[j][3] - dotNormalPoint) / planes[j][1];
@@ -562,7 +562,7 @@ namespace DotRecast.Recast
                 float dx = vertices[vj] - x;
                 float dy = vertices[vj + 1] - y;
                 float dz = vertices[vj + 2] - z;
-                if (Math.Abs(dx) > EPSILON)
+                if (MathF.Abs(dx) > EPSILON)
                 {
                     if (XSlabSegmentIntersection(rectangle, x, y, z, dx, dy, dz, rectangle[0], out var iy))
                     {
@@ -577,7 +577,7 @@ namespace DotRecast.Recast
                     }
                 }
 
-                if (Math.Abs(dz) > EPSILON)
+                if (MathF.Abs(dz) > EPSILON)
                 {
                     if (ZSlabSegmentIntersection(rectangle, x, y, z, dx, dy, dz, rectangle[1], out var iy))
                     {
@@ -614,7 +614,7 @@ namespace DotRecast.Recast
                     continue;
                 }
 
-                if (Math.Abs(planes[tri][1]) < EPSILON)
+                if (MathF.Abs(planes[tri][1]) < EPSILON)
                 {
                     continue;
                 }
@@ -637,7 +637,7 @@ namespace DotRecast.Recast
                     float dx = verts[vj] - x;
                     float dy = verts[vj + 1] - y;
                     float dz = verts[vj + 2] - z;
-                    if (Math.Abs(dx) > EPSILON)
+                    if (MathF.Abs(dx) > EPSILON)
                     {
                         if (XSlabSegmentIntersection(rectangle, x, y, z, dx, dy, dz, rectangle[0], out var iy))
                         {
@@ -652,7 +652,7 @@ namespace DotRecast.Recast
                         }
                     }
 
-                    if (Math.Abs(dz) > EPSILON)
+                    if (MathF.Abs(dz) > EPSILON)
                     {
                         if (ZSlabSegmentIntersection(rectangle, x, y, z, dx, dy, dz, rectangle[1], out var iy))
                         {

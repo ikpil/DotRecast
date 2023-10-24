@@ -29,7 +29,7 @@ namespace DotRecast.Recast.Toolset.Gizmos
             vertices[vi++] = 0;
             for (int r = 0; r <= rings; r++)
             {
-                double theta = Math.PI * (r + 1) / (rings + 2);
+                double theta = MathF.PI * (r + 1) / (rings + 2);
                 vi = GenerateRingVertices(segments, vertices, vi, theta);
             }
 
@@ -51,7 +51,7 @@ namespace DotRecast.Recast.Toolset.Gizmos
             int vi = 0;
             for (int r = 0; r < 4; r++)
             {
-                vi = GenerateRingVertices(segments, vertices, vi, Math.PI * 0.5);
+                vi = GenerateRingVertices(segments, vertices, vi, MathF.PI * 0.5);
             }
 
             return vertices;
@@ -63,7 +63,7 @@ namespace DotRecast.Recast.Toolset.Gizmos
             double sinTheta = Math.Sin(theta);
             for (int p = 0; p <= segments; p++)
             {
-                double phi = 2 * Math.PI * p / segments;
+                double phi = 2 * MathF.PI * p / segments;
                 double cosPhi = Math.Cos(phi);
                 double sinPhi = Math.Sin(phi);
                 vertices[vi++] = (float)(sinTheta * cosPhi);

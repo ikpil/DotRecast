@@ -62,10 +62,10 @@ namespace DotRecast.Detour.Crowd
 
         public void AddItem(DtCrowdAgent agent, float minx, float miny, float maxx, float maxy)
         {
-            int iminx = (int)Math.Floor(minx * _invCellSize);
-            int iminy = (int)Math.Floor(miny * _invCellSize);
-            int imaxx = (int)Math.Floor(maxx * _invCellSize);
-            int imaxy = (int)Math.Floor(maxy * _invCellSize);
+            int iminx = (int)MathF.Floor(minx * _invCellSize);
+            int iminy = (int)MathF.Floor(miny * _invCellSize);
+            int imaxx = (int)MathF.Floor(maxx * _invCellSize);
+            int imaxy = (int)MathF.Floor(maxy * _invCellSize);
 
             for (int y = iminy; y <= imaxy; ++y)
             {
@@ -86,10 +86,10 @@ namespace DotRecast.Detour.Crowd
         // 해당 셀 사이즈의 크기로 x ~ y 영역을 찾아, 군집 에이전트를 가져오는 코드
         public int QueryItems(float minx, float miny, float maxx, float maxy, ref HashSet<DtCrowdAgent> result)
         {
-            int iminx = (int)Math.Floor(minx * _invCellSize);
-            int iminy = (int)Math.Floor(miny * _invCellSize);
-            int imaxx = (int)Math.Floor(maxx * _invCellSize);
-            int imaxy = (int)Math.Floor(maxy * _invCellSize);
+            int iminx = (int)MathF.Floor(minx * _invCellSize);
+            int iminy = (int)MathF.Floor(miny * _invCellSize);
+            int imaxx = (int)MathF.Floor(maxx * _invCellSize);
+            int imaxy = (int)MathF.Floor(maxy * _invCellSize);
 
             for (int y = iminy; y <= imaxy; ++y)
             {

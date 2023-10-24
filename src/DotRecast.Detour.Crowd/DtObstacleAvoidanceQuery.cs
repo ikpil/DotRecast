@@ -188,7 +188,7 @@ namespace DotRecast.Detour.Crowd
             RcVec3f v = RcVec3f.Subtract(bq, bp);
             RcVec3f w = RcVec3f.Subtract(ap, bp);
             float d = RcVec3f.Perp2D(u, v);
-            if (Math.Abs(d) < 1e-6f)
+            if (MathF.Abs(d) < 1e-6f)
                 return false;
 
             d = 1.0f / d;
@@ -376,8 +376,8 @@ namespace DotRecast.Detour.Crowd
         RcVec3f DtRotate2D(float[] v, float ang)
         {
             RcVec3f dest = new RcVec3f();
-            float c = (float)Math.Cos(ang);
-            float s = (float)Math.Sin(ang);
+            float c = MathF.Cos(ang);
+            float s = MathF.Sin(ang);
             dest.X = v[0] * c - v[2] * s;
             dest.Z = v[0] * s + v[2] * c;
             dest.Y = v[1];
@@ -412,8 +412,8 @@ namespace DotRecast.Detour.Crowd
             int nd = Math.Clamp(ndivs, 1, DT_MAX_PATTERN_DIVS);
             int nr = Math.Clamp(nrings, 1, DT_MAX_PATTERN_RINGS);
             float da = (1.0f / nd) * DT_PI * 2;
-            float ca = (float)Math.Cos(da);
-            float sa = (float)Math.Sin(da);
+            float ca = MathF.Cos(da);
+            float sa = MathF.Sin(da);
 
             // desired direction
             float[] ddir = new float[6];

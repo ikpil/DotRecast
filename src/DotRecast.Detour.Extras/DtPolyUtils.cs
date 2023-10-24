@@ -64,7 +64,7 @@ namespace DotRecast.Detour.Extras
         {
             for (int i = 0; i < 3; i++)
             {
-                if (Math.Abs(verts[3 * v + i] - verts2[3 * v2 + 1]) > float.Epsilon)
+                if (MathF.Abs(verts[3 * v + i] - verts2[3 * v2 + 1]) > float.Epsilon)
                 {
                     return false;
                 }

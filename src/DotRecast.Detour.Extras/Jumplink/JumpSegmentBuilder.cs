@@ -121,7 +121,7 @@ namespace DotRecast.Detour.Extras.Jumplink
         private void AddNeighbour(EdgeSampler es, Queue<int[]> queue, float agentClimb, float h, int i, int j)
         {
             GroundSample q = es.end[j].gsamples[i];
-            if (q.validTrajectory && Math.Abs(q.p.Y - h) < agentClimb)
+            if (q.validTrajectory && MathF.Abs(q.p.Y - h) < agentClimb)
             {
                 queue.Enqueue(new int[] { i, j });
             }

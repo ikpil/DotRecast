@@ -64,7 +64,7 @@ namespace DotRecast.Detour
                 float cross = B.X * A.Z - A.X * B.Z; // TriArea2D({0, 0}, A, B);
                 float aHB = DtUtils.TriArea2D(b1, b, a);
                 float bHA = DtUtils.TriArea2D(a1, a, b);
-                if (Math.Abs(cross) < EPSILON)
+                if (MathF.Abs(cross) < EPSILON)
                 {
                     cross = 0f;
                 }
@@ -100,7 +100,7 @@ namespace DotRecast.Detour
                     return null;
                 }
                 /* Special case: A & B collinear. */
-                else if (parallel && Math.Abs(aHB) < EPSILON && Math.Abs(bHA) < EPSILON)
+                else if (parallel && MathF.Abs(aHB) < EPSILON && MathF.Abs(bHA) < EPSILON)
                 {
                     /* Advance but do not output point. */
                     if (f == DtConvexConvexInFlag.Pin)
@@ -276,7 +276,7 @@ namespace DotRecast.Detour
 
         private static bool Between(RcVec3f a, RcVec3f b, RcVec3f c)
         {
-            if (Math.Abs(a.X - b.X) > Math.Abs(a.Z - b.Z))
+            if (MathF.Abs(a.X - b.X) > MathF.Abs(a.Z - b.Z))
             {
                 return ((a.X <= c.X) && (c.X <= b.X)) || ((a.X >= c.X) && (c.X >= b.X));
             }

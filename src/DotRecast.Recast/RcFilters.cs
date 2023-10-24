@@ -61,7 +61,7 @@ namespace DotRecast.Recast
                         // span just below it, mark the span above it walkable too.
                         if (!walkable && previousWalkable)
                         {
-                            if (Math.Abs(s.smax - ps.smax) <= walkableClimb)
+                            if (MathF.Abs(s.smax - ps.smax) <= walkableClimb)
                                 s.area = previousArea;
                         }
 
@@ -142,7 +142,7 @@ namespace DotRecast.Recast
                                     minh = Math.Min(minh, nbot - bot);
 
                                     // Find min/max accessible neighbour height.
-                                    if (Math.Abs(nbot - bot) <= walkableClimb)
+                                    if (MathF.Abs(nbot - bot) <= walkableClimb)
                                     {
                                         if (nbot < asmin)
                                             asmin = nbot;

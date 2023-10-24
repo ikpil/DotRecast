@@ -181,9 +181,9 @@ namespace DotRecast.Core.Numerics
         public static RcMatrix4x4f CreateFromRotate(float a, float x, float y, float z)
         {
             var matrix = new RcMatrix4x4f();
-            a = (float)(a * Math.PI / 180.0); // convert to radians
-            float s = (float)Math.Sin(a);
-            float c = (float)Math.Cos(a);
+            a = (float)(a * MathF.PI / 180.0); // convert to radians
+            float s = MathF.Sin(a);
+            float c = MathF.Cos(a);
             float t = 1.0f - c;
 
             float tx = t * x;

@@ -221,7 +221,7 @@ namespace DotRecast.Detour
 
             // Compute scaled barycentric coordinates
             float denom = v0.X * v1.Z - v0.Z * v1.X;
-            if (Math.Abs(denom) < EPS)
+            if (MathF.Abs(denom) < EPS)
             {
                 return false;
             }
@@ -364,7 +364,7 @@ namespace DotRecast.Detour
                 var diff = RcVec3f.Subtract(p0v, vpj);
                 float n = RcVec3f.Perp2D(edge, diff);
                 float d = RcVec3f.Perp2D(dir, edge);
-                if (Math.Abs(d) < EPS)
+                if (MathF.Abs(d) < EPS)
                 {
                     // S is nearly parallel to this edge
                     if (n < 0)
@@ -426,7 +426,7 @@ namespace DotRecast.Detour
             RcVec3f v = RcVec3f.Subtract(bq, bp);
             RcVec3f w = RcVec3f.Subtract(ap, bp);
             float d = RcVec3f.PerpXZ(u, v);
-            if (Math.Abs(d) < 1e-6f)
+            if (MathF.Abs(d) < 1e-6f)
             {
                 return false;
             }

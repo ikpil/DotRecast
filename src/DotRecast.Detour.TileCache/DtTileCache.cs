@@ -377,8 +377,8 @@ namespace DotRecast.Detour.TileCache
             ob.type = DtTileCacheObstacleType.ORIENTED_BOX;
             ob.center = center;
             ob.extents = extents;
-            float coshalf = (float)Math.Cos(0.5f * yRadians);
-            float sinhalf = (float)Math.Sin(-0.5f * yRadians);
+            float coshalf = MathF.Cos(0.5f * yRadians);
+            float sinhalf = MathF.Sin(-0.5f * yRadians);
             ob.rotAux[0] = coshalf * sinhalf;
             ob.rotAux[1] = coshalf * coshalf - 0.5f;
             return AddObstacleRequest(ob).refs;
@@ -442,10 +442,10 @@ namespace DotRecast.Detour.TileCache
             List<long> results = new List<long>();
             float tw = m_params.width * m_params.cs;
             float th = m_params.height * m_params.cs;
-            int tx0 = (int)Math.Floor((bmin.X - m_params.orig.X) / tw);
-            int tx1 = (int)Math.Floor((bmax.X - m_params.orig.X) / tw);
-            int ty0 = (int)Math.Floor((bmin.Z - m_params.orig.Z) / th);
-            int ty1 = (int)Math.Floor((bmax.Z - m_params.orig.Z) / th);
+            int tx0 = (int)MathF.Floor((bmin.X - m_params.orig.X) / tw);
+            int tx1 = (int)MathF.Floor((bmax.X - m_params.orig.X) / tw);
+            int ty0 = (int)MathF.Floor((bmin.Z - m_params.orig.Z) / th);
+            int ty1 = (int)MathF.Floor((bmax.Z - m_params.orig.Z) / th);
             for (int ty = ty0; ty <= ty1; ++ty)
             {
                 for (int tx = tx0; tx <= tx1; ++tx)

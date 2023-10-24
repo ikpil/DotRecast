@@ -189,10 +189,10 @@ namespace DotRecast.Detour.Dynamic
                 return _tiles.Values;
             }
 
-            int minx = (int)Math.Floor((bounds[0] - navMeshParams.orig.X) / navMeshParams.tileWidth);
-            int minz = (int)Math.Floor((bounds[2] - navMeshParams.orig.Z) / navMeshParams.tileHeight);
-            int maxx = (int)Math.Floor((bounds[3] - navMeshParams.orig.X) / navMeshParams.tileWidth);
-            int maxz = (int)Math.Floor((bounds[5] - navMeshParams.orig.Z) / navMeshParams.tileHeight);
+            int minx = (int)MathF.Floor((bounds[0] - navMeshParams.orig.X) / navMeshParams.tileWidth);
+            int minz = (int)MathF.Floor((bounds[2] - navMeshParams.orig.Z) / navMeshParams.tileHeight);
+            int maxx = (int)MathF.Floor((bounds[3] - navMeshParams.orig.X) / navMeshParams.tileWidth);
+            int maxz = (int)MathF.Floor((bounds[5] - navMeshParams.orig.Z) / navMeshParams.tileHeight);
             List<DtDynamicTile> tiles = new List<DtDynamicTile>();
             for (int z = minz; z <= maxz; ++z)
             {

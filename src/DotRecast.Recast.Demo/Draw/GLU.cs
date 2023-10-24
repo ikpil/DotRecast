@@ -35,7 +35,7 @@ public static class GLU
     public static void GlhPerspectivef2(ref RcMatrix4x4f matrix, float fovyInDegrees, float aspectRatio, float znear, float zfar)
     {
         float ymax, xmax;
-        ymax = (float)(znear * Math.Tan(fovyInDegrees * Math.PI / 360.0));
+        ymax = (float)(znear * Math.Tan(fovyInDegrees * MathF.PI / 360.0));
         xmax = ymax * aspectRatio;
         GlhFrustumf2(ref matrix, -xmax, xmax, -ymax, ymax, znear, zfar);
     }
@@ -158,21 +158,21 @@ public static class GLU
         r3[7] = 1.0f;
         r3[4] = r3[5] = r3[6] = 0.0f;
         /* choose pivot - or die */
-        if (Math.Abs(r3[0]) > Math.Abs(r2[0]))
+        if (MathF.Abs(r3[0]) > MathF.Abs(r2[0]))
         {
             float[] r = r2;
             r2 = r3;
             r3 = r;
         }
 
-        if (Math.Abs(r2[0]) > Math.Abs(r1[0]))
+        if (MathF.Abs(r2[0]) > MathF.Abs(r1[0]))
         {
             float[] r = r2;
             r2 = r1;
             r1 = r;
         }
 
-        if (Math.Abs(r1[0]) > Math.Abs(r0[0]))
+        if (MathF.Abs(r1[0]) > MathF.Abs(r0[0]))
         {
             float[] r = r1;
             r1 = r0;
@@ -230,14 +230,14 @@ public static class GLU
         }
 
         /* choose pivot - or die */
-        if (Math.Abs(r3[1]) > Math.Abs(r2[1]))
+        if (MathF.Abs(r3[1]) > MathF.Abs(r2[1]))
         {
             float[] r = r2;
             r2 = r3;
             r3 = r;
         }
 
-        if (Math.Abs(r2[1]) > Math.Abs(r1[1]))
+        if (MathF.Abs(r2[1]) > MathF.Abs(r1[1]))
         {
             float[] r = r2;
             r2 = r1;
@@ -282,7 +282,7 @@ public static class GLU
         }
 
         /* choose pivot - or die */
-        if (Math.Abs(r3[2]) > Math.Abs(r2[2]))
+        if (MathF.Abs(r3[2]) > MathF.Abs(r2[2]))
         {
             float[] r = r2;
             r2 = r3;

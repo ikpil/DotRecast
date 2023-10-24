@@ -160,15 +160,15 @@ namespace DotRecast.Recast
             Cs = cellSize;
             Ch = cellHeight;
             WalkableSlopeAngle = agentMaxSlope;
-            WalkableHeight = (int)Math.Ceiling(agentHeight / Ch);
+            WalkableHeight = (int)MathF.Ceiling(agentHeight / Ch);
             WalkableHeightWorld = agentHeight;
-            WalkableClimb = (int)Math.Floor(agentMaxClimb / Ch);
+            WalkableClimb = (int)MathF.Floor(agentMaxClimb / Ch);
             WalkableClimbWorld = agentMaxClimb;
-            WalkableRadius = (int)Math.Ceiling(agentRadius / Cs);
+            WalkableRadius = (int)MathF.Ceiling(agentRadius / Cs);
             WalkableRadiusWorld = agentRadius;
-            MinRegionArea = (int)Math.Round(minRegionArea / (Cs * Cs));
+            MinRegionArea = (int)MathF.Round(minRegionArea / (Cs * Cs));
             MinRegionAreaWorld = minRegionArea;
-            MergeRegionArea = (int)Math.Round(mergeRegionArea / (Cs * Cs));
+            MergeRegionArea = (int)MathF.Round(mergeRegionArea / (Cs * Cs));
             MergeRegionAreaWorld = mergeRegionArea;
             MaxEdgeLen = (int)(edgeMaxLen / cellSize);
             MaxEdgeLenWorld = edgeMaxLen;
@@ -185,7 +185,7 @@ namespace DotRecast.Recast
 
         public static int CalcBorder(float agentRadius, float cs)
         {
-            return 3 + (int)Math.Ceiling(agentRadius / cs);
+            return 3 + (int)MathF.Ceiling(agentRadius / cs);
         }
     }
 }

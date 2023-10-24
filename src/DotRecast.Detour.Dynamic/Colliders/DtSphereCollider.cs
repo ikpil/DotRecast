@@ -38,7 +38,7 @@ namespace DotRecast.Detour.Dynamic.Colliders
 
         public override void Rasterize(RcHeightfield hf, RcTelemetry telemetry)
         {
-            RcFilledVolumeRasterization.RasterizeSphere(hf, center, radius, area, (int)Math.Floor(flagMergeThreshold / hf.ch),
+            RcFilledVolumeRasterization.RasterizeSphere(hf, center, radius, area, (int)MathF.Floor(flagMergeThreshold / hf.ch),
                 telemetry);
         }
 

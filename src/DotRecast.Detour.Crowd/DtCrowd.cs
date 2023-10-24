@@ -905,7 +905,7 @@ namespace DotRecast.Detour.Crowd
 
                 // Check for overlap.
                 RcVec3f diff = RcVec3f.Subtract(pos, ag.npos);
-                if (Math.Abs(diff.Y) >= (height + ag.option.height) / 2.0f)
+                if (MathF.Abs(diff.Y) >= (height + ag.option.height) / 2.0f)
                 {
                     continue;
                 }

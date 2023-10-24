@@ -76,7 +76,7 @@ public class PolygonByCircleConstraintTest
         float[] constrained = _constraint.Apply(polygon, center, 3);
 
         Assert.That(constrained.Length, Is.EqualTo(expectedSize));
-        Assert.That(constrained, Is.SupersetOf(new[] { -2f, 0f, -4f, -4f, 0f, 0f, -3.4641016f, 0.0f, 1.6076951f, -2.0f, 0.0f, 2.0f }));
+        Assert.That(constrained, Is.SupersetOf(new[] { -2f, 0f, -4f, -4f, 0f, 0f, -3.4641016f, 0.0f, 1.60769534f, -2.0f, 0.0f, 2.0f }));
     }
 
     [Test]
@@ -88,6 +88,6 @@ public class PolygonByCircleConstraintTest
         float[] constrained = _constraint.Apply(polygon, center, 4);
 
         Assert.That(constrained.Length, Is.EqualTo(expectedSize));
-        Assert.That(constrained, Is.SupersetOf(new[] { 1.5358982f, 0f, 3f, 2f, 0f, 3f, 3f, 0f, -3f }));
+        Assert.That(constrained, Is.SupersetOf(new[] { 1.53589869f, 0f, 3f, 2f, 0f, 3f, 3f, 0f, -3f }));
     }
 }

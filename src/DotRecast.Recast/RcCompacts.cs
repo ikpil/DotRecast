@@ -137,7 +137,7 @@ namespace DotRecast.Recast
 
                                 // Check that the gap between the spans is walkable,
                                 // and that the climb height between the gaps is not too high.
-                                if ((top - bot) >= walkableHeight && Math.Abs(ns.y - s.y) <= walkableClimb)
+                                if ((top - bot) >= walkableHeight && MathF.Abs(ns.y - s.y) <= walkableClimb)
                                 {
                                     // Mark direction as walkable.
                                     int lidx = k - nc.index;

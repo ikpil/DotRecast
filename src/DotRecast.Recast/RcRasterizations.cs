@@ -112,7 +112,7 @@ namespace DotRecast.Recast
                         s.smax = cur.smax;
 
                     // Merge flags.
-                    if (Math.Abs(s.smax - cur.smax) <= flagMergeThreshold)
+                    if (MathF.Abs(s.smax - cur.smax) <= flagMergeThreshold)
                         s.area = Math.Max(s.area, cur.area);
 
                     // Remove current span.
@@ -343,8 +343,8 @@ namespace DotRecast.Recast
                         spanMax = by;
 
                     // Snap the span to the heightfield height grid.
-                    int spanMinCellIndex = Math.Clamp((int)Math.Floor(spanMin * inverseCellHeight), 0, SPAN_MAX_HEIGHT);
-                    int spanMaxCellIndex = Math.Clamp((int)Math.Ceiling(spanMax * inverseCellHeight), spanMinCellIndex + 1, SPAN_MAX_HEIGHT);
+                    int spanMinCellIndex = Math.Clamp((int)MathF.Floor(spanMin * inverseCellHeight), 0, SPAN_MAX_HEIGHT);
+                    int spanMaxCellIndex = Math.Clamp((int)MathF.Ceiling(spanMax * inverseCellHeight), spanMinCellIndex + 1, SPAN_MAX_HEIGHT);
 
                     AddSpan(heightfield, x, z, spanMinCellIndex, spanMaxCellIndex, area, flagMergeThreshold);
                 }

@@ -73,7 +73,7 @@ namespace DotRecast.Detour
             float dx = v2.X - v1.X;
             float dy = v2.Y - v1.Y;
             float dz = v2.Z - v1.Z;
-            return (dx * dx + dz * dz) < r * r && Math.Abs(dy) < h;
+            return (dx * dx + dz * dz) < r * r && MathF.Abs(dy) < h;
         }
 
 

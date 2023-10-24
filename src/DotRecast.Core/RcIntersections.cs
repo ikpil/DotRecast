@@ -93,7 +93,7 @@ namespace DotRecast.Core
 
             for (int i = 0; i < 3; i++)
             {
-                if (Math.Abs(d.Get(i)) < EPS)
+                if (MathF.Abs(d.Get(i)) < EPS)
                 {
                     if (sp.Get(i) < amin.Get(i) || sp.Get(i) > amax.Get(i))
                     {

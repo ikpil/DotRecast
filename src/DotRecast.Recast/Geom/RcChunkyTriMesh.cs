@@ -263,7 +263,7 @@ namespace DotRecast.Recast.Geom
 
             for (int i = 0; i < 2; i++)
             {
-                if (Math.Abs(d.Get(i)) < EPSILON)
+                if (MathF.Abs(d.Get(i)) < EPSILON)
                 {
                     // Ray is parallel to slab. No hit if origin not within slab
                     if (p.Get(i) < bmin.Get(i) || p.Get(i) > bmax.Get(i))

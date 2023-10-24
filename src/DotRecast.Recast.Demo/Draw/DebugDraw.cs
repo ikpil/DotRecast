@@ -132,9 +132,9 @@ public class DebugDraw
             cylinderInit = true;
             for (int i = 0; i < CYLINDER_NUM_SEG; ++i)
             {
-                float a = (float)(i * Math.PI * 2 / CYLINDER_NUM_SEG);
-                cylinderDir[i * 2] = (float)Math.Cos(a);
-                cylinderDir[i * 2 + 1] = (float)Math.Sin(a);
+                float a = (float)(i * MathF.PI * 2 / CYLINDER_NUM_SEG);
+                cylinderDir[i * 2] = MathF.Cos(a);
+                cylinderDir[i * 2 + 1] = MathF.Sin(a);
             }
         }
     }
@@ -313,9 +313,9 @@ public class DebugDraw
             circleInit = true;
             for (int i = 0; i < CIRCLE_NUM_SEG; ++i)
             {
-                float a = (float)(i * Math.PI * 2 / CIRCLE_NUM_SEG);
-                circeDir[i * 2] = (float)Math.Cos(a);
-                circeDir[i * 2 + 1] = (float)Math.Sin(a);
+                float a = (float)(i * MathF.PI * 2 / CIRCLE_NUM_SEG);
+                circeDir[i * 2] = MathF.Cos(a);
+                circeDir[i * 2 + 1] = MathF.Sin(a);
             }
         }
 
