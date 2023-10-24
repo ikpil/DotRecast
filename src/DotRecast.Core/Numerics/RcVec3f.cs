@@ -23,7 +23,6 @@ namespace DotRecast.Core.Numerics
 {
     public struct RcVec3f
     {
-
         public float X;
         public float Y;
         public float Z;
@@ -103,6 +102,9 @@ namespace DotRecast.Core.Numerics
             return MathF.Sqrt(lengthSquared);
         }
 
+        /// Derives the square of the scalar length of the vector. (len * len)
+        /// @param[in] v The vector. [(x, y, z)]
+        /// @return The square of the scalar length of the vector.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly float LengthSquared()
         {
@@ -313,29 +315,6 @@ namespace DotRecast.Core.Numerics
             );
         }
 
-
-        /// Returns the distance between two points.
-        /// @param[in] v1 A point. [(x, y, z)]
-        /// @param[in] v2 A point. [(x, y, z)]
-        /// @return The distance between the two points.
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float DistSqr(RcVec3f v1, float[] v2, int i)
-        {
-            float dx = v2[i] - v1.X;
-            float dy = v2[i + 1] - v1.Y;
-            float dz = v2[i + 2] - v1.Z;
-            return dx * dx + dy * dy + dz * dz;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float DistSqr(RcVec3f v1, RcVec3f v2)
-        {
-            float dx = v2.X - v1.X;
-            float dy = v2.Y - v1.Y;
-            float dz = v2.Z - v1.Z;
-            return dx * dx + dy * dy + dz * dz;
-        }
-
         /// Derives the distance between the specified points on the xz-plane.
         /// @param[in] v1 A point. [(x, y, z)]
         /// @param[in] v2 A point. [(x, y, z)]
@@ -378,15 +357,6 @@ namespace DotRecast.Core.Numerics
         public static float Perp2D(RcVec3f u, RcVec3f v)
         {
             return u.Z * v.X - u.X * v.Z;
-        }
-
-        /// Derives the square of the scalar length of the vector. (len * len)
-        /// @param[in] v The vector. [(x, y, z)]
-        /// @return The square of the scalar length of the vector.
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float LenSqr(RcVec3f v)
-        {
-            return v.X * v.X + v.Y * v.Y + v.Z * v.Z;
         }
 
 

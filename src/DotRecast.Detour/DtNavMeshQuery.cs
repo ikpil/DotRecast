@@ -830,8 +830,8 @@ namespace DotRecast.Detour
                 bool tryLOS = false;
                 if ((options & DtFindPathOptions.DT_FINDPATH_ANY_ANGLE) != 0)
                 {
-                    if ((parentRef != 0) && (raycastLimitSqr >= float.MaxValue
-                                             || RcVec3f.DistSqr(parentNode.pos, bestNode.pos) < raycastLimitSqr))
+                    if ((parentRef != 0) &&
+                        (raycastLimitSqr >= float.MaxValue || RcVec3f.DistanceSquared(parentNode.pos, bestNode.pos) < raycastLimitSqr))
                     {
                         tryLOS = true;
                     }
@@ -1148,8 +1148,8 @@ namespace DotRecast.Detour
                 bool tryLOS = false;
                 if ((m_query.options & DtFindPathOptions.DT_FINDPATH_ANY_ANGLE) != 0)
                 {
-                    if ((parentRef != 0) && (m_query.raycastLimitSqr >= float.MaxValue
-                                             || RcVec3f.DistSqr(parentNode.pos, bestNode.pos) < m_query.raycastLimitSqr))
+                    if ((parentRef != 0) &&
+                        (m_query.raycastLimitSqr >= float.MaxValue || RcVec3f.DistanceSquared(parentNode.pos, bestNode.pos) < m_query.raycastLimitSqr))
                     {
                         tryLOS = true;
                     }

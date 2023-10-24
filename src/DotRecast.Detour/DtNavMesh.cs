@@ -1377,7 +1377,7 @@ namespace DotRecast.Detour
                 }
                 else
                 {
-                    d = RcVec3f.LenSqr(diff);
+                    d = diff.LengthSquared();
                 }
 
                 if (d < nearestDistanceSqr)

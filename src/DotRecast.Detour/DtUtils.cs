@@ -53,7 +53,7 @@ namespace DotRecast.Detour
 
         public static bool VEqual(RcVec3f p0, RcVec3f p1, float thresholdSqr)
         {
-            float d = RcVec3f.DistSqr(p0, p1);
+            float d = RcVec3f.DistanceSquared(p0, p1);
             return d < thresholdSqr;
         }
 

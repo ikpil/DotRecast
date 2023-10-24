@@ -123,6 +123,19 @@ namespace DotRecast.Core.Numerics
                    v1[2] * vector2.Z;
         }
         
+        /// Returns the distance between two points.
+        /// @param[in] v1 A point. [(x, y, z)]
+        /// @param[in] v2 A point. [(x, y, z)]
+        /// @return The distance between the two points.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float DistanceSquared(RcVec3f v1, float[] v2, int i)
+        {
+            float dx = v2[i] - v1.X;
+            float dy = v2[i + 1] - v1.Y;
+            float dz = v2[i + 2] - v1.Z;
+            return dx * dx + dy * dy + dz * dz;
+        }
+        
         /// Normalizes the vector if the length is greater than zero.
         /// If the magnitude is zero, the vector is unchanged.
         /// @param[in,out]	v	The vector to normalize. [(x, y, z)]

@@ -45,7 +45,7 @@ namespace DotRecast.Recast.Toolset.Tools
 
             // Create
             // If clicked on that last pt, create the shape.
-            if (_pts.Count > 0 && RcVec3f.DistSqr(p, _pts[_pts.Count - 1]) < 0.2f * 0.2f)
+            if (_pts.Count > 0 && RcVec3f.DistanceSquared(p, _pts[_pts.Count - 1]) < 0.2f * 0.2f)
             {
                 pts = new List<RcVec3f>(_pts);
                 hull = new List<int>(_hull);

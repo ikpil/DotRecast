@@ -107,7 +107,7 @@ namespace DotRecast.Recast.Toolset.Tools
                         bool valid = true;
                         foreach (var zone in _polyPoints)
                         {
-                            if (RcVec3f.DistSqr(zone.pt, randomPt) < zoneSeparation)
+                            if (RcVec3f.DistanceSquared(zone.pt, randomPt) < zoneSeparation)
                             {
                                 valid = false;
                                 break;
@@ -285,7 +285,7 @@ namespace DotRecast.Recast.Toolset.Tools
             List<DtPolyPoint> potentialTargets = new List<DtPolyPoint>();
             foreach (var zone in _polyPoints)
             {
-                if (RcVec3f.DistSqr(zone.pt, ag.npos) > _cfg.zoneRadius * _cfg.zoneRadius)
+                if (RcVec3f.DistanceSquared(zone.pt, ag.npos) > _cfg.zoneRadius * _cfg.zoneRadius)
                 {
                     potentialTargets.Add(zone);
                 }

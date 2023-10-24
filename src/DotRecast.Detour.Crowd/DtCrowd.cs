@@ -911,7 +911,7 @@ namespace DotRecast.Detour.Crowd
                 }
 
                 diff.Y = 0;
-                float distSqr = RcVec3f.LenSqr(diff);
+                float distSqr = diff.LengthSquared();
                 if (distSqr > RcMath.Sqr(range))
                 {
                     continue;
@@ -1080,7 +1080,7 @@ namespace DotRecast.Detour.Crowd
                         RcVec3f diff = RcVec3f.Subtract(ag.npos, nei.npos);
                         diff.Y = 0;
 
-                        float distSqr = RcVec3f.LenSqr(diff);
+                        float distSqr = diff.LengthSquared();
                         if (distSqr < 0.00001f)
                         {
                             continue;
@@ -1103,7 +1103,7 @@ namespace DotRecast.Detour.Crowd
                         // Adjust desired velocity.
                         dvel = RcVec3f.Mad(dvel, disp, 1.0f / w);
                         // Clamp desired velocity to desired speed.
-                        float speedSqr = RcVec3f.LenSqr(dvel);
+                        float speedSqr = dvel.LengthSquared();
                         float desiredSqr = RcMath.Sqr(ag.desiredSpeed);
                         if (speedSqr > desiredSqr)
                         {
@@ -1227,7 +1227,7 @@ namespace DotRecast.Detour.Crowd
                         RcVec3f diff = RcVec3f.Subtract(ag.npos, nei.npos);
                         diff.Y = 0;
 
-                        float dist = RcVec3f.LenSqr(diff);
+                        float dist = diff.LengthSquared();
                         if (dist > RcMath.Sqr(ag.option.radius + nei.option.radius))
                         {
                             continue;

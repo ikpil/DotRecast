@@ -34,7 +34,7 @@ namespace DotRecast.Recast.Toolset.Tools
             RcOffMeshConnection nearestConnection = null;
             foreach (RcOffMeshConnection offMeshCon in geom.GetOffMeshConnections())
             {
-                float d = Math.Min(RcVec3f.DistSqr(p, offMeshCon.verts, 0), RcVec3f.DistSqr(p, offMeshCon.verts, 3));
+                float d = Math.Min(RcVecUtils.DistanceSquared(p, offMeshCon.verts, 0), RcVecUtils.DistanceSquared(p, offMeshCon.verts, 3));
                 if (d < nearestDist && Math.Sqrt(d) < settings.agentRadius)
                 {
                     nearestDist = d;
