@@ -110,6 +110,21 @@ public class Vector3Tests
 
     [Test]
     [Repeat(100000)]
+    public void TestVectorDot()
+    {
+        var v1 = new Vector3(Random.Shared.NextSingle(), Random.Shared.NextSingle(), Random.Shared.NextSingle());
+        var v2 = new Vector3(Random.Shared.NextSingle(), Random.Shared.NextSingle(), Random.Shared.NextSingle());
+        float d3 = Vector3.Dot(v1, v2);
+        
+        var v11 = new RcVec3f(v1.X, v1.Y, v1.Z);
+        var v22 = new RcVec3f(v2.X, v2.Y, v2.Z);
+        var d33 = RcVec3f.Dot(v11, v22);
+        
+        Assert.That(d3, Is.EqualTo(d33));
+    }
+
+    [Test]
+    [Repeat(100000)]
     public void TestVectorDistance()
     {
         var v1 = new Vector3(Random.Shared.NextSingle(), Random.Shared.NextSingle(), Random.Shared.NextSingle());

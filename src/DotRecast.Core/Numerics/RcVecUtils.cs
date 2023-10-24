@@ -96,13 +96,29 @@ namespace DotRecast.Core.Numerics
             dest[1] = v1[2] * v2[0] - v1[0] * v2[2];
             dest[2] = v1[0] * v2[1] - v1[1] * v2[0];
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Copy(float[] @out, int n, float[] @in, int m)
         {
             @out[n + 0] = @in[m + 0];
             @out[n + 1] = @in[m + 1];
             @out[n + 2] = @in[m + 2];
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Dot(float[] v1, float[] v2)
+        {
+            return v1[0] * v2[0] +
+                   v1[1] * v2[1] +
+                   v1[2] * v2[2];
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Dot(float[] v1, RcVec3f vector2)
+        {
+            return v1[0] * vector2.X +
+                   v1[1] * vector2.Y +
+                   v1[2] * vector2.Z;
         }
     }
 }

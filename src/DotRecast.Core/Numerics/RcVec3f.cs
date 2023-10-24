@@ -288,27 +288,12 @@ namespace DotRecast.Core.Numerics
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Dot(RcVec3f v1, RcVec3f v2)
+        public static float Dot(RcVec3f vector1, RcVec3f vector2)
         {
-            return (v1.X * v2.X)
-                   + (v1.Y * v2.Y)
-                   + (v1.Z * v2.Z);
+            return (vector1.X * vector2.X) +
+                   (vector1.Y * vector2.Y) +
+                   (vector1.Z * vector2.Z);
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Dot(float[] v1, float[] v2)
-        {
-            return v1[0] * v2[0]
-                   + v1[1] * v2[1]
-                   + v1[2] * v2[2];
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Dot(float[] v1, RcVec3f v2)
-        {
-            return v1[0] * v2.X + v1[1] * v2.Y + v1[2] * v2.Z;
-        }
-
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float PerpXZ(RcVec3f a, RcVec3f b)
