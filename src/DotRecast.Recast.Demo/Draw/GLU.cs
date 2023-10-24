@@ -35,7 +35,7 @@ public static class GLU
     public static void GlhPerspectivef2(ref RcMatrix4x4f matrix, float fovyInDegrees, float aspectRatio, float znear, float zfar)
     {
         float ymax, xmax;
-        ymax = (float)(znear * Math.Tan(fovyInDegrees * MathF.PI / 360.0));
+        ymax = znear * MathF.Tan(fovyInDegrees * MathF.PI / 360);
         xmax = ymax * aspectRatio;
         GlhFrustumf2(ref matrix, -xmax, xmax, -ymax, ymax, znear, zfar);
     }
