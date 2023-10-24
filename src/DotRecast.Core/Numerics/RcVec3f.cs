@@ -23,7 +23,6 @@ namespace DotRecast.Core.Numerics
 {
     public struct RcVec3f
     {
-        public const float EPSILON = 1e-6f;
 
         public float X;
         public float Y;
@@ -144,28 +143,9 @@ namespace DotRecast.Core.Numerics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode()
         {
-            int hash = X.GetHashCode();
-            hash = RcHashCodes.CombineHashCodes(hash, Y.GetHashCode());
-            hash = RcHashCodes.CombineHashCodes(hash, Z.GetHashCode());
-            return hash;
+            return HashCode.Combine(X, Y, Z);
         }
 
-
-        /// Normalizes the vector if the length is greater than zero.
-        /// If the magnitude is zero, the vector is unchanged.
-        /// @param[in,out]	v	The vector to normalize. [(x, y, z)]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SafeNormalize()
-        {
-            float sqMag = RcMath.Sqr(X) + RcMath.Sqr(Y) + RcMath.Sqr(Z);
-            if (sqMag > EPSILON)
-            {
-                float inverseMag = 1.0f / (float)Math.Sqrt(sqMag);
-                X *= inverseMag;
-                Y *= inverseMag;
-                Z *= inverseMag;
-            }
-        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Min(float[] @in, int i)
@@ -368,7 +348,7 @@ namespace DotRecast.Core.Numerics
         {
             float dx = v2.X - v1.X;
             float dz = v2.Z - v1.Z;
-            return (float)Math.Sqrt(dx * dx + dz * dz);
+            return (float)MathF.Sqrt(dx * dx + dz * dz);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -457,18 +437,13 @@ namespace DotRecast.Core.Numerics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static RcVec3f Normalize(RcVec3f v)
         {
-            float d = (float)(1.0f / Math.Sqrt(RcMath.Sqr(v.X) + RcMath.Sqr(v.Y) + RcMath.Sqr(v.Z)));
+            float d = 1.0f / MathF.Sqrt(RcMath.Sqr(v.X) + RcMath.Sqr(v.Y) + RcMath.Sqr(v.Z));
 
-            if (d != 0)
-            {
-                return new RcVec3f(
-                    v.X *= d,
-                    v.Y *= d,
-                    v.Z *= d
-                );
-            }
-
-            return v;
+            return new RcVec3f(
+                v.X *= d,
+                v.Y *= d,
+                v.Z *= d
+            );
         }
     }
 }

@@ -253,7 +253,7 @@ namespace DotRecast.Recast
                 return null;
             }
 
-            float discrSqrt = (float)Math.Sqrt(discr);
+            float discrSqrt = MathF.Sqrt(discr);
             float tmin = -b - discrSqrt;
             float tmax = -b + discrSqrt;
 
@@ -346,7 +346,7 @@ namespace DotRecast.Recast
             float discr = b * b - c;
             if (discr > EPSILON)
             {
-                float discrSqrt = (float)Math.Sqrt(discr);
+                float discrSqrt = MathF.Sqrt(discr);
                 float t1 = -b - discrSqrt;
                 float t2 = -b + discrSqrt;
                 if (t1 <= 1 && t2 >= 0)
@@ -454,7 +454,7 @@ namespace DotRecast.Recast
                 return null; // No real roots; no intersection
             }
 
-            float discSqrt = (float)Math.Sqrt(discr);
+            float discSqrt = MathF.Sqrt(discr);
             float t1 = (-b - discSqrt) / a;
             float t2 = (-b + discSqrt) / a;
 

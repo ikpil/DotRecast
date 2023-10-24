@@ -60,7 +60,7 @@ namespace DotRecast.Recast
 
         private static float Vdist2(float[] verts, int p, int q)
         {
-            return (float)Math.Sqrt(VdistSq2(verts, p, q));
+            return MathF.Sqrt(VdistSq2(verts, p, q));
         }
 
         private static float VdistSq2(float[] p, float[] q)
@@ -88,17 +88,17 @@ namespace DotRecast.Recast
 
         private static float Vdist2(float[] p, float[] q)
         {
-            return (float)Math.Sqrt(VdistSq2(p, q));
+            return MathF.Sqrt(VdistSq2(p, q));
         }
 
         private static float Vdist2(RcVec3f p, RcVec3f q)
         {
-            return (float)Math.Sqrt(VdistSq2(p, q));
+            return MathF.Sqrt(VdistSq2(p, q));
         }
 
         private static float Vdist2(float[] p, RcVec3f q)
         {
-            return (float)Math.Sqrt(VdistSq2(p, q));
+            return MathF.Sqrt(VdistSq2(p, q));
         }
 
 
@@ -119,12 +119,12 @@ namespace DotRecast.Recast
 
         private static float Vdist2(float[] p, float[] verts, int q)
         {
-            return (float)Math.Sqrt(VdistSq2(p, verts, q));
+            return MathF.Sqrt(VdistSq2(p, verts, q));
         }
 
         private static float Vdist2(RcVec3f p, float[] verts, int q)
         {
-            return (float)Math.Sqrt(VdistSq2(p, verts, q));
+            return MathF.Sqrt(VdistSq2(p, verts, q));
         }
 
 
@@ -743,7 +743,7 @@ namespace DotRecast.Recast
                 minDist = Math.Min(minDist, maxEdgeDist);
             }
 
-            return (float)Math.Sqrt(minDist);
+            return MathF.Sqrt(minDist);
         }
 
         private static void TriangulateHull(int nverts, float[] verts, int nhull, int[] hull, int nin, List<int> tris)
@@ -890,7 +890,7 @@ namespace DotRecast.Recast
                     float dx = @in[vi + 0] - @in[vj + 0];
                     float dy = @in[vi + 1] - @in[vj + 1];
                     float dz = @in[vi + 2] - @in[vj + 2];
-                    float d = (float)Math.Sqrt(dx * dx + dz * dz);
+                    float d = MathF.Sqrt(dx * dx + dz * dz);
                     int nn = 1 + (int)Math.Floor(d / sampleDist);
                     if (nn >= MAX_VERTS_PER_EDGE)
                     {

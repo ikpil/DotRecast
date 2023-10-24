@@ -11,7 +11,7 @@ namespace DotRecast.Detour.Extras.Jumplink
         protected void SampleGround(JumpLinkBuilderConfig acfg, EdgeSampler es, ComputeNavMeshHeight heightFunc)
         {
             float cs = acfg.cellSize;
-            float dist = (float)Math.Sqrt(RcVec3f.Dist2DSqr(es.start.p, es.start.q));
+            float dist = MathF.Sqrt(RcVec3f.Dist2DSqr(es.start.p, es.start.q));
             int ngsamples = Math.Max(2, (int)Math.Ceiling(dist / cs));
 
             SampleGroundSegment(heightFunc, es.start, ngsamples);

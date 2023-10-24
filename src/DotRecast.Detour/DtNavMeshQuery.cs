@@ -3302,7 +3302,7 @@ namespace DotRecast.Detour
                 hitNormal = RcVec3f.Normalize(new RcVec3f(tangent.Z, 0, -tangent.X));
             }
 
-            hitDist = (float)Math.Sqrt(radiusSqr);
+            hitDist = MathF.Sqrt(radiusSqr);
 
             return status;
         }

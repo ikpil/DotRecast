@@ -163,7 +163,7 @@ namespace DotRecast.Recast.Geom
                 normals[i] = e0.Y * e1.Z - e0.Z * e1.Y;
                 normals[i + 1] = e0.Z * e1.X - e0.X * e1.Z;
                 normals[i + 2] = e0.X * e1.Y - e0.Y * e1.X;
-                float d = (float)Math.Sqrt(normals[i] * normals[i] + normals[i + 1] * normals[i + 1] + normals[i + 2] * normals[i + 2]);
+                float d = MathF.Sqrt(normals[i] * normals[i] + normals[i + 1] * normals[i + 1] + normals[i + 2] * normals[i + 2]);
                 if (d > 0)
                 {
                     d = 1.0f / d;

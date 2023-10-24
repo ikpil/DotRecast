@@ -175,7 +175,7 @@ namespace DotRecast.Detour.Crowd
                 return false; // no intersection.
 
             a = 1.0f / a;
-            float rd = (float)Math.Sqrt(d);
+            float rd = MathF.Sqrt(d);
 
             tmin = (b - rd) * a;
             tmax = (b + rd) * a;
@@ -364,7 +364,7 @@ namespace DotRecast.Detour.Crowd
         // vector normalization that ignores the y-component.
         void DtNormalize2D(float[] v)
         {
-            float d = (float)Math.Sqrt(v[0] * v[0] + v[2] * v[2]);
+            float d = MathF.Sqrt(v[0] * v[0] + v[2] * v[2]);
             if (d == 0)
                 return;
             d = 1.0f / d;

@@ -424,7 +424,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 dd.DepthMask(false);
                 float dx = m_epos.X - m_spos.X;
                 float dz = m_epos.Z - m_spos.Z;
-                float dist = (float)Math.Sqrt(dx * dx + dz * dz);
+                float dist = MathF.Sqrt(dx * dx + dz * dz);
                 dd.DebugDrawCircle(m_spos.X, m_spos.Y + agentHeight / 2, m_spos.Z, dist, DuRGBA(64, 16, 0, 220), 2.0f);
                 dd.DepthMask(true);
             }
@@ -566,7 +566,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 dd.DepthMask(false);
                 float dx = m_epos.X - m_spos.X;
                 float dz = m_epos.Z - m_spos.Z;
-                float dist = (float)Math.Sqrt(dx * dx + dz * dz);
+                float dist = MathF.Sqrt(dx * dx + dz * dz);
                 dd.DebugDrawCircle(m_spos.X, m_spos.Y + agentHeight / 2, m_spos.Z, dist, DuRGBA(64, 16, 0, 220), 2.0f);
                 dd.DepthMask(true);
             }

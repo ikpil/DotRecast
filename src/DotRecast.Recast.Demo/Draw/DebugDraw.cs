@@ -335,7 +335,7 @@ public class DebugDraw
         float dx = x1 - x0;
         float dy = y1 - y0;
         float dz = z1 - z0;
-        float len = (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
+        float len = MathF.Sqrt(dx * dx + dy * dy + dz * dz);
         RcVec3f prev = new RcVec3f();
         EvalArc(x0, y0, z0, dx, dy, dz, len * h, PAD, ref prev);
         for (int i = 1; i <= NUM_ARC_PTS; ++i)
@@ -677,7 +677,7 @@ public class DebugDraw
 
     private void NormalizePlane(float px, float py, float pz, float pw, ref float[] plane)
     {
-        float length = (float)Math.Sqrt(px * px + py * py + pz * pz);
+        float length = MathF.Sqrt(px * px + py * py + pz * pz);
         if (length != 0)
         {
             length = 1f / length;

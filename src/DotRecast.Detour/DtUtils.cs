@@ -193,7 +193,7 @@ namespace DotRecast.Detour
                 acc += dacc;
             }
 
-            float v = (float)Math.Sqrt(t);
+            float v = MathF.Sqrt(t);
 
             float a = 1 - v;
             float b = (1 - u) * v;

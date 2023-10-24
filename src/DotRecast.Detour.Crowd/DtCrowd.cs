@@ -1091,7 +1091,7 @@ namespace DotRecast.Detour.Crowd
                             continue;
                         }
 
-                        float dist = (float)Math.Sqrt(distSqr);
+                        float dist = MathF.Sqrt(distSqr);
                         float weight = separationWeight * (1.0f - RcMath.Sqr(dist * invSeparationDist));
 
                         disp = RcVec3f.Mad(disp, diff, weight / dist);
@@ -1233,7 +1233,7 @@ namespace DotRecast.Detour.Crowd
                             continue;
                         }
 
-                        dist = (float)Math.Sqrt(dist);
+                        dist = MathF.Sqrt(dist);
                         float pen = (ag.option.radius + nei.option.radius) - dist;
                         if (dist < 0.0001f)
                         {

@@ -760,12 +760,12 @@ namespace DotRecast.Recast
                 // From A to B on the x/z plane
                 RcVec3f prevSegmentDir = RcVec3f.Subtract(vertB, vertA);
                 prevSegmentDir.Y = 0; // Squash onto x/z plane
-                prevSegmentDir.SafeNormalize();
+                prevSegmentDir = RcVecUtils.SafeNormalize(prevSegmentDir);
 
                 // From B to C on the x/z plane
                 RcVec3f currSegmentDir = RcVec3f.Subtract(vertC, vertB);
                 currSegmentDir.Y = 0; // Squash onto x/z plane
-                currSegmentDir.SafeNormalize();
+                currSegmentDir = RcVecUtils.SafeNormalize(currSegmentDir);
 
                 // The y component of the cross product of the two normalized segment directions.
                 // The X and Z components of the cross product are both zero because the two
@@ -792,7 +792,7 @@ namespace DotRecast.Recast
                 bool bevel = cornerMiterSqMag * MITER_LIMIT * MITER_LIMIT < 1.0f;
 
                 // Scale the corner miter so it's proportional to how much the corner should be offset compared to the edges.
-                if (cornerMiterSqMag > RcVec3f.EPSILON)
+                if (cornerMiterSqMag > RcVecUtils.EPSILON)
                 {
                     float scale = 1.0f / cornerMiterSqMag;
                     cornerMiterX *= scale;

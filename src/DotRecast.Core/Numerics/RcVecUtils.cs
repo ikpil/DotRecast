@@ -5,6 +5,8 @@ namespace DotRecast.Core.Numerics
 {
     public static class RcVecUtils
     {
+        public const float EPSILON = 1e-6f;
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Get(this RcVec2f v, int i)
         {
@@ -119,6 +121,26 @@ namespace DotRecast.Core.Numerics
             return v1[0] * vector2.X +
                    v1[1] * vector2.Y +
                    v1[2] * vector2.Z;
+        }
+        
+        /// Normalizes the vector if the length is greater than zero.
+        /// If the magnitude is zero, the vector is unchanged.
+        /// @param[in,out]	v	The vector to normalize. [(x, y, z)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static RcVec3f SafeNormalize(RcVec3f v)
+        {
+            float sqMag = RcMath.Sqr(v.X) + RcMath.Sqr(v.Y) + RcMath.Sqr(v.Z);
+            if (sqMag > EPSILON)
+            {
+                float inverseMag = 1.0f / MathF.Sqrt(sqMag);
+                return new RcVec3f(
+                    v.X *= inverseMag,
+                    v.Y *= inverseMag,
+                    v.Z *= inverseMag
+                );
+            }
+
+            return v;
         }
     }
 }

@@ -74,7 +74,7 @@ namespace DotRecast.Recast.Toolset.Tools
 
                 // Find movement delta.
                 RcVec3f delta = RcVec3f.Subtract(steerPos, iterPos);
-                float len = (float)Math.Sqrt(RcVec3f.Dot(delta, delta));
+                float len = MathF.Sqrt(RcVec3f.Dot(delta, delta));
                 // If the steer target is end of path or off-mesh link, do not move past the location.
                 if ((endOfPath || offMeshConnection) && len < STEP_SIZE)
                 {
@@ -329,7 +329,7 @@ namespace DotRecast.Recast.Toolset.Tools
 
             float dx = epos.X - spos.X;
             float dz = epos.Z - spos.Z;
-            float dist = (float)Math.Sqrt(dx * dx + dz * dz);
+            float dist = MathF.Sqrt(dx * dx + dz * dz);
 
             List<long> tempResultRefs = new List<long>();
             List<long> tempParentRefs = new List<long>();
@@ -417,7 +417,7 @@ namespace DotRecast.Recast.Toolset.Tools
 
             float dx = epos.X - spos.X;
             float dz = epos.Z - spos.Z;
-            float dist = (float)Math.Sqrt(dx * dx + dz * dz);
+            float dist = MathF.Sqrt(dx * dx + dz * dz);
 
             IDtPolygonByCircleConstraint constraint = constrainByCircle
                 ? DtStrictDtPolygonByCircleConstraint.Shared
