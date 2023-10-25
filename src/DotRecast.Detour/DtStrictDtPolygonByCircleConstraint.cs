@@ -37,7 +37,7 @@ namespace DotRecast.Detour
             int outsideVertex = -1;
             for (int pv = 0; pv < verts.Length; pv += 3)
             {
-                if (RcVec3f.Dist2DSqr(center, verts, pv) > radiusSqr)
+                if (RcVecUtils.Dist2DSqr(center, verts, pv) > radiusSqr)
                 {
                     outsideVertex = pv;
                     break;

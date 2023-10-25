@@ -187,16 +187,16 @@ namespace DotRecast.Detour.Crowd
         {
             RcVec3f v = RcVec3f.Subtract(bq, bp);
             RcVec3f w = RcVec3f.Subtract(ap, bp);
-            float d = RcVec3f.Perp2D(u, v);
+            float d = RcVecUtils.Perp2D(u, v);
             if (MathF.Abs(d) < 1e-6f)
                 return false;
 
             d = 1.0f / d;
-            t = RcVec3f.Perp2D(v, w) * d;
+            t = RcVecUtils.Perp2D(v, w) * d;
             if (t < 0 || t > 1)
                 return false;
 
-            float s = RcVec3f.Perp2D(u, w) * d;
+            float s = RcVecUtils.Perp2D(u, w) * d;
             if (s < 0 || s > 1)
                 return false;
 
@@ -217,8 +217,8 @@ namespace DotRecast.Detour.Crowd
             float minPenalty, DtObstacleAvoidanceDebugData debug)
         {
             // penalty for straying away from the desired and current velocities
-            float vpen = m_params.weightDesVel * (RcVec3f.Dist2D(vcand, dvel) * m_invVmax);
-            float vcpen = m_params.weightCurVel * (RcVec3f.Dist2D(vcand, vel) * m_invVmax);
+            float vpen = m_params.weightDesVel * (RcVecUtils.Dist2D(vcand, dvel) * m_invVmax);
+            float vcpen = m_params.weightCurVel * (RcVecUtils.Dist2D(vcand, vel) * m_invVmax);
 
             // find the threshold hit time to bail out based on the early out penalty
             // (see how the penalty is calculated below to understand)

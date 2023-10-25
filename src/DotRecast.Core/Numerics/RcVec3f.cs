@@ -301,51 +301,6 @@ namespace DotRecast.Core.Numerics
             );
         }
 
-        /// Derives the distance between the specified points on the xz-plane.
-        /// @param[in] v1 A point. [(x, y, z)]
-        /// @param[in] v2 A point. [(x, y, z)]
-        /// @return The distance between the point on the xz-plane.
-        ///
-        /// The vectors are projected onto the xz-plane, so the y-values are
-        /// ignored.
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Dist2D(RcVec3f v1, RcVec3f v2)
-        {
-            float dx = v2.X - v1.X;
-            float dz = v2.Z - v1.Z;
-            return (float)MathF.Sqrt(dx * dx + dz * dz);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Dist2DSqr(RcVec3f v1, RcVec3f v2)
-        {
-            float dx = v2.X - v1.X;
-            float dz = v2.Z - v1.Z;
-            return dx * dx + dz * dz;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Dist2DSqr(RcVec3f p, float[] verts, int i)
-        {
-            float dx = verts[i] - p.X;
-            float dz = verts[i + 2] - p.Z;
-            return dx * dx + dz * dz;
-        }
-
-        /// Derives the xz-plane 2D perp product of the two vectors. (uz*vx - ux*vz)
-        /// @param[in] u The LHV vector [(x, y, z)]
-        /// @param[in] v The RHV vector [(x, y, z)]
-        /// @return The dot product on the xz-plane.
-        ///
-        /// The vectors are projected onto the xz-plane, so the y-values are
-        /// ignored.
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Perp2D(RcVec3f u, RcVec3f v)
-        {
-            return u.Z * v.X - u.X * v.Z;
-        }
-
-
         /// Checks that the specified vector's components are all finite.
         /// @param[in] v A point. [(x, y, z)]
         /// @return True if all of the point's components are finite, i.e. not NaN

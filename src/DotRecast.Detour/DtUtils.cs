@@ -362,8 +362,8 @@ namespace DotRecast.Detour
                 RcVec3f vpi = verts[i];
                 var edge = RcVec3f.Subtract(vpi, vpj);
                 var diff = RcVec3f.Subtract(p0v, vpj);
-                float n = RcVec3f.Perp2D(edge, diff);
-                float d = RcVec3f.Perp2D(dir, edge);
+                float n = RcVecUtils.Perp2D(edge, diff);
+                float d = RcVecUtils.Perp2D(dir, edge);
                 if (MathF.Abs(d) < EPS)
                 {
                     // S is nearly parallel to this edge

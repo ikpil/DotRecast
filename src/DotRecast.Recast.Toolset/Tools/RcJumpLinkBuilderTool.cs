@@ -116,7 +116,7 @@ namespace DotRecast.Recast.Toolset.Tools
             {
                 RcVec3f p = link.startSamples[i].p;
                 RcVec3f q = link.endSamples[i].p;
-                if (i == 0 || RcVec3f.Dist2D(prev, p) > agentRadius)
+                if (i == 0 || RcVecUtils.Dist2D(prev, p) > agentRadius)
                 {
                     geom.AddOffMeshConnection(p, q, agentRadius, false, area, flags);
                     prev = p;
