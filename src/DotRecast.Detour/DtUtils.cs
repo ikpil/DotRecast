@@ -425,14 +425,14 @@ namespace DotRecast.Detour
             RcVec3f u = RcVec3f.Subtract(aq, ap);
             RcVec3f v = RcVec3f.Subtract(bq, bp);
             RcVec3f w = RcVec3f.Subtract(ap, bp);
-            float d = RcVec3f.PerpXZ(u, v);
+            float d = RcVecUtils.PerpXZ(u, v);
             if (MathF.Abs(d) < 1e-6f)
             {
                 return false;
             }
 
-            s = RcVec3f.PerpXZ(v, w) / d;
-            t = RcVec3f.PerpXZ(u, w) / d;
+            s = RcVecUtils.PerpXZ(v, w) / d;
+            t = RcVecUtils.PerpXZ(u, w) / d;
 
             return true;
         }

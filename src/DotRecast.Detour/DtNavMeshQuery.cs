@@ -205,7 +205,7 @@ namespace DotRecast.Detour
             randomPt = centerPos;
 
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(centerPos) || maxRadius < 0
+            if (!m_nav.IsValidPolyRef(startRef) || !RcVecUtils.IsFinite(centerPos) || maxRadius < 0
                 || !float.IsFinite(maxRadius) || null == filter || null == frand)
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
@@ -406,7 +406,7 @@ namespace DotRecast.Detour
             closest = pos;
             posOverPoly = false;
 
-            if (!m_nav.IsValidPolyRef(refs) || !RcVec3f.IsFinite(pos))
+            if (!m_nav.IsValidPolyRef(refs) || !RcVecUtils.IsFinite(pos))
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
@@ -441,7 +441,7 @@ namespace DotRecast.Detour
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            if (tile == null || !RcVec3f.IsFinite(pos))
+            if (tile == null || !RcVecUtils.IsFinite(pos))
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
@@ -476,7 +476,7 @@ namespace DotRecast.Detour
 
                 int va = imin * 3;
                 int vb = ((imin + 1) % nv) * 3;
-                closest = RcVec3f.Lerp(verts, va, vb, edget[imin]);
+                closest = RcVecUtils.Lerp(verts, va, vb, edget[imin]);
             }
 
             return DtStatus.DT_SUCCSESS;
@@ -502,7 +502,7 @@ namespace DotRecast.Detour
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            if (!RcVec3f.IsFinite2D(pos))
+            if (!RcVecUtils.IsFinite2D(pos))
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
@@ -673,7 +673,7 @@ namespace DotRecast.Detour
      */
         public DtStatus QueryPolygons(RcVec3f center, RcVec3f halfExtents, IDtQueryFilter filter, IDtPolyQuery query)
         {
-            if (!RcVec3f.IsFinite(center) || !RcVec3f.IsFinite(halfExtents) || null == filter)
+            if (!RcVecUtils.IsFinite(center) || !RcVecUtils.IsFinite(halfExtents) || null == filter)
             {
                 return DtStatus.DT_INVALID_PARAM;
             }
@@ -694,7 +694,7 @@ namespace DotRecast.Detour
      */
         public IList<DtMeshTile> QueryTiles(RcVec3f center, RcVec3f halfExtents)
         {
-            if (!RcVec3f.IsFinite(center) || !RcVec3f.IsFinite(halfExtents))
+            if (!RcVecUtils.IsFinite(center) || !RcVecUtils.IsFinite(halfExtents))
             {
                 return RcImmutableArray<DtMeshTile>.Empty;
             }
@@ -744,7 +744,7 @@ namespace DotRecast.Detour
             path.Clear();
 
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !RcVec3f.IsFinite(startPos) || !RcVec3f.IsFinite(endPos) || null == filter)
+            if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !RcVecUtils.IsFinite(startPos) || !RcVecUtils.IsFinite(endPos) || null == filter)
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
@@ -1020,7 +1020,7 @@ namespace DotRecast.Detour
             m_query.raycastLimitSqr = RcMath.Sqr(raycastLimit);
 
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !RcVec3f.IsFinite(startPos) || !RcVec3f.IsFinite(endPos) || null == filter)
+            if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !RcVecUtils.IsFinite(startPos) || !RcVecUtils.IsFinite(endPos) || null == filter)
             {
                 return DtStatus.DT_INVALID_PARAM;
             }
@@ -1514,7 +1514,7 @@ namespace DotRecast.Detour
             ref List<DtStraightPath> straightPath,
             int maxStraightPath, int options)
         {
-            if (!RcVec3f.IsFinite(startPos) || !RcVec3f.IsFinite(endPos) || null == straightPath
+            if (!RcVecUtils.IsFinite(startPos) || !RcVecUtils.IsFinite(endPos) || null == straightPath
                 || null == path || 0 == path.Count || path[0] == 0 || maxStraightPath <= 0)
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
@@ -1779,8 +1779,8 @@ namespace DotRecast.Detour
                 visited.Clear();
 
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(startPos)
-                                                || !RcVec3f.IsFinite(endPos) || null == filter)
+            if (!m_nav.IsValidPolyRef(startRef) || !RcVecUtils.IsFinite(startPos)
+                                                || !RcVecUtils.IsFinite(endPos) || null == filter)
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
@@ -1883,7 +1883,7 @@ namespace DotRecast.Detour
                         if (distSqr < bestDist)
                         {
                             // Update nearest distance.
-                            bestPos = RcVec3f.Lerp(verts, vj, vi, tseg);
+                            bestPos = RcVecUtils.Lerp(verts, vj, vi, tseg);
                             bestDist = distSqr;
                             bestNode = curNode;
                         }
@@ -2062,8 +2062,8 @@ namespace DotRecast.Detour
                     float s = 1.0f / 255.0f;
                     float tmin = link.bmin * s;
                     float tmax = link.bmax * s;
-                    left = RcVec3f.Lerp(fromTile.data.verts, v0 * 3, v1 * 3, tmin);
-                    right = RcVec3f.Lerp(fromTile.data.verts, v0 * 3, v1 * 3, tmax);
+                    left = RcVecUtils.Lerp(fromTile.data.verts, v0 * 3, v1 * 3, tmin);
+                    right = RcVecUtils.Lerp(fromTile.data.verts, v0 * 3, v1 * 3, tmax);
                 }
             }
 
@@ -2165,7 +2165,7 @@ namespace DotRecast.Detour
             hit = null;
 
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(startPos) || !RcVec3f.IsFinite(endPos)
+            if (!m_nav.IsValidPolyRef(startRef) || !RcVecUtils.IsFinite(startPos) || !RcVecUtils.IsFinite(endPos)
                 || null == filter || (prevRef != 0 && !m_nav.IsValidPolyRef(prevRef)))
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
@@ -2340,7 +2340,7 @@ namespace DotRecast.Detour
                     // compute the intersection point at the furthest end of the polygon
                     // and correct the height (since the raycast moves in 2d)
                     lastPos = curPos;
-                    curPos = RcVec3f.Mad(startPos, dir, hit.t);
+                    curPos = RcVecUtils.Mad(startPos, dir, hit.t);
                     var e1 = verts[segMax];
                     var e2 = verts[(segMax + 1) % nv];
                     var eDir = RcVec3f.Subtract(e2, e1);
@@ -2434,7 +2434,7 @@ namespace DotRecast.Detour
             }
 
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(centerPos) || radius < 0
+            if (!m_nav.IsValidPolyRef(startRef) || !RcVecUtils.IsFinite(centerPos) || radius < 0
                 || !float.IsFinite(radius) || null == filter)
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
@@ -2777,7 +2777,7 @@ namespace DotRecast.Detour
             ref List<long> resultRef, ref List<long> resultParent)
         {
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(centerPos) || radius < 0
+            if (!m_nav.IsValidPolyRef(startRef) || !RcVecUtils.IsFinite(centerPos) || radius < 0
                 || !float.IsFinite(radius) || null == filter
                 || null == resultRef || null == resultParent)
             {
@@ -3055,8 +3055,8 @@ namespace DotRecast.Detour
                         float tmin = ints[k].tmin / 255.0f;
                         float tmax = ints[k].tmax / 255.0f;
                         var seg = new RcSegmentVert();
-                        seg.vmin = RcVec3f.Lerp(tile.data.verts, vj, vi, tmin);
-                        seg.vmax = RcVec3f.Lerp(tile.data.verts, vj, vi, tmax);
+                        seg.vmin = RcVecUtils.Lerp(tile.data.verts, vj, vi, tmin);
+                        seg.vmax = RcVecUtils.Lerp(tile.data.verts, vj, vi, tmax);
                         segmentVerts.Add(seg);
                         segmentRefs.Add(ints[k].refs);
                     }
@@ -3069,8 +3069,8 @@ namespace DotRecast.Detour
                         float tmin = imin / 255.0f;
                         float tmax = imax / 255.0f;
                         var seg = new RcSegmentVert();
-                        seg.vmin = RcVec3f.Lerp(tile.data.verts, vj, vi, tmin);
-                        seg.vmax = RcVec3f.Lerp(tile.data.verts, vj, vi, tmax);
+                        seg.vmin = RcVecUtils.Lerp(tile.data.verts, vj, vi, tmin);
+                        seg.vmax = RcVecUtils.Lerp(tile.data.verts, vj, vi, tmax);
                         segmentVerts.Add(seg);
                         segmentRefs.Add(0L);
                     }
@@ -3109,7 +3109,7 @@ namespace DotRecast.Detour
             hitNormal = RcVec3f.Zero;
 
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !RcVec3f.IsFinite(centerPos) || maxRadius < 0
+            if (!m_nav.IsValidPolyRef(startRef) || !RcVecUtils.IsFinite(centerPos) || maxRadius < 0
                 || !float.IsFinite(maxRadius) || null == filter)
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;

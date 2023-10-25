@@ -85,7 +85,7 @@ namespace DotRecast.Recast.Toolset.Tools
                     len = STEP_SIZE / len;
                 }
 
-                RcVec3f moveTgt = RcVec3f.Mad(iterPos, delta, len);
+                RcVec3f moveTgt = RcVecUtils.Mad(iterPos, delta, len);
 
                 // Move
                 navQuery.MoveAlongSurface(polys[0], iterPos, moveTgt, filter, out var result, ref visited);

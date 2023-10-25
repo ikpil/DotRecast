@@ -219,5 +219,61 @@ namespace DotRecast.Core.Numerics
         {
             return u.Z * v.X - u.X * v.Z;
         }
+
+        /// Checks that the specified vector's components are all finite.
+        /// @param[in] v A point. [(x, y, z)]
+        /// @return True if all of the point's components are finite, i.e. not NaN
+        /// or any of the infinities.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(RcVec3f v)
+        {
+            return float.IsFinite(v.X) && float.IsFinite(v.Y) && float.IsFinite(v.Z);
+        }
+
+        /// Checks that the specified vector's 2D components are finite.
+        /// @param[in] v A point. [(x, y, z)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite2D(RcVec3f v)
+        {
+            return float.IsFinite(v.X) && float.IsFinite(v.Z);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float PerpXZ(RcVec3f a, RcVec3f b)
+        {
+            return (a.X * b.Z) - (a.Z * b.X);
+        }
+
+        /// Performs a linear interpolation between two vectors. (@p v1 toward @p
+        /// v2)
+        /// @param[out] dest The result vector. [(x, y, x)]
+        /// @param[in] v1 The starting vector.
+        /// @param[in] v2 The destination vector.
+        /// @param[in] t The interpolation factor. [Limits: 0 <= value <= 1.0]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static RcVec3f Lerp(float[] verts, int v1, int v2, float t)
+        {
+            return new RcVec3f(
+                verts[v1 + 0] + (verts[v2 + 0] - verts[v1 + 0]) * t,
+                verts[v1 + 1] + (verts[v2 + 1] - verts[v1 + 1]) * t,
+                verts[v1 + 2] + (verts[v2 + 2] - verts[v1 + 2]) * t
+            );
+        }
+        
+        /// Performs a scaled vector addition. (@p v1 + (@p v2 * @p s))
+        /// @param[out] dest The result vector. [(x, y, z)]
+        /// @param[in] v1 The base vector. [(x, y, z)]
+        /// @param[in] v2 The vector to scale and add to @p v1. [(x, y, z)]
+        /// @param[in] s The amount to scale @p v2 by before adding to @p v1.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static RcVec3f Mad(RcVec3f v1, RcVec3f v2, float s)
+        {
+            return new RcVec3f()
+            {
+                X = v1.X + (v2.X * s),
+                Y = v1.Y + (v2.Y * s),
+                Z = v1.Z + (v2.Z * s),
+            };
+        }
     }
 }

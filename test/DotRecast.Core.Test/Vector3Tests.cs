@@ -172,13 +172,6 @@ public class Vector3Tests
         // IsFinite
     }
 
-    [Test]
-    [Repeat(100000)]
-    public void TestVectorPerp2D()
-    {
-        // Perp2D
-    }
-
     // [Test]
     // [Repeat(100000)]
     // public void TestVectorLerp()
