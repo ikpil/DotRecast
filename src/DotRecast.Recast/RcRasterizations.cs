@@ -239,10 +239,10 @@ namespace DotRecast.Recast
             // Calculate the bounding box of the triangle.
             RcVec3f tmin = new RcVec3f(verts.AsSpan(v0 * 3));
             RcVec3f tmax = new RcVec3f(verts.AsSpan(v0 * 3));
-            tmin.Min(verts, v1 * 3);
-            tmin.Min(verts, v2 * 3);
-            tmax.Max(verts, v1 * 3);
-            tmax.Max(verts, v2 * 3);
+            tmin = RcVecUtils.Min(tmin, verts, v1 * 3);
+            tmin = RcVecUtils.Min(tmin, verts, v2 * 3);
+            tmax = RcVecUtils.Max(tmax, verts, v1 * 3);
+            tmax = RcVecUtils.Max(tmax, verts, v2 * 3);
 
             // If the triangle does not touch the bbox of the heightfield, skip the triagle.
             if (!OverlapBounds(heightfieldBBMin, heightfieldBBMax, tmin, tmax))

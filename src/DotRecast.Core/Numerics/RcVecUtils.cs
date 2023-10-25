@@ -6,7 +6,7 @@ namespace DotRecast.Core.Numerics
     public static class RcVecUtils
     {
         public const float EPSILON = 1e-6f;
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Get(this RcVec2f v, int i)
         {
@@ -122,7 +122,7 @@ namespace DotRecast.Core.Numerics
                    v1[1] * vector2.Y +
                    v1[2] * vector2.Z;
         }
-        
+
         /// Returns the distance between two points.
         /// @param[in] v1 A point. [(x, y, z)]
         /// @param[in] v2 A point. [(x, y, z)]
@@ -135,7 +135,7 @@ namespace DotRecast.Core.Numerics
             float dz = v2[i + 2] - v1.Z;
             return dx * dx + dy * dy + dz * dz;
         }
-        
+
         /// Normalizes the vector if the length is greater than zero.
         /// If the magnitude is zero, the vector is unchanged.
         /// @param[in,out]	v	The vector to normalize. [(x, y, z)]
@@ -154,6 +154,26 @@ namespace DotRecast.Core.Numerics
             }
 
             return v;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static RcVec3f Min(RcVec3f v, float[] @in, int i)
+        {
+            return new RcVec3f(
+                (v.X < @in[i + 0]) ? v.X : @in[i + 0],
+                (v.Y < @in[i + 1]) ? v.Y : @in[i + 1],
+                (v.Z < @in[i + 2]) ? v.Z : @in[i + 2]
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static RcVec3f Max(RcVec3f v, float[] @in, int i)
+        {
+            return new RcVec3f(
+                (v.X > @in[i + 0]) ? v.X : @in[i + 0],
+                (v.Y > @in[i + 1]) ? v.Y : @in[i + 1],
+                (v.Z > @in[i + 2]) ? v.Z : @in[i + 2]
+            );
         }
     }
 }

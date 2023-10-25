@@ -145,8 +145,24 @@ public class Vector3Tests
     [Repeat(100000)]
     public void TestVectorMinMax()
     {
-        // Min
-        // Max
+        var v1 = new Vector3(Random.Shared.NextSingle(), Random.Shared.NextSingle(), Random.Shared.NextSingle());
+        var v2 = new Vector3(Random.Shared.NextSingle(), Random.Shared.NextSingle(), Random.Shared.NextSingle());
+        var v3 = Vector3.Min(v1, v2);
+        var v4 = Vector3.Max(v1, v2);
+
+        var v11 = new RcVec3f(v1.X, v1.Y, v1.Z);
+        var v22 = new RcVec3f(v2.X, v2.Y, v2.Z);
+        var v33 = RcVec3f.Min(v11, v22);
+        var v44 = RcVec3f.Max(v11, v22);
+        
+        Assert.That(v3.X, Is.EqualTo(v33.X));
+        Assert.That(v3.Y, Is.EqualTo(v33.Y));
+        Assert.That(v3.Z, Is.EqualTo(v33.Z));
+        
+        Assert.That(v4.X, Is.EqualTo(v44.X));
+        Assert.That(v4.Y, Is.EqualTo(v44.Y));
+        Assert.That(v4.Z, Is.EqualTo(v44.Z));
+
     }
 
     [Test]

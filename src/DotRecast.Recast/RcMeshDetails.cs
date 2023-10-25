@@ -1004,8 +1004,8 @@ namespace DotRecast.Recast
                 RcVec3f bmax = new RcVec3f(@in);
                 for (int i = 1; i < nin; ++i)
                 {
-                    bmin.Min(@in, i * 3);
-                    bmax.Max(@in, i * 3);
+                    bmin = RcVecUtils.Min(bmin, @in, i * 3);
+                    bmax = RcVecUtils.Max(bmax, @in, i * 3);
                 }
 
                 int x0 = (int)MathF.Floor(bmin.X / sampleDist);

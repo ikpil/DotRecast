@@ -148,38 +148,24 @@ namespace DotRecast.Core.Numerics
             return HashCode.Combine(X, Y, Z);
         }
 
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Min(float[] @in, int i)
+        public static RcVec3f Min(RcVec3f value1, RcVec3f value2)
         {
-            X = Math.Min(X, @in[i]);
-            Y = Math.Min(Y, @in[i + 1]);
-            Z = Math.Min(Z, @in[i + 2]);
+            return new RcVec3f(
+                (value1.X < value2.X) ? value1.X : value2.X,
+                (value1.Y < value2.Y) ? value1.Y : value2.Y,
+                (value1.Z < value2.Z) ? value1.Z : value2.Z
+            );
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Min(RcVec3f b)
+        public static RcVec3f Max(RcVec3f value1, RcVec3f value2)
         {
-            X = Math.Min(X, b.X);
-            Y = Math.Min(Y, b.Y);
-            Z = Math.Min(Z, b.Z);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Max(RcVec3f b)
-        {
-            X = Math.Max(X, b.X);
-            Y = Math.Max(Y, b.Y);
-            Z = Math.Max(Z, b.Z);
-        }
-
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Max(float[] @in, int i)
-        {
-            X = Math.Max(X, @in[i]);
-            Y = Math.Max(Y, @in[i + 1]);
-            Z = Math.Max(Z, @in[i + 2]);
+            return new RcVec3f(
+                (value1.X > value2.X) ? value1.X : value2.X,
+                (value1.Y > value2.Y) ? value1.Y : value2.Y,
+                (value1.Z > value2.Z) ? value1.Z : value2.Z
+            );
         }
 
         public override string ToString()
