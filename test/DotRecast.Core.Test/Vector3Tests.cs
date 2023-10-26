@@ -99,13 +99,18 @@ public class Vector3Tests
     {
         var v1 = new Vector3(Random.Shared.NextSingle(), Random.Shared.NextSingle(), Random.Shared.NextSingle());
         var array1 = new float[3];
+        var array2 = new float[3];
         v1.CopyTo(array1);
+        v1.CopyTo(array2, 0);
 
         var v11 = new RcVec3f(v1.X, v1.Y, v1.Z);
         var array11 = new float[3];
+        var array22 = new float[3];
         v11.CopyTo(array11);
+        v11.CopyTo(array22, 0);
 
         Assert.That(array1, Is.EqualTo(array11));
+        Assert.That(array2, Is.EqualTo(array22));
     }
 
     [Test]
@@ -167,26 +172,19 @@ public class Vector3Tests
 
     [Test]
     [Repeat(100000)]
-    public void TestVectorIsFinite()
+    public void TestVectorLerp()
     {
-        // IsFinite
+        var amt = Random.Shared.NextSingle();
+        var v1 = new Vector3(Random.Shared.NextSingle(), Random.Shared.NextSingle(), Random.Shared.NextSingle());
+        var v2 = new Vector3(Random.Shared.NextSingle(), Random.Shared.NextSingle(), Random.Shared.NextSingle());
+        var v3 = Vector3.Lerp(v1, v2, amt);
+    
+        var v11 = new RcVec3f(v1.X, v1.Y, v1.Z);
+        var v22 = new RcVec3f(v2.X, v2.Y, v2.Z);
+        var v33 = RcVec3f.Lerp(v11, v22, amt);
+    
+        Assert.That(v3.X, Is.EqualTo(v33.X));
+        Assert.That(v3.Y, Is.EqualTo(v33.Y));
+        Assert.That(v3.Z, Is.EqualTo(v33.Z));
     }
-
-    // [Test]
-    // [Repeat(100000)]
-    // public void TestVectorLerp()
-    // {
-    //     var amt = Random.Shared.NextSingle();
-    //     var v1 = new Vector3(Random.Shared.NextSingle(), Random.Shared.NextSingle(), Random.Shared.NextSingle());
-    //     var v2 = new Vector3(Random.Shared.NextSingle(), Random.Shared.NextSingle(), Random.Shared.NextSingle());
-    //     var v3 = Vector3.Lerp(v1, v2, amt);
-    //
-    //     var v11 = new RcVec3f(v1.X, v1.Y, v1.Z);
-    //     var v22 = new RcVec3f(v2.X, v2.Y, v2.Z);
-    //     var v33 = RcVec3f.Lerp(v11, v22, amt);
-    //
-    //     Assert.That(v3.X, Is.EqualTo(v33.X));
-    //     Assert.That(v3.Y, Is.EqualTo(v33.Y));
-    //     Assert.That(v3.Z, Is.EqualTo(v33.Z));
-    // }
 }

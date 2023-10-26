@@ -228,13 +228,14 @@ namespace DotRecast.Core.Numerics
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static RcVec3f Lerp(RcVec3f v1, RcVec3f v2, float t)
+        public static RcVec3f Lerp(RcVec3f value1, RcVec3f value2, float amount)
         {
-            return new RcVec3f(
-                v1.X + (v2.X - v1.X) * t,
-                v1.Y + (v2.Y - v1.Y) * t,
-                v1.Z + (v2.Z - v1.Z) * t
-            );
+            return (value1 * (1f - amount)) + (value2 * amount);
+            // return new RcVec3f(
+            //     value1.X + (value2.X - value1.X) * amount,
+            //     value1.Y + (value2.Y - value1.Y) * amount,
+            //     value1.Z + (value2.Z - value1.Z) * amount
+            // );
         }
 
         /// Returns the distance between two points.
