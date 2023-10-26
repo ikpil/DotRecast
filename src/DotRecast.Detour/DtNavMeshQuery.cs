@@ -205,7 +205,7 @@ namespace DotRecast.Detour
             randomPt = centerPos;
 
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !RcVecUtils.IsFinite(centerPos) || maxRadius < 0
+            if (!m_nav.IsValidPolyRef(startRef) || !centerPos.IsFinite() || maxRadius < 0
                 || !float.IsFinite(maxRadius) || null == filter || null == frand)
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
@@ -406,7 +406,7 @@ namespace DotRecast.Detour
             closest = pos;
             posOverPoly = false;
 
-            if (!m_nav.IsValidPolyRef(refs) || !RcVecUtils.IsFinite(pos))
+            if (!m_nav.IsValidPolyRef(refs) || !pos.IsFinite())
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
@@ -441,7 +441,7 @@ namespace DotRecast.Detour
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            if (tile == null || !RcVecUtils.IsFinite(pos))
+            if (tile == null || !pos.IsFinite())
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
@@ -502,7 +502,7 @@ namespace DotRecast.Detour
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            if (!RcVecUtils.IsFinite2D(pos))
+            if (!pos.IsFinite2D())
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
@@ -673,7 +673,7 @@ namespace DotRecast.Detour
      */
         public DtStatus QueryPolygons(RcVec3f center, RcVec3f halfExtents, IDtQueryFilter filter, IDtPolyQuery query)
         {
-            if (!RcVecUtils.IsFinite(center) || !RcVecUtils.IsFinite(halfExtents) || null == filter)
+            if (!center.IsFinite() || !halfExtents.IsFinite() || null == filter)
             {
                 return DtStatus.DT_INVALID_PARAM;
             }
@@ -694,7 +694,7 @@ namespace DotRecast.Detour
      */
         public IList<DtMeshTile> QueryTiles(RcVec3f center, RcVec3f halfExtents)
         {
-            if (!RcVecUtils.IsFinite(center) || !RcVecUtils.IsFinite(halfExtents))
+            if (!center.IsFinite() || !halfExtents.IsFinite())
             {
                 return RcImmutableArray<DtMeshTile>.Empty;
             }
@@ -744,7 +744,7 @@ namespace DotRecast.Detour
             path.Clear();
 
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !RcVecUtils.IsFinite(startPos) || !RcVecUtils.IsFinite(endPos) || null == filter)
+            if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !startPos.IsFinite() || !endPos.IsFinite() || null == filter)
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
@@ -1020,7 +1020,7 @@ namespace DotRecast.Detour
             m_query.raycastLimitSqr = RcMath.Sqr(raycastLimit);
 
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !RcVecUtils.IsFinite(startPos) || !RcVecUtils.IsFinite(endPos) || null == filter)
+            if (!m_nav.IsValidPolyRef(startRef) || !m_nav.IsValidPolyRef(endRef) || !startPos.IsFinite() || !endPos.IsFinite() || null == filter)
             {
                 return DtStatus.DT_INVALID_PARAM;
             }
@@ -1514,7 +1514,7 @@ namespace DotRecast.Detour
             ref List<DtStraightPath> straightPath,
             int maxStraightPath, int options)
         {
-            if (!RcVecUtils.IsFinite(startPos) || !RcVecUtils.IsFinite(endPos) || null == straightPath
+            if (!startPos.IsFinite() || !endPos.IsFinite() || null == straightPath
                 || null == path || 0 == path.Count || path[0] == 0 || maxStraightPath <= 0)
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
@@ -1779,8 +1779,8 @@ namespace DotRecast.Detour
                 visited.Clear();
 
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !RcVecUtils.IsFinite(startPos)
-                                                || !RcVecUtils.IsFinite(endPos) || null == filter)
+            if (!m_nav.IsValidPolyRef(startRef) || !startPos.IsFinite()
+                                                || !endPos.IsFinite() || null == filter)
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
@@ -2165,7 +2165,7 @@ namespace DotRecast.Detour
             hit = null;
 
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !RcVecUtils.IsFinite(startPos) || !RcVecUtils.IsFinite(endPos)
+            if (!m_nav.IsValidPolyRef(startRef) || !startPos.IsFinite() || !endPos.IsFinite()
                 || null == filter || (prevRef != 0 && !m_nav.IsValidPolyRef(prevRef)))
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
@@ -2434,7 +2434,7 @@ namespace DotRecast.Detour
             }
 
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !RcVecUtils.IsFinite(centerPos) || radius < 0
+            if (!m_nav.IsValidPolyRef(startRef) || !centerPos.IsFinite() || radius < 0
                 || !float.IsFinite(radius) || null == filter)
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
@@ -2777,7 +2777,7 @@ namespace DotRecast.Detour
             ref List<long> resultRef, ref List<long> resultParent)
         {
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !RcVecUtils.IsFinite(centerPos) || radius < 0
+            if (!m_nav.IsValidPolyRef(startRef) || !centerPos.IsFinite() || radius < 0
                 || !float.IsFinite(radius) || null == filter
                 || null == resultRef || null == resultParent)
             {
@@ -3109,7 +3109,7 @@ namespace DotRecast.Detour
             hitNormal = RcVec3f.Zero;
 
             // Validate input
-            if (!m_nav.IsValidPolyRef(startRef) || !RcVecUtils.IsFinite(centerPos) || maxRadius < 0
+            if (!m_nav.IsValidPolyRef(startRef) || !centerPos.IsFinite() || maxRadius < 0
                 || !float.IsFinite(maxRadius) || null == filter)
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;

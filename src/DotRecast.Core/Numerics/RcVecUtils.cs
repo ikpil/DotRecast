@@ -225,7 +225,7 @@ namespace DotRecast.Core.Numerics
         /// @return True if all of the point's components are finite, i.e. not NaN
         /// or any of the infinities.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsFinite(RcVec3f v)
+        public static bool IsFinite(this RcVec3f v)
         {
             return float.IsFinite(v.X) && float.IsFinite(v.Y) && float.IsFinite(v.Z);
         }
@@ -233,7 +233,7 @@ namespace DotRecast.Core.Numerics
         /// Checks that the specified vector's 2D components are finite.
         /// @param[in] v A point. [(x, y, z)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsFinite2D(RcVec3f v)
+        public static bool IsFinite2D(this RcVec3f v)
         {
             return float.IsFinite(v.X) && float.IsFinite(v.Z);
         }
@@ -259,7 +259,7 @@ namespace DotRecast.Core.Numerics
                 verts[v1 + 2] + (verts[v2 + 2] - verts[v1 + 2]) * t
             );
         }
-        
+
         /// Performs a scaled vector addition. (@p v1 + (@p v2 * @p s))
         /// @param[out] dest The result vector. [(x, y, z)]
         /// @param[in] v1 The base vector. [(x, y, z)]
