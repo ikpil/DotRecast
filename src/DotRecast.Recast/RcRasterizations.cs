@@ -237,8 +237,8 @@ namespace DotRecast.Recast
             float by = heightfieldBBMax.Y - heightfieldBBMin.Y;
 
             // Calculate the bounding box of the triangle.
-            RcVec3f tmin = new RcVec3f(verts.AsSpan(v0 * 3));
-            RcVec3f tmax = new RcVec3f(verts.AsSpan(v0 * 3));
+            RcVec3f tmin = RcVecUtils.Create(verts, v0 * 3);
+            RcVec3f tmax = RcVecUtils.Create(verts, v0 * 3);
             tmin = RcVecUtils.Min(tmin, verts, v1 * 3);
             tmin = RcVecUtils.Min(tmin, verts, v2 * 3);
             tmax = RcVecUtils.Max(tmax, verts, v1 * 3);

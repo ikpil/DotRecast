@@ -401,8 +401,8 @@ namespace DotRecast.Detour
 
                     // Calc polygon bounds.
                     int v = p.verts[0] * 3;
-                    bmin = new RcVec3f(tile.data.verts.AsSpan(v));
-                    bmax = new RcVec3f(tile.data.verts.AsSpan(v));
+                    bmin = RcVecUtils.Create(tile.data.verts, v);
+                    bmax = RcVecUtils.Create(tile.data.verts, v);
                     for (int j = 1; j < p.vertCount; ++j)
                     {
                         v = p.verts[j] * 3;
@@ -1569,8 +1569,8 @@ namespace DotRecast.Detour
                 }
             }
 
-            startPos = new RcVec3f(tile.data.verts.AsSpan(poly.verts[idx0] * 3));
-            endPos = new RcVec3f(tile.data.verts.AsSpan(poly.verts[idx1] * 3));
+            startPos = RcVecUtils.Create(tile.data.verts, poly.verts[idx0] * 3);
+            endPos = RcVecUtils.Create(tile.data.verts, poly.verts[idx1] * 3);
 
             return DtStatus.DT_SUCCSESS;
         }

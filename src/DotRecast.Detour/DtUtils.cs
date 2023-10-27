@@ -309,8 +309,8 @@ namespace DotRecast.Detour
 
         public static float DistancePtSegSqr2D(RcVec3f pt, float[] verts, int p, int q, out float t)
         {
-            var vp = new RcVec3f(verts.AsSpan(p));
-            var vq = new RcVec3f(verts.AsSpan(q));
+            var vp = RcVecUtils.Create(verts, p);
+            var vq = RcVecUtils.Create(verts, q);
             return DistancePtSegSqr2D(pt, vp, vq, out t);
         }
 

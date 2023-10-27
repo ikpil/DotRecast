@@ -6,6 +6,18 @@ namespace DotRecast.Core.Numerics
     public static class RcVecUtils
     {
         public const float EPSILON = 1e-6f;
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static RcVec3f Create(float[] values)
+        {
+            return Create(values, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static RcVec3f Create(float[] values, int n)
+        {
+            return new RcVec3f(values[n + 0], values[n + 1], values[n + 2]);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Get(this RcVec2f v, int i)

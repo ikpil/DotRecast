@@ -178,7 +178,7 @@ namespace DotRecast.Recast
                 return true;
             }
 
-            c = new RcVec3f(verts.AsSpan(p1));
+            c = RcVecUtils.Create(verts, p1);
             r.Exchange(0f);
             return false;
         }
@@ -1000,8 +1000,8 @@ namespace DotRecast.Recast
             if (sampleDist > 0)
             {
                 // Create sample locations in a grid.
-                RcVec3f bmin = new RcVec3f(@in);
-                RcVec3f bmax = new RcVec3f(@in);
+                RcVec3f bmin = RcVecUtils.Create(@in);
+                RcVec3f bmax = RcVecUtils.Create(@in);
                 for (int i = 1; i < nin; ++i)
                 {
                     bmin = RcVecUtils.Min(bmin, @in, i * 3);

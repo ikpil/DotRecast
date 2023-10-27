@@ -641,8 +641,8 @@ namespace DotRecast.Detour
 
                     // Calc polygon bounds.
                     int v = p.verts[0] * 3;
-                    bmin = new RcVec3f(tile.data.verts.AsSpan(v));
-                    bmax = new RcVec3f(tile.data.verts.AsSpan(v));
+                    bmin = RcVecUtils.Create(tile.data.verts, v);
+                    bmax = RcVecUtils.Create(tile.data.verts, v);
                     for (int j = 1; j < p.vertCount; ++j)
                     {
                         v = p.verts[j] * 3;
@@ -2202,7 +2202,7 @@ namespace DotRecast.Detour
                 int nv = 0;
                 for (int i = 0; i < poly.vertCount; ++i)
                 {
-                    verts[nv] = new RcVec3f(tile.data.verts.AsSpan(poly.verts[i] * 3));
+                    verts[nv] = RcVecUtils.Create(tile.data.verts, poly.verts[i] * 3);
                     nv++;
                 }
 
@@ -3031,8 +3031,8 @@ namespace DotRecast.Detour
                     int ivj = poly.verts[j] * 3;
                     int ivi = poly.verts[i] * 3;
                     var seg = new RcSegmentVert();
-                    seg.vmin = new RcVec3f(tile.data.verts.AsSpan(ivj));
-                    seg.vmax = new RcVec3f(tile.data.verts.AsSpan(ivi));
+                    seg.vmin = RcVecUtils.Create(tile.data.verts, ivj);
+                    seg.vmax = RcVecUtils.Create(tile.data.verts, ivi);
                     // Array.Copy(tile.data.verts, ivj, seg, 0, 3);
                     // Array.Copy(tile.data.verts, ivi, seg, 3, 3);
                     segmentVerts.Add(seg);
@@ -3212,8 +3212,8 @@ namespace DotRecast.Detour
                     hitPos.Y = bestTile.data.verts[vj + 1] + (bestTile.data.verts[vi + 1] - bestTile.data.verts[vj + 1]) * tseg;
                     hitPos.Z = bestTile.data.verts[vj + 2] + (bestTile.data.verts[vi + 2] - bestTile.data.verts[vj + 2]) * tseg;
                     hasBestV = true;
-                    bestvj = new RcVec3f(bestTile.data.verts.AsSpan(vj));
-                    bestvi = new RcVec3f(bestTile.data.verts.AsSpan(vi));
+                    bestvj = RcVecUtils.Create(bestTile.data.verts, vj);
+                    bestvi = RcVecUtils.Create(bestTile.data.verts, vi);
                 }
 
                 for (int i = bestTile.polyLinks[bestPoly.index]; i != DtNavMesh.DT_NULL_LINK; i = bestTile.links[i].next)

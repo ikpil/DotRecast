@@ -57,8 +57,8 @@ namespace DotRecast.Recast.Toolset.Geom
             this.faces = faces;
             normals = new float[faces.Length];
             CalculateNormals();
-            bmin = new RcVec3f(vertices);
-            bmax = new RcVec3f(vertices);
+            bmin = RcVecUtils.Create(vertices);
+            bmax = RcVecUtils.Create(vertices);
             for (int i = 1; i < vertices.Length / 3; i++)
             {
                 bmin = RcVecUtils.Min(bmin, vertices, i * 3);

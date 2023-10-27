@@ -457,8 +457,8 @@ namespace DotRecast.Recast
             int zStride = xSize; // For readability
 
             // Compute the bounding box of the polygon
-            RcVec3f bmin = new RcVec3f(verts);
-            RcVec3f bmax = new RcVec3f(verts);
+            RcVec3f bmin = RcVecUtils.Create(verts);
+            RcVec3f bmax = RcVecUtils.Create(verts);
             for (int i = 3; i < verts.Length; i += 3)
             {
                 bmin = RcVecUtils.Min(bmin, verts, i);
@@ -753,9 +753,9 @@ namespace DotRecast.Recast
                 int vertIndexB = vertIndex;
                 int vertIndexC = (vertIndex + 1) % numVerts;
 
-                RcVec3f vertA = new RcVec3f(verts.AsSpan(vertIndexA * 3));
-                RcVec3f vertB = new RcVec3f(verts.AsSpan(vertIndexB * 3));
-                RcVec3f vertC = new RcVec3f(verts.AsSpan(vertIndexC * 3));
+                RcVec3f vertA = RcVecUtils.Create(verts, vertIndexA * 3);
+                RcVec3f vertB = RcVecUtils.Create(verts, vertIndexB * 3);
+                RcVec3f vertC = RcVecUtils.Create(verts, vertIndexC * 3);
 
                 // From A to B on the x/z plane
                 RcVec3f prevSegmentDir = RcVec3f.Subtract(vertB, vertA);

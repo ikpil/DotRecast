@@ -158,8 +158,8 @@ namespace DotRecast.Detour
                     int vb = option.detailMeshes[i * 4 + 0];
                     int ndv = option.detailMeshes[i * 4 + 1];
                     int dv = vb * 3;
-                    var bmin = new RcVec3f(option.detailVerts.AsSpan(dv));
-                    var bmax = new RcVec3f(option.detailVerts.AsSpan(dv));
+                    var bmin = RcVecUtils.Create(option.detailVerts, dv);
+                    var bmax = RcVecUtils.Create(option.detailVerts, dv);
                     for (int j = 1; j < ndv; j++)
                     {
                         bmin = RcVecUtils.Min(bmin, option.detailVerts, dv + j * 3);
@@ -315,8 +315,8 @@ namespace DotRecast.Detour
 
                 for (int i = 0; i < option.offMeshConCount; ++i)
                 {
-                    var p0 = new RcVec3f(option.offMeshConVerts.AsSpan((i * 2 + 0) * 3));
-                    var p1 = new RcVec3f(option.offMeshConVerts.AsSpan((i * 2 + 1) * 3));
+                    var p0 = RcVecUtils.Create(option.offMeshConVerts, (i * 2 + 0) * 3);
+                    var p1 = RcVecUtils.Create(option.offMeshConVerts, (i * 2 + 1) * 3);
 
                     offMeshConClass[i * 2 + 0] = ClassifyOffMeshPoint(p0, bmin, bmax);
                     offMeshConClass[i * 2 + 1] = ClassifyOffMeshPoint(p1, bmin, bmax);
