@@ -2,5 +2,5 @@
 
 public class GeomLoadBeganEvent : IRecastDemoMessage
 {
-    public required string FilePath { get; init; }
+    public string FilePath { get; init; }
 }

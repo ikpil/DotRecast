@@ -587,7 +587,8 @@ public class DebugDraw
 
     public static int Bit(int a, int b)
     {
-        return (a & (1 << b)) >>> b;
+        //return (a & (1 << b)) >>> b;
+        return (a >> b) & 1;
     }
 
     public static int DuIntToCol(int i, int a)

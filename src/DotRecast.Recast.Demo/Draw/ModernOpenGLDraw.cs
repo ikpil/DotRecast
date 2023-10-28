@@ -129,9 +129,9 @@ public class ModernOpenGLDraw : IOpenGLDraw
         // _gl.VertexAttribP3(attrib_pos, GLEnum.Float, false, 24);
         // _gl.VertexAttribP2(attrib_uv, GLEnum.Float, false, 24);
         // _gl.VertexAttribP4(attrib_col, GLEnum.UnsignedByte, true, 24);
-        IntPtr pointer1 = 0;
-        IntPtr pointer2 = 12;
-        IntPtr pointer3 = 20;
+        IntPtr pointer1 = (IntPtr)0;
+        IntPtr pointer2 = (IntPtr)12;
+        IntPtr pointer3 = (IntPtr)20;
         _gl.VertexAttribPointer(attrib_pos, 3, VertexAttribPointerType.Float, false, 24, pointer1.ToPointer());
         _gl.VertexAttribPointer(attrib_uv, 2, VertexAttribPointerType.Float, false, 24, pointer2.ToPointer());
         _gl.VertexAttribPointer(attrib_col, 4, VertexAttribPointerType.UnsignedByte, true, 24, pointer3.ToPointer());
