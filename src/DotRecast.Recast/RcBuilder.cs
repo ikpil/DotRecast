@@ -218,20 +218,10 @@ namespace DotRecast.Recast
                 // Prepare for region partitioning, by calculating distance field
                 // along the walkable surface.
                 RcRegions.BuildDistanceField(ctx, chf);
-                // Partition the walkable surface into simple regions without holes.
-                RcRegions.BuildRegions(ctx, chf, cfg.MinRegionArea, cfg.MergeRegionArea);
             }
-            else if (cfg.Partition == RcPartitionType.MONOTONE.Value)
-            {
-                // Partition the walkable surface into simple regions without holes.
-                // Monotone partitioning does not need distancefield.
-                RcRegions.BuildRegionsMonotone(ctx, chf, cfg.MinRegionArea, cfg.MergeRegionArea);
-            }
-            else
-            {
-                // Partition the walkable surface into simple regions without holes.
-                RcRegions.BuildLayerRegions(ctx, chf, cfg.MinRegionArea);
-            }
+
+            // Partition the walkable surface into simple regions without holes.
+            RcRegions.BuildRegions(ctx, chf, cfg.MinRegionArea, cfg.MergeRegionArea, RcPartitionType.OfValue(cfg.Partition));
 
             //
             // Step 5. Trace and simplify region contours.

@@ -1476,8 +1476,50 @@ namespace DotRecast.Recast
         /// @warning The distance field must be created using #rcBuildDistanceField before attempting to build regions.
         ///
         /// @see rcCompactHeightfield, rcCompactSpan, rcBuildDistanceField, rcBuildRegionsMonotone, rcConfig
-        public static void BuildRegionsMonotone(RcTelemetry ctx, RcCompactHeightfield chf, int minRegionArea,
-            int mergeRegionArea)
+        public static void BuildRegions(RcTelemetry ctx, RcCompactHeightfield chf, int minRegionArea,
+            int mergeRegionArea, RcPartition rcPartitiona)
+        {
+            using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_REGIONS);
+
+            int[] srcReg = new int[chf.spanCount];
+
+            if(rcPartitiona == RcPartition.WATERSHED)
+            {
+                BuildRegionsWatershed(ctx, chf, minRegionArea, mergeRegionArea, srcReg);
+            }
+            else
+            {
+                BuildRegionsMonotoneOrLayered(ctx, chf, minRegionArea, mergeRegionArea, srcReg, rcPartitiona == RcPartition.LAYERS);
+            }
+
+            // Write the result out.
+            for (int i = 0; i < chf.spanCount; ++i)
+            {
+                chf.spans[i].reg = srcReg[i];
+            }
+        }
+
+        /// @par
+        ///
+        /// Non-null regions will consist of connected, non-overlapping walkable spans that form a single contour.
+        /// Contours will form simple polygons.
+        ///
+        /// If multiple regions form an area that is smaller than @p minRegionArea, then all spans will be
+        /// re-assigned to the zero (null) region.
+        ///
+        /// Partitioning can result in smaller than necessary regions. @p mergeRegionArea helps
+        /// reduce unnecessarily small regions.
+        ///
+        /// See the #rcConfig documentation for more information on the configuration parameters.
+        ///
+        /// The region data will be available via the rcCompactHeightfield::maxRegions
+        /// and rcCompactSpan::reg fields.
+        ///
+        /// @warning The distance field must be created using #rcBuildDistanceField before attempting to build regions.
+        ///
+        /// @see rcCompactHeightfield, rcCompactSpan, rcBuildDistanceField, rcBuildRegionsMonotone, rcConfig
+        private static void BuildRegionsMonotoneOrLayered(RcTelemetry ctx, RcCompactHeightfield chf, int minRegionArea,
+            int mergeRegionArea, int[] srcReg, bool isLayered)
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_REGIONS);
 
@@ -1486,14 +1528,8 @@ namespace DotRecast.Recast
             int borderSize = chf.borderSize;
             int id = 1;
 
-            int[] srcReg = new int[chf.spanCount];
-
             int nsweeps = Math.Max(chf.width, chf.height);
             RcSweepSpan[] sweeps = new RcSweepSpan[nsweeps];
-            for (int i = 0; i < sweeps.Length; i++)
-            {
-                sweeps[i] = new RcSweepSpan();
-            }
 
             // Mark border regions.
             if (borderSize > 0)
@@ -1622,9 +1658,20 @@ namespace DotRecast.Recast
             }
 
             ctx.StartTimer(RcTimerLabel.RC_TIMER_BUILD_REGIONS_FILTER);
+
             // Merge regions and filter out small regions.
             List<int> overlaps = new List<int>();
-            chf.maxRegions = MergeAndFilterRegions(ctx, minRegionArea, mergeRegionArea, id, chf, srcReg, overlaps);
+
+            if (isLayered)
+            {
+                // Merge monotone regions to layers and remove small regions.
+                chf.maxRegions = MergeAndFilterLayerRegions(ctx, minRegionArea, id, chf, srcReg, overlaps);
+            }
+            else
+            {
+                // Merge regions and filter out small regions.
+                chf.maxRegions = MergeAndFilterRegions(ctx, minRegionArea, mergeRegionArea, id, chf, srcReg, overlaps);
+            }
 
             // Monotone partitioning does not generate overlapping regions.
             ctx.StopTimer(RcTimerLabel.RC_TIMER_BUILD_REGIONS_FILTER);
@@ -1655,11 +1702,8 @@ namespace DotRecast.Recast
         /// @warning The distance field must be created using #rcBuildDistanceField before attempting to build regions.
         ///
         /// @see rcCompactHeightfield, rcCompactSpan, rcBuildDistanceField, rcBuildRegionsMonotone, rcConfig
-        public static void BuildRegions(RcTelemetry ctx, RcCompactHeightfield chf, int minRegionArea,
-            int mergeRegionArea)
+        private static void BuildRegionsWatershed(RcTelemetry ctx, RcCompactHeightfield chf, int minRegionArea, int mergeRegionArea, int[] srcReg)
         {
-            using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_REGIONS);
-
             int w = chf.width;
             int h = chf.height;
             int borderSize = chf.borderSize;
@@ -1676,7 +1720,6 @@ namespace DotRecast.Recast
 
             List<int> stack = new List<int>(1024);
 
-            int[] srcReg = new int[chf.spanCount];
             int[] srcDist = new int[chf.spanCount];
 
             int regionId = 1;
@@ -1770,170 +1813,6 @@ namespace DotRecast.Recast
             }
 
             ctx.StopTimer(RcTimerLabel.RC_TIMER_BUILD_REGIONS_FILTER);
-
-            // Write the result out.
-            for (int i = 0; i < chf.spanCount; ++i)
-            {
-                chf.spans[i].reg = srcReg[i];
-            }
-        }
-
-        public static void BuildLayerRegions(RcTelemetry ctx, RcCompactHeightfield chf, int minRegionArea)
-        {
-            using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_REGIONS);
-
-            int w = chf.width;
-            int h = chf.height;
-            int borderSize = chf.borderSize;
-            int id = 1;
-
-            int[] srcReg = new int[chf.spanCount];
-            int nsweeps = Math.Max(chf.width, chf.height);
-            RcSweepSpan[] sweeps = new RcSweepSpan[nsweeps];
-            for (int i = 0; i < sweeps.Length; i++)
-            {
-                sweeps[i] = new RcSweepSpan();
-            }
-
-            // Mark border regions.
-            if (borderSize > 0)
-            {
-                // Make sure border will not overflow.
-                int bw = Math.Min(w, borderSize);
-                int bh = Math.Min(h, borderSize);
-                // Paint regions
-                PaintRectRegion(0, bw, 0, h, id | RC_BORDER_REG, chf, srcReg);
-                id++;
-                PaintRectRegion(w - bw, w, 0, h, id | RC_BORDER_REG, chf, srcReg);
-                id++;
-                PaintRectRegion(0, w, 0, bh, id | RC_BORDER_REG, chf, srcReg);
-                id++;
-                PaintRectRegion(0, w, h - bh, h, id | RC_BORDER_REG, chf, srcReg);
-                id++;
-            }
-
-            int[] prev = new int[1024];
-
-            // Sweep one line at a time.
-            for (int y = borderSize; y < h - borderSize; ++y)
-            {
-                // Collect spans from this row.
-                if (prev.Length <= id * 2)
-                {
-                    prev = new int[id * 2];
-                }
-                else
-                {
-                    Array.Fill(prev, 0, 0, (id) - (0));
-                }
-
-                int rid = 1;
-
-                for (int x = borderSize; x < w - borderSize; ++x)
-                {
-                    RcCompactCell c = chf.cells[x + y * w];
-
-                    for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
-                    {
-                        RcCompactSpan s = chf.spans[i];
-                        if (chf.areas[i] == RC_NULL_AREA)
-                        {
-                            continue;
-                        }
-
-                        // -x
-                        int previd = 0;
-                        if (GetCon(s, 0) != RC_NOT_CONNECTED)
-                        {
-                            int ax = x + GetDirOffsetX(0);
-                            int ay = y + GetDirOffsetY(0);
-                            int ai = chf.cells[ax + ay * w].index + GetCon(s, 0);
-                            if ((srcReg[ai] & RC_BORDER_REG) == 0 && chf.areas[i] == chf.areas[ai])
-                            {
-                                previd = srcReg[ai];
-                            }
-                        }
-
-                        if (previd == 0)
-                        {
-                            previd = rid++;
-                            sweeps[previd].rid = previd;
-                            sweeps[previd].ns = 0;
-                            sweeps[previd].nei = 0;
-                        }
-
-                        // -y
-                        if (GetCon(s, 3) != RC_NOT_CONNECTED)
-                        {
-                            int ax = x + GetDirOffsetX(3);
-                            int ay = y + GetDirOffsetY(3);
-                            int ai = chf.cells[ax + ay * w].index + GetCon(s, 3);
-                            if (srcReg[ai] != 0 && (srcReg[ai] & RC_BORDER_REG) == 0 && chf.areas[i] == chf.areas[ai])
-                            {
-                                int nr = srcReg[ai];
-                                if (sweeps[previd].nei == 0 || sweeps[previd].nei == nr)
-                                {
-                                    sweeps[previd].nei = nr;
-                                    sweeps[previd].ns++;
-                                    if (prev.Length <= nr)
-                                    {
-                                        Array.Resize(ref prev, prev.Length * 2);
-                                    }
-
-                                    prev[nr]++;
-                                }
-                                else
-                                {
-                                    sweeps[previd].nei = RC_NULL_NEI;
-                                }
-                            }
-                        }
-
-                        srcReg[i] = previd;
-                    }
-                }
-
-                // Create unique ID.
-                for (int i = 1; i < rid; ++i)
-                {
-                    if (sweeps[i].nei != RC_NULL_NEI && sweeps[i].nei != 0 && prev[sweeps[i].nei] == sweeps[i].ns)
-                    {
-                        sweeps[i].id = sweeps[i].nei;
-                    }
-                    else
-                    {
-                        sweeps[i].id = id++;
-                    }
-                }
-
-                // Remap IDs
-                for (int x = borderSize; x < w - borderSize; ++x)
-                {
-                    RcCompactCell c = chf.cells[x + y * w];
-
-                    for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
-                    {
-                        if (srcReg[i] > 0 && srcReg[i] < rid)
-                        {
-                            srcReg[i] = sweeps[srcReg[i]].id;
-                        }
-                    }
-                }
-            }
-
-            ctx.StartTimer(RcTimerLabel.RC_TIMER_BUILD_REGIONS_FILTER);
-
-            // Merge monotone regions to layers and remove small regions.
-            List<int> overlaps = new List<int>();
-            chf.maxRegions = MergeAndFilterLayerRegions(ctx, minRegionArea, id, chf, srcReg, overlaps);
-
-            ctx.StopTimer(RcTimerLabel.RC_TIMER_BUILD_REGIONS_FILTER);
-
-            // Store the result out.
-            for (int i = 0; i < chf.spanCount; ++i)
-            {
-                chf.spans[i].reg = srcReg[i];
-            }
         }
     }
 }
