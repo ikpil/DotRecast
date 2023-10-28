@@ -14,7 +14,7 @@ on:
 
 jobs:
   build-and-test:
-    name: build-and-test-${{matrix.os}}
+    name: build-and-test-${{matrix.os}}-dotnet-${{matrix.dotnet-version}}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
