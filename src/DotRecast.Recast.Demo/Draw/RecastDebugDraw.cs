@@ -37,8 +37,7 @@ public class RecastDebugDraw : DebugDraw
     {
     }
 
-    public void DebugDrawTriMeshSlope(float[] verts, int[] tris, float[] normals, float walkableSlopeAngle,
-        float texScale)
+    public void DebugDrawTriMeshSlope(float[] verts, int[] tris, float[] normals, float walkableSlopeAngle, float texScale)
     {
         float walkableThr = MathF.Cos(walkableSlopeAngle / 180.0f * MathF.PI);
 
@@ -70,12 +69,12 @@ public class RecastDebugDraw : DebugDraw
             RcVec3f vc = new RcVec3f(verts[tris[i + 2] * 3], verts[tris[i + 2] * 3 + 1], verts[tris[i + 2] * 3 + 2]);
 
             int ax = 0, ay = 0;
-            if (MathF.Abs(norm.Y) > MathF.Abs(norm[ax]))
+            if (MathF.Abs(norm.Y) > MathF.Abs(norm.Get(ax)))
             {
                 ax = 1;
             }
 
-            if (MathF.Abs(norm.Z) > MathF.Abs(norm[ax]))
+            if (MathF.Abs(norm.Z) > MathF.Abs(norm.Get(ax)))
             {
                 ax = 2;
             }
@@ -83,12 +82,12 @@ public class RecastDebugDraw : DebugDraw
             ax = (1 << ax) & 3; // +1 mod 3
             ay = (1 << ax) & 3; // +1 mod 3
 
-            uva.X = va[ax] * texScale;
-            uva.Y = va[ay] * texScale;
-            uvb.X = vb[ax] * texScale;
-            uvb.Y = vb[ay] * texScale;
-            uvc.X = vc[ax] * texScale;
-            uvc.Y = vc[ay] * texScale;
+            uva.X = va.Get(ax) * texScale;
+            uva.Y = va.Get(ay) * texScale;
+            uvb.X = vb.Get(ax) * texScale;
+            uvb.Y = vb.Get(ay) * texScale;
+            uvc.X = vc.Get(ax) * texScale;
+            uvc.Y = vc.Get(ay) * texScale;
 
             Vertex(va, color, uva);
             Vertex(vb, color, uvb);

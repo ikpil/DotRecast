@@ -6,7 +6,7 @@ namespace DotRecast.Core.Numerics
     public static class RcVecUtils
     {
         public const float EPSILON = 1e-6f;
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static RcVec3f Create(float[] values)
         {
@@ -41,7 +41,6 @@ namespace DotRecast.Core.Numerics
                 default: throw new IndexOutOfRangeException("vector3f index out of range");
             }
         }
-
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static RcVec3f Scale(this RcVec3f v, float scale)
