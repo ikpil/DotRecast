@@ -217,20 +217,10 @@ public class RecastSoloMeshTest
             // Prepare for region partitioning, by calculating distance field
             // along the walkable surface.
             RcRegions.BuildDistanceField(m_ctx, m_chf);
-            // Partition the walkable surface into simple regions without holes.
-            RcRegions.BuildRegions(m_ctx, m_chf, cfg.MinRegionArea, cfg.MergeRegionArea);
         }
-        else if (m_partitionType == RcPartition.MONOTONE)
-        {
-            // Partition the walkable surface into simple regions without holes.
-            // Monotone partitioning does not need distancefield.
-            RcRegions.BuildRegionsMonotone(m_ctx, m_chf, cfg.MinRegionArea, cfg.MergeRegionArea);
-        }
-        else
-        {
-            // Partition the walkable surface into simple regions without holes.
-            RcRegions.BuildLayerRegions(m_ctx, m_chf, cfg.MinRegionArea);
-        }
+
+        // Partition the walkable surface into simple regions without holes.
+        RcRegions.BuildRegions(m_ctx, m_chf, cfg.MinRegionArea, cfg.MergeRegionArea, RcPartitionType.OfValue(cfg.Partition));
 
         Assert.That(m_chf.maxDistance, Is.EqualTo(expDistance), "maxDistance");
         Assert.That(m_chf.maxRegions, Is.EqualTo(expRegions), "Regions");
