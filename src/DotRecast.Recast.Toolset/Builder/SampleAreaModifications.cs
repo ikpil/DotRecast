@@ -61,7 +61,15 @@ namespace DotRecast.Recast.Toolset.Builder
 
         public static RcAreaModification OfValue(int value)
         {
-            return Values.FirstOrDefault(x => x.Value == value) ?? SAMPLE_AREAMOD_GRASS;
+            foreach(var v in Values)
+            {
+                if(v.Value == value)
+                {
+                    return v;
+                }
+            }
+
+            return SAMPLE_AREAMOD_GRASS;
         }
     }
 }

@@ -632,10 +632,6 @@ namespace DotRecast.Recast
                 maxVerts += region.holes[i].contour.nverts;
 
             RcPotentialDiagonal[] diags = new RcPotentialDiagonal[maxVerts];
-            for (int pd = 0; pd < maxVerts; pd++)
-            {
-                diags[pd] = new RcPotentialDiagonal();
-            }
 
             RcContour outline = region.outline;
 
@@ -664,8 +660,7 @@ namespace DotRecast.Recast
                         {
                             int dx = outline.verts[j * 4 + 0] - hole.verts[corner + 0];
                             int dz = outline.verts[j * 4 + 2] - hole.verts[corner + 2];
-                            diags[ndiags].vert = j;
-                            diags[ndiags].dist = dx * dx + dz * dz;
+                            diags[ndiags] = new RcPotentialDiagonal(j, dx * dx + dz * dz);  
                             ndiags++;
                         }
                     }
