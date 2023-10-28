@@ -49,15 +49,6 @@ namespace DotRecast.Core.Numerics
             Z = f;
         }
 
-
-        // [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        // public RcVec3f(ReadOnlySpan<float> values)
-        // {
-        //     X = values[0];
-        //     Y = values[1];
-        //     Z = values[2];
-        // }
-
         public float this[int index]
         {
             get => GetElement(index);

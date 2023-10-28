@@ -18,7 +18,6 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 using DotRecast.Core.Numerics;
-
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
@@ -199,11 +198,9 @@ public class FindPathTest : AbstractDetourTest
             for (int j = 0; j < STRAIGHT_PATHS[i].Length; j++)
             {
                 Assert.That(straightPath[j].refs, Is.EqualTo(STRAIGHT_PATHS[i][j].refs));
-                for (int v = 0; v < 3; v++)
-                {
-                    Assert.That(straightPath[j].pos[v], Is.EqualTo(STRAIGHT_PATHS[i][j].pos[v]).Within(0.01f));
-                }
-
+                Assert.That(straightPath[j].pos.X, Is.EqualTo(STRAIGHT_PATHS[i][j].pos.X).Within(0.01f));
+                Assert.That(straightPath[j].pos.Y, Is.EqualTo(STRAIGHT_PATHS[i][j].pos.Y).Within(0.01f));
+                Assert.That(straightPath[j].pos.Z, Is.EqualTo(STRAIGHT_PATHS[i][j].pos.Z).Within(0.01f));
                 Assert.That(straightPath[j].flags, Is.EqualTo(STRAIGHT_PATHS[i][j].flags));
             }
         }

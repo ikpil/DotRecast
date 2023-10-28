@@ -647,8 +647,8 @@ namespace DotRecast.Recast
                     RcCompactCell cell = compactHeightfield.cells[x + z * zStride];
                     int maxSpanIndex = cell.index + cell.count;
 
-                    float cellX = compactHeightfield.bmin[0] + ((float)x + 0.5f) * compactHeightfield.cs;
-                    float cellZ = compactHeightfield.bmin[2] + ((float)z + 0.5f) * compactHeightfield.cs;
+                    float cellX = compactHeightfield.bmin.X + ((float)x + 0.5f) * compactHeightfield.cs;
+                    float cellZ = compactHeightfield.bmin.Z + ((float)z + 0.5f) * compactHeightfield.cs;
                     float deltaX = cellX - position[0];
                     float deltaZ = cellZ - position[2];
 

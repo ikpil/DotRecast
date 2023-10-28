@@ -18,7 +18,6 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 using DotRecast.Core.Numerics;
-
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
@@ -57,13 +56,13 @@ public class MoveAlongSurfaceTest : AbstractDetourTest
         }
     };
 
-    private static readonly float[][] POSITION =
+    private static readonly RcVec3f[] POSITION =
     {
-        new[] { 6.457663f, 10.197294f, -18.334061f },
-        new[] { -1.433933f, 10.197294f, -1.359993f },
-        new[] { 12.184784f, 9.997294f, -18.941269f },
-        new[] { 0.863553f, 10.197294f, -10.310320f },
-        new[] { 18.784092f, 10.197294f, 3.054368f }
+        new RcVec3f(6.457663f, 10.197294f, -18.334061f),
+        new RcVec3f(-1.433933f, 10.197294f, -1.359993f),
+        new RcVec3f(12.184784f, 9.997294f, -18.941269f),
+        new RcVec3f(0.863553f, 10.197294f, -10.310320f),
+        new RcVec3f(18.784092f, 10.197294f, 3.054368f),
     };
 
     [Test]
@@ -78,14 +77,13 @@ public class MoveAlongSurfaceTest : AbstractDetourTest
             RcVec3f endPos = endPoss[i];
             var status = query.MoveAlongSurface(startRef, startPos, endPos, filter, out var result, ref visited);
             Assert.That(status.Succeeded(), Is.True);
-            
-            for (int v = 0; v < 3; v++)
-            {
-                Assert.That(result[v], Is.EqualTo(POSITION[i][v]).Within(0.01f));
-            }
+
+            Assert.That(result.X, Is.EqualTo(POSITION[i].X).Within(0.01f));
+            Assert.That(result.Y, Is.EqualTo(POSITION[i].Y).Within(0.01f));
+            Assert.That(result.Z, Is.EqualTo(POSITION[i].Z).Within(0.01f));
 
             Assert.That(visited.Count, Is.EqualTo(VISITED[i].Length));
-            for (int j = 0; j < POSITION[i].Length; j++)
+            for (int j = 0; j < 3; j++)
             {
                 Assert.That(visited[j], Is.EqualTo(VISITED[i][j]));
             }

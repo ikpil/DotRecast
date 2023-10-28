@@ -217,9 +217,9 @@ namespace DotRecast.Recast.Toolset.Tools
             RcVec3f a = new RcVec3f(1f - 2 * (float)random.NextDouble(), 0.01f + (float)random.NextDouble(), 1f - 2 * (float)random.NextDouble());
             a = RcVec3f.Normalize(a);
             float len = 2f + (float)random.NextDouble() * 20f;
-            a[0] *= len;
-            a[1] *= len;
-            a[2] *= len;
+            a.X *= len;
+            a.Y *= len;
+            a.Z *= len;
             RcVec3f start = new RcVec3f(p.X, p.Y, p.Z);
             RcVec3f end = new RcVec3f(p.X + a.X, p.Y + a.Y, p.Z + a.Z);
             var collider = new DtCylinderCollider(start, end, radius, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, walkableClimb);
