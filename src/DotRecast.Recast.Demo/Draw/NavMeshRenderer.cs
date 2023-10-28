@@ -86,7 +86,7 @@ public class NavMeshRenderer
             int tw = (gw + settings.tileSize - 1) / settings.tileSize;
             int th = (gh + settings.tileSize - 1) / settings.tileSize;
             float s = settings.tileSize * settings.cellSize;
-            _debugDraw.DebugDrawGridXZ(bmin[0], bmin[1], bmin[2], tw, th, s, DebugDraw.DuRGBA(0, 0, 0, 64), 1.0f);
+            _debugDraw.DebugDrawGridXZ(bmin.X, bmin.Y, bmin.Z, tw, th, s, DebugDraw.DuRGBA(0, 0, 0, 64), 1.0f);
         }
 
         if (navMesh != null && navQuery != null

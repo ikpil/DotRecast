@@ -79,8 +79,8 @@ public class ObstacleSampleTool : ISampleTool
             else if (ob.state == DtObstacleState.DT_OBSTACLE_REMOVING)
                 col = DebugDraw.DuRGBA(220, 0, 0, 128);
 
-            dd.DebugDrawCylinder(bmin[0], bmin[1], bmin[2], bmax[0], bmax[1], bmax[2], col);
-            dd.DebugDrawCylinderWire(bmin[0], bmin[1], bmin[2], bmax[0], bmax[1], bmax[2], DebugDraw.DuDarkenCol(col), 2);
+            dd.DebugDrawCylinder(bmin.X, bmin.Y, bmin.Z, bmax.X, bmax.Y, bmax.Z, col);
+            dd.DebugDrawCylinderWire(bmin.X, bmin.Y, bmin.Z, bmax.X, bmax.Y, bmax.Z, DebugDraw.DuDarkenCol(col), 2);
         }
     }
 

@@ -59,19 +59,19 @@ public class TileSampleTool : ISampleTool
             var s = settings.agentRadius;
 
             float ts = settings.tileSize * settings.cellSize;
-            int tx = (int)((_hitPos.X - bmin[0]) / ts);
-            int ty = (int)((_hitPos.Z - bmin[2]) / ts);
+            int tx = (int)((_hitPos.X - bmin.X) / ts);
+            int ty = (int)((_hitPos.Z - bmin.Z) / ts);
 
             RcVec3f lastBuiltTileBmin = RcVec3f.Zero;
             RcVec3f lastBuiltTileBmax = RcVec3f.Zero;
 
-            lastBuiltTileBmin[0] = bmin[0] + tx * ts;
-            lastBuiltTileBmin[1] = bmin[1];
-            lastBuiltTileBmin[2] = bmin[2] + ty * ts;
+            lastBuiltTileBmin.X = bmin.X + tx * ts;
+            lastBuiltTileBmin.Y = bmin.Y;
+            lastBuiltTileBmin.Z = bmin.Z + ty * ts;
 
-            lastBuiltTileBmax[0] = bmin[0] + (tx + 1) * ts;
-            lastBuiltTileBmax[1] = bmax[1];
-            lastBuiltTileBmax[2] = bmin[2] + (ty + 1) * ts;
+            lastBuiltTileBmax.X = bmin.X + (tx + 1) * ts;
+            lastBuiltTileBmax.Y = bmax.Y;
+            lastBuiltTileBmax.Z = bmin.Z + (ty + 1) * ts;
 
             dd.DebugDrawCross(_hitPos.X, _hitPos.Y + 0.1f, _hitPos.Z, s, DuRGBA(0, 0, 0, 128), 2.0f);
             dd.DebugDrawBoxWire(
