@@ -26,7 +26,7 @@ jobs:
         run: dotnet build -c Release --no-restore
 
       - name: publish
-        run: dotnet publish src/DotRecast.Recast.Demo -c Release --no-restore --no-self-contained --output working-temp
+        run: dotnet publish src/DotRecast.Recast.Demo -c Release --framework net7.0 --no-restore --no-self-contained --output working-temp
 
       - name: version
         id: version
