@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Recast
 {
-    public class RcAreaModification
+    public readonly struct RcAreaModification
     {
         public const int RC_AREA_FLAGS_MASK = 0x3F;
 
@@ -58,12 +58,12 @@ namespace DotRecast.Recast
             Mask = other.Mask;
         }
 
-        public int GetMaskedValue()
+        public readonly int GetMaskedValue()
         {
             return Value & Mask;
         }
 
-        public int Apply(int area)
+        public readonly int Apply(int area)
         {
             return ((Value & Mask) | (area & ~Mask));
         }
