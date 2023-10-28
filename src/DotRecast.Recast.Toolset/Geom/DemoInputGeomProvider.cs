@@ -90,13 +90,8 @@ namespace DotRecast.Recast.Toolset.Geom
                 int v0 = faces[i] * 3;
                 int v1 = faces[i + 1] * 3;
                 int v2 = faces[i + 2] * 3;
-                RcVec3f e0 = new RcVec3f();
-                RcVec3f e1 = new RcVec3f();
-                for (int j = 0; j < 3; ++j)
-                {
-                    e0[j] = vertices[v1 + j] - vertices[v0 + j];
-                    e1[j] = vertices[v2 + j] - vertices[v0 + j];
-                }
+                var e0 = RcVecUtils.Subtract(vertices, v1, v0);
+                var e1 = RcVecUtils.Subtract(vertices, v2, v0);
 
                 normals[i] = e0.Y * e1.Z - e0.Z * e1.Y;
                 normals[i + 1] = e0.Z * e1.X - e0.X * e1.Z;
