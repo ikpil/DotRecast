@@ -33,7 +33,6 @@ public class ObstacleSampleTool : ISampleTool
             if (buildResult.Success)
             {
                 _sample.Update(_sample.GetInputGeom(), buildResult.RecastBuilderResults, buildResult.NavMesh);
-                _sample.SetChanged(false);
             }
         }
 
