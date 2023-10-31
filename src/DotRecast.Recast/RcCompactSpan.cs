@@ -21,7 +21,7 @@ freely, subject to the following restrictions:
 namespace DotRecast.Recast
 {
     /** Represents a span of unobstructed space within a compact heightfield. */
-    public struct RcCompactSpan
+    public class RcCompactSpan
     {
         /** The lower extent of the span. (Measured from the heightfield's base.) */
         public int y;

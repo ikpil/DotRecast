@@ -115,11 +115,11 @@ namespace DotRecast.Recast
                     RcCompactCell c = chf.cells[x + y * w];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
-                        ref RcCompactSpan s = ref chf.spans[i];
+                        RcCompactSpan s = chf.spans[i];
 
                         for (int dir = 0; dir < 4; ++dir)
                         {
-                            SetCon(ref s, dir, RC_NOT_CONNECTED);
+                            SetCon(s, dir, RC_NOT_CONNECTED);
                             int nx = x + GetDirOffsetX(dir);
                             int ny = y + GetDirOffsetY(dir);
                             // First check that the neighbour cell is in bounds.
@@ -131,7 +131,7 @@ namespace DotRecast.Recast
                             RcCompactCell nc = chf.cells[nx + ny * w];
                             for (int k = nc.index, nk = nc.index + nc.count; k < nk; ++k)
                             {
-                                ref RcCompactSpan ns = ref chf.spans[k];
+                                RcCompactSpan ns = chf.spans[k];
                                 int bot = Math.Max(s.y, ns.y);
                                 int top = Math.Min(s.y + s.h, ns.y + ns.h);
 
@@ -147,7 +147,7 @@ namespace DotRecast.Recast
                                         continue;
                                     }
 
-                                    SetCon(ref s, dir, lidx);
+                                    SetCon(s, dir, lidx);
                                     break;
                                 }
                             }

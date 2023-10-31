@@ -61,9 +61,9 @@ namespace DotRecast.Recast.Toolset.Builder
 
         public static RcAreaModification OfValue(int value)
         {
-            foreach(var v in Values)
+            foreach (var v in Values)
             {
-                if(v.Value == value)
+                if (v.Value == value)
                 {
                     return v;
                 }

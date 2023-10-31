@@ -30,6 +30,10 @@ namespace DotRecast.Recast
 
     public static class RcLayers
     {
+        const int RC_MAX_LAYERS = RcConstants.RC_NOT_CONNECTED;
+        const int RC_MAX_NEIS = 16;
+
+
         private static void AddUnique(List<int> a, int v)
         {
             if (!a.Contains(v))
@@ -59,6 +63,10 @@ namespace DotRecast.Recast
             Array.Fill(srcReg, 0xFF);
             int nsweeps = chf.width; // Math.Max(chf.width, chf.height);
             RcSweepSpan[] sweeps = new RcSweepSpan[nsweeps];
+            for (int i = 0; i < sweeps.Length; i++)
+            {
+                sweeps[i] = new RcSweepSpan();
+            }
 
             // Partition walkable area into monotone regions.
             int[] prevCount = new int[256];
@@ -297,7 +305,7 @@ namespace DotRecast.Recast
 
                 int newId = ri.layerId;
 
-                while (true)
+                for (;;)
                 {
                     int oldId = 0xff;
 
