@@ -112,7 +112,7 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < w; ++x)
                 {
-                    RcCompactCell c = chf.cells[x + y * w];
+                    ref readonly RcCompactCell c = ref chf.cells[x + y * w];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
                         RcCompactSpan s = chf.spans[i];
@@ -128,7 +128,7 @@ namespace DotRecast.Recast
 
                             // Iterate over all neighbour spans and check if any of the is
                             // accessible from current cell.
-                            RcCompactCell nc = chf.cells[nx + ny * w];
+                            ref readonly RcCompactCell nc = ref chf.cells[nx + ny * w];
                             for (int k = nc.index, nk = nc.index + nc.count; k < nk; ++k)
                             {
                                 RcCompactSpan ns = chf.spans[k];

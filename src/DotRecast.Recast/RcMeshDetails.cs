@@ -1131,7 +1131,7 @@ namespace DotRecast.Recast
                         continue;
                     }
 
-                    RcCompactCell c = chf.cells[(ax + bs) + (az + bs) * chf.width];
+                    ref readonly RcCompactCell c = ref chf.cells[(ax + bs) + (az + bs) * chf.width];
                     for (int i = c.index, ni = c.index + c.count; i < ni && dmin > 0; ++i)
                     {
                         RcCompactSpan s = chf.spans[i];
@@ -1290,7 +1290,7 @@ namespace DotRecast.Recast
                     for (int hx = 0; hx < hp.width; hx++)
                     {
                         int x = hp.xmin + hx + bs;
-                        RcCompactCell c = chf.cells[x + y * chf.width];
+                        ref readonly RcCompactCell c = ref chf.cells[x + y * chf.width];
                         for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                         {
                             RcCompactSpan s = chf.spans[i];

@@ -49,7 +49,7 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < w; ++x)
                 {
-                    RcCompactCell c = chf.cells[x + y * w];
+                    ref readonly RcCompactCell c = ref chf.cells[x + y * w];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
                         RcCompactSpan s = chf.spans[i];
@@ -83,7 +83,7 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < w; ++x)
                 {
-                    RcCompactCell c = chf.cells[x + y * w];
+                    ref readonly RcCompactCell c = ref chf.cells[x + y * w];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
                         RcCompactSpan s = chf.spans[i];
@@ -146,7 +146,7 @@ namespace DotRecast.Recast
             {
                 for (int x = w - 1; x >= 0; --x)
                 {
-                    RcCompactCell c = chf.cells[x + y * w];
+                    ref readonly RcCompactCell c = ref chf.cells[x + y * w];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
                         RcCompactSpan s = chf.spans[i];
@@ -225,7 +225,7 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < w; ++x)
                 {
-                    RcCompactCell c = chf.cells[x + y * w];
+                    ref readonly RcCompactCell c = ref chf.cells[x + y * w];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
                         RcCompactSpan s = chf.spans[i];
@@ -406,7 +406,7 @@ namespace DotRecast.Recast
                 {
                     for (int x = 0; x < w; ++x)
                     {
-                        RcCompactCell c = chf.cells[x + y * w];
+                        ref readonly RcCompactCell c = ref chf.cells[x + y * w];
                         for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                         {
                             if (chf.dist[i] >= level && srcReg[i] == 0 && chf.areas[i] != RC_NULL_AREA)
@@ -535,7 +535,7 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < w; ++x)
                 {
-                    RcCompactCell c = chf.cells[x + y * w];
+                    ref readonly RcCompactCell c = ref chf.cells[x + y * w];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
                         if (chf.areas[i] == RC_NULL_AREA || srcReg[i] != 0)
@@ -807,7 +807,7 @@ namespace DotRecast.Recast
                     int ny = y + GetDirOffsetY(dir);
                     if (GetCon(s, dir) != RC_NOT_CONNECTED)
                     {
-                        RcCompactCell nc = chf.cells[nx + ny * chf.width];
+                        ref readonly RcCompactCell nc = ref chf.cells[nx + ny * chf.width];
                         ni = nc.index + GetCon(s, dir);
                     }
 
@@ -867,7 +867,7 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < w; ++x)
                 {
-                    RcCompactCell c = chf.cells[x + y * w];
+                    ref readonly RcCompactCell c = ref chf.cells[x + y * w];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
                         int r = srcReg[i];
@@ -1190,7 +1190,7 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < w; ++x)
                 {
-                    RcCompactCell c = chf.cells[x + y * w];
+                    ref readonly RcCompactCell c = ref chf.cells[x + y * w];
 
                     lregs.Clear();
 
@@ -1445,7 +1445,7 @@ namespace DotRecast.Recast
             {
                 for (int x = minx; x < maxx; ++x)
                 {
-                    RcCompactCell c = chf.cells[x + y * w];
+                    ref readonly RcCompactCell c = ref chf.cells[x + y * w];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
                         if (chf.areas[i] != RC_NULL_AREA)
@@ -1531,7 +1531,7 @@ namespace DotRecast.Recast
 
                 for (int x = borderSize; x < w - borderSize; ++x)
                 {
-                    RcCompactCell c = chf.cells[x + y * w];
+                    ref readonly RcCompactCell c = ref chf.cells[x + y * w];
 
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
@@ -1609,7 +1609,7 @@ namespace DotRecast.Recast
                 // Remap IDs
                 for (int x = borderSize; x < w - borderSize; ++x)
                 {
-                    RcCompactCell c = chf.cells[x + y * w];
+                    ref readonly RcCompactCell c = ref chf.cells[x + y * w];
 
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
@@ -1831,7 +1831,7 @@ namespace DotRecast.Recast
 
                 for (int x = borderSize; x < w - borderSize; ++x)
                 {
-                    RcCompactCell c = chf.cells[x + y * w];
+                    ref readonly RcCompactCell c = ref chf.cells[x + y * w];
 
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
@@ -1909,7 +1909,7 @@ namespace DotRecast.Recast
                 // Remap IDs
                 for (int x = borderSize; x < w - borderSize; ++x)
                 {
-                    RcCompactCell c = chf.cells[x + y * w];
+                    ref readonly RcCompactCell c = ref chf.cells[x + y * w];
 
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {

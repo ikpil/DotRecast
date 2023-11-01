@@ -486,7 +486,7 @@ public class RecastDebugDraw : DebugDraw
             {
                 float fx = chf.bmin.X + x * cs;
                 float fz = chf.bmin.Z + y * cs;
-                RcCompactCell c = chf.cells[x + y * chf.width];
+                ref readonly RcCompactCell c = ref chf.cells[x + y * chf.width];
 
                 for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                 {
@@ -859,7 +859,7 @@ public class RecastDebugDraw : DebugDraw
             {
                 float fx = chf.bmin.X + x * cs;
                 float fz = chf.bmin.Z + y * cs;
-                RcCompactCell c = chf.cells[x + y * chf.width];
+                ref readonly RcCompactCell c = ref chf.cells[x + y * chf.width];
 
                 for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                 {
@@ -912,7 +912,7 @@ public class RecastDebugDraw : DebugDraw
             {
                 float fx = chf.bmin.X + x * cs;
                 float fz = chf.bmin.Z + y * cs;
-                RcCompactCell c = chf.cells[x + y * chf.width];
+                ref readonly RcCompactCell c = ref chf.cells[x + y * chf.width];
 
                 for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                 {

@@ -177,7 +177,7 @@ namespace DotRecast.Recast
                     RcCompactSpan s = chf.spans[i];
                     if (GetCon(s, dir) != RC_NOT_CONNECTED)
                     {
-                        RcCompactCell nc = chf.cells[nx + ny * chf.width];
+                        ref readonly RcCompactCell nc = ref chf.cells[nx + ny * chf.width];
                         ni = nc.index + GetCon(s, dir);
                     }
 
@@ -660,7 +660,7 @@ namespace DotRecast.Recast
                         {
                             int dx = outline.verts[j * 4 + 0] - hole.verts[corner + 0];
                             int dz = outline.verts[j * 4 + 2] - hole.verts[corner + 2];
-                            diags[ndiags] = new RcPotentialDiagonal(j, dx * dx + dz * dz);  
+                            diags[ndiags] = new RcPotentialDiagonal(j, dx * dx + dz * dz);
                             ndiags++;
                         }
                     }
@@ -753,7 +753,7 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < w; ++x)
                 {
-                    RcCompactCell c = chf.cells[x + y * w];
+                    ref readonly RcCompactCell c = ref chf.cells[x + y * w];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
                         int res = 0;
@@ -793,7 +793,7 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < w; ++x)
                 {
-                    RcCompactCell c = chf.cells[x + y * w];
+                    ref readonly RcCompactCell c = ref chf.cells[x + y * w];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
                         if (flags[i] == 0 || flags[i] == 0xf)

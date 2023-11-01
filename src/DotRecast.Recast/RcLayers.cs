@@ -80,7 +80,7 @@ namespace DotRecast.Recast
 
                 for (int x = borderSize; x < w - borderSize; ++x)
                 {
-                    RcCompactCell c = chf.cells[x + y * w];
+                    ref readonly RcCompactCell c = ref chf.cells[x + y * w];
 
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
@@ -165,7 +165,7 @@ namespace DotRecast.Recast
                 // Remap local sweep ids to region ids.
                 for (int x = borderSize; x < w - borderSize; ++x)
                 {
-                    RcCompactCell c = chf.cells[x + y * w];
+                    ref readonly RcCompactCell c = ref chf.cells[x + y * w];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
                         if (srcReg[i] != 0xff)
@@ -189,7 +189,7 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < w; ++x)
                 {
-                    RcCompactCell c = chf.cells[x + y * w];
+                    ref readonly RcCompactCell c = ref chf.cells[x + y * w];
 
                     lregs.Clear();
 
@@ -475,7 +475,7 @@ namespace DotRecast.Recast
                     {
                         int cx = borderSize + x;
                         int cy = borderSize + y;
-                        RcCompactCell c = chf.cells[cx + cy * w];
+                        ref readonly RcCompactCell c = ref chf.cells[cx + cy * w];
                         for (int j = c.index, nj = c.index + c.count; j < nj; ++j)
                         {
                             RcCompactSpan s = chf.spans[j];

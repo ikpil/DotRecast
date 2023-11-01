@@ -60,7 +60,7 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < xSize; ++x)
                 {
-                    RcCompactCell cell = compactHeightfield.cells[x + z * zStride];
+                    ref readonly RcCompactCell cell = ref compactHeightfield.cells[x + z * zStride];
                     for (int spanIndex = cell.index, maxSpanIndex = cell.index + cell.count; spanIndex < maxSpanIndex; ++spanIndex)
                     {
                         if (compactHeightfield.areas[spanIndex] == RC_NULL_AREA)
@@ -109,7 +109,7 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < xSize; ++x)
                 {
-                    RcCompactCell cell = compactHeightfield.cells[x + z * zStride];
+                    ref readonly RcCompactCell cell = ref compactHeightfield.cells[x + z * zStride];
                     int maxSpanIndex = cell.index + cell.count;
                     for (int spanIndex = cell.index; spanIndex < maxSpanIndex; ++spanIndex)
                     {
@@ -177,7 +177,7 @@ namespace DotRecast.Recast
             {
                 for (int x = xSize - 1; x >= 0; --x)
                 {
-                    RcCompactCell cell = compactHeightfield.cells[x + z * zStride];
+                    ref readonly RcCompactCell cell = ref compactHeightfield.cells[x + z * zStride];
                     int maxSpanIndex = cell.index + cell.count;
                     for (int i = cell.index; i < maxSpanIndex; ++i)
                     {
@@ -275,7 +275,7 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < xSize; ++x)
                 {
-                    RcCompactCell cell = compactHeightfield.cells[x + z * zStride];
+                    ref readonly RcCompactCell cell = ref compactHeightfield.cells[x + z * zStride];
                     int maxSpanIndex = cell.index + cell.count;
                     for (int spanIndex = cell.index; spanIndex < maxSpanIndex; ++spanIndex)
                     {
@@ -404,7 +404,7 @@ namespace DotRecast.Recast
             {
                 for (int x = minX; x <= maxX; ++x)
                 {
-                    RcCompactCell cell = compactHeightfield.cells[x + z * zStride];
+                    ref readonly RcCompactCell cell = ref compactHeightfield.cells[x + z * zStride];
                     int maxSpanIndex = cell.index + cell.count;
                     for (int spanIndex = cell.index; spanIndex < maxSpanIndex; ++spanIndex)
                     {
@@ -523,7 +523,7 @@ namespace DotRecast.Recast
             {
                 for (int x = minx; x <= maxx; ++x)
                 {
-                    RcCompactCell cell = compactHeightfield.cells[x + z * zStride];
+                    ref readonly RcCompactCell cell = ref compactHeightfield.cells[x + z * zStride];
                     int maxSpanIndex = cell.index + cell.count;
                     for (int spanIndex = cell.index; spanIndex < maxSpanIndex; ++spanIndex)
                     {
@@ -644,7 +644,7 @@ namespace DotRecast.Recast
             {
                 for (int x = minx; x <= maxx; ++x)
                 {
-                    RcCompactCell cell = compactHeightfield.cells[x + z * zStride];
+                    ref readonly RcCompactCell cell = ref compactHeightfield.cells[x + z * zStride];
                     int maxSpanIndex = cell.index + cell.count;
 
                     float cellX = compactHeightfield.bmin.X + ((float)x + 0.5f) * compactHeightfield.cs;
