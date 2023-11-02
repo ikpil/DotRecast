@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using System.Linq;
 using DotRecast.Core;
 using static DotRecast.Recast.RcConstants;
 
@@ -65,13 +66,13 @@ namespace DotRecast.Recast
             chf.cs = hf.cs;
             chf.ch = hf.ch;
             chf.cells = new RcCompactCell[w * h];
-            chf.spans = new RcCompactSpan[spanCount];
+            //chf.spans = new RcCompactSpan[spanCount];
             chf.areas = new int[spanCount];
 
-            for (int i = 0; i < chf.spans.Length; i++)
-            {
-                chf.spans[i] = new RcCompactSpan();
-            }
+            var chfSpans = Enumerable
+                .Range(0, spanCount)
+                .Select(x => new RcCompactSpanBuilder())
+                .ToArray();
 
             // Fill in cells and spans.
             int idx = 0;
@@ -92,8 +93,8 @@ namespace DotRecast.Recast
                         {
                             int bot = s.smax;
                             int top = s.next != null ? (int)s.next.smin : MAX_HEIGHT;
-                            chf.spans[idx].y = Math.Clamp(bot, 0, MAX_HEIGHT);
-                            chf.spans[idx].h = Math.Clamp(top - bot, 0, MAX_HEIGHT);
+                            chfSpans[idx].y = Math.Clamp(bot, 0, MAX_HEIGHT);
+                            chfSpans[idx].h = Math.Clamp(top - bot, 0, MAX_HEIGHT);
                             chf.areas[idx] = s.area;
                             idx++;
                             tmpCount++;
@@ -112,10 +113,10 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < w; ++x)
                 {
-                    ref readonly RcCompactCell c = ref chf.cells[x + y * w];
+                    ref RcCompactCell c = ref chf.cells[x + y * w];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
-                        RcCompactSpan s = chf.spans[i];
+                        ref RcCompactSpanBuilder s = ref chfSpans[i];
 
                         for (int dir = 0; dir < 4; ++dir)
                         {
@@ -128,10 +129,10 @@ namespace DotRecast.Recast
 
                             // Iterate over all neighbour spans and check if any of the is
                             // accessible from current cell.
-                            ref readonly RcCompactCell nc = ref chf.cells[nx + ny * w];
+                            ref RcCompactCell nc = ref chf.cells[nx + ny * w];
                             for (int k = nc.index, nk = nc.index + nc.count; k < nk; ++k)
                             {
-                                RcCompactSpan ns = chf.spans[k];
+                                ref RcCompactSpanBuilder ns = ref chfSpans[k];
                                 int bot = Math.Max(s.y, ns.y);
                                 int top = Math.Min(s.y + s.h, ns.y + ns.h);
 
@@ -161,6 +162,8 @@ namespace DotRecast.Recast
                 throw new Exception("rcBuildCompactHeightfield: Heightfield has too many layers " + tooHighNeighbour
                                                                                                   + " (max: " + MAX_LAYERS + ")");
             }
+
+            chf.spans = chfSpans.Select(x => x.Build()).ToArray();
 
             return chf;
         }

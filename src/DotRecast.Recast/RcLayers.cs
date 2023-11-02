@@ -80,21 +80,21 @@ namespace DotRecast.Recast
 
                 for (int x = borderSize; x < w - borderSize; ++x)
                 {
-                    ref readonly RcCompactCell c = ref chf.cells[x + y * w];
+                    ref RcCompactCell c = ref chf.cells[x + y * w];
 
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
-                        RcCompactSpan s = chf.spans[i];
+                        ref RcCompactSpan s = ref chf.spans[i];
                         if (chf.areas[i] == RC_NULL_AREA)
                             continue;
                         int sid = 0xFF;
                         // -x
 
-                        if (GetCon(s, 0) != RC_NOT_CONNECTED)
+                        if (GetCon(ref s, 0) != RC_NOT_CONNECTED)
                         {
                             int ax = x + GetDirOffsetX(0);
                             int ay = y + GetDirOffsetY(0);
-                            int ai = chf.cells[ax + ay * w].index + GetCon(s, 0);
+                            int ai = chf.cells[ax + ay * w].index + GetCon(ref s, 0);
                             if (chf.areas[ai] != RC_NULL_AREA && srcReg[ai] != 0xff)
                                 sid = srcReg[ai];
                         }
@@ -107,11 +107,11 @@ namespace DotRecast.Recast
                         }
 
                         // -y
-                        if (GetCon(s, 3) != RC_NOT_CONNECTED)
+                        if (GetCon(ref s, 3) != RC_NOT_CONNECTED)
                         {
                             int ax = x + GetDirOffsetX(3);
                             int ay = y + GetDirOffsetY(3);
-                            int ai = chf.cells[ax + ay * w].index + GetCon(s, 3);
+                            int ai = chf.cells[ax + ay * w].index + GetCon(ref s, 3);
                             int nr = srcReg[ai];
                             if (nr != 0xff)
                             {
@@ -165,7 +165,7 @@ namespace DotRecast.Recast
                 // Remap local sweep ids to region ids.
                 for (int x = borderSize; x < w - borderSize; ++x)
                 {
-                    ref readonly RcCompactCell c = ref chf.cells[x + y * w];
+                    ref RcCompactCell c = ref chf.cells[x + y * w];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
                         if (srcReg[i] != 0xff)
@@ -189,13 +189,13 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < w; ++x)
                 {
-                    ref readonly RcCompactCell c = ref chf.cells[x + y * w];
+                    ref RcCompactCell c = ref chf.cells[x + y * w];
 
                     lregs.Clear();
 
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
-                        RcCompactSpan s = chf.spans[i];
+                        ref RcCompactSpan s = ref chf.spans[i];
                         int ri = srcReg[i];
                         if (ri == 0xff)
                             continue;
@@ -209,11 +209,11 @@ namespace DotRecast.Recast
                         // Update neighbours
                         for (int dir = 0; dir < 4; ++dir)
                         {
-                            if (GetCon(s, dir) != RC_NOT_CONNECTED)
+                            if (GetCon(ref s, dir) != RC_NOT_CONNECTED)
                             {
                                 int ax = x + GetDirOffsetX(dir);
                                 int ay = y + GetDirOffsetY(dir);
-                                int ai = chf.cells[ax + ay * w].index + GetCon(s, dir);
+                                int ai = chf.cells[ax + ay * w].index + GetCon(ref s, dir);
                                 int rai = srcReg[ai];
                                 if (rai != 0xff && rai != ri)
                                     AddUnique(regs[ri].neis, rai);
@@ -475,10 +475,10 @@ namespace DotRecast.Recast
                     {
                         int cx = borderSize + x;
                         int cy = borderSize + y;
-                        ref readonly RcCompactCell c = ref chf.cells[cx + cy * w];
+                        ref RcCompactCell c = ref chf.cells[cx + cy * w];
                         for (int j = c.index, nj = c.index + c.count; j < nj; ++j)
                         {
-                            RcCompactSpan s = chf.spans[j];
+                            ref RcCompactSpan s = ref chf.spans[j];
                             // Skip unassigned regions.
                             if (srcReg[j] == 0xff)
                                 continue;
@@ -503,11 +503,11 @@ namespace DotRecast.Recast
                             char con = (char)0;
                             for (int dir = 0; dir < 4; ++dir)
                             {
-                                if (GetCon(s, dir) != RC_NOT_CONNECTED)
+                                if (GetCon(ref s, dir) != RC_NOT_CONNECTED)
                                 {
                                     int ax = cx + GetDirOffsetX(dir);
                                     int ay = cy + GetDirOffsetY(dir);
-                                    int ai = chf.cells[ax + ay * w].index + GetCon(s, dir);
+                                    int ai = chf.cells[ax + ay * w].index + GetCon(ref s, dir);
                                     int alid = srcReg[ai] != 0xff ? regs[srcReg[ai]].layerId : 0xff;
                                     // Portal mask
                                     if (chf.areas[ai] != RC_NULL_AREA && lid != alid)
@@ -515,7 +515,7 @@ namespace DotRecast.Recast
                                         portal |= (char)(1 << dir);
                                         // Update height so that it matches on both
                                         // sides of the portal.
-                                        RcCompactSpan @as = chf.spans[ai];
+                                        ref RcCompactSpan @as = ref chf.spans[ai];
                                         if (@as.y > hmin)
                                             layer.heights[idx] = Math.Max(layer.heights[idx], (char)(@as.y - hmin));
                                     }

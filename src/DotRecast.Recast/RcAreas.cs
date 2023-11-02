@@ -60,7 +60,7 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < xSize; ++x)
                 {
-                    ref readonly RcCompactCell cell = ref compactHeightfield.cells[x + z * zStride];
+                    ref RcCompactCell cell = ref compactHeightfield.cells[x + z * zStride];
                     for (int spanIndex = cell.index, maxSpanIndex = cell.index + cell.count; spanIndex < maxSpanIndex; ++spanIndex)
                     {
                         if (compactHeightfield.areas[spanIndex] == RC_NULL_AREA)
@@ -69,13 +69,13 @@ namespace DotRecast.Recast
                         }
                         else
                         {
-                            RcCompactSpan span = compactHeightfield.spans[spanIndex];
+                            ref RcCompactSpan span = ref compactHeightfield.spans[spanIndex];
 
                             // Check that there is a non-null adjacent span in each of the 4 cardinal directions.
                             int neighborCount = 0;
                             for (int direction = 0; direction < 4; ++direction)
                             {
-                                int neighborConnection = GetCon(span, direction);
+                                int neighborConnection = GetCon(ref span, direction);
                                 if (neighborConnection == RC_NOT_CONNECTED)
                                 {
                                     break;
@@ -83,7 +83,7 @@ namespace DotRecast.Recast
 
                                 int neighborX = x + GetDirOffsetX(direction);
                                 int neighborZ = z + GetDirOffsetY(direction);
-                                int neighborSpanIndex = compactHeightfield.cells[neighborX + neighborZ * zStride].index + GetCon(span, direction);
+                                int neighborSpanIndex = compactHeightfield.cells[neighborX + neighborZ * zStride].index + GetCon(ref span, direction);
                                 if (compactHeightfield.areas[neighborSpanIndex] == RC_NULL_AREA)
                                 {
                                     break;
@@ -109,19 +109,19 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < xSize; ++x)
                 {
-                    ref readonly RcCompactCell cell = ref compactHeightfield.cells[x + z * zStride];
+                    ref RcCompactCell cell = ref compactHeightfield.cells[x + z * zStride];
                     int maxSpanIndex = cell.index + cell.count;
                     for (int spanIndex = cell.index; spanIndex < maxSpanIndex; ++spanIndex)
                     {
-                        RcCompactSpan span = compactHeightfield.spans[spanIndex];
+                        ref RcCompactSpan span = ref compactHeightfield.spans[spanIndex];
 
-                        if (GetCon(span, 0) != RC_NOT_CONNECTED)
+                        if (GetCon(ref span, 0) != RC_NOT_CONNECTED)
                         {
                             // (-1,0)
                             int aX = x + GetDirOffsetX(0);
                             int aY = z + GetDirOffsetY(0);
-                            int aIndex = compactHeightfield.cells[aX + aY * xSize].index + GetCon(span, 0);
-                            RcCompactSpan aSpan = compactHeightfield.spans[aIndex];
+                            int aIndex = compactHeightfield.cells[aX + aY * xSize].index + GetCon(ref span, 0);
+                            ref RcCompactSpan aSpan = ref compactHeightfield.spans[aIndex];
                             newDistance = Math.Min(distanceToBoundary[aIndex] + 2, 255);
                             if (newDistance < distanceToBoundary[spanIndex])
                             {
@@ -129,11 +129,11 @@ namespace DotRecast.Recast
                             }
 
                             // (-1,-1)
-                            if (GetCon(aSpan, 3) != RC_NOT_CONNECTED)
+                            if (GetCon(ref aSpan, 3) != RC_NOT_CONNECTED)
                             {
                                 int bX = aX + GetDirOffsetX(3);
                                 int bY = aY + GetDirOffsetY(3);
-                                int bIndex = compactHeightfield.cells[bX + bY * xSize].index + GetCon(aSpan, 3);
+                                int bIndex = compactHeightfield.cells[bX + bY * xSize].index + GetCon(ref aSpan, 3);
                                 newDistance = Math.Min(distanceToBoundary[bIndex] + 3, 255);
                                 if (newDistance < distanceToBoundary[spanIndex])
                                 {
@@ -142,13 +142,13 @@ namespace DotRecast.Recast
                             }
                         }
 
-                        if (GetCon(span, 3) != RC_NOT_CONNECTED)
+                        if (GetCon(ref span, 3) != RC_NOT_CONNECTED)
                         {
                             // (0,-1)
                             int aX = x + GetDirOffsetX(3);
                             int aY = z + GetDirOffsetY(3);
-                            int aIndex = compactHeightfield.cells[aX + aY * xSize].index + GetCon(span, 3);
-                            RcCompactSpan aSpan = compactHeightfield.spans[aIndex];
+                            int aIndex = compactHeightfield.cells[aX + aY * xSize].index + GetCon(ref span, 3);
+                            ref RcCompactSpan aSpan = ref compactHeightfield.spans[aIndex];
                             newDistance = Math.Min(distanceToBoundary[aIndex] + 2, 255);
                             if (newDistance < distanceToBoundary[spanIndex])
                             {
@@ -156,11 +156,11 @@ namespace DotRecast.Recast
                             }
 
                             // (1,-1)
-                            if (GetCon(aSpan, 2) != RC_NOT_CONNECTED)
+                            if (GetCon(ref aSpan, 2) != RC_NOT_CONNECTED)
                             {
                                 int bX = aX + GetDirOffsetX(2);
                                 int bY = aY + GetDirOffsetY(2);
-                                int bIndex = compactHeightfield.cells[bX + bY * xSize].index + GetCon(aSpan, 2);
+                                int bIndex = compactHeightfield.cells[bX + bY * xSize].index + GetCon(ref aSpan, 2);
                                 newDistance = Math.Min(distanceToBoundary[bIndex] + 3, 255);
                                 if (newDistance < distanceToBoundary[spanIndex])
                                 {
@@ -177,19 +177,19 @@ namespace DotRecast.Recast
             {
                 for (int x = xSize - 1; x >= 0; --x)
                 {
-                    ref readonly RcCompactCell cell = ref compactHeightfield.cells[x + z * zStride];
+                    ref RcCompactCell cell = ref compactHeightfield.cells[x + z * zStride];
                     int maxSpanIndex = cell.index + cell.count;
                     for (int i = cell.index; i < maxSpanIndex; ++i)
                     {
-                        RcCompactSpan span = compactHeightfield.spans[i];
+                        ref RcCompactSpan span = ref compactHeightfield.spans[i];
 
-                        if (GetCon(span, 2) != RC_NOT_CONNECTED)
+                        if (GetCon(ref span, 2) != RC_NOT_CONNECTED)
                         {
                             // (1,0)
                             int aX = x + GetDirOffsetX(2);
                             int aY = z + GetDirOffsetY(2);
-                            int aIndex = compactHeightfield.cells[aX + aY * xSize].index + GetCon(span, 2);
-                            RcCompactSpan aSpan = compactHeightfield.spans[aIndex];
+                            int aIndex = compactHeightfield.cells[aX + aY * xSize].index + GetCon(ref span, 2);
+                            ref RcCompactSpan aSpan = ref compactHeightfield.spans[aIndex];
                             newDistance = Math.Min(distanceToBoundary[aIndex] + 2, 255);
                             if (newDistance < distanceToBoundary[i])
                             {
@@ -197,11 +197,11 @@ namespace DotRecast.Recast
                             }
 
                             // (1,1)
-                            if (GetCon(aSpan, 1) != RC_NOT_CONNECTED)
+                            if (GetCon(ref aSpan, 1) != RC_NOT_CONNECTED)
                             {
                                 int bX = aX + GetDirOffsetX(1);
                                 int bY = aY + GetDirOffsetY(1);
-                                int bIndex = compactHeightfield.cells[bX + bY * xSize].index + GetCon(aSpan, 1);
+                                int bIndex = compactHeightfield.cells[bX + bY * xSize].index + GetCon(ref aSpan, 1);
                                 newDistance = Math.Min(distanceToBoundary[bIndex] + 3, 255);
                                 if (newDistance < distanceToBoundary[i])
                                 {
@@ -210,13 +210,13 @@ namespace DotRecast.Recast
                             }
                         }
 
-                        if (GetCon(span, 1) != RC_NOT_CONNECTED)
+                        if (GetCon(ref span, 1) != RC_NOT_CONNECTED)
                         {
                             // (0,1)
                             int aX = x + GetDirOffsetX(1);
                             int aY = z + GetDirOffsetY(1);
-                            int aIndex = compactHeightfield.cells[aX + aY * xSize].index + GetCon(span, 1);
-                            RcCompactSpan aSpan = compactHeightfield.spans[aIndex];
+                            int aIndex = compactHeightfield.cells[aX + aY * xSize].index + GetCon(ref span, 1);
+                            ref RcCompactSpan aSpan = ref compactHeightfield.spans[aIndex];
                             newDistance = Math.Min(distanceToBoundary[aIndex] + 2, 255);
                             if (newDistance < distanceToBoundary[i])
                             {
@@ -224,11 +224,11 @@ namespace DotRecast.Recast
                             }
 
                             // (-1,1)
-                            if (GetCon(aSpan, 0) != RC_NOT_CONNECTED)
+                            if (GetCon(ref aSpan, 0) != RC_NOT_CONNECTED)
                             {
                                 int bX = aX + GetDirOffsetX(0);
                                 int bY = aY + GetDirOffsetY(0);
-                                int bIndex = compactHeightfield.cells[bX + bY * xSize].index + GetCon(aSpan, 0);
+                                int bIndex = compactHeightfield.cells[bX + bY * xSize].index + GetCon(ref aSpan, 0);
                                 newDistance = Math.Min(distanceToBoundary[bIndex] + 3, 255);
                                 if (newDistance < distanceToBoundary[i])
                                 {
@@ -275,11 +275,11 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < xSize; ++x)
                 {
-                    ref readonly RcCompactCell cell = ref compactHeightfield.cells[x + z * zStride];
+                    ref RcCompactCell cell = ref compactHeightfield.cells[x + z * zStride];
                     int maxSpanIndex = cell.index + cell.count;
                     for (int spanIndex = cell.index; spanIndex < maxSpanIndex; ++spanIndex)
                     {
-                        RcCompactSpan span = compactHeightfield.spans[spanIndex];
+                        ref RcCompactSpan span = ref compactHeightfield.spans[spanIndex];
                         if (compactHeightfield.areas[spanIndex] == RC_NULL_AREA)
                         {
                             areas[spanIndex] = compactHeightfield.areas[spanIndex];
@@ -294,27 +294,27 @@ namespace DotRecast.Recast
 
                         for (int dir = 0; dir < 4; ++dir)
                         {
-                            if (GetCon(span, dir) == RC_NOT_CONNECTED)
+                            if (GetCon(ref span, dir) == RC_NOT_CONNECTED)
                             {
                                 continue;
                             }
 
                             int aX = x + GetDirOffsetX(dir);
                             int aZ = z + GetDirOffsetY(dir);
-                            int aIndex = compactHeightfield.cells[aX + aZ * zStride].index + GetCon(span, dir);
+                            int aIndex = compactHeightfield.cells[aX + aZ * zStride].index + GetCon(ref span, dir);
                             if (compactHeightfield.areas[aIndex] != RC_NULL_AREA)
                             {
                                 neighborAreas[dir * 2 + 0] = compactHeightfield.areas[aIndex];
                             }
 
-                            RcCompactSpan aSpan = compactHeightfield.spans[aIndex];
+                            ref RcCompactSpan aSpan = ref compactHeightfield.spans[aIndex];
                             int dir2 = (dir + 1) & 0x3;
-                            int neighborConnection2 = GetCon(aSpan, dir2);
+                            int neighborConnection2 = GetCon(ref aSpan, dir2);
                             if (neighborConnection2 != RC_NOT_CONNECTED)
                             {
                                 int bX = aX + GetDirOffsetX(dir2);
                                 int bZ = aZ + GetDirOffsetY(dir2);
-                                int bIndex = compactHeightfield.cells[bX + bZ * zStride].index + GetCon(aSpan, dir2);
+                                int bIndex = compactHeightfield.cells[bX + bZ * zStride].index + GetCon(ref aSpan, dir2);
                                 if (compactHeightfield.areas[bIndex] != RC_NULL_AREA)
                                 {
                                     neighborAreas[dir * 2 + 1] = compactHeightfield.areas[bIndex];
@@ -404,11 +404,11 @@ namespace DotRecast.Recast
             {
                 for (int x = minX; x <= maxX; ++x)
                 {
-                    ref readonly RcCompactCell cell = ref compactHeightfield.cells[x + z * zStride];
+                    ref RcCompactCell cell = ref compactHeightfield.cells[x + z * zStride];
                     int maxSpanIndex = cell.index + cell.count;
                     for (int spanIndex = cell.index; spanIndex < maxSpanIndex; ++spanIndex)
                     {
-                        RcCompactSpan span = compactHeightfield.spans[spanIndex];
+                        ref RcCompactSpan span = ref compactHeightfield.spans[spanIndex];
 
                         // Skip if the span is outside the box extents.
                         if (span.y < minY || span.y > maxY)
@@ -523,11 +523,11 @@ namespace DotRecast.Recast
             {
                 for (int x = minx; x <= maxx; ++x)
                 {
-                    ref readonly RcCompactCell cell = ref compactHeightfield.cells[x + z * zStride];
+                    ref RcCompactCell cell = ref compactHeightfield.cells[x + z * zStride];
                     int maxSpanIndex = cell.index + cell.count;
                     for (int spanIndex = cell.index; spanIndex < maxSpanIndex; ++spanIndex)
                     {
-                        RcCompactSpan span = compactHeightfield.spans[spanIndex];
+                        ref RcCompactSpan span = ref compactHeightfield.spans[spanIndex];
 
                         // Skip if span is removed.
                         if (compactHeightfield.areas[spanIndex] == RC_NULL_AREA)
@@ -644,7 +644,7 @@ namespace DotRecast.Recast
             {
                 for (int x = minx; x <= maxx; ++x)
                 {
-                    ref readonly RcCompactCell cell = ref compactHeightfield.cells[x + z * zStride];
+                    ref RcCompactCell cell = ref compactHeightfield.cells[x + z * zStride];
                     int maxSpanIndex = cell.index + cell.count;
 
                     float cellX = compactHeightfield.bmin.X + ((float)x + 0.5f) * compactHeightfield.cs;
@@ -661,7 +661,7 @@ namespace DotRecast.Recast
                     // Mark all overlapping spans
                     for (int spanIndex = cell.index; spanIndex < maxSpanIndex; ++spanIndex)
                     {
-                        RcCompactSpan span = compactHeightfield.spans[spanIndex];
+                        ref RcCompactSpan span = ref compactHeightfield.spans[spanIndex];
 
                         // Skip if span is removed.
                         if (compactHeightfield.areas[spanIndex] == RC_NULL_AREA)

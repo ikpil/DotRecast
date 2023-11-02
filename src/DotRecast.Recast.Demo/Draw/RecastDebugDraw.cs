@@ -486,11 +486,11 @@ public class RecastDebugDraw : DebugDraw
             {
                 float fx = chf.bmin.X + x * cs;
                 float fz = chf.bmin.Z + y * cs;
-                ref readonly RcCompactCell c = ref chf.cells[x + y * chf.width];
+                ref RcCompactCell c = ref chf.cells[x + y * chf.width];
 
                 for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                 {
-                    RcCompactSpan s = chf.spans[i];
+                    ref RcCompactSpan s = ref chf.spans[i];
 
                     int area = chf.areas[i];
                     int color;
@@ -859,11 +859,11 @@ public class RecastDebugDraw : DebugDraw
             {
                 float fx = chf.bmin.X + x * cs;
                 float fz = chf.bmin.Z + y * cs;
-                ref readonly RcCompactCell c = ref chf.cells[x + y * chf.width];
+                ref RcCompactCell c = ref chf.cells[x + y * chf.width];
 
                 for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                 {
-                    RcCompactSpan s = chf.spans[i];
+                    ref RcCompactSpan s = ref chf.spans[i];
                     float fy = chf.bmin.Y + (s.y) * ch;
                     int color;
                     if (s.reg != 0)
@@ -912,11 +912,11 @@ public class RecastDebugDraw : DebugDraw
             {
                 float fx = chf.bmin.X + x * cs;
                 float fz = chf.bmin.Z + y * cs;
-                ref readonly RcCompactCell c = ref chf.cells[x + y * chf.width];
+                ref RcCompactCell c = ref chf.cells[x + y * chf.width];
 
                 for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                 {
-                    RcCompactSpan s = chf.spans[i];
+                    ref RcCompactSpan s = ref chf.spans[i];
                     float fy = chf.bmin.Y + (s.y + 1) * ch;
                     char cd = (char)(chf.dist[i] * dscale);
                     int color = DuRGBA(cd, cd, cd, 255);
