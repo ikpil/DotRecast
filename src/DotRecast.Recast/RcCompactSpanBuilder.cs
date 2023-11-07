@@ -9,15 +9,20 @@
 
         public static RcCompactSpanBuilder NewBuilder(ref RcCompactSpan span)
         {
-            var builder = new RcCompactSpanBuilder();
+            var builder = NewBuilder();
             builder.y = span.y;
             builder.reg = span.reg;
             builder.con = span.con;
             builder.h = span.h;
             return builder;
         }
+        
+        public static RcCompactSpanBuilder NewBuilder()
+        {
+            return new RcCompactSpanBuilder();
+        }
 
-        public RcCompactSpanBuilder()
+        private RcCompactSpanBuilder()
         {
         }
 

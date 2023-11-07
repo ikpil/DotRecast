@@ -69,9 +69,9 @@ namespace DotRecast.Recast
             //chf.spans = new RcCompactSpan[spanCount];
             chf.areas = new int[spanCount];
 
-            var chfSpans = Enumerable
+            var tempSpans = Enumerable
                 .Range(0, spanCount)
-                .Select(x => new RcCompactSpanBuilder())
+                .Select(x => RcCompactSpanBuilder.NewBuilder())
                 .ToArray();
 
             // Fill in cells and spans.
@@ -93,8 +93,8 @@ namespace DotRecast.Recast
                         {
                             int bot = s.smax;
                             int top = s.next != null ? (int)s.next.smin : MAX_HEIGHT;
-                            chfSpans[idx].y = Math.Clamp(bot, 0, MAX_HEIGHT);
-                            chfSpans[idx].h = Math.Clamp(top - bot, 0, MAX_HEIGHT);
+                            tempSpans[idx].y = Math.Clamp(bot, 0, MAX_HEIGHT);
+                            tempSpans[idx].h = Math.Clamp(top - bot, 0, MAX_HEIGHT);
                             chf.areas[idx] = s.area;
                             idx++;
                             tmpCount++;
@@ -116,7 +116,7 @@ namespace DotRecast.Recast
                     ref RcCompactCell c = ref chf.cells[x + y * w];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
-                        ref RcCompactSpanBuilder s = ref chfSpans[i];
+                        ref RcCompactSpanBuilder s = ref tempSpans[i];
 
                         for (int dir = 0; dir < 4; ++dir)
                         {
@@ -132,7 +132,7 @@ namespace DotRecast.Recast
                             ref RcCompactCell nc = ref chf.cells[nx + ny * w];
                             for (int k = nc.index, nk = nc.index + nc.count; k < nk; ++k)
                             {
-                                ref RcCompactSpanBuilder ns = ref chfSpans[k];
+                                ref RcCompactSpanBuilder ns = ref tempSpans[k];
                                 int bot = Math.Max(s.y, ns.y);
                                 int top = Math.Min(s.y + s.h, ns.y + ns.h);
 
@@ -163,7 +163,7 @@ namespace DotRecast.Recast
                                                                                                   + " (max: " + MAX_LAYERS + ")");
             }
 
-            chf.spans = chfSpans.Select(x => x.Build()).ToArray();
+            chf.spans = tempSpans.Select(x => x.Build()).ToArray();
 
             return chf;
         }
