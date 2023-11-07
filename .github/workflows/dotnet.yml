@@ -5,12 +5,19 @@ name: .NET
 
 on:
   push:
-  pull_request:
-    branches: [ main ]
+    branches:
+      - main
     paths:
-      - '**/*.cs'
-      - '**/*.csproj'
-      - '**/*.sln'
+      - '**.cs'
+      - '**.csproj'
+      - '**.sln'
+  pull_request:
+    branches:
+      - 'pr/**'
+    paths:
+      - '**.cs'
+      - '**.csproj'
+      - '**.sln'
 
 jobs:
   build-and-test:
