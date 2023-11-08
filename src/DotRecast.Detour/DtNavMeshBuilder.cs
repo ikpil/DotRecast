@@ -545,15 +545,14 @@ namespace DotRecast.Detour
                 int vbase = 0;
                 for (int i = 0; i < option.polyCount; ++i)
                 {
-                    DtPolyDetail dtl = new DtPolyDetail();
-                    navDMeshes[i] = dtl;
                     int vb = option.detailMeshes[i * 4 + 0];
                     int ndv = option.detailMeshes[i * 4 + 1];
                     int nv = navPolys[i].vertCount;
-                    dtl.vertBase = vbase;
-                    dtl.vertCount = (ndv - nv);
-                    dtl.triBase = option.detailMeshes[i * 4 + 2];
-                    dtl.triCount = option.detailMeshes[i * 4 + 3];
+                    int vertBase = vbase;
+                    int vertCount = (ndv - nv);
+                    int triBase = option.detailMeshes[i * 4 + 2];
+                    int triCount = option.detailMeshes[i * 4 + 3];
+                    navDMeshes[i] = new DtPolyDetail(vertBase, triBase, vertCount, triCount);
                     // Copy vertices except the first 'nv' verts which are equal to
                     // nav poly verts.
                     if (ndv - nv != 0)
@@ -572,13 +571,12 @@ namespace DotRecast.Detour
                 int tbase = 0;
                 for (int i = 0; i < option.polyCount; ++i)
                 {
-                    DtPolyDetail dtl = new DtPolyDetail();
-                    navDMeshes[i] = dtl;
                     int nv = navPolys[i].vertCount;
-                    dtl.vertBase = 0;
-                    dtl.vertCount = 0;
-                    dtl.triBase = tbase;
-                    dtl.triCount = (nv - 2);
+                    int vertBase = 0;
+                    int vertCount = 0;
+                    int triBase = tbase;
+                    int triCount = (nv - 2);
+                    navDMeshes[i] = new DtPolyDetail(vertBase, triBase, vertCount, triCount);
                     // Triangulate polygon (local indices).
                     for (int j = 2; j < nv; ++j)
                     {

@@ -255,26 +255,23 @@ public class RecastDebugDraw : DebugDraw
         DtPoly p = tile.data.polys[index];
         if (tile.data.detailMeshes != null)
         {
-            DtPolyDetail pd = tile.data.detailMeshes[index];
-            if (pd != null)
+            ref DtPolyDetail pd = ref tile.data.detailMeshes[index];
+            for (int j = 0; j < pd.triCount; ++j)
             {
-                for (int j = 0; j < pd.triCount; ++j)
+                int t = (pd.triBase + j) * 4;
+                for (int k = 0; k < 3; ++k)
                 {
-                    int t = (pd.triBase + j) * 4;
-                    for (int k = 0; k < 3; ++k)
+                    int v = tile.data.detailTris[t + k];
+                    if (v < p.vertCount)
                     {
-                        int v = tile.data.detailTris[t + k];
-                        if (v < p.vertCount)
-                        {
-                            Vertex(tile.data.verts[p.verts[v] * 3], tile.data.verts[p.verts[v] * 3 + 1],
-                                tile.data.verts[p.verts[v] * 3 + 2], col);
-                        }
-                        else
-                        {
-                            Vertex(tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3],
-                                tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3 + 1],
-                                tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3 + 2], col);
-                        }
+                        Vertex(tile.data.verts[p.verts[v] * 3], tile.data.verts[p.verts[v] * 3 + 1],
+                            tile.data.verts[p.verts[v] * 3 + 2], col);
+                    }
+                    else
+                    {
+                        Vertex(tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3],
+                            tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3 + 1],
+                            tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3 + 2], col);
                     }
                 }
             }
@@ -367,7 +364,7 @@ public class RecastDebugDraw : DebugDraw
                 // This is really slow.
                 if (tile.data.detailMeshes != null)
                 {
-                    DtPolyDetail pd = tile.data.detailMeshes[i];
+                    ref DtPolyDetail pd = ref tile.data.detailMeshes[i];
                     for (int k = 0; k < pd.triCount; ++k)
                     {
                         int t = (pd.triBase + k) * 4;

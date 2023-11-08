@@ -56,40 +56,33 @@ namespace DotRecast.Detour
                     continue;
                 }
 
-                DtPolyDetail pd = tile.data.detailMeshes[i];
+                ref DtPolyDetail pd = ref tile.data.detailMeshes[i];
 
-                if (pd != null)
+                RcVec3f[] verts = new RcVec3f[3];
+                for (int j = 0; j < pd.triCount; ++j)
                 {
-                    RcVec3f[] verts = new RcVec3f[3];
-                    for (int j = 0; j < pd.triCount; ++j)
+                    int t = (pd.triBase + j) * 4;
+                    for (int k = 0; k < 3; ++k)
                     {
-                        int t = (pd.triBase + j) * 4;
-                        for (int k = 0; k < 3; ++k)
+                        int v = tile.data.detailTris[t + k];
+                        if (v < p.vertCount)
                         {
-                            int v = tile.data.detailTris[t + k];
-                            if (v < p.vertCount)
-                            {
-                                verts[k].X = tile.data.verts[p.verts[v] * 3];
-                                verts[k].Y = tile.data.verts[p.verts[v] * 3 + 1];
-                                verts[k].Z = tile.data.verts[p.verts[v] * 3 + 2];
-                            }
-                            else
-                            {
-                                verts[k].X = tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3];
-                                verts[k].Y = tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3 + 1];
-                                verts[k].Z = tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3 + 2];
-                            }
+                            verts[k].X = tile.data.verts[p.verts[v] * 3];
+                            verts[k].Y = tile.data.verts[p.verts[v] * 3 + 1];
+                            verts[k].Z = tile.data.verts[p.verts[v] * 3 + 2];
                         }
-
-                        if (RcIntersections.IntersectSegmentTriangle(sp, sq, verts[0], verts[1], verts[2], out hitTime))
+                        else
                         {
-                            return true;
+                            verts[k].X = tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3];
+                            verts[k].Y = tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3 + 1];
+                            verts[k].Z = tile.data.detailVerts[(pd.vertBase + v - p.vertCount) * 3 + 2];
                         }
                     }
-                }
-                else
-                {
-                    // FIXME: Use Poly if PolyDetail is unavailable
+
+                    if (RcIntersections.IntersectSegmentTriangle(sp, sq, verts[0], verts[1], verts[2], out hitTime))
+                    {
+                        return true;
+                    }
                 }
             }
 

@@ -1137,7 +1137,7 @@ namespace DotRecast.Detour
 
             if (tile.data.detailMeshes != null)
             {
-                DtPolyDetail pd = tile.data.detailMeshes[ip];
+                ref DtPolyDetail pd = ref tile.data.detailMeshes[ip];
                 for (int i = 0; i < pd.triCount; i++)
                 {
                     int ti = (pd.triBase + i) * 4;
@@ -1248,7 +1248,7 @@ namespace DotRecast.Detour
             // Find height at the location.
             if (tile.data.detailMeshes != null)
             {
-                DtPolyDetail pd = tile.data.detailMeshes[ip];
+                ref DtPolyDetail pd = ref tile.data.detailMeshes[ip];
                 for (int j = 0; j < pd.triCount; ++j)
                 {
                     int t = (pd.triBase + j) * 4;
