@@ -6,7 +6,8 @@ name: .NET
 on:
   push:
     branches:
-      - main
+      - 'main'
+      - 'pr/**'
     paths:
       - '**.cs'
       - '**.csproj'
