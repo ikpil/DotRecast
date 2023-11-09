@@ -18,7 +18,7 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Detour.Io
 {
-    public class NavMeshSetHeader
+    public struct NavMeshSetHeader
     {
         public const int NAVMESHSET_MAGIC = 'M' << 24 | 'S' << 16 | 'E' << 8 | 'T'; // 'MSET';
         public const int NAVMESHSET_VERSION = 1;
@@ -28,7 +28,7 @@ namespace DotRecast.Detour.Io
         public int magic;
         public int version;
         public int numTiles;
-        public DtNavMeshParams option = new DtNavMeshParams();
+        public DtNavMeshParams option;
         public int maxVertsPerPoly;
     }
 }
