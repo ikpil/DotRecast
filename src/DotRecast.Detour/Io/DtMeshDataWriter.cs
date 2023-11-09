@@ -27,7 +27,7 @@ namespace DotRecast.Detour.Io
         {
             DtMeshHeader header = data.header;
             Write(stream, header.magic, order);
-            Write(stream, cCompatibility ? DtMeshHeader.DT_NAVMESH_VERSION : DtMeshHeader.DT_NAVMESH_VERSION_RECAST4J_LAST, order);
+            Write(stream, cCompatibility ? DtNavMesh.DT_NAVMESH_VERSION : DtNavMesh.DT_NAVMESH_VERSION_RECAST4J_LAST, order);
             Write(stream, header.x, order);
             Write(stream, header.y, order);
             Write(stream, header.layer, order);

@@ -423,8 +423,8 @@ namespace DotRecast.Detour
             DtOffMeshConnection[] offMeshCons = new DtOffMeshConnection[storedOffMeshConCount];
 
             // Store header
-            header.magic = DtMeshHeader.DT_NAVMESH_MAGIC;
-            header.version = DtMeshHeader.DT_NAVMESH_VERSION;
+            header.magic = DtNavMesh.DT_NAVMESH_MAGIC;
+            header.version = DtNavMesh.DT_NAVMESH_VERSION;
             header.x = option.tileX;
             header.y = option.tileZ;
             header.layer = option.tileLayer;

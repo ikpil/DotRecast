@@ -116,8 +116,8 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                     tiles[tileIndex].detailVerts = detailVerts;
                     tiles[tileIndex].detailTris = detailTris;
                     DtMeshHeader header = new DtMeshHeader();
-                    header.magic = DtMeshHeader.DT_NAVMESH_MAGIC;
-                    header.version = DtMeshHeader.DT_NAVMESH_VERSION;
+                    header.magic = DtNavMesh.DT_NAVMESH_MAGIC;
+                    header.version = DtNavMesh.DT_NAVMESH_VERSION;
                     header.x = x;
                     header.y = z;
                     header.polyCount = nodeCount;
@@ -125,16 +125,16 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                     header.detailMeshCount = nodeCount;
                     header.detailTriCount = nodeCount;
                     header.maxLinkCount = nodeCount * 3 * 2; // XXX: Needed by Recast, not needed by recast4j
-                    header.bmin.X = meta.forcedBoundsCenter.x - 0.5f * meta.forcedBoundsSize.x
-                                    + meta.cellSize * meta.tileSizeX * x;
+                    header.bmin.X = meta.forcedBoundsCenter.x - 0.5f * meta.forcedBoundsSize.x +
+                                    meta.cellSize * meta.tileSizeX * x;
                     header.bmin.Y = ymin;
-                    header.bmin.Z = meta.forcedBoundsCenter.z - 0.5f * meta.forcedBoundsSize.z
-                                    + meta.cellSize * meta.tileSizeZ * z;
-                    header.bmax.X = meta.forcedBoundsCenter.x - 0.5f * meta.forcedBoundsSize.x
-                                    + meta.cellSize * meta.tileSizeX * (x + 1);
+                    header.bmin.Z = meta.forcedBoundsCenter.z - 0.5f * meta.forcedBoundsSize.z +
+                                    meta.cellSize * meta.tileSizeZ * z;
+                    header.bmax.X = meta.forcedBoundsCenter.x - 0.5f * meta.forcedBoundsSize.x +
+                                    meta.cellSize * meta.tileSizeX * (x + 1);
                     header.bmax.Y = ymax;
-                    header.bmax.Z = meta.forcedBoundsCenter.z - 0.5f * meta.forcedBoundsSize.z
-                                    + meta.cellSize * meta.tileSizeZ * (z + 1);
+                    header.bmax.Z = meta.forcedBoundsCenter.z - 0.5f * meta.forcedBoundsSize.z +
+                                    meta.cellSize * meta.tileSizeZ * (z + 1);
                     header.bvQuantFactor = 1.0f / meta.cellSize;
                     header.offMeshBase = nodeCount;
                     header.walkableClimb = meta.walkableClimb;

@@ -27,6 +27,23 @@ namespace DotRecast.Detour
 {
     public class DtNavMesh
     {
+        /** A magic number used to detect compatibility of navigation tile data. */
+        public const int DT_NAVMESH_MAGIC = 'D' << 24 | 'N' << 16 | 'A' << 8 | 'V';
+
+        /** A version number used to detect compatibility of navigation tile data. */
+        public const int DT_NAVMESH_VERSION = 7;
+
+        public const int DT_NAVMESH_VERSION_RECAST4J_FIRST = 0x8807;
+        public const int DT_NAVMESH_VERSION_RECAST4J_NO_POLY_FIRSTLINK = 0x8808;
+        public const int DT_NAVMESH_VERSION_RECAST4J_32BIT_BVTREE = 0x8809;
+        public const int DT_NAVMESH_VERSION_RECAST4J_LAST = 0x8809;
+
+        /** A magic number used to detect the compatibility of navigation tile states. */
+        public const int DT_NAVMESH_STATE_MAGIC = 'D' << 24 | 'N' << 16 | 'M' << 8 | 'S';
+
+        /** A version number used to detect compatibility of navigation tile states. */
+        public const int DT_NAVMESH_STATE_VERSION = 1;
+        
         public const int DT_SALT_BITS = 16;
         public const int DT_TILE_BITS = 28;
         public const int DT_POLY_BITS = 20;
