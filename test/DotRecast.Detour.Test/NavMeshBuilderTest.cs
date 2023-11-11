@@ -16,6 +16,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core.Numerics;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
@@ -49,9 +50,9 @@ public class NavMeshBuilderTest
             Assert.That(nmd.bvTree[i], Is.Not.Null);
         }
 
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < 2; i++)
         {
-            Assert.That(nmd.verts[223 * 3 + i], Is.EqualTo(nmd.offMeshCons[0].pos[i]));
+            Assert.That(RcVecUtils.Create(nmd.verts, 223 * 3 + (i * 3)), Is.EqualTo(nmd.offMeshCons[0].pos[i]));
         }
 
         Assert.That(nmd.offMeshCons[0].rad, Is.EqualTo(0.1f));

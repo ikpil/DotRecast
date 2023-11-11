@@ -48,15 +48,14 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                         startTile.header.vertCount += 2;
                         DtOffMeshConnection connection = new DtOffMeshConnection();
                         connection.poly = poly;
-                        connection.pos = new float[]
+                        connection.pos = new RcVec3f[]
                         {
-                            l.clamped1.X, l.clamped1.Y, l.clamped1.Z,
-                            l.clamped2.X, l.clamped2.Y, l.clamped2.Z
+                            l.clamped1, l.clamped2
                         };
                         connection.rad = 0.1f;
                         connection.side = startTile == endTile
                             ? 0xFF
-                            : DtNavMeshBuilder.ClassifyOffMeshPoint(RcVecUtils.Create(connection.pos, 3), startTile.header.bmin, startTile.header.bmax);
+                            : DtNavMeshBuilder.ClassifyOffMeshPoint(connection.pos[1], startTile.header.bmin, startTile.header.bmax);
                         connection.userId = (int)l.linkID;
                         if (startTile.offMeshCons == null)
                         {

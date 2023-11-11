@@ -213,25 +213,27 @@ public class RecastDebugDraw : DebugDraw
 
                 // End points and their on-mesh locations.
                 Vertex(va.X, va.Y, va.Z, col);
-                Vertex(con.pos[0], con.pos[1], con.pos[2], col);
+                Vertex(con.pos[0], col);
                 col2 = startSet ? col : DuRGBA(220, 32, 16, 196);
-                AppendCircle(con.pos[0], con.pos[1] + 0.1f, con.pos[2], con.rad, col2);
+                AppendCircle(con.pos[0].X, con.pos[0].Y + 0.1f, con.pos[0].Z, con.rad, col2);
 
                 Vertex(vb.X, vb.Y, vb.Z, col);
-                Vertex(con.pos[3], con.pos[4], con.pos[5], col);
+                Vertex(con.pos[1], col);
                 col2 = endSet ? col : DuRGBA(220, 32, 16, 196);
-                AppendCircle(con.pos[3], con.pos[4] + 0.1f, con.pos[5], con.rad, col2);
+                AppendCircle(con.pos[1].X, con.pos[1].Y + 0.1f, con.pos[1].Z, con.rad, col2);
 
                 // End point vertices.
-                Vertex(con.pos[0], con.pos[1], con.pos[2], DuRGBA(0, 48, 64, 196));
-                Vertex(con.pos[0], con.pos[1] + 0.2f, con.pos[2], DuRGBA(0, 48, 64, 196));
+                Vertex(con.pos[0], DuRGBA(0, 48, 64, 196));
+                Vertex(con.pos[0].X, con.pos[0].Y + 0.2f, con.pos[0].Z, DuRGBA(0, 48, 64, 196));
 
-                Vertex(con.pos[3], con.pos[4], con.pos[5], DuRGBA(0, 48, 64, 196));
-                Vertex(con.pos[3], con.pos[4] + 0.2f, con.pos[5], DuRGBA(0, 48, 64, 196));
+                Vertex(con.pos[1], DuRGBA(0, 48, 64, 196));
+                Vertex(con.pos[1].X, con.pos[1].Y + 0.2f, con.pos[1].Z, DuRGBA(0, 48, 64, 196));
 
                 // Connection arc.
-                AppendArc(con.pos[0], con.pos[1], con.pos[2], con.pos[3], con.pos[4], con.pos[5], 0.25f,
-                    (con.flags & 1) != 0 ? 0.6f : 0, 0.6f, col);
+                AppendArc(
+                    con.pos[0].X, con.pos[0].Y, con.pos[0].Z,
+                    con.pos[1].X, con.pos[1].Y, con.pos[1].Z,
+                    0.25f, (con.flags & 1) != 0 ? 0.6f : 0, 0.6f, col);
             }
 
             End();
@@ -1293,8 +1295,10 @@ public class RecastDebugDraw : DebugDraw
             Begin(DebugDrawPrimitives.LINES, 2.0f);
 
             // Connection arc.
-            AppendArc(con.pos[0], con.pos[1], con.pos[2], con.pos[3], con.pos[4], con.pos[5], 0.25f,
-                (con.flags & 1) != 0 ? 0.6f : 0.0f, 0.6f, c);
+            AppendArc(
+                con.pos[0].X, con.pos[0].Y, con.pos[0].Z,
+                con.pos[1].X, con.pos[1].Y, con.pos[1].Z,
+                0.25f, (con.flags & 1) != 0 ? 0.6f : 0.0f, 0.6f, c);
 
             End();
         }

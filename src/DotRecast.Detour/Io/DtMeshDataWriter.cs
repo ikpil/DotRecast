@@ -159,9 +159,11 @@ namespace DotRecast.Detour.Io
         {
             for (int i = 0; i < data.header.offMeshConCount; i++)
             {
-                for (int j = 0; j < 6; j++)
+                for (int j = 0; j < 2; j++)
                 {
-                    Write(stream, data.offMeshCons[i].pos[j], order);
+                    Write(stream, data.offMeshCons[i].pos[j].X, order);
+                    Write(stream, data.offMeshCons[i].pos[j].Y, order);
+                    Write(stream, data.offMeshCons[i].pos[j].Z, order);
                 }
 
                 Write(stream, data.offMeshCons[i].rad, order);

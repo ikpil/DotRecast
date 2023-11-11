@@ -615,7 +615,11 @@ namespace DotRecast.Detour
                     con.poly = (offMeshPolyBase + n);
                     // Copy connection end-points.
                     int endPts = i * 2 * 3;
-                    Array.Copy(option.offMeshConVerts, endPts, con.pos, 0, 6);
+                    for (int j = 0; j < 2; ++j)
+                    {
+                        con.pos[j] = RcVecUtils.Create(option.offMeshConVerts, endPts + (j * 3));
+                    }
+
                     con.rad = option.offMeshConRad[i];
                     con.flags = option.offMeshConDir[i] != 0 ? DtNavMesh.DT_OFFMESH_CON_BIDIR : 0;
                     con.side = offMeshConClass[i * 2 + 1];

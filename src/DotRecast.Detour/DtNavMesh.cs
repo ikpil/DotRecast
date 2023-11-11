@@ -855,10 +855,7 @@ namespace DotRecast.Detour
                 };
 
                 // Find polygon to connect to.
-                RcVec3f p = new RcVec3f();
-                p.X = targetCon.pos[3];
-                p.Y = targetCon.pos[4];
-                p.Z = targetCon.pos[5];
+                RcVec3f p = targetCon.pos[1];
                 var refs = FindNearestPolyInTile(tile, p, ext, out var nearestPt);
                 if (refs == 0)
                 {
@@ -1089,16 +1086,16 @@ namespace DotRecast.Detour
                 };
 
                 // Find polygon to connect to.
-                var refs = FindNearestPolyInTile(tile, new RcVec3f(con.pos[0], con.pos[1], con.pos[2]), ext, out var nearestPt);
+                var refs = FindNearestPolyInTile(tile, con.pos[0], ext, out var nearestPt);
                 if (refs == 0)
                 {
                     continue;
                 }
 
-                float[] p = con.pos; // First vertex
+                RcVec3f[] p = con.pos; // First vertex
                 // findNearestPoly may return too optimistic results, further check
                 // to make sure.
-                if (RcMath.Sqr(nearestPt.X - p[0]) + RcMath.Sqr(nearestPt.Z - p[2]) > RcMath.Sqr(con.rad))
+                if (RcMath.Sqr(nearestPt.X - p[0].X) + RcMath.Sqr(nearestPt.Z - p[0].Z) > RcMath.Sqr(con.rad))
                 {
                     continue;
                 }
