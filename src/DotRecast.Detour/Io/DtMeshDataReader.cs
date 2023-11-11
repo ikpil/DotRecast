@@ -237,9 +237,11 @@ namespace DotRecast.Detour.Io
             for (int i = 0; i < cons.Length; i++)
             {
                 cons[i] = new DtOffMeshConnection();
-                for (int j = 0; j < 6; j++)
+                for (int j = 0; j < 2; j++)
                 {
-                    cons[i].pos[j] = buf.GetFloat();
+                    cons[i].pos[j].X = buf.GetFloat();
+                    cons[i].pos[j].Y = buf.GetFloat();
+                    cons[i].pos[j].Z = buf.GetFloat();
                 }
 
                 cons[i].rad = buf.GetFloat();

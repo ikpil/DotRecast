@@ -131,7 +131,7 @@ public class MeshDataReaderWriterTest
             Assert.That(readData.offMeshCons[i].poly, Is.EqualTo(meshData.offMeshCons[i].poly));
             Assert.That(readData.offMeshCons[i].side, Is.EqualTo(meshData.offMeshCons[i].side));
             Assert.That(readData.offMeshCons[i].userId, Is.EqualTo(meshData.offMeshCons[i].userId));
-            for (int j = 0; j < 6; j++)
+            for (int j = 0; j < 2; j++)
             {
                 Assert.That(readData.offMeshCons[i].pos[j], Is.EqualTo(meshData.offMeshCons[i].pos[j]));
             }

@@ -18,6 +18,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core.Numerics;
+
 namespace DotRecast.Detour
 {
     /// Defines an navigation mesh off-mesh connection within a dtMeshTile object.
@@ -25,7 +27,7 @@ namespace DotRecast.Detour
     public class DtOffMeshConnection
     {
         /// The endpoints of the connection. [(ax, ay, az, bx, by, bz)]
-        public float[] pos = new float[6];
+        public RcVec3f[] pos = new RcVec3f[2];
 
         /// The radius of the endpoints. [Limit: >= 0]
         public float rad;
