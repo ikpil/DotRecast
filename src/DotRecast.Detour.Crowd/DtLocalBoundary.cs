@@ -54,7 +54,7 @@ namespace DotRecast.Detour.Crowd
             DtSegment seg = new DtSegment();
             seg.s[0] = s.vmin;
             seg.s[1] = s.vmax;
-            //Array.Copy(s, seg.s, 6);
+            //RcArrays.Copy(s, seg.s, 6);
             seg.d = dist;
             if (0 == m_segs.Count)
             {

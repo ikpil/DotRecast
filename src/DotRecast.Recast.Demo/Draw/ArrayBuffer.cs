@@ -1,4 +1,5 @@
 ﻿using System;
+using DotRecast.Core;
 
 namespace DotRecast.Recast.Demo.Draw;
 
@@ -24,7 +25,7 @@ public class ArrayBuffer<T>
         if (_items.Length <= _size)
         {
             var temp = new T[(int)(_size * 1.5)];
-            Array.Copy(_items, 0, temp, 0, _items.Length);
+            RcArrays.Copy(_items, 0, temp, 0, _items.Length);
             _items = temp;
         }
 

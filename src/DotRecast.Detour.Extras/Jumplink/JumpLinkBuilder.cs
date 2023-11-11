@@ -64,8 +64,8 @@ namespace DotRecast.Detour.Extras.Jumplink
                 {
                     JumpLink link = new JumpLink();
                     links.Add(link);
-                    link.startSamples = RcArrayUtils.CopyOf(es.start.gsamples, js.startSample, js.samples);
-                    link.endSamples = RcArrayUtils.CopyOf(end.gsamples, js.startSample, js.samples);
+                    link.startSamples = RcArrays.CopyOf(es.start.gsamples, js.startSample, js.samples);
+                    link.endSamples = RcArrays.CopyOf(end.gsamples, js.startSample, js.samples);
                     link.start = es.start;
                     link.end = end;
                     link.trajectory = es.trajectory;

@@ -1275,7 +1275,7 @@ namespace DotRecast.Detour.TileCache
             // Add pb
             for (int i = 0; i < nb - 1; ++i)
                 tmp[n++] = polys[pb + (eb + 1 + i) % nb];
-            Array.Copy(tmp, 0, polys, pa, maxVertsPerPoly);
+            RcArrays.Copy(tmp, 0, polys, pa, maxVertsPerPoly);
         }
 
         private int PushFront(int v, List<int> arr)
@@ -1434,7 +1434,7 @@ namespace DotRecast.Detour.TileCache
 
                     // Remove the polygon.
                     int p2 = (mesh.npolys - 1) * maxVertsPerPoly * 2;
-                    Array.Copy(mesh.polys, p2, mesh.polys, p, maxVertsPerPoly);
+                    RcArrays.Copy(mesh.polys, p2, mesh.polys, p, maxVertsPerPoly);
                     Array.Fill(mesh.polys, DT_TILECACHE_NULL_IDX, p + maxVertsPerPoly, maxVertsPerPoly);
                     mesh.areas[i] = mesh.areas[mesh.npolys - 1];
                     mesh.npolys--;
@@ -1597,7 +1597,7 @@ namespace DotRecast.Detour.TileCache
                         int pa = bestPa * maxVertsPerPoly;
                         int pb = bestPb * maxVertsPerPoly;
                         MergePolys(polys, pa, pb, bestEa, bestEb, maxVertsPerPoly);
-                        Array.Copy(polys, (npolys - 1) * maxVertsPerPoly, polys, pb, maxVertsPerPoly);
+                        RcArrays.Copy(polys, (npolys - 1) * maxVertsPerPoly, polys, pb, maxVertsPerPoly);
                         pareas[bestPb] = pareas[npolys - 1];
                         npolys--;
                     }
@@ -1753,7 +1753,7 @@ namespace DotRecast.Detour.TileCache
                             int pa = bestPa * maxVertsPerPoly;
                             int pb = bestPb * maxVertsPerPoly;
                             MergePolys(polys, pa, pb, bestEa, bestEb, maxVertsPerPoly);
-                            Array.Copy(polys, (npolys - 1) * maxVertsPerPoly, polys, pb, maxVertsPerPoly);
+                            RcArrays.Copy(polys, (npolys - 1) * maxVertsPerPoly, polys, pb, maxVertsPerPoly);
                             npolys--;
                         }
                         else

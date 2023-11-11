@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using DotRecast.Core;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
@@ -171,7 +172,7 @@ namespace DotRecast.Detour
             }
 
             float[] copied = new float[ii];
-            Array.Copy(inters, copied, ii);
+            RcArrays.Copy(inters, copied, ii);
             return copied;
         }
 

@@ -136,10 +136,10 @@ namespace DotRecast.Detour
             // Randomly pick point on polygon.
             float[] verts = new float[3 * m_nav.GetMaxVertsPerPoly()];
             float[] areas = new float[m_nav.GetMaxVertsPerPoly()];
-            Array.Copy(tile.data.verts, poly.verts[0] * 3, verts, 0, 3);
+            RcArrays.Copy(tile.data.verts, poly.verts[0] * 3, verts, 0, 3);
             for (int j = 1; j < poly.vertCount; ++j)
             {
-                Array.Copy(tile.data.verts, poly.verts[j] * 3, verts, j * 3, 3);
+                RcArrays.Copy(tile.data.verts, poly.verts[j] * 3, verts, j * 3, 3);
             }
 
             float s = frand.Next();
@@ -256,7 +256,7 @@ namespace DotRecast.Detour
                     float[] polyVerts = new float[bestPoly.vertCount * 3];
                     for (int j = 0; j < bestPoly.vertCount; ++j)
                     {
-                        Array.Copy(bestTile.data.verts, bestPoly.verts[j] * 3, polyVerts, j * 3, 3);
+                        RcArrays.Copy(bestTile.data.verts, bestPoly.verts[j] * 3, polyVerts, j * 3, 3);
                     }
 
                     float[] constrainedVerts = constraint.Apply(polyVerts, centerPos, maxRadius);
@@ -453,7 +453,7 @@ namespace DotRecast.Detour
             int nv = poly.vertCount;
             for (int i = 0; i < nv; ++i)
             {
-                Array.Copy(tile.data.verts, poly.verts[i] * 3, verts, i * 3, 3);
+                RcArrays.Copy(tile.data.verts, poly.verts[i] * 3, verts, i * 3, 3);
             }
 
             if (DtUtils.DistancePtPolyEdgesSqr(pos, verts, nv, edged, edget))
@@ -1822,7 +1822,7 @@ namespace DotRecast.Detour
                 int nverts = curPoly.vertCount;
                 for (int i = 0; i < nverts; ++i)
                 {
-                    Array.Copy(curTile.data.verts, curPoly.verts[i] * 3, verts, i * 3, 3);
+                    RcArrays.Copy(curTile.data.verts, curPoly.verts[i] * 3, verts, i * 3, 3);
                 }
 
                 // If target is inside the poly, stop search.
@@ -2873,7 +2873,7 @@ namespace DotRecast.Detour
                     int npa = neighbourPoly.vertCount;
                     for (int k = 0; k < npa; ++k)
                     {
-                        Array.Copy(neighbourTile.data.verts, neighbourPoly.verts[k] * 3, pa, k * 3, 3);
+                        RcArrays.Copy(neighbourTile.data.verts, neighbourPoly.verts[k] * 3, pa, k * 3, 3);
                     }
 
                     bool overlap = false;
@@ -2904,7 +2904,7 @@ namespace DotRecast.Detour
                         int npb = pastPoly.vertCount;
                         for (int k = 0; k < npb; ++k)
                         {
-                            Array.Copy(pastTile.data.verts, pastPoly.verts[k] * 3, pb, k * 3, 3);
+                            RcArrays.Copy(pastTile.data.verts, pastPoly.verts[k] * 3, pb, k * 3, 3);
                         }
 
                         if (DtUtils.OverlapPolyPoly2D(pa, npa, pb, npb))
@@ -3033,8 +3033,8 @@ namespace DotRecast.Detour
                     var seg = new RcSegmentVert();
                     seg.vmin = RcVecUtils.Create(tile.data.verts, ivj);
                     seg.vmax = RcVecUtils.Create(tile.data.verts, ivi);
-                    // Array.Copy(tile.data.verts, ivj, seg, 0, 3);
-                    // Array.Copy(tile.data.verts, ivi, seg, 3, 3);
+                    // RcArrays.Copy(tile.data.verts, ivj, seg, 0, 3);
+                    // RcArrays.Copy(tile.data.verts, ivi, seg, 3, 3);
                     segmentVerts.Add(seg);
                     segmentRefs.Add(neiRef);
                     continue;

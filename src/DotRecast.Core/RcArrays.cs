@@ -1,9 +1,24 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace DotRecast.Core
 {
-    public static class RcArrayUtils
+    public static class RcArrays
     {
+        // Type Safe Copy
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Copy<T>(T[] sourceArray, long sourceIndex, T[] destinationArray, long destinationIndex, long length)
+        {
+            Array.Copy(sourceArray, sourceIndex, destinationArray, destinationIndex, length);
+        }
+
+        // Type Safe Copy
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Copy<T>(T[] sourceArray, T[] destinationArray, long length)
+        {
+            Array.Copy(sourceArray, destinationArray, length);
+        }
+
         public static T[] CopyOf<T>(T[] source, int startIdx, int length)
         {
             var deatArr = new T[length];

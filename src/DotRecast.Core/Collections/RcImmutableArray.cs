@@ -41,7 +41,7 @@ namespace DotRecast.Core.Collections
             }
 
             var tmp = new T[items.Length];
-            Array.Copy(items, tmp, items.Length);
+            RcArrays.Copy(items, tmp, items.Length);
             return new RcImmutableArray<T>(tmp);
         }
     }
