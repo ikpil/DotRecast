@@ -37,13 +37,13 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                     if (startNode != null && endNode != null)
                     {
                         // FIXME: Optimise
-                        startTile.polys = RcArrayUtils.CopyOf(startTile.polys, startTile.polys.Length + 1);
+                        startTile.polys = RcArrays.CopyOf(startTile.polys, startTile.polys.Length + 1);
                         int poly = startTile.header.polyCount;
                         startTile.polys[poly] = new DtPoly(poly, 2);
                         startTile.polys[poly].verts[0] = startTile.header.vertCount;
                         startTile.polys[poly].verts[1] = startTile.header.vertCount + 1;
                         startTile.polys[poly].SetPolyType(DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION);
-                        startTile.verts = RcArrayUtils.CopyOf(startTile.verts, startTile.verts.Length + 6);
+                        startTile.verts = RcArrays.CopyOf(startTile.verts, startTile.verts.Length + 6);
                         startTile.header.polyCount++;
                         startTile.header.vertCount += 2;
                         DtOffMeshConnection connection = new DtOffMeshConnection();
@@ -63,7 +63,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                         }
                         else
                         {
-                            startTile.offMeshCons = RcArrayUtils.CopyOf(startTile.offMeshCons, startTile.offMeshCons.Length + 1);
+                            startTile.offMeshCons = RcArrays.CopyOf(startTile.offMeshCons, startTile.offMeshCons.Length + 1);
                         }
 
                         startTile.offMeshCons[startTile.offMeshCons.Length - 1] = connection;

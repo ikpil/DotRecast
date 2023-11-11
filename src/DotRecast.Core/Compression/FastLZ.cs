@@ -356,7 +356,7 @@ namespace DotRecast.Core.Compression
                         return 0;
                     }
 
-                    Array.Copy(input, ip, output, op, ctrl);
+                    RcArrays.Copy(input, ip, output, op, ctrl);
                     ip += ctrl;
                     op += ctrl;
                 }
@@ -452,7 +452,7 @@ namespace DotRecast.Core.Compression
                         return 0;
                     }
 
-                    Array.Copy(input, ip, output, op, ctrl);
+                    RcArrays.Copy(input, ip, output, op, ctrl);
                     ip += ctrl;
                     op += ctrl;
                 }
@@ -498,16 +498,16 @@ namespace DotRecast.Core.Compression
             // if (count >= 4)
             // {
             //     count -= count % 4;
-            //     Array.Copy(src, srcOffset, dest, destOffset, count);
+            //     RcArrays.Copy(src, srcOffset, dest, destOffset, count);
             // }
-            Array.Copy(src, srcOffset, dest, destOffset, count);
+            RcArrays.Copy(src, srcOffset, dest, destOffset, count);
         }
 
         // special case of memcpy: exactly MAX_COPY bytes
         // flz_maxcopy
         static void MaxCopy(byte[] dest, long destOffset, byte[] src, long secOffset)
         {
-            Array.Copy(src, secOffset, dest, destOffset, MAX_COPY);
+            RcArrays.Copy(src, secOffset, dest, destOffset, MAX_COPY);
         }
 
         // flz_literals

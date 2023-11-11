@@ -1251,7 +1251,7 @@ namespace DotRecast.Detour
             int nv = poly.vertCount;
             for (int i = 0; i < nv; ++i)
             {
-                Array.Copy(tile.data.verts, poly.verts[i] * 3, verts, i * 3, 3);
+                RcArrays.Copy(tile.data.verts, poly.verts[i] * 3, verts, i * 3, 3);
             }
 
             if (!DtUtils.PointInPolygon(pos, verts, nv))

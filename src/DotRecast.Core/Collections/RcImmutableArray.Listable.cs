@@ -38,7 +38,7 @@ namespace DotRecast.Core.Collections
         public void CopyTo(T[] array, int arrayIndex)
         {
             var self = this;
-            Array.Copy(self._array!, 0, array, arrayIndex, self.Length);
+            RcArrays.Copy(self._array!, 0, array, arrayIndex, self.Length);
         }
 
         public void Add(T item)

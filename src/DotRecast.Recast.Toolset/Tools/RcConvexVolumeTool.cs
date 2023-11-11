@@ -134,7 +134,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 int noffset = RcAreas.OffsetPoly(verts, hull.Count, polyOffset, offset, offset.Length);
                 if (noffset > 0)
                 {
-                    verts = RcArrayUtils.CopyOf(offset, 0, noffset * 3);
+                    verts = RcArrays.CopyOf(offset, 0, noffset * 3);
                 }
             }
 

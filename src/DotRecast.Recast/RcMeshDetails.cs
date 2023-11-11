@@ -1562,7 +1562,7 @@ namespace DotRecast.Recast
                     float[] newv = new float[vcap * 3];
                     if (dmesh.nverts != 0)
                     {
-                        Array.Copy(dmesh.verts, 0, newv, 0, 3 * dmesh.nverts);
+                        RcArrays.Copy(dmesh.verts, 0, newv, 0, 3 * dmesh.nverts);
                     }
 
                     dmesh.verts = newv;
@@ -1587,7 +1587,7 @@ namespace DotRecast.Recast
                     int[] newt = new int[tcap * 4];
                     if (dmesh.ntris != 0)
                     {
-                        Array.Copy(dmesh.tris, 0, newt, 0, 4 * dmesh.ntris);
+                        RcArrays.Copy(dmesh.tris, 0, newt, 0, 4 * dmesh.ntris);
                     }
 
                     dmesh.tris = newt;

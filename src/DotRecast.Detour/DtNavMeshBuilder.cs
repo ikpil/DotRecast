@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using DotRecast.Core;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
@@ -468,7 +469,7 @@ namespace DotRecast.Detour
                 {
                     int linkv = i * 2 * 3;
                     int v = (offMeshVertsBase + n * 2) * 3;
-                    Array.Copy(option.offMeshConVerts, linkv, navVerts, v, 6);
+                    RcArrays.Copy(option.offMeshConVerts, linkv, navVerts, v, 6);
                     n++;
                 }
             }
@@ -557,13 +558,13 @@ namespace DotRecast.Detour
                     // nav poly verts.
                     if (ndv - nv != 0)
                     {
-                        Array.Copy(option.detailVerts, (vb + nv) * 3, navDVerts, vbase * 3, 3 * (ndv - nv));
+                        RcArrays.Copy(option.detailVerts, (vb + nv) * 3, navDVerts, vbase * 3, 3 * (ndv - nv));
                         vbase += ndv - nv;
                     }
                 }
 
                 // Store triangles.
-                Array.Copy(option.detailTris, 0, navDTris, 0, 4 * option.detailTriCount);
+                RcArrays.Copy(option.detailTris, 0, navDTris, 0, 4 * option.detailTriCount);
             }
             else
             {

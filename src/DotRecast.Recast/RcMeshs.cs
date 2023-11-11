@@ -558,7 +558,7 @@ namespace DotRecast.Recast
                 n++;
             }
 
-            Array.Copy(polys, tmp, polys, pa, nvp);
+            RcArrays.Copy(polys, tmp, polys, pa, nvp);
         }
 
         private static int PushFront(int v, int[] arr, int an)
@@ -737,7 +737,7 @@ namespace DotRecast.Recast
                     int p2 = (mesh.npolys - 1) * nvp * 2;
                     if (p != p2)
                     {
-                        Array.Copy(mesh.polys, p2, mesh.polys, p, nvp);
+                        RcArrays.Copy(mesh.polys, p2, mesh.polys, p, nvp);
                     }
 
                     Array.Fill(mesh.polys, RC_MESH_NULL_IDX, p + nvp, (p + nvp + nvp) - (p + nvp));
@@ -927,7 +927,7 @@ namespace DotRecast.Recast
                         int last = (npolys - 1) * nvp;
                         if (pb != last)
                         {
-                            Array.Copy(polys, last, polys, pb, nvp);
+                            RcArrays.Copy(polys, last, polys, pb, nvp);
                         }
 
                         pregs[bestPb] = pregs[npolys - 1];
@@ -1109,7 +1109,7 @@ namespace DotRecast.Recast
                             int lastPoly = (npolys - 1) * nvp;
                             if (pb != lastPoly)
                             {
-                                Array.Copy(polys, lastPoly, polys, pb, nvp);
+                                RcArrays.Copy(polys, lastPoly, polys, pb, nvp);
                             }
 
                             npolys--;
@@ -1356,15 +1356,15 @@ namespace DotRecast.Recast
             dst.maxEdgeError = src.maxEdgeError;
 
             dst.verts = new int[src.nverts * 3];
-            Array.Copy(src.verts, 0, dst.verts, 0, dst.verts.Length);
+            RcArrays.Copy(src.verts, 0, dst.verts, 0, dst.verts.Length);
             dst.polys = new int[src.npolys * 2 * src.nvp];
-            Array.Copy(src.polys, 0, dst.polys, 0, dst.polys.Length);
+            RcArrays.Copy(src.polys, 0, dst.polys, 0, dst.polys.Length);
             dst.regs = new int[src.npolys];
-            Array.Copy(src.regs, 0, dst.regs, 0, dst.regs.Length);
+            RcArrays.Copy(src.regs, 0, dst.regs, 0, dst.regs.Length);
             dst.areas = new int[src.npolys];
-            Array.Copy(src.areas, 0, dst.areas, 0, dst.areas.Length);
+            RcArrays.Copy(src.areas, 0, dst.areas, 0, dst.areas.Length);
             dst.flags = new int[src.npolys];
-            Array.Copy(src.flags, 0, dst.flags, 0, dst.flags.Length);
+            RcArrays.Copy(src.flags, 0, dst.flags, 0, dst.flags.Length);
             return dst;
         }
     }
