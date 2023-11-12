@@ -34,8 +34,7 @@ namespace DotRecast.Detour.Extras
                 {
                     for (int v = 0; v < tile.data.header.vertCount; v++)
                     {
-                        fw.Write("v " + tile.data.verts[v * 3] + " " + tile.data.verts[v * 3 + 1] + " "
-                                 + tile.data.verts[v * 3 + 2] + "\n");
+                        fw.Write("v " + tile.data.verts[v * 3] + " " + tile.data.verts[v * 3 + 1] + " " + tile.data.verts[v * 3 + 2] + "\n");
                     }
                 }
             }
