@@ -269,9 +269,11 @@ namespace DotRecast.Recast
                         // Skip already visited.
                         if (regn.layerId != 0xff)
                             continue;
+                        
                         // Skip if the neighbour is overlapping root region.
                         if (Contains(root.layers, nei))
                             continue;
+                        
                         // Skip if the height range would become too large.
                         int ymin = Math.Min(root.ymin, regn.ymin);
                         int ymax = Math.Max(root.ymax, regn.ymax);

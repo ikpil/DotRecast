@@ -42,8 +42,7 @@ namespace DotRecast.Recast
         /// See the #rcConfig documentation for more information on the configuration parameters.
         ///
         /// @see rcAllocCompactHeightfield, rcHeightfield, rcCompactHeightfield, rcConfig
-        public static RcCompactHeightfield BuildCompactHeightfield(RcTelemetry ctx, int walkableHeight, int walkableClimb,
-            RcHeightfield hf)
+        public static RcCompactHeightfield BuildCompactHeightfield(RcTelemetry ctx, int walkableHeight, int walkableClimb, RcHeightfield hf)
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_COMPACTHEIGHTFIELD);
 
