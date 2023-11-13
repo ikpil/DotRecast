@@ -1169,8 +1169,7 @@ namespace DotRecast.Recast
             }
         }
 
-        private static int MergeAndFilterLayerRegions(RcTelemetry ctx, int minRegionArea, int maxRegionId,
-            RcCompactHeightfield chf, int[] srcReg, List<int> overlaps)
+        private static int MergeAndFilterLayerRegions(RcTelemetry ctx, int minRegionArea, int maxRegionId, RcCompactHeightfield chf, int[] srcReg, List<int> overlaps)
         {
             int w = chf.width;
             int h = chf.height;
@@ -1197,6 +1196,7 @@ namespace DotRecast.Recast
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
                         ref RcCompactSpan s = ref chf.spans[i];
+                        int area = chf.areas[i];
                         int ri = srcReg[i];
                         if (ri == 0 || ri >= nreg)
                         {
@@ -1206,9 +1206,11 @@ namespace DotRecast.Recast
                         RcRegion reg = regions[ri];
 
                         reg.spanCount++;
-                        reg.areaType = chf.areas[i];
+                        reg.areaType = area;
+                        
                         reg.ymin = Math.Min(reg.ymin, s.y);
                         reg.ymax = Math.Max(reg.ymax, s.y);
+                        
                         // Collect all region layers.
                         lregs.Add(ri);
 
