@@ -26,7 +26,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        dotnet-version: [ '6.0.x', '7.0.x', '8.0.x' ]
+        dotnet-version: [ '6.x', '7.x', '8.x' ]
         os: [ windows-latest, ubuntu-latest, macos-latest ]
 
     steps:
@@ -37,8 +37,11 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: ${{ matrix.dotnet-version }}
-
+          dotnet-version: |
+            6.x
+            7.x
+            8.x
+            
       - name: Restore dependencies
         run: dotnet restore
 
