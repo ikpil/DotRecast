@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/DotRecast.Recast.Demo/bin/Debug/net7.0/DotRecast.Recast.Demo.dll",
+            "program": "${workspaceFolder}/src/DotRecast.Recast.Demo/bin/Debug/net8.0/DotRecast.Recast.Demo.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/DotRecast.Recast.Demo",
             "console": "internalConsole",
