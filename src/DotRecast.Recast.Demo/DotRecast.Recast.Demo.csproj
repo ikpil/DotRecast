@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PackageId>DotRecast.Recast.Demo</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="Serilog" Version="3.1.1" />
-    <PackageReference Include="Serilog.Settings.Configuration" Version="7.0.1"/>
+    <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.0" />
     <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0"/>
     <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0"/>
     <PackageReference Include="Serilog.Sinks.Console" Version="5.0.0" />
