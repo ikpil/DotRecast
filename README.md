@@ -4,6 +4,7 @@
 [![NuGet Version and Downloads count](https://buildstats.info/nuget/DotRecast.Detour)](https://www.nuget.org/packages/DotRecast.Detour)
 ![Repo Size](https://img.shields.io/github/repo-size/ikpil/DotRecast.svg?colorB=lightgray)
 ![Languages](https://img.shields.io/github/languages/top/ikpil/DotRecast)
+[![Visitors](https://api.visitorbadge.io/api/daily?path=https%3A%2F%2Fgithub.com%2Fikpil%2FDotRecast&countColor=%23263759&style=flat-square)](https://visitorbadge.io/status?path=https%3A%2F%2Fgithub.com%2Fikpil%2FDotRecast)
 
 # Screenshot
 ![screenshot](https://github.com/ikpil/DotRecast/assets/313821/8cf67832-1206-4b58-8c1f-7205210cbf22)
