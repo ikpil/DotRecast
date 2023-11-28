@@ -48,8 +48,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                 int nodeCount = graphMeshData.CountNodes();
                 if (connections.Count != nodeCount)
                 {
-                    throw new ArgumentException("Inconsistent number of nodes in data file: " + nodeCount
-                                                                                              + " and connecton files: " + connections.Count);
+                    throw new ArgumentException($"Inconsistent number of nodes in data file: {nodeCount} and connection files: {connections.Count}");
                 }
 
                 // Build BV tree
