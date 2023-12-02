@@ -78,4 +78,4 @@ It is recommended to add the source directories `DotRecast.Core`, `DotRecast.Det
 
 ## License
 
-Recast & Detour is licensed under ZLib license, see `LICENSE.txt` for more information.
+DotRecast is licensed under ZLib license, see [LICENSE.txt](LICENSE.txt) for more information.
