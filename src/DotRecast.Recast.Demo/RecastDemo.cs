@@ -408,6 +408,11 @@ public class RecastDemo : IRecastDemoChannel
         Logger.Information($"gl lang version - {glslString}");
     }
 
+    private float GetKeyValue(IKeyboard keyboard, Key primaryKey, Key secondaryKey)
+    {
+        return keyboard.IsKeyPressed(primaryKey) || keyboard.IsKeyPressed(secondaryKey) ? 1.0f : -1.0f;
+    }
+
     private void UpdateKeyboard(float dt)
     {
         _modState = 0;
@@ -415,17 +420,17 @@ public class RecastDemo : IRecastDemoChannel
         // keyboard input
         foreach (var keyboard in _input.Keyboards)
         {
-            var tempMoveFront = keyboard.IsKeyPressed(Key.W) || keyboard.IsKeyPressed(Key.Up) ? 1.0f : -1f;
-            var tempMoveLeft = keyboard.IsKeyPressed(Key.A) || keyboard.IsKeyPressed(Key.Left) ? 1.0f : -1f;
-            var tempMoveBack = keyboard.IsKeyPressed(Key.S) || keyboard.IsKeyPressed(Key.Down) ? 1.0f : -1f;
-            var tempMoveRight = keyboard.IsKeyPressed(Key.D) || keyboard.IsKeyPressed(Key.Right) ? 1.0f : -1f;
-            var tempMoveUp = keyboard.IsKeyPressed(Key.Q) || keyboard.IsKeyPressed(Key.PageUp) ? 1.0f : -1f;
-            var tempMoveDown = keyboard.IsKeyPressed(Key.E) || keyboard.IsKeyPressed(Key.PageDown) ? 1.0f : -1f;
-            var tempMoveAccel = keyboard.IsKeyPressed(Key.ShiftLeft) || keyboard.IsKeyPressed(Key.ShiftRight) ? 1.0f : -1f;
-            var tempControl = keyboard.IsKeyPressed(Key.ControlLeft) || keyboard.IsKeyPressed(Key.ControlRight);
+            var tempMoveFront = GetKeyValue(keyboard, Key.W, Key.Up);
+            var tempMoveLeft = GetKeyValue(keyboard, Key.A, Key.Left);
+            var tempMoveBack = GetKeyValue(keyboard, Key.S, Key.Down);
+            var tempMoveRight = GetKeyValue(keyboard, Key.D, Key.Right);
+            var tempMoveUp = GetKeyValue(keyboard, Key.Q, Key.PageUp);
+            var tempMoveDown = GetKeyValue(keyboard, Key.E, Key.PageDown);
+            var tempMoveAccel = GetKeyValue(keyboard, Key.ShiftLeft, Key.ShiftRight);
+            var tempControl = GetKeyValue(keyboard, Key.ControlLeft, Key.ControlRight);
 
-            _modState |= tempControl ? (int)KeyModState.Control : (int)KeyModState.None;
-            _modState |= 0 < tempMoveAccel ? (int)KeyModState.Shift : (int)KeyModState.None;
+            _modState |= 0 < tempControl ? KeyModState.Control : KeyModState.None;
+            _modState |= 0 < tempMoveAccel ? KeyModState.Shift : KeyModState.None;
 
             //Logger.Information($"{_modState}");
             _moveFront = Math.Clamp(_moveFront + tempMoveFront * dt * 4.0f, 0, 2.0f);
@@ -787,9 +792,9 @@ public class RecastDemo : IRecastDemoChannel
 
         RcVec3f rayDir = new RcVec3f(rayEnd.X - rayStart.X, rayEnd.Y - rayStart.Y, rayEnd.Z - rayStart.Z);
         rayDir = RcVec3f.Normalize(rayDir);
-        
+
         ISampleTool raySampleTool = toolset.GetTool();
-        
+
         if (raySampleTool != null)
         {
             Logger.Information($"click ray - tool({raySampleTool.GetTool().GetName()}) rayStart({rayStart.X:0.#},{rayStart.Y:0.#},{rayStart.Z:0.#}) pos({rayDir.X:0.#},{rayDir.Y:0.#},{rayDir.Z:0.#}) shift({processHitTestShift})");
