@@ -698,6 +698,7 @@ public class TestNavmeshSampleTool : ISampleTool
         }
         else if (_mode == RcTestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE)
         {
+            _randomPoints.Clear();
             _tool.FindRandomPointAroundCircle(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, _constrainByCircle, _randomPointCount, ref _randomPoints);
         }
     }
