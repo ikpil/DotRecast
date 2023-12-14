@@ -44,7 +44,7 @@ You can find a comprehensive demo project in the `DotRecast.Recast.Demo` folder.
 
 ### Building DotRecast.Recast.Demo
 
-1. `DotRecast.Recast.Demo` uses [dotnet 7](https://dotnet.microsoft.com/) to build platform specific projects. Download it and make sure it's available on your path, or specify the path to it.
+1. `DotRecast.Recast.Demo` uses [dotnet 8](https://dotnet.microsoft.com/) to build platform specific projects. Download it and make sure it's available on your path, or specify the path to it.
 2. Open a command prompt, point it to a directory and clone DotRecast to it: `git clone https://github.com/ikpil/DotRecast.git`
 3. Open `<DotRecastDir>\DotRecast.sln` with Visual Studio 2022 and build `DotRecast.Recast.Demo`
    - Optionally, you can run using the `dotnet run` command with `DotRecast.Recast.Demo.csproj`
