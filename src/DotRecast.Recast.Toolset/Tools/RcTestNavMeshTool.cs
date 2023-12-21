@@ -160,7 +160,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 }
             }
 
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
         public DtStatus FindStraightPath(DtNavMeshQuery navQuery, long startRef, long endRef, RcVec3f startPt, RcVec3f endPt, IDtQueryFilter filter, bool enableRaycast,
@@ -196,7 +196,7 @@ namespace DotRecast.Recast.Toolset.Tools
 
             navQuery.FindStraightPath(startPt, epos, polys, ref straightPath, MAX_POLYS, straightPathOptions);
 
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
         public DtStatus InitSlicedFindPath(DtNavMeshQuery navQuery, long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter, bool enableRaycast)
@@ -242,7 +242,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 navQuery.FindStraightPath(startPos, epos, path, ref straightPath, MAX_POLYS, DtStraightPathOptions.DT_STRAIGHTPATH_ALL_CROSSINGS);
             }
 
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
 
@@ -438,7 +438,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 }
             }
 
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
     }
 }

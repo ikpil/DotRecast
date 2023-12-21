@@ -26,7 +26,7 @@ namespace DotRecast.Detour.Test;
 [Parallelizable]
 public class TiledFindPathTest
 {
-    private static readonly DtStatus[] STATUSES = { DtStatus.DT_SUCCSESS };
+    private static readonly DtStatus[] STATUSES = { DtStatus.DT_SUCCESS };
 
     private static readonly long[][] RESULTS =
     {

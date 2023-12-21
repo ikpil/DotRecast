@@ -33,7 +33,7 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
     protected readonly long[] endRefs = { 281474986147841L };
     protected readonly RcVec3f[] startPoss = { new RcVec3f(39.447338f, 9.998177f, -0.784811f) };
     protected readonly RcVec3f[] endPoss = { new RcVec3f(19.292645f, 11.611748f, -57.750366f) };
-    private readonly DtStatus[] statuses = { DtStatus.DT_SUCCSESS };
+    private readonly DtStatus[] statuses = { DtStatus.DT_SUCCESS };
 
     private readonly long[][] results =
     {

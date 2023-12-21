@@ -27,11 +27,11 @@ public class FindPathTest : AbstractDetourTest
 {
     private static readonly DtStatus[] STATUSES =
     {
-        DtStatus.DT_SUCCSESS,
-        DtStatus.DT_SUCCSESS | DtStatus.DT_PARTIAL_RESULT,
-        DtStatus.DT_SUCCSESS,
-        DtStatus.DT_SUCCSESS,
-        DtStatus.DT_SUCCSESS
+        DtStatus.DT_SUCCESS,
+        DtStatus.DT_SUCCESS | DtStatus.DT_PARTIAL_RESULT,
+        DtStatus.DT_SUCCESS,
+        DtStatus.DT_SUCCESS,
+        DtStatus.DT_SUCCESS
     };
 
     private static readonly long[][] RESULTS =

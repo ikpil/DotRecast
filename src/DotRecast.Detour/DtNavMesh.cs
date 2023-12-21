@@ -297,7 +297,7 @@ namespace DotRecast.Detour
             tile = m_tiles[it];
             poly = m_tiles[it].data.polys[ip];
 
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
         /// @par
@@ -1586,7 +1586,7 @@ namespace DotRecast.Detour
             startPos = RcVecUtils.Create(tile.data.verts, poly.verts[idx0] * 3);
             endPos = RcVecUtils.Create(tile.data.verts, poly.verts[idx1] * 3);
 
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
         public int GetMaxVertsPerPoly()
@@ -1632,7 +1632,7 @@ namespace DotRecast.Detour
 
             // Change flags.
             poly.flags = flags;
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
         /// Gets the user defined flags for the specified polygon.
@@ -1669,7 +1669,7 @@ namespace DotRecast.Detour
 
             resultFlags = poly.flags;
 
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
         public DtStatus SetPolyArea(long refs, char area)
@@ -1700,7 +1700,7 @@ namespace DotRecast.Detour
 
             poly.SetArea(area);
 
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
         public DtStatus GetPolyArea(long refs, out int resultArea)
@@ -1732,7 +1732,7 @@ namespace DotRecast.Detour
             DtPoly poly = tile.data.polys[ip];
             resultArea = poly.GetArea();
 
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
         public RcVec3f GetPolyCenter(long refs)
