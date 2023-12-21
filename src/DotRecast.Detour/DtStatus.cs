@@ -26,7 +26,7 @@ namespace DotRecast.Detour
     {
         // High level status.
         public static readonly DtStatus DT_FAILURE = new DtStatus(1u << 31); // Operation failed. 
-        public static readonly DtStatus DT_SUCCSESS = new DtStatus(1u << 30); // Operation succeed. 
+        public static readonly DtStatus DT_SUCCESS = new DtStatus(1u << 30); // Operation succeed. 
         public static readonly DtStatus DT_IN_PROGRESS = new DtStatus(1u << 29); // Operation still in progress. 
 
         // Detail information for status.
@@ -57,7 +57,7 @@ namespace DotRecast.Detour
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Succeeded()
         {
-            return 0 != (Value & (DT_SUCCSESS.Value | DT_PARTIAL_RESULT.Value));
+            return 0 != (Value & (DT_SUCCESS.Value | DT_PARTIAL_RESULT.Value));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

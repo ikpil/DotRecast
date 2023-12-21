@@ -59,7 +59,7 @@ public class PathCorridorTest
             {
                 refStraightPath = straightPath;
             })
-            .Returns(() => DtStatus.DT_SUCCSESS);
+            .Returns(() => DtStatus.DT_SUCCESS);
 
         var path = new List<DtStraightPath>();
         corridor.FindCorners(ref path, int.MaxValue, mockQuery.Object, filter);
@@ -90,7 +90,7 @@ public class PathCorridorTest
             {
                 refStraightPath = straightPath;
             })
-            .Returns(() => DtStatus.DT_SUCCSESS);
+            .Returns(() => DtStatus.DT_SUCCESS);
 
         var path = new List<DtStraightPath>();
         corridor.FindCorners(ref path, int.MaxValue, mockQuery.Object, filter);

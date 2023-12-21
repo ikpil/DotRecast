@@ -151,7 +151,7 @@ namespace DotRecast.Detour
             randomRef = polyRef;
             randomPt = closest;
 
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
         /**
@@ -229,7 +229,7 @@ namespace DotRecast.Detour
             startNode.flags = DtNodeFlags.DT_NODE_OPEN;
             m_openList.Push(startNode);
 
-            DtStatus status = DtStatus.DT_SUCCSESS;
+            DtStatus status = DtStatus.DT_SUCCESS;
 
             float radiusSqr = maxRadius * maxRadius;
             float areaSum = 0.0f;
@@ -412,7 +412,7 @@ namespace DotRecast.Detour
             }
 
             m_nav.ClosestPointOnPoly(refs, pos, out closest, out posOverPoly);
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
         /// @par
@@ -479,7 +479,7 @@ namespace DotRecast.Detour
                 closest = RcVecUtils.Lerp(verts, va, vb, edget[imin]);
             }
 
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
         /// @par
@@ -519,7 +519,7 @@ namespace DotRecast.Detour
                 DtUtils.DistancePtSegSqr2D(pos, v0, v1, out var t);
                 height = v0.Y + (v1.Y - v0.Y) * t;
 
-                return DtStatus.DT_SUCCSESS;
+                return DtStatus.DT_SUCCESS;
             }
 
             if (!m_nav.GetPolyHeight(tile, poly, pos, out var h))
@@ -528,7 +528,7 @@ namespace DotRecast.Detour
             }
 
             height = h;
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
         /// Finds the polygon nearest to the specified center point.
@@ -560,7 +560,7 @@ namespace DotRecast.Detour
             nearestPt = query.NearestPt();
             isOverPoly = query.OverPoly();
 
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
         // FIXME: (PP) duplicate?
@@ -686,7 +686,7 @@ namespace DotRecast.Detour
                 QueryPolygonsInTile(t, bmin, bmax, filter, query);
             }
 
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
         /**
@@ -768,7 +768,7 @@ namespace DotRecast.Detour
             if (startRef == endRef)
             {
                 path.Add(startRef);
-                return DtStatus.DT_SUCCSESS;
+                return DtStatus.DT_SUCCESS;
             }
 
             m_nodePool.Clear();
@@ -1037,8 +1037,8 @@ namespace DotRecast.Detour
 
             if (startRef == endRef)
             {
-                m_query.status = DtStatus.DT_SUCCSESS;
-                return DtStatus.DT_SUCCSESS;
+                m_query.status = DtStatus.DT_SUCCESS;
+                return DtStatus.DT_SUCCESS;
             }
 
             m_nodePool.Clear();
@@ -1097,7 +1097,7 @@ namespace DotRecast.Detour
                 {
                     m_query.lastBestNode = bestNode;
                     var details = m_query.status & DtStatus.DT_STATUS_DETAIL_MASK;
-                    m_query.status = DtStatus.DT_SUCCSESS | details;
+                    m_query.status = DtStatus.DT_SUCCESS | details;
                     doneIters = iter;
                     return m_query.status;
                 }
@@ -1295,7 +1295,7 @@ namespace DotRecast.Detour
             if (m_openList.IsEmpty())
             {
                 var details = m_query.status & DtStatus.DT_STATUS_DETAIL_MASK;
-                m_query.status = DtStatus.DT_SUCCSESS | details;
+                m_query.status = DtStatus.DT_SUCCESS | details;
             }
 
             doneIters = iter;
@@ -1341,7 +1341,7 @@ namespace DotRecast.Detour
             // Reset query.
             m_query = new DtQueryData();
 
-            return DtStatus.DT_SUCCSESS | details;
+            return DtStatus.DT_SUCCESS | details;
         }
 
         /// Finalizes and returns the results of an incomplete sliced path query, returning the path to the furthest
@@ -1402,7 +1402,7 @@ namespace DotRecast.Detour
             // Reset query.
             m_query = new DtQueryData();
 
-            return DtStatus.DT_SUCCSESS | details;
+            return DtStatus.DT_SUCCESS | details;
         }
 
         protected DtStatus AppendVertex(RcVec3f pos, int flags, long refs, ref List<DtStraightPath> straightPath,
@@ -1424,7 +1424,7 @@ namespace DotRecast.Detour
                 // If reached end of path or there is no space to append more vertices, return.
                 if (flags == DtStraightPathFlags.DT_STRAIGHTPATH_END || straightPath.Count >= maxStraightPath)
                 {
-                    return DtStatus.DT_SUCCSESS;
+                    return DtStatus.DT_SUCCESS;
                 }
             }
 
@@ -1736,7 +1736,7 @@ namespace DotRecast.Detour
 
             // Ignore status return value as we're just about to return anyway.
             AppendVertex(closestEndPos, DtStraightPathFlags.DT_STRAIGHTPATH_END, 0, ref straightPath, maxStraightPath);
-            return DtStatus.DT_SUCCSESS | (straightPath.Count >= maxStraightPath ? DtStatus.DT_BUFFER_TOO_SMALL : DtStatus.DT_STATUS_NOTHING);
+            return DtStatus.DT_SUCCESS | (straightPath.Count >= maxStraightPath ? DtStatus.DT_BUFFER_TOO_SMALL : DtStatus.DT_STATUS_NOTHING);
         }
 
         /// @par
@@ -1942,7 +1942,7 @@ namespace DotRecast.Detour
 
             resultPos = bestPos;
 
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
         protected DtStatus GetPortalPoints(long from, long to, out RcVec3f left, out RcVec3f right, out int fromType, out int toType)
@@ -2012,7 +2012,7 @@ namespace DotRecast.Detour
                         right.Y = fromTile.data.verts[fromPoly.verts[v] * 3 + 1];
                         right.Z = fromTile.data.verts[fromPoly.verts[v] * 3 + 2];
 
-                        return DtStatus.DT_SUCCSESS;
+                        return DtStatus.DT_SUCCESS;
                     }
                 }
 
@@ -2034,7 +2034,7 @@ namespace DotRecast.Detour
                         right.Y = toTile.data.verts[toPoly.verts[v] * 3 + 1];
                         right.Z = toTile.data.verts[toPoly.verts[v] * 3 + 2];
 
-                        return DtStatus.DT_SUCCSESS;
+                        return DtStatus.DT_SUCCESS;
                     }
                 }
 
@@ -2067,7 +2067,7 @@ namespace DotRecast.Detour
                 }
             }
 
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
         protected DtStatus GetEdgeMidPoint(long from, DtPoly fromPoly, DtMeshTile fromTile, long to,
@@ -2083,7 +2083,7 @@ namespace DotRecast.Detour
             mid.Y = (left.Y + right.Y) * 0.5f;
             mid.Z = (left.Z + right.Z) * 0.5f;
 
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
         protected DtStatus GetEdgeIntersectionPoint(RcVec3f fromPos, long from, DtPoly fromPoly, DtMeshTile fromTile,
@@ -2103,7 +2103,7 @@ namespace DotRecast.Detour
             }
 
             pt = RcVec3f.Lerp(left, right, t);
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
 
@@ -2210,7 +2210,7 @@ namespace DotRecast.Detour
                 if (!intersects)
                 {
                     // Could not hit the polygon, keep the old t and report hit.
-                    return DtStatus.DT_SUCCSESS;
+                    return DtStatus.DT_SUCCESS;
                 }
 
                 hit.hitEdgeIndex = segMax;
@@ -2236,7 +2236,7 @@ namespace DotRecast.Detour
                             curRef, tile, poly);
                     }
 
-                    return DtStatus.DT_SUCCSESS;
+                    return DtStatus.DT_SUCCESS;
                 }
 
                 // Follow neighbours.
@@ -2364,7 +2364,7 @@ namespace DotRecast.Detour
                     float dx = verts[b].X - verts[a].X;
                     float dz = verts[b].Z - verts[a].X;
                     hit.hitNormal = RcVec3f.Normalize(new RcVec3f(dz, 0, -dx));
-                    return DtStatus.DT_SUCCSESS;
+                    return DtStatus.DT_SUCCESS;
                 }
 
                 // No hit, advance to neighbour polygon.
@@ -2376,7 +2376,7 @@ namespace DotRecast.Detour
                 poly = nextPoly;
             }
 
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
         /// @par
@@ -2556,7 +2556,7 @@ namespace DotRecast.Detour
                 }
             }
 
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
         /// @par
@@ -2739,7 +2739,7 @@ namespace DotRecast.Detour
                 }
             }
 
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
         /// @par
@@ -2925,7 +2925,7 @@ namespace DotRecast.Detour
                 }
             }
 
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
 
@@ -3077,7 +3077,7 @@ namespace DotRecast.Detour
                 }
             }
 
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
         /// @par
@@ -3133,7 +3133,7 @@ namespace DotRecast.Detour
             var bestvj = RcVec3f.Zero;
             var bestvi = RcVec3f.Zero;
 
-            var status = DtStatus.DT_SUCCSESS;
+            var status = DtStatus.DT_SUCCESS;
             while (!m_openList.IsEmpty())
             {
                 DtNode bestNode = m_openList.Pop();
@@ -3393,7 +3393,7 @@ namespace DotRecast.Detour
             } while (curNode != null);
 
             path.Reverse();
-            return DtStatus.DT_SUCCSESS;
+            return DtStatus.DT_SUCCESS;
         }
 
         /**

@@ -37,7 +37,7 @@ public class UnityAStarPathfindingImporterTest
         RcVec3f endPos = new RcVec3f(11.971109f, 0.000000f, 8.663261f);
         var path = new List<long>();
         var status = FindPath(mesh, startPos, endPos, ref path);
-        Assert.That(status, Is.EqualTo(DtStatus.DT_SUCCSESS));
+        Assert.That(status, Is.EqualTo(DtStatus.DT_SUCCESS));
         Assert.That(path.Count, Is.EqualTo(57));
         SaveMesh(mesh, "v4_0_6");
     }
