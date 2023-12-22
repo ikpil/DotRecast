@@ -982,6 +982,7 @@ namespace DotRecast.Recast
             if (minExtent < sampleDist * 2)
             {
                 TriangulateHull(nverts, verts, nhull, hull, nin, tris);
+                SetTriFlags(tris, nhull, hull);
                 return nverts;
             }
 
@@ -1101,12 +1102,47 @@ namespace DotRecast.Recast
                 List<int> subList = tris.GetRange(0, MAX_TRIS * 4);
                 tris.Clear();
                 tris.AddRange(subList);
-                throw new Exception(
-                    "rcBuildPolyMeshDetail: Shrinking triangle count from " + ntris + " to max " + MAX_TRIS);
+                throw new Exception("rcBuildPolyMeshDetail: Shrinking triangle count from " + ntris + " to max " + MAX_TRIS);
             }
 
+            SetTriFlags(tris, nhull, hull);
             return nverts;
         }
+
+        static bool OnHull(int a, int b, int nhull, int[] hull)
+        {
+            // All internal sampled points come after the hull so we can early out for those.
+            if (a >= nhull || b >= nhull)
+                return false;
+
+            for (int j = nhull - 1, i = 0; i < nhull; j = i++)
+            {
+                if (a == hull[j] && b == hull[i])
+                    return true;
+            }
+
+            return false;
+        }
+
+        // Find edges that lie on hull and mark them as such.
+        static void SetTriFlags(List<int> tris, int nhull, int[] hull)
+        {
+            // Matches DT_DETAIL_EDGE_BOUNDARY
+            const int DETAIL_EDGE_BOUNDARY = 0x1;
+
+            for (int i = 0; i < tris.Count; i += 4)
+            {
+                int a = tris[i];
+                int b = tris[i + 1];
+                int c = tris[i + 2];
+                int flags = 0;
+                flags |= (OnHull(a, b, nhull, hull) ? DETAIL_EDGE_BOUNDARY : 0) << 0;
+                flags |= (OnHull(b, c, nhull, hull) ? DETAIL_EDGE_BOUNDARY : 0) << 2;
+                flags |= (OnHull(c, a, nhull, hull) ? DETAIL_EDGE_BOUNDARY : 0) << 4;
+                tris[i + 3] = flags;
+            }
+        }
+
 
         static void SeedArrayWithPolyCenter(RcTelemetry ctx, RcCompactHeightfield chf, int[] meshpoly, int poly, int npoly,
             int[] verts, int bs, RcHeightPatch hp, List<int> array)
@@ -1387,32 +1423,6 @@ namespace DotRecast.Recast
             }
         }
 
-        static int GetEdgeFlags(float[] verts, int va, int vb, float[] vpoly, int npoly)
-        {
-            // The flag returned by this function matches getDetailTriEdgeFlags in Detour.
-            // Figure out if edge (va,vb) is part of the polygon boundary.
-            float thrSqr = 0.001f * 0.001f;
-            for (int i = 0, j = npoly - 1; i < npoly; j = i++)
-            {
-                if (DistancePtSeg2d(verts, va, vpoly, j * 3, i * 3) < thrSqr
-                    && DistancePtSeg2d(verts, vb, vpoly, j * 3, i * 3) < thrSqr)
-                {
-                    return 1;
-                }
-            }
-
-            return 0;
-        }
-
-        static int GetTriFlags(float[] verts, int va, int vb, int vc, float[] vpoly, int npoly)
-        {
-            int flags = 0;
-            flags |= GetEdgeFlags(verts, va, vb, vpoly, npoly) << 0;
-            flags |= GetEdgeFlags(verts, vb, vc, vpoly, npoly) << 2;
-            flags |= GetEdgeFlags(verts, vc, va, vpoly, npoly) << 4;
-            return flags;
-        }
-
         /// @par
         ///
         /// See the #rcConfig documentation for more information on the configuration parameters.
@@ -1599,8 +1609,7 @@ namespace DotRecast.Recast
                     dmesh.tris[dmesh.ntris * 4 + 0] = tris[t + 0];
                     dmesh.tris[dmesh.ntris * 4 + 1] = tris[t + 1];
                     dmesh.tris[dmesh.ntris * 4 + 2] = tris[t + 2];
-                    dmesh.tris[dmesh.ntris * 4 + 3] = GetTriFlags(verts, tris[t + 0] * 3, tris[t + 1] * 3,
-                        tris[t + 2] * 3, poly, npoly);
+                    dmesh.tris[dmesh.ntris * 4 + 3] = tris[t + 3];
                     dmesh.ntris++;
                 }
             }
