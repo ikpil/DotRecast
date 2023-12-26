@@ -59,6 +59,7 @@ public class RecastDemo : IRecastDemoChannel
     private ImGuiController _imgui;
     private RcCanvas _canvas;
 
+    private Vector2D<int> _resolution;
     private int width = 1000;
     private int height = 900;
 
@@ -250,17 +251,17 @@ public class RecastDemo : IRecastDemoChannel
     private IWindow CreateWindow()
     {
         var monitor = Window.Platforms.First().GetMainMonitor();
-        var resolution = monitor.VideoMode.Resolution.Value;
+        _resolution = monitor.VideoMode.Resolution.Value;
 
         float aspect = 16.0f / 9.0f;
-        width = Math.Min(resolution.X, (int)(resolution.Y * aspect)) - 100;
-        height = resolution.Y - 100;
+        width = Math.Min(_resolution.X, (int)(_resolution.Y * aspect)) - 100;
+        height = _resolution.Y - 100;
         viewport = new int[] { 0, 0, width, height };
 
         var options = WindowOptions.Default;
         options.Title = title;
         options.Size = new Vector2D<int>(width, height);
-        options.Position = new Vector2D<int>((resolution.X - width) / 2, (resolution.Y - height) / 2);
+        options.Position = new Vector2D<int>((_resolution.X - width) / 2, (_resolution.Y - height) / 2);
         options.VSync = true;
         options.ShouldSwapAutomatically = false;
         options.PreferredDepthBufferBits = 24;
@@ -364,10 +365,17 @@ public class RecastDemo : IRecastDemoChannel
 
         dd.Init(camr);
 
+
+        var scale = (float)_resolution.X / 1920;
+        int fontSize = Math.Max(10, (int)(16 * scale));
+        
         // for windows : Microsoft Visual C++ Redistributable Package
         // link - https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist
-        ImGuiFontConfig imGuiFontConfig = new(Path.Combine("resources\\fonts", "DroidSans.ttf"), 16, null);
+        var imGuiFontConfig = new ImGuiFontConfig(Path.Combine("resources\\fonts", "DroidSans.ttf"), fontSize, null);
         _imgui = new ImGuiController(_gl, window, _input, imGuiFontConfig);
+
+        ImGui.GetStyle().ScaleAllSizes(scale);
+        //ImGui.GetIO().FontGlobalScale = 2.0f;
 
         DemoInputGeomProvider geom = LoadInputMesh("nav_test.obj");
         _sample = new DemoSample(geom, ImmutableArray<RcBuilderResult>.Empty, null);
@@ -400,12 +408,11 @@ public class RecastDemo : IRecastDemoChannel
 
         var workingDirectory = Directory.GetCurrentDirectory();
         Logger.Information($"Working directory - {workingDirectory}");
-        Logger.Information($"ImGui.Net version - {ImGui.GetVersion()}");
+        Logger.Information($"ImGui.Net - version({ImGui.GetVersion()}) UI scale({scale}) fontSize({fontSize})");
         Logger.Information($"Dotnet - {Environment.Version.ToString()} culture({currentCulture.Name})");
         Logger.Information($"OS Version - {Environment.OSVersion} {bitness}");
         Logger.Information($"{vendor} {rendererGl}");
-        Logger.Information($"gl version - {version}");
-        Logger.Information($"gl lang version - {glslString}");
+        Logger.Information($"gl version({version}) lang version({glslString})");
     }
 
     private float GetKeyValue(IKeyboard keyboard, Key primaryKey, Key secondaryKey)
