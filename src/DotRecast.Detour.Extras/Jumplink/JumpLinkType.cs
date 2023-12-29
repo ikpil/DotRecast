@@ -10,7 +10,7 @@ namespace DotRecast.Detour.Extras.Jumplink
         public static readonly JumpLinkType EDGE_CLIMB_DOWN = new JumpLinkType(EDGE_CLIMB_DOWN_BIT);
         public static readonly JumpLinkType EDGE_JUMP_OVER = new JumpLinkType(EDGE_JUMP_OVER_BIT);
 
-        public int Bit { get; }
+        public readonly int Bit;
 
         private JumpLinkType(int bit)
         {

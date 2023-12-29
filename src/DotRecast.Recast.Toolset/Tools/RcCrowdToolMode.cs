@@ -16,8 +16,8 @@ namespace DotRecast.Recast.Toolset.Tools
             TOGGLE_POLYS
         );
 
-        public int Idx { get; }
-        public string Label { get; }
+        public readonly int Idx;
+        public readonly string Label;
 
         private RcCrowdToolMode(int idx, string label)
         {

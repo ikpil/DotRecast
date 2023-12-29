@@ -64,8 +64,8 @@ public class DrawMode
         DRAWMODE_POLYMESH_DETAIL
     );
 
-    public int Idx { get; }
-    public string Text { get; }
+    public readonly int Idx;
+    public readonly string Text;
 
     private DrawMode(int idx, string text)
     {

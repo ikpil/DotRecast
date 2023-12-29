@@ -27,8 +27,8 @@ namespace DotRecast.Recast.Toolset.Tools
         );
 
 
-        public int Idx { get; }
-        public string Label { get; }
+        public readonly int Idx;
+        public readonly string Label;
 
         private RcTestNavmeshToolMode(int idx, string label)
         {
