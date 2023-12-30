@@ -27,11 +27,11 @@ namespace DotRecast.Core.Numerics
         public float Y;
         public float Z;
 
-        public static RcVec3f Zero { get; } = new RcVec3f(0.0f, 0.0f, 0.0f);
-        public static RcVec3f One { get; } = new RcVec3f(1.0f);
-        public static RcVec3f UnitX { get; } = new RcVec3f(1.0f, 0.0f, 0.0f);
-        public static RcVec3f UnitY { get; } = new RcVec3f(0.0f, 1.0f, 0.0f);
-        public static RcVec3f UnitZ { get; } = new RcVec3f(0.0f, 0.0f, 1.0f);
+        public static readonly RcVec3f Zero = new RcVec3f(0.0f, 0.0f, 0.0f);
+        public static readonly RcVec3f One = new RcVec3f(1.0f);
+        public static readonly RcVec3f UnitX = new RcVec3f(1.0f, 0.0f, 0.0f);
+        public static readonly RcVec3f UnitY = new RcVec3f(0.0f, 1.0f, 0.0f);
+        public static readonly RcVec3f UnitZ = new RcVec3f(0.0f, 0.0f, 1.0f);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public RcVec3f(float x, float y, float z)

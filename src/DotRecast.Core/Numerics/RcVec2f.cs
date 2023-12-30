@@ -8,7 +8,7 @@ namespace DotRecast.Core.Numerics
         public float X;
         public float Y;
 
-        public static RcVec2f Zero { get; } = new RcVec2f { X = 0, Y = 0 };
+        public static readonly RcVec2f Zero = new RcVec2f { X = 0, Y = 0 };
 
         public RcVec2f(float x, float y)
         {
