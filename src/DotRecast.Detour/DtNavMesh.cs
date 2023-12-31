@@ -43,7 +43,7 @@ namespace DotRecast.Detour
 
         /** A version number used to detect compatibility of navigation tile states. */
         public const int DT_NAVMESH_STATE_VERSION = 1;
-        
+
         public const int DT_SALT_BITS = 16;
         public const int DT_TILE_BITS = 28;
         public const int DT_POLY_BITS = 20;
@@ -284,7 +284,7 @@ namespace DotRecast.Detour
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            if (m_tiles[it].salt != salt || m_tiles[it].data.header == null)
+            if (m_tiles[it].salt != salt || m_tiles[it].data == null || m_tiles[it].data.header == null)
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
