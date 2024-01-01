@@ -84,70 +84,79 @@ namespace DotRecast.Recast
         /// A span is a ledge if: <tt>RcAbs(currentSpan.smax - neighborSpan.smax) > walkableClimb</tt>
         ///
         /// @see rcHeightfield, rcConfig
-        public static void FilterLedgeSpans(RcTelemetry ctx, int walkableHeight, int walkableClimb, RcHeightfield solid)
+        public static void FilterLedgeSpans(RcTelemetry ctx, int walkableHeight, int walkableClimb, RcHeightfield heightfield)
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_FILTER_BORDER);
 
-            int w = solid.width;
-            int h = solid.height;
+            int xSize = heightfield.width;
+            int zSize = heightfield.height;
 
             // Mark border spans.
-            for (int y = 0; y < h; ++y)
+            for (int z = 0; z < zSize; ++z)
             {
-                for (int x = 0; x < w; ++x)
+                for (int x = 0; x < xSize; ++x)
                 {
-                    for (RcSpan s = solid.spans[x + y * w]; s != null; s = s.next)
+                    for (RcSpan span = heightfield.spans[x + z * xSize]; span != null; span = span.next)
                     {
                         // Skip non walkable spans.
-                        if (s.area == RC_NULL_AREA)
+                        if (span.area == RC_NULL_AREA)
+                        {
                             continue;
+                        }
 
-                        int bot = (s.smax);
-                        int top = s.next != null ? s.next.smin : SPAN_MAX_HEIGHT;
+                        int bot = (span.smax);
+                        int top = span.next != null ? span.next.smin : SPAN_MAX_HEIGHT;
 
                         // Find neighbours minimum height.
-                        int minh = SPAN_MAX_HEIGHT;
+                        int minNeighborHeight = SPAN_MAX_HEIGHT;
 
                         // Min and max height of accessible neighbours.
-                        int asmin = s.smax;
-                        int asmax = s.smax;
+                        int accessibleNeighborMinHeight = span.smax;
+                        int accessibleNeighborMaxHeight = span.smax;
 
-                        for (int dir = 0; dir < 4; ++dir)
+                        for (int direction = 0; direction < 4; ++direction)
                         {
-                            int dx = x + GetDirOffsetX(dir);
-                            int dy = y + GetDirOffsetY(dir);
+                            int dx = x + GetDirOffsetX(direction);
+                            int dz = z + GetDirOffsetY(direction);
                             // Skip neighbours which are out of bounds.
-                            if (dx < 0 || dy < 0 || dx >= w || dy >= h)
+                            if (dx < 0 || dz < 0 || dx >= xSize || dz >= zSize)
                             {
-                                minh = Math.Min(minh, -walkableClimb - bot);
-                                continue;
+                                minNeighborHeight = (-walkableClimb - 1);
+                                break;
                             }
 
                             // From minus infinity to the first span.
-                            RcSpan ns = solid.spans[dx + dy * w];
-                            int nbot = -walkableClimb;
-                            int ntop = ns != null ? ns.smin : SPAN_MAX_HEIGHT;
+                            RcSpan neighborSpan = heightfield.spans[dx + dz * xSize];
+                            int neighborTop = neighborSpan != null ? neighborSpan.smin : SPAN_MAX_HEIGHT;
+                            
                             // Skip neightbour if the gap between the spans is too small.
-                            if (Math.Min(top, ntop) - Math.Max(bot, nbot) > walkableHeight)
-                                minh = Math.Min(minh, nbot - bot);
+                            if (Math.Min(top, neighborTop) - bot >= walkableHeight)
+                            {
+                                minNeighborHeight = (-walkableClimb - 1);
+                                break;
+                            }
 
                             // Rest of the spans.
-                            for (ns = solid.spans[dx + dy * w]; ns != null; ns = ns.next)
+                            for (neighborSpan = heightfield.spans[dx + dz * xSize]; neighborSpan != null; neighborSpan = neighborSpan.next)
                             {
-                                nbot = ns.smax;
-                                ntop = ns.next != null ? ns.next.smin : SPAN_MAX_HEIGHT;
+                                int neighborBot = neighborSpan.smax;
+                                neighborTop = neighborSpan.next != null ? neighborSpan.next.smin : SPAN_MAX_HEIGHT;
+                                
                                 // Skip neightbour if the gap between the spans is too small.
-                                if (Math.Min(top, ntop) - Math.Max(bot, nbot) > walkableHeight)
+                                if (Math.Min(top, neighborTop) - Math.Max(bot, neighborBot) >= walkableHeight)
                                 {
-                                    minh = Math.Min(minh, nbot - bot);
+                                    int accessibleNeighbourHeight = neighborBot - bot;
+                                    minNeighborHeight = Math.Min(minNeighborHeight, accessibleNeighbourHeight);
 
-                                    // Find min/max accessible neighbour height.
-                                    if (MathF.Abs(nbot - bot) <= walkableClimb)
+                                    // Find min/max accessible neighbour height. 
+                                    if (MathF.Abs(accessibleNeighbourHeight) <= walkableClimb)
                                     {
-                                        if (nbot < asmin)
-                                            asmin = nbot;
-                                        if (nbot > asmax)
-                                            asmax = nbot;
+                                        if (neighborBot < accessibleNeighborMinHeight) accessibleNeighborMinHeight = neighborBot;
+                                        if (neighborBot > accessibleNeighborMaxHeight) accessibleNeighborMaxHeight = neighborBot;
+                                    }
+                                    else if (accessibleNeighbourHeight < -walkableClimb)
+                                    {
+                                        break;
                                     }
                                 }
                             }
@@ -155,14 +164,16 @@ namespace DotRecast.Recast
 
                         // The current span is close to a ledge if the drop to any
                         // neighbour span is less than the walkableClimb.
-                        if (minh < -walkableClimb)
-                            s.area = RC_NULL_AREA;
+                        if (minNeighborHeight < -walkableClimb)
+                        {
+                            span.area = RC_NULL_AREA;
+                        }
 
                         // If the difference between all neighbours is too large,
                         // we are at steep slope, mark the span as ledge.
-                        if ((asmax - asmin) > walkableClimb)
+                        if ((accessibleNeighborMaxHeight - accessibleNeighborMinHeight) > walkableClimb)
                         {
-                            s.area = RC_NULL_AREA;
+                            span.area = RC_NULL_AREA;
                         }
                     }
                 }
