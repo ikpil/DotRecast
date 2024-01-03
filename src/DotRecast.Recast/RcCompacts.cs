@@ -33,7 +33,12 @@ namespace DotRecast.Recast
         private const int MAX_LAYERS = RC_NOT_CONNECTED - 1;
         private const int MAX_HEIGHT = RcConstants.SPAN_MAX_HEIGHT;
 
-        /// @par
+        /// @}
+        /// @name Compact Heightfield Functions
+        /// @see rcCompactHeightfield
+        /// @{
+
+        /// Builds a compact heightfield representing open space, from a heightfield representing solid space.
         ///
         /// This is just the beginning of the process of fully building a compact heightfield.
         /// Various filters may be applied, then the distance field and regions built.
@@ -42,28 +47,38 @@ namespace DotRecast.Recast
         /// See the #rcConfig documentation for more information on the configuration parameters.
         ///
         /// @see rcAllocCompactHeightfield, rcHeightfield, rcCompactHeightfield, rcConfig
-        public static RcCompactHeightfield BuildCompactHeightfield(RcTelemetry ctx, int walkableHeight, int walkableClimb, RcHeightfield hf)
+        /// @ingroup recast
+        /// 
+        /// @param[in,out]	context				The build context to use during the operation.
+        /// @param[in]		walkableHeight		Minimum floor to 'ceiling' height that will still allow the floor area 
+        /// 									to be considered walkable. [Limit: >= 3] [Units: vx]
+        /// @param[in]		walkableClimb		Maximum ledge height that is considered to still be traversable. 
+        /// 									[Limit: >=0] [Units: vx]
+        /// @param[in]		heightfield			The heightfield to be compacted.
+        /// @param[out]		compactHeightfield	The resulting compact heightfield. (Must be pre-allocated.)
+        /// @returns True if the operation completed successfully.
+        public static RcCompactHeightfield BuildCompactHeightfield(RcTelemetry context, int walkableHeight, int walkableClimb, RcHeightfield heightfield)
         {
-            using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_COMPACTHEIGHTFIELD);
+            using var timer = context.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_COMPACTHEIGHTFIELD);
 
             RcCompactHeightfield chf = new RcCompactHeightfield();
-            int w = hf.width;
-            int h = hf.height;
-            int spanCount = GetHeightFieldSpanCount(hf);
+            int w = heightfield.width;
+            int h = heightfield.height;
+            int spanCount = GetHeightFieldSpanCount(context, heightfield);
 
             // Fill in header.
             chf.width = w;
             chf.height = h;
-            chf.borderSize = hf.borderSize;
+            chf.borderSize = heightfield.borderSize;
             chf.spanCount = spanCount;
             chf.walkableHeight = walkableHeight;
             chf.walkableClimb = walkableClimb;
             chf.maxRegions = 0;
-            chf.bmin = hf.bmin;
-            chf.bmax = hf.bmax;
-            chf.bmax.Y += walkableHeight * hf.ch;
-            chf.cs = hf.cs;
-            chf.ch = hf.ch;
+            chf.bmin = heightfield.bmin;
+            chf.bmax = heightfield.bmax;
+            chf.bmax.Y += walkableHeight * heightfield.ch;
+            chf.cs = heightfield.cs;
+            chf.ch = heightfield.ch;
             chf.cells = new RcCompactCell[w * h];
             //chf.spans = new RcCompactSpan[spanCount];
             chf.areas = new int[spanCount];
@@ -79,7 +94,7 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < w; ++x)
                 {
-                    RcSpan s = hf.spans[x + y * w];
+                    RcSpan s = heightfield.spans[x + y * w];
                     // If there are no spans at this cell, just leave the data to index=0, count=0.
                     if (s == null)
                         continue;
@@ -167,16 +182,21 @@ namespace DotRecast.Recast
             return chf;
         }
 
-        private static int GetHeightFieldSpanCount(RcHeightfield hf)
+        /// Returns the number of spans contained in the specified heightfield.
+        ///  @ingroup recast
+        ///  @param[in,out]	context		The build context to use during the operation.
+        ///  @param[in]		heightfield	An initialized heightfield.
+        ///  @returns The number of spans in the heightfield.
+        private static int GetHeightFieldSpanCount(RcTelemetry context, RcHeightfield heightfield)
         {
-            int w = hf.width;
-            int h = hf.height;
+            int w = heightfield.width;
+            int h = heightfield.height;
             int spanCount = 0;
             for (int y = 0; y < h; ++y)
             {
                 for (int x = 0; x < w; ++x)
                 {
-                    for (RcSpan s = hf.spans[x + y * w]; s != null; s = s.next)
+                    for (RcSpan s = heightfield.spans[x + y * w]; s != null; s = s.next)
                     {
                         if (s.area != RC_NULL_AREA)
                             spanCount++;
