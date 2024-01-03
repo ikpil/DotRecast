@@ -8,14 +8,14 @@
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/ikpil?style=flat-square&logo=GitHub-Sponsors&link=https%3A%2F%2Fgithub.com%2Fsponsors%2Fikpil)](https://github.com/sponsors/ikpil)
 
 # Screenshot
-![screenshot](https://github.com/ikpil/DotRecast/assets/313821/8cf67832-1206-4b58-8c1f-7205210cbf22)
+![screenshot](https://user-images.githubusercontent.com/313821/266750582-8cf67832-1206-4b58-8c1f-7205210cbf22.gif)
+https://user-images.githubusercontent.com/313821/266782992-32a72a43-8f02-4214-8f1e-86b06952c8b7.mp4
 
 # Introduction
 1. DotRecast is a port of C++'s [recastnavigation](https://github.com/recastnavigation/recastnavigation) and Java's [recast4j](https://github.com/ppiastucki/recast4j) to the C# language.
 2. For game development, C# servers, C# project, and Unity3D are supported.
 3. DotRecast consists of Recast and Detour, Crowd, Dynamic, Extras, TileCache, DemoTool, Demo
 
-https://user-images.githubusercontent.com/313821/266782992-32a72a43-8f02-4214-8f1e-86b06952c8b7.mp4
 
 ## DotRecast.Recast
 
