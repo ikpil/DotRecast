@@ -221,8 +221,8 @@ namespace DotRecast.Recast
                         int smax = (int)MathF.Ceiling((h[1] - hf.bmin.Y) * ich);
                         if (smin != smax)
                         {
-                            int ismin = Math.Clamp(smin, 0, SPAN_MAX_HEIGHT);
-                            int ismax = Math.Clamp(smax, ismin + 1, SPAN_MAX_HEIGHT);
+                            int ismin = Math.Clamp(smin, 0, RC_SPAN_MAX_HEIGHT);
+                            int ismax = Math.Clamp(smax, ismin + 1, RC_SPAN_MAX_HEIGHT);
                             RcRasterizations.AddSpan(hf, x, z, ismin, ismax, area, flagMergeThr);
                         }
                     }

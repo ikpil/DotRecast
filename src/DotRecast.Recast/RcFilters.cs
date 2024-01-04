@@ -119,12 +119,12 @@ namespace DotRecast.Recast
                         }
 
                         int floor = (span.smax);
-                        int ceiling = span.next != null ? span.next.smin : SPAN_MAX_HEIGHT;
+                        int ceiling = span.next != null ? span.next.smin : RC_SPAN_MAX_HEIGHT;
 
                         // The difference between this walkable area and the lowest neighbor walkable area.
                         // This is the difference between the current span and all neighbor spans that have
                         // enough space for an agent to move between, but not accounting at all for surface slope.
-                        int lowestNeighborFloorDifference = SPAN_MAX_HEIGHT;
+                        int lowestNeighborFloorDifference = RC_SPAN_MAX_HEIGHT;
 
                         // Min and max height of accessible neighbours.
                         int lowestTraversableNeighborFloor = span.smax;
@@ -146,7 +146,7 @@ namespace DotRecast.Recast
 
                             // The most we can step down to the neighbor is the walkableClimb distance.
                             // Start with the area under the neighbor span                            
-                            int neighborCeiling = neighborSpan != null ? neighborSpan.smin : SPAN_MAX_HEIGHT;
+                            int neighborCeiling = neighborSpan != null ? neighborSpan.smin : RC_SPAN_MAX_HEIGHT;
 
                             // Skip neightbour if the gap between the spans is too small.
                             if (Math.Min(ceiling, neighborCeiling) - floor >= walkableHeight)
@@ -159,7 +159,7 @@ namespace DotRecast.Recast
                             for (; neighborSpan != null; neighborSpan = neighborSpan.next)
                             {
                                 int neighborFloor = neighborSpan.smax;
-                                neighborCeiling = neighborSpan.next != null ? neighborSpan.next.smin : SPAN_MAX_HEIGHT;
+                                neighborCeiling = neighborSpan.next != null ? neighborSpan.next.smin : RC_SPAN_MAX_HEIGHT;
 
                                 // Only consider neighboring areas that have enough overlap to be potentially traversable.
                                 if (Math.Min(ceiling, neighborCeiling) - Math.Max(floor, neighborFloor) < walkableHeight)
@@ -235,7 +235,7 @@ namespace DotRecast.Recast
                     for (RcSpan span = heightfield.spans[x + z * xSize]; span != null; span = span.next)
                     {
                         int floor = (span.smax);
-                        int ceiling = span.next != null ? span.next.smin : SPAN_MAX_HEIGHT;
+                        int ceiling = span.next != null ? span.next.smin : RC_SPAN_MAX_HEIGHT;
                         if ((ceiling - floor) < walkableHeight)
                         {
                             span.area = RC_NULL_AREA;

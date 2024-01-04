@@ -31,7 +31,7 @@ namespace DotRecast.Recast
     public static class RcCompacts
     {
         private const int MAX_LAYERS = RC_NOT_CONNECTED - 1;
-        private const int MAX_HEIGHT = RcConstants.SPAN_MAX_HEIGHT;
+        private const int MAX_HEIGHT = RcConstants.RC_SPAN_MAX_HEIGHT;
 
         /// @}
         /// @name Compact Heightfield Functions

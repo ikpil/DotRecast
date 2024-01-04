@@ -35,7 +35,7 @@ namespace DotRecast.Recast
         public const int MAX_TRIS = 255; // Max tris for delaunay is 2n-2-k (n=num verts, k=num hull verts).
         public const int MAX_VERTS_PER_EDGE = 32;
 
-        public const int RC_UNSET_HEIGHT = RcConstants.SPAN_MAX_HEIGHT;
+        public const int RC_UNSET_HEIGHT = RcConstants.RC_SPAN_MAX_HEIGHT;
         public const int EV_UNDEF = -1;
         public const int EV_HULL = -2;
 
