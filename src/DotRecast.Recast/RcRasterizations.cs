@@ -27,35 +27,19 @@ namespace DotRecast.Recast
 {
     public static class RcRasterizations
     {
-        /**
-         * Check whether two bounding boxes overlap
-         *
-         * @param amin
-         *            Min axis extents of bounding box A
-         * @param amax
-         *            Max axis extents of bounding box A
-         * @param bmin
-         *            Min axis extents of bounding box B
-         * @param bmax
-         *            Max axis extents of bounding box B
-         * @returns true if the two bounding boxes overlap. False otherwise
-         */
-        private static bool OverlapBounds(float[] amin, float[] amax, float[] bmin, float[] bmax)
+        /// Check whether two bounding boxes overlap
+        ///
+        /// @param[in]	aMin	Min axis extents of bounding box A
+        /// @param[in]	aMax	Max axis extents of bounding box A
+        /// @param[in]	bMin	Min axis extents of bounding box B
+        /// @param[in]	bMax	Max axis extents of bounding box B
+        /// @returns true if the two bounding boxes overlap.  False otherwise.
+        private static bool OverlapBounds(RcVec3f aMin, RcVec3f aMax, RcVec3f bMin, RcVec3f bMax)
         {
-            bool overlap = true;
-            overlap = (amin[0] > bmax[0] || amax[0] < bmin[0]) ? false : overlap;
-            overlap = (amin[1] > bmax[1] || amax[1] < bmin[1]) ? false : overlap;
-            overlap = (amin[2] > bmax[2] || amax[2] < bmin[2]) ? false : overlap;
-            return overlap;
-        }
-
-        private static bool OverlapBounds(RcVec3f amin, RcVec3f amax, RcVec3f bmin, RcVec3f bmax)
-        {
-            bool overlap = true;
-            overlap = (amin.X > bmax.X || amax.X < bmin.X) ? false : overlap;
-            overlap = (amin.Y > bmax.Y || amax.Y < bmin.Y) ? false : overlap;
-            overlap = (amin.Z > bmax.Z || amax.Z < bmin.Z) ? false : overlap;
-            return overlap;
+            return
+                aMin.X <= bMax.X && aMax.X >= bMin.X &&
+                aMin.Y <= bMax.Y && aMax.Y >= bMin.Y &&
+                aMin.Z <= bMax.Z && aMax.Z >= bMin.Z;
         }
 
 
@@ -69,72 +53,89 @@ namespace DotRecast.Recast
         /// @param[in]	max					The new span's maximum cell index
         /// @param[in]	areaID				The new span's area type ID
         /// @param[in]	flagMergeThreshold	How close two spans maximum extents need to be to merge area type IDs
-        public static void AddSpan(RcHeightfield heightfield, int x, int y, int spanMin, int spanMax, int areaId, int flagMergeThreshold)
+        public static void AddSpan(RcHeightfield heightfield, int x, int z, int min, int max, int areaID, int flagMergeThreshold)
         {
-            int idx = x + y * heightfield.width;
+            // Create the new span.
+            RcSpan newSpan = new RcSpan();
+            newSpan.smin = min;
+            newSpan.smax = max;
+            newSpan.area = areaID;
+            newSpan.next = null;
 
-            RcSpan s = new RcSpan();
-            s.smin = spanMin;
-            s.smax = spanMax;
-            s.area = areaId;
-            s.next = null;
+            int columnIndex = x + z * heightfield.width;
 
             // Empty cell, add the first span.
-            if (heightfield.spans[idx] == null)
+            if (heightfield.spans[columnIndex] == null)
             {
-                heightfield.spans[idx] = s;
+                heightfield.spans[columnIndex] = newSpan;
                 return;
             }
 
-            RcSpan prev = null;
-            RcSpan cur = heightfield.spans[idx];
+            RcSpan previousSpan = null;
+            RcSpan currentSpan = heightfield.spans[columnIndex];
 
-            // Insert and merge spans.
-            while (cur != null)
+            // Insert the new span, possibly merging it with existing spans.
+            while (currentSpan != null)
             {
-                if (cur.smin > s.smax)
+                if (currentSpan.smin > newSpan.smax)
                 {
                     // Current span is further than the new span, break.
                     break;
                 }
-                else if (cur.smax < s.smin)
+
+                if (currentSpan.smax < newSpan.smin)
                 {
-                    // Current span is before the new span advance.
-                    prev = cur;
-                    cur = cur.next;
+                    // Current span is completely before the new span.  Keep going.
+                    previousSpan = currentSpan;
+                    currentSpan = currentSpan.next;
                 }
                 else
                 {
-                    // Merge spans.
-                    if (cur.smin < s.smin)
-                        s.smin = cur.smin;
-                    if (cur.smax > s.smax)
-                        s.smax = cur.smax;
+                    // The new span overlaps with an existing span.  Merge them.
+                    if (currentSpan.smin < newSpan.smin)
+                    {
+                        newSpan.smin = currentSpan.smin;
+                    }
+
+                    if (currentSpan.smax > newSpan.smax)
+                    {
+                        newSpan.smax = currentSpan.smax;
+                    }
 
                     // Merge flags.
-                    if (MathF.Abs(s.smax - cur.smax) <= flagMergeThreshold)
-                        s.area = Math.Max(s.area, cur.area);
+                    if (MathF.Abs(newSpan.smax - currentSpan.smax) <= flagMergeThreshold)
+                    {
+                        // Higher area ID numbers indicate higher resolution priority.
+                        newSpan.area = Math.Max(newSpan.area, currentSpan.area);
+                    }
 
-                    // Remove current span.
-                    RcSpan next = cur.next;
-                    if (prev != null)
-                        prev.next = next;
+                    // Remove the current span since it's now merged with newSpan.
+                    // Keep going because there might be other overlapping spans that also need to be merged.
+                    RcSpan next = currentSpan.next;
+                    if (previousSpan != null)
+                    {
+                        previousSpan.next = next;
+                    }
                     else
-                        heightfield.spans[idx] = next;
-                    cur = next;
+                    {
+                        heightfield.spans[columnIndex] = next;
+                    }
+
+                    currentSpan = next;
                 }
             }
 
-            // Insert new span.
-            if (prev != null)
+            // Insert new span after prev
+            if (previousSpan != null)
             {
-                s.next = prev.next;
-                prev.next = s;
+                newSpan.next = previousSpan.next;
+                previousSpan.next = newSpan;
             }
             else
             {
-                s.next = heightfield.spans[idx];
-                heightfield.spans[idx] = s;
+                // This span should go before the others in the list
+                newSpan.next = heightfield.spans[columnIndex];
+                heightfield.spans[columnIndex] = newSpan;
             }
         }
 
