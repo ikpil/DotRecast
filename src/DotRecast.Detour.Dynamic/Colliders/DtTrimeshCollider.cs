@@ -62,8 +62,8 @@ namespace DotRecast.Detour.Dynamic.Colliders
         {
             for (int i = 0; i < triangles.Length; i += 3)
             {
-                RcRasterizations.RasterizeTriangle(hf, vertices, triangles[i], triangles[i + 1], triangles[i + 2], area,
-                    (int)MathF.Floor(flagMergeThreshold / hf.ch), telemetry);
+                RcRasterizations.RasterizeTriangle(telemetry, vertices, triangles[i], triangles[i + 1], triangles[i + 2], area,
+                    hf, (int)MathF.Floor(flagMergeThreshold / hf.ch));
             }
         }
     }
