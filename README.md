@@ -75,8 +75,11 @@ It is recommended to add the source directories `DotRecast.Core`, `DotRecast.Det
 
 ## Discuss
 
-- Discuss Recast & Detour: http://groups.google.com/group/recastnavigation
-- Development blog: http://digestingduck.blogspot.com/
+- discussions: 
+  - https://github.com/recastnavigation/recastnavigation/discussions
+- issues:
+  - https://github.com/ikpil/DotRecast/issues or
+  - https://github.com/recastnavigation/recastnavigation/issues
 
 ## License
 
