@@ -372,7 +372,7 @@ namespace DotRecast.Recast
                     AddSpan(heightfield, x, z, spanMinCellIndex, spanMaxCellIndex, areaID, flagMergeThreshold);
                 }
             }
-            
+
             return true;
         }
 
@@ -421,10 +421,10 @@ namespace DotRecast.Recast
         /// @param[in]		flagMergeThreshold	The distance where the walkable flag is favored over the non-walkable flag. 
         ///										[Limit: >= 0] [Units: vx]
         /// @returns True if the operation completed successfully.
-        public static void RasterizeTriangles(RcTelemetry ctx, float[] verts, int[] tris, int[] triAreaIDs, int numTris,
+        public static void RasterizeTriangles(RcTelemetry context, float[] verts, int[] tris, int[] triAreaIDs, int numTris,
             RcHeightfield heightfield, int flagMergeThreshold)
         {
-            using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_RASTERIZE_TRIANGLES);
+            using var timer = context.ScopedTimer(RcTimerLabel.RC_TIMER_RASTERIZE_TRIANGLES);
 
             float inverseCellSize = 1.0f / heightfield.cs;
             float inverseCellHeight = 1.0f / heightfield.ch;
@@ -438,28 +438,25 @@ namespace DotRecast.Recast
             }
         }
 
-        /**
-     * Rasterizes a triangle list into the specified heightfield. Expects each triangle to be specified as three
-     * sequential vertices of 3 floats. Spans will only be added for triangles that overlap the heightfield grid.
-     *
-     * @param heightfield
-     *            An initialized heightfield.
-     * @param verts
-     *            The vertices. [(x, y, z) * numVerts]
-     * @param areaIds
-     *            The area id's of the triangles. [Limit: <= WALKABLE_AREA] [Size: numTris]
-     * @param tris
-     *            The triangle indices. [(vertA, vertB, vertC) * nt]
-     * @param numTris
-     *            The number of triangles.
-     * @param flagMergeThreshold
-     *            The distance where the walkable flag is favored over the non-walkable flag. [Limit: >= 0] [Units: vx]
-     * @see Heightfield
-     */
-        public static void RasterizeTriangles(RcHeightfield heightfield, float[] verts, int[] areaIds, int numTris,
-            int flagMergeThreshold, RcTelemetry ctx)
+        /// Rasterizes a triangle list into the specified heightfield.
+        ///
+        /// Expects each triangle to be specified as three sequential vertices of 3 floats.
+        ///
+        /// Spans will only be added for triangles that overlap the heightfield grid.
+        /// 
+        /// @see rcHeightfield
+        /// @ingroup recast
+        /// @param[in,out]	context				The build context to use during the operation.
+        /// @param[in]		verts				The triangle vertices. [(ax, ay, az, bx, by, bz, cx, by, cx) * @p nt]
+        /// @param[in]		triAreaIDs			The area id's of the triangles. [Limit: <= #RC_WALKABLE_AREA] [Size: @p nt]
+        /// @param[in]		numTris				The number of triangles.
+        /// @param[in,out]	heightfield			An initialized heightfield.
+        /// @param[in]		flagMergeThreshold	The distance where the walkable flag is favored over the non-walkable flag. 
+        /// 									[Limit: >= 0] [Units: vx]
+        /// @returns True if the operation completed successfully.
+        public static void RasterizeTriangles(RcTelemetry context, float[] verts, int[] triAreaIDs, int numTris, RcHeightfield heightfield, int flagMergeThreshold)
         {
-            using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_RASTERIZE_TRIANGLES);
+            using var timer = context.ScopedTimer(RcTimerLabel.RC_TIMER_RASTERIZE_TRIANGLES);
 
             float inverseCellSize = 1.0f / heightfield.cs;
             float inverseCellHeight = 1.0f / heightfield.ch;
@@ -468,7 +465,7 @@ namespace DotRecast.Recast
                 int v0 = (triIndex * 3 + 0);
                 int v1 = (triIndex * 3 + 1);
                 int v2 = (triIndex * 3 + 2);
-                RasterizeTri(verts, v0, v1, v2, areaIds[triIndex], heightfield, heightfield.bmin, heightfield.bmax, heightfield.cs,
+                RasterizeTri(verts, v0, v1, v2, triAreaIDs[triIndex], heightfield, heightfield.bmin, heightfield.bmax, heightfield.cs,
                     inverseCellSize, inverseCellHeight, flagMergeThreshold);
             }
         }

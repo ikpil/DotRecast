@@ -869,9 +869,7 @@ namespace DotRecast.Recast
                     {
                         if (@in[vj + 2] > @in[vi + 2])
                         {
-                            int temp = vi;
-                            vi = vj;
-                            vj = temp;
+                            (vi, vj) = (vj, vi);
                             swapped = true;
                         }
                     }
@@ -879,9 +877,7 @@ namespace DotRecast.Recast
                     {
                         if (@in[vj + 0] > @in[vi + 0])
                         {
-                            int temp = vi;
-                            vi = vj;
-                            vj = temp;
+                            (vi, vj) = (vj, vi);
                             swapped = true;
                         }
                     }

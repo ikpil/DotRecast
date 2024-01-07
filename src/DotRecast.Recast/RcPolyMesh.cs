@@ -22,52 +22,26 @@ using DotRecast.Core.Numerics;
 
 namespace DotRecast.Recast
 {
-    /** Represents a polygon mesh suitable for use in building a navigation mesh. */
+    /// Represents a polygon mesh suitable for use in building a navigation mesh. 
+    /// @ingroup recast
     public class RcPolyMesh
     {
-        /** The mesh vertices. [Form: (x, y, z) coordinates * #nverts] */
-        public int[] verts;
+        public int[] verts; // The mesh vertices. [Form: (x, y, z) coordinates * #nverts]
+        public int[] polys; // Polygon and neighbor data. [Length: #maxpolys * 2 * #nvp]
+        public int[] regs; // The region id assigned to each polygon. [Length: #maxpolys]
+        public int[] areas; // The area id assigned to each polygon. [Length: #maxpolys]
+        public int nverts; // The number of vertices.
+        public int npolys; // The number of polygons.
+        public int nvp; // The maximum number of vertices per polygon.
+        public int maxpolys; // The number of allocated polygons.
+        public int[] flags; // The user defined flags for each polygon. [Length: #maxpolys]
+        public RcVec3f bmin = new RcVec3f(); // The minimum bounds in world space. [(x, y, z)]
+        public RcVec3f bmax = new RcVec3f(); // The maximum bounds in world space. [(x, y, z)]
 
-        /** Polygon and neighbor data. [Length: #maxpolys * 2 * #nvp] */
-        public int[] polys;
+        public float cs; // The size of each cell. (On the xz-plane.)
+        public float ch; // The height of each cell. (The minimum increment along the y-axis.)
 
-        /** The region id assigned to each polygon. [Length: #maxpolys] */
-        public int[] regs;
-
-        /** The area id assigned to each polygon. [Length: #maxpolys] */
-        public int[] areas;
-
-        /** The number of vertices. */
-        public int nverts;
-
-        /** The number of polygons. */
-        public int npolys;
-
-        /** The maximum number of vertices per polygon. */
-        public int nvp;
-
-        /** The number of allocated polygons. */
-        public int maxpolys;
-
-        /** The user defined flags for each polygon. [Length: #maxpolys] */
-        public int[] flags;
-
-        /** The minimum bounds in world space. [(x, y, z)] */
-        public RcVec3f bmin = new RcVec3f();
-
-        /** The maximum bounds in world space. [(x, y, z)] */
-        public RcVec3f bmax = new RcVec3f();
-
-        /** The size of each cell. (On the xz-plane.) */
-        public float cs;
-
-        /** The height of each cell. (The minimum increment along the y-axis.) */
-        public float ch;
-
-        /** The AABB border size used to generate the source data from which the mesh was derived. */
-        public int borderSize;
-
-        /** The max error of the polygon edges in the mesh. */
-        public float maxEdgeError;
+        public int borderSize; // The AABB border size used to generate the source data from which the mesh was derived.
+        public float maxEdgeError; // The max error of the polygon edges in the mesh.
     }
 }

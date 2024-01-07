@@ -154,22 +154,17 @@ namespace DotRecast.Detour
             return DtStatus.DT_SUCCESS;
         }
 
-        /**
-     * Returns random location on navmesh within the reach of specified location. Polygons are chosen weighted by area.
-     * The search runs in linear related to number of polygon. The location is not exactly constrained by the circle,
-     * but it limits the visited polygons.
-     *
-     * @param startRef
-     *            The reference id of the polygon where the search starts.
-     * @param centerPos
-     *            The center of the search circle. [(x, y, z)]
-     * @param maxRadius
-     * @param filter
-     *            The polygon filter to apply to the query.
-     * @param frand
-     *            Function returning a random number [0..1).
-     * @return Random location
-     */
+        /// Returns random location on navmesh within the reach of specified location.
+        /// Polygons are chosen weighted by area. The search runs in linear related to number of polygon.
+        /// The location is not exactly constrained by the circle, but it limits the visited polygons.
+        ///  @param[in]		startRef		The reference id of the polygon where the search starts.
+        ///  @param[in]		centerPos		The center of the search circle. [(x, y, z)]
+        ///  @param[in]		maxRadius		The radius of the search circle. [Units: wu]
+        ///  @param[in]		filter			The polygon filter to apply to the query.
+        ///  @param[in]		frand			Function returning a random number [0..1).
+        ///  @param[out]	randomRef		The reference id of the random location.
+        ///  @param[out]	randomPt		The random location. [(x, y, z)]
+        /// @returns The status flags for the query.
         public DtStatus FindRandomPointAroundCircle(long startRef, RcVec3f centerPos, float maxRadius,
             IDtQueryFilter filter, IRcRand frand, out long randomRef, out RcVec3f randomPt)
         {
@@ -197,6 +192,18 @@ namespace DotRecast.Detour
             return FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, DtStrictDtPolygonByCircleConstraint.Shared, out randomRef, out randomPt);
         }
 
+        /// Returns random location on navmesh within the reach of specified location.
+        /// Polygons are chosen weighted by area. The search runs in linear related to number of polygon.
+        /// The location is not exactly constrained by the circle, but it limits the visited polygons.
+        ///  @param[in]		startRef		The reference id of the polygon where the search starts.
+        ///  @param[in]		centerPos		The center of the search circle. [(x, y, z)]
+        ///  @param[in]		maxRadius		The radius of the search circle. [Units: wu]
+        ///  @param[in]		filter			The polygon filter to apply to the query.
+        ///  @param[in]		frand			Function returning a random number [0..1).
+        ///  @param[in]		constraint      
+        ///  @param[out]	randomRef		The reference id of the random location.
+        ///  @param[out]	randomPt		The random location. [(x, y, z)]
+        /// @returns The status flags for the query.
         public DtStatus FindRandomPointAroundCircle(long startRef, RcVec3f centerPos, float maxRadius,
             IDtQueryFilter filter, IRcRand frand, IDtPolygonByCircleConstraint constraint,
             out long randomRef, out RcVec3f randomPt)
@@ -393,13 +400,13 @@ namespace DotRecast.Detour
         ///
         /// @p pos does not have to be within the bounds of the polygon or navigation mesh.
         ///
-        /// See ClosestPointOnPolyBoundary() for a limited but faster option.
+        /// See closestPointOnPolyBoundary() for a limited but faster option.
         ///
         /// Finds the closest point on the specified polygon.
-        /// @param[in] ref The reference id of the polygon.
-        /// @param[in] pos The position to check. [(x, y, z)]
-        /// @param[out] closest
-        /// @param[out] posOverPoly
+        ///  @param[in]		ref			The reference id of the polygon.
+        ///  @param[in]		pos			The position to check. [(x, y, z)]
+        ///  @param[out]	closest		The closest point on the polygon. [(x, y, z)]
+        ///  @param[out]	posOverPoly	True of the position is over the polygon.
         /// @returns The status flags for the query.
         public DtStatus ClosestPointOnPoly(long refs, RcVec3f pos, out RcVec3f closest, out bool posOverPoly)
         {
