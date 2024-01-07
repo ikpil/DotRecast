@@ -101,7 +101,7 @@ public class RecastSoloMeshTest
         long time = RcFrequency.Ticks;
         RcVec3f bmin = geomProvider.GetMeshBoundsMin();
         RcVec3f bmax = geomProvider.GetMeshBoundsMax();
-        RcTelemetry m_ctx = new RcTelemetry();
+        RcContext m_ctx = new RcContext();
         //
         // Step 1. Initialize build config.
         //

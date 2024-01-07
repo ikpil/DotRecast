@@ -57,7 +57,7 @@ namespace DotRecast.Recast
         /// @param[in]		heightfield			The heightfield to be compacted.
         /// @param[out]		compactHeightfield	The resulting compact heightfield. (Must be pre-allocated.)
         /// @returns True if the operation completed successfully.
-        public static RcCompactHeightfield BuildCompactHeightfield(RcTelemetry context, int walkableHeight, int walkableClimb, RcHeightfield heightfield)
+        public static RcCompactHeightfield BuildCompactHeightfield(RcContext context, int walkableHeight, int walkableClimb, RcHeightfield heightfield)
         {
             using var timer = context.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_COMPACTHEIGHTFIELD);
 
@@ -187,7 +187,7 @@ namespace DotRecast.Recast
         ///  @param[in,out]	context		The build context to use during the operation.
         ///  @param[in]		heightfield	An initialized heightfield.
         ///  @returns The number of spans in the heightfield.
-        private static int GetHeightFieldSpanCount(RcTelemetry context, RcHeightfield heightfield)
+        private static int GetHeightFieldSpanCount(RcContext context, RcHeightfield heightfield)
         {
             int w = heightfield.width;
             int h = heightfield.height;

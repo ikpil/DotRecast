@@ -577,7 +577,7 @@ namespace DotRecast.Recast
             return an;
         }
 
-        private static bool CanRemoveVertex(RcTelemetry ctx, RcPolyMesh mesh, int rem)
+        private static bool CanRemoveVertex(RcContext ctx, RcPolyMesh mesh, int rem)
         {
             int nvp = mesh.nvp;
 
@@ -680,7 +680,7 @@ namespace DotRecast.Recast
             return true;
         }
 
-        private static void RemoveVertex(RcTelemetry ctx, RcPolyMesh mesh, int rem, int maxTris)
+        private static void RemoveVertex(RcContext ctx, RcPolyMesh mesh, int rem, int maxTris)
         {
             int nvp = mesh.nvp;
 
@@ -967,7 +967,7 @@ namespace DotRecast.Recast
         /// limit must be restricted to <= #DT_VERTS_PER_POLYGON.
         ///
         /// @see rcAllocPolyMesh, rcContourSet, rcPolyMesh, rcConfig
-        public static RcPolyMesh BuildPolyMesh(RcTelemetry ctx, RcContourSet cset, int nvp)
+        public static RcPolyMesh BuildPolyMesh(RcContext ctx, RcContourSet cset, int nvp)
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_POLYMESH);
 
@@ -1212,7 +1212,7 @@ namespace DotRecast.Recast
         }
 
         /// @see rcAllocPolyMesh, rcPolyMesh
-        public static RcPolyMesh MergePolyMeshes(RcTelemetry ctx, RcPolyMesh[] meshes, int nmeshes)
+        public static RcPolyMesh MergePolyMeshes(RcContext ctx, RcPolyMesh[] meshes, int nmeshes)
         {
             if (nmeshes == 0 || meshes == null)
                 return null;
@@ -1340,7 +1340,7 @@ namespace DotRecast.Recast
             return mesh;
         }
 
-        public static RcPolyMesh CopyPolyMesh(RcTelemetry ctx, RcPolyMesh src)
+        public static RcPolyMesh CopyPolyMesh(RcContext ctx, RcPolyMesh src)
         {
             RcPolyMesh dst = new RcPolyMesh();
 

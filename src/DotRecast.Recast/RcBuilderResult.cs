@@ -12,9 +12,9 @@ namespace DotRecast.Recast
         private readonly RcPolyMesh pmesh;
         private readonly RcPolyMeshDetail dmesh;
         private readonly RcHeightfield solid;
-        private readonly RcTelemetry telemetry;
+        private readonly RcContext _context;
 
-        public RcBuilderResult(int tileX, int tileZ, RcHeightfield solid, RcCompactHeightfield chf, RcContourSet cs, RcPolyMesh pmesh, RcPolyMeshDetail dmesh, RcTelemetry ctx)
+        public RcBuilderResult(int tileX, int tileZ, RcHeightfield solid, RcCompactHeightfield chf, RcContourSet cs, RcPolyMesh pmesh, RcPolyMeshDetail dmesh, RcContext ctx)
         {
             this.tileX = tileX;
             this.tileZ = tileZ;
@@ -23,7 +23,7 @@ namespace DotRecast.Recast
             this.cs = cs;
             this.pmesh = pmesh;
             this.dmesh = dmesh;
-            telemetry = ctx;
+            _context = ctx;
         }
 
         public RcPolyMesh GetMesh()
@@ -51,9 +51,9 @@ namespace DotRecast.Recast
             return solid;
         }
 
-        public RcTelemetry GetTelemetry()
+        public RcContext GetTelemetry()
         {
-            return telemetry;
+            return _context;
         }
     }
 }

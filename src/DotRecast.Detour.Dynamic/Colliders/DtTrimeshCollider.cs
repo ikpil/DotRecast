@@ -58,11 +58,11 @@ namespace DotRecast.Detour.Dynamic.Colliders
             return bounds;
         }
 
-        public override void Rasterize(RcHeightfield hf, RcTelemetry telemetry)
+        public override void Rasterize(RcHeightfield hf, RcContext context)
         {
             for (int i = 0; i < triangles.Length; i += 3)
             {
-                RcRasterizations.RasterizeTriangle(telemetry, vertices, triangles[i], triangles[i + 1], triangles[i + 2], area,
+                RcRasterizations.RasterizeTriangle(context, vertices, triangles[i], triangles[i + 1], triangles[i + 2], area,
                     hf, (int)MathF.Floor(flagMergeThreshold / hf.ch));
             }
         }

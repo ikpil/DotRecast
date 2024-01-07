@@ -45,7 +45,7 @@ namespace DotRecast.Recast
         /// @param[in]		walkableClimb	Maximum ledge height that is considered to still be traversable. 
         /// 								[Limit: >=0] [Units: vx]
         /// @param[in,out]	heightfield		A fully built heightfield.  (All spans have been added.)
-        public static void FilterLowHangingWalkableObstacles(RcTelemetry context, int walkableClimb, RcHeightfield heightfield)
+        public static void FilterLowHangingWalkableObstacles(RcContext context, int walkableClimb, RcHeightfield heightfield)
         {
             using var timer = context.ScopedTimer(RcTimerLabel.RC_TIMER_FILTER_LOW_OBSTACLES);
 
@@ -98,7 +98,7 @@ namespace DotRecast.Recast
         /// @param[in]		walkableClimb	Maximum ledge height that is considered to still be traversable. 
         /// 								[Limit: >=0] [Units: vx]
         /// @param[in,out]	heightfield			A fully built heightfield.  (All spans have been added.)
-        public static void FilterLedgeSpans(RcTelemetry context, int walkableHeight, int walkableClimb, RcHeightfield heightfield)
+        public static void FilterLedgeSpans(RcContext context, int walkableHeight, int walkableClimb, RcHeightfield heightfield)
         {
             using var timer = context.ScopedTimer(RcTimerLabel.RC_TIMER_FILTER_BORDER);
 
@@ -219,7 +219,7 @@ namespace DotRecast.Recast
         /// @param[in]		walkableHeight	Minimum floor to 'ceiling' height that will still allow the floor area to 
         /// 								be considered walkable. [Limit: >= 3] [Units: vx]
         /// @param[in,out]	heightfield		A fully built heightfield.  (All spans have been added.)
-        public static void FilterWalkableLowHeightSpans(RcTelemetry context, int walkableHeight, RcHeightfield heightfield)
+        public static void FilterWalkableLowHeightSpans(RcContext context, int walkableHeight, RcHeightfield heightfield)
         {
             using var timer = context.ScopedTimer(RcTimerLabel.RC_TIMER_FILTER_WALKABLE);
 
