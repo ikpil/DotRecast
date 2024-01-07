@@ -439,7 +439,7 @@ namespace DotRecast.Recast
             return EV_UNDEF;
         }
 
-        private static void AddEdge(RcTelemetry ctx, List<int> edges, int maxEdges, int s, int t, int l, int r)
+        private static void AddEdge(RcContext ctx, List<int> edges, int maxEdges, int s, int t, int l, int r)
         {
             if (edges.Count / 4 >= maxEdges)
             {
@@ -507,7 +507,7 @@ namespace DotRecast.Recast
             return false;
         }
 
-        static int CompleteFacet(RcTelemetry ctx, float[] pts, int npts, List<int> edges, int maxEdges, int nfaces, int e)
+        static int CompleteFacet(RcContext ctx, float[] pts, int npts, List<int> edges, int maxEdges, int nfaces, int e)
         {
             const float EPS = 1e-5f;
 
@@ -624,7 +624,7 @@ namespace DotRecast.Recast
             return nfaces;
         }
 
-        private static void DelaunayHull(RcTelemetry ctx, int npts, float[] pts, int nhull, int[] hull, List<int> tris)
+        private static void DelaunayHull(RcContext ctx, int npts, float[] pts, int nhull, int[] hull, List<int> tris)
         {
             int nfaces = 0;
             int maxEdges = npts * 10;
@@ -828,7 +828,7 @@ namespace DotRecast.Recast
             return (((i * 0xd8163841) & 0xffff) / 65535.0f * 2.0f) - 1.0f;
         }
 
-        static int BuildPolyDetail(RcTelemetry ctx, float[] @in, int nin, float sampleDist, float sampleMaxError,
+        static int BuildPolyDetail(RcContext ctx, float[] @in, int nin, float sampleDist, float sampleMaxError,
             int heightSearchRadius, RcCompactHeightfield chf, RcHeightPatch hp, float[] verts, List<int> tris)
         {
             List<int> samples = new List<int>(512);
@@ -1140,7 +1140,7 @@ namespace DotRecast.Recast
         }
 
 
-        static void SeedArrayWithPolyCenter(RcTelemetry ctx, RcCompactHeightfield chf, int[] meshpoly, int poly, int npoly,
+        static void SeedArrayWithPolyCenter(RcContext ctx, RcCompactHeightfield chf, int[] meshpoly, int poly, int npoly,
             int[] verts, int bs, RcHeightPatch hp, List<int> array)
         {
             // Note: Reads to the compact heightfield are offset by border size (bs)
@@ -1298,7 +1298,7 @@ namespace DotRecast.Recast
             queue.Add(v3);
         }
 
-        static void GetHeightData(RcTelemetry ctx, RcCompactHeightfield chf, int[] meshpolys, int poly, int npoly, int[] verts,
+        static void GetHeightData(RcContext ctx, RcCompactHeightfield chf, int[] meshpolys, int poly, int npoly, int[] verts,
             int bs, RcHeightPatch hp, int region)
         {
             // Note: Reads to the compact heightfield are offset by border size (bs)
@@ -1424,7 +1424,7 @@ namespace DotRecast.Recast
         /// See the #rcConfig documentation for more information on the configuration parameters.
         ///
         /// @see rcAllocPolyMeshDetail, rcPolyMesh, rcCompactHeightfield, rcPolyMeshDetail, rcConfig
-        public static RcPolyMeshDetail BuildPolyMeshDetail(RcTelemetry ctx, RcPolyMesh mesh, RcCompactHeightfield chf,
+        public static RcPolyMeshDetail BuildPolyMeshDetail(RcContext ctx, RcPolyMesh mesh, RcCompactHeightfield chf,
             float sampleDist, float sampleMaxError)
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_POLYMESHDETAIL);
@@ -1614,7 +1614,7 @@ namespace DotRecast.Recast
         }
 
         /// @see rcAllocPolyMeshDetail, rcPolyMeshDetail
-        private static RcPolyMeshDetail MergePolyMeshDetails(RcTelemetry ctx, RcPolyMeshDetail[] meshes, int nmeshes)
+        private static RcPolyMeshDetail MergePolyMeshDetails(RcContext ctx, RcPolyMeshDetail[] meshes, int nmeshes)
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_MERGE_POLYMESHDETAIL);
 

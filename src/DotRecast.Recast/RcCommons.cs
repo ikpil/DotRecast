@@ -119,7 +119,7 @@ namespace DotRecast.Recast
         /// See the #rcConfig documentation for more information on the configuration parameters.
         ///
         /// @see rcHeightfield, rcClearUnwalkableTriangles, rcRasterizeTriangles
-        public static int[] MarkWalkableTriangles(RcTelemetry ctx, float walkableSlopeAngle, float[] verts, int[] tris, int nt, RcAreaModification areaMod)
+        public static int[] MarkWalkableTriangles(RcContext ctx, float walkableSlopeAngle, float[] verts, int[] tris, int nt, RcAreaModification areaMod)
         {
             int[] areas = new int[nt];
             float walkableThr = MathF.Cos(walkableSlopeAngle / 180.0f * MathF.PI);
@@ -153,7 +153,7 @@ namespace DotRecast.Recast
         /// See the #rcConfig documentation for more information on the configuration parameters.
         ///
         /// @see rcHeightfield, rcClearUnwalkableTriangles, rcRasterizeTriangles
-        public static void ClearUnwalkableTriangles(RcTelemetry ctx, float walkableSlopeAngle, float[] verts, int nv, int[] tris, int nt, int[] areas)
+        public static void ClearUnwalkableTriangles(RcContext ctx, float walkableSlopeAngle, float[] verts, int nv, int[] tris, int nt, int[] areas)
         {
             float walkableThr = MathF.Cos(walkableSlopeAngle / 180.0f * MathF.PI);
 

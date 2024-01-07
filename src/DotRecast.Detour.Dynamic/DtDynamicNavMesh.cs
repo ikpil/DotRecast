@@ -35,7 +35,7 @@ namespace DotRecast.Detour.Dynamic
         public readonly DtDynamicNavMeshConfig config;
         private readonly RcBuilder builder;
         private readonly Dictionary<long, DtDynamicTile> _tiles = new Dictionary<long, DtDynamicTile>();
-        private readonly RcTelemetry telemetry;
+        private readonly RcContext _context;
         private readonly DtNavMeshParams navMeshParams;
         private readonly BlockingCollection<IDtDaynmicTileJob> updateQueue = new BlockingCollection<IDtDaynmicTileJob>();
         private readonly RcAtomicLong currentColliderId = new RcAtomicLong(0);
@@ -72,7 +72,7 @@ namespace DotRecast.Detour.Dynamic
             }
 
             ;
-            telemetry = new RcTelemetry();
+            _context = new RcContext();
         }
 
         public DtNavMesh NavMesh()
@@ -218,7 +218,7 @@ namespace DotRecast.Detour.Dynamic
         {
             DtNavMeshCreateParams option = new DtNavMeshCreateParams();
             option.walkableHeight = config.walkableHeight;
-            dirty = dirty | tile.Build(builder, config, telemetry);
+            dirty = dirty | tile.Build(builder, config, _context);
         }
 
         private bool UpdateNavMesh()

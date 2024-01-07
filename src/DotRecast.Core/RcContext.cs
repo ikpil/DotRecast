@@ -25,12 +25,25 @@ using System.Threading;
 
 namespace DotRecast.Core
 {
-    public class RcTelemetry
+    /// Provides an interface for optional logging and performance tracking of the Recast 
+    /// build process.
+    /// 
+    /// This class does not provide logging or timer functionality on its 
+    /// own.  Both must be provided by a concrete implementation 
+    /// by overriding the protected member functions.  Also, this class does not 
+    /// provide an interface for extracting log messages. (Only adding them.) 
+    /// So concrete implementations must provide one.
+    ///
+    /// If no logging or timers are required, just pass an instance of this 
+    /// class through the Recast build process.
+    /// 
+    /// @ingroup recast
+    public class RcContext
     {
         private readonly ThreadLocal<Dictionary<string, RcAtomicLong>> _timerStart;
         private readonly ConcurrentDictionary<string, RcAtomicLong> _timerAccum;
 
-        public RcTelemetry()
+        public RcContext()
         {
             _timerStart = new ThreadLocal<Dictionary<string, RcAtomicLong>>(() => new Dictionary<string, RcAtomicLong>());
             _timerAccum = new ConcurrentDictionary<string, RcAtomicLong>();
@@ -41,7 +54,7 @@ namespace DotRecast.Core
             StartTimer(label);
             return new RcAnonymousDisposable(() => StopTimer(label));
         }
-        
+
         public void StartTimer(RcTimerLabel label)
         {
             _timerStart.Value[label.Name] = new RcAtomicLong(RcFrequency.Ticks);

@@ -44,7 +44,7 @@ namespace DotRecast.Recast
         /// @param[in]		erosionRadius		The radius of erosion. [Limits: 0 < value < 255] [Units: vx]
         /// @param[in,out]	compactHeightfield	The populated compact heightfield to erode.
         /// @returns True if the operation completed successfully.
-        public static void ErodeWalkableArea(RcTelemetry context, int erosionRadius, RcCompactHeightfield compactHeightfield)
+        public static void ErodeWalkableArea(RcContext context, int erosionRadius, RcCompactHeightfield compactHeightfield)
         {
             int xSize = compactHeightfield.width;
             int zSize = compactHeightfield.height;
@@ -261,7 +261,7 @@ namespace DotRecast.Recast
         /// @param[in,out]	context		The build context to use during the operation.
         /// @param[in,out]	compactHeightfield		A populated compact heightfield.
         /// @returns True if the operation completed successfully.
-        public static bool MedianFilterWalkableArea(RcTelemetry context, RcCompactHeightfield compactHeightfield)
+        public static bool MedianFilterWalkableArea(RcContext context, RcCompactHeightfield compactHeightfield)
         {
             int xSize = compactHeightfield.width;
             int zSize = compactHeightfield.height;
@@ -344,7 +344,7 @@ namespace DotRecast.Recast
         /// @param[in]		boxMaxBounds		The maximum extents of the bounding box. [(x, y, z)] [Units: wu]
         /// @param[in]		areaId				The area id to apply. [Limit: <= #RC_WALKABLE_AREA]
         /// @param[in,out]	compactHeightfield	A populated compact heightfield.
-        public static void MarkBoxArea(RcTelemetry context, float[] boxMinBounds, float[] boxMaxBounds, RcAreaModification areaId, RcCompactHeightfield compactHeightfield)
+        public static void MarkBoxArea(RcContext context, float[] boxMinBounds, float[] boxMaxBounds, RcAreaModification areaId, RcCompactHeightfield compactHeightfield)
         {
             using var timer = context.ScopedTimer(RcTimerLabel.RC_TIMER_MARK_BOX_AREA);
 
@@ -446,7 +446,7 @@ namespace DotRecast.Recast
         /// @param[in]		maxY				The height of the top of the polygon. [Units: wu]
         /// @param[in]		areaId				The area id to apply. [Limit: <= #RC_WALKABLE_AREA]
         /// @param[in,out]	compactHeightfield	A populated compact heightfield.
-        public static void MarkConvexPolyArea(RcTelemetry context, float[] verts,
+        public static void MarkConvexPolyArea(RcContext context, float[] verts,
             float minY, float maxY, RcAreaModification areaId,
             RcCompactHeightfield compactHeightfield)
         {
@@ -567,7 +567,7 @@ namespace DotRecast.Recast
         /// @param[in]		height				The height of the cylinder. [Units: wu] [Limit: > 0]
         /// @param[in]		areaId				The area id to apply. [Limit: <= #RC_WALKABLE_AREA]
         /// @param[in,out]	compactHeightfield	A populated compact heightfield.
-        public static void MarkCylinderArea(RcTelemetry context, float[] position, float radius, float height,
+        public static void MarkCylinderArea(RcContext context, float[] position, float radius, float height,
             RcAreaModification areaId, RcCompactHeightfield compactHeightfield)
         {
             using var timer = context.ScopedTimer(RcTimerLabel.RC_TIMER_MARK_CYLINDER_AREA);
