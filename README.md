@@ -8,6 +8,8 @@
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/ikpil?style=flat-square&logo=GitHub-Sponsors&link=https%3A%2F%2Fgithub.com%2Fsponsors%2Fikpil)](https://github.com/sponsors/ikpil)
 
 # Demo Video
+Click the thumbnail to watch on YouTube.
+
 [![Demo](https://img.youtube.com/vi/zIFIgziKLhQ/0.jpg)](https://youtu.be/zIFIgziKLhQ)
 
 [![Demo](https://img.youtube.com/vi/CPvc19gNUEk/0.jpg)](https://youtu.be/CPvc19gNUEk)
