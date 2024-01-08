@@ -693,6 +693,7 @@ namespace DotRecast.Detour
             }
         }
 
+        /// Removes external links at specified side.V
         void UnconnectLinks(DtMeshTile tile, DtMeshTile target)
         {
             if (tile == null || target == null)
@@ -735,6 +736,7 @@ namespace DotRecast.Detour
             }
         }
 
+        /// Builds external polygon links for a tile.
         void ConnectExtLinks(DtMeshTile tile, DtMeshTile target, int side)
         {
             if (tile == null)
@@ -820,6 +822,7 @@ namespace DotRecast.Detour
             }
         }
 
+        /// Builds external polygon links for a tile.
         void ConnectExtOffMeshLinks(DtMeshTile tile, DtMeshTile target, int side)
         {
             if (tile == null)
@@ -1058,11 +1061,7 @@ namespace DotRecast.Detour
             return false;
         }
 
-        /**
-     * Builds internal polygons links for a tile.
-     *
-     * @param tile
-     */
+        /// Builds internal polygons links for a tile.
         void BaseOffMeshLinks(DtMeshTile tile)
         {
             if (tile == null)
