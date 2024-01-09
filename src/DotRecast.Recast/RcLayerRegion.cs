@@ -5,11 +5,11 @@ namespace DotRecast.Recast
     public class RcLayerRegion
     {
         public int id;
-        public int layerId;
-        public bool @base;
+        public int layerId; // Layer ID
+        public bool @base; // Flag indicating if the region is the base of merged regions.
         public int ymin, ymax;
-        public List<int> layers;
-        public List<int> neis;
+        public List<int> layers; // Layer count
+        public List<int> neis; // Neighbour count
 
         public RcLayerRegion(int i)
         {

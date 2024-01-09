@@ -24,7 +24,7 @@ using System.IO;
 using DotRecast.Core;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour.TileCache.Io;
-using DotRecast.Detour.TileCache.Io.Compress;
+using DotRecast.Recast;
 
 
 namespace DotRecast.Detour.TileCache
@@ -46,10 +46,10 @@ namespace DotRecast.Detour.TileCache
 
             Array.Fill(layer.regs, (short)0x00FF);
             int nsweeps = w;
-            DtLayerSweepSpan[] sweeps = new DtLayerSweepSpan[nsweeps];
+            RcLayerSweepSpan[] sweeps = new RcLayerSweepSpan[nsweeps];
             for (int i = 0; i < sweeps.Length; i++)
             {
-                sweeps[i] = new DtLayerSweepSpan();
+                sweeps[i] = new RcLayerSweepSpan();
             }
 
             // Partition walkable area into monotone regions.

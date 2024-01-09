@@ -62,10 +62,10 @@ namespace DotRecast.Recast
             int[] srcReg = new int[chf.spanCount];
             Array.Fill(srcReg, 0xFF);
             int nsweeps = chf.width; // Math.Max(chf.width, chf.height);
-            RcSweepSpan[] sweeps = new RcSweepSpan[nsweeps];
+            RcLayerSweepSpan[] sweeps = new RcLayerSweepSpan[nsweeps];
             for (int i = 0; i < sweeps.Length; i++)
             {
-                sweeps[i] = new RcSweepSpan();
+                sweeps[i] = new RcLayerSweepSpan();
             }
 
             // Partition walkable area into monotone regions.
@@ -269,11 +269,11 @@ namespace DotRecast.Recast
                         // Skip already visited.
                         if (regn.layerId != 0xff)
                             continue;
-                        
+
                         // Skip if the neighbour is overlapping root region.
                         if (Contains(root.layers, nei))
                             continue;
-                        
+
                         // Skip if the height range would become too large.
                         int ymin = Math.Min(root.ymin, regn.ymin);
                         int ymax = Math.Max(root.ymax, regn.ymax);
