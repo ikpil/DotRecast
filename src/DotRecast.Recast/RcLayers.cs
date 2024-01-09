@@ -52,15 +52,37 @@ namespace DotRecast.Recast
             return (amin > bmax || amax < bmin) ? false : true;
         }
 
-        public static RcHeightfieldLayerSet BuildHeightfieldLayers(RcContext ctx, RcCompactHeightfield chf, int walkableHeight)
+        /// @par
+        /// 
+        /// See the #rcConfig documentation for more information on the configuration parameters.
+        /// 
+        /// @see rcAllocHeightfieldLayerSet, rcCompactHeightfield, rcHeightfieldLayerSet, rcConfig
+        /// @}
+        /// @name Layer, Contour, Polymesh, and Detail Mesh Functions
+        /// @see rcHeightfieldLayer, rcContourSet, rcPolyMesh, rcPolyMeshDetail
+        /// @{
+
+        /// Builds a layer set from the specified compact heightfield.
+        /// @ingroup recast
+        /// @param[in,out]	ctx				The build context to use during the operation.
+        /// @param[in]		chf				A fully built compact heightfield.
+        /// @param[in]		borderSize		The size of the non-navigable border around the heightfield. [Limit: >=0] 
+        ///  								[Units: vx]
+        /// @param[in]		walkableHeight	Minimum floor to 'ceiling' height that will still allow the floor area 
+        ///  								to be considered walkable. [Limit: >= 3] [Units: vx]
+        /// @param[out]		lset			The resulting layer set. (Must be pre-allocated.)
+        /// @returns True if the operation completed successfully.
+        public static bool BuildHeightfieldLayers(RcContext ctx, RcCompactHeightfield chf, int borderSize, int walkableHeight, out RcHeightfieldLayerSet lset)
         {
+            lset = null;
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_LAYERS);
 
             int w = chf.width;
             int h = chf.height;
-            int borderSize = chf.borderSize;
+            
             int[] srcReg = new int[chf.spanCount];
             Array.Fill(srcReg, 0xFF);
+            
             int nsweeps = chf.width; // Math.Max(chf.width, chf.height);
             RcLayerSweepSpan[] sweeps = new RcLayerSweepSpan[nsweeps];
             for (int i = 0; i < sweeps.Length; i++)
@@ -71,11 +93,12 @@ namespace DotRecast.Recast
             // Partition walkable area into monotone regions.
             int[] prevCount = new int[256];
             int regId = 0;
+            
             // Sweep one line at a time.
             for (int y = borderSize; y < h - borderSize; ++y)
             {
                 // Collect spans from this row.
-                Array.Fill(prevCount, 0, 0, (regId) - (0));
+                Array.Fill(prevCount, 0);
                 int sweepId = 0;
 
                 for (int x = borderSize; x < w - borderSize; ++x)
@@ -87,9 +110,10 @@ namespace DotRecast.Recast
                         ref RcCompactSpan s = ref chf.spans[i];
                         if (chf.areas[i] == RC_NULL_AREA)
                             continue;
+                        
                         int sid = 0xFF;
+                        
                         // -x
-
                         if (GetCon(ref s, 0) != RC_NOT_CONNECTED)
                         {
                             int ax = x + GetDirOffsetX(0);
@@ -115,8 +139,7 @@ namespace DotRecast.Recast
                             int nr = srcReg[ai];
                             if (nr != 0xff)
                             {
-                                // Set neighbour when first valid neighbour is
-                                // encoutered.
+                                // Set neighbour when first valid neighbour is encoutered.
                                 if (sweeps[sid].ns == 0)
                                     sweeps[sid].nei = nr;
 
@@ -128,8 +151,7 @@ namespace DotRecast.Recast
                                 }
                                 else
                                 {
-                                    // This is hit if there is nore than one
-                                    // neighbour.
+                                    // This is hit if there is nore than one neighbour.
                                     // Invalidate the neighbour.
                                     sweeps[sid].nei = 0xff;
                                 }
@@ -143,10 +165,8 @@ namespace DotRecast.Recast
                 // Create unique ID.
                 for (int i = 0; i < sweepId; ++i)
                 {
-                    // If the neighbour is set and there is only one continuous
-                    // connection to it,
-                    // the sweep will be merged with the previous one, else new
-                    // region is created.
+                    // If the neighbour is set and there is only one continuous connection to it,
+                    // the sweep will be merged with the previous one, else new region is created.
                     if (sweeps[i].nei != 0xff && prevCount[sweeps[i].nei] == sweeps[i].ns)
                     {
                         sweeps[i].id = sweeps[i].nei;
@@ -156,6 +176,7 @@ namespace DotRecast.Recast
                         if (regId == 255)
                         {
                             throw new Exception("rcBuildHeightfieldLayers: Region ID overflow.");
+                            return false;
                         }
 
                         sweeps[i].id = regId++;
@@ -174,6 +195,7 @@ namespace DotRecast.Recast
                 }
             }
 
+            // Allocate and init layer regions.
             int nregs = regId;
             RcLayerRegion[] regs = new RcLayerRegion[nregs];
 
@@ -216,7 +238,12 @@ namespace DotRecast.Recast
                                 int ai = chf.cells[ax + ay * w].index + GetCon(ref s, dir);
                                 int rai = srcReg[ai];
                                 if (rai != 0xff && rai != ri)
+                                {
+                                    // Don't check return value -- if we cannot add the neighbor
+                                    // it will just cause a few more regions to be created, which
+                                    // is fine.
                                     AddUnique(regs[ri].neis, rai);
+                                }
                             }
                         }
                     }
@@ -287,7 +314,10 @@ namespace DotRecast.Recast
                         regn.layerId = layerId;
                         // Merge current layers to root.
                         foreach (int layer in regn.layers)
+                        {
                             AddUnique(root.layers, layer);
+                        }
+
                         root.ymin = Math.Min(root.ymin, regn.ymin);
                         root.ymax = Math.Max(root.ymax, regn.ymax);
                     }
@@ -328,11 +358,9 @@ namespace DotRecast.Recast
                         if ((ymax - ymin) >= 255)
                             continue;
 
-                        // Make sure that there is no overlap when merging 'ri' and
-                        // 'rj'.
+                        // Make sure that there is no overlap when merging 'ri' and 'rj'.
                         bool overlap = false;
-                        // Iterate over all regions which have the same layerId as
-                        // 'rj'
+                        // Iterate over all regions which have the same layerId as 'rj'
                         for (int k = 0; k < nregs; ++k)
                         {
                             if (regs[k].layerId != rj.layerId)
@@ -370,7 +398,10 @@ namespace DotRecast.Recast
                             rj.layerId = newId;
                             // Add overlaid layers from 'rj' to 'ri'.
                             foreach (int layer in rj.layers)
+                            {
                                 AddUnique(ri.layers, layer);
+                            }
+
                             // Update height bounds.
                             ri.ymin = Math.Min(ri.ymin, rj.ymin);
                             ri.ymax = Math.Max(ri.ymax, rj.ymax);
@@ -396,13 +427,14 @@ namespace DotRecast.Recast
 
             // Remap ids.
             for (int i = 0; i < nregs; ++i)
+            {
                 regs[i].layerId = remap[regs[i].layerId];
+            }
 
             // No layers, return empty.
             if (layerId == 0)
             {
-                // ctx.Stop(RC_TIMER_BUILD_LAYERS);
-                return null;
+                return true;
             }
 
             // Create layers.
@@ -418,8 +450,8 @@ namespace DotRecast.Recast
             bmin.Z += borderSize * chf.cs;
             bmax.X -= borderSize * chf.cs;
             bmax.Z -= borderSize * chf.cs;
-
-            RcHeightfieldLayerSet lset = new RcHeightfieldLayerSet();
+            
+            lset = new RcHeightfieldLayerSet();
             lset.layers = new RcHeightfieldLayer[layerId];
             for (int i = 0; i < lset.layers.Length; i++)
             {
@@ -515,8 +547,7 @@ namespace DotRecast.Recast
                                     if (chf.areas[ai] != RC_NULL_AREA && lid != alid)
                                     {
                                         portal |= (char)(1 << dir);
-                                        // Update height so that it matches on both
-                                        // sides of the portal.
+                                        // Update height so that it matches on both sides of the portal.
                                         ref RcCompactSpan @as = ref chf.spans[ai];
                                         if (@as.y > hmin)
                                             layer.heights[idx] = Math.Max(layer.heights[idx], (char)(@as.y - hmin));
@@ -544,8 +575,7 @@ namespace DotRecast.Recast
                     layer.miny = layer.maxy = 0;
             }
 
-            // ctx->StopTimer(RC_TIMER_BUILD_LAYERS);
-            return lset;
+            return true;
         }
     }
 }

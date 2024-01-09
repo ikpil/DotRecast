@@ -310,7 +310,9 @@ namespace DotRecast.Recast
             RcHeightfield solid = RcVoxelizations.BuildSolidHeightfield(geom, builderCfg, ctx);
             FilterHeightfield(solid, builderCfg.cfg, ctx);
             RcCompactHeightfield chf = BuildCompactHeightfield(geom, builderCfg.cfg, ctx, solid);
-            return RcLayers.BuildHeightfieldLayers(ctx, chf, builderCfg.cfg.WalkableHeight);
+            
+            RcLayers.BuildHeightfieldLayers(ctx, chf, builderCfg.cfg.BorderSize, builderCfg.cfg.WalkableHeight, out var lset);
+            return lset;
         }
     }
 }
