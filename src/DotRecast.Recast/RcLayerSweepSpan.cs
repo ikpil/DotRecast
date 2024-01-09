@@ -1,6 +1,6 @@
-﻿namespace DotRecast.Detour.TileCache
+﻿namespace DotRecast.Recast
 {
-    public class DtLayerSweepSpan
+    public class RcLayerSweepSpan
     {
         public int ns; // number samples
         public int id; // region id
