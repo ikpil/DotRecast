@@ -7,26 +7,38 @@
 [![Visitors](https://api.visitorbadge.io/api/daily?path=https%3A%2F%2Fgithub.com%2Fikpil%2FDotRecast&countColor=%23263759&style=flat-square)](https://visitorbadge.io/status?path=https%3A%2F%2Fgithub.com%2Fikpil%2FDotRecast)
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/ikpil?style=flat-square&logo=GitHub-Sponsors&link=https%3A%2F%2Fgithub.com%2Fsponsors%2Fikpil)](https://github.com/sponsors/ikpil)
 
-# Demo Video
-Click the thumbnail to watch on YouTube.
+# DotRecast : C# Recast & Detour
 
-<a href="https://youtu.be/zIFIgziKLhQ"><img src="https://user-images.githubusercontent.com/313821/266750582-8cf67832-1206-4b58-8c1f-7205210cbf22.gif" width="200" height="105"/></a>
-<a href="https://youtu.be/CPvc19gNUEk"><img src="https://img.youtube.com/vi/CPvc19gNUEk/0.jpg" width="200" height="105"/></a>
+DotRecast is a port of C++'s [recastnavigation](https://github.com/recastnavigation/recastnavigation) and Java's [recast4j](https://github.com/ppiastucki/recast4j) to the C# language.
 
-# Introduction
-1. DotRecast is a port of C++'s [recastnavigation](https://github.com/recastnavigation/recastnavigation) and Java's [recast4j](https://github.com/ppiastucki/recast4j) to the C# language.
-2. For game development, C# servers, C# project, and Unity3D are supported.
-3. DotRecast consists of Recast and Detour, Crowd, Dynamic, Extras, TileCache, DemoTool, Demo
+#### 📹 Youtube
+
+<a href="https://youtu.be/zIFIgziKLhQ"><img src="https://user-images.githubusercontent.com/313821/266750582-8cf67832-1206-4b58-8c1f-7205210cbf22.gif" width="300" height="155"/></a>
+<a href="https://youtu.be/CPvc19gNUEk"><img src="https://img.youtube.com/vi/CPvc19gNUEk/0.jpg" width="300" height="155"/></a>
+
+## 🚀 Features
+- 🤖 Automatic - Recast can generate a navmesh from any level geometry you throw at it
+- 🏎️ Fast - swift turnaround times for level designers
+- 🧘 Flexible - detailed customization options and modular design let you tailor functionality to your specific needs
+- 🚫 Dependency-Free - building Recast & Detour only requires a .NET compiler
+- 💪 Industry Standard - Recast powers AI navigation features in Unity, Unreal, Godot, O3DE and countless AAA and indie games and engines
+
+Recast Navigation is divided into multiple modules, each contained in its own folder:
+
+- `DotRecast.Recast`: Navmesh generation
+- `DotRecast.Detour`: Runtime loading of navmesh data, pathfinding, navmesh queries
+- `DotRecast.Detour.TileCache`: Navmesh streaming. Useful for large levels and open-world games
+- `DotRecast.Detour.Crowd`: Agent movement, collision avoidance, and crowd simulation
+- `DotRecast.Recast.Dynamic`: robust support for dynamic nav meshes combining pre-built voxels with dynamic objects which can be freely added and removed
+- `DotRecast.Recast.Extras`: simple tool to import navmeshes created with [A* Pathfinding Project](https://arongranberg.com/astar/)
+- `DotRecast.Recast.Toolset`: sdk
+- `DotRecast.Recast.Demo`: Standalone, comprehensive demo app showcasing all aspects of Recast & Detour's functionality
+- `test/DotRecast.*.Test`: Unit tests
 
 
 ## DotRecast.Recast
 
 Recast is state of the art navigation mesh construction toolset for games.
-
-Recast is...
-* 🤖 **Automatic** - throw any level geometry at it and you will get a robust navmesh out
-* 🏎️ **Fast** - swift turnaround times for level designers
-* 🧘 **Flexible** - easily customize the navmesh generation and runtime navigation systems to suit your specific game's needs.
 
 Recast constructs a navmesh through a multi-step rasterization process:
 
