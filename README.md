@@ -10,9 +10,8 @@
 # Demo Video
 Click the thumbnail to watch on YouTube.
 
-[![Demo](https://img.youtube.com/vi/zIFIgziKLhQ/0.jpg)](https://youtu.be/zIFIgziKLhQ)
-
-[![Demo](https://img.youtube.com/vi/CPvc19gNUEk/0.jpg)](https://youtu.be/CPvc19gNUEk)
+<a href="https://youtu.be/zIFIgziKLhQ"><img src="https://user-images.githubusercontent.com/313821/266750582-8cf67832-1206-4b58-8c1f-7205210cbf22.gif" width="200" height="105"/></a>
+<a href="https://youtu.be/CPvc19gNUEk"><img src="https://img.youtube.com/vi/CPvc19gNUEk/0.jpg" width="200" height="105"/></a>
 
 # Introduction
 1. DotRecast is a port of C++'s [recastnavigation](https://github.com/recastnavigation/recastnavigation) and Java's [recast4j](https://github.com/ppiastucki/recast4j) to the C# language.
