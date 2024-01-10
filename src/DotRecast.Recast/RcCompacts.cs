@@ -30,7 +30,6 @@ namespace DotRecast.Recast
 
     public static class RcCompacts
     {
-        private const int MAX_LAYERS = RC_NOT_CONNECTED - 1;
         private const int MAX_HEIGHT = RcConstants.RC_SPAN_MAX_HEIGHT;
 
         /// @}
@@ -88,80 +87,81 @@ namespace DotRecast.Recast
                 .ToArray();
 
             // Fill in cells and spans.
-            int idx = 0;
-            for (int y = 0; y < zSize; ++y)
+            int currentCellIndex = 0;
+            int numColumns = xSize * zSize;
+            for (int columnIndex = 0; columnIndex < numColumns; ++columnIndex)
             {
-                for (int x = 0; x < xSize; ++x)
+                RcSpan span = heightfield.spans[columnIndex];
+
+                // If there are no spans at this cell, just leave the data to index=0, count=0.
+                if (span == null)
+                    continue;
+
+                int tmpIdx = currentCellIndex;
+                int tmpCount = 0;
+                for (; span != null; span = span.next)
                 {
-                    RcSpan s = heightfield.spans[x + y * xSize];
-                    // If there are no spans at this cell, just leave the data to index=0, count=0.
-                    if (s == null)
-                        continue;
-
-                    int tmpIdx = idx;
-                    int tmpCount = 0;
-                    while (s != null)
+                    if (span.area != RC_NULL_AREA)
                     {
-                        if (s.area != RC_NULL_AREA)
-                        {
-                            int bot = s.smax;
-                            int top = s.next != null ? (int)s.next.smin : MAX_HEIGHT;
-                            tempSpans[idx].y = Math.Clamp(bot, 0, MAX_HEIGHT);
-                            tempSpans[idx].h = Math.Clamp(top - bot, 0, MAX_HEIGHT);
-                            compactHeightfield.areas[idx] = s.area;
-                            idx++;
-                            tmpCount++;
-                        }
-
-                        s = s.next;
+                        int bot = span.smax;
+                        int top = span.next != null ? (int)span.next.smin : MAX_HEIGHT;
+                        tempSpans[currentCellIndex].y = Math.Clamp(bot, 0, MAX_HEIGHT);
+                        tempSpans[currentCellIndex].h = Math.Clamp(top - bot, 0, MAX_HEIGHT);
+                        compactHeightfield.areas[currentCellIndex] = span.area;
+                        currentCellIndex++;
+                        tmpCount++;
                     }
-
-                    compactHeightfield.cells[x + y * xSize] = new RcCompactCell(tmpIdx, tmpCount);
                 }
+
+                compactHeightfield.cells[columnIndex] = new RcCompactCell(tmpIdx, tmpCount);
             }
 
             // Find neighbour connections.
-            int tooHighNeighbour = 0;
-            for (int y = 0; y < zSize; ++y)
+            const int MAX_LAYERS = RC_NOT_CONNECTED - 1;
+            int maxLayerIndex = 0;
+            int zStride = xSize; // for readability
+            for (int z = 0; z < zSize; ++z)
             {
                 for (int x = 0; x < xSize; ++x)
                 {
-                    ref RcCompactCell c = ref compactHeightfield.cells[x + y * xSize];
-                    for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
+                    ref RcCompactCell cell = ref compactHeightfield.cells[x + z * zStride];
+                    for (int i = cell.index, ni = cell.index + cell.count; i < ni; ++i)
                     {
                         ref RcCompactSpanBuilder s = ref tempSpans[i];
 
                         for (int dir = 0; dir < 4; ++dir)
                         {
                             SetCon(s, dir, RC_NOT_CONNECTED);
-                            int nx = x + GetDirOffsetX(dir);
-                            int ny = y + GetDirOffsetY(dir);
+                            int neighborX = x + GetDirOffsetX(dir);
+                            int neighborZ = z + GetDirOffsetY(dir);
                             // First check that the neighbour cell is in bounds.
-                            if (nx < 0 || ny < 0 || nx >= xSize || ny >= zSize)
+                            if (neighborX < 0 || neighborZ < 0 || neighborX >= xSize || neighborZ >= zSize)
+                            {
                                 continue;
+                            }
 
                             // Iterate over all neighbour spans and check if any of the is
                             // accessible from current cell.
-                            ref RcCompactCell nc = ref compactHeightfield.cells[nx + ny * xSize];
-                            for (int k = nc.index, nk = nc.index + nc.count; k < nk; ++k)
+                            ref RcCompactCell neighborCell = ref compactHeightfield.cells[neighborX + neighborZ * xSize];
+                            for (int k = neighborCell.index, nk = neighborCell.index + neighborCell.count; k < nk; ++k)
                             {
-                                ref RcCompactSpanBuilder ns = ref tempSpans[k];
-                                int bot = Math.Max(s.y, ns.y);
-                                int top = Math.Min(s.y + s.h, ns.y + ns.h);
+                                ref RcCompactSpanBuilder neighborSpan = ref tempSpans[k];
+                                int bot = Math.Max(s.y, neighborSpan.y);
+                                int top = Math.Min(s.y + s.h, neighborSpan.y + neighborSpan.h);
 
                                 // Check that the gap between the spans is walkable,
                                 // and that the climb height between the gaps is not too high.
-                                if ((top - bot) >= walkableHeight && MathF.Abs(ns.y - s.y) <= walkableClimb)
+                                if ((top - bot) >= walkableHeight && MathF.Abs(neighborSpan.y - s.y) <= walkableClimb)
                                 {
                                     // Mark direction as walkable.
-                                    int lidx = k - nc.index;
-                                    if (lidx < 0 || lidx > MAX_LAYERS)
+                                    int layerIndex = k - neighborCell.index;
+                                    if (layerIndex < 0 || layerIndex > MAX_LAYERS)
                                     {
-                                        tooHighNeighbour = Math.Max(tooHighNeighbour, lidx);
+                                        maxLayerIndex = Math.Max(maxLayerIndex, layerIndex);
                                         continue;
                                     }
 
-                                    SetCon(s, dir, lidx);
+                                    SetCon(s, dir, layerIndex);
                                     break;
                                 }
                             }
@@ -170,10 +170,9 @@ namespace DotRecast.Recast
                 }
             }
 
-            if (tooHighNeighbour > MAX_LAYERS)
+            if (maxLayerIndex > MAX_LAYERS)
             {
-                throw new Exception("rcBuildCompactHeightfield: Heightfield has too many layers " + tooHighNeighbour
-                                                                                                  + " (max: " + MAX_LAYERS + ")");
+                throw new Exception($"rcBuildCompactHeightfield: Heightfield has too many layers {maxLayerIndex} (max: {MAX_LAYERS})");
             }
 
             compactHeightfield.spans = tempSpans.Select(x => x.Build()).ToArray();
