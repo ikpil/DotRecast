@@ -37,7 +37,6 @@ namespace DotRecast.Recast
         /// @name Compact Heightfield Functions
         /// @see rcCompactHeightfield
         /// @{
-
         /// Builds a compact heightfield representing open space, from a heightfield representing solid space.
         ///
         /// This is just the beginning of the process of fully building a compact heightfield.
@@ -61,27 +60,27 @@ namespace DotRecast.Recast
         {
             using var timer = context.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_COMPACTHEIGHTFIELD);
 
-            RcCompactHeightfield chf = new RcCompactHeightfield();
-            int w = heightfield.width;
-            int h = heightfield.height;
+            int xSize = heightfield.width;
+            int zSize = heightfield.height;
             int spanCount = GetHeightFieldSpanCount(context, heightfield);
 
             // Fill in header.
-            chf.width = w;
-            chf.height = h;
-            chf.borderSize = heightfield.borderSize;
-            chf.spanCount = spanCount;
-            chf.walkableHeight = walkableHeight;
-            chf.walkableClimb = walkableClimb;
-            chf.maxRegions = 0;
-            chf.bmin = heightfield.bmin;
-            chf.bmax = heightfield.bmax;
-            chf.bmax.Y += walkableHeight * heightfield.ch;
-            chf.cs = heightfield.cs;
-            chf.ch = heightfield.ch;
-            chf.cells = new RcCompactCell[w * h];
+            RcCompactHeightfield compactHeightfield = new RcCompactHeightfield();
+            compactHeightfield.width = xSize;
+            compactHeightfield.height = zSize;
+            compactHeightfield.borderSize = heightfield.borderSize;
+            compactHeightfield.spanCount = spanCount;
+            compactHeightfield.walkableHeight = walkableHeight;
+            compactHeightfield.walkableClimb = walkableClimb;
+            compactHeightfield.maxRegions = 0;
+            compactHeightfield.bmin = heightfield.bmin;
+            compactHeightfield.bmax = heightfield.bmax;
+            compactHeightfield.bmax.Y += walkableHeight * heightfield.ch;
+            compactHeightfield.cs = heightfield.cs;
+            compactHeightfield.ch = heightfield.ch;
+            compactHeightfield.cells = new RcCompactCell[xSize * zSize];
             //chf.spans = new RcCompactSpan[spanCount];
-            chf.areas = new int[spanCount];
+            compactHeightfield.areas = new int[spanCount];
 
             var tempSpans = Enumerable
                 .Range(0, spanCount)
@@ -90,11 +89,11 @@ namespace DotRecast.Recast
 
             // Fill in cells and spans.
             int idx = 0;
-            for (int y = 0; y < h; ++y)
+            for (int y = 0; y < zSize; ++y)
             {
-                for (int x = 0; x < w; ++x)
+                for (int x = 0; x < xSize; ++x)
                 {
-                    RcSpan s = heightfield.spans[x + y * w];
+                    RcSpan s = heightfield.spans[x + y * xSize];
                     // If there are no spans at this cell, just leave the data to index=0, count=0.
                     if (s == null)
                         continue;
@@ -109,7 +108,7 @@ namespace DotRecast.Recast
                             int top = s.next != null ? (int)s.next.smin : MAX_HEIGHT;
                             tempSpans[idx].y = Math.Clamp(bot, 0, MAX_HEIGHT);
                             tempSpans[idx].h = Math.Clamp(top - bot, 0, MAX_HEIGHT);
-                            chf.areas[idx] = s.area;
+                            compactHeightfield.areas[idx] = s.area;
                             idx++;
                             tmpCount++;
                         }
@@ -117,17 +116,17 @@ namespace DotRecast.Recast
                         s = s.next;
                     }
 
-                    chf.cells[x + y * w] = new RcCompactCell(tmpIdx, tmpCount);
+                    compactHeightfield.cells[x + y * xSize] = new RcCompactCell(tmpIdx, tmpCount);
                 }
             }
 
             // Find neighbour connections.
             int tooHighNeighbour = 0;
-            for (int y = 0; y < h; ++y)
+            for (int y = 0; y < zSize; ++y)
             {
-                for (int x = 0; x < w; ++x)
+                for (int x = 0; x < xSize; ++x)
                 {
-                    ref RcCompactCell c = ref chf.cells[x + y * w];
+                    ref RcCompactCell c = ref compactHeightfield.cells[x + y * xSize];
                     for (int i = c.index, ni = c.index + c.count; i < ni; ++i)
                     {
                         ref RcCompactSpanBuilder s = ref tempSpans[i];
@@ -138,12 +137,12 @@ namespace DotRecast.Recast
                             int nx = x + GetDirOffsetX(dir);
                             int ny = y + GetDirOffsetY(dir);
                             // First check that the neighbour cell is in bounds.
-                            if (nx < 0 || ny < 0 || nx >= w || ny >= h)
+                            if (nx < 0 || ny < 0 || nx >= xSize || ny >= zSize)
                                 continue;
 
                             // Iterate over all neighbour spans and check if any of the is
                             // accessible from current cell.
-                            ref RcCompactCell nc = ref chf.cells[nx + ny * w];
+                            ref RcCompactCell nc = ref compactHeightfield.cells[nx + ny * xSize];
                             for (int k = nc.index, nk = nc.index + nc.count; k < nk; ++k)
                             {
                                 ref RcCompactSpanBuilder ns = ref tempSpans[k];
@@ -177,9 +176,9 @@ namespace DotRecast.Recast
                                                                                                   + " (max: " + MAX_LAYERS + ")");
             }
 
-            chf.spans = tempSpans.Select(x => x.Build()).ToArray();
+            compactHeightfield.spans = tempSpans.Select(x => x.Build()).ToArray();
 
-            return chf;
+            return compactHeightfield;
         }
 
         /// Returns the number of spans contained in the specified heightfield.
@@ -189,17 +188,15 @@ namespace DotRecast.Recast
         ///  @returns The number of spans in the heightfield.
         private static int GetHeightFieldSpanCount(RcContext context, RcHeightfield heightfield)
         {
-            int w = heightfield.width;
-            int h = heightfield.height;
+            int numCols = heightfield.width * heightfield.height;
             int spanCount = 0;
-            for (int y = 0; y < h; ++y)
+            for (int columnIndex = 0; columnIndex < numCols; ++columnIndex)
             {
-                for (int x = 0; x < w; ++x)
+                for (RcSpan span = heightfield.spans[columnIndex]; span != null; span = span.next)
                 {
-                    for (RcSpan s = heightfield.spans[x + y * w]; s != null; s = s.next)
+                    if (span.area != RC_NULL_AREA)
                     {
-                        if (s.area != RC_NULL_AREA)
-                            spanCount++;
+                        spanCount++;
                     }
                 }
             }
