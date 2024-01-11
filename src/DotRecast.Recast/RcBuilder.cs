@@ -175,49 +175,37 @@ namespace DotRecast.Recast
             FilterHeightfield(solid, cfg, ctx);
             RcCompactHeightfield chf = BuildCompactHeightfield(geom, cfg, ctx, solid);
 
-            // Partition the heightfield so that we can use simple algorithm later
-            // to triangulate the walkable areas.
+            // Partition the heightfield so that we can use simple algorithm later to triangulate the walkable areas.
             // There are 3 partitioning methods, each with some pros and cons:
             // 1) Watershed partitioning
-            // - the classic Recast partitioning
-            // - creates the nicest tessellation
-            // - usually slowest
-            // - partitions the heightfield into nice regions without holes or
-            // overlaps
-            // - the are some corner cases where this method creates produces holes
-            // and overlaps
-            // - holes may appear when a small obstacles is close to large open area
-            // (triangulation can handle this)
-            // - overlaps may occur if you have narrow spiral corridors (i.e
-            // stairs), this make triangulation to fail
-            // * generally the best choice if you precompute the navmesh, use this
-            // if you have large open areas
-            // 2) Monotone partioning
-            // - fastest
-            // - partitions the heightfield into regions without holes and overlaps
-            // (guaranteed)
-            // - creates long thin polygons, which sometimes causes paths with
-            // detours
-            // * use this if you want fast navmesh generation
+            //   - the classic Recast partitioning
+            //   - creates the nicest tessellation
+            //   - usually slowest
+            //   - partitions the heightfield into nice regions without holes or overlaps
+            //   - the are some corner cases where this method creates produces holes and overlaps
+            //      - holes may appear when a small obstacles is close to large open area (triangulation can handle this)
+            //      - overlaps may occur if you have narrow spiral corridors (i.e stairs), this make triangulation to fail
+            //   * generally the best choice if you precompute the navmesh, use this if you have large open areas
+            // 2) Monotone partitioning
+            //   - fastest
+            //   - partitions the heightfield into regions without holes and overlaps (guaranteed)
+            //   - creates long thin polygons, which sometimes causes paths with detours
+            //   * use this if you want fast navmesh generation
             // 3) Layer partitoining
-            // - quite fast
-            // - partitions the heighfield into non-overlapping regions
-            // - relies on the triangulation code to cope with holes (thus slower
-            // than monotone partitioning)
-            // - produces better triangles than monotone partitioning
-            // - does not have the corner cases of watershed partitioning
-            // - can be slow and create a bit ugly tessellation (still better than
-            // monotone)
-            // if you have large open areas with small obstacles (not a problem if
-            // you use tiles)
-            // * good choice to use for tiled navmesh with medium and small sized
-            // tiles
+            //   - quite fast
+            //   - partitions the heighfield into non-overlapping regions
+            //   - relies on the triangulation code to cope with holes (thus slower than monotone partitioning)
+            //   - produces better triangles than monotone partitioning
+            //   - does not have the corner cases of watershed partitioning
+            //   - can be slow and create a bit ugly tessellation (still better than monotone)
+            //     if you have large open areas with small obstacles (not a problem if you use tiles)
+            //   * good choice to use for tiled navmesh with medium and small sized tiles
 
             if (cfg.Partition == RcPartitionType.WATERSHED.Value)
             {
-                // Prepare for region partitioning, by calculating distance field
-                // along the walkable surface.
+                // Prepare for region partitioning, by calculating distance field along the walkable surface.
                 RcRegions.BuildDistanceField(ctx, chf);
+                
                 // Partition the walkable surface into simple regions without holes.
                 RcRegions.BuildRegions(ctx, chf, cfg.MinRegionArea, cfg.MergeRegionArea);
             }
