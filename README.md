@@ -13,8 +13,9 @@ DotRecast is a port of C++'s [recastnavigation](https://github.com/recastnavigat
 
 #### 📹 Youtube
 
-<a href="https://youtu.be/zIFIgziKLhQ"><img src="https://user-images.githubusercontent.com/313821/266750582-8cf67832-1206-4b58-8c1f-7205210cbf22.gif" width="300" height="155"/></a>
-<a href="https://youtu.be/CPvc19gNUEk"><img src="https://img.youtube.com/vi/CPvc19gNUEk/0.jpg" width="300" height="155"/></a>
+<a href="https://youtu.be/zIFIgziKLhQ"><img src="https://user-images.githubusercontent.com/313821/266750582-8cf67832-1206-4b58-8c1f-7205210cbf22.gif" width="100" height="50"/></a>
+<a href="https://youtu.be/CPvc19gNUEk"><img src="https://img.youtube.com/vi/CPvc19gNUEk/0.jpg" width="100" height="50"/></a>
+<a href="https://youtu.be/pe5jpGUNPRg"><img src="https://img.youtube.com/vi/pe5jpGUNPRg/0.jpg" width="100" height="50"/></a>
 
 ## 🚀 Features
 - 🤖 Automatic - Recast can generate a navmesh from any level geometry you throw at it
