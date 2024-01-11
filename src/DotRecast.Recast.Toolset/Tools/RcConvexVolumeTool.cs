@@ -74,7 +74,7 @@ namespace DotRecast.Recast.Toolset.Tools
         }
 
 
-        public RcConvexVolume RemoveByPos(IInputGeomProvider geom, RcVec3f pos)
+        public bool TryRemove(IInputGeomProvider geom, RcVec3f pos, out RcConvexVolume volume)
         {
             // Delete
             int nearestIndex = -1;
@@ -90,26 +90,57 @@ namespace DotRecast.Recast.Toolset.Tools
 
             // If end point close enough, delete it.
             if (nearestIndex == -1)
-                return null;
+            {
+                volume = null;
+                return false;
+            }
 
             var removal = geom.ConvexVolumes()[nearestIndex];
             geom.ConvexVolumes().RemoveAt(nearestIndex);
-            return removal;
+            volume = removal;
+            return null != volume;
         }
 
-        public void Add(IInputGeomProvider geom, RcConvexVolume volume)
+        public bool TryAdd(IInputGeomProvider geom, RcVec3f p, RcAreaModification areaType, float boxDescent, float boxHeight, float polyOffset, out RcConvexVolume volume)
         {
-            geom.AddConvexVolume(volume);
+            // Create
+
+            // If clicked on that last pt, create the shape.
+            if (_pts.Count > 0 && RcVec3f.DistanceSquared(p, _pts[^1]) < 0.2f * 0.2f)
+            {
+                // 
+                if (_hull.Count > 2)
+                {
+                    volume = CreateConvexVolume(_pts, _hull, areaType, boxDescent, boxHeight, polyOffset);
+                    geom.AddConvexVolume(volume);
+                }
+
+                _pts.Clear();
+                _hull.Clear();
+            }
+            else
+            {
+                // Add new point
+                _pts.Add(p);
+
+                // Update hull.
+                if (_pts.Count > 1)
+                {
+                    _hull.Clear();
+                    _hull.AddRange(RcConvexUtils.Convexhull(_pts));
+                }
+                else
+                {
+                    _hull.Clear();
+                }
+            }
+
+            volume = null;
+            return false;
         }
 
         public static RcConvexVolume CreateConvexVolume(List<RcVec3f> pts, List<int> hull, RcAreaModification areaType, float boxDescent, float boxHeight, float polyOffset)
         {
-            // 
-            if (hull.Count <= 2)
-            {
-                return null;
-            }
-
             // Create shape.
             float[] verts = new float[hull.Count * 3];
             for (int i = 0; i < hull.Count; ++i)
