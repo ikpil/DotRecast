@@ -160,15 +160,11 @@ public class ConvexVolumeSampleTool : ISampleTool
         var geom = _sample.GetInputGeom();
         if (shift)
         {
-            _tool.RemoveByPos(geom, p);
+            _tool.TryRemove(geom, p, out var volume);
         }
         else
         {
-            if (_tool.PlottingShape(p, out var pts, out var hull))
-            {
-                var vol = RcConvexVolumeTool.CreateConvexVolume(pts, hull, _areaType, _boxDescent, _boxHeight, _polyOffset);
-                _tool.Add(geom, vol);
-            }
+            _tool.TryAdd(geom, p, _areaType, _boxDescent, _boxHeight, _polyOffset, out var volume);
         }
     }
 
