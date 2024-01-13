@@ -166,14 +166,14 @@ namespace DotRecast.Recast
             //
             // Step 1. Rasterize input polygon soup.
             //
-            RcHeightfield solid = RcVoxelizations.BuildSolidHeightfield(geom, builderCfg, ctx);
-            return Build(builderCfg.tileX, builderCfg.tileZ, geom, cfg, solid, ctx);
+            RcHeightfield solid = RcVoxelizations.BuildSolidHeightfield(ctx, geom, builderCfg);
+            return Build(ctx, builderCfg.tileX, builderCfg.tileZ, geom, cfg, solid);
         }
 
-        public RcBuilderResult Build(int tileX, int tileZ, IInputGeomProvider geom, RcConfig cfg, RcHeightfield solid, RcContext ctx)
+        public RcBuilderResult Build(RcContext ctx, int tileX, int tileZ, IInputGeomProvider geom, RcConfig cfg, RcHeightfield solid)
         {
-            FilterHeightfield(solid, cfg, ctx);
-            RcCompactHeightfield chf = BuildCompactHeightfield(geom, cfg, ctx, solid);
+            FilterHeightfield(ctx, solid, cfg);
+            RcCompactHeightfield chf = BuildCompactHeightfield(ctx, geom, cfg, solid);
 
             // Partition the heightfield so that we can use simple algorithm later to triangulate the walkable areas.
             // There are 3 partitioning methods, each with some pros and cons:
@@ -247,7 +247,7 @@ namespace DotRecast.Recast
         /*
          * Step 2. Filter walkable surfaces.
          */
-        private void FilterHeightfield(RcHeightfield solid, RcConfig cfg, RcContext ctx)
+        private void FilterHeightfield(RcContext ctx, RcHeightfield solid, RcConfig cfg)
         {
             // Once all geometry is rasterized, we do initial pass of filtering to
             // remove unwanted overhangs caused by the conservative rasterization
@@ -271,7 +271,7 @@ namespace DotRecast.Recast
         /*
          * Step 3. Partition walkable surface to simple regions.
          */
-        private RcCompactHeightfield BuildCompactHeightfield(IInputGeomProvider geom, RcConfig cfg, RcContext ctx, RcHeightfield solid)
+        private RcCompactHeightfield BuildCompactHeightfield(RcContext ctx, IInputGeomProvider geom, RcConfig cfg, RcHeightfield solid)
         {
             // Compact the heightfield so that it is faster to handle from now on.
             // This will result more cache coherent data as well as the neighbours
@@ -295,9 +295,9 @@ namespace DotRecast.Recast
         public RcHeightfieldLayerSet BuildLayers(IInputGeomProvider geom, RcBuilderConfig builderCfg)
         {
             RcContext ctx = new RcContext();
-            RcHeightfield solid = RcVoxelizations.BuildSolidHeightfield(geom, builderCfg, ctx);
-            FilterHeightfield(solid, builderCfg.cfg, ctx);
-            RcCompactHeightfield chf = BuildCompactHeightfield(geom, builderCfg.cfg, ctx, solid);
+            RcHeightfield solid = RcVoxelizations.BuildSolidHeightfield(ctx, geom, builderCfg);
+            FilterHeightfield(ctx, solid, builderCfg.cfg);
+            RcCompactHeightfield chf = BuildCompactHeightfield(ctx, geom, builderCfg.cfg, solid);
             
             RcLayers.BuildHeightfieldLayers(ctx, chf, builderCfg.cfg.BorderSize, builderCfg.cfg.WalkableHeight, out var lset);
             return lset;

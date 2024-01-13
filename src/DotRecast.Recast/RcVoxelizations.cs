@@ -25,7 +25,7 @@ namespace DotRecast.Recast
 {
     public static class RcVoxelizations
     {
-        public static RcHeightfield BuildSolidHeightfield(IInputGeomProvider geomProvider, RcBuilderConfig builderCfg, RcContext ctx)
+        public static RcHeightfield BuildSolidHeightfield(RcContext ctx, IInputGeomProvider geomProvider, RcBuilderConfig builderCfg)
         {
             RcConfig cfg = builderCfg.cfg;
 
@@ -34,13 +34,10 @@ namespace DotRecast.Recast
 
             // Allocate array that can hold triangle area types.
             // If you have multiple meshes you need to process, allocate
-            // and array which can hold the max number of triangles you need to
-            // process.
+            // and array which can hold the max number of triangles you need to process.
 
-            // Find triangles which are walkable based on their slope and rasterize
-            // them.
-            // If your input data is multiple meshes, you can transform them here,
-            // calculate
+            // Find triangles which are walkable based on their slope and rasterize them.
+            // If your input data is multiple meshes, you can transform them here, calculate
             // the are type for each of the meshes and rasterize them.
             foreach (RcTriMesh geom in geomProvider.Meshes())
             {
