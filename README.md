@@ -1,22 +1,22 @@
-[![License: Zlib](https://img.shields.io/badge/License-Zlib-lightgrey.svg)](https://opensource.org/licenses/Zlib)
-[![.NET](https://github.com/ikpil/DotRecast/actions/workflows/dotnet.yml/badge.svg)](https://github.com/ikpil/DotRecast/actions/workflows/dotnet.yml)
-[![CodeQL](https://github.com/ikpil/DotRecast/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/ikpil/DotRecast/actions/workflows/codeql.yml)
-[![NuGet Version and Downloads count](https://buildstats.info/nuget/DotRecast.Core)](https://www.nuget.org/packages/DotRecast.Core)
-![Github Repo Size](https://img.shields.io/github/repo-size/ikpil/DotRecast)
-![Languages](https://img.shields.io/github/languages/top/ikpil/DotRecast)
-[![Visitors](https://api.visitorbadge.io/api/daily?path=https%3A%2F%2Fgithub.com%2Fikpil%2FDotRecast&countColor=%23263759&style=flat-square)](https://visitorbadge.io/status?path=https%3A%2F%2Fgithub.com%2Fikpil%2FDotRecast)
-[![GitHub Sponsors](https://img.shields.io/github/sponsors/ikpil?style=flat-square&logo=GitHub-Sponsors&link=https%3A%2F%2Fgithub.com%2Fsponsors%2Fikpil)](https://github.com/sponsors/ikpil)
+
+![GitHub License](https://img.shields.io/github/license/ikpil/DotRecast?style=for-the-badge)
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ikpil/DotRecast/dotnet.yml?style=for-the-badge&logo=github)](https://github.com/ikpil/DotRecast/actions/workflows/dotnet.yml)
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ikpil/DotRecast/codeql.yml?style=for-the-badge&logo=github&label=CODEQL)](https://github.com/ikpil/DotRecast/actions/workflows/codeql.yml)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/DotRecast.Core?style=for-the-badge&logo=nuget&label=NUGET)](https://www.nuget.org/packages/DotRecast.Core)
+[![GitHub Repo stars](https://img.shields.io/github/stars/ikpil/DotRecast?style=for-the-badge&logo=github)](https://github.com/ikpil/DotRecast)
+![GitHub repo size](https://img.shields.io/github/repo-size/ikpil/DotRecast?style=for-the-badge)
+![Languages](https://img.shields.io/github/languages/top/ikpil/DotRecast?style=for-the-badge)
+[![Visitors](https://api.visitorbadge.io/api/daily?path=ikpil%2FDotRecast&countColor=%23263759)](https://visitorbadge.io/status?path=ikpil%2FDotRecast)
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/ikpil?style=for-the-badge&logo=GitHub-Sponsors&link=https%3A%2F%2Fgithub.com%2Fsponsors%2Fikpil)](https://github.com/sponsors/ikpil)
+
+[![demo](https://user-images.githubusercontent.com/313821/266750582-8cf67832-1206-4b58-8c1f-7205210cbf22.gif)](https://youtu.be/zIFIgziKLhQ)
 
 # DotRecast : C# Recast & Detour
 
-DotRecast is a port of C++'s [recastnavigation](https://github.com/recastnavigation/recastnavigation) and Java's [recast4j](https://github.com/ppiastucki/recast4j) to the C# language.
-
-## 📹 Youtube
-<a href="https://youtu.be/zIFIgziKLhQ"><img src="https://user-images.githubusercontent.com/313821/266750582-8cf67832-1206-4b58-8c1f-7205210cbf22.gif" width="100" height="50"/></a>
-<a href="https://youtu.be/CPvc19gNUEk"><img src="https://img.youtube.com/vi/CPvc19gNUEk/0.jpg" width="100" height="50"/></a>
-<a href="https://youtu.be/pe5jpGUNPRg"><img src="https://img.youtube.com/vi/pe5jpGUNPRg/0.jpg" width="100" height="50"/></a>
+DotRecast is a port of [recastnavigation](https://github.com/recastnavigation/recastnavigation) and [recast4j](https://github.com/ppiastucki/recast4j) to the C# language.
 
 ## 🚀 Features
+ 
 - 🤖 Automatic - Recast can generate a navmesh from any level geometry you throw at it
 - 🏎️ Fast - swift turnaround times for level designers
 - 🧘 Flexible - detailed customization options and modular design let you tailor functionality to your specific needs
@@ -35,6 +35,12 @@ Recast Navigation is divided into multiple modules, each contained in its own fo
 - `DotRecast.Recast.Demo`: Standalone, comprehensive demo app showcasing all aspects of Recast & Detour's functionality
 - `test/DotRecast.*.Test`: Unit tests
 
+## ⚡ Getting Started
+ 
+- To build or integrate into your own project, please check out [BuildingAndIntegrating.md](BuildingAndIntegrating.md)
+- To create a NavMesh, please check out [RecastSoloMeshTest.cs](test/DotRecast.Recast.Test/RecastSoloMeshTest.cs)
+- To test pathfinding, please check out [FindPathTest.cs](test/DotRecast.Detour.Test/FindPathTest.cs)
+
 ## ⚙ How it Works
 
 Recast constructs a navmesh through a multi-step mesh rasterization process.
@@ -48,39 +54,22 @@ You can use Recast to build a single navmesh, or a tiled navmesh.
 Single meshes are suitable for many simple, static cases and are easy to work with.
 Tiled navmeshes are more complex to work with but better support larger, more dynamic environments.  Tiled meshes enable advance Detour features like re-baking, heirarchical path-planning, and navmesh data-streaming.
 
-### Building DotRecast.Recast.Demo
+## 📚 Documentation & Links
 
-1. `DotRecast.Recast.Demo` uses [dotnet 8](https://dotnet.microsoft.com/) to build platform specific projects. Download it and make sure it's available on your path, or specify the path to it.
-2. Open a command prompt, point it to a directory and clone DotRecast to it: `git clone https://github.com/ikpil/DotRecast.git`
-3. Open `<DotRecastDir>\DotRecast.sln` with Visual Studio 2022 and build `DotRecast.Recast.Demo`
-   - Optionally, you can run using the `dotnet run` command with `DotRecast.Recast.Demo.csproj`
-
-#### Windows
-
-- need to install [microsoft visual c++ redistributable package](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist)
-
-#### Linux & macOS & Windows
-
-- Navigate to the `DotRecast.Recast.Demo` folder and run `dotnet run`
-
-### Running Unit tests
-
-#### With VS2022
-
-- In Visual Studio 2022 go to the test menu and press `Run All Tests` 
-
-#### With CLI
-
-- in the DotRecast folder open a command prompt and run `dotnet test`
-
-## Discuss
-
-- discussions: 
-  - https://github.com/recastnavigation/recastnavigation/discussions
-- issues:
-  - https://github.com/ikpil/DotRecast/issues or
-  - https://github.com/recastnavigation/recastnavigation/issues
-
-## License
+- DotRecast Links
+  - DotRecast issues: [DotRecast/issues](https://github.com/ikpil/DotRecast/issues)
+- Official Links
+  - Official discussions: [recastnavigation/discussions](https://github.com/recastnavigation/recastnavigation/discussions)
+  - Official documentation: [recastnav.com](https://recastnav.com)
+## 🅾 License
 
 DotRecast is licensed under ZLib license, see [LICENSE.txt](LICENSE.txt) for more information.
+
+## 📹 Demo Video
+
+[![demo](https://img.youtube.com/vi/zIFIgziKLhQ/0.jpg)](https://youtu.be/zIFIgziKLhQ)
+
+[![demo](https://img.youtube.com/vi/CPvc19gNUEk/0.jpg)](https://youtu.be/CPvc19gNUEk)
+
+[![demo](https://img.youtube.com/vi/pe5jpGUNPRg/0.jpg)](https://youtu.be/pe5jpGUNPRg)
+
