@@ -40,7 +40,7 @@ Recast Navigation is divided into multiple modules, each contained in its own fo
 - To build or integrate into your own project, please check out [BuildingAndIntegrating.md](BuildingAndIntegrating.md)
 - To create a NavMesh, please check out [RecastSoloMeshTest.cs](test/DotRecast.Recast.Test/RecastSoloMeshTest.cs)
 - To test pathfinding, please check out [FindPathTest.cs](test/DotRecast.Detour.Test/FindPathTest.cs)
-- To watch the demo play video, please check out [Demo Video](#📹-demo-video)
+- To watch the demo play video, please check out [Demo Video](#-demo-video)
 
 ## ⚙ How it Works
 
