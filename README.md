@@ -40,6 +40,7 @@ Recast Navigation is divided into multiple modules, each contained in its own fo
 - To build or integrate into your own project, please check out [BuildingAndIntegrating.md](BuildingAndIntegrating.md)
 - To create a NavMesh, please check out [RecastSoloMeshTest.cs](test/DotRecast.Recast.Test/RecastSoloMeshTest.cs)
 - To test pathfinding, please check out [FindPathTest.cs](test/DotRecast.Detour.Test/FindPathTest.cs)
+- To watch the demo play video, please check out [Demo Video](#📹-demo-video)
 
 ## ⚙ How it Works
 
@@ -58,9 +59,11 @@ Tiled navmeshes are more complex to work with but better support larger, more dy
 
 - DotRecast Links
   - DotRecast issues: [DotRecast/issues](https://github.com/ikpil/DotRecast/issues)
+ 
 - Official Links
   - Official discussions: [recastnavigation/discussions](https://github.com/recastnavigation/recastnavigation/discussions)
   - Official documentation: [recastnav.com](https://recastnav.com)
+
 ## 🅾 License
 
 DotRecast is licensed under ZLib license, see [LICENSE.txt](LICENSE.txt) for more information.
