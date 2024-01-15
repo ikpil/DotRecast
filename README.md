@@ -25,13 +25,14 @@ DotRecast is a port of [recastnavigation](https://github.com/recastnavigation/re
 
 Recast Navigation is divided into multiple modules, each contained in its own folder:
 
+- `DotRecast.Core`: Module utilities
 - `DotRecast.Recast`: Navmesh generation
 - `DotRecast.Detour`: Runtime loading of navmesh data, pathfinding, navmesh queries
 - `DotRecast.Detour.TileCache`: Navmesh streaming. Useful for large levels and open-world games
 - `DotRecast.Detour.Crowd`: Agent movement, collision avoidance, and crowd simulation
-- `DotRecast.Recast.Dynamic`: robust support for dynamic nav meshes combining pre-built voxels with dynamic objects which can be freely added and removed
-- `DotRecast.Recast.Extras`: simple tool to import navmeshes created with [A* Pathfinding Project](https://arongranberg.com/astar/)
-- `DotRecast.Recast.Toolset`: sdk
+- `DotRecast.Detour.Dynamic`: robust support for dynamic nav meshes combining pre-built voxels with dynamic objects which can be freely added and removed
+- `DotRecast.Detour.Extras`: simple tool to import navmeshes created with [A* Pathfinding Project](https://arongranberg.com/astar/)
+- `DotRecast.Recast.Toolset`: all modules
 - `DotRecast.Recast.Demo`: Standalone, comprehensive demo app showcasing all aspects of Recast & Detour's functionality
 - `test/DotRecast.*.Test`: Unit tests
 
