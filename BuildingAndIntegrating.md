@@ -1,72 +1,38 @@
 ﻿
 ## 🔨 Build
-- 빌드에는 오직  .NET 8 SDK 만 요구 됩니다.
-- 모든 모듈에 대한 빌드를 확인 하려면, DotRecast.Recast.Demo 빌드 해야 합니다. 
-- 먼저 소스 코드를 clone 하여 준비 합니다.
-- Open a command prompt, point it to a directory and clone DotRecast to it: `git clone https://github.com/ikpil/DotRecast.git`
+- Building requires only .NET 8 SDK.
 
-### Building with Command Prompt
+### 🔨 Building with Command Prompt
+
 ```shell
-dotnet --version
 dotnet build
 ```
 
-### Building with an IDE
-- Visual Studio 2022 & Visual Code & Rider 
-- IDE 로 Open `<DotRecastDir>\DotRecast.sln` 을 오픈 한 뒤, 
-- `DotRecast.Recast.Demo` 를 빌드
+### 🔨 Building with an IDE
+
+1. Open IDE: Launch your C# IDE (e.g., Visual Studio).
+2. Open Solution: Go to the "File" menu and select "Open Solution."
+3. Build: In the IDE menu, select "Build" > "Build Solution" or click the "Build" icon on the toolbar.
 
 ## ▶️ Run
-### Windows 에서 실행할 땐 
-- need to install [microsoft visual c++ redistributable package](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist)
-- 윈도우에서 실행 할 땐, 재배포 패키지가 설치 되어 있어야 한다
- 
-### Linux & MacOS & Windows
-- 추가 종속성 관리 할 필요 없이  `DotRecast.Recast.Demo` 폴더로 이동 한 후 닷넷 커맨드로 `dotnet run` 을 수행하면 된다
-- 비쥬얼 스튜디오 2022 에서 빌드 한다면, DotRecast.sln 을 열고, DotRecast.Recast.Demo 를 선택하여 실행하면 된다.
-- `DotRecast.Recast.Demo` 폴더로 이동 한 후 닷넷 커맨드로 `dotnet run` 을 수행하면 된다
-- 
+- To verify the run for all modules, run [DotRecast.Recast.Demo](src/DotRecast.Recast.Demo/DotRecast.Recast.Demo.csproj)
+- on windows requirement : install to [Microsoft Visual C++ Redistributable Package](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist) 
+
+### ▶️ Running With Command Prompt
+
 ```shell
-dotnet run src/DotRecast.Recast.Demo --proejct
+dotnet run --project src/DotRecast.Recast.Demo --framework net8.0
 ```
 
-## 🛠️ Integration
+### ▶️ Running With IDE (ex. Visual Studio 2022 or Rider ...)
 
-### Source Code
-- [DotRecast.Core](src/DotRecast.Core)
-- [DotRecast.Recast](src/DotRecast.Recast)
-- [DotRecast.Detour](src/DotRecast.Detour)
-- [DotRecast.Detour.TileCache](src/DotRecast.Detour.TileCache)
-- [DotRecast.Detour.Crowd](src/DotRecast.Detour.Crowd)
-- [DotRecast.Detour.Dynamic](src/DotRecast.Detour.Dynamic)
-- [DotRecast.Detour.Extras](src/DotRecast.Detour.Extras)
-- [DotRecast.Recast.Toolset](src/DotRecast.Recast.Toolset)
-- [DotRecast.Recast.Demo](src/DotRecast.Recast.Demo)
+1. Open your C# IDE (like Visual Studio).
+2. Go to "File" in the menu.
+3. Choose "Open Project" or "Open Solution."
+4. Find and select [DotRecast.sln](DotRecast.sln), then click "Open."
+5. Run to [DotRecast.Recast.Demo](src/DotRecast.Recast.Demo/DotRecast.Recast.Demo.csproj)
 
-It is recommended to add the source directories
-`DotRecast.Core`,
-`DotRecast.Detour.Crowd`,
-`DotRecast.Detour.Dynamic`,
-`DotRecast.Detour.TitleCache`,
-`DotRecast.Detour.Extras` and
-`DotRecast.Recast`
-into your own project depending on which parts of the project you need.
-For example your level building tool could include `DotRecast.Core`, `DotRecast.Recast`,
-and `DotRecast.Detour`, and your game runtime could just include `DotRecast.Detour`.
-
-### Nuget
-
-- [DotRecast.Core](https://www.nuget.org/packages/DotRecast.Core)
-- [DotRecast.Recast](https://www.nuget.org/packages/DotRecast.Recast)
-- [DotRecast.Detour](https://www.nuget.org/packages/DotRecast.Detour)
-- [DotRecast.Detour.TileCache](https://www.nuget.org/packages/DotRecast.Detour.TileCache)
-- [DotRecast.Detour.Crowd](https://www.nuget.org/packages/DotRecast.Detour.Crowd)
-- [DotRecast.Detour.Dynamic](https://www.nuget.org/packages/DotRecast.Detour.Dynamic)
-- [DotRecast.Detour.Extras](https://www.nuget.org/packages/DotRecast.Detour.Extras)
-- [DotRecast.Recast.Toolset](https://www.nuget.org/packages/DotRecast.Recast.Toolset)
-- [DotRecast.Recast.Demo](https://www.nuget.org/packages/DotRecast.Recast.Demo)
-
-## 🚦Unit Test
+## 🧪 Running Unit Test
 
 - [DotRecast.Core.Test](test/DotRecast.Core.Test) : ...
 - [DotRecast.Recast.Test](test/DotRecast.Recast.Test) : ...
@@ -76,11 +42,56 @@ and `DotRecast.Detour`, and your game runtime could just include `DotRecast.Deto
 - [DotRecast.Detour.Dynamic.Test](test/DotRecast.Detour.Dynamic.Test) : ...
 - [DotRecast.Detour.Extras.Test](test/DotRecast.Detour.Extras.Test) : ...
 
-### Windows
+### 🧪 Testing With Command Prompt
 
-### With VS2022
-- In Visual Studio 2022 go to the test menu and press `Run All Tests`
-- 
-### With CLI
-- in the DotRecast folder open a command prompt and run `dotnet test`
+```shell
+ dotnet test --framework net8.0
+```
+
+### 🧪 Testing With IDE 
+
+- Refer to the manual for your IDE.
+
+## 🛠️ Integration
+
+There are a few ways to integrate [DotRecast.Recast](src/DotRecast.Recast) and [DotRecast.Detour](src/DotRecast.Detour) into your project. 
+Source integration is the most popular and most flexible, and is what the project was designed for from the beginning.
+
+### 🛠️ Source Integration
+
+It is recommended to add the source directories 
+[DotRecast.Core](src/DotRecast.Core), 
+[DotRecast.Recast](src/DotRecast.Recast),
+[DotRecast.Detour](src/DotRecast.Detour),
+[DotRecast.Detour.Crowd](src/DotRecast.Detour.Crowd),
+[DotRecast.Detour.TileCache](src/DotRecast.Detour.TileCache) 
+and directly into your project depending on which parts of the project you need. 
+
+For example your level building tool could include
+[DotRecast.Core](src/DotRecast.Core),
+[DotRecast.Recast](src/DotRecast.Recast),
+[DotRecast.Detour](src/DotRecast.Detour) 
+and your game runtime could just include
+[DotRecast.Detour](src/DotRecast.Detour)
+
+- [DotRecast.Core](src/DotRecast.Core) : Core Utils
+- [DotRecast.Recast](src/DotRecast.Recast) : Core navmesh building system.
+- [DotRecast.Detour](src/DotRecast.Detour) : Runtime navmesh interface and query system.
+- [DotRecast.Detour.TileCache](src/DotRecast.Detour.TileCache) : Runtime movement, obstacle avoidance, and crowd simulation systems.
+- [DotRecast.Detour.Crowd](src/DotRecast.Detour.Crowd) : Runtime navmesh dynamic obstacle and re-baking system.
+- [DotRecast.Detour.Dynamic](src/DotRecast.Detour.Dynamic) : robust support for dynamic nav meshes combining pre-built voxels with dynamic objects which can be freely added and removed
+- [DotRecast.Detour.Extras](src/DotRecast.Detour.Extras) : simple tool to import navmeshes created with [A* Pathfinding Project](https://arongranberg.com/astar/)
+
+
+### 🛠️ Installation through Nuget
+
+- Nuget link : [DotRecast.Core](https://www.nuget.org/packages/DotRecast.Core)
+- Nuget link : [DotRecast.Recast](https://www.nuget.org/packages/DotRecast.Recast)
+- Nuget link : [DotRecast.Detour](https://www.nuget.org/packages/DotRecast.Detour)
+- Nuget link : [DotRecast.Detour.TileCache](https://www.nuget.org/packages/DotRecast.Detour.TileCache)
+- Nuget link : [DotRecast.Detour.Crowd](https://www.nuget.org/packages/DotRecast.Detour.Crowd)
+- Nuget link : [DotRecast.Detour.Dynamic](https://www.nuget.org/packages/DotRecast.Detour.Dynamic)
+- Nuget link : [DotRecast.Detour.Extras](https://www.nuget.org/packages/DotRecast.Detour.Extras)
+- Nuget link : [DotRecast.Recast.Toolset](https://www.nuget.org/packages/DotRecast.Recast.Toolset)
+- Nuget link : [DotRecast.Recast.Demo](https://www.nuget.org/packages/DotRecast.Recast.Demo)
 
