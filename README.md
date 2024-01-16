@@ -25,16 +25,16 @@ DotRecast is a port of [recastnavigation](https://github.com/recastnavigation/re
 
 Recast Navigation is divided into multiple modules, each contained in its own folder:
 
-- `DotRecast.Core`: Module utilities
-- `DotRecast.Recast`: Navmesh generation
-- `DotRecast.Detour`: Runtime loading of navmesh data, pathfinding, navmesh queries
-- `DotRecast.Detour.TileCache`: Navmesh streaming. Useful for large levels and open-world games
-- `DotRecast.Detour.Crowd`: Agent movement, collision avoidance, and crowd simulation
-- `DotRecast.Detour.Dynamic`: robust support for dynamic nav meshes combining pre-built voxels with dynamic objects which can be freely added and removed
-- `DotRecast.Detour.Extras`: simple tool to import navmeshes created with [A* Pathfinding Project](https://arongranberg.com/astar/)
-- `DotRecast.Recast.Toolset`: all modules
-- `DotRecast.Recast.Demo`: Standalone, comprehensive demo app showcasing all aspects of Recast & Detour's functionality
-- `test/DotRecast.*.Test`: Unit tests
+- [DotRecast.Core](src/DotRecast.Core) : Core utils
+- [DotRecast.Recast](src/DotRecast.Recast) : Navmesh generation
+- [DotRecast.Detour](src/DotRecast.Detour) : Runtime loading of navmesh data, pathfinding, navmesh queries
+- [DotRecast.Detour.TileCache](src/DotRecast.Detour.TileCache) : Navmesh streaming. Useful for large levels and open-world games
+- [DotRecast.Detour.Crowd](src/DotRecast.Detour.Crowd) : Agent movement, collision avoidance, and crowd simulation
+- [DotRecast.Detour.Dynamic](src/DotRecast.Detour.Dynamic) : robust support for dynamic nav meshes combining pre-built voxels with dynamic objects which can be freely added and removed
+- [DotRecast.Detour.Extras](src/DotRecast.Detour.Extras) : simple tool to import navmeshes created with [A* Pathfinding Project](https://arongranberg.com/astar/)
+- [DotRecast.Recast.Toolset](src/DotRecast.Recast.Toolset) : all modules
+- [DotRecast.Recast.Demo](src/DotRecast.Recast.Demo) : Standalone, comprehensive demo app showcasing all aspects of Recast & Detour's functionality
+- [Tests](test) : Unit tests
 
 ## ⚡ Getting Started
  
