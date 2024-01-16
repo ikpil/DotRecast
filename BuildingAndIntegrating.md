@@ -1,12 +1,20 @@
 ﻿
 ## 🔨 Build
-1. `DotRecast.Recast.Demo` uses [dotnet 8](https://dotnet.microsoft.com/) to build platform specific projects. Download it and make sure it's available on your path, or specify the path to it.
-2. Open a command prompt, point it to a directory and clone DotRecast to it: `git clone https://github.com/ikpil/DotRecast.git`
-3. Open `<DotRecastDir>\DotRecast.sln` with Visual Studio 2022 and build `DotRecast.Recast.Demo`
-    - Optionally, you can run using the `dotnet run` command with `DotRecast.Recast.Demo.csproj`
+- 빌드에는 오직  .NET 8 SDK 만 요구 됩니다.
+- 모든 모듈에 대한 빌드를 확인 하려면, DotRecast.Recast.Demo 빌드 해야 합니다. 
+- 먼저 소스 코드를 clone 하여 준비 합니다.
+- Open a command prompt, point it to a directory and clone DotRecast to it: `git clone https://github.com/ikpil/DotRecast.git`
 
-1. 빌드 할 때, .NET 8 SDK 만 필요 하다
-2. `DotRecast.Recast.Demo` 를 빌드하고 실행하면 전체적인 빌드 방법을 확인할 수 있다
+### Building with Command Prompt
+```shell
+dotnet --version
+dotnet build
+```
+
+### Building with an IDE
+- Visual Studio 2022 & Visual Code & Rider 
+- IDE 로 Open `<DotRecastDir>\DotRecast.sln` 을 오픈 한 뒤, 
+- `DotRecast.Recast.Demo` 를 빌드
 
 ## ▶️ Run
 ### Windows 에서 실행할 땐 
@@ -17,6 +25,10 @@
 - 추가 종속성 관리 할 필요 없이  `DotRecast.Recast.Demo` 폴더로 이동 한 후 닷넷 커맨드로 `dotnet run` 을 수행하면 된다
 - 비쥬얼 스튜디오 2022 에서 빌드 한다면, DotRecast.sln 을 열고, DotRecast.Recast.Demo 를 선택하여 실행하면 된다.
 - `DotRecast.Recast.Demo` 폴더로 이동 한 후 닷넷 커맨드로 `dotnet run` 을 수행하면 된다
+- 
+```shell
+dotnet run src/DotRecast.Recast.Demo --proejct
+```
 
 ## 🛠️ Integration
 
