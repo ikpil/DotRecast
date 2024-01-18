@@ -296,9 +296,9 @@ namespace DotRecast.Recast
             while (stack.Count > 0)
             {
                 RcLevelStackEntry back = stack[^1];
-                int ci = back.x;
+                int cx = back.x;
                 int cy = back.y;
-                int cx = back.index;
+                int ci = back.index;
                 stack.RemoveAt(stack.Count - 1);
 
 
