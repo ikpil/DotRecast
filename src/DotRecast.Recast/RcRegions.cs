@@ -429,7 +429,7 @@ namespace DotRecast.Recast
                 }
             }
 
-            List<int> dirtyEntries = new List<int>();
+            List<RcDirtyEntry> dirtyEntries = new List<RcDirtyEntry>();
             int iter = 0;
             while (stack.Count > 0)
             {
@@ -479,9 +479,7 @@ namespace DotRecast.Recast
                     if (r != 0)
                     {
                         stack[j] = new RcLevelStackEntry(stack[j].x, stack[j].y, -1); // mark as used
-                        dirtyEntries.Add(i);
-                        dirtyEntries.Add(r);
-                        dirtyEntries.Add(d2);
+                        dirtyEntries.Add(new RcDirtyEntry(i, r, d2));
                     }
                     else
                     {
@@ -490,11 +488,11 @@ namespace DotRecast.Recast
                 }
 
                 // Copy entries that differ between src and dst to keep them in sync.
-                for (int i = 0; i < dirtyEntries.Count; i += 3)
+                for (int i = 0; i < dirtyEntries.Count; i++)
                 {
-                    int idx = dirtyEntries[i];
-                    srcReg[idx] = dirtyEntries[i + 1];
-                    srcDist[idx] = dirtyEntries[i + 2];
+                    int idx = dirtyEntries[i].index;
+                    srcReg[idx] = dirtyEntries[i].region;
+                    srcDist[idx] = dirtyEntries[i].distance2;
                 }
 
                 if (failed == stack.Count())
@@ -513,10 +511,10 @@ namespace DotRecast.Recast
             }
         }
 
-        private static void SortCellsByLevel(int startLevel, 
-            RcCompactHeightfield chf, 
-            int[] srcReg, 
-            int nbStacks, List<List<RcLevelStackEntry>> stacks, 
+        private static void SortCellsByLevel(int startLevel,
+            RcCompactHeightfield chf,
+            int[] srcReg,
+            int nbStacks, List<List<RcLevelStackEntry>> stacks,
             int loglevelsPerStack) // the levels per stack (2 in our case) as a bit shift
         {
             int w = chf.width;
@@ -559,8 +557,8 @@ namespace DotRecast.Recast
             }
         }
 
-        private static void AppendStacks(List<RcLevelStackEntry> srcStack, 
-            List<RcLevelStackEntry> dstStack, 
+        private static void AppendStacks(List<RcLevelStackEntry> srcStack,
+            List<RcLevelStackEntry> dstStack,
             int[] srcReg)
         {
             for (int j = 0; j < srcStack.Count; j++)
