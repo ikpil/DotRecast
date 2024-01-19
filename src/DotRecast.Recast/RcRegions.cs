@@ -1163,7 +1163,7 @@ namespace DotRecast.Recast
             }
         }
 
-        private static int MergeAndFilterLayerRegions(RcContext ctx, int minRegionArea, int maxRegionId, RcCompactHeightfield chf, int[] srcReg, List<int> overlaps)
+        private static bool MergeAndFilterLayerRegions(RcContext ctx, int minRegionArea, ref int maxRegionId, RcCompactHeightfield chf, int[] srcReg)
         {
             int w = chf.width;
             int h = chf.height;
@@ -1398,7 +1398,7 @@ namespace DotRecast.Recast
                 }
             }
 
-            return maxRegionId;
+            return true;
         }
 
         /// @par
@@ -1781,7 +1781,7 @@ namespace DotRecast.Recast
             }
         }
 
-        public static void BuildLayerRegions(RcContext ctx, RcCompactHeightfield chf, int minRegionArea)
+        public static bool BuildLayerRegions(RcContext ctx, RcCompactHeightfield chf, int minRegionArea)
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_REGIONS);
 
@@ -1924,13 +1924,15 @@ namespace DotRecast.Recast
                 }
             }
 
-            ctx.StartTimer(RcTimerLabel.RC_TIMER_BUILD_REGIONS_FILTER);
-
-            // Merge monotone regions to layers and remove small regions.
-            List<int> overlaps = new List<int>();
-            chf.maxRegions = MergeAndFilterLayerRegions(ctx, minRegionArea, id, chf, srcReg, overlaps);
-
-            ctx.StopTimer(RcTimerLabel.RC_TIMER_BUILD_REGIONS_FILTER);
+            using (var timerFilter = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_REGIONS_FILTER))
+            {
+                // Merge monotone regions to layers and remove small regions.
+                chf.maxRegions = id;
+                if (!MergeAndFilterLayerRegions(ctx, minRegionArea, ref chf.maxRegions, chf, srcReg))
+                {
+                    return false;
+                }
+            }
 
             // Store the result out.
             for (int i = 0; i < chf.spanCount; ++i)
@@ -1940,6 +1942,8 @@ namespace DotRecast.Recast
                     .WithReg(srcReg[i])
                     .Build();
             }
+
+            return true;
         }
     }
 }
