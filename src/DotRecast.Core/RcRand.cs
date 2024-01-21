@@ -20,5 +20,10 @@ namespace DotRecast.Core
         {
             return (float)_r.NextDouble();
         }
+
+        public int NextInt32()
+        {
+            return _r.Next();
+        }
     }
 }
