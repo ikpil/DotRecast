@@ -28,7 +28,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        dotnet-version: [ '6.x', '7.x', '8.x' ]
+        dotnet-version: [ '6', '7', '8' ]
         os: [ windows-latest, ubuntu-latest, macos-latest ]
 
     steps:
@@ -39,13 +39,13 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.x'
+          dotnet-version: ${{ matrix.dotnet }}.x
             
       - name: Restore dependencies
         run: dotnet restore
 
       - name: Build
-        run: dotnet build -c Release --no-restore
+        run: dotnet build -c Release --no-restore --framework net${{ matrix.dotnet }}.0
 
       - name: Test
-        run: dotnet test -c Release --no-build --verbosity normal
+        run: dotnet test -c Release --no-build --verbosity normal --framework net${{ matrix.dotnet }}.0
