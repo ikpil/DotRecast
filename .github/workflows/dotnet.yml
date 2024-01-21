@@ -39,13 +39,13 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: ${{ matrix.dotnet }}.x
+          dotnet-version: ${{ matrix.dotnet-version }}.x
             
       - name: Restore dependencies
         run: dotnet restore
 
       - name: Build
-        run: dotnet build -c Release --no-restore --framework net${{ matrix.dotnet }}.0
+        run: dotnet build -c Release --no-restore --framework net${{ matrix.dotnet-version }}.0
 
       - name: Test
-        run: dotnet test -c Release --no-build --verbosity normal --framework net${{ matrix.dotnet }}.0
+        run: dotnet test -c Release --no-build --verbosity normal --framework net${{ matrix.dotnet-version }}.0
