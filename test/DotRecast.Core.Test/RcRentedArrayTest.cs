@@ -29,7 +29,7 @@ public class RcRentedArrayTest
         {
             RcRentedArray<int> rentedArray;
             {
-                int length = (int)(rand.Next() * 2048);
+                int length = Math.Max(2, (int)(rand.Next() * 2048));
                 var values = RandomValues(length);
                 using var array = RcRentedArray.RentDisposableArray<int>(length);
 
@@ -44,12 +44,12 @@ public class RcRentedArrayTest
                 }
 
                 Assert.That(array[^1], Is.EqualTo(values[^1]));
-                
+
                 Assert.Throws<IndexOutOfRangeException>(() => array[-1] = 0);
                 Assert.Throws<IndexOutOfRangeException>(() => array[array.Length + 1] = 0);
                 Assert.Throws<IndexOutOfRangeException>(() => _ = array[-1]);
                 Assert.Throws<IndexOutOfRangeException>(() => _ = array[array.Length + 1]);
-                
+
                 // danger
                 rentedArray = array;
             }
