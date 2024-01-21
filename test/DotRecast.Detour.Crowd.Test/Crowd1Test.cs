@@ -22,7 +22,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Crowd.Test;
 
-[Parallelizable]
+
 public class Crowd1Test : AbstractCrowdTest
 {
     static readonly float[][] EXPECTED_A1Q0TVTA =

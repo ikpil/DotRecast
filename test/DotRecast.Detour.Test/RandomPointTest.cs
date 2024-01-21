@@ -25,7 +25,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
 
-[Parallelizable]
+
 public class RandomPointTest : AbstractDetourTest
 {
     [Test]

@@ -22,7 +22,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
 
-[Parallelizable]
+
 public class FindPolysAroundCircleTest : AbstractDetourTest
 {
     private static readonly long[][] REFS =

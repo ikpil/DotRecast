@@ -25,7 +25,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Dynamic.Test.Io;
 
-[Parallelizable]
+
 public class VoxelFileReaderTest
 {
     [Test]

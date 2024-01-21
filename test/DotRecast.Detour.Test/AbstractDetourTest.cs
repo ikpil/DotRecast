@@ -21,7 +21,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
 
-[Parallelizable]
+
 public abstract class AbstractDetourTest
 {
     protected static readonly long[] startRefs =

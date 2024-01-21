@@ -27,7 +27,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Recast.Test;
 
-[Parallelizable]
+
 public class RecastTileMeshTest
 {
     private const float m_cellSize = 0.3f;

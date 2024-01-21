@@ -29,7 +29,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.TileCache.Test;
 
-[Parallelizable]
+
 public class TileCacheFindPathTest : AbstractTileCacheTest
 {
     private readonly RcVec3f start = new RcVec3f(39.44734f, 9.998177f, -0.784811f);

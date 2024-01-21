@@ -22,31 +22,38 @@ public class RcRentedArrayTest
     }
 
     [Test]
-    public void Test()
+    public void TestRentedArray()
     {
         var rand = new RcRand();
         for (int loop = 0; loop < 1024; ++loop)
         {
-            int length = (int)(rand.Next() * 2048);
-            var values = RandomValues(length);
-            using var array = RcRentedArray.RentDisposableArray<int>(length);
-
-            for (int i = 0; i < array.Length; ++i)
+            RcRentedArray<int> rentedArray;
             {
-                array[i] = values[i];
-            }
+                int length = (int)(rand.Next() * 2048);
+                var values = RandomValues(length);
+                using var array = RcRentedArray.RentDisposableArray<int>(length);
 
-            for (int i = 0; i < array.Length; ++i)
-            {
-                Assert.That(array[i], Is.EqualTo(values[i]));
+                for (int i = 0; i < array.Length; ++i)
+                {
+                    array[i] = values[i];
+                }
+
+                for (int i = 0; i < array.Length; ++i)
+                {
+                    Assert.That(array[i], Is.EqualTo(values[i]));
+                }
+
+                Assert.That(array[^1], Is.EqualTo(values[^1]));
+                
+                Assert.Throws<IndexOutOfRangeException>(() => array[-1] = 0);
+                Assert.Throws<IndexOutOfRangeException>(() => array[array.Length + 1] = 0);
+                Assert.Throws<IndexOutOfRangeException>(() => _ = array[-1]);
+                Assert.Throws<IndexOutOfRangeException>(() => _ = array[array.Length + 1]);
+                
+                // danger
+                rentedArray = array;
             }
-            
-            Assert.That(array[^1], Is.EqualTo(values[^1]));
-            
-            Assert.Throws<IndexOutOfRangeException>(() => array[-1] = 0);
-            Assert.Throws<IndexOutOfRangeException>(() => array[array.Length + 1] = 0);
-            Assert.Throws<IndexOutOfRangeException>(() => _ = array[-1]);
-            Assert.Throws<IndexOutOfRangeException>(() => _ = array[array.Length + 1]);
+            Assert.Throws<NullReferenceException>(() => rentedArray[^1] = 0);
         }
     }
 }

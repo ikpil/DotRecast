@@ -26,7 +26,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Extras.Test.Unity.Astar;
 
-[Parallelizable]
+
 public class UnityAStarPathfindingImporterTest
 {
     [Test]

@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Core.Test;
 
-[Parallelizable]
+
 public class RcStackArrayTest
 {
     public List<int> RandomValues(int size)

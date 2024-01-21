@@ -28,7 +28,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Test.Io;
 
-[Parallelizable]
+
 public class MeshSetReaderWriterTest
 {
     private readonly DtMeshSetWriter writer = new DtMeshSetWriter();

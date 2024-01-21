@@ -26,7 +26,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.TileCache.Test;
 
-[Parallelizable]
+
 public class TileCacheTest : AbstractTileCacheTest
 {
     [Test]

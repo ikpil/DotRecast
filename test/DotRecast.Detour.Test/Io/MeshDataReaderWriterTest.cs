@@ -23,7 +23,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Test.Io;
 
-[Parallelizable]
+
 public class MeshDataReaderWriterTest
 {
     private const int VERTS_PER_POLYGON = 6;

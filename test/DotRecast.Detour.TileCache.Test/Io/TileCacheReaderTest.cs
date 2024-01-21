@@ -27,7 +27,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.TileCache.Test.Io;
 
-[Parallelizable]
+
 public class TileCacheReaderTest
 {
     private readonly DtTileCacheReader reader = new DtTileCacheReader(DtTileCacheCompressorFactory.Shared);

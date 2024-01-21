@@ -27,7 +27,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.TileCache.Test;
 
-[Parallelizable]
+
 public class AbstractTileCacheTest
 {
     private const int EXPECTED_LAYERS_PER_TILE = 4;

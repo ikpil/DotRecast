@@ -24,7 +24,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Test.Io;
 
-[Parallelizable]
+
 public class MeshSetReaderTest
 {
     private readonly DtMeshSetReader reader = new DtMeshSetReader();

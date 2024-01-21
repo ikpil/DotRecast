@@ -26,7 +26,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.TileCache.Test;
 
-[Parallelizable]
+
 public class TileCacheNavigationTest : AbstractTileCacheTest
 {
     protected readonly long[] startRefs = { 281475006070787L };

@@ -22,7 +22,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
 
-[Parallelizable]
+
 public class FindPathTest : AbstractDetourTest
 {
     private static readonly DtStatus[] STATUSES =
