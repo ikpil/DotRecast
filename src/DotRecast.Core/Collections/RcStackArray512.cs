@@ -523,21 +523,12 @@ namespace DotRecast.Core.Collections
         public T V510;
         public T V511;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ThrowExceptionIfIndexOutOfRange(int index)
-        {
-            if (0 > index || index >= Size)
-            {
-                throw new IndexOutOfRangeException($"{index}");
-            }
-        }
-
         public T this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                ThrowExceptionIfIndexOutOfRange(index);
+                ThrowHelper.ThrowExceptionIfIndexOutOfRange(index, Length);
 
                 return index switch
                 {
@@ -1060,7 +1051,7 @@ namespace DotRecast.Core.Collections
 
             set
             {
-                ThrowExceptionIfIndexOutOfRange(index);
+                ThrowHelper.ThrowExceptionIfIndexOutOfRange(index, Length);
 
                 switch (index)
                 {
@@ -1576,7 +1567,6 @@ namespace DotRecast.Core.Collections
                     case 509: V509 = value; break;
                     case 510: V510 = value; break;
                     case 511: V511 = value; break;
-                    
                 }
             }
         }
