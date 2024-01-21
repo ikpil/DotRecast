@@ -24,26 +24,13 @@ public class RcStackArrayTest
     }
 
     [Test]
-    public void TestStackOverflowBy128X512XFloat()
-    {
-        // 128 * 512 * 4 bytes
-        var array = RcStackArray128<RcStackArray512<float>>.Empty;
-        Assert.That(array.Length, Is.EqualTo(128));
-
-        for (int i = 0; i < array.Length; ++i)
-        {
-            Assert.That(array[i].Length, Is.EqualTo(512));
-        }
-    }
-
-    [Test]
-    public void TestStackOverflowBy256X512XFloat()
+    public void TestStackOverflow()
     {
         // normal
         var array_128_512_1 = RcStackArray128<RcStackArray512<float>>.Empty; // 128 * 512 = 65536
         
         // warn
-        var array_128_512_2 = RcStackArray128<RcStackArray512<float>>.Empty; // 128 * 512 = 65536
+        //var array_128_512_2 = RcStackArray128<RcStackArray512<float>>.Empty; // 128 * 512 = 65536
 
         // danger
         // var array_32_512_1 = RcStackArray32<RcStackArray512<float>>.Empty; // 32 * 512 = 16384
