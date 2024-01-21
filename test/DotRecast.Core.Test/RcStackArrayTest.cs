@@ -27,7 +27,7 @@ public class RcStackArrayTest
     public void TestStackOverflow()
     {
         // normal
-        var array_128_512_1 = RcStackArray128<RcStackArray512<float>>.Empty; // 128 * 512 = 65536
+        var array_128_512_1 = RcStackArray2<RcStackArray512<float>>.Empty; // 128 * 512 = 65536
         
         // warn
         //var array_128_512_2 = RcStackArray128<RcStackArray512<float>>.Empty; // 128 * 512 = 65536
