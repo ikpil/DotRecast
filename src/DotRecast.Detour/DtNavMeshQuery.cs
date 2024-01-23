@@ -21,6 +21,7 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using DotRecast.Core;
+using DotRecast.Core.Buffers;
 using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
 
@@ -36,6 +37,7 @@ namespace DotRecast.Detour
         protected readonly DtNodeQueue m_openList;
 
         protected DtQueryData m_query;
+        protected readonly DtNodePool m_tinyNodePool;
 
         /// < Sliced query state.
         public DtNavMeshQuery(DtNavMesh nav)
@@ -44,6 +46,7 @@ namespace DotRecast.Detour
             m_tinyNodePool = new DtNodePool();
             m_nodePool = new DtNodePool();
             m_openList = new DtNodeQueue();
+            m_tinyNodePool = new DtNodePool();
         }
 
         /// Returns random location on navmesh.
@@ -457,16 +460,16 @@ namespace DotRecast.Detour
             }
 
             // Collect vertices.
-            float[] verts = new float[m_nav.GetMaxVertsPerPoly() * 3];
-            float[] edged = new float[m_nav.GetMaxVertsPerPoly()];
-            float[] edget = new float[m_nav.GetMaxVertsPerPoly()];
+            using var verts = RcRentedArray.RentDisposableArray<float>(m_nav.GetMaxVertsPerPoly() * 3);
+            using var edged = RcRentedArray.RentDisposableArray<float>(m_nav.GetMaxVertsPerPoly());
+            using var edget = RcRentedArray.RentDisposableArray<float>(m_nav.GetMaxVertsPerPoly());
             int nv = poly.vertCount;
             for (int i = 0; i < nv; ++i)
             {
-                RcArrays.Copy(tile.data.verts, poly.verts[i] * 3, verts, i * 3, 3);
+                RcArrays.Copy(tile.data.verts, poly.verts[i] * 3, verts.AsRentedArray(), i * 3, 3);
             }
 
-            if (DtUtils.DistancePtPolyEdgesSqr(pos, verts, nv, edged, edget))
+            if (DtUtils.DistancePtPolyEdgesSqr(pos, verts.AsRentedArray(), nv, edged.AsRentedArray(), edget.AsRentedArray()))
             {
                 closest = pos;
             }
@@ -486,7 +489,7 @@ namespace DotRecast.Detour
 
                 int va = imin * 3;
                 int vb = ((imin + 1) % nv) * 3;
-                closest = RcVecUtils.Lerp(verts, va, vb, edget[imin]);
+                closest = RcVecUtils.Lerp(verts.AsRentedArray(), va, vb, edget[imin]);
             }
 
             return DtStatus.DT_SUCCESS;
@@ -1793,7 +1796,9 @@ namespace DotRecast.Detour
             resultPos = RcVec3f.Zero;
 
             if (null != visited)
+            {
                 visited.Clear();
+            }
 
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !startPos.IsFinite()
@@ -1822,7 +1827,7 @@ namespace DotRecast.Detour
             var searchPos = RcVec3f.Lerp(startPos, endPos, 0.5f);
             float searchRadSqr = RcMath.Sqr(RcVec3f.Distance(startPos, endPos) / 2.0f + 0.001f);
 
-            float[] verts = new float[m_nav.GetMaxVertsPerPoly() * 3];
+            using var verts = RcRentedArray.RentDisposableArray<float>(m_nav.GetMaxVertsPerPoly() * 3);
 
             while (0 < stack.Count)
             {
@@ -1839,11 +1844,11 @@ namespace DotRecast.Detour
                 int nverts = curPoly.vertCount;
                 for (int i = 0; i < nverts; ++i)
                 {
-                    RcArrays.Copy(curTile.data.verts, curPoly.verts[i] * 3, verts, i * 3, 3);
+                    RcArrays.Copy(curTile.data.verts, curPoly.verts[i] * 3, verts.AsRentedArray(), i * 3, 3);
                 }
 
                 // If target is inside the poly, stop search.
-                if (DtUtils.PointInPolygon(endPos, verts, nverts))
+                if (DtUtils.PointInPolygon(endPos, verts.AsRentedArray(), nverts))
                 {
                     bestNode = curNode;
                     bestPos = endPos;
@@ -1856,7 +1861,7 @@ namespace DotRecast.Detour
                     // Find links to neighbours.
                     int MAX_NEIS = 8;
                     int nneis = 0;
-                    long[] neis = new long[MAX_NEIS];
+                    using var neis = RcRentedArray.RentDisposableArray<long>(MAX_NEIS);
 
                     if ((curPoly.neis[j] & DtNavMesh.DT_EXT_LINK) != 0)
                     {
@@ -1896,11 +1901,11 @@ namespace DotRecast.Detour
                         // Wall edge, calc distance.
                         int vj = j * 3;
                         int vi = i * 3;
-                        var distSqr = DtUtils.DistancePtSegSqr2D(endPos, verts, vj, vi, out var tseg);
+                        var distSqr = DtUtils.DistancePtSegSqr2D(endPos, verts.AsRentedArray(), vj, vi, out var tseg);
                         if (distSqr < bestDist)
                         {
                             // Update nearest distance.
-                            bestPos = RcVecUtils.Lerp(verts, vj, vi, tseg);
+                            bestPos = RcVecUtils.Lerp(verts.AsRentedArray(), vj, vi, tseg);
                             bestDist = distSqr;
                             bestNode = curNode;
                         }
@@ -1920,7 +1925,7 @@ namespace DotRecast.Detour
                             // TODO: Maybe should use GetPortalPoints(), but this one is way faster.
                             int vj = j * 3;
                             int vi = i * 3;
-                            var distSqr = DtUtils.DistancePtSegSqr2D(searchPos, verts, vj, vi, out var _);
+                            var distSqr = DtUtils.DistancePtSegSqr2D(searchPos, verts.AsRentedArray(), vj, vi, out var _);
                             if (distSqr > searchRadSqr)
                             {
                                 continue;
@@ -2873,8 +2878,8 @@ namespace DotRecast.Detour
 
             float radiusSqr = RcMath.Sqr(radius);
 
-            float[] pa = new float[m_nav.GetMaxVertsPerPoly() * 3];
-            float[] pb = new float[m_nav.GetMaxVertsPerPoly() * 3];
+            using var pa = RcRentedArray.RentDisposableArray<float>(m_nav.GetMaxVertsPerPoly() * 3);
+            using var pb = RcRentedArray.RentDisposableArray<float>(m_nav.GetMaxVertsPerPoly() * 3);
 
             while (0 < stack.Count)
             {
@@ -2945,7 +2950,7 @@ namespace DotRecast.Detour
                     int npa = neighbourPoly.vertCount;
                     for (int k = 0; k < npa; ++k)
                     {
-                        RcArrays.Copy(neighbourTile.data.verts, neighbourPoly.verts[k] * 3, pa, k * 3, 3);
+                        RcArrays.Copy(neighbourTile.data.verts, neighbourPoly.verts[k] * 3, pa.AsRentedArray(), k * 3, 3);
                     }
 
                     bool overlap = false;
@@ -2976,10 +2981,10 @@ namespace DotRecast.Detour
                         int npb = pastPoly.vertCount;
                         for (int k = 0; k < npb; ++k)
                         {
-                            RcArrays.Copy(pastTile.data.verts, pastPoly.verts[k] * 3, pb, k * 3, 3);
+                            RcArrays.Copy(pastTile.data.verts, pastPoly.verts[k] * 3, pb.AsRentedArray(), k * 3, 3);
                         }
 
-                        if (DtUtils.OverlapPolyPoly2D(pa, npa, pb, npb))
+                        if (DtUtils.OverlapPolyPoly2D(pa.AsRentedArray(), npa, pb.AsRentedArray(), npb))
                         {
                             overlap = true;
                             break;

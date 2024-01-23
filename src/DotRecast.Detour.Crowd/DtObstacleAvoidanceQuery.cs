@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using DotRecast.Core;
+using DotRecast.Core.Buffers;
 using DotRecast.Core.Numerics;
 
 
@@ -402,7 +403,7 @@ namespace DotRecast.Detour.Crowd
                 debug.Reset();
 
             // Build sampling pattern aligned to desired velocity.
-            float[] pat = new float[(DT_MAX_PATTERN_DIVS * DT_MAX_PATTERN_RINGS + 1) * 2];
+            using var pat = RcRentedArray.RentDisposableArray<float>((DT_MAX_PATTERN_DIVS * DT_MAX_PATTERN_RINGS + 1) * 2);
             int npat = 0;
 
             int ndivs = m_params.adaptiveDivs;
