@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DotRecast.Core;
+using DotRecast.Core.Buffers;
 using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
 
