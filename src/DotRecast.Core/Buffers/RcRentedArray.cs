@@ -46,6 +46,10 @@ namespace DotRecast.Core.Buffers
             }
         }
 
+        public T[] AsRentedArray()
+        {
+            return _array;
+        }
 
         public void Dispose()
         {
