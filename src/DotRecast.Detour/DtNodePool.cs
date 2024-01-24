@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using DotRecast.Core.Collections;
 
 namespace DotRecast.Detour
 {
@@ -34,13 +35,12 @@ namespace DotRecast.Detour
         public void Clear()
         {
             m_nodes.Clear();
-            m_map.Clear();
+            m_map.Values.ForEach(x => x.Clear());
         }
 
         public List<DtNode> FindNodes(long id)
         {
             var hasNode = m_map.TryGetValue(id, out var nodes);
-            ;
             if (nodes == null)
             {
                 nodes = new List<DtNode>();
@@ -52,7 +52,6 @@ namespace DotRecast.Detour
         public DtNode FindNode(long id)
         {
             var hasNode = m_map.TryGetValue(id, out var nodes);
-            ;
             if (nodes != null && 0 != nodes.Count)
             {
                 return nodes[0];
