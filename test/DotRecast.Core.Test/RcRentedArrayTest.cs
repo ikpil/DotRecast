@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Xml;
 using DotRecast.Core.Buffers;
+using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities.Serialization;
 using NUnit.Framework;
 
 namespace DotRecast.Core.Test;
@@ -55,5 +58,51 @@ public class RcRentedArrayTest
             }
             Assert.Throws<NullReferenceException>(() => rentedArray[^1] = 0);
         }
+    }
+
+    [Test]
+    public void TestSame()
+    {
+        // not same
+        {
+            using var r1 = RcRentedArray.RentDisposableArray<float>(1024);
+            using var r2 = RcRentedArray.RentDisposableArray<float>(1024);
+
+            Assert.That(r2.AsRentedArray() != r1.AsRentedArray(), Is.EqualTo(true));
+        }
+
+        // same
+        {
+            // error case 
+            float[] r1Array;
+            using (var r1 = RcRentedArray.RentDisposableArray<float>(1024))
+            {
+                r1Array = r1.AsRentedArray();
+                for (int i = 0; i < r1.Length; ++i)
+                {
+                    r1[i] = 123;
+                }
+            }
+
+            using var r2 = RcRentedArray.RentDisposableArray<float>(1024);
+
+            Assert.That(r2.AsRentedArray() == r1Array, Is.EqualTo(true));
+            Assert.That(r2.AsRentedArray().Sum(), Is.EqualTo(0));
+        }
+    }
+
+    [Test]
+    public void TestDispose()
+    {
+        var r1 = RcRentedArray.RentDisposableArray<float>(1024);
+        for (int i = 0; i < r1.Length; ++i)
+        {
+            r1[i] = 123;
+        }
+
+        Assert.That(r1.IsDisposed, Is.EqualTo(false));
+        r1.Dispose();
+        Assert.That(r1.IsDisposed, Is.EqualTo(true));
+        Assert.That(r1.AsRentedArray(), Is.Null);
     }
 }
