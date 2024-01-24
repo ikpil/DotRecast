@@ -17,16 +17,17 @@ namespace DotRecast.Core.Buffers
     {
         private ArrayPool<T> _owner;
         private T[] _array;
-        private readonly RcAtomicInteger _disposed;
+        private bool _disposed;
 
         public int Length { get; }
+        public bool IsDisposed => _disposed;
 
         internal RcRentedArray(ArrayPool<T> owner, T[] array, int length)
         {
             _owner = owner;
             _array = array;
             Length = length;
-            _disposed = new RcAtomicInteger(0);
+            _disposed = false;
         }
 
         public T this[int index]
@@ -53,9 +54,10 @@ namespace DotRecast.Core.Buffers
 
         public void Dispose()
         {
-            if (1 != _disposed.IncrementAndGet())
+            if (_disposed)
                 return;
 
+            _disposed = true;
             _owner?.Return(_array, true);
             _array = null;
             _owner = null;
