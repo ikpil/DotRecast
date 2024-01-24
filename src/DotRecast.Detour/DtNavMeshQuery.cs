@@ -140,18 +140,18 @@ namespace DotRecast.Detour
             }
 
             // Randomly pick point on polygon.
-            float[] verts = new float[3 * m_nav.GetMaxVertsPerPoly()];
-            float[] areas = new float[m_nav.GetMaxVertsPerPoly()];
-            RcArrays.Copy(tile.data.verts, poly.verts[0] * 3, verts, 0, 3);
+            using var verts = RcRentedArray.RentDisposableArray<float>(3 * m_nav.GetMaxVertsPerPoly());
+            using var areas = RcRentedArray.RentDisposableArray<float>(m_nav.GetMaxVertsPerPoly());
+            RcArrays.Copy(tile.data.verts, poly.verts[0] * 3, verts.AsRentedArray(), 0, 3);
             for (int j = 1; j < poly.vertCount; ++j)
             {
-                RcArrays.Copy(tile.data.verts, poly.verts[j] * 3, verts, j * 3, 3);
+                RcArrays.Copy(tile.data.verts, poly.verts[j] * 3, verts.AsRentedArray(), j * 3, 3);
             }
 
             float s = frand.Next();
             float t = frand.Next();
 
-            var pt = DtUtils.RandomPointInConvexPoly(verts, poly.vertCount, areas, s, t);
+            var pt = DtUtils.RandomPointInConvexPoly(verts.AsRentedArray(), poly.vertCount, areas.AsRentedArray(), s, t);
             ClosestPointOnPoly(polyRef, pt, out var closest, out var _);
 
             randomRef = polyRef;
@@ -389,8 +389,8 @@ namespace DotRecast.Detour
             float s = frand.Next();
             float t = frand.Next();
 
-            float[] areas = new float[randomPolyVerts.Length / 3];
-            RcVec3f pt = DtUtils.RandomPointInConvexPoly(randomPolyVerts, randomPolyVerts.Length / 3, areas, s, t);
+            using var areas = RcRentedArray.RentDisposableArray<float>(randomPolyVerts.Length / 3);
+            RcVec3f pt = DtUtils.RandomPointInConvexPoly(randomPolyVerts, randomPolyVerts.Length / 3, areas.AsRentedArray(), s, t);
             ClosestPointOnPoly(randomPolyRef, pt, out var closest, out var _);
 
             randomRef = randomPolyRef;
