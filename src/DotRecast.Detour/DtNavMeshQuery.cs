@@ -2249,7 +2249,7 @@ namespace DotRecast.Detour
             hit.path.Clear();
             hit.pathCost = 0;
 
-            RcVec3f[] verts = new RcVec3f[m_nav.GetMaxVertsPerPoly() + 1];
+            using var verts = RcRentedArray.RentDisposableArray<RcVec3f>(m_nav.GetMaxVertsPerPoly() + 1);
 
             RcVec3f curPos = RcVec3f.Zero;
             RcVec3f lastPos = RcVec3f.Zero;
@@ -2283,7 +2283,7 @@ namespace DotRecast.Detour
                     nv++;
                 }
 
-                bool intersects = DtUtils.IntersectSegmentPoly2D(startPos, endPos, verts, nv, out var tmin, out var tmax, out var segMin, out var segMax);
+                bool intersects = DtUtils.IntersectSegmentPoly2D(startPos, endPos, verts.AsRentedArray(), nv, out var tmin, out var tmax, out var segMin, out var segMax);
                 if (!intersects)
                 {
                     // Could not hit the polygon, keep the old t and report hit.
