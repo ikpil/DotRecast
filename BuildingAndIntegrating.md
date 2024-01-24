@@ -5,7 +5,7 @@
 ### 🔨 Building with Command Prompt
 
 ```shell
-dotnet build
+dotnet build -c Release
 ```
 
 ### 🔨 Building with an IDE
@@ -21,7 +21,7 @@ dotnet build
 ### ▶️ Running With Command Prompt
 
 ```shell
-dotnet run --project src/DotRecast.Recast.Demo --framework net8.0
+dotnet run --project src/DotRecast.Recast.Demo --framework net8.0 -c Release
 ```
 
 ### ▶️ Running With IDE (ex. Visual Studio 2022 or Rider ...)
@@ -45,7 +45,7 @@ dotnet run --project src/DotRecast.Recast.Demo --framework net8.0
 ### 🧪 Testing With Command Prompt
 
 ```shell
- dotnet test --framework net8.0
+ dotnet test --framework net8.0 -c Release
 ```
 
 ### 🧪 Testing With IDE 
