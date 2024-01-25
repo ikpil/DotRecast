@@ -35,7 +35,7 @@ namespace DotRecast.Detour
         public void Clear()
         {
             m_nodes.Clear();
-            m_map.Values.ForEach(x => x.Clear());
+            m_map.Clear();
         }
 
         public List<DtNode> FindNodes(long id)
