@@ -83,30 +83,51 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        // 해당 셀 사이즈의 크기로 x ~ y 영역을 찾아, 군집 에이전트를 가져오는 코드
-        public int QueryItems(float minx, float miny, float maxx, float maxy, ref HashSet<DtCrowdAgent> result)
+        public int QueryItems(float minx, float miny, float maxx, float maxy, DtCrowdAgent[] ids, int maxIds)
         {
             int iminx = (int)MathF.Floor(minx * _invCellSize);
             int iminy = (int)MathF.Floor(miny * _invCellSize);
             int imaxx = (int)MathF.Floor(maxx * _invCellSize);
             int imaxy = (int)MathF.Floor(maxy * _invCellSize);
 
+            int n = 0;
+
             for (int y = iminy; y <= imaxy; ++y)
             {
                 for (int x = iminx; x <= imaxx; ++x)
                 {
                     long key = CombineKey(x, y);
-                    if (_items.TryGetValue(key, out var ids))
+                    bool hasPool = _items.TryGetValue(key, out var pool);
+                    if (!hasPool)
                     {
-                        for (int i = 0; i < ids.Count; ++i)
+                        continue;
+                    }
+
+                    for (int idx = 0; idx < pool.Count; ++idx)
+                    {
+                        var item = pool[idx];
+
+                        // Check if the id exists already.
+                        int end = n;
+                        int i = 0;
+                        while (i != end && ids[i] != item)
                         {
-                            result.Add(ids[i]);
+                            ++i;
+                        }
+
+                        // Item not found, add it.
+                        if (i == n)
+                        {
+                            ids[n++] = item;
+
+                            if (n >= maxIds)
+                                return n;
                         }
                     }
                 }
             }
 
-            return result.Count;
+            return n;
         }
 
         public IEnumerable<(long, int)> GetItemCounts()

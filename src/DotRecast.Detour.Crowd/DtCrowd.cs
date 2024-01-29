@@ -894,10 +894,12 @@ namespace DotRecast.Detour.Crowd
         {
             result.Clear();
 
-            var proxAgents = new HashSet<DtCrowdAgent>();
-            int nids = grid.QueryItems(pos.X - range, pos.Z - range, pos.X + range, pos.Z + range, ref proxAgents);
-            foreach (DtCrowdAgent ag in proxAgents)
+            int MAX_NEIS = 32;
+            var ids = new DtCrowdAgent[MAX_NEIS];
+            int nids = grid.QueryItems(pos.X - range, pos.Z - range, pos.X + range, pos.Z + range, ids, ids.Length);
+            for (int i = 0; i < nids; ++i)
             {
+                var ag = ids[i];
                 if (ag == skip)
                 {
                     continue;
