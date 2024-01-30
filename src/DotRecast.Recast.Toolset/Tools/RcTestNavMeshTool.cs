@@ -257,16 +257,16 @@ namespace DotRecast.Recast.Toolset.Tools
                 return DtStatus.DT_FAILURE;
             }
 
-            var status = navQuery.Raycast(startRef, startPos, endPos, filter, 0, 0, out var rayHit);
+            var status = navQuery.Raycast(startRef, startPos, endPos, filter, out var t, out var hitNormal2, out var path);
             if (!status.Succeeded())
             {
                 return status;
             }
 
             // results ...
-            polys = rayHit.path;
+            polys = path;
 
-            if (rayHit.t > 1)
+            if (t > 1)
             {
                 // No hit
                 hitPos = endPos;
@@ -275,15 +275,15 @@ namespace DotRecast.Recast.Toolset.Tools
             else
             {
                 // Hit
-                hitPos = RcVec3f.Lerp(startPos, endPos, rayHit.t);
-                hitNormal = rayHit.hitNormal;
+                hitPos = RcVec3f.Lerp(startPos, endPos, t);
+                hitNormal = hitNormal2;
                 hitResult = true;
             }
 
             // Adjust height.
-            if (rayHit.path.Count > 0)
+            if (path.Count > 0)
             {
-                var result = navQuery.GetPolyHeight(rayHit.path[rayHit.path.Count - 1], hitPos, out var h);
+                var result = navQuery.GetPolyHeight(path[path.Count - 1], hitPos, out var h);
                 if (result.Succeeded())
                 {
                     hitPos.Y = h;
