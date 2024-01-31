@@ -38,18 +38,9 @@ namespace DotRecast.Detour
         public int hitEdgeIndex;
 
         /// Pointer to an array of reference ids of the visited polygons. [opt]
-        public readonly List<long> path;
+        public List<long> path;
 
         ///  The cost of the path until hit.
         public float pathCost;
-
-        public DtRaycastHit(int s)
-        {
-            t = 0;
-            hitEdgeIndex = 0;
-            hitNormal = RcVec3f.Zero;
-            path = new List<long>();
-            pathCost = 0;
-        }
     }
 }
