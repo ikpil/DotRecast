@@ -793,7 +793,8 @@ namespace DotRecast.Detour
             DtNode lastBestNode = startNode;
             float lastBestNodeCost = startNode.total;
 
-
+            DtRaycastHit rayHit = new DtRaycastHit();
+            rayHit.path = new List<long>();
             while (!m_openList.IsEmpty())
             {
                 // Remove node from open list and put it in closed list.
@@ -892,7 +893,6 @@ namespace DotRecast.Detour
                     List<long> shortcut = null;
                     if (tryLOS)
                     {
-                        var rayHit = new DtRaycastHit(0);
                         var rayStatus = Raycast(parentRef, parentNode.pos, neighbourPos, filter,
                             DtRaycastOptions.DT_RAYCAST_USE_COSTS, ref rayHit, grandpaRef);
                         if (rayStatus.Succeeded())
@@ -900,7 +900,7 @@ namespace DotRecast.Detour
                             foundShortCut = rayHit.t >= 1.0f;
                             if (foundShortCut)
                             {
-                                shortcut = rayHit.path;
+                                shortcut = new List<long>(rayHit.path);
                                 // shortcut found using raycast. Using shorter cost
                                 // instead
                                 cost = parentNode.cost + rayHit.pathCost;
@@ -1090,6 +1090,9 @@ namespace DotRecast.Detour
                 return DtStatus.DT_FAILURE;
             }
 
+            var rayHit = new DtRaycastHit();
+            rayHit.path = new List<long>();
+
             int iter = 0;
             while (iter < maxIter && !m_openList.IsEmpty())
             {
@@ -1214,7 +1217,6 @@ namespace DotRecast.Detour
                     List<long> shortcut = null;
                     if (tryLOS)
                     {
-                        var rayHit = new DtRaycastHit(0);
                         status = Raycast(parentRef, parentNode.pos, neighbourPos, m_query.filter,
                             DtRaycastOptions.DT_RAYCAST_USE_COSTS, ref rayHit, grandpaRef);
                         if (status.Succeeded())
@@ -1222,7 +1224,7 @@ namespace DotRecast.Detour
                             foundShortCut = rayHit.t >= 1.0f;
                             if (foundShortCut)
                             {
-                                shortcut = rayHit.path;
+                                shortcut = new List<long>(rayHit.path);
                                 // shortcut found using raycast. Using shorter cost
                                 // instead
                                 cost = parentNode.cost + rayHit.pathCost;
@@ -2155,19 +2157,16 @@ namespace DotRecast.Detour
         ///
         public DtStatus Raycast(long startRef, RcVec3f startPos, RcVec3f endPos,
             IDtQueryFilter filter,
-            out float t, out RcVec3f hitNormal, out List<long> path)
+            out float t, out RcVec3f hitNormal, ref List<long> path)
         {
-            DtRaycastHit hit = new DtRaycastHit(0);
-            // hit.path = path;
-            // hit.maxPath = maxPath;
+            DtRaycastHit hit = new DtRaycastHit();
+            hit.path = path;
 
             DtStatus status = Raycast(startRef, startPos, endPos, filter, 0, ref hit, 0);
 
             t = hit.t;
             hitNormal = hit.hitNormal;
             path = hit.path;
-            // if (pathCount)
-            //     *pathCount = hit.pathCount;
 
             return status;
         }
@@ -2224,7 +2223,7 @@ namespace DotRecast.Detour
         /// @param[out] pathCount The number of visited polygons. [opt]
         /// @param[in] maxPath The maximum number of polygons the @p path array can hold.
         /// @returns The status flags for the query.
-        public DtStatus Raycast(long startRef, RcVec3f startPos, RcVec3f endPos, 
+        public DtStatus Raycast(long startRef, RcVec3f startPos, RcVec3f endPos,
             IDtQueryFilter filter, int options,
             ref DtRaycastHit hit, long prevRef)
         {

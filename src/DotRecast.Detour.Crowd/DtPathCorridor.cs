@@ -194,12 +194,13 @@ namespace DotRecast.Detour.Crowd
             var delta = RcVec3f.Subtract(next, m_pos);
             RcVec3f goal = RcVecUtils.Mad(m_pos, delta, pathOptimizationRange / dist);
 
-            var status = navquery.Raycast(m_path[0], m_pos, goal, filter, out var t, out var norm, out var path);
+            var res = new List<long>();
+            var status = navquery.Raycast(m_path[0], m_pos, goal, filter, out var t, out var norm, ref res);
             if (status.Succeeded())
             {
-                if (path.Count > 1 && t > 0.99f)
+                if (res.Count > 1 && t > 0.99f)
                 {
-                    m_path = DtPathUtils.MergeCorridorStartShortcut(m_path, path);
+                    m_path = DtPathUtils.MergeCorridorStartShortcut(m_path, res);
                 }
             }
         }

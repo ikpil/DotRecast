@@ -257,7 +257,8 @@ namespace DotRecast.Recast.Toolset.Tools
                 return DtStatus.DT_FAILURE;
             }
 
-            var status = navQuery.Raycast(startRef, startPos, endPos, filter, out var t, out var hitNormal2, out var path);
+            var path = new List<long>();
+            var status = navQuery.Raycast(startRef, startPos, endPos, filter, out var t, out var hitNormal2, ref path);
             if (!status.Succeeded())
             {
                 return status;
