@@ -5,7 +5,7 @@
     <PackageId>DotRecast.Detour.Extras</PackageId>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Authors>ikpil</Authors>
-    <Description>DotRecast - a port of Recast Detour, navigation mesh toolset for games, Unity3D, servers, C#</Description>
+    <Description>DotRecast - a port of Recast Detour, Industry-standard navigation mesh toolset for .NET, C#, Unity3D, games, servers</Description>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/ikpil/DotRecast</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ikpil/DotRecast</RepositoryUrl>
