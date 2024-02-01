@@ -21,3 +21,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - [Upstream] 248275e - Fix: typo error (#153) (#21) @ikpil
 - Code cleanup and small optimizations in RecastFilter.cpp (#29) @ikpil
 - Added UI scaling feature based on monitor resolution in Demo (#28) @ikpil
+
