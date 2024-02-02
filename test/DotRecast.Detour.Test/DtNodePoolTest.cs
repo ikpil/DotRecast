@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Linq;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
@@ -37,6 +38,20 @@ public class DtNodePoolTest
             }
         }
 
+        int sum = counts.Sum();
+        Assert.That(sum, Is.EqualTo(10));
+
+        // check GetNodeIdx GetNodeAtIdx
+        for (int i = 0; i < sum; ++i)
+        {
+            var node = pool.GetNodeAtIdx(i);
+            var nodeIdx = pool.GetNodeIdx(node);
+            var nodeByIdx = pool.GetNodeAtIdx(nodeIdx);
+
+            Assert.That(node, Is.SameAs(nodeByIdx));
+            Assert.That(nodeIdx, Is.EqualTo(i));
+        }
+
         // check count
         for (int i = 0; i < counts.Length; ++i)
         {
@@ -47,7 +62,7 @@ public class DtNodePoolTest
 
             var node = pool.FindNode(i);
             Assert.That(nodes[0], Is.SameAs(node));
-            
+
             var node2 = pool.FindNode(i);
             Assert.That(nodes[0], Is.SameAs(node2));
         }
@@ -58,5 +73,12 @@ public class DtNodePoolTest
             Assert.That(n, Is.EqualTo(0));
             Assert.That(nodes, Is.Null);
         }
+
+        var totalCount = pool.GetNodeMap().Sum(x => x.Value.Count);
+        Assert.That(totalCount, Is.EqualTo(sum));
+
+        pool.Clear();
+        totalCount = pool.GetNodeMap().Sum(x => x.Value.Count);
+        Assert.That(totalCount, Is.EqualTo(0));
     }
 }

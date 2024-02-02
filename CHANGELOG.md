@@ -7,13 +7,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased] - yyyy-mm-dd
 
 ### Added
-- Added DtNodePool.GetNode, FindNode, FindNodes tests
+- Added DtNodePool tests
  
 ### Fixed
-- Fixed SOH issue in dtNavMeshQuery.Raycast
+- Fixed SOH issue in DtNavMeshQuery.Raycast
 - Fixed SOH issue in DtProximityGrid.QueryItems
 
 ### Changed
+- Upgrade NUnit.Analyzers 4.0.1
 
 ### Removed
 
