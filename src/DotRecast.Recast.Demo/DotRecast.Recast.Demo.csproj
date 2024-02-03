@@ -12,6 +12,7 @@
     <PackageProjectUrl>https://github.com/ikpil/DotRecast</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ikpil/DotRecast</RepositoryUrl>
     <PackageTags>game gamedev ai csharp server unity navigation game-development unity3d pathfinding pathfinder recast detour navmesh crowd-simulation recastnavigation</PackageTags>
+    <PackageReleaseNotes>https://github.com/ikpil/DotRecast/blob/main/CHANGELOG.md</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
