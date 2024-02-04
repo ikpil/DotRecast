@@ -25,7 +25,7 @@ namespace DotRecast.Detour
 {
     public class DtNode
     {
-        public readonly int index;
+        public readonly int ptr;
 
         public RcVec3f pos; // Position of the node.
         public float cost; // Cost from previous node to current node.
@@ -36,9 +36,9 @@ namespace DotRecast.Detour
         public long id; // Polygon ref the node corresponds to.
         public List<long> shortcut; // Shortcut found by raycast.
 
-        public DtNode(int index)
+        public DtNode(int ptr)
         {
-            this.index = index;
+            this.ptr = ptr;
         }
         
         public static int ComparisonNodeTotal(DtNode a, DtNode b)
