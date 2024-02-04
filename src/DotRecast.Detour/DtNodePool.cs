@@ -25,6 +25,8 @@ namespace DotRecast.Detour
     public class DtNodePool
     {
         private readonly Dictionary<long, List<DtNode>> m_map;
+
+        private int m_nodeCount;
         private readonly List<DtNode> m_nodes;
 
         public DtNodePool()
@@ -35,8 +37,8 @@ namespace DotRecast.Detour
 
         public void Clear()
         {
-            m_nodes.Clear();
             m_map.Clear();
+            m_nodeCount = 0;
         }
 
         public int FindNodes(long id, out List<DtNode> nodes)
@@ -52,7 +54,7 @@ namespace DotRecast.Detour
 
         public DtNode FindNode(long id)
         {
-            var hasNode = m_map.TryGetValue(id, out var nodes);
+            m_map.TryGetValue(id, out var nodes);
             if (nodes != null && 0 != nodes.Count)
             {
                 return nodes[0];
@@ -63,7 +65,7 @@ namespace DotRecast.Detour
 
         public DtNode GetNode(long id, int state)
         {
-            var hasNode = m_map.TryGetValue(id, out var nodes);
+            m_map.TryGetValue(id, out var nodes);
             if (nodes != null)
             {
                 foreach (DtNode node in nodes)
@@ -85,10 +87,22 @@ namespace DotRecast.Detour
 
         private DtNode Create(long id, int state, List<DtNode> nodes)
         {
-            DtNode node = new DtNode(m_nodes.Count + 1);
+            if (m_nodes.Count <= m_nodeCount)
+            {
+                var newNode = new DtNode(m_nodeCount);
+                m_nodes.Add(newNode);
+            }
+
+            int i = m_nodeCount;
+            m_nodeCount++;
+            var node = m_nodes[i];
+            node.pidx = 0;
+            node.cost = 0;
+            node.total = 0;
             node.id = id;
             node.state = state;
-            m_nodes.Add(node);
+            node.flags = 0;
+            node.shortcut = null;
 
             nodes.Add(node);
             return node;
@@ -96,12 +110,16 @@ namespace DotRecast.Detour
 
         public int GetNodeIdx(DtNode node)
         {
-            return node != null ? node.index : 0;
+            return node != null
+                ? node.ptr + 1
+                : 0;
         }
 
         public DtNode GetNodeAtIdx(int idx)
         {
-            return idx != 0 ? m_nodes[idx - 1] : null;
+            return idx != 0
+                ? m_nodes[idx - 1]
+                : null;
         }
 
         public DtNode GetNode(long refs)

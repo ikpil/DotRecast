@@ -31,14 +31,17 @@ namespace DotRecast.Detour
         /// < Add a vertex at every polygon edge crossing.
         protected readonly DtNavMesh m_nav;
 
+        protected readonly DtNodePool m_tinyNodePool;
         protected readonly DtNodePool m_nodePool;
         protected readonly DtNodeQueue m_openList;
+
         protected DtQueryData m_query;
 
         /// < Sliced query state.
         public DtNavMeshQuery(DtNavMesh nav)
         {
             m_nav = nav;
+            m_tinyNodePool = new DtNodePool();
             m_nodePool = new DtNodePool();
             m_openList = new DtNodeQueue();
         }
@@ -1799,9 +1802,9 @@ namespace DotRecast.Detour
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            DtNodePool tinyNodePool = new DtNodePool();
+            m_tinyNodePool.Clear();
 
-            DtNode startNode = tinyNodePool.GetNode(startRef);
+            DtNode startNode = m_tinyNodePool.GetNode(startRef);
             startNode.pidx = 0;
             startNode.cost = 0;
             startNode.total = 0;
@@ -1906,7 +1909,7 @@ namespace DotRecast.Detour
                     {
                         for (int k = 0; k < nneis; ++k)
                         {
-                            DtNode neighbourNode = tinyNodePool.GetNode(neis[k]);
+                            DtNode neighbourNode = m_tinyNodePool.GetNode(neis[k]);
                             // Skip if already visited.
                             if ((neighbourNode.flags & DtNodeFlags.DT_NODE_CLOSED) != 0)
                             {
@@ -1924,7 +1927,7 @@ namespace DotRecast.Detour
                             }
 
                             // Mark as the node as visited and push to queue.
-                            neighbourNode.pidx = tinyNodePool.GetNodeIdx(curNode);
+                            neighbourNode.pidx = m_tinyNodePool.GetNodeIdx(curNode);
                             neighbourNode.flags |= DtNodeFlags.DT_NODE_CLOSED;
                             stack.AddLast(neighbourNode);
                         }
@@ -1939,8 +1942,8 @@ namespace DotRecast.Detour
                 DtNode node = bestNode;
                 do
                 {
-                    DtNode next = tinyNodePool.GetNodeAtIdx(node.pidx);
-                    node.pidx = tinyNodePool.GetNodeIdx(prev);
+                    DtNode next = m_tinyNodePool.GetNodeAtIdx(node.pidx);
+                    node.pidx = m_tinyNodePool.GetNodeIdx(prev);
                     prev = node;
                     node = next;
                 } while (node != null);
@@ -1950,7 +1953,7 @@ namespace DotRecast.Detour
                 do
                 {
                     visited.Add(node.id);
-                    node = tinyNodePool.GetNodeAtIdx(node.pidx);
+                    node = m_tinyNodePool.GetNodeAtIdx(node.pidx);
                 } while (node != null);
             }
 
@@ -2856,9 +2859,9 @@ namespace DotRecast.Detour
             resultRef.Clear();
             resultParent.Clear();
 
-            DtNodePool tinyNodePool = new DtNodePool();
+            m_tinyNodePool.Clear();
 
-            DtNode startNode = tinyNodePool.GetNode(startRef);
+            DtNode startNode = m_tinyNodePool.GetNode(startRef);
             startNode.pidx = 0;
             startNode.id = startRef;
             startNode.flags = DtNodeFlags.DT_NODE_CLOSED;
@@ -2894,7 +2897,7 @@ namespace DotRecast.Detour
                         continue;
                     }
 
-                    DtNode neighbourNode = tinyNodePool.GetNode(neighbourRef);
+                    DtNode neighbourNode = m_tinyNodePool.GetNode(neighbourRef);
                     // Skip visited.
                     if ((neighbourNode.flags & DtNodeFlags.DT_NODE_CLOSED) != 0)
                     {
@@ -2934,7 +2937,7 @@ namespace DotRecast.Detour
                     // Mark node visited, this is done before the overlap test so that
                     // we will not visit the poly again if the test fails.
                     neighbourNode.flags |= DtNodeFlags.DT_NODE_CLOSED;
-                    neighbourNode.pidx = tinyNodePool.GetNodeIdx(curNode);
+                    neighbourNode.pidx = m_tinyNodePool.GetNodeIdx(curNode);
 
                     // Check that the polygon does not collide with existing polygons.
 
