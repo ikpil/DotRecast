@@ -24,11 +24,13 @@ namespace DotRecast.Detour
 {
     public class DtNodePool
     {
-        private readonly Dictionary<long, List<DtNode>> m_map = new Dictionary<long, List<DtNode>>();
-        private readonly List<DtNode> m_nodes = new List<DtNode>();
+        private readonly Dictionary<long, List<DtNode>> m_map;
+        private readonly List<DtNode> m_nodes;
 
         public DtNodePool()
         {
+            m_map = new Dictionary<long, List<DtNode>>();
+            m_nodes = new List<DtNode>();
         }
 
         public void Clear()
