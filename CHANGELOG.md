@@ -31,6 +31,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Removed
 
+### Special Thanks
+- [@Doprez](https://github.com/Doprez)
+- [@Arctium](https://github.com/Arctium)
+
 ## [2024.1.1] - 2024-01-05
 
 ### Fixed
