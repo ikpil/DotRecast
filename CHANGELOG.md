@@ -7,13 +7,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased] - yyyy-mm-dd
 
 ### Added
-- Added DtNodePool tests
-- Added WangHash() for DtNodePool
-- Added avg, min, max, sampling updated times in CrowdAgentProfilingTool
+
+### Fixed
+
+### Changed
+
+### Removed
+
+
+## [2024.1.2] - 2024-02-04
+
+### Added
+- Added DtNodePool tests [@ikpil](https://github.com/ikpil)
+- Added WangHash() for DtNodePool [@ikpil](https://github.com/ikpil)
+- Added avg, min, max, sampling updated times in CrowdAgentProfilingTool [@ikpil](https://github.com/ikpil)
  
 ### Fixed
-- Fixed SOH issue in DtNavMeshQuery.Raycast
-- Fixed SOH issue in DtProximityGrid.QueryItems
+- Fixed SOH issue in DtNavMeshQuery.Raycast [@ikpil](https://github.com/ikpil)
+- Fixed SOH issue in DtProximityGrid.QueryItems [@ikpil](https://github.com/ikpil)
 
 ### Changed
 - Upgrade NUnit.Analyzers 4.0.1
@@ -21,8 +32,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Removed
 
 ## [2024.1.1] - 2024-01-05
-
-### Added
 
 ### Fixed
 - Fix typo ([#25](https://github.com/ikpil/DotRecast/pull/25)) [@c0nd3v](https://github.com/c0nd3v)
@@ -35,6 +44,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - [Upstream] 248275e - Fix: typo error (#153) ([#21](https://github.com/ikpil/DotRecast/pull/21)) [@ikpil](https://github.com/ikpil)
 - Code cleanup and small optimizations in RecastFilter.cpp ([#29](https://github.com/ikpil/DotRecast/pull/29)) [@ikpil](https://github.com/ikpil)
 - Added UI scaling feature based on monitor resolution in Demo ([#28](https://github.com/ikpil/DotRecast/pull/28)) [@ikpil](https://github.com/ikpil)
-
-### Removed
 
