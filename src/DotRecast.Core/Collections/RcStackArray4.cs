@@ -20,7 +20,7 @@ namespace DotRecast.Core.Collections
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                ThrowHelper.ThrowExceptionIfIndexOutOfRange(index, Length);
+                RcThrowHelper.ThrowExceptionIfIndexOutOfRange(index, Length);
 
                 return index switch
                 {
@@ -34,7 +34,7 @@ namespace DotRecast.Core.Collections
 
             set
             {
-                ThrowHelper.ThrowExceptionIfIndexOutOfRange(index, Length);
+                RcThrowHelper.ThrowExceptionIfIndexOutOfRange(index, Length);
 
                 switch (index)
                 {

@@ -4,7 +4,7 @@ using DotRecast.Core.Collections;
 
 namespace DotRecast.Core
 {
-    public static class ThrowHelper
+    public static class RcThrowHelper
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowExceptionIfIndexOutOfRange(int index, int size)

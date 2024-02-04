@@ -34,14 +34,14 @@ namespace DotRecast.Core.Buffers
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                ThrowHelper.ThrowExceptionIfIndexOutOfRange(index, Length);
+                RcThrowHelper.ThrowExceptionIfIndexOutOfRange(index, Length);
                 return _array[index];
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                ThrowHelper.ThrowExceptionIfIndexOutOfRange(index, Length);
+                RcThrowHelper.ThrowExceptionIfIndexOutOfRange(index, Length);
                 _array[index] = value;
             }
         }
