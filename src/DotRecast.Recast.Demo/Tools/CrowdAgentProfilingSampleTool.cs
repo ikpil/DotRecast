@@ -118,7 +118,11 @@ public class CrowdAgentProfilingSampleTool : ISampleTool
                 ImGui.Text($"{rtt.Key}: {rtt.Micros} us");
             }
 
-            ImGui.Text($"Update Time: {_tool.GetCrowdUpdateTime()} ms");
+            ImGui.Text($"Current Update Time: {_tool.GetCrowdUpdateTime()} ms");
+            ImGui.Text($"Sampling Update Time: {_tool.GetCrowdUpdateSamplingTime()} ms");
+            ImGui.Text($"Avg Update Time: {_tool.GetCrowdUpdateAvgTime()} ms");
+            ImGui.Text($"Max Update Time: {_tool.GetCrowdUpdateMaxTime()} ms");
+            ImGui.Text($"Min Update Time: {_tool.GetCrowdUpdateMinTime()} ms");
         }
     }
 
