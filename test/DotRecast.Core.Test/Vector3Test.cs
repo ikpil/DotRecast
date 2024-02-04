@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Core.Test;
 
-public class Vector3Tests
+public class Vector3Test
 {
     [Test]
     [Repeat(100000)]

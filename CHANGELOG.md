@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 - Added DtNodePool tests
+- Added WangHash() for DtNodePool
 - Added avg, min, max, sampling updated times in CrowdAgentProfilingTool
  
 ### Fixed
