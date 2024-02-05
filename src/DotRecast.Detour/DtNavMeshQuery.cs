@@ -723,26 +723,29 @@ namespace DotRecast.Detour
             return tiles;
         }
 
-        /**
-     * Finds a path from the start polygon to the end polygon.
-     *
-     * If the end polygon cannot be reached through the navigation graph, the last polygon in the path will be the
-     * nearest the end polygon.
-     *
-     * The start and end positions are used to calculate traversal costs. (The y-values impact the result.)
-     *
-     * @param startRef
-     *            The reference id of the start polygon.
-     * @param endRef
-     *            The reference id of the end polygon.
-     * @param startPos
-     *            A position within the start polygon. [(x, y, z)]
-     * @param endPos
-     *            A position within the end polygon. [(x, y, z)]
-     * @param filter
-     *            The polygon filter to apply to the query.
-     * @return Found path
-     */
+        /// @par
+        ///
+        /// If the end polygon cannot be reached through the navigation graph,
+        /// the last polygon in the path will be the nearest the end polygon.
+        ///
+        /// If the path array is to small to hold the full result, it will be filled as 
+        /// far as possible from the start polygon toward the end polygon.
+        ///
+        /// The start and end positions are used to calculate traversal costs. 
+        /// (The y-values impact the result.)
+        ///
+        /// @name Standard Pathfinding Functions
+        /// @{
+        /// Finds a path from the start polygon to the end polygon.
+        ///  @param[in]		startRef	The reference id of the start polygon.
+        ///  @param[in]		endRef		The reference id of the end polygon.
+        ///  @param[in]		startPos	A position within the start polygon. [(x, y, z)]
+        ///  @param[in]		endPos		A position within the end polygon. [(x, y, z)]
+        ///  @param[in]		filter		The polygon filter to apply to the query.
+        ///  @param[out]	path		An ordered list of polygon references representing the path. (Start to end.) 
+        ///  							[(polyRef) * @p pathCount]
+        ///  @param[out]	pathCount	The number of polygons returned in the @p path array.
+        ///  @param[in]		maxPath		The maximum number of polygons the @p path array can hold. [Limit: >= 1]
         public DtStatus FindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter, ref List<long> path, DtFindPathOption fpo)
         {
             if (null == path)
@@ -3428,7 +3431,7 @@ namespace DotRecast.Detour
             }
 
             DtNode endNode = endNodes[0];
-            
+
             return GetPathToNode(endNode, ref path);
         }
 
