@@ -27,31 +27,14 @@ namespace DotRecast.Detour
     {
         public readonly int index;
 
-        /** Position of the node. */
-        public RcVec3f pos = new RcVec3f();
-
-        /** Cost of reaching the given node. */
-        public float cost;
-
-        /** Total cost of reaching the goal via the given node including heuristics. */
-        public float total;
-
-        /** Index to parent node. */
-        public int pidx;
-
-        /**
-     * extra state information. A polyRef can have multiple nodes with different extra info. see DT_MAX_STATES_PER_NODE
-     */
-        public int state;
-
-        /** Node flags. A combination of dtNodeFlags. */
-        public int flags;
-
-        /** Polygon ref the node corresponds to. */
-        public long id;
-
-        /** Shortcut found by raycast. */
-        public List<long> shortcut;
+        public RcVec3f pos; // Position of the node.
+        public float cost; // Cost from previous node to current node.
+        public float total; // Cost up to the node.
+        public int pidx; // Index to parent node.
+        public int state; // extra state information. A polyRef can have multiple nodes with different extra info. see DT_MAX_STATES_PER_NODE
+        public int flags; // Node flags. A combination of dtNodeFlags.
+        public long id; // Polygon ref the node corresponds to.
+        public List<long> shortcut; // Shortcut found by raycast.
 
         public DtNode(int index)
         {
