@@ -74,11 +74,11 @@ public class DtNodePoolTest
             Assert.That(nodes, Is.Null);
         }
 
-        var totalCount = pool.GetNodeMap().Sum(x => x.Value.Count);
+        var totalCount = pool.GetNodeCount();
         Assert.That(totalCount, Is.EqualTo(sum));
 
         pool.Clear();
-        totalCount = pool.GetNodeMap().Sum(x => x.Value.Count);
+        totalCount = pool.GetNodeCount();
         Assert.That(totalCount, Is.EqualTo(0));
     }
 }

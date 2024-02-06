@@ -1200,45 +1200,39 @@ public class RecastDebugDraw : DebugDraw
             float off = 0.5f;
             Begin(DebugDrawPrimitives.POINTS, 4.0f);
 
-            foreach (List<DtNode> nodes in pool.GetNodeMap().Values)
+            foreach (DtNode node in pool.AsEnumerable())
             {
-                foreach (DtNode node in nodes)
+                if (node == null)
                 {
-                    if (node == null)
-                    {
-                        continue;
-                    }
-
-                    Vertex(node.pos.X, node.pos.Y + off, node.pos.Z, DuRGBA(255, 192, 0, 255));
+                    continue;
                 }
+
+                Vertex(node.pos.X, node.pos.Y + off, node.pos.Z, DuRGBA(255, 192, 0, 255));
             }
 
             End();
 
             Begin(DebugDrawPrimitives.LINES, 2.0f);
-            foreach (List<DtNode> nodes in pool.GetNodeMap().Values)
+            foreach (DtNode node in pool.AsEnumerable())
             {
-                foreach (DtNode node in nodes)
+                if (node == null)
                 {
-                    if (node == null)
-                    {
-                        continue;
-                    }
-
-                    if (node.pidx == 0)
-                    {
-                        continue;
-                    }
-
-                    DtNode parent = pool.GetNodeAtIdx(node.pidx);
-                    if (parent == null)
-                    {
-                        continue;
-                    }
-
-                    Vertex(node.pos.X, node.pos.Y + off, node.pos.Z, DuRGBA(255, 192, 0, 128));
-                    Vertex(parent.pos.X, parent.pos.Y + off, parent.pos.Z, DuRGBA(255, 192, 0, 128));
+                    continue;
                 }
+
+                if (node.pidx == 0)
+                {
+                    continue;
+                }
+
+                DtNode parent = pool.GetNodeAtIdx(node.pidx);
+                if (parent == null)
+                {
+                    continue;
+                }
+
+                Vertex(node.pos.X, node.pos.Y + off, node.pos.Z, DuRGBA(255, 192, 0, 128));
+                Vertex(parent.pos.X, parent.pos.Y + off, parent.pos.Z, DuRGBA(255, 192, 0, 128));
             }
 
             End();
