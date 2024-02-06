@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DotRecast.Detour
 {
@@ -39,6 +40,11 @@ namespace DotRecast.Detour
         {
             m_map.Clear();
             m_nodeCount = 0;
+        }
+
+        public int GetNodeCount()
+        {
+            return m_nodeCount;
         }
 
         public int FindNodes(long id, out List<DtNode> nodes)
@@ -127,9 +133,9 @@ namespace DotRecast.Detour
             return GetNode(refs, 0);
         }
 
-        public Dictionary<long, List<DtNode>> GetNodeMap()
+        public IEnumerable<DtNode> AsEnumerable()
         {
-            return m_map;
+            return m_nodes.Take(m_nodeCount);
         }
     }
 }
