@@ -11,10 +11,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 ### Changed
+- Update Microsoft.NET.Test.Sdk 17.8.0 to 17.9.0
 
 ### Removed
 
-
+### Special Thanks
+- [@Doprez](https://github.com/Doprez)
+- [@Arctium](https://github.com/Arctium)
+ 
 ## [2024.1.2] - 2024-02-04
 
 ### Added
