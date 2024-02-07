@@ -81,8 +81,8 @@ namespace DotRecast.Core.Collections
 
         public bool Remove(T item)
         {
-            Balance();
-            int idx = _items.BinarySearch(item, _comparer);
+            //int idx = _items.BinarySearch(item, _comparer); // don't use this! Because reference types can be reused externally.
+            int idx = _items.FindLastIndex(x => item.Equals(x));
             if (0 > idx)
                 return false;
 

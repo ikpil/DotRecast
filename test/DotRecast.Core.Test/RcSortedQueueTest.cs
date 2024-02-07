@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using DotRecast.Core.Collections;
 using NUnit.Framework;
 
@@ -51,7 +50,7 @@ public class RcSortedQueueTest
     }
 
     [Test]
-    public void TestRemove()
+    public void TestRemoveForValueType()
     {
         var sortedQueue = new RcSortedQueue<int>((a, b) => a.CompareTo(b));
 
@@ -80,4 +79,36 @@ public class RcSortedQueueTest
 
         Assert.That(sortedQueue.IsEmpty(), Is.True);
     }
+
+    [Test]
+    public void TestRemoveForReferenceType()
+    {
+        var sortedQueue = new RcSortedQueue<RcAtomicLong>((a, b) => a.Read().CompareTo(b.Read()));
+
+        var r = new RcRand();
+        var expectedList = new List<RcAtomicLong>();
+        for (int i = 0; i < 999; ++i)
+        {
+            expectedList.Add(new RcAtomicLong(r.NextInt32() % 300)); // allow duplication 
+        }
+
+        // ready
+        foreach (var expected in expectedList)
+        {
+            sortedQueue.Enqueue(expected);
+        }
+
+        expectedList.Shuffle();
+
+        // check
+        Assert.That(sortedQueue.Count(), Is.EqualTo(expectedList.Count));
+
+        foreach (var expected in expectedList)
+        {
+            Assert.That(sortedQueue.Remove(expected), Is.True);
+        }
+
+        Assert.That(sortedQueue.IsEmpty(), Is.True);
+    }
+
 }
