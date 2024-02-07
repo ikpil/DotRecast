@@ -7,10 +7,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased] - yyyy-mm-dd
 
 ### Added
-
+- Added DtNodeQueue UnitTest [@ikpil](https://github.com/ikpil)
+- Added RcSortedQueue UnitTest [@ikpil](https://github.com/ikpil)
+ 
 ### Fixed
 
 ### Changed
+- Changed RcSortedQueue.Remove() function to use binary search.
 - Update Microsoft.NET.Test.Sdk 17.8.0 to 17.9.0
 
 ### Removed

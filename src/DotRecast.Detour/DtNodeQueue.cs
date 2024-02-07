@@ -24,7 +24,12 @@ namespace DotRecast.Detour
 {
     public class DtNodeQueue
     {
-        private readonly RcSortedQueue<DtNode> m_heap = new RcSortedQueue<DtNode>((n1, n2) => n1.total.CompareTo(n2.total));
+        private readonly RcSortedQueue<DtNode> m_heap;
+
+        public DtNodeQueue()
+        {
+            m_heap = new RcSortedQueue<DtNode>((n1, n2) => n1.total.CompareTo(n2.total));
+        }
 
         public int Count()
         {
@@ -43,9 +48,7 @@ namespace DotRecast.Detour
 
         public DtNode Pop()
         {
-            var node = Peek();
-            m_heap.Remove(node);
-            return node;
+            return m_heap.Dequeue();
         }
 
         public void Push(DtNode node)

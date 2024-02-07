@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using DotRecast.Core.Collections;
-using NuGet.Frameworks;
 using NUnit.Framework;
 
 namespace DotRecast.Core.Test;
