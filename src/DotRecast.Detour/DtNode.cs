@@ -47,12 +47,12 @@ namespace DotRecast.Detour
             if (0 != compare)
                 return compare;
 
-            return a.index.CompareTo(b.index);
+            return a.ptr.CompareTo(b.ptr);
         }
 
         public override string ToString()
         {
-            return $"Node [index={index} id={id} cost={cost} total={total}]";
+            return $"Node [ptr={ptr} id={id} cost={cost} total={total}]";
         }
     }
 }
