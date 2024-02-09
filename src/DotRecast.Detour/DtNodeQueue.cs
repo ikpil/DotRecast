@@ -28,7 +28,7 @@ namespace DotRecast.Detour
 
         public DtNodeQueue()
         {
-            m_heap = new RcSortedQueue<DtNode>((n1, n2) => n1.total.CompareTo(n2.total));
+            m_heap = new RcSortedQueue<DtNode>(DtNode.ComparisonNodeTotal);
         }
 
         public int Count()
@@ -64,7 +64,7 @@ namespace DotRecast.Detour
 
         public bool IsEmpty()
         {
-            return 0 == m_heap.Count();
+            return m_heap.IsEmpty();
         }
     }
 }

@@ -40,10 +40,19 @@ namespace DotRecast.Detour
         {
             this.index = index;
         }
+        
+        public static int ComparisonNodeTotal(DtNode a, DtNode b)
+        {
+            int compare = a.total.CompareTo(b.total);
+            if (0 != compare)
+                return compare;
+
+            return a.index.CompareTo(b.index);
+        }
 
         public override string ToString()
         {
-            return "Node [id=" + id + "]";
+            return $"Node [index={index} id={id} cost={cost} total={total}]";
         }
     }
 }

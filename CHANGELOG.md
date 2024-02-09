@@ -9,12 +9,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 - Added DtNodeQueue UnitTest [@ikpil](https://github.com/ikpil)
 - Added RcSortedQueue UnitTest [@ikpil](https://github.com/ikpil)
+- Added IComparable interface to RcAtomicLong [@ikpil](https://github.com/ikpil)
  
 ### Fixed
 
 ### Changed
 - Update Microsoft.NET.Test.Sdk 17.8.0 to 17.9.0
-
+- Enhanced ToString method of DtNode to provide more detailed information.
+ 
 ### Removed
 
 ### Special Thanks

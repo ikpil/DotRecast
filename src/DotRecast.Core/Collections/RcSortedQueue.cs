@@ -75,12 +75,18 @@ namespace DotRecast.Core.Collections
 
         public void Enqueue(T item)
         {
+            if (null == item)
+                return;
+
             _items.Add(item);
             _dirty = true;
         }
 
         public bool Remove(T item)
         {
+            if (null == item)
+                return false;
+
             //int idx = _items.BinarySearch(item, _comparer); // don't use this! Because reference types can be reused externally.
             int idx = _items.FindLastIndex(x => item.Equals(x));
             if (0 > idx)
