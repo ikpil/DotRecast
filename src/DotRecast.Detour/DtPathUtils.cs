@@ -181,6 +181,7 @@ namespace DotRecast.Detour
 
             // Adjust beginning of the buffer to include the visited.
             List<long> result = new List<long>();
+            
             // Store visited
             for (int i = nvisited - 1; i > furthestVisited; --i)
             {
