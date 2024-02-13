@@ -33,8 +33,7 @@ namespace DotRecast.Detour.Crowd
         /// The type of mesh polygon the agent is traversing. (See: #CrowdAgentState)
         public DtCrowdAgentState state;
 
-        /// True if the agent has valid path (targetState == DT_CROWDAGENT_TARGET_VALID) and the path does not lead to the
-        /// requested position, else false.
+        /// True if the agent has valid path (targetState == DT_CROWDAGENT_TARGET_VALID) and the path does not lead to the requested position, else false.
         public bool partial;
 
         /// The path corridor the agent is using.
@@ -52,51 +51,24 @@ namespace DotRecast.Detour.Crowd
         /// The desired speed.
         public float desiredSpeed;
 
-        public RcVec3f npos = new RcVec3f();
+        public RcVec3f npos = new RcVec3f(); // < The current agent position. [(x, y, z)]
+        public RcVec3f disp = new RcVec3f(); // < A temporary value used to accumulate agent displacement during iterative collision resolution. [(x, y, z)]
+        public RcVec3f dvel = new RcVec3f(); // < The desired velocity of the agent. Based on the current path, calculated from scratch each frame. [(x, y, z)]
+        public RcVec3f nvel = new RcVec3f(); // < The desired velocity adjusted by obstacle avoidance, calculated from scratch each frame. [(x, y, z)]
+        public RcVec3f vel = new RcVec3f(); // < The actual velocity of the agent. The change from nvel -> vel is constrained by max acceleration. [(x, y, z)]
 
-        /// < The current agent position. [(x, y, z)]
-        public RcVec3f disp = new RcVec3f();
-
-        /// < A temporary value used to accumulate agent displacement during iterative
-        /// collision resolution. [(x, y, z)]
-        public RcVec3f dvel = new RcVec3f();
-
-        /// < The desired velocity of the agent. Based on the current path, calculated
-        /// from
-        /// scratch each frame. [(x, y, z)]
-        public RcVec3f nvel = new RcVec3f();
-
-        /// < The desired velocity adjusted by obstacle avoidance, calculated from scratch each
-        /// frame. [(x, y, z)]
-        public RcVec3f vel = new RcVec3f();
-
-        /// < The actual velocity of the agent. The change from nvel -> vel is
-        /// constrained by max acceleration. [(x, y, z)]
         /// The agent's configuration parameters.
         public DtCrowdAgentParams option;
 
         /// The local path corridor corners for the agent.
         public List<DtStraightPath> corners = new List<DtStraightPath>();
 
-        public DtMoveRequestState targetState;
-
-        /// < State of the movement request.
-        public long targetRef;
-
-        /// < Target polyref of the movement request.
-        public RcVec3f targetPos = new RcVec3f();
-
-        /// < Target position of the movement request (or velocity in case of
-        /// DT_CROWDAGENT_TARGET_VELOCITY).
-        public DtPathQueryResult targetPathQueryResult;
-
-        /// < Path finder query
-        public bool targetReplan;
-
-        /// < Flag indicating that the current path is being replanned.
-        public float targetReplanTime;
-
-        /// <Time since the agent's target was replanned.
+        public DtMoveRequestState targetState; // < State of the movement request.
+        public long targetRef; // < Target polyref of the movement request.
+        public RcVec3f targetPos = new RcVec3f(); // < Target position of the movement request (or velocity in case of DT_CROWDAGENT_TARGET_VELOCITY).
+        public DtPathQueryResult targetPathQueryResult; // < Path finder query
+        public bool targetReplan; // < Flag indicating that the current path is being replanned.
+        public float targetReplanTime; // <Time since the agent's target was replanned.
         public float targetReplanWaitTime;
 
         public DtCrowdAgentAnimation animation;

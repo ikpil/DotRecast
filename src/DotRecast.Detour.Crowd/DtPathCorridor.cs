@@ -30,8 +30,8 @@ namespace DotRecast.Detour.Crowd
     /// @ingroup crowd, detour
     public class DtPathCorridor
     {
-        private RcVec3f m_pos = new RcVec3f();
-        private RcVec3f m_target = new RcVec3f();
+        private RcVec3f m_pos;
+        private RcVec3f m_target;
         private List<long> m_path;
 
         /**
@@ -85,9 +85,10 @@ namespace DotRecast.Detour.Crowd
         /// Allocates the corridor's path buffer. 
         ///  @param[in]		maxPath		The maximum path size the corridor can handle.
         /// @return True if the initialization succeeded.
-        public void Init(int maxPath)
+        public bool Init(int maxPath)
         {
             // ...
+            return true;
         }
 
         /// @par
