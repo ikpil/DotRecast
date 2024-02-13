@@ -7,6 +7,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased] - yyyy-mm-dd
 
 ### Added
+
+### Fixed
+
+### Changed
+
+### Removed
+
+### Special Thanks
+- [@Doprez](https://github.com/Doprez)
+- [@Arctium](https://github.com/Arctium)
+
+
+## [2024.1.3] - 2024-02-13
+
+### Added
 - Added DtNodeQueue UnitTest [@ikpil](https://github.com/ikpil)
 - Added RcSortedQueue UnitTest [@ikpil](https://github.com/ikpil)
 - Added IComparable interface to RcAtomicLong [@ikpil](https://github.com/ikpil)
@@ -17,6 +32,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 - Update Microsoft.NET.Test.Sdk 17.8.0 to 17.9.0
 - Enhanced ToString method of DtNode to provide more detailed information.
+- Reuse DtNode in DtNodePool
  
 ### Removed
 
