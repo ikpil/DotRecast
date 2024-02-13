@@ -34,8 +34,6 @@ namespace DotRecast.Detour.Crowd
         private RcVec3f m_target = new RcVec3f();
         private List<long> m_path;
 
-        private static readonly float MIN_TARGET_DIST = RcMath.Sqr(0.01f);
-
         /**
         @class dtPathCorridor
         @par
@@ -131,6 +129,8 @@ namespace DotRecast.Detour.Crowd
         /// @return The number of corners returned in the corner buffers. [0 <= value <= @p maxCorners]
         public int FindCorners(ref List<DtStraightPath> corners, int maxCorners, DtNavMeshQuery navquery, IDtQueryFilter filter)
         {
+            const float MIN_TARGET_DIST = 0.01f;
+            
             var result = navquery.FindStraightPath(m_pos, m_target, m_path, ref corners, maxCorners, 0);
             if (result.Succeeded())
             {
@@ -139,7 +139,7 @@ namespace DotRecast.Detour.Crowd
                 foreach (DtStraightPath spi in corners)
                 {
                     if ((spi.flags & DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0
-                        || RcVecUtils.Dist2DSqr(spi.pos, m_pos) > MIN_TARGET_DIST)
+                        || RcVecUtils.Dist2DSqr(spi.pos, m_pos) > RcMath.Sqr(MIN_TARGET_DIST))
                     {
                         break;
                     }
