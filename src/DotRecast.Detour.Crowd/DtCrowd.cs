@@ -24,137 +24,116 @@ using DotRecast.Core;
 using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
 
-
 namespace DotRecast.Detour.Crowd
 {
+    ///////////////////////////////////////////////////////////////////////////
+
+// This section contains detailed documentation for members that don't have
+// a source file. It reduces clutter in the main section of the header.
+
     /**
- * Members in this module implement local steering and dynamic avoidance features.
- *
- * The crowd is the big beast of the navigation features. It not only handles a lot of the path management for you, but
- * also local steering and dynamic avoidance between members of the crowd. I.e. It can keep your agents from running
- * into each other.
- *
- * Main class: Crowd
- *
- * The #dtNavMeshQuery and #dtPathCorridor classes provide perfectly good, easy to use path planning features. But in
- * the end they only give you points that your navigation client should be moving toward. When it comes to deciding
- * things like agent velocity and steering to avoid other agents, that is up to you to implement. Unless, of course, you
- * decide to use Crowd.
- *
- * Basically, you add an agent to the crowd, providing various configuration settings such as maximum speed and
- * acceleration. You also provide a local target to move toward. The crowd manager then provides, with every update, the
- * new agent position and velocity for the frame. The movement will be constrained to the navigation mesh, and steering
- * will be applied to ensure agents managed by the crowd do not collide with each other.
- *
- * This is very powerful feature set. But it comes with limitations.
- *
- * The biggest limitation is that you must give control of the agent's position completely over to the crowd manager.
- * You can update things like maximum speed and acceleration. But in order for the crowd manager to do its thing, it
- * can't allow you to constantly be giving it overrides to position and velocity. So you give up direct control of the
- * agent's movement. It belongs to the crowd.
- *
- * The second biggest limitation revolves around the fact that the crowd manager deals with local planning. So the
- * agent's target should never be more than 256 polygons away from its current position. If it is, you risk your agent
- * failing to reach its target. So you may still need to do long distance planning and provide the crowd manager with
- * intermediate targets.
- *
- * Other significant limitations:
- *
- * - All agents using the crowd manager will use the same #dtQueryFilter. - Crowd management is relatively expensive.
- * The maximum agents under crowd management at any one time is between 20 and 30. A good place to start is a maximum of
- * 25 agents for 0.5ms per frame.
- *
- * @note This is a summary list of members. Use the index or search feature to find minor members.
- *
- * @struct dtCrowdAgentParams
- * @see CrowdAgent, Crowd::AddAgent(), Crowd::UpdateAgentParameters()
- *
- * @var dtCrowdAgentParams::obstacleAvoidanceType
- * @par
- *
- * 		#dtCrowd permits agents to use different avoidance configurations. This value is the index of the
- *      #dtObstacleAvoidanceParams within the crowd.
- *
- * @see dtObstacleAvoidanceParams, dtCrowd::SetObstacleAvoidanceParams(), dtCrowd::GetObstacleAvoidanceParams()
- *
- * @var dtCrowdAgentParams::collisionQueryRange
- * @par
- *
- * 		Collision elements include other agents and navigation mesh boundaries.
- *
- *      This value is often based on the agent radius and/or maximum speed. E.g. radius * 8
- *
- * @var dtCrowdAgentParams::pathOptimizationRange
- * @par
- *
- * 		Only applicable if #updateFlags includes the #DT_CROWD_OPTIMIZE_VIS flag.
- *
- *      This value is often based on the agent radius. E.g. radius * 30
- *
- * @see dtPathCorridor::OptimizePathVisibility()
- *
- * @var dtCrowdAgentParams::separationWeight
- * @par
- *
- * 		A higher value will result in agents trying to stay farther away from each other at the cost of more difficult
- *      steering in tight spaces.
- *
- */
-    /**
-     * This is the core class of the refs crowd module. See the refs crowd documentation for a summary of the crowd
-     * features. A common method for setting up the crowd is as follows: -# Allocate the crowd -# Set the avoidance
-     * configurations using #SetObstacleAvoidanceParams(). -# Add agents using #AddAgent() and make an initial movement
-     * request using #RequestMoveTarget(). A common process for managing the crowd is as follows: -# Call #Update() to allow
-     * the crowd to manage its agents. -# Retrieve agent information using #GetActiveAgents(). -# Make movement requests
-     * using #RequestMoveTarget() when movement goal changes. -# Repeat every frame. Some agent configuration settings can
-     * be updated using #UpdateAgentParameters(). But the crowd owns the agent position. So it is not possible to update an
-     * active agent's position. If agent position must be fed back into the crowd, the agent must be removed and re-added.
-     * Notes: - Path related information is available for newly added agents only after an #Update() has been performed. -
-     * Agent objects are kept in a pool and re-used. So it is important when using agent objects to check the value of
-     * #dtCrowdAgent::active to determine if the agent is actually in use or not. - This class is meant to provide 'local'
-     * movement. There is a limit of 256 polygons in the path corridor. So it is not meant to provide automatic pathfinding
-     * services over long distances.
-     *
-     * @see DtAllocCrowd(), DtFreeCrowd(), Init(), dtCrowdAgent
-     */
+
+    @defgroup crowd Crowd
+
+    Members in this module implement local steering and dynamic avoidance features.
+
+    The crowd is the big beast of the navigation features. It not only handles a
+    lot of the path management for you, but also local steering and dynamic
+    avoidance between members of the crowd. I.e. It can keep your agents from
+    running into each other.
+
+    Main class: #dtCrowd
+
+    The #dtNavMeshQuery and #dtPathCorridor classes provide perfectly good, easy
+    to use path planning features. But in the end they only give you points that
+    your navigation client should be moving toward. When it comes to deciding things
+    like agent velocity and steering to avoid other agents, that is up to you to
+    implement. Unless, of course, you decide to use #dtCrowd.
+
+    Basically, you add an agent to the crowd, providing various configuration
+    settings such as maximum speed and acceleration. You also provide a local
+    target to more toward. The crowd manager then provides, with every update, the
+    new agent position and velocity for the frame. The movement will be
+    constrained to the navigation mesh, and steering will be applied to ensure
+    agents managed by the crowd do not collide with each other.
+
+    This is very powerful feature set. But it comes with limitations.
+
+    The biggest limitation is that you must give control of the agent's position
+    completely over to the crowd manager. You can update things like maximum speed
+    and acceleration. But in order for the crowd manager to do its thing, it can't
+    allow you to constantly be giving it overrides to position and velocity. So
+    you give up direct control of the agent's movement. It belongs to the crowd.
+
+    The second biggest limitation revolves around the fact that the crowd manager
+    deals with local planning. So the agent's target should never be more than
+    256 polygons aways from its current position. If it is, you risk
+    your agent failing to reach its target. So you may still need to do long
+    distance planning and provide the crowd manager with intermediate targets.
+
+    Other significant limitations:
+
+    - All agents using the crowd manager will use the same #dtQueryFilter.
+    - Crowd management is relatively expensive. The maximum agents under crowd
+      management at any one time is between 20 and 30.  A good place to start
+      is a maximum of 25 agents for 0.5ms per frame.
+
+    @note This is a summary list of members.  Use the index or search
+    feature to find minor members.
+
+    @struct dtCrowdAgentParams
+    @see dtCrowdAgent, dtCrowd::addAgent(), dtCrowd::updateAgentParameters()
+
+    @var dtCrowdAgentParams::obstacleAvoidanceType
+    @par
+
+    #dtCrowd permits agents to use different avoidance configurations.  This value
+    is the index of the #dtObstacleAvoidanceParams within the crowd.
+
+    @see dtObstacleAvoidanceParams, dtCrowd::setObstacleAvoidanceParams(),
+         dtCrowd::getObstacleAvoidanceParams()
+
+    @var dtCrowdAgentParams::collisionQueryRange
+    @par
+
+    Collision elements include other agents and navigation mesh boundaries.
+
+    This value is often based on the agent radius and/or maximum speed. E.g. radius * 8
+
+    @var dtCrowdAgentParams::pathOptimizationRange
+    @par
+
+    Only applicable if #updateFlags includes the #DT_CROWD_OPTIMIZE_VIS flag.
+
+    This value is often based on the agent radius. E.g. radius * 30
+
+    @see dtPathCorridor::optimizePathVisibility()
+
+    @var dtCrowdAgentParams::separationWeight
+    @par
+
+    A higher value will result in agents trying to stay farther away from each other at
+    the cost of more difficult steering in tight spaces.
+    */
+    /// Provides local steering behaviors for a group of agents. 
+    /// @ingroup crowd
     public class DtCrowd
     {
-        /// The maximum number of corners a crowd agent will look ahead in the path.
-        /// This value is used for sizing the crowd agent corner buffers.
-        /// Due to the behavior of the crowd manager, the actual number of useful
-        /// corners will be one less than this number.
-        /// @ingroup crowd
-        public const int DT_CROWDAGENT_MAX_CORNERS = 4;
-
-        /// The maximum number of crowd avoidance configurations supported by the
-        /// crowd manager.
-        /// @ingroup crowd
-        /// @see dtObstacleAvoidanceParams, dtCrowd::SetObstacleAvoidanceParams(), dtCrowd::GetObstacleAvoidanceParams(),
-        /// dtCrowdAgentParams::obstacleAvoidanceType
-        public const int DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS = 8;
-
-        /// The maximum number of query filter types supported by the crowd manager.
-        /// @ingroup crowd
-        /// @see dtQueryFilter, dtCrowd::GetFilter() dtCrowd::GetEditableFilter(),
-        /// dtCrowdAgentParams::queryFilterType
-        public const int DT_CROWD_MAX_QUERY_FILTER_TYPE = 16;
-
         private readonly RcAtomicInteger _agentId = new RcAtomicInteger();
         private readonly List<DtCrowdAgent> _agents;
         private readonly DtPathQueue _pathQ;
-        private readonly DtObstacleAvoidanceParams[] _obstacleQueryParams = new DtObstacleAvoidanceParams[DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS];
+        private readonly DtObstacleAvoidanceParams[] _obstacleQueryParams = new DtObstacleAvoidanceParams[DtCrowdConst.DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS];
         private readonly DtObstacleAvoidanceQuery _obstacleQuery;
         private DtProximityGrid _grid;
         private readonly RcVec3f _ext = new RcVec3f();
-        private readonly IDtQueryFilter[] _filters = new IDtQueryFilter[DT_CROWD_MAX_QUERY_FILTER_TYPE];
+        private readonly IDtQueryFilter[] _filters = new IDtQueryFilter[DtCrowdConst.DT_CROWD_MAX_QUERY_FILTER_TYPE];
         private DtNavMeshQuery _navQuery;
         private DtNavMesh _navMesh;
         private readonly DtCrowdConfig _config;
         private readonly DtCrowdTelemetry _telemetry = new DtCrowdTelemetry();
         private int _velocitySampleCount;
 
-        public DtCrowd(DtCrowdConfig config, DtNavMesh nav) :
-            this(config, nav, i => new DtQueryDefaultFilter())
+        public DtCrowd(DtCrowdConfig config, DtNavMesh nav) : this(config, nav, i => new DtQueryDefaultFilter())
         {
         }
 
@@ -165,13 +144,13 @@ namespace DotRecast.Detour.Crowd
 
             _obstacleQuery = new DtObstacleAvoidanceQuery(config.maxObstacleAvoidanceCircles, config.maxObstacleAvoidanceSegments);
 
-            for (int i = 0; i < DT_CROWD_MAX_QUERY_FILTER_TYPE; i++)
+            for (int i = 0; i < DtCrowdConst.DT_CROWD_MAX_QUERY_FILTER_TYPE; i++)
             {
                 _filters[i] = queryFilterFactory.Invoke(i);
             }
 
             // Init obstacle query option.
-            for (int i = 0; i < DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS; ++i)
+            for (int i = 0; i < DtCrowdConst.DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS; ++i)
             {
                 _obstacleQueryParams[i] = new DtObstacleAvoidanceParams();
             }
@@ -206,7 +185,7 @@ namespace DotRecast.Detour.Crowd
         /// @param[in] option The new configuration.
         public void SetObstacleAvoidanceParams(int idx, DtObstacleAvoidanceParams option)
         {
-            if (idx >= 0 && idx < DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS)
+            if (idx >= 0 && idx < DtCrowdConst.DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS)
             {
                 _obstacleQueryParams[idx] = new DtObstacleAvoidanceParams(option);
             }
@@ -218,7 +197,7 @@ namespace DotRecast.Detour.Crowd
         /// @return The requested configuration.
         public DtObstacleAvoidanceParams GetObstacleAvoidanceParams(int idx)
         {
-            if (idx >= 0 && idx < DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS)
+            if (idx >= 0 && idx < DtCrowdConst.DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS)
             {
                 return _obstacleQueryParams[idx];
             }
@@ -375,7 +354,7 @@ namespace DotRecast.Detour.Crowd
 
         public IDtQueryFilter GetFilter(int i)
         {
-            return i >= 0 && i < DT_CROWD_MAX_QUERY_FILTER_TYPE ? _filters[i] : null;
+            return i >= 0 && i < DtCrowdConst.DT_CROWD_MAX_QUERY_FILTER_TYPE ? _filters[i] : null;
         }
 
         public DtProximityGrid GetGrid()
@@ -945,7 +924,7 @@ namespace DotRecast.Detour.Crowd
                 }
 
                 // Find corners for steering
-                ag.corridor.FindCorners(ref ag.corners, DT_CROWDAGENT_MAX_CORNERS, _navQuery, _filters[ag.option.queryFilterType]);
+                ag.corridor.FindCorners(ref ag.corners, DtCrowdConst.DT_CROWDAGENT_MAX_CORNERS, _navQuery, _filters[ag.option.queryFilterType]);
 
                 // Check to see if the corner after the next corner is directly visible,
                 // and short cut to there.

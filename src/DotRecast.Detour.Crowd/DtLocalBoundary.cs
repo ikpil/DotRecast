@@ -25,8 +25,6 @@ using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour.Crowd
 {
-    
-
     public class DtLocalBoundary
     {
         public const int MAX_LOCAL_SEGS = 8;
@@ -109,7 +107,7 @@ namespace DotRecast.Detour.Crowd
 
                 var segmentVerts = new List<RcSegmentVert>();
                 var segmentRefs = new List<long>();
-                
+
                 for (int j = 0; j < m_polys.Count; ++j)
                 {
                     var result = navquery.GetPolyWallSegments(m_polys[j], false, filter, ref segmentVerts, ref segmentRefs);
