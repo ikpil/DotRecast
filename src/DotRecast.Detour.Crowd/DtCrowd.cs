@@ -121,17 +121,25 @@ namespace DotRecast.Detour.Crowd
     {
         private readonly RcAtomicInteger _agentId = new RcAtomicInteger();
         private readonly List<DtCrowdAgent> _agents;
+
         private readonly DtPathQueue _pathQ;
-        private readonly DtObstacleAvoidanceParams[] _obstacleQueryParams = new DtObstacleAvoidanceParams[DtCrowdConst.DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS];
+
+        private readonly DtObstacleAvoidanceParams[] _obstacleQueryParams;
         private readonly DtObstacleAvoidanceQuery _obstacleQuery;
+
         private DtProximityGrid _grid;
-        private readonly RcVec3f _ext = new RcVec3f();
-        private readonly IDtQueryFilter[] _filters = new IDtQueryFilter[DtCrowdConst.DT_CROWD_MAX_QUERY_FILTER_TYPE];
-        private DtNavMeshQuery _navQuery;
-        private DtNavMesh _navMesh;
+
+        private readonly RcVec3f _agentPlacementHalfExtents;
+
+        private readonly IDtQueryFilter[] _filters;
+
         private readonly DtCrowdConfig _config;
-        private readonly DtCrowdTelemetry _telemetry = new DtCrowdTelemetry();
         private int _velocitySampleCount;
+
+        private DtNavMeshQuery _navQuery;
+
+        private DtNavMesh _navMesh;
+        private readonly DtCrowdTelemetry _telemetry = new DtCrowdTelemetry();
 
         public DtCrowd(DtCrowdConfig config, DtNavMesh nav) : this(config, nav, i => new DtQueryDefaultFilter())
         {
@@ -140,16 +148,18 @@ namespace DotRecast.Detour.Crowd
         public DtCrowd(DtCrowdConfig config, DtNavMesh nav, Func<int, IDtQueryFilter> queryFilterFactory)
         {
             _config = config;
-            _ext = new RcVec3f(config.maxAgentRadius * 2.0f, config.maxAgentRadius * 1.5f, config.maxAgentRadius * 2.0f);
+            _agentPlacementHalfExtents = new RcVec3f(config.maxAgentRadius * 2.0f, config.maxAgentRadius * 1.5f, config.maxAgentRadius * 2.0f);
 
             _obstacleQuery = new DtObstacleAvoidanceQuery(config.maxObstacleAvoidanceCircles, config.maxObstacleAvoidanceSegments);
 
+            _filters = new IDtQueryFilter[DtCrowdConst.DT_CROWD_MAX_QUERY_FILTER_TYPE];
             for (int i = 0; i < DtCrowdConst.DT_CROWD_MAX_QUERY_FILTER_TYPE; i++)
             {
                 _filters[i] = queryFilterFactory.Invoke(i);
             }
 
             // Init obstacle query option.
+            _obstacleQueryParams = new DtObstacleAvoidanceParams[DtCrowdConst.DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS];
             for (int i = 0; i < DtCrowdConst.DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS; ++i)
             {
                 _obstacleQueryParams[i] = new DtObstacleAvoidanceParams();
@@ -229,7 +239,7 @@ namespace DotRecast.Detour.Crowd
             UpdateAgentParameters(ag, option);
 
             // Find nearest position on navmesh and place the agent there.
-            var status = _navQuery.FindNearestPoly(pos, _ext, _filters[ag.option.queryFilterType], out var refs, out var nearestPt, out var _);
+            var status = _navQuery.FindNearestPoly(pos, _agentPlacementHalfExtents, _filters[ag.option.queryFilterType], out var refs, out var nearestPt, out var _);
             if (status.Failed())
             {
                 nearestPt = pos;
@@ -349,7 +359,7 @@ namespace DotRecast.Detour.Crowd
 
         public RcVec3f GetQueryExtents()
         {
-            return _ext;
+            return _agentPlacementHalfExtents;
         }
 
         public IDtQueryFilter GetFilter(int i)
@@ -449,7 +459,7 @@ namespace DotRecast.Detour.Crowd
                 {
                     // Current location is not valid, try to reposition.
                     // TODO: this can snap agents, how to handle that?
-                    _navQuery.FindNearestPoly(ag.npos, _ext, _filters[ag.option.queryFilterType], out agentRef, out var nearestPt, out var _);
+                    _navQuery.FindNearestPoly(ag.npos, _agentPlacementHalfExtents, _filters[ag.option.queryFilterType], out agentRef, out var nearestPt, out var _);
                     agentPos = nearestPt;
 
                     if (agentRef == 0)
@@ -489,7 +499,7 @@ namespace DotRecast.Detour.Crowd
                     if (!_navQuery.IsValidPolyRef(ag.targetRef, _filters[ag.option.queryFilterType]))
                     {
                         // Current target is not valid, try to reposition.
-                        _navQuery.FindNearestPoly(ag.targetPos, _ext, _filters[ag.option.queryFilterType], out ag.targetRef, out var nearestPt, out var _);
+                        _navQuery.FindNearestPoly(ag.targetPos, _agentPlacementHalfExtents, _filters[ag.option.queryFilterType], out ag.targetRef, out var nearestPt, out var _);
                         ag.targetPos = nearestPt;
                         replan = true;
                     }
