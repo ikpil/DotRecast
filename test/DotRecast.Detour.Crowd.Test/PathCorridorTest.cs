@@ -34,6 +34,7 @@ public class PathCorridorTest
     [SetUp]
     public void SetUp()
     {
+        corridor.Init(256);
         corridor.Reset(0, new RcVec3f(10, 20, 30));
     }
 

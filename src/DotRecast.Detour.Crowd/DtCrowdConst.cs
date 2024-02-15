@@ -26,5 +26,9 @@
         /// @see dtQueryFilter, dtCrowd::GetFilter() dtCrowd::GetEditableFilter(),
         /// dtCrowdAgentParams::queryFilterType
         public const int DT_CROWD_MAX_QUERY_FILTER_TYPE = 16;
+        
+        public const int MAX_ITERS_PER_UPDATE = 100;
+        public const int MAX_PATHQUEUE_NODES = 4096;
+        public const int MAX_COMMON_NODES = 512;
     }
 }

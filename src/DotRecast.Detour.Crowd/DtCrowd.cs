@@ -129,6 +129,7 @@ namespace DotRecast.Detour.Crowd
 
         private DtProximityGrid _grid;
 
+        private int _maxPathResult;
         private readonly RcVec3f _agentPlacementHalfExtents;
 
         private readonly IDtQueryFilter[] _filters;
@@ -166,6 +167,7 @@ namespace DotRecast.Detour.Crowd
             }
 
             // Allocate temp buffer for merging paths.
+            _maxPathResult = 256;
             _pathQ = new DtPathQueue(config);
             _agents = new List<DtCrowdAgent>();
 
@@ -223,19 +225,20 @@ namespace DotRecast.Detour.Crowd
             agent.option = option;
         }
 
-        /**
-     * Adds a new agent to the crowd.
-     *
-     * @param pos
-     *            The requested position of the agent. [(x, y, z)]
-     * @param params
-     *            The configuration of the agent.
-     * @return The newly created agent object
-     */
+        /// @par
+        ///
+        /// The agent's position will be constrained to the surface of the navigation mesh.
+        /// Adds a new agent to the crowd.
+        ///  @param[in]		pos		The requested position of the agent. [(x, y, z)]
+        ///  @param[in]		params	The configuration of the agent.
+        /// @return The index of the agent in the agent pool. Or -1 if the agent could not be added.
         public DtCrowdAgent AddAgent(RcVec3f pos, DtCrowdAgentParams option)
         {
-            DtCrowdAgent ag = new DtCrowdAgent(_agentId.GetAndIncrement());
+            int idx = _agentId.GetAndIncrement();
+            DtCrowdAgent ag = new DtCrowdAgent(idx);
+            ag.corridor.Init(_maxPathResult);
             _agents.Add(ag);
+
             UpdateAgentParameters(ag, option);
 
             // Find nearest position on navmesh and place the agent there.
@@ -523,8 +526,7 @@ namespace DotRecast.Detour.Crowd
                     replan = true;
                 }
 
-                // If the end of the path is near and it is not the requested
-                // location, replan.
+                // If the end of the path is near and it is not the requested location, replan.
                 if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_VALID)
                 {
                     if (ag.targetReplanTime > _config.targetReplanDelay && ag.corridor.GetPathCount() < _config.checkLookAhead

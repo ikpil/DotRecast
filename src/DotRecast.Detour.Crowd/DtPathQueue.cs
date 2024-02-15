@@ -26,28 +26,29 @@ namespace DotRecast.Detour.Crowd
 {
     public class DtPathQueue
     {
-        private readonly DtCrowdConfig config;
-        private readonly LinkedList<DtPathQuery> queue = new LinkedList<DtPathQuery>();
+        private readonly DtCrowdConfig m_config;
+        private readonly LinkedList<DtPathQuery> m_queue;
 
         public DtPathQueue(DtCrowdConfig config)
         {
-            this.config = config;
+            m_config = config;
+            m_queue = new LinkedList<DtPathQuery>();
         }
 
         public void Update(DtNavMesh navMesh)
         {
-            // Update path request until there is nothing to update or up to maxIters pathfinder iterations has been
-            // consumed.
-            int iterCount = config.maxFindPathIterations;
+            // Update path request until there is nothing to update
+            // or upto maxIters pathfinder iterations has been consumed.
+            int iterCount = m_config.maxFindPathIterations;
             while (iterCount > 0)
             {
-                DtPathQuery q = queue.First?.Value;
+                DtPathQuery q = m_queue.First?.Value;
                 if (q == null)
                 {
                     break;
                 }
 
-                queue.RemoveFirst();
+                m_queue.RemoveFirst();
 
                 // Handle query start.
                 if (q.result.status.IsEmpty())
@@ -70,14 +71,14 @@ namespace DotRecast.Detour.Crowd
 
                 if (!(q.result.status.Failed() || q.result.status.Succeeded()))
                 {
-                    queue.AddFirst(q);
+                    m_queue.AddFirst(q);
                 }
             }
         }
 
         public DtPathQueryResult Request(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter)
         {
-            if (queue.Count >= config.pathQueueSize)
+            if (m_queue.Count >= m_config.pathQueueSize)
             {
                 return null;
             }
@@ -88,7 +89,7 @@ namespace DotRecast.Detour.Crowd
             q.endPos = endPos;
             q.endRef = endRef;
             q.filter = filter;
-            queue.AddLast(q);
+            m_queue.AddLast(q);
             return q.result;
         }
     }

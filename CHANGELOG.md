@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 ### Changed
+- Added DtPathCorridor.Init(int maxPath) function to allow setting the maximum path [@ikpil](https://github.com/ikpil)
 
 ### Removed
 
