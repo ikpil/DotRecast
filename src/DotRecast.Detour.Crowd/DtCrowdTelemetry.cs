@@ -23,6 +23,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Emit;
 using DotRecast.Core;
+using DotRecast.Core.Buffers;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour.Crowd
@@ -34,7 +35,7 @@ namespace DotRecast.Detour.Crowd
         private float _maxTimeToFindPath;
 
         private readonly Dictionary<DtCrowdTimerLabel, long> _executionTimings = new Dictionary<DtCrowdTimerLabel, long>();
-        private readonly Dictionary<DtCrowdTimerLabel, List<long>> _executionTimingSamples = new Dictionary<DtCrowdTimerLabel, List<long>>();
+        private readonly Dictionary<DtCrowdTimerLabel, RcCyclicBuffer<long>> _executionTimingSamples = new Dictionary<DtCrowdTimerLabel, RcCyclicBuffer<long>>();
 
         public float MaxTimeToEnqueueRequest()
         {
@@ -87,17 +88,23 @@ namespace DotRecast.Detour.Crowd
             long duration = RcFrequency.Ticks - _executionTimings[name];
             if (!_executionTimingSamples.TryGetValue(name, out var s))
             {
-                s = new List<long>();
+                s = new RcCyclicBuffer<long>(TIMING_SAMPLES);
                 _executionTimingSamples.Add(name, s);
             }
 
-            if (s.Count == TIMING_SAMPLES)
+            s.Add(duration);
+            _executionTimings[name] = CalculateAverage(s.AsSpan());
+        }
+
+        private static long CalculateAverage(Span<long> buffer)
+        {
+            long sum = 0L;
+            foreach (var item in buffer)
             {
-                s.RemoveAt(0);
+                sum += item;
             }
 
-            s.Add(duration);
-            _executionTimings[name] = (long)s.Average();
+            return sum / buffer.Length;
         }
     }
 }
