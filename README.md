@@ -28,22 +28,22 @@ DotRecast is a port of [recastnavigation](https://github.com/recastnavigation/re
 
 Recast Navigation is divided into multiple modules, each contained in its own folder:
 
-- [DotRecast.Core](src/DotRecast.Core) : Core utils
-- [DotRecast.Recast](src/DotRecast.Recast) : Navmesh generation
-- [DotRecast.Detour](src/DotRecast.Detour) : Runtime loading of navmesh data, pathfinding, navmesh queries
-- [DotRecast.Detour.TileCache](src/DotRecast.Detour.TileCache) : Navmesh streaming. Useful for large levels and open-world games
-- [DotRecast.Detour.Crowd](src/DotRecast.Detour.Crowd) : Agent movement, collision avoidance, and crowd simulation
-- [DotRecast.Detour.Dynamic](src/DotRecast.Detour.Dynamic) : robust support for dynamic nav meshes combining pre-built voxels with dynamic objects which can be freely added and removed
-- [DotRecast.Detour.Extras](src/DotRecast.Detour.Extras) : simple tool to import navmeshes created with [A* Pathfinding Project](https://arongranberg.com/astar/)
-- [DotRecast.Recast.Toolset](src/DotRecast.Recast.Toolset) : all modules
-- [DotRecast.Recast.Demo](src/DotRecast.Recast.Demo) : Standalone, comprehensive demo app showcasing all aspects of Recast & Detour's functionality
-- [Tests](test) : Unit tests
+- [DotRecast.Core](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Core) : Core utils
+- [DotRecast.Recast](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Recast) : Navmesh generation
+- [DotRecast.Detour](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Detour) : Runtime loading of navmesh data, pathfinding, navmesh queries
+- [DotRecast.Detour.TileCache](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Detour.TileCache) : Navmesh streaming. Useful for large levels and open-world games
+- [DotRecast.Detour.Crowd](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Detour.Crowd) : Agent movement, collision avoidance, and crowd simulation
+- [DotRecast.Detour.Dynamic](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Detour.Dynamic) : robust support for dynamic nav meshes combining pre-built voxels with dynamic objects which can be freely added and removed
+- [DotRecast.Detour.Extras](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Detour.Extras) : simple tool to import navmeshes created with [A* Pathfinding Project](https://arongranberg.com/astar/)
+- [DotRecast.Recast.Toolset](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Recast.Toolset) : all modules
+- [DotRecast.Recast.Demo](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Recast.Demo) : Standalone, comprehensive demo app showcasing all aspects of Recast & Detour's functionality
+- [Tests](https://github.com/ikpil/DotRecast/tree/main/test) : Unit tests
 
 ## ⚡ Getting Started
  
-- To build or integrate into your own project, please check out [BuildingAndIntegrating.md](BuildingAndIntegrating.md)
-- To create a NavMesh, please check out [RecastSoloMeshTest.cs](test/DotRecast.Recast.Test/RecastSoloMeshTest.cs)
-- To test pathfinding, please check out [FindPathTest.cs](test/DotRecast.Detour.Test/FindPathTest.cs)
+- To build or integrate into your own project, please check out [BuildingAndIntegrating.md](https://github.com/ikpil/DotRecast/tree/main/BuildingAndIntegrating.md)
+- To create a NavMesh, please check out [RecastSoloMeshTest.cs](https://github.com/ikpil/DotRecast/tree/main/test/DotRecast.Recast.Test/RecastSoloMeshTest.cs)
+- To test pathfinding, please check out [FindPathTest.cs](https://github.com/ikpil/DotRecast/tree/main/test/DotRecast.Detour.Test/FindPathTest.cs)
 - To watch the demo play video, please check out [Demo Video](#-demo-video)
 
 ## ⚙ How it Works
@@ -62,15 +62,15 @@ Tiled navmeshes are more complex to work with but better support larger, more dy
 ## 📚 Documentation & Links
 
 - DotRecast Links
-  - DotRecast issues: [DotRecast/issues](https://github.com/ikpil/DotRecast/issues)
+  - [DotRecast/issues](https://github.com/ikpil/DotRecast/issues)
  
 - Official Links
-  - Official discussions: [recastnavigation/discussions](https://github.com/recastnavigation/recastnavigation/discussions)
-  - Official documentation: [recastnav.com](https://recastnav.com)
+  - [recastnavigation/discussions](https://github.com/recastnavigation/recastnavigation/discussions)
+  - [recastnav.com](https://recastnav.com)
 
 ## 🅾 License
 
-DotRecast is licensed under ZLib license, see [LICENSE.txt](LICENSE.txt) for more information.
+DotRecast is licensed under ZLib license, see [LICENSE.txt](https://github.com/ikpil/DotRecast/tree/main/LICENSE.txt) for more information.
 
 ## 📹 Demo Video
 
