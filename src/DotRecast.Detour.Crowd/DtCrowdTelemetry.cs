@@ -19,12 +19,9 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection.Emit;
 using DotRecast.Core;
 using DotRecast.Core.Buffers;
-using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour.Crowd
 {
@@ -86,25 +83,25 @@ namespace DotRecast.Detour.Crowd
         private void Stop(DtCrowdTimerLabel name)
         {
             long duration = RcFrequency.Ticks - _executionTimings[name];
-            if (!_executionTimingSamples.TryGetValue(name, out var s))
+            if (!_executionTimingSamples.TryGetValue(name, out var cb))
             {
-                s = new RcCyclicBuffer<long>(TIMING_SAMPLES);
-                _executionTimingSamples.Add(name, s);
+                cb = new RcCyclicBuffer<long>(TIMING_SAMPLES);
+                _executionTimingSamples.Add(name, cb);
             }
 
-            s.Add(duration);
-            _executionTimings[name] = CalculateAverage(s.AsSpan());
+            cb.PushBack(duration);
+            _executionTimings[name] = CalculateAverage(cb);
         }
 
-        private static long CalculateAverage(Span<long> buffer)
+        private static long CalculateAverage(RcCyclicBuffer<long> buffer)
         {
             long sum = 0L;
-            foreach (var item in buffer)
+            buffer.ForEach(item =>
             {
                 sum += item;
-            }
+            });
 
-            return sum / buffer.Length;
+            return sum / buffer.Size;
         }
     }
 }
