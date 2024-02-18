@@ -27,6 +27,24 @@ namespace DotRecast.Detour.Crowd
 {
     public class DtCrowdTelemetry
     {
+        public readonly struct DisposableHandle : IDisposable
+        {
+            private readonly DtCrowdTimerLabel _label;
+            private readonly DtCrowdTelemetry _telemetry;
+
+            public DisposableHandle(DtCrowdTelemetry telemetry, DtCrowdTimerLabel label)
+            {
+                _telemetry = telemetry;
+                _label = label;
+            }
+
+            public void Dispose()
+            {
+                _telemetry.Stop(_label);
+            }
+        }
+            
+        
         public const int TIMING_SAMPLES = 10;
         private float _maxTimeToEnqueueRequest;
         private float _maxTimeToFindPath;
@@ -69,10 +87,10 @@ namespace DotRecast.Detour.Crowd
             _maxTimeToFindPath = Math.Max(_maxTimeToFindPath, time);
         }
 
-        public IDisposable ScopedTimer(DtCrowdTimerLabel label)
+        public DisposableHandle ScopedTimer(DtCrowdTimerLabel label)
         {
             Start(label);
-            return new RcAnonymousDisposable(() => Stop(label));
+            return new DisposableHandle(this, label);
         }
 
         private void Start(DtCrowdTimerLabel name)
