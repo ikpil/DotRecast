@@ -1,12 +1,47 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net.Security;
 
 namespace DotRecast.Core.Buffers
 {
     // https://github.com/joaoportela/CircularBuffer-CSharp/blob/master/CircularBuffer/CircularBuffer.cs
-    public class RcCyclicBuffer<T>
+    public class RcCyclicBuffer<T> : IEnumerable<T>
     {
+        public struct Enumerator : IEnumerator<T>
+        {
+            private readonly RcCyclicBuffer<T> _buffer;
+            private int _index;
+            private readonly int _size;
+
+            internal Enumerator(RcCyclicBuffer<T> buffer)
+            {
+                _buffer = buffer;
+                _size = _buffer._size;
+                _index = default;
+                Reset();
+            }
+            
+            public bool MoveNext()
+            {
+                return ++_index < _size;
+            }
+
+            public void Reset()
+            {
+                _index = -1;
+            }
+
+            public T Current => _buffer[_index];
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose()
+            {
+                // This could be used to unlock write access to collection
+            }
+        }
+        
         private readonly T[] _buffer;
 
         private int _start;
@@ -155,27 +190,13 @@ namespace DotRecast.Core.Buffers
 
         public T[] ToArray()
         {
-            int idx = 0;
             T[] newArray = new T[Size];
 
-            ForEach(x => newArray[idx++] = x);
+            var span1 = ArrayOne();
+            span1.CopyTo(newArray.AsSpan());
+            ArrayTwo().CopyTo(newArray.AsSpan(span1.Length..));
 
             return newArray;
-        }
-
-        public void ForEach(Action<T> action)
-        {
-            var spanOne = ArrayOne();
-            foreach (var item in spanOne)
-            {
-                action.Invoke(item);
-            }
-
-            var spanTwo = ArrayTwo();
-            foreach (var item in spanTwo)
-            {
-                action.Invoke(item);
-            }
         }
 
         private void ThrowIfEmpty(string message = "Cannot access an empty buffer.")
@@ -240,5 +261,11 @@ namespace DotRecast.Core.Buffers
 
             return new Span<T>(_buffer, 0, _end);
         }
+
+        public Enumerator GetEnumerator() => new Enumerator(this);
+        
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+        
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }
