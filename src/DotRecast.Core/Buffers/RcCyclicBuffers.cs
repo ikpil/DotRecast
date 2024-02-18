@@ -7,7 +7,11 @@
             long sum = 0;
             checked
             {
-                source.ForEach(x => sum += x);
+                // NOTE: SIMD would be nice here
+                foreach (var x in source)
+                {
+                    sum += x;
+                }
             }
 
             return sum;
@@ -27,11 +31,11 @@
                 return 0;
             
             long minValue = long.MaxValue;
-            source.ForEach(x =>
+            foreach (var x in source)
             {
                 if (x < minValue)
                     minValue = x;
-            });
+            }
 
             return minValue;
         }
@@ -42,11 +46,11 @@
                 return 0;
             
             long maxValue = long.MinValue;
-            source.ForEach(x =>
+            foreach (var x in source)
             {
                 if (x > maxValue)
                     maxValue = x;
-            });
+            }
 
             return maxValue;
         }

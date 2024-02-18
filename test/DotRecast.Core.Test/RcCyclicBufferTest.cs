@@ -1,5 +1,6 @@
 ﻿using System;
 using DotRecast.Core.Buffers;
+using DotRecast.Core.Collections;
 using NUnit.Framework;
 
 namespace DotRecast.Core.Test;
@@ -39,11 +40,11 @@ public class RcCyclicBufferTests
         var buffer = new RcCyclicBuffer<int>(5, new[] { 0, 1, 2, 3 });
 
         int x = 0;
-        buffer.ForEach(item =>
+        foreach (var item in buffer)
         {
             Assert.That(item, Is.EqualTo(x));
             x++;
-        });
+        }
     }
 
     [Test]
@@ -288,6 +289,42 @@ public class RcCyclicBufferTests
         for (int i = 0; i < 5; i++)
         {
             Assert.That(buffer[i], Is.EqualTo(i));
+        }
+    }
+    
+    [Test]
+    public void RcCyclicBuffer_RegularForEachWorks()
+    {
+        var refValues = new[] { 4, 3, 2, 1, 0 };
+        var buffer = new RcCyclicBuffer<int>(5, refValues);
+
+        var index = 0;
+        foreach (var element in buffer)
+        {
+            Assert.That(element, Is.EqualTo(refValues[index++]));
+        }
+    }
+    
+    [Test]
+    public void RcCyclicBuffer_EnumeratorWorks()
+    {
+        var refValues = new[] { 4, 3, 2, 1, 0 };
+        var buffer = new RcCyclicBuffer<int>(5, refValues);
+
+        var index = 0;
+        var enumerator = buffer.GetEnumerator();
+        enumerator.Reset();
+        while (enumerator.MoveNext())
+        {
+            Assert.That(enumerator.Current, Is.EqualTo(refValues[index++]));
+        }
+        
+        // Ensure Reset works properly
+        index = 0;
+        enumerator.Reset();
+        while (enumerator.MoveNext())
+        {
+            Assert.That(enumerator.Current, Is.EqualTo(refValues[index++]));
         }
     }
 }
