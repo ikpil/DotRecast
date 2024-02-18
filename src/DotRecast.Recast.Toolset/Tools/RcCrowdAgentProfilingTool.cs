@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using DotRecast.Core;
+using DotRecast.Core.Buffers;
 using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour;
@@ -25,7 +27,7 @@ namespace DotRecast.Recast.Toolset.Tools
 
         private const int SamplingCount = 500;
         private long _samplingUpdateTime;
-        private readonly List<long> _updateTimes;
+        private readonly RcCyclicBuffer<long> _updateTimes;
         private long _curUpdateTime;
         private long _avgUpdateTime;
         private long _minUpdateTime;
@@ -36,7 +38,7 @@ namespace DotRecast.Recast.Toolset.Tools
             _cfg = new RcCrowdAgentProfilingToolConfig();
             _agCfg = new DtCrowdAgentConfig();
             _polyPoints = new List<DtPolyPoint>();
-            _updateTimes = new List<long>();
+            _updateTimes = new RcCyclicBuffer<long>(SamplingCount);
         }
 
         public string GetName()
@@ -264,20 +266,14 @@ namespace DotRecast.Recast.Toolset.Tools
             }
 
             var currentTime = endTime - startTime;
-            _updateTimes.Add(currentTime);
+            _updateTimes.PushBack(currentTime);
 
-            if ((int)(SamplingCount * 1.25f) < _updateTimes.Count)
-            {
-                _updateTimes.RemoveRange(0, _updateTimes.Count - SamplingCount);
-            }
-            
             // for benchmark
             _samplingUpdateTime = _updateTimes.Sum() / TimeSpan.TicksPerMillisecond;
             _curUpdateTime = currentTime / TimeSpan.TicksPerMillisecond;
             _avgUpdateTime = (long)(_updateTimes.Average() / TimeSpan.TicksPerMillisecond);
             _minUpdateTime = _updateTimes.Min() / TimeSpan.TicksPerMillisecond;
             _maxUpdateTime = _updateTimes.Max() / TimeSpan.TicksPerMillisecond;
-
         }
 
         private void MoveMob(DtNavMeshQuery navquery, IDtQueryFilter filter, DtCrowdAgent ag, RcCrowdAgentData crowAgentData)
@@ -392,16 +388,15 @@ namespace DotRecast.Recast.Toolset.Tools
         {
             return _avgUpdateTime;
         }
-        
+
         public long GetCrowdUpdateMinTime()
         {
             return _minUpdateTime;
         }
-        
+
         public long GetCrowdUpdateMaxTime()
         {
             return _maxUpdateTime;
         }
-
     }
 }

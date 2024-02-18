@@ -90,18 +90,9 @@ namespace DotRecast.Detour.Crowd
             }
 
             cb.PushBack(duration);
-            _executionTimings[name] = CalculateAverage(cb);
+            _executionTimings[name] = (long)cb.Average();
         }
 
-        private static long CalculateAverage(RcCyclicBuffer<long> buffer)
-        {
-            long sum = 0L;
-            buffer.ForEach(item =>
-            {
-                sum += item;
-            });
 
-            return sum / buffer.Size;
-        }
     }
 }
