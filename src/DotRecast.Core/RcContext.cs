@@ -49,10 +49,9 @@ namespace DotRecast.Core
             _timerAccum = new ConcurrentDictionary<string, RcAtomicLong>();
         }
 
-        public IDisposable ScopedTimer(RcTimerLabel label)
+        public RcScopedTimer ScopedTimer(RcTimerLabel label)
         {
-            StartTimer(label);
-            return new RcAnonymousDisposable(() => StopTimer(label));
+            return new RcScopedTimer(this, label);
         }
 
         public void StartTimer(RcTimerLabel label)
