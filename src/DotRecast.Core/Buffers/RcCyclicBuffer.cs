@@ -10,14 +10,14 @@ namespace DotRecast.Core.Buffers
     {
         public struct Enumerator : IEnumerator<T>
         {
-            private readonly RcCyclicBuffer<T> _buffer;
+            private readonly RcCyclicBuffer<T> _cb;
             private int _index;
             private readonly int _size;
 
-            internal Enumerator(RcCyclicBuffer<T> buffer)
+            internal Enumerator(RcCyclicBuffer<T> cb)
             {
-                _buffer = buffer;
-                _size = _buffer._size;
+                _cb = cb;
+                _size = _cb._size;
                 _index = default;
                 Reset();
             }
@@ -32,7 +32,7 @@ namespace DotRecast.Core.Buffers
                 _index = -1;
             }
 
-            public T Current => _buffer[_index];
+            public T Current => _cb[_index];
 
             object IEnumerator.Current => Current;
 

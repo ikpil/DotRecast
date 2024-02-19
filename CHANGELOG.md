@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 - Changed DtPathCorridor.Init(int maxPath) function to allow setting the maximum path [@ikpil](https://github.com/ikpil)
 - Changed from List<T> to RcCyclicBuffer in DtCrowdTelemetry execution timing sampling [@wrenge](https://github.com/wrenge)
+- RcCyclicBuffer<T> optimizations [@wrenge](https://github.com/wrenge)
 
 ### Removed
 

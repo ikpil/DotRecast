@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using DotRecast.Core.Buffers;
 using DotRecast.Core.Collections;
 using NUnit.Framework;
@@ -291,7 +293,7 @@ public class RcCyclicBufferTests
             Assert.That(buffer[i], Is.EqualTo(i));
         }
     }
-    
+
     [Test]
     public void RcCyclicBuffer_RegularForEachWorks()
     {
@@ -304,21 +306,22 @@ public class RcCyclicBufferTests
             Assert.That(element, Is.EqualTo(refValues[index++]));
         }
     }
-    
+
     [Test]
     public void RcCyclicBuffer_EnumeratorWorks()
     {
-        var refValues = new[] { 4, 3, 2, 1, 0 };
+        var refValues = new int[] { 4, 3, 2, 1, 0 };
         var buffer = new RcCyclicBuffer<int>(5, refValues);
 
+
         var index = 0;
-        var enumerator = buffer.GetEnumerator();
+        using var enumerator = buffer.GetEnumerator();
         enumerator.Reset();
         while (enumerator.MoveNext())
         {
             Assert.That(enumerator.Current, Is.EqualTo(refValues[index++]));
         }
-        
+
         // Ensure Reset works properly
         index = 0;
         enumerator.Reset();
