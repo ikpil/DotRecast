@@ -1,8 +1,12 @@
-<div style="text-align: center">
-<h2>DotRecast : C# Recast & Detour</h2>
+<h1 align="center">DotRecast : C# Recast & Detour</h1>
+<p align="center">
 <i>DotRecast is a port of <a href="https://github.com/recastnavigation/recastnavigation">recastnavigation</a> and <a href="https://github.com/ppiastucki/recast4j">recast4j</a> to the C# language.</i><br />
 <i>If you'd like to support the project, we'd appreciate starring(⭐) our repos on Github for more visibility.</i> <p>
+</p>
 
+---
+
+<p align="center">
 <img alt="![GitHub License]" src="https://img.shields.io/github/license/ikpil/DotRecast?style=for-the-badge">
 <img alt="Languages" src="https://img.shields.io/github/languages/top/ikpil/DotRecast?style=for-the-badge">
 <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/ikpil/DotRecast?style=for-the-badge">
@@ -16,9 +20,10 @@
 <a href="https://www.nuget.org/packages/DotRecast.Core"><img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/DotRecast.Core?style=for-the-badge&logo=nuget"></a>
 <a href="https://visitorbadge.io/status?path=ikpil%2FDotRecast"><img alt="Visitors" src="https://api.visitorbadge.io/api/daily?path=ikpil%2FDotRecast&countColor=%23263759"></a>
 <a href="https://github.com/sponsors/ikpil"><img alt="GitHub Sponsors" src="https://img.shields.io/github/sponsors/ikpil?style=for-the-badge&logo=GitHub-Sponsors&link=https%3A%2F%2Fgithub.com%2Fsponsors%2Fikpil"></a>
-</div>
+</p>
 
 ---
+
 [![demo](https://user-images.githubusercontent.com/313821/266750582-8cf67832-1206-4b58-8c1f-7205210cbf22.gif)](https://youtu.be/zIFIgziKLhQ)
 
 
