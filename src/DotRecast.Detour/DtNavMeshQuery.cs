@@ -37,13 +37,11 @@ namespace DotRecast.Detour
         protected readonly DtNodeQueue m_openList;
 
         protected DtQueryData m_query;
-        protected readonly DtNodePool m_tinyNodePool;
 
         /// < Sliced query state.
         public DtNavMeshQuery(DtNavMesh nav)
         {
             m_nav = nav;
-            m_tinyNodePool = new DtNodePool();
             m_nodePool = new DtNodePool();
             m_openList = new DtNodeQueue();
             m_tinyNodePool = new DtNodePool();

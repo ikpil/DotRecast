@@ -84,7 +84,7 @@ public class RcArrayBenchmarkTests
         using var array = RcRentedArray.RentDisposableArray<int>(len);
         for (int ii = 0; ii < array.Length; ++ii)
         {
-            array.RentedArray[ii] = _rand.NextInt32();
+            array.AsRentedArray()[ii] = _rand.NextInt32();
         }
     }
 
