@@ -1,8 +1,9 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 
 namespace DotRecast.Core
 {
-    public class RcAtomicLong
+    public class RcAtomicLong : IComparable<RcAtomicLong>
     {
         private long _location;
 
@@ -13,6 +14,11 @@ namespace DotRecast.Core
         public RcAtomicLong(long location)
         {
             _location = location;
+        }
+
+        public int CompareTo(RcAtomicLong other)
+        {
+            return Read().CompareTo(other.Read());
         }
 
         public long IncrementAndGet()

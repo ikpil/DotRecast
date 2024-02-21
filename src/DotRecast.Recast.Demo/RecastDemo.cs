@@ -43,7 +43,6 @@ using DotRecast.Recast.Demo.Messages;
 using DotRecast.Recast.Toolset.Geom;
 using DotRecast.Recast.Demo.Tools;
 using DotRecast.Recast.Demo.UI;
-using DotRecast.Recast.Toolset;
 using MouseButton = Silk.NET.Input.MouseButton;
 using Window = Silk.NET.Windowing.Window;
 
@@ -111,7 +110,8 @@ public class RecastDemo : IRecastDemoChannel
     private bool markerPositionSet;
     private RcVec3f markerPosition = new RcVec3f();
 
-    private RcToolsetView toolset;
+    private RcMenuView _menuView;
+    private RcToolsetView _toolsetView;
     private RcSettingsView settingsView;
     private RcLogView logView;
 
@@ -319,7 +319,7 @@ public class RecastDemo : IRecastDemoChannel
             if (null != mesh)
             {
                 _sample.Update(_sample.GetInputGeom(), ImmutableArray<RcBuilderResult>.Empty, mesh);
-                toolset.SetEnabled(true);
+                _toolsetView.SetEnabled(true);
             }
         }
         catch (Exception e)
@@ -379,11 +379,12 @@ public class RecastDemo : IRecastDemoChannel
 
         DemoInputGeomProvider geom = LoadInputMesh("nav_test.obj");
         _sample = new DemoSample(geom, ImmutableArray<RcBuilderResult>.Empty, null);
-
+        
+        _menuView = new RcMenuView();
         settingsView = new RcSettingsView(this);
         settingsView.SetSample(_sample);
 
-        toolset = new RcToolsetView(
+        _toolsetView = new RcToolsetView(
             new TestNavmeshSampleTool(),
             new TileSampleTool(),
             new ObstacleSampleTool(),
@@ -394,10 +395,10 @@ public class RecastDemo : IRecastDemoChannel
             new JumpLinkBuilderSampleTool(),
             new DynamicUpdateSampleTool()
         );
-        toolset.SetEnabled(true);
+        _toolsetView.SetEnabled(true);
         logView = new RcLogView();
 
-        _canvas = new RcCanvas(window, settingsView, toolset, logView);
+        _canvas = new RcCanvas(window, _menuView, settingsView, _toolsetView, logView);
 
         var vendor = _gl.GetStringS(GLEnum.Vendor);
         var version = _gl.GetStringS(GLEnum.Version);
@@ -504,7 +505,7 @@ public class RecastDemo : IRecastDemoChannel
             timeAcc -= DELTA_TIME;
             if (simIter < 5 && _sample != null)
             {
-                var tool = toolset.GetTool();
+                var tool = _toolsetView.GetTool();
                 if (null != tool)
                 {
                     tool.HandleUpdate(DELTA_TIME);
@@ -591,7 +592,7 @@ public class RecastDemo : IRecastDemoChannel
             }
 
             _sample.SetChanged(false);
-            toolset.SetSample(_sample);
+            _toolsetView.SetSample(_sample);
         }
 
         if (_messages.TryDequeue(out var msg))
@@ -620,7 +621,7 @@ public class RecastDemo : IRecastDemoChannel
         dd.Fog(camr * 0.1f, camr * 1.25f);
         renderer.Render(_sample, settingsView.GetDrawMode());
 
-        ISampleTool sampleTool = toolset.GetTool();
+        ISampleTool sampleTool = _toolsetView.GetTool();
         if (sampleTool != null)
         {
             sampleTool.HandleRender(renderer);
@@ -707,7 +708,7 @@ public class RecastDemo : IRecastDemoChannel
         _sample.SetChanged(false);
         settingsView.SetBuildTime((RcFrequency.Ticks - t) / TimeSpan.TicksPerMillisecond);
         //settingsUI.SetBuildTelemetry(buildResult.Item1.Select(x => x.GetTelemetry()).ToList());
-        toolset.SetSample(_sample);
+        _toolsetView.SetSample(_sample);
 
         Logger.Information($"build times");
         Logger.Information($"-----------------------------------------");
@@ -800,7 +801,7 @@ public class RecastDemo : IRecastDemoChannel
         RcVec3f rayDir = new RcVec3f(rayEnd.X - rayStart.X, rayEnd.Y - rayStart.Y, rayEnd.Z - rayStart.Z);
         rayDir = RcVec3f.Normalize(rayDir);
 
-        ISampleTool raySampleTool = toolset.GetTool();
+        ISampleTool raySampleTool = _toolsetView.GetTool();
 
         if (raySampleTool != null)
         {

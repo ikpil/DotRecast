@@ -27,12 +27,12 @@ namespace DotRecast.Core.Collections
     {
         private bool _dirty;
         private readonly List<T> _items;
-        private readonly Comparison<T> _comparison;
+        private readonly Comparer<T> _comparer;
 
-        public RcSortedQueue(Comparison<T> comparison)
+        public RcSortedQueue(Comparison<T> comp)
         {
             _items = new List<T>();
-            _comparison = (x, y) => comparison.Invoke(x, y) * -1; // reverse
+            _comparer = Comparer<T>.Create((x, y) => comp.Invoke(x, y) * -1);
         }
 
         public int Count()
@@ -40,16 +40,22 @@ namespace DotRecast.Core.Collections
             return _items.Count;
         }
 
+        public bool IsEmpty()
+        {
+            return 0 == _items.Count;
+        }
+
         public void Clear()
         {
             _items.Clear();
+            _dirty = false;
         }
 
         private void Balance()
         {
             if (_dirty)
             {
-                _items.Sort(_comparison); // reverse
+                _items.Sort(_comparer); // reverse
                 _dirty = false;
             }
         }
@@ -57,35 +63,39 @@ namespace DotRecast.Core.Collections
         public T Peek()
         {
             Balance();
-            return _items[_items.Count - 1];
+            return _items[^1];
         }
 
         public T Dequeue()
         {
             var node = Peek();
-            _items.Remove(node);
+            _items.RemoveAt(_items.Count - 1);
             return node;
         }
 
         public void Enqueue(T item)
         {
+            if (null == item)
+                return;
+
             _items.Add(item);
             _dirty = true;
         }
 
-        public void Remove(T item)
+        public bool Remove(T item)
         {
+            if (null == item)
+                return false;
+
+            //int idx = _items.BinarySearch(item, _comparer); // don't use this! Because reference types can be reused externally.
             int idx = _items.FindLastIndex(x => item.Equals(x));
             if (0 > idx)
-                return;
+                return false;
 
             _items.RemoveAt(idx);
+            return true;
         }
 
-        public bool IsEmpty()
-        {
-            return 0 == _items.Count;
-        }
 
         public List<T> ToList()
         {

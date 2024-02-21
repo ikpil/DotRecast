@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
 using DotRecast.Core;
+using DotRecast.Core.Buffers;
 using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour;
@@ -14,20 +17,28 @@ namespace DotRecast.Recast.Toolset.Tools
         private RcCrowdAgentProfilingToolConfig _cfg;
 
         private DtCrowdConfig _crowdCfg;
-        private DtCrowd crowd;
+        private DtCrowd _crowd;
         private readonly DtCrowdAgentConfig _agCfg;
 
-        private DtNavMesh navMesh;
+        private DtNavMesh _navMesh;
 
-        private RcRand rnd;
+        private IRcRand _rand;
         private readonly List<DtPolyPoint> _polyPoints;
-        private long crowdUpdateTime;
+
+        private const int SamplingCount = 500;
+        private long _samplingUpdateTime;
+        private readonly RcCyclicBuffer<long> _updateTimes;
+        private long _curUpdateTime;
+        private long _avgUpdateTime;
+        private long _minUpdateTime;
+        private long _maxUpdateTime;
 
         public RcCrowdAgentProfilingTool()
         {
             _cfg = new RcCrowdAgentProfilingToolConfig();
             _agCfg = new DtCrowdAgentConfig();
             _polyPoints = new List<DtPolyPoint>();
+            _updateTimes = new RcCyclicBuffer<long>(SamplingCount);
         }
 
         public string GetName()
@@ -47,12 +58,12 @@ namespace DotRecast.Recast.Toolset.Tools
 
         public DtCrowd GetCrowd()
         {
-            return crowd;
+            return _crowd;
         }
 
         public void Setup(float maxAgentRadius, DtNavMesh nav)
         {
-            navMesh = nav;
+            _navMesh = nav;
             if (nav != null)
             {
                 _crowdCfg = new DtCrowdConfig(maxAgentRadius);
@@ -76,7 +87,7 @@ namespace DotRecast.Recast.Toolset.Tools
 
         private DtStatus GetMobPosition(DtNavMeshQuery navquery, IDtQueryFilter filter, out RcVec3f randomPt)
         {
-            return navquery.FindRandomPoint(filter, rnd, out var randomRef, out randomPt);
+            return navquery.FindRandomPoint(filter, _rand, out var randomRef, out randomPt);
         }
 
         private DtStatus GetVillagerPosition(DtNavMeshQuery navquery, IDtQueryFilter filter, out RcVec3f randomPt)
@@ -86,8 +97,8 @@ namespace DotRecast.Recast.Toolset.Tools
             if (0 >= _polyPoints.Count)
                 return DtStatus.DT_FAILURE;
 
-            int zone = (int)(rnd.Next() * _polyPoints.Count);
-            return navquery.FindRandomPointWithinCircle(_polyPoints[zone].refs, _polyPoints[zone].pt, _cfg.zoneRadius, filter, rnd,
+            int zone = (int)(_rand.Next() * _polyPoints.Count);
+            return navquery.FindRandomPointWithinCircle(_polyPoints[zone].refs, _polyPoints[zone].pt, _cfg.zoneRadius, filter, _rand,
                 out var randomRef, out randomPt);
         }
 
@@ -95,13 +106,13 @@ namespace DotRecast.Recast.Toolset.Tools
         {
             _polyPoints.Clear();
             IDtQueryFilter filter = new DtQueryDefaultFilter();
-            DtNavMeshQuery navquery = new DtNavMeshQuery(navMesh);
+            DtNavMeshQuery navquery = new DtNavMeshQuery(_navMesh);
             for (int i = 0; i < _cfg.numberOfZones; i++)
             {
                 float zoneSeparation = _cfg.zoneRadius * _cfg.zoneRadius * 16;
                 for (int k = 0; k < 100; k++)
                 {
-                    var status = navquery.FindRandomPoint(filter, rnd, out var randomRef, out var randomPt);
+                    var status = navquery.FindRandomPoint(filter, _rand, out var randomRef, out var randomPt);
                     if (status.Succeeded())
                     {
                         bool valid = true;
@@ -126,57 +137,65 @@ namespace DotRecast.Recast.Toolset.Tools
 
         private void CreateCrowd()
         {
-            crowd = new DtCrowd(_crowdCfg, navMesh, __ => new DtQueryDefaultFilter(
+            _crowd = new DtCrowd(_crowdCfg, _navMesh, __ => new DtQueryDefaultFilter(
                 SampleAreaModifications.SAMPLE_POLYFLAGS_ALL,
                 SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED,
                 new float[] { 1f, 10f, 1f, 1f, 2f, 1.5f })
             );
 
-            DtObstacleAvoidanceParams option = new DtObstacleAvoidanceParams(crowd.GetObstacleAvoidanceParams(0));
+            DtObstacleAvoidanceParams option = new DtObstacleAvoidanceParams(_crowd.GetObstacleAvoidanceParams(0));
             // Low (11)
             option.velBias = 0.5f;
             option.adaptiveDivs = 5;
             option.adaptiveRings = 2;
             option.adaptiveDepth = 1;
-            crowd.SetObstacleAvoidanceParams(0, option);
+            _crowd.SetObstacleAvoidanceParams(0, option);
             // Medium (22)
             option.velBias = 0.5f;
             option.adaptiveDivs = 5;
             option.adaptiveRings = 2;
             option.adaptiveDepth = 2;
-            crowd.SetObstacleAvoidanceParams(1, option);
+            _crowd.SetObstacleAvoidanceParams(1, option);
             // Good (45)
             option.velBias = 0.5f;
             option.adaptiveDivs = 7;
             option.adaptiveRings = 2;
             option.adaptiveDepth = 3;
-            crowd.SetObstacleAvoidanceParams(2, option);
+            _crowd.SetObstacleAvoidanceParams(2, option);
             // High (66)
             option.velBias = 0.5f;
             option.adaptiveDivs = 7;
             option.adaptiveRings = 3;
             option.adaptiveDepth = 3;
-            crowd.SetObstacleAvoidanceParams(3, option);
+            _crowd.SetObstacleAvoidanceParams(3, option);
         }
 
         public void StartProfiling(float agentRadius, float agentHeight, float agentMaxAcceleration, float agentMaxSpeed)
         {
-            if (null == navMesh)
+            if (null == _navMesh)
                 return;
 
-            rnd = new RcRand(_cfg.randomSeed);
+            // for benchmark
+            _updateTimes.Clear();
+            _samplingUpdateTime = 0;
+            _curUpdateTime = 0;
+            _avgUpdateTime = 0;
+            _minUpdateTime = 0;
+            _maxUpdateTime = 0;
+
+            _rand = new RcRand(_cfg.randomSeed);
             CreateCrowd();
             CreateZones();
-            DtNavMeshQuery navquery = new DtNavMeshQuery(navMesh);
+            DtNavMeshQuery navquery = new DtNavMeshQuery(_navMesh);
             IDtQueryFilter filter = new DtQueryDefaultFilter();
             for (int i = 0; i < _cfg.agents; i++)
             {
-                float tr = rnd.Next();
+                float tr = _rand.Next();
                 RcCrowdAgentType type = RcCrowdAgentType.MOB;
                 float mobsPcnt = _cfg.percentMobs / 100f;
                 if (tr > mobsPcnt)
                 {
-                    tr = rnd.Next();
+                    tr = _rand.Next();
                     float travellerPcnt = _cfg.percentTravellers / 100f;
                     if (tr > travellerPcnt)
                     {
@@ -213,19 +232,19 @@ namespace DotRecast.Recast.Toolset.Tools
         public void Update(float dt)
         {
             long startTime = RcFrequency.Ticks;
-            if (crowd != null)
+            if (_crowd != null)
             {
-                crowd.Config().pathQueueSize = _cfg.pathQueueSize;
-                crowd.Config().maxFindPathIterations = _cfg.maxIterations;
-                crowd.Update(dt, null);
+                _crowd.Config().pathQueueSize = _cfg.pathQueueSize;
+                _crowd.Config().maxFindPathIterations = _cfg.maxIterations;
+                _crowd.Update(dt, null);
             }
 
             long endTime = RcFrequency.Ticks;
-            if (crowd != null)
+            if (_crowd != null)
             {
-                DtNavMeshQuery navquery = new DtNavMeshQuery(navMesh);
+                DtNavMeshQuery navquery = new DtNavMeshQuery(_navMesh);
                 IDtQueryFilter filter = new DtQueryDefaultFilter();
-                foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
+                foreach (DtCrowdAgent ag in _crowd.GetActiveAgents())
                 {
                     if (NeedsNewTarget(ag))
                     {
@@ -246,20 +265,28 @@ namespace DotRecast.Recast.Toolset.Tools
                 }
             }
 
-            crowdUpdateTime = (endTime - startTime) / TimeSpan.TicksPerMillisecond;
+            var currentTime = endTime - startTime;
+            _updateTimes.PushBack(currentTime);
+
+            // for benchmark
+            _samplingUpdateTime = _updateTimes.Sum() / TimeSpan.TicksPerMillisecond;
+            _curUpdateTime = currentTime / TimeSpan.TicksPerMillisecond;
+            _avgUpdateTime = (long)(_updateTimes.Average() / TimeSpan.TicksPerMillisecond);
+            _minUpdateTime = _updateTimes.Min() / TimeSpan.TicksPerMillisecond;
+            _maxUpdateTime = _updateTimes.Max() / TimeSpan.TicksPerMillisecond;
         }
 
         private void MoveMob(DtNavMeshQuery navquery, IDtQueryFilter filter, DtCrowdAgent ag, RcCrowdAgentData crowAgentData)
         {
             // Move somewhere
-            var status = navquery.FindNearestPoly(ag.npos, crowd.GetQueryExtents(), filter, out var nearestRef, out var nearestPt, out var _);
+            var status = navquery.FindNearestPoly(ag.npos, _crowd.GetQueryExtents(), filter, out var nearestRef, out var nearestPt, out var _);
             if (status.Succeeded())
             {
-                status = navquery.FindRandomPointAroundCircle(nearestRef, crowAgentData.home, _cfg.zoneRadius * 2f, filter, rnd,
+                status = navquery.FindRandomPointAroundCircle(nearestRef, crowAgentData.home, _cfg.zoneRadius * 2f, filter, _rand,
                     out var randomRef, out var randomPt);
                 if (status.Succeeded())
                 {
-                    crowd.RequestMoveTarget(ag, randomRef, randomPt);
+                    _crowd.RequestMoveTarget(ag, randomRef, randomPt);
                 }
             }
         }
@@ -267,14 +294,14 @@ namespace DotRecast.Recast.Toolset.Tools
         private void MoveVillager(DtNavMeshQuery navquery, IDtQueryFilter filter, DtCrowdAgent ag, RcCrowdAgentData crowAgentData)
         {
             // Move somewhere close
-            var status = navquery.FindNearestPoly(ag.npos, crowd.GetQueryExtents(), filter, out var nearestRef, out var nearestPt, out var _);
+            var status = navquery.FindNearestPoly(ag.npos, _crowd.GetQueryExtents(), filter, out var nearestRef, out var nearestPt, out var _);
             if (status.Succeeded())
             {
-                status = navquery.FindRandomPointAroundCircle(nearestRef, crowAgentData.home, _cfg.zoneRadius * 0.2f, filter, rnd,
+                status = navquery.FindRandomPointAroundCircle(nearestRef, crowAgentData.home, _cfg.zoneRadius * 0.2f, filter, _rand,
                     out var randomRef, out var randomPt);
                 if (status.Succeeded())
                 {
-                    crowd.RequestMoveTarget(ag, randomRef, randomPt);
+                    _crowd.RequestMoveTarget(ag, randomRef, randomPt);
                 }
             }
         }
@@ -294,7 +321,7 @@ namespace DotRecast.Recast.Toolset.Tools
             if (0 < potentialTargets.Count)
             {
                 potentialTargets.Shuffle();
-                crowd.RequestMoveTarget(ag, potentialTargets[0].refs, potentialTargets[0].pt);
+                _crowd.RequestMoveTarget(ag, potentialTargets[0].refs, potentialTargets[0].pt);
             }
         }
 
@@ -321,14 +348,14 @@ namespace DotRecast.Recast.Toolset.Tools
         {
             DtCrowdAgentParams ap = GetAgentParams(agentRadius, agentHeight, agentMaxAcceleration, agentMaxSpeed);
             ap.userData = new RcCrowdAgentData(type, p);
-            return crowd.AddAgent(p, ap);
+            return _crowd.AddAgent(p, ap);
         }
 
         public void UpdateAgentParams()
         {
-            if (crowd != null)
+            if (_crowd != null)
             {
-                foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
+                foreach (DtCrowdAgent ag in _crowd.GetActiveAgents())
                 {
                     DtCrowdAgentParams option = new DtCrowdAgentParams();
                     option.radius = ag.option.radius;
@@ -342,14 +369,34 @@ namespace DotRecast.Recast.Toolset.Tools
                     option.updateFlags = _agCfg.GetUpdateFlags();
                     option.obstacleAvoidanceType = _agCfg.obstacleAvoidanceType;
                     option.separationWeight = _agCfg.separationWeight;
-                    crowd.UpdateAgentParameters(ag, option);
+                    _crowd.UpdateAgentParameters(ag, option);
                 }
             }
         }
 
+        public long GetCrowdUpdateSamplingTime()
+        {
+            return _samplingUpdateTime;
+        }
+
         public long GetCrowdUpdateTime()
         {
-            return crowdUpdateTime;
+            return _curUpdateTime;
+        }
+
+        public long GetCrowdUpdateAvgTime()
+        {
+            return _avgUpdateTime;
+        }
+
+        public long GetCrowdUpdateMinTime()
+        {
+            return _minUpdateTime;
+        }
+
+        public long GetCrowdUpdateMaxTime()
+        {
+            return _maxUpdateTime;
         }
     }
 }

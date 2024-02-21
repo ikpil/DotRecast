@@ -26,22 +26,21 @@ namespace DotRecast.Detour
     /// Provides information about raycast hit
     /// filled by dtNavMeshQuery::raycast
     /// @ingroup detour
-    public class DtRaycastHit
+    public struct DtRaycastHit
     {
         /// The hit parameter. (FLT_MAX if no wall hit.)
         public float t;
 
         /// hitNormal	The normal of the nearest wall hit. [(x, y, z)]
-        public RcVec3f hitNormal = new RcVec3f();
+        public RcVec3f hitNormal;
 
         /// The index of the edge on the final polygon where the wall was hit.
         public int hitEdgeIndex;
-        
+
         /// Pointer to an array of reference ids of the visited polygons. [opt]
-        public readonly List<long> path = new List<long>();
+        public List<long> path;
 
         ///  The cost of the path until hit.
         public float pathCost;
-
     }
 }

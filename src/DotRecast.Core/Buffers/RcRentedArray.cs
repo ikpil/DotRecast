@@ -16,7 +16,7 @@ namespace DotRecast.Core.Buffers
     public class RcRentedArray<T> : IDisposable
     {
         private ArrayPool<T> _owner;
-        public T[] RentedArray;
+        private T[] _array;
         private bool _disposed;
 
         public int Length { get; }
@@ -35,15 +35,21 @@ namespace DotRecast.Core.Buffers
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                ThrowHelper.ThrowExceptionIfIndexOutOfRange(index, Length);
-                return ref RentedArray[index];
+                RcThrowHelper.ThrowExceptionIfIndexOutOfRange(index, Length);
+                return _array[index];
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set
+            {
+                RcThrowHelper.ThrowExceptionIfIndexOutOfRange(index, Length);
+                _array[index] = value;
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T[] AsRentedArray()
         {
-            return RentedArray;
+            return _array;
         }
 
         public void Dispose()
@@ -52,8 +58,8 @@ namespace DotRecast.Core.Buffers
                 return;
 
             _disposed = true;
-            _owner?.Return(RentedArray, true);
-            RentedArray = null;
+            _owner?.Return(_array, true);
+            _array = null;
             _owner = null;
         }
     }
