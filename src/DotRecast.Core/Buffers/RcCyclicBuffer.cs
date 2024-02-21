@@ -191,12 +191,15 @@ namespace DotRecast.Core.Buffers
         public T[] ToArray()
         {
             T[] newArray = new T[Size];
-
-            var span1 = ArrayOne();
-            span1.CopyTo(newArray.AsSpan());
-            ArrayTwo().CopyTo(newArray.AsSpan(span1.Length..));
-
+            CopyTo(newArray);
             return newArray;
+        }
+
+        public void CopyTo(Span<T> destination)
+        {
+            var span1 = ArrayOne();
+            span1.CopyTo(destination);
+            ArrayTwo().CopyTo(destination[span1.Length..]);
         }
 
         private void ThrowIfEmpty(string message = "Cannot access an empty buffer.")
@@ -232,7 +235,7 @@ namespace DotRecast.Core.Buffers
                 : index - Capacity);
         }
 
-        private Span<T> ArrayOne()
+        internal Span<T> ArrayOne()
         {
             if (IsEmpty)
             {
@@ -247,7 +250,7 @@ namespace DotRecast.Core.Buffers
             return new Span<T>(_buffer, _start, _buffer.Length - _start);
         }
 
-        private Span<T> ArrayTwo()
+        internal Span<T> ArrayTwo()
         {
             if (IsEmpty)
             {
@@ -260,11 +263,6 @@ namespace DotRecast.Core.Buffers
             }
 
             return new Span<T>(_buffer, 0, _end);
-        }
-
-        internal ReadOnlySpan<T> GetBufferSpan()
-        {
-            return _buffer;
         }
 
         public Enumerator GetEnumerator() => new Enumerator(this);
