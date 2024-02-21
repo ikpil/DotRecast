@@ -1,7 +1,9 @@
 <h1 align="center">DotRecast</h1>
 <p align="center">
-<i>DotRecast is C# Recast & Detour, a port of <a href="https://github.com/recastnavigation/recastnavigation">recastnavigation</a> and <a href="https://github.com/ppiastucki/recast4j">recast4j</a> to the C# language.</i><p>
-<i>If you'd like to support the project, we'd appreciate starring(⭐) our repos on Github for more visibility.</i> <p>
+<i>DotRecast is C# Recast & Detour, a port of <a href="https://github.com/recastnavigation/recastnavigation">recastnavigation</a> and <a href="https://github.com/ppiastucki/recast4j">recast4j</a> to the C# language.</i>
+</p>
+<p align="center">
+<i>If you'd like to support the project, we'd appreciate starring(⭐) our repos on Github for more visibility.</i>
 </p>
 
 ---
