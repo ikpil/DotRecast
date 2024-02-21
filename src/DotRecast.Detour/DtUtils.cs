@@ -64,7 +64,7 @@ namespace DotRecast.Detour
         /// @param[in] bmax Maximum bounds of box B. [(x, y, z)]
         /// @return True if the two AABB's overlap.
         /// @see dtOverlapBounds
-        public static bool OverlapQuantBounds(int[] amin, int[] amax, int[] bmin, int[] bmax)
+        public static bool OverlapQuantBounds(Span<int> amin, Span<int> amax, Span<int> bmin, Span<int> bmax)
         {
             bool overlap = true;
             overlap = (amin[0] > bmax[0] || amax[0] < bmin[0]) ? false : overlap;
