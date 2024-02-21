@@ -262,6 +262,11 @@ namespace DotRecast.Core.Buffers
             return new Span<T>(_buffer, 0, _end);
         }
 
+        internal ReadOnlySpan<T> GetBufferSpan()
+        {
+            return _buffer;
+        }
+
         public Enumerator GetEnumerator() => new Enumerator(this);
         
         IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();

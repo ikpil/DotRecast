@@ -330,4 +330,68 @@ public class RcCyclicBufferTests
             Assert.That(enumerator.Current, Is.EqualTo(refValues[index++]));
         }
     }
+    
+    [Test]
+    public void RcCyclicBuffers_Sum()
+    {
+        var refValues = Enumerable.Range(-100, 211).Select(x => (long)x).ToArray();
+        var buffer = new RcCyclicBuffer<long>(refValues.Length, refValues);
+        Assert.That(RcCyclicBuffers.Sum(buffer), Is.EqualTo(refValues.Sum()));
+    }
+    
+    [Test]
+    public void RcCyclicBuffers_Average()
+    {
+        var refValues = Enumerable.Range(-100, 211).Select(x => (long)x).ToArray();
+        var buffer = new RcCyclicBuffer<long>(refValues.Length, refValues);
+        Assert.That(RcCyclicBuffers.Average(buffer), Is.EqualTo(refValues.Average()));
+    }
+
+    [Test]
+    public void RcCyclicBuffers_Min()
+    {
+        var refValues = Enumerable.Range(-100, 211).Select(x => (long)x).ToArray();
+        var buffer = new RcCyclicBuffer<long>(refValues.Length, refValues);
+        Assert.That(RcCyclicBuffers.Min(buffer), Is.EqualTo(refValues.Min()));
+    }
+
+    [Test]
+    public void RcCyclicBuffers_Max()
+    {
+        var refValues = Enumerable.Range(-100, 211).Select(x => (long)x).ToArray();
+        var buffer = new RcCyclicBuffer<long>(refValues.Length, refValues);
+        Assert.That(RcCyclicBuffers.Max(buffer), Is.EqualTo(refValues.Max()));
+    }
+    
+    [Test]
+    public void RcCyclicBuffers_SumUnaligned()
+    {
+        var refValues = Enumerable.Range(-1, 3).Select(x => (long)x).ToArray();
+        var buffer = new RcCyclicBuffer<long>(refValues.Length, refValues);
+        Assert.That(RcCyclicBuffers.Sum(buffer), Is.EqualTo(refValues.Sum()));
+    }
+    
+    [Test]
+    public void RcCyclicBuffers_AverageUnaligned()
+    {
+        var refValues = Enumerable.Range(-1, 3).Select(x => (long)x).ToArray();
+        var buffer = new RcCyclicBuffer<long>(refValues.Length, refValues);
+        Assert.That(RcCyclicBuffers.Average(buffer), Is.EqualTo(refValues.Average()));
+    }
+
+    [Test]
+    public void RcCyclicBuffers_MinUnaligned()
+    {
+        var refValues = Enumerable.Range(5, 3).Select(x => (long)x).ToArray();
+        var buffer = new RcCyclicBuffer<long>(refValues.Length, refValues);
+        Assert.That(RcCyclicBuffers.Min(buffer), Is.EqualTo(refValues.Min()));
+    }
+
+    [Test]
+    public void RcCyclicBuffers_MaxUnaligned()
+    {
+        var refValues = Enumerable.Range(-5, 3).Select(x => (long)x).ToArray();
+        var buffer = new RcCyclicBuffer<long>(refValues.Length, refValues);
+        Assert.That(RcCyclicBuffers.Max(buffer), Is.EqualTo(refValues.Max()));
+    }
 }
