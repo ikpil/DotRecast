@@ -6,9 +6,9 @@ namespace DotRecast.Core.Buffers
 {
     public static class RcCyclicBuffers
     {
-        public static long Sum(this RcCyclicBuffer<long> source)
+        public static long Sum(this ReadOnlySpan<long> source)
         {
-            var buffer = source.GetBufferSpan();
+            var buffer = source;
             var result = 0L;
             if (Vector.IsHardwareAccelerated)
             {
@@ -18,7 +18,7 @@ namespace DotRecast.Core.Buffers
                     vecSum += vec;
 
                 result = Vector.Dot(vecSum, Vector<long>.One);
-                var remainder = source.Size % Vector<long>.Count;
+                var remainder = source.Length % Vector<long>.Count;
                 buffer = buffer[^remainder..];
             }
             
@@ -28,17 +28,17 @@ namespace DotRecast.Core.Buffers
             return result;
         }
 
-        public static double Average(this RcCyclicBuffer<long> source)
+        public static double Average(this ReadOnlySpan<long> source)
         {
-            if (0 >= source.Size)
+            if (0 >= source.Length)
                 return 0;
 
-            return source.Sum() / (double)source.Size;
+            return source.Sum() / (double)source.Length;
         }
         
-        public static long Min(this RcCyclicBuffer<long> source)
+        private static long Min(this ReadOnlySpan<long> source)
         {
-            var buffer = source.GetBufferSpan();
+            var buffer = source;
             var result = long.MaxValue;
             
             if (Vector.IsHardwareAccelerated)
@@ -52,7 +52,7 @@ namespace DotRecast.Core.Buffers
                 for (int i = 0; i < Vector<long>.Count; i++)
                     result = Math.Min(result, vecMin[i]);
                 
-                var remainder = source.Size % Vector<long>.Count;
+                var remainder = source.Length % Vector<long>.Count;
                 buffer = buffer[^remainder..];
             }
             
@@ -62,9 +62,9 @@ namespace DotRecast.Core.Buffers
             return result;
         }
         
-        public static long Max(this RcCyclicBuffer<long> source)
+        private static long Max(this ReadOnlySpan<long> source)
         {
-            var buffer = source.GetBufferSpan();
+            var buffer = source;
             var result = long.MinValue;
             
             if (Vector.IsHardwareAccelerated)
@@ -78,7 +78,7 @@ namespace DotRecast.Core.Buffers
                 for (int i = 0; i < Vector<long>.Count; i++)
                     result = Math.Max(result, vecMax[i]);
                 
-                var remainder = source.Size % Vector<long>.Count;
+                var remainder = source.Length % Vector<long>.Count;
                 buffer = buffer[^remainder..];
             }
             
@@ -86,6 +86,34 @@ namespace DotRecast.Core.Buffers
                 result = Math.Max(result, val);
 
             return result;
+        }
+
+        public static long Sum(this RcCyclicBuffer<long> source)
+        {
+            return Sum(source.ArrayOne()) + Sum(source.ArrayTwo());
+        }
+
+        public static double Average(this RcCyclicBuffer<long> source)
+        {
+            return Sum(source) / (double)source.Size;
+        }
+
+        public static long Min(this RcCyclicBuffer<long> source)
+        {
+            var firstHalf = source.ArrayOne();
+            var secondHalf = source.ArrayTwo();
+            var a = firstHalf.Length > 0 ? Min(firstHalf) : long.MaxValue;
+            var b = secondHalf.Length > 0 ? Min(secondHalf) : long.MaxValue;
+            return Math.Min(a, b);
+        }
+
+        public static long Max(this RcCyclicBuffer<long> source)
+        {
+            var firstHalf = source.ArrayOne();
+            var secondHalf = source.ArrayTwo();
+            var a = firstHalf.Length > 0 ? Max(firstHalf) : long.MinValue;
+            var b = secondHalf.Length > 0 ? Max(secondHalf) : long.MinValue;
+            return Math.Max(a, b);
         }
     }
 }

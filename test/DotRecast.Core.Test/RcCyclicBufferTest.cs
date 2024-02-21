@@ -394,4 +394,56 @@ public class RcCyclicBufferTests
         var buffer = new RcCyclicBuffer<long>(refValues.Length, refValues);
         Assert.That(RcCyclicBuffers.Max(buffer), Is.EqualTo(refValues.Max()));
     }
+    
+    [Test]
+    public void RcCyclicBuffers_SumDeleted()
+    {
+        var initialValues = Enumerable.Range(-100, 211).Select(x => (long)x).ToArray();
+        var refValues = initialValues.Skip(1).SkipLast(1).ToArray();
+        var buffer = new RcCyclicBuffer<long>(initialValues.Length, initialValues);
+        buffer.PopBack();
+        buffer.PopFront();
+        
+        Assert.That(RcCyclicBuffers.Sum(buffer), Is.EqualTo(refValues.Sum()));
+    }
+    
+    [Test]
+    public void RcCyclicBuffers_SumSplit()
+    {
+        var refValues = Enumerable.Range(-100, 211).Select(x => (long)x).ToArray();
+        var buffer = new RcCyclicBuffer<long>(refValues.Length, refValues);
+        buffer.PopFront();
+        buffer.PushBack(refValues[0]);
+        Assert.That(RcCyclicBuffers.Sum(buffer), Is.EqualTo(refValues.Sum()));
+    }
+    
+    [Test]
+    public void RcCyclicBuffers_AverageSplit()
+    {
+        var refValues = Enumerable.Range(-100, 211).Select(x => (long)x).ToArray();
+        var buffer = new RcCyclicBuffer<long>(refValues.Length, refValues);
+        buffer.PopFront();
+        buffer.PushBack(refValues[0]);
+        Assert.That(RcCyclicBuffers.Average(buffer), Is.EqualTo(refValues.Average()));
+    }
+
+    [Test]
+    public void RcCyclicBuffers_MinSplit()
+    {
+        var refValues = Enumerable.Range(-100, 211).Select(x => (long)x).ToArray();
+        var buffer = new RcCyclicBuffer<long>(refValues.Length, refValues);
+        buffer.PopFront();
+        buffer.PushBack(refValues[0]);
+        Assert.That(RcCyclicBuffers.Min(buffer), Is.EqualTo(refValues.Min()));
+    }
+
+    [Test]
+    public void RcCyclicBuffers_MaxSplit()
+    {
+        var refValues = Enumerable.Range(-100, 211).Select(x => (long)x).ToArray();
+        var buffer = new RcCyclicBuffer<long>(refValues.Length, refValues);
+        buffer.PopFront();
+        buffer.PushBack(refValues[0]);
+        Assert.That(RcCyclicBuffers.Max(buffer), Is.EqualTo(refValues.Max()));
+    }
 }
