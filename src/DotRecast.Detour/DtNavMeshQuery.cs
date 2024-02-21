@@ -583,8 +583,8 @@ namespace DotRecast.Detour
                 var tbmax = tile.data.header.bmax;
                 float qfac = tile.data.header.bvQuantFactor;
                 // Calculate quantized box
-                int[] bmin = new int[3];
-                int[] bmax = new int[3];
+                Span<int> bmin = stackalloc int[3];
+                Span<int> bmax = stackalloc int[3];
                 // dtClamp query box to world box.
                 float minx = Math.Clamp(qmin.X, tbmin.X, tbmax.X) - tbmin.X;
                 float miny = Math.Clamp(qmin.Y, tbmin.Y, tbmax.Y) - tbmin.Y;
@@ -1824,6 +1824,9 @@ namespace DotRecast.Detour
 
             float[] verts = new float[m_nav.GetMaxVertsPerPoly() * 3];
 
+            const int MAX_NEIS = 8;
+            Span<long> neis = stackalloc long[MAX_NEIS];
+
             while (0 < stack.Count)
             {
                 // Pop front.
@@ -1854,9 +1857,7 @@ namespace DotRecast.Detour
                 for (int i = 0, j = curPoly.vertCount - 1; i < curPoly.vertCount; j = i++)
                 {
                     // Find links to neighbours.
-                    int MAX_NEIS = 8;
                     int nneis = 0;
-                    long[] neis = new long[MAX_NEIS];
 
                     if ((curPoly.neis[j] & DtNavMesh.DT_EXT_LINK) != 0)
                     {

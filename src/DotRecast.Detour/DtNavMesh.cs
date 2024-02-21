@@ -358,8 +358,8 @@ namespace DotRecast.Detour
                 var tbmax = tile.data.header.bmax;
                 float qfac = tile.data.header.bvQuantFactor;
                 // Calculate quantized box
-                int[] bmin = new int[3];
-                int[] bmax = new int[3];
+                Span<int> bmin = stackalloc int[3];
+                Span<int> bmax = stackalloc int[3];
                 // dtClamp query box to world box.
                 float minx = Math.Clamp(qmin.X, tbmin.X, tbmax.X) - tbmin.X;
                 float miny = Math.Clamp(qmin.Y, tbmin.Y, tbmax.Y) - tbmin.Y;
