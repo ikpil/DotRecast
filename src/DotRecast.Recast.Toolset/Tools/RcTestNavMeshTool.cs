@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DotRecast.Core;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour;
@@ -92,7 +93,7 @@ namespace DotRecast.Recast.Toolset.Tools
 
                 iterPos = result;
 
-                pathIterPolys = DtPathUtils.MergeCorridorStartMoved(pathIterPolys, pathIterPolys.Count, MAX_POLYS, visited);
+                DtPathUtils.MergeCorridorStartMoved(pathIterPolys, pathIterPolys.Count, MAX_POLYS, visited);
                 pathIterPolys = DtPathUtils.FixupShortcuts(pathIterPolys, navQuery);
 
                 var status = navQuery.GetPolyHeight(pathIterPolys[0], result, out var h);

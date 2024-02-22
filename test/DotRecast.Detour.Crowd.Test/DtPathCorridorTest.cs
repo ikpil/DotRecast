@@ -47,7 +47,7 @@ public class DtPathCorridorTest
         const int maxPath = 0;
         var visited = new List<long>();
         var result = DtPathUtils.MergeCorridorStartMoved(path, npath, maxPath, visited);
-        Assert.That(result.Count, Is.EqualTo(0));
+        Assert.That(result, Is.EqualTo(0));
     }
 
     [Test(Description = "dtMergeCorridorStartMoved")]
@@ -60,7 +60,7 @@ public class DtPathCorridorTest
         var visited = new List<long>();
 
         var result = DtPathUtils.MergeCorridorStartMoved(path, npath, maxPath, visited);
-        Assert.That(result.Count, Is.EqualTo(1));
+        Assert.That(result, Is.EqualTo(1));
 
         var expectedPath = new List<long> { 1 };
         Assert.That(path, Is.EqualTo(expectedPath));
@@ -76,7 +76,7 @@ public class DtPathCorridorTest
         var visited = new List<long> { 1 };
 
         var result = DtPathUtils.MergeCorridorStartMoved(path, npath, maxPath, visited);
-        Assert.That(result.Count, Is.EqualTo(0));
+        Assert.That(result, Is.EqualTo(0));
     }
 
     [Test(Description = "dtMergeCorridorStartMoved")]
@@ -89,7 +89,7 @@ public class DtPathCorridorTest
         var visited = new List<long> { 1, 2 };
 
         var result = DtPathUtils.MergeCorridorStartMoved(path, npath, maxPath, visited);
-        Assert.That(result.Count, Is.EqualTo(1));
+        Assert.That(result, Is.EqualTo(1));
 
         var expectedPath = new List<long> { 2, 2 };
         Assert.That(path, Is.EqualTo(expectedPath));
@@ -103,7 +103,7 @@ public class DtPathCorridorTest
         const int maxPath = 3;
         var visited = new List<long> { 1, 2, 3, 4 };
         var result = DtPathUtils.MergeCorridorStartMoved(path, npath, maxPath, visited);
-        Assert.That(result.Count, Is.EqualTo(3));
+        Assert.That(result, Is.EqualTo(3));
 
         var expectedPath = new List<long> { 4, 3, 2 };
         Assert.That(path, Is.EqualTo(expectedPath));
@@ -117,7 +117,7 @@ public class DtPathCorridorTest
         const int maxPath = 3;
         var visited = new List<long>() { 1, 2, 3, 4, 5 };
         var result = DtPathUtils.MergeCorridorStartMoved(path, npath, maxPath, visited);
-        Assert.That(result.Count, Is.EqualTo(3));
+        Assert.That(result, Is.EqualTo(3));
 
         var expectedPath = new List<long> { 5, 4, 3 };
         Assert.That(path, Is.EqualTo(expectedPath));
@@ -131,7 +131,7 @@ public class DtPathCorridorTest
         const int maxPath = 2;
         var visited = new List<long>() { 3, 4 };
         var result = DtPathUtils.MergeCorridorStartMoved(path, npath, maxPath, visited);
-        Assert.That(result.Count, Is.EqualTo(2));
+        Assert.That(result, Is.EqualTo(2));
 
         var expectedPath = new List<long> { 1, 2 };
         Assert.That(path, Is.EqualTo(expectedPath));
@@ -145,7 +145,7 @@ public class DtPathCorridorTest
         const int maxPath = 3;
         var visited = new List<long>() { 1, 3 };
         var result = DtPathUtils.MergeCorridorStartMoved(path, npath, maxPath, visited);
-        Assert.That(result.Count, Is.EqualTo(3));
+        Assert.That(result, Is.EqualTo(3));
 
         var expectedPath = new List<long> { 3, 1, 2 };
         Assert.That(path, Is.EqualTo(expectedPath));
@@ -159,7 +159,7 @@ public class DtPathCorridorTest
         const int maxPath = 2;
         var visited = new List<long>() { 1, 3 };
         var result = DtPathUtils.MergeCorridorStartMoved(path, npath, maxPath, visited);
-        Assert.That(result.Count, Is.EqualTo(2));
+        Assert.That(result, Is.EqualTo(2));
 
         var expectedPath = new List<long> { 3, 1 };
         Assert.That(path, Is.EqualTo(expectedPath));

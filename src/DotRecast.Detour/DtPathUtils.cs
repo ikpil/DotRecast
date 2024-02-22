@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
@@ -141,13 +142,13 @@ namespace DotRecast.Detour
             return path;
         }
 
-        public static List<long> MergeCorridorStartMoved(List<long> path, int npath, int maxPath, List<long> visited)
+        public static int MergeCorridorStartMoved(List<long> path, int npath, int maxPath, List<long> visited)
         {
             int furthestPath = -1;
             int furthestVisited = -1;
 
             // Find furthest common polygon.
-            for (int i = path.Count - 1; i >= 0; --i)
+            for (int i = npath - 1; i >= 0; --i)
             {
                 bool found = false;
                 for (int j = visited.Count - 1; j >= 0; --j)
@@ -169,22 +170,37 @@ namespace DotRecast.Detour
             // If no intersection found just return current path.
             if (furthestPath == -1 || furthestVisited == -1)
             {
-                return path;
+                return npath;
             }
 
             // Concatenate paths.
 
             // Adjust beginning of the buffer to include the visited.
-            List<long> result = new List<long>();
-            
-            // Store visited
-            for (int i = visited.Count - 1; i > furthestVisited; --i)
+            int req = visited.Count - furthestVisited;
+            int orig = Math.Min(furthestPath + 1, npath);
+            int size = Math.Max(0, npath - orig);
+            if (req + size > maxPath)
+                size = maxPath - req;
+
+            if (size > 0)
             {
-                result.Add(visited[i]);
+                //memmove(path + req, path + orig, size * sizeof(dtPolyRef));
+                for (int i = 0; i < size; ++i)
+                {
+                    if (path.Count <= req + i)
+                        path.Add(0);
+                    
+                    path[req + i] = path[orig + i];
+                }
             }
 
-            result.AddRange(path.GetRange(furthestPath, path.Count - furthestPath));
-            return result;
+            // Store visited
+            for (int i = 0, n = Math.Min(req, maxPath); i < n; ++i)
+            {
+                path[i] = visited[(visited.Count - 1) - i];
+            }
+
+            return req + size;
         }
 
         public static List<long> MergeCorridorEndMoved(List<long> path, int npath, int maxPath, List<long> visited)

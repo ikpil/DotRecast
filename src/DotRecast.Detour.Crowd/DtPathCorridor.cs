@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DotRecast.Core;
 using DotRecast.Core.Numerics;
 
@@ -316,7 +317,7 @@ namespace DotRecast.Detour.Crowd
             var status = navquery.MoveAlongSurface(m_path[0], m_pos, npos, filter, out var result, ref visited);
             if (status.Succeeded())
             {
-                m_path = DtPathUtils.MergeCorridorStartMoved(m_path, m_path.Count, m_maxPath, visited);
+                DtPathUtils.MergeCorridorStartMoved(m_path, m_path.Count, m_maxPath, visited);
 
                 // Adjust the position to stay on top of the navmesh.
                 m_pos = result;
