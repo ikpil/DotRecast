@@ -215,7 +215,7 @@ namespace DotRecast.Detour.Crowd
             {
                 if (res.Count > 1 && t > 0.99f)
                 {
-                    m_path = DtPathUtils.MergeCorridorStartShortcut(m_path, m_maxPath, res);
+                    m_path = DtPathUtils.MergeCorridorStartShortcut(m_path, m_path.Count, m_maxPath, res);
                 }
             }
         }
@@ -241,13 +241,13 @@ namespace DotRecast.Detour.Crowd
             }
 
             var res = new List<long>();
-            navquery.InitSlicedFindPath(m_path[0], m_path[m_path.Count - 1], m_pos, m_target, filter, 0);
+            navquery.InitSlicedFindPath(m_path[0], m_path[^1], m_pos, m_target, filter, 0);
             navquery.UpdateSlicedFindPath(maxIterations, out var _);
             var status = navquery.FinalizeSlicedFindPathPartial(m_path, ref res);
 
             if (status.Succeeded() && res.Count > 0)
             {
-                m_path = DtPathUtils.MergeCorridorStartShortcut(m_path, m_maxPath, res);
+                m_path = DtPathUtils.MergeCorridorStartShortcut(m_path, m_path.Count, m_maxPath, res);
                 return true;
             }
 
@@ -316,7 +316,7 @@ namespace DotRecast.Detour.Crowd
             var status = navquery.MoveAlongSurface(m_path[0], m_pos, npos, filter, out var result, ref visited);
             if (status.Succeeded())
             {
-                m_path = DtPathUtils.MergeCorridorStartMoved(m_path, m_maxPath, visited);
+                m_path = DtPathUtils.MergeCorridorStartMoved(m_path, m_path.Count, m_maxPath, visited);
 
                 // Adjust the position to stay on top of the navmesh.
                 m_pos = result;
@@ -355,10 +355,10 @@ namespace DotRecast.Detour.Crowd
         {
             // Move along navmesh and update new position.
             var visited = new List<long>();
-            var status = navquery.MoveAlongSurface(m_path[m_path.Count - 1], m_target, npos, filter, out var result, ref visited);
+            var status = navquery.MoveAlongSurface(m_path[^1], m_target, npos, filter, out var result, ref visited);
             if (status.Succeeded())
             {
-                m_path = DtPathUtils.MergeCorridorEndMoved(m_path, m_maxPath, visited);
+                m_path = DtPathUtils.MergeCorridorEndMoved(m_path, m_path.Count, m_maxPath, visited);
                 // TODO: should we do that?
                 // Adjust the position to stay on top of the navmesh.
                 /*
