@@ -168,7 +168,7 @@ namespace DotRecast.Detour.Crowd
             }
 
             // Allocate temp buffer for merging paths.
-            _maxPathResult = 256;
+            _maxPathResult = DtCrowdConst.MAX_PATH_RESULT;
             _pathQ = new DtPathQueue(config);
             _agents = new List<DtCrowdAgent>();
 

@@ -30,5 +30,6 @@
         public const int MAX_ITERS_PER_UPDATE = 100;
         public const int MAX_PATHQUEUE_NODES = 4096;
         public const int MAX_COMMON_NODES = 512;
+        public const int MAX_PATH_RESULT = 256;
     }
 }
