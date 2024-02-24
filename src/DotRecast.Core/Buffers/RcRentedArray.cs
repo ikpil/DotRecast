@@ -19,6 +19,7 @@ namespace DotRecast.Core.Buffers
         private T[] _array;
 
         public int Length { get; }
+        public bool IsDisposed => null == _owner || null == _array;
 
         internal RcRentedArray(ArrayPool<T> owner, T[] array, int length)
         {
@@ -35,6 +36,11 @@ namespace DotRecast.Core.Buffers
                 RcThrowHelper.ThrowExceptionIfIndexOutOfRange(index, Length);
                 return ref _array[index];
             }
+        }
+
+        public T[] AsArray()
+        {
+            return _array;
         }
 
 
