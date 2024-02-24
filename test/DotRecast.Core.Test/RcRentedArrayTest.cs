@@ -31,7 +31,7 @@ public class RcRentedArrayTest
             {
                 int length = Math.Max(2, (int)(rand.Next() * 2048));
                 var values = RandomValues(length);
-                using var array = RcRentedArray.RentDisposableArray<int>(length);
+                using var array = RcRentedArray.Rent<int>(length);
 
                 for (int i = 0; i < array.Length; ++i)
                 {

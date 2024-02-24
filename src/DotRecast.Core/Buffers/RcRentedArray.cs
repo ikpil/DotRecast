@@ -6,7 +6,7 @@ namespace DotRecast.Core.Buffers
 {
     public static class RcRentedArray
     {
-        public static RcRentedArray<T> RentDisposableArray<T>(int minimumLength)
+        public static RcRentedArray<T> Rent<T>(int minimumLength)
         {
             var array = ArrayPool<T>.Shared.Rent(minimumLength);
             return new RcRentedArray<T>(ArrayPool<T>.Shared, array, minimumLength);
@@ -17,7 +17,6 @@ namespace DotRecast.Core.Buffers
     {
         private ArrayPool<T> _owner;
         private T[] _array;
-        private readonly RcAtomicInteger _disposed;
 
         public int Length { get; }
 
@@ -26,35 +25,27 @@ namespace DotRecast.Core.Buffers
             _owner = owner;
             _array = array;
             Length = length;
-            _disposed = new RcAtomicInteger(0);
         }
 
-        public T this[int index]
+        public ref T this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 RcThrowHelper.ThrowExceptionIfIndexOutOfRange(index, Length);
-                return _array[index];
-            }
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set
-            {
-                RcThrowHelper.ThrowExceptionIfIndexOutOfRange(index, Length);
-                _array[index] = value;
+                return ref _array[index];
             }
         }
 
 
         public void Dispose()
         {
-            if (1 != _disposed.IncrementAndGet())
-                return;
-
-            _owner?.Return(_array, true);
-            _array = null;
-            _owner = null;
+            if (null != _owner && null != _array)
+            {
+                _owner.Return(_array, true);
+                _owner = null;
+                _array = null;
+            }
         }
     }
 }
