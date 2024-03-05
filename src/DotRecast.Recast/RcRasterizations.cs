@@ -156,7 +156,7 @@ namespace DotRecast.Recast
             float axisOffset, int axis)
         {
             // How far positive or negative away from the separating axis is each vertex.
-            float[] inVertAxisDelta = new float[12];
+            Span<float> inVertAxisDelta = stackalloc float[12];
             for (int inVert = 0; inVert < inVertsCount; ++inVert)
             {
                 inVertAxisDelta[inVert] = axisOffset - inVerts[inVertsOffset + inVert * 3 + axis];
