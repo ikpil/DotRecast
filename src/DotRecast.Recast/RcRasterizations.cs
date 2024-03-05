@@ -56,27 +56,29 @@ namespace DotRecast.Recast
         public static void AddSpan(RcHeightfield heightfield, int x, int z, int min, int max, int areaID, int flagMergeThreshold)
         {
             // Create the new span.
-            RcSpan newSpan = new RcSpan();
+            uint newSpanIndex = heightfield.spanPool.Alloc();
+            ref RcSpan newSpan = ref heightfield.Span(newSpanIndex);
             newSpan.smin = min;
             newSpan.smax = max;
             newSpan.area = areaID;
-            newSpan.next = null;
+            newSpan.next = 0;
 
             int columnIndex = x + z * heightfield.width;
 
             // Empty cell, add the first span.
-            if (heightfield.spans[columnIndex] == null)
+            if (heightfield.spans[columnIndex] == 0)
             {
-                heightfield.spans[columnIndex] = newSpan;
+                heightfield.spans[columnIndex] = newSpanIndex;
                 return;
             }
 
-            RcSpan previousSpan = null;
-            RcSpan currentSpan = heightfield.spans[columnIndex];
+            uint previousSpanIndex = 0;
+            uint currentSpanIndex = heightfield.spans[columnIndex];
 
             // Insert the new span, possibly merging it with existing spans.
-            while (currentSpan != null)
+            while (currentSpanIndex != 0)
             {
+                ref var currentSpan = ref heightfield.Span(currentSpanIndex);
                 if (currentSpan.smin > newSpan.smax)
                 {
                     // Current span is further than the new span, break.
@@ -86,8 +88,8 @@ namespace DotRecast.Recast
                 if (currentSpan.smax < newSpan.smin)
                 {
                     // Current span is completely before the new span.  Keep going.
-                    previousSpan = currentSpan;
-                    currentSpan = currentSpan.next;
+                    previousSpanIndex = currentSpanIndex;
+                    currentSpanIndex = currentSpan.next;
                 }
                 else
                 {
@@ -111,31 +113,32 @@ namespace DotRecast.Recast
 
                     // Remove the current span since it's now merged with newSpan.
                     // Keep going because there might be other overlapping spans that also need to be merged.
-                    RcSpan next = currentSpan.next;
-                    if (previousSpan != null)
+                    uint next = currentSpan.next;
+                    if (previousSpanIndex != 0)
                     {
-                        previousSpan.next = next;
+                        heightfield.Span(previousSpanIndex).next = next;
                     }
                     else
                     {
                         heightfield.spans[columnIndex] = next;
                     }
+                    heightfield.spanPool.Free(currentSpanIndex);
 
-                    currentSpan = next;
+                    currentSpanIndex = next;
                 }
             }
 
             // Insert new span after prev
-            if (previousSpan != null)
+            if (previousSpanIndex != 0)
             {
-                newSpan.next = previousSpan.next;
-                previousSpan.next = newSpan;
+                newSpan.next = heightfield.Span(previousSpanIndex).next;
+                heightfield.Span(previousSpanIndex).next = newSpanIndex;
             }
             else
             {
                 // This span should go before the others in the list
                 newSpan.next = heightfield.spans[columnIndex];
-                heightfield.spans[columnIndex] = newSpan;
+                heightfield.spans[columnIndex] = newSpanIndex;
             }
         }
 

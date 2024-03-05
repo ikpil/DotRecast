@@ -44,7 +44,10 @@ namespace DotRecast.Recast
         public readonly float ch;
 
         /** Heightfield of spans (width*height). */
-        public readonly RcSpan[] spans;
+        public readonly uint[] spans;
+
+        /** Actual span storage. */
+        public readonly RcSpanPool spanPool;
 
         /** Border size in cell units */
         public readonly int borderSize;
@@ -58,7 +61,10 @@ namespace DotRecast.Recast
             this.cs = cs;
             this.ch = ch;
             this.borderSize = borderSize;
-            spans = new RcSpan[width * height];
+            spans = new uint[width * height];
+            spanPool = new RcSpanPool();
         }
+
+        public ref RcSpan Span(uint index) => ref spanPool.Span(index);
     }
 }
