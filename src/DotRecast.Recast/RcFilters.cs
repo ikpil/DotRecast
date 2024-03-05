@@ -56,25 +56,25 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < xSize; ++x)
                 {
-                    RcSpan previousSpan = null;
+                    uint previousSpan = 0;
                     bool previousWasWalkable = false;
                     int previousAreaID = RC_NULL_AREA;
 
                     // For each span in the column...
-                    for (RcSpan span = heightfield.spans[x + z * xSize]; span != null; previousSpan = span, span = span.next)
+                    for (uint span = heightfield.spans[x + z * xSize]; span != 0; previousSpan = span, span = heightfield.Span(span).next)
                     {
-                        bool walkable = span.area != RC_NULL_AREA;
+                        bool walkable = heightfield.Span(span).area != RC_NULL_AREA;
                         // If current span is not walkable, but there is walkable span just below it and the height difference
                         // is small enough for the agent to walk over, mark the current span as walkable too.
-                        if (!walkable && previousWasWalkable && span.smax - previousSpan.smax <= walkableClimb)
+                        if (!walkable && previousWasWalkable && heightfield.Span(span).smax - heightfield.Span(previousSpan).smax <= walkableClimb)
                         {
-                            span.area = previousAreaID;
+                            heightfield.Span(span).area = previousAreaID;
                         }
 
                         // Copy the original walkable value regardless of whether we changed it.
                         // This prevents multiple consecutive non-walkable spans from being erroneously marked as walkable.
                         previousWasWalkable = walkable;
-                        previousAreaID = span.area;
+                        previousAreaID = heightfield.Span(span).area;
                     }
                 }
             }
@@ -110,16 +110,17 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < xSize; ++x)
                 {
-                    for (RcSpan span = heightfield.spans[x + z * xSize]; span != null; span = span.next)
+                    for (uint spanIndex = heightfield.spans[x + z * xSize]; spanIndex != 0; spanIndex = heightfield.Span(spanIndex).next)
                     {
                         // Skip non-walkable spans.
+                        ref var span = ref heightfield.Span(spanIndex);
                         if (span.area == RC_NULL_AREA)
                         {
                             continue;
                         }
 
                         int floor = (span.smax);
-                        int ceiling = span.next != null ? span.next.smin : RC_SPAN_MAX_HEIGHT;
+                        int ceiling = span.next != 0 ? heightfield.Span(span.next).smin : RC_SPAN_MAX_HEIGHT;
 
                         // The difference between this walkable area and the lowest neighbor walkable area.
                         // This is the difference between the current span and all neighbor spans that have
@@ -142,11 +143,11 @@ namespace DotRecast.Recast
                                 break;
                             }
 
-                            RcSpan neighborSpan = heightfield.spans[neighborX + neighborZ * xSize];
+                            uint neighborSpanIndex = heightfield.spans[neighborX + neighborZ * xSize];
 
                             // The most we can step down to the neighbor is the walkableClimb distance.
                             // Start with the area under the neighbor span                            
-                            int neighborCeiling = neighborSpan != null ? neighborSpan.smin : RC_SPAN_MAX_HEIGHT;
+                            int neighborCeiling = neighborSpanIndex != 0 ? heightfield.Span(neighborSpanIndex).smin : RC_SPAN_MAX_HEIGHT;
 
                             // Skip neightbour if the gap between the spans is too small.
                             if (Math.Min(ceiling, neighborCeiling) - floor >= walkableHeight)
@@ -156,10 +157,11 @@ namespace DotRecast.Recast
                             }
 
                             // For each span in the neighboring column...
-                            for (; neighborSpan != null; neighborSpan = neighborSpan.next)
+                            for (; neighborSpanIndex != 0; neighborSpanIndex = heightfield.Span(neighborSpanIndex).next)
                             {
+                                ref var neighborSpan = ref heightfield.Span(neighborSpanIndex);
                                 int neighborFloor = neighborSpan.smax;
-                                neighborCeiling = neighborSpan.next != null ? neighborSpan.next.smin : RC_SPAN_MAX_HEIGHT;
+                                neighborCeiling = neighborSpan.next != 0 ? heightfield.Span(neighborSpan.next).smin : RC_SPAN_MAX_HEIGHT;
 
                                 // Only consider neighboring areas that have enough overlap to be potentially traversable.
                                 if (Math.Min(ceiling, neighborCeiling) - Math.Max(floor, neighborFloor) < walkableHeight)
@@ -232,10 +234,11 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < xSize; ++x)
                 {
-                    for (RcSpan span = heightfield.spans[x + z * xSize]; span != null; span = span.next)
+                    for (uint spanIndex = heightfield.spans[x + z * xSize]; spanIndex != 0; spanIndex = heightfield.Span(spanIndex).next)
                     {
+                        ref var span = ref heightfield.Span(spanIndex);
                         int floor = (span.smax);
-                        int ceiling = span.next != null ? span.next.smin : RC_SPAN_MAX_HEIGHT;
+                        int ceiling = span.next != 0 ? heightfield.Span(span.next).smin : RC_SPAN_MAX_HEIGHT;
                         if ((ceiling - floor) < walkableHeight)
                         {
                             span.area = RC_NULL_AREA;

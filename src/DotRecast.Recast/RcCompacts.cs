@@ -91,26 +91,25 @@ namespace DotRecast.Recast
             int numColumns = xSize * zSize;
             for (int columnIndex = 0; columnIndex < numColumns; ++columnIndex)
             {
-                RcSpan span = heightfield.spans[columnIndex];
+                uint spanIndex = heightfield.spans[columnIndex];
 
                 // If there are no spans at this cell, just leave the data to index=0, count=0.
-                if (span == null)
-                    continue;
-
                 int tmpIdx = currentCellIndex;
                 int tmpCount = 0;
-                for (; span != null; span = span.next)
+                while (spanIndex != 0)
                 {
+                    ref var span = ref heightfield.Span(spanIndex);
                     if (span.area != RC_NULL_AREA)
                     {
                         int bot = span.smax;
-                        int top = span.next != null ? (int)span.next.smin : MAX_HEIGHT;
+                        int top = span.next != 0 ? heightfield.Span(span.next).smin : MAX_HEIGHT;
                         tempSpans[currentCellIndex].y = Math.Clamp(bot, 0, MAX_HEIGHT);
                         tempSpans[currentCellIndex].h = Math.Clamp(top - bot, 0, MAX_HEIGHT);
                         compactHeightfield.areas[currentCellIndex] = span.area;
                         currentCellIndex++;
                         tmpCount++;
                     }
+                    spanIndex = span.next;
                 }
 
                 compactHeightfield.cells[columnIndex] = new RcCompactCell(tmpIdx, tmpCount);
@@ -191,9 +190,9 @@ namespace DotRecast.Recast
             int spanCount = 0;
             for (int columnIndex = 0; columnIndex < numCols; ++columnIndex)
             {
-                for (RcSpan span = heightfield.spans[columnIndex]; span != null; span = span.next)
+                for (uint span = heightfield.spans[columnIndex]; span != 0; span = heightfield.Span(span).next)
                 {
-                    if (span.area != RC_NULL_AREA)
+                    if (heightfield.Span(span).area != RC_NULL_AREA)
                     {
                         spanCount++;
                     }
