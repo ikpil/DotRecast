@@ -46,6 +46,11 @@ namespace DotRecast.Recast
         /** Heightfield of spans (width*height). */
         public readonly RcSpan[] spans;
 
+        // memory pool for rcSpan instances.
+        public RcSpanPool pools; //< Linked list of span pools.
+        public RcSpan freelist; //< The next free span.
+
+
         /** Border size in cell units */
         public readonly int borderSize;
 
