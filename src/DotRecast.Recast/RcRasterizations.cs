@@ -109,9 +109,9 @@ namespace DotRecast.Recast
         /// @param[in]	max					The new span's maximum cell index
         /// @param[in]	areaID				The new span's area type ID
         /// @param[in]	flagMergeThreshold	How close two spans maximum extents need to be to merge area type IDs
-        public static void AddSpan(RcHeightfield heightfield, 
-            int x, int z, 
-            int min, int max, 
+        public static void AddSpan(RcHeightfield heightfield,
+            int x, int z,
+            int min, int max,
             int areaID, int flagMergeThreshold)
         {
             // Create the new span.
@@ -231,15 +231,9 @@ namespace DotRecast.Recast
                 if (!sameSide)
                 {
                     float s = inVertAxisDelta[inVertB] / (inVertAxisDelta[inVertB] - inVertAxisDelta[inVertA]);
-                    inVerts[outVerts1 + poly1Vert * 3 + 0] = inVerts[inVertsOffset + inVertB * 3 + 0] +
-                                                             (inVerts[inVertsOffset + inVertA * 3 + 0] -
-                                                              inVerts[inVertsOffset + inVertB * 3 + 0]) * s;
-                    inVerts[outVerts1 + poly1Vert * 3 + 1] = inVerts[inVertsOffset + inVertB * 3 + 1] +
-                                                             (inVerts[inVertsOffset + inVertA * 3 + 1] -
-                                                              inVerts[inVertsOffset + inVertB * 3 + 1]) * s;
-                    inVerts[outVerts1 + poly1Vert * 3 + 2] = inVerts[inVertsOffset + inVertB * 3 + 2] +
-                                                             (inVerts[inVertsOffset + inVertA * 3 + 2] -
-                                                              inVerts[inVertsOffset + inVertB * 3 + 2]) * s;
+                    inVerts[outVerts1 + poly1Vert * 3 + 0] = inVerts[inVertsOffset + inVertB * 3 + 0] + (inVerts[inVertsOffset + inVertA * 3 + 0] - inVerts[inVertsOffset + inVertB * 3 + 0]) * s;
+                    inVerts[outVerts1 + poly1Vert * 3 + 1] = inVerts[inVertsOffset + inVertB * 3 + 1] + (inVerts[inVertsOffset + inVertA * 3 + 1] - inVerts[inVertsOffset + inVertB * 3 + 1]) * s;
+                    inVerts[outVerts1 + poly1Vert * 3 + 2] = inVerts[inVertsOffset + inVertB * 3 + 2] + (inVerts[inVertsOffset + inVertA * 3 + 2] - inVerts[inVertsOffset + inVertB * 3 + 2]) * s;
                     RcVecUtils.Copy(inVerts, outVerts2 + poly2Vert * 3, inVerts, outVerts1 + poly1Vert * 3);
                     poly1Vert++;
                     poly2Vert++;
@@ -432,10 +426,8 @@ namespace DotRecast.Recast
                     }
 
                     // Snap the span to the heightfield height grid.
-                    int spanMinCellIndex =
-                        Math.Clamp((int)MathF.Floor(spanMin * inverseCellHeight), 0, RC_SPAN_MAX_HEIGHT);
-                    int spanMaxCellIndex = Math.Clamp((int)MathF.Ceiling(spanMax * inverseCellHeight),
-                        spanMinCellIndex + 1, RC_SPAN_MAX_HEIGHT);
+                    int spanMinCellIndex = Math.Clamp((int)MathF.Floor(spanMin * inverseCellHeight), 0, RC_SPAN_MAX_HEIGHT);
+                    int spanMaxCellIndex = Math.Clamp((int)MathF.Ceiling(spanMax * inverseCellHeight), spanMinCellIndex + 1, RC_SPAN_MAX_HEIGHT);
 
                     AddSpan(heightfield, x, z, spanMinCellIndex, spanMaxCellIndex, areaID, flagMergeThreshold);
                 }
@@ -469,8 +461,7 @@ namespace DotRecast.Recast
             // Rasterize the single triangle.
             float inverseCellSize = 1.0f / heightfield.cs;
             float inverseCellHeight = 1.0f / heightfield.ch;
-            RasterizeTri(verts, v0, v1, v2, areaID, heightfield, heightfield.bmin, heightfield.bmax, heightfield.cs,
-                inverseCellSize,
+            RasterizeTri(verts, v0, v1, v2, areaID, heightfield, heightfield.bmin, heightfield.bmax, heightfield.cs, inverseCellSize,
                 inverseCellHeight, flagMergeThreshold);
         }
 
@@ -490,8 +481,7 @@ namespace DotRecast.Recast
         /// @param[in]		flagMergeThreshold	The distance where the walkable flag is favored over the non-walkable flag. 
         ///										[Limit: >= 0] [Units: vx]
         /// @returns True if the operation completed successfully.
-        public static void RasterizeTriangles(RcContext context, float[] verts, int[] tris, int[] triAreaIDs,
-            int numTris,
+        public static void RasterizeTriangles(RcContext context, float[] verts, int[] tris, int[] triAreaIDs, int numTris,
             RcHeightfield heightfield, int flagMergeThreshold)
         {
             using var timer = context.ScopedTimer(RcTimerLabel.RC_TIMER_RASTERIZE_TRIANGLES);
@@ -503,8 +493,7 @@ namespace DotRecast.Recast
                 int v0 = tris[triIndex * 3 + 0];
                 int v1 = tris[triIndex * 3 + 1];
                 int v2 = tris[triIndex * 3 + 2];
-                RasterizeTri(verts, v0, v1, v2, triAreaIDs[triIndex], heightfield, heightfield.bmin, heightfield.bmax,
-                    heightfield.cs,
+                RasterizeTri(verts, v0, v1, v2, triAreaIDs[triIndex], heightfield, heightfield.bmin, heightfield.bmax, heightfield.cs,
                     inverseCellSize, inverseCellHeight, flagMergeThreshold);
             }
         }
@@ -525,8 +514,7 @@ namespace DotRecast.Recast
         /// @param[in]		flagMergeThreshold	The distance where the walkable flag is favored over the non-walkable flag. 
         /// 									[Limit: >= 0] [Units: vx]
         /// @returns True if the operation completed successfully.
-        public static void RasterizeTriangles(RcContext context, float[] verts, int[] triAreaIDs, int numTris,
-            RcHeightfield heightfield, int flagMergeThreshold)
+        public static void RasterizeTriangles(RcContext context, float[] verts, int[] triAreaIDs, int numTris, RcHeightfield heightfield, int flagMergeThreshold)
         {
             using var timer = context.ScopedTimer(RcTimerLabel.RC_TIMER_RASTERIZE_TRIANGLES);
 
@@ -537,8 +525,7 @@ namespace DotRecast.Recast
                 int v0 = (triIndex * 3 + 0);
                 int v1 = (triIndex * 3 + 1);
                 int v2 = (triIndex * 3 + 2);
-                RasterizeTri(verts, v0, v1, v2, triAreaIDs[triIndex], heightfield, heightfield.bmin, heightfield.bmax,
-                    heightfield.cs,
+                RasterizeTri(verts, v0, v1, v2, triAreaIDs[triIndex], heightfield, heightfield.bmin, heightfield.bmax, heightfield.cs,
                     inverseCellSize, inverseCellHeight, flagMergeThreshold);
             }
         }
