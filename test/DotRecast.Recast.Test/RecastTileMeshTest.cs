@@ -27,7 +27,6 @@ using NUnit.Framework;
 
 namespace DotRecast.Recast.Test;
 
-
 public class RecastTileMeshTest
 {
     private const float m_cellSize = 0.3f;
@@ -138,8 +137,8 @@ public class RecastTileMeshTest
     private void Build(IInputGeomProvider geom, RcBuilder builder, RcConfig cfg, int threads, bool validate)
     {
         CancellationTokenSource cts = new CancellationTokenSource();
-        List<RcBuilderResult> tiles = new();
-        var task = builder.BuildTilesAsync(geom, cfg, threads, tiles, Task.Factory, cts.Token);
+        var task = builder.BuildTilesAsync(geom, cfg, threads, Task.Factory, cts.Token);
+        List<RcBuilderResult> tiles = task.Result;
         if (validate)
         {
             RcBuilderResult rcResult = GetTile(tiles, 7, 8);

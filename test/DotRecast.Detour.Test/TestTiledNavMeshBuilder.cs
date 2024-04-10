@@ -78,7 +78,8 @@ public class TestTiledNavMeshBuilder
             true, true, true,
             SampleAreaModifications.SAMPLE_AREAMOD_GROUND, true);
         RcBuilder rcBuilder = new RcBuilder();
-        List<RcBuilderResult> rcResult = rcBuilder.BuildTiles(geom, cfg, null);
+        var task = rcBuilder.BuildTilesAsync(geom, cfg);
+        List<RcBuilderResult> rcResult = task.Result;
 
         // Add tiles to nav mesh
 
