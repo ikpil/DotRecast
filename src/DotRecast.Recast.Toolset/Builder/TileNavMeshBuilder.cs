@@ -124,8 +124,8 @@ namespace DotRecast.Recast.Toolset.Builder
             List<DtMeshData> meshData = new List<DtMeshData>();
             foreach (RcBuilderResult result in results)
             {
-                int x = result.tileX;
-                int z = result.tileZ;
+                int x = result.TileX;
+                int z = result.TileZ;
                 DtNavMeshCreateParams option = DemoNavMeshBuilder
                     .GetNavMeshCreateParams(geom, cellSize, cellHeight, agentHeight, agentRadius, agentMaxClimb, result);
 

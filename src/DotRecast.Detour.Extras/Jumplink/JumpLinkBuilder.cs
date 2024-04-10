@@ -21,7 +21,7 @@ namespace DotRecast.Detour.Extras.Jumplink
         public JumpLinkBuilder(IList<RcBuilderResult> results)
         {
             this.results = results;
-            edges = results.Select(r => edgeExtractor.ExtractEdges(r.GetMesh())).ToList();
+            edges = results.Select(r => edgeExtractor.ExtractEdges(r.Mesh)).ToList();
         }
 
         public List<JumpLink> Build(JumpLinkBuilderConfig acfg, JumpLinkType type)
@@ -43,7 +43,7 @@ namespace DotRecast.Detour.Extras.Jumplink
         {
             EdgeSampler es = edgeSamplerFactory.Get(acfg, type, edge);
             groundSampler.Sample(acfg, result, es);
-            trajectorySampler.Sample(acfg, result.GetSolidHeightfield(), es);
+            trajectorySampler.Sample(acfg, result.SolidHeightfiled, es);
             JumpSegment[] jumpSegments = jumpSegmentBuilder.Build(acfg, es);
             return BuildJumpLinks(acfg, es, jumpSegments);
         }

@@ -73,13 +73,13 @@ public class RecastTestMeshBuilder
         RcBuilderConfig bcfg = new RcBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax());
         RcBuilder rcBuilder = new RcBuilder();
         RcBuilderResult rcResult = rcBuilder.Build(geom, bcfg);
-        RcPolyMesh m_pmesh = rcResult.GetMesh();
+        RcPolyMesh m_pmesh = rcResult.Mesh;
         for (int i = 0; i < m_pmesh.npolys; ++i)
         {
             m_pmesh.flags[i] = 1;
         }
 
-        RcPolyMeshDetail m_dmesh = rcResult.GetMeshDetail();
+        RcPolyMeshDetail m_dmesh = rcResult.MeshDetail;
         DtNavMeshCreateParams option = new DtNavMeshCreateParams();
         option.verts = m_pmesh.verts;
         option.vertCount = m_pmesh.nverts;

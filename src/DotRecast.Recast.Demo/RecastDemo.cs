@@ -552,7 +552,7 @@ public class RecastDemo : IRecastDemoChannel
             {
                 foreach (RcBuilderResult result in _sample.GetRecastResults())
                 {
-                    if (result.GetSolidHeightfield() != null)
+                    if (result.SolidHeightfiled != null)
                     {
                         if (!hasBound)
                         {
@@ -561,15 +561,15 @@ public class RecastDemo : IRecastDemoChannel
                         }
 
                         bminN = new RcVec3f(
-                            Math.Min(bminN.X, result.GetSolidHeightfield().bmin.X),
-                            Math.Min(bminN.Y, result.GetSolidHeightfield().bmin.Y),
-                            Math.Min(bminN.Z, result.GetSolidHeightfield().bmin.Z)
+                            Math.Min(bminN.X, result.SolidHeightfiled.bmin.X),
+                            Math.Min(bminN.Y, result.SolidHeightfiled.bmin.Y),
+                            Math.Min(bminN.Z, result.SolidHeightfiled.bmin.Z)
                         );
 
                         bmaxN = new RcVec3f(
-                            Math.Max(bmaxN.X, result.GetSolidHeightfield().bmax.X),
-                            Math.Max(bmaxN.Y, result.GetSolidHeightfield().bmax.Y),
-                            Math.Max(bmaxN.Z, result.GetSolidHeightfield().bmax.Z)
+                            Math.Max(bmaxN.X, result.SolidHeightfiled.bmax.X),
+                            Math.Max(bmaxN.Y, result.SolidHeightfiled.bmax.Y),
+                            Math.Max(bmaxN.Z, result.SolidHeightfiled.bmax.Z)
                         );
 
                         hasBound = true;
@@ -713,7 +713,7 @@ public class RecastDemo : IRecastDemoChannel
         Logger.Information($"build times");
         Logger.Information($"-----------------------------------------");
         var telemetries = buildResult.RecastBuilderResults
-            .Select(x => x.GetTelemetry())
+            .Select(x => x.Context)
             .SelectMany(x => x.ToList())
             .GroupBy(x => x.Key)
             .ToImmutableSortedDictionary(x => x.Key, x => x.Sum(y => y.Millis));

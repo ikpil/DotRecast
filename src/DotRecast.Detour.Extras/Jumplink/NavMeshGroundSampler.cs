@@ -16,25 +16,25 @@ namespace DotRecast.Detour.Extras.Jumplink
         private DtNavMeshQuery CreateNavMesh(RcBuilderResult r, float agentRadius, float agentHeight, float agentClimb)
         {
             DtNavMeshCreateParams option = new DtNavMeshCreateParams();
-            option.verts = r.GetMesh().verts;
-            option.vertCount = r.GetMesh().nverts;
-            option.polys = r.GetMesh().polys;
-            option.polyAreas = r.GetMesh().areas;
-            option.polyFlags = r.GetMesh().flags;
-            option.polyCount = r.GetMesh().npolys;
-            option.nvp = r.GetMesh().nvp;
-            option.detailMeshes = r.GetMeshDetail().meshes;
-            option.detailVerts = r.GetMeshDetail().verts;
-            option.detailVertsCount = r.GetMeshDetail().nverts;
-            option.detailTris = r.GetMeshDetail().tris;
-            option.detailTriCount = r.GetMeshDetail().ntris;
+            option.verts = r.Mesh.verts;
+            option.vertCount = r.Mesh.nverts;
+            option.polys = r.Mesh.polys;
+            option.polyAreas = r.Mesh.areas;
+            option.polyFlags = r.Mesh.flags;
+            option.polyCount = r.Mesh.npolys;
+            option.nvp = r.Mesh.nvp;
+            option.detailMeshes = r.MeshDetail.meshes;
+            option.detailVerts = r.MeshDetail.verts;
+            option.detailVertsCount = r.MeshDetail.nverts;
+            option.detailTris = r.MeshDetail.tris;
+            option.detailTriCount = r.MeshDetail.ntris;
             option.walkableRadius = agentRadius;
             option.walkableHeight = agentHeight;
             option.walkableClimb = agentClimb;
-            option.bmin = r.GetMesh().bmin;
-            option.bmax = r.GetMesh().bmax;
-            option.cs = r.GetMesh().cs;
-            option.ch = r.GetMesh().ch;
+            option.bmin = r.Mesh.bmin;
+            option.bmax = r.Mesh.bmax;
+            option.cs = r.Mesh.cs;
+            option.ch = r.Mesh.ch;
             option.buildBvTree = true;
             return new DtNavMeshQuery(new DtNavMesh(DtNavMeshBuilder.CreateNavMeshData(option), option.nvp, 0));
         }

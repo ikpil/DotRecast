@@ -132,8 +132,8 @@ namespace DotRecast.Detour.Dynamic
         private DtNavMeshCreateParams NavMeshCreateParams(int tilex, int tileZ, float cellSize, float cellHeight,
             DtDynamicNavMeshConfig config, RcBuilderResult rcResult)
         {
-            RcPolyMesh m_pmesh = rcResult.GetMesh();
-            RcPolyMeshDetail m_dmesh = rcResult.GetMeshDetail();
+            RcPolyMesh m_pmesh = rcResult.Mesh;
+            RcPolyMeshDetail m_dmesh = rcResult.MeshDetail;
             DtNavMeshCreateParams option = new DtNavMeshCreateParams();
             for (int i = 0; i < m_pmesh.npolys; ++i)
             {

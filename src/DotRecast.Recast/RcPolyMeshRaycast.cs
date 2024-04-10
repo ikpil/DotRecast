@@ -30,9 +30,9 @@ namespace DotRecast.Recast
             hitTime = 0.0f;
             foreach (RcBuilderResult result in results)
             {
-                if (result.GetMeshDetail() != null)
+                if (result.MeshDetail != null)
                 {
-                    if (Raycast(result.GetMesh(), result.GetMeshDetail(), src, dst, out hitTime))
+                    if (Raycast(result.Mesh, result.MeshDetail, src, dst, out hitTime))
                     {
                         return true;
                     }

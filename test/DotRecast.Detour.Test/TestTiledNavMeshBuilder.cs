@@ -85,7 +85,7 @@ public class TestTiledNavMeshBuilder
 
         foreach (RcBuilderResult result in rcResult)
         {
-            RcPolyMesh pmesh = result.GetMesh();
+            RcPolyMesh pmesh = result.Mesh;
             if (pmesh.npolys == 0)
             {
                 continue;
@@ -104,7 +104,7 @@ public class TestTiledNavMeshBuilder
             option.polyFlags = pmesh.flags;
             option.polyCount = pmesh.npolys;
             option.nvp = pmesh.nvp;
-            RcPolyMeshDetail dmesh = result.GetMeshDetail();
+            RcPolyMeshDetail dmesh = result.MeshDetail;
             option.detailMeshes = dmesh.meshes;
             option.detailVerts = dmesh.verts;
             option.detailVertsCount = dmesh.nverts;
@@ -117,8 +117,8 @@ public class TestTiledNavMeshBuilder
             option.bmax = pmesh.bmax;
             option.cs = cellSize;
             option.ch = cellHeight;
-            option.tileX = result.tileX;
-            option.tileZ = result.tileZ;
+            option.tileX = result.TileX;
+            option.tileZ = result.TileZ;
             option.buildBvTree = true;
             navMesh.AddTile(DtNavMeshBuilder.CreateNavMeshData(option), 0, 0);
         }
