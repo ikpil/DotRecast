@@ -577,12 +577,15 @@ public class RecastDemo : IRecastDemoChannel
                 }
             }
 
+            // Reset camera and fog to match the mesh bounds.
             if (hasBound)
             {
                 RcVec3f bmin = bminN;
                 RcVec3f bmax = bmaxN;
 
-                camr = (float)(Math.Sqrt(RcMath.Sqr(bmax.X - bmin.X) + RcMath.Sqr(bmax.Y - bmin.Y) + RcMath.Sqr(bmax.Z - bmin.Z)) / 2);
+                camr = (float)(Math.Sqrt(RcMath.Sqr(bmax.X - bmin.X) + 
+                                         RcMath.Sqr(bmax.Y - bmin.Y) + 
+                                         RcMath.Sqr(bmax.Z - bmin.Z)) / 2);
                 cameraPos.X = (bmax.X + bmin.X) / 2 + camr;
                 cameraPos.Y = (bmax.Y + bmin.Y) / 2 + camr;
                 cameraPos.Z = (bmax.Z + bmin.Z) / 2 + camr;
