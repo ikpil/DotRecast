@@ -47,7 +47,7 @@ namespace DotRecast.Recast
             _progressListener = progressListener;
         }
 
-        public Task<List<RcBuilderResult>> BuildTilesAsync(IInputGeomProvider geom, RcConfig cfg,
+        public List<RcBuilderResult> BuildTiles(IInputGeomProvider geom, RcConfig cfg,
             int threads = 0, TaskFactory taskFactory = null, CancellationToken cancellation = default)
         {
             RcVec3f bmin = geom.GetMeshBoundsMin();
@@ -56,11 +56,10 @@ namespace DotRecast.Recast
 
             if (1 < threads)
             {
-                return BuildMultiThreadAsync(geom, cfg, bmin, bmax, tw, th, threads, taskFactory ?? Task.Factory, cancellation);
+                return BuildMultiThread(geom, cfg, bmin, bmax, tw, th, threads, taskFactory ?? Task.Factory, cancellation);
             }
 
-            var results = BuildSingleThread(geom, cfg, bmin, bmax, tw, th);
-            return Task.FromResult(results);
+            return BuildSingleThread(geom, cfg, bmin, bmax, tw, th);
         }
 
         private List<RcBuilderResult> BuildSingleThread(IInputGeomProvider geom, RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tw, int th)
@@ -80,7 +79,7 @@ namespace DotRecast.Recast
             return results;
         }
 
-        private async Task<List<RcBuilderResult>> BuildMultiThreadAsync(IInputGeomProvider geom, RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tw, int th,
+        private List<RcBuilderResult> BuildMultiThread(IInputGeomProvider geom, RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tw, int th,
             int threads, TaskFactory taskFactory, CancellationToken cancellation)
         {
             var results = new ConcurrentQueue<RcBuilderResult>();
@@ -107,12 +106,12 @@ namespace DotRecast.Recast
                         {
                             Console.WriteLine(e);
                         }
-                    }, null);
+                    }, null, cancellation);
 
                     limits.Add(task);
                     if (threads <= limits.Count)
                     {
-                        await Task.WhenAll(limits);
+                        Task.WaitAll(limits.ToArray());
                         limits.Clear();
                     }
                 }
@@ -120,7 +119,7 @@ namespace DotRecast.Recast
 
             if (0 < limits.Count)
             {
-                await Task.WhenAll(limits);
+                Task.WaitAll(limits.ToArray());
                 limits.Clear();
             }
 

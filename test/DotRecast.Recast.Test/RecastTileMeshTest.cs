@@ -137,8 +137,7 @@ public class RecastTileMeshTest
     private void Build(IInputGeomProvider geom, RcBuilder builder, RcConfig cfg, int threads, bool validate)
     {
         CancellationTokenSource cts = new CancellationTokenSource();
-        var task = builder.BuildTilesAsync(geom, cfg, threads, Task.Factory, cts.Token);
-        List<RcBuilderResult> tiles = task.Result;
+        List<RcBuilderResult> tiles = builder.BuildTiles(geom, cfg, threads, Task.Factory, cts.Token);
         if (validate)
         {
             RcBuilderResult rcResult = GetTile(tiles, 7, 8);
