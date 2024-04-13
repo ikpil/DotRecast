@@ -537,6 +537,7 @@ public class RecastDemo : IRecastDemoChannel
             bool hasBound = false;
             RcVec3f bminN = RcVec3f.Zero;
             RcVec3f bmaxN = RcVec3f.Zero;
+            
             if (_sample.GetInputGeom() != null)
             {
                 bminN = _sample.GetInputGeom().GetMeshBoundsMin();
@@ -561,15 +562,15 @@ public class RecastDemo : IRecastDemoChannel
                         }
 
                         bminN = new RcVec3f(
-                            Math.Min(bminN.X, result.SolidHeightfiled.bmin.X),
-                            Math.Min(bminN.Y, result.SolidHeightfiled.bmin.Y),
-                            Math.Min(bminN.Z, result.SolidHeightfiled.bmin.Z)
+                            Math.Min(bminN.X, result.CompactHeightfield.bmin.X),
+                            Math.Min(bminN.Y, result.CompactHeightfield.bmin.Y),
+                            Math.Min(bminN.Z, result.CompactHeightfield.bmin.Z)
                         );
 
                         bmaxN = new RcVec3f(
-                            Math.Max(bmaxN.X, result.SolidHeightfiled.bmax.X),
-                            Math.Max(bmaxN.Y, result.SolidHeightfiled.bmax.Y),
-                            Math.Max(bmaxN.Z, result.SolidHeightfiled.bmax.Z)
+                            Math.Max(bmaxN.X, result.CompactHeightfield.bmax.X),
+                            Math.Max(bmaxN.Y, result.CompactHeightfield.bmax.Y),
+                            Math.Max(bmaxN.Z, result.CompactHeightfield.bmax.Z)
                         );
 
                         hasBound = true;
