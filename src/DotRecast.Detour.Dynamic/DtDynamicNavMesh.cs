@@ -40,7 +40,7 @@ namespace DotRecast.Detour.Dynamic
         private readonly BlockingCollection<IDtDaynmicTileJob> updateQueue = new BlockingCollection<IDtDaynmicTileJob>();
         private readonly RcAtomicLong currentColliderId = new RcAtomicLong(0);
         private DtNavMesh _navMesh;
-        private bool dirty = true;
+        private bool _dirty = true;
 
         public DtDynamicNavMesh(DtVoxelFile voxelFile)
         {
@@ -105,29 +105,6 @@ namespace DotRecast.Detour.Dynamic
             updateQueue.Add(new DtDynamicTileColliderRemovalJob(colliderId, GetTilesByCollider(colliderId)));
         }
 
-        /**
-     * Perform full build of the nav mesh
-     */
-        public void Build()
-        {
-            ProcessQueue();
-            Rebuild(_tiles.Values);
-        }
-
-        /**
-     * Perform incremental update of the nav mesh
-     */
-        public bool Update()
-        {
-            return Rebuild(ProcessQueue());
-        }
-
-        private bool Rebuild(ICollection<DtDynamicTile> stream)
-        {
-            foreach (var dynamicTile in stream)
-                Rebuild(dynamicTile);
-            return UpdateNavMesh();
-        }
 
         private HashSet<DtDynamicTile> ProcessQueue()
         {
@@ -159,27 +136,49 @@ namespace DotRecast.Detour.Dynamic
             }
         }
 
-        /**
-     * Perform full build concurrently using the given {@link ExecutorService}
-     */
-        public Task<bool> Build(TaskFactory executor)
+        // Perform full build of the navmesh
+        public void Build()
+        {
+            ProcessQueue();
+            Rebuild(_tiles.Values);
+        }
+
+        // Perform full build concurrently using the given {@link ExecutorService}
+        public bool Build(TaskFactory executor)
         {
             ProcessQueue();
             return Rebuild(_tiles.Values, executor);
         }
 
-        /**
-     * Perform incremental update concurrently using the given {@link ExecutorService}
-     */
-        public Task<bool> Update(TaskFactory executor)
+
+        // Perform incremental update of the navmesh
+        public bool Update()
+        {
+            return Rebuild(ProcessQueue());
+        }
+
+        // Perform incremental update concurrently using the given {@link ExecutorService}
+        public bool Update(TaskFactory executor)
         {
             return Rebuild(ProcessQueue(), executor);
         }
 
-        private Task<bool> Rebuild(ICollection<DtDynamicTile> tiles, TaskFactory executor)
+        private bool Rebuild(ICollection<DtDynamicTile> tiles)
         {
-            var tasks = tiles.Select(tile => executor.StartNew(() => Rebuild(tile))).ToArray();
-            return Task.WhenAll(tasks).ContinueWith(k => UpdateNavMesh());
+            foreach (var tile in tiles)
+                Rebuild(tile);
+            
+            return UpdateNavMesh();
+        }
+
+        private bool Rebuild(ICollection<DtDynamicTile> tiles, TaskFactory executor)
+        {
+            var tasks = tiles
+                .Select(tile => executor.StartNew(() => Rebuild(tile)))
+                .ToArray();
+
+            Task.WaitAll(tasks);
+            return UpdateNavMesh();
         }
 
         private ICollection<DtDynamicTile> GetTiles(float[] bounds)
@@ -218,19 +217,19 @@ namespace DotRecast.Detour.Dynamic
         {
             DtNavMeshCreateParams option = new DtNavMeshCreateParams();
             option.walkableHeight = config.walkableHeight;
-            dirty = dirty | tile.Build(builder, config, _context);
+            _dirty = _dirty | tile.Build(builder, config, _context);
         }
 
         private bool UpdateNavMesh()
         {
-            if (dirty)
+            if (_dirty)
             {
                 DtNavMesh navMesh = new DtNavMesh(navMeshParams, MAX_VERTS_PER_POLY);
                 foreach (var t in _tiles.Values)
                     t.AddTo(navMesh);
 
-                this._navMesh = navMesh;
-                dirty = false;
+                _navMesh = navMesh;
+                _dirty = false;
                 return true;
             }
 

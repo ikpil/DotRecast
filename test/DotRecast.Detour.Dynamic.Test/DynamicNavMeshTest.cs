@@ -10,7 +10,6 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Dynamic.Test;
 
-
 public class DynamicNavMeshTest
 {
     private static readonly RcVec3f START_POS = new RcVec3f(70.87453f, 0.0010070801f, 86.69021f);
@@ -32,9 +31,7 @@ public class DynamicNavMeshTest
         // create dynamic navmesh
         DtDynamicNavMesh mesh = new DtDynamicNavMesh(f);
         // build navmesh asynchronously using multiple threads
-        Task<bool> future = mesh.Build(Task.Factory);
-        // wait for build to complete
-        bool _ = future.Result;
+        mesh.Build(Task.Factory);
 
         // create new query
         DtNavMeshQuery query = new DtNavMeshQuery(mesh.NavMesh());
@@ -54,9 +51,8 @@ public class DynamicNavMeshTest
         long colliderId = mesh.AddCollider(colldier);
 
         // update navmesh asynchronously
-        future = mesh.Update(Task.Factory);
-        // wait for update to complete
-        _ = future.Result;
+        mesh.Update(Task.Factory);
+
         // create new query
         query = new DtNavMeshQuery(mesh.NavMesh());
 
@@ -70,9 +66,7 @@ public class DynamicNavMeshTest
         // remove obstacle
         mesh.RemoveCollider(colliderId);
         // update navmesh asynchronously
-        future = mesh.Update(Task.Factory);
-        // wait for update to complete
-        _ = future.Result;
+        mesh.Update(Task.Factory);
         // create new query
         query = new DtNavMeshQuery(mesh.NavMesh());
 

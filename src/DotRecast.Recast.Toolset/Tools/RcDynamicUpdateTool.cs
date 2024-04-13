@@ -18,12 +18,12 @@ namespace DotRecast.Recast.Toolset.Tools
         private DtDynamicNavMesh dynaMesh;
         private readonly Dictionary<long, RcGizmo> colliderGizmos;
 
-        private readonly Random random;
+        private readonly IRcRand random;
         private readonly DemoInputGeomProvider bridgeGeom;
         private readonly DemoInputGeomProvider houseGeom;
         private readonly DemoInputGeomProvider convexGeom;
 
-        public RcDynamicUpdateTool(Random rand, DemoInputGeomProvider bridgeGeom, DemoInputGeomProvider houseGeom, DemoInputGeomProvider convexGeom)
+        public RcDynamicUpdateTool(IRcRand rand, DemoInputGeomProvider bridgeGeom, DemoInputGeomProvider houseGeom, DemoInputGeomProvider convexGeom)
         {
             this.colliderGizmos = new Dictionary<long, RcGizmo>();
             this.random = rand;
@@ -339,20 +339,14 @@ namespace DotRecast.Recast.Toolset.Tools
             return resultvector;
         }
 
-        public bool UpdateDynaMesh(TaskFactory executor)
+        public bool Update(TaskFactory executor)
         {
             if (dynaMesh == null)
             {
                 return false;
             }
 
-            bool updated = dynaMesh.Update(executor).Result;
-            if (updated)
-            {
-                return false;
-            }
-
-            return true;
+            return dynaMesh.Update(executor);
         }
 
         public bool Raycast(RcVec3f spos, RcVec3f epos, out float hitPos, out RcVec3f raycastHitPos)

@@ -91,7 +91,7 @@ public class DynamicUpdateSampleTool : ISampleTool
         var bridgeGeom = DemoInputGeomProvider.LoadFile("bridge.obj");
         var houseGeom = DemoInputGeomProvider.LoadFile("house.obj");
         var convexGeom = DemoInputGeomProvider.LoadFile("convex.obj");
-        _tool = new(Random.Shared, bridgeGeom, houseGeom, convexGeom);
+        _tool = new(new RcRand(Random.Shared), bridgeGeom, houseGeom, convexGeom);
         executor = Task.Factory;
     }
 
@@ -406,7 +406,7 @@ public class DynamicUpdateSampleTool : ISampleTool
         long t = RcFrequency.Ticks;
         try
         {
-            bool updated = _tool.UpdateDynaMesh(executor);
+            bool updated = _tool.Update(executor);
             if (updated)
             {
                 buildTime = (RcFrequency.Ticks - t) / TimeSpan.TicksPerMillisecond;
@@ -450,7 +450,7 @@ public class DynamicUpdateSampleTool : ISampleTool
         long t = RcFrequency.Ticks;
         try
         {
-            var _ = dynaMesh.Build(executor).Result;
+            var _ = dynaMesh.Build(executor);
         }
         catch (Exception e)
         {

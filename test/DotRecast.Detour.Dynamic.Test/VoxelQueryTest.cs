@@ -31,7 +31,6 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Dynamic.Test;
 
-
 public class VoxelQueryTest
 {
     private const int TILE_WIDTH = 100;
@@ -101,12 +100,12 @@ public class VoxelQueryTest
         // load voxels from file
         DtVoxelFileReader reader = new DtVoxelFileReader(DtVoxelTileLZ4ForTestCompressor.Shared);
         DtVoxelFile f = reader.Read(br);
+        
         // create dynamic navmesh
         var mesh = new DtDynamicNavMesh(f);
+        
         // build navmesh asynchronously using multiple threads
-        Task<bool> future = mesh.Build(Task.Factory);
-        // wait for build to complete
-        var _ = future.Result;
+        mesh.Build(Task.Factory);
         return mesh;
     }
 }

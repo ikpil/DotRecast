@@ -6,9 +6,13 @@ namespace DotRecast.Core
     {
         private readonly Random _r;
 
-        public RcRand()
+        public RcRand() : this(new Random())
         {
-            _r = new Random();
+        }
+
+        public RcRand(Random r)
+        {
+            _r = r;
         }
 
         public RcRand(long seed)
@@ -19,6 +23,11 @@ namespace DotRecast.Core
         public float Next()
         {
             return (float)_r.NextDouble();
+        }
+
+        public double NextDouble()
+        {
+            return _r.NextDouble();
         }
 
         public int NextInt32()
