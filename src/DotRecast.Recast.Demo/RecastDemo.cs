@@ -553,7 +553,7 @@ public class RecastDemo : IRecastDemoChannel
             {
                 foreach (RcBuilderResult result in _sample.GetRecastResults())
                 {
-                    if (result.SolidHeightfiled != null)
+                    if (result.CompactHeightfield != null)
                     {
                         if (!hasBound)
                         {
