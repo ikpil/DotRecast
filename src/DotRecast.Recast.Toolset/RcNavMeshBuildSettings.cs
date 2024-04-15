@@ -31,5 +31,8 @@
 
         public bool tiled = false;
         public int tileSize = 32;
+        
+        public bool keepInterResults = false;
+        public bool buildAll = true;
     }
 }
