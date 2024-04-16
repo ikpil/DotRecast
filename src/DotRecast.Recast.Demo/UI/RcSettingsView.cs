@@ -165,7 +165,7 @@ public class RcSettingsView : IRcView
         ImGui.SliderFloat("Sample Distance", ref settings.detailSampleDist, 0f, 16f, "%.1f");
         ImGui.SliderFloat("Max Sample Error", ref settings.detailSampleMaxError, 0f, 16f, "%.1f");
         ImGui.NewLine();
-        
+
         ImGui.Checkbox("Keep Itermediate Results", ref settings.keepInterResults);
         ImGui.Checkbox("Build All Tiles", ref settings.buildAll);
         ImGui.NewLine();
@@ -230,6 +230,12 @@ public class RcSettingsView : IRcView
         ImGui.Separator();
 
         DrawMode.Values.ForEach(dm => { ImGui.RadioButton(dm.Text, ref drawMode, dm.Idx); });
+        ImGui.NewLine();
+
+        ImGui.Separator();
+        ImGui.Text("Tick 'Keep Itermediate Results'");
+        ImGui.Text("rebuild some tiles to see");
+        ImGui.Text("more debug mode options.");
         ImGui.NewLine();
 
         ImGui.End();
