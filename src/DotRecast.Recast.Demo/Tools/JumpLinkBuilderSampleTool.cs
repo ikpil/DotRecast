@@ -16,6 +16,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System.Linq;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour.Extras.Jumplink;
 using DotRecast.Recast.Demo.Draw;
@@ -96,13 +97,25 @@ public class JumpLinkBuilderSampleTool : ISampleTool
 
         if (build || _cfg.buildOffMeshConnections)
         {
-            if (0 < _sample.GetRecastResults().Count)
+            do
             {
+                if (0 >= _sample.GetRecastResults().Count)
+                {
+                    Logger.Error("build navmesh");
+                    break;
+                }
+
+                if (_sample.GetRecastResults().Any(x => null == x.SolidHeightfiled))
+                {
+                    Logger.Error("Tick 'Keep Itermediate Results' option");
+                    break;
+                }
+
                 var geom = _sample.GetInputGeom();
                 var settings = _sample.GetSettings();
 
                 _tool.Build(geom, settings, _sample.GetRecastResults(), _cfg);
-            }
+            } while (false);
         }
 
         ImGui.NewLine();

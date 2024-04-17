@@ -47,9 +47,8 @@ namespace DotRecast.Recast
             _progressListener = progressListener;
         }
 
-        public List<RcBuilderResult> BuildTiles(IInputGeomProvider geom, RcConfig cfg,
-            int threads = 0, TaskFactory taskFactory = null, CancellationToken cancellation = default,
-            bool keepInterResults = false, bool buildAll = true)
+        public List<RcBuilderResult> BuildTiles(IInputGeomProvider geom, RcConfig cfg, bool keepInterResults, bool buildAll,
+            int threads = 0, TaskFactory taskFactory = null, CancellationToken cancellation = default)
         {
             RcVec3f bmin = geom.GetMeshBoundsMin();
             RcVec3f bmax = geom.GetMeshBoundsMax();

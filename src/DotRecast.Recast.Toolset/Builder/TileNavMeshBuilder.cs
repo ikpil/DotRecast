@@ -101,7 +101,7 @@ namespace DotRecast.Recast.Toolset.Builder
                 filterLowHangingObstacles, filterLedgeSpans, filterWalkableLowHeightSpans,
                 SampleAreaModifications.SAMPLE_AREAMOD_WALKABLE, true);
             RcBuilder rcBuilder = new RcBuilder();
-            return rcBuilder.BuildTiles(geom, cfg, Environment.ProcessorCount + 1, Task.Factory);
+            return rcBuilder.BuildTiles(geom, cfg, keepInterResults, buildAll, Environment.ProcessorCount + 1, Task.Factory);
         }
 
         public DtNavMesh BuildNavMesh(IInputGeomProvider geom, List<DtMeshData> meshData, float cellSize, int tileSize, int vertsPerPoly)
