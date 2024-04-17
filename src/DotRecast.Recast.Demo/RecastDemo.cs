@@ -368,7 +368,7 @@ public class RecastDemo : IRecastDemoChannel
 
         var scale = (float)_resolution.X / 1920;
         int fontSize = Math.Max(10, (int)(16 * scale));
-        
+
         // for windows : Microsoft Visual C++ Redistributable Package
         // link - https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist
         var imGuiFontConfig = new ImGuiFontConfig(Path.Combine("resources\\fonts", "DroidSans.ttf"), fontSize, null);
@@ -379,7 +379,7 @@ public class RecastDemo : IRecastDemoChannel
 
         DemoInputGeomProvider geom = LoadInputMesh("nav_test.obj");
         _sample = new DemoSample(geom, ImmutableArray<RcBuilderResult>.Empty, null);
-        
+
         _menuView = new RcMenuView();
         settingsView = new RcSettingsView(this);
         settingsView.SetSample(_sample);
@@ -537,7 +537,7 @@ public class RecastDemo : IRecastDemoChannel
             bool hasBound = false;
             RcVec3f bminN = RcVec3f.Zero;
             RcVec3f bmaxN = RcVec3f.Zero;
-            
+
             if (_sample.GetInputGeom() != null)
             {
                 bminN = _sample.GetInputGeom().GetMeshBoundsMin();
@@ -584,8 +584,8 @@ public class RecastDemo : IRecastDemoChannel
                 RcVec3f bmin = bminN;
                 RcVec3f bmax = bmaxN;
 
-                camr = (float)(Math.Sqrt(RcMath.Sqr(bmax.X - bmin.X) + 
-                                         RcMath.Sqr(bmax.Y - bmin.Y) + 
+                camr = (float)(Math.Sqrt(RcMath.Sqr(bmax.X - bmin.X) +
+                                         RcMath.Sqr(bmax.Y - bmin.Y) +
                                          RcMath.Sqr(bmax.Z - bmin.Z)) / 2);
                 cameraPos.X = (bmax.X + bmin.X) / 2 + camr;
                 cameraPos.Y = (bmax.Y + bmin.Y) / 2 + camr;
@@ -692,14 +692,15 @@ public class RecastDemo : IRecastDemoChannel
 
         NavMeshBuildResult buildResult;
 
+        var geom = _sample.GetInputGeom();
         var settings = _sample.GetSettings();
         if (settings.tiled)
         {
-            buildResult = tileNavMeshBuilder.Build(_sample.GetInputGeom(), settings);
+            buildResult = tileNavMeshBuilder.Build(geom, settings);
         }
         else
         {
-            buildResult = soloNavMeshBuilder.Build(_sample.GetInputGeom(), settings);
+            buildResult = soloNavMeshBuilder.Build(geom, settings);
         }
 
         if (!buildResult.Success)

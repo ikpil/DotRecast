@@ -34,7 +34,8 @@ namespace DotRecast.Recast.Toolset.Builder
                 settings.edgeMaxLen, settings.edgeMaxError,
                 settings.vertsPerPoly,
                 settings.detailSampleDist, settings.detailSampleMaxError,
-                settings.filterLowHangingObstacles, settings.filterLedgeSpans, settings.filterWalkableLowHeightSpans);
+                settings.filterLowHangingObstacles, settings.filterLedgeSpans, settings.filterWalkableLowHeightSpans,
+                settings.keepInterResults);
         }
 
         public NavMeshBuildResult Build(DemoInputGeomProvider geom,
@@ -45,7 +46,8 @@ namespace DotRecast.Recast.Toolset.Builder
             float edgeMaxLen, float edgeMaxError,
             int vertsPerPoly,
             float detailSampleDist, float detailSampleMaxError,
-            bool filterLowHangingObstacles, bool filterLedgeSpans, bool filterWalkableLowHeightSpans)
+            bool filterLowHangingObstacles, bool filterLedgeSpans, bool filterWalkableLowHeightSpans,
+            bool keepInterResults)
         {
             RcConfig cfg = new RcConfig(
                 partitionType,
@@ -58,7 +60,7 @@ namespace DotRecast.Recast.Toolset.Builder
                 filterLowHangingObstacles, filterLedgeSpans, filterWalkableLowHeightSpans,
                 SampleAreaModifications.SAMPLE_AREAMOD_WALKABLE, true);
 
-            RcBuilderResult rcResult = BuildRecastResult(geom, cfg);
+            RcBuilderResult rcResult = BuildRecastResult(geom, cfg, keepInterResults);
             var meshData = BuildMeshData(geom, cellSize, cellHeight, agentHeight, agentRadius, agentMaxClimb, rcResult);
             if (null == meshData)
             {
@@ -74,11 +76,26 @@ namespace DotRecast.Recast.Toolset.Builder
             return new DtNavMesh(meshData, vertsPerPoly, 0);
         }
 
-        private RcBuilderResult BuildRecastResult(DemoInputGeomProvider geom, RcConfig cfg)
+        private RcBuilderResult BuildRecastResult(DemoInputGeomProvider geom, RcConfig cfg, bool keepInterResults)
         {
             RcBuilderConfig bcfg = new RcBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax());
             RcBuilder rcBuilder = new RcBuilder();
-            return rcBuilder.Build(geom, bcfg);
+            var result = rcBuilder.Build(geom, bcfg);
+            if (!keepInterResults)
+            {
+                return new RcBuilderResult(
+                    result.TileX,
+                    result.TileZ,
+                    null,
+                    result.CompactHeightfield,
+                    result.ContourSet,
+                    result.Mesh,
+                    result.MeshDetail,
+                    result.Context
+                );
+            }
+
+            return result;
         }
 
         public DtMeshData BuildMeshData(DemoInputGeomProvider geom,

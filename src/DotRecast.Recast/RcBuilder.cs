@@ -48,7 +48,8 @@ namespace DotRecast.Recast
         }
 
         public List<RcBuilderResult> BuildTiles(IInputGeomProvider geom, RcConfig cfg,
-            int threads = 0, TaskFactory taskFactory = null, CancellationToken cancellation = default)
+            int threads = 0, TaskFactory taskFactory = null, CancellationToken cancellation = default,
+            bool keepInterResults = false, bool buildAll = true)
         {
             RcVec3f bmin = geom.GetMeshBoundsMin();
             RcVec3f bmax = geom.GetMeshBoundsMax();
@@ -56,13 +57,14 @@ namespace DotRecast.Recast
 
             if (1 < threads)
             {
-                return BuildMultiThread(geom, cfg, bmin, bmax, tw, th, threads, taskFactory ?? Task.Factory, cancellation);
+                return BuildMultiThread(geom, cfg, bmin, bmax, tw, th, threads, taskFactory ?? Task.Factory, cancellation, keepInterResults, buildAll);
             }
 
-            return BuildSingleThread(geom, cfg, bmin, bmax, tw, th);
+            return BuildSingleThread(geom, cfg, bmin, bmax, tw, th, keepInterResults, buildAll);
         }
 
-        private List<RcBuilderResult> BuildSingleThread(IInputGeomProvider geom, RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tw, int th)
+        private List<RcBuilderResult> BuildSingleThread(IInputGeomProvider geom, RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tw, int th,
+            bool keepInterResults, bool buildAll)
         {
             var results = new List<RcBuilderResult>(th * tw);
             RcAtomicInteger counter = new RcAtomicInteger(0);
@@ -71,7 +73,7 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < tw; ++x)
                 {
-                    var result = BuildTile(geom, cfg, bmin, bmax, x, y, counter, tw * th);
+                    var result = BuildTile(geom, cfg, bmin, bmax, x, y, counter, tw * th, keepInterResults);
                     results.Add(result);
                 }
             }
@@ -80,7 +82,8 @@ namespace DotRecast.Recast
         }
 
         private List<RcBuilderResult> BuildMultiThread(IInputGeomProvider geom, RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tw, int th,
-            int threads, TaskFactory taskFactory, CancellationToken cancellation)
+            int threads, TaskFactory taskFactory, CancellationToken cancellation,
+            bool keepInterResults, bool buildAll)
         {
             var results = new ConcurrentQueue<RcBuilderResult>();
             RcAtomicInteger progress = new RcAtomicInteger(0);
@@ -99,7 +102,7 @@ namespace DotRecast.Recast
 
                         try
                         {
-                            RcBuilderResult result = BuildTile(geom, cfg, bmin, bmax, tx, ty, progress, tw * th);
+                            RcBuilderResult result = BuildTile(geom, cfg, bmin, bmax, tx, ty, progress, tw * th, keepInterResults);
                             results.Enqueue(result);
                         }
                         catch (Exception e)
@@ -127,26 +130,41 @@ namespace DotRecast.Recast
             return list;
         }
 
-        public RcBuilderResult BuildTile(IInputGeomProvider geom, RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tx, int ty, RcAtomicInteger progress, int total)
+        public RcBuilderResult BuildTile(IInputGeomProvider geom, RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tx, int ty, RcAtomicInteger progress, int total, bool keepInterResults)
         {
-            RcBuilderResult result = Build(geom, new RcBuilderConfig(cfg, bmin, bmax, tx, ty));
+            var bcfg = new RcBuilderConfig(cfg, bmin, bmax, tx, ty);
+            RcBuilderResult result = Build(geom, bcfg);
             if (_progressListener != null)
             {
                 _progressListener.OnProgress(progress.IncrementAndGet(), total);
             }
 
+            if (!keepInterResults)
+            {
+                return new RcBuilderResult(
+                    result.TileX,
+                    result.TileZ,
+                    null,
+                    result.CompactHeightfield,
+                    result.ContourSet,
+                    result.Mesh,
+                    result.MeshDetail,
+                    result.Context
+                );
+            }
+
             return result;
         }
 
-        public RcBuilderResult Build(IInputGeomProvider geom, RcBuilderConfig builderCfg)
+        public RcBuilderResult Build(IInputGeomProvider geom, RcBuilderConfig bcfg)
         {
-            RcConfig cfg = builderCfg.cfg;
+            RcConfig cfg = bcfg.cfg;
             RcContext ctx = new RcContext();
             //
             // Step 1. Rasterize input polygon soup.
             //
-            RcHeightfield solid = RcVoxelizations.BuildSolidHeightfield(ctx, geom, builderCfg);
-            return Build(ctx, builderCfg.tileX, builderCfg.tileZ, geom, cfg, solid);
+            RcHeightfield solid = RcVoxelizations.BuildSolidHeightfield(ctx, geom, bcfg);
+            return Build(ctx, bcfg.tileX, bcfg.tileZ, geom, cfg, solid);
         }
 
         public RcBuilderResult Build(RcContext ctx, int tileX, int tileZ, IInputGeomProvider geom, RcConfig cfg, RcHeightfield solid)

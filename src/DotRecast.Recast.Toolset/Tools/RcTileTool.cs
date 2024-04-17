@@ -94,7 +94,7 @@ namespace DotRecast.Recast.Toolset.Tools
 
             var beginTick = RcFrequency.Ticks;
             var rb = new RcBuilder();
-            var result = rb.BuildTile(geom, cfg, bmin, bmax, tx, ty, new RcAtomicInteger(0), 1);
+            var result = rb.BuildTile(geom, cfg, bmin, bmax, tx, ty, new RcAtomicInteger(0), 1, settings.keepInterResults);
 
             var tb = new TileNavMeshBuilder();
             var meshData = tb.BuildMeshData(geom, settings.cellSize, settings.cellHeight, settings.agentHeight, settings.agentRadius, settings.agentMaxClimb, RcImmutableArray.Create(result)

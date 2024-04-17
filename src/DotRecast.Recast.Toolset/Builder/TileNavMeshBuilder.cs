@@ -41,7 +41,8 @@ namespace DotRecast.Recast.Toolset.Builder
                 settings.minRegionSize, settings.mergedRegionSize,
                 settings.edgeMaxLen, settings.edgeMaxError,
                 settings.vertsPerPoly, settings.detailSampleDist, settings.detailSampleMaxError,
-                settings.filterLowHangingObstacles, settings.filterLedgeSpans, settings.filterWalkableLowHeightSpans);
+                settings.filterLowHangingObstacles, settings.filterLedgeSpans, settings.filterWalkableLowHeightSpans,
+                settings.keepInterResults, settings.buildAll);
         }
 
         public NavMeshBuildResult Build(IInputGeomProvider geom,
@@ -53,7 +54,8 @@ namespace DotRecast.Recast.Toolset.Builder
             float edgeMaxLen, float edgeMaxError,
             int vertsPerPoly,
             float detailSampleDist, float detailSampleMaxError,
-            bool filterLowHangingObstacles, bool filterLedgeSpans, bool filterWalkableLowHeightSpans)
+            bool filterLowHangingObstacles, bool filterLedgeSpans, bool filterWalkableLowHeightSpans,
+            bool keepInterResults, bool buildAll)
         {
             List<RcBuilderResult> results = BuildRecastResult(
                 geom,
@@ -65,7 +67,8 @@ namespace DotRecast.Recast.Toolset.Builder
                 edgeMaxLen, edgeMaxError,
                 vertsPerPoly,
                 detailSampleDist, detailSampleMaxError,
-                filterLowHangingObstacles, filterLedgeSpans, filterWalkableLowHeightSpans
+                filterLowHangingObstacles, filterLedgeSpans, filterWalkableLowHeightSpans,
+                keepInterResults, buildAll
             );
 
             var tileMeshData = BuildMeshData(geom, cellSize, cellHeight, agentHeight, agentRadius, agentMaxClimb, results);
@@ -82,7 +85,8 @@ namespace DotRecast.Recast.Toolset.Builder
             float edgeMaxLen, float edgeMaxError,
             int vertsPerPoly,
             float detailSampleDist, float detailSampleMaxError,
-            bool filterLowHangingObstacles, bool filterLedgeSpans, bool filterWalkableLowHeightSpans)
+            bool filterLowHangingObstacles, bool filterLedgeSpans, bool filterWalkableLowHeightSpans,
+            bool keepInterResults, bool buildAll)
 
         {
             RcConfig cfg = new RcConfig(true, tileSize, tileSize,
@@ -125,8 +129,7 @@ namespace DotRecast.Recast.Toolset.Builder
             {
                 int x = result.TileX;
                 int z = result.TileZ;
-                DtNavMeshCreateParams option = DemoNavMeshBuilder
-                    .GetNavMeshCreateParams(geom, cellSize, cellHeight, agentHeight, agentRadius, agentMaxClimb, result);
+                DtNavMeshCreateParams option = DemoNavMeshBuilder.GetNavMeshCreateParams(geom, cellSize, cellHeight, agentHeight, agentRadius, agentMaxClimb, result);
 
                 option.tileX = x;
                 option.tileZ = z;
