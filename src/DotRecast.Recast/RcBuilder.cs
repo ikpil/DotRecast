@@ -144,8 +144,8 @@ namespace DotRecast.Recast
                     result.TileX,
                     result.TileZ,
                     null,
-                    result.CompactHeightfield,
-                    result.ContourSet,
+                    null,
+                    null,
                     result.Mesh,
                     result.MeshDetail,
                     result.Context

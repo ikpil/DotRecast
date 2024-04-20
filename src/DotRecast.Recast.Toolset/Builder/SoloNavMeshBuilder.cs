@@ -87,8 +87,8 @@ namespace DotRecast.Recast.Toolset.Builder
                     result.TileX,
                     result.TileZ,
                     null,
-                    result.CompactHeightfield,
-                    result.ContourSet,
+                    null,
+                    null,
                     result.Mesh,
                     result.MeshDetail,
                     result.Context
