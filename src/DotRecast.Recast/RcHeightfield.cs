@@ -34,6 +34,10 @@ namespace DotRecast.Recast
         public readonly float ch; //< The height of each cell. (The minimum increment along the y-axis.)
         public readonly RcSpan[] spans; //< Heightfield of spans (width*height).
 
+        // memory pool for rcSpan instances.
+        public RcSpanPool pools; //< Linked list of span pools.
+        public RcSpan freelist; //< The next free span.
+
         /** Border size in cell units */
         public readonly int borderSize;
 

@@ -41,6 +41,63 @@ namespace DotRecast.Recast
                 aMin.Y <= bMax.Y && aMax.Y >= bMin.Y &&
                 aMin.Z <= bMax.Z && aMax.Z >= bMin.Z;
         }
+        
+        /// Allocates a new span in the heightfield.
+        /// Use a memory pool and free list to minimize actual allocations.
+        /// 
+        /// @param[in]	heightfield		The heightfield
+        /// @returns A pointer to the allocated or re-used span memory. 
+        private static RcSpan AllocSpan(RcHeightfield heightfield)
+        {
+            // If necessary, allocate new page and update the freelist.
+            if (heightfield.freelist == null || heightfield.freelist.next == null)
+            {
+                // Create new page.
+                // Allocate memory for the new pool.
+                RcSpanPool spanPool = new RcSpanPool();
+                if (spanPool == null)
+                {
+                    return null;
+                }
+
+                // Add the pool into the list of pools.
+                spanPool.next = heightfield.pools;
+                heightfield.pools = spanPool;
+
+                // Add new spans to the free list.
+                RcSpan freeList = heightfield.freelist;
+                int head = 0;
+                int it = RC_SPANS_PER_POOL;
+                do
+                {
+                    --it;
+                    spanPool.items[it].next = freeList;
+                    freeList = spanPool.items[it];
+                } while (it != head);
+
+                heightfield.freelist = spanPool.items[it];
+            }
+
+            // Pop item from the front of the free list.
+            RcSpan newSpan = heightfield.freelist;
+            heightfield.freelist = heightfield.freelist.next;
+            return newSpan;
+        }
+
+        /// Releases the memory used by the span back to the heightfield, so it can be re-used for new spans.
+        /// @param[in]	heightfield		The heightfield.
+        /// @param[in]	span	A pointer to the span to free
+        private static void FreeSpan(RcHeightfield heightfield, RcSpan span)
+        {
+            if (span == null)
+            {
+                return;
+            }
+
+            // Add the span to the front of the free list.
+            span.next = heightfield.freelist;
+            heightfield.freelist = span;
+        }
 
 
         /// Adds a span to the heightfield.  If the new span overlaps existing spans,
