@@ -32,15 +32,18 @@ public class GLCheckerTexture
         _gl = gl;
     }
 
-    public void Release()
+    public unsafe void Release()
     {
         if (m_texId != 0)
         {
-            _gl.DeleteTextures(1, m_texId);
+            fixed (uint* p = &m_texId)
+            {
+                _gl.DeleteTextures(1, p);
+            }
         }
     }
 
-    public void Bind()
+    public unsafe void Bind()
     {
         if (m_texId == 0)
         {
@@ -50,7 +53,11 @@ public class GLCheckerTexture
             uint TSIZE = 64;
             int[] data = new int[TSIZE * TSIZE];
 
-            _gl.GenTextures(1, out m_texId);
+            fixed (uint* p = &m_texId)
+            {
+                _gl.GenTextures(1, p);
+            }
+
             _gl.BindTexture(GLEnum.Texture2D, m_texId);
 
             int level = 0;
@@ -70,8 +77,10 @@ public class GLCheckerTexture
                 level++;
             }
 
-            _gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMinFilter, (uint)GLEnum.LinearMipmapNearest);
-            _gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMagFilter, (uint)GLEnum.Linear);
+            uint linearMipmapNearest = (uint)GLEnum.LinearMipmapNearest;
+            uint linear = (uint)GLEnum.Linear;
+            _gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMinFilter, &linearMipmapNearest);
+            _gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMagFilter, &linear);
         }
         else
         {

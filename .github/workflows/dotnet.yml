@@ -37,7 +37,7 @@ jobs:
           fetch-depth: 0 # Get all history to allow automatic versioning using MinVer
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ matrix.dotnet-version }}.x
             
@@ -45,9 +45,7 @@ jobs:
         run: dotnet restore
 
       - name: Build
-        run: |
-          dotnet restore
-          dotnet build -c Release --no-restore --framework net${{ matrix.dotnet-version }}.0
+        run: dotnet build -c Release --no-restore --framework net${{ matrix.dotnet-version }}.0
 
       - name: Test
         run: dotnet test -c Release --no-build --verbosity normal --framework net${{ matrix.dotnet-version }}.0
