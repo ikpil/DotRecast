@@ -80,22 +80,7 @@ namespace DotRecast.Recast.Toolset.Builder
         {
             RcBuilderConfig bcfg = new RcBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax());
             RcBuilder rcBuilder = new RcBuilder();
-            var result = rcBuilder.Build(geom, bcfg);
-            if (!keepInterResults)
-            {
-                return new RcBuilderResult(
-                    result.TileX,
-                    result.TileZ,
-                    null,
-                    null,
-                    null,
-                    result.Mesh,
-                    result.MeshDetail,
-                    result.Context
-                );
-            }
-
-            return result;
+            return rcBuilder.Build(geom, bcfg, keepInterResults);
         }
 
         public DtMeshData BuildMeshData(DemoInputGeomProvider geom,

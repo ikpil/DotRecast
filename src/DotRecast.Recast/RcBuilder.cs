@@ -132,30 +132,17 @@ namespace DotRecast.Recast
         public RcBuilderResult BuildTile(IInputGeomProvider geom, RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tx, int ty, RcAtomicInteger progress, int total, bool keepInterResults)
         {
             var bcfg = new RcBuilderConfig(cfg, bmin, bmax, tx, ty);
-            RcBuilderResult result = Build(geom, bcfg);
+            RcBuilderResult result = Build(geom, bcfg, keepInterResults);
             if (_progressListener != null)
             {
                 _progressListener.OnProgress(progress.IncrementAndGet(), total);
             }
 
-            if (!keepInterResults)
-            {
-                return new RcBuilderResult(
-                    result.TileX,
-                    result.TileZ,
-                    null,
-                    null,
-                    null,
-                    result.Mesh,
-                    result.MeshDetail,
-                    result.Context
-                );
-            }
 
             return result;
         }
 
-        public RcBuilderResult Build(IInputGeomProvider geom, RcBuilderConfig bcfg)
+        public RcBuilderResult Build(IInputGeomProvider geom, RcBuilderConfig bcfg, bool keepInterResults)
         {
             RcConfig cfg = bcfg.cfg;
             RcContext ctx = new RcContext();
@@ -163,10 +150,10 @@ namespace DotRecast.Recast
             // Step 1. Rasterize input polygon soup.
             //
             RcHeightfield solid = RcVoxelizations.BuildSolidHeightfield(ctx, geom, bcfg);
-            return Build(ctx, bcfg.tileX, bcfg.tileZ, geom, cfg, solid);
+            return Build(ctx, bcfg.tileX, bcfg.tileZ, geom, cfg, solid, keepInterResults);
         }
 
-        public RcBuilderResult Build(RcContext ctx, int tileX, int tileZ, IInputGeomProvider geom, RcConfig cfg, RcHeightfield solid)
+        public RcBuilderResult Build(RcContext ctx, int tileX, int tileZ, IInputGeomProvider geom, RcConfig cfg, RcHeightfield solid, bool keepInterResults)
         {
             FilterHeightfield(ctx, solid, cfg);
             RcCompactHeightfield chf = BuildCompactHeightfield(ctx, geom, cfg, solid);
@@ -237,7 +224,17 @@ namespace DotRecast.Recast
             RcPolyMeshDetail dmesh = cfg.BuildMeshDetail
                 ? RcMeshDetails.BuildPolyMeshDetail(ctx, pmesh, chf, cfg.DetailSampleDist, cfg.DetailSampleMaxError)
                 : null;
-            return new RcBuilderResult(tileX, tileZ, solid, chf, cset, pmesh, dmesh, ctx);
+
+            return new RcBuilderResult(
+                tileX,
+                tileZ,
+                keepInterResults ? solid : null,
+                keepInterResults ? chf : null,
+                keepInterResults ? cset : null,
+                pmesh,
+                dmesh,
+                ctx
+            );
         }
 
         /*

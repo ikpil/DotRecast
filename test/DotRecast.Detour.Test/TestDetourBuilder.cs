@@ -27,7 +27,7 @@ public class TestDetourBuilder : DetourBuilder
         float agentMaxClimb, int x, int y, bool applyRecastDemoFlags)
     {
         RcBuilder rcBuilder = new RcBuilder();
-        RcBuilderResult rcResult = rcBuilder.Build(geom, rcConfig);
+        RcBuilderResult rcResult = rcBuilder.Build(geom, rcConfig, false);
         RcPolyMesh pmesh = rcResult.Mesh;
 
         if (applyRecastDemoFlags)
