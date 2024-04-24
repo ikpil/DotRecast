@@ -45,7 +45,9 @@ jobs:
         run: dotnet restore
 
       - name: Build
-        run: dotnet build -c Release --no-restore --framework net${{ matrix.dotnet-version }}.0
+        run: |
+          dotnet restore
+          dotnet build -c Release --no-restore --framework net${{ matrix.dotnet-version }}.0
 
       - name: Test
         run: dotnet test -c Release --no-build --verbosity normal --framework net${{ matrix.dotnet-version }}.0
