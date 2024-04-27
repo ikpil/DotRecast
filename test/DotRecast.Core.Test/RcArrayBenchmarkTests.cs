@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using DotRecast.Core.Buffers;
 using DotRecast.Core.Collections;
 using NUnit.Framework;
@@ -84,18 +85,76 @@ public class RcArrayBenchmarkTests
     [Test]
     public void TestBenchmarkArrays()
     {
-        var list = new List<(string title, long ticks)>();
-        list.Add(Bench("new int[len]", RoundForArray));
-        list.Add(Bench("ArrayPool<int>.Shared.Rent(len)", RoundForPureRentArray));
-        list.Add(Bench("RcRentedArray.Rent<int>(len)", RoundForRcRentedArray));
-        list.Add(Bench("new RcStackArray512<int>()", RoundForRcStackArray));
-        list.Add(Bench("stackalloc int[len]", RoundForStackalloc));
+        var results = new List<(string title, long ticks)>();
+        results.Add(Bench("new int[len]", RoundForArray));
+        results.Add(Bench("ArrayPool<int>.Shared.Rent(len)", RoundForPureRentArray));
+        results.Add(Bench("RcRentedArray.Rent<int>(len)", RoundForRcRentedArray));
+        results.Add(Bench("new RcStackArray512<int>()", RoundForRcStackArray));
+        results.Add(Bench("stackalloc int[len]", RoundForStackalloc));
 
-        list.Sort((x, y) => x.ticks.CompareTo(y.ticks));
+        results.Sort((x, y) => x.ticks.CompareTo(y.ticks));
 
-        foreach (var t in list)
+        foreach (var t in results)
         {
             Console.WriteLine($"{t.title} {t.ticks / (double)TimeSpan.TicksPerMillisecond} ms");
+        }
+    }
+
+    [Test]
+    public void TestSpanVsArray()
+    {
+        var r = new RcRand();
+        var list = new List<(long[] src, long[] dest)>();
+        for (int i = 0; i < 14; ++i)
+        {
+            var s = new long[(int)Math.Pow(2, i + 1)];
+            var d = new long[(int)Math.Pow(2, i + 1)];
+            for (int ii = 0; ii < s.Length; ++ii)
+            {
+                s[ii] = r.NextInt32();
+            }
+
+            list.Add((s, d));
+        }
+
+        var results = new List<(string title, long ticks)>();
+        for (int i = 0; i < list.Count; ++i)
+        {
+            var seq = i;
+
+            Array.Fill(list[seq].dest, 0);
+            var resultLong = Bench($"long[{list[seq].src.Length}]", _ =>
+            {
+                var v = list[seq];
+                RcArrays.Copy(v.src, 0, v.dest, 0, v.src.Length);
+            });
+
+
+            Array.Fill(list[seq].dest, 0);
+            var resultSpan = Bench($"Span<long[], {list[seq].src.Length}>", _ =>
+            {
+                var v = list[seq];
+                Span<long> src = v.src;
+                Span<long> dest = v.dest;
+                RcArrays.Copy(src, 0, dest, 0, src.Length);
+            });
+
+
+            results.Add(resultLong);
+            results.Add(resultSpan);
+        }
+
+
+        int newLine = 0;
+        foreach (var t in results)
+        {
+            Console.WriteLine($"{t.title}: {t.ticks / (double)TimeSpan.TicksPerMillisecond} ms");
+            newLine += 1;
+            if (0 == (newLine % 2))
+            {
+                Console.WriteLine("");
+            }
+                
         }
     }
 }
