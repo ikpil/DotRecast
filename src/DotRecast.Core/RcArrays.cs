@@ -12,15 +12,6 @@ namespace DotRecast.Core
             Array.Copy(sourceArray, sourceIndex, destinationArray, destinationIndex, length);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Copy<T>(Span<T> sourceArray, int sourceIndex, Span<T> destinationArray, int destinationIndex, int length)
-        {
-            var src = sourceArray.Slice(sourceIndex, length);
-            var dst = destinationArray.Slice(destinationIndex);
-            src.CopyTo(dst);
-        }
-
-
         // Type Safe Copy
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Copy<T>(T[] sourceArray, T[] destinationArray, long length)

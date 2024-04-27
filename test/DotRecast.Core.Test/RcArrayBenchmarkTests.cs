@@ -134,9 +134,7 @@ public class RcArrayBenchmarkTests
             var resultSpan = Bench($"Span<long[], {list[seq].src.Length}>", _ =>
             {
                 var v = list[seq];
-                Span<long> src = v.src;
-                Span<long> dest = v.dest;
-                RcArrays.Copy(src, 0, dest, 0, src.Length);
+                RcSpans.Copy<long>(v.src, 0, v.dest, 0, v.src.Length);
             });
 
 
@@ -154,7 +152,6 @@ public class RcArrayBenchmarkTests
             {
                 Console.WriteLine("");
             }
-                
         }
     }
 }
