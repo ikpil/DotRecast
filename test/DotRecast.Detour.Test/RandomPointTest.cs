@@ -29,11 +29,14 @@ namespace DotRecast.Detour.Test;
 public class RandomPointTest : AbstractDetourTest
 {
     [Test]
+    [Repeat(10)]
     public void TestRandom()
     {
         RcRand f = new RcRand(1);
         IDtQueryFilter filter = new DtQueryDefaultFilter();
-        for (int i = 0; i < 1000; i++)
+
+        var begin = RcFrequency.Ticks;
+        for (int i = 0; i < 10000; i++)
         {
             var status = query.FindRandomPoint(filter, f, out var randomRef, out var randomPt);
             Assert.That(status.Succeeded(), Is.True);
@@ -55,6 +58,9 @@ public class RandomPointTest : AbstractDetourTest
             Assert.That(randomPt.Z >= bmin[1], Is.True);
             Assert.That(randomPt.Z <= bmax[1], Is.True);
         }
+
+        var ticks = RcFrequency.Ticks - begin;
+        Console.WriteLine($"RandomPointTest::TestRandom() - {(double)ticks / TimeSpan.TicksPerMillisecond} ms");
     }
 
     [Test]
