@@ -19,12 +19,10 @@ freely, subject to the following restrictions:
 using System;
 using DotRecast.Core;
 using DotRecast.Core.Numerics;
-
 using NUnit.Framework;
 
 
 namespace DotRecast.Detour.Test;
-
 
 public class RandomPointTest : AbstractDetourTest
 {
@@ -78,7 +76,7 @@ public class RandomPointTest : AbstractDetourTest
             randomPt = nextRandomPt;
 
             status = navmesh.GetTileAndPolyByRef(randomRef, out var tile, out var poly);
-            
+
             float[] bmin = new float[2];
             float[] bmax = new float[2];
             for (int j = 0; j < poly.vertCount; j++)

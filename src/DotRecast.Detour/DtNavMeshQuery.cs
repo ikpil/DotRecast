@@ -137,12 +137,12 @@ namespace DotRecast.Detour
             }
 
             // Randomly pick point on polygon.
-            float[] verts = new float[3 * m_nav.GetMaxVertsPerPoly()];
-            float[] areas = new float[m_nav.GetMaxVertsPerPoly()];
-            RcArrays.Copy(tile.data.verts, poly.verts[0] * 3, verts, 0, 3);
+            Span<float> verts = stackalloc float[3 * m_nav.GetMaxVertsPerPoly()];
+            Span<float> areas = stackalloc float[m_nav.GetMaxVertsPerPoly()];
+            RcSpans.Copy(tile.data.verts, poly.verts[0] * 3, verts, 0, 3);
             for (int j = 1; j < poly.vertCount; ++j)
             {
-                RcArrays.Copy(tile.data.verts, poly.verts[j] * 3, verts, j * 3, 3);
+                RcSpans.Copy(tile.data.verts, poly.verts[j] * 3, verts, j * 3, 3);
             }
 
             float s = frand.Next();

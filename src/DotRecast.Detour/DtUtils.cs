@@ -145,7 +145,7 @@ namespace DotRecast.Detour
         /// @param[in] b Vertex B. [(x, y, z)]
         /// @param[in] c Vertex C. [(x, y, z)]
         /// @return The signed xz-plane area of the triangle.
-        public static float TriArea2D(float[] verts, int a, int b, int c)
+        public static float TriArea2D(Span<float> verts, int a, int b, int c)
         {
             float abx = verts[b] - verts[a];
             float abz = verts[b + 2] - verts[a + 2];
@@ -165,7 +165,7 @@ namespace DotRecast.Detour
 
         // Returns a random point in a convex polygon.
         // Adapted from Graphics Gems article.
-        public static RcVec3f RandomPointInConvexPoly(float[] pts, int npts, float[] areas, float s, float t)
+        public static RcVec3f RandomPointInConvexPoly(Span<float> pts, int npts, Span<float> areas, float s, float t)
         {
             // Calc triangle araes
             float areasum = 0.0f;
