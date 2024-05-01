@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using System.Runtime.CompilerServices;
 using DotRecast.Core;
 using DotRecast.Core.Numerics;
 
@@ -27,11 +28,9 @@ namespace DotRecast.Detour.Crowd
 {
     public class DtObstacleAvoidanceQuery
     {
-        public const int DT_MAX_PATTERN_DIVS = 32;
-
-        /// < Max numver of adaptive divs.
+        public const int DT_MAX_PATTERN_DIVS = 32; // < Max numver of adaptive divs.
         public const int DT_MAX_PATTERN_RINGS = 4;
-
+        public const float DT_PI = 3.14159265f;
 
         private DtObstacleAvoidanceParams m_params;
         private float m_invHorizTime;
@@ -362,7 +361,8 @@ namespace DotRecast.Detour.Crowd
         }
 
         // vector normalization that ignores the y-component.
-        void DtNormalize2D(float[] v)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        void DtNormalize2D(Span<float> v)
         {
             float d = MathF.Sqrt(v[0] * v[0] + v[2] * v[2]);
             if (d == 0)
@@ -373,7 +373,8 @@ namespace DotRecast.Detour.Crowd
         }
 
         // vector normalization that ignores the y-component.
-        RcVec3f DtRotate2D(float[] v, float ang)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        RcVec3f DtRotate2D(Span<float> v, float ang)
         {
             RcVec3f dest = new RcVec3f();
             float c = MathF.Cos(ang);
@@ -384,7 +385,6 @@ namespace DotRecast.Detour.Crowd
             return dest;
         }
 
-        static readonly float DT_PI = 3.14159265f;
 
         public int SampleVelocityAdaptive(RcVec3f pos, float rad, float vmax, RcVec3f vel, RcVec3f dvel, out RcVec3f nvel,
             DtObstacleAvoidanceParams option,
@@ -402,7 +402,7 @@ namespace DotRecast.Detour.Crowd
                 debug.Reset();
 
             // Build sampling pattern aligned to desired velocity.
-            float[] pat = new float[(DT_MAX_PATTERN_DIVS * DT_MAX_PATTERN_RINGS + 1) * 2];
+            Span<float> pat = stackalloc float[(DT_MAX_PATTERN_DIVS * DT_MAX_PATTERN_RINGS + 1) * 2];
             int npat = 0;
 
             int ndivs = m_params.adaptiveDivs;
@@ -416,7 +416,7 @@ namespace DotRecast.Detour.Crowd
             float sa = MathF.Sin(da);
 
             // desired direction
-            float[] ddir = new float[6];
+            Span<float> ddir = stackalloc float[6];
             ddir[0] = dvel.X;
             ddir[1] = dvel.Y;
             ddir[2] = dvel.Z;
