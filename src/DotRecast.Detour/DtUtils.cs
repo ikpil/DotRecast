@@ -267,7 +267,7 @@ namespace DotRecast.Detour
         /// @par
         ///
         /// All points are projected onto the xz-plane, so the y-values are ignored.
-        public static bool PointInPolygon(RcVec3f pt, float[] verts, int nverts)
+        public static bool PointInPolygon(RcVec3f pt, Span<float> verts, int nverts)
         {
             // TODO: Replace pnpoly with triArea2D tests?
             int i, j;

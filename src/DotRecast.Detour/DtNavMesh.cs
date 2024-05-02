@@ -66,30 +66,19 @@ namespace DotRecast.Detour
         /// The limit is given as a multiple of the character radius
         public const float DT_RAY_CAST_LIMIT_PROPORTIONS = 50.0f;
 
-        private readonly DtNavMeshParams m_params;
-
-        /// < Current initialization params. TODO: do not store this info twice.
-        private readonly RcVec3f m_orig;
-
-        /// < Origin of the tile (0,0)
+        private readonly DtNavMeshParams m_params; // < Current initialization params. TODO: do not store this info twice.
+        private readonly RcVec3f m_orig; // < Origin of the tile (0,0)
         // float m_orig[3]; ///< Origin of the tile (0,0)
+
         private float m_tileWidth;
-
-        private float m_tileHeight;
-
-        /// < Dimensions of each tile.
-        int m_maxTiles;
-
-        /// < Max number of tiles.
-        private readonly int m_tileLutMask;
-
-        /// < Tile hash lookup mask.
+        private float m_tileHeight; // < Dimensions of each tile.
+        int m_maxTiles; // < Max number of tiles.
+        private readonly int m_tileLutMask; // < Tile hash lookup mask.
         private readonly Dictionary<int, List<DtMeshTile>> posLookup = new Dictionary<int, List<DtMeshTile>>();
 
         private readonly LinkedList<DtMeshTile> availableTiles = new LinkedList<DtMeshTile>();
-        private readonly DtMeshTile[] m_tiles;
+        private readonly DtMeshTile[] m_tiles; // List of tiles.
 
-        /// < List of tiles.
         /** The maximum number of vertices per navigation polygon. */
         private readonly int m_maxVertPerPoly;
 
@@ -1246,11 +1235,11 @@ namespace DotRecast.Detour
 
             int ip = poly.index;
 
-            float[] verts = new float[m_maxVertPerPoly * 3];
+            Span<float> verts = stackalloc float[m_maxVertPerPoly * 3];
             int nv = poly.vertCount;
             for (int i = 0; i < nv; ++i)
             {
-                RcArrays.Copy(tile.data.verts, poly.verts[i] * 3, verts, i * 3, 3);
+                RcSpans.Copy(tile.data.verts, poly.verts[i] * 3, verts, i * 3, 3);
             }
 
             if (!DtUtils.PointInPolygon(pos, verts, nv))
