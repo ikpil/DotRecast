@@ -97,7 +97,7 @@ namespace DotRecast.Detour
         /// @par
         ///
         /// All vertices are projected onto the xz-plane, so the y-values are ignored.
-        public static bool OverlapPolyPoly2D(float[] polya, int npolya, float[] polyb, int npolyb)
+        public static bool OverlapPolyPoly2D(Span<float> polya, int npolya, Span<float> polyb, int npolyb)
         {
             const float eps = 1e-4f;
             for (int i = 0, j = npolya - 1; i < npolya; j = i++)
@@ -246,7 +246,7 @@ namespace DotRecast.Detour
             return false;
         }
 
-        public static RcVec2f ProjectPoly(RcVec3f axis, float[] poly, int npoly)
+        public static RcVec2f ProjectPoly(RcVec3f axis, Span<float> poly, int npoly)
         {
             float rmin, rmax;
             rmin = rmax = axis.Dot2D(poly, 0);
@@ -286,7 +286,7 @@ namespace DotRecast.Detour
             return c;
         }
 
-        public static bool DistancePtPolyEdgesSqr(RcVec3f pt, float[] verts, int nverts, float[] ed, float[] et)
+        public static bool DistancePtPolyEdgesSqr(RcVec3f pt, Span<float> verts, int nverts, Span<float> ed, Span<float> et)
         {
             // TODO: Replace pnpoly with triArea2D tests?
             int i, j;
@@ -307,7 +307,7 @@ namespace DotRecast.Detour
             return c;
         }
 
-        public static float DistancePtSegSqr2D(RcVec3f pt, float[] verts, int p, int q, out float t)
+        public static float DistancePtSegSqr2D(RcVec3f pt, Span<float> verts, int p, int q, out float t)
         {
             var vp = RcVecUtils.Create(verts, p);
             var vq = RcVecUtils.Create(verts, q);

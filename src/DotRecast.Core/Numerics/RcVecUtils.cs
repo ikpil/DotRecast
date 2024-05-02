@@ -14,7 +14,7 @@ namespace DotRecast.Core.Numerics
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static RcVec3f Create(float[] values, int n)
+        public static RcVec3f Create(Span<float> values, int n)
         {
             return new RcVec3f(values[n + 0], values[n + 1], values[n + 2]);
         }
@@ -63,7 +63,7 @@ namespace DotRecast.Core.Numerics
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Dot2D(this RcVec3f @this, float[] v, int vi)
+        public static float Dot2D(this RcVec3f @this, Span<float> v, int vi)
         {
             return @this.X * v[vi] +
                    @this.Z * v[vi + 2];
@@ -262,7 +262,7 @@ namespace DotRecast.Core.Numerics
         /// @param[in] v2 The destination vector.
         /// @param[in] t The interpolation factor. [Limits: 0 <= value <= 1.0]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static RcVec3f Lerp(float[] verts, int v1, int v2, float t)
+        public static RcVec3f Lerp(Span<float> verts, int v1, int v2, float t)
         {
             return new RcVec3f(
                 verts[v1 + 0] + (verts[v2 + 0] - verts[v1 + 0]) * t,
