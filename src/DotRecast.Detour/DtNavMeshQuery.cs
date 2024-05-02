@@ -2245,7 +2245,7 @@ namespace DotRecast.Detour
             hit.path.Clear();
             hit.pathCost = 0;
 
-            RcVec3f[] verts = new RcVec3f[m_nav.GetMaxVertsPerPoly() + 1];
+            Span<RcVec3f> verts = stackalloc RcVec3f[m_nav.GetMaxVertsPerPoly() + 1];
 
             RcVec3f curPos = RcVec3f.Zero;
             RcVec3f lastPos = RcVec3f.Zero;

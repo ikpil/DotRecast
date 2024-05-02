@@ -342,7 +342,7 @@ namespace DotRecast.Detour
         }
 
         public static bool IntersectSegmentPoly2D(RcVec3f p0, RcVec3f p1,
-            RcVec3f[] verts, int nverts,
+            Span<RcVec3f> verts, int nverts,
             out float tmin, out float tmax,
             out int segMin, out int segMax)
         {

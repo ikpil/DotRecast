@@ -296,8 +296,8 @@ namespace DotRecast.Recast
 
             if (axis.Y * axis.Y > EPSILON)
             {
-                RcVec3f[] rectangleOnStartPlane = new RcVec3f[4];
-                RcVec3f[] rectangleOnEndPlane = new RcVec3f[4];
+                Span<RcVec3f> rectangleOnStartPlane = stackalloc RcVec3f[4];
+                Span<RcVec3f> rectangleOnEndPlane = stackalloc RcVec3f[4];
                 float ds = RcVec3f.Dot(axis, start);
                 float de = RcVec3f.Dot(axis, end);
                 for (int i = 0; i < 4; i++)
@@ -326,7 +326,7 @@ namespace DotRecast.Recast
             return s;
         }
 
-        private static float[] CylinderCapIntersection(RcVec3f start, float radiusSqr, float[] s, int i, RcVec3f[] rectangleOnPlane)
+        private static float[] CylinderCapIntersection(RcVec3f start, float radiusSqr, float[] s, int i, Span<RcVec3f> rectangleOnPlane)
         {
             int j = (i + 1) % 4;
             // Ray against sphere intersection
