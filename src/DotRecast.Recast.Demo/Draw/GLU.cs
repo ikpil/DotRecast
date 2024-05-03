@@ -68,8 +68,8 @@ public static class GLU
     public static int GlhUnProjectf(float winx, float winy, float winz, float[] modelview, float[] projection, int[] viewport, ref RcVec3f objectCoordinate)
     {
         // Transformation matrices
-        float[] m = new float[16], A = new float[16];
-        float[] @in = new float[4], @out = new float[4];
+        Span<float> m = stackalloc float[16], A = stackalloc float[16];
+        Span<float> @in = stackalloc float[4], @out = stackalloc float[4];
         // Calculation for inverting a matrix, compute projection x modelview
         // and store in A[16]
         MultiplyMatrices4by4OpenGL_FLOAT(A, projection, modelview);
@@ -92,7 +92,7 @@ public static class GLU
         return 1;
     }
 
-    static void MultiplyMatrices4by4OpenGL_FLOAT(float[] result, float[] matrix1, float[] matrix2)
+    static void MultiplyMatrices4by4OpenGL_FLOAT(Span<float> result, float[] matrix1, float[] matrix2)
     {
         result[0] = matrix1[0] * matrix2[0] + matrix1[4] * matrix2[1] + matrix1[8] * matrix2[2] + matrix1[12] * matrix2[3];
         result[4] = matrix1[0] * matrix2[4] + matrix1[4] * matrix2[5] + matrix1[8] * matrix2[6] + matrix1[12] * matrix2[7];
@@ -115,7 +115,7 @@ public static class GLU
         result[15] = matrix1[3] * matrix2[12] + matrix1[7] * matrix2[13] + matrix1[11] * matrix2[14] + matrix1[15] * matrix2[15];
     }
 
-    static void MultiplyMatrixByVector4by4OpenGL_FLOAT(float[] resultvector, float[] matrix, float[] pvector)
+    static void MultiplyMatrixByVector4by4OpenGL_FLOAT(Span<float> resultvector, Span<float> matrix, Span<float> pvector)
     {
         resultvector[0] = matrix[0] * pvector[0] + matrix[4] * pvector[1] + matrix[8] * pvector[2] + matrix[12] * pvector[3];
         resultvector[1] = matrix[1] * pvector[0] + matrix[5] * pvector[1] + matrix[9] * pvector[2] + matrix[13] * pvector[3];
@@ -124,15 +124,13 @@ public static class GLU
     }
 
     // This code comes directly from GLU except that it is for float
-    static int GlhInvertMatrixf2(float[] m, float[] @out)
+    static int GlhInvertMatrixf2(Span<float> m, Span<float> @out)
     {
-        float[][] wtmp = RcArrays.Of<float>(4, 8);
         float m0, m1, m2, m3, s;
-        float[] r0, r1, r2, r3;
-        r0 = wtmp[0];
-        r1 = wtmp[1];
-        r2 = wtmp[2];
-        r3 = wtmp[3];
+        Span<float> r0 = stackalloc float[8];
+        Span<float> r1 = stackalloc float[8];
+        Span<float> r2 = stackalloc float[8];
+        Span<float> r3 = stackalloc float[8];
         r0[0] = MAT(m, 0, 0);
         r0[1] = MAT(m, 0, 1);
         r0[2] = MAT(m, 0, 2);
@@ -160,27 +158,28 @@ public static class GLU
         /* choose pivot - or die */
         if (MathF.Abs(r3[0]) > MathF.Abs(r2[0]))
         {
-            float[] r = r2;
+            Span<float> r = r2;
             r2 = r3;
             r3 = r;
         }
 
         if (MathF.Abs(r2[0]) > MathF.Abs(r1[0]))
         {
-            float[] r = r2;
+            Span<float> r = r2;
             r2 = r1;
             r1 = r;
         }
 
         if (MathF.Abs(r1[0]) > MathF.Abs(r0[0]))
         {
-            float[] r = r1;
+            Span<float> r = r1;
             r1 = r0;
             r0 = r;
         }
 
         if (0.0 == r0[0])
             return 0;
+        
         /* eliminate first variable */
         m1 = r1[0] / r0[0];
         m2 = r2[0] / r0[0];
@@ -232,14 +231,14 @@ public static class GLU
         /* choose pivot - or die */
         if (MathF.Abs(r3[1]) > MathF.Abs(r2[1]))
         {
-            float[] r = r2;
+            Span<float> r = r2;
             r2 = r3;
             r3 = r;
         }
 
         if (MathF.Abs(r2[1]) > MathF.Abs(r1[1]))
         {
-            float[] r = r2;
+            Span<float> r = r2;
             r2 = r1;
             r1 = r;
         }
@@ -284,7 +283,7 @@ public static class GLU
         /* choose pivot - or die */
         if (MathF.Abs(r3[2]) > MathF.Abs(r2[2]))
         {
-            float[] r = r2;
+            Span<float> r = r2;
             r2 = r3;
             r3 = r;
         }
@@ -358,12 +357,12 @@ public static class GLU
         return 1;
     }
 
-    static float MAT(float[] m, int r, int c)
+    static float MAT(Span<float> m, int r, int c)
     {
         return m[(c) * 4 + (r)];
     }
 
-    static void MAT(float[] m, int r, int c, float v)
+    static void MAT(Span<float> m, int r, int c, float v)
     {
         m[(c) * 4 + (r)] = v;
     }

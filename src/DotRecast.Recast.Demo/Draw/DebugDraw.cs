@@ -694,7 +694,7 @@ public class DebugDraw
         plane[3] = pw;
     }
 
-    public bool FrustumTest(float[] bounds)
+    public bool FrustumTest(Span<float> bounds)
     {
         foreach (float[] plane in frustumPlanes)
         {
@@ -748,6 +748,6 @@ public class DebugDraw
 
     public bool FrustumTest(RcVec3f bmin, RcVec3f bmax)
     {
-        return FrustumTest(new float[] { bmin.X, bmin.Y, bmin.Z, bmax.X, bmax.Y, bmax.Z });
+        return FrustumTest(stackalloc float[] { bmin.X, bmin.Y, bmin.Z, bmax.X, bmax.Y, bmax.Z });
     }
 }
