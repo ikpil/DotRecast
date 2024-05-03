@@ -65,7 +65,7 @@ public static class GizmoRenderer
         var trX = new RcVec3f(box.halfEdges[0].X, box.halfEdges[1].X, box.halfEdges[2].X);
         var trY = new RcVec3f(box.halfEdges[0].Y, box.halfEdges[1].Y, box.halfEdges[2].Y);
         var trZ = new RcVec3f(box.halfEdges[0].Z, box.halfEdges[1].Z, box.halfEdges[2].Z);
-        float[] vertices = new float[8 * 3];
+        Span<float> vertices = stackalloc float[8 * 3];
         for (int i = 0; i < 8; i++)
         {
             vertices[i * 3 + 0] = RcVec3f.Dot(RcBoxGizmo.VERTS[i], trX) + box.center.X;
