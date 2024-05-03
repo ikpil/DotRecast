@@ -41,9 +41,9 @@ namespace DotRecast.Detour
         public DtNavMeshQuery(DtNavMesh nav)
         {
             m_nav = nav;
-            m_tinyNodePool = new DtNodePool();
             m_nodePool = new DtNodePool();
             m_openList = new DtNodeQueue();
+            m_tinyNodePool = new DtNodePool();
         }
 
         /// Returns random location on navmesh.
@@ -386,7 +386,7 @@ namespace DotRecast.Detour
             float s = frand.Next();
             float t = frand.Next();
 
-            float[] areas = new float[randomPolyVerts.Length / 3];
+            Span<float> areas = stackalloc float[randomPolyVerts.Length / 3];
             RcVec3f pt = DtUtils.RandomPointInConvexPoly(randomPolyVerts, randomPolyVerts.Length / 3, areas, s, t);
             ClosestPointOnPoly(randomPolyRef, pt, out var closest, out var _);
 
