@@ -299,6 +299,7 @@ public class RecastDebugDraw : DebugDraw
 
         Begin(DebugDrawPrimitives.LINES, linew);
 
+        Span<RcVec3f> tv = stackalloc RcVec3f[3];
         for (int i = 0; i < tile.data.header.polyCount; ++i)
         {
             DtPoly p = tile.data.polys[i];
@@ -370,14 +371,14 @@ public class RecastDebugDraw : DebugDraw
                     for (int k = 0; k < pd.triCount; ++k)
                     {
                         int t = (pd.triBase + k) * 4;
-                        RcVec3f[] tv = new RcVec3f[3];
                         for (int m = 0; m < 3; ++m)
                         {
                             int v = tile.data.detailTris[t + m];
                             if (v < p.vertCount)
                             {
                                 tv[m] = new RcVec3f(
-                                    tile.data.verts[p.verts[v] * 3], tile.data.verts[p.verts[v] * 3 + 1],
+                                    tile.data.verts[p.verts[v] * 3],
+                                    tile.data.verts[p.verts[v] * 3 + 1],
                                     tile.data.verts[p.verts[v] * 3 + 2]
                                 );
                             }
