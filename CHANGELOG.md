@@ -7,10 +7,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased] - yyyy-mm-dd
 
 ### Added
+- Added RcSpans UnitTest
+ 
 ### Fixed
 ### Changed
 ### Removed
 ### Special Thanks
+- [@Doprez](https://github.com/Doprez)
 
 
 ## [2024.2.1] - 2024-05-04
@@ -20,7 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added struct DtCrowdScopedTimer to avoid allocations in scoped timer calls. [@wrenge](https://github.com/wrenge)
 - Added struct RcScopedTimer to avoid allocations in RcContext scoped timer [@ikpil](https://github.com/ikpil)
 - Added RcSpans [@ikpil](https://github.com/ikpil)
-- 
+ 
 ### Fixed
 - SOH issue [#14](https://github.com/ikpil/DotRecast/issues/41)
 - Optimization: reduce number of allocations on hot path. [@awgil](https://github.com/awgil)

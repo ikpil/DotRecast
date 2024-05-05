@@ -6,17 +6,25 @@ namespace DotRecast.Core
     public static class RcSpans
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Copy<T>(Span<T> source, Span<T> destination)
+        public static void Copy<T>(Span<T> src, Span<T> dst)
         {
-            Copy(source, 0, destination, 0, source.Length);
-        }
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Copy<T>(Span<T> source, int sourceIdx, Span<T> destination, int destinationIdx, int length)
-        {
-            var src = source.Slice(sourceIdx, length);
-            var dst = destination.Slice(destinationIdx);
             src.CopyTo(dst);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Copy<T>(Span<T> src, int srcIdx, Span<T> dst, int dstIdx, int length)
+        {
+            var slicedSrc = src.Slice(srcIdx, length);
+            var slicedDst = dst.Slice(dstIdx);
+            slicedSrc.CopyTo(slicedDst);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Move<T>(Span<T> src, int srcIdx, int dstIdx, int length)
+        {
+            var slicedSrc = src.Slice(srcIdx, length);
+            var slicedDst = src.Slice(dstIdx, length);
+            slicedSrc.CopyTo(slicedDst);
         }
     }
 }
