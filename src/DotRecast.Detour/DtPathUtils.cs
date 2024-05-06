@@ -96,7 +96,9 @@ namespace DotRecast.Detour
             }
 
             // Get connected polygons
-            List<long> neis = new List<long>();
+            const int maxNeis = 16;
+            Span<long> neis = stackalloc long[maxNeis];
+            int nneis = 0;
 
             var status = navQuery.GetAttachedNavMesh().GetTileAndPolyByRef(path[0], out var tile, out var poly);
             if (status.Failed())
@@ -110,7 +112,8 @@ namespace DotRecast.Detour
                 DtLink link = tile.links[k];
                 if (link.refs != 0)
                 {
-                    neis.Add(link.refs);
+                    if (nneis < maxNeis)
+                        neis[nneis++] = link.refs;
                 }
             }
 
@@ -120,7 +123,7 @@ namespace DotRecast.Detour
             int cut = 0;
             for (int i = Math.Min(maxLookAhead, path.Count) - 1; i > 1 && cut == 0; i--)
             {
-                for (int j = 0; j < neis.Count; j++)
+                for (int j = 0; j < nneis; j++)
                 {
                     if (path[i] == neis[j])
                     {
