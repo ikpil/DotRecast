@@ -88,7 +88,7 @@ namespace DotRecast.Detour
         // +-S-+-T-+
         // |:::| | <-- the step can end up in here, resulting U-turn path.
         // +---+---+
-        public static List<long> FixupShortcuts(List<long> path, DtNavMeshQuery navQuery)
+        public static List<long> FixupShortcuts(List<long> path, int npath, DtNavMeshQuery navQuery)
         {
             if (path.Count < 3)
             {
