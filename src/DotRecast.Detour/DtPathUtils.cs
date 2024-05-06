@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
@@ -88,11 +89,11 @@ namespace DotRecast.Detour
         // +-S-+-T-+
         // |:::| | <-- the step can end up in here, resulting U-turn path.
         // +---+---+
-        public static List<long> FixupShortcuts(List<long> path, int npath, DtNavMeshQuery navQuery)
+        public static int FixupShortcuts(ref List<long> path, int npath, DtNavMeshQuery navQuery)
         {
-            if (path.Count < 3)
+            if (npath < 3)
             {
-                return path;
+                return npath;
             }
 
             // Get connected polygons
@@ -103,7 +104,7 @@ namespace DotRecast.Detour
             var status = navQuery.GetAttachedNavMesh().GetTileAndPolyByRef(path[0], out var tile, out var poly);
             if (status.Failed())
             {
-                return path;
+                return npath;
             }
 
 
@@ -121,7 +122,7 @@ namespace DotRecast.Detour
             // in the path, short cut to that polygon directly.
             const int maxLookAhead = 6;
             int cut = 0;
-            for (int i = Math.Min(maxLookAhead, path.Count) - 1; i > 1 && cut == 0; i--)
+            for (int i = Math.Min(maxLookAhead, npath) - 1; i > 1 && cut == 0; i--)
             {
                 for (int j = 0; j < nneis; j++)
                 {
@@ -137,20 +138,22 @@ namespace DotRecast.Detour
             {
                 List<long> shortcut = new List<long>();
                 shortcut.Add(path[0]);
-                shortcut.AddRange(path.GetRange(cut, path.Count - cut));
-                return shortcut;
+                shortcut.AddRange(path.GetRange(cut, npath - cut));
+
+                path = shortcut;
+                return shortcut.Count;
             }
 
-            return path;
+            return npath;
         }
 
-        public static List<long> MergeCorridorStartMoved(List<long> path, int npath, int maxPath, List<long> visited)
+        public static int MergeCorridorStartMoved(ref List<long> path, int npath, int maxPath, List<long> visited)
         {
             int furthestPath = -1;
             int furthestVisited = -1;
 
             // Find furthest common polygon.
-            for (int i = path.Count - 1; i >= 0; --i)
+            for (int i = npath - 1; i >= 0; --i)
             {
                 bool found = false;
                 for (int j = visited.Count - 1; j >= 0; --j)
@@ -172,7 +175,7 @@ namespace DotRecast.Detour
             // If no intersection found just return current path.
             if (furthestPath == -1 || furthestVisited == -1)
             {
-                return path;
+                return npath;
             }
 
             // Concatenate paths.
@@ -185,17 +188,19 @@ namespace DotRecast.Detour
                 result.Add(visited[i]);
             }
 
-            result.AddRange(path.GetRange(furthestPath, path.Count - furthestPath));
-            return result;
+            result.AddRange(path.GetRange(furthestPath, npath - furthestPath));
+
+            path = result;
+            return result.Count;
         }
 
-        public static List<long> MergeCorridorEndMoved(List<long> path, int npath, int maxPath, List<long> visited)
+        public static int MergeCorridorEndMoved(ref List<long> path, int npath, int maxPath, List<long> visited)
         {
             int furthestPath = -1;
             int furthestVisited = -1;
 
             // Find furthest common polygon.
-            for (int i = 0; i < path.Count; ++i)
+            for (int i = 0; i < npath; ++i)
             {
                 bool found = false;
                 for (int j = visited.Count - 1; j >= 0; --j)
@@ -217,22 +222,24 @@ namespace DotRecast.Detour
             // If no intersection found just return current path.
             if (furthestPath == -1 || furthestVisited == -1)
             {
-                return path;
+                return npath;
             }
 
             // Concatenate paths.
             List<long> result = path.GetRange(0, furthestPath);
             result.AddRange(visited.GetRange(furthestVisited, visited.Count - furthestVisited));
-            return result;
+
+            path = result;
+            return result.Count;
         }
 
-        public static List<long> MergeCorridorStartShortcut(List<long> path, int npath, int maxPath, List<long> visited)
+        public static int MergeCorridorStartShortcut(ref List<long> path, int npath, int maxPath, List<long> visited)
         {
             int furthestPath = -1;
             int furthestVisited = -1;
 
             // Find furthest common polygon.
-            for (int i = path.Count - 1; i >= 0; --i)
+            for (int i = npath - 1; i >= 0; --i)
             {
                 bool found = false;
                 for (int j = visited.Count - 1; j >= 0; --j)
@@ -254,15 +261,17 @@ namespace DotRecast.Detour
             // If no intersection found just return current path.
             if (furthestPath == -1 || furthestVisited <= 0)
             {
-                return path;
+                return npath;
             }
 
             // Concatenate paths.
 
             // Adjust beginning of the buffer to include the visited.
             List<long> result = visited.GetRange(0, furthestVisited);
-            result.AddRange(path.GetRange(furthestPath, path.Count - furthestPath));
-            return result;
+            result.AddRange(path.GetRange(furthestPath, npath - furthestPath));
+
+            path = result;
+            return result.Count;
         }
     }
 }

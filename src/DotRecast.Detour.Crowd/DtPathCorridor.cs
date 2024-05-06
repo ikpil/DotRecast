@@ -34,6 +34,7 @@ namespace DotRecast.Detour.Crowd
         private RcVec3f m_target;
 
         private List<long> m_path;
+        private int m_npath;
         private int m_maxPath;
 
         /**
@@ -88,7 +89,8 @@ namespace DotRecast.Detour.Crowd
         /// @return True if the initialization succeeded.
         public bool Init(int maxPath)
         {
-            m_path = new List<long>();
+            m_path = new List<long>(maxPath);
+            m_npath = 0;
             m_maxPath = maxPath;
             return true;
         }
@@ -107,6 +109,7 @@ namespace DotRecast.Detour.Crowd
             m_target = pos;
             m_path.Clear();
             m_path.Add(refs);
+            m_npath = 1;
         }
 
         /**
@@ -215,7 +218,7 @@ namespace DotRecast.Detour.Crowd
             {
                 if (res.Count > 1 && t > 0.99f)
                 {
-                    m_path = DtPathUtils.MergeCorridorStartShortcut(m_path, m_path.Count, m_maxPath, res);
+                    m_npath = DtPathUtils.MergeCorridorStartShortcut(ref m_path, m_npath, m_maxPath, res);
                 }
             }
         }
@@ -247,7 +250,7 @@ namespace DotRecast.Detour.Crowd
 
             if (status.Succeeded() && res.Count > 0)
             {
-                m_path = DtPathUtils.MergeCorridorStartShortcut(m_path, m_path.Count, m_maxPath, res);
+                m_npath = DtPathUtils.MergeCorridorStartShortcut(ref m_path, m_npath, m_maxPath, res);
                 return true;
             }
 
@@ -274,6 +277,8 @@ namespace DotRecast.Detour.Crowd
 
             // Prune path
             m_path = m_path.GetRange(npos, m_path.Count - npos);
+            m_npath -= npos;
+
             refs[0] = prevRef;
             refs[1] = polyRef;
 
@@ -316,7 +321,7 @@ namespace DotRecast.Detour.Crowd
             var status = navquery.MoveAlongSurface(m_path[0], m_pos, npos, filter, out var result, ref visited);
             if (status.Succeeded())
             {
-                m_path = DtPathUtils.MergeCorridorStartMoved(m_path, m_path.Count, m_maxPath, visited);
+                m_npath = DtPathUtils.MergeCorridorStartMoved(ref m_path, m_npath, m_maxPath, visited);
 
                 // Adjust the position to stay on top of the navmesh.
                 m_pos = result;
@@ -358,7 +363,8 @@ namespace DotRecast.Detour.Crowd
             var status = navquery.MoveAlongSurface(m_path[^1], m_target, npos, filter, out var result, ref visited);
             if (status.Succeeded())
             {
-                m_path = DtPathUtils.MergeCorridorEndMoved(m_path, m_path.Count, m_maxPath, visited);
+                m_npath = DtPathUtils.MergeCorridorEndMoved(ref m_path, m_npath, m_maxPath, visited);
+
                 // TODO: should we do that?
                 // Adjust the position to stay on top of the navmesh.
                 /*
@@ -386,6 +392,7 @@ namespace DotRecast.Detour.Crowd
         {
             m_target = target;
             m_path = new List<long>(path);
+            m_npath = path.Count;
         }
 
         public void FixPathStart(long safeRef, RcVec3f safePos)
@@ -393,17 +400,19 @@ namespace DotRecast.Detour.Crowd
             m_pos = safePos;
             if (m_path.Count < 3 && m_path.Count > 0)
             {
-                long p = m_path[m_path.Count - 1];
+                long p = m_path[m_npath - 1];
                 m_path.Clear();
                 m_path.Add(safeRef);
                 m_path.Add(0L);
                 m_path.Add(p);
+                m_npath = 3;
             }
             else
             {
                 m_path.Clear();
                 m_path.Add(safeRef);
                 m_path.Add(0L);
+                m_npath = 2;
             }
         }
 
@@ -427,11 +436,13 @@ namespace DotRecast.Detour.Crowd
                 m_pos = RcVecUtils.Create(safePos);
                 m_path.Clear();
                 m_path.Add(safeRef);
+                m_npath = 1;
             }
             else if (n < m_path.Count)
             {
                 // The path is partially usable.
                 m_path = m_path.GetRange(0, n);
+                m_npath = n;
             }
 
             // Clamp target pos to last poly

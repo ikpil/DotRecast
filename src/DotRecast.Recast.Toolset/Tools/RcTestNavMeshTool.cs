@@ -22,7 +22,7 @@ namespace DotRecast.Recast.Toolset.Tools
         }
 
         public DtStatus FindFollowPath(DtNavMesh navMesh, DtNavMeshQuery navQuery, long startRef, long endRef, RcVec3f startPt, RcVec3f endPt, IDtQueryFilter filter, bool enableRaycast,
-            ref List<long> pathIterPolys, ref List<RcVec3f> smoothPath)
+            ref List<long> pathIterPolys, int pathIterPolyCount, ref List<RcVec3f> smoothPath)
         {
             if (startRef == 0 || endRef == 0)
             {
@@ -36,27 +36,32 @@ namespace DotRecast.Recast.Toolset.Tools
             smoothPath ??= new List<RcVec3f>();
 
             pathIterPolys.Clear();
+            pathIterPolyCount = 0;
+            
             smoothPath.Clear();
 
             var opt = new DtFindPathOption(enableRaycast ? DtFindPathOptions.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue);
             navQuery.FindPath(startRef, endRef, startPt, endPt, filter, ref pathIterPolys, opt);
             if (0 >= pathIterPolys.Count)
                 return DtStatus.DT_FAILURE;
-
+            
+            pathIterPolyCount = pathIterPolys.Count;
+            
             // Iterate over the path to find smooth path on the detail mesh surface.
             navQuery.ClosestPointOnPoly(startRef, startPt, out var iterPos, out var _);
             navQuery.ClosestPointOnPoly(pathIterPolys[pathIterPolys.Count - 1], endPt, out var targetPos, out var _);
 
-            float STEP_SIZE = 0.5f;
-            float SLOP = 0.01f;
+            const float STEP_SIZE = 0.5f;
+            const float SLOP = 0.01f;
 
             smoothPath.Clear();
             smoothPath.Add(iterPos);
             var visited = new List<long>();
+            
 
             // Move towards target a small advancement at a time until target reached or
             // when ran out of memory to store the path.
-            while (0 < pathIterPolys.Count && smoothPath.Count < MAX_SMOOTH)
+            while (0 < pathIterPolyCount && smoothPath.Count < MAX_SMOOTH)
             {
                 // Find location to steer towards.
                 if (!DtPathUtils.GetSteerTarget(navQuery, iterPos, targetPos, SLOP,
@@ -64,7 +69,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 {
                     break;
                 }
-
+                
                 bool endOfPath = (steerPosFlag & DtStraightPathFlags.DT_STRAIGHTPATH_END) != 0
                     ? true
                     : false;
@@ -84,7 +89,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 {
                     len = STEP_SIZE / len;
                 }
-
+                
                 RcVec3f moveTgt = RcVecUtils.Mad(iterPos, delta, len);
 
                 // Move
@@ -92,8 +97,8 @@ namespace DotRecast.Recast.Toolset.Tools
 
                 iterPos = result;
 
-                pathIterPolys = DtPathUtils.MergeCorridorStartMoved(pathIterPolys, pathIterPolys.Count, MAX_POLYS, visited);
-                pathIterPolys = DtPathUtils.FixupShortcuts(pathIterPolys, pathIterPolys.Count, navQuery);
+                pathIterPolyCount = DtPathUtils.MergeCorridorStartMoved(ref pathIterPolys, pathIterPolyCount, MAX_POLYS, visited);
+                pathIterPolyCount = DtPathUtils.FixupShortcuts(ref pathIterPolys, pathIterPolyCount, navQuery);
 
                 var status = navQuery.GetPolyHeight(pathIterPolys[0], result, out var h);
                 if (status.Succeeded())
@@ -123,7 +128,7 @@ namespace DotRecast.Recast.Toolset.Tools
                     long prevRef = 0;
                     long polyRef = pathIterPolys[0];
                     int npos = 0;
-                    while (npos < pathIterPolys.Count && polyRef != steerPosRef)
+                    while (npos < pathIterPolyCount && polyRef != steerPosRef)
                     {
                         prevRef = polyRef;
                         polyRef = pathIterPolys[npos];
@@ -131,6 +136,7 @@ namespace DotRecast.Recast.Toolset.Tools
                     }
 
                     pathIterPolys = pathIterPolys.GetRange(npos, pathIterPolys.Count - npos);
+                    pathIterPolyCount -= npos;
 
                     // Handle the connection.
                     var status2 = navMesh.GetOffMeshConnectionPolyEndPoints(prevRef, polyRef, ref startPos, ref endPos);

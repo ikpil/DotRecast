@@ -661,7 +661,7 @@ public class TestNavmeshSampleTool : ISampleTool
         if (_mode == RcTestNavmeshToolMode.PATHFIND_FOLLOW)
         {
             _tool.FindFollowPath(navMesh, navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, _enableRaycast,
-                ref m_polys, ref m_smoothPath);
+                ref m_polys, m_polys?.Count ?? 0, ref m_smoothPath);
         }
         else if (_mode == RcTestNavmeshToolMode.PATHFIND_STRAIGHT)
         {
