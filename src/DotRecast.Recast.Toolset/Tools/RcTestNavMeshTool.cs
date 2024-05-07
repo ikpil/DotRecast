@@ -65,7 +65,7 @@ namespace DotRecast.Recast.Toolset.Tools
             {
                 // Find location to steer towards.
                 if (!DtPathUtils.GetSteerTarget(navQuery, iterPos, targetPos, SLOP,
-                        pathIterPolys, out var steerPos, out var steerPosFlag, out var steerPosRef))
+                        pathIterPolys, pathIterPolyCount, out var steerPos, out var steerPosFlag, out var steerPosRef))
                 {
                     break;
                 }
@@ -200,7 +200,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 }
             }
 
-            navQuery.FindStraightPath(startPt, epos, polys, ref straightPath, MAX_POLYS, straightPathOptions);
+            navQuery.FindStraightPath(startPt, epos, polys, polys.Count, ref straightPath, MAX_POLYS, straightPathOptions);
 
             return DtStatus.DT_SUCCESS;
         }
@@ -245,7 +245,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 }
 
                 straightPath = new List<DtStraightPath>(MAX_POLYS);
-                navQuery.FindStraightPath(startPos, epos, path, ref straightPath, MAX_POLYS, DtStraightPathOptions.DT_STRAIGHTPATH_ALL_CROSSINGS);
+                navQuery.FindStraightPath(startPos, epos, path, path.Count, ref straightPath, MAX_POLYS, DtStraightPathOptions.DT_STRAIGHTPATH_ALL_CROSSINGS);
             }
 
             return DtStatus.DT_SUCCESS;

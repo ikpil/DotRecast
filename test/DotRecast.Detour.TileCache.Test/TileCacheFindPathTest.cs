@@ -60,7 +60,7 @@ public class TileCacheFindPathTest : AbstractTileCacheTest
         int options = 0;
 
         var pathStr = new List<DtStraightPath>();
-        query.FindStraightPath(startPos, endPos, path, ref pathStr, maxStraightPath, options);
+        query.FindStraightPath(startPos, endPos, path, path.Count, ref pathStr, maxStraightPath, options);
         Assert.That(pathStr.Count, Is.EqualTo(8));
     }
 }

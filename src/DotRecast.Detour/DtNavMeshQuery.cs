@@ -1363,19 +1363,21 @@ namespace DotRecast.Detour
 
         /// Finalizes and returns the results of an incomplete sliced path query, returning the path to the furthest
         /// polygon on the existing path that was visited during the search.
-        /// @param[in] existing An array of polygon references for the existing path.
-        /// @param[in] existingSize The number of polygon in the @p existing array.
-        /// @param[out] path An ordered list of polygon references representing the path. (Start to end.)
-        /// [(polyRef) * @p pathCount]
+        ///  @param[in]		existing		An array of polygon references for the existing path.
+        ///  @param[in]		existingSize	The number of polygon in the @p existing array.
+        ///  @param[out]	path			An ordered list of polygon references representing the path. (Start to end.) 
+        ///  								[(polyRef) * @p pathCount]
+        ///  @param[out]	pathCount		The number of polygons returned in the @p path array.
+        ///  @param[in]		maxPath			The max number of polygons the @p path array can hold. [Limit: >= 1]
         /// @returns The status flags for the query.
-        public virtual DtStatus FinalizeSlicedFindPathPartial(List<long> existing, ref List<long> path)
+        public virtual DtStatus FinalizeSlicedFindPathPartial(List<long> existing, int existingSize, ref List<long> path)
         {
             if (null == path)
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
 
             path.Clear();
 
-            if (null == existing || existing.Count <= 0)
+            if (null == existing || existingSize <= 0)
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
@@ -1396,7 +1398,7 @@ namespace DotRecast.Detour
             {
                 // Find furthest existing node that was visited.
                 DtNode node = null;
-                for (int i = existing.Count - 1; i >= 0; --i)
+                for (int i = existingSize - 1; i >= 0; --i)
                 {
                     node = m_nodePool.FindNode(existing[i]);
                     if (node != null)
@@ -1527,12 +1529,12 @@ namespace DotRecast.Detour
         ///  @param[in]		maxStraightPath		The maximum number of points the straight path arrays can hold.  [Limit: > 0]
         ///  @param[in]		options				Query options. (see: #dtStraightPathOptions)
         /// @returns The status flags for the query.
-        public virtual DtStatus FindStraightPath(RcVec3f startPos, RcVec3f endPos, List<long> path,
+        public virtual DtStatus FindStraightPath(RcVec3f startPos, RcVec3f endPos, List<long> path, int pathSize,
             ref List<DtStraightPath> straightPath,
             int maxStraightPath, int options)
         {
             if (!startPos.IsFinite() || !endPos.IsFinite() || null == straightPath
-                || null == path || 0 == path.Count || path[0] == 0 || maxStraightPath <= 0)
+                || null == path || pathSize <= 0 || path[0] == 0 || maxStraightPath <= 0)
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
@@ -1546,7 +1548,7 @@ namespace DotRecast.Detour
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            var closestEndPosRes = ClosestPointOnPolyBoundary(path[path.Count - 1], endPos, out var closestEndPos);
+            var closestEndPosRes = ClosestPointOnPolyBoundary(path[pathSize - 1], endPos, out var closestEndPos);
             if (closestEndPosRes.Failed())
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
@@ -1559,7 +1561,7 @@ namespace DotRecast.Detour
                 return stat;
             }
 
-            if (path.Count > 1)
+            if (pathSize > 1)
             {
                 RcVec3f portalApex = closestStartPos;
                 RcVec3f portalLeft = portalApex;
@@ -1574,13 +1576,13 @@ namespace DotRecast.Detour
                 long leftPolyRef = path[0];
                 long rightPolyRef = path[0];
 
-                for (int i = 0; i < path.Count; ++i)
+                for (int i = 0; i < pathSize; ++i)
                 {
                     RcVec3f left;
                     RcVec3f right;
                     int toType;
 
-                    if (i + 1 < path.Count)
+                    if (i + 1 < pathSize)
                     {
                         int fromType; // // fromType is ignored.
 
@@ -1633,7 +1635,7 @@ namespace DotRecast.Detour
                         if (DtUtils.VEqual(portalApex, portalRight) || DtUtils.TriArea2D(portalApex, portalLeft, right) > 0.0f)
                         {
                             portalRight = right;
-                            rightPolyRef = (i + 1 < path.Count) ? path[i + 1] : 0;
+                            rightPolyRef = (i + 1 < pathSize) ? path[i + 1] : 0;
                             rightPolyType = toType;
                             rightIndex = i;
                         }
@@ -1689,7 +1691,7 @@ namespace DotRecast.Detour
                         if (DtUtils.VEqual(portalApex, portalLeft) || DtUtils.TriArea2D(portalApex, portalRight, left) < 0.0f)
                         {
                             portalLeft = left;
-                            leftPolyRef = (i + 1 < path.Count) ? path[i + 1] : 0;
+                            leftPolyRef = (i + 1 < pathSize) ? path[i + 1] : 0;
                             leftPolyType = toType;
                             leftIndex = i;
                         }
@@ -1743,7 +1745,7 @@ namespace DotRecast.Detour
                 // Append portals along the current straight path segment.
                 if ((options & (DtStraightPathOptions.DT_STRAIGHTPATH_AREA_CROSSINGS | DtStraightPathOptions.DT_STRAIGHTPATH_ALL_CROSSINGS)) != 0)
                 {
-                    stat = AppendPortals(apexIndex, path.Count - 1, closestEndPos, path, ref straightPath, maxStraightPath, options);
+                    stat = AppendPortals(apexIndex, pathSize - 1, closestEndPos, path, ref straightPath, maxStraightPath, options);
                     if (!stat.InProgress())
                     {
                         return stat;

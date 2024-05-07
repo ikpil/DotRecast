@@ -31,7 +31,7 @@ namespace DotRecast.Detour
 
         public static bool GetSteerTarget(DtNavMeshQuery navQuery, RcVec3f startPos, RcVec3f endPos,
             float minTargetDist,
-            List<long> path,
+            List<long> path, int pathSize,
             out RcVec3f steerPos, out int steerPosFlag, out long steerPosRef)
         {
             steerPos = RcVec3f.Zero;
@@ -40,7 +40,7 @@ namespace DotRecast.Detour
 
             // Find steer target.
             var straightPath = new List<DtStraightPath>(MAX_STEER_POINTS);
-            var result = navQuery.FindStraightPath(startPos, endPos, path, ref straightPath, MAX_STEER_POINTS, 0);
+            var result = navQuery.FindStraightPath(startPos, endPos, path, pathSize, ref straightPath, MAX_STEER_POINTS, 0);
             if (result.Failed())
             {
                 return false;

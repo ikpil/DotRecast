@@ -589,7 +589,7 @@ namespace DotRecast.Detour.Crowd
                     if (ag.targetReplan) // && npath > 10)
                     {
                         // Try to use existing steady path during replan if possible.
-                        status = _navQuery.FinalizeSlicedFindPathPartial(path, ref reqPath);
+                        status = _navQuery.FinalizeSlicedFindPathPartial(path, path.Count, ref reqPath);
                     }
                     else
                     {

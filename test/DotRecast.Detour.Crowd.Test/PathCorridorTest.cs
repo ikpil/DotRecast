@@ -51,11 +51,12 @@ public class PathCorridorTest
                 It.IsAny<RcVec3f>(),
                 It.IsAny<RcVec3f>(),
                 It.IsAny<List<long>>(),
+                It.IsAny<int>(),
                 ref It.Ref<List<DtStraightPath>>.IsAny,
                 It.IsAny<int>(),
                 It.IsAny<int>())
             )
-            .Callback((RcVec3f startPos, RcVec3f endPos, List<long> path,
+            .Callback((RcVec3f startPos, RcVec3f endPos, List<long> path, int pathSize,
                 ref List<DtStraightPath> refStraightPath, int maxStraightPath, int options) =>
             {
                 refStraightPath = straightPath;
@@ -83,10 +84,11 @@ public class PathCorridorTest
                 It.IsAny<RcVec3f>(),
                 It.IsAny<RcVec3f>(),
                 It.IsAny<List<long>>(),
+                It.IsAny<int>(),
                 ref It.Ref<List<DtStraightPath>>.IsAny,
                 It.IsAny<int>(),
                 It.IsAny<int>())
-            ).Callback((RcVec3f startPos, RcVec3f endPos, List<long> path,
+            ).Callback((RcVec3f startPos, RcVec3f endPos, List<long> path, int pathSize,
                 ref List<DtStraightPath> refStraightPath, int maxStraightPath, int options) =>
             {
                 refStraightPath = straightPath;

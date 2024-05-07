@@ -137,7 +137,7 @@ namespace DotRecast.Detour.Crowd
         {
             const float MIN_TARGET_DIST = 0.01f;
 
-            var result = navquery.FindStraightPath(m_pos, m_target, m_path, ref corners, maxCorners, 0);
+            var result = navquery.FindStraightPath(m_pos, m_target, m_path, m_npath, ref corners, maxCorners, 0);
             if (result.Succeeded())
             {
                 // Prune points in the beginning of the path which are too close.
@@ -246,7 +246,7 @@ namespace DotRecast.Detour.Crowd
             var res = new List<long>();
             navquery.InitSlicedFindPath(m_path[0], m_path[^1], m_pos, m_target, filter, 0);
             navquery.UpdateSlicedFindPath(maxIterations, out var _);
-            var status = navquery.FinalizeSlicedFindPathPartial(m_path, ref res);
+            var status = navquery.FinalizeSlicedFindPathPartial(m_path, m_npath, ref res);
 
             if (status.Succeeded() && res.Count > 0)
             {
