@@ -26,7 +26,7 @@ using NUnit.Framework;
 namespace DotRecast.Detour.Crowd.Test;
 
 
-public class PathCorridorTest
+public class DtPathCorridorTest
 {
     private readonly DtPathCorridor corridor = new DtPathCorridor();
     private readonly IDtQueryFilter filter = new DtQueryDefaultFilter();
