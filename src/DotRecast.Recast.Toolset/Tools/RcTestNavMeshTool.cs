@@ -97,7 +97,7 @@ namespace DotRecast.Recast.Toolset.Tools
 
                 iterPos = result;
 
-                pathIterPolyCount = DtPathUtils.MergeCorridorStartMoved(ref pathIterPolys, pathIterPolyCount, MAX_POLYS, visited);
+                pathIterPolyCount = DtPathUtils.MergeCorridorStartMoved(ref pathIterPolys, pathIterPolyCount, MAX_POLYS, visited, visited.Count);
                 pathIterPolyCount = DtPathUtils.FixupShortcuts(ref pathIterPolys, pathIterPolyCount, navQuery);
 
                 var status = navQuery.GetPolyHeight(pathIterPolys[0], result, out var h);
