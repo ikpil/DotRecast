@@ -16,12 +16,12 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
 using System.Collections.Generic;
 using DotRecast.Core.Numerics;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
-
 
 public class MoveAlongSurfaceTest : AbstractDetourTest
 {
@@ -69,20 +69,21 @@ public class MoveAlongSurfaceTest : AbstractDetourTest
     public void TestMoveAlongSurface()
     {
         IDtQueryFilter filter = new DtQueryDefaultFilter();
-        var visited = new List<long>();
+        const int MAX_VISITED = 32;
+        Span<long> visited = stackalloc long[MAX_VISITED];
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
             RcVec3f startPos = startPoss[i];
             RcVec3f endPos = endPoss[i];
-            var status = query.MoveAlongSurface(startRef, startPos, endPos, filter, out var result, ref visited);
+            var status = query.MoveAlongSurface(startRef, startPos, endPos, filter, out var result, visited, out var nvisited, MAX_VISITED);
             Assert.That(status.Succeeded(), Is.True);
 
             Assert.That(result.X, Is.EqualTo(POSITION[i].X).Within(0.01f));
             Assert.That(result.Y, Is.EqualTo(POSITION[i].Y).Within(0.01f));
             Assert.That(result.Z, Is.EqualTo(POSITION[i].Z).Within(0.01f));
 
-            Assert.That(visited.Count, Is.EqualTo(VISITED[i].Length));
+            Assert.That(nvisited, Is.EqualTo(VISITED[i].Length));
             for (int j = 0; j < 3; j++)
             {
                 Assert.That(visited[j], Is.EqualTo(VISITED[i][j]));

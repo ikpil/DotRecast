@@ -1790,12 +1790,11 @@ namespace DotRecast.Detour
         /// @returns The status flags for the query.
         public DtStatus MoveAlongSurface(long startRef, RcVec3f startPos, RcVec3f endPos,
             IDtQueryFilter filter,
-            out RcVec3f resultPos, ref List<long> visited)
+            out RcVec3f resultPos, Span<long> visited, out int visitedCount, int maxVisitedSize)
         {
             resultPos = RcVec3f.Zero;
 
-            if (null != visited)
-                visited.Clear();
+            visitedCount = 0;
 
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !startPos.IsFinite()
@@ -1803,6 +1802,8 @@ namespace DotRecast.Detour
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
+
+            DtStatus status = DtStatus.DT_SUCCESS;
 
             m_tinyNodePool.Clear();
 
@@ -1938,6 +1939,7 @@ namespace DotRecast.Detour
                 }
             }
 
+            int n = 0;
             if (bestNode != null)
             {
                 // Reverse the path.
@@ -1955,14 +1957,21 @@ namespace DotRecast.Detour
                 node = prev;
                 do
                 {
-                    visited.Add(node.id);
+                    visited[n++] = node.id;
+                    if (n >= maxVisitedSize)
+                    {
+                        status |= DtStatus.DT_BUFFER_TOO_SMALL;;
+                        break;
+                    }
+
                     node = m_tinyNodePool.GetNodeAtIdx(node.pidx);
                 } while (node != null);
             }
 
             resultPos = bestPos;
+            visitedCount = n;
 
-            return DtStatus.DT_SUCCESS;
+            return status;
         }
 
         protected DtStatus GetPortalPoints(long from, long to, out RcVec3f left, out RcVec3f right, out int fromType, out int toType)

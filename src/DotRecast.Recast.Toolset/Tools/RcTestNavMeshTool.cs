@@ -37,16 +37,16 @@ namespace DotRecast.Recast.Toolset.Tools
 
             pathIterPolys.Clear();
             pathIterPolyCount = 0;
-            
+
             smoothPath.Clear();
 
             var opt = new DtFindPathOption(enableRaycast ? DtFindPathOptions.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue);
             navQuery.FindPath(startRef, endRef, startPt, endPt, filter, ref pathIterPolys, opt);
             if (0 >= pathIterPolys.Count)
                 return DtStatus.DT_FAILURE;
-            
+
             pathIterPolyCount = pathIterPolys.Count;
-            
+
             // Iterate over the path to find smooth path on the detail mesh surface.
             navQuery.ClosestPointOnPoly(startRef, startPt, out var iterPos, out var _);
             navQuery.ClosestPointOnPoly(pathIterPolys[pathIterPolys.Count - 1], endPt, out var targetPos, out var _);
@@ -56,8 +56,10 @@ namespace DotRecast.Recast.Toolset.Tools
 
             smoothPath.Clear();
             smoothPath.Add(iterPos);
-            var visited = new List<long>();
-            
+
+            Span<long> visited = stackalloc long[16];
+            int nvisited = 0;
+
 
             // Move towards target a small advancement at a time until target reached or
             // when ran out of memory to store the path.
@@ -69,7 +71,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 {
                     break;
                 }
-                
+
                 bool endOfPath = (steerPosFlag & DtStraightPathFlags.DT_STRAIGHTPATH_END) != 0
                     ? true
                     : false;
@@ -89,15 +91,15 @@ namespace DotRecast.Recast.Toolset.Tools
                 {
                     len = STEP_SIZE / len;
                 }
-                
+
                 RcVec3f moveTgt = RcVecUtils.Mad(iterPos, delta, len);
 
                 // Move
-                navQuery.MoveAlongSurface(pathIterPolys[0], iterPos, moveTgt, filter, out var result, ref visited);
+                navQuery.MoveAlongSurface(pathIterPolys[0], iterPos, moveTgt, filter, out var result, visited, out nvisited, 16);
 
                 iterPos = result;
 
-                pathIterPolyCount = DtPathUtils.MergeCorridorStartMoved(ref pathIterPolys, pathIterPolyCount, MAX_POLYS, visited, visited.Count);
+                pathIterPolyCount = DtPathUtils.MergeCorridorStartMoved(ref pathIterPolys, pathIterPolyCount, MAX_POLYS, visited, nvisited);
                 pathIterPolyCount = DtPathUtils.FixupShortcuts(ref pathIterPolys, pathIterPolyCount, navQuery);
 
                 var status = navQuery.GetPolyHeight(pathIterPolys[0], result, out var h);

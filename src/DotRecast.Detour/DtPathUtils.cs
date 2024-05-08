@@ -146,7 +146,7 @@ namespace DotRecast.Detour
             return npath;
         }
 
-        public static int MergeCorridorStartMoved(ref List<long> path, int npath, int maxPath, List<long> visited, int nvisited)
+        public static int MergeCorridorStartMoved(ref List<long> path, int npath, int maxPath, Span<long> visited, int nvisited)
         {
             int furthestPath = -1;
             int furthestVisited = -1;
@@ -193,7 +193,7 @@ namespace DotRecast.Detour
             return result.Count;
         }
 
-        public static int MergeCorridorEndMoved(ref List<long> path, int npath, int maxPath, List<long> visited, int nvisited)
+        public static int MergeCorridorEndMoved(ref List<long> path, int npath, int maxPath, Span<long> visited, int nvisited)
         {
             int furthestPath = -1;
             int furthestVisited = -1;
@@ -226,7 +226,10 @@ namespace DotRecast.Detour
 
             // Concatenate paths.
             List<long> result = path.GetRange(0, furthestPath);
-            result.AddRange(visited.GetRange(furthestVisited, nvisited - furthestVisited));
+            foreach (var v in visited.Slice(furthestVisited, nvisited - furthestVisited))
+            {
+                result.Add(v);
+            }
 
             path = result;
             return result.Count;

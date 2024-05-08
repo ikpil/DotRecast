@@ -317,11 +317,12 @@ namespace DotRecast.Detour.Crowd
         public bool MovePosition(RcVec3f npos, DtNavMeshQuery navquery, IDtQueryFilter filter)
         {
             // Move along navmesh and update new position.
-            var visited = new List<long>();
-            var status = navquery.MoveAlongSurface(m_path[0], m_pos, npos, filter, out var result, ref visited);
+            const int MAX_VISITED = 16;
+            Span<long> visited = stackalloc long[MAX_VISITED];
+            var status = navquery.MoveAlongSurface(m_path[0], m_pos, npos, filter, out var result, visited, out var nvisited, MAX_VISITED);
             if (status.Succeeded())
             {
-                m_npath = DtPathUtils.MergeCorridorStartMoved(ref m_path, m_npath, m_maxPath, visited, visited.Count);
+                m_npath = DtPathUtils.MergeCorridorStartMoved(ref m_path, m_npath, m_maxPath, visited, nvisited);
 
                 // Adjust the position to stay on top of the navmesh.
                 m_pos = result;
@@ -359,11 +360,13 @@ namespace DotRecast.Detour.Crowd
         public bool MoveTargetPosition(RcVec3f npos, DtNavMeshQuery navquery, IDtQueryFilter filter)
         {
             // Move along navmesh and update new position.
-            var visited = new List<long>();
-            var status = navquery.MoveAlongSurface(m_path[^1], m_target, npos, filter, out var result, ref visited);
+            const int MAX_VISITED = 16;
+            Span<long> visited = stackalloc long[MAX_VISITED];
+            int nvisited = 0;
+            var status = navquery.MoveAlongSurface(m_path[^1], m_target, npos, filter, out var result, visited, out nvisited, MAX_VISITED);
             if (status.Succeeded())
             {
-                m_npath = DtPathUtils.MergeCorridorEndMoved(ref m_path, m_npath, m_maxPath, visited, visited.Count);
+                m_npath = DtPathUtils.MergeCorridorEndMoved(ref m_path, m_npath, m_maxPath, visited, nvisited);
 
                 // TODO: should we do that?
                 // Adjust the position to stay on top of the navmesh.
