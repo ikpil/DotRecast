@@ -16,12 +16,12 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
 using System.Collections.Generic;
 using DotRecast.Core.Numerics;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
-
 
 public class FindPathTest : AbstractDetourTest
 {
@@ -155,7 +155,8 @@ public class FindPathTest : AbstractDetourTest
     public void TestFindPathSliced()
     {
         IDtQueryFilter filter = new DtQueryDefaultFilter();
-        var path = new List<long>();
+        const int MAX_PATH = 36;
+        Span<long> path = stackalloc long[MAX_PATH];
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
@@ -169,9 +170,9 @@ public class FindPathTest : AbstractDetourTest
                 status = query.UpdateSlicedFindPath(10, out var _);
             }
 
-            status = query.FinalizeSlicedFindPath(ref path);
+            status = query.FinalizeSlicedFindPath(path, out var npath, MAX_PATH);
             Assert.That(status, Is.EqualTo(STATUSES[i]), $"index({i})");
-            Assert.That(path.Count, Is.EqualTo(RESULTS[i].Length));
+            Assert.That(npath, Is.EqualTo(RESULTS[i].Length));
             for (int j = 0; j < RESULTS[i].Length; j++)
             {
                 Assert.That(path[j], Is.EqualTo(RESULTS[i][j]));

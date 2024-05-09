@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DotRecast.Core;
 using DotRecast.Core.Numerics;
 
@@ -212,13 +213,17 @@ namespace DotRecast.Detour.Crowd
             var delta = RcVec3f.Subtract(next, m_pos);
             RcVec3f goal = RcVecUtils.Mad(m_pos, delta, pathOptimizationRange / dist);
 
-            var res = new List<long>();
-            var status = navquery.Raycast(m_path[0], m_pos, goal, filter, out var t, out var norm, ref res);
+            const int MAX_RES = 32;
+            Span<long> res = stackalloc long[MAX_RES];
+            float t = 0.0f;
+            RcVec3f norm;
+            int nres = 0;
+            var status = navquery.Raycast(m_path[0], m_pos, goal, filter, out t, out norm, res, out nres, MAX_RES);
             if (status.Succeeded())
             {
-                if (res.Count > 1 && t > 0.99f)
+                if (nres > 1 && t > 0.99f)
                 {
-                    m_npath = DtPathUtils.MergeCorridorStartShortcut(ref m_path, m_npath, m_maxPath, res, res.Count);
+                    m_npath = DtPathUtils.MergeCorridorStartShortcut(ref m_path, m_npath, m_maxPath, res, nres);
                 }
             }
         }
@@ -243,14 +248,19 @@ namespace DotRecast.Detour.Crowd
                 return false;
             }
 
-            var res = new List<long>();
+            const int MAX_ITER = 32;
+            const int MAX_RES = 32;
+
+            Span<long> res = stackalloc long[MAX_RES];
+            int nres = 0;
+
             navquery.InitSlicedFindPath(m_path[0], m_path[^1], m_pos, m_target, filter, 0);
             navquery.UpdateSlicedFindPath(maxIterations, out var _);
-            var status = navquery.FinalizeSlicedFindPathPartial(m_path, m_npath, ref res);
+            var status = navquery.FinalizeSlicedFindPathPartial(m_path, m_npath, res, out nres, MAX_RES);
 
-            if (status.Succeeded() && res.Count > 0)
+            if (status.Succeeded() && nres > 0)
             {
-                m_npath = DtPathUtils.MergeCorridorStartShortcut(ref m_path, m_npath, m_maxPath, res, res.Count);
+                m_npath = DtPathUtils.MergeCorridorStartShortcut(ref m_path, m_npath, m_maxPath, res, nres);
                 return true;
             }
 
@@ -391,11 +401,16 @@ namespace DotRecast.Detour.Crowd
         ///  @param[in]		target		The target location within the last polygon of the path. [(x, y, z)]
         ///  @param[in]		path		The path corridor. [(polyRef) * @p npolys]
         ///  @param[in]		npath		The number of polygons in the path.
-        public void SetCorridor(RcVec3f target, List<long> path)
+        public void SetCorridor(RcVec3f target, Span<long> path, int npath)
         {
             m_target = target;
-            m_path = new List<long>(path);
-            m_npath = path.Count;
+            m_path.Clear();
+            for (int i = 0; i < npath; ++i)
+            {
+                m_path.Add(path[i]);
+            }
+
+            m_npath = npath;
         }
 
         public void FixPathStart(long safeRef, RcVec3f safePos)

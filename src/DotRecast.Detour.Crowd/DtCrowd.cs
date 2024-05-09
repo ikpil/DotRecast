@@ -169,7 +169,7 @@ namespace DotRecast.Detour.Crowd
 
             // Allocate temp buffer for merging paths.
             _maxPathResult = DtCrowdConst.MAX_PATH_RESULT;
-            _pathQ = new DtPathQueue(config);
+            _pathQ = new DtPathQueue(config, _maxPathResult);
             _agents = new List<DtCrowdAgent>();
 
             // The navQuery is mostly used for local searches, no need for large node pool.
@@ -556,7 +556,8 @@ namespace DotRecast.Detour.Crowd
             RcSortedQueue<DtCrowdAgent> queue = new RcSortedQueue<DtCrowdAgent>((a1, a2) => a2.targetReplanTime.CompareTo(a1.targetReplanTime));
 
             // Fire off new requests.
-            List<long> reqPath = new List<long>();
+            const int MAX_RES = 32;
+            Span<long> reqPath = stackalloc long[MAX_RES];	// The path to the request location
             for (var i = 0; i < agents.Count; i++)
             {
                 var ag = agents[i];
@@ -581,34 +582,34 @@ namespace DotRecast.Detour.Crowd
 
 
                     // Quick search towards the goal.
-                    _navQuery.InitSlicedFindPath(path[0], ag.targetRef, ag.npos, ag.targetPos,
-                        _filters[ag.option.queryFilterType], 0);
+                    _navQuery.InitSlicedFindPath(path[0], ag.targetRef, ag.npos, ag.targetPos, _filters[ag.option.queryFilterType], 0);
                     _navQuery.UpdateSlicedFindPath(_config.maxTargetFindPathIterations, out var _);
+
+                    int reqPathCount = 0;
 
                     DtStatus status;
                     if (ag.targetReplan) // && npath > 10)
                     {
                         // Try to use existing steady path during replan if possible.
-                        status = _navQuery.FinalizeSlicedFindPathPartial(path, path.Count, ref reqPath);
+                        status = _navQuery.FinalizeSlicedFindPathPartial(path, path.Count, reqPath, out reqPathCount, MAX_RES);
                     }
                     else
                     {
                         // Try to move towards target when goal changes.
-                        status = _navQuery.FinalizeSlicedFindPath(ref reqPath);
+                        status = _navQuery.FinalizeSlicedFindPath(reqPath, out reqPathCount, MAX_RES);
                     }
 
                     RcVec3f reqPos = new RcVec3f();
-                    if (status.Succeeded() && reqPath.Count > 0)
+                    if (status.Succeeded() && reqPathCount > 0)
                     {
                         // In progress or succeed.
-                        if (reqPath[reqPath.Count - 1] != ag.targetRef)
+                        if (reqPath[reqPathCount - 1] != ag.targetRef)
                         {
-                            // Partial path, constrain target position inside the
-                            // last polygon.
-                            var cr = _navQuery.ClosestPointOnPoly(reqPath[reqPath.Count - 1], ag.targetPos, out reqPos, out var _);
+                            // Partial path, constrain target position inside the last polygon.
+                            var cr = _navQuery.ClosestPointOnPoly(reqPath[reqPathCount - 1], ag.targetPos, out reqPos, out var _);
                             if (cr.Failed())
                             {
-                                reqPath = new List<long>();
+                                reqPathCount = 0;
                             }
                         }
                         else
@@ -618,18 +619,17 @@ namespace DotRecast.Detour.Crowd
                     }
                     else
                     {
-                        // Could not find path, start the request from current
-                        // location.
+                        // Could not find path, start the request from current location.
                         reqPos = ag.npos;
-                        reqPath = new List<long>();
-                        reqPath.Add(path[0]);
+                        reqPath[0] = path[0];
+                        reqPathCount = 1;
                     }
 
-                    ag.corridor.SetCorridor(reqPos, reqPath);
+                    ag.corridor.SetCorridor(reqPos, reqPath, reqPathCount);
                     ag.boundary.Reset();
                     ag.partial = false;
 
-                    if (reqPath[reqPath.Count - 1] == ag.targetRef)
+                    if (reqPath[reqPathCount - 1] == ag.targetRef)
                     {
                         ag.targetState = DtMoveRequestState.DT_CROWDAGENT_TARGET_VALID;
                         ag.targetReplanTime = 0;
@@ -785,7 +785,7 @@ namespace DotRecast.Detour.Crowd
                         if (valid)
                         {
                             // Set current corridor.
-                            ag.corridor.SetCorridor(targetPos, res);
+                            ag.corridor.SetCorridor(targetPos, res.ToArray(), res.Count);
                             // Force to update boundary.
                             ag.boundary.Reset();
                             ag.targetState = DtMoveRequestState.DT_CROWDAGENT_TARGET_VALID;

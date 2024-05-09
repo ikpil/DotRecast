@@ -235,7 +235,7 @@ namespace DotRecast.Detour
             return result.Count;
         }
 
-        public static int MergeCorridorStartShortcut(ref List<long> path, int npath, int maxPath, List<long> visited, int nvisited)
+        public static int MergeCorridorStartShortcut(ref List<long> path, int npath, int maxPath, Span<long> visited, int nvisited)
         {
             int furthestPath = -1;
             int furthestVisited = -1;
@@ -269,7 +269,11 @@ namespace DotRecast.Detour
             // Concatenate paths.
 
             // Adjust beginning of the buffer to include the visited.
-            List<long> result = visited.GetRange(0, furthestVisited);
+            List<long> result = new List<long>();
+            for (int i = 0; i < furthestVisited; ++i)
+            {
+                result.Add(visited[i]);
+            }
             result.AddRange(path.GetRange(furthestPath, npath - furthestPath));
 
             path = result;

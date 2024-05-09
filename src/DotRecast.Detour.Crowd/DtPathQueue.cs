@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
 using System.Collections.Generic;
 using DotRecast.Core.Numerics;
 
@@ -28,15 +29,19 @@ namespace DotRecast.Detour.Crowd
     {
         private readonly DtCrowdConfig m_config;
         private readonly LinkedList<DtPathQuery> m_queue;
+        private readonly int m_maxPathSize;
 
-        public DtPathQueue(DtCrowdConfig config)
+        public DtPathQueue(DtCrowdConfig config, int maxPathSize)
         {
             m_config = config;
             m_queue = new LinkedList<DtPathQuery>();
+            m_maxPathSize = maxPathSize;
         }
 
         public void Update(DtNavMesh navMesh)
         {
+            Span<long> path = stackalloc long[m_maxPathSize]; // TODO: ikpil, is it?
+
             // Update path request until there is nothing to update
             // or upto maxIters pathfinder iterations has been consumed.
             int iterCount = m_config.maxFindPathIterations;
@@ -66,7 +71,12 @@ namespace DotRecast.Detour.Crowd
 
                 if (q.result.status.Succeeded())
                 {
-                    q.result.status = q.navQuery.FinalizeSlicedFindPath(ref q.result.path);
+                    q.result.path.Clear();
+                    q.result.status = q.navQuery.FinalizeSlicedFindPath(path, out var npath, m_maxPathSize);
+                    for (int i = 0; i < npath; ++i)
+                    {
+                        q.result.path.Add(path[i]);
+                    }
                 }
 
                 if (!(q.result.status.Failed() || q.result.status.Succeeded()))

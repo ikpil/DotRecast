@@ -24,6 +24,6 @@ namespace DotRecast.Detour.Crowd
     public class DtPathQueryResult
     {
         public DtStatus status;
-        public List<long> path = new List<long>();
+        public List<long> path = new List<long>(); // TODO: ikpil, List to array[]
     }
 }
