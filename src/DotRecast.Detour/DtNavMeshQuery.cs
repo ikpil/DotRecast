@@ -1406,6 +1406,7 @@ namespace DotRecast.Detour
 
             // Reset query.
             m_query = new DtQueryData();
+            pathCount = n;
 
             return DtStatus.DT_SUCCESS | details;
         }
