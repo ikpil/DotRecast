@@ -224,22 +224,28 @@ namespace DotRecast.Recast.Toolset.Tools
             ref List<long> path, ref List<DtStraightPath> straightPath)
         {
             var status = navQuery.UpdateSlicedFindPath(maxIter, out _);
-
             if (!status.Succeeded())
             {
                 return status;
             }
 
-            navQuery.FinalizeSlicedFindPath(ref path);
+            path.Clear();
+
+            Span<long> polys = stackalloc long[MAX_POLYS];
+            navQuery.FinalizeSlicedFindPath(polys, out var npolys, MAX_POLYS);
+            for (int i = 0; i < npolys; ++i)
+            {
+                path.Add(polys[i]);
+            }
 
             straightPath?.Clear();
-            if (path != null)
+            if (0 < npolys)
             {
                 // In case of partial path, make sure the end point is clamped to the last polygon.
                 RcVec3f epos = endPos;
-                if (path[path.Count - 1] != endRef)
+                if (path[npolys - 1] != endRef)
                 {
-                    var result = navQuery.ClosestPointOnPoly(path[path.Count - 1], endPos, out var closest, out var _);
+                    var result = navQuery.ClosestPointOnPoly(path[npolys - 1], endPos, out var closest, out var _);
                     if (result.Succeeded())
                     {
                         epos = closest;
@@ -247,7 +253,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 }
 
                 straightPath = new List<DtStraightPath>(MAX_POLYS);
-                navQuery.FindStraightPath(startPos, epos, path, path.Count, ref straightPath, MAX_POLYS, DtStraightPathOptions.DT_STRAIGHTPATH_ALL_CROSSINGS);
+                navQuery.FindStraightPath(startPos, epos, path, npolys, ref straightPath, MAX_POLYS, DtStraightPathOptions.DT_STRAIGHTPATH_ALL_CROSSINGS);
             }
 
             return DtStatus.DT_SUCCESS;
@@ -265,15 +271,18 @@ namespace DotRecast.Recast.Toolset.Tools
                 return DtStatus.DT_FAILURE;
             }
 
-            var path = new List<long>();
-            var status = navQuery.Raycast(startRef, startPos, endPos, filter, out var t, out var hitNormal2, ref path);
+            Span<long> path = stackalloc long[MAX_POLYS];
+            var status = navQuery.Raycast(startRef, startPos, endPos, filter, out var t, out var hitNormal2, path, out var npath, MAX_POLYS);
             if (!status.Succeeded())
             {
                 return status;
             }
 
             // results ...
-            polys = path;
+            for (int i = 0; i < npath; ++i)
+            {
+                polys.Add(path[i]);
+            }
 
             if (t > 1)
             {
@@ -290,9 +299,9 @@ namespace DotRecast.Recast.Toolset.Tools
             }
 
             // Adjust height.
-            if (path.Count > 0)
+            if (npath > 0)
             {
-                var result = navQuery.GetPolyHeight(path[path.Count - 1], hitPos, out var h);
+                var result = navQuery.GetPolyHeight(path[npath - 1], hitPos, out var h);
                 if (result.Succeeded())
                 {
                     hitPos.Y = h;

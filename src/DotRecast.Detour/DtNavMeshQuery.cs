@@ -763,20 +763,20 @@ namespace DotRecast.Detour
             }
 
             var heuristic = fpo.heuristic;
-            var raycastLimit = fpo.raycastLimit;
-            var options = fpo.options;
-
-            float raycastLimitSqr = RcMath.Sqr(raycastLimit);
-
-            // trade quality with performance?
-            if ((options & DtFindPathOptions.DT_FINDPATH_ANY_ANGLE) != 0 && raycastLimit < 0f)
-            {
-                // limiting to several times the character radius yields nice results. It is not sensitive
-                // so it is enough to compute it from the first tile.
-                DtMeshTile tile = m_nav.GetTileByRef(startRef);
-                float agentRadius = tile.data.header.walkableRadius;
-                raycastLimitSqr = RcMath.Sqr(agentRadius * DtNavMesh.DT_RAY_CAST_LIMIT_PROPORTIONS);
-            }
+            // var raycastLimit = fpo.raycastLimit;
+            // var options = fpo.options;
+            //
+            // float raycastLimitSqr = RcMath.Sqr(raycastLimit);
+            //
+            // // trade quality with performance?
+            // if ((options & DtFindPathOptions.DT_FINDPATH_ANY_ANGLE) != 0 && raycastLimit < 0f)
+            // {
+            //     // limiting to several times the character radius yields nice results. It is not sensitive
+            //     // so it is enough to compute it from the first tile.
+            //     DtMeshTile tile = m_nav.GetTileByRef(startRef);
+            //     float agentRadius = tile.data.header.walkableRadius;
+            //     raycastLimitSqr = RcMath.Sqr(agentRadius * DtNavMesh.DT_RAY_CAST_LIMIT_PROPORTIONS);
+            // }
 
             if (startRef == endRef)
             {
@@ -798,6 +798,8 @@ namespace DotRecast.Detour
 
             DtNode lastBestNode = startNode;
             float lastBestNodeCost = startNode.total;
+
+            bool outOfNodes = false;
 
             DtRaycastHit rayHit = new DtRaycastHit();
             rayHit.path = new List<long>();
@@ -840,16 +842,16 @@ namespace DotRecast.Detour
                     m_nav.GetTileAndPolyByRefUnsafe(parentRef, out parentTile, out parentPoly);
                 }
 
-                // decide whether to test raycast to previous nodes
-                bool tryLOS = false;
-                if ((options & DtFindPathOptions.DT_FINDPATH_ANY_ANGLE) != 0)
-                {
-                    if ((parentRef != 0) &&
-                        (raycastLimitSqr >= float.MaxValue || RcVec3f.DistanceSquared(parentNode.pos, bestNode.pos) < raycastLimitSqr))
-                    {
-                        tryLOS = true;
-                    }
-                }
+                // // decide whether to test raycast to previous nodes
+                // bool tryLOS = false;
+                // if ((options & DtFindPathOptions.DT_FINDPATH_ANY_ANGLE) != 0)
+                // {
+                //     if ((parentRef != 0) &&
+                //         (raycastLimitSqr >= float.MaxValue || RcVec3f.DistanceSquared(parentNode.pos, bestNode.pos) < raycastLimitSqr))
+                //     {
+                //         tryLOS = true;
+                //     }
+                // }
 
                 for (int i = bestTile.polyLinks[bestPoly.index]; i != DtNavMesh.DT_NULL_LINK; i = bestTile.links[i].next)
                 {
@@ -870,25 +872,40 @@ namespace DotRecast.Detour
                         continue;
                     }
 
-                    // get the node
-                    DtNode neighbourNode = m_nodePool.GetNode(neighbourRef, 0);
+                    // deal explicitly with crossing tile boundaries
+                    byte crossSide = 0;
+                    if (bestTile.links[i].side != 0xff)
+                        crossSide = (byte)(bestTile.links[i].side >> 1);
 
-                    // do not expand to nodes that were already visited from the
-                    // same parent
-                    if (neighbourNode.pidx != 0 && neighbourNode.pidx == bestNode.pidx)
+                    // get the node
+                    DtNode neighbourNode = m_nodePool.GetNode(neighbourRef, crossSide);
+                    if (null == neighbourNode)
                     {
+                        outOfNodes = true;
                         continue;
                     }
 
+                    // // do not expand to nodes that were already visited from the same parent
+                    // if (neighbourNode.pidx != 0 && neighbourNode.pidx == bestNode.pidx)
+                    // {
+                    //     continue;
+                    // }
+
                     // If the node is visited the first time, calculate node position.
-                    var neighbourPos = neighbourNode.pos;
-                    var empStatus = neighbourRef == endRef
-                        ? GetEdgeIntersectionPoint(bestNode.pos, bestRef, bestPoly, bestTile,
-                            endPos, neighbourRef, neighbourPoly, neighbourTile,
-                            ref neighbourPos)
-                        : GetEdgeMidPoint(bestRef, bestPoly, bestTile,
+                    if (neighbourNode.flags == 0)
+                    {
+                        GetEdgeMidPoint(bestRef, bestPoly, bestTile,
                             neighbourRef, neighbourPoly, neighbourTile,
-                            ref neighbourPos);
+                            ref neighbourNode.pos);
+                    }
+                    // var neighbourPos = neighbourNode.pos;
+                    // var empStatus = neighbourRef == endRef
+                    //     ? GetEdgeIntersectionPoint(bestNode.pos, bestRef, bestPoly, bestTile,
+                    //         endPos, neighbourRef, neighbourPoly, neighbourTile,
+                    //         ref neighbourPos)
+                    //     : GetEdgeMidPoint(bestRef, bestPoly, bestTile,
+                    //         neighbourRef, neighbourPoly, neighbourTile,
+                    //         ref neighbourPos);
 
                     // Calculate cost and heuristic.
                     float cost = 0;
@@ -897,34 +914,38 @@ namespace DotRecast.Detour
                     // raycast parent
                     bool foundShortCut = false;
                     List<long> shortcut = null;
-                    if (tryLOS)
-                    {
-                        var rayStatus = Raycast(parentRef, parentNode.pos, neighbourPos, filter,
-                            DtRaycastOptions.DT_RAYCAST_USE_COSTS, ref rayHit, grandpaRef);
-                        if (rayStatus.Succeeded())
-                        {
-                            foundShortCut = rayHit.t >= 1.0f;
-                            if (foundShortCut)
-                            {
-                                shortcut = new List<long>(rayHit.path);
-                                // shortcut found using raycast. Using shorter cost
-                                // instead
-                                cost = parentNode.cost + rayHit.pathCost;
-                            }
-                        }
-                    }
+                    // if (tryLOS)
+                    // {
+                    //     var rayStatus = Raycast(parentRef, parentNode.pos, neighbourPos, filter,
+                    //         DtRaycastOptions.DT_RAYCAST_USE_COSTS, ref rayHit, grandpaRef);
+                    //     if (rayStatus.Succeeded())
+                    //     {
+                    //         foundShortCut = rayHit.t >= 1.0f;
+                    //         if (foundShortCut)
+                    //         {
+                    //             shortcut = new List<long>(rayHit.path);
+                    //             // shortcut found using raycast. Using shorter cost
+                    //             // instead
+                    //             cost = parentNode.cost + rayHit.pathCost;
+                    //         }
+                    //     }
+                    // }
 
-                    // update move cost
-                    if (!foundShortCut)
-                    {
-                        float curCost = filter.GetCost(bestNode.pos, neighbourPos, parentRef, parentTile,
-                            parentPoly, bestRef, bestTile, bestPoly, neighbourRef, neighbourTile, neighbourPoly);
-                        cost = bestNode.cost + curCost;
-                    }
+                    // // update move cost
+                    // if (!foundShortCut)
+                    // {
+                    //     float curCost = filter.GetCost(bestNode.pos, neighbourPos, parentRef, parentTile,
+                    //         parentPoly, bestRef, bestTile, bestPoly, neighbourRef, neighbourTile, neighbourPoly);
+                    //     cost = bestNode.cost + curCost;
+                    // }
 
                     // Special case for last node.
                     if (neighbourRef == endRef)
                     {
+                        float curCost = filter.GetCost(bestNode.pos, neighbourPos, parentRef, parentTile,
+                            parentPoly, bestRef, bestTile, bestPoly, neighbourRef, neighbourTile, neighbourPoly);
+                        cost = bestNode.cost + curCost;
+                        
                         // Cost
                         float endCost = filter.GetCost(neighbourPos, endPos, bestRef, bestTile, bestPoly, neighbourRef,
                             neighbourTile, neighbourPoly, 0L, null, null);
@@ -3553,32 +3574,43 @@ namespace DotRecast.Detour
             return GetPathToNode(endNode, ref path);
         }
 
-        // Gets the path leading to the specified end node.
         protected DtStatus GetPathToNode(DtNode endNode, ref List<long> path)
         {
-            // Reverse the path.
+            int beginIdx = path.Count;
+
+            // Find the length of the entire path.
             DtNode curNode = endNode;
+
+            int length = 0;
             do
             {
                 path.Add(curNode.id);
-                DtNode nextNode = m_nodePool.GetNodeAtIdx(curNode.pidx);
-                if (curNode.shortcut != null)
-                {
-                    // remove potential duplicates from shortcut path
-                    for (int i = curNode.shortcut.Count - 1; i >= 0; i--)
-                    {
-                        long id = curNode.shortcut[i];
-                        if (id != curNode.id && id != nextNode.id)
-                        {
-                            path.Add(id);
-                        }
-                    }
-                }
+                length++;
+                curNode = m_nodePool.GetNodeAtIdx(curNode.pidx);
+            } while (null != curNode);
 
-                curNode = nextNode;
-            } while (curNode != null);
+            path.Reverse(beginIdx, length);
 
-            path.Reverse();
+            // // If the path cannot be fully stored then advance to the last node we will be able to store.
+            // curNode = endNode;
+            // int writeCount;
+            // for (writeCount = length; writeCount > maxPath; writeCount--)
+            // {
+            //     curNode = m_nodePool.GetNodeAtIdx(curNode.pidx);
+            // }
+            //
+            // // Write path
+            // for (int i = writeCount - 1; i >= 0; i--)
+            // {
+            //     path[i] = curNode.id;
+            //     curNode = m_nodePool.GetNodeAtIdx(curNode.pidx);
+            // }
+            //
+            // *pathCount = dtMin(length, maxPath);
+            //
+            // if (length > maxPath)
+            //     return DtStatus.DT_SUCCESS | DtStatus.DT_BUFFER_TOO_SMALL;
+
             return DtStatus.DT_SUCCESS;
         }
 
