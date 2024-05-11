@@ -28,7 +28,7 @@ namespace DotRecast.Recast
 
         public RcSpanPool()
         {
-            items = new RcSpan[RcConstants.RC_SPANS_PER_POOL];
+            items = new RcSpan[RcRecast.RC_SPANS_PER_POOL];
             for (int i = 0; i < items.Length; ++i)
             {
                 items[i] = new RcSpan();

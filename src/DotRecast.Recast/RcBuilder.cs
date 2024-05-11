@@ -30,7 +30,7 @@ using DotRecast.Recast.Geom;
 
 namespace DotRecast.Recast
 {
-    using static RcCommons;
+    using static RcRecast;
     using static RcAreas;
 
     public class RcBuilder

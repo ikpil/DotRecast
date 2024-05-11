@@ -25,8 +25,7 @@ using DotRecast.Core.Numerics;
 
 namespace DotRecast.Recast
 {
-    using static RcConstants;
-    using static RcCommons;
+    using static RcRecast;
 
     public static class RcAreas
     {

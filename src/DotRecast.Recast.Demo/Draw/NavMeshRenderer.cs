@@ -23,14 +23,14 @@ using DotRecast.Core.Numerics;
 using DotRecast.Detour;
 using DotRecast.Recast.Toolset.Builder;
 using DotRecast.Recast.Toolset.Geom;
-using static DotRecast.Recast.RcCommons;
+using static DotRecast.Recast.RcRecast;
 
 namespace DotRecast.Recast.Demo.Draw;
 
 public class NavMeshRenderer
 {
     private readonly RecastDebugDraw _debugDraw;
-    private readonly int _navMeshDrawFlags = RecastDebugDraw.DRAWNAVMESH_OFFMESHCONS | RecastDebugDraw.DRAWNAVMESH_CLOSEDLIST;
+    private readonly int _navMeshDrawFlags = RecastDebugDraw.DU_DRAWNAVMESH_OFFMESHCONS | RecastDebugDraw.DU_DRAWNAVMESH_CLOSEDLIST;
 
     public NavMeshRenderer(RecastDebugDraw debugDraw)
     {

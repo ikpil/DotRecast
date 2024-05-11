@@ -24,8 +24,8 @@ using DotRecast.Core;
 
 namespace DotRecast.Recast
 {
-    using static RcConstants;
-    using static RcCommons;
+    
+    using static RcRecast;
 
     public static class RcContours
     {

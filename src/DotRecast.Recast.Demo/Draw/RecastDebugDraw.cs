@@ -22,16 +22,20 @@ using System;
 using System.Collections.Generic;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour;
+using DotRecast.Detour.Crowd;
+using DotRecast.Detour.Dynamic.Colliders;
 using DotRecast.Recast.Toolset.Builder;
 using Silk.NET.OpenGL;
 
 namespace DotRecast.Recast.Demo.Draw;
 
+using static DtDetour;
+
 public class RecastDebugDraw : DebugDraw
 {
-    public static readonly int DRAWNAVMESH_OFFMESHCONS = 0x01;
-    public static readonly int DRAWNAVMESH_CLOSEDLIST = 0x02;
-    public static readonly int DRAWNAVMESH_COLOR_TILES = 0x04;
+    public static readonly int DU_DRAWNAVMESH_OFFMESHCONS = 0x01;
+    public static readonly int DU_DRAWNAVMESH_CLOSEDLIST = 0x02;
+    public static readonly int DU_DRAWNAVMESH_COLOR_TILES = 0x04;
 
     public RecastDebugDraw(GL gl) : base(gl)
     {
@@ -101,7 +105,7 @@ public class RecastDebugDraw : DebugDraw
 
     public void DebugDrawNavMeshWithClosedList(DtNavMesh mesh, DtNavMeshQuery query, int flags)
     {
-        DtNavMeshQuery q = (flags & DRAWNAVMESH_CLOSEDLIST) != 0 ? query : null;
+        DtNavMeshQuery q = (flags & DU_DRAWNAVMESH_CLOSEDLIST) != 0 ? query : null;
         for (int i = 0; i < mesh.GetMaxTiles(); ++i)
         {
             DtMeshTile tile = mesh.GetTile(i);
@@ -116,7 +120,7 @@ public class RecastDebugDraw : DebugDraw
     {
         long @base = mesh.GetPolyRefBase(tile);
 
-        int tileNum = DtNavMesh.DecodePolyIdTile(@base);
+        int tileNum = DecodePolyIdTile(@base);
         int tileColor = DuIntToCol(tileNum, 128);
         DepthMask(false);
         Begin(DebugDrawPrimitives.TRIS);
@@ -135,7 +139,7 @@ public class RecastDebugDraw : DebugDraw
             }
             else
             {
-                if ((flags & DRAWNAVMESH_COLOR_TILES) != 0)
+                if ((flags & DU_DRAWNAVMESH_COLOR_TILES) != 0)
                 {
                     col = tileColor;
                 }
@@ -163,7 +167,7 @@ public class RecastDebugDraw : DebugDraw
         // Draw outer poly boundaries
         DrawPolyBoundaries(tile, DuRGBA(0, 48, 64, 220), 2.5f, false);
 
-        if ((flags & DRAWNAVMESH_OFFMESHCONS) != 0)
+        if ((flags & DU_DRAWNAVMESH_OFFMESHCONS) != 0)
         {
             Begin(DebugDrawPrimitives.LINES, 2.0f);
             for (int i = 0; i < tile.data.header.polyCount; ++i)
@@ -198,7 +202,7 @@ public class RecastDebugDraw : DebugDraw
                 // Check to see if start and end end-points have links.
                 bool startSet = false;
                 bool endSet = false;
-                for (int k = tile.polyLinks[p.index]; k != DtNavMesh.DT_NULL_LINK; k = tile.links[k].next)
+                for (int k = tile.polyLinks[p.index]; k != DT_NULL_LINK; k = tile.links[k].next)
                 {
                     if (tile.links[k].edge == 0)
                     {
@@ -319,10 +323,10 @@ public class RecastDebugDraw : DebugDraw
                         continue;
                     }
 
-                    if ((p.neis[j] & DtNavMesh.DT_EXT_LINK) != 0)
+                    if ((p.neis[j] & DT_EXT_LINK) != 0)
                     {
                         bool con = false;
-                        for (int k = tile.polyLinks[p.index]; k != DtNavMesh.DT_NULL_LINK; k = tile.links[k].next)
+                        for (int k = tile.polyLinks[p.index]; k != DT_NULL_LINK; k = tile.links[k].next)
                         {
                             if (tile.links[k].edge == j)
                             {
@@ -394,7 +398,7 @@ public class RecastDebugDraw : DebugDraw
 
                         for (int m = 0, n = 2; m < 3; n = m++)
                         {
-                            if ((DtNavMesh.GetDetailTriEdgeFlags(tile.data.detailTris[t + 3], n) & DtDetailTriEdgeFlags.DT_DETAIL_EDGE_BOUNDARY) == 0)
+                            if ((GetDetailTriEdgeFlags(tile.data.detailTris[t + 3], n) & DtDetailTriEdgeFlags.DT_DETAIL_EDGE_BOUNDARY) == 0)
                                 continue;
 
                             if (((tile.data.detailTris[t + 3] >> (n * 2)) & 0x3) == 0)
@@ -498,7 +502,7 @@ public class RecastDebugDraw : DebugDraw
                     {
                         color = DuRGBA(0, 192, 255, 64);
                     }
-                    else if (area == RcConstants.RC_NULL_AREA)
+                    else if (area == RcRecast.RC_NULL_AREA)
                     {
                         color = DuRGBA(0, 0, 0, 64);
                     }
@@ -670,7 +674,7 @@ public class RecastDebugDraw : DebugDraw
                 int v3 = c.rverts[j * 4 + 3];
                 float off = 0;
                 int colv = color;
-                if ((v3 & RcConstants.RC_BORDER_VERTEX) != 0)
+                if ((v3 & RcRecast.RC_BORDER_VERTEX) != 0)
                 {
                     colv = DuRGBA(255, 255, 255, a);
                     off = ch * 2;
@@ -717,7 +721,7 @@ public class RecastDebugDraw : DebugDraw
                 int vb0 = c.verts[j * 4];
                 int vb1 = c.verts[j * 4 + 1];
                 int vb2 = c.verts[j * 4 + 2];
-                int col = (va3 & RcConstants.RC_AREA_BORDER) != 0 ? bcolor : color;
+                int col = (va3 & RcRecast.RC_AREA_BORDER) != 0 ? bcolor : color;
 
                 float fx = orig.X + va0 * cs;
                 float fy = orig.Y + (va1 + 1 + (i & 1)) * ch;
@@ -748,7 +752,7 @@ public class RecastDebugDraw : DebugDraw
                 int v3 = c.verts[j * 4 + 3];
                 float off = 0;
                 int colv = color;
-                if ((v3 & RcConstants.RC_BORDER_VERTEX) != 0)
+                if ((v3 & RcRecast.RC_BORDER_VERTEX) != 0)
                 {
                     colv = DuRGBA(255, 255, 255, a);
                     off = ch * 2;
@@ -828,7 +832,7 @@ public class RecastDebugDraw : DebugDraw
                     {
                         fcol[0] = DuRGBA(64, 128, 160, 255);
                     }
-                    else if (s.area == RcConstants.RC_NULL_AREA)
+                    else if (s.area == RcRecast.RC_NULL_AREA)
                     {
                         fcol[0] = DuRGBA(64, 64, 64, 255);
                     }
@@ -950,7 +954,7 @@ public class RecastDebugDraw : DebugDraw
             {
                 color = DuRGBA(0, 192, 255, 64);
             }
-            else if (area == RcConstants.RC_NULL_AREA)
+            else if (area == RcRecast.RC_NULL_AREA)
             {
                 color = DuRGBA(0, 0, 0, 64);
             }
@@ -962,7 +966,7 @@ public class RecastDebugDraw : DebugDraw
             int[] vi = new int[3];
             for (int j = 2; j < nvp; ++j)
             {
-                if (mesh.polys[p + j] == RcConstants.RC_MESH_NULL_IDX)
+                if (mesh.polys[p + j] == RcRecast.RC_MESH_NULL_IDX)
                 {
                     break;
                 }
@@ -993,7 +997,7 @@ public class RecastDebugDraw : DebugDraw
             int p = i * nvp * 2;
             for (int j = 0; j < nvp; ++j)
             {
-                if (mesh.polys[p + j] == RcConstants.RC_MESH_NULL_IDX)
+                if (mesh.polys[p + j] == RcRecast.RC_MESH_NULL_IDX)
                 {
                     break;
                 }
@@ -1003,7 +1007,7 @@ public class RecastDebugDraw : DebugDraw
                     continue;
                 }
 
-                int nj = (j + 1 >= nvp || mesh.polys[p + j + 1] == RcConstants.RC_MESH_NULL_IDX) ? 0 : j + 1;
+                int nj = (j + 1 >= nvp || mesh.polys[p + j + 1] == RcRecast.RC_MESH_NULL_IDX) ? 0 : j + 1;
                 int[] vi = { mesh.polys[p + j], mesh.polys[p + nj] };
 
                 for (int k = 0; k < 2; ++k)
@@ -1027,7 +1031,7 @@ public class RecastDebugDraw : DebugDraw
             int p = i * nvp * 2;
             for (int j = 0; j < nvp; ++j)
             {
-                if (mesh.polys[p + j] == RcConstants.RC_MESH_NULL_IDX)
+                if (mesh.polys[p + j] == RcRecast.RC_MESH_NULL_IDX)
                 {
                     break;
                 }
@@ -1037,7 +1041,7 @@ public class RecastDebugDraw : DebugDraw
                     continue;
                 }
 
-                int nj = (j + 1 >= nvp || mesh.polys[p + j + 1] == RcConstants.RC_MESH_NULL_IDX) ? 0 : j + 1;
+                int nj = (j + 1 >= nvp || mesh.polys[p + j + 1] == RcRecast.RC_MESH_NULL_IDX) ? 0 : j + 1;
                 int[] vi = { mesh.polys[p + j], mesh.polys[p + nj] };
 
                 int col = colb;
@@ -1328,7 +1332,7 @@ public class RecastDebugDraw : DebugDraw
 
         for (int side = 0; side < 8; ++side)
         {
-            int m = DtNavMesh.DT_EXT_LINK | (short)side;
+            int m = DT_EXT_LINK | (short)side;
 
             for (int i = 0; i < tile.data.header.polyCount; ++i)
             {

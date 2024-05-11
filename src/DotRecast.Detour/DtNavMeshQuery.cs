@@ -26,6 +26,8 @@ using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
 {
+    using static DtDetour;
+
     public class DtNavMeshQuery
     {
         /// < Add a vertex at every polygon edge crossing.
@@ -300,7 +302,7 @@ namespace DotRecast.Detour
                     parentRef = m_nodePool.GetNodeAtIdx(bestNode.pidx).id;
                 }
 
-                for (int i = bestTile.polyLinks[bestPoly.index]; i != DtNavMesh.DT_NULL_LINK; i = bestTile.links[i].next)
+                for (int i = bestTile.polyLinks[bestPoly.index]; i != DT_NULL_LINK; i = bestTile.links[i].next)
                 {
                     DtLink link = bestTile.links[i];
                     long neighbourRef = link.refs;
@@ -775,7 +777,7 @@ namespace DotRecast.Detour
                 // so it is enough to compute it from the first tile.
                 DtMeshTile tile = m_nav.GetTileByRef(startRef);
                 float agentRadius = tile.data.header.walkableRadius;
-                raycastLimitSqr = RcMath.Sqr(agentRadius * DtNavMesh.DT_RAY_CAST_LIMIT_PROPORTIONS);
+                raycastLimitSqr = RcMath.Sqr(agentRadius * DT_RAY_CAST_LIMIT_PROPORTIONS);
             }
 
             if (startRef == endRef)
@@ -851,7 +853,7 @@ namespace DotRecast.Detour
                     }
                 }
 
-                for (int i = bestTile.polyLinks[bestPoly.index]; i != DtNavMesh.DT_NULL_LINK; i = bestTile.links[i].next)
+                for (int i = bestTile.polyLinks[bestPoly.index]; i != DT_NULL_LINK; i = bestTile.links[i].next)
                 {
                     long neighbourRef = bestTile.links[i].refs;
 
@@ -1046,7 +1048,7 @@ namespace DotRecast.Detour
                 // so it is enough to compute it from the first tile.
                 DtMeshTile tile = m_nav.GetTileByRef(startRef);
                 float agentRadius = tile.data.header.walkableRadius;
-                m_query.raycastLimitSqr = RcMath.Sqr(agentRadius * DtNavMesh.DT_RAY_CAST_LIMIT_PROPORTIONS);
+                m_query.raycastLimitSqr = RcMath.Sqr(agentRadius * DT_RAY_CAST_LIMIT_PROPORTIONS);
             }
 
             if (startRef == endRef)
@@ -1172,7 +1174,7 @@ namespace DotRecast.Detour
                     }
                 }
 
-                for (int i = bestTile.polyLinks[bestPoly.index]; i != DtNavMesh.DT_NULL_LINK; i = bestTile.links[i].next)
+                for (int i = bestTile.polyLinks[bestPoly.index]; i != DT_NULL_LINK; i = bestTile.links[i].next)
                 {
                     long neighbourRef = bestTile.links[i].refs;
 
@@ -1862,10 +1864,10 @@ namespace DotRecast.Detour
                     // Find links to neighbours.
                     int nneis = 0;
 
-                    if ((curPoly.neis[j] & DtNavMesh.DT_EXT_LINK) != 0)
+                    if ((curPoly.neis[j] & DT_EXT_LINK) != 0)
                     {
                         // Tile border.
-                        for (int k = curTile.polyLinks[curPoly.index]; k != DtNavMesh.DT_NULL_LINK; k = curTile.links[k].next)
+                        for (int k = curTile.polyLinks[curPoly.index]; k != DT_NULL_LINK; k = curTile.links[k].next)
                         {
                             DtLink link = curTile.links[k];
                             if (link.edge == j)
@@ -1960,7 +1962,8 @@ namespace DotRecast.Detour
                     visited[n++] = node.id;
                     if (n >= maxVisitedSize)
                     {
-                        status |= DtStatus.DT_BUFFER_TOO_SMALL;;
+                        status |= DtStatus.DT_BUFFER_TOO_SMALL;
+                        ;
                         break;
                     }
 
@@ -2010,7 +2013,7 @@ namespace DotRecast.Detour
 
             // Find the link that points to the 'to' polygon.
             DtLink link = null;
-            for (int i = fromTile.polyLinks[fromPoly.index]; i != DtNavMesh.DT_NULL_LINK; i = fromTile.links[i].next)
+            for (int i = fromTile.polyLinks[fromPoly.index]; i != DT_NULL_LINK; i = fromTile.links[i].next)
             {
                 if (fromTile.links[i].refs == to)
                 {
@@ -2028,7 +2031,7 @@ namespace DotRecast.Detour
             if (fromPoly.GetPolyType() == DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
                 // Find link that points to first vertex.
-                for (int i = fromTile.polyLinks[fromPoly.index]; i != DtNavMesh.DT_NULL_LINK; i = fromTile.links[i].next)
+                for (int i = fromTile.polyLinks[fromPoly.index]; i != DT_NULL_LINK; i = fromTile.links[i].next)
                 {
                     if (fromTile.links[i].refs == to)
                     {
@@ -2050,7 +2053,7 @@ namespace DotRecast.Detour
 
             if (toPoly.GetPolyType() == DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
-                for (int i = toTile.polyLinks[toPoly.index]; i != DtNavMesh.DT_NULL_LINK; i = toTile.links[i].next)
+                for (int i = toTile.polyLinks[toPoly.index]; i != DT_NULL_LINK; i = toTile.links[i].next)
                 {
                     if (toTile.links[i].refs == from)
                     {
@@ -2326,7 +2329,7 @@ namespace DotRecast.Detour
                 // Follow neighbours.
                 long nextRef = 0;
 
-                for (int i = tile.polyLinks[poly.index]; i != DtNavMesh.DT_NULL_LINK; i = tile.links[i].next)
+                for (int i = tile.polyLinks[poly.index]; i != DT_NULL_LINK; i = tile.links[i].next)
                 {
                     DtLink link = tile.links[i];
 
@@ -2567,7 +2570,7 @@ namespace DotRecast.Detour
                 resultParent.Add(parentRef);
                 resultCost.Add(bestNode.total);
 
-                for (int i = bestTile.polyLinks[bestPoly.index]; i != DtNavMesh.DT_NULL_LINK; i = bestTile.links[i].next)
+                for (int i = bestTile.polyLinks[bestPoly.index]; i != DT_NULL_LINK; i = bestTile.links[i].next)
                 {
                     DtLink link = bestTile.links[i];
                     long neighbourRef = link.refs;
@@ -2744,7 +2747,7 @@ namespace DotRecast.Detour
                 resultParent.Add(parentRef);
                 resultCost.Add(bestNode.total);
 
-                for (int i = bestTile.polyLinks[bestPoly.index]; i != DtNavMesh.DT_NULL_LINK; i = bestTile.links[i].next)
+                for (int i = bestTile.polyLinks[bestPoly.index]; i != DT_NULL_LINK; i = bestTile.links[i].next)
                 {
                     DtLink link = bestTile.links[i];
                     long neighbourRef = link.refs;
@@ -2899,7 +2902,7 @@ namespace DotRecast.Detour
                 long curRef = curNode.id;
                 m_nav.GetTileAndPolyByRefUnsafe(curRef, out var curTile, out var curPoly);
 
-                for (int i = curTile.polyLinks[curPoly.index]; i != DtNavMesh.DT_NULL_LINK; i = curTile.links[i].next)
+                for (int i = curTile.polyLinks[curPoly.index]; i != DT_NULL_LINK; i = curTile.links[i].next)
                 {
                     DtLink link = curTile.links[i];
                     long neighbourRef = link.refs;
@@ -2967,7 +2970,7 @@ namespace DotRecast.Detour
 
                         // Connected polys do not overlap.
                         bool connected = false;
-                        for (int k = curTile.polyLinks[curPoly.index]; k != DtNavMesh.DT_NULL_LINK; k = curTile.links[k].next)
+                        for (int k = curTile.polyLinks[curPoly.index]; k != DT_NULL_LINK; k = curTile.links[k].next)
                         {
                             if (curTile.links[k].refs == pastRef)
                             {
@@ -3073,10 +3076,10 @@ namespace DotRecast.Detour
             {
                 // Skip non-solid edges.
                 ints.Clear();
-                if ((poly.neis[j] & DtNavMesh.DT_EXT_LINK) != 0)
+                if ((poly.neis[j] & DT_EXT_LINK) != 0)
                 {
                     // Tile border.
-                    for (int k = tile.polyLinks[poly.index]; k != DtNavMesh.DT_NULL_LINK; k = tile.links[k].next)
+                    for (int k = tile.polyLinks[poly.index]; k != DT_NULL_LINK; k = tile.links[k].next)
                     {
                         DtLink link = tile.links[k];
                         if (link.edge == j)
@@ -3240,11 +3243,11 @@ namespace DotRecast.Detour
                 for (int i = 0, j = bestPoly.vertCount - 1; i < bestPoly.vertCount; j = i++)
                 {
                     // Skip non-solid edges.
-                    if ((bestPoly.neis[j] & DtNavMesh.DT_EXT_LINK) != 0)
+                    if ((bestPoly.neis[j] & DT_EXT_LINK) != 0)
                     {
                         // Tile border.
                         bool solid = true;
-                        for (int k = bestTile.polyLinks[bestPoly.index]; k != DtNavMesh.DT_NULL_LINK; k = bestTile.links[k].next)
+                        for (int k = bestTile.polyLinks[bestPoly.index]; k != DT_NULL_LINK; k = bestTile.links[k].next)
                         {
                             DtLink link = bestTile.links[k];
                             if (link.edge == j)
@@ -3300,7 +3303,7 @@ namespace DotRecast.Detour
                     bestvi = RcVecUtils.Create(bestTile.data.verts, vi);
                 }
 
-                for (int i = bestTile.polyLinks[bestPoly.index]; i != DtNavMesh.DT_NULL_LINK; i = bestTile.links[i].next)
+                for (int i = bestTile.polyLinks[bestPoly.index]; i != DT_NULL_LINK; i = bestTile.links[i].next)
                 {
                     DtLink link = bestTile.links[i];
                     long neighbourRef = link.refs;

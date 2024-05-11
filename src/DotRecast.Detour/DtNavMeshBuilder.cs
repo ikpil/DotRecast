@@ -24,6 +24,8 @@ using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
 {
+    using static DtDetour;
+
     public static class DtNavMeshBuilder
     {
         const int MESH_NULL_IDX = 0xffff;
@@ -424,8 +426,8 @@ namespace DotRecast.Detour
             DtOffMeshConnection[] offMeshCons = new DtOffMeshConnection[storedOffMeshConCount];
 
             // Store header
-            header.magic = DtNavMesh.DT_NAVMESH_MAGIC;
-            header.version = DtNavMesh.DT_NAVMESH_VERSION;
+            header.magic = DT_NAVMESH_MAGIC;
+            header.version = DT_NAVMESH_VERSION;
             header.x = option.tileX;
             header.y = option.tileZ;
             header.layer = option.tileLayer;
@@ -497,13 +499,13 @@ namespace DotRecast.Detour
                         if (dir == 0xf) // Border
                             p.neis[j] = 0;
                         else if (dir == 0) // Portal x-
-                            p.neis[j] = DtNavMesh.DT_EXT_LINK | 4;
+                            p.neis[j] = DT_EXT_LINK | 4;
                         else if (dir == 1) // Portal z+
-                            p.neis[j] = DtNavMesh.DT_EXT_LINK | 2;
+                            p.neis[j] = DT_EXT_LINK | 2;
                         else if (dir == 2) // Portal x+
-                            p.neis[j] = DtNavMesh.DT_EXT_LINK | 0;
+                            p.neis[j] = DT_EXT_LINK | 0;
                         else if (dir == 3) // Portal z-
-                            p.neis[j] = DtNavMesh.DT_EXT_LINK | 6;
+                            p.neis[j] = DT_EXT_LINK | 6;
                     }
                     else
                     {
@@ -622,7 +624,7 @@ namespace DotRecast.Detour
                     }
 
                     con.rad = option.offMeshConRad[i];
-                    con.flags = option.offMeshConDir[i] != 0 ? DtNavMesh.DT_OFFMESH_CON_BIDIR : 0;
+                    con.flags = option.offMeshConDir[i] != 0 ? DT_OFFMESH_CON_BIDIR : 0;
                     con.side = offMeshConClass[i * 2 + 1];
                     if (option.offMeshConUserID != null)
                         con.userId = option.offMeshConUserID[i];

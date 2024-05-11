@@ -21,13 +21,15 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour.Io
 {
+    using static DtDetour;
+
     public class DtMeshDataWriter : DtWriter
     {
         public void Write(BinaryWriter stream, DtMeshData data, RcByteOrder order, bool cCompatibility)
         {
             DtMeshHeader header = data.header;
             Write(stream, header.magic, order);
-            Write(stream, cCompatibility ? DtNavMesh.DT_NAVMESH_VERSION : DtNavMesh.DT_NAVMESH_VERSION_RECAST4J_LAST, order);
+            Write(stream, cCompatibility ? DT_NAVMESH_VERSION : DT_NAVMESH_VERSION_RECAST4J_LAST, order);
             Write(stream, header.x, order);
             Write(stream, header.y, order);
             Write(stream, header.layer, order);

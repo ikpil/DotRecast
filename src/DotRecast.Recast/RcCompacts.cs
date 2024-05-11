@@ -20,17 +20,14 @@ freely, subject to the following restrictions:
 using System;
 using System.Linq;
 using DotRecast.Core;
-using static DotRecast.Recast.RcConstants;
-
 
 namespace DotRecast.Recast
 {
-    using static RcCommons;
-
+    using static RcRecast;
 
     public static class RcCompacts
     {
-        private const int MAX_HEIGHT = RcConstants.RC_SPAN_MAX_HEIGHT;
+        private const int MAX_HEIGHT = RC_SPAN_MAX_HEIGHT;
 
         /// @}
         /// @name Compact Heightfield Functions

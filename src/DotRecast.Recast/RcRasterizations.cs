@@ -21,10 +21,12 @@ freely, subject to the following restrictions:
 using System;
 using DotRecast.Core;
 using DotRecast.Core.Numerics;
-using static DotRecast.Recast.RcConstants;
+
 
 namespace DotRecast.Recast
 {
+    using static RcRecast;
+
     public static class RcRasterizations
     {
         /// Check whether two bounding boxes overlap
@@ -41,7 +43,7 @@ namespace DotRecast.Recast
                 aMin.Y <= bMax.Y && aMax.Y >= bMin.Y &&
                 aMin.Z <= bMax.Z && aMax.Z >= bMin.Z;
         }
-        
+
         /// Allocates a new span in the heightfield.
         /// Use a memory pool and free list to minimize actual allocations.
         /// 

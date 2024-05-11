@@ -25,9 +25,8 @@ using NUnit.Framework;
 
 namespace DotRecast.Recast.Test;
 
-using static RcConstants;
+using static RcRecast;
 using static RcAreas;
-
 
 public class RecastSoloMeshTest
 {
@@ -139,7 +138,7 @@ public class RecastSoloMeshTest
             // Find triangles which are walkable based on their slope and rasterize them.
             // If your input data is multiple meshes, you can transform them here, calculate
             // the are type for each of the meshes and rasterize them.
-            int[] m_triareas = RcCommons.MarkWalkableTriangles(m_ctx, cfg.WalkableSlopeAngle, verts, tris, ntris, cfg.WalkableAreaMod);
+            int[] m_triareas = RcRecast.MarkWalkableTriangles(m_ctx, cfg.WalkableSlopeAngle, verts, tris, ntris, cfg.WalkableAreaMod);
             RcRasterizations.RasterizeTriangles(m_ctx, verts, tris, m_triareas, ntris, m_solid, cfg.WalkableClimb);
         }
 

@@ -25,12 +25,12 @@ using DotRecast.Core.Numerics;
 
 namespace DotRecast.Recast
 {
-    using static RcConstants;
-    using static RcCommons;
+    
+    using static RcRecast;
 
     public static class RcLayers
     {
-        const int RC_MAX_LAYERS = RcConstants.RC_NOT_CONNECTED;
+        const int RC_MAX_LAYERS = RcRecast.RC_NOT_CONNECTED;
         const int RC_MAX_NEIS = 16;
 
 

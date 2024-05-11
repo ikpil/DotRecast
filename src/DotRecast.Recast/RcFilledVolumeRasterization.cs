@@ -20,11 +20,11 @@ freely, subject to the following restrictions:
 using System;
 using DotRecast.Core;
 using DotRecast.Core.Numerics;
-using static DotRecast.Recast.RcConstants;
-
 
 namespace DotRecast.Recast
 {
+    using static RcRecast;
+
     public static class RcFilledVolumeRasterization
     {
         private const float EPSILON = 0.00001f;

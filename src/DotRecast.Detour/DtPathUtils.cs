@@ -24,6 +24,8 @@ using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
 {
+    using static DtDetour;
+
     public static class DtPathUtils
     {
         private const int MAX_STEER_POINTS = 3;
@@ -107,7 +109,7 @@ namespace DotRecast.Detour
             }
 
 
-            for (int k = tile.polyLinks[poly.index]; k != DtNavMesh.DT_NULL_LINK; k = tile.links[k].next)
+            for (int k = tile.polyLinks[poly.index]; k != DT_NULL_LINK; k = tile.links[k].next)
             {
                 DtLink link = tile.links[k];
                 if (link.refs != 0)

@@ -158,7 +158,7 @@ namespace DotRecast.Recast.Toolset.Builder
 
         private int GetTileBits(IInputGeomProvider geom, float cellSize, int tileSize)
         {
-            RcCommons.CalcGridSize(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), cellSize, out var gw, out var gh);
+            RcRecast.CalcGridSize(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), cellSize, out var gw, out var gh);
             int tw = (gw + tileSize - 1) / tileSize;
             int th = (gh + tileSize - 1) / tileSize;
             int tileBits = Math.Min(DtUtils.Ilog2(DtUtils.NextPow2(tw * th)), 14);
@@ -167,7 +167,7 @@ namespace DotRecast.Recast.Toolset.Builder
 
         public int[] GetTiles(DemoInputGeomProvider geom, float cellSize, int tileSize)
         {
-            RcCommons.CalcGridSize(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), cellSize, out var gw, out var gh);
+            RcRecast.CalcGridSize(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), cellSize, out var gw, out var gh);
             int tw = (gw + tileSize - 1) / tileSize;
             int th = (gh + tileSize - 1) / tileSize;
             return new int[] { tw, th };

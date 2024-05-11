@@ -22,6 +22,8 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour.Io
 {
+    using static DtDetour;
+
     public class DtMeshSetReader
     {
         private readonly DtMeshDataReader meshReader = new DtMeshDataReader();
@@ -147,7 +149,7 @@ namespace DotRecast.Detour.Io
             int salt = ((refs >> (m_polyBits + m_tileBits)) & saltMask);
             int it = ((refs >> m_polyBits) & tileMask);
             int ip = refs & polyMask;
-            return DtNavMesh.EncodePolyId(salt, it, ip);
+            return EncodePolyId(salt, it, ip);
         }
     }
 }

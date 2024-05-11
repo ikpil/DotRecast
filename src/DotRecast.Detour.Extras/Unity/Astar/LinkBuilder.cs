@@ -21,6 +21,8 @@ using System.Collections.Generic;
 
 namespace DotRecast.Detour.Extras.Unity.Astar
 {
+    using static DtDetour;
+
     public class LinkBuilder
     {
         // Process connections and transform them into recast neighbour flags
@@ -65,19 +67,19 @@ namespace DotRecast.Detour.Extras.Unity.Astar
         {
             if (neighbourTile.header.bmin.X > tile.header.bmin.X)
             {
-                node.neis[DtPolyUtils.FindEdge(node, tile, neighbourTile.header.bmin.X, 0)] = DtNavMesh.DT_EXT_LINK;
+                node.neis[DtPolyUtils.FindEdge(node, tile, neighbourTile.header.bmin.X, 0)] = DT_EXT_LINK;
             }
             else if (neighbourTile.header.bmin.X < tile.header.bmin.X)
             {
-                node.neis[DtPolyUtils.FindEdge(node, tile, tile.header.bmin.X, 0)] = DtNavMesh.DT_EXT_LINK | 4;
+                node.neis[DtPolyUtils.FindEdge(node, tile, tile.header.bmin.X, 0)] = DT_EXT_LINK | 4;
             }
             else if (neighbourTile.header.bmin.Z > tile.header.bmin.Z)
             {
-                node.neis[DtPolyUtils.FindEdge(node, tile, neighbourTile.header.bmin.Z, 2)] = DtNavMesh.DT_EXT_LINK | 2;
+                node.neis[DtPolyUtils.FindEdge(node, tile, neighbourTile.header.bmin.Z, 2)] = DT_EXT_LINK | 2;
             }
             else
             {
-                node.neis[DtPolyUtils.FindEdge(node, tile, tile.header.bmin.Z, 2)] = DtNavMesh.DT_EXT_LINK | 6;
+                node.neis[DtPolyUtils.FindEdge(node, tile, tile.header.bmin.Z, 2)] = DT_EXT_LINK | 6;
             }
         }
     }

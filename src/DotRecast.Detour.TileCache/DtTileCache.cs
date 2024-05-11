@@ -26,6 +26,8 @@ using DotRecast.Detour.TileCache.Io;
 
 namespace DotRecast.Detour.TileCache
 {
+    using static DtDetour;
+
     public class DtTileCache
     {
         private int m_tileLutSize; // < Tile hash lookup size (must be pot).
@@ -160,7 +162,7 @@ namespace DotRecast.Detour.TileCache
             List<long> tiles = new List<long>();
 
             // Find tile based on hash.
-            int h = DtNavMesh.ComputeTileHash(tx, ty, m_tileLutMask);
+            int h = ComputeTileHash(tx, ty, m_tileLutMask);
             DtCompressedTile tile = m_posLookup[h];
             while (tile != null)
             {
@@ -178,7 +180,7 @@ namespace DotRecast.Detour.TileCache
         DtCompressedTile GetTileAt(int tx, int ty, int tlayer)
         {
             // Find tile based on hash.
-            int h = DtNavMesh.ComputeTileHash(tx, ty, m_tileLutMask);
+            int h = ComputeTileHash(tx, ty, m_tileLutMask);
             DtCompressedTile tile = m_posLookup[h];
             while (tile != null)
             {
@@ -266,7 +268,7 @@ namespace DotRecast.Detour.TileCache
             }
 
             // Insert tile into the position lut.
-            int h = DtNavMesh.ComputeTileHash(header.tx, header.ty, m_tileLutMask);
+            int h = ComputeTileHash(header.tx, header.ty, m_tileLutMask);
             tile.next = m_posLookup[h];
             m_posLookup[h] = tile;
 
@@ -305,7 +307,7 @@ namespace DotRecast.Detour.TileCache
             }
 
             // Remove tile from hash lookup.
-            int h = DtNavMesh.ComputeTileHash(tile.header.tx, tile.header.ty, m_tileLutMask);
+            int h = ComputeTileHash(tile.header.tx, tile.header.ty, m_tileLutMask);
             DtCompressedTile prev = null;
             DtCompressedTile cur = m_posLookup[h];
             while (cur != null)

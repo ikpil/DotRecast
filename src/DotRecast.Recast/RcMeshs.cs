@@ -24,7 +24,7 @@ using DotRecast.Core.Numerics;
 
 namespace DotRecast.Recast
 {
-    using static RcConstants;
+    using static RcRecast;
 
     public static class RcMeshs
     {

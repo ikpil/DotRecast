@@ -55,7 +55,7 @@ namespace DotRecast.Recast
                     {
                         int[] tris = node.tris;
                         int ntris = tris.Length / 3;
-                        int[] m_triareas = RcCommons.MarkWalkableTriangles(ctx, cfg.WalkableSlopeAngle, verts, tris, ntris, cfg.WalkableAreaMod);
+                        int[] m_triareas = RcRecast.MarkWalkableTriangles(ctx, cfg.WalkableSlopeAngle, verts, tris, ntris, cfg.WalkableAreaMod);
                         RcRasterizations.RasterizeTriangles(ctx, verts, tris, m_triareas, ntris, solid, cfg.WalkableClimb);
                     }
                 }
@@ -63,7 +63,7 @@ namespace DotRecast.Recast
                 {
                     int[] tris = geom.GetTris();
                     int ntris = tris.Length / 3;
-                    int[] m_triareas = RcCommons.MarkWalkableTriangles(ctx, cfg.WalkableSlopeAngle, verts, tris, ntris, cfg.WalkableAreaMod);
+                    int[] m_triareas = RcRecast.MarkWalkableTriangles(ctx, cfg.WalkableSlopeAngle, verts, tris, ntris, cfg.WalkableAreaMod);
                     RcRasterizations.RasterizeTriangles(ctx, verts, tris, m_triareas, ntris, solid, cfg.WalkableClimb);
                 }
             }

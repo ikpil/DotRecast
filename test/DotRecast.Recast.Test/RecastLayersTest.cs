@@ -24,7 +24,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Recast.Test;
 
-using static RcConstants;
+
 
 
 public class RecastLayersTest

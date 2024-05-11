@@ -22,6 +22,8 @@ using System.Collections.Generic;
 
 namespace DotRecast.Detour
 {
+    using static DtDetour;
+
     /**
      * Defines a navigation mesh tile.
      */
@@ -41,7 +43,7 @@ namespace DotRecast.Detour
         public readonly List<DtLink> links = new List<DtLink>();
 
         /** Index to the next free link. */
-        public int linksFreeList = DtNavMesh.DT_NULL_LINK; // FIXME: Remove
+        public int linksFreeList = DT_NULL_LINK; // FIXME: Remove
 
         /** Tile flags. (See: #dtTileFlags) */
         public int flags;

@@ -23,6 +23,8 @@ using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
 {
+    using static DtDetour;
+
     /**
  * <b>The Default Implementation</b>
  *
@@ -50,7 +52,7 @@ namespace DotRecast.Detour
  */
     public class DtQueryDefaultFilter : IDtQueryFilter
     {
-        private readonly float[] m_areaCost = new float[DtNavMesh.DT_MAX_AREAS]; //< Cost per area type. (Used by default implementation.)
+        private readonly float[] m_areaCost = new float[DT_MAX_AREAS]; //< Cost per area type. (Used by default implementation.)
         private int m_includeFlags; //< Flags for polygons that can be visited. (Used by default implementation.) 
         private int m_excludeFlags; //< Flags for polygons that should not be visited. (Used by default implementation.) 
 
@@ -58,7 +60,7 @@ namespace DotRecast.Detour
         {
             m_includeFlags = 0xffff;
             m_excludeFlags = 0;
-            for (int i = 0; i < DtNavMesh.DT_MAX_AREAS; ++i)
+            for (int i = 0; i < DT_MAX_AREAS; ++i)
             {
                 m_areaCost[i] = 1.0f;
             }
@@ -68,12 +70,12 @@ namespace DotRecast.Detour
         {
             m_includeFlags = includeFlags;
             m_excludeFlags = excludeFlags;
-            for (int i = 0; i < Math.Min(DtNavMesh.DT_MAX_AREAS, areaCost.Length); ++i)
+            for (int i = 0; i < Math.Min(DT_MAX_AREAS, areaCost.Length); ++i)
             {
                 m_areaCost[i] = areaCost[i];
             }
 
-            for (int i = areaCost.Length; i < DtNavMesh.DT_MAX_AREAS; ++i)
+            for (int i = areaCost.Length; i < DT_MAX_AREAS; ++i)
             {
                 m_areaCost[i] = 1.0f;
             }
