@@ -22,33 +22,22 @@ namespace DotRecast.Detour
 {
     public class DtMeshData
     {
-        /** The tile header. */
-        public DtMeshHeader header;
+        public DtMeshHeader header; //< The tile header.
+        public DtPoly[] polys; //< The tile polygons. [Size: dtMeshHeader::polyCount]
+        public float[] verts; //< The tile vertices. [(x, y, z) * dtMeshHeader::vertCount] 
+        public DtPolyDetail[] detailMeshes; //< The tile's detail sub-meshes. [Size: dtMeshHeader::detailMeshCount]
 
-        /** The tile vertices. [Size: MeshHeader::vertCount] */
-        public float[] verts;
-
-        /** The tile polygons. [Size: MeshHeader::polyCount] */
-        public DtPoly[] polys;
-
-        /** The tile's detail sub-meshes. [Size: MeshHeader::detailMeshCount] */
-        public DtPolyDetail[] detailMeshes;
-
-        /** The detail mesh's unique vertices. [(x, y, z) * MeshHeader::detailVertCount] */
+        /// The detail mesh's unique vertices. [(x, y, z) * dtMeshHeader::detailVertCount]
         public float[] detailVerts;
 
-        /**
-         * The detail mesh's triangles. [(vertA, vertB, vertC) * MeshHeader::detailTriCount] See DetailTriEdgeFlags and
-         * NavMesh::getDetailTriEdgeFlags.
-         */
+        /// The detail mesh's triangles. [(vertA, vertB, vertC, triFlags) * dtMeshHeader::detailTriCount].
+        /// See dtDetailTriEdgeFlags and dtGetDetailTriEdgeFlags.
         public int[] detailTris;
 
-        /**
-         * The tile bounding volume nodes. [Size: MeshHeader::bvNodeCount] (Will be null if bounding volumes are disabled.)
-         */
+        /// The tile bounding volume nodes. [Size: dtMeshHeader::bvNodeCount]
+        /// (Will be null if bounding volumes are disabled.)
         public DtBVNode[] bvTree;
 
-        /** The tile off-mesh connections. [Size: MeshHeader::offMeshConCount] */
-        public DtOffMeshConnection[] offMeshCons;
+        public DtOffMeshConnection[] offMeshCons; //< The tile off-mesh connections. [Size: dtMeshHeader::offMeshConCount]
     }
 }
