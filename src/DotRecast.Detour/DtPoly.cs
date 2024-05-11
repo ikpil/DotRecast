@@ -20,21 +20,24 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Detour
 {
-    /** Defines a polygon within a MeshTile object. */
+    /// Defines a polygon within a dtMeshTile object.
+    /// @ingroup detour
     public class DtPoly
     {
+        /// Index to first link in linked list. (Or #DT_NULL_LINK if there is no link.)
         public readonly int index;
 
-        /** The indices of the polygon's vertices. The actual vertices are located in MeshTile::verts. */
+        /// The indices of the polygon's vertices.
+        /// The actual vertices are located in dtMeshTile::verts.
         public readonly int[] verts;
 
-        /** Packed data representing neighbor polygons references and flags for each edge. */
+        /// Packed data representing neighbor polygons references and flags for each edge.
         public readonly int[] neis;
 
-        /** The user defined polygon flags. */
+        /// The user defined polygon flags.
         public int flags;
 
-        /** The number of vertices in the polygon. */
+        /// The number of vertices in the polygon.
         public int vertCount;
 
         /// The bit packed area id and polygon type.
@@ -48,25 +51,25 @@ namespace DotRecast.Detour
             neis = new int[maxVertsPerPoly];
         }
 
-        /** Sets the user defined area id. [Limit: &lt; {@link org.recast4j.detour.NavMesh#DT_MAX_AREAS}] */
+        /// Sets the user defined area id. [Limit: < #DT_MAX_AREAS]
         public void SetArea(int a)
         {
             areaAndtype = (areaAndtype & 0xc0) | (a & 0x3f);
         }
 
-        /** Sets the polygon type. (See: #dtPolyTypes.) */
+        /// Sets the polygon type. (See: #dtPolyTypes.)
         public void SetPolyType(int t)
         {
             areaAndtype = (areaAndtype & 0x3f) | (t << 6);
         }
 
-        /** Gets the user defined area id. */
+        /// Gets the user defined area id.
         public int GetArea()
         {
             return areaAndtype & 0x3f;
         }
 
-        /** Gets the polygon type. (See: #dtPolyTypes) */
+        /// Gets the polygon type. (See: #dtPolyTypes)
         public int GetPolyType()
         {
             return areaAndtype >> 6;
