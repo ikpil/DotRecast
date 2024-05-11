@@ -66,18 +66,16 @@ namespace DotRecast.Detour
         /// The limit is given as a multiple of the character radius
         public const float DT_RAY_CAST_LIMIT_PROPORTIONS = 50.0f;
 
-        private readonly DtNavMeshParams m_params; // < Current initialization params. TODO: do not store this info twice.
+        private readonly DtNavMeshParams m_params; //< Current initialization params. TODO: do not store this info twice.
         private readonly RcVec3f m_orig; // < Origin of the tile (0,0)
-        // float m_orig[3]; ///< Origin of the tile (0,0)
-
-        private float m_tileWidth;
-        private float m_tileHeight; // < Dimensions of each tile.
-        int m_maxTiles; // < Max number of tiles.
+        private readonly float m_tileWidth;// < Dimensions of each tile.
+        private readonly float m_tileHeight; // < Dimensions of each tile.
+        private readonly int m_maxTiles; // < Max number of tiles.
         private readonly int m_tileLutMask; // < Tile hash lookup mask.
-        private readonly Dictionary<int, List<DtMeshTile>> posLookup = new Dictionary<int, List<DtMeshTile>>();
-
-        private readonly LinkedList<DtMeshTile> availableTiles = new LinkedList<DtMeshTile>();
-        private readonly DtMeshTile[] m_tiles; // List of tiles.
+        
+        private readonly Dictionary<int, List<DtMeshTile>> m_posLookup = new Dictionary<int, List<DtMeshTile>>(); //< Tile hash lookup.
+        private readonly LinkedList<DtMeshTile> m_nextFree = new LinkedList<DtMeshTile>(); //< Freelist of tiles.
+        private readonly DtMeshTile[] m_tiles; //< List of tiles.
 
         /** The maximum number of vertices per navigation polygon. */
         private readonly int m_maxVertPerPoly;
@@ -105,7 +103,7 @@ namespace DotRecast.Detour
             {
                 m_tiles[i] = new DtMeshTile(i);
                 m_tiles[i].salt = 1;
-                availableTiles.AddLast(m_tiles[i]);
+                m_nextFree.AddLast(m_tiles[i]);
             }
         }
 
@@ -475,13 +473,13 @@ namespace DotRecast.Detour
             if (lastRef == 0)
             {
                 // Make sure we could allocate a tile.
-                if (0 == availableTiles.Count)
+                if (0 == m_nextFree.Count)
                 {
                     throw new Exception("Could not allocate a tile");
                 }
 
-                tile = availableTiles.First?.Value;
-                availableTiles.RemoveFirst();
+                tile = m_nextFree.First?.Value;
+                m_nextFree.RemoveFirst();
                 m_tileCount++;
             }
             else
@@ -496,7 +494,7 @@ namespace DotRecast.Detour
                 // Try to find the specific tile id from the free list.
                 DtMeshTile target = m_tiles[tileIndex];
                 // Remove from freelist
-                if (!availableTiles.Remove(target))
+                if (!m_nextFree.Remove(target))
                 {
                     // Could not find the correct location.
                     throw new Exception("Could not find tile");
@@ -634,7 +632,7 @@ namespace DotRecast.Detour
             }
 
             // Add to free list.
-            availableTiles.AddFirst(tile);
+            m_nextFree.AddFirst(tile);
             m_tileCount--;
             return GetTileRef(tile);
         }
@@ -1589,7 +1587,7 @@ namespace DotRecast.Detour
 
         public int GetAvailableTileCount()
         {
-            return availableTiles.Count;
+            return m_nextFree.Count;
         }
 
         public DtStatus SetPolyFlags(long refs, int flags)
@@ -1764,10 +1762,10 @@ namespace DotRecast.Detour
         private List<DtMeshTile> GetTileListByPos(int x, int z)
         {
             var tileHash = ComputeTileHash(x, z, m_tileLutMask);
-            if (!posLookup.TryGetValue(tileHash, out var tiles))
+            if (!m_posLookup.TryGetValue(tileHash, out var tiles))
             {
                 tiles = new List<DtMeshTile>();
-                posLookup.Add(tileHash, tiles);
+                m_posLookup.Add(tileHash, tiles);
             }
 
             return tiles;
