@@ -165,7 +165,7 @@ namespace DotRecast.Detour
 
         // Returns a random point in a convex polygon.
         // Adapted from Graphics Gems article.
-        public static RcVec3f RandomPointInConvexPoly(Span<float> pts, int npts, Span<float> areas, float s, float t)
+        public static void RandomPointInConvexPoly(Span<float> pts, int npts, Span<float> areas, float s, float t, out RcVec3f @out)
         {
             // Calc triangle araes
             float areasum = 0.0f;
@@ -202,7 +202,7 @@ namespace DotRecast.Detour
             int pb = (tri - 1) * 3;
             int pc = tri * 3;
 
-            return new RcVec3f()
+            @out = new RcVec3f()
             {
                 X = a * pts[pa] + b * pts[pb] + c * pts[pc],
                 Y = a * pts[pa + 1] + b * pts[pb + 1] + c * pts[pc + 1],

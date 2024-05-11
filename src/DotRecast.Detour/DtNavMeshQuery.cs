@@ -68,8 +68,8 @@ namespace DotRecast.Detour
             float tsum = 0.0f;
             for (int i = 0; i < m_nav.GetMaxTiles(); i++)
             {
-                DtMeshTile mt = m_nav.GetTile(i);
-                if (mt == null || mt.data == null || mt.data.header == null)
+                DtMeshTile t = m_nav.GetTile(i);
+                if (t == null || t.data == null || t.data.header == null)
                 {
                     continue;
                 }
@@ -80,7 +80,7 @@ namespace DotRecast.Detour
                 float u = frand.Next();
                 if (u * tsum <= area)
                 {
-                    tile = mt;
+                    tile = t;
                 }
             }
 
@@ -146,9 +146,9 @@ namespace DotRecast.Detour
             }
 
             float s = frand.Next();
-            float t = frand.Next();
+            float t0 = frand.Next();
 
-            var pt = DtUtils.RandomPointInConvexPoly(verts, poly.vertCount, areas, s, t);
+            DtUtils.RandomPointInConvexPoly(verts, poly.vertCount, areas, s, t0, out var pt);
             ClosestPointOnPoly(polyRef, pt, out var closest, out var _);
 
             randomRef = polyRef;
@@ -387,7 +387,7 @@ namespace DotRecast.Detour
             float t = frand.Next();
 
             Span<float> areas = stackalloc float[randomPolyVerts.Length / 3];
-            RcVec3f pt = DtUtils.RandomPointInConvexPoly(randomPolyVerts, randomPolyVerts.Length / 3, areas, s, t);
+            DtUtils.RandomPointInConvexPoly(randomPolyVerts, randomPolyVerts.Length / 3, areas, s, t, out var pt);
             ClosestPointOnPoly(randomPolyRef, pt, out var closest, out var _);
 
             randomRef = randomPolyRef;
