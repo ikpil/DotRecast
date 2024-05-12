@@ -1,6 +1,5 @@
 using DotRecast.Core;
 using DotRecast.Core.Numerics;
-
 using DotRecast.Recast;
 
 namespace DotRecast.Detour.Extras.Jumplink
@@ -36,7 +35,14 @@ namespace DotRecast.Detour.Extras.Jumplink
             option.cs = r.Mesh.cs;
             option.ch = r.Mesh.ch;
             option.buildBvTree = true;
-            return new DtNavMeshQuery(new DtNavMesh(DtNavMeshBuilder.CreateNavMeshData(option), option.nvp, 0));
+            var mesh = new DtNavMesh();
+            var status = mesh.Init(DtNavMeshBuilder.CreateNavMeshData(option), option.nvp, 0);
+            if (status.Failed())
+            {
+                return null;
+            }
+
+            return new DtNavMeshQuery(mesh);
         }
 
 

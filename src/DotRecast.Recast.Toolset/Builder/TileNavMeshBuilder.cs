@@ -115,8 +115,9 @@ namespace DotRecast.Recast.Toolset.Builder
 
             navMeshParams.maxTiles = GetMaxTiles(geom, cellSize, tileSize);
             navMeshParams.maxPolys = GetMaxPolysPerTile(geom, cellSize, tileSize);
-            DtNavMesh navMesh = new DtNavMesh(navMeshParams, vertsPerPoly);
-            meshData.ForEach(md => navMesh.AddTile(md, 0, 0));
+            DtNavMesh navMesh = new DtNavMesh();
+            navMesh.Init(navMeshParams, vertsPerPoly);
+            meshData.ForEach(md => navMesh.AddTile(md, 0, 0, out _));
             return navMesh;
         }
 

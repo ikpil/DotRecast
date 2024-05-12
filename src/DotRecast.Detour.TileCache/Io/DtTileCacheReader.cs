@@ -69,7 +69,8 @@ namespace DotRecast.Detour.TileCache.Io
             header.numTiles = bb.GetInt();
             header.meshParams = paramReader.Read(bb);
             header.cacheParams = ReadCacheParams(bb, cCompatibility);
-            DtNavMesh mesh = new DtNavMesh(header.meshParams, maxVertPerPoly);
+            DtNavMesh mesh = new DtNavMesh();
+            mesh.Init(header.meshParams, maxVertPerPoly);
             IRcCompressor comp = _compFactory.Create(cCompatibility ? 0 : 1);
             DtTileCacheStorageParams storageParams = new DtTileCacheStorageParams(bb.Order(), cCompatibility);
             DtTileCache tc = new DtTileCache(header.cacheParams, storageParams, mesh, comp, meshProcessor);

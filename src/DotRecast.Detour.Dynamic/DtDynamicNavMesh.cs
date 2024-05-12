@@ -224,9 +224,13 @@ namespace DotRecast.Detour.Dynamic
         {
             if (_dirty)
             {
-                DtNavMesh navMesh = new DtNavMesh(navMeshParams, MAX_VERTS_PER_POLY);
+                DtNavMesh navMesh = new DtNavMesh();
+                navMesh.Init(navMeshParams, MAX_VERTS_PER_POLY);
+
                 foreach (var t in _tiles.Values)
+                {
                     t.AddTo(navMesh);
+                }
 
                 _navMesh = navMesh;
                 _dirty = false;

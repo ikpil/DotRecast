@@ -672,7 +672,7 @@ namespace DotRecast.Detour.TileCache
             // Add new tile, or leave the location empty. if (navData) { // Let the
             if (meshData != null)
             {
-                m_navmesh.AddTile(meshData, 0, 0);
+                m_navmesh.AddTile(meshData, 0, 0, out var result);
             }
         }
 

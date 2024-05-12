@@ -21,7 +21,6 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
 
-
 public abstract class AbstractDetourTest
 {
     protected static readonly long[] startRefs =
@@ -64,6 +63,8 @@ public abstract class AbstractDetourTest
 
     protected DtNavMesh CreateNavMesh()
     {
-        return new DtNavMesh(new RecastTestMeshBuilder().GetMeshData(), 6, 0);
+        var mesh = new DtNavMesh();
+        mesh.Init(new RecastTestMeshBuilder().GetMeshData(), 6, 0);
+        return mesh;
     }
 }

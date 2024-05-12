@@ -29,29 +29,23 @@ namespace DotRecast.Detour
 
     public class DtNavMesh
     {
-        private readonly DtNavMeshParams m_params; //< Current initialization params. TODO: do not store this info twice.
-        private readonly RcVec3f m_orig; // < Origin of the tile (0,0)
-        private readonly float m_tileWidth; // < Dimensions of each tile.
-        private readonly float m_tileHeight; // < Dimensions of each tile.
-        private readonly int m_maxTiles; // < Max number of tiles.
-        private readonly int m_tileLutMask; // < Tile hash lookup mask.
+        private DtNavMeshParams m_params; //< Current initialization params. TODO: do not store this info twice.
+        private RcVec3f m_orig; // < Origin of the tile (0,0)
+        private float m_tileWidth; // < Dimensions of each tile.
+        private float m_tileHeight; // < Dimensions of each tile.
+        private int m_maxTiles; // < Max number of tiles.
+        private int m_tileLutMask; // < Tile hash lookup mask.
 
-        private readonly Dictionary<int, List<DtMeshTile>> m_posLookup; //< Tile hash lookup.
-        private readonly LinkedList<DtMeshTile> m_nextFree; //< Freelist of tiles.
-        private readonly DtMeshTile[] m_tiles; //< List of tiles.
+        private Dictionary<int, List<DtMeshTile>> m_posLookup; //< Tile hash lookup.
+        private LinkedList<DtMeshTile> m_nextFree; //< Freelist of tiles.
+        private DtMeshTile[] m_tiles; //< List of tiles.
 
         /** The maximum number of vertices per navigation polygon. */
-        private readonly int m_maxVertPerPoly;
+        private int m_maxVertPerPoly;
 
         private int m_tileCount;
 
-        public DtNavMesh(DtMeshData data, int maxVertsPerPoly, int flags)
-            : this(GetNavMeshParams(data), maxVertsPerPoly)
-        {
-            AddTile(data, flags, 0);
-        }
-
-        public DtNavMesh(DtNavMeshParams option, int maxVertsPerPoly)
+        public DtStatus Init(DtNavMeshParams option, int maxVertsPerPoly)
         {
             m_params = option;
             m_orig = option.orig;
@@ -70,6 +64,18 @@ namespace DotRecast.Detour
                 m_tiles[i].salt = 1;
                 m_nextFree.AddLast(m_tiles[i]);
             }
+
+            return DtStatus.DT_SUCCESS;
+        }
+
+        public DtStatus Init(DtMeshData data, int maxVertsPerPoly, int flags)
+        {
+            var option = GetNavMeshParams(data);
+            DtStatus status = Init(option, maxVertsPerPoly);
+            if (status.Failed())
+                return status;
+
+            return AddTile(data, flags, 0, out _);
         }
 
         private static DtNavMeshParams GetNavMeshParams(DtMeshData data)
@@ -328,31 +334,21 @@ namespace DotRecast.Detour
             }
         }
 
-        public long UpdateTile(DtMeshData data, int flags)
+        public DtStatus UpdateTile(DtMeshData data, int flags)
         {
             long refs = GetTileRefAt(data.header.x, data.header.y, data.header.layer);
             refs = RemoveTile(refs);
-            return AddTile(data, flags, refs);
+            return AddTile(data, flags, refs, out _);
         }
 
-        /// Adds a tile to the navigation mesh.
-        /// @param[in] data Data for the new tile mesh. (See: #dtCreateNavMeshData)
-        /// @param[in] dataSize Data size of the new tile mesh.
-        /// @param[in] flags Tile flags. (See: #dtTileFlags)
-        /// @param[in] lastRef The desired reference for the tile. (When reloading a
-        /// tile.) [opt] [Default: 0]
-        /// @param[out] result The tile reference. (If the tile was succesfully
-        /// added.) [opt]
-        /// @return The status flags for the operation.
         /// @par
         ///
-        /// The add operation will fail if the data is in the wrong format, the
-        /// allocated tile
+        /// The add operation will fail if the data is in the wrong format, the allocated tile
         /// space is full, or there is a tile already at the specified reference.
         ///
         /// The lastRef parameter is used to restore a tile with the same tile
-        /// reference it had previously used. In this case the #long's for the
-        /// tile will be restored to the same values they were before the tile was
+        /// reference it had previously used.  In this case the #dtPolyRef's for the
+        /// tile will be restored to the same values they were before the tile was 
         /// removed.
         ///
         /// The nav mesh assumes exclusive access to the data passed and will make
@@ -361,15 +357,24 @@ namespace DotRecast.Detour
         /// removed from this nav mesh.
         ///
         /// @see dtCreateNavMeshData, #removeTile
-        public long AddTile(DtMeshData data, int flags, long lastRef)
+        /// Adds a tile to the navigation mesh.
+        ///  @param[in]		data		Data for the new tile mesh. (See: #dtCreateNavMeshData)
+        ///  @param[in]		dataSize	Data size of the new tile mesh.
+        ///  @param[in]		flags		Tile flags. (See: #dtTileFlags)
+        ///  @param[in]		lastRef		The desired reference for the tile. (When reloading a tile.) [opt] [Default: 0]
+        ///  @param[out]	result		The tile reference. (If the tile was succesfully added.) [opt]
+        /// @return The status flags for the operation. 
+        public DtStatus AddTile(DtMeshData data, int flags, long lastRef, out long result)
         {
+            result = 0;
+
             // Make sure the data is in right format.
             DtMeshHeader header = data.header;
 
             // Make sure the location is free.
             if (GetTileAt(header.x, header.y, header.layer) != null)
             {
-                throw new Exception("Tile already exists");
+                return DtStatus.DT_FAILURE | DtStatus.DT_ALREADY_OCCUPIED;
             }
 
             // Allocate a tile.
@@ -392,7 +397,7 @@ namespace DotRecast.Detour
                 int tileIndex = DecodePolyIdTile(lastRef);
                 if (tileIndex >= m_maxTiles)
                 {
-                    throw new Exception("Tile index too high");
+                    return DtStatus.DT_FAILURE | DtStatus.DT_OUT_OF_MEMORY;
                 }
 
                 // Try to find the specific tile id from the free list.
@@ -401,12 +406,18 @@ namespace DotRecast.Detour
                 if (!m_nextFree.Remove(target))
                 {
                     // Could not find the correct location.
-                    throw new Exception("Could not find tile");
+                    return DtStatus.DT_FAILURE | DtStatus.DT_OUT_OF_MEMORY;
                 }
 
                 tile = target;
                 // Restore salt.
                 tile.salt = DecodePolyIdSalt(lastRef);
+            }
+
+            // Make sure we could allocate a tile.
+            if (null == tile)
+            {
+                return DtStatus.DT_FAILURE | DtStatus.DT_OUT_OF_MEMORY;
             }
 
             tile.data = data;
@@ -461,7 +472,8 @@ namespace DotRecast.Detour
                 }
             }
 
-            return GetTileRef(tile);
+            result = GetTileRef(tile);
+            return DtStatus.DT_SUCCESS;
         }
 
         /// Removes the specified tile from the navigation mesh.

@@ -17,7 +17,6 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
-using DotRecast.Core.Numerics;
 using DotRecast.Recast;
 using DotRecast.Recast.Geom;
 
@@ -64,7 +63,8 @@ public class TestTiledNavMeshBuilder
         navMeshParams.tileHeight = tileSize * cellSize;
         navMeshParams.maxTiles = 128;
         navMeshParams.maxPolys = 32768;
-        navMesh = new DtNavMesh(navMeshParams, 6);
+        navMesh = new DtNavMesh();
+        navMesh.Init(navMeshParams, 6);
 
         // Build all tiles
         RcConfig cfg = new RcConfig(true, tileSize, tileSize, RcConfig.CalcBorder(agentRadius, cellSize),
@@ -119,7 +119,7 @@ public class TestTiledNavMeshBuilder
             option.tileX = result.TileX;
             option.tileZ = result.TileZ;
             option.buildBvTree = true;
-            navMesh.AddTile(DtNavMeshBuilder.CreateNavMeshData(option), 0, 0);
+            navMesh.AddTile(DtNavMeshBuilder.CreateNavMeshData(option), 0, 0, out _);
         }
     }
 

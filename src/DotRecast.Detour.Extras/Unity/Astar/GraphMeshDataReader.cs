@@ -78,7 +78,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                     int nodeCount = buffer.GetInt();
                     DtPoly[] nodes = new DtPoly[nodeCount];
                     DtPolyDetail[] detailNodes = new DtPolyDetail[nodeCount];
-                    float[] detailVerts = new float[0];
+                    float[] detailVerts = Array.Empty<float>();
                     int[] detailTris = new int[4 * nodeCount];
                     int vertMask = GetVertMask(vertsCount);
                     float ymin = float.PositiveInfinity;

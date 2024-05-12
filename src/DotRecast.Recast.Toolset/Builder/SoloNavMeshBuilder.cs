@@ -73,7 +73,14 @@ namespace DotRecast.Recast.Toolset.Builder
 
         private DtNavMesh BuildNavMesh(DtMeshData meshData, int vertsPerPoly)
         {
-            return new DtNavMesh(meshData, vertsPerPoly, 0);
+            var mesh = new DtNavMesh();
+            var status = mesh.Init(meshData, vertsPerPoly, 0);
+            if (status.Failed())
+            {
+                return null;
+            }
+            
+            return mesh;
         }
 
         private RcBuilderResult BuildRecastResult(DemoInputGeomProvider geom, RcConfig cfg, bool keepInterResults)

@@ -168,12 +168,12 @@ namespace DotRecast.Detour.Dynamic
             option.buildBvTree = true;
 
             option.offMeshConCount = 0;
-            option.offMeshConVerts = new float[0];
-            option.offMeshConRad = new float[0];
-            option.offMeshConDir = new int[0];
-            option.offMeshConAreas = new int[0];
-            option.offMeshConFlags = new int[0];
-            option.offMeshConUserID = new int[0];
+            option.offMeshConVerts = Array.Empty<float>();
+            option.offMeshConRad = Array.Empty<float>();
+            option.offMeshConDir = Array.Empty<int>();
+            option.offMeshConAreas = Array.Empty<int>();
+            option.offMeshConFlags = Array.Empty<int>();
+            option.offMeshConUserID = Array.Empty<int>();
             return option;
         }
 
@@ -181,7 +181,7 @@ namespace DotRecast.Detour.Dynamic
         {
             if (meshData != null)
             {
-                id = navMesh.AddTile(meshData, 0, 0);
+                navMesh.AddTile(meshData, 0, 0, out var id);
             }
             else
             {

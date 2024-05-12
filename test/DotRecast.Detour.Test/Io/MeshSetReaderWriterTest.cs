@@ -28,7 +28,6 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Test.Io;
 
-
 public class MeshSetReaderWriterTest
 {
     private readonly DtMeshSetWriter writer = new DtMeshSetWriter();
@@ -66,7 +65,8 @@ public class MeshSetReaderWriterTest
         header.option.maxTiles = m_maxTiles;
         header.option.maxPolys = m_maxPolysPerTile;
         header.numTiles = 0;
-        DtNavMesh mesh = new DtNavMesh(header.option, 6);
+        DtNavMesh mesh = new DtNavMesh();
+        mesh.Init(header.option, 6);
 
         RcVec3f bmin = geom.GetMeshBoundsMin();
         RcVec3f bmax = geom.GetMeshBoundsMax();
@@ -92,7 +92,7 @@ public class MeshSetReaderWriterTest
                 if (data != null)
                 {
                     mesh.RemoveTile(mesh.GetTileRefAt(x, y, 0));
-                    mesh.AddTile(data, 0, 0);
+                    mesh.AddTile(data, 0, 0, out _);
                 }
             }
         }

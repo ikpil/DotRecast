@@ -25,7 +25,6 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Crowd.Test;
 
-
 public class AbstractCrowdTest
 {
     protected readonly long[] startRefs =
@@ -64,7 +63,8 @@ public class AbstractCrowdTest
     public void SetUp()
     {
         nmd = new RecastTestMeshBuilder().GetMeshData();
-        navmesh = new DtNavMesh(nmd, 6, 0);
+        navmesh = new DtNavMesh();
+        navmesh.Init(nmd, 6, 0);
         query = new DtNavMeshQuery(navmesh);
         DtCrowdConfig config = new DtCrowdConfig(0.6f);
         crowd = new DtCrowd(config, navmesh);

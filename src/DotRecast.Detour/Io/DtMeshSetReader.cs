@@ -68,7 +68,8 @@ namespace DotRecast.Detour.Io
             }
 
             bool cCompatibility = header.version == NavMeshSetHeader.NAVMESHSET_VERSION;
-            DtNavMesh mesh = new DtNavMesh(header.option, header.maxVertsPerPoly);
+            DtNavMesh mesh = new DtNavMesh();
+            mesh.Init(header.option, header.maxVertsPerPoly);
             ReadTiles(bb, is32Bit, ref header, cCompatibility, mesh);
             return mesh;
         }
@@ -133,7 +134,7 @@ namespace DotRecast.Detour.Io
                 }
 
                 DtMeshData data = meshReader.Read(bb, mesh.GetMaxVertsPerPoly(), is32Bit);
-                mesh.AddTile(data, i, tileHeader.tileRef);
+                mesh.AddTile(data, i, tileHeader.tileRef, out _);
             }
         }
 
