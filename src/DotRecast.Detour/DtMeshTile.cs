@@ -24,33 +24,25 @@ namespace DotRecast.Detour
 {
     using static DtDetour;
 
-    /**
-     * Defines a navigation mesh tile.
-     */
+    /// Defines a navigation mesh tile.
+    /// @ingroup detour
     public class DtMeshTile
     {
-        public readonly int index;
-
-        /** Counter describing modifications to the tile. */
-        public int salt;
-
-        /** The tile data. */
-        public DtMeshData data;
+        public readonly int index; // DtNavMesh.m_tiles array index
+        public int linksFreeList = DT_NULL_LINK; //< Index to the next free link.
+        public int salt; //< Counter describing modifications to the tile.
+        public DtMeshData data; // The tile data.
 
         public int[] polyLinks;
 
-        /** The tile links. */
-        public readonly List<DtLink> links = new List<DtLink>();
+        public readonly List<DtLink> links; // The tile links. [Size: dtMeshHeader::maxLinkCount]
 
-        /** Index to the next free link. */
-        public int linksFreeList = DT_NULL_LINK; // FIXME: Remove
-
-        /** Tile flags. (See: #dtTileFlags) */
-        public int flags;
+        public int flags; //< Tile flags. (See: #dtTileFlags)
 
         public DtMeshTile(int index)
         {
             this.index = index;
+            this.links = new List<DtLink>();
         }
     }
 }
