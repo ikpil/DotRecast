@@ -27,12 +27,11 @@ namespace DotRecast.Detour
     /// @see dtMeshTile
     public class DtLink
     {
-        public readonly int index; // DtMeshTile.links array index
         public long refs; //< Neighbour reference. (The neighbor that is linked to.)
         public int next; //< Index of the next link.
-        public int edge; //< Index of the polygon edge that owns this link.
-        public int side; //< If a boundary link, defines on which side the link is.
-        public int bmin; //< If a boundary link, defines the minimum sub-edge area.
-        public int bmax; //< If a boundary link, defines the maximum sub-edge area.
+        public byte edge; //< Index of the polygon edge that owns this link.
+        public byte side; //< If a boundary link, defines on which side the link is.
+        public byte bmin; //< If a boundary link, defines the minimum sub-edge area.
+        public byte bmax; //< If a boundary link, defines the maximum sub-edge area.
     }
 }
