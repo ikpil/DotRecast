@@ -18,8 +18,6 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using System.Collections.Generic;
-
 namespace DotRecast.Detour
 {
     using static DtDetour;
@@ -32,17 +30,13 @@ namespace DotRecast.Detour
         public int linksFreeList = DT_NULL_LINK; //< Index to the next free link.
         public int salt; //< Counter describing modifications to the tile.
         public DtMeshData data; // The tile data.
-
-        public int[] polyLinks;
-
-        public readonly List<DtLink> links; // The tile links. [Size: dtMeshHeader::maxLinkCount]
+        public DtLink[] links; // The tile links. [Size: dtMeshHeader::maxLinkCount]
 
         public int flags; //< Tile flags. (See: #dtTileFlags)
 
         public DtMeshTile(int index)
         {
             this.index = index;
-            this.links = new List<DtLink>();
         }
     }
 }

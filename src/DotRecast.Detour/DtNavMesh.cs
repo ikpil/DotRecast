@@ -129,12 +129,7 @@ namespace DotRecast.Detour
         private int AllocLink(DtMeshTile tile)
         {
             if (tile.linksFreeList == DT_NULL_LINK)
-            {
-                DtLink link = new DtLink();
-                link.next = DT_NULL_LINK;
-                tile.links.Add(link);
-                return tile.links.Count - 1;
-            }
+                return DT_NULL_LINK;
 
             int linkIdx = tile.linksFreeList;
             tile.linksFreeList = tile.links[linkIdx].next;
@@ -420,16 +415,16 @@ namespace DotRecast.Detour
                 return DtStatus.DT_FAILURE | DtStatus.DT_OUT_OF_MEMORY;
             }
 
-            tile.data = data;
-            tile.flags = flags;
-            tile.links.Clear();
-            tile.polyLinks = new int[data.polys.Length];
-            Array.Fill(tile.polyLinks, DT_NULL_LINK);
-
             // Insert tile into the position lut.
             GetTileListByPos(header.x, header.y).Add(tile);
 
             // Patch header pointers.
+            tile.data = data;
+            tile.links = new DtLink[data.header.maxLinkCount];
+            for (int i = 0; i < tile.links.Length; ++i)
+            {
+                tile.links[i] = new DtLink();
+            }
 
             // If there are no items in the bvtree, reset the tree pointer.
             if (tile.data.bvTree != null && tile.data.bvTree.Length == 0)
@@ -437,7 +432,14 @@ namespace DotRecast.Detour
                 tile.data.bvTree = null;
             }
 
+            // Build links freelist
+            tile.linksFreeList = 0;
+            tile.links[data.header.maxLinkCount - 1].next = DT_NULL_LINK;
+            for (int i = 0; i < data.header.maxLinkCount - 1; ++i)
+                tile.links[i].next = i + 1;
+
             // Init tile.
+            tile.flags = flags;
 
             ConnectIntLinks(tile);
             // Base off-mesh connections to their starting polygons and connect connections inside the tile.
@@ -535,9 +537,8 @@ namespace DotRecast.Detour
 
             // Reset tile.
             tile.data = null;
-
             tile.flags = 0;
-            tile.links.Clear();
+            tile.links = null;
             tile.linksFreeList = DT_NULL_LINK;
 
             // Update salt, salt should never be zero.
@@ -566,7 +567,7 @@ namespace DotRecast.Detour
             for (int i = 0; i < tile.data.header.polyCount; ++i)
             {
                 DtPoly poly = tile.data.polys[i];
-                tile.polyLinks[poly.index] = DT_NULL_LINK;
+                poly.firstLink = DT_NULL_LINK;
 
                 if (poly.GetPolyType() == DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION)
                 {
@@ -590,13 +591,13 @@ namespace DotRecast.Detour
                     link.side = 0xff;
                     link.bmin = link.bmax = 0;
                     // Add to linked list.
-                    link.next = tile.polyLinks[poly.index];
-                    tile.polyLinks[poly.index] = idx;
+                    link.next = poly.firstLink;
+                    poly.firstLink = idx;
                 }
             }
         }
 
-        /// Removes external links at specified side.V
+        /// Removes external links at specified side.
         void UnconnectLinks(DtMeshTile tile, DtMeshTile target)
         {
             if (tile == null || target == null)
@@ -609,7 +610,7 @@ namespace DotRecast.Detour
             for (int i = 0; i < tile.data.header.polyCount; ++i)
             {
                 DtPoly poly = tile.data.polys[i];
-                int j = tile.polyLinks[poly.index];
+                int j = poly.firstLink;
                 int pj = DT_NULL_LINK;
                 while (j != DT_NULL_LINK)
                 {
@@ -619,7 +620,7 @@ namespace DotRecast.Detour
                         int nj = tile.links[j].next;
                         if (pj == DT_NULL_LINK)
                         {
-                            tile.polyLinks[poly.index] = nj;
+                            poly.firstLink = nj;
                         }
                         else
                         {
@@ -679,46 +680,49 @@ namespace DotRecast.Detour
                     foreach (var connectPoly in connectPolys)
                     {
                         int idx = AllocLink(tile);
-                        DtLink link = tile.links[idx];
-                        link.refs = connectPoly.refs;
-                        link.edge = j;
-                        link.side = dir;
-
-                        link.next = tile.polyLinks[poly.index];
-                        tile.polyLinks[poly.index] = idx;
-
-                        // Compress portal limits to a byte value.
-                        if (dir == 0 || dir == 4)
+                        if (idx != DT_NULL_LINK)
                         {
-                            float tmin = (connectPoly.tmin - tile.data.verts[va + 2])
-                                         / (tile.data.verts[vb + 2] - tile.data.verts[va + 2]);
-                            float tmax = (connectPoly.tmax - tile.data.verts[va + 2])
-                                         / (tile.data.verts[vb + 2] - tile.data.verts[va + 2]);
-                            if (tmin > tmax)
-                            {
-                                float temp = tmin;
-                                tmin = tmax;
-                                tmax = temp;
-                            }
+                            DtLink link = tile.links[idx];
+                            link.refs = connectPoly.refs;
+                            link.edge = j;
+                            link.side = dir;
 
-                            link.bmin = (int)MathF.Round(Math.Clamp(tmin, 0.0f, 1.0f) * 255.0f);
-                            link.bmax = (int)MathF.Round(Math.Clamp(tmax, 0.0f, 1.0f) * 255.0f);
-                        }
-                        else if (dir == 2 || dir == 6)
-                        {
-                            float tmin = (connectPoly.tmin - tile.data.verts[va])
-                                         / (tile.data.verts[vb] - tile.data.verts[va]);
-                            float tmax = (connectPoly.tmax - tile.data.verts[va])
-                                         / (tile.data.verts[vb] - tile.data.verts[va]);
-                            if (tmin > tmax)
-                            {
-                                float temp = tmin;
-                                tmin = tmax;
-                                tmax = temp;
-                            }
+                            link.next = poly.firstLink;
+                            poly.firstLink = idx;
 
-                            link.bmin = (int)MathF.Round(Math.Clamp(tmin, 0.0f, 1.0f) * 255.0f);
-                            link.bmax = (int)MathF.Round(Math.Clamp(tmax, 0.0f, 1.0f) * 255.0f);
+                            // Compress portal limits to a byte value.
+                            if (dir == 0 || dir == 4)
+                            {
+                                float tmin = (connectPoly.tmin - tile.data.verts[va + 2])
+                                             / (tile.data.verts[vb + 2] - tile.data.verts[va + 2]);
+                                float tmax = (connectPoly.tmax - tile.data.verts[va + 2])
+                                             / (tile.data.verts[vb + 2] - tile.data.verts[va + 2]);
+                                if (tmin > tmax)
+                                {
+                                    float temp = tmin;
+                                    tmin = tmax;
+                                    tmax = temp;
+                                }
+
+                                link.bmin = (int)MathF.Round(Math.Clamp(tmin, 0.0f, 1.0f) * 255.0f);
+                                link.bmax = (int)MathF.Round(Math.Clamp(tmax, 0.0f, 1.0f) * 255.0f);
+                            }
+                            else if (dir == 2 || dir == 6)
+                            {
+                                float tmin = (connectPoly.tmin - tile.data.verts[va])
+                                             / (tile.data.verts[vb] - tile.data.verts[va]);
+                                float tmax = (connectPoly.tmax - tile.data.verts[va])
+                                             / (tile.data.verts[vb] - tile.data.verts[va]);
+                                if (tmin > tmax)
+                                {
+                                    float temp = tmin;
+                                    tmin = tmax;
+                                    tmax = temp;
+                                }
+
+                                link.bmin = (int)MathF.Round(Math.Clamp(tmin, 0.0f, 1.0f) * 255.0f);
+                                link.bmax = (int)MathF.Round(Math.Clamp(tmax, 0.0f, 1.0f) * 255.0f);
+                            }
                         }
                     }
                 }
@@ -748,7 +752,7 @@ namespace DotRecast.Detour
                 DtPoly targetPoly = target.data.polys[targetCon.poly];
                 // Skip off-mesh connections which start location could not be
                 // connected at all.
-                if (target.polyLinks[targetPoly.index] == DT_NULL_LINK)
+                if (targetPoly.firstLink == DT_NULL_LINK)
                 {
                     continue;
                 }
@@ -789,8 +793,8 @@ namespace DotRecast.Detour
                 link.side = oppositeSide;
                 link.bmin = link.bmax = 0;
                 // Add to linked list.
-                link.next = target.polyLinks[targetPoly.index];
-                target.polyLinks[targetPoly.index] = idx;
+                link.next = targetPoly.firstLink;
+                targetPoly.firstLink = idx;
 
                 // Link target poly to off-mesh connection.
                 if ((targetCon.flags & DT_OFFMESH_CON_BIDIR) != 0)
@@ -804,8 +808,8 @@ namespace DotRecast.Detour
                     link.side = (side == -1 ? 0xff : side);
                     link.bmin = link.bmax = 0;
                     // Add to linked list.
-                    link.next = tile.polyLinks[landPoly.index];
-                    tile.polyLinks[landPoly.index] = tidx;
+                    link.next = landPoly.firstLink;
+                    landPoly.firstLink = tidx;
                 }
             }
         }
@@ -963,8 +967,8 @@ namespace DotRecast.Detour
                 link.side = 0xff;
                 link.bmin = link.bmax = 0;
                 // Add to linked list.
-                link.next = tile.polyLinks[poly.index];
-                tile.polyLinks[poly.index] = idx;
+                link.next = poly.firstLink;
+                poly.firstLink = idx;
 
                 // Start end-point is always connect back to off-mesh connection.
                 int tidx = AllocLink(tile);
@@ -976,8 +980,8 @@ namespace DotRecast.Detour
                 link.side = 0xff;
                 link.bmin = link.bmax = 0;
                 // Add to linked list.
-                link.next = tile.polyLinks[landPoly.index];
-                tile.polyLinks[landPoly.index] = tidx;
+                link.next = landPoly.firstLink;
+                landPoly.firstLink = tidx;
             }
         }
 
@@ -1411,7 +1415,7 @@ namespace DotRecast.Detour
             int idx0 = 0, idx1 = 1;
 
             // Find link that points to first vertex.
-            for (int i = tile.polyLinks[poly.index]; i != DT_NULL_LINK; i = tile.links[i].next)
+            for (int i = poly.firstLink; i != DT_NULL_LINK; i = tile.links[i].next)
             {
                 if (tile.links[i].edge == 0)
                 {

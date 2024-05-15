@@ -202,7 +202,7 @@ public class RecastDebugDraw : DebugDraw
                 // Check to see if start and end end-points have links.
                 bool startSet = false;
                 bool endSet = false;
-                for (int k = tile.polyLinks[p.index]; k != DT_NULL_LINK; k = tile.links[k].next)
+                for (int k = p.firstLink; k != DT_NULL_LINK; k = tile.links[k].next)
                 {
                     if (tile.links[k].edge == 0)
                     {
@@ -326,7 +326,7 @@ public class RecastDebugDraw : DebugDraw
                     if ((p.neis[j] & DT_EXT_LINK) != 0)
                     {
                         bool con = false;
-                        for (int k = tile.polyLinks[p.index]; k != DT_NULL_LINK; k = tile.links[k].next)
+                        for (int k = p.firstLink; k != DT_NULL_LINK; k = tile.links[k].next)
                         {
                             if (tile.links[k].edge == j)
                             {

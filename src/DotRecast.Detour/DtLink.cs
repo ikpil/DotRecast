@@ -18,6 +18,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
+
 namespace DotRecast.Detour
 {
     /// Defines a link between polygons.
@@ -25,6 +27,7 @@ namespace DotRecast.Detour
     /// @see dtMeshTile
     public class DtLink
     {
+        public readonly int index; // DtMeshTile.links array index
         public long refs; //< Neighbour reference. (The neighbor that is linked to.)
         public int next; //< Index of the next link.
         public int edge; //< Index of the polygon edge that owns this link.
