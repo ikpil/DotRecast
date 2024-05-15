@@ -587,7 +587,7 @@ namespace DotRecast.Detour
                     int idx = AllocLink(tile);
                     DtLink link = tile.links[idx];
                     link.refs = @base | (long)(poly.neis[j] - 1);
-                    link.edge = j;
+                    link.edge = (byte)j;
                     link.side = 0xff;
                     link.bmin = link.bmax = 0;
                     // Add to linked list.
@@ -684,8 +684,8 @@ namespace DotRecast.Detour
                         {
                             DtLink link = tile.links[idx];
                             link.refs = connectPoly.refs;
-                            link.edge = j;
-                            link.side = dir;
+                            link.edge = (byte)j;
+                            link.side = (byte)dir;
 
                             link.next = poly.firstLink;
                             poly.firstLink = idx;
@@ -704,8 +704,8 @@ namespace DotRecast.Detour
                                     tmax = temp;
                                 }
 
-                                link.bmin = (int)MathF.Round(Math.Clamp(tmin, 0.0f, 1.0f) * 255.0f);
-                                link.bmax = (int)MathF.Round(Math.Clamp(tmax, 0.0f, 1.0f) * 255.0f);
+                                link.bmin = (byte)MathF.Round(Math.Clamp(tmin, 0.0f, 1.0f) * 255.0f);
+                                link.bmax = (byte)MathF.Round(Math.Clamp(tmax, 0.0f, 1.0f) * 255.0f);
                             }
                             else if (dir == 2 || dir == 6)
                             {
@@ -720,8 +720,8 @@ namespace DotRecast.Detour
                                     tmax = temp;
                                 }
 
-                                link.bmin = (int)MathF.Round(Math.Clamp(tmin, 0.0f, 1.0f) * 255.0f);
-                                link.bmax = (int)MathF.Round(Math.Clamp(tmax, 0.0f, 1.0f) * 255.0f);
+                                link.bmin = (byte)MathF.Round(Math.Clamp(tmin, 0.0f, 1.0f) * 255.0f);
+                                link.bmax = (byte)MathF.Round(Math.Clamp(tmax, 0.0f, 1.0f) * 255.0f);
                             }
                         }
                     }
@@ -790,7 +790,7 @@ namespace DotRecast.Detour
                 DtLink link = target.links[idx];
                 link.refs = refs;
                 link.edge = 1;
-                link.side = oppositeSide;
+                link.side = (byte)oppositeSide;
                 link.bmin = link.bmax = 0;
                 // Add to linked list.
                 link.next = targetPoly.firstLink;
@@ -805,7 +805,7 @@ namespace DotRecast.Detour
                     link = tile.links[tidx];
                     link.refs = GetPolyRefBase(target) | (long)targetCon.poly;
                     link.edge = 0xff;
-                    link.side = (side == -1 ? 0xff : side);
+                    link.side = (byte)(side == -1 ? 0xff : side);
                     link.bmin = link.bmax = 0;
                     // Add to linked list.
                     link.next = landPoly.firstLink;
