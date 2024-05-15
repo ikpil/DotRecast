@@ -20,20 +20,13 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Detour
 {
-    /** Defines the location of detail sub-mesh data within a dtMeshTile. */
+    /// Defines the location of detail sub-mesh data within a dtMeshTile.
     public readonly struct DtPolyDetail
     {
-        /** The offset of the vertices in the MeshTile::detailVerts array. */
-        public readonly int vertBase;
-
-        /** The offset of the triangles in the MeshTile::detailTris array. */
-        public readonly int triBase;
-
-        /** The number of vertices in the sub-mesh. */
-        public readonly int vertCount;
-
-        /** The number of triangles in the sub-mesh. */
-        public readonly int triCount;
+        public readonly int vertBase; //< The offset of the vertices in the dtMeshTile::detailVerts array.
+        public readonly int triBase; //< The offset of the triangles in the dtMeshTile::detailTris array.
+        public readonly int vertCount; //< The number of vertices in the sub-mesh.
+        public readonly int triCount; //< The number of triangles in the sub-mesh.
 
         public DtPolyDetail(int vertBase, int triBase, int vertCount, int triCount)
         {
