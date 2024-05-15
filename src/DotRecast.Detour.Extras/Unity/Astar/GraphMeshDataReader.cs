@@ -126,7 +126,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                     header.vertCount = vertsCount;
                     header.detailMeshCount = nodeCount;
                     header.detailTriCount = nodeCount;
-                    header.maxLinkCount = nodeCount * 3 * 2; // XXX: Needed by Recast, not needed by recast4j
+                    header.maxLinkCount = nodeCount * 3 * 2; // needed by Recast, not needed by recast4j, needed by DotRecast
                     header.bmin.X = meta.forcedBoundsCenter.x - 0.5f * meta.forcedBoundsSize.x +
                                     meta.cellSize * meta.tileSizeX * x;
                     header.bmin.Y = ymin;
