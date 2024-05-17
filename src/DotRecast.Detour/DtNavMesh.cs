@@ -27,6 +27,8 @@ namespace DotRecast.Detour
 {
     using static DtDetour;
 
+    /// A navigation mesh based on tiles of convex polygons.
+    /// @ingroup detour
     public class DtNavMesh
     {
         private DtNavMeshParams m_params; //< Current initialization params. TODO: do not store this info twice.
@@ -34,6 +36,7 @@ namespace DotRecast.Detour
         private float m_tileWidth; // < Dimensions of each tile.
         private float m_tileHeight; // < Dimensions of each tile.
         private int m_maxTiles; // < Max number of tiles.
+        private int m_tileLutSize; //< Tile hash lookup size (must be pot).
         private int m_tileLutMask; // < Tile hash lookup mask.
 
         private Dictionary<int, List<DtMeshTile>> m_posLookup; //< Tile hash lookup.
@@ -45,19 +48,24 @@ namespace DotRecast.Detour
 
         private int m_tileCount;
 
-        public DtStatus Init(DtNavMeshParams option, int maxVertsPerPoly)
+        public DtStatus Init(DtNavMeshParams param, int maxVertsPerPoly)
         {
-            m_params = option;
-            m_orig = option.orig;
-            m_tileWidth = option.tileWidth;
-            m_tileHeight = option.tileHeight;
+            m_params = param;
+            m_orig = param.orig;
+            m_tileWidth = param.tileWidth;
+            m_tileHeight = param.tileHeight;
+
             // Init tiles
-            m_maxTiles = option.maxTiles;
             m_maxVertPerPoly = maxVertsPerPoly;
-            m_tileLutMask = Math.Max(1, DtUtils.NextPow2(option.maxTiles)) - 1;
+            m_maxTiles = param.maxTiles;
+            m_tileLutSize = DtUtils.NextPow2(param.maxTiles);
+            if (0 == m_tileLutSize)
+                m_tileLutSize = 1;
+            m_tileLutMask = m_tileLutSize - 1;
+            
+            m_tiles = new DtMeshTile[m_maxTiles];
             m_posLookup = new Dictionary<int, List<DtMeshTile>>();
             m_nextFree = new LinkedList<DtMeshTile>();
-            m_tiles = new DtMeshTile[m_maxTiles];
             for (int i = 0; i < m_maxTiles; i++)
             {
                 m_tiles[i] = new DtMeshTile(i);
