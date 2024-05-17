@@ -8,13 +8,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 - Added RcSpans UnitTest
-- Added DtNavMesh.Init() interface
  
 ### Fixed
+- Nothing
+
 ### Changed
-- RcRecast, DtDetour 
- 
+- Changed class name of static functions to RcRecast and DtDetour
+- Changed DtLink class member variable type from int to byte
+- Changed initialization in DtNavMesh constructor to Init() function.
+
 ### Removed
+- Nothing
+ 
 ### Special Thanks
 - [@Doprez](https://github.com/Doprez)
 
