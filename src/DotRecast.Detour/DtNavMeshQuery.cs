@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using DotRecast.Core;
 using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
@@ -575,15 +576,22 @@ namespace DotRecast.Detour
             return DtStatus.DT_SUCCESS;
         }
 
-        // FIXME: (PP) duplicate?
+        /// Queries polygons within a tile.
         protected void QueryPolygonsInTile(DtMeshTile tile, RcVec3f qmin, RcVec3f qmax, IDtQueryFilter filter, IDtPolyQuery query)
         {
+            const int batchSize = 32;
+            long[] polyRefs = new long[batchSize];
+            DtPoly[] polys = new DtPoly[batchSize];
+            int n = 0;
+
             if (tile.data.bvTree != null)
             {
                 int nodeIndex = 0;
+                int end = tile.data.header.bvNodeCount;
                 var tbmin = tile.data.header.bmin;
                 var tbmax = tile.data.header.bmax;
                 float qfac = tile.data.header.bvQuantFactor;
+                
                 // Calculate quantized box
                 Span<int> bmin = stackalloc int[3];
                 Span<int> bmax = stackalloc int[3];
@@ -604,7 +612,6 @@ namespace DotRecast.Detour
 
                 // Traverse tree
                 long @base = m_nav.GetPolyRefBase(tile);
-                int end = tile.data.header.bvNodeCount;
                 while (nodeIndex < end)
                 {
                     DtBVNode node = tile.data.bvTree[nodeIndex];
@@ -616,7 +623,18 @@ namespace DotRecast.Detour
                         long refs = @base | (long)node.i;
                         if (filter.PassFilter(refs, tile, tile.data.polys[node.i]))
                         {
-                            query.Process(tile, tile.data.polys[node.i], refs);
+                            polyRefs[n] = refs;
+                            polys[n] = tile.data.polys[node.i];
+                            
+                            if (n == batchSize - 1)
+                            {
+                                query.Process(tile, polys, polyRefs, batchSize);
+                                n = 0;
+                            }
+                            else
+                            {
+                                n++;
+                            }
                         }
                     }
 
@@ -645,6 +663,7 @@ namespace DotRecast.Detour
                         continue;
                     }
 
+                    // Must pass filter
                     long refs = @base | (long)i;
                     if (!filter.PassFilter(refs, tile, p))
                     {
@@ -664,9 +683,26 @@ namespace DotRecast.Detour
 
                     if (DtUtils.OverlapBounds(qmin, qmax, bmin, bmax))
                     {
-                        query.Process(tile, p, refs);
+                        polyRefs[n] = refs;
+                        polys[n] = p;
+
+                        if (n == batchSize - 1)
+                        {
+                            query.Process(tile, polys, polyRefs, batchSize);
+                            n = 0;
+                        }
+                        else
+                        {
+                            n++;
+                        }
                     }
                 }
+            }
+
+            // Process the last polygons that didn't make a full batch.
+            if (n > 0)
+            {
+                query.Process(tile, polys, polyRefs, n);
             }
         }
 
