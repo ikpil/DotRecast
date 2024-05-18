@@ -7,6 +7,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased] - yyyy-mm-dd
 
 ### Added
+- Nothing
+
+### Fixed
+- Nothing
+
+### Changed
+- Nothing
+
+### Removed
+- Nothing
+
+### Special Thanks
+- [@Doprez](https://github.com/Doprez)
+
+ 
+## [2024.2.2] - 2024-05-18
+
+### Added
 - Added RcSpans UnitTest
  
 ### Fixed
