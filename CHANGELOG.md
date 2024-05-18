@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Nothing
 
 ### Changed
-- Nothing
+- Changed `IDtPolyQuery` interface to make `Process()` more versatile
 
 ### Removed
 - Nothing

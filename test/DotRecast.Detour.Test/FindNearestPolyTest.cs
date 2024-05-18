@@ -44,11 +44,11 @@ public class FindNearestPolyTest : AbstractDetourTest
         {
             RcVec3f startPos = startPoss[i];
             var status = query.FindNearestPoly(startPos, extents, filter, out var nearestRef, out var nearestPt, out var _);
-            Assert.That(status.Succeeded(), Is.True);
-            Assert.That(nearestRef, Is.EqualTo(POLY_REFS[i]));
-            Assert.That(nearestPt.X, Is.EqualTo(POLY_POS[i].X).Within(0.001f));
-            Assert.That(nearestPt.Y, Is.EqualTo(POLY_POS[i].Y).Within(0.001f));
-            Assert.That(nearestPt.Z, Is.EqualTo(POLY_POS[i].Z).Within(0.001f));
+            Assert.That(status.Succeeded(), Is.True, $"index({i})");
+            Assert.That(nearestRef, Is.EqualTo(POLY_REFS[i]), $"index({i})");
+            Assert.That(nearestPt.X, Is.EqualTo(POLY_POS[i].X).Within(0.001f), $"index({i})");
+            Assert.That(nearestPt.Y, Is.EqualTo(POLY_POS[i].Y).Within(0.001f), $"index({i})");
+            Assert.That(nearestPt.Z, Is.EqualTo(POLY_POS[i].Z).Within(0.001f), $"index({i})");
         }
     }
 
