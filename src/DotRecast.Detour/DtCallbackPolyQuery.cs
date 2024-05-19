@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace DotRecast.Detour.Extras.Jumplink
+namespace DotRecast.Detour
 {
-    public class PolyQueryInvoker : IDtPolyQuery
+    public class DtCallbackPolyQuery : IDtPolyQuery
     {
         private readonly Action<DtMeshTile, DtPoly[], long[], int> _callback;
 
-        public PolyQueryInvoker(Action<DtMeshTile, DtPoly[], long[], int> callback)
+        public DtCallbackPolyQuery(Action<DtMeshTile, DtPoly[], long[], int> callback)
         {
             _callback = callback;
         }

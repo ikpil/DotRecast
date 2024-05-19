@@ -591,7 +591,7 @@ namespace DotRecast.Detour
                 var tbmin = tile.data.header.bmin;
                 var tbmax = tile.data.header.bmax;
                 float qfac = tile.data.header.bvQuantFactor;
-                
+
                 // Calculate quantized box
                 Span<int> bmin = stackalloc int[3];
                 Span<int> bmax = stackalloc int[3];
@@ -625,7 +625,7 @@ namespace DotRecast.Detour
                         {
                             polyRefs[n] = refs;
                             polys[n] = tile.data.polys[node.i];
-                            
+
                             if (n == batchSize - 1)
                             {
                                 query.Process(tile, polys, polyRefs, batchSize);
@@ -706,19 +706,54 @@ namespace DotRecast.Detour
             }
         }
 
-        /**
-     * Finds polygons that overlap the search box.
-     *
-     * If no polygons are found, the function will return with a polyCount of zero.
-     *
-     * @param center
-     *            The center of the search box. [(x, y, z)]
-     * @param halfExtents
-     *            The search distance along each axis. [(x, y, z)]
-     * @param filter
-     *            The polygon filter to apply to the query.
-     * @return The reference ids of the polygons that overlap the query box.
-     */
+        /// @par 
+        ///
+        /// If no polygons are found, the function will return #DT_SUCCESS with a
+        /// @p polyCount of zero.
+        ///
+        /// If @p polys is too small to hold the entire result set, then the array will 
+        /// be filled to capacity. The method of choosing which polygons from the 
+        /// full set are included in the partial result set is undefined.
+        ///
+        /// Finds polygons that overlap the search box.
+        ///  @param[in]		center		The center of the search box. [(x, y, z)]
+        ///  @param[in]		halfExtents		The search distance along each axis. [(x, y, z)]
+        ///  @param[in]		filter		The polygon filter to apply to the query.
+        ///  @param[out]	polys		The reference ids of the polygons that overlap the query box.
+        ///  @param[out]	polyCount	The number of polygons in the search result.
+        ///  @param[in]		maxPolys	The maximum number of polygons the search result can hold.
+        /// @returns The status flags for the query.
+        public DtStatus QueryPolygons(RcVec3f center, RcVec3f halfExtents,
+            IDtQueryFilter filter,
+            long[] polys, out int polyCount, int maxPolys)
+        {
+            polyCount = 0;
+            if (null == polys || maxPolys < 0)
+                return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
+
+            DtCollectPolysQuery collector = new DtCollectPolysQuery(polys, maxPolys);
+            DtStatus status = QueryPolygons(center, halfExtents, filter, collector);
+            if (status.Failed())
+                return status;
+
+            polyCount = collector.NumCollected();
+            return collector.Overflowed()
+                ? DtStatus.DT_SUCCESS | DtStatus.DT_BUFFER_TOO_SMALL
+                : DtStatus.DT_SUCCESS;
+        }
+
+        /// @par 
+        ///
+        /// The query will be invoked with batches of polygons. Polygons passed
+        /// to the query have bounding boxes that overlap with the center and halfExtents
+        /// passed to this function. The dtPolyQuery::process function is invoked multiple
+        /// times until all overlapping polygons have been processed.
+        ///
+        /// Finds polygons that overlap the search box.
+        ///  @param[in]		center		The center of the search box. [(x, y, z)]
+        ///  @param[in]		halfExtents		The search distance along each axis. [(x, y, z)]
+        ///  @param[in]		filter		The polygon filter to apply to the query.
+        ///  @param[in]		query		The query. Polygons found will be batched together and passed to this query.
         public DtStatus QueryPolygons(RcVec3f center, RcVec3f halfExtents, IDtQueryFilter filter, IDtPolyQuery query)
         {
             if (!center.IsFinite() || !halfExtents.IsFinite() || null == filter)
