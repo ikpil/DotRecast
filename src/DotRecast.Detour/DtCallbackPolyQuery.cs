@@ -4,16 +4,19 @@ namespace DotRecast.Detour
 {
     public class DtCallbackPolyQuery : IDtPolyQuery
     {
-        private readonly Action<DtMeshTile, DtPoly[], long[], int> _callback;
+        private readonly Action<DtMeshTile, DtPoly, long> _callback;
 
-        public DtCallbackPolyQuery(Action<DtMeshTile, DtPoly[], long[], int> callback)
+        public DtCallbackPolyQuery(Action<DtMeshTile, DtPoly, long> callback)
         {
             _callback = callback;
         }
 
-        public void Process(DtMeshTile tile, DtPoly[] poly, long[] refs, int count)
+        public void Process(DtMeshTile tile, DtPoly[] poly, Span<long> refs, int count)
         {
-            _callback?.Invoke(tile, poly, refs, count);
+            for (int i = 0; i < count; ++i)
+            {
+                _callback?.Invoke(tile, poly[i], refs[i]);
+            }
         }
     }
 }

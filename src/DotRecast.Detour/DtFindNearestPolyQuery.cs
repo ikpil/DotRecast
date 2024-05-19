@@ -20,7 +20,7 @@ namespace DotRecast.Detour
             _nearestPoint = center;
         }
 
-        public void Process(DtMeshTile tile, DtPoly[] poly, long[] refs, int count)
+        public void Process(DtMeshTile tile, DtPoly[] poly, Span<long> refs, int count)
         {
             for (int i = 0; i < count; ++i)
             {

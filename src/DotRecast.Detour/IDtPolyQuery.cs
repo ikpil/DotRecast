@@ -1,3 +1,5 @@
+using System;
+
 namespace DotRecast.Detour
 {
     /// Provides custom polygon query behavior.
@@ -7,6 +9,6 @@ namespace DotRecast.Detour
     {
         /// Called for each batch of unique polygons touched by the search area in dtNavMeshQuery::queryPolygons.
         /// This can be called multiple times for a single query.
-        void Process(DtMeshTile tile, DtPoly[] poly, long[] refs, int count);
+        void Process(DtMeshTile tile, DtPoly[] poly, Span<long> refs, int count);
     }
 }

@@ -1,4 +1,5 @@
-﻿using DotRecast.Core;
+﻿using System;
+using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
@@ -25,7 +26,7 @@ namespace DotRecast.Detour
             return m_overflow;
         }
 
-        public void Process(DtMeshTile tile, DtPoly[] poly, long[] refs, int count)
+        public void Process(DtMeshTile tile, DtPoly[] poly, Span<long> refs, int count)
         {
             int numLeft = m_maxPolys - m_numCollected;
             int toCopy = count;

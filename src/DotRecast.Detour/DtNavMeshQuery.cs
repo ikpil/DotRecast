@@ -580,7 +580,7 @@ namespace DotRecast.Detour
         protected void QueryPolygonsInTile(DtMeshTile tile, RcVec3f qmin, RcVec3f qmax, IDtQueryFilter filter, IDtPolyQuery query)
         {
             const int batchSize = 32;
-            long[] polyRefs = new long[batchSize];
+            Span<long> polyRefs = stackalloc long[batchSize];
             DtPoly[] polys = new DtPoly[batchSize];
             int n = 0;
 
