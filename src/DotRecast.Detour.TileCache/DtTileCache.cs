@@ -53,8 +53,6 @@ namespace DotRecast.Detour.TileCache
         private readonly List<DtObstacleRequest> m_reqs = new List<DtObstacleRequest>();
         private readonly List<long> m_update = new List<long>();
 
-        private readonly DtTileCacheBuilder builder = new DtTileCacheBuilder();
-
         public DtTileCache(DtTileCacheParams option, DtTileCacheStorageParams storageParams, DtNavMesh navmesh, IRcCompressor tcomp, IDtTileCacheMeshProcess tmprocs)
         {
             m_params = option;
