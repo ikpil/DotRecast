@@ -128,7 +128,7 @@ namespace DotRecast.Detour.TileCache
                     header.hmax = layer.hmax;
 
                     var comp = _compFactory.Create(storageParams.Compatibility ? 0 : 1);
-                    var bytes = builder.CompressTileCacheLayer(header, layer.heights, layer.areas, layer.cons, storageParams.Order, storageParams.Compatibility, comp);
+                    var bytes = DtTileCacheBuilder.CompressTileCacheLayer(header, layer.heights, layer.areas, layer.cons, storageParams.Order, storageParams.Compatibility, comp);
                     result.Add(bytes);
                 }
             }

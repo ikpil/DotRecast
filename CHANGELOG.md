@@ -15,7 +15,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 - Changed `IDtPolyQuery` interface to make `Process()` more versatile
 - Changed `PolyQueryInvoker` to `DtActionPolyQuery`
-
+- Changed `DtTileCacheBuilder` to a static class
+- Changed `DtTileCacheLayerHeaderReader` to a static class
+ 
 ### Removed
 - Nothing
 
