@@ -39,8 +39,8 @@ namespace DotRecast.Detour
         private int m_tileLutSize; //< Tile hash lookup size (must be pot).
         private int m_tileLutMask; // < Tile hash lookup mask.
 
-        private Dictionary<int, List<DtMeshTile>> m_posLookup; //< Tile hash lookup.
-        private LinkedList<DtMeshTile> m_nextFree; //< Freelist of tiles.
+        private DtMeshTile[] m_posLookup; //< Tile hash lookup.
+        private DtMeshTile m_nextFree; //< Freelist of tiles.
         private DtMeshTile[] m_tiles; //< List of tiles.
 
         /** The maximum number of vertices per navigation polygon. */
@@ -62,15 +62,16 @@ namespace DotRecast.Detour
             if (0 == m_tileLutSize)
                 m_tileLutSize = 1;
             m_tileLutMask = m_tileLutSize - 1;
-            
+
             m_tiles = new DtMeshTile[m_maxTiles];
-            m_posLookup = new Dictionary<int, List<DtMeshTile>>();
-            m_nextFree = new LinkedList<DtMeshTile>();
-            for (int i = 0; i < m_maxTiles; i++)
+            m_posLookup = new DtMeshTile[m_tileLutSize];
+            m_nextFree = null;
+            for (int i = m_maxTiles-1; i >= 0; --i)
             {
                 m_tiles[i] = new DtMeshTile(i);
                 m_tiles[i].salt = 1;
-                m_nextFree.AddLast(m_tiles[i]);
+                m_tiles[i].next = m_nextFree;
+                m_nextFree = m_tiles[i];
             }
 
             return DtStatus.DT_SUCCESS;
@@ -384,15 +385,13 @@ namespace DotRecast.Detour
             DtMeshTile tile = null;
             if (lastRef == 0)
             {
-                // Make sure we could allocate a tile.
-                if (0 == m_nextFree.Count)
+                if (null != m_nextFree)
                 {
-                    throw new Exception("Could not allocate a tile");
+                    tile = m_nextFree;
+                    m_nextFree = tile.next;
+                    tile.next = null;
+                    m_tileCount++;
                 }
-
-                tile = m_nextFree.First?.Value;
-                m_nextFree.RemoveFirst();
-                m_tileCount++;
             }
             else
             {
@@ -405,14 +404,25 @@ namespace DotRecast.Detour
 
                 // Try to find the specific tile id from the free list.
                 DtMeshTile target = m_tiles[tileIndex];
-                // Remove from freelist
-                if (!m_nextFree.Remove(target))
+                DtMeshTile prev = null;
+                tile = m_nextFree;
+
+                while (null != tile && tile != target)
                 {
-                    // Could not find the correct location.
-                    return DtStatus.DT_FAILURE | DtStatus.DT_OUT_OF_MEMORY;
+                    prev = tile;
+                    tile = tile.next;
                 }
 
-                tile = target;
+                // Could not find the correct location.
+                if (tile != target)
+                    return DtStatus.DT_FAILURE | DtStatus.DT_OUT_OF_MEMORY;
+
+                // Remove from freelist
+                if (null == prev)
+                    m_nextFree = tile.next;
+                else
+                    prev.next = tile.next;
+
                 // Restore salt.
                 tile.salt = DecodePolyIdSalt(lastRef);
             }
@@ -424,7 +434,10 @@ namespace DotRecast.Detour
             }
 
             // Insert tile into the position lut.
-            GetTileListByPos(header.x, header.y).Add(tile);
+            int h = ComputeTileHash(header.x, header.y, m_tileLutMask);
+            tile.next = m_posLookup[h];
+            m_posLookup[h] = tile;
+
 
             // Patch header pointers.
             tile.data = data;
@@ -450,13 +463,19 @@ namespace DotRecast.Detour
             tile.flags = flags;
 
             ConnectIntLinks(tile);
+
             // Base off-mesh connections to their starting polygons and connect connections inside the tile.
             BaseOffMeshLinks(tile);
             ConnectExtOffMeshLinks(tile, tile, -1);
 
+            // Create connections with neighbour tiles.
+            const int MAX_NEIS = 32;
+            DtMeshTile[] neis = new DtMeshTile[MAX_NEIS];
+            int nneis;
+
             // Connect with layers in current tile.
-            List<DtMeshTile> neis = GetTilesAt(header.x, header.y);
-            for (int j = 0; j < neis.Count; ++j)
+            nneis = GetTilesAt(header.x, header.y, neis, MAX_NEIS);
+            for (int j = 0; j < nneis; ++j)
             {
                 if (neis[j] == tile)
                 {
@@ -472,8 +491,8 @@ namespace DotRecast.Detour
             // Connect with neighbour tiles.
             for (int i = 0; i < 8; ++i)
             {
-                neis = GetNeighbourTilesAt(header.x, header.y, i);
-                for (int j = 0; j < neis.Count; ++j)
+                nneis = GetNeighbourTilesAt(header.x, header.y, i, neis, MAX_NEIS);
+                for (int j = 0; j < nneis; ++j)
                 {
                     ConnectExtLinks(tile, neis[j], i);
                     ConnectExtLinks(neis[j], tile, DtUtils.OppositeTile(i));
@@ -516,30 +535,44 @@ namespace DotRecast.Detour
             }
 
             // Remove tile from hash lookup.
-            GetTileListByPos(tile.data.header.x, tile.data.header.y).Remove(tile);
-
-            // Remove connections to neighbour tiles.
-            // Create connections with neighbour tiles.
-
-            // Disconnect from other layers in current tile.
-            List<DtMeshTile> nneis = GetTilesAt(tile.data.header.x, tile.data.header.y);
-            foreach (DtMeshTile j in nneis)
+            int h = ComputeTileHash(tile.data.header.x, tile.data.header.y, m_tileLutMask);
+            DtMeshTile prev = null;
+            DtMeshTile cur = m_posLookup[h];
+            while (null != cur)
             {
-                if (j == tile)
+                if (cur == tile)
                 {
-                    continue;
+                    if (null != prev)
+                        prev.next = cur.next;
+                    else
+                        m_posLookup[h] = cur.next;
+                    break;
                 }
 
-                UnconnectLinks(j, tile);
+                prev = cur;
+                cur = cur.next;
+            }
+
+            // Remove connections to neighbour tiles.
+            const int MAX_NEIS = 32;
+            DtMeshTile[] neis = new DtMeshTile[MAX_NEIS];
+            int nneis = 0;
+
+            // Disconnect from other layers in current tile.
+            nneis = GetTilesAt(tile.data.header.x, tile.data.header.y, neis, MAX_NEIS);
+            for (int j = 0; j < nneis; ++j)
+            {
+                if (neis[j] == tile) continue;
+                UnconnectLinks(neis[j], tile);
             }
 
             // Disconnect from neighbour tiles.
             for (int i = 0; i < 8; ++i)
             {
-                nneis = GetNeighbourTilesAt(tile.data.header.x, tile.data.header.y, i);
-                foreach (DtMeshTile j in nneis)
+                nneis = GetNeighbourTilesAt(tile.data.header.x, tile.data.header.y, i, neis, MAX_NEIS);
+                for (int j = 0; j < nneis; ++j)
                 {
-                    UnconnectLinks(j, tile);
+                    UnconnectLinks(neis[j], tile);
                 }
             }
 
@@ -557,7 +590,8 @@ namespace DotRecast.Detour
             }
 
             // Add to free list.
-            m_nextFree.AddFirst(tile);
+            tile.next = m_nextFree;
+            m_nextFree = tile;
             m_tileCount--;
             return GetTileRef(tile);
         }
@@ -1270,19 +1304,27 @@ namespace DotRecast.Detour
 
         DtMeshTile GetTileAt(int x, int y, int layer)
         {
-            foreach (DtMeshTile tile in GetTileListByPos(x, y))
+            // Find tile based on hash.
+            int h = ComputeTileHash(x, y, m_tileLutMask);
+            DtMeshTile tile = m_posLookup[h];
+            while (null != tile)
             {
-                if (tile.data.header != null && tile.data.header.x == x && tile.data.header.y == y
-                    && tile.data.header.layer == layer)
+                if (null != tile.data &&
+                    null != tile.data.header &&
+                    tile.data.header.x == x &&
+                    tile.data.header.y == y &&
+                    tile.data.header.layer == layer)
                 {
                     return tile;
                 }
+
+                tile = tile.next;
             }
 
             return null;
         }
 
-        List<DtMeshTile> GetNeighbourTilesAt(int x, int y, int side)
+        int GetNeighbourTilesAt(int x, int y, int side, DtMeshTile[] tiles, int maxTiles)
         {
             int nx = x, ny = y;
             switch (side)
@@ -1317,21 +1359,31 @@ namespace DotRecast.Detour
                     break;
             }
 
-            return GetTilesAt(nx, ny);
+            return GetTilesAt(nx, ny, tiles, maxTiles);
         }
 
-        public List<DtMeshTile> GetTilesAt(int x, int y)
+        public int GetTilesAt(int x, int y, DtMeshTile[] tiles, int maxTiles)
         {
-            List<DtMeshTile> tiles = new List<DtMeshTile>();
-            foreach (DtMeshTile tile in GetTileListByPos(x, y))
+            int n = 0;
+
+            // Find tile based on hash.
+            int h = ComputeTileHash(x, y, m_tileLutMask);
+            DtMeshTile tile = m_posLookup[h];
+            while (null != tile)
             {
-                if (tile.data.header != null && tile.data.header.x == x && tile.data.header.y == y)
+                if (null != tile.data &&
+                    null != tile.data.header &&
+                    tile.data.header.x == x &&
+                    tile.data.header.y == y)
                 {
-                    tiles.Add(tile);
+                    if (n < maxTiles)
+                        tiles[n++] = tile;
                 }
+
+                tile = tile.next;
             }
 
-            return tiles;
+            return n;
         }
 
         public long GetTileRefAt(int x, int y, int layer)
@@ -1453,9 +1505,9 @@ namespace DotRecast.Detour
             return m_tileCount;
         }
 
-        public int GetAvailableTileCount()
+        public bool IsAvailableTileCount()
         {
-            return m_nextFree.Count;
+            return null != m_nextFree;
         }
 
         public DtStatus SetPolyFlags(long refs, int flags)
@@ -1611,18 +1663,6 @@ namespace DotRecast.Detour
             }
 
             return center;
-        }
-
-        private List<DtMeshTile> GetTileListByPos(int x, int z)
-        {
-            var tileHash = ComputeTileHash(x, z, m_tileLutMask);
-            if (!m_posLookup.TryGetValue(tileHash, out var tiles))
-            {
-                tiles = new List<DtMeshTile>();
-                m_posLookup.Add(tileHash, tiles);
-            }
-
-            return tiles;
         }
 
         public void ComputeBounds(out RcVec3f bmin, out RcVec3f bmax)

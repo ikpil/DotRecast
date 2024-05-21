@@ -26,7 +26,6 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.TileCache.Test;
 
-
 public class TempObstaclesTest : AbstractTileCacheTest
 {
     [Test]
@@ -43,21 +42,29 @@ public class TempObstaclesTest : AbstractTileCacheTest
             tc.BuildNavMeshTile(refs);
         }
 
-        List<DtMeshTile> tiles = tc.GetNavMesh().GetTilesAt(1, 4);
+        const int MAX_NEIS = 32;
+        DtMeshTile[] tiles = new DtMeshTile[MAX_NEIS];
+        int nneis = 0;
+
+        nneis = tc.GetNavMesh().GetTilesAt(1, 4, tiles, MAX_NEIS);
         DtMeshTile tile = tiles[0];
         Assert.That(tile.data.header.vertCount, Is.EqualTo(16));
         Assert.That(tile.data.header.polyCount, Is.EqualTo(6));
+
         long o = tc.AddObstacle(new RcVec3f(-1.815208f, 9.998184f, -20.307983f), 1f, 2f);
         bool upToDate = tc.Update();
         Assert.That(upToDate, Is.True);
-        tiles = tc.GetNavMesh().GetTilesAt(1, 4);
+
+        nneis = tc.GetNavMesh().GetTilesAt(1, 4, tiles, MAX_NEIS);
         tile = tiles[0];
         Assert.That(tile.data.header.vertCount, Is.EqualTo(22));
         Assert.That(tile.data.header.polyCount, Is.EqualTo(11));
+
         tc.RemoveObstacle(o);
         upToDate = tc.Update();
         Assert.That(upToDate, Is.True);
-        tiles = tc.GetNavMesh().GetTilesAt(1, 4);
+
+        nneis = tc.GetNavMesh().GetTilesAt(1, 4, tiles, MAX_NEIS);
         tile = tiles[0];
         Assert.That(tile.data.header.vertCount, Is.EqualTo(16));
         Assert.That(tile.data.header.polyCount, Is.EqualTo(6));
@@ -77,24 +84,32 @@ public class TempObstaclesTest : AbstractTileCacheTest
             tc.BuildNavMeshTile(refs);
         }
 
-        List<DtMeshTile> tiles = tc.GetNavMesh().GetTilesAt(1, 4);
+        const int MAX_NEIS = 32;
+        DtMeshTile[] tiles = new DtMeshTile[MAX_NEIS];
+        int nneis = 0;
+
+        nneis = tc.GetNavMesh().GetTilesAt(1, 4, tiles, MAX_NEIS);
         DtMeshTile tile = tiles[0];
         Assert.That(tile.data.header.vertCount, Is.EqualTo(16));
         Assert.That(tile.data.header.polyCount, Is.EqualTo(6));
+
         long o = tc.AddBoxObstacle(
             new RcVec3f(-2.315208f, 9.998184f, -20.807983f),
             new RcVec3f(-1.315208f, 11.998184f, -19.807983f)
         );
         bool upToDate = tc.Update();
         Assert.That(upToDate, Is.True);
-        tiles = tc.GetNavMesh().GetTilesAt(1, 4);
+
+        nneis = tc.GetNavMesh().GetTilesAt(1, 4, tiles, MAX_NEIS);
         tile = tiles[0];
         Assert.That(tile.data.header.vertCount, Is.EqualTo(22));
         Assert.That(tile.data.header.polyCount, Is.EqualTo(11));
+
         tc.RemoveObstacle(o);
         upToDate = tc.Update();
         Assert.That(upToDate, Is.True);
-        tiles = tc.GetNavMesh().GetTilesAt(1, 4);
+
+        nneis = tc.GetNavMesh().GetTilesAt(1, 4, tiles, MAX_NEIS);
         tile = tiles[0];
         Assert.That(tile.data.header.vertCount, Is.EqualTo(16));
         Assert.That(tile.data.header.polyCount, Is.EqualTo(6));

@@ -764,39 +764,27 @@ namespace DotRecast.Detour
             // Find tiles the query touches.
             RcVec3f bmin = RcVec3f.Subtract(center, halfExtents);
             RcVec3f bmax = RcVec3f.Add(center, halfExtents);
-            foreach (var t in QueryTiles(center, halfExtents))
-            {
-                QueryPolygonsInTile(t, bmin, bmax, filter, query);
-            }
 
-            return DtStatus.DT_SUCCESS;
-        }
-
-        /**
-     * Finds tiles that overlap the search box.
-     */
-        public IList<DtMeshTile> QueryTiles(RcVec3f center, RcVec3f halfExtents)
-        {
-            if (!center.IsFinite() || !halfExtents.IsFinite())
-            {
-                return RcImmutableArray<DtMeshTile>.Empty;
-            }
-
-            RcVec3f bmin = RcVec3f.Subtract(center, halfExtents);
-            RcVec3f bmax = RcVec3f.Add(center, halfExtents);
+            // Find tiles the query touches.
             m_nav.CalcTileLoc(bmin, out var minx, out var miny);
             m_nav.CalcTileLoc(bmax, out var maxx, out var maxy);
 
-            List<DtMeshTile> tiles = new List<DtMeshTile>();
+            const int MAX_NEIS = 32;
+            DtMeshTile[] neis = new DtMeshTile[MAX_NEIS];
+
             for (int y = miny; y <= maxy; ++y)
             {
                 for (int x = minx; x <= maxx; ++x)
                 {
-                    tiles.AddRange(m_nav.GetTilesAt(x, y));
+                    int nneis = m_nav.GetTilesAt(x, y, neis, MAX_NEIS);
+                    for (int j = 0; j < nneis; ++j)
+                    {
+                        QueryPolygonsInTile(neis[j], bmin, bmax, filter, query);
+                    }
                 }
             }
 
-            return tiles;
+            return DtStatus.DT_SUCCESS;
         }
 
         /// @par

@@ -68,8 +68,8 @@ namespace DotRecast.Recast.Toolset.Tools
             tileTriCount = 0; // ...
             tileMemUsage = 0; // ...
 
-            var availableTileCount = navMesh.GetAvailableTileCount();
-            if (0 >= availableTileCount)
+            var availableTile = navMesh.IsAvailableTileCount();
+            if (!availableTile)
             {
                 return false;
             }
