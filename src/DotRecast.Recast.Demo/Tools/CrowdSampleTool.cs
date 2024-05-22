@@ -251,10 +251,10 @@ public class CrowdSampleTool : ISampleTool
 
             if (_showCorners)
             {
-                if (0 < ag.corners.Count)
+                if (0 < ag.ncorners)
                 {
                     dd.Begin(LINES, 2.0f);
-                    for (int j = 0; j < ag.corners.Count; ++j)
+                    for (int j = 0; j < ag.ncorners; ++j)
                     {
                         RcVec3f va = j == 0 ? pos : ag.corners[j - 1].pos;
                         RcVec3f vb = ag.corners[j].pos;
@@ -262,10 +262,10 @@ public class CrowdSampleTool : ISampleTool
                         dd.Vertex(vb.X, vb.Y + radius, vb.Z, DuRGBA(128, 0, 0, 192));
                     }
 
-                    if ((ag.corners[ag.corners.Count - 1].flags
+                    if ((ag.corners[ag.ncorners - 1].flags
                          & DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
                     {
-                        RcVec3f v = ag.corners[ag.corners.Count - 1].pos;
+                        RcVec3f v = ag.corners[ag.ncorners - 1].pos;
                         dd.Vertex(v.X, v.Y, v.Z, DuRGBA(192, 0, 0, 192));
                         dd.Vertex(v.X, v.Y + radius * 2, v.Z, DuRGBA(192, 0, 0, 192));
                     }

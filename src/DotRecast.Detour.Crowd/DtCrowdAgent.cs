@@ -61,8 +61,11 @@ namespace DotRecast.Detour.Crowd
         public DtCrowdAgentParams option;
 
         /// The local path corridor corners for the agent.
-        public List<DtStraightPath> corners = new List<DtStraightPath>();
-
+        public DtStraightPath[] corners = new DtStraightPath[DtCrowdConst.DT_CROWDAGENT_MAX_CORNERS];
+        
+        /// The number of corners.
+        public int ncorners;
+        
         public DtMoveRequestState targetState; // < State of the movement request.
         public long targetRef; // < Target polyref of the movement request.
         public RcVec3f targetPos = new RcVec3f(); // < Target position of the movement request (or velocity in case of DT_CROWDAGENT_TARGET_VELOCITY).
@@ -100,16 +103,16 @@ namespace DotRecast.Detour.Crowd
 
         public bool OverOffmeshConnection(float radius)
         {
-            if (0 == corners.Count)
+            if (0 == ncorners)
                 return false;
 
-            bool offMeshConnection = ((corners[corners.Count - 1].flags
+            bool offMeshConnection = ((corners[ncorners - 1].flags
                                        & DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
                 ? true
                 : false;
             if (offMeshConnection)
             {
-                float distSq = RcVecUtils.Dist2DSqr(npos, corners[corners.Count - 1].pos);
+                float distSq = RcVecUtils.Dist2DSqr(npos, corners[ncorners - 1].pos);
                 if (distSq < radius * radius)
                     return true;
             }
@@ -119,12 +122,12 @@ namespace DotRecast.Detour.Crowd
 
         public float GetDistanceToGoal(float range)
         {
-            if (0 == corners.Count)
+            if (0 == ncorners)
                 return range;
 
-            bool endOfPath = ((corners[corners.Count - 1].flags & DtStraightPathFlags.DT_STRAIGHTPATH_END) != 0) ? true : false;
+            bool endOfPath = ((corners[ncorners - 1].flags & DtStraightPathFlags.DT_STRAIGHTPATH_END) != 0) ? true : false;
             if (endOfPath)
-                return Math.Min(RcVecUtils.Dist2D(npos, corners[corners.Count - 1].pos), range);
+                return Math.Min(RcVecUtils.Dist2D(npos, corners[ncorners - 1].pos), range);
 
             return range;
         }
@@ -132,10 +135,10 @@ namespace DotRecast.Detour.Crowd
         public RcVec3f CalcSmoothSteerDirection()
         {
             RcVec3f dir = new RcVec3f();
-            if (0 < corners.Count)
+            if (0 < ncorners)
             {
                 int ip0 = 0;
-                int ip1 = Math.Min(1, corners.Count - 1);
+                int ip1 = Math.Min(1, ncorners - 1);
                 var p0 = corners[ip0].pos;
                 var p1 = corners[ip1].pos;
 
@@ -161,7 +164,7 @@ namespace DotRecast.Detour.Crowd
         public RcVec3f CalcStraightSteerDirection()
         {
             RcVec3f dir = new RcVec3f();
-            if (0 < corners.Count)
+            if (0 < ncorners)
             {
                 dir = RcVec3f.Subtract(corners[0].pos, npos);
                 dir.Y = 0;

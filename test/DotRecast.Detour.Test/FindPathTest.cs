@@ -16,12 +16,12 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
 using System.Collections.Generic;
 using DotRecast.Core.Numerics;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
-
 
 public class FindPathTest : AbstractDetourTest
 {
@@ -184,6 +184,7 @@ public class FindPathTest : AbstractDetourTest
     {
         IDtQueryFilter filter = new DtQueryDefaultFilter();
         var path = new List<long>();
+        Span<DtStraightPath> straightPath = stackalloc DtStraightPath[256];
         for (int i = 0; i < STRAIGHT_PATHS.Length; i++)
         {
             // startRefs.Length; i++) {
@@ -192,9 +193,8 @@ public class FindPathTest : AbstractDetourTest
             var startPos = startPoss[i];
             var endPos = endPoss[i];
             var status = query.FindPath(startRef, endRef, startPos, endPos, filter, ref path, DtFindPathOption.NoOption);
-            var straightPath = new List<DtStraightPath>();
-            query.FindStraightPath(startPos, endPos, path, path.Count, ref straightPath, int.MaxValue, 0);
-            Assert.That(straightPath.Count, Is.EqualTo(STRAIGHT_PATHS[i].Length));
+            query.FindStraightPath(startPos, endPos, path, path.Count, straightPath, out var nstraightPath, 256, 0);
+            Assert.That(nstraightPath, Is.EqualTo(STRAIGHT_PATHS[i].Length));
             for (int j = 0; j < STRAIGHT_PATHS[i].Length; j++)
             {
                 Assert.That(straightPath[j].refs, Is.EqualTo(STRAIGHT_PATHS[i][j].refs));

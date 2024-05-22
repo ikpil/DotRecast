@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Changed `DtTileCacheLayerHeaderReader` to a static class
 - Changed `Dictionary<int, List<DtMeshTile>>` to `DtMeshTile[]` to optimize memory usage
 - Changed `MAX_STEER_POINTS` from class constant to local. 
+- Changed `List<DtStraightPath>` to `Span<DtStraightPath>` for enhanced memory efficiency
 
 ### Removed
 - Nothing
