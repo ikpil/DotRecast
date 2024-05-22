@@ -57,7 +57,8 @@ public class TestNavmeshSampleTool : ISampleTool
     private bool m_hitResult;
 
     private float m_distanceToWall;
-    private List<DtStraightPath> m_straightPath;
+    private DtStraightPath[] m_straightPath;
+    private int m_straightPathCount;
     private List<long> m_polys;
     private List<long> m_parent;
     private float m_neighbourhoodRadius;
@@ -77,6 +78,8 @@ public class TestNavmeshSampleTool : ISampleTool
             SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED,
             new float[] { 1f, 1f, 1f, 1f, 2f, 1.5f }
         );
+        m_straightPath = new DtStraightPath[MAX_POLYS];
+        m_straightPathCount = 0;
     }
 
     public void Layout()
@@ -284,7 +287,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 int spathCol = DuRGBA(64, 16, 0, 220);
                 int offMeshCol = DuRGBA(128, 96, 0, 220);
                 dd.Begin(LINES, 2.0f);
-                for (int i = 0; i < m_straightPath.Count - 1; ++i)
+                for (int i = 0; i < m_straightPathCount - 1; ++i)
                 {
                     DtStraightPath straightPathItem = m_straightPath[i];
                     DtStraightPath straightPathItem2 = m_straightPath[i + 1];
@@ -304,7 +307,7 @@ public class TestNavmeshSampleTool : ISampleTool
 
                 dd.End();
                 dd.Begin(POINTS, 6.0f);
-                for (int i = 0; i < m_straightPath.Count; ++i)
+                for (int i = 0; i < m_straightPathCount; ++i)
                 {
                     DtStraightPath straightPathItem = m_straightPath[i];
                     int col;
@@ -349,7 +352,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 dd.DepthMask(false);
                 int spathCol = m_hitResult ? DuRGBA(64, 16, 0, 220) : DuRGBA(240, 240, 240, 220);
                 dd.Begin(LINES, 2.0f);
-                for (int i = 0; i < m_straightPath.Count - 1; ++i)
+                for (int i = 0; i < m_straightPathCount - 1; ++i)
                 {
                     DtStraightPath straightPathItem = m_straightPath[i];
                     DtStraightPath straightPathItem2 = m_straightPath[i + 1];
@@ -359,7 +362,7 @@ public class TestNavmeshSampleTool : ISampleTool
 
                 dd.End();
                 dd.Begin(POINTS, 4.0f);
-                for (int i = 0; i < m_straightPath.Count; ++i)
+                for (int i = 0; i < m_straightPathCount; ++i)
                 {
                     DtStraightPath straightPathItem = m_straightPath[i];
                     dd.Vertex(straightPathItem.pos.X, straightPathItem.pos.Y + 0.4f, straightPathItem.pos.Z, spathCol);
@@ -666,18 +669,18 @@ public class TestNavmeshSampleTool : ISampleTool
         else if (_mode == RcTestNavmeshToolMode.PATHFIND_STRAIGHT)
         {
             _tool.FindStraightPath(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, _enableRaycast,
-                ref m_polys, ref m_straightPath, _straightPathOption);
+                ref m_polys, m_straightPath, out m_straightPathCount, MAX_POLYS, _straightPathOption);
         }
         else if (_mode == RcTestNavmeshToolMode.PATHFIND_SLICED)
         {
             m_polys?.Clear();
-            m_straightPath?.Clear();
+            m_straightPathCount = 0;
             m_pathFindStatus = _tool.InitSlicedFindPath(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, _enableRaycast);
         }
         else if (_mode == RcTestNavmeshToolMode.RAYCAST)
         {
             _tool.Raycast(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter,
-                ref m_polys, ref m_straightPath, ref m_hitPos, ref m_hitNormal, ref m_hitResult);
+                ref m_polys, m_straightPath, out m_straightPathCount, MAX_POLYS, ref m_hitPos, ref m_hitNormal, ref m_hitResult);
         }
         else if (_mode == RcTestNavmeshToolMode.DISTANCE_TO_WALL)
         {
@@ -712,7 +715,7 @@ public class TestNavmeshSampleTool : ISampleTool
 
             if (m_pathFindStatus.InProgress())
             {
-                m_pathFindStatus = _tool.UpdateSlicedFindPath(navQuery, 1, m_endRef, m_spos, m_epos, ref m_polys, ref m_straightPath);
+                m_pathFindStatus = _tool.UpdateSlicedFindPath(navQuery, 1, m_endRef, m_spos, m_epos, ref m_polys, m_straightPath, out m_straightPathCount, MAX_POLYS);
             }
         }
     }

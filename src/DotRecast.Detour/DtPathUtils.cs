@@ -34,14 +34,14 @@ namespace DotRecast.Detour
             out RcVec3f steerPos, out int steerPosFlag, out long steerPosRef)
         {
             const int MAX_STEER_POINTS = 3;
-            
+
             steerPos = RcVec3f.Zero;
             steerPosFlag = 0;
             steerPosRef = 0;
 
             // Find steer target.
-            var straightPath = new List<DtStraightPath>(MAX_STEER_POINTS);
-            var result = navQuery.FindStraightPath(startPos, endPos, path, pathSize, ref straightPath, MAX_STEER_POINTS, 0);
+            Span<DtStraightPath> straightPath = stackalloc DtStraightPath[MAX_STEER_POINTS];
+            var result = navQuery.FindStraightPath(startPos, endPos, path, pathSize, straightPath, out var nsteerPath, MAX_STEER_POINTS, 0);
             if (result.Failed())
             {
                 return false;
@@ -49,7 +49,7 @@ namespace DotRecast.Detour
 
             // Find vertex far enough to steer to.
             int ns = 0;
-            while (ns < straightPath.Count)
+            while (ns < nsteerPath)
             {
                 // Stop at Off-Mesh link or when point is further than slop away.
                 if (((straightPath[ns].flags & DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
@@ -59,7 +59,7 @@ namespace DotRecast.Detour
             }
 
             // Failed to find good point to steer to.
-            if (ns >= straightPath.Count)
+            if (ns >= nsteerPath)
                 return false;
 
             steerPos = straightPath[ns].pos;

@@ -17,14 +17,12 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
 using System.Collections.Generic;
 using DotRecast.Core.Numerics;
-
-using Moq;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Crowd.Test;
-
 
 public class DtPathCorridorTest
 {
@@ -41,63 +39,35 @@ public class DtPathCorridorTest
     [Test]
     public void ShouldKeepOriginalPathInFindCornersWhenNothingCanBePruned()
     {
-        List<DtStraightPath> straightPath = new();
-        straightPath.Add(new DtStraightPath(new RcVec3f(11, 20, 30.00001f), 0, 0));
-        straightPath.Add(new DtStraightPath(new RcVec3f(12, 20, 30.00002f), 0, 0));
-        straightPath.Add(new DtStraightPath(new RcVec3f(11f, 21, 32f), 0, 0));
-        straightPath.Add(new DtStraightPath(new RcVec3f(11f, 21, 32f), 0, 0));
-        var mockQuery = new Mock<DtNavMeshQuery>(It.IsAny<DtNavMesh>());
-        mockQuery.Setup(q => q.FindStraightPath(
-                It.IsAny<RcVec3f>(),
-                It.IsAny<RcVec3f>(),
-                It.IsAny<List<long>>(),
-                It.IsAny<int>(),
-                ref It.Ref<List<DtStraightPath>>.IsAny,
-                It.IsAny<int>(),
-                It.IsAny<int>())
-            )
-            .Callback((RcVec3f startPos, RcVec3f endPos, List<long> path, int pathSize,
-                ref List<DtStraightPath> refStraightPath, int maxStraightPath, int options) =>
-            {
-                refStraightPath = straightPath;
-            })
-            .Returns(() => DtStatus.DT_SUCCESS);
+        var straightPath = new DtStraightPath[4];
+        straightPath[0] = new DtStraightPath(new RcVec3f(11, 20, 30.00001f), 0, 0);
+        straightPath[1] = new DtStraightPath(new RcVec3f(12, 20, 30.00002f), 0, 0);
+        straightPath[2] = new DtStraightPath(new RcVec3f(11f, 21, 32f), 0, 0);
+        straightPath[3] = new DtStraightPath(new RcVec3f(11f, 21, 32f), 0, 0);
+        var query = new DtNavMeshQueryMock(straightPath, DtStatus.DT_SUCCESS);
 
-        var path = new List<DtStraightPath>();
-        corridor.FindCorners(ref path, int.MaxValue, mockQuery.Object, filter);
-        Assert.That(path.Count, Is.EqualTo(4));
-        Assert.That(path, Is.EqualTo(straightPath));
+        Span<DtStraightPath> path = stackalloc DtStraightPath[8];
+        var npath = corridor.FindCorners(path, 8, query, filter);
+        Assert.That(npath, Is.EqualTo(4));
+        Assert.That(path.Slice(0, npath).ToArray(), Is.EqualTo(straightPath));
     }
+
 
     [Test]
     public void ShouldPrunePathInFindCorners()
     {
-        List<DtStraightPath> straightPath = new();
-        straightPath.Add(new DtStraightPath(new RcVec3f(10, 20, 30.00001f), 0, 0)); // too close
-        straightPath.Add(new DtStraightPath(new RcVec3f(10, 20, 30.00002f), 0, 0)); // too close
-        straightPath.Add(new DtStraightPath(new RcVec3f(11f, 21, 32f), 0, 0));
-        straightPath.Add(new DtStraightPath(new RcVec3f(12f, 22, 33f), DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION, 0)); // offmesh
-        straightPath.Add(new DtStraightPath(new RcVec3f(11f, 21, 32f), DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION, 0)); // offmesh
+        DtStraightPath[] straightPath = new DtStraightPath[5];
+        straightPath[0] = (new DtStraightPath(new RcVec3f(10, 20, 30.00001f), 0, 0)); // too close
+        straightPath[1] = (new DtStraightPath(new RcVec3f(10, 20, 30.00002f), 0, 0)); // too close
+        straightPath[2] = (new DtStraightPath(new RcVec3f(11f, 21, 32f), 0, 0));
+        straightPath[3] = (new DtStraightPath(new RcVec3f(12f, 22, 33f), DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION, 0)); // offmesh
+        straightPath[4] = (new DtStraightPath(new RcVec3f(11f, 21, 32f), DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION, 0)); // offmesh
 
-        var mockQuery = new Mock<DtNavMeshQuery>(It.IsAny<DtNavMesh>());
-        mockQuery.Setup(q => q.FindStraightPath(
-                It.IsAny<RcVec3f>(),
-                It.IsAny<RcVec3f>(),
-                It.IsAny<List<long>>(),
-                It.IsAny<int>(),
-                ref It.Ref<List<DtStraightPath>>.IsAny,
-                It.IsAny<int>(),
-                It.IsAny<int>())
-            ).Callback((RcVec3f startPos, RcVec3f endPos, List<long> path, int pathSize,
-                ref List<DtStraightPath> refStraightPath, int maxStraightPath, int options) =>
-            {
-                refStraightPath = straightPath;
-            })
-            .Returns(() => DtStatus.DT_SUCCESS);
+        var query = new DtNavMeshQueryMock(straightPath, DtStatus.DT_SUCCESS);
 
-        var path = new List<DtStraightPath>();
-        corridor.FindCorners(ref path, int.MaxValue, mockQuery.Object, filter);
-        Assert.That(path.Count, Is.EqualTo(2));
-        Assert.That(path, Is.EqualTo(new List<DtStraightPath> { straightPath[2], straightPath[3] }));
+        Span<DtStraightPath> path = stackalloc DtStraightPath[8];
+        int npath = corridor.FindCorners(path, 8, query, filter);
+        Assert.That(npath, Is.EqualTo(2));
+        Assert.That(path.Slice(0, npath).ToArray(), Is.EqualTo(new DtStraightPath[] { straightPath[2], straightPath[3] }));
     }
 }

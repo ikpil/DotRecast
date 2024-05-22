@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using DotRecast.Core;
@@ -28,7 +29,6 @@ using DotRecast.Detour.TileCache.Test.Io;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.TileCache.Test;
-
 
 public class TileCacheFindPathTest : AbstractTileCacheTest
 {
@@ -56,11 +56,11 @@ public class TileCacheFindPathTest : AbstractTileCacheTest
 
         var path = new List<long>();
         var status = query.FindPath(startRef, endRef, startPos, endPos, filter, ref path, DtFindPathOption.NoOption);
-        int maxStraightPath = 256;
+        const int maxStraightPath = 256;
         int options = 0;
 
-        var pathStr = new List<DtStraightPath>();
-        query.FindStraightPath(startPos, endPos, path, path.Count, ref pathStr, maxStraightPath, options);
-        Assert.That(pathStr.Count, Is.EqualTo(8));
+        Span<DtStraightPath> pathStr = stackalloc DtStraightPath[maxStraightPath];
+        query.FindStraightPath(startPos, endPos, path, path.Count, pathStr, out var npathStr, maxStraightPath, options);
+        Assert.That(npathStr, Is.EqualTo(8));
     }
 }

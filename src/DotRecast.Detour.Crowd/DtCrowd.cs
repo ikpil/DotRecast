@@ -944,13 +944,13 @@ namespace DotRecast.Detour.Crowd
                 }
 
                 // Find corners for steering
-                ag.corridor.FindCorners(ref ag.corners, DtCrowdConst.DT_CROWDAGENT_MAX_CORNERS, _navQuery, _filters[ag.option.queryFilterType]);
+                ag.ncorners = ag.corridor.FindCorners(ag.corners, DtCrowdConst.DT_CROWDAGENT_MAX_CORNERS, _navQuery, _filters[ag.option.queryFilterType]);
 
                 // Check to see if the corner after the next corner is directly visible,
                 // and short cut to there.
-                if ((ag.option.updateFlags & DtCrowdAgentUpdateFlags.DT_CROWD_OPTIMIZE_VIS) != 0 && ag.corners.Count > 0)
+                if ((ag.option.updateFlags & DtCrowdAgentUpdateFlags.DT_CROWD_OPTIMIZE_VIS) != 0 && ag.ncorners > 0)
                 {
-                    RcVec3f target = ag.corners[Math.Min(1, ag.corners.Count - 1)].pos;
+                    RcVec3f target = ag.corners[Math.Min(1, ag.ncorners - 1)].pos;
                     ag.corridor.OptimizePathVisibility(target, ag.option.pathOptimizationRange, _navQuery,
                         _filters[ag.option.queryFilterType]);
 
@@ -1000,7 +1000,7 @@ namespace DotRecast.Detour.Crowd
 
                     // Adjust the path over the off-mesh connection.
                     long[] refs = new long[2];
-                    if (ag.corridor.MoveOverOffmeshConnection(ag.corners[ag.corners.Count - 1].refs, refs, ref anim.startPos,
+                    if (ag.corridor.MoveOverOffmeshConnection(ag.corners[ag.ncorners - 1].refs, refs, ref anim.startPos,
                             ref anim.endPos, _navQuery))
                     {
                         anim.initPos = ag.npos;
@@ -1010,7 +1010,7 @@ namespace DotRecast.Detour.Crowd
                         anim.tmax = (RcVecUtils.Dist2D(anim.startPos, anim.endPos) / ag.option.maxSpeed) * 0.5f;
 
                         ag.state = DtCrowdAgentState.DT_CROWDAGENT_STATE_OFFMESH;
-                        ag.corners.Clear();
+                        ag.ncorners = 0;
                         ag.neis.Clear();
                         continue;
                     }

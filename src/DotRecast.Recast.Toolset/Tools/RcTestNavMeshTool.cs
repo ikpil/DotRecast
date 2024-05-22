@@ -11,7 +11,6 @@ namespace DotRecast.Recast.Toolset.Tools
         public const int MAX_POLYS = 256;
         public const int MAX_SMOOTH = 2048;
 
-
         public RcTestNavMeshTool()
         {
         }
@@ -172,15 +171,15 @@ namespace DotRecast.Recast.Toolset.Tools
         }
 
         public DtStatus FindStraightPath(DtNavMeshQuery navQuery, long startRef, long endRef, RcVec3f startPt, RcVec3f endPt, IDtQueryFilter filter, bool enableRaycast,
-            ref List<long> polys, ref List<DtStraightPath> straightPath, int straightPathOptions)
+            ref List<long> polys, Span<DtStraightPath> straightPath, out int straightPathCount, int maxStraightPath, int straightPathOptions)
         {
+            straightPathCount = 0;
             if (startRef == 0 || endRef == 0)
             {
                 return DtStatus.DT_FAILURE;
             }
 
             polys ??= new List<long>();
-            straightPath ??= new List<DtStraightPath>();
 
             polys.Clear();
             straightPath.Clear();
@@ -202,7 +201,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 }
             }
 
-            navQuery.FindStraightPath(startPt, epos, polys, polys.Count, ref straightPath, MAX_POLYS, straightPathOptions);
+            navQuery.FindStraightPath(startPt, epos, polys, polys.Count, straightPath, out straightPathCount, maxStraightPath, straightPathOptions);
 
             return DtStatus.DT_SUCCESS;
         }
@@ -221,8 +220,9 @@ namespace DotRecast.Recast.Toolset.Tools
         }
 
         public DtStatus UpdateSlicedFindPath(DtNavMeshQuery navQuery, int maxIter, long endRef, RcVec3f startPos, RcVec3f endPos,
-            ref List<long> path, ref List<DtStraightPath> straightPath)
+            ref List<long> path, Span<DtStraightPath> straightPath, out int straightPathCount, int maxStraightPath)
         {
+            straightPathCount = 0;
             var status = navQuery.UpdateSlicedFindPath(maxIter, out _);
 
             if (!status.Succeeded())
@@ -232,7 +232,6 @@ namespace DotRecast.Recast.Toolset.Tools
 
             navQuery.FinalizeSlicedFindPath(ref path);
 
-            straightPath?.Clear();
             if (path != null)
             {
                 // In case of partial path, make sure the end point is clamped to the last polygon.
@@ -246,8 +245,7 @@ namespace DotRecast.Recast.Toolset.Tools
                     }
                 }
 
-                straightPath = new List<DtStraightPath>(MAX_POLYS);
-                navQuery.FindStraightPath(startPos, epos, path, path.Count, ref straightPath, MAX_POLYS, DtStraightPathOptions.DT_STRAIGHTPATH_ALL_CROSSINGS);
+                navQuery.FindStraightPath(startPos, epos, path, path.Count, straightPath, out straightPathCount, maxStraightPath, DtStraightPathOptions.DT_STRAIGHTPATH_ALL_CROSSINGS);
             }
 
             return DtStatus.DT_SUCCESS;
@@ -255,13 +253,12 @@ namespace DotRecast.Recast.Toolset.Tools
 
 
         public DtStatus Raycast(DtNavMeshQuery navQuery, long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter,
-            ref List<long> polys, ref List<DtStraightPath> straightPath, ref RcVec3f hitPos, ref RcVec3f hitNormal, ref bool hitResult)
+            ref List<long> polys, Span<DtStraightPath> straightPath, out int straightPathCount, int maxStraightPath, ref RcVec3f hitPos, ref RcVec3f hitNormal, ref bool hitResult)
         {
+            straightPathCount = 0;
             if (startRef == 0 || endRef == 0)
             {
                 polys?.Clear();
-                straightPath?.Clear();
-
                 return DtStatus.DT_FAILURE;
             }
 
@@ -299,10 +296,8 @@ namespace DotRecast.Recast.Toolset.Tools
                 }
             }
 
-            straightPath ??= new List<DtStraightPath>();
-            straightPath.Clear();
-            straightPath.Add(new DtStraightPath(startPos, 0, 0));
-            straightPath.Add(new DtStraightPath(hitPos, 0, 0));
+            straightPath[straightPathCount++] = new DtStraightPath(startPos, 0, 0);
+            straightPath[straightPathCount++] = new DtStraightPath(hitPos, 0, 0);
 
             return status;
         }
