@@ -28,13 +28,13 @@ namespace DotRecast.Detour
 
     public static class DtPathUtils
     {
-        private const int MAX_STEER_POINTS = 3;
-
         public static bool GetSteerTarget(DtNavMeshQuery navQuery, RcVec3f startPos, RcVec3f endPos,
             float minTargetDist,
             List<long> path, int pathSize,
             out RcVec3f steerPos, out int steerPosFlag, out long steerPosRef)
         {
+            const int MAX_STEER_POINTS = 3;
+            
             steerPos = RcVec3f.Zero;
             steerPosFlag = 0;
             steerPosRef = 0;
