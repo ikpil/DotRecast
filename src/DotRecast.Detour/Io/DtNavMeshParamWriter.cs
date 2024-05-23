@@ -4,17 +4,17 @@ using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour.Io
 {
-    public class DtNavMeshParamWriter : DtWriter
+    public class DtNavMeshParamWriter
     {
         public void Write(BinaryWriter stream, DtNavMeshParams option, RcByteOrder order)
         {
-            Write(stream, option.orig.X, order);
-            Write(stream, option.orig.Y, order);
-            Write(stream, option.orig.Z, order);
-            Write(stream, option.tileWidth, order);
-            Write(stream, option.tileHeight, order);
-            Write(stream, option.maxTiles, order);
-            Write(stream, option.maxPolys, order);
+            RcIO.Write(stream, option.orig.X, order);
+            RcIO.Write(stream, option.orig.Y, order);
+            RcIO.Write(stream, option.orig.Z, order);
+            RcIO.Write(stream, option.tileWidth, order);
+            RcIO.Write(stream, option.tileHeight, order);
+            RcIO.Write(stream, option.maxTiles, order);
+            RcIO.Write(stream, option.maxPolys, order);
         }
     }
 }

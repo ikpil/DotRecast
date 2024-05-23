@@ -37,7 +37,7 @@ namespace DotRecast.Detour.TileCache.Io
 
         public DtTileCache Read(BinaryReader @is, int maxVertPerPoly, IDtTileCacheMeshProcess meshProcessor)
         {
-            RcByteBuffer bb = IOUtils.ToByteBuffer(@is);
+            RcByteBuffer bb = RcIO.ToByteBuffer(@is);
             return Read(bb, maxVertPerPoly, meshProcessor);
         }
 
@@ -47,7 +47,7 @@ namespace DotRecast.Detour.TileCache.Io
             header.magic = bb.GetInt();
             if (header.magic != DtTileCacheSetHeader.TILECACHESET_MAGIC)
             {
-                header.magic = IOUtils.SwapEndianness(header.magic);
+                header.magic = RcIO.SwapEndianness(header.magic);
                 if (header.magic != DtTileCacheSetHeader.TILECACHESET_MAGIC)
                 {
                     throw new IOException("Invalid magic");

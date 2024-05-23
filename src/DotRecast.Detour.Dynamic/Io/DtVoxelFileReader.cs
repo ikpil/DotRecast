@@ -35,12 +35,12 @@ namespace DotRecast.Detour.Dynamic.Io
 
         public DtVoxelFile Read(BinaryReader stream)
         {
-            RcByteBuffer buf = IOUtils.ToByteBuffer(stream);
+            RcByteBuffer buf = RcIO.ToByteBuffer(stream);
             DtVoxelFile file = new DtVoxelFile();
             int magic = buf.GetInt();
             if (magic != DtVoxelFile.MAGIC)
             {
-                magic = IOUtils.SwapEndianness(magic);
+                magic = RcIO.SwapEndianness(magic);
                 if (magic != DtVoxelFile.MAGIC)
                 {
                     throw new IOException("Invalid magic");

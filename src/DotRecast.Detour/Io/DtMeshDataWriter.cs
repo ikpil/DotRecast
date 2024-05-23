@@ -23,36 +23,36 @@ namespace DotRecast.Detour.Io
 {
     using static DtDetour;
 
-    public class DtMeshDataWriter : DtWriter
+    public class DtMeshDataWriter
     {
         public void Write(BinaryWriter stream, DtMeshData data, RcByteOrder order, bool cCompatibility)
         {
             DtMeshHeader header = data.header;
-            Write(stream, header.magic, order);
-            Write(stream, cCompatibility ? DT_NAVMESH_VERSION : DT_NAVMESH_VERSION_RECAST4J_LAST, order);
-            Write(stream, header.x, order);
-            Write(stream, header.y, order);
-            Write(stream, header.layer, order);
-            Write(stream, header.userId, order);
-            Write(stream, header.polyCount, order);
-            Write(stream, header.vertCount, order);
-            Write(stream, header.maxLinkCount, order);
-            Write(stream, header.detailMeshCount, order);
-            Write(stream, header.detailVertCount, order);
-            Write(stream, header.detailTriCount, order);
-            Write(stream, header.bvNodeCount, order);
-            Write(stream, header.offMeshConCount, order);
-            Write(stream, header.offMeshBase, order);
-            Write(stream, header.walkableHeight, order);
-            Write(stream, header.walkableRadius, order);
-            Write(stream, header.walkableClimb, order);
-            Write(stream, header.bmin.X, order);
-            Write(stream, header.bmin.Y, order);
-            Write(stream, header.bmin.Z, order);
-            Write(stream, header.bmax.X, order);
-            Write(stream, header.bmax.Y, order);
-            Write(stream, header.bmax.Z, order);
-            Write(stream, header.bvQuantFactor, order);
+            RcIO.Write(stream, header.magic, order);
+            RcIO.Write(stream, cCompatibility ? DT_NAVMESH_VERSION : DT_NAVMESH_VERSION_RECAST4J_LAST, order);
+            RcIO.Write(stream, header.x, order);
+            RcIO.Write(stream, header.y, order);
+            RcIO.Write(stream, header.layer, order);
+            RcIO.Write(stream, header.userId, order);
+            RcIO.Write(stream, header.polyCount, order);
+            RcIO.Write(stream, header.vertCount, order);
+            RcIO.Write(stream, header.maxLinkCount, order);
+            RcIO.Write(stream, header.detailMeshCount, order);
+            RcIO.Write(stream, header.detailVertCount, order);
+            RcIO.Write(stream, header.detailTriCount, order);
+            RcIO.Write(stream, header.bvNodeCount, order);
+            RcIO.Write(stream, header.offMeshConCount, order);
+            RcIO.Write(stream, header.offMeshBase, order);
+            RcIO.Write(stream, header.walkableHeight, order);
+            RcIO.Write(stream, header.walkableRadius, order);
+            RcIO.Write(stream, header.walkableClimb, order);
+            RcIO.Write(stream, header.bmin.X, order);
+            RcIO.Write(stream, header.bmin.Y, order);
+            RcIO.Write(stream, header.bmin.Z, order);
+            RcIO.Write(stream, header.bmax.X, order);
+            RcIO.Write(stream, header.bmax.Y, order);
+            RcIO.Write(stream, header.bmax.Z, order);
+            RcIO.Write(stream, header.bvQuantFactor, order);
             WriteVerts(stream, data.verts, header.vertCount, order);
             WritePolys(stream, data, order, cCompatibility);
             if (cCompatibility)
@@ -72,7 +72,7 @@ namespace DotRecast.Detour.Io
         {
             for (int i = 0; i < count * 3; i++)
             {
-                Write(stream, verts[i], order);
+                RcIO.Write(stream, verts[i], order);
             }
         }
 
@@ -82,22 +82,22 @@ namespace DotRecast.Detour.Io
             {
                 if (cCompatibility)
                 {
-                    Write(stream, 0xFFFF, order);
+                    RcIO.Write(stream, 0xFFFF, order);
                 }
 
                 for (int j = 0; j < data.polys[i].verts.Length; j++)
                 {
-                    Write(stream, (short)data.polys[i].verts[j], order);
+                    RcIO.Write(stream, (short)data.polys[i].verts[j], order);
                 }
 
                 for (int j = 0; j < data.polys[i].neis.Length; j++)
                 {
-                    Write(stream, (short)data.polys[i].neis[j], order);
+                    RcIO.Write(stream, (short)data.polys[i].neis[j], order);
                 }
 
-                Write(stream, (short)data.polys[i].flags, order);
-                Write(stream, (byte)data.polys[i].vertCount);
-                Write(stream, (byte)data.polys[i].areaAndtype);
+                RcIO.Write(stream, (short)data.polys[i].flags, order);
+                RcIO.Write(stream, (byte)data.polys[i].vertCount);
+                RcIO.Write(stream, (byte)data.polys[i].areaAndtype);
             }
         }
 
@@ -105,13 +105,13 @@ namespace DotRecast.Detour.Io
         {
             for (int i = 0; i < data.header.detailMeshCount; i++)
             {
-                Write(stream, data.detailMeshes[i].vertBase, order);
-                Write(stream, data.detailMeshes[i].triBase, order);
-                Write(stream, (byte)data.detailMeshes[i].vertCount);
-                Write(stream, (byte)data.detailMeshes[i].triCount);
+                RcIO.Write(stream, data.detailMeshes[i].vertBase, order);
+                RcIO.Write(stream, data.detailMeshes[i].triBase, order);
+                RcIO.Write(stream, (byte)data.detailMeshes[i].vertCount);
+                RcIO.Write(stream, (byte)data.detailMeshes[i].triCount);
                 if (cCompatibility)
                 {
-                    Write(stream, (short)0, order);
+                    RcIO.Write(stream, (short)0, order);
                 }
             }
         }
@@ -120,7 +120,7 @@ namespace DotRecast.Detour.Io
         {
             for (int i = 0; i < data.header.detailTriCount * 4; i++)
             {
-                Write(stream, (byte)data.detailTris[i]);
+                RcIO.Write(stream, (byte)data.detailTris[i]);
             }
         }
 
@@ -132,28 +132,28 @@ namespace DotRecast.Detour.Io
                 {
                     for (int j = 0; j < 3; j++)
                     {
-                        Write(stream, (short)data.bvTree[i].bmin[j], order);
+                        RcIO.Write(stream, (short)data.bvTree[i].bmin[j], order);
                     }
 
                     for (int j = 0; j < 3; j++)
                     {
-                        Write(stream, (short)data.bvTree[i].bmax[j], order);
+                        RcIO.Write(stream, (short)data.bvTree[i].bmax[j], order);
                     }
                 }
                 else
                 {
                     for (int j = 0; j < 3; j++)
                     {
-                        Write(stream, data.bvTree[i].bmin[j], order);
+                        RcIO.Write(stream, data.bvTree[i].bmin[j], order);
                     }
 
                     for (int j = 0; j < 3; j++)
                     {
-                        Write(stream, data.bvTree[i].bmax[j], order);
+                        RcIO.Write(stream, data.bvTree[i].bmax[j], order);
                     }
                 }
 
-                Write(stream, data.bvTree[i].i, order);
+                RcIO.Write(stream, data.bvTree[i].i, order);
             }
         }
 
@@ -163,16 +163,16 @@ namespace DotRecast.Detour.Io
             {
                 for (int j = 0; j < 2; j++)
                 {
-                    Write(stream, data.offMeshCons[i].pos[j].X, order);
-                    Write(stream, data.offMeshCons[i].pos[j].Y, order);
-                    Write(stream, data.offMeshCons[i].pos[j].Z, order);
+                    RcIO.Write(stream, data.offMeshCons[i].pos[j].X, order);
+                    RcIO.Write(stream, data.offMeshCons[i].pos[j].Y, order);
+                    RcIO.Write(stream, data.offMeshCons[i].pos[j].Z, order);
                 }
 
-                Write(stream, data.offMeshCons[i].rad, order);
-                Write(stream, (short)data.offMeshCons[i].poly, order);
-                Write(stream, (byte)data.offMeshCons[i].flags);
-                Write(stream, (byte)data.offMeshCons[i].side);
-                Write(stream, data.offMeshCons[i].userId, order);
+                RcIO.Write(stream, data.offMeshCons[i].rad, order);
+                RcIO.Write(stream, (short)data.offMeshCons[i].poly, order);
+                RcIO.Write(stream, (byte)data.offMeshCons[i].flags);
+                RcIO.Write(stream, (byte)data.offMeshCons[i].side);
+                RcIO.Write(stream, data.offMeshCons[i].userId, order);
             }
         }
     }

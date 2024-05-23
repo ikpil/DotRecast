@@ -31,7 +31,7 @@ namespace DotRecast.Detour.Io
 
         public DtNavMesh Read(BinaryReader @is, int maxVertPerPoly)
         {
-            return Read(IOUtils.ToByteBuffer(@is), maxVertPerPoly, false);
+            return Read(RcIO.ToByteBuffer(@is), maxVertPerPoly, false);
         }
 
         public DtNavMesh Read(RcByteBuffer bb, int maxVertPerPoly)
@@ -41,7 +41,7 @@ namespace DotRecast.Detour.Io
 
         public DtNavMesh Read32Bit(BinaryReader @is, int maxVertPerPoly)
         {
-            return Read(IOUtils.ToByteBuffer(@is), maxVertPerPoly, true);
+            return Read(RcIO.ToByteBuffer(@is), maxVertPerPoly, true);
         }
 
         public DtNavMesh Read32Bit(RcByteBuffer bb, int maxVertPerPoly)
@@ -51,7 +51,7 @@ namespace DotRecast.Detour.Io
 
         public DtNavMesh Read(BinaryReader @is)
         {
-            return Read(IOUtils.ToByteBuffer(@is));
+            return Read(RcIO.ToByteBuffer(@is));
         }
 
         public DtNavMesh Read(RcByteBuffer bb)
@@ -80,7 +80,7 @@ namespace DotRecast.Detour.Io
             header.magic = bb.GetInt();
             if (header.magic != NavMeshSetHeader.NAVMESHSET_MAGIC)
             {
-                header.magic = IOUtils.SwapEndianness(header.magic);
+                header.magic = RcIO.SwapEndianness(header.magic);
                 if (header.magic != NavMeshSetHeader.NAVMESHSET_MAGIC)
                 {
                     throw new IOException("Invalid magic " + header.magic);

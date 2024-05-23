@@ -26,10 +26,12 @@ namespace DotRecast.Detour.Io
     public class DtMeshDataReader
     {
         public const int DT_POLY_DETAIL_SIZE = 10;
+        public const int LINK_SIZEOF = 16;
+        public const int LINK_SIZEOF32BIT = 12;
 
         public DtMeshData Read(BinaryReader stream, int maxVertPerPoly)
         {
-            RcByteBuffer buf = IOUtils.ToByteBuffer(stream);
+            RcByteBuffer buf = RcIO.ToByteBuffer(stream);
             return Read(buf, maxVertPerPoly, false);
         }
 
@@ -40,7 +42,7 @@ namespace DotRecast.Detour.Io
 
         public DtMeshData Read32Bit(BinaryReader stream, int maxVertPerPoly)
         {
-            RcByteBuffer buf = IOUtils.ToByteBuffer(stream);
+            RcByteBuffer buf = RcIO.ToByteBuffer(stream);
             return Read(buf, maxVertPerPoly, true);
         }
 
@@ -57,7 +59,7 @@ namespace DotRecast.Detour.Io
             header.magic = buf.GetInt();
             if (header.magic != DT_NAVMESH_MAGIC)
             {
-                header.magic = IOUtils.SwapEndianness(header.magic);
+                header.magic = RcIO.SwapEndianness(header.magic);
                 if (header.magic != DT_NAVMESH_MAGIC)
                 {
                     throw new IOException("Invalid magic");
@@ -118,8 +120,6 @@ namespace DotRecast.Detour.Io
             return data;
         }
 
-        public const int LINK_SIZEOF = 16;
-        public const int LINK_SIZEOF32BIT = 12;
 
         public static int GetSizeofLink(bool is32Bit)
         {
