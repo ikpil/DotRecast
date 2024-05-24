@@ -27,18 +27,18 @@ namespace DotRecast.Detour
 {
     using static DtDetour;
 
+    /// Provides the ability to perform pathfinding related queries against
+    /// a navigation mesh.
+    /// @ingroup detour
     public class DtNavMeshQuery
     {
-        /// < Add a vertex at every polygon edge crossing.
-        protected readonly DtNavMesh m_nav;
+        protected readonly DtNavMesh m_nav; //< Pointer to navmesh data.
+        protected DtQueryData m_query; //< Sliced query state.
 
-        protected readonly DtNodePool m_tinyNodePool;
-        protected readonly DtNodePool m_nodePool;
-        protected readonly DtNodeQueue m_openList;
+        protected readonly DtNodePool m_tinyNodePool; //< Pointer to small node pool. 
+        protected readonly DtNodePool m_nodePool; //< Pointer to node pool. 
+        protected readonly DtNodeQueue m_openList; //< Pointer to open list queue. 
 
-        protected DtQueryData m_query;
-
-        /// < Sliced query state.
         public DtNavMeshQuery(DtNavMesh nav)
         {
             m_nav = nav;
@@ -1048,26 +1048,22 @@ namespace DotRecast.Detour
             return status;
         }
 
-        /**
-     * Intializes a sliced path query.
-     *
-     * Common use case: -# Call InitSlicedFindPath() to initialize the sliced path query. -# Call UpdateSlicedFindPath()
-     * until it returns complete. -# Call FinalizeSlicedFindPath() to get the path.
-     *
-     * @param startRef
-     *            The reference id of the start polygon.
-     * @param endRef
-     *            The reference id of the end polygon.
-     * @param startPos
-     *            A position within the start polygon. [(x, y, z)]
-     * @param endPos
-     *            A position within the end polygon. [(x, y, z)]
-     * @param filter
-     *            The polygon filter to apply to the query.
-     * @param options
-     *            query options (see: #FindPathOptions)
-     * @return
-     */
+        ///@}
+        /// @name Sliced Pathfinding Functions
+        /// Common use case:
+        ///	-# Call initSlicedFindPath() to initialize the sliced path query.
+        ///	-# Call updateSlicedFindPath() until it returns complete.
+        ///	-# Call finalizeSlicedFindPath() to get the path.
+        ///@{ 
+
+        /// Initializes a sliced path query.
+        ///  @param[in]		startRef	The reference id of the start polygon.
+        ///  @param[in]		endRef		The reference id of the end polygon.
+        ///  @param[in]		startPos	A position within the start polygon. [(x, y, z)]
+        ///  @param[in]		endPos		A position within the end polygon. [(x, y, z)]
+        ///  @param[in]		filter		The polygon filter to apply to the query.
+        ///  @param[in]		options		query options (see: #dtFindPathOptions)
+        /// @returns The status flags for the query.
         public DtStatus InitSlicedFindPath(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter, int options)
         {
             return InitSlicedFindPath(startRef, endRef, startPos, endPos, filter, options, DtDefaultQueryHeuristic.Default, -1.0f);
@@ -1133,13 +1129,10 @@ namespace DotRecast.Detour
             return m_query.status;
         }
 
-        /**
-     * Updates an in-progress sliced path query.
-     *
-     * @param maxIter
-     *            The maximum number of iterations to perform.
-     * @return The status flags for the query.
-     */
+        /// Updates an in-progress sliced path query.
+        ///  @param[in]		maxIter		The maximum number of iterations to perform.
+        ///  @param[out]	doneIters	The actual number of iterations completed. [opt]
+        /// @returns The status flags for the query.
         public virtual DtStatus UpdateSlicedFindPath(int maxIter, out int doneIters)
         {
             doneIters = 0;
@@ -1379,8 +1372,10 @@ namespace DotRecast.Detour
         }
 
         /// Finalizes and returns the results of a sliced path query.
-        /// @param[out] path An ordered list of polygon references representing the path. (Start to end.)
-        /// [(polyRef) * @p pathCount]
+        ///  @param[out]	path		An ordered list of polygon references representing the path. (Start to end.) 
+        ///  							[(polyRef) * @p pathCount]
+        ///  @param[out]	pathCount	The number of polygons returned in the @p path array.
+        ///  @param[in]		maxPath		The max number of polygons the path array can hold. [Limit: >= 1]
         /// @returns The status flags for the query.
         public virtual DtStatus FinalizeSlicedFindPath(ref List<long> path)
         {
