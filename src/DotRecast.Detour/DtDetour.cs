@@ -4,6 +4,10 @@ namespace DotRecast.Detour
 {
     public static class DtDetour
     {
+        /// The maximum number of vertices per navigation polygon.
+        /// @ingroup detour
+        public const int DT_VERTS_PER_POLYGON = 6;
+        
         /** A magic number used to detect compatibility of navigation tile data. */
         public const int DT_NAVMESH_MAGIC = 'D' << 24 | 'N' << 16 | 'A' << 8 | 'V';
 

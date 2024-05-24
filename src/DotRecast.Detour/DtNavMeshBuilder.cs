@@ -111,8 +111,11 @@ namespace DotRecast.Detour
                 node.bmin = minmax[0];
                 node.bmax = minmax[1];
 
-                int axis = LongestAxis(node.bmax[0] - node.bmin[0], node.bmax[1] - node.bmin[1],
-                    node.bmax[2] - node.bmin[2]);
+                int axis = LongestAxis(
+                    node.bmax[0] - node.bmin[0],
+                    node.bmax[1] - node.bmin[1],
+                    node.bmax[2] - node.bmin[2]
+                );
 
                 if (axis == 0)
                 {
@@ -253,14 +256,15 @@ namespace DotRecast.Detour
             return 0xff;
         }
 
-        /**
-     * Builds navigation mesh tile data from the provided tile creation data.
-     *
-     * @param option
-     *            Tile creation data.
-     *
-     * @return created tile data
-     */
+        // TODO: Better error handling.
+
+        /// @par
+        /// 
+        /// The output data array is allocated using the detour allocator (dtAlloc()).  The method
+        /// used to free the memory will be determined by how the tile is added to the navigation
+        /// mesh.
+        ///
+        /// @see dtNavMesh, dtNavMesh::addTile()
         public static DtMeshData CreateNavMeshData(DtNavMeshCreateParams option)
         {
             if (option.vertCount >= 0xffff)
