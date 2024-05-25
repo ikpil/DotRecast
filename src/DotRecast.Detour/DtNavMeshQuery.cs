@@ -1055,7 +1055,6 @@ namespace DotRecast.Detour
         ///	-# Call updateSlicedFindPath() until it returns complete.
         ///	-# Call finalizeSlicedFindPath() to get the path.
         ///@{ 
-
         /// Initializes a sliced path query.
         ///  @param[in]		startRef	The reference id of the start polygon.
         ///  @param[in]		endRef		The reference id of the end polygon.
@@ -2256,16 +2255,16 @@ namespace DotRecast.Detour
         ///
         /// This method is meant to be used for quick, short distance checks.
         ///
-        /// If the path array is too small to hold the result, it will be filled as
+        /// If the path array is too small to hold the result, it will be filled as 
         /// far as possible from the start postion toward the end position.
         ///
         /// <b>Using the Hit Parameter t of RaycastHit</b>
-        ///
-        /// If the hit parameter is a very high value (FLT_MAX), then the ray has hit
-        /// the end position. In this case the path represents a valid corridor to the
+        /// 
+        /// If the hit parameter is a very high value (FLT_MAX), then the ray has hit 
+        /// the end position. In this case the path represents a valid corridor to the 
         /// end position and the value of @p hitNormal is undefined.
         ///
-        /// If the hit parameter is zero, then the start position is on the wall that
+        /// If the hit parameter is zero, then the start position is on the wall that 
         /// was hit and the value of @p hitNormal is undefined.
         ///
         /// If 0 < t < 1.0 then the following applies:
@@ -2277,32 +2276,29 @@ namespace DotRecast.Detour
         ///
         /// <b>Use Case Restriction</b>
         ///
-        /// The raycast ignores the y-value of the end position. (2D check.) This
+        /// The raycast ignores the y-value of the end position. (2D check.) This 
         /// places significant limits on how it can be used. For example:
         ///
-        /// Consider a scene where there is a main floor with a second floor balcony
-        /// that hangs over the main floor. So the first floor mesh extends below the
-        /// balcony mesh. The start position is somewhere on the first floor. The end
+        /// Consider a scene where there is a main floor with a second floor balcony 
+        /// that hangs over the main floor. So the first floor mesh extends below the 
+        /// balcony mesh. The start position is somewhere on the first floor. The end 
         /// position is on the balcony.
         ///
-        /// The raycast will search toward the end position along the first floor mesh.
+        /// The raycast will search toward the end position along the first floor mesh. 
         /// If it reaches the end position's xz-coordinates it will indicate FLT_MAX
         /// (no wall hit), meaning it reached the end position. This is one example of why
         /// this method is meant for short distance checks.
         ///
-        /// Casts a 'walkability' ray along the surface of the navigation mesh from
+        /// Casts a 'walkability' ray along the surface of the navigation mesh from 
         /// the start position toward the end position.
-        /// @note A wrapper around Raycast(..., RaycastHit*). Retained for backward compatibility.
-        /// @param[in] startRef The reference id of the start polygon.
-        /// @param[in] startPos A position within the start polygon representing
-        /// the start of the ray. [(x, y, z)]
-        /// @param[in] endPos The position to cast the ray toward. [(x, y, z)]
-        /// @param[out] t The hit parameter. (FLT_MAX if no wall hit.)
-        /// @param[out] hitNormal The normal of the nearest wall hit. [(x, y, z)]
-        /// @param[in] filter The polygon filter to apply to the query.
-        /// @param[out] path The reference ids of the visited polygons. [opt]
-        /// @param[out] pathCount The number of visited polygons. [opt]
-        /// @param[in] maxPath The maximum number of polygons the @p path array can hold.
+        ///  @param[in]		startRef	The reference id of the start polygon.
+        ///  @param[in]		startPos	A position within the start polygon representing 
+        ///  							the start of the ray. [(x, y, z)]
+        ///  @param[in]		endPos		The position to cast the ray toward. [(x, y, z)]
+        ///  @param[in]		filter		The polygon filter to apply to the query.
+        ///  @param[in]		options		govern how the raycast behaves. See dtRaycastOptions
+        ///  @param[out]	hit			Pointer to a raycast hit structure which will be filled by the results.
+        ///  @param[in]		prevRef		parent of start ref. Used during for cost calculation [opt]
         /// @returns The status flags for the query.
         public DtStatus Raycast(long startRef, RcVec3f startPos, RcVec3f endPos,
             IDtQueryFilter filter, int options,
