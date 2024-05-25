@@ -33,7 +33,7 @@ public class MeshDataReaderWriterTest
     [SetUp]
     public void SetUp()
     {
-        meshData = RecastTestMeshBuilder.Create();
+        meshData = TestMeshDataFactory.Create();
     }
 
     [Test]

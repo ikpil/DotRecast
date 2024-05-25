@@ -65,7 +65,7 @@ public abstract class AbstractDetourTest
     protected DtNavMesh CreateNavMesh()
     {
         var mesh = new DtNavMesh();
-        mesh.Init(RecastTestMeshBuilder.Create(), 6, 0);
+        mesh.Init(TestMeshDataFactory.Create(), 6, 0);
         return mesh;
     }
 }

@@ -25,9 +25,6 @@ using NUnit.Framework;
 
 namespace DotRecast.Recast.Test;
 
-
-
-
 public class RecastLayersTest
 {
     private const float m_cellSize = 0.3f;

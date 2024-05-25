@@ -31,7 +31,7 @@ public class NavMeshBuilderTest
     [SetUp]
     public void SetUp()
     {
-        nmd = RecastTestMeshBuilder.Create();
+        nmd = TestMeshDataFactory.Create();
     }
 
     [Test]

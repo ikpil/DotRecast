@@ -22,7 +22,7 @@ using DotRecast.Recast.Geom;
 
 namespace DotRecast.Detour.Test;
 
-public static class RecastTestMeshBuilder
+public static class TestMeshDataFactory
 {
     private const float m_cellSize = 0.3f;
     private const float m_cellHeight = 0.2f;
