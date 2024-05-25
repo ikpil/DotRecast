@@ -93,7 +93,7 @@ public class VoxelQueryTest
 
     private DtDynamicNavMesh CreateDynaMesh()
     {
-        var bytes = RcResources.Load("test_tiles.voxels");
+        var bytes = RcIO.ReadFileIfFound("test_tiles.voxels");
         using var ms = new MemoryStream(bytes);
         using var br = new BinaryReader(ms);
 

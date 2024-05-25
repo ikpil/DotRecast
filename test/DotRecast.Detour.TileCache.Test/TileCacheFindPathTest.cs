@@ -39,7 +39,7 @@ public class TileCacheFindPathTest : AbstractTileCacheTest
 
     public TileCacheFindPathTest()
     {
-        using var msr = new MemoryStream(RcResources.Load("dungeon_all_tiles_tilecache.bin"));
+        using var msr = new MemoryStream(RcIO.ReadFileIfFound("dungeon_all_tiles_tilecache.bin"));
         using var br = new BinaryReader(msr);
         DtTileCache tcC = new DtTileCacheReader(DtTileCacheCompressorFactory.Shared).Read(br, 6, new TestTileCacheMeshProcess());
         navmesh = tcC.GetNavMesh();

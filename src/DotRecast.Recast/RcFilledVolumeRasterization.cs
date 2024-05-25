@@ -507,8 +507,8 @@ namespace DotRecast.Recast
             for (int i = 0; i < 8; i++)
             {
                 int vi = i * 3;
-                if (vertices[vi] >= rectangle[0] && vertices[vi] < rectangle[2] && vertices[vi + 2] >= rectangle[1]
-                    && vertices[vi + 2] < rectangle[3])
+                if (vertices[vi] >= rectangle[0] && vertices[vi] < rectangle[2] &&
+                    vertices[vi + 2] >= rectangle[1] && vertices[vi + 2] < rectangle[3])
                 {
                     yMin = Math.Min(yMin, vertices[vi + 1]);
                     yMax = Math.Max(yMax, vertices[vi + 1]);

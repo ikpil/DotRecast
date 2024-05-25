@@ -61,6 +61,36 @@ namespace DotRecast.Core
             return (int)s;
         }
 
+        public static byte[] ReadFileIfFound(string filename)
+        {
+            if (string.IsNullOrEmpty(filename))
+                return null;
+
+            string filePath = filename;
+
+            if (!File.Exists(filePath))
+            {
+                var searchFilePath = RcDirectory.SearchFile($"{filename}");
+                if (!File.Exists(searchFilePath))
+                {
+                    searchFilePath = RcDirectory.SearchFile($"resources/{filename}");
+                }
+
+                if (File.Exists(searchFilePath))
+                {
+                    filePath = searchFilePath;
+                }
+            }
+
+            using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            byte[] buffer = new byte[fs.Length];
+            var read = fs.Read(buffer, 0, buffer.Length);
+            if (read != buffer.Length)
+                return null;
+
+            return buffer;
+        }
+
         public static void Write(BinaryWriter ws, float value, RcByteOrder order)
         {
             byte[] bytes = BitConverter.GetBytes(value);

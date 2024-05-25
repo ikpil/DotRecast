@@ -31,7 +31,7 @@ public class MeshSetReaderTest
     [Test]
     public void TestNavmesh()
     {
-        byte[] @is = RcResources.Load("all_tiles_navmesh.bin");
+        byte[] @is = RcIO.ReadFileIfFound("all_tiles_navmesh.bin");
         using var ms = new MemoryStream(@is);
         using var br = new BinaryReader(ms);
         DtNavMesh mesh = reader.Read(br, 6);
@@ -67,7 +67,7 @@ public class MeshSetReaderTest
     [Test]
     public void TestDungeon()
     {
-        byte[] @is = RcResources.Load("dungeon_all_tiles_navmesh.bin");
+        byte[] @is = RcIO.ReadFileIfFound("dungeon_all_tiles_navmesh.bin");
         using var ms = new MemoryStream(@is);
         using var br = new BinaryReader(ms);
 
@@ -104,7 +104,7 @@ public class MeshSetReaderTest
     [Test]
     public void TestDungeon32Bit()
     {
-        byte[] @is = RcResources.Load("dungeon_all_tiles_navmesh_32bit.bin");
+        byte[] @is = RcIO.ReadFileIfFound("dungeon_all_tiles_navmesh_32bit.bin");
         using var ms = new MemoryStream(@is);
         using var br = new BinaryReader(ms);
 

@@ -41,7 +41,7 @@ namespace DotRecast.Recast.Toolset.Geom
 
         public static DemoInputGeomProvider LoadFile(string objFilePath)
         {
-            byte[] chunk = RcResources.Load(objFilePath);
+            byte[] chunk = RcIO.ReadFileIfFound(objFilePath);
             var context = RcObjImporter.LoadContext(chunk);
             return new DemoInputGeomProvider(context.vertexPositions, context.meshFaces);
         }
