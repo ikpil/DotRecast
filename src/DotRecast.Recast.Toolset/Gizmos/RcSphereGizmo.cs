@@ -1,7 +1,6 @@
 ﻿using DotRecast.Core.Numerics;
 using static DotRecast.Recast.Toolset.Gizmos.RcGizmoHelper;
 
-
 namespace DotRecast.Recast.Toolset.Gizmos
 {
     public class RcSphereGizmo : IRcGizmoMeshFilter

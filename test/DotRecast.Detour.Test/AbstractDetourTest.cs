@@ -1,6 +1,6 @@
 /*
 recast4j Copyright (c) 2015-2019 Piotr Piastucki piotr@jtilia.org
-DotRecast Copyright (c) 2023 Choi Ikpil ikpil@naver.com
+DotRecast Copyright (c) 2023-2024 Choi Ikpil ikpil@naver.com
 
 This software is provided 'as-is', without any express or implied
 warranty.  In no event will the authors be held liable for any damages
@@ -65,7 +65,7 @@ public abstract class AbstractDetourTest
     protected DtNavMesh CreateNavMesh()
     {
         var mesh = new DtNavMesh();
-        mesh.Init(new RecastTestMeshBuilder().GetMeshData(), 6, 0);
+        mesh.Init(RecastTestMeshBuilder.Create(), 6, 0);
         return mesh;
     }
 }

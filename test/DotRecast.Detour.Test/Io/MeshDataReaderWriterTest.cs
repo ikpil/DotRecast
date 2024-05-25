@@ -1,5 +1,6 @@
 /*
 recast4j Copyright (c) 2015-2019 Piotr Piastucki piotr@jtilia.org
+DotRecast Copyright (c) 2023-2024 Choi Ikpil ikpil@naver.com
 
 This software is provided 'as-is', without any express or implied
 warranty.  In no event will the authors be held liable for any damages
@@ -32,8 +33,7 @@ public class MeshDataReaderWriterTest
     [SetUp]
     public void SetUp()
     {
-        RecastTestMeshBuilder rcBuilder = new RecastTestMeshBuilder();
-        meshData = rcBuilder.GetMeshData();
+        meshData = RecastTestMeshBuilder.Create();
     }
 
     [Test]

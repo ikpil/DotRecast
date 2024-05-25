@@ -1,5 +1,6 @@
 /*
 recast4j Copyright (c) 2015-2019 Piotr Piastucki piotr@jtilia.org
+DotRecast Copyright (c) 2023-2024 Choi Ikpil ikpil@naver.com
 
 This software is provided 'as-is', without any express or implied
 warranty.  In no event will the authors be held liable for any damages
@@ -119,7 +120,7 @@ public class TestTiledNavMeshBuilder
             option.tileX = result.TileX;
             option.tileZ = result.TileZ;
             option.buildBvTree = true;
-            navMesh.AddTile(DtNavMeshBuilder.CreateNavMeshData(option), 0, 0, out _);
+            navMesh.AddTile(Detour.DtNavMeshBuilder.CreateNavMeshData(option), 0, 0, out _);
         }
     }
 
