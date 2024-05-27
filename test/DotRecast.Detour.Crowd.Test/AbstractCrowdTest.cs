@@ -62,7 +62,7 @@ public class AbstractCrowdTest
     [SetUp]
     public void SetUp()
     {
-        nmd = new RecastTestMeshBuilder().GetMeshData();
+        nmd = TestMeshDataFactory.Create();
         navmesh = new DtNavMesh();
         navmesh.Init(nmd, 6, 0);
         query = new DtNavMeshQuery(navmesh);
