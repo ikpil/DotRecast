@@ -4,7 +4,7 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Extras.Jumplink
 {
-    class NavMeshGroundSampler : AbstractGroundSampler
+    public class NavMeshGroundSampler : AbstractGroundSampler
     {
         public override void Sample(JumpLinkBuilderConfig acfg, RcBuilderResult result, EdgeSampler es)
         {

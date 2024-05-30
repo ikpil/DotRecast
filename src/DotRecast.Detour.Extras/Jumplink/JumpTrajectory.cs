@@ -1,4 +1,5 @@
 using System;
+using DotRecast.Core;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour.Extras.Jumplink
@@ -16,9 +17,9 @@ namespace DotRecast.Detour.Extras.Jumplink
         {
             return new RcVec3f
             {
-                X = Lerp(start.X, end.X, u), 
+                X = RcMath.Lerp(start.X, end.X, u),
                 Y = InterpolateHeight(start.Y, end.Y, u),
-                Z = Lerp(start.Z, end.Z, u)
+                Z = RcMath.Lerp(start.Z, end.Z, u)
             };
         }
 

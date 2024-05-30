@@ -4,7 +4,7 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour.Extras.Jumplink
 {
-    class JumpSegmentBuilder
+    public class JumpSegmentBuilder
     {
         public JumpSegment[] Build(JumpLinkBuilderConfig acfg, EdgeSampler es)
         {

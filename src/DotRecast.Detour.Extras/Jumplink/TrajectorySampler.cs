@@ -5,7 +5,7 @@ using DotRecast.Recast;
 
 namespace DotRecast.Detour.Extras.Jumplink
 {
-    class TrajectorySampler
+    public class TrajectorySampler
     {
         public void Sample(JumpLinkBuilderConfig acfg, RcHeightfield heightfield, EdgeSampler es)
         {

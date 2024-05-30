@@ -3,7 +3,7 @@ using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour.Extras.Jumplink
 {
-    class EdgeSamplerFactory
+    public class EdgeSamplerFactory
     {
         public EdgeSampler Get(JumpLinkBuilderConfig acfg, JumpLinkType type, JumpEdge edge)
         {
