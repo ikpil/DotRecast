@@ -29,5 +29,11 @@ namespace DotRecast.Core
         {
             return f * f;
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Lerp(float value1, float value2, float amount)
+        {
+            return (value1 * (1.0f - amount)) + (value2 * amount);
+        }
     }
 }
