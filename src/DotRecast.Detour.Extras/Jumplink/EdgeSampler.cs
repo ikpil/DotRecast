@@ -7,13 +7,13 @@ namespace DotRecast.Detour.Extras.Jumplink
     {
         public readonly GroundSegment start = new GroundSegment();
         public readonly List<GroundSegment> end = new List<GroundSegment>();
-        public readonly Trajectory trajectory;
+        public readonly ITrajectory trajectory;
 
         public readonly RcVec3f ax = new RcVec3f();
         public readonly RcVec3f ay = new RcVec3f();
         public readonly RcVec3f az = new RcVec3f();
 
-        public EdgeSampler(JumpEdge edge, Trajectory trajectory)
+        public EdgeSampler(JumpEdge edge, ITrajectory trajectory)
         {
             this.trajectory = trajectory;
             ax = RcVec3f.Subtract(edge.sq, edge.sp);

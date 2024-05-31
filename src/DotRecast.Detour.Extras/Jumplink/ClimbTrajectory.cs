@@ -4,9 +4,9 @@ using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour.Extras.Jumplink
 {
-    public class ClimbTrajectory : Trajectory
+    public class ClimbTrajectory : ITrajectory
     {
-        public override RcVec3f Apply(RcVec3f start, RcVec3f end, float u)
+        public RcVec3f Apply(RcVec3f start, RcVec3f end, float u)
         {
             return new RcVec3f()
             {

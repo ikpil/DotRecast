@@ -20,7 +20,7 @@ namespace DotRecast.Detour.Extras.Jumplink
                 {
                     if (i > 41 || i < 41)
                     {
-                        //           continue;
+                        // continue;
                     }
 
                     int nvp = mesh.nvp;
@@ -29,7 +29,7 @@ namespace DotRecast.Detour.Extras.Jumplink
                     {
                         if (j != 1)
                         {
-                            //                    continue;
+                            // continue;
                         }
 
                         if (mesh.polys[p + j] == RC_MESH_NULL_IDX)

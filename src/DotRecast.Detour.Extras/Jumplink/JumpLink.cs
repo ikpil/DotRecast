@@ -10,6 +10,6 @@ namespace DotRecast.Detour.Extras.Jumplink
         public GroundSample[] endSamples;
         public GroundSegment start;
         public GroundSegment end;
-        public Trajectory trajectory;
+        public ITrajectory trajectory;
     }
 }

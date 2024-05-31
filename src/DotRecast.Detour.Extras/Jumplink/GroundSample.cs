@@ -4,7 +4,7 @@ namespace DotRecast.Detour.Extras.Jumplink
 {
     public class GroundSample
     {
-        public RcVec3f p = new RcVec3f();
+        public RcVec3f p;
         public bool validTrajectory;
         public bool validHeight;
     }

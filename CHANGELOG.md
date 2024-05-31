@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Changed `MAX_STEER_POINTS` from class constant to local. 
 - Changed `List<DtStraightPath>` to `Span<DtStraightPath>` for enhanced memory efficiency
 - Changed `DtWriter` to a static class and renamed it to `RcIO`
+- Changed class `Trajectory` to interface `ITrajectory`
 
 ### Removed
 - Nothing

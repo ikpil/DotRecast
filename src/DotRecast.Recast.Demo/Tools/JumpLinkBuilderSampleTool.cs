@@ -417,7 +417,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
     }
 
 
-    private void DrawTrajectory(RecastDebugDraw dd, JumpLink link, RcVec3f pa, RcVec3f pb, Trajectory tra, int cola)
+    private void DrawTrajectory(RecastDebugDraw dd, JumpLink link, RcVec3f pa, RcVec3f pb, ITrajectory tra, int cola)
     {
     }
 
