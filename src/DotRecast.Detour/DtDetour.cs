@@ -35,7 +35,11 @@ namespace DotRecast.Detour
 
         /// A value that indicates the entity does not link to anything.
         public const int DT_NULL_LINK = unchecked((int)0xffffffff);
-
+        
+        public const int DT_NODE_PARENT_BITS = 24;
+        public const int DT_NODE_STATE_BITS = 2;
+        public const int DT_MAX_STATES_PER_NODE = 1 << DT_NODE_STATE_BITS; // number of extra states per node. See dtNode::state
+        
         /// A flag that indicates that an off-mesh connection can be traversed in
         /// both directions. (Is bidirectional.)
         public const int DT_OFFMESH_CON_BIDIR = 1;
