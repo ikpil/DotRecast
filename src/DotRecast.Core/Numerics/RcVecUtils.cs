@@ -118,22 +118,6 @@ namespace DotRecast.Core.Numerics
             @out[n + 2] = @in[m + 2];
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Dot(float[] v1, float[] v2)
-        {
-            return v1[0] * v2[0] +
-                   v1[1] * v2[1] +
-                   v1[2] * v2[2];
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Dot(float[] v1, RcVec3f vector2)
-        {
-            return v1[0] * vector2.X +
-                   v1[1] * vector2.Y +
-                   v1[2] * vector2.Z;
-        }
-
         /// Returns the distance between two points.
         /// @param[in] v1 A point. [(x, y, z)]
         /// @param[in] v2 A point. [(x, y, z)]
