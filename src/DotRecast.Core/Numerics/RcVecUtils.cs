@@ -84,18 +84,6 @@ namespace DotRecast.Core.Numerics
             );
         }
 
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static RcVec3f Subtract(RcVec3f i, float[] verts, int j)
-        {
-            return new RcVec3f(
-                i.X - verts[j],
-                i.Y - verts[j + 1],
-                i.Z - verts[j + 2]
-            );
-        }
-
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Cross(float[] dest, float[] v1, float[] v2)
         {

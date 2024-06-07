@@ -183,11 +183,11 @@ namespace DotRecast.Recast
             return false;
         }
 
-        private static float DistPtTri(RcVec3f p, float[] verts, int a, int b, int c)
+        private static float DistPtTri(RcVec3f p, RcVec3f a, RcVec3f b, RcVec3f c)
         {
-            var v0 = RcVecUtils.Subtract(verts, c, a);
-            var v1 = RcVecUtils.Subtract(verts, b, a);
-            var v2 = RcVecUtils.Subtract(p, verts, a);
+            var v0 = c - a;
+            var v1 = b - a;
+            var v2 = p - a;
 
             float dot00 = Vdot2(v0, v0);
             float dot01 = Vdot2(v0, v1);
@@ -204,7 +204,7 @@ namespace DotRecast.Recast
             const float EPS = 1e-4f;
             if (u >= -EPS && v >= -EPS && (u + v) <= 1 + EPS)
             {
-                float y = verts[a + 1] + v0.Y * u + v1.Y * v;
+                float y = a.Y + v0.Y * u + v1.Y * v;
                 return MathF.Abs(y - p.Y);
             }
 
@@ -303,10 +303,10 @@ namespace DotRecast.Recast
             float dmin = float.MaxValue;
             for (int i = 0; i < ntris; ++i)
             {
-                int va = tris[i * 4 + 0] * 3;
-                int vb = tris[i * 4 + 1] * 3;
-                int vc = tris[i * 4 + 2] * 3;
-                float d = DistPtTri(p, verts, va, vb, vc);
+                RcVec3f va = RcVecUtils.Create(verts, tris[i * 4 + 0] * 3);
+                RcVec3f vb = RcVecUtils.Create(verts, tris[i * 4 + 1] * 3);
+                RcVec3f vc = RcVecUtils.Create(verts, tris[i * 4 + 2] * 3);
+                float d = DistPtTri(p, va, vb, vc);
                 if (d < dmin)
                 {
                     dmin = d;
