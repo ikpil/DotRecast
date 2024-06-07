@@ -153,7 +153,7 @@ public class AbstractCrowdTest
         RcVec3f vel = RcVec3f.Subtract(tgt, pos);
         vel.Y = 0.0f;
         vel = RcVec3f.Normalize(vel);
-        vel = vel.Scale(speed);
+        vel = vel * speed;
         return vel;
     }
 

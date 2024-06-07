@@ -42,12 +42,6 @@ namespace DotRecast.Core.Numerics
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static RcVec3f Scale(this RcVec3f v, float scale)
-        {
-            return v * scale;
-        }
-
         /// Derives the dot product of two vectors on the xz-plane. (@p u . @p v)
         /// @param[in] u A vector [(x, y, z)]
         /// @param[in] v A vector [(x, y, z)]

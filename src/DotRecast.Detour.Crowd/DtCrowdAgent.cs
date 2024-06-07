@@ -62,10 +62,10 @@ namespace DotRecast.Detour.Crowd
 
         /// The local path corridor corners for the agent.
         public DtStraightPath[] corners = new DtStraightPath[DtCrowdConst.DT_CROWDAGENT_MAX_CORNERS];
-        
+
         /// The number of corners.
         public int ncorners;
-        
+
         public DtMoveRequestState targetState; // < State of the movement request.
         public long targetRef; // < Target polyref of the movement request.
         public RcVec3f targetPos = new RcVec3f(); // < Target position of the movement request (or velocity in case of DT_CROWDAGENT_TARGET_VELOCITY).
@@ -91,7 +91,7 @@ namespace DotRecast.Detour.Crowd
             RcVec3f dv = RcVec3f.Subtract(nvel, vel);
             float ds = dv.Length();
             if (ds > maxDelta)
-                dv = dv.Scale(maxDelta / ds);
+                dv = dv * (maxDelta / ds);
             vel = RcVec3f.Add(vel, dv);
 
             // Integrate
@@ -150,7 +150,7 @@ namespace DotRecast.Detour.Crowd
                 float len0 = dir0.Length();
                 float len1 = dir1.Length();
                 if (len1 > 0.001f)
-                    dir1 = dir1.Scale(1.0f / len1);
+                    dir1 = dir1 * (1.0f / len1);
 
                 dir.X = dir0.X - dir1.X * len0 * 0.5f;
                 dir.Y = 0;
