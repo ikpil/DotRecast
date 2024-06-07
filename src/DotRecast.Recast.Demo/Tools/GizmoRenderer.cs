@@ -36,16 +36,11 @@ public static class GizmoRenderer
         }
     }
 
-    public static int GetColorByNormal(float[] vertices, int v0, int v1, int v2)
+    public static int GetColorByNormal(RcVec3f v0, RcVec3f v1, RcVec3f v2)
     {
-        RcVec3f e0 = new RcVec3f();
-        RcVec3f e1 = new RcVec3f();
         RcVec3f normal = new RcVec3f();
-        for (int j = 0; j < 3; ++j)
-        {
-            e0 = RcVecUtils.Subtract(vertices, v1, v0);
-            e1 = RcVecUtils.Subtract(vertices, v2, v0);
-        }
+        RcVec3f e0 = v1 - v0;
+        RcVec3f e1 = v2 - v0;
 
         normal.X = e0.Y * e1.Z - e0.Z * e1.Y;
         normal.Y = e0.Z * e1.X - e0.X * e1.Z;
@@ -160,13 +155,13 @@ public static class GizmoRenderer
         debugDraw.Begin(DebugDrawPrimitives.TRIS);
         for (int i = 0; i < trimesh.triangles.Length; i += 3)
         {
-            int v0 = 3 * trimesh.triangles[i];
-            int v1 = 3 * trimesh.triangles[i + 1];
-            int v2 = 3 * trimesh.triangles[i + 2];
-            int col = GetColorByNormal(trimesh.vertices, v0, v1, v2);
-            debugDraw.Vertex(trimesh.vertices[v0], trimesh.vertices[v0 + 1], trimesh.vertices[v0 + 2], col);
-            debugDraw.Vertex(trimesh.vertices[v1], trimesh.vertices[v1 + 1], trimesh.vertices[v1 + 2], col);
-            debugDraw.Vertex(trimesh.vertices[v2], trimesh.vertices[v2 + 1], trimesh.vertices[v2 + 2], col);
+            RcVec3f v0 = RcVecUtils.Create(trimesh.vertices, 3 * trimesh.triangles[i]);
+            RcVec3f v1 = RcVecUtils.Create(trimesh.vertices, 3 * trimesh.triangles[i + 1]);
+            RcVec3f v2 = RcVecUtils.Create(trimesh.vertices, 3 * trimesh.triangles[i + 2]);
+            int col = GetColorByNormal(v0, v1, v2);
+            debugDraw.Vertex(v0.X, v0.Y, v0.Z, col);
+            debugDraw.Vertex(v1.X, v1.Y, v1.Z, col);
+            debugDraw.Vertex(v2.X, v2.Y, v2.Z, col);
         }
 
         debugDraw.End();

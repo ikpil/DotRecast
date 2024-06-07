@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Removed RcVecUtils.Dot()
 - Removed RcVecUtils.Scale()
 - Removed RcVecUtils.Subtract(RcVec3f i, float[] verts, int j)
+- Removed RcVecUtils.Subtract(float[] verts, int i, int j)
 - Removed RcMeshDetails.VdistSq2(float[], float[])
 
 ### Special Thanks
