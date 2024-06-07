@@ -40,11 +40,6 @@ namespace DotRecast.Recast
         public const int EV_HULL = -2;
 
 
-        private static float Vdot2(float[] a, float[] b)
-        {
-            return a[0] * b[0] + a[2] * b[2];
-        }
-
         private static float Vdot2(RcVec3f a, RcVec3f b)
         {
             return a.X * b.X + a.Z * b.Z;
@@ -63,21 +58,6 @@ namespace DotRecast.Recast
             return MathF.Sqrt(VdistSq2(verts, p, q));
         }
 
-        private static float VdistSq2(float[] p, float[] q)
-        {
-            float dx = q[0] - p[0];
-            float dy = q[2] - p[2];
-            return dx * dx + dy * dy;
-        }
-
-        private static float VdistSq2(float[] p, RcVec3f q)
-        {
-            float dx = q.X - p[0];
-            float dy = q.Z - p[2];
-            return dx * dx + dy * dy;
-        }
-
-
         private static float VdistSq2(RcVec3f p, RcVec3f q)
         {
             float dx = q.X - p.X;
@@ -85,48 +65,10 @@ namespace DotRecast.Recast
             return dx * dx + dy * dy;
         }
 
-
-        private static float Vdist2(float[] p, float[] q)
-        {
-            return MathF.Sqrt(VdistSq2(p, q));
-        }
-
         private static float Vdist2(RcVec3f p, RcVec3f q)
         {
             return MathF.Sqrt(VdistSq2(p, q));
         }
-
-        private static float Vdist2(float[] p, RcVec3f q)
-        {
-            return MathF.Sqrt(VdistSq2(p, q));
-        }
-
-
-        private static float VdistSq2(float[] p, float[] verts, int q)
-        {
-            float dx = verts[q + 0] - p[0];
-            float dy = verts[q + 2] - p[2];
-            return dx * dx + dy * dy;
-        }
-
-        private static float VdistSq2(RcVec3f p, float[] verts, int q)
-        {
-            float dx = verts[q + 0] - p.X;
-            float dy = verts[q + 2] - p.Z;
-            return dx * dx + dy * dy;
-        }
-
-
-        private static float Vdist2(float[] p, float[] verts, int q)
-        {
-            return MathF.Sqrt(VdistSq2(p, verts, q));
-        }
-
-        private static float Vdist2(RcVec3f p, float[] verts, int q)
-        {
-            return MathF.Sqrt(VdistSq2(p, verts, q));
-        }
-
 
         private static float Vcross2(float[] verts, int p1, int p2, int p3)
         {
@@ -134,15 +76,6 @@ namespace DotRecast.Recast
             float v1 = verts[p2 + 2] - verts[p1 + 2];
             float u2 = verts[p3 + 0] - verts[p1 + 0];
             float v2 = verts[p3 + 2] - verts[p1 + 2];
-            return u1 * v2 - v1 * u2;
-        }
-
-        private static float Vcross2(float[] p1, float[] p2, float[] p3)
-        {
-            float u1 = p2[0] - p1[0];
-            float v1 = p2[2] - p1[2];
-            float u2 = p3[0] - p1[0];
-            float v2 = p3[2] - p1[2];
             return u1 * v2 - v1 * u2;
         }
 
@@ -156,13 +89,13 @@ namespace DotRecast.Recast
         }
 
 
-        private static bool CircumCircle(float[] verts, int p1, int p2, int p3, ref RcVec3f c, RcAtomicFloat r)
+        private static bool CircumCircle(RcVec3f p1, RcVec3f p2, RcVec3f p3, ref RcVec3f c, out float r)
         {
             const float EPS = 1e-6f;
             // Calculate the circle relative to p1, to avoid some precision issues.
             var v1 = new RcVec3f();
-            var v2 = RcVecUtils.Subtract(verts, p2, p1);
-            var v3 = RcVecUtils.Subtract(verts, p3, p1);
+            var v2 = p2 - p1;
+            var v3 = p3 - p1;
 
             float cp = Vcross2(v1, v2, v3);
             if (MathF.Abs(cp) > EPS)
@@ -173,13 +106,13 @@ namespace DotRecast.Recast
                 c.X = (v1Sq * (v2.Z - v3.Z) + v2Sq * (v3.Z - v1.Z) + v3Sq * (v1.Z - v2.Z)) / (2 * cp);
                 c.Y = 0;
                 c.Z = (v1Sq * (v3.X - v2.X) + v2Sq * (v1.X - v3.X) + v3Sq * (v2.X - v1.X)) / (2 * cp);
-                r.Exchange(Vdist2(c, v1));
-                c = RcVecUtils.Add(c, verts, p1);
+                r = Vdist2(c, v1);
+                c = c + p1;
                 return true;
             }
 
-            c = RcVecUtils.Create(verts, p1);
-            r.Exchange(0f);
+            c = p1;
+            r = 0f;
             return false;
         }
 
@@ -534,7 +467,7 @@ namespace DotRecast.Recast
             // Find best point on left of edge.
             int pt = npts;
             RcVec3f c = new RcVec3f();
-            RcAtomicFloat r = new RcAtomicFloat(-1f);
+            float r = -1f;
             for (int u = 0; u < npts; ++u)
             {
                 if (u == s || u == t)
@@ -542,28 +475,32 @@ namespace DotRecast.Recast
                     continue;
                 }
 
-                if (Vcross2(pts, s * 3, t * 3, u * 3) > EPS)
+                RcVec3f vs = RcVecUtils.Create(pts, s * 3);
+                RcVec3f vt = RcVecUtils.Create(pts, t * 3);
+                RcVec3f vu = RcVecUtils.Create(pts, u * 3);
+
+                if (Vcross2(vs, vt, vu) > EPS)
                 {
-                    if (r.Get() < 0)
+                    if (r < 0)
                     {
                         // The circle is not updated yet, do it now.
                         pt = u;
-                        CircumCircle(pts, s * 3, t * 3, u * 3, ref c, r);
+                        CircumCircle(vs, vt, vu, ref c, out r);
                         continue;
                     }
 
-                    float d = Vdist2(c, pts, u * 3);
+                    float d = Vdist2(c, vu);
                     float tol = 0.001f;
-                    if (d > r.Get() * (1 + tol))
+                    if (d > r * (1 + tol))
                     {
                         // Outside current circumcircle, skip.
                         continue;
                     }
-                    else if (d < r.Get() * (1 - tol))
+                    else if (d < r * (1 - tol))
                     {
                         // Inside safe circumcircle, update circle.
                         pt = u;
-                        CircumCircle(pts, s * 3, t * 3, u * 3, ref c, r);
+                        CircumCircle(vs, vt, vu, ref c, out r);
                     }
                     else
                     {
@@ -581,7 +518,7 @@ namespace DotRecast.Recast
 
                         // Edge is valid.
                         pt = u;
-                        CircumCircle(pts, s * 3, t * 3, u * 3, ref c, r);
+                        CircumCircle(vs, vt, vu, ref c, out r);
                     }
                 }
             }

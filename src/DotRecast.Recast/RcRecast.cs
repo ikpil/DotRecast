@@ -193,7 +193,10 @@ namespace DotRecast.Recast
             for (int i = 0; i < nt; ++i)
             {
                 int tri = i * 3;
-                CalcTriNormal(verts, tris[tri], tris[tri + 1], tris[tri + 2], ref norm);
+                RcVec3f v0 = RcVecUtils.Create(verts, tris[tri + 0] * 3);
+                RcVec3f v1 = RcVecUtils.Create(verts, tris[tri + 1] * 3);
+                RcVec3f v2 = RcVecUtils.Create(verts, tris[tri + 2] * 3);
+                CalcTriNormal(v0, v1, v2, ref norm);
                 // Check if the face is walkable.
                 if (norm.Y > walkableThr)
                     areas[i] = areaMod.Apply(areas[i]);
@@ -202,10 +205,10 @@ namespace DotRecast.Recast
             return areas;
         }
 
-        public static void CalcTriNormal(float[] verts, int v0, int v1, int v2, ref RcVec3f norm)
+        public static void CalcTriNormal(RcVec3f v0, RcVec3f v1, RcVec3f v2, ref RcVec3f norm)
         {
-            var e0 = RcVecUtils.Subtract(verts, v1 * 3, v0 * 3);
-            var e1 = RcVecUtils.Subtract(verts, v2 * 3, v0 * 3);
+            var e0 = v1 - v0;
+            var e1 = v2 - v0;
             norm = RcVec3f.Cross(e0, e1);
             norm = RcVec3f.Normalize(norm);
         }
@@ -228,7 +231,10 @@ namespace DotRecast.Recast
             for (int i = 0; i < nt; ++i)
             {
                 int tri = i * 3;
-                CalcTriNormal(verts, tris[tri], tris[tri + 1], tris[tri + 2], ref norm);
+                RcVec3f v0 = RcVecUtils.Create(verts, tris[tri + 0] * 3);
+                RcVec3f v1 = RcVecUtils.Create(verts, tris[tri + 1] * 3);
+                RcVec3f v2 = RcVecUtils.Create(verts, tris[tri + 2] * 3);
+                CalcTriNormal(v0, v1, v2, ref norm);
                 // Check if the face is walkable.
                 if (norm.Y <= walkableThr)
                     areas[i] = RC_NULL_AREA;
