@@ -168,8 +168,8 @@ namespace DotRecast.Detour
                     var bmax = RcVecUtils.Create(option.detailVerts, dv);
                     for (int j = 1; j < ndv; j++)
                     {
-                        bmin = RcVecUtils.Min(bmin, option.detailVerts, dv + j * 3);
-                        bmax = RcVecUtils.Max(bmax, option.detailVerts, dv + j * 3);
+                        bmin = RcVec3f.Min(bmin, RcVecUtils.Create(option.detailVerts, dv + j * 3));
+                        bmax = RcVec3f.Max(bmax, RcVecUtils.Create(option.detailVerts, dv + j * 3));
                     }
 
                     // BV-tree uses cs for all dimensions

@@ -460,8 +460,8 @@ namespace DotRecast.Recast
             RcVec3f bmax = RcVecUtils.Create(verts);
             for (int i = 3; i < verts.Length; i += 3)
             {
-                bmin = RcVecUtils.Min(bmin, verts, i);
-                bmax = RcVecUtils.Max(bmax, verts, i);
+                bmin = RcVec3f.Min(bmin, RcVecUtils.Create(verts, i));
+                bmax = RcVec3f.Max(bmax, RcVecUtils.Create(verts, i));
             }
 
             bmin.Y = minY;
