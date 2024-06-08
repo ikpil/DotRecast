@@ -64,17 +64,6 @@ namespace DotRecast.Core.Numerics
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static RcVec3f Add(RcVec3f a, float[] verts, int i)
-        {
-            return new RcVec3f(
-                a.X + verts[i],
-                a.Y + verts[i + 1],
-                a.Z + verts[i + 2]
-            );
-        }
-
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Cross(float[] dest, float[] v1, float[] v2)
         {
             dest[0] = v1[1] * v2[2] - v1[2] * v2[1];
