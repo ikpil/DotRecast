@@ -51,13 +51,6 @@ namespace DotRecast.Core.Numerics
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Dot2D(this RcVec3f @this, Span<float> v, int vi)
-        {
-            return @this.X * v[vi] +
-                   @this.Z * v[vi + 2];
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Cross(float[] dest, float[] v1, float[] v2)
         {
             dest[0] = v1[1] * v2[2] - v1[2] * v2[1];

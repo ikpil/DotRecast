@@ -16,13 +16,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Changed to reuse samples and edges list in BuildPolyDetail()
 
 ### Removed
+- Removed RcMeshDetails.VdistSq2(float[], float[])
 - Removed RcVecUtils.Dot()
 - Removed RcVecUtils.Scale()
 - Removed RcVecUtils.Subtract(RcVec3f i, float[] verts, int j)
 - Removed RcVecUtils.Subtract(float[] verts, int i, int j)
-- Removed RcMeshDetails.VdistSq2(float[], float[])
 - Removed RcVecUtils.Min(), RcVecUtils.Max()
 - Removed RcVecUtils.Create(float[] values)
+- Removed RcVecUtils.Dot2D(this RcVec3f @this, Span<float> v, int vi)
 
 ### Special Thanks
 - [@Doprez](https://github.com/Doprez)
