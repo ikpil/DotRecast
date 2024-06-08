@@ -931,8 +931,8 @@ namespace DotRecast.Recast
             if (sampleDist > 0)
             {
                 // Create sample locations in a grid.
-                RcVec3f bmin = RcVecUtils.Create(@in);
-                RcVec3f bmax = RcVecUtils.Create(@in);
+                RcVec3f bmin = new RcVec3f(@in);
+                RcVec3f bmax = new RcVec3f(@in);
                 for (int i = 1; i < nin; ++i)
                 {
                     bmin = RcVec3f.Min(bmin, RcVecUtils.Create(@in, i * 3));

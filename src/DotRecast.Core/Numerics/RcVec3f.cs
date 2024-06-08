@@ -50,6 +50,19 @@ namespace DotRecast.Core.Numerics
             Z = f;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public RcVec3f(ReadOnlySpan<float> values)
+        {
+            if (values.Length < 3)
+            {
+                RcThrowHelper.ThrowArgumentOutOfRangeException(nameof(values));
+            }
+
+            X = values[0];
+            Y = values[1];
+            Z = values[2];
+        }
+
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly float Length()

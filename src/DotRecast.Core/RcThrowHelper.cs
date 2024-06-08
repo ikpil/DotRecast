@@ -16,6 +16,12 @@ namespace DotRecast.Core
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowArgumentOutOfRangeException(string argument)
+        {
+            throw new ArgumentOutOfRangeException(argument);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void StackOverflow()
         {
             var array_128_512_1 = RcStackArray128<RcStackArray512<float>>.Empty; // 128 * 512 = 65536

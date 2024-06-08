@@ -8,12 +8,6 @@ namespace DotRecast.Core.Numerics
         public const float EPSILON = 1e-6f;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static RcVec3f Create(float[] values)
-        {
-            return Create(values, 0);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static RcVec3f Create(Span<float> values, int n)
         {
             return new RcVec3f(values[n + 0], values[n + 1], values[n + 2]);
@@ -110,26 +104,6 @@ namespace DotRecast.Core.Numerics
             }
 
             return v;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static RcVec3f Min(RcVec3f v, float[] @in, int i)
-        {
-            return new RcVec3f(
-                (v.X < @in[i + 0]) ? v.X : @in[i + 0],
-                (v.Y < @in[i + 1]) ? v.Y : @in[i + 1],
-                (v.Z < @in[i + 2]) ? v.Z : @in[i + 2]
-            );
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static RcVec3f Max(RcVec3f v, float[] @in, int i)
-        {
-            return new RcVec3f(
-                (v.X > @in[i + 0]) ? v.X : @in[i + 0],
-                (v.Y > @in[i + 1]) ? v.Y : @in[i + 1],
-                (v.Z > @in[i + 2]) ? v.Z : @in[i + 2]
-            );
         }
 
         /// Derives the distance between the specified points on the xz-plane.
