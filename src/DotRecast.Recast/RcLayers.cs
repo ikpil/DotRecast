@@ -80,10 +80,10 @@ namespace DotRecast.Recast
             int w = chf.width;
             int h = chf.height;
             
-            int[] srcReg = new int[chf.spanCount];
-            Array.Fill(srcReg, 0xFF);
+            byte[] srcReg = new byte[chf.spanCount];
+            Array.Fill(srcReg, (byte)0xFF);
             
-            int nsweeps = chf.width; // Math.Max(chf.width, chf.height);
+            int nsweeps = chf.width;
             RcLayerSweepSpan[] sweeps = new RcLayerSweepSpan[nsweeps];
             for (int i = 0; i < sweeps.Length; i++)
             {
@@ -92,14 +92,14 @@ namespace DotRecast.Recast
 
             // Partition walkable area into monotone regions.
             int[] prevCount = new int[256];
-            int regId = 0;
+            byte regId = 0;
             
             // Sweep one line at a time.
             for (int y = borderSize; y < h - borderSize; ++y)
             {
                 // Collect spans from this row.
                 Array.Fill(prevCount, 0);
-                int sweepId = 0;
+                byte sweepId = 0;
 
                 for (int x = borderSize; x < w - borderSize; ++x)
                 {
@@ -111,7 +111,7 @@ namespace DotRecast.Recast
                         if (chf.areas[i] == RC_NULL_AREA)
                             continue;
                         
-                        int sid = 0xFF;
+                        byte sid = 0xFF;
                         
                         // -x
                         if (GetCon(ref s, 0) != RC_NOT_CONNECTED)
@@ -136,7 +136,7 @@ namespace DotRecast.Recast
                             int ax = x + GetDirOffsetX(3);
                             int ay = y + GetDirOffsetY(3);
                             int ai = chf.cells[ax + ay * w].index + GetCon(ref s, 3);
-                            int nr = srcReg[ai];
+                            byte nr = srcReg[ai];
                             if (nr != 0xff)
                             {
                                 // Set neighbour when first valid neighbour is encoutered.

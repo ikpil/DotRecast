@@ -43,7 +43,7 @@ namespace DotRecast.Detour.TileCache
             int w = layer.header.width;
             int h = layer.header.height;
 
-            Array.Fill(layer.regs, (short)0x00FF);
+            Array.Fill(layer.regs, (byte)0xFF);
             int nsweeps = w;
             RcLayerSweepSpan[] sweeps = new RcLayerSweepSpan[nsweeps];
             for (int i = 0; i < sweeps.Length; i++)
@@ -53,7 +53,7 @@ namespace DotRecast.Detour.TileCache
 
             // Partition walkable area into monotone regions.
             int[] prevCount = new int[256];
-            int regId = 0;
+            byte regId = 0;
 
             for (int y = 0; y < h; ++y)
             {
@@ -92,7 +92,7 @@ namespace DotRecast.Detour.TileCache
                     int yidx = x + (y - 1) * w;
                     if (y > 0 && IsConnected(layer, idx, yidx, walkableClimb))
                     {
-                        int nr = layer.regs[yidx];
+                        byte nr = layer.regs[yidx];
                         if (nr != 0xff)
                         {
                             // Set neighbour when first valid neighbour is
@@ -146,12 +146,12 @@ namespace DotRecast.Detour.TileCache
                 {
                     int idx = x + y * w;
                     if (layer.regs[idx] != 0xff)
-                        layer.regs[idx] = (short)sweeps[layer.regs[idx]].id;
+                        layer.regs[idx] = sweeps[layer.regs[idx]].id;
                 }
             }
 
             // Allocate and init layer regions.
-            int nregs = regId;
+            byte nregs = regId;
             DtLayerMonotoneRegion[] regs = new DtLayerMonotoneRegion[nregs];
 
             for (int i = 0; i < nregs; ++i)
@@ -166,7 +166,7 @@ namespace DotRecast.Detour.TileCache
                 for (int x = 0; x < w; ++x)
                 {
                     int idx = x + y * w;
-                    int ri = layer.regs[idx];
+                    byte ri = layer.regs[idx];
                     if (ri == 0xff)
                         continue;
 
@@ -178,7 +178,7 @@ namespace DotRecast.Detour.TileCache
                     int ymi = x + (y - 1) * w;
                     if (y > 0 && IsConnected(layer, idx, ymi, walkableClimb))
                     {
-                        int rai = layer.regs[ymi];
+                        byte rai = layer.regs[ymi];
                         if (rai != 0xff && rai != ri)
                         {
                             AddUniqueLast(regs[ri].neis, rai);
@@ -188,7 +188,7 @@ namespace DotRecast.Detour.TileCache
                 }
             }
 
-            for (int i = 0; i < nregs; ++i)
+            for (byte i = 0; i < nregs; ++i)
                 regs[i].regId = i;
 
             for (int i = 0; i < nregs; ++i)
@@ -217,7 +217,7 @@ namespace DotRecast.Detour.TileCache
                 if (merge != -1)
                 {
                     int oldId = reg.regId;
-                    int newId = regs[merge].regId;
+                    byte newId = regs[merge].regId;
                     for (int j = 0; j < nregs; ++j)
                         if (regs[j].regId == oldId)
                             regs[j].regId = newId;
@@ -225,7 +225,7 @@ namespace DotRecast.Detour.TileCache
             }
 
             // Compact ids.
-            int[] remap = new int[256];
+            byte[] remap = new byte[256];
             // Find number of unique regions.
             regId = 0;
             for (int i = 0; i < nregs; ++i)
@@ -242,11 +242,11 @@ namespace DotRecast.Detour.TileCache
             for (int i = 0; i < w * h; ++i)
             {
                 if (layer.regs[i] != 0xff)
-                    layer.regs[i] = (short)regs[layer.regs[i]].regId;
+                    layer.regs[i] = regs[layer.regs[i]].regId;
             }
         }
 
-        public static void AddUniqueLast(List<int> a, int v)
+        public static void AddUniqueLast(List<byte> a, byte v)
         {
             int n = a.Count;
             if (n > 0 && a[n - 1] == v)
@@ -1800,7 +1800,7 @@ namespace DotRecast.Detour.TileCache
             return mesh;
         }
 
-        public static void MarkCylinderArea(DtTileCacheLayer layer, RcVec3f orig, float cs, float ch, RcVec3f pos, float radius, float height, int areaId)
+        public static void MarkCylinderArea(DtTileCacheLayer layer, RcVec3f orig, float cs, float ch, RcVec3f pos, float radius, float height, byte areaId)
         {
             RcVec3f bmin = new RcVec3f();
             RcVec3f bmax = new RcVec3f();
@@ -1856,12 +1856,12 @@ namespace DotRecast.Detour.TileCache
                     int y = layer.heights[x + z * w];
                     if (y < miny || y > maxy)
                         continue;
-                    layer.areas[x + z * w] = (short)areaId;
+                    layer.areas[x + z * w] = areaId;
                 }
             }
         }
 
-        public static void MarkBoxArea(DtTileCacheLayer layer, RcVec3f orig, float cs, float ch, RcVec3f bmin, RcVec3f bmax, int areaId)
+        public static void MarkBoxArea(DtTileCacheLayer layer, RcVec3f orig, float cs, float ch, RcVec3f bmin, RcVec3f bmax, byte areaId)
         {
             int w = layer.header.width;
             int h = layer.header.height;
@@ -1900,7 +1900,7 @@ namespace DotRecast.Detour.TileCache
                     int y = layer.heights[x + z * w];
                     if (y < miny || y > maxy)
                         continue;
-                    layer.areas[x + z * w] = (short)areaId;
+                    layer.areas[x + z * w] = areaId;
                 }
             }
         }
@@ -1975,22 +1975,22 @@ namespace DotRecast.Detour.TileCache
 
             int gridSize = layer.header.width * layer.header.height;
             byte[] grids = comp.Decompress(compressed, buf.Position(), compressed.Length - buf.Position(), gridSize * 3);
-            layer.heights = new short[gridSize];
-            layer.areas = new short[gridSize];
-            layer.cons = new short[gridSize];
-            layer.regs = new short[gridSize];
+            layer.heights = new byte[gridSize];
+            layer.areas = new byte[gridSize];
+            layer.cons = new byte[gridSize];
+            layer.regs = new byte[gridSize];
             for (int i = 0; i < gridSize; i++)
             {
-                layer.heights[i] = (short)(grids[i] & 0xFF);
-                layer.areas[i] = (short)(grids[i + gridSize] & 0xFF);
-                layer.cons[i] = (short)(grids[i + gridSize * 2] & 0xFF);
+                layer.heights[i] = (byte)(grids[i] & 0xFF);
+                layer.areas[i] = (byte)(grids[i + gridSize] & 0xFF);
+                layer.cons[i] = (byte)(grids[i + gridSize * 2] & 0xFF);
             }
 
             return layer;
         }
 
         public static void MarkBoxArea(DtTileCacheLayer layer, RcVec3f orig, float cs, float ch, RcVec3f center, RcVec3f extents,
-            float[] rotAux, int areaId)
+            float[] rotAux, byte areaId)
         {
             int w = layer.header.width;
             int h = layer.header.height;
@@ -2043,7 +2043,7 @@ namespace DotRecast.Detour.TileCache
                     int y = layer.heights[x + z * w];
                     if (y < miny || y > maxy)
                         continue;
-                    layer.areas[x + z * w] = (short)areaId;
+                    layer.areas[x + z * w] = areaId;
                 }
             }
         }

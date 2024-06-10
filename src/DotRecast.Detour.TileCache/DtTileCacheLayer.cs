@@ -23,13 +23,10 @@ namespace DotRecast.Detour.TileCache
     public class DtTileCacheLayer
     {
         public DtTileCacheLayerHeader header;
-        public int regCount;
-
-        /// < Region count.
-        public short[] heights; // char
-
-        public short[] areas; // char
-        public short[] cons; // char
-        public short[] regs; // char
+        public byte regCount; // < Region count.
+        public byte[] heights; // unsigned char
+        public byte[] areas; // unsigned char
+        public byte[] cons; // unsigned char
+        public byte[] regs; // unsigned char
     }
 }

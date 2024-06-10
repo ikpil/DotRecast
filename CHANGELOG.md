@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 - Changed to reuse samples and edges list in BuildPolyDetail()
+- Changed 'heights', 'areas', 'cons', and 'regs' arrays to byte arrays for uniformity and efficiency in DtTileCacheLayer
 
 ### Removed
 - Removed RcMeshDetails.VdistSq2(float[], float[])
