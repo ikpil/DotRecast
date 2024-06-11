@@ -655,7 +655,7 @@ namespace DotRecast.Detour.TileCache
                 for (int x = 0; x < w; ++x)
                 {
                     int idx = x + y * w;
-                    int ri = layer.regs[idx];
+                    byte ri = layer.regs[idx];
                     if (ri == 0xff)
                         continue;
 

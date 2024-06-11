@@ -24,7 +24,7 @@ namespace DotRecast.Detour.TileCache
     {
         public int nverts;
         public int[] verts;
-        public int reg;
-        public int area;
+        public byte reg;
+        public byte area;
     }
 }
