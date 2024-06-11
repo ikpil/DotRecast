@@ -32,7 +32,8 @@ namespace DotRecast.Recast.Geom
         {
             this.vertices = vertices;
             this.faces = faces;
-            chunkyTriMesh = new RcChunkyTriMesh(vertices, faces, faces.Length / 3, 32);
+            chunkyTriMesh = new RcChunkyTriMesh();
+            RcChunkyTriMeshs.CreateChunkyTriMesh(vertices, faces, faces.Length / 3, 32, chunkyTriMesh);
         }
 
         public int[] GetTris()
@@ -47,7 +48,7 @@ namespace DotRecast.Recast.Geom
 
         public List<RcChunkyTriMeshNode> GetChunksOverlappingRect(float[] bmin, float[] bmax)
         {
-            return chunkyTriMesh.GetChunksOverlappingRect(bmin, bmax);
+            return RcChunkyTriMeshs.GetChunksOverlappingRect(chunkyTriMesh, bmin, bmax);
         }
     }
 }

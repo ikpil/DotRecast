@@ -13,9 +13,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fixed bug where the dynamic voxel save file browser doesn't appear in Recast.Demo
 
 ### Changed
-- Changed to reuse samples and edges list in BuildPolyDetail()
-- Changed 'heights', 'areas', 'cons', and 'regs' arrays to byte arrays for uniformity and efficiency in DtTileCacheLayer
-- Changed 'reg', 'area' arrays to byte arrays for uniformity and efficiency in DtTileCacheContour
+- Changed to reuse samples and edges list in `BuildPolyDetail()`
+- Changed `heights`, `areas`, `cons`, and `regs` arrays to byte arrays for uniformity and efficiency in `DtTileCacheLayer`
+- Changed `reg`, `area` arrays to byte arrays for uniformity and efficiency in `DtTileCacheContour`
+- Changed `RcChunkyTriMesh` to separate the function and variable.
   
 ### Removed
 - Removed RcMeshDetails.VdistSq2(float[], float[])

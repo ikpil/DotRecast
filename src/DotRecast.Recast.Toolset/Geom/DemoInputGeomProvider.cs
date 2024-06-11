@@ -150,7 +150,7 @@ namespace DotRecast.Recast.Toolset.Geom
             q.X = src.X + (dst.X - src.X) * btmax;
             q.Y = src.Z + (dst.Z - src.Z) * btmax;
 
-            List<RcChunkyTriMeshNode> chunks = _mesh.chunkyTriMesh.GetChunksOverlappingSegment(p, q);
+            List<RcChunkyTriMeshNode> chunks = RcChunkyTriMeshs.GetChunksOverlappingSegment(_mesh.chunkyTriMesh, p, q);
             if (0 == chunks.Count)
             {
                 return false;
