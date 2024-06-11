@@ -159,7 +159,7 @@ namespace DotRecast.Recast.Toolset.Tools
         public void Save(string filename, bool compression, IRcCompressor compressor)
         {
             DtVoxelFile voxelFile = DtVoxelFile.From(dynaMesh);
-            using var fs = new FileStream(filename, FileMode.CreateNew, FileAccess.Write);
+            using var fs = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite);
             using var bw = new BinaryWriter(fs);
             DtVoxelFileWriter writer = new DtVoxelFileWriter(compressor);
             writer.Write(bw, voxelFile, compression);

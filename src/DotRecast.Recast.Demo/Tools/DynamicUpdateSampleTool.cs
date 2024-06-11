@@ -116,7 +116,8 @@ public class DynamicUpdateSampleTool : ISampleTool
 
         if (mode == RcDynamicUpdateToolMode.BUILD)
         {
-            var loadVoxelPopupStrId = "Load Voxels Popup";
+            const string loadVoxelPopupStrId = "Load Voxels Popup";
+            
             bool isLoadVoxelPopup = true;
             if (ImGui.Button("Load Voxels..."))
             {
@@ -135,7 +136,7 @@ public class DynamicUpdateSampleTool : ISampleTool
                 ImGui.EndPopup();
             }
 
-            var saveVoxelPopupStrId = "Save Voxels Popup";
+            const string saveVoxelPopupStrId = "Save Voxels Popup";
             bool isSaveVoxelPopup = true;
 
             var dynaMesh = _tool.GetDynamicNavMesh();
@@ -144,7 +145,7 @@ public class DynamicUpdateSampleTool : ISampleTool
                 ImGui.Checkbox("Compression", ref compression);
                 if (ImGui.Button("Save Voxels..."))
                 {
-                    ImGui.BeginPopup(saveVoxelPopupStrId);
+                    ImGui.OpenPopup(saveVoxelPopupStrId);
                 }
 
                 if (ImGui.BeginPopupModal(saveVoxelPopupStrId, ref isSaveVoxelPopup, ImGuiWindowFlags.NoTitleBar))
@@ -152,9 +153,7 @@ public class DynamicUpdateSampleTool : ISampleTool
                     var picker = ImFilePicker.GetFilePicker(saveVoxelPopupStrId, Path.Combine(Environment.CurrentDirectory), ".voxels");
                     if (picker.Draw())
                     {
-                        if (string.IsNullOrEmpty(picker.SelectedFile))
-                            Save(picker.SelectedFile);
-
+                        Save(picker.SelectedFile);
                         ImFilePicker.RemoveFilePicker(saveVoxelPopupStrId);
                     }
 
