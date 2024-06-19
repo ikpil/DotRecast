@@ -36,6 +36,54 @@ namespace DotRecast.Core.Numerics
             }
         }
 
+        public static float Dot2(RcVec3f a, RcVec3f b)
+        {
+            return a.X * b.X + a.Z * b.Z;
+        }
+
+
+        public static float DistSq2(float[] verts, int p, int q)
+        {
+            float dx = verts[q + 0] - verts[p + 0];
+            float dy = verts[q + 2] - verts[p + 2];
+            return dx * dx + dy * dy;
+        }
+
+        public static float Dist2(float[] verts, int p, int q)
+        {
+            return MathF.Sqrt(DistSq2(verts, p, q));
+        }
+
+        public static float DistSq2(RcVec3f p, RcVec3f q)
+        {
+            float dx = q.X - p.X;
+            float dy = q.Z - p.Z;
+            return dx * dx + dy * dy;
+        }
+
+        public static float Dist2(RcVec3f p, RcVec3f q)
+        {
+            return MathF.Sqrt(DistSq2(p, q));
+        }
+
+        public static float Cross2(float[] verts, int p1, int p2, int p3)
+        {
+            float u1 = verts[p2 + 0] - verts[p1 + 0];
+            float v1 = verts[p2 + 2] - verts[p1 + 2];
+            float u2 = verts[p3 + 0] - verts[p1 + 0];
+            float v2 = verts[p3 + 2] - verts[p1 + 2];
+            return u1 * v2 - v1 * u2;
+        }
+
+        public static float Cross2(RcVec3f p1, RcVec3f p2, RcVec3f p3)
+        {
+            float u1 = p2.X - p1.X;
+            float v1 = p2.Z - p1.Z;
+            float u2 = p3.X - p1.X;
+            float v2 = p3.Z - p1.Z;
+            return u1 * v2 - v1 * u2;
+        }
+        
         /// Derives the dot product of two vectors on the xz-plane. (@p u . @p v)
         /// @param[in] u A vector [(x, y, z)]
         /// @param[in] v A vector [(x, y, z)]

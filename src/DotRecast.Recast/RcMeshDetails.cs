@@ -27,59 +27,12 @@ using DotRecast.Core.Numerics;
 namespace DotRecast.Recast
 {
     using static RcRecast;
+    using static RcVecUtils;
     using static EdgeValues;
 
     public static class RcMeshDetails
     {
         public const int RC_UNSET_HEIGHT = RC_SPAN_MAX_HEIGHT;
-
-        public static float Vdot2(RcVec3f a, RcVec3f b)
-        {
-            return a.X * b.X + a.Z * b.Z;
-        }
-
-
-        public static float VdistSq2(float[] verts, int p, int q)
-        {
-            float dx = verts[q + 0] - verts[p + 0];
-            float dy = verts[q + 2] - verts[p + 2];
-            return dx * dx + dy * dy;
-        }
-
-        public static float Vdist2(float[] verts, int p, int q)
-        {
-            return MathF.Sqrt(VdistSq2(verts, p, q));
-        }
-
-        public static float VdistSq2(RcVec3f p, RcVec3f q)
-        {
-            float dx = q.X - p.X;
-            float dy = q.Z - p.Z;
-            return dx * dx + dy * dy;
-        }
-
-        public static float Vdist2(RcVec3f p, RcVec3f q)
-        {
-            return MathF.Sqrt(VdistSq2(p, q));
-        }
-
-        public static float Vcross2(float[] verts, int p1, int p2, int p3)
-        {
-            float u1 = verts[p2 + 0] - verts[p1 + 0];
-            float v1 = verts[p2 + 2] - verts[p1 + 2];
-            float u2 = verts[p3 + 0] - verts[p1 + 0];
-            float v2 = verts[p3 + 2] - verts[p1 + 2];
-            return u1 * v2 - v1 * u2;
-        }
-
-        public static float Vcross2(RcVec3f p1, RcVec3f p2, RcVec3f p3)
-        {
-            float u1 = p2.X - p1.X;
-            float v1 = p2.Z - p1.Z;
-            float u2 = p3.X - p1.X;
-            float v2 = p3.Z - p1.Z;
-            return u1 * v2 - v1 * u2;
-        }
 
 
         public static bool CircumCircle(RcVec3f p1, RcVec3f p2, RcVec3f p3, ref RcVec3f c, out float r)
@@ -90,16 +43,16 @@ namespace DotRecast.Recast
             var v2 = p2 - p1;
             var v3 = p3 - p1;
 
-            float cp = Vcross2(v1, v2, v3);
+            float cp = Cross2(v1, v2, v3);
             if (MathF.Abs(cp) > EPS)
             {
-                float v1Sq = Vdot2(v1, v1);
-                float v2Sq = Vdot2(v2, v2);
-                float v3Sq = Vdot2(v3, v3);
+                float v1Sq = Dot2(v1, v1);
+                float v2Sq = Dot2(v2, v2);
+                float v3Sq = Dot2(v3, v3);
                 c.X = (v1Sq * (v2.Z - v3.Z) + v2Sq * (v3.Z - v1.Z) + v3Sq * (v1.Z - v2.Z)) / (2 * cp);
                 c.Y = 0;
                 c.Z = (v1Sq * (v3.X - v2.X) + v2Sq * (v1.X - v3.X) + v3Sq * (v2.X - v1.X)) / (2 * cp);
-                r = Vdist2(c, v1);
+                r = Dist2(c, v1);
                 c = c + p1;
                 return true;
             }
@@ -115,11 +68,11 @@ namespace DotRecast.Recast
             var v1 = b - a;
             var v2 = p - a;
 
-            float dot00 = Vdot2(v0, v0);
-            float dot01 = Vdot2(v0, v1);
-            float dot02 = Vdot2(v0, v2);
-            float dot11 = Vdot2(v1, v1);
-            float dot12 = Vdot2(v1, v2);
+            float dot00 = Dot2(v0, v0);
+            float dot01 = Dot2(v0, v1);
+            float dot02 = Dot2(v0, v2);
+            float dot11 = Dot2(v1, v1);
+            float dot12 = Dot2(v1, v2);
 
             // Compute barycentric coordinates
             float invDenom = 1.0f / (dot00 * dot11 - dot01 * dot01);
@@ -397,11 +350,11 @@ namespace DotRecast.Recast
 
         public static bool OverlapSegSeg2d(float[] verts, int a, int b, int c, int d)
         {
-            float a1 = Vcross2(verts, a, b, d);
-            float a2 = Vcross2(verts, a, b, c);
+            float a1 = Cross2(verts, a, b, d);
+            float a2 = Cross2(verts, a, b, c);
             if (a1 * a2 < 0.0f)
             {
-                float a3 = Vcross2(verts, c, d, a);
+                float a3 = Cross2(verts, c, d, a);
                 float a4 = a3 + a2 - a1;
                 if (a3 * a4 < 0.0f)
                 {
@@ -472,7 +425,7 @@ namespace DotRecast.Recast
                 RcVec3f vt = RcVecUtils.Create(pts, t * 3);
                 RcVec3f vu = RcVecUtils.Create(pts, u * 3);
 
-                if (Vcross2(vs, vt, vu) > EPS)
+                if (Cross2(vs, vt, vu) > EPS)
                 {
                     if (r < 0)
                     {
@@ -482,7 +435,7 @@ namespace DotRecast.Recast
                         continue;
                     }
 
-                    float d = Vdist2(c, vu);
+                    float d = Dist2(c, vu);
                     float tol = 0.001f;
                     if (d > r * (1 + tol))
                     {
@@ -696,7 +649,7 @@ namespace DotRecast.Recast
                 int pv = hull[pi] * 3;
                 int cv = hull[i] * 3;
                 int nv = hull[ni] * 3;
-                float d = Vdist2(verts, pv, cv) + Vdist2(verts, cv, nv) + Vdist2(verts, nv, pv);
+                float d = Dist2(verts, pv, cv) + Dist2(verts, cv, nv) + Dist2(verts, nv, pv);
                 if (d < dmin)
                 {
                     start = i;
@@ -726,8 +679,8 @@ namespace DotRecast.Recast
                 int nvleft = hull[nleft] * 3;
                 int cvright = hull[right] * 3;
                 int nvright = hull[nright] * 3;
-                float dleft = Vdist2(verts, cvleft, nvleft) + Vdist2(verts, nvleft, cvright);
-                float dright = Vdist2(verts, cvright, nvright) + Vdist2(verts, cvleft, nvright);
+                float dleft = Dist2(verts, cvleft, nvleft) + Dist2(verts, nvleft, cvright);
+                float dright = Dist2(verts, cvright, nvright) + Dist2(verts, cvleft, nvright);
 
                 if (dleft < dright)
                 {
