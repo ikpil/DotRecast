@@ -26,11 +26,13 @@ namespace DotRecast.Detour.TileCache
     public class DtTileCacheObstacle
     {
         public readonly int index;
-        public DtTileCacheObstacleType type;
         public RcVec3f pos = new RcVec3f();
+        public float radius;
+        public float height;
+        
         public RcVec3f bmin = new RcVec3f();
         public RcVec3f bmax = new RcVec3f();
-        public float radius, height;
+        
         public RcVec3f center = new RcVec3f();
         public RcVec3f extents = new RcVec3f();
         public readonly float[] rotAux = new float[2]; // { Cos(0.5f*angle)*Sin(-0.5f*angle); Cos(0.5f*angle)*Cos(0.5f*angle) - 0.5 }
@@ -38,13 +40,14 @@ namespace DotRecast.Detour.TileCache
         public List<long> touched = new List<long>();
         public readonly List<long> pending = new List<long>();
         public int salt;
+        public DtTileCacheObstacleType type;
         public DtObstacleState state = DtObstacleState.DT_OBSTACLE_EMPTY;
         public DtTileCacheObstacle next;
 
         public DtTileCacheObstacle(int index)
         {
-            salt = 1;
             this.index = index;
+            salt = 1;
         }
     }
 }

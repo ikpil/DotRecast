@@ -2,8 +2,8 @@
 {
     public enum DtTileCacheObstacleType
     {
-        CYLINDER,
-        BOX,
-        ORIENTED_BOX
+        DT_OBSTACLE_CYLINDER,
+        DT_OBSTACLE_BOX, // AABB
+        DT_OBSTACLE_ORIENTED_BOX // OBB
     };
 }

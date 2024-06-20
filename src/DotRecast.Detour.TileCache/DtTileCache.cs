@@ -348,7 +348,7 @@ namespace DotRecast.Detour.TileCache
         public long AddObstacle(RcVec3f pos, float radius, float height)
         {
             DtTileCacheObstacle ob = AllocObstacle();
-            ob.type = DtTileCacheObstacleType.CYLINDER;
+            ob.type = DtTileCacheObstacleType.DT_OBSTACLE_CYLINDER;
 
             ob.pos = pos;
             ob.radius = radius;
@@ -361,7 +361,7 @@ namespace DotRecast.Detour.TileCache
         public long AddBoxObstacle(RcVec3f bmin, RcVec3f bmax)
         {
             DtTileCacheObstacle ob = AllocObstacle();
-            ob.type = DtTileCacheObstacleType.BOX;
+            ob.type = DtTileCacheObstacleType.DT_OBSTACLE_BOX;
 
             ob.bmin = bmin;
             ob.bmax = bmax;
@@ -373,7 +373,7 @@ namespace DotRecast.Detour.TileCache
         public long AddBoxObstacle(RcVec3f center, RcVec3f extents, float yRadians)
         {
             DtTileCacheObstacle ob = AllocObstacle();
-            ob.type = DtTileCacheObstacleType.ORIENTED_BOX;
+            ob.type = DtTileCacheObstacleType.DT_OBSTACLE_ORIENTED_BOX;
             ob.center = center;
             ob.extents = extents;
             float coshalf = MathF.Cos(0.5f * yRadians);
@@ -612,15 +612,15 @@ namespace DotRecast.Detour.TileCache
 
                 if (Contains(ob.touched, refs))
                 {
-                    if (ob.type == DtTileCacheObstacleType.CYLINDER)
+                    if (ob.type == DtTileCacheObstacleType.DT_OBSTACLE_CYLINDER)
                     {
                         DtTileCacheBuilder.MarkCylinderArea(layer, tile.header.bmin, m_params.cs, m_params.ch, ob.pos, ob.radius, ob.height, 0);
                     }
-                    else if (ob.type == DtTileCacheObstacleType.BOX)
+                    else if (ob.type == DtTileCacheObstacleType.DT_OBSTACLE_BOX)
                     {
                         DtTileCacheBuilder.MarkBoxArea(layer, tile.header.bmin, m_params.cs, m_params.ch, ob.bmin, ob.bmax, 0);
                     }
-                    else if (ob.type == DtTileCacheObstacleType.ORIENTED_BOX)
+                    else if (ob.type == DtTileCacheObstacleType.DT_OBSTACLE_ORIENTED_BOX)
                     {
                         DtTileCacheBuilder.MarkBoxArea(layer, tile.header.bmin, m_params.cs, m_params.ch, ob.center, ob.extents, ob.rotAux, 0);
                     }
@@ -692,7 +692,7 @@ namespace DotRecast.Detour.TileCache
 
         public void GetObstacleBounds(DtTileCacheObstacle ob, ref RcVec3f bmin, ref RcVec3f bmax)
         {
-            if (ob.type == DtTileCacheObstacleType.CYLINDER)
+            if (ob.type == DtTileCacheObstacleType.DT_OBSTACLE_CYLINDER)
             {
                 bmin.X = ob.pos.X - ob.radius;
                 bmin.Y = ob.pos.Y;
@@ -701,12 +701,12 @@ namespace DotRecast.Detour.TileCache
                 bmax.Y = ob.pos.Y + ob.height;
                 bmax.Z = ob.pos.Z + ob.radius;
             }
-            else if (ob.type == DtTileCacheObstacleType.BOX)
+            else if (ob.type == DtTileCacheObstacleType.DT_OBSTACLE_BOX)
             {
                 bmin = ob.bmin;
                 bmax = ob.bmax;
             }
-            else if (ob.type == DtTileCacheObstacleType.ORIENTED_BOX)
+            else if (ob.type == DtTileCacheObstacleType.DT_OBSTACLE_ORIENTED_BOX)
             {
                 float maxr = 1.41f * Math.Max(ob.extents.X, ob.extents.Z);
                 bmin.X = ob.center.X - maxr;
