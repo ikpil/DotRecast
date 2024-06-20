@@ -350,9 +350,9 @@ namespace DotRecast.Detour.TileCache
             DtTileCacheObstacle ob = AllocObstacle();
             ob.type = DtTileCacheObstacleType.DT_OBSTACLE_CYLINDER;
 
-            ob.pos = pos;
-            ob.radius = radius;
-            ob.height = height;
+            ob.cylinder.pos = pos;
+            ob.cylinder.radius = radius;
+            ob.cylinder.height = height;
 
             return AddObstacleRequest(ob).refs;
         }
@@ -363,8 +363,8 @@ namespace DotRecast.Detour.TileCache
             DtTileCacheObstacle ob = AllocObstacle();
             ob.type = DtTileCacheObstacleType.DT_OBSTACLE_BOX;
 
-            ob.bmin = bmin;
-            ob.bmax = bmax;
+            ob.box.bmin = bmin;
+            ob.box.bmax = bmax;
 
             return AddObstacleRequest(ob).refs;
         }
@@ -374,12 +374,12 @@ namespace DotRecast.Detour.TileCache
         {
             DtTileCacheObstacle ob = AllocObstacle();
             ob.type = DtTileCacheObstacleType.DT_OBSTACLE_ORIENTED_BOX;
-            ob.center = center;
-            ob.extents = extents;
+            ob.orientedBox.center = center;
+            ob.orientedBox.extents = extents;
             float coshalf = MathF.Cos(0.5f * yRadians);
             float sinhalf = MathF.Sin(-0.5f * yRadians);
-            ob.rotAux[0] = coshalf * sinhalf;
-            ob.rotAux[1] = coshalf * coshalf - 0.5f;
+            ob.orientedBox.rotAux[0] = coshalf * sinhalf;
+            ob.orientedBox.rotAux[1] = coshalf * coshalf - 0.5f;
             return AddObstacleRequest(ob).refs;
         }
 
@@ -614,15 +614,15 @@ namespace DotRecast.Detour.TileCache
                 {
                     if (ob.type == DtTileCacheObstacleType.DT_OBSTACLE_CYLINDER)
                     {
-                        DtTileCacheBuilder.MarkCylinderArea(layer, tile.header.bmin, m_params.cs, m_params.ch, ob.pos, ob.radius, ob.height, 0);
+                        DtTileCacheBuilder.MarkCylinderArea(layer, tile.header.bmin, m_params.cs, m_params.ch, ob.cylinder.pos, ob.cylinder.radius, ob.cylinder.height, 0);
                     }
                     else if (ob.type == DtTileCacheObstacleType.DT_OBSTACLE_BOX)
                     {
-                        DtTileCacheBuilder.MarkBoxArea(layer, tile.header.bmin, m_params.cs, m_params.ch, ob.bmin, ob.bmax, 0);
+                        DtTileCacheBuilder.MarkBoxArea(layer, tile.header.bmin, m_params.cs, m_params.ch, ob.box.bmin, ob.box.bmax, 0);
                     }
                     else if (ob.type == DtTileCacheObstacleType.DT_OBSTACLE_ORIENTED_BOX)
                     {
-                        DtTileCacheBuilder.MarkBoxArea(layer, tile.header.bmin, m_params.cs, m_params.ch, ob.center, ob.extents, ob.rotAux, 0);
+                        DtTileCacheBuilder.MarkBoxArea(layer, tile.header.bmin, m_params.cs, m_params.ch, ob.orientedBox.center, ob.orientedBox.extents, ob.orientedBox.rotAux, 0);
                     }
                 }
             }
@@ -694,27 +694,27 @@ namespace DotRecast.Detour.TileCache
         {
             if (ob.type == DtTileCacheObstacleType.DT_OBSTACLE_CYLINDER)
             {
-                bmin.X = ob.pos.X - ob.radius;
-                bmin.Y = ob.pos.Y;
-                bmin.Z = ob.pos.Z - ob.radius;
-                bmax.X = ob.pos.X + ob.radius;
-                bmax.Y = ob.pos.Y + ob.height;
-                bmax.Z = ob.pos.Z + ob.radius;
+                bmin.X = ob.cylinder.pos.X - ob.cylinder.radius;
+                bmin.Y = ob.cylinder.pos.Y;
+                bmin.Z = ob.cylinder.pos.Z - ob.cylinder.radius;
+                bmax.X = ob.cylinder.pos.X + ob.cylinder.radius;
+                bmax.Y = ob.cylinder.pos.Y + ob.cylinder.height;
+                bmax.Z = ob.cylinder.pos.Z + ob.cylinder.radius;
             }
             else if (ob.type == DtTileCacheObstacleType.DT_OBSTACLE_BOX)
             {
-                bmin = ob.bmin;
-                bmax = ob.bmax;
+                bmin = ob.box.bmin;
+                bmax = ob.box.bmax;
             }
             else if (ob.type == DtTileCacheObstacleType.DT_OBSTACLE_ORIENTED_BOX)
             {
-                float maxr = 1.41f * Math.Max(ob.extents.X, ob.extents.Z);
-                bmin.X = ob.center.X - maxr;
-                bmax.X = ob.center.X + maxr;
-                bmin.Y = ob.center.Y - ob.extents.Y;
-                bmax.Y = ob.center.Y + ob.extents.Y;
-                bmin.Z = ob.center.Z - maxr;
-                bmax.Z = ob.center.Z + maxr;
+                float maxr = 1.41f * Math.Max(ob.orientedBox.extents.X, ob.orientedBox.extents.Z);
+                bmin.X = ob.orientedBox.center.X - maxr;
+                bmax.X = ob.orientedBox.center.X + maxr;
+                bmin.Y = ob.orientedBox.center.Y - ob.orientedBox.extents.Y;
+                bmax.Y = ob.orientedBox.center.Y + ob.orientedBox.extents.Y;
+                bmin.Z = ob.orientedBox.center.Z - maxr;
+                bmax.Z = ob.orientedBox.center.Z + maxr;
             }
         }
 
