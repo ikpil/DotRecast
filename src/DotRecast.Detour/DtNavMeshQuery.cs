@@ -1477,7 +1477,7 @@ namespace DotRecast.Detour
             return DtStatus.DT_SUCCESS | details;
         }
 
-        protected DtStatus AppendVertex(RcVec3f pos, int flags, long refs, Span<DtStraightPath> straightPath, ref int straightPathCount, int maxStraightPath)
+        protected DtStatus AppendVertex(RcVec3f pos, byte flags, long refs, Span<DtStraightPath> straightPath, ref int straightPathCount, int maxStraightPath)
         {
             if (straightPathCount > 0 && RcVec.Equal(straightPath[straightPathCount - 1].pos, pos))
             {
@@ -1715,7 +1715,7 @@ namespace DotRecast.Detour
                             portalApex = portalLeft;
                             apexIndex = leftIndex;
 
-                            int flags = 0;
+                            byte flags = 0;
                             if (leftPolyRef == 0)
                             {
                                 flags = DtStraightPathFlags.DT_STRAIGHTPATH_END;
@@ -1771,7 +1771,7 @@ namespace DotRecast.Detour
                             portalApex = portalRight;
                             apexIndex = rightIndex;
 
-                            int flags = 0;
+                            byte flags = 0;
                             if (rightPolyRef == 0)
                             {
                                 flags = DtStraightPathFlags.DT_STRAIGHTPATH_END;

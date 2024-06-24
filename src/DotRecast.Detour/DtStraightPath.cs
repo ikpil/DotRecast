@@ -25,11 +25,16 @@ namespace DotRecast.Detour
     //TODO: (PP) Add comments
     public readonly struct DtStraightPath
     {
+        /// The local path corridor corners for the agent. (Staight path.) [(x, y, z) * #ncorners]
         public readonly RcVec3f pos;
-        public readonly int flags;
+
+        /// The local path corridor corner flags. (See: #dtStraightPathFlags) [(flags) * #ncorners]
+        public readonly byte flags;
+
+        /// The reference id of the polygon being entered at the corner. [(polyRef) * #ncorners]
         public readonly long refs;
 
-        public DtStraightPath(RcVec3f pos, int flags, long refs)
+        public DtStraightPath(RcVec3f pos, byte flags, long refs)
         {
             this.pos = pos;
             this.flags = flags;
