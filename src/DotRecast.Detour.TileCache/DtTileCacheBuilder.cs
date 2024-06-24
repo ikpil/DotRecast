@@ -52,14 +52,14 @@ namespace DotRecast.Detour.TileCache
             }
 
             // Partition walkable area into monotone regions.
-            int[] prevCount = new int[256];
+            Span<byte> prevCount = stackalloc byte[256];
             byte regId = 0;
 
             for (int y = 0; y < h; ++y)
             {
                 if (regId > 0)
                 {
-                    Array.Fill(prevCount, 0, 0, regId);
+                    RcSpans.Fill<byte>(prevCount, 0, 0, regId);
                 }
 
                 // Memset(prevCount,0,Sizeof(char)*regId);
@@ -225,7 +225,7 @@ namespace DotRecast.Detour.TileCache
             }
 
             // Compact ids.
-            byte[] remap = new byte[256];
+            Span<byte> remap = stackalloc byte[256];
             // Find number of unique regions.
             regId = 0;
             for (int i = 0; i < nregs; ++i)

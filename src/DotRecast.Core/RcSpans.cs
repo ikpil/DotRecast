@@ -26,5 +26,11 @@ namespace DotRecast.Core
             var slicedDst = src.Slice(dstIdx, length);
             slicedSrc.CopyTo(slicedDst);
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Fill<T>(Span<T> span, T value, int start, int count)
+        {
+            span.Slice(start, count).Fill(value);
+        }
     }
 }
