@@ -108,7 +108,7 @@ public class RandomPointTest : AbstractDetourTest
             var status = query.FindRandomPointWithinCircle(randomRef, randomPt, radius, filter, f, out var nextRandomRef, out var nextRandomPt);
             Assert.That(status.Failed(), Is.False);
 
-            float distance = RcVecUtils.Dist2D(randomPt, nextRandomPt);
+            float distance = RcVec.Dist2D(randomPt, nextRandomPt);
             Assert.That(distance <= radius, Is.True);
 
             randomRef = nextRandomRef;

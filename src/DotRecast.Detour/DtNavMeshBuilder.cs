@@ -164,12 +164,12 @@ namespace DotRecast.Detour
                     int vb = option.detailMeshes[i * 4 + 0];
                     int ndv = option.detailMeshes[i * 4 + 1];
                     int dv = vb * 3;
-                    var bmin = RcVecUtils.Create(option.detailVerts, dv);
-                    var bmax = RcVecUtils.Create(option.detailVerts, dv);
+                    var bmin = RcVec.Create(option.detailVerts, dv);
+                    var bmax = RcVec.Create(option.detailVerts, dv);
                     for (int j = 1; j < ndv; j++)
                     {
-                        bmin = RcVec3f.Min(bmin, RcVecUtils.Create(option.detailVerts, dv + j * 3));
-                        bmax = RcVec3f.Max(bmax, RcVecUtils.Create(option.detailVerts, dv + j * 3));
+                        bmin = RcVec3f.Min(bmin, RcVec.Create(option.detailVerts, dv + j * 3));
+                        bmax = RcVec3f.Max(bmax, RcVec.Create(option.detailVerts, dv + j * 3));
                     }
 
                     // BV-tree uses cs for all dimensions
@@ -322,8 +322,8 @@ namespace DotRecast.Detour
 
                 for (int i = 0; i < option.offMeshConCount; ++i)
                 {
-                    var p0 = RcVecUtils.Create(option.offMeshConVerts, (i * 2 + 0) * 3);
-                    var p1 = RcVecUtils.Create(option.offMeshConVerts, (i * 2 + 1) * 3);
+                    var p0 = RcVec.Create(option.offMeshConVerts, (i * 2 + 0) * 3);
+                    var p1 = RcVec.Create(option.offMeshConVerts, (i * 2 + 1) * 3);
 
                     offMeshConClass[i * 2 + 0] = ClassifyOffMeshPoint(p0, bmin, bmax);
                     offMeshConClass[i * 2 + 1] = ClassifyOffMeshPoint(p1, bmin, bmax);
@@ -624,7 +624,7 @@ namespace DotRecast.Detour
                     int endPts = i * 2 * 3;
                     for (int j = 0; j < 2; ++j)
                     {
-                        con.pos[j] = RcVecUtils.Create(option.offMeshConVerts, endPts + (j * 3));
+                        con.pos[j] = RcVec.Create(option.offMeshConVerts, endPts + (j * 3));
                     }
 
                     con.rad = option.offMeshConRad[i];

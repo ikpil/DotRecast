@@ -54,7 +54,7 @@ public class NavMeshBuilderTest
 
         for (int i = 0; i < 2; i++)
         {
-            Assert.That(RcVecUtils.Create(nmd.verts, 223 * 3 + (i * 3)), Is.EqualTo(nmd.offMeshCons[0].pos[i]));
+            Assert.That(RcVec.Create(nmd.verts, 223 * 3 + (i * 3)), Is.EqualTo(nmd.offMeshCons[0].pos[i]));
         }
 
         Assert.That(nmd.offMeshCons[0].rad, Is.EqualTo(0.1f));

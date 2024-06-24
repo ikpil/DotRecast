@@ -487,7 +487,7 @@ namespace DotRecast.Detour
 
                 int va = imin * 3;
                 int vb = ((imin + 1) % nv) * 3;
-                closest = RcVecUtils.Lerp(verts, va, vb, edget[imin]);
+                closest = RcVec.Lerp(verts, va, vb, edget[imin]);
             }
 
             return DtStatus.DT_SUCCESS;
@@ -670,13 +670,13 @@ namespace DotRecast.Detour
 
                     // Calc polygon bounds.
                     int v = p.verts[0] * 3;
-                    bmin = RcVecUtils.Create(tile.data.verts, v);
-                    bmax = RcVecUtils.Create(tile.data.verts, v);
+                    bmin = RcVec.Create(tile.data.verts, v);
+                    bmax = RcVec.Create(tile.data.verts, v);
                     for (int j = 1; j < p.vertCount; ++j)
                     {
                         v = p.verts[j] * 3;
-                        bmin = RcVec3f.Min(bmin, RcVecUtils.Create(tile.data.verts, v));
-                        bmax = RcVec3f.Max(bmax, RcVecUtils.Create(tile.data.verts, v));
+                        bmin = RcVec3f.Min(bmin, RcVec.Create(tile.data.verts, v));
+                        bmax = RcVec3f.Max(bmax, RcVec.Create(tile.data.verts, v));
                     }
 
                     if (DtUtils.OverlapBounds(qmin, qmax, bmin, bmax))
@@ -1479,7 +1479,7 @@ namespace DotRecast.Detour
 
         protected DtStatus AppendVertex(RcVec3f pos, int flags, long refs, Span<DtStraightPath> straightPath, ref int straightPathCount, int maxStraightPath)
         {
-            if (straightPathCount > 0 && DtUtils.VEqual(straightPath[straightPathCount - 1].pos, pos))
+            if (straightPathCount > 0 && RcVec.Equal(straightPath[straightPathCount - 1].pos, pos))
             {
                 // The vertices are equal, update flags and poly.
                 straightPath[straightPathCount - 1] = new DtStraightPath(straightPath[straightPathCount - 1].pos, flags, refs);
@@ -1693,7 +1693,7 @@ namespace DotRecast.Detour
                     // Right vertex.
                     if (DtUtils.TriArea2D(portalApex, portalRight, right) <= 0.0f)
                     {
-                        if (DtUtils.VEqual(portalApex, portalRight) || DtUtils.TriArea2D(portalApex, portalLeft, right) > 0.0f)
+                        if (RcVec.Equal(portalApex, portalRight) || DtUtils.TriArea2D(portalApex, portalLeft, right) > 0.0f)
                         {
                             portalRight = right;
                             rightPolyRef = (i + 1 < pathSize) ? path[i + 1] : 0;
@@ -1749,7 +1749,7 @@ namespace DotRecast.Detour
                     // Left vertex.
                     if (DtUtils.TriArea2D(portalApex, portalLeft, left) >= 0.0f)
                     {
-                        if (DtUtils.VEqual(portalApex, portalLeft) || DtUtils.TriArea2D(portalApex, portalRight, left) < 0.0f)
+                        if (RcVec.Equal(portalApex, portalLeft) || DtUtils.TriArea2D(portalApex, portalRight, left) < 0.0f)
                         {
                             portalLeft = left;
                             leftPolyRef = (i + 1 < pathSize) ? path[i + 1] : 0;
@@ -1965,7 +1965,7 @@ namespace DotRecast.Detour
                         if (distSqr < bestDist)
                         {
                             // Update nearest distance.
-                            bestPos = RcVecUtils.Lerp(verts, vj, vi, tseg);
+                            bestPos = RcVec.Lerp(verts, vj, vi, tseg);
                             bestDist = distSqr;
                             bestNode = curNode;
                         }
@@ -2153,8 +2153,8 @@ namespace DotRecast.Detour
                     float s = 1.0f / 255.0f;
                     float tmin = link.bmin * s;
                     float tmax = link.bmax * s;
-                    left = RcVecUtils.Lerp(fromTile.data.verts, v0 * 3, v1 * 3, tmin);
-                    right = RcVecUtils.Lerp(fromTile.data.verts, v0 * 3, v1 * 3, tmax);
+                    left = RcVec.Lerp(fromTile.data.verts, v0 * 3, v1 * 3, tmin);
+                    right = RcVec.Lerp(fromTile.data.verts, v0 * 3, v1 * 3, tmax);
                 }
             }
 
@@ -2345,7 +2345,7 @@ namespace DotRecast.Detour
                 int nv = 0;
                 for (int i = 0; i < poly.vertCount; ++i)
                 {
-                    verts[nv] = RcVecUtils.Create(tile.data.verts, poly.verts[i] * 3);
+                    verts[nv] = RcVec.Create(tile.data.verts, poly.verts[i] * 3);
                     nv++;
                 }
 
@@ -2483,7 +2483,7 @@ namespace DotRecast.Detour
                     // compute the intersection point at the furthest end of the polygon
                     // and correct the height (since the raycast moves in 2d)
                     lastPos = curPos;
-                    curPos = RcVecUtils.Mad(startPos, dir, hit.t);
+                    curPos = RcVec.Mad(startPos, dir, hit.t);
                     var e1 = verts[segMax];
                     var e2 = verts[(segMax + 1) % nv];
                     var eDir = RcVec3f.Subtract(e2, e1);
@@ -3174,8 +3174,8 @@ namespace DotRecast.Detour
                     int ivj = poly.verts[j] * 3;
                     int ivi = poly.verts[i] * 3;
                     var seg = new RcSegmentVert();
-                    seg.vmin = RcVecUtils.Create(tile.data.verts, ivj);
-                    seg.vmax = RcVecUtils.Create(tile.data.verts, ivi);
+                    seg.vmin = RcVec.Create(tile.data.verts, ivj);
+                    seg.vmax = RcVec.Create(tile.data.verts, ivi);
                     // RcArrays.Copy(tile.data.verts, ivj, seg, 0, 3);
                     // RcArrays.Copy(tile.data.verts, ivi, seg, 3, 3);
                     segmentVerts.Add(seg);
@@ -3198,8 +3198,8 @@ namespace DotRecast.Detour
                         float tmin = ints[k].tmin / 255.0f;
                         float tmax = ints[k].tmax / 255.0f;
                         var seg = new RcSegmentVert();
-                        seg.vmin = RcVecUtils.Lerp(tile.data.verts, vj, vi, tmin);
-                        seg.vmax = RcVecUtils.Lerp(tile.data.verts, vj, vi, tmax);
+                        seg.vmin = RcVec.Lerp(tile.data.verts, vj, vi, tmin);
+                        seg.vmax = RcVec.Lerp(tile.data.verts, vj, vi, tmax);
                         segmentVerts.Add(seg);
                         segmentRefs.Add(ints[k].refs);
                     }
@@ -3212,8 +3212,8 @@ namespace DotRecast.Detour
                         float tmin = imin / 255.0f;
                         float tmax = imax / 255.0f;
                         var seg = new RcSegmentVert();
-                        seg.vmin = RcVecUtils.Lerp(tile.data.verts, vj, vi, tmin);
-                        seg.vmax = RcVecUtils.Lerp(tile.data.verts, vj, vi, tmax);
+                        seg.vmin = RcVec.Lerp(tile.data.verts, vj, vi, tmin);
+                        seg.vmax = RcVec.Lerp(tile.data.verts, vj, vi, tmax);
                         segmentVerts.Add(seg);
                         segmentRefs.Add(0L);
                     }
@@ -3355,8 +3355,8 @@ namespace DotRecast.Detour
                     hitPos.Y = bestTile.data.verts[vj + 1] + (bestTile.data.verts[vi + 1] - bestTile.data.verts[vj + 1]) * tseg;
                     hitPos.Z = bestTile.data.verts[vj + 2] + (bestTile.data.verts[vi + 2] - bestTile.data.verts[vj + 2]) * tseg;
                     hasBestV = true;
-                    bestvj = RcVecUtils.Create(bestTile.data.verts, vj);
-                    bestvi = RcVecUtils.Create(bestTile.data.verts, vi);
+                    bestvj = RcVec.Create(bestTile.data.verts, vj);
+                    bestvi = RcVec.Create(bestTile.data.verts, vi);
                 }
 
                 for (int i = bestPoly.firstLink; i != DT_NULL_LINK; i = bestTile.links[i].next)

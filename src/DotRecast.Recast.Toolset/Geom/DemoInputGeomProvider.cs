@@ -61,8 +61,8 @@ namespace DotRecast.Recast.Toolset.Geom
             bmax = new RcVec3f(vertices);
             for (int i = 1; i < vertices.Length / 3; i++)
             {
-                bmin = RcVec3f.Min(bmin, RcVecUtils.Create(vertices, i * 3));
-                bmax = RcVec3f.Max(bmax, RcVecUtils.Create(vertices, i * 3));
+                bmin = RcVec3f.Min(bmin, RcVec.Create(vertices, i * 3));
+                bmax = RcVec3f.Max(bmax, RcVec.Create(vertices, i * 3));
             }
 
             _mesh = new RcTriMesh(vertices, faces);
@@ -87,9 +87,9 @@ namespace DotRecast.Recast.Toolset.Geom
         {
             for (int i = 0; i < faces.Length; i += 3)
             {
-                RcVec3f v0 = RcVecUtils.Create(vertices, faces[i] * 3);
-                RcVec3f v1 = RcVecUtils.Create(vertices, faces[i + 1] * 3);
-                RcVec3f v2 = RcVecUtils.Create(vertices, faces[i + 2] * 3);
+                RcVec3f v0 = RcVec.Create(vertices, faces[i] * 3);
+                RcVec3f v1 = RcVec.Create(vertices, faces[i + 1] * 3);
+                RcVec3f v2 = RcVec.Create(vertices, faces[i + 2] * 3);
                 RcVec3f e0 = v1 - v0;
                 RcVec3f e1 = v2 - v0;
 

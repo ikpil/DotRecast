@@ -1,13 +1,10 @@
 ﻿using System;
-using DotRecast.Core;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
 {
     public static class DtUtils
     {
-        private static readonly float EQUAL_THRESHOLD = RcMath.Sqr(1.0f / 16384.0f);
-
         public static int NextPow2(int v)
         {
             v--;
@@ -37,24 +34,6 @@ namespace DotRecast.Detour
             r |= shift;
             r |= (v >> 1);
             return r;
-        }
-
-        /// Performs a 'sloppy' colocation check of the specified points.
-        /// @param[in] p0 A point. [(x, y, z)]
-        /// @param[in] p1 A point. [(x, y, z)]
-        /// @return True if the points are considered to be at the same location.
-        ///
-        /// Basically, this function will return true if the specified points are
-        /// close enough to eachother to be considered colocated.
-        public static bool VEqual(RcVec3f p0, RcVec3f p1)
-        {
-            return VEqual(p0, p1, EQUAL_THRESHOLD);
-        }
-
-        public static bool VEqual(RcVec3f p0, RcVec3f p1, float thresholdSqr)
-        {
-            float d = RcVec3f.DistanceSquared(p0, p1);
-            return d < thresholdSqr;
         }
 
         /// Determines if two axis-aligned bounding boxes overlap.
@@ -252,7 +231,7 @@ namespace DotRecast.Detour
             rmin = rmax = axis.Dot2D(new RcVec3f(poly));
             for (int i = 1; i < npoly; ++i)
             {
-                float d = axis.Dot2D(RcVecUtils.Create(poly, i * 3));
+                float d = axis.Dot2D(RcVec.Create(poly, i * 3));
                 rmin = Math.Min(rmin, d);
                 rmax = Math.Max(rmax, d);
             }
@@ -309,8 +288,8 @@ namespace DotRecast.Detour
 
         public static float DistancePtSegSqr2D(RcVec3f pt, Span<float> verts, int p, int q, out float t)
         {
-            var vp = RcVecUtils.Create(verts, p);
-            var vq = RcVecUtils.Create(verts, q);
+            var vp = RcVec.Create(verts, p);
+            var vq = RcVec.Create(verts, q);
             return DistancePtSegSqr2D(pt, vp, vq, out t);
         }
 
@@ -362,8 +341,8 @@ namespace DotRecast.Detour
                 RcVec3f vpi = verts[i];
                 var edge = RcVec3f.Subtract(vpi, vpj);
                 var diff = RcVec3f.Subtract(p0v, vpj);
-                float n = RcVecUtils.Perp2D(edge, diff);
-                float d = RcVecUtils.Perp2D(dir, edge);
+                float n = RcVec.Perp2D(edge, diff);
+                float d = RcVec.Perp2D(dir, edge);
                 if (MathF.Abs(d) < EPS)
                 {
                     // S is nearly parallel to this edge
@@ -425,14 +404,14 @@ namespace DotRecast.Detour
             RcVec3f u = RcVec3f.Subtract(aq, ap);
             RcVec3f v = RcVec3f.Subtract(bq, bp);
             RcVec3f w = RcVec3f.Subtract(ap, bp);
-            float d = RcVecUtils.PerpXZ(u, v);
+            float d = RcVec.PerpXZ(u, v);
             if (MathF.Abs(d) < 1e-6f)
             {
                 return false;
             }
 
-            s = RcVecUtils.PerpXZ(v, w) / d;
-            t = RcVecUtils.PerpXZ(u, w) / d;
+            s = RcVec.PerpXZ(v, w) / d;
+            t = RcVec.PerpXZ(u, w) / d;
 
             return true;
         }

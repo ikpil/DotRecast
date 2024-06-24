@@ -193,9 +193,9 @@ namespace DotRecast.Recast
             for (int i = 0; i < nt; ++i)
             {
                 int tri = i * 3;
-                RcVec3f v0 = RcVecUtils.Create(verts, tris[tri + 0] * 3);
-                RcVec3f v1 = RcVecUtils.Create(verts, tris[tri + 1] * 3);
-                RcVec3f v2 = RcVecUtils.Create(verts, tris[tri + 2] * 3);
+                RcVec3f v0 = RcVec.Create(verts, tris[tri + 0] * 3);
+                RcVec3f v1 = RcVec.Create(verts, tris[tri + 1] * 3);
+                RcVec3f v2 = RcVec.Create(verts, tris[tri + 2] * 3);
                 CalcTriNormal(v0, v1, v2, ref norm);
                 // Check if the face is walkable.
                 if (norm.Y > walkableThr)
@@ -231,9 +231,9 @@ namespace DotRecast.Recast
             for (int i = 0; i < nt; ++i)
             {
                 int tri = i * 3;
-                RcVec3f v0 = RcVecUtils.Create(verts, tris[tri + 0] * 3);
-                RcVec3f v1 = RcVecUtils.Create(verts, tris[tri + 1] * 3);
-                RcVec3f v2 = RcVecUtils.Create(verts, tris[tri + 2] * 3);
+                RcVec3f v0 = RcVec.Create(verts, tris[tri + 0] * 3);
+                RcVec3f v1 = RcVec.Create(verts, tris[tri + 1] * 3);
+                RcVec3f v2 = RcVec.Create(verts, tris[tri + 2] * 3);
                 CalcTriNormal(v0, v1, v2, ref norm);
                 // Check if the face is walkable.
                 if (norm.Y <= walkableThr)

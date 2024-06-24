@@ -460,8 +460,8 @@ namespace DotRecast.Recast
             RcVec3f bmax = new RcVec3f(verts);
             for (int i = 3; i < verts.Length; i += 3)
             {
-                bmin = RcVec3f.Min(bmin, RcVecUtils.Create(verts, i));
-                bmax = RcVec3f.Max(bmax, RcVecUtils.Create(verts, i));
+                bmin = RcVec3f.Min(bmin, RcVec.Create(verts, i));
+                bmax = RcVec3f.Max(bmax, RcVec.Create(verts, i));
             }
 
             bmin.Y = minY;
@@ -752,19 +752,19 @@ namespace DotRecast.Recast
                 int vertIndexB = vertIndex;
                 int vertIndexC = (vertIndex + 1) % numVerts;
 
-                RcVec3f vertA = RcVecUtils.Create(verts, vertIndexA * 3);
-                RcVec3f vertB = RcVecUtils.Create(verts, vertIndexB * 3);
-                RcVec3f vertC = RcVecUtils.Create(verts, vertIndexC * 3);
+                RcVec3f vertA = RcVec.Create(verts, vertIndexA * 3);
+                RcVec3f vertB = RcVec.Create(verts, vertIndexB * 3);
+                RcVec3f vertC = RcVec.Create(verts, vertIndexC * 3);
 
                 // From A to B on the x/z plane
                 RcVec3f prevSegmentDir = RcVec3f.Subtract(vertB, vertA);
                 prevSegmentDir.Y = 0; // Squash onto x/z plane
-                prevSegmentDir = RcVecUtils.SafeNormalize(prevSegmentDir);
+                prevSegmentDir = RcVec.SafeNormalize(prevSegmentDir);
 
                 // From B to C on the x/z plane
                 RcVec3f currSegmentDir = RcVec3f.Subtract(vertC, vertB);
                 currSegmentDir.Y = 0; // Squash onto x/z plane
-                currSegmentDir = RcVecUtils.SafeNormalize(currSegmentDir);
+                currSegmentDir = RcVec.SafeNormalize(currSegmentDir);
 
                 // The y component of the cross product of the two normalized segment directions.
                 // The X and Z components of the cross product are both zero because the two
@@ -791,7 +791,7 @@ namespace DotRecast.Recast
                 bool bevel = cornerMiterSqMag * MITER_LIMIT * MITER_LIMIT < 1.0f;
 
                 // Scale the corner miter so it's proportional to how much the corner should be offset compared to the edges.
-                if (cornerMiterSqMag > RcVecUtils.EPSILON)
+                if (cornerMiterSqMag > RcVec.EPSILON)
                 {
                     float scale = 1.0f / cornerMiterSqMag;
                     cornerMiterX *= scale;

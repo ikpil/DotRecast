@@ -176,7 +176,7 @@ namespace DotRecast.Recast
 
         private static void Plane(float[][] planes, int p, float[] v1, float[] v2, float[] vertices, int vert)
         {
-            RcVecUtils.Cross(planes[p], v1, v2);
+            RcVec.Cross(planes[p], v1, v2);
             planes[p][3] = planes[p][0] * vertices[vert] + planes[p][1] * vertices[vert + 1] + planes[p][2] * vertices[vert + 2];
         }
 

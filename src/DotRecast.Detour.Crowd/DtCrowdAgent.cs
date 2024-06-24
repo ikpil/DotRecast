@@ -96,7 +96,7 @@ namespace DotRecast.Detour.Crowd
 
             // Integrate
             if (vel.Length() > 0.0001f)
-                npos = RcVecUtils.Mad(npos, vel, dt);
+                npos = RcVec.Mad(npos, vel, dt);
             else
                 vel = RcVec3f.Zero;
         }
@@ -112,7 +112,7 @@ namespace DotRecast.Detour.Crowd
                 : false;
             if (offMeshConnection)
             {
-                float distSq = RcVecUtils.Dist2DSqr(npos, corners[ncorners - 1].pos);
+                float distSq = RcVec.Dist2DSqr(npos, corners[ncorners - 1].pos);
                 if (distSq < radius * radius)
                     return true;
             }
@@ -127,7 +127,7 @@ namespace DotRecast.Detour.Crowd
 
             bool endOfPath = ((corners[ncorners - 1].flags & DtStraightPathFlags.DT_STRAIGHTPATH_END) != 0) ? true : false;
             if (endOfPath)
-                return Math.Min(RcVecUtils.Dist2D(npos, corners[ncorners - 1].pos), range);
+                return Math.Min(RcVec.Dist2D(npos, corners[ncorners - 1].pos), range);
 
             return range;
         }

@@ -511,10 +511,10 @@ public class TestNavmeshSampleTool : ISampleTool
                                 }
 
                                 RcVec3f delta = RcVec3f.Subtract(s3, s.vmin);
-                                RcVec3f p0 = RcVecUtils.Mad(s.vmin, delta, 0.5f);
+                                RcVec3f p0 = RcVec.Mad(s.vmin, delta, 0.5f);
                                 RcVec3f norm = new RcVec3f(delta.Z, 0, -delta.X);
                                 norm = RcVec3f.Normalize(norm);
-                                RcVec3f p1 = RcVecUtils.Mad(p0, norm, agentRadius * 0.5f);
+                                RcVec3f p1 = RcVec.Mad(p0, norm, agentRadius * 0.5f);
                                 // Skip backfacing segments.
                                 if (segmentRefs[j] != 0)
                                 {

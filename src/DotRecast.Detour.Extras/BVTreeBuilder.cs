@@ -40,12 +40,12 @@ namespace DotRecast.Detour.Extras
                 BVItem it = new BVItem();
                 items[i] = it;
                 it.i = i;
-                RcVec3f bmin = RcVecUtils.Create(data.verts, data.polys[i].verts[0] * 3);
-                RcVec3f bmax = RcVecUtils.Create(data.verts, data.polys[i].verts[0] * 3);
+                RcVec3f bmin = RcVec.Create(data.verts, data.polys[i].verts[0] * 3);
+                RcVec3f bmax = RcVec.Create(data.verts, data.polys[i].verts[0] * 3);
                 for (int j = 1; j < data.polys[i].vertCount; j++)
                 {
-                    bmin = RcVec3f.Min(bmin, RcVecUtils.Create(data.verts, data.polys[i].verts[j] * 3));
-                    bmax = RcVec3f.Max(bmax, RcVecUtils.Create(data.verts, data.polys[i].verts[j] * 3));
+                    bmin = RcVec3f.Min(bmin, RcVec.Create(data.verts, data.polys[i].verts[j] * 3));
+                    bmax = RcVec3f.Max(bmax, RcVec.Create(data.verts, data.polys[i].verts[j] * 3));
                 }
 
                 it.bmin[0] = Math.Clamp((int)((bmin.X - data.header.bmin.X) * quantFactor), 0, 0x7fffffff);

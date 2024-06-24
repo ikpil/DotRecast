@@ -27,7 +27,7 @@ using DotRecast.Core.Numerics;
 namespace DotRecast.Recast
 {
     using static RcRecast;
-    using static RcVecUtils;
+    using static RcVec;
     using static EdgeValues;
 
     public static class RcMeshDetails
@@ -182,9 +182,9 @@ namespace DotRecast.Recast
             float dmin = float.MaxValue;
             for (int i = 0; i < ntris; ++i)
             {
-                RcVec3f va = RcVecUtils.Create(verts, tris[i * 4 + 0] * 3);
-                RcVec3f vb = RcVecUtils.Create(verts, tris[i * 4 + 1] * 3);
-                RcVec3f vc = RcVecUtils.Create(verts, tris[i * 4 + 2] * 3);
+                RcVec3f va = RcVec.Create(verts, tris[i * 4 + 0] * 3);
+                RcVec3f vb = RcVec.Create(verts, tris[i * 4 + 1] * 3);
+                RcVec3f vc = RcVec.Create(verts, tris[i * 4 + 2] * 3);
                 float d = DistPtTri(p, va, vb, vc);
                 if (d < dmin)
                 {
@@ -421,9 +421,9 @@ namespace DotRecast.Recast
                     continue;
                 }
 
-                RcVec3f vs = RcVecUtils.Create(pts, s * 3);
-                RcVec3f vt = RcVecUtils.Create(pts, t * 3);
-                RcVec3f vu = RcVecUtils.Create(pts, u * 3);
+                RcVec3f vs = RcVec.Create(pts, s * 3);
+                RcVec3f vt = RcVec.Create(pts, t * 3);
+                RcVec3f vu = RcVec.Create(pts, u * 3);
 
                 if (Cross2(vs, vt, vu) > EPS)
                 {
@@ -728,7 +728,7 @@ namespace DotRecast.Recast
 
             for (int i = 0; i < nin; ++i)
             {
-                RcVecUtils.Copy(verts, i * 3, @in, i * 3);
+                RcVec.Copy(verts, i * 3, @in, i * 3);
             }
 
             edges.Clear();
@@ -844,7 +844,7 @@ namespace DotRecast.Recast
                     {
                         for (int k = nidx - 2; k > 0; --k)
                         {
-                            RcVecUtils.Copy(verts, nverts * 3, edge, idx[k] * 3);
+                            RcVec.Copy(verts, nverts * 3, edge, idx[k] * 3);
                             hull[nhull++] = nverts;
                             nverts++;
                         }
@@ -853,7 +853,7 @@ namespace DotRecast.Recast
                     {
                         for (int k = 1; k < nidx - 1; ++k)
                         {
-                            RcVecUtils.Copy(verts, nverts * 3, edge, idx[k] * 3);
+                            RcVec.Copy(verts, nverts * 3, edge, idx[k] * 3);
                             hull[nhull++] = nverts;
                             nverts++;
                         }
@@ -888,8 +888,8 @@ namespace DotRecast.Recast
                 RcVec3f bmax = new RcVec3f(@in);
                 for (int i = 1; i < nin; ++i)
                 {
-                    bmin = RcVec3f.Min(bmin, RcVecUtils.Create(@in, i * 3));
-                    bmax = RcVec3f.Max(bmax, RcVecUtils.Create(@in, i * 3));
+                    bmin = RcVec3f.Min(bmin, RcVec.Create(@in, i * 3));
+                    bmax = RcVec3f.Max(bmax, RcVec.Create(@in, i * 3));
                 }
 
                 int x0 = (int)MathF.Floor(bmin.X / sampleDist);
@@ -1561,7 +1561,7 @@ namespace DotRecast.Recast
 
                 for (int k = 0; k < dm.nverts; ++k)
                 {
-                    RcVecUtils.Copy(mesh.verts, mesh.nverts * 3, dm.verts, k * 3);
+                    RcVec.Copy(mesh.verts, mesh.nverts * 3, dm.verts, k * 3);
                     mesh.nverts++;
                 }
 

@@ -144,7 +144,7 @@ namespace DotRecast.Detour.Crowd
             while (0 < ncorners)
             {
                 if ((corners[0].flags & DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0 ||
-                    RcVecUtils.Dist2DSqr(corners[0].pos, m_pos) > RcMath.Sqr(MIN_TARGET_DIST))
+                    RcVec.Dist2DSqr(corners[0].pos, m_pos) > RcMath.Sqr(MIN_TARGET_DIST))
                 {
                     break;
                 }
@@ -197,7 +197,7 @@ namespace DotRecast.Detour.Crowd
         public void OptimizePathVisibility(RcVec3f next, float pathOptimizationRange, DtNavMeshQuery navquery, IDtQueryFilter filter)
         {
             // Clamp the ray to max distance.
-            float dist = RcVecUtils.Dist2D(m_pos, next);
+            float dist = RcVec.Dist2D(m_pos, next);
 
             // If too close to the goal, do not try to optimize.
             if (dist < 0.01f)
@@ -210,7 +210,7 @@ namespace DotRecast.Detour.Crowd
 
             // Adjust ray length.
             var delta = RcVec3f.Subtract(next, m_pos);
-            RcVec3f goal = RcVecUtils.Mad(m_pos, delta, pathOptimizationRange / dist);
+            RcVec3f goal = RcVec.Mad(m_pos, delta, pathOptimizationRange / dist);
 
             var res = new List<long>();
             var status = navquery.Raycast(m_path[0], m_pos, goal, filter, out var t, out var norm, ref res);

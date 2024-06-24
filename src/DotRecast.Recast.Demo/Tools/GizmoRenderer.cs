@@ -155,9 +155,9 @@ public static class GizmoRenderer
         debugDraw.Begin(DebugDrawPrimitives.TRIS);
         for (int i = 0; i < trimesh.triangles.Length; i += 3)
         {
-            RcVec3f v0 = RcVecUtils.Create(trimesh.vertices, 3 * trimesh.triangles[i]);
-            RcVec3f v1 = RcVecUtils.Create(trimesh.vertices, 3 * trimesh.triangles[i + 1]);
-            RcVec3f v2 = RcVecUtils.Create(trimesh.vertices, 3 * trimesh.triangles[i + 2]);
+            RcVec3f v0 = RcVec.Create(trimesh.vertices, 3 * trimesh.triangles[i]);
+            RcVec3f v1 = RcVec.Create(trimesh.vertices, 3 * trimesh.triangles[i + 1]);
+            RcVec3f v2 = RcVec.Create(trimesh.vertices, 3 * trimesh.triangles[i + 2]);
             int col = GetColorByNormal(v0, v1, v2);
             debugDraw.Vertex(v0.X, v0.Y, v0.Z, col);
             debugDraw.Vertex(v1.X, v1.Y, v1.Z, col);
