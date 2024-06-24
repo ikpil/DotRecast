@@ -266,7 +266,7 @@ namespace DotRecast.Recast
             }
 
             // Create 2D layers from regions.
-            int layerId = 0;
+            byte layerId = 0;
 
             List<int> stack = new List<int>();
 
@@ -335,7 +335,7 @@ namespace DotRecast.Recast
                 if (!ri.@base)
                     continue;
 
-                int newId = ri.layerId;
+                byte newId = ri.layerId;
 
                 for (;;)
                 {
@@ -411,7 +411,7 @@ namespace DotRecast.Recast
             }
 
             // Compact layerIds
-            int[] remap = new int[256];
+            Span<byte> remap = stackalloc byte[256];
 
             // Find number of unique layers.
             layerId = 0;
