@@ -18,7 +18,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Changed `reg`, `area` arrays to byte arrays for uniformity and efficiency in `DtTileCacheContour`
 - Changed `RcChunkyTriMesh` to separate the function and variable.
 - Changed to consolidate vector-related functions into one place.
-  
+- Changed stack handling from List to a fixed-size array with manual index management for optimization in `RcLayers.BuildHeightfieldLayers`
+
 ### Removed
 - Removed RcMeshDetails.VdistSq2(float[], float[])
 - Removed RcVecUtils.Dot()
