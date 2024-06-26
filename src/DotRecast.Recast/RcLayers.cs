@@ -268,7 +268,9 @@ namespace DotRecast.Recast
             // Create 2D layers from regions.
             byte layerId = 0;
 
-            List<int> stack = new List<int>();
+            const int MAX_STACK = 64;
+            Span<byte> stack = stackalloc byte[MAX_STACK];
+            int nstack = 0;
 
             for (int i = 0; i < nregs; ++i)
             {
@@ -281,14 +283,16 @@ namespace DotRecast.Recast
                 root.layerId = layerId;
                 root.@base = true;
 
-                stack.Add(i);
+                nstack = 0;
+                stack[nstack++] = ((byte)i);
 
-                while (stack.Count != 0)
+                while (0 != nstack)
                 {
                     // Pop front
-                    int pop = stack[0]; // TODO : 여기에 stack 처럼 작동하게 했는데, 스택인지는 모르겠음
-                    stack.RemoveAt(0);
-                    RcLayerRegion reg = regs[pop];
+                    RcLayerRegion reg = regs[stack[0]];
+                    nstack--;
+                    for (int j = 0; j < nstack; ++j)
+                        stack[j] = stack[j+1];
 
                     foreach (int nei in reg.neis)
                     {
@@ -307,19 +311,22 @@ namespace DotRecast.Recast
                         if ((ymax - ymin) >= 255)
                             continue;
 
-                        // Deepen
-                        stack.Add(nei);
-
-                        // Mark layer id
-                        regn.layerId = layerId;
-                        // Merge current layers to root.
-                        foreach (int layer in regn.layers)
+                        if (nstack < MAX_STACK)
                         {
-                            AddUnique(root.layers, layer);
-                        }
+                            // Deepen
+                            stack[nstack++] = (byte)nei;
 
-                        root.ymin = Math.Min(root.ymin, regn.ymin);
-                        root.ymax = Math.Max(root.ymax, regn.ymax);
+                            // Mark layer id
+                            regn.layerId = layerId;
+                            // Merge current layers to root.
+                            foreach (int layer in regn.layers)
+                            {
+                                AddUnique(root.layers, layer);
+                            }
+
+                            root.ymin = Math.Min(root.ymin, regn.ymin);
+                            root.ymax = Math.Max(root.ymax, regn.ymax);
+                        }
                     }
                 }
 
