@@ -25,7 +25,6 @@ using DotRecast.Core.Numerics;
 
 namespace DotRecast.Recast
 {
-    
     using static RcRecast;
 
     public static class RcLayers
@@ -61,7 +60,6 @@ namespace DotRecast.Recast
         /// @name Layer, Contour, Polymesh, and Detail Mesh Functions
         /// @see rcHeightfieldLayer, rcContourSet, rcPolyMesh, rcPolyMeshDetail
         /// @{
-
         /// Builds a layer set from the specified compact heightfield.
         /// @ingroup recast
         /// @param[in,out]	ctx				The build context to use during the operation.
@@ -79,10 +77,10 @@ namespace DotRecast.Recast
 
             int w = chf.width;
             int h = chf.height;
-            
-            byte[] srcReg = new byte[chf.spanCount];
-            Array.Fill(srcReg, (byte)0xFF);
-            
+
+            Span<byte> srcReg = stackalloc byte[chf.spanCount];
+            srcReg.Fill(0xFF);
+
             int nsweeps = chf.width;
             RcLayerSweepSpan[] sweeps = new RcLayerSweepSpan[nsweeps];
             for (int i = 0; i < sweeps.Length; i++)
@@ -91,14 +89,14 @@ namespace DotRecast.Recast
             }
 
             // Partition walkable area into monotone regions.
-            int[] prevCount = new int[256];
+            Span<int> prevCount = stackalloc int[256];
             byte regId = 0;
-            
+
             // Sweep one line at a time.
             for (int y = borderSize; y < h - borderSize; ++y)
             {
                 // Collect spans from this row.
-                Array.Fill(prevCount, 0);
+                prevCount.Fill(0);
                 byte sweepId = 0;
 
                 for (int x = borderSize; x < w - borderSize; ++x)
@@ -110,9 +108,9 @@ namespace DotRecast.Recast
                         ref RcCompactSpan s = ref chf.spans[i];
                         if (chf.areas[i] == RC_NULL_AREA)
                             continue;
-                        
+
                         byte sid = 0xFF;
-                        
+
                         // -x
                         if (GetCon(ref s, 0) != RC_NOT_CONNECTED)
                         {
@@ -292,7 +290,7 @@ namespace DotRecast.Recast
                     RcLayerRegion reg = regs[stack[0]];
                     nstack--;
                     for (int j = 0; j < nstack; ++j)
-                        stack[j] = stack[j+1];
+                        stack[j] = stack[j + 1];
 
                     foreach (int nei in reg.neis)
                     {
@@ -457,7 +455,7 @@ namespace DotRecast.Recast
             bmin.Z += borderSize * chf.cs;
             bmax.X -= borderSize * chf.cs;
             bmax.Z -= borderSize * chf.cs;
-            
+
             lset = new RcHeightfieldLayerSet();
             lset.layers = new RcHeightfieldLayer[layerId];
             for (int i = 0; i < lset.layers.Length; i++)
