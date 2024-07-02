@@ -556,9 +556,9 @@ namespace DotRecast.Detour
                     int ndv = option.detailMeshes[i * 4 + 1];
                     int nv = navPolys[i].vertCount;
                     int vertBase = vbase;
-                    int vertCount = (ndv - nv);
+                    byte vertCount = (byte)(ndv - nv);
                     int triBase = option.detailMeshes[i * 4 + 2];
-                    int triCount = option.detailMeshes[i * 4 + 3];
+                    byte triCount = (byte)option.detailMeshes[i * 4 + 3];
                     navDMeshes[i] = new DtPolyDetail(vertBase, triBase, vertCount, triCount);
                     // Copy vertices except the first 'nv' verts which are equal to
                     // nav poly verts.
@@ -580,9 +580,9 @@ namespace DotRecast.Detour
                 {
                     int nv = navPolys[i].vertCount;
                     int vertBase = 0;
-                    int vertCount = 0;
+                    byte vertCount = 0;
                     int triBase = tbase;
-                    int triCount = (nv - 2);
+                    byte triCount = (byte)(nv - 2);
                     navDMeshes[i] = new DtPolyDetail(vertBase, triBase, vertCount, triCount);
                     // Triangulate polygon (local indices).
                     for (int j = 2; j < nv; ++j)

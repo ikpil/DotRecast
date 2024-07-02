@@ -101,9 +101,9 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                         ymax = Math.Max(ymax, verts[nodes[i].verts[1] * 3 + 1]);
                         ymax = Math.Max(ymax, verts[nodes[i].verts[2] * 3 + 1]);
                         int vertBase = 0;
-                        int vertCount = 0;
+                        byte vertCount = 0;
                         int triBase = i;
-                        int triCount = 1;
+                        byte triCount = 1;
                         detailNodes[i] = new DtPolyDetail(vertBase, triBase, vertCount, triCount);
                         detailTris[4 * i] = 0;
                         detailTris[4 * i + 1] = 1;

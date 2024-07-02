@@ -173,8 +173,8 @@ namespace DotRecast.Detour.Io
             {
                 int vertBase = buf.GetInt();
                 int triBase = buf.GetInt();
-                int vertCount = buf.Get() & 0xFF;
-                int triCount = buf.Get() & 0xFF;
+                byte vertCount = (byte)(buf.Get() & 0xFF);
+                byte triCount = (byte)(buf.Get() & 0xFF);
                 polys[i] = new DtPolyDetail(vertBase, triBase, vertCount, triCount);
                 if (cCompatibility)
                 {
