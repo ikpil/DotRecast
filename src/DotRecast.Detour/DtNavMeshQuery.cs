@@ -39,6 +39,23 @@ namespace DotRecast.Detour
         protected readonly DtNodePool m_nodePool; //< Pointer to node pool. 
         protected readonly DtNodeQueue m_openList; //< Pointer to open list queue. 
 
+        //////////////////////////////////////////////////////////////////////////////////////////
+
+        /// @class dtNavMeshQuery
+        ///
+        /// For methods that support undersized buffers, if the buffer is too small 
+        /// to hold the entire result set the return status of the method will include 
+        /// the #DT_BUFFER_TOO_SMALL flag.
+        ///
+        /// Constant member functions can be used by multiple clients without side
+        /// effects. (E.g. No change to the closed list. No impact on an in-progress
+        /// sliced path query. Etc.)
+        /// 
+        /// Walls and portals: A @e wall is a polygon segment that is 
+        /// considered impassable. A @e portal is a passable segment between polygons.
+        /// A portal may be treated as a wall based on the dtQueryFilter used for a query.
+        ///
+        /// @see dtNavMesh, dtQueryFilter, #dtAllocNavMeshQuery(), #dtAllocNavMeshQuery()
         public DtNavMeshQuery(DtNavMesh nav)
         {
             m_nav = nav;
@@ -254,6 +271,7 @@ namespace DotRecast.Detour
                 DtNode bestNode = m_openList.Pop();
                 bestNode.flags &= ~DtNodeFlags.DT_NODE_OPEN;
                 bestNode.flags |= DtNodeFlags.DT_NODE_CLOSED;
+                
                 // Get poly and tile.
                 // The API input has been checked already, skip checking internal data.
                 long bestRef = bestNode.id;
