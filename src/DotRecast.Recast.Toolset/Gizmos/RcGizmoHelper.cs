@@ -4,8 +4,8 @@ namespace DotRecast.Recast.Toolset.Gizmos
 {
     public static class RcGizmoHelper
     {
-        private static readonly int SEGMENTS = 16;
-        private static readonly int RINGS = 8;
+        private const int SEGMENTS = 16;
+        private const int RINGS = 8;
 
         private static float[] sphericalVertices;
 

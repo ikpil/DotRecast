@@ -6,7 +6,7 @@ namespace DotRecast.Core.Numerics
     public static class RcVec
     {
         public const float EPSILON = 1e-6f;
-        private static readonly float EQUAL_THRESHOLD = RcMath.Sqr(1.0f / 16384.0f);
+        public static readonly float EQUAL_THRESHOLD = RcMath.Sqr(1.0f / 16384.0f);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static RcVec3f Create(Span<float> values, int n)

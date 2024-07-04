@@ -28,7 +28,7 @@ namespace DotRecast.Detour
  */
     public static class DtConvexConvexIntersections
     {
-        private static readonly float EPSILON = 0.0001f;
+        private const float EPSILON = 0.0001f;
 
         public static float[] Intersect(float[] p, float[] q)
         {

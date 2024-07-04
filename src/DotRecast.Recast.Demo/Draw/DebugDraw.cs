@@ -326,9 +326,9 @@ public class DebugDraw
         }
     }
 
-    private static readonly int NUM_ARC_PTS = 8;
-    private static readonly float PAD = 0.05f;
-    private static readonly float ARC_PTS_SCALE = (1.0f - PAD * 2) / NUM_ARC_PTS;
+    private const int NUM_ARC_PTS = 8;
+    private const float PAD = 0.05f;
+    private const float ARC_PTS_SCALE = (1.0f - PAD * 2) / NUM_ARC_PTS;
 
     public void AppendArc(float x0, float y0, float z0, float x1, float y1, float z1, float h, float as0, float as1, int col)
     {

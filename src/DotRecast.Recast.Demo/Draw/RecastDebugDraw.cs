@@ -33,9 +33,9 @@ using static DtDetour;
 
 public class RecastDebugDraw : DebugDraw
 {
-    public static readonly int DU_DRAWNAVMESH_OFFMESHCONS = 0x01;
-    public static readonly int DU_DRAWNAVMESH_CLOSEDLIST = 0x02;
-    public static readonly int DU_DRAWNAVMESH_COLOR_TILES = 0x04;
+    public const int DU_DRAWNAVMESH_OFFMESHCONS = 0x01;
+    public const int DU_DRAWNAVMESH_CLOSEDLIST = 0x02;
+    public const int DU_DRAWNAVMESH_COLOR_TILES = 0x04;
 
     public RecastDebugDraw(GL gl) : base(gl)
     {
