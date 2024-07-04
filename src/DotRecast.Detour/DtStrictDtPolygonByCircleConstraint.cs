@@ -3,13 +3,11 @@ using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
 {
-    /**
-     * Calculate the intersection between a polygon and a circle. A dodecagon is used as an approximation of the circle.
-     */
+    // Calculate the intersection between a polygon and a circle. A dodecagon is used as an approximation of the circle.
     public class DtStrictDtPolygonByCircleConstraint : IDtPolygonByCircleConstraint
     {
         private const int CIRCLE_SEGMENTS = 12;
-        private static readonly float[] UnitCircle = MakeUnitCircle();
+        private static readonly float[] UnitCircle = CreateCircle();
 
         public static readonly IDtPolygonByCircleConstraint Shared = new DtStrictDtPolygonByCircleConstraint();
 
@@ -17,7 +15,7 @@ namespace DotRecast.Detour
         {
         }
 
-        private static float[] MakeUnitCircle()
+        public static float[] CreateCircle()
         {
             var temp = new float[CIRCLE_SEGMENTS * 3];
             for (int i = 0; i < CIRCLE_SEGMENTS; i++)
@@ -30,6 +28,17 @@ namespace DotRecast.Detour
 
             return temp;
         }
+
+        public static void ScaleCircle(Span<float> src, RcVec3f center, float radius, Span<float> dst)
+        {
+            for (int i = 0; i < CIRCLE_SEGMENTS; i++)
+            {
+                dst[3 * i] = src[3 * i] * radius + center.X;
+                dst[3 * i + 1] = center.Y;
+                dst[3 * i + 2] = src[3 * i + 2] * radius + center.Z;
+            }
+        }
+
 
         public float[] Apply(float[] verts, RcVec3f center, float radius)
         {
@@ -50,29 +59,16 @@ namespace DotRecast.Detour
                 return verts;
             }
 
-            float[] qCircle = Circle(center, radius);
+            Span<float> qCircle = stackalloc float[UnitCircle.Length];
+            ScaleCircle(UnitCircle, center, radius, qCircle);
             float[] intersection = DtConvexConvexIntersections.Intersect(verts, qCircle);
             if (intersection == null && DtUtils.PointInPolygon(center, verts, verts.Length / 3))
             {
                 // circle inside polygon
-                return qCircle;
+                return qCircle.ToArray();
             }
 
             return intersection;
-        }
-
-
-        private float[] Circle(RcVec3f center, float radius)
-        {
-            float[] circle = new float[12 * 3];
-            for (int i = 0; i < CIRCLE_SEGMENTS * 3; i += 3)
-            {
-                circle[i] = UnitCircle[i] * radius + center.X;
-                circle[i + 1] = center.Y;
-                circle[i + 2] = UnitCircle[i + 2] * radius + center.Z;
-            }
-
-            return circle;
         }
     }
 }

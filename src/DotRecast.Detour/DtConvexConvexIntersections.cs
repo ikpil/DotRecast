@@ -18,23 +18,20 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using DotRecast.Core;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
 {
-    /**
- * Convex-convex intersection based on "Computational Geometry in C" by Joseph O'Rourke
- */
+    // Convex-convex intersection based on "Computational Geometry in C" by Joseph O'Rourke
     public static class DtConvexConvexIntersections
     {
         private const float EPSILON = 0.0001f;
 
-        public static float[] Intersect(float[] p, float[] q)
+        public static float[] Intersect(Span<float> p, Span<float> q)
         {
             int n = p.Length / 3;
             int m = q.Length / 3;
-            float[] inters = new float[Math.Max(m, n) * 3 * 3];
+            Span<float> inters = stackalloc float[Math.Max(m, n) * 3 * 3];
             int ii = 0;
             /* Initialize variables. */
             RcVec3f a = new RcVec3f();
@@ -171,12 +168,11 @@ namespace DotRecast.Detour
                 return null;
             }
 
-            float[] copied = new float[ii];
-            RcArrays.Copy(inters, copied, ii);
+            float[] copied = inters.Slice(0, ii).ToArray();
             return copied;
         }
 
-        private static int AddVertex(float[] inters, int ii, RcVec3f p)
+        private static int AddVertex(Span<float> inters, int ii, RcVec3f p)
         {
             if (ii > 0)
             {
