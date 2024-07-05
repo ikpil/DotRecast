@@ -24,6 +24,7 @@ using System.Runtime.InteropServices;
 
 namespace DotRecast.Core.Collections
 {
+    // TODO 使用二叉堆重构
     public class RcSortedQueue<T>
     {
         private bool _dirty;
