@@ -20,6 +20,8 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using DotRecast.Core;
 using DotRecast.Core.Collections;
@@ -29,8 +31,8 @@ namespace DotRecast.Detour.Crowd
 {
     ///////////////////////////////////////////////////////////////////////////
 
-// This section contains detailed documentation for members that don't have
-// a source file. It reduces clutter in the main section of the header.
+    // This section contains detailed documentation for members that don't have
+    // a source file. It reduces clutter in the main section of the header.
 
     /**
 
@@ -1120,7 +1122,7 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        private void PlanVelocity(DtCrowdAgentDebugInfo debug, IList<DtCrowdAgent> agents)
+        private unsafe void PlanVelocity(DtCrowdAgentDebugInfo debug, IList<DtCrowdAgent> agents)
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.PlanVelocity);
 
@@ -1147,15 +1149,16 @@ namespace DotRecast.Detour.Crowd
                     // Append neighbour segments as obstacles.
                     for (int j = 0; j < ag.boundary.GetSegmentCount(); ++j)
                     {
-                        RcVec3f[] s = ag.boundary.GetSegment(j);
-                        RcVec3f s3 = s[1];
+                        var s = ag.boundary.GetSegment(j);
+                        RcVec3f s0 = Unsafe.ReadUnaligned<RcVec3f>(s.s);
+                        RcVec3f s3 = Unsafe.ReadUnaligned<RcVec3f>(s.s + 3);
                         //RcArrays.Copy(s, 3, s3, 0, 3);
-                        if (DtUtils.TriArea2D(ag.npos, s[0], s3) < 0.0f)
+                        if (DtUtils.TriArea2D(ag.npos, s0, s3) < 0.0f)
                         {
                             continue;
                         }
 
-                        _obstacleQuery.AddSegment(s[0], s3);
+                        _obstacleQuery.AddSegment(s0, s3);
                     }
 
                     DtObstacleAvoidanceDebugData vod = null;
