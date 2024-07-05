@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Recast.Toolset.Tools
+namespace DotRecast.Recast.Toolset.Tools
 {
     public class RcCrowdAgentProfilingToolConfig
     {
@@ -12,5 +12,7 @@
         public float percentTravellers = 15f;
         public int pathQueueSize = 32;
         public int maxIterations = 300;
+
+        public bool showAgents = true;
     }
 }

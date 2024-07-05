@@ -18,12 +18,9 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour;
 using DotRecast.Detour.Crowd;
-using DotRecast.Recast.Toolset.Builder;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Toolset;
 using DotRecast.Recast.Toolset.Tools;
@@ -98,6 +95,11 @@ public class CrowdAgentProfilingSampleTool : ISampleTool
         ImGui.SliderInt("Max Iterations", ref toolCfg.maxIterations, 0, 4000);
         ImGui.NewLine();
 
+        ImGui.Text("Debug Draw");
+        ImGui.Separator();
+        ImGui.Checkbox("Show Agents", ref toolCfg.showAgents);
+        ImGui.NewLine();
+
         if (ImGui.Button("Start Crowd Profiling"))
         {
             var settings = _sample.GetSettings();
@@ -118,11 +120,11 @@ public class CrowdAgentProfilingSampleTool : ISampleTool
                 ImGui.Text($"{rtt.Key}: {rtt.Micros} us");
             }
 
-            ImGui.Text($"Sampling Time: {_tool.GetCrowdUpdateSamplingTime()} ms");
-            ImGui.Text($"Current Update Time: {_tool.GetCrowdUpdateTime()} ms");
-            ImGui.Text($"Avg Update Time: {_tool.GetCrowdUpdateAvgTime()} ms");
-            ImGui.Text($"Max Update Time: {_tool.GetCrowdUpdateMaxTime()} ms");
-            ImGui.Text($"Min Update Time: {_tool.GetCrowdUpdateMinTime()} ms");
+            ImGui.Text($"Sampling Time: {_tool.GetCrowdUpdateSamplingTime():0.00} ms");
+            ImGui.Text($"Current Update Time: {_tool.GetCrowdUpdateTime():0.00} ms");
+            ImGui.Text($"Avg Update Time: {_tool.GetCrowdUpdateAvgTime():0.00} ms");
+            ImGui.Text($"Max Update Time: {_tool.GetCrowdUpdateMaxTime():0.00} ms");
+            ImGui.Text($"Min Update Time: {_tool.GetCrowdUpdateMinTime():0.00} ms");
         }
     }
 
@@ -132,7 +134,7 @@ public class CrowdAgentProfilingSampleTool : ISampleTool
         dd.DepthMask(false);
 
         var crowd = _tool.GetCrowd();
-        if (crowd != null)
+        if (crowd != null && _tool.GetToolConfig().showAgents)
         {
             foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
             {
