@@ -22,8 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Numerics;
-using DotRecast.Core;
+using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
 {
@@ -31,14 +30,14 @@ namespace DotRecast.Detour
 
     public static class DtPathUtils
     {
-        public static bool GetSteerTarget(DtNavMeshQuery navQuery, Vector3 startPos, Vector3 endPos,
+        public static bool GetSteerTarget(DtNavMeshQuery navQuery, RcVec3f startPos, RcVec3f endPos,
             float minTargetDist,
-            ReadOnlySpan<long> path, int pathSize,
-            out Vector3 steerPos, out int steerPosFlag, out long steerPosRef)
+            List<long> path, int pathSize,
+            out RcVec3f steerPos, out int steerPosFlag, out long steerPosRef)
         {
             const int MAX_STEER_POINTS = 3;
 
-            steerPos = Vector3.Zero;
+            steerPos = RcVec3f.Zero;
             steerPosFlag = 0;
             steerPosRef = 0;
 
@@ -73,7 +72,7 @@ namespace DotRecast.Detour
             return true;
         }
 
-        public static bool InRange(Vector3 v1, Vector3 v2, float r, float h)
+        public static bool InRange(RcVec3f v1, RcVec3f v2, float r, float h)
         {
             float dx = v2.X - v1.X;
             float dy = v2.Y - v1.Y;
@@ -93,7 +92,7 @@ namespace DotRecast.Detour
         // +-S-+-T-+
         // |:::| | <-- the step can end up in here, resulting U-turn path.
         // +---+---+
-        public static int FixupShortcuts(Span<long> path, int npath, DtNavMeshQuery navQuery)
+        public static int FixupShortcuts(ref List<long> path, int npath, DtNavMeshQuery navQuery)
         {
             if (npath < 3)
             {
@@ -138,32 +137,20 @@ namespace DotRecast.Detour
                 }
             }
 
-#if true
-            if (cut > 1)
-            {
-                int offset = cut - 1;
-                npath -= offset;
-                for (int i = 1; i < npath; i++)
-                    path[i] = path[i + offset];
-            }
-
-            return npath;
-#else
             if (cut > 1)
             {
                 List<long> shortcut = new List<long>();
                 shortcut.Add(path[0]);
-                shortcut.AddRange(path.Slice(cut, npath - cut));
+                shortcut.AddRange(path.GetRange(cut, npath - cut));
 
-                shortcut.CopyTo(path);
+                path = shortcut;
                 return shortcut.Count;
             }
 
             return npath;
-#endif
         }
 
-        public static int MergeCorridorStartMoved(Span<long> path, int npath, int maxPath, Span<long> visited, int nvisited)
+        public static int MergeCorridorStartMoved(ref List<long> path, int npath, int maxPath, Span<long> visited, int nvisited)
         {
             int furthestPath = -1;
             int furthestVisited = -1;
@@ -194,26 +181,23 @@ namespace DotRecast.Detour
                 return npath;
             }
 
-            // Concatenate paths.	
+            // Concatenate paths.
 
             // Adjust beginning of the buffer to include the visited.
-            int req = nvisited - furthestVisited;
-            int orig = Math.Min(furthestPath + 1, npath);
-            int size = Math.Max(0, npath - orig);
-            if (req + size > maxPath)
-                size = maxPath - req;
-            if (size > 0)
-                path.Slice(orig, size).CopyTo(path.Slice(req, size));
-            //memmove(path + req, path + orig, size * sizeof(dtPolyRef));
-
+            List<long> result = new List<long>(); // TODO reuse
             // Store visited
-            for (int i = 0, n = Math.Min(req, maxPath); i < n; ++i)
-                path[i] = visited[(nvisited - 1) - i];
+            for (int i = nvisited - 1; i > furthestVisited; --i)
+            {
+                result.Add(visited[i]);
+            }
 
-            return req + size;
+            result.AddRange(path.GetRange(furthestPath, npath - furthestPath));
+
+            path = result;
+            return result.Count;
         }
 
-        public static int MergeCorridorEndMoved(Span<long> path, int npath, int maxPath, Span<long> visited, int nvisited)
+        public static int MergeCorridorEndMoved(ref List<long> path, int npath, int maxPath, Span<long> visited, int nvisited)
         {
             int furthestPath = -1;
             int furthestVisited = -1;
@@ -244,31 +228,18 @@ namespace DotRecast.Detour
                 return npath;
             }
 
-#if true
             // Concatenate paths.
-            int ppos = furthestPath + 1;
-            int vpos = furthestVisited + 1;
-            int count = Math.Min(nvisited - vpos, maxPath - ppos);
-            System.Diagnostics.Debug.Assert(ppos + count <= maxPath);
-            if (count > 0)
-                visited.Slice(vpos, count).CopyTo(path.Slice(ppos, count));
-            //memcpy(path + ppos, visited + vpos, sizeof(dtPolyRef) * count);
-
-            return ppos + count;
-#else
-
-            // Concatenate paths.
-            List<long> result = new List<long>(path.Slice(0, furthestPath).ToArray());
+            List<long> result = path.GetRange(0, furthestPath);
             foreach (var v in visited.Slice(furthestVisited, nvisited - furthestVisited))
             {
                 result.Add(v);
             }
-            result.CopyTo(path);
+
+            path = result;
             return result.Count;
-#endif
         }
 
-        public static int MergeCorridorStartShortcut(Span<long> path, int npath, int maxPath, Span<long> visited, int nvisited)
+        public static int MergeCorridorStartShortcut(ref List<long> path, int npath, int maxPath, List<long> visited, int nvisited)
         {
             int furthestPath = -1;
             int furthestVisited = -1;
@@ -299,26 +270,58 @@ namespace DotRecast.Detour
                 return npath;
             }
 
-            // Concatenate paths.	
+            // Concatenate paths.
 
             // Adjust beginning of the buffer to include the visited.
-            int req = furthestVisited;
-            if (req <= 0)
-                return npath;
+            //List<long> result = visited.GetRange(0, furthestVisited);
+            //result.AddRange(path.GetRange(furthestPath, npath - furthestPath));
 
-            int orig = furthestPath;
-            int size = Math.Min(0, npath - orig);
-            if (req + size > maxPath)
-                size = maxPath - req;
-            if (size > 0)
-                path.Slice(orig, size).CopyTo(path.Slice(req, size));
-            //memmove(path + req, path + orig, size * sizeof(dtPolyRef));
-
-            // Store visited
-            for (int i = 0; i < req; ++i)
-                path[i] = visited[i];
-
-            return req + size;
+            // TODO reuse tests
+#if NET6_0_OR_GREATER
+            var visitedSlice = CollectionsMarshal.AsSpan(visited).Slice(0, furthestVisited);
+            var pathSlice = CollectionsMarshal.AsSpan(path).Slice(furthestPath, npath - furthestPath);
+            var count = visitedSlice.Length + pathSlice.Length;
+            var result = new List<long>();
+            var span = FMemoryMarshal.CreateSpan(result, count);
+            visitedSlice.CopyTo(span);
+            pathSlice.CopyTo(span.Slice(visitedSlice.Length));
+            path = result;
+            return result.Count;
+#else
+            throw new NotImplementedException("TODO for unity");
+#endif
         }
+    }
+
+    public static class FMemoryMarshal
+    {
+        /// <summary>
+        /// similar as AsSpan but modify size to create fixed-size span.
+        /// </summary>
+        public static Span<T> CreateSpan<T>(List<T> list, int count)
+        {
+#if NET8_0_OR_GREATER
+            CollectionsMarshal.SetCount(list, count);
+            return CollectionsMarshal.AsSpan(list);
+#else
+            // TODO 有一些差异，CollectionsMarshal.SetCount 会清掉引用类型的对象
+            if (list.Capacity < count)
+                list.Capacity = count;
+
+            ref var view = ref Unsafe.As<List<T>, ListView<T>>(ref list); // 没有gc
+            view._size = count;
+            return view._items.AsSpan(0, count);
+#endif
+        }
+
+#if !NET8_0_OR_GREATER
+        // NOTE: These structure depndent on .NET 7, if changed, require to keep same structure.
+        internal class ListView<T>
+        {
+            public T[] _items;
+            public int _size;
+            public int _version;
+        }
+#endif
     }
 }

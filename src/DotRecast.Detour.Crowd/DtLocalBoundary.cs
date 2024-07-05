@@ -107,8 +107,8 @@ namespace DotRecast.Detour.Crowd
                 // Secondly, store all polygon edges.
                 m_segs.Clear();
 
-                var segmentVerts = new List<RcSegmentVert>();
-                var segmentRefs = new List<long>();
+                var segmentVerts = new List<RcSegmentVert>(); // TODO temp alloc
+                var segmentRefs = new List<long>(); // TODO temp alloc
 
                 for (int j = 0; j < m_polys.Count; ++j)
                 {
