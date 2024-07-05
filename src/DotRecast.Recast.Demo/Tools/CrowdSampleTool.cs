@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
-using System.Numerics;
+using DotRecast.Core.Numerics;
 using DotRecast.Detour;
 using DotRecast.Detour.Crowd;
 
@@ -32,7 +32,6 @@ using ImGuiNET;
 using Serilog;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
-using DotRecast.Core;
 
 namespace DotRecast.Recast.Demo.Tools;
 
@@ -49,17 +48,17 @@ public class CrowdSampleTool : ISampleTool
     private int m_modeIdx = RcCrowdToolMode.CREATE.Idx;
 
     private int _expandSelectedDebugDraw = 1;
-    private bool _showCorners = false;
-    private bool _showCollisionSegments = false;
-    private bool _showPath = false;
-    private bool _showVO = false;
-    private bool _showOpt = false;
-    private bool _showNeis = false;
+    private bool _showCorners = true;
+    private bool _showCollisionSegments = true;
+    private bool _showPath = true;
+    private bool _showVO = true;
+    private bool _showOpt = true;
+    private bool _showNeis = true;
 
     private int _expandDebugDraw = 0;
     private bool _showLabels = true;
     private bool _showGrid = false;
-    private bool _showNodes = false;
+    private bool _showNodes = true;
     private bool _showPerfGraph = true;
     private bool _showDetailAll = true;
 
@@ -171,7 +170,7 @@ public class CrowdSampleTool : ISampleTool
                 if (!_showDetailAll && ag != agentDebug.agent)
                     continue;
 
-                var path = ag.corridor.GetPath();
+                List<long> path = ag.corridor.GetPath();
                 int npath = ag.corridor.GetPathCount();
                 for (int j = 0; j < npath; ++j)
                 {
@@ -189,7 +188,7 @@ public class CrowdSampleTool : ISampleTool
             float gridy = -float.MaxValue;
             foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
             {
-                Vector3 pos = ag.corridor.GetPos();
+                RcVec3f pos = ag.corridor.GetPos();
                 gridy = Math.Max(gridy, pos.Y);
             }
 
@@ -199,33 +198,19 @@ public class CrowdSampleTool : ISampleTool
             if (null != grid)
             {
                 dd.Begin(QUADS);
-                var bounds = grid.GetBounds();
                 float cs = grid.GetCellSize();
-                for (int y = bounds[1]; y <= bounds[3]; y++)
+                foreach (var (combinedKey, count) in grid.GetItemCounts())
                 {
-                    for (int x = bounds[0]; x <= bounds[2]; x++)
+                    DtProximityGrid.DecomposeKey(combinedKey, out var x, out var y);
+                    if (count != 0)
                     {
-                        var count = grid.GetItemCountAt(x, y);
                         int col = DuRGBA(128, 0, 0, Math.Min(count * 40, 255));
                         dd.Vertex(x * cs, gridy, y * cs, col);
                         dd.Vertex(x * cs, gridy, y * cs + cs, col);
                         dd.Vertex(x * cs + cs, gridy, y * cs + cs, col);
                         dd.Vertex(x * cs + cs, gridy, y * cs, col);
-
                     }
                 }
-                //foreach (var (combinedKey, count) in grid.GetItemCounts())
-                //{
-                //    DtProximityGrid.DecomposeKey(combinedKey, out var x, out var y);
-                //    if (count != 0)
-                //    {
-                //        int col = DuRGBA(128, 0, 0, Math.Min(count * 40, 255));
-                //        dd.Vertex(x * cs, gridy, y * cs, col);
-                //        dd.Vertex(x * cs, gridy, y * cs + cs, col);
-                //        dd.Vertex(x * cs + cs, gridy, y * cs + cs, col);
-                //        dd.Vertex(x * cs + cs, gridy, y * cs, col);
-                //    }
-                //}
 
                 dd.End();
             }
@@ -235,10 +220,10 @@ public class CrowdSampleTool : ISampleTool
         foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
         {
             RcCrowdAgentTrail trail = agentTrails[ag.idx];
-            Vector3 pos = ag.npos;
+            RcVec3f pos = ag.npos;
 
             dd.Begin(LINES, 3.0f);
-            Vector3 prev = new Vector3();
+            RcVec3f prev = new RcVec3f();
             float preva = 1;
             prev = pos;
             for (int j = 0; j < RcCrowdAgentTrail.AGENT_MAX_TRAIL - 1; ++j)
@@ -262,7 +247,7 @@ public class CrowdSampleTool : ISampleTool
                 continue;
 
             float radius = ag.option.radius;
-            Vector3 pos = ag.npos;
+            RcVec3f pos = ag.npos;
 
             if (_showCorners)
             {
@@ -271,8 +256,8 @@ public class CrowdSampleTool : ISampleTool
                     dd.Begin(LINES, 2.0f);
                     for (int j = 0; j < ag.ncorners; ++j)
                     {
-                        Vector3 va = j == 0 ? pos : ag.corners[j - 1].pos;
-                        Vector3 vb = ag.corners[j].pos;
+                        RcVec3f va = j == 0 ? pos : ag.corners[j - 1].pos;
+                        RcVec3f vb = ag.corners[j].pos;
                         dd.Vertex(va.X, va.Y + radius, va.Z, DuRGBA(128, 0, 0, 192));
                         dd.Vertex(vb.X, vb.Y + radius, vb.Z, DuRGBA(128, 0, 0, 192));
                     }
@@ -280,7 +265,7 @@ public class CrowdSampleTool : ISampleTool
                     if ((ag.corners[ag.ncorners - 1].flags
                          & DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION) != 0)
                     {
-                        Vector3 v = ag.corners[ag.ncorners - 1].pos;
+                        RcVec3f v = ag.corners[ag.ncorners - 1].pos;
                         dd.Vertex(v.X, v.Y, v.Z, DuRGBA(192, 0, 0, 192));
                         dd.Vertex(v.X, v.Y + radius * 2, v.Z, DuRGBA(192, 0, 0, 192));
                     }
@@ -314,7 +299,7 @@ public class CrowdSampleTool : ISampleTool
 
             if (_showCollisionSegments)
             {
-                Vector3 center = ag.boundary.GetCenter();
+                RcVec3f center = ag.boundary.GetCenter();
                 dd.DebugDrawCross(center.X, center.Y + radius, center.Z, 0.2f, DuRGBA(192, 0, 128, 255), 2.0f);
                 dd.DebugDrawCircle(center.X, center.Y + radius, center.Z, ag.option.collisionQueryRange, DuRGBA(192, 0, 128, 128), 2.0f);
 
@@ -325,8 +310,8 @@ public class CrowdSampleTool : ISampleTool
                     var s = ag.boundary.GetSegment(j);
                     //RcVec3f s0 = s[0];
                     //RcVec3f s3 = s[1];
-                    Vector3 s3 = new Vector3(s.s[3 + 0], s.s[3 + 1], s.s[3 + 2]);
-                    Vector3 s0 = new Vector3(s.s[0 + 0], s.s[0 + 1], s.s[0 + 2]);
+                    RcVec3f s3 = new RcVec3f(s.s[3 + 0], s.s[3 + 1], s.s[3 + 2]);
+                    RcVec3f s0 = new RcVec3f(s.s[0 + 0], s.s[0 + 1], s.s[0 + 2]);
                     if (DtUtils.TriArea2D(pos, s0, s3) < 0.0f)
                         col = DuDarkenCol(col);
 
@@ -369,7 +354,7 @@ public class CrowdSampleTool : ISampleTool
         foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
         {
             float radius = ag.option.radius;
-            Vector3 pos = ag.npos;
+            RcVec3f pos = ag.npos;
 
             int col = DuRGBA(0, 0, 0, 32);
             if (agentDebug.agent == ag)
@@ -382,7 +367,7 @@ public class CrowdSampleTool : ISampleTool
         {
             float height = ag.option.height;
             float radius = ag.option.radius;
-            Vector3 pos = ag.npos;
+            RcVec3f pos = ag.npos;
 
             int col = DuRGBA(220, 220, 220, 128);
             if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING
@@ -418,7 +403,7 @@ public class CrowdSampleTool : ISampleTool
                 dd.Begin(QUADS);
                 for (int j = 0; j < vod.GetSampleCount(); ++j)
                 {
-                    Vector3 p = vod.GetSampleVelocity(j);
+                    RcVec3f p = vod.GetSampleVelocity(j);
                     float sr = vod.GetSampleSize(j);
                     float pen = vod.GetSamplePenalty(j);
                     float pen2 = vod.GetSamplePreferredSidePenalty(j);
@@ -439,9 +424,9 @@ public class CrowdSampleTool : ISampleTool
         {
             float radius = ag.option.radius;
             float height = ag.option.height;
-            Vector3 pos = ag.npos;
-            Vector3 vel = ag.vel;
-            Vector3 dvel = ag.dvel;
+            RcVec3f pos = ag.npos;
+            RcVec3f vel = ag.vel;
+            RcVec3f dvel = ag.dvel;
 
             int col = DuRGBA(220, 220, 220, 192);
             if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING
@@ -489,7 +474,7 @@ public class CrowdSampleTool : ISampleTool
         }
     }
 
-    public void HandleClick(Vector3 s, Vector3 p, bool shift)
+    public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
         var crowd = _tool.GetCrowd();
         if (crowd == null)
@@ -502,8 +487,8 @@ public class CrowdSampleTool : ISampleTool
             if (shift)
             {
                 // Delete
-                int ahit = _tool.HitTestAgents(s, p);
-                if (ahit != -1)
+                DtCrowdAgent ahit = _tool.HitTestAgents(s, p);
+                if (ahit != null)
                 {
                     _tool.RemoveAgent(ahit);
                 }
@@ -522,7 +507,7 @@ public class CrowdSampleTool : ISampleTool
         else if (m_mode == RcCrowdToolMode.SELECT)
         {
             // Highlight
-            int ahit = _tool.HitTestAgents(s, p);
+            DtCrowdAgent ahit = _tool.HitTestAgents(s, p);
             _tool.HighlightAgent(ahit);
         }
         else if (m_mode == RcCrowdToolMode.TOGGLE_POLYS)
@@ -532,7 +517,7 @@ public class CrowdSampleTool : ISampleTool
             if (nav != null && navquery != null)
             {
                 IDtQueryFilter filter = new DtQueryDefaultFilter();
-                Vector3 halfExtents = crowd.GetQueryExtents();
+                RcVec3f halfExtents = crowd.GetQueryExtents();
                 navquery.FindNearestPoly(p, halfExtents, filter, out var refs, out var nearestPt, out var _);
                 if (refs != 0)
                 {
@@ -553,7 +538,7 @@ public class CrowdSampleTool : ISampleTool
     }
 
 
-    public void HandleClickRay(Vector3 start, Vector3 direction, bool shift)
+    public void HandleClickRay(RcVec3f start, RcVec3f direction, bool shift)
     {
     }
 }
