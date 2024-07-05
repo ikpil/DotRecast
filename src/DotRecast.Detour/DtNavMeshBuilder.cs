@@ -30,11 +30,8 @@ namespace DotRecast.Detour
     {
         const int MESH_NULL_IDX = 0xffff;
 
-
-        private static void CalcExtends(BVItem[] items, int nitems, int imin, int imax, Span<int> bmin, Span<int> bmax)
+        private static void CalcExtends(BVItem[] items, int nitems, int imin, int imax, int* bmin, int* bmax)
         {
-            //int[] bmin = new int[3];
-            //int[] bmax = new int[3];
             bmin[0] = items[imin].bmin[0];
             bmin[1] = items[imin].bmin[1];
             bmin[2] = items[imin].bmin[2];
@@ -88,8 +85,7 @@ namespace DotRecast.Detour
             int inum = imax - imin;
             int icur = curNode;
 
-            DtBVNode node = new DtBVNode();
-            nodes[curNode++] = node;
+            ref DtBVNode node = ref nodes[curNode++];
 
             if (inum == 1)
             {
@@ -107,7 +103,11 @@ namespace DotRecast.Detour
             else
             {
                 // Split
-                CalcExtends(items, nitems, imin, imax, node.bmin, node.bmax);
+                fixed(int* nmim = node.bmin)
+                fixed(int* nmax = node.bmax)
+                {
+                    CalcExtends(items, nitems, imin, imax, nmim, nmax);
+                }
 
                 int axis = LongestAxis(
                     node.bmax[0] - node.bmin[0],

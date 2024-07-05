@@ -29,7 +29,7 @@ namespace DotRecast.Detour
 
     /// A navigation mesh based on tiles of convex polygons.
     /// @ingroup detour
-    public class DtNavMesh
+    public unsafe class DtNavMesh
     {
         private DtNavMeshParams m_params; //< Current initialization params. TODO: do not store this info twice.
         private RcVec3f m_orig; // < Origin of the tile (0,0)
@@ -281,23 +281,28 @@ namespace DotRecast.Detour
                 int end = tile.data.header.bvNodeCount;
                 while (nodeIndex < end)
                 {
-                    DtBVNode node = tile.data.bvTree[nodeIndex];
-                    bool overlap = DtUtils.OverlapQuantBounds(bmin, bmax, node.bmin, node.bmax);
-                    bool isLeafNode = node.i >= 0;
+                    ref DtBVNode node = ref tile.data.bvTree[nodeIndex];
+                    fixed (int* nmin = node.bmin)
+                    fixed (int* nmax = node.bmax)
+                    {
+                        bool overlap = DtUtils.OverlapQuantBounds(bmin, bmax, nmin, nmax);
 
-                    if (isLeafNode && overlap)
-                    {
-                        polys.Add(@base | (long)node.i);
-                    }
+                        bool isLeafNode = node.i >= 0;
 
-                    if (overlap || isLeafNode)
-                    {
-                        nodeIndex++;
-                    }
-                    else
-                    {
-                        int escapeIndex = -node.i;
-                        nodeIndex += escapeIndex;
+                        if (isLeafNode && overlap)
+                        {
+                            polys.Add(@base | (long)node.i);
+                        }
+
+                        if (overlap || isLeafNode)
+                        {
+                            nodeIndex++;
+                        }
+                        else
+                        {
+                            int escapeIndex = -node.i;
+                            nodeIndex += escapeIndex;
+                        }
                     }
                 }
 
@@ -305,8 +310,6 @@ namespace DotRecast.Detour
             }
             else
             {
-                RcVec3f bmin = new RcVec3f();
-                RcVec3f bmax = new RcVec3f();
                 long @base = GetPolyRefBase(tile);
                 for (int i = 0; i < tile.data.header.polyCount; ++i)
                 {
@@ -319,8 +322,8 @@ namespace DotRecast.Detour
 
                     // Calc polygon bounds.
                     int v = p.verts[0] * 3;
-                    bmin = RcVec.Create(tile.data.verts, v);
-                    bmax = RcVec.Create(tile.data.verts, v);
+                    var bmin = RcVec.Create(tile.data.verts, v);
+                    var bmax = RcVec.Create(tile.data.verts, v);
                     for (int j = 1; j < p.vertCount; ++j)
                     {
                         v = p.verts[j] * 3;
@@ -562,7 +565,8 @@ namespace DotRecast.Detour
             nneis = GetTilesAt(tile.data.header.x, tile.data.header.y, neis, MAX_NEIS);
             for (int j = 0; j < nneis; ++j)
             {
-                if (neis[j] == tile) continue;
+                if (neis[j] == tile)
+                    continue;
                 UnconnectLinks(neis[j], tile);
             }
 

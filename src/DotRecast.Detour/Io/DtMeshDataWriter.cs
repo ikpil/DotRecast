@@ -124,7 +124,7 @@ namespace DotRecast.Detour.Io
             }
         }
 
-        private void WriteBVTree(BinaryWriter stream, DtMeshData data, RcByteOrder order, bool cCompatibility)
+        private unsafe void WriteBVTree(BinaryWriter stream, DtMeshData data, RcByteOrder order, bool cCompatibility)
         {
             for (int i = 0; i < data.header.bvNodeCount; i++)
             {

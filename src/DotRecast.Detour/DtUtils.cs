@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
@@ -44,6 +44,15 @@ namespace DotRecast.Detour
         /// @return True if the two AABB's overlap.
         /// @see dtOverlapBounds
         public static bool OverlapQuantBounds(Span<int> amin, Span<int> amax, Span<int> bmin, Span<int> bmax)
+        {
+            bool overlap = true;
+            overlap = (amin[0] > bmax[0] || amax[0] < bmin[0]) ? false : overlap;
+            overlap = (amin[1] > bmax[1] || amax[1] < bmin[1]) ? false : overlap;
+            overlap = (amin[2] > bmax[2] || amax[2] < bmin[2]) ? false : overlap;
+            return overlap;
+        }
+
+        internal unsafe static bool OverlapQuantBounds(Span<int> amin, Span<int> amax, int* bmin, int* bmax)
         {
             bool overlap = true;
             overlap = (amin[0] > bmax[0] || amax[0] < bmin[0]) ? false : overlap;
