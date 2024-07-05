@@ -25,7 +25,7 @@ namespace DotRecast.Detour
     /// Defines a link between polygons.
     /// @note This structure is rarely if ever used by the end user.
     /// @see dtMeshTile
-    public class DtLink
+    public struct DtLink
     {
         public long refs; //< Neighbour reference. (The neighbor that is linked to.)
         public int next; //< Index of the next link.

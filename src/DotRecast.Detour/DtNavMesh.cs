@@ -445,10 +445,10 @@ namespace DotRecast.Detour
             // Patch header pointers.
             tile.data = data;
             tile.links = new DtLink[data.header.maxLinkCount];
-            for (int i = 0; i < tile.links.Length; ++i)
-            {
-                tile.links[i] = new DtLink();
-            }
+            //for (int i = 0; i < tile.links.Length; ++i)
+            //{
+            //    tile.links[i] = new DtLink();
+            //}
 
             // If there are no items in the bvtree, reset the tree pointer.
             if (tile.data.bvTree != null && tile.data.bvTree.Length == 0)
@@ -631,7 +631,7 @@ namespace DotRecast.Detour
                     }
 
                     int idx = AllocLink(tile);
-                    DtLink link = tile.links[idx];
+                    ref DtLink link = ref tile.links[idx];
                     link.refs = @base | (long)(poly.neis[j] - 1);
                     link.edge = (byte)j;
                     link.side = 0xff;
@@ -728,7 +728,7 @@ namespace DotRecast.Detour
                         int idx = AllocLink(tile);
                         if (idx != DT_NULL_LINK)
                         {
-                            DtLink link = tile.links[idx];
+                            ref DtLink link = ref tile.links[idx];
                             link.refs = connectPoly.refs;
                             link.edge = (byte)j;
                             link.side = (byte)dir;
@@ -833,7 +833,7 @@ namespace DotRecast.Detour
 
                 // Link off-mesh connection to target poly.
                 int idx = AllocLink(target);
-                DtLink link = target.links[idx];
+                ref DtLink link = ref target.links[idx];
                 link.refs = refs;
                 link.edge = 1;
                 link.side = (byte)oppositeSide;
@@ -1007,7 +1007,7 @@ namespace DotRecast.Detour
 
                 // Link off-mesh connection to target poly.
                 int idx = AllocLink(tile);
-                DtLink link = tile.links[idx];
+                ref DtLink link = ref tile.links[idx];
                 link.refs = refs;
                 link.edge = 0;
                 link.side = 0xff;
@@ -1020,7 +1020,7 @@ namespace DotRecast.Detour
                 int tidx = AllocLink(tile);
                 int landPolyIdx = DecodePolyIdPoly(refs);
                 DtPoly landPoly = tile.data.polys[landPolyIdx];
-                link = tile.links[tidx];
+                link = ref tile.links[tidx];
                 link.refs = @base | (long)con.poly;
                 link.edge = 0xff;
                 link.side = 0xff;
