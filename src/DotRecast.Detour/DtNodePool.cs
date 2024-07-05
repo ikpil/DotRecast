@@ -38,7 +38,7 @@ namespace DotRecast.Detour
 
         public void Clear()
         {
-            m_map.Clear();
+            m_map.Clear(); // TODO DtNode not reuse 大头
             m_nodeCount = 0;
         }
 

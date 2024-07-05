@@ -168,7 +168,7 @@ namespace DotRecast.Detour
                 return null;
             }
 
-            float[] copied = inters.Slice(0, ii).ToArray();
+            float[] copied = inters.Slice(0, ii).ToArray(); // TODO alloc
             return copied;
         }
 
