@@ -12,29 +12,11 @@
     <PackageTags>game gamedev ai csharp server unity navigation game-development unity3d pathfinding pathfinder recast detour navmesh crowd-simulation recastnavigation</PackageTags>
     <PackageReleaseNotes>https://github.com/ikpil/DotRecast/blob/main/CHANGELOG.md</PackageReleaseNotes>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Configurations>Debug;Release;ReleaseNoProfiling</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="../../README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
-
-
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <Optimize>false</Optimize>
-    <DefineConstants>TRACE;DEBUG;CHECKMATH;PROFILE</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE;RELEASE;PROFILE</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='ReleaseNoProfiling'">
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE;RELEASE</DefineConstants>
-  </PropertyGroup>
-
 
   <ItemGroup>
     <ProjectReference Include="..\DotRecast.Detour\DotRecast.Detour.csproj" />
