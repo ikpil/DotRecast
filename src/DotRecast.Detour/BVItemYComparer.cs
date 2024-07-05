@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace DotRecast.Detour
 {
@@ -10,7 +10,7 @@ namespace DotRecast.Detour
         {
         }
 
-        public int Compare(BVItem a, BVItem b)
+        public unsafe int Compare(BVItem a, BVItem b)
         {
             return a.bmin[1].CompareTo(b.bmin[1]);
         }

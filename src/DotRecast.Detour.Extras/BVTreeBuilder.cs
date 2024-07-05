@@ -22,7 +22,7 @@ using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour.Extras
 {
-    public class BVTreeBuilder
+    public unsafe class BVTreeBuilder
     {
         public void Build(DtMeshData data)
         {
@@ -37,8 +37,7 @@ namespace DotRecast.Detour.Extras
             BVItem[] items = new BVItem[data.header.polyCount];
             for (int i = 0; i < data.header.polyCount; i++)
             {
-                BVItem it = new BVItem();
-                items[i] = it;
+                ref BVItem it = ref items[i];
                 it.i = i;
                 RcVec3f bmin = RcVec.Create(data.verts, data.polys[i].verts[0] * 3);
                 RcVec3f bmax = RcVec.Create(data.verts, data.polys[i].verts[0] * 3);

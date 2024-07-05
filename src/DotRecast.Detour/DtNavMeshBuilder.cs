@@ -26,15 +26,15 @@ namespace DotRecast.Detour
 {
     using static DtDetour;
 
-    public static class DtNavMeshBuilder
+    public unsafe static class DtNavMeshBuilder
     {
         const int MESH_NULL_IDX = 0xffff;
 
 
-        private static int[][] CalcExtends(BVItem[] items, int nitems, int imin, int imax)
+        private static void CalcExtends(BVItem[] items, int nitems, int imin, int imax, Span<int> bmin, Span<int> bmax)
         {
-            int[] bmin = new int[3];
-            int[] bmax = new int[3];
+            //int[] bmin = new int[3];
+            //int[] bmax = new int[3];
             bmin[0] = items[imin].bmin[0];
             bmin[1] = items[imin].bmin[1];
             bmin[2] = items[imin].bmin[2];
@@ -61,7 +61,7 @@ namespace DotRecast.Detour
                     bmax[2] = it.bmax[2];
             }
 
-            return new int[][] { bmin, bmax };
+            //return new int[][] { bmin, bmax };
         }
 
         private static int LongestAxis(int x, int y, int z)
@@ -107,9 +107,7 @@ namespace DotRecast.Detour
             else
             {
                 // Split
-                int[][] minmax = CalcExtends(items, nitems, imin, imax);
-                node.bmin = minmax[0];
-                node.bmax = minmax[1];
+                CalcExtends(items, nitems, imin, imax, node.bmin, node.bmax);
 
                 int axis = LongestAxis(
                     node.bmax[0] - node.bmin[0],
@@ -155,8 +153,7 @@ namespace DotRecast.Detour
             BVItem[] items = new BVItem[option.polyCount];
             for (int i = 0; i < option.polyCount; i++)
             {
-                BVItem it = new BVItem();
-                items[i] = it;
+                ref BVItem it = ref items[i];
                 it.i = i;
                 // Calc polygon bounds. Use detail meshes if available.
                 if (option.detailMeshes != null)
