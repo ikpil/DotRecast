@@ -111,7 +111,7 @@ namespace DotRecast.Detour
 
             for (int k = poly.firstLink; k != DT_NULL_LINK; k = tile.links[k].next)
             {
-                DtLink link = tile.links[k];
+                ref readonly DtLink link = ref tile.links[k];
                 if (link.refs != 0)
                 {
                     if (nneis < maxNeis)

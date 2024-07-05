@@ -50,10 +50,10 @@ namespace DotRecast.Detour.Crowd
             m_maxCircles = maxCircles;
             m_ncircles = 0;
             m_circles = new DtObstacleCircle[m_maxCircles];
-            for (int i = 0; i < m_maxCircles; i++)
-            {
-                m_circles[i] = new DtObstacleCircle();
-            }
+            //for (int i = 0; i < m_maxCircles; i++)
+            //{
+            //    m_circles[i] = new DtObstacleCircle();
+            //}
 
             m_maxSegments = maxSegments;
             m_nsegments = 0;
@@ -75,7 +75,7 @@ namespace DotRecast.Detour.Crowd
             if (m_ncircles >= m_maxCircles)
                 return;
 
-            DtObstacleCircle cir = m_circles[m_ncircles++];
+            ref DtObstacleCircle cir = ref m_circles[m_ncircles++];
             cir.p = pos;
             cir.rad = rad;
             cir.vel = vel;
@@ -117,7 +117,7 @@ namespace DotRecast.Detour.Crowd
             // Prepare obstacles
             for (int i = 0; i < m_ncircles; ++i)
             {
-                DtObstacleCircle cir = m_circles[i];
+                ref DtObstacleCircle cir = ref m_circles[i];
 
                 // Side
                 RcVec3f pa = pos;
@@ -233,7 +233,7 @@ namespace DotRecast.Detour.Crowd
 
             for (int i = 0; i < m_ncircles; ++i)
             {
-                DtObstacleCircle cir = m_circles[i];
+                ref DtObstacleCircle cir = ref m_circles[i];
 
                 // RVO
                 RcVec3f vab = vcand * 2;
