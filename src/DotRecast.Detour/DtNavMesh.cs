@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using DotRecast.Core;
 using DotRecast.Core.Numerics;
 
@@ -66,7 +67,7 @@ namespace DotRecast.Detour
             m_tiles = new DtMeshTile[m_maxTiles];
             m_posLookup = new DtMeshTile[m_tileLutSize];
             m_nextFree = null;
-            for (int i = m_maxTiles-1; i >= 0; --i)
+            for (int i = m_maxTiles - 1; i >= 0; --i)
             {
                 m_tiles[i] = new DtMeshTile(i);
                 m_tiles[i].salt = 1;
@@ -1052,6 +1053,7 @@ namespace DotRecast.Detour
             if (tile.data.detailMeshes != null)
             {
                 ref DtPolyDetail pd = ref tile.data.detailMeshes[ip];
+                Span<RcVec3f> v = stackalloc RcVec3f[3];
                 for (int i = 0; i < pd.triCount; i++)
                 {
                     int ti = (pd.triBase + i) * 4;
@@ -1061,7 +1063,6 @@ namespace DotRecast.Detour
                         continue;
                     }
 
-                    RcVec3f[] v = new RcVec3f[3];
                     for (int j = 0; j < 3; ++j)
                     {
                         if (tris[ti + j] < poly.vertCount)
@@ -1109,7 +1110,7 @@ namespace DotRecast.Detour
             }
             else
             {
-                RcVec3f[] v = new RcVec3f[2];
+                Span<RcVec3f> v = stackalloc RcVec3f[2];
                 for (int j = 0; j < poly.vertCount; ++j)
                 {
                     int k = (j + 1) % poly.vertCount;
@@ -1163,10 +1164,10 @@ namespace DotRecast.Detour
             if (tile.data.detailMeshes != null)
             {
                 ref DtPolyDetail pd = ref tile.data.detailMeshes[ip];
+                Span<RcVec3f> v = stackalloc RcVec3f[3];
                 for (int j = 0; j < pd.triCount; ++j)
                 {
                     int t = (pd.triBase + j) * 4;
-                    RcVec3f[] v = new RcVec3f[3];
                     for (int k = 0; k < 3; ++k)
                     {
                         if (tile.data.detailTris[t + k] < poly.vertCount)
@@ -1200,13 +1201,13 @@ namespace DotRecast.Detour
             }
             else
             {
-                RcVec3f[] v = new RcVec3f[3];
+                Span<RcVec3f> v = stackalloc RcVec3f[3];
                 v[0].X = tile.data.verts[poly.verts[0] * 3];
                 v[0].Y = tile.data.verts[poly.verts[0] * 3 + 1];
                 v[0].Z = tile.data.verts[poly.verts[0] * 3 + 2];
                 for (int j = 1; j < poly.vertCount - 1; ++j)
                 {
-                    for (int k = 0; k < 2; ++k)
+                    for (int k = 0; k < 2; ++k) // TODO memcpy
                     {
                         v[k + 1].X = tile.data.verts[poly.verts[j + k] * 3];
                         v[k + 1].Y = tile.data.verts[poly.verts[j + k] * 3 + 1];

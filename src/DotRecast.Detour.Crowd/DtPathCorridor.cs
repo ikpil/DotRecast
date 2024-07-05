@@ -212,7 +212,7 @@ namespace DotRecast.Detour.Crowd
             var delta = RcVec3f.Subtract(next, m_pos);
             RcVec3f goal = RcVec.Mad(m_pos, delta, pathOptimizationRange / dist);
 
-            var res = new List<long>();
+            var res = new List<long>();// TODO temp alloc
             var status = navquery.Raycast(m_path[0], m_pos, goal, filter, out var t, out var norm, ref res);
             if (status.Succeeded())
             {
@@ -257,7 +257,7 @@ namespace DotRecast.Detour.Crowd
             return false;
         }
 
-        public bool MoveOverOffmeshConnection(long offMeshConRef, long[] refs, ref RcVec3f startPos, ref RcVec3f endPos, DtNavMeshQuery navquery)
+        public bool MoveOverOffmeshConnection(long offMeshConRef, Span<long> refs, ref RcVec3f startPos, ref RcVec3f endPos, DtNavMeshQuery navquery)
         {
             // Advance the path up to and over the off-mesh connection.
             long prevRef = 0, polyRef = m_path[0];
@@ -271,12 +271,15 @@ namespace DotRecast.Detour.Crowd
 
             if (npos == m_npath)
             {
+                refs[0] = 0; // reset
+                refs[1] = 0;
+
                 // Could not find offMeshConRef
                 return false;
             }
 
             // Prune path
-            m_path = m_path.GetRange(npos, m_npath - npos);
+            m_path = m_path.GetRange(npos, m_npath - npos); // TODO alloc
             m_npath -= npos;
 
             refs[0] = prevRef;

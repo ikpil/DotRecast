@@ -272,7 +272,7 @@ namespace DotRecast.Detour
                 DtNode bestNode = m_openList.Pop();
                 bestNode.flags &= ~DtNodeFlags.DT_NODE_OPEN;
                 bestNode.flags |= DtNodeFlags.DT_NODE_CLOSED;
-                
+
                 // Get poly and tile.
                 // The API input has been checked already, skip checking internal data.
                 long bestRef = bestNode.id;
@@ -283,7 +283,7 @@ namespace DotRecast.Detour
                 {
                     // Calc area of the polygon.
                     float polyArea = 0.0f;
-                    float[] polyVerts = new float[bestPoly.vertCount * 3];
+                    float[] polyVerts = new float[bestPoly.vertCount * 3]; // TODO alloc temp
                     for (int j = 0; j < bestPoly.vertCount; ++j)
                     {
                         RcArrays.Copy(bestTile.data.verts, bestPoly.verts[j] * 3, polyVerts, j * 3, 3);
@@ -406,6 +406,7 @@ namespace DotRecast.Detour
             float s = frand.Next();
             float t = frand.Next();
 
+            // TODO reuse stack memory
             Span<float> areas = stackalloc float[randomPolyVerts.Length / 3];
             DtUtils.RandomPointInConvexPoly(randomPolyVerts, randomPolyVerts.Length / 3, areas, s, t, out var pt);
             ClosestPointOnPoly(randomPolyRef, pt, out var closest, out var _);
@@ -3151,7 +3152,7 @@ namespace DotRecast.Detour
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            List<DtSegInterval> ints = new List<DtSegInterval>(16);
+            List<DtSegInterval> ints = new List<DtSegInterval>(16); // TODO alloc temp
             for (int i = 0, j = poly.vertCount - 1; i < poly.vertCount; j = i++)
             {
                 // Skip non-solid edges.
