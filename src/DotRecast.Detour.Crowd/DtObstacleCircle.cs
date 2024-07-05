@@ -1,26 +1,26 @@
-using System.Numerics;
+using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour.Crowd
 {
     /// < Max number of adaptive rings.
-    public struct DtObstacleCircle
+    public struct DtObstacleCircle // TODO struct
     {
         /** Position of the obstacle */
-        public Vector3 p;
+        public RcVec3f p;
 
         /** Velocity of the obstacle */
-        public Vector3 vel;
+        public RcVec3f vel;
 
         /** Velocity of the obstacle */
-        public Vector3 dvel;
+        public RcVec3f dvel;
 
         /** Radius of the obstacle */
         public float rad;
 
         /** Use for side selection during sampling. */
-        public Vector3 dp;
+        public RcVec3f dp;
 
         /** Use for side selection during sampling. */
-        public Vector3 np;
+        public RcVec3f np;
     }
 }

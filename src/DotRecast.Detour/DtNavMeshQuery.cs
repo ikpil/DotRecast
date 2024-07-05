@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using DotRecast.Core;
 using DotRecast.Core.Numerics;
 
@@ -271,7 +272,7 @@ namespace DotRecast.Detour
                 DtNode bestNode = m_openList.Pop();
                 bestNode.flags &= ~DtNodeFlags.DT_NODE_OPEN;
                 bestNode.flags |= DtNodeFlags.DT_NODE_CLOSED;
-                
+
                 // Get poly and tile.
                 // The API input has been checked already, skip checking internal data.
                 long bestRef = bestNode.id;
@@ -321,7 +322,7 @@ namespace DotRecast.Detour
 
                 for (int i = bestPoly.firstLink; i != DT_NULL_LINK; i = bestTile.links[i].next)
                 {
-                    DtLink link = bestTile.links[i];
+                    ref readonly DtLink link = ref bestTile.links[i];
                     long neighbourRef = link.refs;
                     // Skip invalid neighbours and do not follow back to parent.
                     if (neighbourRef == 0 || neighbourRef == parentRef)
@@ -1950,7 +1951,7 @@ namespace DotRecast.Detour
                         // Tile border.
                         for (int k = curPoly.firstLink; k != DT_NULL_LINK; k = curTile.links[k].next)
                         {
-                            DtLink link = curTile.links[k];
+                            ref readonly DtLink link = ref curTile.links[k];
                             if (link.edge == j)
                             {
                                 if (link.refs != 0)
@@ -2093,17 +2094,18 @@ namespace DotRecast.Detour
             right = RcVec3f.Zero;
 
             // Find the link that points to the 'to' polygon.
-            DtLink link = null;
+            //DtLink link = null;
+            ref DtLink link = ref Unsafe.NullRef<DtLink>();
             for (int i = fromPoly.firstLink; i != DT_NULL_LINK; i = fromTile.links[i].next)
             {
                 if (fromTile.links[i].refs == to)
                 {
-                    link = fromTile.links[i];
+                    link = ref fromTile.links[i];
                     break;
                 }
             }
 
-            if (link == null)
+            if (Unsafe.IsNullRef(ref link))
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
@@ -2409,7 +2411,7 @@ namespace DotRecast.Detour
 
                 for (int i = poly.firstLink; i != DT_NULL_LINK; i = tile.links[i].next)
                 {
-                    DtLink link = tile.links[i];
+                    ref readonly DtLink link = ref tile.links[i];
 
                     // Find link which contains this edge.
                     if (link.edge != segMax)
@@ -2650,7 +2652,7 @@ namespace DotRecast.Detour
 
                 for (int i = bestPoly.firstLink; i != DT_NULL_LINK; i = bestTile.links[i].next)
                 {
-                    DtLink link = bestTile.links[i];
+                    ref readonly DtLink link = ref bestTile.links[i];
                     long neighbourRef = link.refs;
                     // Skip invalid neighbours and do not follow back to parent.
                     if (neighbourRef == 0 || neighbourRef == parentRef)
@@ -2827,7 +2829,7 @@ namespace DotRecast.Detour
 
                 for (int i = bestPoly.firstLink; i != DT_NULL_LINK; i = bestTile.links[i].next)
                 {
-                    DtLink link = bestTile.links[i];
+                    ref readonly DtLink link = ref bestTile.links[i];
                     long neighbourRef = link.refs;
                     // Skip invalid neighbours and do not follow back to parent.
                     if (neighbourRef == 0 || neighbourRef == parentRef)
@@ -2982,7 +2984,7 @@ namespace DotRecast.Detour
 
                 for (int i = curPoly.firstLink; i != DT_NULL_LINK; i = curTile.links[i].next)
                 {
-                    DtLink link = curTile.links[i];
+                    ref readonly DtLink link = ref curTile.links[i];
                     long neighbourRef = link.refs;
                     // Skip invalid neighbours.
                     if (neighbourRef == 0)
@@ -3159,7 +3161,7 @@ namespace DotRecast.Detour
                     // Tile border.
                     for (int k = poly.firstLink; k != DT_NULL_LINK; k = tile.links[k].next)
                     {
-                        DtLink link = tile.links[k];
+                        ref readonly DtLink link = ref tile.links[k];
                         if (link.edge == j)
                         {
                             if (link.refs != 0)
@@ -3327,7 +3329,7 @@ namespace DotRecast.Detour
                         bool solid = true;
                         for (int k = bestPoly.firstLink; k != DT_NULL_LINK; k = bestTile.links[k].next)
                         {
-                            DtLink link = bestTile.links[k];
+                            ref readonly DtLink link = ref bestTile.links[k];
                             if (link.edge == j)
                             {
                                 if (link.refs != 0)
@@ -3383,7 +3385,7 @@ namespace DotRecast.Detour
 
                 for (int i = bestPoly.firstLink; i != DT_NULL_LINK; i = bestTile.links[i].next)
                 {
-                    DtLink link = bestTile.links[i];
+                    ref readonly DtLink link = ref bestTile.links[i];
                     long neighbourRef = link.refs;
                     // Skip invalid neighbours and do not follow back to parent.
                     if (neighbourRef == 0 || neighbourRef == parentRef)
