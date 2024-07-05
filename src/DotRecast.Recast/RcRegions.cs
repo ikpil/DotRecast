@@ -1486,10 +1486,10 @@ namespace DotRecast.Recast
 
             int nsweeps = Math.Max(chf.width, chf.height);
             RcSweepSpan[] sweeps = new RcSweepSpan[nsweeps];
-            for (int i = 0; i < sweeps.Length; i++)
-            {
-                sweeps[i] = new RcSweepSpan();
-            }
+            //for (int i = 0; i < sweeps.Length; i++)
+            //{
+            //    sweeps[i] = new RcSweepSpan();
+            //}
 
             // Mark border regions.
             if (borderSize > 0)
@@ -1793,10 +1793,10 @@ namespace DotRecast.Recast
             int[] srcReg = new int[chf.spanCount];
             int nsweeps = Math.Max(chf.width, chf.height);
             RcSweepSpan[] sweeps = new RcSweepSpan[nsweeps];
-            for (int i = 0; i < sweeps.Length; i++)
-            {
-                sweeps[i] = new RcSweepSpan();
-            }
+            //for (int i = 0; i < sweeps.Length; i++)
+            //{
+            //    sweeps[i] = new RcSweepSpan();
+            //}
 
             // Mark border regions.
             if (borderSize > 0)
