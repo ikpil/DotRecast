@@ -455,14 +455,14 @@ public class RecastDebugDraw : DebugDraw
         }
     }
 
-    private void DrawMeshTileBVTree(DtMeshTile tile)
+    private unsafe void DrawMeshTileBVTree(DtMeshTile tile)
     {
         // Draw BV nodes.
         float cs = 1.0f / tile.data.header.bvQuantFactor;
         Begin(DebugDrawPrimitives.LINES, 1.0f);
         for (int i = 0; i < tile.data.header.bvNodeCount; ++i)
         {
-            DtBVNode n = tile.data.bvTree[i];
+            ref readonly DtBVNode n = ref tile.data.bvTree[i];
             if (n.i < 0)
             {
                 continue;

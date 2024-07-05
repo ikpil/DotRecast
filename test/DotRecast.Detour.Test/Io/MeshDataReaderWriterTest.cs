@@ -25,7 +25,7 @@ using NUnit.Framework;
 namespace DotRecast.Detour.Test.Io;
 
 
-public class MeshDataReaderWriterTest
+public unsafe class MeshDataReaderWriterTest
 {
     private const int VERTS_PER_POLYGON = 6;
     private DtMeshData meshData;

@@ -593,7 +593,7 @@ namespace DotRecast.Detour
         }
 
         /// Queries polygons within a tile.
-        protected void QueryPolygonsInTile(DtMeshTile tile, RcVec3f qmin, RcVec3f qmax, IDtQueryFilter filter, IDtPolyQuery query)
+        protected unsafe void QueryPolygonsInTile(DtMeshTile tile, RcVec3f qmin, RcVec3f qmax, IDtQueryFilter filter, IDtPolyQuery query)
         {
             const int batchSize = 32;
             Span<long> polyRefs = stackalloc long[batchSize];
@@ -630,38 +630,42 @@ namespace DotRecast.Detour
                 long @base = m_nav.GetPolyRefBase(tile);
                 while (nodeIndex < end)
                 {
-                    DtBVNode node = tile.data.bvTree[nodeIndex];
-                    bool overlap = DtUtils.OverlapQuantBounds(bmin, bmax, node.bmin, node.bmax);
-                    bool isLeafNode = node.i >= 0;
-
-                    if (isLeafNode && overlap)
+                    ref readonly DtBVNode node = ref tile.data.bvTree[nodeIndex];
+                    fixed (int* nmin = node.bmin)
+                    fixed (int* nmax = node.bmax)
                     {
-                        long refs = @base | (long)node.i;
-                        if (filter.PassFilter(refs, tile, tile.data.polys[node.i]))
-                        {
-                            polyRefs[n] = refs;
-                            polys[n] = tile.data.polys[node.i];
+                        bool overlap = DtUtils.OverlapQuantBounds(bmin, bmax, nmin, nmax);
+                        bool isLeafNode = node.i >= 0;
 
-                            if (n == batchSize - 1)
+                        if (isLeafNode && overlap)
+                        {
+                            long refs = @base | (long)node.i;
+                            if (filter.PassFilter(refs, tile, tile.data.polys[node.i]))
                             {
-                                query.Process(tile, polys, polyRefs, batchSize);
-                                n = 0;
-                            }
-                            else
-                            {
-                                n++;
+                                polyRefs[n] = refs;
+                                polys[n] = tile.data.polys[node.i];
+
+                                if (n == batchSize - 1)
+                                {
+                                    query.Process(tile, polys, polyRefs, batchSize);
+                                    n = 0;
+                                }
+                                else
+                                {
+                                    n++;
+                                }
                             }
                         }
-                    }
 
-                    if (overlap || isLeafNode)
-                    {
-                        nodeIndex++;
-                    }
-                    else
-                    {
-                        int escapeIndex = -node.i;
-                        nodeIndex += escapeIndex;
+                        if (overlap || isLeafNode)
+                        {
+                            nodeIndex++;
+                        }
+                        else
+                        {
+                            int escapeIndex = -node.i;
+                            nodeIndex += escapeIndex;
+                        }
                     }
                 }
             }

@@ -196,38 +196,38 @@ namespace DotRecast.Detour.Io
             return tris;
         }
 
-        private DtBVNode[] ReadBVTree(RcByteBuffer buf, DtMeshHeader header)
+        private unsafe DtBVNode[] ReadBVTree(RcByteBuffer buf, DtMeshHeader header)
         {
             DtBVNode[] nodes = new DtBVNode[header.bvNodeCount];
             for (int i = 0; i < nodes.Length; i++)
             {
-                nodes[i] = new DtBVNode();
+                ref var n = ref nodes[i];
                 if (header.version < DT_NAVMESH_VERSION_RECAST4J_32BIT_BVTREE)
                 {
                     for (int j = 0; j < 3; j++)
                     {
-                        nodes[i].bmin[j] = buf.GetShort() & 0xFFFF;
+                        n.bmin[j] = buf.GetShort() & 0xFFFF;
                     }
 
                     for (int j = 0; j < 3; j++)
                     {
-                        nodes[i].bmax[j] = buf.GetShort() & 0xFFFF;
+                        n.bmax[j] = buf.GetShort() & 0xFFFF;
                     }
                 }
                 else
                 {
                     for (int j = 0; j < 3; j++)
                     {
-                        nodes[i].bmin[j] = buf.GetInt();
+                        n.bmin[j] = buf.GetInt();
                     }
 
                     for (int j = 0; j < 3; j++)
                     {
-                        nodes[i].bmax[j] = buf.GetInt();
+                        n.bmax[j] = buf.GetInt();
                     }
                 }
 
-                nodes[i].i = buf.GetInt();
+                n.i = buf.GetInt();
             }
 
             return nodes;
