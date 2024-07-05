@@ -131,7 +131,7 @@ public class CrowdSampleTool : ISampleTool
         ImGui.Text($"Update Time: {_tool.GetCrowdUpdateTime()} ms");
     }
 
-    public void HandleRender(NavMeshRenderer renderer)
+    public unsafe void HandleRender(NavMeshRenderer renderer)
     {
         RecastDebugDraw dd = renderer.GetDebugDraw();
         var settings = _sample.GetSettings();
@@ -307,13 +307,15 @@ public class CrowdSampleTool : ISampleTool
                 for (int j = 0; j < ag.boundary.GetSegmentCount(); ++j)
                 {
                     int col = DuRGBA(192, 0, 128, 192);
-                    RcVec3f[] s = ag.boundary.GetSegment(j);
-                    RcVec3f s0 = s[0];
-                    RcVec3f s3 = s[1];
+                    var s = ag.boundary.GetSegment(j);
+                    //RcVec3f s0 = s[0];
+                    //RcVec3f s3 = s[1];
+                    RcVec3f s3 = new RcVec3f(s.s[3 + 0], s.s[3 + 1], s.s[3 + 2]);
+                    RcVec3f s0 = new RcVec3f(s.s[0 + 0], s.s[0 + 1], s.s[0 + 2]);
                     if (DtUtils.TriArea2D(pos, s0, s3) < 0.0f)
                         col = DuDarkenCol(col);
 
-                    dd.AppendArrow(s[0].X, s[0].Y + 0.2f, s[0].Z, s[1].X, s[1].Z + 0.2f, s[1].Z, 0.0f, 0.3f, col);
+                    dd.AppendArrow(s0.X, s0.Y + 0.2f, s0.Z, s3.X, s3.Z + 0.2f, s3.Z, 0.0f, 0.3f, col);
                 }
 
                 dd.End();

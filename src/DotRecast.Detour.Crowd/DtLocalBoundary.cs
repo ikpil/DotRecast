@@ -19,6 +19,8 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using DotRecast.Core;
 using DotRecast.Core.Numerics;
 
@@ -46,12 +48,12 @@ namespace DotRecast.Detour.Crowd
             m_segs.Clear();
         }
 
-        protected void AddSegment(float dist, RcSegmentVert s)
+        protected unsafe void AddSegment(float dist, RcSegmentVert s)
         {
             // Insert neighbour based on the distance.
             DtSegment seg = new DtSegment();
-            seg.s[0] = s.vmin;
-            seg.s[1] = s.vmax;
+            Unsafe.WriteUnaligned(seg.s, s.vmin);
+            Unsafe.WriteUnaligned(seg.s + 3, s.vmax);
             //RcArrays.Copy(s, seg.s, 6);
             seg.d = dist;
             if (0 == m_segs.Count)
@@ -157,9 +159,9 @@ namespace DotRecast.Detour.Crowd
             return m_center;
         }
 
-        public RcVec3f[] GetSegment(int j)
+        public DtSegment GetSegment(int j)
         {
-            return m_segs[j].s;
+            return m_segs[j];
         }
 
         public int GetSegmentCount()
