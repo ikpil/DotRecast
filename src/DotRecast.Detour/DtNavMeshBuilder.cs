@@ -19,10 +19,8 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using DotRecast.Core;
-using System.Numerics;
+using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
 {
@@ -105,8 +103,8 @@ namespace DotRecast.Detour
             else
             {
                 // Split
-                fixed (int* nmim = node.bmin)
-                fixed (int* nmax = node.bmax)
+                fixed(int* nmim = node.bmin)
+                fixed(int* nmax = node.bmax)
                 {
                     CalcExtends(items, nitems, imin, imax, nmim, nmax);
                 }
@@ -167,8 +165,8 @@ namespace DotRecast.Detour
                     var bmax = RcVec.Create(option.detailVerts, dv);
                     for (int j = 1; j < ndv; j++)
                     {
-                        bmin = Vector3.Min(bmin, RcVec.Create(option.detailVerts, dv + j * 3));
-                        bmax = Vector3.Max(bmax, RcVec.Create(option.detailVerts, dv + j * 3));
+                        bmin = RcVec3f.Min(bmin, RcVec.Create(option.detailVerts, dv + j * 3));
+                        bmax = RcVec3f.Max(bmax, RcVec.Create(option.detailVerts, dv + j * 3));
                     }
 
                     // BV-tree uses cs for all dimensions
@@ -224,7 +222,7 @@ namespace DotRecast.Detour
         const int XM = 1 << 2;
         const int ZM = 1 << 3;
 
-        public static int ClassifyOffMeshPoint(Vector3 pt, Vector3 bmin, Vector3 bmax)
+        public static int ClassifyOffMeshPoint(RcVec3f pt, RcVec3f bmin, RcVec3f bmax)
         {
             int outcode = 0;
             outcode |= (pt.X >= bmax.X) ? XP : 0;
@@ -232,18 +230,27 @@ namespace DotRecast.Detour
             outcode |= (pt.X < bmin.X) ? XM : 0;
             outcode |= (pt.Z < bmin.Z) ? ZM : 0;
 
-            return outcode switch
+            switch (outcode)
             {
-                XP => 0,
-                XP | ZP => 1,
-                ZP => 2,
-                XM | ZP => 3,
-                XM => 4,
-                XM | ZM => 5,
-                ZM => 6,
-                XP | ZM => 7,
-                _ => 0xff,
-            };
+                case XP:
+                    return 0;
+                case XP | ZP:
+                    return 1;
+                case ZP:
+                    return 2;
+                case XM | ZP:
+                    return 3;
+                case XM:
+                    return 4;
+                case XM | ZM:
+                    return 5;
+                case ZM:
+                    return 6;
+                case XP | ZM:
+                    return 7;
+            }
+
+            return 0xff;
         }
 
         // TODO: Better error handling.
@@ -268,19 +275,18 @@ namespace DotRecast.Detour
 
             // Classify off-mesh connection points. We store only the connections
             // whose start point is inside the tile.
-            scoped Span<int> offMeshConClass = null;
-
+            int[] offMeshConClass = null;
             int storedOffMeshConCount = 0;
             int offMeshConLinkCount = 0;
 
             if (option.offMeshConCount > 0)
             {
-                offMeshConClass = stackalloc int[option.offMeshConCount * 2];
+                offMeshConClass = new int[option.offMeshConCount * 2];
 
                 // Find tight heigh bounds, used for culling out off-mesh start
                 // locations.
                 float hmin = float.MaxValue;
-                float hmax = float.MinValue;
+                float hmax = -float.MaxValue;
 
                 if (option.detailVerts != null && option.detailVertsCount != 0)
                 {
@@ -304,8 +310,8 @@ namespace DotRecast.Detour
 
                 hmin -= option.walkableClimb;
                 hmax += option.walkableClimb;
-                Vector3 bmin = new Vector3();
-                Vector3 bmax = new Vector3();
+                RcVec3f bmin = new RcVec3f();
+                RcVec3f bmax = new RcVec3f();
                 bmin = option.bmin;
                 bmax = option.bmax;
                 bmin.Y = hmin;
@@ -524,7 +530,7 @@ namespace DotRecast.Detour
                     DtPoly p = new DtPoly(offMeshPolyBase + n, nvp);
                     navPolys[offMeshPolyBase + n] = p;
                     p.vertCount = 2;
-                    p.verts[0] = offMeshVertsBase + n * 2 + 0;
+                    p.verts[0] = offMeshVertsBase + n * 2;
                     p.verts[1] = offMeshVertsBase + n * 2 + 1;
                     p.flags = option.offMeshConFlags[i];
                     p.SetArea(option.offMeshConAreas[i]);
@@ -608,19 +614,18 @@ namespace DotRecast.Detour
                 // Only store connections which start from this tile.
                 if (offMeshConClass[i * 2 + 0] == 0xff)
                 {
-                    ref DtOffMeshConnection con = ref offMeshCons[n];
+                    DtOffMeshConnection con = new DtOffMeshConnection();
+                    offMeshCons[n] = con;
                     con.poly = (offMeshPolyBase + n);
                     // Copy connection end-points.
                     int endPts = i * 2 * 3;
                     for (int j = 0; j < 2; ++j)
                     {
-                        con.pos[j * 3 + 0] = option.offMeshConVerts[endPts + (j * 3) + 0];
-                        con.pos[j * 3 + 1] = option.offMeshConVerts[endPts + (j * 3) + 1];
-                        con.pos[j * 3 + 2] = option.offMeshConVerts[endPts + (j * 3) + 2];
+                        con.pos[j] = RcVec.Create(option.offMeshConVerts, endPts + (j * 3));
                     }
 
-                    con.rad = option.offMeshConRads[i];
-                    con.flags = option.offMeshConDirs[i] != false ? DT_OFFMESH_CON_BIDIR : 0;
+                    con.rad = option.offMeshConRad[i];
+                    con.flags = option.offMeshConDir[i] != 0 ? DT_OFFMESH_CON_BIDIR : 0;
                     con.side = offMeshConClass[i * 2 + 1];
                     if (option.offMeshConUserID != null)
                         con.userId = option.offMeshConUserID[i];
