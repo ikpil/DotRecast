@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -26,12 +26,12 @@ namespace DotRecast.Recast.Toolset.Tools
         private readonly List<DtPolyPoint> _polyPoints;
 
         private const int SamplingCount = 500;
-        private long _samplingUpdateTime;
+        private double _samplingUpdateTime;
         private readonly RcCyclicBuffer<long> _updateTimes;
-        private long _curUpdateTime;
-        private long _avgUpdateTime;
-        private long _minUpdateTime;
-        private long _maxUpdateTime;
+        private double _curUpdateTime;
+        private double _avgUpdateTime;
+        private double _minUpdateTime;
+        private double _maxUpdateTime;
 
         public RcCrowdAgentProfilingTool()
         {
@@ -269,11 +269,11 @@ namespace DotRecast.Recast.Toolset.Tools
             _updateTimes.PushBack(currentTime);
 
             // for benchmark
-            _samplingUpdateTime = _updateTimes.Sum() / TimeSpan.TicksPerMillisecond;
-            _curUpdateTime = currentTime / TimeSpan.TicksPerMillisecond;
-            _avgUpdateTime = (long)(_updateTimes.Average() / TimeSpan.TicksPerMillisecond);
-            _minUpdateTime = _updateTimes.Min() / TimeSpan.TicksPerMillisecond;
-            _maxUpdateTime = _updateTimes.Max() / TimeSpan.TicksPerMillisecond;
+            _samplingUpdateTime = _updateTimes.Sum() / (double)TimeSpan.TicksPerMillisecond;
+            _curUpdateTime = currentTime / (double)TimeSpan.TicksPerMillisecond;
+            _avgUpdateTime = (_updateTimes.Average() / (double)TimeSpan.TicksPerMillisecond);
+            _minUpdateTime = _updateTimes.Min() / (double)TimeSpan.TicksPerMillisecond;
+            _maxUpdateTime = _updateTimes.Max() / (double)TimeSpan.TicksPerMillisecond;
         }
 
         private void MoveMob(DtNavMeshQuery navquery, IDtQueryFilter filter, DtCrowdAgent ag, RcCrowdAgentData crowAgentData)
@@ -374,27 +374,27 @@ namespace DotRecast.Recast.Toolset.Tools
             }
         }
 
-        public long GetCrowdUpdateSamplingTime()
+        public double GetCrowdUpdateSamplingTime()
         {
             return _samplingUpdateTime;
         }
 
-        public long GetCrowdUpdateTime()
+        public double GetCrowdUpdateTime()
         {
             return _curUpdateTime;
         }
 
-        public long GetCrowdUpdateAvgTime()
+        public double GetCrowdUpdateAvgTime()
         {
             return _avgUpdateTime;
         }
 
-        public long GetCrowdUpdateMinTime()
+        public double GetCrowdUpdateMinTime()
         {
             return _minUpdateTime;
         }
 
-        public long GetCrowdUpdateMaxTime()
+        public double GetCrowdUpdateMaxTime()
         {
             return _maxUpdateTime;
         }
