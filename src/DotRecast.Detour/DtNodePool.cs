@@ -18,120 +18,102 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
     public class DtNodePool
     {
-        DtNode[] m_nodes;
-        ushort[] m_first;
-        ushort[] m_next;
-        int m_maxNodes;
-        int m_hashSize;
-        int m_nodeCount;
+        private readonly Dictionary<long, List<DtNode>> m_map;
 
-        const int DT_NULL_IDX = ushort.MaxValue;
+        private int m_nodeCount;
+        private readonly List<DtNode> m_nodes;
 
-        public DtNodePool(int maxNodes) : this(maxNodes, (int)RcMath.dtNextPow2((uint)(maxNodes / 4)))
-        { }
-
-        public DtNodePool(int maxNodes, int hashSize)
+        public DtNodePool()
         {
-            m_maxNodes = maxNodes;
-            m_hashSize = hashSize; // dtNextPow2
-
-            m_nodes = new DtNode[m_maxNodes];
-            m_next = new ushort[m_maxNodes];
-            m_first = new ushort[m_hashSize];
-            m_nodeCount = 0;
-
-            m_next.AsSpan().Fill(DT_NULL_IDX);
-            m_first.AsSpan().Fill(DT_NULL_IDX);
+            m_map = new Dictionary<long, List<DtNode>>();
+            m_nodes = new List<DtNode>();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
-            m_first.AsSpan().Fill(DT_NULL_IDX);
+            m_map.Clear(); // TODO DtNode not reuse 大头
             m_nodeCount = 0;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetNodeCount()
         {
             return m_nodeCount;
         }
 
-        public int FindNodes(long id, Span<DtNode> nodes)
+        public int FindNodes(long id, out List<DtNode> nodes)
         {
-            int n = 0;
-            uint bucket = (uint)(dtHashRef(id) & (m_hashSize - 1));
-            ushort i = m_first[bucket];
-            while (i != DT_NULL_IDX)
+            var hasNode = m_map.TryGetValue(id, out nodes);
+            if (hasNode)
             {
-                if (m_nodes[i].id == id)
-                {
-                    if (n >= nodes.Length)
-                        return n;
-                    nodes[n++] = m_nodes[i];
-                }
-                i = m_next[i];
+                return nodes.Count;
             }
 
-            return n;
+            return 0;
         }
 
         public DtNode FindNode(long id)
         {
-            long bucket = dtHashRef(id) & (m_hashSize - 1);
-            ushort i = m_first[bucket];
-            while (i != DT_NULL_IDX)
+            m_map.TryGetValue(id, out var nodes);
+            if (nodes != null && 0 != nodes.Count)
             {
-                if (m_nodes[i].id == id /*&& m_nodes[i].state == state*/) // TODO test
-                    return m_nodes[i];
-                i = m_next[i];
+                return nodes[0];
             }
+
             return null;
         }
 
         public DtNode GetNode(long id, int state)
         {
-            uint bucket = (uint)(dtHashRef(id) & (m_hashSize - 1));
-            ushort i = m_first[bucket];
-            while (i != DT_NULL_IDX)
+            m_map.TryGetValue(id, out var nodes);
+            if (nodes != null)
             {
-                if (m_nodes[i].id == id && m_nodes[i].state == state)
-                    return m_nodes[i];
-                i = m_next[i];
+                foreach (DtNode node in nodes)
+                {
+                    if (node.state == state)
+                    {
+                        return node;
+                    }
+                }
+            }
+            else
+            {
+                nodes = new List<DtNode>();
+                m_map.Add(id, nodes);
             }
 
-            if (m_nodeCount >= m_maxNodes)
-                return null;
+            return Create(id, state, nodes);
+        }
 
-            i = (ushort)m_nodeCount;
+        private DtNode Create(long id, int state, List<DtNode> nodes)
+        {
+            if (m_nodes.Count <= m_nodeCount)
+            {
+                var newNode = new DtNode(m_nodeCount);
+                m_nodes.Add(newNode);
+            }
+
+            int i = m_nodeCount;
             m_nodeCount++;
-
-            // Init node
-            var node = m_nodes[i] ?? (m_nodes[i] = new DtNode(i));
+            var node = m_nodes[i];
             node.pidx = 0;
             node.cost = 0;
             node.total = 0;
             node.id = id;
             node.state = state;
             node.flags = 0;
+            node.shortcut = null;
 
-            m_next[i] = m_first[bucket];
-            m_first[bucket] = i;
-
+            nodes.Add(node);
             return node;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetNodeIdx(DtNode node)
         {
             return node != null
@@ -139,7 +121,6 @@ namespace DotRecast.Detour
                 : 0;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public DtNode GetNodeAtIdx(int idx)
         {
             return idx != 0
@@ -147,28 +128,14 @@ namespace DotRecast.Detour
                 : null;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public DtNode GetNode(long refs)
         {
             return GetNode(refs, 0);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlySpan<DtNode> AsSpan()
+        public IEnumerable<DtNode> AsEnumerable()
         {
-            return m_nodes.AsSpan(0, m_nodeCount);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static uint dtHashRef(long a)
-        {
-            a += ~(a << 15);
-            a ^= (a >> 10);
-            a += (a << 3);
-            a ^= (a >> 6);
-            a += ~(a << 11);
-            a ^= (a >> 16);
-            return (uint)a;
+            return m_nodes.Take(m_nodeCount);
         }
     }
 }

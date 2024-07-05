@@ -555,10 +555,10 @@ namespace DotRecast.Detour.Crowd
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.UpdateMoveRequest);
 
-            RcSortedQueue<DtCrowdAgent> queue = new RcSortedQueue<DtCrowdAgent>((a1, a2) => a2.targetReplanTime.CompareTo(a1.targetReplanTime));
+            RcSortedQueue<DtCrowdAgent> queue = new RcSortedQueue<DtCrowdAgent>((a1, a2) => a2.targetReplanTime.CompareTo(a1.targetReplanTime)); // TODO alloc temp
 
             // Fire off new requests.
-            List<long> reqPath = new List<long>();
+            List<long> reqPath = new List<long>(); // TODO alloc temp
             for (var i = 0; i < agents.Count; i++)
             {
                 var ag = agents[i];
@@ -811,7 +811,7 @@ namespace DotRecast.Detour.Crowd
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.UpdateTopologyOptimization);
 
-            RcSortedQueue<DtCrowdAgent> queue = new RcSortedQueue<DtCrowdAgent>((a1, a2) => a2.topologyOptTime.CompareTo(a1.topologyOptTime));
+            RcSortedQueue<DtCrowdAgent> queue = new RcSortedQueue<DtCrowdAgent>((a1, a2) => a2.topologyOptTime.CompareTo(a1.topologyOptTime));// TODO alloc temp
 
             for (var i = 0; i < agents.Count; i++)
             {
@@ -895,7 +895,7 @@ namespace DotRecast.Detour.Crowd
             result.Clear();
 
             int MAX_NEIS = 32;
-            var ids = new DtCrowdAgent[MAX_NEIS];
+            var ids = new DtCrowdAgent[MAX_NEIS]; // TODO alloc temp
             int nids = grid.QueryItems(pos.X - range, pos.Z - range, pos.X + range, pos.Z + range, ids, ids.Length);
             for (int i = 0; i < nids; ++i)
             {
@@ -979,6 +979,7 @@ namespace DotRecast.Detour.Crowd
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.TriggerOffMeshConnections);
 
+            Span<long> refs = stackalloc long[2];
             for (var i = 0; i < agents.Count; i++)
             {
                 var ag = agents[i];
@@ -1001,7 +1002,6 @@ namespace DotRecast.Detour.Crowd
                     DtCrowdAgentAnimation anim = ag.animation;
 
                     // Adjust the path over the off-mesh connection.
-                    long[] refs = new long[2];
                     if (ag.corridor.MoveOverOffmeshConnection(ag.corners[ag.ncorners - 1].refs, refs, ref anim.startPos,
                             ref anim.endPos, _navQuery))
                     {
