@@ -20,19 +20,23 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace DotRecast.Core.Collections
 {
-    // TODO 使用二叉堆重构
     public class RcSortedQueue<T>
     {
         private bool _dirty;
         private readonly List<T> _items;
         private readonly Comparer<T> _comparer;
 
-        public RcSortedQueue(Comparison<T> comp)
+        public RcSortedQueue(Comparison<T> comp) : this(8, comp)
         {
-            _items = new List<T>();
+        }
+
+        public RcSortedQueue(int capacity, Comparison<T> comp)
+        {
+            _items = new List<T>(capacity);
             _comparer = Comparer<T>.Create((x, y) => comp.Invoke(x, y) * -1);
         }
 
@@ -89,14 +93,18 @@ namespace DotRecast.Core.Collections
                 return false;
 
             //int idx = _items.BinarySearch(item, _comparer); // don't use this! Because reference types can be reused externally.
-            int idx = _items.FindLastIndex(x => item.Equals(x));
-            if (0 > idx)
-                return false;
+            for (int i = 0; i < _items.Count; i++)
+            {
+                T x = _items[i];
+                if (x.Equals(item))
+                {
+                    _items.RemoveAt(i);
+                    return true;
+                }
+            }
 
-            _items.RemoveAt(idx);
             return true;
         }
-
 
         public List<T> ToList()
         {

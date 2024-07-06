@@ -551,11 +551,14 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
+        RcSortedQueue<DtCrowdAgent> queue1 = new RcSortedQueue<DtCrowdAgent>(512, (a1, a2) => a2.targetReplanTime.CompareTo(a1.targetReplanTime));
+
         private void UpdateMoveRequest(IList<DtCrowdAgent> agents, float dt)
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.UpdateMoveRequest);
 
-            RcSortedQueue<DtCrowdAgent> queue = new RcSortedQueue<DtCrowdAgent>((a1, a2) => a2.targetReplanTime.CompareTo(a1.targetReplanTime)); // TODO alloc temp
+            var queue = queue1;
+            queue.Clear();
 
             // Fire off new requests.
             List<long> reqPath = new List<long>(); // TODO alloc temp
@@ -807,11 +810,14 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
+        RcSortedQueue<DtCrowdAgent> queue2 = new RcSortedQueue<DtCrowdAgent>(512, (a1, a2) => a2.topologyOptTime.CompareTo(a1.topologyOptTime));// TODO alloc temp
+
         private void UpdateTopologyOptimization(IList<DtCrowdAgent> agents, float dt)
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.UpdateTopologyOptimization);
 
-            RcSortedQueue<DtCrowdAgent> queue = new RcSortedQueue<DtCrowdAgent>((a1, a2) => a2.topologyOptTime.CompareTo(a1.topologyOptTime));// TODO alloc temp
+            var queue = queue2;
+            queue.Clear();
 
             for (var i = 0; i < agents.Count; i++)
             {
