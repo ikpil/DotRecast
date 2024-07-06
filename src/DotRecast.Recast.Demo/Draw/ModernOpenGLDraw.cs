@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using Silk.NET.OpenGL;
 using DotRecast.Core.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace DotRecast.Recast.Demo.Draw;
 
@@ -210,16 +211,27 @@ public class ModernOpenGLDraw : IOpenGLDraw
 
             if (currentPrim == DebugDrawPrimitives.QUADS)
             {
-                using var unmanagedElems = new UnmanagedMemoryStream(pElems, eboSize, eboSize, FileAccess.Write);
-                using var bw = new BinaryWriter(unmanagedElems);
+                //using var unmanagedElems = new UnmanagedMemoryStream(pElems, eboSize, eboSize, FileAccess.Write);
+                //using var bw = new BinaryWriter(unmanagedElems);
+                //for (int i = 0; i < vertices.Count; i += 4)
+                //{
+                //    bw.Write(i);
+                //    bw.Write(i + 1);
+                //    bw.Write(i + 2);
+                //    bw.Write(i);
+                //    bw.Write(i + 2);
+                //    bw.Write(i + 3);
+                //}
+
+                var ptr = (int*)pElems;
+                var index = 0;
                 for (int i = 0; i < vertices.Count; i += 4)
                 {
-                    bw.Write(i);
-                    bw.Write(i + 1);
-                    bw.Write(i + 2);
-                    bw.Write(i);
-                    bw.Write(i + 2);
-                    bw.Write(i + 3);
+                    *(ptr + index++) = i + 1;
+                    *(ptr + index++) = i + 2;
+                    *(ptr + index++) = i;
+                    *(ptr + index++) = i + 2;
+                    *(ptr + index++) = i + 3;
                 }
             }
             else
