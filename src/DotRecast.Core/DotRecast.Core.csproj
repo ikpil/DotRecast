@@ -14,7 +14,11 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <None Include="../../README.md" Pack="true" PackagePath="\"/>
+    <None Include="../../README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
   </ItemGroup>
 
 

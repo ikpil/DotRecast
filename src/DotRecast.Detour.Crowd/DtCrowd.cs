@@ -358,7 +358,8 @@ namespace DotRecast.Detour.Crowd
      *
      * @return List of active agents
      */
-        public IList<DtCrowdAgent> GetActiveAgents()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public List<DtCrowdAgent> GetActiveAgents()
         {
             return _agents;
         }
@@ -399,7 +400,7 @@ namespace DotRecast.Detour.Crowd
 
             _telemetry.Start();
 
-            IList<DtCrowdAgent> agents = GetActiveAgents();
+            var agents = FCollectionsMarshal.AsSpan(GetActiveAgents());
 
             // Check that all agents still have valid paths.
             CheckPathValidity(agents, dt);
@@ -441,12 +442,11 @@ namespace DotRecast.Detour.Crowd
             return _telemetry;
         }
 
-
-        private void CheckPathValidity(IList<DtCrowdAgent> agents, float dt)
+        private void CheckPathValidity(ReadOnlySpan<DtCrowdAgent> agents, float dt)
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.CheckPathValidity);
 
-            for (var i = 0; i < agents.Count; i++)
+            for (var i = 0; i < agents.Length; i++)
             {
                 var ag = agents[i];
                 if (ag.state != DtCrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
@@ -553,7 +553,7 @@ namespace DotRecast.Detour.Crowd
 
         RcSortedQueue<DtCrowdAgent> queue1 = new RcSortedQueue<DtCrowdAgent>(512, (a1, a2) => a2.targetReplanTime.CompareTo(a1.targetReplanTime));
 
-        private void UpdateMoveRequest(IList<DtCrowdAgent> agents, float dt)
+        private void UpdateMoveRequest(ReadOnlySpan<DtCrowdAgent> agents, float dt)
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.UpdateMoveRequest);
 
@@ -562,7 +562,7 @@ namespace DotRecast.Detour.Crowd
 
             // Fire off new requests.
             List<long> reqPath = new List<long>(); // TODO alloc temp
-            for (var i = 0; i < agents.Count; i++)
+            for (var i = 0; i < agents.Length; i++)
             {
                 var ag = agents[i];
                 if (ag.state == DtCrowdAgentState.DT_CROWDAGENT_STATE_INVALID)
@@ -676,7 +676,7 @@ namespace DotRecast.Detour.Crowd
             }
 
             // Process path results.
-            for (var i = 0; i < agents.Count; i++)
+            for (var i = 0; i < agents.Length; i++)
             {
                 var ag = agents[i];
                 if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_NONE
@@ -812,14 +812,14 @@ namespace DotRecast.Detour.Crowd
 
         RcSortedQueue<DtCrowdAgent> queue2 = new RcSortedQueue<DtCrowdAgent>(512, (a1, a2) => a2.topologyOptTime.CompareTo(a1.topologyOptTime));// TODO alloc temp
 
-        private void UpdateTopologyOptimization(IList<DtCrowdAgent> agents, float dt)
+        private void UpdateTopologyOptimization(ReadOnlySpan<DtCrowdAgent> agents, float dt)
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.UpdateTopologyOptimization);
 
             var queue = queue2;
             queue.Clear();
 
-            for (var i = 0; i < agents.Count; i++)
+            for (var i = 0; i < agents.Length; i++)
             {
                 var ag = agents[i];
                 if (ag.state != DtCrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
@@ -853,13 +853,13 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        private void BuildProximityGrid(IList<DtCrowdAgent> agents)
+        private void BuildProximityGrid(ReadOnlySpan<DtCrowdAgent> agents)
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.BuildProximityGrid);
 
             _grid = new DtProximityGrid(_config.maxAgentRadius * 3);
 
-            for (var i = 0; i < agents.Count; i++)
+            for (var i = 0; i < agents.Length; i++)
             {
                 var ag = agents[i];
                 RcVec3f p = ag.npos;
@@ -868,11 +868,11 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        private void BuildNeighbours(IList<DtCrowdAgent> agents)
+        private void BuildNeighbours(ReadOnlySpan<DtCrowdAgent> agents)
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.BuildNeighbours);
 
-            for (var i = 0; i < agents.Count; i++)
+            for (var i = 0; i < agents.Length; i++)
             {
                 var ag = agents[i];
                 if (ag.state != DtCrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
@@ -932,12 +932,12 @@ namespace DotRecast.Detour.Crowd
             return result.Count;
         }
 
-        private void FindCorners(IList<DtCrowdAgent> agents, DtCrowdAgentDebugInfo debug)
+        private void FindCorners(ReadOnlySpan<DtCrowdAgent> agents, DtCrowdAgentDebugInfo debug)
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.FindCorners);
 
             DtCrowdAgent debugAgent = debug != null ? debug.agent : null;
-            for (var i = 0; i < agents.Count; i++)
+            for (var i = 0; i < agents.Length; i++)
             {
                 var ag = agents[i];
                 if (ag.state != DtCrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
@@ -981,12 +981,12 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        private void TriggerOffMeshConnections(IList<DtCrowdAgent> agents)
+        private void TriggerOffMeshConnections(ReadOnlySpan<DtCrowdAgent> agents)
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.TriggerOffMeshConnections);
 
             Span<long> refs = stackalloc long[2];
-            for (var i = 0; i < agents.Count; i++)
+            for (var i = 0; i < agents.Length; i++)
             {
                 var ag = agents[i];
                 if (ag.state != DtCrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
@@ -1030,11 +1030,11 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        private void CalculateSteering(IList<DtCrowdAgent> agents)
+        private void CalculateSteering(ReadOnlySpan<DtCrowdAgent> agents)
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.CalculateSteering);
 
-            for (var i = 0; i < agents.Count; i++)
+            for (var i = 0; i < agents.Length; i++)
             {
                 var ag = agents[i];
                 if (ag.state != DtCrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
@@ -1128,12 +1128,12 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        private unsafe void PlanVelocity(DtCrowdAgentDebugInfo debug, IList<DtCrowdAgent> agents)
+        private unsafe void PlanVelocity(DtCrowdAgentDebugInfo debug, ReadOnlySpan<DtCrowdAgent> agents)
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.PlanVelocity);
 
             DtCrowdAgent debugAgent = debug != null ? debug.agent : null;
-            for (var i = 0; i < agents.Count; i++)
+            for (var i = 0; i < agents.Length; i++)
             {
                 var ag = agents[i];
                 if (ag.state != DtCrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
@@ -1200,11 +1200,11 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        private void Integrate(float dt, IList<DtCrowdAgent> agents)
+        private void Integrate(float dt, ReadOnlySpan<DtCrowdAgent> agents)
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.Integrate);
 
-            for (var i = 0; i < agents.Count; i++)
+            for (var i = 0; i < agents.Length; i++)
             {
                 var ag = agents[i];
                 if (ag.state != DtCrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
@@ -1216,13 +1216,13 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        private void HandleCollisions(IList<DtCrowdAgent> agents)
+        private void HandleCollisions(ReadOnlySpan<DtCrowdAgent> agents)
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.HandleCollisions);
 
             for (int iter = 0; iter < 4; ++iter)
             {
-                for (var i = 0; i < agents.Count; i++)
+                for (var i = 0; i < agents.Length; i++)
                 {
                     var ag = agents[i];
                     long idx0 = ag.idx;
@@ -1281,7 +1281,7 @@ namespace DotRecast.Detour.Crowd
                     }
                 }
 
-                for (var i = 0; i < agents.Count; i++)
+                for (var i = 0; i < agents.Length; i++)
                 {
                     var ag = agents[i];
                     if (ag.state != DtCrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
@@ -1294,11 +1294,11 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        private void MoveAgents(IList<DtCrowdAgent> agents)
+        private void MoveAgents(ReadOnlySpan<DtCrowdAgent> agents)
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.MoveAgents);
 
-            for (var i = 0; i < agents.Count; i++)
+            for (var i = 0; i < agents.Length; i++)
             {
                 var ag = agents[i];
                 if (ag.state != DtCrowdAgentState.DT_CROWDAGENT_STATE_WALKING)
@@ -1321,11 +1321,11 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        private void UpdateOffMeshConnections(IList<DtCrowdAgent> agents, float dt)
+        private void UpdateOffMeshConnections(ReadOnlySpan<DtCrowdAgent> agents, float dt)
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.UpdateOffMeshConnections);
 
-            for (var i = 0; i < agents.Count; i++)
+            for (var i = 0; i < agents.Length; i++)
             {
                 var ag = agents[i];
                 DtCrowdAgentAnimation anim = ag.animation;
