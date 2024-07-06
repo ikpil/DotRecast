@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using DotRecast.Core.Numerics;
+using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
@@ -278,11 +279,11 @@ namespace DotRecast.Detour
 
             // TODO reuse tests
 #if NET6_0_OR_GREATER
-            var visitedSlice = CollectionsMarshal.AsSpan(visited).Slice(0, furthestVisited);
-            var pathSlice = CollectionsMarshal.AsSpan(path).Slice(furthestPath, npath - furthestPath);
+            var visitedSlice = FCollectionsMarshal.AsSpan(visited).Slice(0, furthestVisited);
+            var pathSlice = FCollectionsMarshal.AsSpan(path).Slice(furthestPath, npath - furthestPath);
             var count = visitedSlice.Length + pathSlice.Length;
             var result = new List<long>();
-            var span = FMemoryMarshal.CreateSpan(result, count);
+            var span = FCollectionsMarshal.CreateSpan(result, count);
             visitedSlice.CopyTo(span);
             pathSlice.CopyTo(span.Slice(visitedSlice.Length));
             path = result;
@@ -291,37 +292,5 @@ namespace DotRecast.Detour
             throw new NotImplementedException("TODO for unity");
 #endif
         }
-    }
-
-    public static class FMemoryMarshal
-    {
-        /// <summary>
-        /// similar as AsSpan but modify size to create fixed-size span.
-        /// </summary>
-        public static Span<T> CreateSpan<T>(List<T> list, int count)
-        {
-#if NET8_0_OR_GREATER
-            CollectionsMarshal.SetCount(list, count);
-            return CollectionsMarshal.AsSpan(list);
-#else
-            // TODO 有一些差异，CollectionsMarshal.SetCount 会清掉引用类型的对象
-            if (list.Capacity < count)
-                list.Capacity = count;
-
-            ref var view = ref Unsafe.As<List<T>, ListView<T>>(ref list); // 没有gc
-            view._size = count;
-            return view._items.AsSpan(0, count);
-#endif
-        }
-
-#if !NET8_0_OR_GREATER
-        // NOTE: These structure depndent on .NET 7, if changed, require to keep same structure.
-        internal class ListView<T>
-        {
-            public T[] _items;
-            public int _size;
-            public int _version;
-        }
-#endif
     }
 }
