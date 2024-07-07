@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+using System;
+using System.Collections.Immutable;
 using System.Linq;
 using NUnit.Framework;
 
@@ -9,7 +10,7 @@ public class DtNodePoolTest
     [Test]
     public void TestGetNode()
     {
-        var pool = new DtNodePool();
+        var pool = new DtNodePool(1024);
 
         var node1St = pool.GetNode(0);
         var node2St = pool.GetNode(0);
@@ -23,7 +24,7 @@ public class DtNodePoolTest
     [Test]
     public void TestFindNode()
     {
-        var pool = new DtNodePool();
+        var pool = new DtNodePool(1024);
 
         var counts = ImmutableArray.Create(2, 3, 5);
 
@@ -56,9 +57,10 @@ public class DtNodePoolTest
         for (int i = 0; i < counts.Length; ++i)
         {
             var count = counts[i];
-            var n = pool.FindNodes(i, out var nodes);
+            var nodes = new DtNode[count];
+            var n = pool.FindNodes(i, nodes);
             Assert.That(n, Is.EqualTo(count));
-            Assert.That(nodes, Has.Count.EqualTo(count));
+            Assert.That(nodes, Has.Length.EqualTo(count));
 
             var node = pool.FindNode(i);
             Assert.That(nodes[0], Is.SameAs(node));
@@ -69,9 +71,9 @@ public class DtNodePoolTest
 
         // check other count
         {
-            var n = pool.FindNodes(4, out var nodes);
+            var n = pool.FindNodes(4, Array.Empty<DtNode>());
             Assert.That(n, Is.EqualTo(0));
-            Assert.That(nodes, Is.Null);
+            //Assert.That(nodes, Is.Null);
         }
 
         var totalCount = pool.GetNodeCount();

@@ -40,7 +40,7 @@ namespace DotRecast.Detour
         {
             this.ptr = ptr;
         }
-        
+
         public static int ComparisonNodeTotal(DtNode a, DtNode b)
         {
             int compare = a.total.CompareTo(b.total);
