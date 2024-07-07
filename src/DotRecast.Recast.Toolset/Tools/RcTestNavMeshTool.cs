@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using DotRecast.Core;
 using DotRecast.Core.Numerics;
@@ -262,15 +262,18 @@ namespace DotRecast.Recast.Toolset.Tools
                 return DtStatus.DT_FAILURE;
             }
 
-            var path = new List<long>();
-            var status = navQuery.Raycast(startRef, startPos, endPos, filter, out var t, out var hitNormal2, ref path);
+            //var path = new List<long>();
+            polys ??= new List<long>();
+            const int MAX_PATH = 32;
+            Span<long> path = FCollectionsMarshal.CreateSpan(polys, MAX_PATH);
+            var status = navQuery.Raycast(startRef, startPos, endPos, filter, out var t, out var hitNormal2, path, out var pathCount);
             if (!status.Succeeded())
             {
                 return status;
             }
 
             // results ...
-            polys = path;
+            //polys = path;
 
             if (t > 1)
             {
@@ -287,9 +290,9 @@ namespace DotRecast.Recast.Toolset.Tools
             }
 
             // Adjust height.
-            if (path.Count > 0)
+            if (pathCount > 0)
             {
-                var result = navQuery.GetPolyHeight(path[path.Count - 1], hitPos, out var h);
+                var result = navQuery.GetPolyHeight(path[pathCount - 1], hitPos, out var h);
                 if (result.Succeeded())
                 {
                     hitPos.Y = h;
