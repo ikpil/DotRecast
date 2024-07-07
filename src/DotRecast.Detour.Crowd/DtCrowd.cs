@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using DotRecast.Core;
 using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
@@ -258,6 +258,7 @@ namespace DotRecast.Detour.Crowd
 
             ag.topologyOptTime = 0;
             ag.targetReplanTime = 0;
+            ag.nneis = 0;
 
             ag.dvel = RcVec3f.Zero;
             ag.nvel = RcVec3f.Zero;
@@ -897,21 +898,63 @@ namespace DotRecast.Detour.Crowd
                 }
 
                 // Query neighbour agents
-                GetNeighbours(ag.npos, ag.option.height, ag.option.collisionQueryRange, ag, ref ag.neis, _grid);
+                ag.nneis = GetNeighbours(ag.npos, ag.option.height, ag.option.collisionQueryRange, ag, ag.neis, DtCrowdConst.DT_CROWDAGENT_MAX_NEIGHBOURS, _grid);
             }
         }
 
-
-        private int GetNeighbours(RcVec3f pos, float height, float range, DtCrowdAgent skip, ref List<DtCrowdNeighbour> result, DtProximityGrid grid)
+        public static int AddNeighbour(DtCrowdAgent idx, float dist, Span<DtCrowdNeighbour> neis, int nneis, int maxNeis)
         {
-            result.Clear();
+            // Insert neighbour based on the distance.
+            int nei = 0;
+            if (0 == nneis)
+            {
+                nei = nneis;
+            }
+            else if (dist >= neis[nneis - 1].dist)
+            {
+                if (nneis >= maxNeis)
+                    return nneis;
+                nei = nneis;
+            }
+            else
+            {
+                int i;
+                for (i = 0; i < nneis; ++i)
+                {
+                    if (dist <= neis[i].dist)
+                    {
+                        break;
+                    }
+                }
+
+                int tgt = i + 1;
+                int n = Math.Min(nneis - i, maxNeis - tgt);
+                
+                Debug.Assert(tgt + n <= maxNeis);
+
+                if (n > 0)
+                {
+                    RcSpans.Move(neis, i, tgt, n);
+                }
+
+                nei = i;
+            }
+
+            neis[nei] = new DtCrowdNeighbour(idx, dist);
+
+            return Math.Min(nneis + 1, maxNeis);
+        }
+
+        private int GetNeighbours(RcVec3f pos, float height, float range, DtCrowdAgent skip, DtCrowdNeighbour[] result, int maxResult, DtProximityGrid grid)
+        {
+            int n = 0;
 
             const int MAX_NEIS = 32;
             Span<int> ids = stackalloc int[MAX_NEIS];
             int nids = grid.QueryItems(pos.X - range, pos.Z - range,
                 pos.X + range, pos.Z + range,
                 ids, ids.Length);
-            
+
             for (int i = 0; i < nids; ++i)
             {
                 var ag = GetAgent(ids[i]);
@@ -934,11 +977,10 @@ namespace DotRecast.Detour.Crowd
                     continue;
                 }
 
-                result.Add(new DtCrowdNeighbour(ag, distSqr));
+                n = AddNeighbour(ag, distSqr, result, n, maxResult);
             }
 
-            result.Sort((o1, o2) => o1.dist.CompareTo(o2.dist));
-            return result.Count;
+            return n;
         }
 
         private void FindCorners(IList<DtCrowdAgent> agents, DtCrowdAgentDebugInfo debug)
@@ -1028,7 +1070,7 @@ namespace DotRecast.Detour.Crowd
 
                         ag.state = DtCrowdAgentState.DT_CROWDAGENT_STATE_OFFMESH;
                         ag.ncorners = 0;
-                        ag.neis.Clear();
+                        ag.nneis = 0;
                         continue;
                     }
                     else
@@ -1093,7 +1135,7 @@ namespace DotRecast.Detour.Crowd
                     float w = 0;
                     RcVec3f disp = new RcVec3f();
 
-                    for (int j = 0; j < ag.neis.Count; ++j)
+                    for (int j = 0; j < ag.nneis; ++j)
                     {
                         DtCrowdAgent nei = ag.neis[j].agent;
 
@@ -1155,7 +1197,7 @@ namespace DotRecast.Detour.Crowd
                     _obstacleQuery.Reset();
 
                     // Add neighbours as obstacles.
-                    for (int j = 0; j < ag.neis.Count; ++j)
+                    for (int j = 0; j < ag.nneis; ++j)
                     {
                         DtCrowdAgent nei = ag.neis[j].agent;
                         _obstacleQuery.AddCircle(nei.npos, nei.option.radius, nei.vel, nei.dvel);
@@ -1243,7 +1285,7 @@ namespace DotRecast.Detour.Crowd
 
                     float w = 0;
 
-                    for (int j = 0; j < ag.neis.Count; ++j)
+                    for (int j = 0; j < ag.nneis; ++j)
                     {
                         DtCrowdAgent nei = ag.neis[j].agent;
                         long idx1 = nei.idx;

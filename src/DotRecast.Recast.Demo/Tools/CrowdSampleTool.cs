@@ -325,7 +325,7 @@ public class CrowdSampleTool : ISampleTool
                     2.0f);
 
                 dd.Begin(LINES, 2.0f);
-                for (int j = 0; j < ag.neis.Count; ++j)
+                for (int j = 0; j < ag.nneis; ++j)
                 {
                     DtCrowdAgent nei = ag.neis[j].agent;
                     if (nei != null)

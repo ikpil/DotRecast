@@ -37,16 +37,19 @@ namespace DotRecast.Detour.Crowd
         public bool partial;
 
         /// The path corridor the agent is using.
-        public DtPathCorridor corridor;
+        public readonly DtPathCorridor corridor;
 
         /// The local boundary data for the agent.
-        public DtLocalBoundary boundary;
+        public readonly DtLocalBoundary boundary;
 
         /// Time since the agent's path corridor was optimized.
         public float topologyOptTime;
 
         /// The known neighbors of the agent.
-        public List<DtCrowdNeighbour> neis = new List<DtCrowdNeighbour>();
+        public readonly DtCrowdNeighbour[] neis = new DtCrowdNeighbour[DtCrowdConst.DT_CROWDAGENT_MAX_NEIGHBOURS];
+        
+        /// The number of neighbors.
+        public int nneis;
 
         /// The desired speed.
         public float desiredSpeed;
