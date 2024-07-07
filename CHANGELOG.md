@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Changed to use Span<byte> and stackalloc for improved performance and memory management in `RcLayers.BuildHeightfieldLayers()`
 - Changed vertCount and triCount to byte in `DtPolyDetail`
 - Changed `new float[]` to `stackalloc float[]` in `DtConvexConvexIntersections.Intersect()`
+- Changed agents management from list to dictionary in `DtCrowd`
 
 ### Removed
 - Removed RcMeshDetails.VdistSq2(float[], float[])

@@ -28,7 +28,7 @@ namespace DotRecast.Detour.Crowd
     /// @ingroup crowd
     public class DtCrowdAgent
     {
-        public readonly long idx;
+        public readonly int idx;
 
         /// The type of mesh polygon the agent is traversing. (See: #CrowdAgentState)
         public DtCrowdAgentState state;

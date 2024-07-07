@@ -120,8 +120,9 @@ namespace DotRecast.Detour.Crowd
     /// @ingroup crowd
     public class DtCrowd
     {
-        private readonly RcAtomicInteger _agentId = new RcAtomicInteger();
-        private readonly List<DtCrowdAgent> _agents;
+        private readonly RcAtomicInteger _agentIdx;
+        private readonly Dictionary<int, DtCrowdAgent> _agents;
+        private readonly List<DtCrowdAgent> _activeAgents;
 
         private readonly DtPathQueue _pathQ;
 
@@ -170,7 +171,9 @@ namespace DotRecast.Detour.Crowd
             // Allocate temp buffer for merging paths.
             _maxPathResult = DtCrowdConst.MAX_PATH_RESULT;
             _pathQ = new DtPathQueue(config);
-            _agents = new List<DtCrowdAgent>();
+            _agentIdx = new RcAtomicInteger(0);
+            _agents = new Dictionary<int, DtCrowdAgent>();
+            _activeAgents = new List<DtCrowdAgent>();
 
             // The navQuery is mostly used for local searches, no need for large node pool.
             SetNavMesh(nav);
@@ -235,11 +238,10 @@ namespace DotRecast.Detour.Crowd
         /// @return The index of the agent in the agent pool. Or -1 if the agent could not be added.
         public DtCrowdAgent AddAgent(RcVec3f pos, DtCrowdAgentParams option)
         {
-            int idx = _agentId.GetAndIncrement();
+            int idx = _agentIdx.GetAndIncrement();
             DtCrowdAgent ag = new DtCrowdAgent(idx);
             ag.corridor.Init(_maxPathResult);
-            _agents.Add(ag);
-
+            AddAgent(ag);
             UpdateAgentParameters(ag, option);
 
             // Find nearest position on navmesh and place the agent there.
@@ -278,15 +280,22 @@ namespace DotRecast.Detour.Crowd
             return ag;
         }
 
-        /**
-     * Removes the agent from the crowd.
-     *
-     * @param agent
-     *            Agent to be removed
-     */
+        // Add the agent from the crowd.
+        public void AddAgent(DtCrowdAgent agent)
+        {
+            if (_agents.TryAdd(agent.idx, agent))
+            {
+                _activeAgents.Add(agent);
+            }
+        }
+
+        // Removes the agent from the crowd.
         public void RemoveAgent(DtCrowdAgent agent)
         {
-            _agents.Remove(agent);
+            if (_agents.Remove(agent.idx))
+            {
+                _activeAgents.Remove(agent);
+            }
         }
 
         private bool RequestMoveTargetReplan(DtCrowdAgent ag, long refs, RcVec3f pos)
@@ -358,7 +367,7 @@ namespace DotRecast.Detour.Crowd
      */
         public IList<DtCrowdAgent> GetActiveAgents()
         {
-            return _agents;
+            return _activeAgents;
         }
 
         public RcVec3f GetQueryExtents()
