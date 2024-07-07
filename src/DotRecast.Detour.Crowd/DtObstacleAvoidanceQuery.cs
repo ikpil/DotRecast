@@ -58,10 +58,10 @@ namespace DotRecast.Detour.Crowd
             m_maxSegments = maxSegments;
             m_nsegments = 0;
             m_segments = new DtObstacleSegment[m_maxSegments];
-            for (int i = 0; i < m_maxSegments; i++)
-            {
-                m_segments[i] = new DtObstacleSegment();
-            }
+            //for (int i = 0; i < m_maxSegments; i++)
+            //{
+            //    m_segments[i] = new DtObstacleSegment();
+            //}
         }
 
         public void Reset()
@@ -87,7 +87,7 @@ namespace DotRecast.Detour.Crowd
             if (m_nsegments >= m_maxSegments)
                 return;
 
-            DtObstacleSegment seg = m_segments[m_nsegments++];
+            ref DtObstacleSegment seg = ref m_segments[m_nsegments++];
             seg.p = p;
             seg.q = q;
         }
@@ -144,7 +144,7 @@ namespace DotRecast.Detour.Crowd
 
             for (int i = 0; i < m_nsegments; ++i)
             {
-                DtObstacleSegment seg = m_segments[i];
+                ref DtObstacleSegment seg = ref m_segments[i];
 
                 // Precalc if the agent is really close to the segment.
                 float r = 0.01f;
@@ -268,7 +268,7 @@ namespace DotRecast.Detour.Crowd
 
             for (int i = 0; i < m_nsegments; ++i)
             {
-                DtObstacleSegment seg = m_segments[i];
+                ref DtObstacleSegment seg = ref m_segments[i];
                 float htmin = 0;
 
                 if (seg.touch)
