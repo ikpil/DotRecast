@@ -1205,7 +1205,7 @@ public class RecastDebugDraw : DebugDraw
             float off = 0.5f;
             Begin(DebugDrawPrimitives.POINTS, 4.0f);
 
-            foreach (DtNode node in pool.AsEnumerable())
+            foreach (DtNode node in pool.AsSpan())
             {
                 if (node == null)
                 {
@@ -1218,7 +1218,7 @@ public class RecastDebugDraw : DebugDraw
             End();
 
             Begin(DebugDrawPrimitives.LINES, 2.0f);
-            foreach (DtNode node in pool.AsEnumerable())
+            foreach (DtNode node in pool.AsSpan())
             {
                 if (node == null)
                 {

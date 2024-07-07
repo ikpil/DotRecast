@@ -21,6 +21,7 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Xml.Linq;
 using DotRecast.Core;
 using DotRecast.Core.Numerics;
 
@@ -60,9 +61,9 @@ namespace DotRecast.Detour
         public DtNavMeshQuery(DtNavMesh nav)
         {
             m_nav = nav;
-            m_nodePool = new DtNodePool();
-            m_openList = new DtNodeQueue();
-            m_tinyNodePool = new DtNodePool();
+            m_nodePool = new DtNodePool(512); // TODO maxNodes
+            m_openList = new DtNodeQueue(); // TODO maxQueueNodes
+            m_tinyNodePool = new DtNodePool(512);  // TODO maxNodes
         }
 
         /// Returns random location on navmesh.
@@ -3545,7 +3546,8 @@ namespace DotRecast.Detour
 
             path.Clear();
 
-            if (m_nodePool.FindNodes(endRef, out var endNodes) != 1
+            var endNodes = nodes.AsSpan(0, 1); // only 1
+            if (m_nodePool.FindNodes(endRef, endNodes) != 1
                 || (endNodes[0].flags & DtNodeFlags.DT_NODE_CLOSED) == 0)
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
@@ -3585,6 +3587,7 @@ namespace DotRecast.Detour
             return DtStatus.DT_SUCCESS;
         }
 
+        DtNode[] nodes = new DtNode[DT_MAX_STATES_PER_NODE];
         /// @par
         ///
         /// The closed list is the list of polygons that were fully evaluated during 
@@ -3597,7 +3600,7 @@ namespace DotRecast.Detour
                 return false;
             }
 
-            int n = m_nodePool.FindNodes(refs, out var nodes);
+            int n = m_nodePool.FindNodes(refs, nodes);
             for (int i = 0; i < n; ++i)
             {
                 if ((nodes[i].flags & DtNodeFlags.DT_NODE_CLOSED) != 0)
