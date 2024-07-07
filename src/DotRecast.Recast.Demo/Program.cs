@@ -3,7 +3,6 @@ using System.Threading;
 using DotRecast.Core;
 using DotRecast.Recast.Demo.Logging.Sinks;
 using Serilog;
-using Serilog.Enrichers;
 
 namespace DotRecast.Recast.Demo;
 
