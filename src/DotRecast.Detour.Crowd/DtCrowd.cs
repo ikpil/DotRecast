@@ -551,14 +551,15 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        RcSortedQueue<DtCrowdAgent> queue1 = new RcSortedQueue<DtCrowdAgent>(512, (a1, a2) => a2.targetReplanTime.CompareTo(a1.targetReplanTime));
+        const int PATH_MAX_AGENTS = 8;
+        const int OPT_MAX_AGENTS = 1;
+        DtCrowdAgent[] queue = new DtCrowdAgent[Math.Max(PATH_MAX_AGENTS, OPT_MAX_AGENTS)];
 
         private void UpdateMoveRequest(ReadOnlySpan<DtCrowdAgent> agents, float dt)
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.UpdateMoveRequest);
 
-            var queue = queue1;
-            queue.Clear();
+            var nqueue = 0;
 
             // Fire off new requests.
             List<long> reqPath = new List<long>(); // TODO alloc temp
@@ -626,7 +627,8 @@ namespace DotRecast.Detour.Crowd
                         // Could not find path, start the request from current
                         // location.
                         reqPos = ag.npos;
-                        reqPath = new List<long>();
+                        //reqPath = new List<long>();
+                        reqPath.Clear();
                         reqPath.Add(path[0]);
                     }
 
@@ -650,13 +652,14 @@ namespace DotRecast.Detour.Crowd
 
                 if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE)
                 {
-                    queue.Enqueue(ag);
+                    //queue.Add(ag);
+                    nqueue = AddToPathQueue(ag, queue, nqueue, PATH_MAX_AGENTS);
                 }
             }
 
-            while (!queue.IsEmpty())
+            for (int i = 0; i < nqueue; i++)
             {
-                DtCrowdAgent ag = queue.Dequeue();
+                DtCrowdAgent ag = queue[i];
                 ag.targetPathQueryResult = _pathQ.Request(ag.corridor.GetLastPoly(), ag.targetRef, ag.corridor.GetTarget(), ag.targetPos, _filters[ag.option.queryFilterType]);
                 if (ag.targetPathQueryResult != null)
                 {
@@ -810,14 +813,11 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        RcSortedQueue<DtCrowdAgent> queue2 = new RcSortedQueue<DtCrowdAgent>(512, (a1, a2) => a2.topologyOptTime.CompareTo(a1.topologyOptTime));// TODO alloc temp
-
         private void UpdateTopologyOptimization(ReadOnlySpan<DtCrowdAgent> agents, float dt)
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.UpdateTopologyOptimization);
 
-            var queue = queue2;
-            queue.Clear();
+            var nqueue = 0;
 
             for (var i = 0; i < agents.Length; i++)
             {
@@ -841,16 +841,89 @@ namespace DotRecast.Detour.Crowd
                 ag.topologyOptTime += dt;
                 if (ag.topologyOptTime >= _config.topologyOptimizationTimeThreshold)
                 {
-                    queue.Enqueue(ag);
+                    //queue.Add(ag);
+                    nqueue = AddToOptQueue(ag, queue, nqueue, OPT_MAX_AGENTS);
                 }
             }
 
-            while (!queue.IsEmpty())
+            for (int i = 0; i < nqueue; i++)
             {
-                DtCrowdAgent ag = queue.Dequeue();
+                DtCrowdAgent ag = queue[i];
                 ag.corridor.OptimizePathTopology(_navQuery, _filters[ag.option.queryFilterType], _config.maxTopologyOptimizationIterations);
                 ag.topologyOptTime = 0;
             }
+        }
+
+        static int AddToOptQueue(DtCrowdAgent newag, DtCrowdAgent[] agents, int nagents, int maxAgents)
+        {
+            // Insert neighbour based on greatest time.
+            int slot = 0;
+            if (nagents == 0)
+            {
+                slot = nagents;
+            }
+            else if (newag.topologyOptTime <= agents[nagents - 1].topologyOptTime)
+            {
+                if (nagents >= maxAgents)
+                    return nagents;
+                slot = nagents;
+            }
+            else
+            {
+                int i;
+                for (i = 0; i < nagents; ++i)
+                    if (newag.topologyOptTime >= agents[i].topologyOptTime)
+                        break;
+
+                int tgt = i + 1;
+                int n = Math.Min(nagents - i, maxAgents - tgt);
+
+                System.Diagnostics.Debug.Assert(tgt + n <= maxAgents);
+
+                if (n > 0)
+                    Array.Copy(agents, i, agents, tgt, n);
+                slot = i;
+            }
+
+            agents[slot] = newag;
+
+            return Math.Min(nagents + 1, maxAgents);
+        }
+
+        static int AddToPathQueue(DtCrowdAgent newag, DtCrowdAgent[] agents, int nagents, int maxAgents)
+        {
+            // Insert neighbour based on greatest time.
+            int slot;
+            if (nagents == 0)
+            {
+                slot = nagents;
+            }
+            else if (newag.targetReplanTime <= agents[nagents - 1].targetReplanTime)
+            {
+                if (nagents >= maxAgents)
+                    return nagents;
+                slot = nagents;
+            }
+            else
+            {
+                int i;
+                for (i = 0; i < nagents; ++i)
+                    if (newag.targetReplanTime >= agents[i].targetReplanTime)
+                        break;
+
+                int tgt = i + 1;
+                int n = Math.Min(nagents - i, maxAgents - tgt);
+
+                System.Diagnostics.Debug.Assert(tgt + n <= maxAgents);
+
+                if (n > 0)
+                    Array.Copy(agents, i, agents, tgt, n);
+                slot = i;
+            }
+
+            agents[slot] = newag;
+
+            return Math.Min(nagents + 1, maxAgents);
         }
 
         private void BuildProximityGrid(ReadOnlySpan<DtCrowdAgent> agents)
@@ -868,7 +941,7 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        private void BuildNeighbours(ReadOnlySpan<DtCrowdAgent> agents)
+        void BuildNeighbours(ReadOnlySpan<DtCrowdAgent> agents)
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.BuildNeighbours);
 
@@ -895,8 +968,7 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-
-        private int GetNeighbours(RcVec3f pos, float height, float range, DtCrowdAgent skip, ref List<DtCrowdNeighbour> result, DtProximityGrid grid)
+        static int GetNeighbours(RcVec3f pos, float height, float range, DtCrowdAgent skip, ref List<DtCrowdNeighbour> result, DtProximityGrid grid)
         {
             result.Clear();
 
