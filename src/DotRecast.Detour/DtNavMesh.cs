@@ -849,7 +849,7 @@ namespace DotRecast.Detour
                     int tidx = AllocLink(tile);
                     int landPolyIdx = DecodePolyIdPoly(refs);
                     DtPoly landPoly = tile.data.polys[landPolyIdx];
-                    link = tile.links[tidx];
+                    link = ref tile.links[tidx];
                     link.refs = GetPolyRefBase(target) | (long)targetCon.poly;
                     link.edge = 0xff;
                     link.side = (byte)(side == -1 ? 0xff : side);
