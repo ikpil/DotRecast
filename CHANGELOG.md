@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Changed vertCount and triCount to byte in `DtPolyDetail`
 - Changed `new float[]` to `stackalloc float[]` in `DtConvexConvexIntersections.Intersect()`
 - Changed agents management from list to dictionary in `DtCrowd`
+- Changed to efficiently stack nearby DtCrowdAgents in `DtCrowd.GetNeighbours()`
 
 ### Removed
 - Removed RcMeshDetails.VdistSq2(float[], float[])

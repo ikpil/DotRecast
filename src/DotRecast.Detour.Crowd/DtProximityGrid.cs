@@ -83,7 +83,7 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        public int QueryItems(float minx, float miny, float maxx, float maxy, DtCrowdAgent[] ids, int maxIds)
+        public int QueryItems(float minx, float miny, float maxx, float maxy, Span<int> ids, int maxIds)
         {
             int iminx = (int)MathF.Floor(minx * _invCellSize);
             int iminy = (int)MathF.Floor(miny * _invCellSize);
@@ -110,7 +110,7 @@ namespace DotRecast.Detour.Crowd
                         // Check if the id exists already.
                         int end = n;
                         int i = 0;
-                        while (i != end && ids[i] != item)
+                        while (i != end && ids[i] != item.idx)
                         {
                             ++i;
                         }
@@ -118,7 +118,7 @@ namespace DotRecast.Detour.Crowd
                         // Item not found, add it.
                         if (i == n)
                         {
-                            ids[n++] = item;
+                            ids[n++] = item.idx;
 
                             if (n >= maxIds)
                                 return n;

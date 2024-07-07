@@ -280,6 +280,11 @@ namespace DotRecast.Detour.Crowd
             return ag;
         }
 
+        public DtCrowdAgent GetAgent(int idx)
+        {
+            return _agents.GetValueOrDefault(idx);
+        }
+
         // Add the agent from the crowd.
         public void AddAgent(DtCrowdAgent agent)
         {
@@ -901,12 +906,15 @@ namespace DotRecast.Detour.Crowd
         {
             result.Clear();
 
-            int MAX_NEIS = 32;
-            var ids = new DtCrowdAgent[MAX_NEIS];
-            int nids = grid.QueryItems(pos.X - range, pos.Z - range, pos.X + range, pos.Z + range, ids, ids.Length);
+            const int MAX_NEIS = 32;
+            Span<int> ids = stackalloc int[MAX_NEIS];
+            int nids = grid.QueryItems(pos.X - range, pos.Z - range,
+                pos.X + range, pos.Z + range,
+                ids, ids.Length);
+            
             for (int i = 0; i < nids; ++i)
             {
-                var ag = ids[i];
+                var ag = GetAgent(ids[i]);
                 if (ag == skip)
                 {
                     continue;
