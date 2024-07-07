@@ -240,7 +240,7 @@ namespace DotRecast.Detour
             return result.Count;
         }
 
-        public static int MergeCorridorStartShortcut(ref List<long> path, int npath, int maxPath, List<long> visited, int nvisited)
+        public static int MergeCorridorStartShortcut(ref List<long> path, int npath, int maxPath, Span<long> visited, int nvisited)
         {
             int furthestPath = -1;
             int furthestVisited = -1;
@@ -278,8 +278,7 @@ namespace DotRecast.Detour
             //result.AddRange(path.GetRange(furthestPath, npath - furthestPath));
 
             // TODO reuse tests
-#if NET6_0_OR_GREATER
-            var visitedSlice = FCollectionsMarshal.AsSpan(visited).Slice(0, furthestVisited);
+            var visitedSlice = visited.Slice(0, furthestVisited);
             var pathSlice = FCollectionsMarshal.AsSpan(path).Slice(furthestPath, npath - furthestPath);
             var count = visitedSlice.Length + pathSlice.Length;
             var result = new List<long>();
@@ -288,9 +287,6 @@ namespace DotRecast.Detour
             pathSlice.CopyTo(span.Slice(visitedSlice.Length));
             path = result;
             return result.Count;
-#else
-            throw new NotImplementedException("TODO for unity");
-#endif
         }
     }
 }

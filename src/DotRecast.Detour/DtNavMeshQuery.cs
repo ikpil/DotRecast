@@ -883,7 +883,8 @@ namespace DotRecast.Detour
             float lastBestNodeCost = startNode.total;
 
             DtRaycastHit rayHit = new DtRaycastHit();
-            rayHit.path = new List<long>();
+            const int MAX_PATH = 32;
+            rayHit.path = new long[MAX_PATH]; // TODO alloc temp
             while (!m_openList.IsEmpty())
             {
                 // Remove node from open list and put it in closed list.
@@ -979,7 +980,7 @@ namespace DotRecast.Detour
 
                     // raycast parent
                     bool foundShortCut = false;
-                    List<long> shortcut = null;
+                    Span<long> shortcut = null;
                     if (tryLOS)
                     {
                         var rayStatus = Raycast(parentRef, parentNode.pos, neighbourPos, filter,
@@ -989,7 +990,8 @@ namespace DotRecast.Detour
                             foundShortCut = rayHit.t >= 1.0f;
                             if (foundShortCut)
                             {
-                                shortcut = new List<long>(rayHit.path);
+                                //shortcut = new List<long>(rayHit.path);
+                                shortcut = rayHit.path.Slice(0, rayHit.pathCount);
                                 // shortcut found using raycast. Using shorter cost
                                 // instead
                                 cost = parentNode.cost + rayHit.pathCost;
@@ -1040,7 +1042,9 @@ namespace DotRecast.Detour
                     neighbourNode.cost = cost;
                     neighbourNode.total = total;
                     neighbourNode.pos = neighbourPos;
-                    neighbourNode.shortcut = shortcut;
+                    //neighbourNode.shortcut = shortcut;
+                    neighbourNode.shortcut ??= new List<long>(shortcut.Length);
+                    shortcut.CopyTo(FCollectionsMarshal.CreateSpan(neighbourNode.shortcut, shortcut.Length));
 
                     if ((neighbourNode.flags & DtNodeFlags.DT_NODE_OPEN) != 0)
                     {
@@ -1172,7 +1176,8 @@ namespace DotRecast.Detour
             }
 
             var rayHit = new DtRaycastHit();
-            rayHit.path = new List<long>();
+            const int MAX_PATH = 32;
+            rayHit.path = new long[MAX_PATH]; // TODO alloc temp
 
             int iter = 0;
             while (iter < maxIter && !m_openList.IsEmpty())
@@ -1295,7 +1300,7 @@ namespace DotRecast.Detour
 
                     // raycast parent
                     bool foundShortCut = false;
-                    List<long> shortcut = null;
+                    ReadOnlySpan<long> shortcut = null;
                     if (tryLOS)
                     {
                         status = Raycast(parentRef, parentNode.pos, neighbourPos, m_query.filter,
@@ -1305,7 +1310,8 @@ namespace DotRecast.Detour
                             foundShortCut = rayHit.t >= 1.0f;
                             if (foundShortCut)
                             {
-                                shortcut = new List<long>(rayHit.path);
+                                //shortcut = new List<long>(rayHit.path);
+                                shortcut = rayHit.path.Slice(0, rayHit.pathCount);
                                 // shortcut found using raycast. Using shorter cost
                                 // instead
                                 cost = parentNode.cost + rayHit.pathCost;
@@ -1360,7 +1366,9 @@ namespace DotRecast.Detour
                     neighbourNode.cost = cost;
                     neighbourNode.total = total;
                     neighbourNode.pos = neighbourPos;
-                    neighbourNode.shortcut = shortcut;
+                    //neighbourNode.shortcut = shortcut;
+                    neighbourNode.shortcut ??= new List<long>(shortcut.Length);
+                    shortcut.CopyTo(FCollectionsMarshal.CreateSpan(neighbourNode.shortcut, shortcut.Length));
 
                     if ((neighbourNode.flags & DtNodeFlags.DT_NODE_OPEN) != 0)
                     {
@@ -2262,16 +2270,17 @@ namespace DotRecast.Detour
         ///
         public DtStatus Raycast(long startRef, RcVec3f startPos, RcVec3f endPos,
             IDtQueryFilter filter,
-            out float t, out RcVec3f hitNormal, ref List<long> path)
+            out float t, out RcVec3f hitNormal, Span<long> path, out int pathCount)
         {
             DtRaycastHit hit = new DtRaycastHit();
             hit.path = path;
+            hit.pathCount = 0;
 
             DtStatus status = Raycast(startRef, startPos, endPos, filter, 0, ref hit, 0);
 
             t = hit.t;
             hitNormal = hit.hitNormal;
-            path = hit.path;
+            pathCount = hit.pathCount;
 
             return status;
         }
@@ -2338,7 +2347,9 @@ namespace DotRecast.Detour
 
             hit.t = 0;
             hit.path.Clear();
+            hit.pathCount = 0;
             hit.pathCost = 0;
+            int n = 0;
 
             Span<RcVec3f> verts = stackalloc RcVec3f[m_nav.GetMaxVertsPerPoly() + 1];
 
@@ -2348,6 +2359,8 @@ namespace DotRecast.Detour
             curPos = startPos;
             RcVec3f dir = RcVec3f.Subtract(endPos, startPos);
             hit.hitNormal = RcVec3f.Zero;
+
+            DtStatus status = DtStatus.DT_SUCCESS;
 
             DtMeshTile prevTile, tile, nextTile;
             DtPoly prevPoly, poly, nextPoly;
@@ -2378,7 +2391,8 @@ namespace DotRecast.Detour
                 if (!intersects)
                 {
                     // Could not hit the polygon, keep the old t and report hit.
-                    return DtStatus.DT_SUCCESS;
+                    hit.pathCount = n;
+                    return status;
                 }
 
                 hit.hitEdgeIndex = segMax;
@@ -2390,7 +2404,11 @@ namespace DotRecast.Detour
                 }
 
                 // Store visited polygons.
-                hit.path.Add(curRef);
+                //hit.path.Add(curRef);
+                if (n < hit.path.Length)
+                    hit.path[n++] = curRef;
+                else
+                    status |= DtStatus.DT_BUFFER_TOO_SMALL;
 
                 // Ray end is completely inside the polygon.
                 if (segMax == -1)
@@ -2404,7 +2422,8 @@ namespace DotRecast.Detour
                             curRef, tile, poly);
                     }
 
-                    return DtStatus.DT_SUCCESS;
+                    hit.pathCount = n;
+                    return status;
                 }
 
                 // Follow neighbours.
@@ -2532,7 +2551,9 @@ namespace DotRecast.Detour
                     float dx = verts[b].X - verts[a].X;
                     float dz = verts[b].Z - verts[a].X;
                     hit.hitNormal = RcVec3f.Normalize(new RcVec3f(dz, 0, -dx));
-                    return DtStatus.DT_SUCCESS;
+
+                    hit.pathCount = n;
+                    return status;
                 }
 
                 // No hit, advance to neighbour polygon.
@@ -2544,7 +2565,8 @@ namespace DotRecast.Detour
                 poly = nextPoly;
             }
 
-            return DtStatus.DT_SUCCESS;
+            hit.pathCount = n;
+            return status;
         }
 
         /// @par

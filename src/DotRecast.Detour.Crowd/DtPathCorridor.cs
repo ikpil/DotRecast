@@ -212,13 +212,15 @@ namespace DotRecast.Detour.Crowd
             var delta = RcVec3f.Subtract(next, m_pos);
             RcVec3f goal = RcVec.Mad(m_pos, delta, pathOptimizationRange / dist);
 
-            var res = new List<long>();// TODO temp alloc
-            var status = navquery.Raycast(m_path[0], m_pos, goal, filter, out var t, out var norm, ref res);
+            //var res = new List<long>();// TODO temp alloc
+            const int MAX_RES = 32;
+            Span<long> res = stackalloc long[MAX_RES];
+            var status = navquery.Raycast(m_path[0], m_pos, goal, filter, out var t, out var norm, res, out var nres);
             if (status.Succeeded())
             {
-                if (res.Count > 1 && t > 0.99f)
+                if (nres > 1 && t > 0.99f)
                 {
-                    m_npath = DtPathUtils.MergeCorridorStartShortcut(ref m_path, m_npath, m_maxPath, res, res.Count);
+                    m_npath = DtPathUtils.MergeCorridorStartShortcut(ref m_path, m_npath, m_maxPath, res, nres);
                 }
             }
         }
@@ -243,14 +245,15 @@ namespace DotRecast.Detour.Crowd
                 return false;
             }
 
-            var res = new List<long>();
+            var res = new List<long>(32);
             navquery.InitSlicedFindPath(m_path[0], m_path[^1], m_pos, m_target, filter, 0);
             navquery.UpdateSlicedFindPath(maxIterations, out var _);
             var status = navquery.FinalizeSlicedFindPathPartial(m_path, m_npath, ref res);
 
             if (status.Succeeded() && res.Count > 0)
             {
-                m_npath = DtPathUtils.MergeCorridorStartShortcut(ref m_path, m_npath, m_maxPath, res, res.Count);
+                var resspan = FCollectionsMarshal.AsSpan(res);
+                m_npath = DtPathUtils.MergeCorridorStartShortcut(ref m_path, m_npath, m_maxPath, resspan, res.Count);
                 return true;
             }
 
