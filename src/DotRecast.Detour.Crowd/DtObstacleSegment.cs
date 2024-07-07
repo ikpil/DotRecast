@@ -1,14 +1,14 @@
-﻿using DotRecast.Core.Numerics;
+using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour.Crowd
 {
-    public class DtObstacleSegment
+    public struct DtObstacleSegment // TODO struct
     {
         /** End points of the obstacle segment */
-        public RcVec3f p = new RcVec3f();
+        public RcVec3f p;// = new RcVec3f();
 
         /** End points of the obstacle segment */
-        public RcVec3f q = new RcVec3f();
+        public RcVec3f q;// = new RcVec3f();
 
         public bool touch;
     }
