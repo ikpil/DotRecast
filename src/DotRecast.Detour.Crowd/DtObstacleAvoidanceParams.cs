@@ -8,18 +8,11 @@
         public float weightSide;
         public float weightToi;
         public float horizTime;
-        public int gridSize;
+        public int gridSize; // < grid
+        public int adaptiveDivs; // < adaptive
+        public int adaptiveRings; // < adaptive
+        public int adaptiveDepth; // < adaptive
 
-        /// < grid
-        public int adaptiveDivs;
-
-        /// < adaptive
-        public int adaptiveRings;
-
-        /// < adaptive
-        public int adaptiveDepth;
-
-        /// < adaptive
         public DtObstacleAvoidanceParams()
         {
             velBias = 0.4f;
