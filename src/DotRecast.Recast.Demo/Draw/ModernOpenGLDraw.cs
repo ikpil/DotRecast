@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using Silk.NET.OpenGL;
 using DotRecast.Core.Numerics;
-using System.Runtime.CompilerServices;
 
 namespace DotRecast.Recast.Demo.Draw;
 
@@ -20,8 +19,8 @@ public class ModernOpenGLDraw : IOpenGLDraw
     private float fogEnd;
     private bool fogEnabled;
     private int uniformViewMatrix;
-    private readonly ArrayBuffer<OpenGLVertex> vertices = new();
-    private readonly ArrayBuffer<int> elements = new();
+    private readonly ArrayBuffer<OpenGLVertex> vertices = new(512);
+    private readonly ArrayBuffer<int> elements = new(512);
     private GLCheckerTexture _texture;
     private readonly float[] _viewMatrix = new float[16];
     private readonly float[] _projectionMatrix = new float[16];
@@ -37,36 +36,42 @@ public class ModernOpenGLDraw : IOpenGLDraw
 
     public unsafe void Init()
     {
-        string SHADER_VERSION = "#version 400\n";
-        string vertex_shader = SHADER_VERSION + "uniform mat4 ProjMtx;\n" //
-                                              + "uniform mat4 ViewMtx;\n" //
-                                              + "in vec3 Position;\n" //
-                                              + "in vec2 TexCoord;\n" //
-                                              + "in vec4 Color;\n" //
-                                              + "out vec2 Frag_UV;\n" //
-                                              + "out vec4 Frag_Color;\n" //
-                                              + "out float Frag_Depth;\n" //
-                                              + "void main() {\n" //
-                                              + "   Frag_UV = TexCoord;\n" //
-                                              + "   Frag_Color = Color;\n" //
-                                              + "   vec4 VSPosition = ViewMtx * vec4(Position, 1);\n" //
-                                              + "   Frag_Depth = -VSPosition.z;\n" //
-                                              + "   gl_Position = ProjMtx * VSPosition;\n" //
-                                              + "}\n";
-        string fragment_shader = SHADER_VERSION + "precision mediump float;\n" //
-                                                + "uniform sampler2D Texture;\n" //
-                                                + "uniform float UseTexture;\n" //
-                                                + "uniform float EnableFog;\n" //
-                                                + "uniform float FogStart;\n" //
-                                                + "uniform float FogEnd;\n" //
-                                                + "const vec4 FogColor = vec4(0.3f, 0.3f, 0.32f, 1.0f);\n" //
-                                                + "in vec2 Frag_UV;\n" //
-                                                + "in vec4 Frag_Color;\n" //
-                                                + "in float Frag_Depth;\n" //
-                                                + "out vec4 Out_Color;\n" //
-                                                + "void main(){\n" //
-                                                + "   Out_Color = mix(FogColor, Frag_Color * mix(vec4(1), texture(Texture, Frag_UV.st), UseTexture), 1.0 - EnableFog * clamp( (Frag_Depth - FogStart) / (FogEnd - FogStart), 0.0, 1.0) );\n" //
-                                                + "}\n";
+        const string SHADER_VERSION = "#version 400\n";
+        const string vertex_shader = $@"
+{SHADER_VERSION}
+uniform mat4 ProjMtx;
+uniform mat4 ViewMtx;
+in vec3 Position;
+in vec2 TexCoord;
+in vec4 Color;
+out vec2 Frag_UV;
+out vec4 Frag_Color;
+out float Frag_Depth;
+void main() {{
+   Frag_UV = TexCoord;
+   Frag_Color = Color;
+   vec4 VSPosition = ViewMtx * vec4(Position, 1);
+   Frag_Depth = -VSPosition.z;
+   gl_Position = ProjMtx * VSPosition;
+}}
+";
+        const string fragment_shader = $@"
+{SHADER_VERSION}
+precision mediump float;
+uniform sampler2D Texture;
+uniform float UseTexture;
+uniform float EnableFog;
+uniform float FogStart;
+uniform float FogEnd;
+const vec4 FogColor = vec4(0.3f, 0.3f, 0.32f, 1.0f);
+in vec2 Frag_UV;
+in vec4 Frag_Color;
+in float Frag_Depth;
+out vec4 Out_Color;
+void main(){{
+   Out_Color = mix(FogColor, Frag_Color * mix(vec4(1), texture(Texture, Frag_UV.st), UseTexture), 1.0 - EnableFog * clamp( (Frag_Depth - FogStart) / (FogEnd - FogStart), 0.0, 1.0) );
+}}
+";
 
         program = _gl.CreateProgram();
         uint vert_shdr = _gl.CreateShader(GLEnum.VertexShader);
@@ -192,64 +197,29 @@ public class ModernOpenGLDraw : IOpenGLDraw
         // GlBufferData(GL_ARRAY_BUFFER, MAX_VERTEX_BUFFER, GL_STREAM_DRAW);
         // GlBufferData(GL_ELEMENT_ARRAY_BUFFER, MAX_ELEMENT_BUFFER, GL_STREAM_DRAW);
 
-        uint vboSize = (uint)vertices.Count * 24;
-        uint eboSize = currentPrim == DebugDrawPrimitives.QUADS ? (uint)vertices.Count * 6 : (uint)vertices.Count * 4;
+        _gl.BufferData<OpenGLVertex>(GLEnum.ArrayBuffer, vertices.AsArray(), GLEnum.DynamicDraw);
 
-        _gl.BufferData(GLEnum.ArrayBuffer, vboSize, null, GLEnum.StreamDraw);
-        _gl.BufferData(GLEnum.ElementArrayBuffer, eboSize, null, GLEnum.StreamDraw);
-        // load draw vertices & elements directly into vertex + element buffer
-
+        if (currentPrim == DebugDrawPrimitives.QUADS)
         {
-            byte* pVerts = (byte*)_gl.MapBuffer(GLEnum.ArrayBuffer, GLEnum.WriteOnly);
-            byte* pElems = (byte*)_gl.MapBuffer(GLEnum.ElementArrayBuffer, GLEnum.WriteOnly);
-
-            //vertices.ForEach(v => v.Store(verts));
-            fixed (void* v = vertices.AsArray())
+            for (int i = 0; i < vertices.Count; i += 4)
             {
-                System.Buffer.MemoryCopy(v, pVerts, vboSize, vboSize);
+                elements.Add(i);
+                elements.Add(i + 1);
+                elements.Add(i + 2);
+                elements.Add(i);
+                elements.Add(i + 2);
+                elements.Add(i + 3);
             }
-
-            if (currentPrim == DebugDrawPrimitives.QUADS)
-            {
-                //using var unmanagedElems = new UnmanagedMemoryStream(pElems, eboSize, eboSize, FileAccess.Write);
-                //using var bw = new BinaryWriter(unmanagedElems);
-                //for (int i = 0; i < vertices.Count; i += 4)
-                //{
-                //    bw.Write(i);
-                //    bw.Write(i + 1);
-                //    bw.Write(i + 2);
-                //    bw.Write(i);
-                //    bw.Write(i + 2);
-                //    bw.Write(i + 3);
-                //}
-
-                var ptr = (int*)pElems;
-                var index = 0;
-                for (int i = 0; i < vertices.Count; i += 4)
-                {
-                    *(ptr + index++) = i + 1;
-                    *(ptr + index++) = i + 2;
-                    *(ptr + index++) = i;
-                    *(ptr + index++) = i + 2;
-                    *(ptr + index++) = i + 3;
-                }
-            }
-            else
-            {
-                for (int i = elements.Count; i < vertices.Count; i++)
-                {
-                    elements.Add(i);
-                }
-
-                fixed (void* e = elements.AsArray())
-                {
-                    System.Buffer.MemoryCopy(e, pElems, eboSize, eboSize);
-                }
-            }
-
-            _gl.UnmapBuffer(GLEnum.ElementArrayBuffer);
-            _gl.UnmapBuffer(GLEnum.ArrayBuffer);
         }
+        else
+        {
+            for (int i = elements.Count; i < vertices.Count; i++)
+            {
+                elements.Add(i);
+            }
+        }
+        _gl.BufferData<int>(GLEnum.ElementArrayBuffer, elements.AsArray(), GLEnum.DynamicDraw);
+
         if (_texture != null)
         {
             _texture.Bind();
@@ -283,9 +253,11 @@ public class ModernOpenGLDraw : IOpenGLDraw
         _gl.BindBuffer(GLEnum.ArrayBuffer, 0);
         _gl.BindBuffer(GLEnum.ElementArrayBuffer, 0);
         vertices.Clear();
+        elements.Clear();
         _gl.LineWidth(1.0f);
         _gl.PointSize(1.0f);
     }
+
 
     public void Vertex(float x, float y, float z, int color)
     {
