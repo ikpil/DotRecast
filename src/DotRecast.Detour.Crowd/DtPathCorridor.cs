@@ -33,7 +33,7 @@ namespace DotRecast.Detour.Crowd
         private RcVec3f m_pos;
         private RcVec3f m_target;
 
-        private List<long> m_path;
+        private List<long> m_path; // TODO array
         private int m_npath;
         private int m_maxPath;
 
@@ -245,7 +245,7 @@ namespace DotRecast.Detour.Crowd
                 return false;
             }
 
-            var res = new List<long>(32);
+            var res = new List<long>(32); // TODO alloc temp
             navquery.InitSlicedFindPath(m_path[0], m_path[^1], m_pos, m_target, filter, 0);
             navquery.UpdateSlicedFindPath(maxIterations, out var _);
             var status = navquery.FinalizeSlicedFindPathPartial(m_path, m_npath, ref res);
@@ -400,8 +400,12 @@ namespace DotRecast.Detour.Crowd
         public void SetCorridor(RcVec3f target, List<long> path)
         {
             m_target = target;
-            m_path = new List<long>(path);
+            m_path = new List<long>(path); // TODO alloc
+            //m_path ??= new List<long>();
+            //m_path.Clear();
+            //m_path.AddRange(path); // m_path path 很可能是同一个对象
             m_npath = path.Count;
+            //Console.WriteLine($"m_npath = {m_npath}");
         }
 
         public void FixPathStart(long safeRef, RcVec3f safePos)
