@@ -10,7 +10,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Nothing
 
 ### Fixed
-- Fixed bug where the dynamic voxel save file browser doesn't appear in Recast.Demo
+- Nothing
+
+### Changed
+- Nothing
+
+### Removed
+- Nothing
+
+### Special Thanks
+- [@Doprez](https://github.com/Doprez)
+
+
+## [2024.3.1] - 2024-07-09
+
+### Added
+- Nothing
+
+### Fixed
+- Fixed bug where the dynamic voxel save file browser doesn't appear in `Recast.Demo`
 
 ### Changed
 - Changed to reuse samples and edges list in `BuildPolyDetail()`
