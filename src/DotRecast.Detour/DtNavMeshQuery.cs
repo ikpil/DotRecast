@@ -1907,7 +1907,7 @@ namespace DotRecast.Detour
             startNode.total = 0;
             startNode.id = startRef;
             startNode.flags = DtNodeFlags.DT_NODE_CLOSED;
-            LinkedList<DtNode> stack = new LinkedList<DtNode>();
+            LinkedList<DtNode> stack = new LinkedList<DtNode>(); // TODO alloc temp
             stack.AddLast(startNode);
 
             RcVec3f bestPos = new RcVec3f();
@@ -2984,7 +2984,7 @@ namespace DotRecast.Detour
             startNode.pidx = 0;
             startNode.id = startRef;
             startNode.flags = DtNodeFlags.DT_NODE_CLOSED;
-            LinkedList<DtNode> stack = new LinkedList<DtNode>();
+            LinkedList<DtNode> stack = new LinkedList<DtNode>(); // TODO alloc temp
             stack.AddLast(startNode);
 
             resultRef.Add(startNode.id);

@@ -116,7 +116,7 @@ namespace DotRecast.Detour
             m_nodeCount++;
 
             // Init node
-            var node = m_nodes[i] = new DtNode(i);
+            var node = m_nodes[i] ?? (m_nodes[i] = new DtNode(i));
             node.pidx = 0;
             node.cost = 0;
             node.total = 0;
