@@ -16,7 +16,6 @@
 [![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/ikpil/DotRecast?style=for-the-badge&logo=github&color=a371f7)](https://github.com/ikpil/DotRecast/issues)
 [![NuGet Version](https://img.shields.io/nuget/vpre/DotRecast.Core?style=for-the-badge&logo=nuget)](https://www.nuget.org/packages/DotRecast.Core)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/DotRecast.Core?style=for-the-badge&logo=nuget)](https://www.nuget.org/packages/DotRecast.Core)
-[![Visitors](https://api.visitorbadge.io/api/daily?path=ikpil%2FDotRecast&countColor=%23263759)](https://visitorbadge.io/status?path=ikpil%2FDotRecast)
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/ikpil?style=for-the-badge&logo=GitHub-Sponsors&link=https%3A%2F%2Fgithub.com%2Fsponsors%2Fikpil)](https://github.com/sponsors/ikpil)
 
 ---
