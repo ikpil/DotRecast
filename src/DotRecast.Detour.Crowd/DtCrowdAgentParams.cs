@@ -24,24 +24,16 @@ namespace DotRecast.Detour.Crowd
     /// @ingroup crowd
     public class DtCrowdAgentParams
     {
-        /// < Agent radius. [Limit: >= 0]
-        public float radius;
+        public float radius; // < Agent radius. [Limit: >= 0]
+        public float height; // < Agent height. [Limit: > 0]
+        public float maxAcceleration; // < Maximum allowed acceleration. [Limit: >= 0]
+        public float maxSpeed; // < Maximum allowed speed. [Limit: >= 0]
 
-        /// < Agent height. [Limit: > 0]
-        public float height;
-
-        /// < Maximum allowed acceleration. [Limit: >= 0]
-        public float maxAcceleration;
-
-        /// < Maximum allowed speed. [Limit: >= 0]
-        public float maxSpeed;
-                
         /// Defines how close a collision element must be before it is considered for steering behaviors. [Limits: > 0]
         public float collisionQueryRange;
 
-        /// < The path visibility optimization range. [Limit: > 0]
-        public float pathOptimizationRange;
-                
+        public float pathOptimizationRange; // < The path visibility optimization range. [Limit: > 0]
+
         /// How aggresive the agent manager should be at avoiding collisions with this agent. [Limit: >= 0]
         public float separationWeight;
 
