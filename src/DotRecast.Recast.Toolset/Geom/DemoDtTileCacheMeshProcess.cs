@@ -1,4 +1,5 @@
-﻿using DotRecast.Detour;
+using System;
+using DotRecast.Detour;
 using DotRecast.Detour.TileCache;
 using DotRecast.Recast.Geom;
 using DotRecast.Recast.Toolset.Builder;
@@ -46,13 +47,13 @@ namespace DotRecast.Recast.Toolset.Geom
             if (null != _geom)
             {
                 var offMeshConnections = _geom.GetOffMeshConnections();
+                option.offMeshConCount = offMeshConnections.Count;
                 option.offMeshConVerts = new float[option.offMeshConCount * 6];
                 option.offMeshConRad = new float[option.offMeshConCount];
                 option.offMeshConDir = new int[option.offMeshConCount];
                 option.offMeshConAreas = new int[option.offMeshConCount];
                 option.offMeshConFlags = new int[option.offMeshConCount];
                 option.offMeshConUserID = new int[option.offMeshConCount];
-                option.offMeshConCount = offMeshConnections.Count;
                 for (int i = 0; i < option.offMeshConCount; i++)
                 {
                     RcOffMeshConnection offMeshCon = offMeshConnections[i];
