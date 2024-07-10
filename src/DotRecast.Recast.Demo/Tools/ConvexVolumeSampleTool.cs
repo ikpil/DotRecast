@@ -19,7 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 using DotRecast.Recast.Toolset.Builder;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Toolset;
@@ -155,7 +155,7 @@ public class ConvexVolumeSampleTool : ISampleTool
         // ..
     }
 
-    public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
+    public void HandleClick(Vector3 s, Vector3 p, bool shift)
     {
         var geom = _sample.GetInputGeom();
         if (shift)
@@ -174,7 +174,7 @@ public class ConvexVolumeSampleTool : ISampleTool
         // TODO Auto-generated method stub
     }
 
-    public void HandleClickRay(RcVec3f start, RcVec3f direction, bool shift)
+    public void HandleClickRay(Vector3 start, Vector3 direction, bool shift)
     {
     }
 }

@@ -1,10 +1,10 @@
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 namespace DotRecast.Detour.Extras.Jumplink
 {
     public class GroundSample
     {
-        public RcVec3f p;
+        public Vector3 p;
         public bool validTrajectory;
         public bool validHeight;
     }

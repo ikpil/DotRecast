@@ -18,7 +18,7 @@ freely, subject to the following restrictions:
 
 using System.IO;
 using DotRecast.Core;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 namespace DotRecast.Detour.Io
 {

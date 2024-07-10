@@ -18,7 +18,8 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using DotRecast.Core.Numerics;
+using System.Numerics;
+using DotRecast.Core;
 
 namespace DotRecast.Detour.Extras
 {
@@ -39,12 +40,12 @@ namespace DotRecast.Detour.Extras
             {
                 ref BVItem it = ref items[i];
                 it.i = i;
-                RcVec3f bmin = RcVec.Create(data.verts, data.polys[i].verts[0] * 3);
-                RcVec3f bmax = RcVec.Create(data.verts, data.polys[i].verts[0] * 3);
+                Vector3 bmin = RcVec.Create(data.verts, data.polys[i].verts[0] * 3);
+                Vector3 bmax = RcVec.Create(data.verts, data.polys[i].verts[0] * 3);
                 for (int j = 1; j < data.polys[i].vertCount; j++)
                 {
-                    bmin = RcVec3f.Min(bmin, RcVec.Create(data.verts, data.polys[i].verts[j] * 3));
-                    bmax = RcVec3f.Max(bmax, RcVec.Create(data.verts, data.polys[i].verts[j] * 3));
+                    bmin = Vector3.Min(bmin, RcVec.Create(data.verts, data.polys[i].verts[j] * 3));
+                    bmax = Vector3.Max(bmax, RcVec.Create(data.verts, data.polys[i].verts[j] * 3));
                 }
 
                 it.bmin[0] = Math.Clamp((int)((bmin.X - data.header.bmin.X) * quantFactor), 0, 0x7fffffff);

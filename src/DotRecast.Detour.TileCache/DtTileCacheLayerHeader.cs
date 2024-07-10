@@ -18,7 +18,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 namespace DotRecast.Detour.TileCache
 {
@@ -31,8 +31,8 @@ namespace DotRecast.Detour.TileCache
         public int version; // < Data version
         public int tx, ty, tlayer;
 
-        public RcVec3f bmin = new RcVec3f();
-        public RcVec3f bmax = new RcVec3f();
+        public Vector3 bmin = new Vector3();
+        public Vector3 bmax = new Vector3();
         public int hmin, hmax; // < Height min/max range
         public int width, height; // < Dimension of the layer.
         public int minx, maxx, miny, maxy; // < Usable sub-region.

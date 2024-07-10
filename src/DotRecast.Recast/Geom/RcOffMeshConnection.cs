@@ -18,7 +18,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 namespace DotRecast.Recast.Geom
 {
@@ -33,7 +33,7 @@ namespace DotRecast.Recast.Geom
         public readonly int flags;
         public readonly int userId;
 
-        public RcOffMeshConnection(RcVec3f start, RcVec3f end, float radius, bool bidir, int area, int flags)
+        public RcOffMeshConnection(Vector3 start, Vector3 end, float radius, bool bidir, int area, int flags)
         {
             verts = new float[6];
             verts[0] = start.X;

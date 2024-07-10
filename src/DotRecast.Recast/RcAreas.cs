@@ -21,7 +21,7 @@ freely, subject to the following restrictions:
 using System;
 using DotRecast.Core;
 using DotRecast.Core.Collections;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 namespace DotRecast.Recast
 {
@@ -456,12 +456,12 @@ namespace DotRecast.Recast
             int zStride = xSize; // For readability
 
             // Compute the bounding box of the polygon
-            RcVec3f bmin = new RcVec3f(verts);
-            RcVec3f bmax = new RcVec3f(verts);
+            Vector3 bmin = new Vector3(verts);
+            Vector3 bmax = new Vector3(verts);
             for (int i = 3; i < verts.Length; i += 3)
             {
-                bmin = RcVec3f.Min(bmin, RcVec.Create(verts, i));
-                bmax = RcVec3f.Max(bmax, RcVec.Create(verts, i));
+                bmin = Vector3.Min(bmin, RcVec.Create(verts, i));
+                bmax = Vector3.Max(bmax, RcVec.Create(verts, i));
             }
 
             bmin.Y = minY;
@@ -538,7 +538,7 @@ namespace DotRecast.Recast
                             continue;
                         }
 
-                        RcVec3f point = new RcVec3f(
+                        Vector3 point = new Vector3(
                             compactHeightfield.bmin.X + (x + 0.5f) * compactHeightfield.cs,
                             0,
                             compactHeightfield.bmin.Z + (z + 0.5f) * compactHeightfield.cs
@@ -576,13 +576,13 @@ namespace DotRecast.Recast
             int zStride = xSize; // For readability
 
             // Compute the bounding box of the cylinder
-            RcVec3f cylinderBBMin = new RcVec3f(
+            Vector3 cylinderBBMin = new Vector3(
                 position[0] - radius,
                 position[1],
                 position[2] - radius
             );
 
-            RcVec3f cylinderBBMax = new RcVec3f(
+            Vector3 cylinderBBMax = new Vector3(
                 position[0] + radius,
                 position[1] + height,
                 position[2] + radius
@@ -702,13 +702,13 @@ namespace DotRecast.Recast
         /// @param[in]	verts		The polygon vertices
         /// @param[in]	point		The point to check
         /// @returns true if the point lies within the polygon, false otherwise.
-        public static bool PointInPoly(float[] verts, RcVec3f point)
+        public static bool PointInPoly(float[] verts, Vector3 point)
         {
             bool inPoly = false;
             for (int i = 0, j = verts.Length / 3 - 1; i < verts.Length / 3; j = i++)
             {
-                RcVec3f vi = new RcVec3f(verts[i * 3], verts[i * 3 + 1], verts[i * 3 + 2]);
-                RcVec3f vj = new RcVec3f(verts[j * 3], verts[j * 3 + 1], verts[j * 3 + 2]);
+                Vector3 vi = new Vector3(verts[i * 3], verts[i * 3 + 1], verts[i * 3 + 2]);
+                Vector3 vj = new Vector3(verts[j * 3], verts[j * 3 + 1], verts[j * 3 + 2]);
                 if (vi.Z > point.Z == vj.Z > point.Z)
                 {
                     continue;
@@ -752,17 +752,17 @@ namespace DotRecast.Recast
                 int vertIndexB = vertIndex;
                 int vertIndexC = (vertIndex + 1) % numVerts;
 
-                RcVec3f vertA = RcVec.Create(verts, vertIndexA * 3);
-                RcVec3f vertB = RcVec.Create(verts, vertIndexB * 3);
-                RcVec3f vertC = RcVec.Create(verts, vertIndexC * 3);
+                Vector3 vertA = RcVec.Create(verts, vertIndexA * 3);
+                Vector3 vertB = RcVec.Create(verts, vertIndexB * 3);
+                Vector3 vertC = RcVec.Create(verts, vertIndexC * 3);
 
                 // From A to B on the x/z plane
-                RcVec3f prevSegmentDir = RcVec3f.Subtract(vertB, vertA);
+                Vector3 prevSegmentDir = Vector3.Subtract(vertB, vertA);
                 prevSegmentDir.Y = 0; // Squash onto x/z plane
                 prevSegmentDir = RcVec.SafeNormalize(prevSegmentDir);
 
                 // From B to C on the x/z plane
-                RcVec3f currSegmentDir = RcVec3f.Subtract(vertC, vertB);
+                Vector3 currSegmentDir = Vector3.Subtract(vertC, vertB);
                 currSegmentDir.Y = 0; // Squash onto x/z plane
                 currSegmentDir = RcVec.SafeNormalize(currSegmentDir);
 

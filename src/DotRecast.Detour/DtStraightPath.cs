@@ -18,7 +18,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 namespace DotRecast.Detour
 {
@@ -26,7 +26,7 @@ namespace DotRecast.Detour
     public readonly struct DtStraightPath
     {
         /// The local path corridor corners for the agent. (Staight path.) [(x, y, z) * #ncorners]
-        public readonly RcVec3f pos;
+        public readonly Vector3 pos;
 
         /// The local path corridor corner flags. (See: #dtStraightPathFlags) [(flags) * #ncorners]
         public readonly byte flags;
@@ -34,7 +34,7 @@ namespace DotRecast.Detour
         /// The reference id of the polygon being entered at the corner. [(polyRef) * #ncorners]
         public readonly long refs;
 
-        public DtStraightPath(RcVec3f pos, byte flags, long refs)
+        public DtStraightPath(Vector3 pos, byte flags, long refs)
         {
             this.pos = pos;
             this.flags = flags;

@@ -1,60 +1,60 @@
-using System;
-using System.Runtime.CompilerServices;
+//using System;
+//using System.Runtime.CompilerServices;
 
-namespace DotRecast.Core.Numerics
-{
-    public struct RcVec2f
-    {
-        public float X;
-        public float Y;
+//namespace System.Numerics
+//{
+//    public struct Vector2
+//    {
+//        public float X;
+//        public float Y;
 
-        public static readonly RcVec2f Zero = new RcVec2f { X = 0, Y = 0 };
+//        public static readonly Vector2 Zero = new Vector2 { X = 0, Y = 0 };
 
-        public RcVec2f(float x, float y)
-        {
-            X = x;
-            Y = y;
-        }
+//        public Vector2(float x, float y)
+//        {
+//            X = x;
+//            Y = y;
+//        }
 
-        public override bool Equals(object obj)
-        {
-            if (!(obj is RcVec2f))
-                return false;
+//        public override bool Equals(object obj)
+//        {
+//            if (!(obj is Vector2))
+//                return false;
 
-            return Equals((RcVec2f)obj);
-        }
+//            return Equals((Vector2)obj);
+//        }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(RcVec2f other)
-        {
-            return X.Equals(other.X) &&
-                   Y.Equals(other.Y);
-        }
+//        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+//        public bool Equals(Vector2 other)
+//        {
+//            return X.Equals(other.X) &&
+//                   Y.Equals(other.Y);
+//        }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode()
-        {
-            int hash = X.GetHashCode();
-            hash = RcHashCodes.CombineHashCodes(hash, Y.GetHashCode());
-            return hash;
-        }
+//        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+//        public override int GetHashCode()
+//        {
+//            int hash = X.GetHashCode();
+//            hash = RcHashCodes.CombineHashCodes(hash, Y.GetHashCode());
+//            return hash;
+//        }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator ==(RcVec2f left, RcVec2f right)
-        {
-            return left.Equals(right);
-        }
+//        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+//        public static bool operator ==(Vector2 left, Vector2 right)
+//        {
+//            return left.Equals(right);
+//        }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator !=(RcVec2f left, RcVec2f right)
-        {
-            return !left.Equals(right);
-        }
+//        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+//        public static bool operator !=(Vector2 left, Vector2 right)
+//        {
+//            return !left.Equals(right);
+//        }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
-        {
-            return $"{X}, {Y}";
-        }
-    }
-}
+//        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+//        public override string ToString()
+//        {
+//            return $"{X}, {Y}";
+//        }
+//    }
+//}

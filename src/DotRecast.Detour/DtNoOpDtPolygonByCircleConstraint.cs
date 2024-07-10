@@ -1,4 +1,4 @@
-﻿using DotRecast.Core.Numerics;
+﻿using System.Numerics;
 
 namespace DotRecast.Detour
 {
@@ -10,7 +10,7 @@ namespace DotRecast.Detour
         {
         }
 
-        public float[] Apply(float[] polyVerts, RcVec3f circleCenter, float radius)
+        public float[] Apply(float[] polyVerts, Vector3 circleCenter, float radius)
         {
             return polyVerts;
         }

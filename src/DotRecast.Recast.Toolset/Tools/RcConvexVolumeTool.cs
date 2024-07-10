@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using DotRecast.Core;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 using DotRecast.Recast.Geom;
 
 namespace DotRecast.Recast.Toolset.Tools
 {
     public class RcConvexVolumeTool : IRcToolable
     {
-        private readonly List<RcVec3f> _pts;
+        private readonly List<Vector3> _pts;
         private readonly List<int> _hull;
 
         public RcConvexVolumeTool()
         {
-            _pts = new List<RcVec3f>();
+            _pts = new List<Vector3>();
             _hull = new List<int>();
         }
 
@@ -22,7 +22,7 @@ namespace DotRecast.Recast.Toolset.Tools
             return "Convex Volumes";
         }
 
-        public List<RcVec3f> GetShapePoint()
+        public List<Vector3> GetShapePoint()
         {
             return _pts;
         }
@@ -38,16 +38,16 @@ namespace DotRecast.Recast.Toolset.Tools
             _hull.Clear();
         }
 
-        public bool PlottingShape(RcVec3f p, out List<RcVec3f> pts, out List<int> hull)
+        public bool PlottingShape(Vector3 p, out List<Vector3> pts, out List<int> hull)
         {
             pts = null;
             hull = null;
 
             // Create
             // If clicked on that last pt, create the shape.
-            if (_pts.Count > 0 && RcVec3f.DistanceSquared(p, _pts[_pts.Count - 1]) < 0.2f * 0.2f)
+            if (_pts.Count > 0 && Vector3.DistanceSquared(p, _pts[_pts.Count - 1]) < 0.2f * 0.2f)
             {
-                pts = new List<RcVec3f>(_pts);
+                pts = new List<Vector3>(_pts);
                 hull = new List<int>(_hull);
 
                 _pts.Clear();
@@ -74,7 +74,7 @@ namespace DotRecast.Recast.Toolset.Tools
         }
 
 
-        public bool TryRemove(IInputGeomProvider geom, RcVec3f pos, out RcConvexVolume volume)
+        public bool TryRemove(IInputGeomProvider geom, Vector3 pos, out RcConvexVolume volume)
         {
             // Delete
             int nearestIndex = -1;
@@ -101,12 +101,12 @@ namespace DotRecast.Recast.Toolset.Tools
             return null != volume;
         }
 
-        public bool TryAdd(IInputGeomProvider geom, RcVec3f p, RcAreaModification areaType, float boxDescent, float boxHeight, float polyOffset, out RcConvexVolume volume)
+        public bool TryAdd(IInputGeomProvider geom, Vector3 p, RcAreaModification areaType, float boxDescent, float boxHeight, float polyOffset, out RcConvexVolume volume)
         {
             // Create
 
             // If clicked on that last pt, create the shape.
-            if (_pts.Count > 0 && RcVec3f.DistanceSquared(p, _pts[^1]) < 0.2f * 0.2f)
+            if (_pts.Count > 0 && Vector3.DistanceSquared(p, _pts[^1]) < 0.2f * 0.2f)
             {
                 // 
                 if (_hull.Count > 2)
@@ -139,7 +139,7 @@ namespace DotRecast.Recast.Toolset.Tools
             return false;
         }
 
-        public static RcConvexVolume CreateConvexVolume(List<RcVec3f> pts, List<int> hull, RcAreaModification areaType, float boxDescent, float boxHeight, float polyOffset)
+        public static RcConvexVolume CreateConvexVolume(List<Vector3> pts, List<int> hull, RcAreaModification areaType, float boxDescent, float boxHeight, float polyOffset)
         {
             // Create shape.
             float[] verts = new float[hull.Count * 3];

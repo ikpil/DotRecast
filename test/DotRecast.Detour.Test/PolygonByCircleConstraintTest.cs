@@ -17,7 +17,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using DotRecast.Core.Numerics;
+using System.Numerics;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
@@ -31,7 +31,7 @@ public class PolygonByCircleConstraintTest
     public void ShouldHandlePolygonFullyInsideCircle()
     {
         float[] polygon = { -2, 0, 2, 2, 0, 2, 2, 0, -2, -2, 0, -2 };
-        RcVec3f center = new RcVec3f(1, 0, 1);
+        Vector3 center = new Vector3(1, 0, 1);
         float[] constrained = _constraint.Apply(polygon, center, 6);
 
         Assert.That(constrained, Is.EqualTo(polygon));
@@ -42,7 +42,7 @@ public class PolygonByCircleConstraintTest
     {
         int expectedSize = 21;
         float[] polygon = { -2, 0, 2, 2, 0, 2, 2, 0, -2, -2, 0, -2 };
-        RcVec3f center = new RcVec3f(2, 0, 0);
+        Vector3 center = new Vector3(2, 0, 0);
 
         float[] constrained = _constraint.Apply(polygon, center, 3);
         Assert.That(constrained.Length, Is.EqualTo(expectedSize));
@@ -54,7 +54,7 @@ public class PolygonByCircleConstraintTest
     {
         int expectedSize = 12 * 3;
         float[] polygon = { -4, 0, 0, -3, 0, 3, 2, 0, 3, 3, 0, -3, -2, 0, -4 };
-        RcVec3f center = new RcVec3f(-1, 0, -1);
+        Vector3 center = new Vector3(-1, 0, -1);
         float[] constrained = _constraint.Apply(polygon, center, 2);
 
         Assert.That(constrained.Length, Is.EqualTo(expectedSize));
@@ -72,7 +72,7 @@ public class PolygonByCircleConstraintTest
     {
         int expectedSize = 9 * 3;
         float[] polygon = { -4, 0, 0, -3, 0, 3, 2, 0, 3, 3, 0, -3, -2, 0, -4 };
-        RcVec3f center = new RcVec3f(-2, 0, -1);
+        Vector3 center = new Vector3(-2, 0, -1);
         float[] constrained = _constraint.Apply(polygon, center, 3);
 
         Assert.That(constrained.Length, Is.EqualTo(expectedSize));
@@ -84,7 +84,7 @@ public class PolygonByCircleConstraintTest
     {
         int expectedSize = 7 * 3;
         float[] polygon = { -4, 0, 0, -3, 0, 3, 2, 0, 3, 3, 0, -3, -2, 0, -4 };
-        RcVec3f center = new RcVec3f(4, 0, 0);
+        Vector3 center = new Vector3(4, 0, 0);
         float[] constrained = _constraint.Apply(polygon, center, 4);
 
         Assert.That(constrained.Length, Is.EqualTo(expectedSize));

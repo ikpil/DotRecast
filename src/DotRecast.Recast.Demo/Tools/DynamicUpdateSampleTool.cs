@@ -23,7 +23,7 @@ using System.IO;
 using System.Threading.Tasks;
 using DotRecast.Core;
 using DotRecast.Core.Collections;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 using DotRecast.Detour.Dynamic;
 using DotRecast.Recast.Toolset;
 using DotRecast.Recast.Toolset.Tools;
@@ -81,10 +81,10 @@ public class DynamicUpdateSampleTool : ISampleTool
 
     private bool sposSet;
     private bool eposSet;
-    private RcVec3f spos;
-    private RcVec3f epos;
+    private Vector3 spos;
+    private Vector3 epos;
     private bool raycastHit;
-    private RcVec3f raycastHitPos;
+    private Vector3 raycastHitPos;
 
     public DynamicUpdateSampleTool()
     {
@@ -302,7 +302,7 @@ public class DynamicUpdateSampleTool : ISampleTool
             }
 
             dd.DepthMask(false);
-            if (raycastHitPos != RcVec3f.Zero)
+            if (raycastHitPos != Vector3.Zero)
             {
                 int spathCol = raycastHit ? DuRGBA(128, 32, 16, 220) : DuRGBA(64, 128, 240, 220);
                 dd.Begin(LINES, 2.0f);
@@ -315,7 +315,7 @@ public class DynamicUpdateSampleTool : ISampleTool
         }
     }
 
-    private void DrawAgent(RecastDebugDraw dd, RcVec3f pos, int col)
+    private void DrawAgent(RecastDebugDraw dd, Vector3 pos, int col)
     {
         var settings = _sample.GetSettings();
         float r = settings.agentRadius;
@@ -353,7 +353,7 @@ public class DynamicUpdateSampleTool : ISampleTool
     }
 
 
-    public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
+    public void HandleClick(Vector3 s, Vector3 p, bool shift)
     {
         if (mode == RcDynamicUpdateToolMode.COLLIDERS)
         {
@@ -389,7 +389,7 @@ public class DynamicUpdateSampleTool : ISampleTool
     }
 
 
-    public void HandleClickRay(RcVec3f start, RcVec3f dir, bool shift)
+    public void HandleClickRay(Vector3 start, Vector3 dir, bool shift)
     {
         if (mode == RcDynamicUpdateToolMode.COLLIDERS)
         {

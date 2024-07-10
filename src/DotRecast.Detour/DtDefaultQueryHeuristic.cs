@@ -17,7 +17,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 
 namespace DotRecast.Detour
@@ -34,9 +34,9 @@ namespace DotRecast.Detour
             this.scale = scale;
         }
 
-        public float GetCost(RcVec3f neighbourPos, RcVec3f endPos)
+        public float GetCost(Vector3 neighbourPos, Vector3 endPos)
         {
-            return RcVec3f.Distance(neighbourPos, endPos) * scale;
+            return Vector3.Distance(neighbourPos, endPos) * scale;
         }
     }
 }

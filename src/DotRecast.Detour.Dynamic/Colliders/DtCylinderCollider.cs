@@ -19,18 +19,18 @@ freely, subject to the following restrictions:
 
 using System;
 using DotRecast.Core;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 using DotRecast.Recast;
 
 namespace DotRecast.Detour.Dynamic.Colliders
 {
     public class DtCylinderCollider : DtCollider
     {
-        private readonly RcVec3f start;
-        private readonly RcVec3f end;
+        private readonly Vector3 start;
+        private readonly Vector3 end;
         private readonly float radius;
 
-        public DtCylinderCollider(RcVec3f start, RcVec3f end, float radius, int area, float flagMergeThreshold) :
+        public DtCylinderCollider(Vector3 start, Vector3 end, float radius, int area, float flagMergeThreshold) :
             base(area, flagMergeThreshold, Bounds(start, end, radius))
         {
             this.start = start;
@@ -44,7 +44,7 @@ namespace DotRecast.Detour.Dynamic.Colliders
                 context);
         }
 
-        private static float[] Bounds(RcVec3f start, RcVec3f end, float radius)
+        private static float[] Bounds(Vector3 start, Vector3 end, float radius)
         {
             return new float[]
             {

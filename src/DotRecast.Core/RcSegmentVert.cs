@@ -1,11 +1,11 @@
-﻿using DotRecast.Core.Numerics;
+﻿using System.Numerics;
 
 namespace DotRecast.Core
 {
     public struct RcSegmentVert
     {
-        public RcVec3f vmin;
-        public RcVec3f vmax;
+        public Vector3 vmin;
+        public Vector3 vmax;
 
         public RcSegmentVert(float v0, float v1, float v2, float v3, float v4, float v5)
         {

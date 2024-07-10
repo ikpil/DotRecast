@@ -19,7 +19,7 @@ freely, subject to the following restrictions:
 
 using System.IO;
 using DotRecast.Core;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 using DotRecast.Detour.Dynamic.Io;
 using NUnit.Framework;
 
@@ -50,8 +50,8 @@ public class VoxelFileReaderTest
         Assert.That(f.tiles[0].cellHeight, Is.EqualTo(0.001f));
         Assert.That(f.tiles[0].width, Is.EqualTo(810));
         Assert.That(f.tiles[0].depth, Is.EqualTo(810));
-        Assert.That(f.tiles[0].boundsMin, Is.EqualTo(new RcVec3f(-101.25f, 0f, -101.25f)));
-        Assert.That(f.tiles[0].boundsMax, Is.EqualTo(new RcVec3f(101.25f, 5.0f, 101.25f)));
+        Assert.That(f.tiles[0].boundsMin, Is.EqualTo(new Vector3(-101.25f, 0f, -101.25f)));
+        Assert.That(f.tiles[0].boundsMax, Is.EqualTo(new Vector3(101.25f, 5.0f, 101.25f)));
     }
 
     [Test]
@@ -77,7 +77,7 @@ public class VoxelFileReaderTest
         Assert.That(f.tiles[0].cellHeight, Is.EqualTo(0.001f));
         Assert.That(f.tiles[0].width, Is.EqualTo(90));
         Assert.That(f.tiles[0].depth, Is.EqualTo(90));
-        Assert.That(f.tiles[0].boundsMin, Is.EqualTo(new RcVec3f(-101.25f, 0f, -101.25f)));
-        Assert.That(f.tiles[0].boundsMax, Is.EqualTo(new RcVec3f(-78.75f, 5.0f, -78.75f)));
+        Assert.That(f.tiles[0].boundsMin, Is.EqualTo(new Vector3(-101.25f, 0f, -101.25f)));
+        Assert.That(f.tiles[0].boundsMax, Is.EqualTo(new Vector3(-78.75f, 5.0f, -78.75f)));
     }
 }

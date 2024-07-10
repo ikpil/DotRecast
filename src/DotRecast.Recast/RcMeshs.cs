@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using DotRecast.Core;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 namespace DotRecast.Recast
 {
@@ -1231,8 +1231,8 @@ namespace DotRecast.Recast
             int maxVertsPerMesh = 0;
             for (int i = 0; i < nmeshes; ++i)
             {
-                mesh.bmin = RcVec3f.Min(mesh.bmin, meshes[i].bmin);
-                mesh.bmax = RcVec3f.Max(mesh.bmax, meshes[i].bmax);
+                mesh.bmin = Vector3.Min(mesh.bmin, meshes[i].bmin);
+                mesh.bmax = Vector3.Max(mesh.bmax, meshes[i].bmax);
                 maxVertsPerMesh = Math.Max(maxVertsPerMesh, meshes[i].nverts);
                 maxVerts += meshes[i].nverts;
                 maxPolys += meshes[i].npolys;

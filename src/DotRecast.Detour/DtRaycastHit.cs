@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 namespace DotRecast.Detour
 {
@@ -33,7 +33,7 @@ namespace DotRecast.Detour
         public float t;
 
         /// hitNormal	The normal of the nearest wall hit. [(x, y, z)]
-        public RcVec3f hitNormal;
+        public Vector3 hitNormal;
 
         /// The index of the edge on the final polygon where the wall was hit.
         public int hitEdgeIndex;

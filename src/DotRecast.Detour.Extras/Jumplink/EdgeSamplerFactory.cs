@@ -1,5 +1,5 @@
 using System;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 namespace DotRecast.Detour.Extras.Jumplink
 {
@@ -29,8 +29,8 @@ namespace DotRecast.Detour.Extras.Jumplink
         {
             EdgeSampler es = new EdgeSampler(edge, new JumpTrajectory(acfg.jumpHeight));
             es.start.height = acfg.agentClimb * 2;
-            RcVec3f offset = new RcVec3f();
-            Trans2d(ref offset, es.az, es.ay, new RcVec2f { X = acfg.startDistance, Y = -acfg.agentClimb, });
+            Vector3 offset = new Vector3();
+            Trans2d(ref offset, es.az, es.ay, new Vector2 { X = acfg.startDistance, Y = -acfg.agentClimb, });
             Vadd(ref es.start.p, edge.sp, offset);
             Vadd(ref es.start.q, edge.sq, offset);
 
@@ -42,7 +42,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             {
                 float v = (float)j / (float)(nsamples - 1);
                 float ox = 2 * acfg.agentRadius + dx * v;
-                Trans2d(ref offset, es.az, es.ay, new RcVec2f { X = ox, Y = acfg.minHeight });
+                Trans2d(ref offset, es.az, es.ay, new Vector2 { X = ox, Y = acfg.minHeight });
                 GroundSegment end = new GroundSegment();
                 end.height = acfg.heightRange;
                 Vadd(ref end.p, edge.sp, offset);
@@ -57,12 +57,12 @@ namespace DotRecast.Detour.Extras.Jumplink
         {
             EdgeSampler es = new EdgeSampler(edge, new ClimbTrajectory());
             es.start.height = acfg.agentClimb * 2;
-            RcVec3f offset = new RcVec3f();
-            Trans2d(ref offset, es.az, es.ay, new RcVec2f() { X = acfg.startDistance, Y = -acfg.agentClimb });
+            Vector3 offset = new Vector3();
+            Trans2d(ref offset, es.az, es.ay, new Vector2() { X = acfg.startDistance, Y = -acfg.agentClimb });
             Vadd(ref es.start.p, edge.sp, offset);
             Vadd(ref es.start.q, edge.sq, offset);
 
-            Trans2d(ref offset, es.az, es.ay, new RcVec2f() { X = acfg.endDistance, Y = acfg.minHeight });
+            Trans2d(ref offset, es.az, es.ay, new Vector2() { X = acfg.endDistance, Y = acfg.minHeight });
             GroundSegment end = new GroundSegment();
             end.height = acfg.heightRange;
             Vadd(ref end.p, edge.sp, offset);
@@ -78,7 +78,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             dest[2] = v1[2] + v2[2];
         }
         
-        private void Vadd(ref RcVec3f dest, RcVec3f v1, RcVec3f v2)
+        private void Vadd(ref Vector3 dest, Vector3 v1, Vector3 v2)
         {
             dest.X = v1.X + v2.X;
             dest.Y = v1.Y + v2.Y;
@@ -93,7 +93,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             dst[2] = ax[2] * pt[0] + ay[2] * pt[1];
         }
         
-        private void Trans2d(ref RcVec3f dst, RcVec3f ax, RcVec3f ay, RcVec2f pt)
+        private void Trans2d(ref Vector3 dst, Vector3 ax, Vector3 ay, Vector2 pt)
         {
             dst.X = ax.X * pt.X + ay.X * pt.Y;
             dst.Y = ax.Y * pt.X + ay.Y * pt.Y;

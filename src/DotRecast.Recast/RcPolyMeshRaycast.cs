@@ -19,13 +19,13 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 using DotRecast.Core;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 namespace DotRecast.Recast
 {
     public static class RcPolyMeshRaycast
     {
-        public static bool Raycast(IList<RcBuilderResult> results, RcVec3f src, RcVec3f dst, out float hitTime)
+        public static bool Raycast(IList<RcBuilderResult> results, Vector3 src, Vector3 dst, out float hitTime)
         {
             hitTime = 0.0f;
             foreach (RcBuilderResult result in results)
@@ -42,7 +42,7 @@ namespace DotRecast.Recast
             return false;
         }
 
-        private static bool Raycast(RcPolyMesh poly, RcPolyMeshDetail meshDetail, RcVec3f sp, RcVec3f sq, out float hitTime)
+        private static bool Raycast(RcPolyMesh poly, RcPolyMeshDetail meshDetail, Vector3 sp, Vector3 sq, out float hitTime)
         {
             hitTime = 0;
             if (meshDetail != null)
@@ -57,7 +57,7 @@ namespace DotRecast.Recast
                     int tris = btris * 4;
                     for (int j = 0; j < ntris; ++j)
                     {
-                        RcVec3f[] vs = new RcVec3f[3];
+                        Vector3[] vs = new Vector3[3];
                         for (int k = 0; k < 3; ++k)
                         {
                             vs[k].X = meshDetail.verts[verts + meshDetail.tris[tris + j * 4 + k] * 3];

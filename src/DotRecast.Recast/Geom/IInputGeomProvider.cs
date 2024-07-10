@@ -20,16 +20,16 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 namespace DotRecast.Recast.Geom
 {
     public interface IInputGeomProvider
     {
         RcTriMesh GetMesh();
-        RcVec3f GetMeshBoundsMin();
+        Vector3 GetMeshBoundsMin();
 
-        RcVec3f GetMeshBoundsMax();
+        Vector3 GetMeshBoundsMax();
 
         IEnumerable<RcTriMesh> Meshes();
         
@@ -39,7 +39,7 @@ namespace DotRecast.Recast.Geom
 
         // off mesh connections
         public List<RcOffMeshConnection> GetOffMeshConnections();
-        public void AddOffMeshConnection(RcVec3f start, RcVec3f end, float radius, bool bidir, int area, int flags);
+        public void AddOffMeshConnection(Vector3 start, Vector3 end, float radius, bool bidir, int area, int flags);
         public void RemoveOffMeshConnections(Predicate<RcOffMeshConnection> filter);
 
     }

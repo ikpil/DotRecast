@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 using DotRecast.Core;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 
 namespace DotRecast.Detour.Crowd
@@ -79,7 +79,7 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        public DtPathQueryResult Request(long startRef, long endRef, RcVec3f startPos, RcVec3f endPos, IDtQueryFilter filter)
+        public DtPathQueryResult Request(long startRef, long endRef, Vector3 startPos, Vector3 endPos, IDtQueryFilter filter)
         {
             if (m_queue.Count >= m_config.pathQueueSize)
             {

@@ -19,7 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Toolset;
 using DotRecast.Recast.Toolset.Geom;
@@ -40,7 +40,7 @@ public class OffMeshConnectionSampleTool : ISampleTool
 
     private int _bidir;
     private bool _hasStartPt;
-    private RcVec3f _startPt;
+    private Vector3 _startPt;
 
     public OffMeshConnectionSampleTool()
     {
@@ -88,7 +88,7 @@ public class OffMeshConnectionSampleTool : ISampleTool
         // ..
     }
 
-    public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
+    public void HandleClick(Vector3 s, Vector3 p, bool shift)
     {
         DemoInputGeomProvider geom = _sample.GetInputGeom();
         if (geom == null)
@@ -124,7 +124,7 @@ public class OffMeshConnectionSampleTool : ISampleTool
         // TODO Auto-generated method stub
     }
 
-    public void HandleClickRay(RcVec3f start, RcVec3f direction, bool shift)
+    public void HandleClickRay(Vector3 start, Vector3 direction, bool shift)
     {
     }
 }

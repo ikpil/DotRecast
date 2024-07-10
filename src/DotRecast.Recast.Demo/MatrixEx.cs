@@ -20,30 +20,27 @@ freely, subject to the following restrictions:
 
 using System.Numerics;
 
-namespace DotRecast.Detour
+namespace DotRecast.Recast.Demo;
+
+static class MatrixEx
 {
-    /// Defines an navigation mesh off-mesh connection within a dtMeshTile object.
-    /// An off-mesh connection is a user defined traversable connection made up to two vertices.
-    public class DtOffMeshConnection
+    public static void CopyTo(this Matrix4x4 s, float[] m)
     {
-        /// The endpoints of the connection. [(ax, ay, az, bx, by, bz)]
-        public Vector3[] pos = new Vector3[2];
-
-        /// The radius of the endpoints. [Limit: >= 0]
-        public float rad;
-
-        /// The polygon reference of the connection within the tile.
-        public int poly;
-
-        /// Link flags. 
-        /// @note These are not the connection's user defined flags. Those are assigned via the 
-        /// connection's dtPoly definition. These are link flags used for internal purposes.
-        public int flags;
-
-        /// End point side.
-        public int side;
-
-        /// The id of the offmesh connection. (User assigned when the navigation mesh is built.)
-        public int userId;
+        m[0] = s.M11;
+        m[1] = s.M12;
+        m[2] = s.M13;
+        m[3] = s.M14;
+        m[4] = s.M21;
+        m[5] = s.M22;
+        m[6] = s.M23;
+        m[7] = s.M24;
+        m[8] = s.M31;
+        m[9] = s.M32;
+        m[10] = s.M33;
+        m[11] = s.M34;
+        m[12] = s.M41;
+        m[13] = s.M42;
+        m[14] = s.M43;
+        m[15] = s.M44;
     }
 }
