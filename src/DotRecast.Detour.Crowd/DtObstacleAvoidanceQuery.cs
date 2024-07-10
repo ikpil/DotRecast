@@ -30,7 +30,7 @@ namespace DotRecast.Detour.Crowd
     {
         public const int DT_MAX_PATTERN_DIVS = 32; // < Max numver of adaptive divs.
         public const int DT_MAX_PATTERN_RINGS = 4;
-        public const float DT_PI = 3.14159265f;
+        //public const float DT_PI = 3.14159265f; // 3.14159274
 
         private DtObstacleAvoidanceParams m_params;
         private float m_invHorizTime;
@@ -411,7 +411,7 @@ namespace DotRecast.Detour.Crowd
 
             int nd = Math.Clamp(ndivs, 1, DT_MAX_PATTERN_DIVS);
             int nr = Math.Clamp(nrings, 1, DT_MAX_PATTERN_RINGS);
-            float da = (1.0f / nd) * DT_PI * 2;
+            float da = (1.0f / nd) * MathF.PI * 2;
             float ca = MathF.Cos(da);
             float sa = MathF.Sin(da);
 

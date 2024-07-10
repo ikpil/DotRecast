@@ -44,12 +44,16 @@ namespace DotRecast.Detour.Crowd
             return _maxTimeToFindPath;
         }
 
-        public List<RcTelemetryTick> ToExecutionTimings()
+        public IEnumerable<RcTelemetryTick> ToExecutionTimings()
         {
-            return _executionTimings
-                .Select(e => new RcTelemetryTick(e.Key.Label, e.Value))
-                .OrderByDescending(x => x.Ticks)
-                .ToList();
+            foreach (var e in _executionTimings)
+            {
+                yield return new RcTelemetryTick(e.Key.Label, e.Value);
+            }
+            //return _executionTimings
+            //    .Select(e => new RcTelemetryTick(e.Key.Label, e.Value))
+            //    .OrderByDescending(x => x.Ticks)
+            //    .ToList();
         }
 
         public void Start()
@@ -76,7 +80,8 @@ namespace DotRecast.Detour.Crowd
 
         internal void Start(DtCrowdTimerLabel name)
         {
-            _executionTimings.Add(name, RcFrequency.Ticks);
+            //_executionTimings.Add(name, RcFrequency.Ticks);
+            _executionTimings[name] = RcFrequency.Ticks;
         }
 
         internal void Stop(DtCrowdTimerLabel name)

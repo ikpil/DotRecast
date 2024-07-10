@@ -100,7 +100,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 return DtStatus.DT_FAILURE;
 
             int zone = (int)(_rand.Next() * _polyPoints.Count);
-            return navquery.FindRandomPointWithinCircle(_polyPoints[zone].refs, _polyPoints[zone].pt, _cfg.zoneRadius, filter, _rand,
+            return navquery.FindRandomPointAroundCircle(_polyPoints[zone].refs, _polyPoints[zone].pt, _cfg.zoneRadius, filter, _rand,
                 out var randomRef, out randomPt);
         }
 
