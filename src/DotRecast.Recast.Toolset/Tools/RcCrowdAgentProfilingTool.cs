@@ -32,6 +32,7 @@ namespace DotRecast.Recast.Toolset.Tools
         private double _avgUpdateTime;
         private double _minUpdateTime;
         private double _maxUpdateTime;
+        private DtNavMeshQuery m_navquery;
 
         public RcCrowdAgentProfilingTool()
         {
@@ -68,6 +69,7 @@ namespace DotRecast.Recast.Toolset.Tools
             {
                 _crowdCfg = new DtCrowdConfig(maxAgentRadius);
             }
+            m_navquery = new DtNavMeshQuery(_navMesh);
         }
 
         private DtCrowdAgentParams GetAgentParams(float agentRadius, float agentHeight, float agentMaxAcceleration, float agentMaxSpeed)
@@ -242,7 +244,6 @@ namespace DotRecast.Recast.Toolset.Tools
             long endTime = RcFrequency.Ticks;
             if (_crowd != null)
             {
-                DtNavMeshQuery navquery = new DtNavMeshQuery(_navMesh);
                 IDtQueryFilter filter = new DtQueryDefaultFilter();
                 foreach (DtCrowdAgent ag in _crowd.GetActiveAgents())
                 {
@@ -252,13 +253,13 @@ namespace DotRecast.Recast.Toolset.Tools
                         switch (crowAgentData.type)
                         {
                             case RcCrowdAgentType.MOB:
-                                MoveMob(navquery, filter, ag, crowAgentData);
+                                MoveMob(m_navquery, filter, ag, crowAgentData);
                                 break;
                             case RcCrowdAgentType.VILLAGER:
-                                MoveVillager(navquery, filter, ag, crowAgentData);
+                                MoveVillager(m_navquery, filter, ag, crowAgentData);
                                 break;
                             case RcCrowdAgentType.TRAVELLER:
-                                MoveTraveller(navquery, filter, ag, crowAgentData);
+                                MoveTraveller(m_navquery, filter, ag, crowAgentData);
                                 break;
                         }
                     }
