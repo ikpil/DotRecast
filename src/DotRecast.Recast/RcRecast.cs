@@ -188,7 +188,7 @@ namespace DotRecast.Recast
         public static int[] MarkWalkableTriangles(RcContext ctx, float walkableSlopeAngle, float[] verts, int[] tris, int nt, RcAreaModification areaMod)
         {
             int[] areas = new int[nt];
-            float walkableThr = MathF.Cos(walkableSlopeAngle / 180.0f * MathF.PI);
+            float walkableThr = MathF.Cos(float.DegreesToRadians(walkableSlopeAngle));
             Vector3 norm = new Vector3();
             for (int i = 0; i < nt; ++i)
             {
@@ -224,7 +224,7 @@ namespace DotRecast.Recast
         /// @see rcHeightfield, rcClearUnwalkableTriangles, rcRasterizeTriangles
         public static void ClearUnwalkableTriangles(RcContext ctx, float walkableSlopeAngle, float[] verts, int nv, int[] tris, int nt, int[] areas)
         {
-            float walkableThr = MathF.Cos(walkableSlopeAngle / 180.0f * MathF.PI);
+            float walkableThr = MathF.Cos(float.DegreesToRadians(walkableSlopeAngle));
 
             Vector3 norm = new Vector3();
 

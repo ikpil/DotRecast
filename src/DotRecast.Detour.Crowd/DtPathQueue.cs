@@ -34,7 +34,7 @@ namespace DotRecast.Detour.Crowd
         public DtPathQueue(DtNavMesh navMesh, DtCrowdConfig config)
         {
             m_config = config;
-            m_queue = new LinkedList<DtPathQuery>(); // TODO use queue instead of linkedlist
+            m_queue = new LinkedList<DtPathQuery>(); // TODO use array, cache DtPathQuery
             m_navQuery = new DtNavMeshQuery(navMesh);
         }
 
@@ -86,7 +86,7 @@ namespace DotRecast.Detour.Crowd
                 return null;
             }
 
-            DtPathQuery q = new DtPathQuery(); // TODO struct?
+            DtPathQuery q = new DtPathQuery();
             q.startPos = startPos;
             q.startRef = startRef;
             q.endPos = endPos;

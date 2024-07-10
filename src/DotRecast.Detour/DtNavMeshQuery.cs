@@ -20,9 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
-using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
-using System.Xml.Linq;
 using DotRecast.Core;
 using System.Numerics;
 
@@ -186,50 +184,12 @@ namespace DotRecast.Detour
         ///  @param[in]		maxRadius		The radius of the search circle. [Units: wu]
         ///  @param[in]		filter			The polygon filter to apply to the query.
         ///  @param[in]		frand			Function returning a random number [0..1).
-        ///  @param[out]	randomRef		The reference id of the random location.
-        ///  @param[out]	randomPt		The random location. [(x, y, z)]
-        /// @returns The status flags for the query.
-        public DtStatus FindRandomPointAroundCircle(long startRef, Vector3 centerPos, float maxRadius,
-            IDtQueryFilter filter, IRcRand frand, out long randomRef, out Vector3 randomPt)
-        {
-            return FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, DtNoOpDtPolygonByCircleConstraint.Shared, out randomRef, out randomPt);
-        }
-
-        /**
-     * Returns random location on navmesh within the reach of specified location. Polygons are chosen weighted by area.
-     * The search runs in linear related to number of polygon. The location is strictly constrained by the circle.
-     *
-     * @param startRef
-     *            The reference id of the polygon where the search starts.
-     * @param centerPos
-     *            The center of the search circle. [(x, y, z)]
-     * @param maxRadius
-     * @param filter
-     *            The polygon filter to apply to the query.
-     * @param frand
-     *            Function returning a random number [0..1).
-     * @return Random location
-     */
-        public DtStatus FindRandomPointWithinCircle(long startRef, Vector3 centerPos, float maxRadius,
-            IDtQueryFilter filter, IRcRand frand, out long randomRef, out Vector3 randomPt)
-        {
-            return FindRandomPointAroundCircle(startRef, centerPos, maxRadius, filter, frand, DtStrictDtPolygonByCircleConstraint.Shared, out randomRef, out randomPt);
-        }
-
-        /// Returns random location on navmesh within the reach of specified location.
-        /// Polygons are chosen weighted by area. The search runs in linear related to number of polygon.
-        /// The location is not exactly constrained by the circle, but it limits the visited polygons.
-        ///  @param[in]		startRef		The reference id of the polygon where the search starts.
-        ///  @param[in]		centerPos		The center of the search circle. [(x, y, z)]
-        ///  @param[in]		maxRadius		The radius of the search circle. [Units: wu]
-        ///  @param[in]		filter			The polygon filter to apply to the query.
-        ///  @param[in]		frand			Function returning a random number [0..1).
         ///  @param[in]		constraint      
         ///  @param[out]	randomRef		The reference id of the random location.
         ///  @param[out]	randomPt		The random location. [(x, y, z)]
         /// @returns The status flags for the query.
         public DtStatus FindRandomPointAroundCircle(long startRef, Vector3 centerPos, float maxRadius,
-            IDtQueryFilter filter, IRcRand frand, IDtPolygonByCircleConstraint constraint,
+            IDtQueryFilter filter, IRcRand frand,
             out long randomRef, out Vector3 randomPt)
         {
             randomRef = startRef;
@@ -265,9 +225,10 @@ namespace DotRecast.Detour
             float radiusSqr = maxRadius * maxRadius;
             float areaSum = 0.0f;
 
+            DtMeshTile randomTile = null;
             DtPoly randomPoly = null;
             long randomPolyRef = 0;
-            float[] randomPolyVerts = null;
+            //float[] randomPolyVerts = null;
 
             while (!m_openList.IsEmpty())
             {
@@ -285,42 +246,30 @@ namespace DotRecast.Detour
                 {
                     // Calc area of the polygon.
                     float polyArea = 0.0f;
-                    float[] polyVerts = new float[bestPoly.vertCount * 3]; // TODO alloc temp
-                    for (int j = 0; j < bestPoly.vertCount; ++j)
+                    for (int j = 2; j < bestPoly.vertCount; ++j)
                     {
-                        RcArrays.Copy(bestTile.data.verts, bestPoly.verts[j] * 3, polyVerts, j * 3, 3);
+                        int va = bestPoly.verts[0] * 3;
+                        int vb = bestPoly.verts[j - 1] * 3;
+                        int vc = bestPoly.verts[j] * 3;
+                        polyArea += DtUtils.TriArea2D(bestTile.data.verts, va, vb, vc);
                     }
-
-                    float[] constrainedVerts = constraint.Apply(polyVerts, centerPos, maxRadius);
-                    if (constrainedVerts != null)
+                    // Choose random polygon weighted by area, using reservoir sampling.
+                    areaSum += polyArea;
+                    float u = frand.Next();
+                    if (u * areaSum <= polyArea)
                     {
-                        int vertCount = constrainedVerts.Length / 3;
-                        for (int j = 2; j < vertCount; ++j)
-                        {
-                            int va = 0;
-                            int vb = (j - 1) * 3;
-                            int vc = j * 3;
-                            polyArea += DtUtils.TriArea2D(constrainedVerts, va, vb, vc);
-                        }
-
-                        // Choose random polygon weighted by area, using reservoir sampling.
-                        areaSum += polyArea;
-                        float u = frand.Next();
-                        if (u * areaSum <= polyArea)
-                        {
-                            randomPoly = bestPoly;
-                            randomPolyRef = bestRef;
-                            randomPolyVerts = constrainedVerts;
-                        }
+                        randomTile = bestTile;
+                        randomPoly = bestPoly;
+                        randomPolyRef = bestRef;
                     }
                 }
 
                 // Get parent poly and tile.
                 long parentRef = 0;
                 if (bestNode.pidx != 0)
-                {
                     parentRef = m_nodePool.GetNodeAtIdx(bestNode.pidx).id;
-                }
+                //if (parentRef != 0)
+                //    m_nav.GetTileAndPolyByRefUnsafe(parentRef, &parentTile, &parentPoly);
 
                 for (int i = bestPoly.firstLink; i != DT_NULL_LINK; i = bestTile.links[i].next)
                 {
@@ -328,33 +277,25 @@ namespace DotRecast.Detour
                     long neighbourRef = link.refs;
                     // Skip invalid neighbours and do not follow back to parent.
                     if (neighbourRef == 0 || neighbourRef == parentRef)
-                    {
                         continue;
-                    }
 
                     // Expand to neighbour
                     m_nav.GetTileAndPolyByRefUnsafe(neighbourRef, out var neighbourTile, out var neighbourPoly);
 
                     // Do not advance if the polygon is excluded by the filter.
                     if (!filter.PassFilter(neighbourRef, neighbourTile, neighbourPoly))
-                    {
                         continue;
-                    }
 
                     // Find edge and calc distance to the edge.
                     var ppStatus = GetPortalPoints(bestRef, bestPoly, bestTile, neighbourRef,
                         neighbourPoly, neighbourTile, out var va, out var vb);
                     if (ppStatus.Failed())
-                    {
                         continue;
-                    }
 
                     // If the circle is not touching the next polygon, skip it.
                     var distSqr = DtUtils.DistancePtSegSqr2D(centerPos, va, vb, out var tesg);
                     if (distSqr > radiusSqr)
-                    {
                         continue;
-                    }
 
                     DtNode neighbourNode = m_nodePool.GetNode(neighbourRef);
                     if (null == neighbourNode)
@@ -364,23 +305,17 @@ namespace DotRecast.Detour
                     }
 
                     if ((neighbourNode.flags & DtNodeFlags.DT_NODE_CLOSED) != 0)
-                    {
                         continue;
-                    }
 
                     // Cost
                     if (neighbourNode.flags == 0)
-                    {
                         neighbourNode.pos = Vector3.Lerp(va, vb, 0.5f);
-                    }
 
                     float total = bestNode.total + Vector3.Distance(bestNode.pos, neighbourNode.pos);
 
                     // The node is already in open list and the new result is worse, skip.
                     if ((neighbourNode.flags & DtNodeFlags.DT_NODE_OPEN) != 0 && total >= neighbourNode.total)
-                    {
                         continue;
-                    }
 
                     neighbourNode.id = neighbourRef;
                     neighbourNode.flags = (neighbourNode.flags & ~DtNodeFlags.DT_NODE_CLOSED);
@@ -400,18 +335,28 @@ namespace DotRecast.Detour
             }
 
             if (randomPoly == null)
-            {
                 return DtStatus.DT_FAILURE;
-            }
 
             // Randomly pick point on polygon.
+            Span<float> verts = stackalloc float[3 * DT_VERTS_PER_POLYGON];
+            Span<float> areas = stackalloc float[DT_VERTS_PER_POLYGON];
+            //ref float v = ref randomTile.data.verts[randomPoly.verts[0] * 3];
+            //dtVcopy(&verts[0 * 3], v);
+            //for (int j = 1; j < randomPoly->vertCount; ++j)
+            //{
+            //    v = &randomTile->verts[randomPoly->verts[j] * 3];
+            //    dtVcopy(&verts[j * 3], v);
+            //}
+            for (int j = 0; j < randomPoly.vertCount; ++j)
+            {
+                RcArrays.Copy(randomTile.data.verts, randomPoly.verts[j] * 3, verts, j * 3, 3);
+            }
+
             float s = frand.Next();
             float t = frand.Next();
 
-            // TODO reuse stack memory
-            Span<float> areas = stackalloc float[randomPolyVerts.Length / 3];
-            DtUtils.RandomPointInConvexPoly(randomPolyVerts, randomPolyVerts.Length / 3, areas, s, t, out var pt);
-            ClosestPointOnPoly(randomPolyRef, pt, out var closest, out var _);
+            DtUtils.RandomPointInConvexPoly(verts, randomPoly.vertCount, areas, s, t, out var pt);
+            ClosestPointOnPoly(randomPolyRef, pt, out var closest, out _);
 
             randomRef = randomPolyRef;
             randomPt = closest;
@@ -596,12 +541,13 @@ namespace DotRecast.Detour
             return DtStatus.DT_SUCCESS;
         }
 
+        const int batchSize = 32;
+        DtPoly[] polys = new DtPoly[batchSize];  // cache
+
         /// Queries polygons within a tile.
         protected unsafe void QueryPolygonsInTile(DtMeshTile tile, Vector3 qmin, Vector3 qmax, IDtQueryFilter filter, IDtPolyQuery query)
         {
-            const int batchSize = 32;
             Span<long> polyRefs = stackalloc long[batchSize];
-            DtPoly[] polys = new DtPoly[batchSize];  // TODO allo temp
             int n = 0;
 
             if (tile.data.bvTree != null)
@@ -766,6 +712,9 @@ namespace DotRecast.Detour
                 : DtStatus.DT_SUCCESS;
         }
 
+        const int MAX_NEIS = 32;
+        DtMeshTile[] neis = new DtMeshTile[MAX_NEIS]; // cache
+
         /// @par 
         ///
         /// The query will be invoked with batches of polygons. Polygons passed
@@ -792,9 +741,6 @@ namespace DotRecast.Detour
             // Find tiles the query touches.
             m_nav.CalcTileLoc(bmin, out var minx, out var miny);
             m_nav.CalcTileLoc(bmax, out var maxx, out var maxy);
-
-            const int MAX_NEIS = 32;
-            DtMeshTile[] neis = new DtMeshTile[MAX_NEIS]; // TODO allo temp
 
             for (int y = miny; y <= maxy; ++y)
             {
@@ -892,7 +838,12 @@ namespace DotRecast.Detour
 
             DtRaycastHit rayHit = new DtRaycastHit();
             const int MAX_PATH = 32;
-            rayHit.path = new long[MAX_PATH]; // TODO alloc temp
+            unsafe
+            {
+                long* temppath = stackalloc long[MAX_PATH];
+                rayHit.path = new Span<long>(temppath, MAX_PATH); // TODO safe?
+            }
+            //rayHit.path = new long[MAX_PATH];
             while (!m_openList.IsEmpty())
             {
                 // Remove node from open list and put it in closed list.
@@ -1187,7 +1138,12 @@ namespace DotRecast.Detour
 
             var rayHit = new DtRaycastHit();
             const int MAX_PATH = 32;
-            rayHit.path = new long[MAX_PATH]; // TODO alloc temp
+            unsafe
+            {
+                long* temppath = stackalloc long[MAX_PATH];
+                rayHit.path = new Span<long>(temppath, MAX_PATH); // TODO safe?
+            }
+            //rayHit.path = new long[MAX_PATH];
 
             int iter = 0;
             while (iter < maxIter && !m_openList.IsEmpty())
@@ -1876,6 +1832,10 @@ namespace DotRecast.Detour
             return DtStatus.DT_SUCCESS | (straightPathCount >= maxStraightPath ? DtStatus.DT_BUFFER_TOO_SMALL : DtStatus.DT_STATUS_NOTHING);
         }
 
+
+        const int MAX_STACK = 48;
+        Queue<DtNode> _stack = new Queue<DtNode>(MAX_STACK);
+
         /// @par
         ///
         /// This method is optimized for small delta movement and a small number of 
@@ -1931,8 +1891,10 @@ namespace DotRecast.Detour
             startNode.total = 0;
             startNode.id = startRef;
             startNode.flags = DtNodeFlags.DT_NODE_CLOSED;
-            LinkedList<DtNode> stack = new LinkedList<DtNode>(); // TODO alloc temp
-            stack.AddLast(startNode);
+            //LinkedList<DtNode> stack = new LinkedList<DtNode>(); // TODO alloc test
+            var stack = _stack;
+            stack.Clear();
+            stack.Enqueue(startNode);
 
             Vector3 bestPos = new Vector3();
             float bestDist = float.MaxValue;
@@ -1951,8 +1913,7 @@ namespace DotRecast.Detour
             while (0 < stack.Count)
             {
                 // Pop front.
-                DtNode curNode = stack.First?.Value;
-                stack.RemoveFirst();
+                DtNode curNode = stack.Dequeue();
 
                 // Get poly and tile.
                 // The API input has been checked already, skip checking internal data.
@@ -2051,7 +2012,7 @@ namespace DotRecast.Detour
                             // Mark as the node as visited and push to queue.
                             neighbourNode.pidx = m_tinyNodePool.GetNodeIdx(curNode);
                             neighbourNode.flags |= DtNodeFlags.DT_NODE_CLOSED;
-                            stack.AddLast(neighbourNode);
+                            stack.Enqueue(neighbourNode);
                         }
                     }
                 }
@@ -3057,8 +3018,10 @@ namespace DotRecast.Detour
             startNode.pidx = 0;
             startNode.id = startRef;
             startNode.flags = DtNodeFlags.DT_NODE_CLOSED;
-            LinkedList<DtNode> stack = new LinkedList<DtNode>(); // TODO alloc temp
-            stack.AddLast(startNode);
+            //LinkedList<DtNode> stack = new LinkedList<DtNode>(); // TODO alloc test
+            var stack = _stack;
+            stack.Clear();
+            stack.Enqueue(startNode);
 
             DtStatus status = DtStatus.DT_SUCCESS;
             int n = 0;
@@ -3083,8 +3046,7 @@ namespace DotRecast.Detour
             while (0 < stack.Count)
             {
                 // Pop front.
-                DtNode curNode = stack.First?.Value;
-                stack.RemoveFirst();
+                DtNode curNode = stack.Dequeue();
 
                 // Get poly and tile.
                 // The API input has been checked already, skip checking internal data.
@@ -3210,7 +3172,7 @@ namespace DotRecast.Detour
                         status |= DtStatus.DT_BUFFER_TOO_SMALL;
                     }
 
-                    stack.AddLast(neighbourNode);
+                    stack.Enqueue(neighbourNode);
                 }
             }
 

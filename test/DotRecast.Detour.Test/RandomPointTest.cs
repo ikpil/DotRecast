@@ -96,25 +96,25 @@ public class RandomPointTest : AbstractDetourTest
         }
     }
 
-    [Test]
-    public void TestRandomWithinCircle()
-    {
-        RcRand f = new RcRand(1);
-        IDtQueryFilter filter = new DtQueryDefaultFilter();
-        query.FindRandomPoint(filter, f, out var randomRef, out var randomPt);
-        float radius = 5f;
-        for (int i = 0; i < 1000; i++)
-        {
-            var status = query.FindRandomPointWithinCircle(randomRef, randomPt, radius, filter, f, out var nextRandomRef, out var nextRandomPt);
-            Assert.That(status.Failed(), Is.False);
+    //[Test]
+    //public void TestRandomWithinCircle()
+    //{
+    //    RcRand f = new RcRand(1);
+    //    IDtQueryFilter filter = new DtQueryDefaultFilter();
+    //    query.FindRandomPoint(filter, f, out var randomRef, out var randomPt);
+    //    float radius = 5f;
+    //    for (int i = 0; i < 1000; i++)
+    //    {
+    //        var status = query.FindRandomPointWithinCircle(randomRef, randomPt, radius, filter, f, out var nextRandomRef, out var nextRandomPt);
+    //        Assert.That(status.Failed(), Is.False);
 
-            float distance = RcVec.Dist2D(randomPt, nextRandomPt);
-            Assert.That(distance <= radius, Is.True);
+    //        float distance = RcVec.Dist2D(randomPt, nextRandomPt);
+    //        Assert.That(distance <= radius, Is.True);
 
-            randomRef = nextRandomRef;
-            randomPt = nextRandomPt;
-        }
-    }
+    //        randomRef = nextRandomRef;
+    //        randomPt = nextRandomPt;
+    //    }
+    //}
 
     [Test]
     public void TestPerformance()
@@ -130,10 +130,10 @@ public class RandomPointTest : AbstractDetourTest
             query.FindRandomPointAroundCircle(randomRef, randomPt, radius, filter, f, out var _, out var _);
         }
 
-        for (int i = 0; i < 1000; i++)
-        {
-            query.FindRandomPointWithinCircle(randomRef, randomPt, radius, filter, f, out var _, out var _);
-        }
+        //for (int i = 0; i < 1000; i++)
+        //{
+        //    query.FindRandomPointWithinCircle(randomRef, randomPt, radius, filter, f, out var _, out var _);
+        //}
 
         long t1 = RcFrequency.Ticks;
         for (int i = 0; i < 10000; i++)
@@ -142,10 +142,10 @@ public class RandomPointTest : AbstractDetourTest
         }
 
         long t2 = RcFrequency.Ticks;
-        for (int i = 0; i < 10000; i++)
-        {
-            query.FindRandomPointWithinCircle(randomRef, randomPt, radius, filter, f, out var _, out var _);
-        }
+        //for (int i = 0; i < 10000; i++)
+        //{
+        //    query.FindRandomPointWithinCircle(randomRef, randomPt, radius, filter, f, out var _, out var _);
+        //}
 
         long t3 = RcFrequency.Ticks;
         Console.WriteLine("Random point around circle: " + (t2 - t1) / TimeSpan.TicksPerMillisecond + "ms");

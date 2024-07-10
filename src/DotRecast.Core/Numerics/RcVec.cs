@@ -10,7 +10,7 @@ namespace DotRecast.Core
         public static readonly float EQUAL_THRESHOLD = RcMath.Sqr(1.0f / 16384.0f);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector3 Create(Span<float> values, int n)
+        public static Vector3 Create(ReadOnlySpan<float> values, int n)
         {
             return new Vector3(values[n + 0], values[n + 1], values[n + 2]);
         }
@@ -175,7 +175,7 @@ namespace DotRecast.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Dist2DSqr(Vector3 p, float[] verts, int i)
+        public static float Dist2DSqr(Vector3 p, ReadOnlySpan<float> verts, int i)
         {
             float dx = verts[i] - p.X;
             float dz = verts[i + 2] - p.Z;

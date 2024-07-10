@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace DotRecast.Core
@@ -17,6 +17,12 @@ namespace DotRecast.Core
         public static void Copy<T>(T[] sourceArray, T[] destinationArray, long length)
         {
             Array.Copy(sourceArray, destinationArray, length);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Copy<T>(Span<T> sourceArray, int sourceIndex, Span<T> destinationArray, int destinationIndex, int length)
+        {
+            sourceArray.Slice(sourceIndex, length).CopyTo(destinationArray.Slice(destinationIndex));
         }
 
         public static T[] CopyOf<T>(T[] source, int startIdx, int length)

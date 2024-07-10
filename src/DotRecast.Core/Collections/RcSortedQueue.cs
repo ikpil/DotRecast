@@ -28,7 +28,7 @@ namespace DotRecast.Core.Collections
     {
         private bool _dirty;
         private readonly List<T> _items;
-        private readonly Comparer<T> _comparer;
+        private readonly Comparison<T> _comparison;
 
         public RcSortedQueue(Comparison<T> comp) : this(8, comp)
         {
@@ -37,7 +37,7 @@ namespace DotRecast.Core.Collections
         public RcSortedQueue(int capacity, Comparison<T> comp)
         {
             _items = new List<T>(capacity);
-            _comparer = Comparer<T>.Create((x, y) => comp.Invoke(x, y) * -1);
+            _comparison = Comparer<T>.Create((x, y) => comp.Invoke(x, y) * -1).Compare;
         }
 
         public int Count()
@@ -60,7 +60,8 @@ namespace DotRecast.Core.Collections
         {
             if (_dirty)
             {
-                _items.Sort(_comparer); // reverse
+                // TODO alloc temp
+                _items.Sort(_comparison); // reverse
                 _dirty = false;
             }
         }

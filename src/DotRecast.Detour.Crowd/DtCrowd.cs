@@ -423,7 +423,7 @@ namespace DotRecast.Detour.Crowd
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlySpan<DtCrowdAgent> GetActiveAgents()
+        public ReadOnlySpan<DtCrowdAgent> GetActiveAgents() // TODO 测试一下开销怎么样？跟手动判断active对比
         {
             var nagents = GetActiveAgents(m_activeAgents, m_maxAgents);
             return m_activeAgents.AsSpan(0, nagents);
