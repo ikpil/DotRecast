@@ -19,7 +19,6 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using System.Collections.Generic;
 using System.Numerics;
 using DotRecast.Core;
 
@@ -30,6 +29,8 @@ namespace DotRecast.Detour.Crowd
     public class DtCrowdAgent
     {
         public readonly long idx;
+
+        public bool active;
 
         /// The type of mesh polygon the agent is traversing. (See: #CrowdAgentState)
         public DtCrowdAgentState state;

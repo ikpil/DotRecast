@@ -21,6 +21,9 @@ namespace DotRecast.Detour.Crowd
 {
     public class DtCrowdConfig
     {
+        const int DEFAULT_MAX_AGENTS = 4096;
+
+        public readonly int maxAgents;
         public readonly float maxAgentRadius;
 
         public int pathQueueSize = 32; // Max number of path requests in the queue
@@ -34,8 +37,13 @@ namespace DotRecast.Detour.Crowd
         public int maxObstacleAvoidanceCircles = 6; // Max number of neighbour agents to consider in obstacle avoidance processing
         public int maxObstacleAvoidanceSegments = 8; // Max number of neighbour segments to consider in obstacle avoidance processing
 
-        public DtCrowdConfig(float maxAgentRadius)
+        public DtCrowdConfig(float maxAgentRadius) : this(DEFAULT_MAX_AGENTS, maxAgentRadius)
         {
+        }
+
+        public DtCrowdConfig(int maxAgents, float maxAgentRadius)
+        {
+            this.maxAgents = maxAgents;
             this.maxAgentRadius = maxAgentRadius;
         }
     }

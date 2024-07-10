@@ -1,10 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using DotRecast.Core;
 using System.Numerics;
 using DotRecast.Detour;
 using DotRecast.Detour.Crowd;
 using DotRecast.Recast.Toolset.Builder;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace DotRecast.Recast.Toolset.Tools
 {
@@ -161,19 +163,19 @@ namespace DotRecast.Recast.Toolset.Tools
             crowdUpdateTime = (endTime - startTime) / TimeSpan.TicksPerMillisecond;
         }
 
-        public void RemoveAgent(DtCrowdAgent agent)
+        public void RemoveAgent(int idx)
         {
-            crowd.RemoveAgent(agent);
-            if (agent == _agentDebug.agent)
-            {
+            var ag = crowd.GetAgent(idx);
+            if (ag == _agentDebug.agent)
                 _agentDebug.agent = null;
-            }
+            crowd.RemoveAgent(idx);
         }
 
         public void AddAgent(Vector3 p, float agentRadius, float agentHeight, float agentMaxAcceleration, float agentMaxSpeed)
         {
             DtCrowdAgentParams ap = CreateAgentParams(agentRadius, agentHeight, agentMaxAcceleration, agentMaxSpeed);
-            DtCrowdAgent ag = crowd.AddAgent(p, ap);
+            var idx = crowd.AddAgent(p, ap);
+            DtCrowdAgent ag = crowd.GetAgent(idx);
             if (ag != null)
             {
                 if (_moveTargetRef != 0)
@@ -212,13 +214,17 @@ namespace DotRecast.Recast.Toolset.Tools
             return ap;
         }
 
-        public DtCrowdAgent HitTestAgents(Vector3 s, Vector3 p)
+        public int HitTestAgents(Vector3 s, Vector3 p)
         {
-            DtCrowdAgent isel = null;
+            int isel = -1;
             float tsel = float.MaxValue;
 
-            foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
+            //foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
+            for (int i = 0; i < crowd.GetAgentCount(); i++)
             {
+                var ag = crowd.GetAgent(i);
+                if (!ag.active)
+                    continue;
                 Vector3 bmin = new Vector3();
                 Vector3 bmax = new Vector3();
                 GetAgentBounds(ag, ref bmin, ref bmax);
@@ -226,12 +232,11 @@ namespace DotRecast.Recast.Toolset.Tools
                 {
                     if (tmin > 0 && tmin < tsel)
                     {
-                        isel = ag;
+                        isel = i;
                         tsel = tmin;
                     }
                 }
             }
-
             return isel;
         }
 
@@ -305,9 +310,10 @@ namespace DotRecast.Recast.Toolset.Tools
             return crowdUpdateTime;
         }
 
-        public void HighlightAgent(DtCrowdAgent agent)
+        public void HighlightAgent(int idx)
         {
-            _agentDebug.agent = agent;
+            var ag = crowd.GetAgent(idx);
+            _agentDebug.agent = ag;
         }
     }
 }

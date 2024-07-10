@@ -488,8 +488,8 @@ public class CrowdSampleTool : ISampleTool
             if (shift)
             {
                 // Delete
-                DtCrowdAgent ahit = _tool.HitTestAgents(s, p);
-                if (ahit != null)
+                int ahit = _tool.HitTestAgents(s, p);
+                if (ahit != -1)
                 {
                     _tool.RemoveAgent(ahit);
                 }
@@ -508,7 +508,7 @@ public class CrowdSampleTool : ISampleTool
         else if (m_mode == RcCrowdToolMode.SELECT)
         {
             // Highlight
-            DtCrowdAgent ahit = _tool.HitTestAgents(s, p);
+            int ahit = _tool.HitTestAgents(s, p);
             _tool.HighlightAgent(ahit);
         }
         else if (m_mode == RcCrowdToolMode.TOGGLE_POLYS)
