@@ -41,10 +41,10 @@ public class DynamicNavMeshTest
         query.FindNearestPoly(START_POS, EXTENT, filter, out var startRef, out var startPt, out var _);
         query.FindNearestPoly(END_POS, EXTENT, filter, out var endRef, out var endPt, out var _);
 
-        var path = new List<long>();
-        query.FindPath(startRef, endRef, startPt, endPt, filter, ref path, DtFindPathOption.AnyAngle);
+        var path = new long[32];
+        query.FindPath(startRef, endRef, startPt, endPt, filter, path, out var pathCount, DtFindPathOption.AnyAngle);
         // check path length without any obstacles
-        Assert.That(path.Count, Is.EqualTo(16));
+        Assert.That(pathCount, Is.EqualTo(16));
 
         // place obstacle
         IDtCollider colldier = new DtSphereCollider(SPHERE_POS, 20, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GROUND, 0.1f);
@@ -59,10 +59,10 @@ public class DynamicNavMeshTest
         // find path again
         query.FindNearestPoly(START_POS, EXTENT, filter, out startRef, out startPt, out var _);
         query.FindNearestPoly(END_POS, EXTENT, filter, out endRef, out endPt, out var _);
-        query.FindPath(startRef, endRef, startPt, endPt, filter, ref path, DtFindPathOption.AnyAngle);
+        query.FindPath(startRef, endRef, startPt, endPt, filter, path, out pathCount, DtFindPathOption.AnyAngle);
 
         // check path length with obstacles
-        Assert.That(path.Count, Is.EqualTo(19));
+        Assert.That(pathCount, Is.EqualTo(19));
         // remove obstacle
         mesh.RemoveCollider(colliderId);
         // update navmesh asynchronously
@@ -73,9 +73,9 @@ public class DynamicNavMeshTest
         // find path one more time
         query.FindNearestPoly(START_POS, EXTENT, filter, out startRef, out startPt, out var _);
         query.FindNearestPoly(END_POS, EXTENT, filter, out endRef, out endPt, out var _);
-        query.FindPath(startRef, endRef, startPt, endPt, filter, ref path, DtFindPathOption.AnyAngle);
+        query.FindPath(startRef, endRef, startPt, endPt, filter, path, out pathCount, DtFindPathOption.AnyAngle);
 
         // path length should be back to the initial value
-        Assert.That(path.Count, Is.EqualTo(16));
+        Assert.That(pathCount, Is.EqualTo(16));
     }
 }

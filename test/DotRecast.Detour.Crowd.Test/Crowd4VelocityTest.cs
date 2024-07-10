@@ -99,7 +99,7 @@ public class Crowd4VelocityTest : AbstractCrowdTest
     [Test]
     public void TestAgent1Quality3TVTA()
     {
-        int updateFlags = DtCrowdAgentUpdateFlags.DT_CROWD_ANTICIPATE_TURNS |
+        var updateFlags = DtCrowdAgentUpdateFlags.DT_CROWD_ANTICIPATE_TURNS |
                           DtCrowdAgentUpdateFlags.DT_CROWD_OPTIMIZE_VIS |
                           DtCrowdAgentUpdateFlags.DT_CROWD_OPTIMIZE_TOPO |
                           DtCrowdAgentUpdateFlags.DT_CROWD_OBSTACLE_AVOIDANCE;

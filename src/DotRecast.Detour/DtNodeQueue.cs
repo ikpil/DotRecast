@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System.Runtime.CompilerServices;
 using DotRecast.Core.Collections;
 
 namespace DotRecast.Detour
@@ -35,37 +36,44 @@ namespace DotRecast.Detour
             m_heap = new RcSortedQueue<DtNode>(capacity, DtNode.ComparisonNodeTotal);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Count()
         {
             return m_heap.Count();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
             m_heap.Clear();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public DtNode Peek()
         {
             return m_heap.Peek();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public DtNode Pop()
         {
             return m_heap.Dequeue();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Push(DtNode node)
         {
             m_heap.Enqueue(node);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Modify(DtNode node)
         {
             m_heap.Remove(node);
             Push(node);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsEmpty()
         {
             return m_heap.IsEmpty();

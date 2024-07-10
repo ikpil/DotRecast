@@ -24,6 +24,8 @@ namespace DotRecast.Detour.Crowd
     public class DtPathQueryResult
     {
         public DtStatus status;
-        public List<long> path = new List<long>();
+        //public List<long> path = new List<long>();
+        public long[] path = new long[DtCrowdConst.MAX_PATH_RESULT];
+        public int pathCount;
     }
 }

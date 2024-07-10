@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using DotRecast.Core;
 using DotRecast.Core.Numerics;
 
 
@@ -53,7 +54,7 @@ namespace DotRecast.Detour.Crowd
                 // Handle query start.
                 if (q.result.status.IsEmpty())
                 {
-                    q.navQuery = new DtNavMeshQuery(navMesh);
+                    q.navQuery = new DtNavMeshQuery(navMesh); // TODO alloc
                     q.result.status = q.navQuery.InitSlicedFindPath(q.startRef, q.endRef, q.startPos, q.endPos, q.filter, 0);
                 }
 
@@ -66,7 +67,7 @@ namespace DotRecast.Detour.Crowd
 
                 if (q.result.status.Succeeded())
                 {
-                    q.result.status = q.navQuery.FinalizeSlicedFindPath(ref q.result.path);
+                    q.result.status = q.navQuery.FinalizeSlicedFindPath(q.result.path, out q.result.pathCount);
                 }
 
                 if (!(q.result.status.Failed() || q.result.status.Succeeded()))
@@ -83,7 +84,7 @@ namespace DotRecast.Detour.Crowd
                 return null;
             }
 
-            DtPathQuery q = new DtPathQuery();
+            DtPathQuery q = new DtPathQuery(); // TODO struct
             q.startPos = startPos;
             q.startRef = startRef;
             q.endPos = endPos;
