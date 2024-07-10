@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
@@ -36,7 +37,7 @@ namespace DotRecast.Detour
 
         const int DT_NULL_IDX = ushort.MaxValue;
 
-        public DtNodePool(int maxNodes) : this(maxNodes, (int)dtNextPow2((uint)(maxNodes / 4)))
+        public DtNodePool(int maxNodes) : this(maxNodes, (int)RcMath.dtNextPow2((uint)(maxNodes / 4)))
         { }
 
         public DtNodePool(int maxNodes, int hashSize)
@@ -156,19 +157,6 @@ namespace DotRecast.Detour
         public ReadOnlySpan<DtNode> AsSpan()
         {
             return m_nodes.AsSpan(0, m_nodeCount);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static uint dtNextPow2(uint v)
-        {
-            v--;
-            v |= v >> 1;
-            v |= v >> 2;
-            v |= v >> 4;
-            v |= v >> 8;
-            v |= v >> 16;
-            v++;
-            return v;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

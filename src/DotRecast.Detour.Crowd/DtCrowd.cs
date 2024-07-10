@@ -157,6 +157,8 @@ namespace DotRecast.Detour.Crowd
             m_maxAgents = config.maxAgents;
             m_agentPlacementHalfExtents = new Vector3(config.maxAgentRadius * 2.0f, config.maxAgentRadius * 1.5f, config.maxAgentRadius * 2.0f);
 
+            m_grid = new DtProximityGrid(m_config.maxAgents * 4, m_config.maxAgentRadius * 3); // TODO test
+
             m_obstacleQuery = new DtObstacleAvoidanceQuery(config.maxObstacleAvoidanceCircles, config.maxObstacleAvoidanceSegments);
 
             m_filters = new IDtQueryFilter[DtCrowdConst.DT_CROWD_MAX_QUERY_FILTER_TYPE];
@@ -1046,14 +1048,15 @@ namespace DotRecast.Detour.Crowd
         {
             using var timer = m_telemetry.ScopedTimer(DtCrowdTimerLabel.BuildProximityGrid);
 
-            m_grid = new DtProximityGrid(m_config.maxAgentRadius * 3);
+            //m_grid = new DtProximityGrid(m_config.maxAgents * 4, m_config.maxAgentRadius * 3); // TODO test
 
+            m_grid.Clear();
             for (var i = 0; i < agents.Length; i++)
             {
                 var ag = agents[i];
                 Vector3 p = ag.npos;
                 float r = ag.option.radius;
-                m_grid.AddItem(ag, p.X - r, p.Z - r, p.X + r, p.Z + r);
+                m_grid.AddItem((ushort)i, p.X - r, p.Z - r, p.X + r, p.Z + r);
             }
         }
 
@@ -1080,23 +1083,23 @@ namespace DotRecast.Detour.Crowd
                 }
 
                 // Query neighbour agents
-                ag.nneis = GetNeighbours(ag.npos, ag.option.height, ag.option.collisionQueryRange, ag, ag.neis, DtCrowdConst.DT_CROWDAGENT_MAX_NEIGHBOURS, m_grid);
+                ag.nneis = GetNeighbours(ag.npos, ag.option.height, ag.option.collisionQueryRange, ag, ag.neis, DtCrowdConst.DT_CROWDAGENT_MAX_NEIGHBOURS, agents, m_grid);
             }
         }
 
-        const int MAX_NEIS = 32;
-        DtCrowdAgent[] ids = new DtCrowdAgent[MAX_NEIS];
-        int GetNeighbours(Vector3 pos, float height, float range, DtCrowdAgent skip, Span<DtCrowdNeighbour> result, int maxResult, DtProximityGrid grid)
+        int GetNeighbours(Vector3 pos, float height, float range, DtCrowdAgent skip, Span<DtCrowdNeighbour> result, int maxResult, ReadOnlySpan<DtCrowdAgent> agents, DtProximityGrid grid)
         {
             int n = 0;
 
-            int nids = grid.QueryItems(pos.X - range, pos.Z - range,
-                pos.X + range, pos.Z + range,
-                ids, ids.Length);
+            const int MAX_NEIS = 32;
+            Span<ushort> ids = stackalloc ushort[MAX_NEIS];
+
+            int nids = grid.QueryItems(pos.X - range, pos.Z - range, pos.X + range, pos.Z + range,
+                ids, MAX_NEIS);
 
             for (int i = 0; i < nids; ++i)
             {
-                var ag = ids[i];
+                var ag = agents[ids[i]];
                 if (ag == skip)
                 {
                     continue;
