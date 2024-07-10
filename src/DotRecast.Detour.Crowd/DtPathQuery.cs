@@ -33,6 +33,6 @@ namespace DotRecast.Detour.Crowd
         public readonly DtPathQueryResult result = new DtPathQueryResult();
         public IDtQueryFilter filter; // < TODO: This is potentially dangerous!
 
-        public DtNavMeshQuery navQuery;
+        //public DtNavMeshQuery navQuery;
     }
 }

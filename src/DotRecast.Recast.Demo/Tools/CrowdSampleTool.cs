@@ -48,17 +48,17 @@ public class CrowdSampleTool : ISampleTool
     private int m_modeIdx = RcCrowdToolMode.CREATE.Idx;
 
     private int _expandSelectedDebugDraw = 1;
-    private bool _showCorners = true;
-    private bool _showCollisionSegments = true;
-    private bool _showPath = true;
-    private bool _showVO = true;
-    private bool _showOpt = true;
-    private bool _showNeis = true;
+    private bool _showCorners = false;
+    private bool _showCollisionSegments = false;
+    private bool _showPath = false;
+    private bool _showVO = false;
+    private bool _showOpt = false;
+    private bool _showNeis = false;
 
     private int _expandDebugDraw = 0;
     private bool _showLabels = true;
     private bool _showGrid = false;
-    private bool _showNodes = true;
+    private bool _showNodes = false;
     private bool _showPerfGraph = true;
     private bool _showDetailAll = true;
 

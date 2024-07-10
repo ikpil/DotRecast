@@ -124,7 +124,7 @@ namespace DotRecast.Detour.Crowd
         private readonly RcAtomicInteger _agentId = new RcAtomicInteger();
         private readonly List<DtCrowdAgent> _agents;
 
-        private readonly DtPathQueue _pathQ;
+        private /*readonly*/ DtPathQueue _pathQ;
 
         private readonly DtObstacleAvoidanceParams[] _obstacleQueryParams;
         private readonly DtObstacleAvoidanceQuery _obstacleQuery;
@@ -170,7 +170,6 @@ namespace DotRecast.Detour.Crowd
 
             // Allocate temp buffer for merging paths.
             _maxPathResult = DtCrowdConst.MAX_PATH_RESULT;
-            _pathQ = new DtPathQueue(config);
             _agents = new List<DtCrowdAgent>();
 
             // The navQuery is mostly used for local searches, no need for large node pool.
@@ -181,6 +180,7 @@ namespace DotRecast.Detour.Crowd
         {
             _navMesh = nav;
             _navQuery = new DtNavMeshQuery(nav);
+            _pathQ = new DtPathQueue(nav, _config);
         }
 
         public DtNavMesh GetNavMesh()
@@ -686,7 +686,7 @@ namespace DotRecast.Detour.Crowd
             // Update requests.
             using (var timer2 = _telemetry.ScopedTimer(DtCrowdTimerLabel.PathQueueUpdate))
             {
-                _pathQ.Update(_navMesh);
+                _pathQ.Update(/*_navMesh*/);
             }
 
             // Process path results.
