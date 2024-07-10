@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
-using System.Numerics;
+using DotRecast.Core.Numerics;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Crowd.Test;
@@ -35,22 +35,22 @@ public class AbstractCrowdTest
 
     protected readonly long[] endRefs = { 281474976710721L, 281474976710767L, 281474976710758L, 281474976710731L, 281474976710772L };
 
-    protected readonly Vector3[] startPoss =
+    protected readonly RcVec3f[] startPoss =
     {
-        new Vector3(22.60652f, 10.197294f, -45.918674f),
-        new Vector3(22.331268f, 10.197294f, -1.0401875f),
-        new Vector3(18.694363f, 15.803535f, -73.090416f),
-        new Vector3(0.7453353f, 10.197294f, -5.94005f),
-        new Vector3(-20.651257f, 5.904126f, -13.712508f),
+        new RcVec3f(22.60652f, 10.197294f, -45.918674f),
+        new RcVec3f(22.331268f, 10.197294f, -1.0401875f),
+        new RcVec3f(18.694363f, 15.803535f, -73.090416f),
+        new RcVec3f(0.7453353f, 10.197294f, -5.94005f),
+        new RcVec3f(-20.651257f, 5.904126f, -13.712508f),
     };
 
-    protected readonly Vector3[] endPoss =
+    protected readonly RcVec3f[] endPoss =
     {
-        new Vector3(6.4576626f, 10.197294f, -18.33406f),
-        new Vector3(-5.8023443f, 0.19729415f, 3.008419f),
-        new Vector3(38.423977f, 10.197294f, -0.116066754f),
-        new Vector3(0.8635526f, 10.197294f, -10.31032f),
-        new Vector3(18.784092f, 10.197294f, 3.0543678f),
+        new RcVec3f(6.4576626f, 10.197294f, -18.33406f),
+        new RcVec3f(-5.8023443f, 0.19729415f, 3.008419f),
+        new RcVec3f(38.423977f, 10.197294f, -0.116066754f),
+        new RcVec3f(0.8635526f, 10.197294f, -10.31032f),
+        new RcVec3f(18.784092f, 10.197294f, 3.0543678f),
     };
 
     protected DtMeshData nmd;
@@ -65,7 +65,7 @@ public class AbstractCrowdTest
         nmd = TestMeshDataFactory.Create();
         navmesh = new DtNavMesh();
         navmesh.Init(nmd, 6, 0);
-        query = new DtNavMeshQuery(navmesh, DtCrowdConst.MAX_COMMON_NODES);
+        query = new DtNavMeshQuery(navmesh);
         DtCrowdConfig config = new DtCrowdConfig(0.6f);
         crowd = new DtCrowd(config, navmesh);
         DtObstacleAvoidanceParams option = new DtObstacleAvoidanceParams();
@@ -110,33 +110,31 @@ public class AbstractCrowdTest
         return ap;
     }
 
-    protected void AddAgentGrid(int size, float distance, DtCrowdAgentUpdateFlags updateFlags, int obstacleAvoidanceType, Vector3 startPos)
+    protected void AddAgentGrid(int size, float distance, DtCrowdAgentUpdateFlags updateFlags, int obstacleAvoidanceType, RcVec3f startPos)
     {
         DtCrowdAgentParams ap = GetAgentParams(updateFlags, obstacleAvoidanceType);
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
             {
-                Vector3 pos = new Vector3();
+                RcVec3f pos = new RcVec3f();
                 pos.X = startPos.X + i * distance;
                 pos.Y = startPos.Y;
                 pos.Z = startPos.Z + j * distance;
-                var idx = crowd.AddAgent(pos, ap);
-                Assert.That(idx != -1);
-                agents.Add(crowd.GetAgent(idx));
+                agents.Add(crowd.AddAgent(pos, ap));
             }
         }
     }
 
-    protected void SetMoveTarget(Vector3 pos, bool adjust)
+    protected void SetMoveTarget(RcVec3f pos, bool adjust)
     {
-        Vector3 ext = crowd.GetQueryExtents();
+        RcVec3f ext = crowd.GetQueryExtents();
         IDtQueryFilter filter = crowd.GetFilter(0);
         if (adjust)
         {
             foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
             {
-                Vector3 vel = CalcVel(ag.npos, pos, ag.option.maxSpeed);
+                RcVec3f vel = CalcVel(ag.npos, pos, ag.option.maxSpeed);
                 crowd.RequestMoveVelocity(ag, vel);
             }
         }
@@ -150,18 +148,18 @@ public class AbstractCrowdTest
         }
     }
 
-    protected Vector3 CalcVel(Vector3 pos, Vector3 tgt, float speed)
+    protected RcVec3f CalcVel(RcVec3f pos, RcVec3f tgt, float speed)
     {
-        Vector3 vel = Vector3.Subtract(tgt, pos);
+        RcVec3f vel = RcVec3f.Subtract(tgt, pos);
         vel.Y = 0.0f;
-        vel = Vector3.Normalize(vel);
+        vel = RcVec3f.Normalize(vel);
         vel = vel * speed;
         return vel;
     }
 
     protected void DumpActiveAgents(int i)
     {
-        Console.WriteLine(crowd.GetActiveAgents().Length);
+        Console.WriteLine(crowd.GetActiveAgents().Count);
         foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
         {
             Console.WriteLine(ag.state + ", " + ag.targetState);

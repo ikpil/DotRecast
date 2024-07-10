@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 using DotRecast.Core;
-using System.Numerics;
+using DotRecast.Core.Numerics;
 using DotRecast.Recast.Geom;
 using NUnit.Framework;
 
@@ -31,8 +31,8 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
 {
     protected readonly long[] startRefs = { 281475006070787L };
     protected readonly long[] endRefs = { 281474986147841L };
-    protected readonly Vector3[] startPoss = { new Vector3(39.447338f, 9.998177f, -0.784811f) };
-    protected readonly Vector3[] endPoss = { new Vector3(19.292645f, 11.611748f, -57.750366f) };
+    protected readonly RcVec3f[] startPoss = { new RcVec3f(39.447338f, 9.998177f, -0.784811f) };
+    protected readonly RcVec3f[] endPoss = { new RcVec3f(19.292645f, 11.611748f, -57.750366f) };
     private readonly DtStatus[] statuses = { DtStatus.DT_SUCCESS };
 
     private readonly long[][] results =
@@ -76,7 +76,7 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
         }
 
         navmesh = tc.GetNavMesh();
-        query = new DtNavMeshQuery(navmesh, 512);
+        query = new DtNavMeshQuery(navmesh);
     }
 
     [Test]
@@ -88,9 +88,30 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
         {
             long startRef = startRefs[i];
             long endRef = endRefs[i];
-            Vector3 startPos = startPoss[i];
-            Vector3 endPos = endPoss[i];
+            RcVec3f startPos = startPoss[i];
+            RcVec3f endPos = endPoss[i];
             var status = query.FindPath(startRef, endRef, startPos, endPos, filter, path, out var pathCount, DtFindPathOption.NoOption);
+            Assert.That(status, Is.EqualTo(statuses[i]));
+            Assert.That(pathCount, Is.EqualTo(results[i].Length));
+            for (int j = 0; j < results[i].Length; j++)
+            {
+                Assert.That(path[j], Is.EqualTo(results[i][j])); // TODO : 확인 필요
+            }
+        }
+    }
+
+    [Test]
+    public void TestFindPathWithNoHeuristic()
+    {
+        IDtQueryFilter filter = new DtQueryDefaultFilter();
+        var path = new long[32];
+        for (int i = 0; i < startRefs.Length; i++)
+        {
+            long startRef = startRefs[i];
+            long endRef = endRefs[i];
+            RcVec3f startPos = startPoss[i];
+            RcVec3f endPos = endPoss[i];
+            var status = query.FindPath(startRef, endRef, startPos, endPos, filter, path, out var pathCount, DtFindPathOption.ZeroScale);
             Assert.That(status, Is.EqualTo(statuses[i]));
             Assert.That(pathCount, Is.EqualTo(results[i].Length));
             for (int j = 0; j < results[i].Length; j++)
