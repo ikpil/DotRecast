@@ -47,7 +47,7 @@ namespace DotRecast.Detour.Crowd
 
         /// the agent path.
         /// Flags that impact steering behavior. (See: #UpdateFlags)
-        public int updateFlags;
+        public DtCrowdAgentUpdateFlags updateFlags;
 
         /// The index of the avoidance configuration to use for the agent.
         /// [Limits: 0 <= value < #DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS]

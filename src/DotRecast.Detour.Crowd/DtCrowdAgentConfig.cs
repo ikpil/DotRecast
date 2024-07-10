@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Detour.Crowd
+namespace DotRecast.Detour.Crowd
 {
     public class DtCrowdAgentConfig
     {
@@ -11,9 +11,9 @@
         public bool separation;
         public float separationWeight = 2f;
 
-        public int GetUpdateFlags()
+        public DtCrowdAgentUpdateFlags GetUpdateFlags()
         {
-            int updateFlags = 0;
+            DtCrowdAgentUpdateFlags updateFlags = 0;
             if (anticipateTurns)
             {
                 updateFlags |= DtCrowdAgentUpdateFlags.DT_CROWD_ANTICIPATE_TURNS;

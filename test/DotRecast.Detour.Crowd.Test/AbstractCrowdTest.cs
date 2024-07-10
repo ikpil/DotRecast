@@ -95,7 +95,7 @@ public class AbstractCrowdTest
         agents = new();
     }
 
-    protected DtCrowdAgentParams GetAgentParams(int updateFlags, int obstacleAvoidanceType)
+    protected DtCrowdAgentParams GetAgentParams(DtCrowdAgentUpdateFlags updateFlags, int obstacleAvoidanceType)
     {
         DtCrowdAgentParams ap = new DtCrowdAgentParams();
         ap.radius = 0.6f;
@@ -110,7 +110,7 @@ public class AbstractCrowdTest
         return ap;
     }
 
-    protected void AddAgentGrid(int size, float distance, int updateFlags, int obstacleAvoidanceType, RcVec3f startPos)
+    protected void AddAgentGrid(int size, float distance, DtCrowdAgentUpdateFlags updateFlags, int obstacleAvoidanceType, RcVec3f startPos)
     {
         DtCrowdAgentParams ap = GetAgentParams(updateFlags, obstacleAvoidanceType);
         for (int i = 0; i < size; i++)

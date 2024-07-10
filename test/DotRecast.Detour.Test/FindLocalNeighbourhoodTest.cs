@@ -17,6 +17,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
 using System.Collections.Generic;
 using DotRecast.Core.Numerics;
 using NUnit.Framework;
@@ -56,13 +57,16 @@ public class FindLocalNeighbourhoodTest : AbstractDetourTest
     public void TestFindNearestPoly()
     {
         IDtQueryFilter filter = new DtQueryDefaultFilter();
+
+        const int MAX_REFS = 32;
+        Span<long> refs = stackalloc long[MAX_REFS];
+        Span<long> parentRefs = stackalloc long[MAX_REFS];
+
         for (int i = 0; i < startRefs.Length; i++)
         {
             RcVec3f startPos = startPoss[i];
-            var refs = new List<long>();
-            var parentRefs = new List<long>();
-            var status = query.FindLocalNeighbourhood(startRefs[i], startPos, 3.5f, filter, ref refs, ref parentRefs);
-            Assert.That(refs.Count, Is.EqualTo(REFS[i].Length));
+            var status = query.FindLocalNeighbourhood(startRefs[i], startPos, 3.5f, filter, refs, parentRefs, out var resultCount, MAX_REFS);
+            Assert.That(resultCount, Is.EqualTo(REFS[i].Length));
             for (int v = 0; v < REFS[i].Length; v++)
             {
                 Assert.That(refs[v], Is.EqualTo(REFS[i][v]));

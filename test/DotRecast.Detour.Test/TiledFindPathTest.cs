@@ -66,16 +66,16 @@ public class TiledFindPathTest
     public void TestFindPath()
     {
         IDtQueryFilter filter = new DtQueryDefaultFilter();
-        var path = new List<long>();
+        var path = new long[64];
         for (int i = 0; i < START_REFS.Length; i++)
         {
             long startRef = START_REFS[i];
             long endRef = END_REFS[i];
             RcVec3f startPos = START_POS[i];
             RcVec3f endPos = END_POS[i];
-            var status = query.FindPath(startRef, endRef, startPos, endPos, filter, ref path, DtFindPathOption.NoOption);
+            var status = query.FindPath(startRef, endRef, startPos, endPos, filter, path, out var pathCount, DtFindPathOption.NoOption);
             Assert.That(status, Is.EqualTo(STATUSES[i]));
-            Assert.That(path.Count, Is.EqualTo(RESULTS[i].Length));
+            Assert.That(pathCount, Is.EqualTo(RESULTS[i].Length));
             for (int j = 0; j < RESULTS[i].Length; j++)
             {
                 Assert.That(RESULTS[i][j], Is.EqualTo(path[j]));

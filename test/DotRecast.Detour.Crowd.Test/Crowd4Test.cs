@@ -308,7 +308,7 @@ public class Crowd4Test : AbstractCrowdTest
     [Test]
     public void TestAgent1Quality2TVTA()
     {
-        int updateFlags = DtCrowdAgentUpdateFlags.DT_CROWD_ANTICIPATE_TURNS |
+        var updateFlags = DtCrowdAgentUpdateFlags.DT_CROWD_ANTICIPATE_TURNS |
                           DtCrowdAgentUpdateFlags.DT_CROWD_OPTIMIZE_VIS |
                           DtCrowdAgentUpdateFlags.DT_CROWD_OPTIMIZE_TOPO | 
                           DtCrowdAgentUpdateFlags.DT_CROWD_OBSTACLE_AVOIDANCE;
@@ -331,7 +331,7 @@ public class Crowd4Test : AbstractCrowdTest
     [Test]
     public void TestAgent1Quality2TVTAS()
     {
-        int updateFlags = DtCrowdAgentUpdateFlags.DT_CROWD_ANTICIPATE_TURNS | 
+        var updateFlags = DtCrowdAgentUpdateFlags.DT_CROWD_ANTICIPATE_TURNS | 
                           DtCrowdAgentUpdateFlags.DT_CROWD_OPTIMIZE_VIS | 
                           DtCrowdAgentUpdateFlags.DT_CROWD_OPTIMIZE_TOPO | 
                           DtCrowdAgentUpdateFlags.DT_CROWD_OBSTACLE_AVOIDANCE | 
@@ -355,7 +355,7 @@ public class Crowd4Test : AbstractCrowdTest
     [Test]
     public void TestAgent1Quality2T()
     {
-        int updateFlags = DtCrowdAgentUpdateFlags.DT_CROWD_OPTIMIZE_TOPO;
+        var updateFlags = DtCrowdAgentUpdateFlags.DT_CROWD_OPTIMIZE_TOPO;
 
         AddAgentGrid(2, 0.3f, updateFlags, 2, startPoss[0]);
         SetMoveTarget(endPoss[0], false);
