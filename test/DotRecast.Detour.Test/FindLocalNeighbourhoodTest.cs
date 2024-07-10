@@ -19,7 +19,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
-using System.Numerics;
+using DotRecast.Core.Numerics;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
@@ -28,28 +28,30 @@ namespace DotRecast.Detour.Test;
 public class FindLocalNeighbourhoodTest : AbstractDetourTest
 {
     private static readonly long[][] REFS =
-    [
-        [281474976710696L, 281474976710695L, 281474976710691L, 281474976710697L],
-        [281474976710773L, 281474976710769L, 281474976710772L],
-        [
+    {
+        new[] { 281474976710696L, 281474976710695L, 281474976710691L, 281474976710697L },
+        new[] { 281474976710773L, 281474976710769L, 281474976710772L },
+        new[]
+        {
             281474976710680L, 281474976710674L, 281474976710679L, 281474976710684L, 281474976710683L,
             281474976710678L, 281474976710677L, 281474976710676L
-        ],
-        [281474976710753L, 281474976710748L, 281474976710750L, 281474976710752L],
-        [281474976710733L, 281474976710735L, 281474976710736L]
-    ];
+        },
+        new[] { 281474976710753L, 281474976710748L, 281474976710750L, 281474976710752L },
+        new[] { 281474976710733L, 281474976710735L, 281474976710736L }
+    };
 
     private static readonly long[][] PARENT_REFS =
-    [
-        [0L, 281474976710696L, 281474976710695L, 281474976710695L],
-        [0L, 281474976710773L, 281474976710773L],
-        [
+    {
+        new[] { 0L, 281474976710696L, 281474976710695L, 281474976710695L },
+        new[] { 0L, 281474976710773L, 281474976710773L },
+        new[]
+        {
             0L, 281474976710680L, 281474976710680L, 281474976710680L, 281474976710680L, 281474976710679L,
             281474976710683L, 281474976710678L
-        ],
-        [0L, 281474976710753L, 281474976710753L, 281474976710748L],
-        [0L, 281474976710733L, 281474976710733L]
-    ];
+        },
+        new[] { 0L, 281474976710753L, 281474976710753L, 281474976710748L },
+        new[] { 0L, 281474976710733L, 281474976710733L }
+    };
 
     [Test]
     public void TestFindNearestPoly()
@@ -62,7 +64,7 @@ public class FindLocalNeighbourhoodTest : AbstractDetourTest
 
         for (int i = 0; i < startRefs.Length; i++)
         {
-            Vector3 startPos = startPoss[i];
+            RcVec3f startPos = startPoss[i];
             var status = query.FindLocalNeighbourhood(startRefs[i], startPos, 3.5f, filter, refs, parentRefs, out var resultCount, MAX_REFS);
             Assert.That(resultCount, Is.EqualTo(REFS[i].Length));
             for (int v = 0; v < REFS[i].Length; v++)

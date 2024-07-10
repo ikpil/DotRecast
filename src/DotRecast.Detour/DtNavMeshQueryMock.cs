@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Numerics;
+using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
 {
@@ -10,13 +10,13 @@ namespace DotRecast.Detour
         private readonly DtStatus _status;
 
         public DtNavMeshQueryMock(DtStraightPath[] straightPath, DtStatus status)
-            : base(null, 512)
+            : base(null)
         {
             _straightPath = straightPath;
             _status = status;
         }
 
-        public override DtStatus FindStraightPath(Vector3 startPos, Vector3 endPos,
+        public override DtStatus FindStraightPath(RcVec3f startPos, RcVec3f endPos,
             ReadOnlySpan<long> path, int pathSize,
             Span<DtStraightPath> straightPath, out int straightPathCount, int maxStraightPath,
             int options)

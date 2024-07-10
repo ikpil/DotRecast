@@ -18,7 +18,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
-using System.Numerics;
+using DotRecast.Core.Numerics;
 
 using NUnit.Framework;
 
@@ -27,24 +27,25 @@ namespace DotRecast.Detour.Test;
 
 public class TiledFindPathTest
 {
-    private static readonly DtStatus[] STATUSES = [DtStatus.DT_SUCCESS];
+    private static readonly DtStatus[] STATUSES = { DtStatus.DT_SUCCESS };
 
     private static readonly long[][] RESULTS =
-    [
-        [
+    {
+        new[]
+        {
             281475015507969L, 281475014459393L, 281475014459392L, 281475006070784L,
             281475005022208L, 281475003973636L, 281475012362240L, 281475012362241L, 281475012362242L, 281475003973634L,
             281475003973635L, 281475003973633L, 281475002925059L, 281475002925057L, 281475002925056L, 281474998730753L,
             281474998730754L, 281474994536450L, 281474994536451L, 281474994536452L, 281474994536448L, 281474990342146L,
             281474990342145L, 281474991390723L, 281474991390724L, 281474991390725L, 281474987196418L, 281474987196417L,
             281474988244996L, 281474988244995L, 281474988244997L, 281474985099266L
-        ]
-    ];
+        }
+    };
 
-    protected static readonly long[] START_REFS = [281475015507969L];
-    protected static readonly long[] END_REFS = [281474985099266L];
-    protected static readonly Vector3[] START_POS = [new Vector3(39.447338f, 9.998177f, -0.784811f)];
-    protected static readonly Vector3[] END_POS = [new Vector3(19.292645f, 11.611748f, -57.750366f)];
+    protected static readonly long[] START_REFS = { 281475015507969L };
+    protected static readonly long[] END_REFS = { 281474985099266L };
+    protected static readonly RcVec3f[] START_POS = { new RcVec3f(39.447338f, 9.998177f, -0.784811f) };
+    protected static readonly RcVec3f[] END_POS = { new RcVec3f(19.292645f, 11.611748f, -57.750366f) };
 
     protected DtNavMeshQuery query;
     protected DtNavMesh navmesh;
@@ -53,7 +54,7 @@ public class TiledFindPathTest
     public void SetUp()
     {
         navmesh = CreateNavMesh();
-        query = new DtNavMeshQuery(navmesh, 512);
+        query = new DtNavMeshQuery(navmesh);
     }
 
     protected DtNavMesh CreateNavMesh()
@@ -70,8 +71,8 @@ public class TiledFindPathTest
         {
             long startRef = START_REFS[i];
             long endRef = END_REFS[i];
-            Vector3 startPos = START_POS[i];
-            Vector3 endPos = END_POS[i];
+            RcVec3f startPos = START_POS[i];
+            RcVec3f endPos = END_POS[i];
             var status = query.FindPath(startRef, endRef, startPos, endPos, filter, path, out var pathCount, DtFindPathOption.NoOption);
             Assert.That(status, Is.EqualTo(STATUSES[i]));
             Assert.That(pathCount, Is.EqualTo(RESULTS[i].Length));
