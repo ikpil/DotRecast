@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using DotRecast.Core;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 
 namespace DotRecast.Detour.Crowd
@@ -32,8 +32,8 @@ namespace DotRecast.Detour.Crowd
     /// @ingroup crowd, detour
     public class DtPathCorridor
     {
-        private RcVec3f m_pos;
-        private RcVec3f m_target;
+        private Vector3 m_pos;
+        private Vector3 m_target;
 
         private long[] m_path;
         private int m_npath;
@@ -105,7 +105,7 @@ namespace DotRecast.Detour.Crowd
         /// Resets the path corridor to the specified position.
         ///  @param[in]		ref		The polygon reference containing the position.
         ///  @param[in]		pos		The new position in the corridor. [(x, y, z)]
-        public void Reset(long refs, RcVec3f pos)
+        public void Reset(long refs, Vector3 pos)
         {
             m_pos = pos;
             m_target = pos;
@@ -197,7 +197,7 @@ namespace DotRecast.Detour.Crowd
         ///  @param[in]		pathOptimizationRange	The maximum range to search. [Limit: > 0]
         ///  @param[in]		navquery				The query object used to build the corridor.
         ///  @param[in]		filter					The filter to apply to the operation.	
-        public void OptimizePathVisibility(RcVec3f next, float pathOptimizationRange, DtNavMeshQuery navquery, IDtQueryFilter filter)
+        public void OptimizePathVisibility(Vector3 next, float pathOptimizationRange, DtNavMeshQuery navquery, IDtQueryFilter filter)
         {
             // Clamp the ray to max distance.
             float dist = RcVec.Dist2D(m_pos, next);
@@ -212,8 +212,8 @@ namespace DotRecast.Detour.Crowd
             dist = Math.Min(dist + 0.01f, pathOptimizationRange);
 
             // Adjust ray length.
-            var delta = RcVec3f.Subtract(next, m_pos);
-            RcVec3f goal = RcVec.Mad(m_pos, delta, pathOptimizationRange / dist);
+            var delta = Vector3.Subtract(next, m_pos);
+            Vector3 goal = RcVec.Mad(m_pos, delta, pathOptimizationRange / dist);
 
             //var res = new List<long>();// TODO temp alloc
             const int MAX_RES = 32;
@@ -263,7 +263,7 @@ namespace DotRecast.Detour.Crowd
             return false;
         }
 
-        public bool MoveOverOffmeshConnection(long offMeshConRef, Span<long> refs, ref RcVec3f startPos, ref RcVec3f endPos, DtNavMeshQuery navquery)
+        public bool MoveOverOffmeshConnection(long offMeshConRef, Span<long> refs, ref Vector3 startPos, ref Vector3 endPos, DtNavMeshQuery navquery)
         {
             // Advance the path up to and over the off-mesh connection.
             long prevRef = 0, polyRef = m_path[0];
@@ -324,7 +324,7 @@ namespace DotRecast.Detour.Crowd
         ///  @param[in]		navquery	The query object used to build the corridor.
         ///  @param[in]		filter		The filter to apply to the operation.
         /// @return Returns true if move succeeded.
-        public bool MovePosition(RcVec3f npos, DtNavMeshQuery navquery, IDtQueryFilter filter)
+        public bool MovePosition(Vector3 npos, DtNavMeshQuery navquery, IDtQueryFilter filter)
         {
             // Move along navmesh and update new position.
             const int MAX_VISITED = 16;
@@ -367,7 +367,7 @@ namespace DotRecast.Detour.Crowd
         ///  @param[in]		navquery	The query object used to build the corridor.
         ///  @param[in]		filter		The filter to apply to the operation.
         /// @return Returns true if move succeeded.
-        public bool MoveTargetPosition(RcVec3f npos, DtNavMeshQuery navquery, IDtQueryFilter filter)
+        public bool MoveTargetPosition(Vector3 npos, DtNavMeshQuery navquery, IDtQueryFilter filter)
         {
             // Move along navmesh and update new position.
             const int MAX_VISITED = 16;
@@ -401,7 +401,7 @@ namespace DotRecast.Detour.Crowd
         ///  @param[in]		target		The target location within the last polygon of the path. [(x, y, z)]
         ///  @param[in]		path		The path corridor. [(polyRef) * @p npolys]
         ///  @param[in]		npath		The number of polygons in the path.
-        public void SetCorridor(RcVec3f target, ReadOnlySpan<long> path, int npath)
+        public void SetCorridor(Vector3 target, ReadOnlySpan<long> path, int npath)
         {
             System.Diagnostics.Debug.Assert(npath > 0);
             System.Diagnostics.Debug.Assert(npath <= m_maxPath);
@@ -419,7 +419,7 @@ namespace DotRecast.Detour.Crowd
             ////Console.WriteLine($"m_npath = {m_npath}");
         }
 
-        public void FixPathStart(long safeRef, RcVec3f safePos)
+        public void FixPathStart(long safeRef, Vector3 safePos)
         {
             m_pos = safePos;
             if (m_npath < 3 && m_npath > 0)
@@ -461,7 +461,7 @@ namespace DotRecast.Detour.Crowd
             else if (n == 0)
             {
                 // The first polyref is bad, use current safe values.
-                m_pos = new RcVec3f(safePos);
+                m_pos = new Vector3(safePos);
                 //m_path.Clear();
                 //m_path.Add(safeRef);
                 m_path[0] = safeRef;
@@ -506,7 +506,7 @@ namespace DotRecast.Detour.Crowd
         /// Gets the current position within the corridor. (In the first polygon.)
         /// @return The current position within the corridor.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RcVec3f GetPos()
+        public Vector3 GetPos()
         {
             return m_pos;
         }
@@ -514,7 +514,7 @@ namespace DotRecast.Detour.Crowd
         /// Gets the current target within the corridor. (In the last polygon.)
         /// @return The current target within the corridor.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public RcVec3f GetTarget()
+        public Vector3 GetTarget()
         {
             return m_target;
         }

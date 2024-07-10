@@ -18,19 +18,25 @@ freely, subject to the following restrictions:
 */
 
 using System.Numerics;
-using System.Runtime.CompilerServices;
 
 
 namespace DotRecast.Detour
 {
-    public class DtDefaultQueryHeuristic
+    public class DtDefaultQueryHeuristic : IDtQueryHeuristic
     {
         public const float H_SCALE = 0.999f; // Search heuristic scale.
+        public static readonly DtDefaultQueryHeuristic Default = new DtDefaultQueryHeuristic(H_SCALE);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float GetCost(Vector3 neighbourPos, Vector3 endPos)
+        private readonly float scale;
+
+        public DtDefaultQueryHeuristic(float scale)
         {
-            return Vector3.Distance(neighbourPos, endPos) * H_SCALE;
+            this.scale = scale;
+        }
+
+        public float GetCost(Vector3 neighbourPos, Vector3 endPos)
+        {
+            return Vector3.Distance(neighbourPos, endPos) * scale;
         }
     }
 }

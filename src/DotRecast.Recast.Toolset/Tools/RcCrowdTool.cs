@@ -1,12 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using DotRecast.Core;
 using System.Numerics;
 using DotRecast.Detour;
 using DotRecast.Detour.Crowd;
 using DotRecast.Recast.Toolset.Builder;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace DotRecast.Recast.Toolset.Tools
 {
@@ -62,20 +60,11 @@ namespace DotRecast.Recast.Toolset.Tools
         public void Setup(float agentRadius, DtNavMesh navMesh)
         {
             DtCrowdConfig config = new DtCrowdConfig(agentRadius);
-            crowd = new DtCrowd(config, navMesh, __ =>
-            {
-                var filter = new DtQueryDefaultFilter();
-                filter.SetIncludeFlags(SampleAreaModifications.SAMPLE_POLYFLAGS_ALL);
-                filter.SetExcludeFlags(SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED);
-                filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GROUND, 1f);
-                filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, 10f);
-                filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, 1f);
-                filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_DOOR, 1f);
-                filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GRASS, 2f);
-                filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP, 1.5f);
-
-                return filter;
-            });
+            crowd = new DtCrowd(config, navMesh, __ => new DtQueryDefaultFilter(
+                SampleAreaModifications.SAMPLE_POLYFLAGS_ALL,
+                SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED,
+                new float[] { 1f, 10f, 1f, 1f, 2f, 1.5f })
+            );
 
             // Setup local avoidance option to different qualities.
             // Use mostly default settings, copy from dtCrowd.
@@ -172,19 +161,19 @@ namespace DotRecast.Recast.Toolset.Tools
             crowdUpdateTime = (endTime - startTime) / TimeSpan.TicksPerMillisecond;
         }
 
-        public void RemoveAgent(int idx)
+        public void RemoveAgent(DtCrowdAgent agent)
         {
-            var ag = crowd.GetAgent(idx);
-            if (ag == _agentDebug.agent)
+            crowd.RemoveAgent(agent);
+            if (agent == _agentDebug.agent)
+            {
                 _agentDebug.agent = null;
-            crowd.RemoveAgent(idx);
+            }
         }
 
         public void AddAgent(Vector3 p, float agentRadius, float agentHeight, float agentMaxAcceleration, float agentMaxSpeed)
         {
             DtCrowdAgentParams ap = CreateAgentParams(agentRadius, agentHeight, agentMaxAcceleration, agentMaxSpeed);
-            var idx = crowd.AddAgent(p, ap);
-            DtCrowdAgent ag = crowd.GetAgent(idx);
+            DtCrowdAgent ag = crowd.AddAgent(p, ap);
             if (ag != null)
             {
                 if (_moveTargetRef != 0)
@@ -223,17 +212,13 @@ namespace DotRecast.Recast.Toolset.Tools
             return ap;
         }
 
-        public int HitTestAgents(Vector3 s, Vector3 p)
+        public DtCrowdAgent HitTestAgents(Vector3 s, Vector3 p)
         {
-            int isel = -1;
+            DtCrowdAgent isel = null;
             float tsel = float.MaxValue;
 
-            //foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
-            for (int i = 0; i < crowd.GetAgentCount(); i++)
+            foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
             {
-                var ag = crowd.GetAgent(i);
-                if (!ag.active)
-                    continue;
                 Vector3 bmin = new Vector3();
                 Vector3 bmax = new Vector3();
                 GetAgentBounds(ag, ref bmin, ref bmax);
@@ -241,11 +226,12 @@ namespace DotRecast.Recast.Toolset.Tools
                 {
                     if (tmin > 0 && tmin < tsel)
                     {
-                        isel = i;
+                        isel = ag;
                         tsel = tmin;
                     }
                 }
             }
+
             return isel;
         }
 
@@ -319,10 +305,9 @@ namespace DotRecast.Recast.Toolset.Tools
             return crowdUpdateTime;
         }
 
-        public void HighlightAgent(int idx)
+        public void HighlightAgent(DtCrowdAgent agent)
         {
-            var ag = crowd.GetAgent(idx);
-            _agentDebug.agent = ag;
+            _agentDebug.agent = agent;
         }
     }
 }

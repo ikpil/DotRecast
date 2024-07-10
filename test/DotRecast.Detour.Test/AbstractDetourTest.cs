@@ -25,32 +25,32 @@ namespace DotRecast.Detour.Test;
 public abstract class AbstractDetourTest
 {
     protected static readonly long[] startRefs =
-    [
+    {
         281474976710696L, 281474976710773L, 281474976710680L, 281474976710753L, 281474976710733L
-    ];
+    };
 
     protected static readonly long[] endRefs =
-    [
+    {
         281474976710721L, 281474976710767L, 281474976710758L, 281474976710731L, 281474976710772L
-    ];
+    };
 
     protected static readonly Vector3[] startPoss =
-    [
+    {
         new Vector3(22.60652f, 10.197294f, -45.918674f),
         new Vector3(22.331268f, 10.197294f, -1.0401875f),
         new Vector3(18.694363f, 15.803535f, -73.090416f),
         new Vector3(0.7453353f, 10.197294f, -5.94005f),
         new Vector3(-20.651257f, 5.904126f, -13.712508f)
-    ];
+    };
 
     protected static readonly Vector3[] endPoss =
-    [
+    {
         new Vector3(6.4576626f, 10.197294f, -18.33406f),
         new Vector3(-5.8023443f, 0.19729415f, 3.008419f),
         new Vector3(38.423977f, 10.197294f, -0.116066754f),
         new Vector3(0.8635526f, 10.197294f, -10.31032f),
         new Vector3(18.784092f, 10.197294f, 3.0543678f),
-    ];
+    };
 
     protected DtNavMeshQuery query;
     protected DtNavMesh navmesh;
@@ -59,7 +59,7 @@ public abstract class AbstractDetourTest
     public void SetUp()
     {
         navmesh = CreateNavMesh();
-        query = new DtNavMeshQuery(navmesh, 512);
+        query = new DtNavMeshQuery(navmesh);
     }
 
     protected DtNavMesh CreateNavMesh()

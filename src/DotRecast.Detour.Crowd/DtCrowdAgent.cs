@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 using DotRecast.Core;
 
@@ -26,11 +27,9 @@ namespace DotRecast.Detour.Crowd
 {
     /// Represents an agent managed by a #dtCrowd object.
     /// @ingroup crowd
-    public sealed class DtCrowdAgent
+    public class DtCrowdAgent
     {
         public readonly long idx;
-
-        public bool active;
 
         /// The type of mesh polygon the agent is traversing. (See: #CrowdAgentState)
         public DtCrowdAgentState state;
@@ -56,11 +55,11 @@ namespace DotRecast.Detour.Crowd
         /// The desired speed.
         public float desiredSpeed;
 
-        public Vector3 npos; // < The current agent position. [(x, y, z)]
-        public Vector3 disp; // < A temporary value used to accumulate agent displacement during iterative collision resolution. [(x, y, z)]
-        public Vector3 dvel; // < The desired velocity of the agent. Based on the current path, calculated from scratch each frame. [(x, y, z)]
-        public Vector3 nvel; // < The desired velocity adjusted by obstacle avoidance, calculated from scratch each frame. [(x, y, z)]
-        public Vector3 vel; // < The actual velocity of the agent. The change from nvel -> vel is constrained by max acceleration. [(x, y, z)]
+        public Vector3 npos = new Vector3(); // < The current agent position. [(x, y, z)]
+        public Vector3 disp = new Vector3(); // < A temporary value used to accumulate agent displacement during iterative collision resolution. [(x, y, z)]
+        public Vector3 dvel = new Vector3(); // < The desired velocity of the agent. Based on the current path, calculated from scratch each frame. [(x, y, z)]
+        public Vector3 nvel = new Vector3(); // < The desired velocity adjusted by obstacle avoidance, calculated from scratch each frame. [(x, y, z)]
+        public Vector3 vel = new Vector3(); // < The actual velocity of the agent. The change from nvel -> vel is constrained by max acceleration. [(x, y, z)]
 
         /// The agent's configuration parameters.
         public DtCrowdAgentParams option;
@@ -73,8 +72,8 @@ namespace DotRecast.Detour.Crowd
 
         public DtMoveRequestState targetState; // < State of the movement request.
         public long targetRef; // < Target polyref of the movement request.
-        public Vector3 targetPos; // < Target position of the movement request (or velocity in case of DT_CROWDAGENT_TARGET_VELOCITY).
-        public uint targetPathqRef; // < Path finder refs
+        public Vector3 targetPos = new Vector3(); // < Target position of the movement request (or velocity in case of DT_CROWDAGENT_TARGET_VELOCITY).
+        public DtPathQueryResult targetPathQueryResult; // < Path finder query
         public bool targetReplan; // < Flag indicating that the current path is being replanned.
         public float targetReplanTime; // <Time since the agent's target was replanned.
         public float targetReplanWaitTime;
@@ -86,6 +85,7 @@ namespace DotRecast.Detour.Crowd
             this.idx = idx;
             corridor = new DtPathCorridor();
             boundary = new DtLocalBoundary();
+            animation = new DtCrowdAgentAnimation();
         }
 
         public void Integrate(float dt)
@@ -182,7 +182,7 @@ namespace DotRecast.Detour.Crowd
         {
             targetRef = refs;
             targetPos = pos;
-            targetPathqRef = DtPathQueue.DT_PATHQ_INVALID;
+            targetPathQueryResult = null;
             if (targetRef != 0)
             {
                 targetState = DtMoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING;

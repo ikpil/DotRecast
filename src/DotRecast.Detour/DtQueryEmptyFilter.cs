@@ -1,4 +1,4 @@
-using System.Numerics;
+﻿using System.Numerics;
 
 namespace DotRecast.Detour
 {
@@ -19,16 +19,6 @@ namespace DotRecast.Detour
             DtMeshTile curTile, DtPoly curPoly, long nextRef, DtMeshTile nextTile, DtPoly nextPoly)
         {
             return 0;
-        }
-
-        public float GetAreaCost(int i)
-        {
-            return 0;
-        }
-
-        public void SetAreaCost(int i, float cost)
-        {
-            
         }
     }
 }
