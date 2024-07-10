@@ -121,7 +121,9 @@ public class AbstractCrowdTest
                 pos.X = startPos.X + i * distance;
                 pos.Y = startPos.Y;
                 pos.Z = startPos.Z + j * distance;
-                agents.Add(crowd.AddAgent(pos, ap));
+                var idx = crowd.AddAgent(pos, ap);
+                Assert.That(idx != -1);
+                agents.Add(crowd.GetAgent(idx));
             }
         }
     }
@@ -159,7 +161,7 @@ public class AbstractCrowdTest
 
     protected void DumpActiveAgents(int i)
     {
-        Console.WriteLine(crowd.GetActiveAgents().Count);
+        Console.WriteLine(crowd.GetActiveAgents().Length);
         foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
         {
             Console.WriteLine(ag.state + ", " + ag.targetState);

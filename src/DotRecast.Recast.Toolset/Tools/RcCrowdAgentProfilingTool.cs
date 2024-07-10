@@ -348,15 +348,20 @@ namespace DotRecast.Recast.Toolset.Tools
         {
             DtCrowdAgentParams ap = GetAgentParams(agentRadius, agentHeight, agentMaxAcceleration, agentMaxSpeed);
             ap.userData = new RcCrowdAgentData(type, p);
-            return _crowd.AddAgent(p, ap);
+            var idx = _crowd.AddAgent(p, ap);
+            return _crowd.GetAgent(idx);
         }
 
         public void UpdateAgentParams()
         {
             if (_crowd != null)
             {
-                foreach (DtCrowdAgent ag in _crowd.GetActiveAgents())
+                //foreach (DtCrowdAgent ag in _crowd.GetActiveAgents())
+                for (int i = 0; i < _crowd.GetAgentCount(); i++)
                 {
+                    var ag = _crowd.GetAgent(i);
+                    if (!ag.active)
+                        continue;
                     DtCrowdAgentParams option = new DtCrowdAgentParams();
                     option.radius = ag.option.radius;
                     option.height = ag.option.height;
