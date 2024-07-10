@@ -22,7 +22,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using DotRecast.Core;
@@ -86,10 +85,6 @@ namespace DotRecast.Detour.Crowd
 
         public void AddItem(ushort id, float minx, float miny, float maxx, float maxy)
         {
-            // TODO simd ?
-            // Vector.Floor()
-            // Vector.Min()
-
             int iminx = (int)MathF.Floor(minx * m_invCellSize);
             int iminy = (int)MathF.Floor(miny * m_invCellSize);
             int imaxx = (int)MathF.Floor(maxx * m_invCellSize);
@@ -97,8 +92,8 @@ namespace DotRecast.Detour.Crowd
 
             m_bounds[0] = Math.Min(m_bounds[0], iminx);
             m_bounds[1] = Math.Min(m_bounds[1], iminy);
-            m_bounds[2] = Math.Max(m_bounds[2], imaxx);
-            m_bounds[3] = Math.Max(m_bounds[3], imaxy);
+            m_bounds[2] = Math.Min(m_bounds[2], imaxx);
+            m_bounds[3] = Math.Min(m_bounds[3], imaxy);
 
             for (int y = iminy; y <= imaxy; ++y)
             {
@@ -137,7 +132,7 @@ namespace DotRecast.Detour.Crowd
                     ushort idx = m_buckets[h];
                     while (idx != 0xffff)
                     {
-                        ref readonly Item item = ref m_pool[idx];
+                        ref Item item = ref m_pool[idx];
                         if (item.x == x && item.y == y)
                         {
                             // Check if the id exists already.
@@ -178,10 +173,14 @@ namespace DotRecast.Detour.Crowd
             return n;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlySpan<int> GetBounds() => m_bounds;
+        public ReadOnlySpan<int> GetBounds()
+        {
+            return m_bounds;
+        }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float GetCellSize() => m_cellSize;
+        public float GetCellSize()
+        {
+            return m_cellSize;
+        }
     }
 }
