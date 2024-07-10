@@ -93,11 +93,6 @@ public class DebugDraw
         GetOpenGlDraw().Vertex(pos, color);
     }
 
-    public unsafe void Vertex(float* pos, int color)
-    {
-        GetOpenGlDraw().Vertex(pos, color);
-    }
-
     public void Vertex(Vector3 pos, int color)
     {
         GetOpenGlDraw().Vertex(pos, color);
@@ -243,7 +238,7 @@ public class DebugDraw
         new[] { 0f, 0f, 0f }
     };
 
-    public void AppendBox(float minx, float miny, float minz, float maxx, float maxy, float maxz, Span<int> fcol)
+    public void AppendBox(float minx, float miny, float minz, float maxx, float maxy, float maxz, int[] fcol)
     {
         boxVerts[0][0] = minx;
         boxVerts[0][1] = miny;
@@ -400,7 +395,7 @@ public class DebugDraw
         Vertex(x, y, z + s, col);
     }
 
-    public void DebugDrawBox(float minx, float miny, float minz, float maxx, float maxy, float maxz, Span<int> fcol)
+    public void DebugDrawBox(float minx, float miny, float minz, float maxx, float maxy, float maxz, int[] fcol)
     {
         Begin(DebugDrawPrimitives.QUADS);
         AppendBox(minx, miny, minz, maxx, maxy, maxz, fcol);

@@ -127,21 +127,17 @@ namespace DotRecast.Recast.Geom
             return RcImmutableArray.Create(_mesh);
         }
 
-        public int OffMeshConCount => throw new NotImplementedException();
-
-        public float[] OffMeshConVerts => throw new NotImplementedException();
-
-        public float[] OffMeshConRads => throw new NotImplementedException();
-
-        public bool[] OffMeshConDirs => throw new NotImplementedException();
-
-        public int[] OffMeshConAreas => throw new NotImplementedException();
-
-        public int[] OffMeshConFlags => throw new NotImplementedException();
-
-        public int[] OffMeshConId => throw new NotImplementedException();
+        public List<RcOffMeshConnection> GetOffMeshConnections()
+        {
+            throw new NotImplementedException();
+        }
 
         public void AddOffMeshConnection(Vector3 start, Vector3 end, float radius, bool bidir, int area, int flags)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveOffMeshConnections(Predicate<RcOffMeshConnection> filter)
         {
             throw new NotImplementedException();
         }
@@ -176,11 +172,6 @@ namespace DotRecast.Recast.Geom
                     normals[i + 2] *= d;
                 }
             }
-        }
-
-        public void RemoveOffMeshConnection(int idx)
-        {
-            throw new NotImplementedException();
         }
     }
 }

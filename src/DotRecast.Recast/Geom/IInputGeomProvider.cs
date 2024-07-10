@@ -32,20 +32,15 @@ namespace DotRecast.Recast.Geom
         Vector3 GetMeshBoundsMax();
 
         IEnumerable<RcTriMesh> Meshes();
-
+        
         // convex volume
         void AddConvexVolume(RcConvexVolume convexVolume);
         IList<RcConvexVolume> ConvexVolumes();
 
         // off mesh connections
-        int OffMeshConCount { get; }
-        float[] OffMeshConVerts { get; }
-        float[] OffMeshConRads { get; }
-        bool[] OffMeshConDirs { get; }
-        int[] OffMeshConAreas { get; }
-        int[] OffMeshConFlags { get; }
-        int[] OffMeshConId { get; }
+        public List<RcOffMeshConnection> GetOffMeshConnections();
         public void AddOffMeshConnection(Vector3 start, Vector3 end, float radius, bool bidir, int area, int flags);
-        public void RemoveOffMeshConnection(int idx);
+        public void RemoveOffMeshConnections(Predicate<RcOffMeshConnection> filter);
+
     }
 }

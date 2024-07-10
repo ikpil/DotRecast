@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using DotRecast.Core;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 
 namespace DotRecast.Detour.Crowd
@@ -32,7 +32,7 @@ namespace DotRecast.Detour.Crowd
         public const int MAX_LOCAL_SEGS = 8;
         public const int MAX_LOCAL_POLYS = 16;
 
-        private RcVec3f m_center = new RcVec3f();
+        private Vector3 m_center = new Vector3();
         private List<DtSegment> m_segs = new List<DtSegment>(); // TODO array
         private long[] m_polys = new long[MAX_LOCAL_POLYS];
         private int m_npolys;
@@ -93,7 +93,7 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        public void Update(long startRef, RcVec3f pos, float collisionQueryRange, DtNavMeshQuery navquery, IDtQueryFilter filter)
+        public void Update(long startRef, Vector3 pos, float collisionQueryRange, DtNavMeshQuery navquery, IDtQueryFilter filter)
         {
             if (startRef == 0)
             {
@@ -157,7 +157,7 @@ namespace DotRecast.Detour.Crowd
             return true;
         }
 
-        public RcVec3f GetCenter()
+        public Vector3 GetCenter()
         {
             return m_center;
         }
