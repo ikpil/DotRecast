@@ -25,6 +25,7 @@ using System.Runtime.CompilerServices;
 
 namespace DotRecast.Detour.Crowd
 {
+    // TODO pooling
     public class DtProximityGrid
     {
         private readonly float _cellSize;
@@ -35,7 +36,7 @@ namespace DotRecast.Detour.Crowd
         {
             _cellSize = cellSize;
             _invCellSize = 1.0f / cellSize;
-            _items = new Dictionary<long, List<DtCrowdAgent>>();
+            _items = new Dictionary<long, List<DtCrowdAgent>>(512);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -74,7 +75,7 @@ namespace DotRecast.Detour.Crowd
                     long key = CombineKey(x, y);
                     if (!_items.TryGetValue(key, out var ids))
                     {
-                        ids = new List<DtCrowdAgent>();
+                        ids = new List<DtCrowdAgent>(/*64*/);
                         _items.Add(key, ids);
                     }
 

@@ -29,14 +29,16 @@ namespace DotRecast.Detour.Crowd
     {
         private readonly DtCrowdConfig m_config;
         private readonly LinkedList<DtPathQuery> m_queue;
+        private readonly DtNavMeshQuery m_navQuery;
 
-        public DtPathQueue(DtCrowdConfig config)
+        public DtPathQueue(DtNavMesh navMesh, DtCrowdConfig config)
         {
             m_config = config;
-            m_queue = new LinkedList<DtPathQuery>();
+            m_queue = new LinkedList<DtPathQuery>(); // TODO use queue instead of linkedlist
+            m_navQuery = new DtNavMeshQuery(navMesh);
         }
 
-        public void Update(DtNavMesh navMesh)
+        public void Update()
         {
             // Update path request until there is nothing to update
             // or upto maxIters pathfinder iterations has been consumed.
@@ -54,20 +56,20 @@ namespace DotRecast.Detour.Crowd
                 // Handle query start.
                 if (q.result.status.IsEmpty())
                 {
-                    q.navQuery = new DtNavMeshQuery(navMesh); // TODO alloc
-                    q.result.status = q.navQuery.InitSlicedFindPath(q.startRef, q.endRef, q.startPos, q.endPos, q.filter, 0);
+                    //q.navQuery = new DtNavMeshQuery(navMesh); // TODO cache navquery is ok?
+                    q.result.status = m_navQuery.InitSlicedFindPath(q.startRef, q.endRef, q.startPos, q.endPos, q.filter, 0);
                 }
 
                 // Handle query in progress.
                 if (q.result.status.InProgress())
                 {
-                    q.result.status = q.navQuery.UpdateSlicedFindPath(iterCount, out var iters);
+                    q.result.status = m_navQuery.UpdateSlicedFindPath(iterCount, out var iters);
                     iterCount -= iters;
                 }
 
                 if (q.result.status.Succeeded())
                 {
-                    q.result.status = q.navQuery.FinalizeSlicedFindPath(q.result.path, out q.result.pathCount);
+                    q.result.status = m_navQuery.FinalizeSlicedFindPath(q.result.path, out q.result.pathCount);
                 }
 
                 if (!(q.result.status.Failed() || q.result.status.Succeeded()))
@@ -84,7 +86,7 @@ namespace DotRecast.Detour.Crowd
                 return null;
             }
 
-            DtPathQuery q = new DtPathQuery(); // TODO struct
+            DtPathQuery q = new DtPathQuery(); // TODO struct?
             q.startPos = startPos;
             q.startRef = startRef;
             q.endPos = endPos;
