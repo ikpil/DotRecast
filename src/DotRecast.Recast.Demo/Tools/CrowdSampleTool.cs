@@ -198,19 +198,33 @@ public class CrowdSampleTool : ISampleTool
             if (null != grid)
             {
                 dd.Begin(QUADS);
+                var bounds = grid.GetBounds();
                 float cs = grid.GetCellSize();
-                foreach (var (combinedKey, count) in grid.GetItemCounts())
+                for (int y = bounds[1]; y <= bounds[3]; y++)
                 {
-                    DtProximityGrid.DecomposeKey(combinedKey, out var x, out var y);
-                    if (count != 0)
+                    for (int x = bounds[0]; x <= bounds[2]; x++)
                     {
+                        var count = grid.GetItemCountAt(x, y);
                         int col = DuRGBA(128, 0, 0, Math.Min(count * 40, 255));
                         dd.Vertex(x * cs, gridy, y * cs, col);
                         dd.Vertex(x * cs, gridy, y * cs + cs, col);
                         dd.Vertex(x * cs + cs, gridy, y * cs + cs, col);
                         dd.Vertex(x * cs + cs, gridy, y * cs, col);
+
                     }
                 }
+                //foreach (var (combinedKey, count) in grid.GetItemCounts())
+                //{
+                //    DtProximityGrid.DecomposeKey(combinedKey, out var x, out var y);
+                //    if (count != 0)
+                //    {
+                //        int col = DuRGBA(128, 0, 0, Math.Min(count * 40, 255));
+                //        dd.Vertex(x * cs, gridy, y * cs, col);
+                //        dd.Vertex(x * cs, gridy, y * cs + cs, col);
+                //        dd.Vertex(x * cs + cs, gridy, y * cs + cs, col);
+                //        dd.Vertex(x * cs + cs, gridy, y * cs, col);
+                //    }
+                //}
 
                 dd.End();
             }
