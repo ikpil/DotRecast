@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DotRecast.Core;
-using System.Numerics;
+using DotRecast.Core.Numerics;
 using DotRecast.Detour;
 using DotRecast.Recast.Toolset.Builder;
 using DotRecast.Recast.Demo.Draw;
@@ -30,29 +30,30 @@ public class TestNavmeshSampleTool : ISampleTool
     private int _includeFlags = SampleAreaModifications.SAMPLE_POLYFLAGS_ALL;
     private int _excludeFlags = 0;
 
-    private bool _enableRaycast = false; // TODO bug
+    private bool _enableRaycast = true;
 
     // for pathfind straight mode
     private int _straightPathOption;
 
     // for random point in circle mode
     private int _randomPointCount = 300;
+    private bool _constrainByCircle;
 
     // 
     private bool m_sposSet;
     private long m_startRef;
-    private Vector3 m_spos;
+    private RcVec3f m_spos;
 
     private bool m_eposSet;
     private long m_endRef;
-    private Vector3 m_epos;
+    private RcVec3f m_epos;
 
     private readonly DtQueryDefaultFilter m_filter;
-    private readonly Vector3 m_polyPickExt = new Vector3(2, 4, 2);
+    private readonly RcVec3f m_polyPickExt = new RcVec3f(2, 4, 2);
 
     // for hit
-    private Vector3 m_hitPos;
-    private Vector3 m_hitNormal;
+    private RcVec3f m_hitPos;
+    private RcVec3f m_hitNormal;
     private bool m_hitResult;
 
     private float m_distanceToWall;
@@ -63,26 +64,22 @@ public class TestNavmeshSampleTool : ISampleTool
     private long[] m_parent = new long[MAX_POLYS];
     private int m_npolys = 0;
     private float m_neighbourhoodRadius;
-    private Vector3[] m_queryPoly = new Vector3[4];
-    private List<Vector3> m_smoothPath;
+    private RcVec3f[] m_queryPoly = new RcVec3f[4];
+    private List<RcVec3f> m_smoothPath;
     private DtStatus m_pathFindStatus = DtStatus.DT_FAILURE;
 
     // for mode RANDOM_POINTS_IN_CIRCLE
-    private List<Vector3> _randomPoints = new();
+    private List<RcVec3f> _randomPoints = new();
 
     public TestNavmeshSampleTool()
     {
         _tool = new();
 
-        m_filter = new DtQueryDefaultFilter();
-        m_filter.SetIncludeFlags(SampleAreaModifications.SAMPLE_POLYFLAGS_ALL ^ SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED);
-        m_filter.SetExcludeFlags(0);
-        m_filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GROUND, 1f);
-        m_filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, 10f);
-        m_filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, 1f);
-        m_filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_DOOR, 1f);
-        m_filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GRASS, 2f);
-        m_filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP, 1.5f);
+        m_filter = new DtQueryDefaultFilter(
+            SampleAreaModifications.SAMPLE_POLYFLAGS_ALL,
+            SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED,
+            new float[] { 1f, 1f, 1f, 1f, 2f, 1.5f }
+        );
     }
 
     public void Layout()
@@ -96,6 +93,7 @@ public class TestNavmeshSampleTool : ISampleTool
         bool prevEnableRaycast = _enableRaycast;
 
         int prevStraightPathOption = _straightPathOption;
+        bool prevConstrainByCircle = _constrainByCircle;
 
         ImGui.Text("Mode");
         ImGui.Separator();
@@ -136,6 +134,7 @@ public class TestNavmeshSampleTool : ISampleTool
         if (_mode == RcTestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE)
         {
             ImGui.SliderInt("Random point count", ref _randomPointCount, 0, 10000);
+            ImGui.Checkbox("Constrained", ref _constrainByCircle);
         }
 
         ImGui.Text("Common");
@@ -167,7 +166,7 @@ public class TestNavmeshSampleTool : ISampleTool
                               || prevExcludeFlags != _excludeFlags
                               || prevEnableRaycast != _enableRaycast
                               || prevStraightPathOption != _straightPathOption
-                              /*|| prevConstrainByCircle != _constrainByCircle*/)
+                              || prevConstrainByCircle != _constrainByCircle)
         {
             Recalc();
         }
@@ -387,12 +386,12 @@ public class TestNavmeshSampleTool : ISampleTool
         {
             dd.DebugDrawNavMeshPoly(m_navMesh, m_startRef, startCol);
             dd.DepthMask(false);
-            if (m_spos != Vector3.Zero)
+            if (m_spos != RcVec3f.Zero)
             {
                 dd.DebugDrawCircle(m_spos.X, m_spos.Y + agentHeight / 2, m_spos.Z, m_distanceToWall, DuRGBA(64, 16, 0, 220), 2.0f);
             }
 
-            if (m_hitPos != Vector3.Zero)
+            if (m_hitPos != RcVec3f.Zero)
             {
                 dd.Begin(LINES, 3.0f);
                 dd.Vertex(m_hitPos.X, m_hitPos.Y + 0.02f, m_hitPos.Z, DuRGBA(0, 0, 0, 192));
@@ -413,8 +412,8 @@ public class TestNavmeshSampleTool : ISampleTool
                     if (m_parent[i] != 0)
                     {
                         dd.DepthMask(false);
-                        Vector3 p0 = m_navMesh.GetPolyCenter(m_parent[i]);
-                        Vector3 p1 = m_navMesh.GetPolyCenter(m_polys[i]);
+                        RcVec3f p0 = m_navMesh.GetPolyCenter(m_parent[i]);
+                        RcVec3f p1 = m_navMesh.GetPolyCenter(m_polys[i]);
                         dd.DebugDrawArc(p0.X, p0.Y, p0.Z, p1.X, p1.Y, p1.Z, 0.25f, 0.0f, 0.4f, DuRGBA(0, 0, 0, 128), 2.0f);
                         dd.DepthMask(true);
                     }
@@ -444,8 +443,8 @@ public class TestNavmeshSampleTool : ISampleTool
                     if (m_parent[i] != 0)
                     {
                         dd.DepthMask(false);
-                        Vector3 p0 = m_navMesh.GetPolyCenter(m_parent[i]);
-                        Vector3 p1 = m_navMesh.GetPolyCenter(m_polys[i]);
+                        RcVec3f p0 = m_navMesh.GetPolyCenter(m_parent[i]);
+                        RcVec3f p1 = m_navMesh.GetPolyCenter(m_polys[i]);
                         dd.DebugDrawArc(p0.X, p0.Y, p0.Z, p1.X, p1.Y, p1.Z, 0.25f, 0.0f, 0.4f, DuRGBA(0, 0, 0, 128), 2.0f);
                         dd.DepthMask(true);
                     }
@@ -473,10 +472,8 @@ public class TestNavmeshSampleTool : ISampleTool
         {
             if (m_polys != null)
             {
-                const int MAX_SEGS = DtDetour.DT_VERTS_PER_POLYGON * 4;
-                Span<RcSegmentVert> segs = stackalloc RcSegmentVert[MAX_SEGS];
-                Span<long> refs = stackalloc long[MAX_SEGS];
-                refs.Clear();
+                var segmentVerts = new List<RcSegmentVert>();
+                var segmentRefs = new List<long>();
 
                 for (int i = 0; i < m_npolys; i++)
                 {
@@ -485,8 +482,8 @@ public class TestNavmeshSampleTool : ISampleTool
                     if (m_parent[i] != 0)
                     {
                         dd.DepthMask(false);
-                        Vector3 p0 = m_navMesh.GetPolyCenter(m_parent[i]);
-                        Vector3 p1 = m_navMesh.GetPolyCenter(m_polys[i]);
+                        RcVec3f p0 = m_navMesh.GetPolyCenter(m_parent[i]);
+                        RcVec3f p1 = m_navMesh.GetPolyCenter(m_polys[i]);
                         dd.DebugDrawArc(p0.X, p0.Y, p0.Z, p1.X, p1.Y, p1.Z, 0.25f, 0.0f, 0.4f, DuRGBA(0, 0, 0, 128), 2.0f);
                         dd.DepthMask(true);
                     }
@@ -496,14 +493,14 @@ public class TestNavmeshSampleTool : ISampleTool
                     {
                         var result = _sample
                             .GetNavMeshQuery()
-                            .GetPolyWallSegments(m_polys[i], m_filter, segs, refs, out var nsegs, MAX_SEGS);
+                            .GetPolyWallSegments(m_polys[i], false, m_filter, ref segmentVerts, ref segmentRefs);
 
                         if (result.Succeeded())
                         {
                             dd.Begin(LINES, 2.0f);
-                            for (int j = 0; j < nsegs; ++j)
+                            for (int j = 0; j < segmentVerts.Count; ++j)
                             {
-                                ref readonly RcSegmentVert s = ref segs[j];
+                                RcSegmentVert s = segmentVerts[j];
                                 var v0 = s.vmin;
                                 var s3 = s.vmax;
                                 // Skip too distant segments.
@@ -513,13 +510,13 @@ public class TestNavmeshSampleTool : ISampleTool
                                     continue;
                                 }
 
-                                Vector3 delta = Vector3.Subtract(s3, s.vmin);
-                                Vector3 p0 = RcVec.Mad(s.vmin, delta, 0.5f);
-                                Vector3 norm = new Vector3(delta.Z, 0, -delta.X);
-                                norm = Vector3.Normalize(norm);
-                                Vector3 p1 = RcVec.Mad(p0, norm, agentRadius * 0.5f);
+                                RcVec3f delta = RcVec3f.Subtract(s3, s.vmin);
+                                RcVec3f p0 = RcVec.Mad(s.vmin, delta, 0.5f);
+                                RcVec3f norm = new RcVec3f(delta.Z, 0, -delta.X);
+                                norm = RcVec3f.Normalize(norm);
+                                RcVec3f p1 = RcVec.Mad(p0, norm, agentRadius * 0.5f);
                                 // Skip backfacing segments.
-                                if (refs[j] != 0)
+                                if (segmentRefs[j] != 0)
                                 {
                                     int col = DuRGBA(255, 255, 255, 32);
                                     dd.Vertex(s.vmin.X, s.vmin.Y + agentClimb, s.vmin.Z, col);
@@ -561,7 +558,7 @@ public class TestNavmeshSampleTool : ISampleTool
             dd.DepthMask(false);
             dd.Begin(POINTS, 4.0f);
             int col = DuRGBA(64, 16, 0, 220);
-            foreach (Vector3 point in _randomPoints)
+            foreach (RcVec3f point in _randomPoints)
             {
                 dd.Vertex(point.X, point.Y + 0.1f, point.Z, col);
             }
@@ -581,7 +578,7 @@ public class TestNavmeshSampleTool : ISampleTool
         }
     }
 
-    private void DrawAgent(RecastDebugDraw dd, Vector3 pos, int col)
+    private void DrawAgent(RecastDebugDraw dd, RcVec3f pos, int col)
     {
         var settings = _sample.GetSettings();
         float r = settings.agentRadius;
@@ -619,7 +616,7 @@ public class TestNavmeshSampleTool : ISampleTool
     }
 
 
-    public void HandleClick(Vector3 s, Vector3 p, bool shift)
+    public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
         if (shift)
         {
@@ -705,7 +702,7 @@ public class TestNavmeshSampleTool : ISampleTool
         else if (_mode == RcTestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE)
         {
             _randomPoints.Clear();
-            _tool.FindRandomPointAroundCircle(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, /*_constrainByCircle, */_randomPointCount, ref _randomPoints);
+            _tool.FindRandomPointAroundCircle(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, _constrainByCircle, _randomPointCount, ref _randomPoints);
         }
     }
 
@@ -723,7 +720,7 @@ public class TestNavmeshSampleTool : ISampleTool
         }
     }
 
-    public void HandleClickRay(Vector3 start, Vector3 direction, bool shift)
+    public void HandleClickRay(RcVec3f start, RcVec3f direction, bool shift)
     {
     }
 }

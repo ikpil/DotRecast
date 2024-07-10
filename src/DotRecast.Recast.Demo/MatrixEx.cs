@@ -1,6 +1,5 @@
 /*
-Copyright (c) 2009-2010 Mikko Mononen memon@inside.org
-recast4j copyright (c) 2015-2019 Piotr Piastucki piotr@jtilia.org
+recast4j copyright (c) 2021 Piotr Piastucki piotr@jtilia.org
 DotRecast Copyright (c) 2023-2024 Choi Ikpil ikpil@naver.com
 
 This software is provided 'as-is', without any express or implied
@@ -18,29 +17,15 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using System.Numerics;
+using System.Collections.Generic;
 
-namespace DotRecast.Recast.Demo;
-
-static class MatrixEx
+namespace DotRecast.Detour.Crowd
 {
-    public static void CopyTo(this Matrix4x4 s, float[] m)
+    public class DtPathQueryResult
     {
-        m[0] = s.M11;
-        m[1] = s.M12;
-        m[2] = s.M13;
-        m[3] = s.M14;
-        m[4] = s.M21;
-        m[5] = s.M22;
-        m[6] = s.M23;
-        m[7] = s.M24;
-        m[8] = s.M31;
-        m[9] = s.M32;
-        m[10] = s.M33;
-        m[11] = s.M34;
-        m[12] = s.M41;
-        m[13] = s.M42;
-        m[14] = s.M43;
-        m[15] = s.M44;
+        public DtStatus status;
+        //public List<long> path = new List<long>();
+        public long[] path = new long[DtCrowdConst.MAX_PATH_RESULT];
+        public int pathCount;
     }
 }
