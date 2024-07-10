@@ -1,5 +1,6 @@
 using System;
-using DotRecast.Core.Numerics;
+using System.Numerics;
+using DotRecast.Core;
 using DotRecast.Recast;
 
 
@@ -32,7 +33,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             }
         }
 
-        private bool SampleTrajectory(JumpLinkBuilderConfig acfg, RcHeightfield solid, RcVec3f pa, RcVec3f pb, ITrajectory tra)
+        private bool SampleTrajectory(JumpLinkBuilderConfig acfg, RcHeightfield solid, Vector3 pa, Vector3 pb, ITrajectory tra)
         {
             float cs = Math.Min(acfg.cellSize, acfg.cellHeight);
             float d = RcVec.Dist2D(pa, pb) + MathF.Abs(pa.Y - pb.Y);
@@ -40,7 +41,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             for (int i = 0; i < nsamples; ++i)
             {
                 float u = (float)i / (float)(nsamples - 1);
-                RcVec3f p = tra.Apply(pa, pb, u);
+                Vector3 p = tra.Apply(pa, pb, u);
                 if (CheckHeightfieldCollision(solid, p.X, p.Y + acfg.groundTolerance, p.Y + acfg.agentHeight, p.Z))
                 {
                     return false;
@@ -56,7 +57,7 @@ namespace DotRecast.Detour.Extras.Jumplink
             int h = solid.height;
             float cs = solid.cs;
             float ch = solid.ch;
-            RcVec3f orig = solid.bmin;
+            Vector3 orig = solid.bmin;
             int ix = (int)MathF.Floor((x - orig.X) / cs);
             int iz = (int)MathF.Floor((z - orig.Z) / cs);
 

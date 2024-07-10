@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 using System;
 using System.IO;
 using DotRecast.Core;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 using DotRecast.Recast.Geom;
 using NUnit.Framework;
 
@@ -99,8 +99,8 @@ public class RecastSoloMeshTest
         m_partitionType = partitionType;
         IInputGeomProvider geomProvider = SimpleInputGeomProvider.LoadFile(filename);
         long time = RcFrequency.Ticks;
-        RcVec3f bmin = geomProvider.GetMeshBoundsMin();
-        RcVec3f bmax = geomProvider.GetMeshBoundsMax();
+        Vector3 bmin = geomProvider.GetMeshBoundsMin();
+        Vector3 bmax = geomProvider.GetMeshBoundsMax();
         RcContext m_ctx = new RcContext();
         //
         // Step 1. Initialize build config.

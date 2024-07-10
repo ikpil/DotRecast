@@ -1,4 +1,5 @@
-using DotRecast.Core.Numerics;
+using System.Numerics;
+using DotRecast.Core;
 
 namespace DotRecast.Recast.Demo.Draw;
 
@@ -15,9 +16,9 @@ public interface IOpenGLDraw
     void Vertex(float x, float y, float z, int color);
 
     void Vertex(float[] pos, int color);
-    void Vertex(RcVec3f pos, int color);
+    void Vertex(Vector3 pos, int color);
 
-    void Vertex(RcVec3f pos, int color, RcVec2f uv);
+    void Vertex(Vector3 pos, int color, Vector2 uv);
 
     void Vertex(float x, float y, float z, int color, float u, float v);
 

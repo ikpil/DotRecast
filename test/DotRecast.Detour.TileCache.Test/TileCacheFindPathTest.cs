@@ -22,7 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using DotRecast.Core;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 using DotRecast.Detour.TileCache.Io;
 using DotRecast.Detour.TileCache.Io.Compress;
 using DotRecast.Detour.TileCache.Test.Io;
@@ -32,8 +32,8 @@ namespace DotRecast.Detour.TileCache.Test;
 
 public class TileCacheFindPathTest : AbstractTileCacheTest
 {
-    private readonly RcVec3f start = new RcVec3f(39.44734f, 9.998177f, -0.784811f);
-    private readonly RcVec3f end = new RcVec3f(19.292645f, 11.611748f, -57.750366f);
+    private readonly Vector3 start = new Vector3(39.44734f, 9.998177f, -0.784811f);
+    private readonly Vector3 end = new Vector3(19.292645f, 11.611748f, -57.750366f);
     private readonly DtNavMesh navmesh;
     private readonly DtNavMeshQuery query;
 
@@ -50,7 +50,7 @@ public class TileCacheFindPathTest : AbstractTileCacheTest
     public void TestFindPath()
     {
         IDtQueryFilter filter = new DtQueryDefaultFilter();
-        RcVec3f extents = new RcVec3f(2f, 4f, 2f);
+        Vector3 extents = new Vector3(2f, 4f, 2f);
         query.FindNearestPoly(start, extents, filter, out var startRef, out var startPos, out var _);
         query.FindNearestPoly(end, extents, filter, out var endRef, out var endPos, out var _);
 

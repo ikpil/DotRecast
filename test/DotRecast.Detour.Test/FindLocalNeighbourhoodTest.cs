@@ -19,7 +19,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
@@ -64,7 +64,7 @@ public class FindLocalNeighbourhoodTest : AbstractDetourTest
 
         for (int i = 0; i < startRefs.Length; i++)
         {
-            RcVec3f startPos = startPoss[i];
+            Vector3 startPos = startPoss[i];
             var status = query.FindLocalNeighbourhood(startRefs[i], startPos, 3.5f, filter, refs, parentRefs, out var resultCount, MAX_REFS);
             Assert.That(resultCount, Is.EqualTo(REFS[i].Length));
             for (int v = 0; v < REFS[i].Length; v++)

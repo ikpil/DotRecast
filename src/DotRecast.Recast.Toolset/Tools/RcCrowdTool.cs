@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using DotRecast.Core;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 using DotRecast.Detour;
 using DotRecast.Detour.Crowd;
 using DotRecast.Recast.Toolset.Builder;
@@ -16,7 +16,7 @@ namespace DotRecast.Recast.Toolset.Tools
         private long crowdUpdateTime;
         private readonly Dictionary<long, RcCrowdAgentTrail> _trails;
         private long _moveTargetRef;
-        private RcVec3f _moveTargetPos;
+        private Vector3 _moveTargetPos;
 
         public RcCrowdTool()
         {
@@ -52,7 +52,7 @@ namespace DotRecast.Recast.Toolset.Tools
             return _moveTargetRef;
         }
 
-        public RcVec3f GetMoveTargetPos()
+        public Vector3 GetMoveTargetPos()
         {
             return _moveTargetPos;
         }
@@ -170,7 +170,7 @@ namespace DotRecast.Recast.Toolset.Tools
             }
         }
 
-        public void AddAgent(RcVec3f p, float agentRadius, float agentHeight, float agentMaxAcceleration, float agentMaxSpeed)
+        public void AddAgent(Vector3 p, float agentRadius, float agentHeight, float agentMaxAcceleration, float agentMaxSpeed)
         {
             DtCrowdAgentParams ap = CreateAgentParams(agentRadius, agentHeight, agentMaxAcceleration, agentMaxSpeed);
             DtCrowdAgent ag = crowd.AddAgent(p, ap);
@@ -212,15 +212,15 @@ namespace DotRecast.Recast.Toolset.Tools
             return ap;
         }
 
-        public DtCrowdAgent HitTestAgents(RcVec3f s, RcVec3f p)
+        public DtCrowdAgent HitTestAgents(Vector3 s, Vector3 p)
         {
             DtCrowdAgent isel = null;
             float tsel = float.MaxValue;
 
             foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
             {
-                RcVec3f bmin = new RcVec3f();
-                RcVec3f bmax = new RcVec3f();
+                Vector3 bmin = new Vector3();
+                Vector3 bmax = new Vector3();
                 GetAgentBounds(ag, ref bmin, ref bmax);
                 if (RcIntersections.IsectSegAABB(s, p, bmin, bmax, out var tmin, out var tmax))
                 {
@@ -235,9 +235,9 @@ namespace DotRecast.Recast.Toolset.Tools
             return isel;
         }
 
-        private void GetAgentBounds(DtCrowdAgent ag, ref RcVec3f bmin, ref RcVec3f bmax)
+        private void GetAgentBounds(DtCrowdAgent ag, ref Vector3 bmin, ref Vector3 bmax)
         {
-            RcVec3f p = ag.npos;
+            Vector3 p = ag.npos;
             float r = ag.option.radius;
             float h = ag.option.height;
             bmin.X = p.X - r;
@@ -248,7 +248,7 @@ namespace DotRecast.Recast.Toolset.Tools
             bmax.Z = p.Z + r;
         }
 
-        public void SetMoveTarget(RcVec3f p, bool adjust)
+        public void SetMoveTarget(Vector3 p, bool adjust)
         {
             if (crowd == null)
                 return;
@@ -256,21 +256,21 @@ namespace DotRecast.Recast.Toolset.Tools
             // Find nearest point on navmesh and set move request to that location.
             DtNavMeshQuery navquery = crowd.GetNavMeshQuery();
             IDtQueryFilter filter = crowd.GetFilter(0);
-            RcVec3f halfExtents = crowd.GetQueryExtents();
+            Vector3 halfExtents = crowd.GetQueryExtents();
 
             if (adjust)
             {
                 // Request velocity
                 if (_agentDebug.agent != null)
                 {
-                    RcVec3f vel = CalcVel(_agentDebug.agent.npos, p, _agentDebug.agent.option.maxSpeed);
+                    Vector3 vel = CalcVel(_agentDebug.agent.npos, p, _agentDebug.agent.option.maxSpeed);
                     crowd.RequestMoveVelocity(_agentDebug.agent, vel);
                 }
                 else
                 {
                     foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
                     {
-                        RcVec3f vel = CalcVel(ag.npos, p, ag.option.maxSpeed);
+                        Vector3 vel = CalcVel(ag.npos, p, ag.option.maxSpeed);
                         crowd.RequestMoveVelocity(ag, vel);
                     }
                 }
@@ -292,11 +292,11 @@ namespace DotRecast.Recast.Toolset.Tools
             }
         }
 
-        private RcVec3f CalcVel(RcVec3f pos, RcVec3f tgt, float speed)
+        private Vector3 CalcVel(Vector3 pos, Vector3 tgt, float speed)
         {
-            RcVec3f vel = RcVec3f.Subtract(tgt, pos);
+            Vector3 vel = Vector3.Subtract(tgt, pos);
             vel.Y = 0.0f;
-            vel = RcVec3f.Normalize(vel);
+            vel = Vector3.Normalize(vel);
             return vel * speed;
         }
 

@@ -18,7 +18,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 namespace DotRecast.Detour
 {
@@ -80,10 +80,10 @@ namespace DotRecast.Detour
         public float walkableClimb;
 
         /** The minimum bounds of the tile's AABB. [(x, y, z)] */
-        public RcVec3f bmin = new RcVec3f();
+        public Vector3 bmin;
 
         /** The maximum bounds of the tile's AABB. [(x, y, z)] */
-        public RcVec3f bmax = new RcVec3f();
+        public Vector3 bmax;
 
         /** The bounding volume quantization factor. */
         public float bvQuantFactor;

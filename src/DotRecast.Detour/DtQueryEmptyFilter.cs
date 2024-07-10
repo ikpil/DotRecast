@@ -1,4 +1,4 @@
-﻿using DotRecast.Core.Numerics;
+﻿using System.Numerics;
 
 namespace DotRecast.Detour
 {
@@ -15,7 +15,7 @@ namespace DotRecast.Detour
             return false;
         }
 
-        public float GetCost(RcVec3f pa, RcVec3f pb, long prevRef, DtMeshTile prevTile, DtPoly prevPoly, long curRef,
+        public float GetCost(Vector3 pa, Vector3 pb, long prevRef, DtMeshTile prevTile, DtPoly prevPoly, long curRef,
             DtMeshTile curTile, DtPoly curPoly, long nextRef, DtMeshTile nextTile, DtPoly nextPoly)
         {
             return 0;

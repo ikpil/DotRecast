@@ -18,7 +18,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using DotRecast.Core.Numerics;
+using System.Numerics;
 using DotRecast.Recast.Demo.Draw;
 using DotRecast.Recast.Toolset;
 
@@ -31,8 +31,8 @@ public interface ISampleTool
 
     IRcToolable GetTool();
     void Layout();
-    void HandleClick(RcVec3f s, RcVec3f p, bool shift);
+    void HandleClick(Vector3 s, Vector3 p, bool shift);
     void HandleRender(NavMeshRenderer renderer);
     void HandleUpdate(float dt);
-    void HandleClickRay(RcVec3f start, RcVec3f direction, bool shift);
+    void HandleClickRay(Vector3 start, Vector3 direction, bool shift);
 }

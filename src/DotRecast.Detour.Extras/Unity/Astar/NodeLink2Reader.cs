@@ -19,7 +19,7 @@ freely, subject to the following restrictions:
 
 using System.IO.Compression;
 using DotRecast.Core;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 namespace DotRecast.Detour.Extras.Unity.Astar
 {
@@ -37,11 +37,11 @@ namespace DotRecast.Detour.Extras.Unity.Astar
                 int endNode = indexToNode[buffer.GetInt()];
                 int connectedNode1 = buffer.GetInt();
                 int connectedNode2 = buffer.GetInt();
-                RcVec3f clamped1 = new RcVec3f();
+                Vector3 clamped1 = new Vector3();
                 clamped1.X = buffer.GetFloat();
                 clamped1.Y = buffer.GetFloat();
                 clamped1.Z = buffer.GetFloat();
-                RcVec3f clamped2 = new RcVec3f();
+                Vector3 clamped2 = new Vector3();
                 clamped2.X = buffer.GetFloat();
                 clamped2.Y = buffer.GetFloat();
                 clamped2.Z = buffer.GetFloat();

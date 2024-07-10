@@ -1,14 +1,14 @@
 using System;
 using DotRecast.Core;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 namespace DotRecast.Detour.Extras.Jumplink
 {
     public class ClimbTrajectory : ITrajectory
     {
-        public RcVec3f Apply(RcVec3f start, RcVec3f end, float u)
+        public Vector3 Apply(Vector3 start, Vector3 end, float u)
         {
-            return new RcVec3f()
+            return new Vector3()
             {
                 X = RcMath.Lerp(start.X, end.X, Math.Min(2f * u, 1f)),
                 Y = RcMath.Lerp(start.Y, end.Y, Math.Max(0f, 2f * u - 1f)),

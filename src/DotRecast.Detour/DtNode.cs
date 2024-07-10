@@ -19,7 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 namespace DotRecast.Detour
 {
@@ -27,7 +27,7 @@ namespace DotRecast.Detour
     {
         public readonly int ptr;
 
-        public RcVec3f pos; // Position of the node.
+        public Vector3 pos; // Position of the node.
         public float cost; // Cost from previous node to current node.
         public float total; // Cost up to the node.
         public int pidx; // Index to parent node.

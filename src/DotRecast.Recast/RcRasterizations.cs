@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using DotRecast.Core;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 
 namespace DotRecast.Recast
@@ -36,7 +36,7 @@ namespace DotRecast.Recast
         /// @param[in]	bMin	Min axis extents of bounding box B
         /// @param[in]	bMax	Max axis extents of bounding box B
         /// @returns true if the two bounding boxes overlap.  False otherwise.
-        private static bool OverlapBounds(RcVec3f aMin, RcVec3f aMax, RcVec3f bMin, RcVec3f bMax)
+        private static bool OverlapBounds(Vector3 aMin, Vector3 aMax, Vector3 bMin, Vector3 bMax)
         {
             return
                 aMin.X <= bMax.X && aMax.X >= bMin.X &&
@@ -290,18 +290,18 @@ namespace DotRecast.Recast
         /// @returns true if the operation completes successfully.  false if there was an error adding spans to the heightfield.
         private static bool RasterizeTri(float[] verts, int v0, int v1, int v2,
             int areaID, RcHeightfield heightfield,
-            RcVec3f heightfieldBBMin, RcVec3f heightfieldBBMax,
+            Vector3 heightfieldBBMin, Vector3 heightfieldBBMax,
             float cellSize, float inverseCellSize, float inverseCellHeight,
             int flagMergeThreshold)
         {
             // Calculate the bounding box of the triangle.
-            RcVec3f triBBMin = RcVec.Create(verts, v0 * 3);
-            triBBMin = RcVec3f.Min(triBBMin, RcVec.Create(verts, v1 * 3));
-            triBBMin = RcVec3f.Min(triBBMin, RcVec.Create(verts, v2 * 3));
+            Vector3 triBBMin = RcVec.Create(verts, v0 * 3);
+            triBBMin = Vector3.Min(triBBMin, RcVec.Create(verts, v1 * 3));
+            triBBMin = Vector3.Min(triBBMin, RcVec.Create(verts, v2 * 3));
 
-            RcVec3f triBBMax = RcVec.Create(verts, v0 * 3);
-            triBBMax = RcVec3f.Max(triBBMax, RcVec.Create(verts, v1 * 3));
-            triBBMax = RcVec3f.Max(triBBMax, RcVec.Create(verts, v2 * 3));
+            Vector3 triBBMax = RcVec.Create(verts, v0 * 3);
+            triBBMax = Vector3.Max(triBBMax, RcVec.Create(verts, v1 * 3));
+            triBBMax = Vector3.Max(triBBMax, RcVec.Create(verts, v2 * 3));
 
             // If the triangle does not touch the bounding box of the heightfield, skip the triangle.
             if (!OverlapBounds(triBBMin, triBBMax, heightfieldBBMin, heightfieldBBMax))

@@ -1,10 +1,10 @@
-﻿using DotRecast.Core.Numerics;
+﻿using System.Numerics;
 
 namespace DotRecast.Detour.TileCache
 {
     public class DtObstacleBox
     {
-        public RcVec3f bmin;
-        public RcVec3f bmax;
+        public Vector3 bmin;
+        public Vector3 bmax;
     }
 }

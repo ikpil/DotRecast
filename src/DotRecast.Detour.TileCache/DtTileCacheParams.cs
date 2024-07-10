@@ -18,13 +18,13 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 namespace DotRecast.Detour.TileCache
 {
     public struct DtTileCacheParams
     {
-        public RcVec3f orig;
+        public Vector3 orig;
         public float cs, ch;
         public int width, height;
         public float walkableHeight;

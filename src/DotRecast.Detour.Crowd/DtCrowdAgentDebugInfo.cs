@@ -18,15 +18,15 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 namespace DotRecast.Detour.Crowd
 {
     public class DtCrowdAgentDebugInfo
     {
         public DtCrowdAgent agent;
-        public RcVec3f optStart = new RcVec3f();
-        public RcVec3f optEnd = new RcVec3f();
+        public Vector3 optStart = new Vector3();
+        public Vector3 optEnd = new Vector3();
         public DtObstacleAvoidanceDebugData vod;
     }
 }

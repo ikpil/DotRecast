@@ -21,7 +21,7 @@ freely, subject to the following restrictions:
 using System.Collections.Generic;
 using System.Linq;
 using DotRecast.Core;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 using DotRecast.Detour.TileCache.Io.Compress;
 using DotRecast.Recast;
 using DotRecast.Recast.Geom;
@@ -71,8 +71,8 @@ public class TestTileLayerBuilder : DtTileCacheLayerBuilder
             true, true, true,
             SampleAreaModifications.SAMPLE_AREAMOD_GROUND, true);
 
-        RcVec3f bmin = geom.GetMeshBoundsMin();
-        RcVec3f bmax = geom.GetMeshBoundsMax();
+        Vector3 bmin = geom.GetMeshBoundsMin();
+        Vector3 bmax = geom.GetMeshBoundsMax();
         RcRecast.CalcTileCount(bmin, bmax, CellSize, m_tileSize, m_tileSize, out tw, out th);
     }
 

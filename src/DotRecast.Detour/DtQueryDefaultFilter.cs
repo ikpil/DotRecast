@@ -19,7 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 namespace DotRecast.Detour
 {
@@ -86,10 +86,10 @@ namespace DotRecast.Detour
             return (poly.flags & m_includeFlags) != 0 && (poly.flags & m_excludeFlags) == 0;
         }
 
-        public float GetCost(RcVec3f pa, RcVec3f pb, long prevRef, DtMeshTile prevTile, DtPoly prevPoly, long curRef,
+        public float GetCost(Vector3 pa, Vector3 pb, long prevRef, DtMeshTile prevTile, DtPoly prevPoly, long curRef,
             DtMeshTile curTile, DtPoly curPoly, long nextRef, DtMeshTile nextTile, DtPoly nextPoly)
         {
-            return RcVec3f.Distance(pa, pb) * m_areaCost[curPoly.GetArea()];
+            return Vector3.Distance(pa, pb) * m_areaCost[curPoly.GetArea()];
         }
 
         public int GetIncludeFlags()

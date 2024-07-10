@@ -1,4 +1,4 @@
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 namespace DotRecast.Detour.Crowd
 {

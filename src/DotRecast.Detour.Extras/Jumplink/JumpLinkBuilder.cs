@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DotRecast.Core;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 using DotRecast.Recast;
 
 namespace DotRecast.Detour.Extras.Jumplink
@@ -54,11 +54,11 @@ namespace DotRecast.Detour.Extras.Jumplink
             List<JumpLink> links = new List<JumpLink>();
             foreach (JumpSegment js in jumpSegments)
             {
-                RcVec3f sp = es.start.gsamples[js.startSample].p;
-                RcVec3f sq = es.start.gsamples[js.startSample + js.samples - 1].p;
+                Vector3 sp = es.start.gsamples[js.startSample].p;
+                Vector3 sq = es.start.gsamples[js.startSample + js.samples - 1].p;
                 GroundSegment end = es.end[js.groundSegment];
-                RcVec3f ep = end.gsamples[js.startSample].p;
-                RcVec3f eq = end.gsamples[js.startSample + js.samples - 1].p;
+                Vector3 ep = end.gsamples[js.startSample].p;
+                Vector3 eq = end.gsamples[js.startSample + js.samples - 1].p;
                 float d = Math.Min(RcVec.Dist2DSqr(sp, sq), RcVec.Dist2DSqr(ep, eq));
                 if (d >= 4 * acfg.agentRadius * acfg.agentRadius)
                 {
@@ -72,7 +72,7 @@ namespace DotRecast.Detour.Extras.Jumplink
                     for (int j = 0; j < link.nspine; ++j)
                     {
                         float u = ((float)j) / (link.nspine - 1);
-                        RcVec3f p = es.trajectory.Apply(sp, ep, u);
+                        Vector3 p = es.trajectory.Apply(sp, ep, u);
                         link.spine0[j * 3] = p.X;
                         link.spine0[j * 3 + 1] = p.Y;
                         link.spine0[j * 3 + 2] = p.Z;

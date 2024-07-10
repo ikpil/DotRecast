@@ -2,7 +2,7 @@
 using System.Linq;
 using DotRecast.Core;
 using DotRecast.Core.Collections;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 using DotRecast.Detour;
 using DotRecast.Detour.TileCache;
 using DotRecast.Detour.TileCache.Io.Compress;
@@ -96,7 +96,7 @@ namespace DotRecast.Recast.Toolset.Tools
             }
         }
 
-        public void RemoveTempObstacle(RcVec3f sp, RcVec3f sq)
+        public void RemoveTempObstacle(Vector3 sp, Vector3 sq)
         {
             if (null == _tc)
                 return;
@@ -105,7 +105,7 @@ namespace DotRecast.Recast.Toolset.Tools
             _tc.RemoveObstacle(refs);
         }
 
-        public long AddTempObstacle(RcVec3f p)
+        public long AddTempObstacle(Vector3 p)
         {
             if (null == _tc)
                 return 0;
@@ -149,7 +149,7 @@ namespace DotRecast.Recast.Toolset.Tools
             return tc;
         }
 
-        public long HitTestObstacle(RcVec3f sp, RcVec3f sq)
+        public long HitTestObstacle(Vector3 sp, Vector3 sq)
         {
             float tmin = float.MaxValue;
             DtTileCacheObstacle obmin = null;
@@ -160,8 +160,8 @@ namespace DotRecast.Recast.Toolset.Tools
                 if (ob.state == DtObstacleState.DT_OBSTACLE_EMPTY)
                     continue;
 
-                RcVec3f bmin = RcVec3f.Zero;
-                RcVec3f bmax = RcVec3f.Zero;
+                Vector3 bmin = Vector3.Zero;
+                Vector3 bmax = Vector3.Zero;
                 _tc.GetObstacleBounds(ob, ref bmin, ref bmax);
 
                 if (RcIntersections.IsectSegAABB(sp, sq, bmin, bmax, out var t0, out var t1))

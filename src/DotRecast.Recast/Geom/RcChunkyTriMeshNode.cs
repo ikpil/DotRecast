@@ -1,11 +1,11 @@
-﻿using DotRecast.Core.Numerics;
+﻿using System.Numerics;
 
 namespace DotRecast.Recast.Geom
 {
     public class RcChunkyTriMeshNode
     {
-        public RcVec2f bmin;
-        public RcVec2f bmax;
+        public Vector2 bmin;
+        public Vector2 bmax;
         public int i;
         public int[] tris;
     }

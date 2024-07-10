@@ -18,7 +18,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 namespace DotRecast.Detour
 {
@@ -90,8 +90,8 @@ namespace DotRecast.Detour
         public int tileX; // < The tile's x-grid location within the multi-tile destination mesh. (Along the x-axis.)
         public int tileZ; // < The tile's y-grid location within the multi-tile destination mesh. (Along the z-axis.)
         public int tileLayer; // < The tile's layer within the layered destination mesh. [Limit: >= 0] (Along the y-axis.)
-        public RcVec3f bmin; // < The minimum bounds of the tile. [(x, y, z)] [Unit: wu]
-        public RcVec3f bmax; // < The maximum bounds of the tile. [(x, y, z)] [Unit: wu]
+        public Vector3 bmin; // < The minimum bounds of the tile. [(x, y, z)] [Unit: wu]
+        public Vector3 bmax; // < The maximum bounds of the tile. [(x, y, z)] [Unit: wu]
 
         /// @}
         /// @name General Configuration Attributes

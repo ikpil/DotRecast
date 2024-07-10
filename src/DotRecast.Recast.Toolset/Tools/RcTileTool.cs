@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using DotRecast.Core;
 using DotRecast.Core.Collections;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 using DotRecast.Detour;
 using DotRecast.Recast.Geom;
 using DotRecast.Recast.Toolset.Builder;
@@ -74,8 +74,8 @@ namespace DotRecast.Recast.Toolset.Tools
                 return false;
             }
 
-            RcVec3f bmin = geom.GetMeshBoundsMin();
-            RcVec3f bmax = geom.GetMeshBoundsMax();
+            Vector3 bmin = geom.GetMeshBoundsMin();
+            Vector3 bmax = geom.GetMeshBoundsMax();
 
             RcConfig cfg = new RcConfig(
                 true, settings.tileSize, settings.tileSize,
@@ -112,7 +112,7 @@ namespace DotRecast.Recast.Toolset.Tools
             return true;
         }
 
-        public bool BuildTile(IInputGeomProvider geom, RcNavMeshBuildSettings settings, DtNavMesh navMesh, RcVec3f pos, out long tileBuildTicks, out int tileTriCount, out int tileMemUsage)
+        public bool BuildTile(IInputGeomProvider geom, RcNavMeshBuildSettings settings, DtNavMesh navMesh, Vector3 pos, out long tileBuildTicks, out int tileTriCount, out int tileMemUsage)
         {
             tileBuildTicks = 0;
             tileTriCount = 0;
@@ -123,8 +123,8 @@ namespace DotRecast.Recast.Toolset.Tools
 
             float ts = settings.tileSize * settings.cellSize;
 
-            RcVec3f bmin = geom.GetMeshBoundsMin();
-            RcVec3f bmax = geom.GetMeshBoundsMax();
+            Vector3 bmin = geom.GetMeshBoundsMin();
+            Vector3 bmax = geom.GetMeshBoundsMax();
 
             int tx = (int)((pos.X - bmin.X) / ts);
             int ty = (int)((pos.Z - bmin.Z) / ts);
@@ -132,7 +132,7 @@ namespace DotRecast.Recast.Toolset.Tools
             return BuildTile(geom, settings, navMesh, tx, ty, out tileBuildTicks, out tileTriCount, out tileMemUsage);
         }
 
-        public bool RemoveTile(IInputGeomProvider geom, RcNavMeshBuildSettings settings, DtNavMesh navMesh, RcVec3f pos)
+        public bool RemoveTile(IInputGeomProvider geom, RcNavMeshBuildSettings settings, DtNavMesh navMesh, Vector3 pos)
         {
             if (null == settings || null == geom || navMesh == null)
                 return false;

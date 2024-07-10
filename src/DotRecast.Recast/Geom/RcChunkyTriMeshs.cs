@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright (c) 2009-2010 Mikko Mononen memon@inside.org
 recast4j copyright (c) 2015-2019 Piotr Piastucki piotr@jtilia.org
 DotRecast Copyright (c) 2023-2024 Choi Ikpil ikpil@naver.com
@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 namespace DotRecast.Recast.Geom
 {
@@ -129,7 +129,7 @@ namespace DotRecast.Recast.Geom
         }
 
         /// Returns the chunk indices which overlap the input segment.
-        public static List<RcChunkyTriMeshNode> GetChunksOverlappingSegment(RcChunkyTriMesh cm, RcVec2f p, RcVec2f q)
+        public static List<RcChunkyTriMeshNode> GetChunksOverlappingSegment(RcChunkyTriMesh cm, Vector2 p, Vector2 q)
         {
             // Traverse tree
             List<RcChunkyTriMeshNode> ids = new List<RcChunkyTriMeshNode>();
@@ -159,7 +159,7 @@ namespace DotRecast.Recast.Geom
         }
 
 
-        private static void CalcExtends(BoundsItem[] items, int imin, int imax, ref RcVec2f bmin, ref RcVec2f bmax)
+        private static void CalcExtends(BoundsItem[] items, int imin, int imax, ref Vector2 bmin, ref Vector2 bmax)
         {
             bmin.X = items[imin].bmin.X;
             bmin.Y = items[imin].bmin.Y;
@@ -252,7 +252,7 @@ namespace DotRecast.Recast.Geom
             }
         }
 
-        private static bool CheckOverlapRect(float[] amin, float[] amax, RcVec2f bmin, RcVec2f bmax)
+        private static bool CheckOverlapRect(float[] amin, float[] amax, Vector2 bmin, Vector2 bmax)
         {
             bool overlap = true;
             overlap = (amin[0] > bmax.X || amax[0] < bmin.X) ? false : overlap;
@@ -261,30 +261,30 @@ namespace DotRecast.Recast.Geom
         }
 
 
-        private static bool CheckOverlapSegment(RcVec2f p, RcVec2f q, RcVec2f bmin, RcVec2f bmax)
+        private static bool CheckOverlapSegment(Vector2 p, Vector2 q, Vector2 bmin, Vector2 bmax)
         {
             const float EPSILON = 1e-6f;
 
             float tmin = 0;
             float tmax = 1;
-            var d = new RcVec2f();
+            var d = new Vector2();
             d.X = q.X - p.X;
             d.Y = q.Y - p.Y;
 
             for (int i = 0; i < 2; i++)
             {
-                if (MathF.Abs(d.Get(i)) < EPSILON)
+                if (MathF.Abs(d[i]) < EPSILON)
                 {
                     // Ray is parallel to slab. No hit if origin not within slab
-                    if (p.Get(i) < bmin.Get(i) || p.Get(i) > bmax.Get(i))
+                    if (p[i] < bmin[i] || p[i] > bmax[i])
                         return false;
                 }
                 else
                 {
                     // Compute intersection t value of ray with near and far plane of slab
-                    float ood = 1.0f / d.Get(i);
-                    float t1 = (bmin.Get(i) - p.Get(i)) * ood;
-                    float t2 = (bmax.Get(i) - p.Get(i)) * ood;
+                    float ood = 1.0f / d[i];
+                    float t1 = (bmin[i] - p[i]) * ood;
+                    float t2 = (bmax[i] - p[i]) * ood;
                     if (t1 > t2)
                     {
                         (t1, t2) = (t2, t1);

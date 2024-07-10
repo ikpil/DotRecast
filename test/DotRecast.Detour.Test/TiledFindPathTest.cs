@@ -18,7 +18,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 using NUnit.Framework;
 
@@ -44,8 +44,8 @@ public class TiledFindPathTest
 
     protected static readonly long[] START_REFS = { 281475015507969L };
     protected static readonly long[] END_REFS = { 281474985099266L };
-    protected static readonly RcVec3f[] START_POS = { new RcVec3f(39.447338f, 9.998177f, -0.784811f) };
-    protected static readonly RcVec3f[] END_POS = { new RcVec3f(19.292645f, 11.611748f, -57.750366f) };
+    protected static readonly Vector3[] START_POS = { new Vector3(39.447338f, 9.998177f, -0.784811f) };
+    protected static readonly Vector3[] END_POS = { new Vector3(19.292645f, 11.611748f, -57.750366f) };
 
     protected DtNavMeshQuery query;
     protected DtNavMesh navmesh;
@@ -71,8 +71,8 @@ public class TiledFindPathTest
         {
             long startRef = START_REFS[i];
             long endRef = END_REFS[i];
-            RcVec3f startPos = START_POS[i];
-            RcVec3f endPos = END_POS[i];
+            Vector3 startPos = START_POS[i];
+            Vector3 endPos = END_POS[i];
             var status = query.FindPath(startRef, endRef, startPos, endPos, filter, path, out var pathCount, DtFindPathOption.NoOption);
             Assert.That(status, Is.EqualTo(STATUSES[i]));
             Assert.That(pathCount, Is.EqualTo(RESULTS[i].Length));
