@@ -20,76 +20,107 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using DotRecast.Core;
 
 namespace DotRecast.Detour.Crowd
 {
-    // TODO pooling
     public class DtProximityGrid
     {
-        private readonly float _cellSize;
-        private readonly float _invCellSize;
-        private readonly Dictionary<long, List<DtCrowdAgent>> _items;
-
-        public DtProximityGrid(float cellSize)
+        struct Item
         {
-            _cellSize = cellSize;
-            _invCellSize = 1.0f / cellSize;
-            _items = new Dictionary<long, List<DtCrowdAgent>>(512);
+            public ushort id;
+            public short x, y;
+            public ushort next;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static long CombineKey(int x, int y)
-        {
-            uint ux = (uint)x;
-            uint uy = (uint)y;
-            return ((long)ux << 32) | uy;
-        }
+        private readonly float m_cellSize;
+        private readonly float m_invCellSize;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DecomposeKey(long key, out int x, out int y)
+        Item[] m_pool;
+        int m_poolHead;
+        int m_poolSize;
+
+        ushort[] m_buckets;
+        int m_bucketsSize;
+
+        int[] m_bounds = new int[4];
+
+        public DtProximityGrid(int poolSize, float cellSize)
         {
-            uint ux = (uint)(key >> 32);
-            uint uy = (uint)key;
-            x = (int)ux;
-            y = (int)uy;
+            Debug.Assert(poolSize > 0);
+            Debug.Assert(cellSize > 0.0f);
+
+            m_cellSize = cellSize;
+            m_invCellSize = 1.0f / cellSize;
+
+            m_bucketsSize = (int)RcMath.dtNextPow2((uint)poolSize);
+            m_buckets = new ushort[m_bucketsSize];
+
+            m_poolSize = poolSize;
+            m_poolHead = 0;
+            m_pool = new Item[m_poolSize];
+
+            Clear();
         }
 
         public void Clear()
         {
-            _items.Clear();
+            m_buckets.AsSpan().Fill(0xffff);
+            m_poolHead = 0;
+            m_bounds[0] = 0xffff;
+            m_bounds[1] = 0xffff;
+            m_bounds[2] = -0xffff;
+            m_bounds[3] = -0xffff;
         }
 
-        public void AddItem(DtCrowdAgent agent, float minx, float miny, float maxx, float maxy)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static int hashPos2(int x, int y, int n)
         {
-            int iminx = (int)MathF.Floor(minx * _invCellSize);
-            int iminy = (int)MathF.Floor(miny * _invCellSize);
-            int imaxx = (int)MathF.Floor(maxx * _invCellSize);
-            int imaxy = (int)MathF.Floor(maxy * _invCellSize);
+            return ((x * 73856093) ^ (y * 19349663)) & (n - 1);
+        }
+
+        public void AddItem(ushort id, float minx, float miny, float maxx, float maxy)
+        {
+            int iminx = (int)MathF.Floor(minx * m_invCellSize);
+            int iminy = (int)MathF.Floor(miny * m_invCellSize);
+            int imaxx = (int)MathF.Floor(maxx * m_invCellSize);
+            int imaxy = (int)MathF.Floor(maxy * m_invCellSize);
+
+            m_bounds[0] = Math.Min(m_bounds[0], iminx);
+            m_bounds[1] = Math.Min(m_bounds[1], iminy);
+            m_bounds[2] = Math.Min(m_bounds[2], imaxx);
+            m_bounds[3] = Math.Min(m_bounds[3], imaxy);
 
             for (int y = iminy; y <= imaxy; ++y)
             {
                 for (int x = iminx; x <= imaxx; ++x)
                 {
-                    long key = CombineKey(x, y);
-                    if (!_items.TryGetValue(key, out var ids))
+                    if (m_poolHead < m_poolSize)
                     {
-                        ids = new List<DtCrowdAgent>(/*64*/);
-                        _items.Add(key, ids);
+                        int h = hashPos2(x, y, m_bucketsSize);
+                        ushort idx = (ushort)m_poolHead;
+                        m_poolHead++;
+                        ref var item = ref m_pool[idx];
+                        item.x = (short)x;
+                        item.y = (short)y;
+                        item.id = id;
+                        item.next = m_buckets[h];
+                        m_buckets[h] = idx;
                     }
-
-                    ids.Add(agent);
                 }
             }
         }
 
-        public int QueryItems(float minx, float miny, float maxx, float maxy, DtCrowdAgent[] ids, int maxIds)
+        public int QueryItems(float minx, float miny, float maxx, float maxy, Span<ushort> ids, int maxIds)
         {
-            int iminx = (int)MathF.Floor(minx * _invCellSize);
-            int iminy = (int)MathF.Floor(miny * _invCellSize);
-            int imaxx = (int)MathF.Floor(maxx * _invCellSize);
-            int imaxy = (int)MathF.Floor(maxy * _invCellSize);
+            int iminx = (int)MathF.Floor(minx * m_invCellSize);
+            int iminy = (int)MathF.Floor(miny * m_invCellSize);
+            int imaxx = (int)MathF.Floor(maxx * m_invCellSize);
+            int imaxy = (int)MathF.Floor(maxy * m_invCellSize);
 
             int n = 0;
 
@@ -97,33 +128,27 @@ namespace DotRecast.Detour.Crowd
             {
                 for (int x = iminx; x <= imaxx; ++x)
                 {
-                    long key = CombineKey(x, y);
-                    bool hasPool = _items.TryGetValue(key, out var pool);
-                    if (!hasPool)
+                    var h = hashPos2(x, y, m_bucketsSize);
+                    ushort idx = m_buckets[h];
+                    while (idx != 0xffff)
                     {
-                        continue;
-                    }
-
-                    for (int idx = 0; idx < pool.Count; ++idx)
-                    {
-                        var item = pool[idx];
-
-                        // Check if the id exists already.
-                        int end = n;
-                        int i = 0;
-                        while (i != end && ids[i] != item)
+                        ref Item item = ref m_pool[idx];
+                        if (item.x == x && item.y == y)
                         {
-                            ++i;
+                            // Check if the id exists already.
+                            ref var end = ref Unsafe.Add(ref MemoryMarshal.GetReference(ids), n);
+                            ref var i = ref MemoryMarshal.GetReference(ids);
+                            while (i != end && i != item.id)
+                                i = ref Unsafe.Add(ref i, 1);
+                            // Item not found, add it.
+                            if (i == end)
+                            {
+                                if (n >= maxIds)
+                                    return n;
+                                ids[n++] = item.id;
+                            }
                         }
-
-                        // Item not found, add it.
-                        if (i == n)
-                        {
-                            ids[n++] = item;
-
-                            if (n >= maxIds)
-                                return n;
-                        }
+                        idx = item.next;
                     }
                 }
             }
@@ -131,16 +156,31 @@ namespace DotRecast.Detour.Crowd
             return n;
         }
 
-        public IEnumerable<(long, int)> GetItemCounts()
+        public int GetItemCountAt(int x, int y)
         {
-            return _items
-                .Where(e => e.Value.Count > 0)
-                .Select(e => (e.Key, e.Value.Count));
+            int n = 0;
+
+            int h = hashPos2(x, y, m_bucketsSize);
+            ushort idx = m_buckets[h];
+            while (idx != 0xffff)
+            {
+                Item item = m_pool[idx];
+                if (item.x == x && item.y == y)
+                    n++;
+                idx = item.next;
+            }
+
+            return n;
+        }
+
+        public ReadOnlySpan<int> GetBounds()
+        {
+            return m_bounds;
         }
 
         public float GetCellSize()
         {
-            return _cellSize;
+            return m_cellSize;
         }
     }
 }
