@@ -111,5 +111,15 @@ namespace DotRecast.Detour
         {
             m_excludeFlags = flags;
         }
+
+        public float GetAreaCost(int i)
+        {
+            return m_areaCost[i];
+        }
+
+        public void SetAreaCost(int i, float cost)
+        {
+            m_areaCost[i] = cost;
+        }
     }
 }

@@ -22,7 +22,7 @@ using System.Numerics;
 
 namespace DotRecast.Detour
 {
-    public class DtDefaultQueryHeuristic : IDtQueryHeuristic
+    public class DtDefaultQueryHeuristic : IDtQueryHeuristic // TODO remove
     {
         public const float H_SCALE = 0.999f; // Search heuristic scale.
         public static readonly DtDefaultQueryHeuristic Default = new DtDefaultQueryHeuristic(H_SCALE);

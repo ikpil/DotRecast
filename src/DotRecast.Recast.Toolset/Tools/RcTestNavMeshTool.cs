@@ -410,7 +410,7 @@ namespace DotRecast.Recast.Toolset.Tools
             return status;
         }
 
-        public DtStatus FindRandomPointAroundCircle(DtNavMeshQuery navQuery, long startRef, long endRef, Vector3 spos, Vector3 epos, IDtQueryFilter filter, bool constrainByCircle, int count,
+        public DtStatus FindRandomPointAroundCircle(DtNavMeshQuery navQuery, long startRef, long endRef, Vector3 spos, Vector3 epos, IDtQueryFilter filter, /*bool constrainByCircle, */int count,
             ref List<Vector3> points)
         {
             if (startRef == 0 || endRef == 0)
