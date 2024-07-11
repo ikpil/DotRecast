@@ -20,25 +20,14 @@ freely, subject to the following restrictions:
 
 namespace DotRecast.Recast
 {
-    /** Represents a simple, non-overlapping contour in field space. */
+    /// Represents a simple, non-overlapping contour in field space.
     public class RcContour
     {
-        /** Simplified contour vertex and connection data. [Size: 4 * #nverts] */
-        public int[] verts;
-
-        /** The number of vertices in the simplified contour. */
-        public int nverts;
-
-        /** Raw contour vertex and connection data. [Size: 4 * #nrverts] */
-        public int[] rverts;
-
-        /** The number of vertices in the raw contour. */
-        public int nrverts;
-
-        /** The region id of the contour. */
-        public int area;
-
-        /** The area id of the contour. */
-        public int reg;
+        public int[] verts; //< Simplified contour vertex and connection data. [Size: 4 * #nverts]
+        public int nverts; //< The number of vertices in the simplified contour.
+        public int[] rverts; //< Raw contour vertex and connection data. [Size: 4 * #nrverts]
+        public int nrverts; //< The number of vertices in the raw contour.
+        public int reg; //< The region id of the contour.
+        public int area; //< The area id of the contour.
     }
 }
