@@ -62,11 +62,20 @@ namespace DotRecast.Recast.Toolset.Tools
         public void Setup(float agentRadius, DtNavMesh navMesh)
         {
             DtCrowdConfig config = new DtCrowdConfig(agentRadius);
-            crowd = new DtCrowd(config, navMesh, __ => new DtQueryDefaultFilter(
-                SampleAreaModifications.SAMPLE_POLYFLAGS_ALL,
-                SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED,
-                new float[] { 1f, 10f, 1f, 1f, 2f, 1.5f })
-            );
+            crowd = new DtCrowd(config, navMesh, __ =>
+            {
+                var filter = new DtQueryDefaultFilter();
+                filter.SetIncludeFlags(SampleAreaModifications.SAMPLE_POLYFLAGS_ALL);
+                filter.SetExcludeFlags(SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED);
+                filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GROUND, 1f);
+                filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, 10f);
+                filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, 1f);
+                filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_DOOR, 1f);
+                filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GRASS, 2f);
+                filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP, 1.5f);
+
+                return filter;
+            });
 
             // Setup local avoidance option to different qualities.
             // Use mostly default settings, copy from dtCrowd.

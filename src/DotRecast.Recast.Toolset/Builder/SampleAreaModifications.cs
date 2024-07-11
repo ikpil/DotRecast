@@ -31,7 +31,7 @@ namespace DotRecast.Recast.Toolset.Builder
         public const int SAMPLE_POLYAREA_TYPE_DOOR = 0x3;
         public const int SAMPLE_POLYAREA_TYPE_GRASS = 0x4;
         public const int SAMPLE_POLYAREA_TYPE_JUMP = 0x5;
-        public const int SAMPLE_POLYAREA_TYPE_JUMP_AUTO = 0x6;
+        //public const int SAMPLE_POLYAREA_TYPE_JUMP_AUTO = 0x6;
         public const int SAMPLE_POLYAREA_TYPE_WALKABLE = 0x3f;
 
         public const int SAMPLE_POLYFLAGS_WALK = 0x01; // Ability to walk (ground, grass, road)
@@ -50,7 +50,7 @@ namespace DotRecast.Recast.Toolset.Builder
         public static readonly RcAreaModification SAMPLE_AREAMOD_JUMP = new RcAreaModification(SAMPLE_POLYAREA_TYPE_JUMP);
 
         public static readonly RcImmutableArray<RcAreaModification> Values = RcImmutableArray.Create(
-            SAMPLE_AREAMOD_WALKABLE,
+            //SAMPLE_AREAMOD_WALKABLE,
             SAMPLE_AREAMOD_GROUND,
             SAMPLE_AREAMOD_WATER,
             SAMPLE_AREAMOD_ROAD,

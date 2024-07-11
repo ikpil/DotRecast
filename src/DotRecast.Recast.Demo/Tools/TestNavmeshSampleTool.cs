@@ -37,7 +37,7 @@ public class TestNavmeshSampleTool : ISampleTool
 
     // for random point in circle mode
     private int _randomPointCount = 300;
-    private bool _constrainByCircle;
+    //private bool _constrainByCircle;
 
     // 
     private bool m_sposSet;
@@ -75,11 +75,21 @@ public class TestNavmeshSampleTool : ISampleTool
     {
         _tool = new();
 
-        m_filter = new DtQueryDefaultFilter(
-            SampleAreaModifications.SAMPLE_POLYFLAGS_ALL,
-            SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED,
-            new float[] { 1f, 1f, 1f, 1f, 2f, 1.5f }
-        );
+        //m_filter = new DtQueryDefaultFilter(
+        //    SampleAreaModifications.SAMPLE_POLYFLAGS_ALL,
+        //    SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED,
+        //    new float[] { 1f, 1f, 1f, 1f, 2f, 1.5f }
+        //);
+        m_filter = new DtQueryDefaultFilter();
+        m_filter.SetIncludeFlags(SampleAreaModifications.SAMPLE_POLYFLAGS_ALL ^ SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED);
+        //m_filter.SetIncludeFlags(SampleAreaModifications.SAMPLE_POLYFLAGS_ALL);
+        m_filter.SetExcludeFlags(0);
+        m_filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GROUND, 1f);
+        m_filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, 10f);
+        m_filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, 1f);
+        m_filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_DOOR, 1f);
+        m_filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GRASS, 2f);
+        m_filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP, 1.5f);
     }
 
     public void Layout()
@@ -93,7 +103,7 @@ public class TestNavmeshSampleTool : ISampleTool
         bool prevEnableRaycast = _enableRaycast;
 
         int prevStraightPathOption = _straightPathOption;
-        bool prevConstrainByCircle = _constrainByCircle;
+        //bool prevConstrainByCircle = _constrainByCircle;
 
         ImGui.Text("Mode");
         ImGui.Separator();
@@ -134,7 +144,7 @@ public class TestNavmeshSampleTool : ISampleTool
         if (_mode == RcTestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE)
         {
             ImGui.SliderInt("Random point count", ref _randomPointCount, 0, 10000);
-            ImGui.Checkbox("Constrained", ref _constrainByCircle);
+            //ImGui.Checkbox("Constrained", ref _constrainByCircle);
         }
 
         ImGui.Text("Common");
@@ -166,7 +176,7 @@ public class TestNavmeshSampleTool : ISampleTool
                               || prevExcludeFlags != _excludeFlags
                               || prevEnableRaycast != _enableRaycast
                               || prevStraightPathOption != _straightPathOption
-                              || prevConstrainByCircle != _constrainByCircle)
+                              /*|| prevConstrainByCircle != _constrainByCircle*/)
         {
             Recalc();
         }
@@ -702,7 +712,7 @@ public class TestNavmeshSampleTool : ISampleTool
         else if (_mode == RcTestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE)
         {
             _randomPoints.Clear();
-            _tool.FindRandomPointAroundCircle(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, _constrainByCircle, _randomPointCount, ref _randomPoints);
+            _tool.FindRandomPointAroundCircle(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, /*_constrainByCircle, */_randomPointCount, ref _randomPoints);
         }
     }
 

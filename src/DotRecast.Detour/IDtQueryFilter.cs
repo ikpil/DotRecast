@@ -28,5 +28,8 @@ namespace DotRecast.Detour
 
         float GetCost(Vector3 pa, Vector3 pb, long prevRef, DtMeshTile prevTile, DtPoly prevPoly, long curRef, DtMeshTile curTile,
             DtPoly curPoly, long nextRef, DtMeshTile nextTile, DtPoly nextPoly);
+
+        float GetAreaCost(int i);
+        void SetAreaCost(int i, float cost);
     }
 }

@@ -7,6 +7,7 @@ using DotRecast.Recast.Toolset.Builder;
 
 namespace DotRecast.Recast.Toolset.Tools
 {
+    // TODO usage?
     public class RcJumpLinkBuilderTool : IRcToolable
     {
         private readonly List<JumpLink> _links;
@@ -99,30 +100,30 @@ namespace DotRecast.Recast.Toolset.Tools
                     _links.AddRange(_annotationBuilder.Build(config, JumpLinkType.EDGE_JUMP));
                 }
 
-                if (cfg.buildOffMeshConnections)
-                {
-                    int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP_AUTO;
-                    geom.RemoveOffMeshConnections(c => c.area == area);
-                    _links.ForEach(l => AddOffMeshLink(l, geom, agentRadius));
-                }
+                //if (cfg.buildOffMeshConnections)
+                //{
+                //    int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP_AUTO;
+                //    geom.RemoveOffMeshConnections(c => c.area == area);
+                //    _links.ForEach(l => AddOffMeshLink(l, geom, agentRadius));
+                //}
             }
         }
 
-        private void AddOffMeshLink(JumpLink link, IInputGeomProvider geom, float agentRadius)
-        {
-            int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP_AUTO;
-            int flags = SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP;
-            Vector3 prev = new Vector3();
-            for (int i = 0; i < link.startSamples.Length; i++)
-            {
-                Vector3 p = link.startSamples[i].p;
-                Vector3 q = link.endSamples[i].p;
-                if (i == 0 || RcVec.Dist2D(prev, p) > agentRadius)
-                {
-                    geom.AddOffMeshConnection(p, q, agentRadius, false, area, flags);
-                    prev = p;
-                }
-            }
-        }
+        //private void AddOffMeshLink(JumpLink link, IInputGeomProvider geom, float agentRadius)
+        //{
+        //    int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP_AUTO;
+        //    int flags = SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP;
+        //    Vector3 prev = new Vector3();
+        //    for (int i = 0; i < link.startSamples.Length; i++)
+        //    {
+        //        Vector3 p = link.startSamples[i].p;
+        //        Vector3 q = link.endSamples[i].p;
+        //        if (i == 0 || RcVec.Dist2D(prev, p) > agentRadius)
+        //        {
+        //            geom.AddOffMeshConnection(p, q, agentRadius, false, area, flags);
+        //            prev = p;
+        //        }
+        //    }
+        //}
     }
 }
