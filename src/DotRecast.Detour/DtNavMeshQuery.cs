@@ -527,7 +527,7 @@ namespace DotRecast.Detour
             isOverPoly = false;
 
             // Get nearby polygons from proximity grid.
-            DtFindNearestPolyQuery query = new DtFindNearestPolyQuery(this, center);
+            DtFindNearestPolyQuery query = new DtFindNearestPolyQuery(this, center); // TODO cache ?
             DtStatus status = QueryPolygons(center, halfExtents, filter, query);
             if (status.Failed())
             {

@@ -74,7 +74,7 @@ namespace DotRecast.Detour.Crowd
         public DtMoveRequestState targetState; // < State of the movement request.
         public long targetRef; // < Target polyref of the movement request.
         public Vector3 targetPos = new Vector3(); // < Target position of the movement request (or velocity in case of DT_CROWDAGENT_TARGET_VELOCITY).
-        public DtPathQueryResult targetPathQueryResult; // < Path finder query
+        public uint targetPathqRef; // < Path finder refs
         public bool targetReplan; // < Flag indicating that the current path is being replanned.
         public float targetReplanTime; // <Time since the agent's target was replanned.
         public float targetReplanWaitTime;
@@ -183,7 +183,7 @@ namespace DotRecast.Detour.Crowd
         {
             targetRef = refs;
             targetPos = pos;
-            targetPathQueryResult = null;
+            targetPathqRef = DtPathQueue.DT_PATHQ_INVALID;
             if (targetRef != 0)
             {
                 targetState = DtMoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING;

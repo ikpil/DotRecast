@@ -21,79 +21,245 @@ freely, subject to the following restrictions:
 using System.Collections.Generic;
 using DotRecast.Core;
 using System.Numerics;
+using DotRecast.Detour;
+using System.IO;
+using System.Net.NetworkInformation;
+using System;
 
 
 namespace DotRecast.Detour.Crowd
 {
     public class DtPathQueue
     {
-        private readonly DtCrowdConfig m_config;
-        private readonly LinkedList<DtPathQuery> m_queue;
-        private readonly DtNavMeshQuery m_navQuery;
+        class PathQuery
+        {
+            public uint refs;
+            /// Path find start and end location.
+            public Vector3 startPos;
+            public Vector3 endPos;
+            public long startRef;
+            public long endRef;
 
-        public DtPathQueue(DtNavMesh navMesh, DtCrowdConfig config)
+            public DtStatus status;
+            //public List<long> path = new List<long>();
+            public long[] path;
+            public int npath;
+            public int keepAlive;
+            public IDtQueryFilter filter; // < TODO: This is potentially dangerous!
+
+            //public DtNavMeshQuery navQuery;
+        }
+
+        private readonly DtCrowdConfig m_config;
+        //private readonly LinkedList<DtPathQuery> m_queue;
+        private readonly DtNavMeshQuery m_navquery;
+
+        const int MAX_QUEUE = 8;
+        readonly PathQuery[] m_queue;
+        uint m_nextHandle;
+        int m_maxPathSize;
+        uint m_queueHead;
+
+        public const uint DT_PATHQ_INVALID = 0;
+
+        public DtPathQueue(int maxPathSize, DtNavMesh navMesh, DtCrowdConfig config)
         {
             m_config = config;
-            m_queue = new LinkedList<DtPathQuery>(); // TODO use array, cache DtPathQuery
-            m_navQuery = new DtNavMeshQuery(navMesh);
+            //m_queue = new LinkedList<PathQuery>(); // TODO use array, cache DtPathQuery
+            m_navquery = new DtNavMeshQuery(navMesh);
+
+            m_maxPathSize = maxPathSize;
+            m_queue = new PathQuery[MAX_QUEUE];
+
+            for (int i = 0; i < MAX_QUEUE; i++)
+            {
+                m_queue[i] = new PathQuery
+                {
+                    refs = DT_PATHQ_INVALID,
+                    //m_queue[i].result.pathCount = 0;
+                    path = new long[maxPathSize]
+                };
+            }
+
+            m_queueHead = 0;
         }
 
         public void Update()
         {
+            const int MAX_KEEP_ALIVE = 2; // in update ticks.
+
             // Update path request until there is nothing to update
             // or upto maxIters pathfinder iterations has been consumed.
             int iterCount = m_config.maxFindPathIterations;
-            while (iterCount > 0)
+
+            for (int i = 0; i < MAX_QUEUE; i++)
             {
-                DtPathQuery q = m_queue.First?.Value;
-                if (q == null)
+                PathQuery q = m_queue[m_queueHead % MAX_QUEUE];
+
+                // Skip inactive requests.
+                if (q.refs == DT_PATHQ_INVALID)
                 {
-                    break;
+                    m_queueHead++;
+                    continue;
                 }
 
-                m_queue.RemoveFirst();
+                // Handle completed request.
+                if (q.status.Succeeded() || q.status.Failed())
+                {
+                    // If the path result has not been read in few frames, free the slot.
+                    q.keepAlive++;
+                    if (q.keepAlive > MAX_KEEP_ALIVE)
+                    {
+                        q.refs = DT_PATHQ_INVALID;
+                        q.status = 0;
+                    }
+
+                    m_queueHead++;
+                    continue;
+                }
 
                 // Handle query start.
-                if (q.result.status.IsEmpty())
+                if (q.status.IsEmpty())
                 {
-                    //q.navQuery = new DtNavMeshQuery(navMesh); // TODO cache navquery is ok?
-                    q.result.status = m_navQuery.InitSlicedFindPath(q.startRef, q.endRef, q.startPos, q.endPos, q.filter, 0);
+                    q.status = m_navquery.InitSlicedFindPath(q.startRef, q.endRef, q.startPos, q.endPos, q.filter, 0);
                 }
-
                 // Handle query in progress.
-                if (q.result.status.InProgress())
+                if (q.status.InProgress())
                 {
-                    q.result.status = m_navQuery.UpdateSlicedFindPath(iterCount, out var iters);
+                    q.status = m_navquery.UpdateSlicedFindPath(iterCount, out var iters);
                     iterCount -= iters;
                 }
-
-                if (q.result.status.Succeeded())
+                if (q.status.Succeeded())
                 {
-                    q.result.status = m_navQuery.FinalizeSlicedFindPath(q.result.path, out q.result.pathCount);
+                    q.status = m_navquery.FinalizeSlicedFindPath(q.path, out q.npath);
                 }
 
-                if (!(q.result.status.Failed() || q.result.status.Succeeded()))
-                {
-                    m_queue.AddFirst(q);
-                }
+                if (iterCount <= 0)
+                    break;
             }
+
+            m_queueHead++;
+
+            //// Update path request until there is nothing to update
+            //// or upto maxIters pathfinder iterations has been consumed.
+            //int iterCount = m_config.maxFindPathIterations;
+            //while (iterCount > 0)
+            //{
+            //    PathQuery q = m_queue.First?.Value;
+            //    if (q == null)
+            //    {
+            //        break;
+            //    }
+
+            //    m_queue.RemoveFirst();
+
+            //    // Handle query start.
+            //    if (q.result.status.IsEmpty())
+            //    {
+            //        //q.navQuery = new DtNavMeshQuery(navMesh); // TODO cache navquery is ok?
+            //        q.result.status = m_navquery.InitSlicedFindPath(q.startRef, q.endRef, q.startPos, q.endPos, q.filter, 0);
+            //    }
+
+            //    // Handle query in progress.
+            //    if (q.result.status.InProgress())
+            //    {
+            //        q.result.status = m_navquery.UpdateSlicedFindPath(iterCount, out var iters);
+            //        iterCount -= iters;
+            //    }
+
+            //    if (q.result.status.Succeeded())
+            //    {
+            //        q.result.status = m_navquery.FinalizeSlicedFindPath(q.result.path, out q.result.pathCount);
+            //    }
+
+            //    if (!(q.result.status.Failed() || q.result.status.Succeeded()))
+            //    {
+            //        m_queue.AddFirst(q);
+            //    }
+            //}
         }
 
-        public DtPathQueryResult Request(long startRef, long endRef, Vector3 startPos, Vector3 endPos, IDtQueryFilter filter)
+        public uint Request(long startRef, long endRef, Vector3 startPos, Vector3 endPos, IDtQueryFilter filter)
         {
-            if (m_queue.Count >= m_config.pathQueueSize)
+            // Find empty slot
+            int slot = -1;
+            for (int i = 0; i < MAX_QUEUE; i++)
             {
-                return null;
+                if (m_queue[i].refs == DT_PATHQ_INVALID)
+                {
+                    slot = i;
+                    break;
+                }
             }
+            // Could not find slot.
+            if (slot == -1)
+                return DT_PATHQ_INVALID;
 
-            DtPathQuery q = new DtPathQuery();
+            uint refs = m_nextHandle++;
+            if (m_nextHandle == DT_PATHQ_INVALID)
+                m_nextHandle++;
+
+            PathQuery q = m_queue[slot];
+            q.refs = refs;
             q.startPos = startPos;
             q.startRef = startRef;
             q.endPos = endPos;
             q.endRef = endRef;
+
+            q.status = 0;
+            q.npath = 0;
             q.filter = filter;
-            m_queue.AddLast(q);
-            return q.result;
+            q.keepAlive = 0;
+
+            return refs;
+
+            //if (m_queue.Count >= m_config.pathQueueSize)
+            //{
+            //    return null;
+            //}
+
+            //PathQuery q = new PathQuery();
+            //q.startPos = startPos;
+            //q.startRef = startRef;
+            //q.endPos = endPos;
+            //q.endRef = endRef;
+            //q.filter = filter;
+            //m_queue.AddLast(q);
+            //return q.result;
+        }
+
+
+        public DtStatus GetRequestStatus(uint refs)
+        {
+            for (int i = 0; i < MAX_QUEUE; ++i)
+            {
+                if (m_queue[i].refs == refs)
+                    return m_queue[i].status;
+            }
+            return DtStatus.DT_FAILURE;
+        }
+
+        public DtStatus GetPathResult(uint refs, Span<long> path, out int pathSize, int maxPath)
+        {
+            for (int i = 0; i < MAX_QUEUE; ++i)
+            {
+                if (m_queue[i].refs == refs)
+                {
+                    PathQuery q = m_queue[i];
+                    DtStatus details = q.status & DtStatus.DT_STATUS_DETAIL_MASK;
+                    // Free request for reuse.
+                    q.refs = DT_PATHQ_INVALID;
+                    q.status = 0;
+                    // Copy path
+                    int n = Math.Min(q.npath, maxPath);
+                    //memcpy(path, q.path, sizeof(dtPolyRef) * n);
+                    q.path.AsSpan(0, n).CopyTo(path);
+                    pathSize = n;
+                    return details | DtStatus.DT_SUCCESS;
+                }
+            }
+            pathSize = 0;
+            return DtStatus.DT_FAILURE;
         }
     }
 }
