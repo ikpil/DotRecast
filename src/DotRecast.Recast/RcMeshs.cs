@@ -715,8 +715,13 @@ namespace DotRecast.Recast
                 int nv = CountPolyVerts(mesh.polys, p, nvp);
                 bool hasRem = false;
                 for (int j = 0; j < nv; ++j)
+                {
                     if (mesh.polys[p + j] == rem)
+                    {
                         hasRem = true;
+                    }
+                }
+
                 if (hasRem)
                 {
                     // Collect edges which does not touch the removed vertex.
@@ -956,7 +961,7 @@ namespace DotRecast.Recast
                 mesh.npolys++;
                 if (mesh.npolys > maxTris)
                 {
-                    throw new Exception("removeVertex: Too many polygons " + mesh.npolys + " (max:" + maxTris + ".");
+                    throw new Exception($"removeVertex: Too many polygons {mesh.npolys} max:({maxTris}).");
                 }
             }
         }
@@ -1033,11 +1038,23 @@ namespace DotRecast.Recast
                 // Triangulate contour
                 for (int j = 0; j < cont.nverts; ++j)
                     indices[j] = j;
+
                 int ntris = Triangulate(cont.nverts, cont.verts, indices, tris);
                 if (ntris <= 0)
                 {
                     // Bad triangulation, should not happen.
-                    ctx.Warn("buildPolyMesh: Bad triangulation Contour " + i + ".");
+                    /*
+                    printf("\tconst float bmin[3] = {%ff,%ff,%ff};\n", cset.bmin[0], cset.bmin[1], cset.bmin[2]);
+                    printf("\tconst float cs = %ff;\n", cset.cs);
+                    printf("\tconst float ch = %ff;\n", cset.ch);
+                    printf("\tconst int verts[] = {\n");
+                    for (int k = 0; k < cont.nverts; ++k)
+                    {
+                       const int* v = &cont.verts[k*4];
+                       printf("\t\t%d,%d,%d,%d,\n", v[0], v[1], v[2], v[3]);
+                    }
+                    printf("\t};\n\tconst int nverts = sizeof(verts)/(sizeof(int)*4);\n");*/
+                    ctx.Warn($"BuildPolyMesh: Bad triangulation Contour {i}.");
                     ntris = -ntris;
                 }
 
@@ -1198,14 +1215,12 @@ namespace DotRecast.Recast
 
             if (mesh.nverts > MAX_MESH_VERTS_POLY)
             {
-                throw new Exception("rcBuildPolyMesh: The resulting mesh has too many vertices " + mesh.nverts
-                                                                                                 + " (max " + MAX_MESH_VERTS_POLY + "). Data can be corrupted.");
+                throw new Exception($"BuildPolyMesh: The resulting mesh has too many vertices {mesh.nverts} (max {MAX_MESH_VERTS_POLY}). Data can be corrupted.");
             }
 
             if (mesh.npolys > MAX_MESH_VERTS_POLY)
             {
-                throw new Exception("rcBuildPolyMesh: The resulting mesh has too many polygons " + mesh.npolys
-                                                                                                 + " (max " + MAX_MESH_VERTS_POLY + "). Data can be corrupted.");
+                throw new Exception($"BuildPolyMesh: The resulting mesh has too many polygons {mesh.npolys} (max {MAX_MESH_VERTS_POLY}). Data can be corrupted.");
             }
 
             return mesh;
