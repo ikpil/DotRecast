@@ -54,7 +54,7 @@ public class TiledFindPathTest
     public void SetUp()
     {
         navmesh = CreateNavMesh();
-        query = new DtNavMeshQuery(navmesh);
+        query = new DtNavMeshQuery(navmesh, 512);
     }
 
     protected DtNavMesh CreateNavMesh()

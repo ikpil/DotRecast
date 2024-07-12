@@ -65,7 +65,7 @@ public class AbstractCrowdTest
         nmd = TestMeshDataFactory.Create();
         navmesh = new DtNavMesh();
         navmesh.Init(nmd, 6, 0);
-        query = new DtNavMeshQuery(navmesh);
+        query = new DtNavMeshQuery(navmesh, DtCrowdConst.MAX_COMMON_NODES);
         DtCrowdConfig config = new DtCrowdConfig(0.6f);
         crowd = new DtCrowd(config, navmesh);
         DtObstacleAvoidanceParams option = new DtObstacleAvoidanceParams();

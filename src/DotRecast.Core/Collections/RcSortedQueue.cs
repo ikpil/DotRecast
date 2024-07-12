@@ -60,7 +60,6 @@ namespace DotRecast.Core.Collections
         {
             if (_dirty)
             {
-                // TODO alloc temp
                 _items.Sort(_comparison); // reverse
                 _dirty = false;
             }

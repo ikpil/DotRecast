@@ -76,7 +76,7 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
         }
 
         navmesh = tc.GetNavMesh();
-        query = new DtNavMeshQuery(navmesh);
+        query = new DtNavMeshQuery(navmesh, 512);
     }
 
     [Test]

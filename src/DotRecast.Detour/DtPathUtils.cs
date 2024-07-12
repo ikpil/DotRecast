@@ -194,7 +194,6 @@ namespace DotRecast.Detour
                 return npath;
             }
 
-#if true
             // Concatenate paths.	
 
             // Adjust beginning of the buffer to include the visited.
@@ -212,23 +211,6 @@ namespace DotRecast.Detour
                 path[i] = visited[(nvisited - 1) - i];
 
             return req + size;
-#else
-
-            // Concatenate paths.
-
-            // Adjust beginning of the buffer to include the visited.
-            List<long> result = new List<long>(); // TODO reuse
-            // Store visited
-            for (int i = nvisited - 1; i > furthestVisited; --i)
-            {
-                result.Add(visited[i]);
-            }
-
-            result.AddRange(path.Slice(furthestPath, npath - furthestPath));
-
-            result.CopyTo(path);
-            return result.Count;
-#endif
         }
 
         public static int MergeCorridorEndMoved(Span<long> path, int npath, int maxPath, Span<long> visited, int nvisited)
@@ -317,7 +299,6 @@ namespace DotRecast.Detour
                 return npath;
             }
 
-#if true
             // Concatenate paths.	
 
             // Adjust beginning of the buffer to include the visited.
@@ -338,24 +319,6 @@ namespace DotRecast.Detour
                 path[i] = visited[i];
 
             return req + size;
-#else
-            // Concatenate paths.
-
-            // Adjust beginning of the buffer to include the visited.
-            //List<long> result = visited.GetRange(0, furthestVisited);
-            //result.AddRange(path.GetRange(furthestPath, npath - furthestPath));
-
-            //TODO reuse tests
-           var visitedSlice = visited.Slice(0, furthestVisited);
-            var pathSlice = path.Slice(furthestPath, npath - furthestPath);
-            var count = visitedSlice.Length + pathSlice.Length;
-            var result = new List<long>();
-            var span = FCollectionsMarshal.CreateSpan(result, count);
-            visitedSlice.CopyTo(span);
-            pathSlice.CopyTo(span.Slice(visitedSlice.Length));
-            result.CopyTo(path);
-            return result.Count;
-#endif
         }
     }
 }

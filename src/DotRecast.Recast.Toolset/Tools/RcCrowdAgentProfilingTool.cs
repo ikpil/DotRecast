@@ -69,7 +69,7 @@ namespace DotRecast.Recast.Toolset.Tools
             {
                 _crowdCfg = new DtCrowdConfig(maxAgentRadius);
             }
-            m_navquery = new DtNavMeshQuery(_navMesh);
+            m_navquery = new DtNavMeshQuery(_navMesh, 512);
         }
 
         private DtCrowdAgentParams GetAgentParams(float agentRadius, float agentHeight, float agentMaxAcceleration, float agentMaxSpeed)
@@ -108,7 +108,7 @@ namespace DotRecast.Recast.Toolset.Tools
         {
             _polyPoints.Clear();
             IDtQueryFilter filter = new DtQueryDefaultFilter();
-            DtNavMeshQuery navquery = new DtNavMeshQuery(_navMesh);
+            DtNavMeshQuery navquery = new DtNavMeshQuery(_navMesh, 512);
             for (int i = 0; i < _cfg.numberOfZones; i++)
             {
                 float zoneSeparation = _cfg.zoneRadius * _cfg.zoneRadius * 16;
@@ -188,7 +188,7 @@ namespace DotRecast.Recast.Toolset.Tools
             _rand = new RcRand(_cfg.randomSeed);
             CreateCrowd();
             CreateZones();
-            DtNavMeshQuery navquery = new DtNavMeshQuery(_navMesh);
+            DtNavMeshQuery navquery = new DtNavMeshQuery(_navMesh, 512);
             IDtQueryFilter filter = new DtQueryDefaultFilter();
             for (int i = 0; i < _cfg.agents; i++)
             {

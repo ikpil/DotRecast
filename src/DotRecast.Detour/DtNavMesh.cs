@@ -1207,7 +1207,7 @@ namespace DotRecast.Detour
                 v[0].Z = tile.data.verts[poly.verts[0] * 3 + 2];
                 for (int j = 1; j < poly.vertCount - 1; ++j)
                 {
-                    for (int k = 0; k < 2; ++k) // TODO memcpy
+                    for (int k = 0; k < 2; ++k)
                     {
                         v[k + 1].X = tile.data.verts[poly.verts[j + k] * 3];
                         v[k + 1].Y = tile.data.verts[poly.verts[j + k] * 3 + 1];

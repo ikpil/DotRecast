@@ -43,7 +43,7 @@ public class TileCacheFindPathTest : AbstractTileCacheTest
         using var br = new BinaryReader(msr);
         DtTileCache tcC = new DtTileCacheReader(DtTileCacheCompressorFactory.Shared).Read(br, 6, new TestTileCacheMeshProcess());
         navmesh = tcC.GetNavMesh();
-        query = new DtNavMeshQuery(navmesh);
+        query = new DtNavMeshQuery(navmesh, 512);
     }
 
     [Test]

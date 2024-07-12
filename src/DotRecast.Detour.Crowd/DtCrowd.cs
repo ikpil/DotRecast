@@ -159,7 +159,7 @@ namespace DotRecast.Detour.Crowd
             m_maxAgents = config.maxAgents;
             m_agentPlacementHalfExtents = new Vector3(config.maxAgentRadius * 2.0f, config.maxAgentRadius * 1.5f, config.maxAgentRadius * 2.0f);
 
-            m_grid = new DtProximityGrid(m_config.maxAgents * 4, m_config.maxAgentRadius * 3); // TODO test
+            m_grid = new DtProximityGrid(m_config.maxAgents * 4, m_config.maxAgentRadius * 3);
 
             m_obstacleQuery = new DtObstacleAvoidanceQuery(config.maxObstacleAvoidanceCircles, config.maxObstacleAvoidanceSegments);
 
@@ -197,7 +197,7 @@ namespace DotRecast.Detour.Crowd
         public void SetNavMesh(DtNavMesh nav)
         {
             m_navMesh = nav;
-            m_navQuery = new DtNavMeshQuery(nav);
+            m_navQuery = new DtNavMeshQuery(nav, DtCrowdConst.MAX_COMMON_NODES);
             m_pathq = new DtPathQueue(m_maxPathResult, nav, m_config);
         }
 
@@ -462,7 +462,7 @@ namespace DotRecast.Detour.Crowd
             return m_config;
         }
 
-        public DtCrowdTelemetry Update(float dt, DtCrowdAgentDebugInfo debug)
+        public DtCrowdTelemetry Update(float dt, DtCrowdAgentDebugInfo debug = null)
         {
             m_velocitySampleCount = 0;
 
@@ -631,7 +631,6 @@ namespace DotRecast.Detour.Crowd
             var nqueue = 0;
 
             // Fire off new requests.
-            //List<long> reqPath = new List<long>(); // TODO alloc temp
             const int MAX_RES = 32;
             Span<long> reqPath = stackalloc long[MAX_RES]; // The path to the request location
 
@@ -1049,8 +1048,6 @@ namespace DotRecast.Detour.Crowd
         private void BuildProximityGrid(ReadOnlySpan<DtCrowdAgent> agents)
         {
             using var timer = m_telemetry.ScopedTimer(DtCrowdTimerLabel.BuildProximityGrid);
-
-            //m_grid = new DtProximityGrid(m_config.maxAgents * 4, m_config.maxAgentRadius * 3); // TODO test
 
             m_grid.Clear();
             for (var i = 0; i < agents.Length; i++)
