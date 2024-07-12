@@ -32,7 +32,6 @@ namespace DotRecast.Recast
         const int RC_MAX_LAYERS = RcRecast.RC_NOT_CONNECTED;
         const int RC_MAX_NEIS = 16;
 
-
         private static void AddUnique(List<int> a, int v)
         {
             if (!a.Contains(v))

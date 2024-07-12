@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Nothing
 
 ### Changed
-- Nothing
+- Changed data structure of 'neis' from List<byte> to byte[] for optimized memory usage and improved access speed in `DtLayerMonotoneRegion`
 
 ### Removed
 - Nothing

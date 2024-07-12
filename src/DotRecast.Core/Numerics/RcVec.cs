@@ -135,6 +135,14 @@ namespace DotRecast.Core.Numerics
             @out[n + 1] = @in[m + 1];
             @out[n + 2] = @in[m + 2];
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Copy(Span<float> @out, int n, Span<float> @in, int m)
+        {
+            @out[n + 0] = @in[m + 0];
+            @out[n + 1] = @in[m + 1];
+            @out[n + 2] = @in[m + 2];
+        }
 
         /// Returns the distance between two points.
         /// @param[in] v1 A point. [(x, y, z)]

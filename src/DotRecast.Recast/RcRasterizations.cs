@@ -209,7 +209,7 @@ namespace DotRecast.Recast
         /// @param[out]	outVerts2Count	The number of resulting polygon 2 vertices
         /// @param[in]	axisOffset		THe offset along the specified axis
         /// @param[in]	axis			The separating axis
-        private static void DividePoly(float[] inVerts, int inVertsOffset, int inVertsCount,
+        private static void DividePoly(Span<float> inVerts, int inVertsOffset, int inVertsCount,
             int outVerts1, out int outVerts1Count,
             int outVerts2, out int outVerts2Count,
             float axisOffset, int axis)
@@ -322,7 +322,7 @@ namespace DotRecast.Recast
             z1 = Math.Clamp(z1, 0, h - 1);
 
             // Clip the triangle into all grid cells it touches.
-            float[] buf = new float[7 * 3 * 4];
+            Span<float> buf = stackalloc float[7 * 3 * 4];
             int @in = 0;
             int inRow = 7 * 3;
             int p1 = inRow + 7 * 3;

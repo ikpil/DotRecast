@@ -1665,8 +1665,8 @@ namespace DotRecast.Recast
 
             ctx.StartTimer(RcTimerLabel.RC_TIMER_BUILD_REGIONS_WATERSHED);
 
-            int LOG_NB_STACKS = 3;
-            int NB_STACKS = 1 << LOG_NB_STACKS;
+            const int LOG_NB_STACKS = 3;
+            const int NB_STACKS = 1 << LOG_NB_STACKS;
             List<List<RcLevelStackEntry>> lvlStacks = new List<List<RcLevelStackEntry>>();
             for (int i = 0; i < NB_STACKS; ++i)
             {
@@ -1756,7 +1756,7 @@ namespace DotRecast.Recast
             ExpandRegions(expandIters * 8, 0, chf, srcReg, srcDist, stack, true);
 
             ctx.StopTimer(RcTimerLabel.RC_TIMER_BUILD_REGIONS_WATERSHED);
-
+            
             ctx.StartTimer(RcTimerLabel.RC_TIMER_BUILD_REGIONS_FILTER);
 
             // Merge regions and filter out small regions.

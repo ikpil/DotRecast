@@ -181,8 +181,8 @@ namespace DotRecast.Detour.TileCache
                         byte rai = layer.regs[ymi];
                         if (rai != 0xff && rai != ri)
                         {
-                            AddUniqueLast(regs[ri].neis, rai);
-                            AddUniqueLast(regs[rai].neis, ri);
+                            AddUniqueLast(regs[ri].neis, ref regs[ri].nneis, rai);
+                            AddUniqueLast(regs[rai].neis, ref regs[rai].nneis, ri);
                         }
                     }
                 }
@@ -197,8 +197,9 @@ namespace DotRecast.Detour.TileCache
 
                 int merge = -1;
                 int mergea = 0;
-                foreach (int nei in reg.neis)
+                for (int j = 0; j < reg.nneis; ++j)
                 {
+                    byte nei = reg.neis[j];
                     DtLayerMonotoneRegion regn = regs[nei];
                     if (reg.regId == regn.regId)
                         continue;
@@ -246,12 +247,13 @@ namespace DotRecast.Detour.TileCache
             }
         }
 
-        public static void AddUniqueLast(List<byte> a, byte v)
+        public static void AddUniqueLast(byte[] a, ref byte an, byte v)
         {
-            int n = a.Count;
+            int n = an;
             if (n > 0 && a[n - 1] == v)
                 return;
-            a.Add(v);
+            a[an] = v;
+            an++;
         }
 
         public static bool IsConnected(DtTileCacheLayer layer, int ia, int ib, int walkableClimb)
@@ -271,9 +273,11 @@ namespace DotRecast.Detour.TileCache
                 DtLayerMonotoneRegion reg = regs[i];
                 if (reg.regId != oldRegId)
                     continue;
-                foreach (int nei in reg.neis)
+
+                int nnei = reg.nneis;
+                for (int j = 0; j < nnei ; ++j)
                 {
-                    if (regs[nei].regId == newRegId)
+                    if (regs[reg.neis[j]].regId == newRegId)
                         count++;
                 }
             }
