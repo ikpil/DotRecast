@@ -25,6 +25,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using DotRecast.Core;
 using System.Numerics;
+using System.Net.NetworkInformation;
 
 namespace DotRecast.Detour.Crowd
 {
@@ -127,13 +128,14 @@ namespace DotRecast.Detour.Crowd
         private readonly DtCrowdAgent[] m_agents;
         private readonly DtCrowdAgent[] m_activeAgents;
 
-        private /*readonly*/ DtPathQueue m_pathQ;
+        private /*readonly*/ DtPathQueue m_pathq;
 
         private readonly DtObstacleAvoidanceParams[] m_obstacleQueryParams;
         private readonly DtObstacleAvoidanceQuery m_obstacleQuery;
 
         private DtProximityGrid m_grid;
 
+        long[] m_pathResult;
         private int m_maxPathResult;
         private readonly Vector3 m_agentPlacementHalfExtents;
 
@@ -157,7 +159,7 @@ namespace DotRecast.Detour.Crowd
             m_maxAgents = config.maxAgents;
             m_agentPlacementHalfExtents = new Vector3(config.maxAgentRadius * 2.0f, config.maxAgentRadius * 1.5f, config.maxAgentRadius * 2.0f);
 
-            m_grid = new DtProximityGrid(m_config.maxAgents * 4, m_config.maxAgentRadius * 3); // TODO test
+            m_grid = new DtProximityGrid(m_config.maxAgents * 4, m_config.maxAgentRadius * 3);
 
             m_obstacleQuery = new DtObstacleAvoidanceQuery(config.maxObstacleAvoidanceCircles, config.maxObstacleAvoidanceSegments);
 
@@ -176,6 +178,7 @@ namespace DotRecast.Detour.Crowd
 
             // Allocate temp buffer for merging paths.
             m_maxPathResult = DtCrowdConst.MAX_PATH_RESULT;
+            m_pathResult = new long[m_maxPathResult];
             //_agents = new List<DtCrowdAgent>();
             m_agents = new DtCrowdAgent[m_maxAgents];
             m_activeAgents = new DtCrowdAgent[m_maxAgents];
@@ -194,8 +197,8 @@ namespace DotRecast.Detour.Crowd
         public void SetNavMesh(DtNavMesh nav)
         {
             m_navMesh = nav;
-            m_navQuery = new DtNavMeshQuery(nav);
-            m_pathQ = new DtPathQueue(nav, m_config);
+            m_navQuery = new DtNavMeshQuery(nav, DtCrowdConst.MAX_COMMON_NODES);
+            m_pathq = new DtPathQueue(m_maxPathResult, nav, m_config);
         }
 
         public DtNavMesh GetNavMesh()
@@ -367,7 +370,7 @@ namespace DotRecast.Detour.Crowd
             // Initialize request.
             agent.targetRef = 0;
             agent.targetPos = vel;
-            agent.targetPathQueryResult = null;
+            agent.targetPathqRef = DtPathQueue.DT_PATHQ_INVALID;
             agent.targetReplan = false;
             agent.targetState = DtMoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY;
 
@@ -383,7 +386,7 @@ namespace DotRecast.Detour.Crowd
             agent.targetRef = 0;
             agent.targetPos = Vector3.Zero;
             agent.dvel = Vector3.Zero;
-            agent.targetPathQueryResult = null;
+            agent.targetPathqRef = DtPathQueue.DT_PATHQ_INVALID;
             agent.targetReplan = false;
             agent.targetState = DtMoveRequestState.DT_CROWDAGENT_TARGET_NONE;
             return true;
@@ -423,7 +426,7 @@ namespace DotRecast.Detour.Crowd
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlySpan<DtCrowdAgent> GetActiveAgents()
+        public ReadOnlySpan<DtCrowdAgent> GetActiveAgents() // TODO 测试一下开销怎么样？跟手动判断active对比
         {
             var nagents = GetActiveAgents(m_activeAgents, m_maxAgents);
             return m_activeAgents.AsSpan(0, nagents);
@@ -446,7 +449,7 @@ namespace DotRecast.Detour.Crowd
 
         public DtPathQueue GetPathQueue()
         {
-            return m_pathQ;
+            return m_pathq;
         }
 
         public DtCrowdTelemetry Telemetry()
@@ -459,7 +462,7 @@ namespace DotRecast.Detour.Crowd
             return m_config;
         }
 
-        public DtCrowdTelemetry Update(float dt, DtCrowdAgentDebugInfo debug)
+        public DtCrowdTelemetry Update(float dt, DtCrowdAgentDebugInfo debug = null)
         {
             m_velocitySampleCount = 0;
 
@@ -628,7 +631,6 @@ namespace DotRecast.Detour.Crowd
             var nqueue = 0;
 
             // Fire off new requests.
-            //List<long> reqPath = new List<long>(); // TODO alloc temp
             const int MAX_RES = 32;
             Span<long> reqPath = stackalloc long[MAX_RES]; // The path to the request location
 
@@ -742,8 +744,8 @@ namespace DotRecast.Detour.Crowd
             for (int i = 0; i < nqueue; i++)
             {
                 DtCrowdAgent ag = queue[i];
-                ag.targetPathQueryResult = m_pathQ.Request(ag.corridor.GetLastPoly(), ag.targetRef, ag.corridor.GetTarget(), ag.targetPos, m_filters[ag.option.queryFilterType]);
-                if (ag.targetPathQueryResult != null)
+                ag.targetPathqRef = m_pathq.Request(ag.corridor.GetLastPoly(), ag.targetRef, ag.corridor.GetTarget(), ag.targetPos, m_filters[ag.option.queryFilterType]);
+                if (ag.targetPathqRef != DtPathQueue.DT_PATHQ_INVALID)
                 {
                     ag.targetState = DtMoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_PATH;
                 }
@@ -757,7 +759,7 @@ namespace DotRecast.Detour.Crowd
             // Update requests.
             using (var timer2 = m_telemetry.ScopedTimer(DtCrowdTimerLabel.PathQueueUpdate))
             {
-                m_pathQ.Update(/*_navMesh*/);
+                m_pathq.Update(/*_navMesh*/);
             }
 
             // Process path results.
@@ -778,12 +780,12 @@ namespace DotRecast.Detour.Crowd
                 {
                     // _telemetry.RecordPathWaitTime(ag.targetReplanTime);
                     // Poll path queue.
-                    DtStatus status = ag.targetPathQueryResult.status;
+                    DtStatus status = m_pathq.GetRequestStatus(ag.targetPathqRef);
                     if (status.Failed())
                     {
                         // Path find failed, retry if the target location is still
                         // valid.
-                        ag.targetPathQueryResult = null;
+                        ag.targetPathqRef = DtPathQueue.DT_PATHQ_INVALID;
                         if (ag.targetRef != 0)
                         {
                             ag.targetState = DtMoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING;
@@ -804,10 +806,9 @@ namespace DotRecast.Detour.Crowd
                         // Apply results.
                         var targetPos = ag.targetPos;
 
+                        var res = m_pathResult;
                         bool valid = true;
-                        var res = ag.targetPathQueryResult.path;
-                        var nres = ag.targetPathQueryResult.pathCount;
-                        status = ag.targetPathQueryResult.status;
+                        status = m_pathq.GetPathResult(ag.targetPathqRef, res, out var nres, m_maxPathResult);
                         if (status.Failed() || 0 == nres)
                             valid = false;
 
@@ -1047,8 +1048,6 @@ namespace DotRecast.Detour.Crowd
         private void BuildProximityGrid(ReadOnlySpan<DtCrowdAgent> agents)
         {
             using var timer = m_telemetry.ScopedTimer(DtCrowdTimerLabel.BuildProximityGrid);
-
-            //m_grid = new DtProximityGrid(m_config.maxAgents * 4, m_config.maxAgentRadius * 3); // TODO test
 
             m_grid.Clear();
             for (var i = 0; i < agents.Length; i++)

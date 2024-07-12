@@ -36,7 +36,6 @@ namespace DotRecast.Detour.Crowd
         private List<DtSegment> m_segs = new List<DtSegment>(); // TODO array
         private long[] m_polys = new long[MAX_LOCAL_POLYS];
         private int m_npolys;
-        //private List<long> m_parents = new List<long>(); // TODO test
 
         public DtLocalBoundary()
         {
@@ -46,7 +45,6 @@ namespace DotRecast.Detour.Crowd
         public void Reset()
         {
             m_center.X = m_center.Y = m_center.Z = float.MaxValue;
-            //m_polys.Clear();
             m_npolys = 0;
             m_segs.Clear();
         }
@@ -57,7 +55,6 @@ namespace DotRecast.Detour.Crowd
             DtSegment seg = new DtSegment();
             Unsafe.WriteUnaligned(seg.s, s.vmin);
             Unsafe.WriteUnaligned(seg.s + 3, s.vmax);
-            //RcArrays.Copy(s, seg.s, 6);
             seg.d = dist;
             if (0 == m_segs.Count)
             {
