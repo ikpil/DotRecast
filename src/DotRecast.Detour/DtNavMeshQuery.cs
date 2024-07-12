@@ -795,7 +795,6 @@ namespace DotRecast.Detour
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            var heuristic = fpo.heuristic;
             var raycastLimit = fpo.raycastLimit;
             var options = fpo.options;
 
@@ -826,7 +825,7 @@ namespace DotRecast.Detour
             startNode.pos = startPos;
             startNode.pidx = 0;
             startNode.cost = 0;
-            startNode.total = heuristic.GetCost(startPos, endPos);
+            startNode.total = DtDefaultQueryHeuristic.GetCost(startPos, endPos);
             startNode.id = startRef;
             startNode.flags = DtNodeFlags.DT_NODE_OPEN;
             m_openList.Push(startNode);
@@ -843,7 +842,7 @@ namespace DotRecast.Detour
                 long* temppath = stackalloc long[MAX_PATH];
                 rayHit.path = new Span<long>(temppath, MAX_PATH); // TODO safe?
             }
-            //rayHit.path = new long[MAX_PATH];
+
             while (!m_openList.IsEmpty())
             {
                 // Remove node from open list and put it in closed list.
@@ -949,7 +948,6 @@ namespace DotRecast.Detour
                             foundShortCut = rayHit.t >= 1.0f;
                             if (foundShortCut)
                             {
-                                //shortcut = new List<long>(rayHit.path);
                                 shortcut = rayHit.path.Slice(0, rayHit.pathCount);
                                 // shortcut found using raycast. Using shorter cost
                                 // instead
@@ -977,7 +975,7 @@ namespace DotRecast.Detour
                     else
                     {
                         // Cost
-                        heuristicCost = heuristic.GetCost(neighbourPos, endPos);
+                        heuristicCost = DtDefaultQueryHeuristic.GetCost(neighbourPos, endPos);
                     }
 
                     float total = cost + heuristicCost;
@@ -1052,17 +1050,7 @@ namespace DotRecast.Detour
         ///  @param[in]		filter		The polygon filter to apply to the query.
         ///  @param[in]		options		query options (see: #dtFindPathOptions)
         /// @returns The status flags for the query.
-        public DtStatus InitSlicedFindPath(long startRef, long endRef, Vector3 startPos, Vector3 endPos, IDtQueryFilter filter, int options)
-        {
-            return InitSlicedFindPath(startRef, endRef, startPos, endPos, filter, options, DtDefaultQueryHeuristic.Default, -1.0f);
-        }
-
-        public DtStatus InitSlicedFindPath(long startRef, long endRef, Vector3 startPos, Vector3 endPos, IDtQueryFilter filter, int options, float raycastLimit)
-        {
-            return InitSlicedFindPath(startRef, endRef, startPos, endPos, filter, options, DtDefaultQueryHeuristic.Default, raycastLimit);
-        }
-
-        public DtStatus InitSlicedFindPath(long startRef, long endRef, Vector3 startPos, Vector3 endPos, IDtQueryFilter filter, int options, IDtQueryHeuristic heuristic, float raycastLimit)
+        public DtStatus InitSlicedFindPath(long startRef, long endRef, Vector3 startPos, Vector3 endPos, IDtQueryFilter filter, int options, float raycastLimit = float.MaxValue)
         {
             // Init path state.
             m_query = new DtQueryData();
@@ -1073,7 +1061,6 @@ namespace DotRecast.Detour
             m_query.endPos = endPos;
             m_query.filter = filter;
             m_query.options = options;
-            m_query.heuristic = heuristic;
             m_query.raycastLimitSqr = RcMath.Sqr(raycastLimit);
 
             // Validate input
@@ -1105,7 +1092,7 @@ namespace DotRecast.Detour
             startNode.pos = startPos;
             startNode.pidx = 0;
             startNode.cost = 0;
-            startNode.total = heuristic.GetCost(startPos, endPos);
+            startNode.total = DtDefaultQueryHeuristic.GetCost(startPos, endPos);
             startNode.id = startRef;
             startNode.flags = DtNodeFlags.DT_NODE_OPEN;
             m_openList.Push(startNode);
@@ -1143,7 +1130,6 @@ namespace DotRecast.Detour
                 long* temppath = stackalloc long[MAX_PATH];
                 rayHit.path = new Span<long>(temppath, MAX_PATH); // TODO safe?
             }
-            //rayHit.path = new long[MAX_PATH];
 
             int iter = 0;
             while (iter < maxIter && !m_openList.IsEmpty())
@@ -1306,7 +1292,7 @@ namespace DotRecast.Detour
                     }
                     else
                     {
-                        heuristic = m_query.heuristic.GetCost(neighbourPos, m_query.endPos);
+                        heuristic = DtDefaultQueryHeuristic.GetCost(neighbourPos, m_query.endPos);
                     }
 
                     float total = cost + heuristic;
