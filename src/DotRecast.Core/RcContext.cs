@@ -38,7 +38,7 @@ namespace DotRecast.Core
     /// class through the Recast build process.
     /// 
     /// @ingroup recast
-    public class RcContext
+    public class RcContext // TODO profiler only
     {
         private readonly ThreadLocal<Dictionary<string, RcAtomicLong>> _timerStart;
         private readonly ConcurrentDictionary<string, RcAtomicLong> _timerAccum;

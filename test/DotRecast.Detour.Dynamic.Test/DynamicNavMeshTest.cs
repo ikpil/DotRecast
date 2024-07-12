@@ -34,7 +34,7 @@ public class DynamicNavMeshTest
         mesh.Build(Task.Factory);
 
         // create new query
-        DtNavMeshQuery query = new DtNavMeshQuery(mesh.NavMesh());
+        DtNavMeshQuery query = new DtNavMeshQuery(mesh.NavMesh(), 512);
         IDtQueryFilter filter = new DtQueryDefaultFilter();
 
         // find path
@@ -54,7 +54,7 @@ public class DynamicNavMeshTest
         mesh.Update(Task.Factory);
 
         // create new query
-        query = new DtNavMeshQuery(mesh.NavMesh());
+        query = new DtNavMeshQuery(mesh.NavMesh(), 512);
 
         // find path again
         query.FindNearestPoly(START_POS, EXTENT, filter, out startRef, out startPt, out var _);
@@ -68,7 +68,7 @@ public class DynamicNavMeshTest
         // update navmesh asynchronously
         mesh.Update(Task.Factory);
         // create new query
-        query = new DtNavMeshQuery(mesh.NavMesh());
+        query = new DtNavMeshQuery(mesh.NavMesh(), 512);
 
         // find path one more time
         query.FindNearestPoly(START_POS, EXTENT, filter, out startRef, out startPt, out var _);

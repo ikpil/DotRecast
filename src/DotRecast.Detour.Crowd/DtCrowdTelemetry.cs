@@ -50,10 +50,6 @@ namespace DotRecast.Detour.Crowd
             {
                 yield return new RcTelemetryTick(e.Key.Label, e.Value);
             }
-            //return _executionTimings
-            //    .Select(e => new RcTelemetryTick(e.Key.Label, e.Value))
-            //    .OrderByDescending(x => x.Ticks)
-            //    .ToList();
         }
 
         public void Start()

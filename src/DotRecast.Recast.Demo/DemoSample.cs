@@ -48,7 +48,7 @@ namespace DotRecast.Recast.Demo
 
         private void SetQuery(DtNavMesh navMesh)
         {
-            _navMeshQuery = navMesh != null ? new DtNavMeshQuery(navMesh) : null;
+            _navMeshQuery = navMesh != null ? new DtNavMeshQuery(navMesh, 512) : null;
         }
 
         public DemoInputGeomProvider GetInputGeom()

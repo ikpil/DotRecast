@@ -57,12 +57,12 @@ namespace DotRecast.Detour
         /// A portal may be treated as a wall based on the dtQueryFilter used for a query.
         ///
         /// @see dtNavMesh, dtQueryFilter, #dtAllocNavMeshQuery(), #dtAllocNavMeshQuery()
-        public DtNavMeshQuery(DtNavMesh nav)
+        public DtNavMeshQuery(DtNavMesh nav, int maxNodes)
         {
             m_nav = nav;
-            m_nodePool = new DtNodePool(512); // TODO maxNodes
-            m_openList = new DtNodeQueue(); // TODO maxQueueNodes
-            m_tinyNodePool = new DtNodePool(512);  // TODO maxNodes
+            m_nodePool = new DtNodePool(maxNodes);
+            m_openList = new DtNodeQueue(maxNodes);
+            m_tinyNodePool = new DtNodePool(maxNodes);
         }
 
         /// Returns random location on navmesh.
@@ -1891,7 +1891,7 @@ namespace DotRecast.Detour
             startNode.total = 0;
             startNode.id = startRef;
             startNode.flags = DtNodeFlags.DT_NODE_CLOSED;
-            //LinkedList<DtNode> stack = new LinkedList<DtNode>(); // TODO alloc test
+
             var stack = _stack;
             stack.Clear();
             stack.Enqueue(startNode);
@@ -2602,16 +2602,11 @@ namespace DotRecast.Detour
         public DtStatus FindPolysAroundCircle(long startRef, Vector3 centerPos, float radius, IDtQueryFilter filter,
             Span<long> resultRef, Span<long> resultParent, Span<float> resultCost, out int resultCount, int maxResult)
         {
-            // TODO check maxResult
+            System.Diagnostics.Debug.Assert(resultRef.IsEmpty || resultRef.Length >= maxResult);
+            System.Diagnostics.Debug.Assert(resultParent.IsEmpty || resultParent.Length >= maxResult);
+            System.Diagnostics.Debug.Assert(resultCost.IsEmpty || resultCost.Length >= maxResult);
 
             resultCount = 0;
-
-            //if (null != resultRef)
-            //{
-            //    resultRef.Clear();
-            //    resultParent.Clear();
-            //    resultCost.Clear();
-            //}
 
             // Validate input
             if (!m_nav.IsValidPolyRef(startRef) || !centerPos.IsFinite() || radius < 0
@@ -2661,10 +2656,6 @@ namespace DotRecast.Detour
                 {
                     m_nav.GetTileAndPolyByRefUnsafe(parentRef, out parentTile, out parentPoly);
                 }
-
-                //resultRef.Add(bestRef);
-                //resultParent.Add(parentRef);
-                //resultCost.Add(bestNode.total);
 
                 if (n < maxResult)
                 {
@@ -2797,10 +2788,9 @@ namespace DotRecast.Detour
         public DtStatus FindPolysAroundShape(long startRef, Span<Vector3> verts, IDtQueryFilter filter,
             Span<long> resultRef, Span<long> resultParent, Span<float> resultCost, out int resultCount, int maxResult)
         {
-            // TODO check maxResult
-            //resultRef.Clear();
-            //resultParent.Clear();
-            //resultCost.Clear();
+            System.Diagnostics.Debug.Assert(resultRef.IsEmpty || resultRef.Length >= maxResult);
+            System.Diagnostics.Debug.Assert(resultParent.IsEmpty || resultParent.Length >= maxResult);
+            System.Diagnostics.Debug.Assert(resultCost.IsEmpty || resultCost.Length >= maxResult);
 
             resultCount = 0;
 
@@ -2997,7 +2987,8 @@ namespace DotRecast.Detour
             IDtQueryFilter filter,
             Span<long> resultRef, Span<long> resultParent, out int resultCount, int maxResult)
         {
-            // TODO check maxResult
+            System.Diagnostics.Debug.Assert(resultRef.Length >= maxResult);
+            System.Diagnostics.Debug.Assert(resultParent.IsEmpty || resultParent.Length >= maxResult);
 
             resultCount = 0;
 
@@ -3009,16 +3000,13 @@ namespace DotRecast.Detour
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            //resultRef.Clear();
-            //resultParent.Clear();
-
             m_tinyNodePool.Clear();
 
             DtNode startNode = m_tinyNodePool.GetNode(startRef);
             startNode.pidx = 0;
             startNode.id = startRef;
             startNode.flags = DtNodeFlags.DT_NODE_CLOSED;
-            //LinkedList<DtNode> stack = new LinkedList<DtNode>(); // TODO alloc test
+
             var stack = _stack;
             stack.Clear();
             stack.Enqueue(startNode);
@@ -3156,9 +3144,6 @@ namespace DotRecast.Detour
                     {
                         continue;
                     }
-
-                    //resultRef.Add(neighbourRef);
-                    //resultParent.Add(curRef);
 
                     if (n < maxResult)
                     {
