@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using DotRecast.Core;
-using DotRecast.Core.Numerics;
+using System.Numerics;
 
 
 namespace DotRecast.Detour.Crowd
@@ -30,11 +30,12 @@ namespace DotRecast.Detour.Crowd
     public class DtLocalBoundary
     {
         public const int MAX_LOCAL_SEGS = 8;
+        public const int MAX_LOCAL_POLYS = 16;
 
-        private RcVec3f m_center = new RcVec3f();
-        private List<DtSegment> m_segs = new List<DtSegment>();
-        private List<long> m_polys = new List<long>();
-        private List<long> m_parents = new List<long>();
+        private Vector3 m_center = new Vector3();
+        private List<DtSegment> m_segs = new List<DtSegment>(); // TODO array
+        private long[] m_polys = new long[MAX_LOCAL_POLYS];
+        private int m_npolys;
 
         public DtLocalBoundary()
         {
@@ -44,7 +45,7 @@ namespace DotRecast.Detour.Crowd
         public void Reset()
         {
             m_center.X = m_center.Y = m_center.Z = float.MaxValue;
-            m_polys.Clear();
+            m_npolys = 0;
             m_segs.Clear();
         }
 
@@ -54,7 +55,6 @@ namespace DotRecast.Detour.Crowd
             DtSegment seg = new DtSegment();
             Unsafe.WriteUnaligned(seg.s, s.vmin);
             Unsafe.WriteUnaligned(seg.s + 3, s.vmax);
-            //RcArrays.Copy(s, seg.s, 6);
             seg.d = dist;
             if (0 == m_segs.Count)
             {
@@ -90,7 +90,7 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        public void Update(long startRef, RcVec3f pos, float collisionQueryRange, DtNavMeshQuery navquery, IDtQueryFilter filter)
+        public void Update(long startRef, Vector3 pos, float collisionQueryRange, DtNavMeshQuery navquery, IDtQueryFilter filter)
         {
             if (startRef == 0)
             {
@@ -101,16 +101,16 @@ namespace DotRecast.Detour.Crowd
             m_center = pos;
 
             // First query non-overlapping polygons.
-            var status = navquery.FindLocalNeighbourhood(startRef, pos, collisionQueryRange, filter, ref m_polys, ref m_parents);
+            var status = navquery.FindLocalNeighbourhood(startRef, pos, collisionQueryRange, filter, m_polys, null, out m_npolys, MAX_LOCAL_POLYS);
             if (status.Succeeded())
             {
                 // Secondly, store all polygon edges.
                 m_segs.Clear();
 
-                var segmentVerts = new List<RcSegmentVert>();
-                var segmentRefs = new List<long>();
+                var segmentVerts = new List<RcSegmentVert>(); // TODO temp alloc
+                var segmentRefs = new List<long>(); // TODO temp alloc
 
-                for (int j = 0; j < m_polys.Count; ++j)
+                for (int j = 0; j < m_npolys; ++j)
                 {
                     var result = navquery.GetPolyWallSegments(m_polys[j], false, filter, ref segmentVerts, ref segmentRefs);
                     if (result.Succeeded())
@@ -137,7 +137,7 @@ namespace DotRecast.Detour.Crowd
 
         public bool IsValid(DtNavMeshQuery navquery, IDtQueryFilter filter)
         {
-            if (m_polys.Count == 0)
+            if (m_npolys == 0)
             {
                 return false;
             }
@@ -154,7 +154,7 @@ namespace DotRecast.Detour.Crowd
             return true;
         }
 
-        public RcVec3f GetCenter()
+        public Vector3 GetCenter()
         {
             return m_center;
         }

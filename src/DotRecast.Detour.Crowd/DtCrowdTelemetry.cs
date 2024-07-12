@@ -1,7 +1,24 @@
+/*
+recast4j copyright (c) 2021 Piotr Piastucki piotr@jtilia.org
+DotRecast Copyright (c) 2023-2024 Choi Ikpil ikpil@naver.com
+
+This software is provided 'as-is', without any express or implied
+warranty.  In no event will the authors be held liable for any damages
+arising from the use of this software.
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it
+freely, subject to the following restrictions:
+1. The origin of this software must not be misrepresented; you must not
+ claim that you wrote the original software. If you use this software
+ in a product, an acknowledgment in the product documentation would be
+ appreciated but is not required.
+2. Altered source versions must be plainly marked as such, and must not be
+ misrepresented as being the original software.
+3. This notice may not be removed or altered from any source distribution.
+*/
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using DotRecast.Core;
 using DotRecast.Core.Buffers;
@@ -14,10 +31,8 @@ namespace DotRecast.Detour.Crowd
         private float _maxTimeToEnqueueRequest;
         private float _maxTimeToFindPath;
 
-#if PROFILE
         private readonly Dictionary<DtCrowdTimerLabel, long> _executionTimings = new Dictionary<DtCrowdTimerLabel, long>();
         private readonly Dictionary<DtCrowdTimerLabel, RcCyclicBuffer<long>> _executionTimingSamples = new Dictionary<DtCrowdTimerLabel, RcCyclicBuffer<long>>();
-#endif
 
         public float MaxTimeToEnqueueRequest()
         {
@@ -31,40 +46,27 @@ namespace DotRecast.Detour.Crowd
 
         public IEnumerable<RcTelemetryTick> ToExecutionTimings()
         {
-#if PROFILE
             foreach (var e in _executionTimings)
             {
                 yield return new RcTelemetryTick(e.Key.Label, e.Value);
             }
-#else
-            yield return default;
-#endif
         }
 
-        [Conditional("PROFILE")]
         public void Start()
         {
-#if PROFILE
             _maxTimeToEnqueueRequest = 0;
             _maxTimeToFindPath = 0;
             _executionTimings.Clear();
-#endif
         }
 
-        [Conditional("PROFILE")]
         public void RecordMaxTimeToEnqueueRequest(float time)
         {
-#if PROFILE
             _maxTimeToEnqueueRequest = Math.Max(_maxTimeToEnqueueRequest, time);
-#endif
         }
 
-        [Conditional("PROFILE")]
         public void RecordMaxTimeToFindPath(float time)
         {
-#if PROFILE
             _maxTimeToFindPath = Math.Max(_maxTimeToFindPath, time);
-#endif
         }
 
         internal DtCrowdScopedTimer ScopedTimer(DtCrowdTimerLabel label)
@@ -72,19 +74,14 @@ namespace DotRecast.Detour.Crowd
             return new DtCrowdScopedTimer(this, label);
         }
 
-        [Conditional("PROFILE")]
         internal void Start(DtCrowdTimerLabel name)
         {
-#if PROFILE
             //_executionTimings.Add(name, RcFrequency.Ticks);
             _executionTimings[name] = RcFrequency.Ticks;
-#endif
         }
 
-        [Conditional("PROFILE")]
         internal void Stop(DtCrowdTimerLabel name)
         {
-#if PROFILE
             long duration = RcFrequency.Ticks - _executionTimings[name];
             if (!_executionTimingSamples.TryGetValue(name, out var cb))
             {
@@ -94,8 +91,6 @@ namespace DotRecast.Detour.Crowd
 
             cb.PushBack(duration);
             _executionTimings[name] = (long)cb.Average();
-#endif
         }
     }
 }
-
