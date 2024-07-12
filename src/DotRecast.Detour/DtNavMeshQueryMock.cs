@@ -10,7 +10,7 @@ namespace DotRecast.Detour
         private readonly DtStatus _status;
 
         public DtNavMeshQueryMock(DtStraightPath[] straightPath, DtStatus status)
-            : base(null)
+            : base(null, 512)
         {
             _straightPath = straightPath;
             _status = status;

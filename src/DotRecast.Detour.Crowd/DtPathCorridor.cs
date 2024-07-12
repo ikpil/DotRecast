@@ -215,7 +215,6 @@ namespace DotRecast.Detour.Crowd
             var delta = Vector3.Subtract(next, m_pos);
             Vector3 goal = RcVec.Mad(m_pos, delta, pathOptimizationRange / dist);
 
-            //var res = new List<long>();// TODO temp alloc
             const int MAX_RES = 32;
             Span<long> res = stackalloc long[MAX_RES];
             var status = navquery.Raycast(m_path[0], m_pos, goal, filter, out var t, out var norm, res, out var nres);
@@ -409,14 +408,6 @@ namespace DotRecast.Detour.Crowd
             m_target = target;
             path.Slice(0, npath).CopyTo(m_path);
             m_npath = npath;
-
-            //m_target = target;
-            //m_path = new List<long>(path); // TODO alloc
-            ////m_path ??= new List<long>();
-            ////m_path.Clear();
-            ////m_path.AddRange(path); // m_path path 很可能是同一个对象
-            //m_npath = path.Count;
-            ////Console.WriteLine($"m_npath = {m_npath}");
         }
 
         public void FixPathStart(long safeRef, Vector3 safePos)
@@ -424,10 +415,6 @@ namespace DotRecast.Detour.Crowd
             m_pos = safePos;
             if (m_npath < 3 && m_npath > 0)
             {
-                //m_path.Clear();
-                //m_path.Add(safeRef);
-                //m_path.Add(0L);
-                //m_path.Add(p);
                 m_path[2] = m_path[m_npath - 1];
                 m_path[0] = safeRef;
                 m_path[1] = 0L;
@@ -435,9 +422,6 @@ namespace DotRecast.Detour.Crowd
             }
             else
             {
-                //m_path.Clear();
-                //m_path.Add(safeRef);
-                //m_path.Add(0L);
                 m_path[0] = safeRef;
                 m_path[1] = 0L;
                 m_npath = 2;

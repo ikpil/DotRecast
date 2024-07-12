@@ -2,13 +2,13 @@ using System.Numerics;
 
 namespace DotRecast.Detour.Crowd
 {
-    public struct DtObstacleSegment // TODO struct
+    public struct DtObstacleSegment
     {
         /** End points of the obstacle segment */
-        public Vector3 p;// = new RcVec3f();
+        public Vector3 p;
 
         /** End points of the obstacle segment */
-        public Vector3 q;// = new RcVec3f();
+        public Vector3 q;
 
         public bool touch;
     }
