@@ -238,7 +238,7 @@ public class DebugDraw
         new[] { 0f, 0f, 0f }
     };
 
-    public void AppendBox(float minx, float miny, float minz, float maxx, float maxy, float maxz, int[] fcol)
+    public void AppendBox(float minx, float miny, float minz, float maxx, float maxy, float maxz, Span<int> fcol)
     {
         boxVerts[0][0] = minx;
         boxVerts[0][1] = miny;
@@ -395,7 +395,7 @@ public class DebugDraw
         Vertex(x, y, z + s, col);
     }
 
-    public void DebugDrawBox(float minx, float miny, float minz, float maxx, float maxy, float maxz, int[] fcol)
+    public void DebugDrawBox(float minx, float miny, float minz, float maxx, float maxy, float maxz, Span<int> fcol)
     {
         Begin(DebugDrawPrimitives.QUADS);
         AppendBox(minx, miny, minz, maxx, maxy, maxz, fcol);
