@@ -80,7 +80,7 @@ namespace DotRecast.Detour.TileCache
             }
 
             return results
-                .Select(x => x.Result)
+                .Select(x => x.Result) // TODO block main thread
                 .ToList();
         }
 

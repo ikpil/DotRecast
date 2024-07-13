@@ -23,6 +23,7 @@
 */
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace DotRecast.Core.Compression
 {
@@ -86,6 +87,9 @@ namespace DotRecast.Core.Compression
         }
 
         // fastlz1_compress
+#if NET5_0_OR_GREATER
+        [SkipLocalsInit]
+#endif
         public static long CompressLevel1(byte[] input, long inputOffset, long length, byte[] output)
         {
             long ip = inputOffset;
@@ -95,13 +99,13 @@ namespace DotRecast.Core.Compression
 
             long op = 0;
 
-            long[] htab = new long[HASH_SIZE];
+            Span<long> htab = stackalloc long[HASH_SIZE];
             long seq, hash;
 
             // Initializes hash table
             for (hash = 0; hash < HASH_SIZE; ++hash)
             {
-                htab[hash] = 0;
+                htab[(int)hash] = 0;
             }
 
             // We start with literal copy
@@ -119,8 +123,8 @@ namespace DotRecast.Core.Compression
                 {
                     seq = ReadUInt32(input, ip) & 0xffffff;
                     hash = Hash(seq);
-                    refIdx = ip_start + htab[hash];
-                    htab[hash] = ip - ip_start;
+                    refIdx = ip_start + htab[(int)hash];
+                    htab[(int)hash] = ip - ip_start;
                     distance = ip - refIdx;
                     cmp = distance < MAX_L1_DISTANCE
                         ? ReadUInt32(input, refIdx) & 0xffffff
@@ -153,10 +157,10 @@ namespace DotRecast.Core.Compression
                 ip += len;
                 seq = ReadUInt32(input, ip);
                 hash = Hash(seq & 0xffffff);
-                htab[hash] = ip++ - ip_start;
+                htab[(int)hash] = ip++ - ip_start;
                 seq >>= 8;
                 hash = Hash(seq);
-                htab[hash] = ip++ - ip_start;
+                htab[(int)hash] = ip++ - ip_start;
 
                 anchor = ip;
             }
@@ -167,6 +171,9 @@ namespace DotRecast.Core.Compression
         }
 
         // fastlz2_compress
+#if NET5_0_OR_GREATER
+        [SkipLocalsInit]
+#endif
         public static long CompressLevel2(byte[] input, long inputOffset, long length, byte[] output)
         {
             long ip = inputOffset;
@@ -176,13 +183,13 @@ namespace DotRecast.Core.Compression
 
             long op = 0;
 
-            long[] htab = new long[HASH_SIZE];
+            Span<long> htab = stackalloc long[HASH_SIZE];
             long seq, hash;
 
             /* initializes hash table */
             for (hash = 0; hash < HASH_SIZE; ++hash)
             {
-                htab[hash] = 0;
+                htab[(int)hash] = 0;
             }
 
             /* we start with literal copy */
@@ -200,8 +207,8 @@ namespace DotRecast.Core.Compression
                 {
                     seq = ReadUInt32(input, ip) & 0xffffff;
                     hash = Hash(seq);
-                    refs = ip_start + htab[hash];
-                    htab[hash] = ip - ip_start;
+                    refs = ip_start + htab[(int)hash];
+                    htab[(int)hash] = ip - ip_start;
                     distance = ip - refs;
                     cmp = distance < MAX_FARDISTANCE
                         ? ReadUInt32(input, refs) & 0xffffff
@@ -244,10 +251,10 @@ namespace DotRecast.Core.Compression
                 ip += len;
                 seq = ReadUInt32(input, ip);
                 hash = Hash(seq & 0xffffff);
-                htab[hash] = ip++ - ip_start;
+                htab[(int)hash] = ip++ - ip_start;
                 seq >>= 8;
                 hash = Hash(seq);
-                htab[hash] = ip++ - ip_start;
+                htab[(int)hash] = ip++ - ip_start;
 
                 anchor = ip;
             }
