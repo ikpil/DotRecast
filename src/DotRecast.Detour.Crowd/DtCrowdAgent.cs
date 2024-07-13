@@ -86,7 +86,6 @@ namespace DotRecast.Detour.Crowd
             this.idx = idx;
             corridor = new DtPathCorridor();
             boundary = new DtLocalBoundary();
-            animation = new DtCrowdAgentAnimation();
         }
 
         public void Integrate(float dt)
