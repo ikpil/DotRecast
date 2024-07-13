@@ -38,7 +38,7 @@ namespace DotRecast.Detour.TileCache
         private static readonly int[] DirOffsetX = { -1, 0, 1, 0, };
         private static readonly int[] DirOffsetY = { 0, 1, 0, -1 };
 
-        public static void BuildTileCacheRegions(DtTileCacheLayer layer, int walkableClimb)
+        public unsafe static void BuildTileCacheRegions(DtTileCacheLayer layer, int walkableClimb)
         {
             int w = layer.header.width;
             int h = layer.header.height;
@@ -148,13 +148,9 @@ namespace DotRecast.Detour.TileCache
 
             // Allocate and init layer regions.
             byte nregs = regId;
-            DtLayerMonotoneRegion[] regs = new DtLayerMonotoneRegion[nregs];
-
+            Span<DtLayerMonotoneRegion> regs = stackalloc DtLayerMonotoneRegion[nregs];
             for (int i = 0; i < nregs; ++i)
-            {
-                regs[i] = new DtLayerMonotoneRegion();
                 regs[i].regId = 0xff;
-            }
 
             // Find region neighbours.
             for (int y = 0; y < h; ++y)
@@ -177,8 +173,12 @@ namespace DotRecast.Detour.TileCache
                         byte rai = layer.regs[ymi];
                         if (rai != 0xff && rai != ri)
                         {
-                            AddUniqueLast(regs[ri].neis, rai);
-                            AddUniqueLast(regs[rai].neis, ri);
+                            fixed (byte* ri_neis = regs[ri].neis)
+                            fixed (byte* rai_neis = regs[rai].neis)
+                            {
+                                AddUniqueLast(ri_neis, ref regs[ri].nneis, rai);
+                                AddUniqueLast(rai_neis, ref regs[rai].nneis, ri);
+                            }
                         }
                     }
                 }
@@ -189,13 +189,14 @@ namespace DotRecast.Detour.TileCache
 
             for (int i = 0; i < nregs; ++i)
             {
-                DtLayerMonotoneRegion reg = regs[i];
+                ref readonly DtLayerMonotoneRegion reg = ref regs[i];
 
                 int merge = -1;
                 int mergea = 0;
-                foreach (int nei in reg.neis)
+                for (int j = 0; j < reg.nneis; ++j)
                 {
-                    DtLayerMonotoneRegion regn = regs[nei];
+                    byte nei = reg.neis[j];
+                    ref readonly DtLayerMonotoneRegion regn = ref regs[nei];
                     if (reg.regId == regn.regId)
                         continue;
                     if (reg.areaId != regn.areaId)
@@ -242,12 +243,13 @@ namespace DotRecast.Detour.TileCache
             }
         }
 
-        public static void AddUniqueLast(List<byte> a, byte v)
+        unsafe static void AddUniqueLast(byte* a, ref byte na, byte v)
         {
-            int n = a.Count;
+            int n = na;
             if (n > 0 && a[n - 1] == v)
                 return;
-            a.Add(v);
+            a[na] = v;
+            na++;
         }
 
         public static bool IsConnected(DtTileCacheLayer layer, int ia, int ib, int walkableClimb)
@@ -259,16 +261,17 @@ namespace DotRecast.Detour.TileCache
             return true;
         }
 
-        public static bool CanMerge(int oldRegId, int newRegId, DtLayerMonotoneRegion[] regs, int nregs)
+        public unsafe static bool CanMerge(int oldRegId, int newRegId, Span<DtLayerMonotoneRegion> regs, int nregs)
         {
             int count = 0;
             for (int i = 0; i < nregs; ++i)
             {
-                DtLayerMonotoneRegion reg = regs[i];
+                ref readonly DtLayerMonotoneRegion reg = ref regs[i];
                 if (reg.regId != oldRegId)
                     continue;
-                foreach (int nei in reg.neis)
+                for (int j = 0; j < reg.nneis; ++j)
                 {
+                    byte nei = reg.neis[j];
                     if (regs[nei].regId == newRegId)
                         count++;
                 }
@@ -1562,7 +1565,7 @@ namespace DotRecast.Detour.TileCache
             // Merge polygons.
             if (maxVertsPerPoly > 3)
             {
-                for (;;)
+                for (; ; )
                 {
                     // Find best polygons to merge.
                     int bestMergeVal = 0;
@@ -1718,7 +1721,7 @@ namespace DotRecast.Detour.TileCache
                 // Merge polygons.
                 if (maxVertsPerPoly > 3)
                 {
-                    for (;;)
+                    for (; ; )
                     {
                         // Find best polygons to merge.
                         int bestMergeVal = 0;
