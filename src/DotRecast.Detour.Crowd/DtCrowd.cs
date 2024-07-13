@@ -201,15 +201,11 @@ namespace DotRecast.Detour.Crowd
             m_pathq = new DtPathQueue(m_maxPathResult, nav, m_config);
         }
 
-        public DtNavMesh GetNavMesh()
-        {
-            return m_navMesh;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public DtNavMesh GetNavMesh() => m_navMesh;
 
-        public DtNavMeshQuery GetNavMeshQuery()
-        {
-            return m_navQuery;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public DtNavMeshQuery GetNavMeshQuery() => m_navQuery;
 
         /// Sets the shared avoidance configuration for the specified index.
         /// @param[in] idx The index. [Limits: 0 <= value <
@@ -240,6 +236,7 @@ namespace DotRecast.Detour.Crowd
         /// Updates the specified agent's configuration.
         /// @param[in] idx The agent index. [Limits: 0 <= value < #GetAgentCount()]
         /// @param[in] params The new agent configuration.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void UpdateAgentParameters(DtCrowdAgent agent, DtCrowdAgentParams option)
         {
             agent.option = option;
@@ -393,10 +390,7 @@ namespace DotRecast.Detour.Crowd
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetAgentCount()
-        {
-            return m_maxAgents;
-        }
+        public int GetAgentCount() => m_maxAgents;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public DtCrowdAgent GetAgent(int idx)
@@ -432,35 +426,26 @@ namespace DotRecast.Detour.Crowd
             return m_activeAgents.AsSpan(0, nagents);
         }
 
-        public Vector3 GetQueryExtents()
-        {
-            return m_agentPlacementHalfExtents;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Vector3 GetQueryExtents() => m_agentPlacementHalfExtents;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IDtQueryFilter GetFilter(int i)
         {
             return i >= 0 && i < DtCrowdConst.DT_CROWD_MAX_QUERY_FILTER_TYPE ? m_filters[i] : null;
         }
 
-        public DtProximityGrid GetGrid()
-        {
-            return m_grid;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public DtProximityGrid GetGrid() => m_grid;
 
-        public DtPathQueue GetPathQueue()
-        {
-            return m_pathq;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public DtPathQueue GetPathQueue() => m_pathq;
 
-        public DtCrowdTelemetry Telemetry()
-        {
-            return m_telemetry;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public DtCrowdTelemetry Telemetry() => m_telemetry;
 
-        public DtCrowdConfig Config()
-        {
-            return m_config;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public DtCrowdConfig Config() => m_config;
 
         public DtCrowdTelemetry Update(float dt, DtCrowdAgentDebugInfo debug = null)
         {
@@ -468,7 +453,6 @@ namespace DotRecast.Detour.Crowd
 
             m_telemetry.Start();
 
-            //var agents = FCollectionsMarshal.AsSpan(GetActiveAgents());
             var agents = GetActiveAgents();
 
             // Check that all agents still have valid paths.
@@ -935,7 +919,6 @@ namespace DotRecast.Detour.Crowd
         private void UpdateTopologyOptimization(ReadOnlySpan<DtCrowdAgent> agents, float dt)
         {
             using var timer = m_telemetry.ScopedTimer(DtCrowdTimerLabel.UpdateTopologyOptimization);
-
             var nqueue = 0;
 
             for (var i = 0; i < agents.Length; i++)
@@ -1597,6 +1580,7 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private float Tween(float t, float t0, float t1)
         {
             return Math.Clamp((t - t0) / (t1 - t0), 0.0f, 1.0f);

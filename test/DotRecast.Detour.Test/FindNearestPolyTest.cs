@@ -25,18 +25,18 @@ namespace DotRecast.Detour.Test;
 public class FindNearestPolyTest : AbstractDetourTest
 {
     private static readonly long[] POLY_REFS =
-    {
+    [
         281474976710696L, 281474976710773L, 281474976710680L, 281474976710753L, 281474976710733L
-    };
+    ];
 
     private static readonly Vector3[] POLY_POS =
-    {
+    [
         new Vector3(22.606520f, 10.197294f, -45.918674f),
         new Vector3(22.331268f, 10.197294f, -1.040187f),
         new Vector3(18.694363f, 15.803535f, -73.090416f),
         new Vector3(0.745335f, 10.197294f, -5.940050f),
         new Vector3(-20.651257f, 5.904126f, -13.712508f)
-    };
+    ];
 
     [Test]
     public void TestFindNearestPoly()
