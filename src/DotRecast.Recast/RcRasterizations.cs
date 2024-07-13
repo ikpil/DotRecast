@@ -322,7 +322,7 @@ namespace DotRecast.Recast
             z1 = Math.Clamp(z1, 0, h - 1);
 
             // Clip the triangle into all grid cells it touches.
-            float[] buf = new float[7 * 3 * 4];
+            float[] buf = new float[7 * 3 * 4]; // TODO alloc
             int @in = 0;
             int inRow = 7 * 3;
             int p1 = inRow + 7 * 3;

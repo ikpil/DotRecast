@@ -72,8 +72,9 @@ namespace DotRecast.Recast
         /// @returns True if the operation completed successfully.
         public static bool BuildHeightfieldLayers(RcContext ctx, RcCompactHeightfield chf, int borderSize, int walkableHeight, out RcHeightfieldLayerSet lset)
         {
-            lset = null;
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_LAYERS);
+
+            lset = null;
 
             int w = chf.width;
             int h = chf.height;

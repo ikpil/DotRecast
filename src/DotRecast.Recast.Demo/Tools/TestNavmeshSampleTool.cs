@@ -37,7 +37,6 @@ public class TestNavmeshSampleTool : ISampleTool
 
     // for random point in circle mode
     private int _randomPointCount = 300;
-    //private bool _constrainByCircle;
 
     // 
     private bool m_sposSet;
@@ -75,14 +74,8 @@ public class TestNavmeshSampleTool : ISampleTool
     {
         _tool = new();
 
-        //m_filter = new DtQueryDefaultFilter(
-        //    SampleAreaModifications.SAMPLE_POLYFLAGS_ALL,
-        //    SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED,
-        //    new float[] { 1f, 1f, 1f, 1f, 2f, 1.5f }
-        //);
         m_filter = new DtQueryDefaultFilter();
         m_filter.SetIncludeFlags(SampleAreaModifications.SAMPLE_POLYFLAGS_ALL ^ SampleAreaModifications.SAMPLE_POLYFLAGS_DISABLED);
-        //m_filter.SetIncludeFlags(SampleAreaModifications.SAMPLE_POLYFLAGS_ALL);
         m_filter.SetExcludeFlags(0);
         m_filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GROUND, 1f);
         m_filter.SetAreaCost(SampleAreaModifications.SAMPLE_POLYAREA_TYPE_WATER, 10f);
@@ -103,7 +96,6 @@ public class TestNavmeshSampleTool : ISampleTool
         bool prevEnableRaycast = _enableRaycast;
 
         int prevStraightPathOption = _straightPathOption;
-        //bool prevConstrainByCircle = _constrainByCircle;
 
         ImGui.Text("Mode");
         ImGui.Separator();
@@ -144,7 +136,6 @@ public class TestNavmeshSampleTool : ISampleTool
         if (_mode == RcTestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE)
         {
             ImGui.SliderInt("Random point count", ref _randomPointCount, 0, 10000);
-            //ImGui.Checkbox("Constrained", ref _constrainByCircle);
         }
 
         ImGui.Text("Common");
@@ -482,8 +473,10 @@ public class TestNavmeshSampleTool : ISampleTool
         {
             if (m_polys != null)
             {
-                var segmentVerts = new List<RcSegmentVert>();
-                var segmentRefs = new List<long>();
+                const int MAX_SEGS = DtDetour.DT_VERTS_PER_POLYGON * 4;
+                Span<RcSegmentVert> segs = stackalloc RcSegmentVert[MAX_SEGS];
+                Span<long> refs = stackalloc long[MAX_SEGS];
+                refs.Clear();
 
                 for (int i = 0; i < m_npolys; i++)
                 {
@@ -503,14 +496,14 @@ public class TestNavmeshSampleTool : ISampleTool
                     {
                         var result = _sample
                             .GetNavMeshQuery()
-                            .GetPolyWallSegments(m_polys[i], false, m_filter, ref segmentVerts, ref segmentRefs);
+                            .GetPolyWallSegments(m_polys[i], m_filter, segs, refs, out var nsegs, MAX_SEGS);
 
                         if (result.Succeeded())
                         {
                             dd.Begin(LINES, 2.0f);
-                            for (int j = 0; j < segmentVerts.Count; ++j)
+                            for (int j = 0; j < nsegs; ++j)
                             {
-                                RcSegmentVert s = segmentVerts[j];
+                                ref readonly RcSegmentVert s = ref segs[j];
                                 var v0 = s.vmin;
                                 var s3 = s.vmax;
                                 // Skip too distant segments.
@@ -526,7 +519,7 @@ public class TestNavmeshSampleTool : ISampleTool
                                 norm = Vector3.Normalize(norm);
                                 Vector3 p1 = RcVec.Mad(p0, norm, agentRadius * 0.5f);
                                 // Skip backfacing segments.
-                                if (segmentRefs[j] != 0)
+                                if (refs[j] != 0)
                                 {
                                     int col = DuRGBA(255, 255, 255, 32);
                                     dd.Vertex(s.vmin.X, s.vmin.Y + agentClimb, s.vmin.Z, col);

@@ -429,7 +429,7 @@ namespace DotRecast.Recast
                 }
             }
 
-            List<RcDirtyEntry> dirtyEntries = new List<RcDirtyEntry>();
+            List<RcDirtyEntry> dirtyEntries = new List<RcDirtyEntry>(); // TODO alloc temp
             int iter = 0;
             while (stack.Count > 0)
             {
@@ -1415,7 +1415,7 @@ namespace DotRecast.Recast
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_DISTANCEFIELD);
 
-            int[] src = new int[chf.spanCount];
+            int[] src = new int[chf.spanCount]; // TODO alloc
 
             ctx.StartTimer(RcTimerLabel.RC_TIMER_BUILD_DISTANCEFIELD_DIST);
             int maxDist = CalculateDistanceField(chf, src);
@@ -1667,7 +1667,7 @@ namespace DotRecast.Recast
 
             int LOG_NB_STACKS = 3;
             int NB_STACKS = 1 << LOG_NB_STACKS;
-            List<List<RcLevelStackEntry>> lvlStacks = new List<List<RcLevelStackEntry>>();
+            List<List<RcLevelStackEntry>> lvlStacks = new List<List<RcLevelStackEntry>>(); // TODO alloc
             for (int i = 0; i < NB_STACKS; ++i)
             {
                 lvlStacks.Add(new List<RcLevelStackEntry>(256));
@@ -1675,8 +1675,8 @@ namespace DotRecast.Recast
 
             List<RcLevelStackEntry> stack = new List<RcLevelStackEntry>(256);
 
-            int[] srcReg = new int[chf.spanCount];
-            int[] srcDist = new int[chf.spanCount];
+            int[] srcReg = new int[chf.spanCount]; // TODO alloc
+            int[] srcDist = new int[chf.spanCount]; // TODO alloc
 
             int regionId = 1;
             int level = (chf.maxDistance + 1) & ~1;
@@ -1760,7 +1760,7 @@ namespace DotRecast.Recast
             ctx.StartTimer(RcTimerLabel.RC_TIMER_BUILD_REGIONS_FILTER);
 
             // Merge regions and filter out small regions.
-            List<int> overlaps = new List<int>();
+            List<int> overlaps = new List<int>(); // TODO alloc
             chf.maxRegions = MergeAndFilterRegions(ctx, minRegionArea, mergeRegionArea, regionId, chf, srcReg, overlaps);
 
             // If overlapping regions were found during merging, split those regions.
@@ -1790,13 +1790,9 @@ namespace DotRecast.Recast
             int borderSize = chf.borderSize;
             int id = 1;
 
-            int[] srcReg = new int[chf.spanCount];
+            int[] srcReg = new int[chf.spanCount]; // TODO alloc
             int nsweeps = Math.Max(chf.width, chf.height);
-            RcSweepSpan[] sweeps = new RcSweepSpan[nsweeps];
-            //for (int i = 0; i < sweeps.Length; i++)
-            //{
-            //    sweeps[i] = new RcSweepSpan();
-            //}
+            RcSweepSpan[] sweeps = new RcSweepSpan[nsweeps]; // TODO alloc
 
             // Mark border regions.
             if (borderSize > 0)
@@ -1815,7 +1811,7 @@ namespace DotRecast.Recast
                 id++;
             }
 
-            int[] prev = new int[1024];
+            int[] prev = new int[1024]; // TODO alloc
 
             // Sweep one line at a time.
             for (int y = borderSize; y < h - borderSize; ++y)
