@@ -23,13 +23,12 @@ using DotRecast.Core.Compression;
 
 namespace DotRecast.Detour.TileCache.Io.Compress
 {
-    public class DtTileCacheFastLzCompressor : IRcCompressor
+    public class DtTileCacheFastLzCompressor : IRcCompressor // TODO span api
     {
         public static readonly DtTileCacheFastLzCompressor Shared = new DtTileCacheFastLzCompressor();
 
         private DtTileCacheFastLzCompressor()
-        {
-        }
+        { }
 
         public byte[] Decompress(byte[] buf)
         {
