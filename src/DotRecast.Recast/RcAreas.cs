@@ -52,8 +52,8 @@ namespace DotRecast.Recast
 
             using var timer = context.ScopedTimer(RcTimerLabel.RC_TIMER_ERODE_AREA);
 
-            int[] distanceToBoundary = new int[compactHeightfield.spanCount]; // TODO alloc
-            Array.Fill(distanceToBoundary, 255);
+            Span<int> distanceToBoundary = stackalloc int[compactHeightfield.spanCount];
+            distanceToBoundary.Fill(255);
 
             // Mark boundary cells.
             for (int z = 0; z < zSize; ++z)

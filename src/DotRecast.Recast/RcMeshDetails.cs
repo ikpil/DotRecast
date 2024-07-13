@@ -711,10 +711,10 @@ namespace DotRecast.Recast
             return (((i * 0xd8163841) & 0xffff) / 65535.0f * 2.0f) - 1.0f;
         }
 
-        public static int BuildPolyDetail(RcContext ctx, float[] @in, int nin, 
-                                            float sampleDist, float sampleMaxError, 
-                                            int heightSearchRadius, RcCompactHeightfield chf, 
-                                            RcHeightPatch hp, float[] verts, 
+        public static int BuildPolyDetail(RcContext ctx, float[] @in, int nin,
+                                            float sampleDist, float sampleMaxError,
+                                            int heightSearchRadius, RcCompactHeightfield chf,
+                                            RcHeightPatch hp, float[] verts,
                                             ref List<int> tris, ref List<int> edges, ref List<int> samples)
         {
             const int MAX_VERTS = 127;
@@ -739,6 +739,8 @@ namespace DotRecast.Recast
 
             // Calculate minimum extents of the polygon based on input data.
             float minExtent = PolyMinExtent(verts, nverts);
+
+            Span<int> idx = stackalloc int[MAX_VERTS_PER_EDGE];
 
             // Tessellate outlines.
             // This is done in separate pass in order to ensure
@@ -797,7 +799,7 @@ namespace DotRecast.Recast
                     }
 
                     // Simplify samples.
-                    int[] idx = new int[MAX_VERTS_PER_EDGE]; // TODO alloc
+                    idx.Clear();
                     idx[0] = 0;
                     idx[1] = nn;
                     int nidx = 2;
@@ -1033,7 +1035,7 @@ namespace DotRecast.Recast
             // Note: Reads to the compact heightfield are offset by border size (bs)
             // since border size offset is already removed from the polymesh vertices.
 
-            int[] offset = { 0, 0, -1, -1, 0, -1, 1, -1, 1, 0, 1, 1, 0, 1, -1, 1, -1, 0, }; // TODO alloc
+            Span<int> offset = stackalloc int[] { 0, 0, -1, -1, 0, -1, 1, -1, 1, 0, 1, 1, 0, 1, -1, 1, -1, 0, };
 
             // Find cell closest to a poly vertex
             int startCellX = 0, startCellY = 0, startSpanIndex = -1;
@@ -1081,7 +1083,7 @@ namespace DotRecast.Recast
             array.Add(startCellX);
             array.Add(startCellY);
             array.Add(startSpanIndex);
-            int[] dirs = { 0, 1, 2, 3 }; // TODO alloc
+            Span<int> dirs = stackalloc int[] { 0, 1, 2, 3 };
             Array.Fill(hp.data, 0, 0, (hp.width * hp.height) - (0));
             // DFS to move to the center. Note that we need a DFS here and can not just move
             // directly towards the center without recording intermediate nodes, even though the polygons
