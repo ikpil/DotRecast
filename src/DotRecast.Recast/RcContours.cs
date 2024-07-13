@@ -24,7 +24,7 @@ using DotRecast.Core;
 
 namespace DotRecast.Recast
 {
-    
+
     using static RcRecast;
 
     public static class RcContours
@@ -37,7 +37,7 @@ namespace DotRecast.Recast
             int ch = s.y;
             int dirp = (dir + 1) & 0x3;
 
-            int[] regs =
+            Span<int> regs = stackalloc int[]
             {
                 0, 0, 0, 0
             };
@@ -744,7 +744,7 @@ namespace DotRecast.Recast
             cset.borderSize = chf.borderSize;
             cset.maxError = maxError;
 
-            int[] flags = new int[chf.spanCount];
+            int[] flags = new int[chf.spanCount]; // TODO alloc
 
             ctx.StartTimer(RcTimerLabel.RC_TIMER_BUILD_CONTOURS_TRACE);
 
