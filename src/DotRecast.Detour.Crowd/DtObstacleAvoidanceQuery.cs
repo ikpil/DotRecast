@@ -30,7 +30,7 @@ namespace DotRecast.Detour.Crowd
     {
         public const int DT_MAX_PATTERN_DIVS = 32; // < Max numver of adaptive divs.
         public const int DT_MAX_PATTERN_RINGS = 4;
-        public const float DT_PI = 3.14159265f;
+        //public const float DT_PI = 3.14159265f; // 3.14159274
 
         private DtObstacleAvoidanceParams m_params;
         private float m_invHorizTime;
@@ -50,20 +50,13 @@ namespace DotRecast.Detour.Crowd
             m_maxCircles = maxCircles;
             m_ncircles = 0;
             m_circles = new DtObstacleCircle[m_maxCircles];
-            //for (int i = 0; i < m_maxCircles; i++)
-            //{
-            //    m_circles[i] = new DtObstacleCircle();
-            //}
 
             m_maxSegments = maxSegments;
             m_nsegments = 0;
             m_segments = new DtObstacleSegment[m_maxSegments];
-            for (int i = 0; i < m_maxSegments; i++)
-            {
-                m_segments[i] = new DtObstacleSegment();
-            }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Reset()
         {
             m_ncircles = 0;
@@ -87,30 +80,22 @@ namespace DotRecast.Detour.Crowd
             if (m_nsegments >= m_maxSegments)
                 return;
 
-            DtObstacleSegment seg = m_segments[m_nsegments++];
+            ref DtObstacleSegment seg = ref m_segments[m_nsegments++];
             seg.p = p;
             seg.q = q;
         }
 
-        public int GetObstacleCircleCount()
-        {
-            return m_ncircles;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int GetObstacleCircleCount() => m_ncircles;
 
-        public DtObstacleCircle GetObstacleCircle(int i)
-        {
-            return m_circles[i];
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public DtObstacleCircle GetObstacleCircle(int i) => m_circles[i];
 
-        public int GetObstacleSegmentCount()
-        {
-            return m_nsegments;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int GetObstacleSegmentCount() => m_nsegments;
 
-        public DtObstacleSegment GetObstacleSegment(int i)
-        {
-            return m_segments[i];
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public DtObstacleSegment GetObstacleSegment(int i) => m_segments[i];
 
         private void Prepare(Vector3 pos, Vector3 dvel)
         {
@@ -144,7 +129,7 @@ namespace DotRecast.Detour.Crowd
 
             for (int i = 0; i < m_nsegments; ++i)
             {
-                DtObstacleSegment seg = m_segments[i];
+                ref DtObstacleSegment seg = ref m_segments[i];
 
                 // Precalc if the agent is really close to the segment.
                 float r = 0.01f;
@@ -233,7 +218,7 @@ namespace DotRecast.Detour.Crowd
 
             for (int i = 0; i < m_ncircles; ++i)
             {
-                ref DtObstacleCircle cir = ref m_circles[i];
+                ref readonly DtObstacleCircle cir = ref m_circles[i];
 
                 // RVO
                 Vector3 vab = vcand * 2;
@@ -268,7 +253,7 @@ namespace DotRecast.Detour.Crowd
 
             for (int i = 0; i < m_nsegments; ++i)
             {
-                DtObstacleSegment seg = m_segments[i];
+                ref readonly DtObstacleSegment seg = ref m_segments[i];
                 float htmin = 0;
 
                 if (seg.touch)
@@ -411,7 +396,7 @@ namespace DotRecast.Detour.Crowd
 
             int nd = Math.Clamp(ndivs, 1, DT_MAX_PATTERN_DIVS);
             int nr = Math.Clamp(nrings, 1, DT_MAX_PATTERN_RINGS);
-            float da = (1.0f / nd) * DT_PI * 2;
+            float da = (1.0f / nd) * MathF.PI * 2;
             float ca = MathF.Cos(da);
             float sa = MathF.Sin(da);
 
@@ -433,7 +418,7 @@ namespace DotRecast.Detour.Crowd
 
             for (int j = 0; j < nr; ++j)
             {
-                float r = (float)(nr - j) / (float)nr;
+                float r = (nr - j) / (float)nr;
                 pat[npat * 2 + 0] = ddir[(j % 2) * 3] * r;
                 pat[npat * 2 + 1] = ddir[(j % 2) * 3 + 2] * r;
                 int last1 = npat * 2;

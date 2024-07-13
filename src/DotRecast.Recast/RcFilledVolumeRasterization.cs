@@ -33,6 +33,7 @@ namespace DotRecast.Recast
         public static void RasterizeSphere(RcHeightfield hf, Vector3 center, float radius, int area, int flagMergeThr, RcContext ctx)
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_RASTERIZE_SPHERE);
+
             float[] bounds =
             {
                 center.X - radius, center.Y - radius, center.Z - radius, center.X + radius, center.Y + radius,
@@ -59,6 +60,7 @@ namespace DotRecast.Recast
         public static void RasterizeCylinder(RcHeightfield hf, Vector3 start, Vector3 end, float radius, int area, int flagMergeThr, RcContext ctx)
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_RASTERIZE_CYLINDER);
+
             float[] bounds =
             {
                 Math.Min(start.X, end.X) - radius, Math.Min(start.Y, end.Y) - radius,
@@ -73,6 +75,7 @@ namespace DotRecast.Recast
         public static void RasterizeBox(RcHeightfield hf, Vector3 center, Vector3[] halfEdges, int area, int flagMergeThr, RcContext ctx)
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_RASTERIZE_BOX);
+
             Vector3[] normals =
             {
                 new Vector3(halfEdges[0].X, halfEdges[0].Y, halfEdges[0].Z),
@@ -123,6 +126,7 @@ namespace DotRecast.Recast
         public static void RasterizeConvex(RcHeightfield hf, float[] vertices, int[] triangles, int area, int flagMergeThr, RcContext ctx)
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_RASTERIZE_CONVEX);
+
             float[] bounds = new float[] { vertices[0], vertices[1], vertices[2], vertices[0], vertices[1], vertices[2] };
             for (int i = 0; i < vertices.Length; i += 3)
             {
@@ -181,7 +185,7 @@ namespace DotRecast.Recast
         }
 
         private static void RasterizationFilledShape(RcHeightfield hf, float[] bounds, int area, int flagMergeThr,
-            Func<float[], float[]> intersection)
+            Func<float[], float[]> intersection) // TODO alloc delegate
         {
             if (!OverlapBounds(hf.bmin, hf.bmax, bounds))
             {
@@ -204,7 +208,7 @@ namespace DotRecast.Recast
             int zMin = (int)((bounds[2] - hf.bmin.Z) * ics);
             int xMax = Math.Min(hf.width - 1, (int)((bounds[3] - hf.bmin.X) * ics));
             int zMax = Math.Min(hf.height - 1, (int)((bounds[5] - hf.bmin.Z) * ics));
-            float[] rectangle = new float[5];
+            float[] rectangle = new float[5]; // TODO alloc
             rectangle[4] = hf.bmin.Y;
             for (int x = xMin; x <= xMax; x++)
             {
@@ -765,7 +769,7 @@ namespace DotRecast.Recast
                 return s1;
             }
 
-            return new float[] { Math.Min(s1[0], s2[0]), Math.Max(s1[1], s2[1]) };
+            return new float[] { Math.Min(s1[0], s2[0]), Math.Max(s1[1], s2[1]) }; // TODO alloc
         }
 
         private static float LenSqr(float dx, float dy, float dz)
