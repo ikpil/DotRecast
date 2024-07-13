@@ -16,7 +16,7 @@ dotnet build -c Release
 
 ## ▶️ Run
 - To verify the run for all modules, run [DotRecast.Recast.Demo](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Recast.Demo/DotRecast.Recast.Demo.csproj)
-- on windows requirement : install to [Microsoft Visual C++ Redistributable Package](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist) 
+- on windows requirement : install to [Microsoft Visual C++ Redistributable Package](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist)
 
 ### ▶️ Running With Command Prompt
 
@@ -40,7 +40,7 @@ dotnet run --project src/DotRecast.Recast.Demo --framework net8.0 -c Release
 - [DotRecast.Detour.TileCache.Test](https://github.com/ikpil/DotRecast/tree/main/test/DotRecast.Detour.TileCache.Test) : ...
 - [DotRecast.Detour.Crowd.Test](https://github.com/ikpil/DotRecast/tree/main/test/DotRecast.Detour.Crowd.Test) : ...
 - [DotRecast.Detour.Dynamic.Test](https://github.com/ikpil/DotRecast/tree/main/test/DotRecast.Detour.Dynamic.Test) : ...
-- [DotRecast.Detour.Extras.Test](https://github.com/ikpil/DotRecast/tree/main/test/DotRecast.Detour.Extras.Test) : ...
+- ~~[DotRecast.Detour.Extras.Test](https://github.com/ikpil/DotRecast/tree/main/test/DotRecast.Detour.Extras.Test) : ...~~
 
 ### 🧪 Testing With Command Prompt
 
@@ -48,29 +48,29 @@ dotnet run --project src/DotRecast.Recast.Demo --framework net8.0 -c Release
  dotnet test --framework net8.0 -c Release
 ```
 
-### 🧪 Testing With IDE 
+### 🧪 Testing With IDE
 
 - Refer to the manual for your IDE.
 
 ## 🛠️ Integration
 
-There are a few ways to integrate [DotRecast.Recast](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Recast) and [DotRecast.Detour](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Detour) into your project. 
+There are a few ways to integrate [DotRecast.Recast](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Recast) and [DotRecast.Detour](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Detour) into your project.
 Source integration is the most popular and most flexible, and is what the project was designed for from the beginning.
 
 ### 🛠️ Source Integration
 
-It is recommended to add the source directories 
-[DotRecast.Core](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Core), 
+It is recommended to add the source directories
+[DotRecast.Core](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Core),
 [DotRecast.Recast](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Recast),
 [DotRecast.Detour](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Detour),
 [DotRecast.Detour.Crowd](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Detour.Crowd),
-[DotRecast.Detour.TileCache](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Detour.TileCache) 
-and directly into your project depending on which parts of the project you need. 
+[DotRecast.Detour.TileCache](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Detour.TileCache)
+and directly into your project depending on which parts of the project you need.
 
 For example your level building tool could include
 [DotRecast.Core](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Core),
 [DotRecast.Recast](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Recast),
-[DotRecast.Detour](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Detour) 
+[DotRecast.Detour](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Detour)
 and your game runtime could just include
 [DotRecast.Detour](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Detour)
 
@@ -80,7 +80,7 @@ and your game runtime could just include
 - [DotRecast.Detour.TileCache](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Detour.TileCache) : Runtime movement, obstacle avoidance, and crowd simulation systems.
 - [DotRecast.Detour.Crowd](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Detour.Crowd) : Runtime navmesh dynamic obstacle and re-baking system.
 - [DotRecast.Detour.Dynamic](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Detour.Dynamic) : robust support for dynamic nav meshes combining pre-built voxels with dynamic objects which can be freely added and removed
-- [DotRecast.Detour.Extras](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Detour.Extras) : simple tool to import navmeshes created with [A* Pathfinding Project](https://arongranberg.com/astar/)
+- ~~[DotRecast.Detour.Extras](https://github.com/ikpil/DotRecast/tree/main/src/DotRecast.Detour.Extras) : simple tool to import navmeshes created with [A* Pathfinding Project](https://arongranberg.com/astar/)~~
 
 
 ### 🛠️ Installation through Nuget
