@@ -3152,23 +3152,29 @@ namespace DotRecast.Detour
             return DtStatus.DT_SUCCESS;
         }
 
-
-        protected void InsertInterval(List<DtSegInterval> ints, int tmin, int tmax, long refs)
+        protected void InsertInterval(Span<DtSegInterval> ints, ref int nints, int tmin, int tmax, long refs)
         {
+            if (nints + 1 > ints.Length)
+                return;
+
             // Find insertion point.
             int idx = 0;
-            while (idx < ints.Count)
+            while (idx < nints)
             {
                 if (tmax <= ints[idx].tmin)
-                {
                     break;
-                }
-
                 idx++;
             }
+            // Move current results.
+            if (nints - idx != 0)
+                ints.Slice(idx, nints - idx).CopyTo(ints.Slice(idx + 1));
+            //memmove(ints+idx+1, ints+idx, sizeof(dtSegInterval)*(nints-idx));
 
             // Store
-            ints.Insert(idx, new DtSegInterval(refs, tmin, tmax));
+            ints[idx].refs = refs;
+            ints[idx].tmin = tmin;
+            ints[idx].tmax = tmax;
+            nints++;
         }
 
         /// @par
@@ -3191,11 +3197,12 @@ namespace DotRecast.Detour
         /// @param[out] segmentCount The number of segments returned.
         /// @param[in] maxSegments The maximum number of segments the result arrays can hold.
         /// @returns The status flags for the query.
-        public DtStatus GetPolyWallSegments(long refs, bool storePortals, IDtQueryFilter filter,
-            ref List<RcSegmentVert> segmentVerts, ref List<long> segmentRefs)
+        public DtStatus GetPolyWallSegments(long refs, IDtQueryFilter filter,
+             Span<RcSegmentVert> segmentVerts, Span<long> segmentRefs, out int segmentCount, int maxSegments)
         {
-            segmentVerts.Clear();
-            segmentRefs.Clear();
+            System.Diagnostics.Debug.Assert(m_nav != null);
+
+            segmentCount = 0;
 
             var status = m_nav.GetTileAndPolyByRef(refs, out var tile, out var poly);
             if (status.Failed())
@@ -3203,16 +3210,22 @@ namespace DotRecast.Detour
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            if (null == filter)
+            if (null == filter || segmentVerts.IsEmpty || maxSegments < 0)
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            List<DtSegInterval> ints = new List<DtSegInterval>(16); // TODO alloc temp
+            int n = 0;
+            const int MAX_INTERVAL = 16;
+            Span<DtSegInterval> ints = stackalloc DtSegInterval[MAX_INTERVAL];
+            int nints;
+
+            bool storePortals = !segmentRefs.IsEmpty;
+
             for (int i = 0, j = poly.vertCount - 1; i < poly.vertCount; j = i++)
             {
                 // Skip non-solid edges.
-                ints.Clear();
+                nints = 0;
                 if ((poly.neis[j] & DT_EXT_LINK) != 0)
                 {
                     // Tile border.
@@ -3226,7 +3239,7 @@ namespace DotRecast.Detour
                                 m_nav.GetTileAndPolyByRefUnsafe(link.refs, out var neiTile, out var neiPoly);
                                 if (filter.PassFilter(link.refs, neiTile, neiPoly))
                                 {
-                                    InsertInterval(ints, link.bmin, link.bmax, link.refs);
+                                    InsertInterval(ints, ref nints, link.bmin, link.bmax, link.refs);
                                 }
                             }
                         }
@@ -3241,48 +3254,59 @@ namespace DotRecast.Detour
                         int idx = (poly.neis[j] - 1);
                         neiRef = m_nav.GetPolyRefBase(tile) | (long)idx;
                         if (!filter.PassFilter(neiRef, tile, tile.data.polys[idx]))
-                        {
                             neiRef = 0;
-                        }
                     }
 
                     // If the edge leads to another polygon and portals are not stored, skip.
                     if (neiRef != 0 && !storePortals)
-                    {
                         continue;
+
+                    if (n < maxSegments)
+                    {
+                        int ivj = poly.verts[j] * 3;
+                        int ivi = poly.verts[i] * 3;
+                        ref var seg = ref segmentVerts[n];
+                        seg.vmin = RcVec.Create(tile.data.verts, ivj);
+                        seg.vmax = RcVec.Create(tile.data.verts, ivi);
+                        if (!segmentRefs.IsEmpty)
+                            segmentRefs[n] = neiRef;
+                        n++;
+                    }
+                    else
+                    {
+                        status |= DtStatus.DT_BUFFER_TOO_SMALL;
                     }
 
-                    int ivj = poly.verts[j] * 3;
-                    int ivi = poly.verts[i] * 3;
-                    var seg = new RcSegmentVert();
-                    seg.vmin = RcVec.Create(tile.data.verts, ivj);
-                    seg.vmax = RcVec.Create(tile.data.verts, ivi);
-                    // RcArrays.Copy(tile.data.verts, ivj, seg, 0, 3);
-                    // RcArrays.Copy(tile.data.verts, ivi, seg, 3, 3);
-                    segmentVerts.Add(seg);
-                    segmentRefs.Add(neiRef);
                     continue;
                 }
 
-                // Add sentinels
-                InsertInterval(ints, -1, 0, 0);
-                InsertInterval(ints, 255, 256, 0);
+                InsertInterval(ints, ref nints, -1, 0, 0);
+                InsertInterval(ints, ref nints, 255, 256, 0);
 
                 // Store segments.
                 int vj = poly.verts[j] * 3;
                 int vi = poly.verts[i] * 3;
-                for (int k = 1; k < ints.Count; ++k)
+                for (int k = 1; k < nints; ++k)
                 {
                     // Portal segment.
                     if (storePortals && ints[k].refs != 0)
                     {
                         float tmin = ints[k].tmin / 255.0f;
                         float tmax = ints[k].tmax / 255.0f;
-                        var seg = new RcSegmentVert();
-                        seg.vmin = RcVec.Lerp(tile.data.verts, vj, vi, tmin);
-                        seg.vmax = RcVec.Lerp(tile.data.verts, vj, vi, tmax);
-                        segmentVerts.Add(seg);
-                        segmentRefs.Add(ints[k].refs);
+                        if (n < maxSegments)
+                        {
+                            ref var seg = ref segmentVerts[n];
+                            seg.vmin = RcVec.Lerp(tile.data.verts, vj, vi, tmin);
+                            seg.vmax = RcVec.Lerp(tile.data.verts, vj, vi, tmax);
+
+                            if (!segmentRefs.IsEmpty)
+                                segmentRefs[n] = ints[k].refs;
+                            n++;
+                        }
+                        else
+                        {
+                            status |= DtStatus.DT_BUFFER_TOO_SMALL;
+                        }
                     }
 
                     // Wall segment.
@@ -3292,14 +3316,25 @@ namespace DotRecast.Detour
                     {
                         float tmin = imin / 255.0f;
                         float tmax = imax / 255.0f;
-                        var seg = new RcSegmentVert();
-                        seg.vmin = RcVec.Lerp(tile.data.verts, vj, vi, tmin);
-                        seg.vmax = RcVec.Lerp(tile.data.verts, vj, vi, tmax);
-                        segmentVerts.Add(seg);
-                        segmentRefs.Add(0L);
+                        if (n < maxSegments)
+                        {
+                            ref var seg = ref segmentVerts[n];
+                            seg.vmin = RcVec.Lerp(tile.data.verts, vj, vi, tmin);
+                            seg.vmax = RcVec.Lerp(tile.data.verts, vj, vi, tmax);
+
+                            if (!segmentRefs.IsEmpty)
+                                segmentRefs[n] = 0;
+                            n++;
+                        }
+                        else
+                        {
+                            status |= DtStatus.DT_BUFFER_TOO_SMALL;
+                        }
                     }
                 }
             }
+
+            segmentCount = n;
 
             return DtStatus.DT_SUCCESS;
         }
@@ -3553,10 +3588,8 @@ namespace DotRecast.Detour
 
         /// Gets the navigation mesh the query object is using.
         /// @return The navigation mesh the query object is using.
-        public DtNavMesh GetAttachedNavMesh()
-        {
-            return m_nav;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public DtNavMesh GetAttachedNavMesh() => m_nav;
 
         /// Gets a path from the explored nodes in the previous search.
         ///  @param[in]		endRef		The reference id of the end polygon.
@@ -3655,9 +3688,7 @@ namespace DotRecast.Detour
             return false;
         }
 
-        public DtNodePool GetNodePool()
-        {
-            return m_nodePool;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public DtNodePool GetNodePool() => m_nodePool;
     }
 }
