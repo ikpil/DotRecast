@@ -18,6 +18,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System.Runtime.CompilerServices;
+
 namespace DotRecast.Recast
 {
     public readonly struct RcAreaModification
@@ -58,14 +60,10 @@ namespace DotRecast.Recast
             Mask = other.Mask;
         }
 
-        public readonly int GetMaskedValue()
-        {
-            return Value & Mask;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly int GetMaskedValue() => Value & Mask;
 
-        public readonly int Apply(int area)
-        {
-            return ((Value & Mask) | (area & ~Mask));
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly int Apply(int area) => (Value & Mask) | (area & ~Mask);
     }
 }

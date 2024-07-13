@@ -30,7 +30,7 @@ namespace DotRecast.Detour.Crowd
 {
     /// Represents a dynamic polygon corridor used to plan agent movement.
     /// @ingroup crowd, detour
-    public class DtPathCorridor
+    public sealed class DtPathCorridor
     {
         private Vector3 m_pos;
         private Vector3 m_target;
@@ -105,12 +105,11 @@ namespace DotRecast.Detour.Crowd
         /// Resets the path corridor to the specified position.
         ///  @param[in]		ref		The polygon reference containing the position.
         ///  @param[in]		pos		The new position in the corridor. [(x, y, z)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Reset(long refs, Vector3 pos)
         {
             m_pos = pos;
             m_target = pos;
-            //m_path.Clear();
-            //m_path.Add(refs);
             m_path[0] = refs;
             m_npath = 1;
         }
@@ -159,7 +158,6 @@ namespace DotRecast.Detour.Crowd
                 }
             }
 
-
             // Prune points after an off-mesh connection.
             for (int i = 0; i < ncorners; ++i)
             {
@@ -169,7 +167,6 @@ namespace DotRecast.Detour.Crowd
                     break;
                 }
             }
-
 
             return ncorners;
         }
@@ -446,15 +443,12 @@ namespace DotRecast.Detour.Crowd
             {
                 // The first polyref is bad, use current safe values.
                 m_pos = new Vector3(safePos);
-                //m_path.Clear();
-                //m_path.Add(safeRef);
                 m_path[0] = safeRef;
                 m_npath = 1;
             }
             else if (n < m_npath)
             {
                 // The path is partially usable.
-                //m_path = m_path.GetRange(0, n);
                 m_npath = n;
             }
 
@@ -490,49 +484,31 @@ namespace DotRecast.Detour.Crowd
         /// Gets the current position within the corridor. (In the first polygon.)
         /// @return The current position within the corridor.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector3 GetPos()
-        {
-            return m_pos;
-        }
+        public Vector3 GetPos() => m_pos;
 
         /// Gets the current target within the corridor. (In the last polygon.)
         /// @return The current target within the corridor.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector3 GetTarget()
-        {
-            return m_target;
-        }
+        public Vector3 GetTarget() => m_target;
 
         /// The polygon reference id of the first polygon in the corridor, the polygon containing the position.
         /// @return The polygon reference id of the first polygon in the corridor. (Or zero if there is no path.)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public long GetFirstPoly()
-        {
-            return 0 == m_npath ? 0 : m_path[0];
-        }
+        public long GetFirstPoly() => 0 == m_npath ? 0 : m_path[0];
 
         /// The polygon reference id of the last polygon in the corridor, the polygon containing the target.
         /// @return The polygon reference id of the last polygon in the corridor. (Or zero if there is no path.)
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public long GetLastPoly()
-        {
-            return 0 == m_npath ? 0 : m_path[m_npath - 1];
-        }
+        public long GetLastPoly() => 0 == m_npath ? 0 : m_path[m_npath - 1];
 
         /// The corridor's path.
         /// @return The corridor's path. [(polyRef) * #getPathCount()]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<long> GetPath()
-        {
-            return m_path;
-        }
+        public Span<long> GetPath() => m_path;
 
         /// The number of polygons in the current corridor path.
         /// @return The number of polygons in the current corridor path.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetPathCount()
-        {
-            return m_npath;
-        }
+        public int GetPathCount() => m_npath;
     }
 }
