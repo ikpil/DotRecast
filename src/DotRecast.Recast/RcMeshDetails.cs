@@ -90,7 +90,7 @@ namespace DotRecast.Recast
             return float.MaxValue;
         }
 
-        public static float DistancePtSeg(float[] verts, int pt, int p, int q)
+        public static float DistancePtSeg(Span<float> verts, int pt, int p, int q)
         {
             float pqx = verts[q + 0] - verts[p + 0];
             float pqy = verts[q + 1] - verts[p + 1];
@@ -121,7 +121,7 @@ namespace DotRecast.Recast
             return dx * dx + dy * dy + dz * dz;
         }
 
-        public static float DistancePtSeg2d(Vector3 verts, float[] poly, int p, int q)
+        public static float DistancePtSeg2d(Vector3 verts, ReadOnlySpan<float> poly, int p, int q)
         {
             float pqx = poly[q + 0] - poly[p + 0];
             float pqz = poly[q + 2] - poly[p + 2];
@@ -149,7 +149,7 @@ namespace DotRecast.Recast
             return dx * dx + dz * dz;
         }
 
-        public static float DistancePtSeg2d(float[] verts, int pt, float[] poly, int p, int q)
+        public static float DistancePtSeg2d(ReadOnlySpan<float> verts, int pt, ReadOnlySpan<float> poly, int p, int q)
         {
             float pqx = poly[q + 0] - poly[p + 0];
             float pqz = poly[q + 2] - poly[p + 2];
@@ -177,7 +177,7 @@ namespace DotRecast.Recast
             return dx * dx + dz * dz;
         }
 
-        public static float DistToTriMesh(Vector3 p, float[] verts, int nverts, List<int> tris, int ntris)
+        public static float DistToTriMesh(Vector3 p, ReadOnlySpan<float> verts, int nverts, List<int> tris, int ntris)
         {
             float dmin = float.MaxValue;
             for (int i = 0; i < ntris; ++i)
@@ -200,7 +200,7 @@ namespace DotRecast.Recast
             return dmin;
         }
 
-        public static float DistToPoly(int nvert, float[] verts, Vector3 p)
+        public static float DistToPoly(int nvert, ReadOnlySpan<float> verts, Vector3 p)
         {
             float dmin = float.MaxValue;
             int i, j;
@@ -348,7 +348,7 @@ namespace DotRecast.Recast
             }
         }
 
-        public static bool OverlapSegSeg2d(float[] verts, int a, int b, int c, int d)
+        public static bool OverlapSegSeg2d(ReadOnlySpan<float> verts, int a, int b, int c, int d)
         {
             float a1 = Cross2(verts, a, b, d);
             float a2 = Cross2(verts, a, b, c);
@@ -365,7 +365,7 @@ namespace DotRecast.Recast
             return false;
         }
 
-        public static bool OverlapEdges(float[] pts, List<int> edges, int s1, int t1)
+        public static bool OverlapEdges(ReadOnlySpan<float> pts, List<int> edges, int s1, int t1)
         {
             for (int i = 0; i < edges.Count / 4; ++i)
             {
@@ -386,7 +386,7 @@ namespace DotRecast.Recast
             return false;
         }
 
-        public static int CompleteFacet(RcContext ctx, float[] pts, int npts, List<int> edges, int maxEdges, int nfaces, int e)
+        public static int CompleteFacet(RcContext ctx, ReadOnlySpan<float> pts, int npts, List<int> edges, int maxEdges, int nfaces, int e)
         {
             const float EPS = 1e-5f;
 
@@ -507,7 +507,7 @@ namespace DotRecast.Recast
             return nfaces;
         }
 
-        public static void DelaunayHull(RcContext ctx, int npts, float[] pts, int nhull, int[] hull, List<int> tris)
+        public static void DelaunayHull(RcContext ctx, int npts, ReadOnlySpan<float> pts, int nhull, ReadOnlySpan<int> hull, List<int> tris)
         {
             int nfaces = 0;
             int maxEdges = npts * 10;
@@ -603,7 +603,7 @@ namespace DotRecast.Recast
         }
 
         // Calculate minimum extend of the polygon.
-        public static float PolyMinExtent(float[] verts, int nverts)
+        public static float PolyMinExtent(ReadOnlySpan<float> verts, int nverts)
         {
             float minDist = float.MaxValue;
             for (int i = 0; i < nverts; i++)
@@ -629,7 +629,7 @@ namespace DotRecast.Recast
             return MathF.Sqrt(minDist);
         }
 
-        public static void TriangulateHull(int nverts, float[] verts, int nhull, int[] hull, int nin, List<int> tris)
+        public static void TriangulateHull(int nverts, Span<float> verts, int nhull, Span<int> hull, int nin, List<int> tris)
         {
             int start = 0, left = 1, right = nhull - 1;
 
@@ -711,7 +711,7 @@ namespace DotRecast.Recast
             return (((i * 0xd8163841) & 0xffff) / 65535.0f * 2.0f) - 1.0f;
         }
 
-        public static int BuildPolyDetail(RcContext ctx, float[] @in, int nin,
+        public static int BuildPolyDetail(RcContext ctx, Span<float> @in, int nin,
                                             float sampleDist, float sampleMaxError,
                                             int heightSearchRadius, RcCompactHeightfield chf,
                                             RcHeightPatch hp, float[] verts,
@@ -720,8 +720,8 @@ namespace DotRecast.Recast
             const int MAX_VERTS = 127;
             const int MAX_TRIS = 255; // Max tris for delaunay is 2n-2-k (n=num verts, k=num hull verts).
             const int MAX_VERTS_PER_EDGE = 32;
-            float[] edge = new float[(MAX_VERTS_PER_EDGE + 1) * 3]; // TODO alloc
-            int[] hull = new int[MAX_VERTS]; // TODO alloc
+            Span<float> edge = stackalloc float[(MAX_VERTS_PER_EDGE + 1) * 3];
+            Span<int> hull = stackalloc int[MAX_VERTS];
             int nhull = 0;
 
             int nverts = nin;
@@ -994,7 +994,7 @@ namespace DotRecast.Recast
             return nverts;
         }
 
-        public static bool OnHull(int a, int b, int nhull, int[] hull)
+        public static bool OnHull(int a, int b, int nhull, Span<int> hull)
         {
             // All internal sampled points come after the hull so we can early out for those.
             if (a >= nhull || b >= nhull)
@@ -1010,7 +1010,7 @@ namespace DotRecast.Recast
         }
 
         // Find edges that lie on hull and mark them as such.
-        public static void SetTriFlags(List<int> tris, int nhull, int[] hull)
+        public static void SetTriFlags(List<int> tris, int nhull, Span<int> hull)
         {
             // Matches DT_DETAIL_EDGE_BOUNDARY
             const int DETAIL_EDGE_BOUNDARY = 0x1;
@@ -1029,8 +1029,8 @@ namespace DotRecast.Recast
         }
 
 
-        public static void SeedArrayWithPolyCenter(RcContext ctx, RcCompactHeightfield chf, int[] meshpoly, int poly, int npoly,
-            int[] verts, int bs, RcHeightPatch hp, List<int> array)
+        public static void SeedArrayWithPolyCenter(RcContext ctx, RcCompactHeightfield chf, ReadOnlySpan<int> meshpoly, int poly, int npoly,
+            ReadOnlySpan<int> verts, int bs, RcHeightPatch hp, List<int> array)
         {
             // Note: Reads to the compact heightfield are offset by border size (bs)
             // since border size offset is already removed from the polymesh vertices.
@@ -1187,8 +1187,8 @@ namespace DotRecast.Recast
         }
 
         public static void GetHeightData(RcContext ctx, RcCompactHeightfield chf,
-            int[] meshpolys, int poly, int npoly,
-            int[] verts, int bs,
+            ReadOnlySpan<int> meshpolys, int poly, int npoly,
+            ReadOnlySpan<int> verts, int bs,
             ref RcHeightPatch hp, ref List<int> queue,
             int region)
         {
@@ -1344,8 +1344,8 @@ namespace DotRecast.Recast
             int nPolyVerts = 0;
             int maxhw = 0, maxhh = 0;
 
-            int[] bounds = new int[mesh.npolys * 4];
-            float[] poly = new float[nvp * 3];
+            Span<int> bounds = stackalloc int[mesh.npolys * 4];
+            Span<float> poly = stackalloc float[nvp * 3];
 
             // Find max size for a polygon area.
             for (int i = 0; i < mesh.npolys; ++i)
