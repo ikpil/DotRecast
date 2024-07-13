@@ -19,7 +19,7 @@ namespace DotRecast.Recast.Toolset.Gizmos
                 0.5f * (start.Z + end.Z)
             };
             RcVec3f axis = new RcVec3f(end.X - start.X, end.Y - start.Y, end.Z - start.Z);
-            RcVec3f[] normals = new RcVec3f[3];
+            Span<RcVec3f> normals = stackalloc RcVec3f[3];
             normals[1] = new RcVec3f(end.X - start.X, end.Y - start.Y, end.Z - start.Z);
             normals[1] = RcVec3f.Normalize(normals[1]);
             normals[0] = GetSideVector(axis);

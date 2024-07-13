@@ -17,6 +17,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
 using System.Collections.Generic;
 using DotRecast.Core;
 using DotRecast.Core.Numerics;
@@ -45,6 +46,7 @@ namespace DotRecast.Recast
         private static bool Raycast(RcPolyMesh poly, RcPolyMeshDetail meshDetail, RcVec3f sp, RcVec3f sq, out float hitTime)
         {
             hitTime = 0;
+            Span<RcVec3f> tempVs = stackalloc RcVec3f[3];
             if (meshDetail != null)
             {
                 for (int i = 0; i < meshDetail.nmeshes; ++i)
@@ -57,7 +59,7 @@ namespace DotRecast.Recast
                     int tris = btris * 4;
                     for (int j = 0; j < ntris; ++j)
                     {
-                        RcVec3f[] vs = new RcVec3f[3];
+                        Span<RcVec3f> vs = tempVs;
                         for (int k = 0; k < 3; ++k)
                         {
                             vs[k].X = meshDetail.verts[verts + meshDetail.tris[tris + j * 4 + k] * 3];

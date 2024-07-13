@@ -17,6 +17,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
 using DotRecast.Core;
 using DotRecast.Core.Numerics;
 
@@ -48,6 +49,7 @@ namespace DotRecast.Detour
         private static bool Raycast(DtMeshTile tile, RcVec3f sp, RcVec3f sq, out float hitTime)
         {
             hitTime = 0.0f;
+            Span<RcVec3f> tempVerts = stackalloc RcVec3f[3];
             for (int i = 0; i < tile.data.header.polyCount; ++i)
             {
                 DtPoly p = tile.data.polys[i];
@@ -58,7 +60,7 @@ namespace DotRecast.Detour
 
                 ref DtPolyDetail pd = ref tile.data.detailMeshes[i];
 
-                RcVec3f[] verts = new RcVec3f[3];
+                Span<RcVec3f> verts = tempVerts;
                 for (int j = 0; j < pd.triCount; ++j)
                 {
                     int t = (pd.triBase + j) * 4;
