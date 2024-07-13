@@ -222,7 +222,7 @@ namespace DotRecast.Recast
         public static void FilterWalkableLowHeightSpans(RcContext context, int walkableHeight, RcHeightfield heightfield)
         {
             using var timer = context.ScopedTimer(RcTimerLabel.RC_TIMER_FILTER_WALKABLE);
-
+ 
             int xSize = heightfield.width;
             int zSize = heightfield.height;
 
