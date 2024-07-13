@@ -108,7 +108,7 @@ namespace DotRecast.Recast
             return ch;
         }
 
-        private static void WalkContour(int x, int y, int i, RcCompactHeightfield chf, Span<int> flags, List<int> points)
+        private static void WalkContour(int x, int y, int i, RcCompactHeightfield chf, int[] flags, List<int> points)
         {
             // Choose the first non-connected edge
             int dir = 0;
@@ -744,7 +744,7 @@ namespace DotRecast.Recast
             cset.borderSize = chf.borderSize;
             cset.maxError = maxError;
 
-            Span<int> flags = stackalloc int[chf.spanCount];
+            int[] flags = new int[chf.spanCount]; // TODO alloc
 
             ctx.StartTimer(RcTimerLabel.RC_TIMER_BUILD_CONTOURS_TRACE);
 
