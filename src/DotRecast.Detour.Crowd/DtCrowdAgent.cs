@@ -26,7 +26,7 @@ namespace DotRecast.Detour.Crowd
 {
     /// Represents an agent managed by a #dtCrowd object.
     /// @ingroup crowd
-    public class DtCrowdAgent
+    public sealed class DtCrowdAgent
     {
         public readonly long idx;
 
@@ -73,7 +73,7 @@ namespace DotRecast.Detour.Crowd
 
         public DtMoveRequestState targetState; // < State of the movement request.
         public long targetRef; // < Target polyref of the movement request.
-        public Vector3 targetPos = new Vector3(); // < Target position of the movement request (or velocity in case of DT_CROWDAGENT_TARGET_VELOCITY).
+        public Vector3 targetPos; // < Target position of the movement request (or velocity in case of DT_CROWDAGENT_TARGET_VELOCITY).
         public uint targetPathqRef; // < Path finder refs
         public bool targetReplan; // < Flag indicating that the current path is being replanned.
         public float targetReplanTime; // <Time since the agent's target was replanned.

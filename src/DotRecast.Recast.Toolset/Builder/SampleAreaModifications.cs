@@ -18,12 +18,11 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using System.Linq;
 using DotRecast.Core.Collections;
 
 namespace DotRecast.Recast.Toolset.Builder
 {
-    public class SampleAreaModifications
+    public class SampleAreaModifications // TODO layer config
     {
         public const int SAMPLE_POLYAREA_TYPE_GROUND = 0x0;
         public const int SAMPLE_POLYAREA_TYPE_WATER = 0x1;
@@ -62,13 +61,8 @@ namespace DotRecast.Recast.Toolset.Builder
         public static RcAreaModification OfValue(int value)
         {
             foreach (var v in Values)
-            {
                 if (v.Value == value)
-                {
                     return v;
-                }
-            }
-
             return SAMPLE_AREAMOD_GRASS;
         }
     }
