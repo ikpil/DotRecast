@@ -10,9 +10,23 @@ namespace DotRecast.Core
         public static readonly float EQUAL_THRESHOLD = RcMath.Sqr(1.0f / 16384.0f);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3 Create(ReadOnlySpan<float> values)
+        {
+#if NET8_0_OR_GREATER
+            return new Vector3(values);
+#else
+            return new Vector3(values[0], values[1], values[2]);
+#endif
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Create(ReadOnlySpan<float> values, int n)
         {
+#if NET8_0_OR_GREATER
+            return new Vector3(values.Slice(n, 3));
+#else
             return new Vector3(values[n + 0], values[n + 1], values[n + 2]);
+#endif
         }
 
         /// Performs a 'sloppy' colocation check of the specified points.
@@ -37,7 +51,7 @@ namespace DotRecast.Core
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float DistSq2(float[] verts, int p, int q)
+        public static float DistSq2(ReadOnlySpan<float> verts, int p, int q)
         {
             float dx = verts[q + 0] - verts[p + 0];
             float dy = verts[q + 2] - verts[p + 2];
@@ -45,7 +59,7 @@ namespace DotRecast.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Dist2(float[] verts, int p, int q)
+        public static float Dist2(ReadOnlySpan<float> verts, int p, int q)
         {
             return MathF.Sqrt(DistSq2(verts, p, q));
         }
@@ -65,7 +79,7 @@ namespace DotRecast.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Cross2(float[] verts, int p1, int p2, int p3)
+        public static float Cross2(ReadOnlySpan<float> verts, int p1, int p2, int p3)
         {
             float u1 = verts[p2 + 0] - verts[p1 + 0];
             float v1 = verts[p2 + 2] - verts[p1 + 2];
@@ -99,7 +113,7 @@ namespace DotRecast.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Cross(float[] dest, float[] v1, float[] v2)
+        public static void Cross(Span<float> dest, ReadOnlySpan<float> v1, ReadOnlySpan<float> v2)
         {
             dest[0] = v1[1] * v2[2] - v1[2] * v2[1];
             dest[1] = v1[2] * v2[0] - v1[0] * v2[2];
@@ -107,7 +121,7 @@ namespace DotRecast.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Copy(float[] @out, int n, float[] @in, int m)
+        public static void Copy(Span<float> @out, int n, ReadOnlySpan<float> @in, int m)
         {
             @out[n + 0] = @in[m + 0];
             @out[n + 1] = @in[m + 1];
@@ -119,7 +133,7 @@ namespace DotRecast.Core
         /// @param[in] v2 A point. [(x, y, z)]
         /// @return The distance between the two points.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float DistanceSquared(Vector3 v1, float[] v2, int i)
+        public static float DistanceSquared(Vector3 v1, ReadOnlySpan<float> v2, int i)
         {
             float dx = v2[i] - v1.X;
             float dy = v2[i + 1] - v1.Y;
@@ -226,7 +240,7 @@ namespace DotRecast.Core
         /// @param[in] v2 The destination vector.
         /// @param[in] t The interpolation factor. [Limits: 0 <= value <= 1.0]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector3 Lerp(Span<float> verts, int v1, int v2, float t)
+        public static Vector3 Lerp(ReadOnlySpan<float> verts, int v1, int v2, float t)
         {
             return new Vector3(
                 verts[v1 + 0] + (verts[v2 + 0] - verts[v1 + 0]) * t,
