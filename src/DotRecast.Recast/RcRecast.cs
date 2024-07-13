@@ -49,6 +49,11 @@ namespace DotRecast.Recast
         /// The number of spans allocated per span spool.
         /// @see rcSpanPool
         public const int RC_SPANS_PER_POOL = 2048;
+        
+        // Must be 255 or smaller (not 256) because layer IDs are stored as
+        // a byte where 255 is a special value.
+        public const int RC_MAX_LAYERS = RC_NOT_CONNECTED;
+        public const int RC_MAX_NEIS = 16;
 
         /// Heighfield border flag.
         /// If a heightfield region ID has this bit set, then the region is a border
