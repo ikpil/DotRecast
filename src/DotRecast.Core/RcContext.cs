@@ -20,7 +20,9 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace DotRecast.Core
@@ -38,15 +40,19 @@ namespace DotRecast.Core
     /// class through the Recast build process.
     /// 
     /// @ingroup recast
-    public class RcContext // TODO profiler only
+    public class RcContext
     {
+#if PROFILE
         private readonly ThreadLocal<Dictionary<string, RcAtomicLong>> _timerStart;
         private readonly ConcurrentDictionary<string, RcAtomicLong> _timerAccum;
+#endif
 
         public RcContext()
         {
-            _timerStart = new ThreadLocal<Dictionary<string, RcAtomicLong>>(() => new Dictionary<string, RcAtomicLong>());
-            _timerAccum = new ConcurrentDictionary<string, RcAtomicLong>();
+#if PROFILE
+            _timerStart = new(() => new(32));
+            _timerAccum = new(Environment.ProcessorCount, 32);
+#endif
         }
 
         public RcScopedTimer ScopedTimer(RcTimerLabel label)
@@ -54,17 +60,22 @@ namespace DotRecast.Core
             return new RcScopedTimer(this, label);
         }
 
+        [Conditional("PROFILE")]
         public void StartTimer(RcTimerLabel label)
         {
+#if PROFILE
             _timerStart.Value[label.Name] = new RcAtomicLong(RcFrequency.Ticks);
+#endif
         }
 
-
+        [Conditional("PROFILE")]
         public void StopTimer(RcTimerLabel label)
         {
+#if PROFILE
             _timerAccum
-                .GetOrAdd(label.Name, _ => new RcAtomicLong(0))
-                .AddAndGet(RcFrequency.Ticks - _timerStart.Value?[label.Name].Read() ?? 0);
+               .GetOrAdd(label.Name, _ => new RcAtomicLong(0))
+               .AddAndGet(RcFrequency.Ticks - _timerStart.Value?[label.Name].Read() ?? 0);
+#endif
         }
 
         public void Warn(string message)
@@ -74,9 +85,13 @@ namespace DotRecast.Core
 
         public List<RcTelemetryTick> ToList()
         {
+#if PROFILE
             return _timerAccum
                 .Select(x => new RcTelemetryTick(x.Key, x.Value.Read()))
                 .ToList();
+#else
+            return new List<RcTelemetryTick>();
+#endif
         }
     }
 }
