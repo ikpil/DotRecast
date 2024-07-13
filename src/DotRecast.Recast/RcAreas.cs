@@ -49,9 +49,10 @@ namespace DotRecast.Recast
             int zSize = compactHeightfield.height;
             int zStride = xSize; // For readability
 
+
             using var timer = context.ScopedTimer(RcTimerLabel.RC_TIMER_ERODE_AREA);
 
-            int[] distanceToBoundary = new int[compactHeightfield.spanCount];
+            int[] distanceToBoundary = new int[compactHeightfield.spanCount]; // TODO alloc
             Array.Fill(distanceToBoundary, 255);
 
             // Mark boundary cells.

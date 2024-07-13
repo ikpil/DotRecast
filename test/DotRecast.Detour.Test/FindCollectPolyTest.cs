@@ -8,21 +8,18 @@ namespace DotRecast.Detour.Test;
 public class FindCollectPolyTest : AbstractDetourTest
 {
     private static readonly long[][] POLY_REFS =
-    {
-        new long[]
-        {
+    [
+        [
             281474976710697L,
             281474976710695L,
             281474976710696L,
             281474976710691L,
-        },
-        new long[]
-        {
+        ],
+        [
             281474976710769L,
             281474976710773L,
-        },
-        new long[]
-        {
+        ],
+        [
             281474976710676L,
             281474976710678L,
             281474976710679L,
@@ -31,23 +28,21 @@ public class FindCollectPolyTest : AbstractDetourTest
             281474976710683L,
             281474976710680L,
             281474976710684L,
-        },
+        ],
 
-        new long[]
-        {
+        [
             281474976710748L,
             281474976710753L,
             281474976710752L,
             281474976710750L,
-        },
+        ],
 
-        new long[]
-        {
+        [
             281474976710736L,
             281474976710733L,
             281474976710735L,
-        }
-    };
+        ]
+    ];
 
     [Test]
     public void TestFindNearestPoly()

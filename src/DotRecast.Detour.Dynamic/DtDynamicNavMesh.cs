@@ -71,7 +71,6 @@ namespace DotRecast.Detour.Dynamic
                 _tiles.Add(LookupKey(t.tileX, t.tileZ), new DtDynamicTile(t));
             }
 
-            ;
             _context = new RcContext();
         }
 

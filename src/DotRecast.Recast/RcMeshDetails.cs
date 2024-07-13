@@ -720,8 +720,8 @@ namespace DotRecast.Recast
             const int MAX_VERTS = 127;
             const int MAX_TRIS = 255; // Max tris for delaunay is 2n-2-k (n=num verts, k=num hull verts).
             const int MAX_VERTS_PER_EDGE = 32;
-            float[] edge = new float[(MAX_VERTS_PER_EDGE + 1) * 3];
-            int[] hull = new int[MAX_VERTS];
+            float[] edge = new float[(MAX_VERTS_PER_EDGE + 1) * 3]; // TODO alloc
+            int[] hull = new int[MAX_VERTS]; // TODO alloc
             int nhull = 0;
 
             int nverts = nin;
@@ -797,7 +797,7 @@ namespace DotRecast.Recast
                     }
 
                     // Simplify samples.
-                    int[] idx = new int[MAX_VERTS_PER_EDGE];
+                    int[] idx = new int[MAX_VERTS_PER_EDGE]; // TODO alloc
                     idx[0] = 0;
                     idx[1] = nn;
                     int nidx = 2;
@@ -982,7 +982,7 @@ namespace DotRecast.Recast
             int ntris = tris.Count / 4;
             if (ntris > MAX_TRIS)
             {
-                List<int> subList = tris.GetRange(0, MAX_TRIS * 4);
+                List<int> subList = tris.GetRange(0, MAX_TRIS * 4); // TODO alloc
                 tris.Clear();
                 tris.AddRange(subList);
                 throw new Exception("rcBuildPolyMeshDetail: Shrinking triangle count from " + ntris + " to max " + MAX_TRIS);
@@ -1033,7 +1033,7 @@ namespace DotRecast.Recast
             // Note: Reads to the compact heightfield are offset by border size (bs)
             // since border size offset is already removed from the polymesh vertices.
 
-            int[] offset = { 0, 0, -1, -1, 0, -1, 1, -1, 1, 0, 1, 1, 0, 1, -1, 1, -1, 0, };
+            int[] offset = { 0, 0, -1, -1, 0, -1, 1, -1, 1, 0, 1, 1, 0, 1, -1, 1, -1, 0, }; // TODO alloc
 
             // Find cell closest to a poly vertex
             int startCellX = 0, startCellY = 0, startSpanIndex = -1;
@@ -1081,7 +1081,7 @@ namespace DotRecast.Recast
             array.Add(startCellX);
             array.Add(startCellY);
             array.Add(startSpanIndex);
-            int[] dirs = { 0, 1, 2, 3 };
+            int[] dirs = { 0, 1, 2, 3 }; // TODO alloc
             Array.Fill(hp.data, 0, 0, (hp.width * hp.height) - (0));
             // DFS to move to the center. Note that we need a DFS here and can not just move
             // directly towards the center without recording intermediate nodes, even though the polygons
@@ -1275,7 +1275,7 @@ namespace DotRecast.Recast
                 if (head >= RETRACT_SIZE)
                 {
                     head = 0;
-                    queue = queue.GetRange(RETRACT_SIZE * 3, queue.Count - (RETRACT_SIZE * 3));
+                    queue = queue.GetRange(RETRACT_SIZE * 3, queue.Count - (RETRACT_SIZE * 3)); // TODO alloc temp
                 }
 
                 ref RcCompactSpan cs = ref chf.spans[ci];
@@ -1319,6 +1319,7 @@ namespace DotRecast.Recast
             float sampleDist, float sampleMaxError)
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_POLYMESHDETAIL);
+
             if (mesh.nverts == 0 || mesh.npolys == 0)
             {
                 return null;
@@ -1332,7 +1333,7 @@ namespace DotRecast.Recast
             int borderSize = mesh.borderSize;
             int heightSearchRadius = (int)Math.Max(1, MathF.Ceiling(mesh.maxEdgeError));
 
-            List<int> edges = new List<int>(64);
+            List<int> edges = new List<int>(64); // TODO alloc
             List<int> tris = new List<int>(512);
             List<int> arr = new List<int>(512);
             List<int> samples = new List<int>(512);
