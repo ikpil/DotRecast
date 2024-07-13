@@ -22,7 +22,7 @@ using System.Numerics;
 
 namespace DotRecast.Detour.Crowd
 {
-    public class DtCrowdAgentAnimation
+    public struct DtCrowdAgentAnimation
     {
         public bool active;
         public Vector3 initPos = new Vector3();
