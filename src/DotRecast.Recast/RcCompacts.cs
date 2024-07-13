@@ -75,13 +75,11 @@ namespace DotRecast.Recast
             compactHeightfield.cs = heightfield.cs;
             compactHeightfield.ch = heightfield.ch;
             compactHeightfield.cells = new RcCompactCell[xSize * zSize];
-            //chf.spans = new RcCompactSpan[spanCount];
+            compactHeightfield.spans = new RcCompactSpan[spanCount];
             compactHeightfield.areas = new int[spanCount];
 
-            var tempSpans = Enumerable
-                .Range(0, spanCount)
-                .Select(x => RcCompactSpanBuilder.NewBuilder())
-                .ToArray();
+            Span<RcCompactSpanBuilder> tempSpans = stackalloc RcCompactSpanBuilder[spanCount];
+            //tempSpans.Clear(); // incase: zero memory if use SkipLocalsInit
 
             // Fill in cells and spans.
             int currentCellIndex = 0;
@@ -101,7 +99,7 @@ namespace DotRecast.Recast
                     if (span.area != RC_NULL_AREA)
                     {
                         int bot = span.smax;
-                        int top = span.next != null ? (int)span.next.smin : MAX_HEIGHT;
+                        int top = span.next != null ? span.next.smin : MAX_HEIGHT;
                         tempSpans[currentCellIndex].y = Math.Clamp(bot, 0, MAX_HEIGHT);
                         tempSpans[currentCellIndex].h = Math.Clamp(top - bot, 0, MAX_HEIGHT);
                         compactHeightfield.areas[currentCellIndex] = span.area;
@@ -121,14 +119,14 @@ namespace DotRecast.Recast
             {
                 for (int x = 0; x < xSize; ++x)
                 {
-                    ref RcCompactCell cell = ref compactHeightfield.cells[x + z * zStride];
+                    ref readonly RcCompactCell cell = ref compactHeightfield.cells[x + z * zStride];
                     for (int i = cell.index, ni = cell.index + cell.count; i < ni; ++i)
                     {
                         ref RcCompactSpanBuilder s = ref tempSpans[i];
 
                         for (int dir = 0; dir < 4; ++dir)
                         {
-                            SetCon(s, dir, RC_NOT_CONNECTED);
+                            SetCon(ref s, dir, RC_NOT_CONNECTED);
                             int neighborX = x + GetDirOffsetX(dir);
                             int neighborZ = z + GetDirOffsetY(dir);
                             // First check that the neighbour cell is in bounds.
@@ -158,7 +156,7 @@ namespace DotRecast.Recast
                                         continue;
                                     }
 
-                                    SetCon(s, dir, layerIndex);
+                                    SetCon(ref s, dir, layerIndex);
                                     break;
                                 }
                             }
@@ -172,7 +170,8 @@ namespace DotRecast.Recast
                 throw new Exception($"rcBuildCompactHeightfield: Heightfield has too many layers {maxLayerIndex} (max: {MAX_LAYERS})");
             }
 
-            compactHeightfield.spans = tempSpans.Select(x => x.Build()).ToArray();
+            for (int i = 0; i < spanCount; i++)
+                compactHeightfield.spans[i] = tempSpans[i].Build();
 
             return compactHeightfield;
         }

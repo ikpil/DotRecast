@@ -1,6 +1,6 @@
-﻿namespace DotRecast.Recast
+namespace DotRecast.Recast
 {
-    public class RcCompactSpanBuilder
+    public struct RcCompactSpanBuilder
     {
         public int y;
         public int reg;
@@ -9,21 +9,14 @@
 
         public static RcCompactSpanBuilder NewBuilder(ref RcCompactSpan span)
         {
-            var builder = NewBuilder();
-            builder.y = span.y;
-            builder.reg = span.reg;
-            builder.con = span.con;
-            builder.h = span.h;
+            var builder = new RcCompactSpanBuilder
+            {
+                y = span.y,
+                reg = span.reg,
+                con = span.con,
+                h = span.h
+            };
             return builder;
-        }
-        
-        public static RcCompactSpanBuilder NewBuilder()
-        {
-            return new RcCompactSpanBuilder();
-        }
-
-        private RcCompactSpanBuilder()
-        {
         }
 
         public RcCompactSpanBuilder WithReg(int reg)
