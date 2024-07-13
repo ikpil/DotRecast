@@ -83,11 +83,7 @@ namespace DotRecast.Recast
             srcReg.Fill(0xFF);
 
             int nsweeps = chf.width;
-            RcLayerSweepSpan[] sweeps = new RcLayerSweepSpan[nsweeps];
-            for (int i = 0; i < sweeps.Length; i++)
-            {
-                sweeps[i] = new RcLayerSweepSpan();
-            }
+            Span<RcLayerSweepSpan> sweeps = stackalloc RcLayerSweepSpan[nsweeps];
 
             // Partition walkable area into monotone regions.
             Span<int> prevCount = stackalloc int[256];

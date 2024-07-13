@@ -45,11 +45,7 @@ namespace DotRecast.Detour.TileCache
 
             Array.Fill(layer.regs, (byte)0xFF);
             int nsweeps = w;
-            RcLayerSweepSpan[] sweeps = new RcLayerSweepSpan[nsweeps];
-            for (int i = 0; i < sweeps.Length; i++)
-            {
-                sweeps[i] = new RcLayerSweepSpan();
-            }
+            Span<RcLayerSweepSpan> sweeps = stackalloc RcLayerSweepSpan[nsweeps];
 
             // Partition walkable area into monotone regions.
             Span<byte> prevCount = stackalloc byte[256];
