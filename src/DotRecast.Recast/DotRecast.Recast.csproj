@@ -11,14 +11,15 @@
     <RepositoryUrl>https://github.com/ikpil/DotRecast</RepositoryUrl>
     <PackageTags>game gamedev ai csharp server unity navigation game-development unity3d pathfinding pathfinder recast detour navmesh crowd-simulation recastnavigation</PackageTags>
     <PackageReleaseNotes>https://github.com/ikpil/DotRecast/blob/main/CHANGELOG.md</PackageReleaseNotes>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="../../README.md" Pack="true" PackagePath="\"/>
+    <None Include="../../README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DotRecast.Core\DotRecast.Core.csproj"/>
+    <ProjectReference Include="..\DotRecast.Core\DotRecast.Core.csproj" />
   </ItemGroup>
 
 </Project>

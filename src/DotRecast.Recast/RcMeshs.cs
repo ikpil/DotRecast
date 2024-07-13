@@ -32,20 +32,19 @@ namespace DotRecast.Recast
         public const int VERTEX_BUCKET_COUNT = (1 << 12);
 
 
-        private static void BuildMeshAdjacency(int[] polys, int npolys, int nverts, int vertsPerPoly)
+        private unsafe static void BuildMeshAdjacency(int[] polys, int npolys, int nverts, int vertsPerPoly)
         {
             // Based on code by Eric Lengyel from:
             // http://www.terathon.com/code/edges.php
 
             int maxEdgeCount = npolys * vertsPerPoly;
-            int[] firstEdge = new int[nverts + maxEdgeCount];
+            Span<int> firstEdge = stackalloc int[nverts + maxEdgeCount];
             int nextEdge = nverts;
             int edgeCount = 0;
 
-            RcEdge[] edges = new RcEdge[maxEdgeCount];
+            Span<RcEdge> edges = stackalloc RcEdge[maxEdgeCount];
 
-            for (int i = 0; i < nverts; i++)
-                firstEdge[i] = RC_MESH_NULL_IDX;
+            firstEdge.Slice(0, nverts).Fill(RC_MESH_NULL_IDX);
 
             for (int i = 0; i < npolys; ++i)
             {
@@ -60,8 +59,7 @@ namespace DotRecast.Recast
                         : polys[t + j + 1];
                     if (v0 < v1)
                     {
-                        RcEdge edge = new RcEdge();
-                        edges[edgeCount] = edge;
+                        ref RcEdge edge = ref edges[edgeCount];
                         edge.vert[0] = v0;
                         edge.vert[1] = v1;
                         edge.poly[0] = i;
@@ -91,7 +89,7 @@ namespace DotRecast.Recast
                     {
                         for (int e = firstEdge[v1]; e != RC_MESH_NULL_IDX; e = firstEdge[nextEdge + e])
                         {
-                            RcEdge edge = edges[e];
+                            ref RcEdge edge = ref edges[e];
                             if (edge.vert[1] == v0 && edge.poly[0] == edge.poly[1])
                             {
                                 edge.poly[1] = i;
@@ -106,7 +104,7 @@ namespace DotRecast.Recast
             // Store adjacency
             for (int i = 0; i < edgeCount; ++i)
             {
-                RcEdge e = edges[i];
+                ref RcEdge e = ref edges[i];
                 if (e.poly[0] != e.poly[1])
                 {
                     int p0 = e.poly[0] * vertsPerPoly * 2;
@@ -892,7 +890,7 @@ namespace DotRecast.Recast
             // Merge polygons.
             if (nvp > 3)
             {
-                for (;;)
+                for (; ; )
                 {
                     // Find best polygons to merge.
                     int bestMergeVal = 0;
@@ -997,7 +995,7 @@ namespace DotRecast.Recast
                 throw new Exception("rcBuildPolyMesh: Too many vertices " + maxVertices);
             }
 
-            int[] vflags = new int[maxVertices];
+            int[] vflags = new int[maxVertices]; // TODO alloc
 
             mesh.verts = new int[maxVertices * 3];
             mesh.polys = new int[maxTris * nvp * 2];
@@ -1010,7 +1008,7 @@ namespace DotRecast.Recast
             mesh.nvp = nvp;
             mesh.maxpolys = maxTris;
 
-            int[] nextVert = new int[maxVertices];
+            int[] nextVert = new int[maxVertices];  // TODO alloc
 
             int[] firstVert = new int[VERTEX_BUCKET_COUNT];
             for (int i = 0; i < VERTEX_BUCKET_COUNT; ++i)
@@ -1076,7 +1074,7 @@ namespace DotRecast.Recast
                 // Merge polygons.
                 if (nvp > 3)
                 {
-                    for (;;)
+                    for (; ; )
                     {
                         // Find best polygons to merge.
                         int bestMergeVal = 0;

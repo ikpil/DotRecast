@@ -1,9 +1,9 @@
-﻿namespace DotRecast.Core
+namespace DotRecast.Core
 {
-    public class RcEdge
+    public unsafe struct RcEdge
     {
-        public int[] vert = new int[2];
-        public int[] polyEdge = new int[2];
-        public int[] poly = new int[2];
+        public fixed int vert[2];
+        public fixed int polyEdge[2];
+        public fixed int poly[2];
     }
 }

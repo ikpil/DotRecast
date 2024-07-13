@@ -741,7 +741,7 @@ namespace DotRecast.Detour.TileCache
             return i;
         }
 
-        public static void BuildMeshAdjacency(int[] polys, int npolys, int[] verts, int nverts, DtTileCacheContourSet lcset,
+        public unsafe static void BuildMeshAdjacency(int[] polys, int npolys, int[] verts, int nverts, DtTileCacheContourSet lcset,
             int maxVertsPerPoly)
         {
             // Based on code by Eric Lengyel from:
@@ -749,15 +749,11 @@ namespace DotRecast.Detour.TileCache
 
             int maxEdgeCount = npolys * maxVertsPerPoly;
 
-            int[] firstEdge = new int[nverts + maxEdgeCount];
+            Span<int> firstEdge = stackalloc int[nverts + maxEdgeCount];
             int nextEdge = nverts;
             int edgeCount = 0;
 
-            RcEdge[] edges = new RcEdge[maxEdgeCount];
-            for (int i = 0; i < maxEdgeCount; i++)
-            {
-                edges[i] = new RcEdge();
-            }
+            Span<RcEdge> edges = stackalloc RcEdge[maxEdgeCount];
 
             for (int i = 0; i < nverts; i++)
                 firstEdge[i] = DT_TILECACHE_NULL_IDX;
@@ -775,7 +771,7 @@ namespace DotRecast.Detour.TileCache
                         : polys[t + j + 1];
                     if (v0 < v1)
                     {
-                        RcEdge edge = edges[edgeCount];
+                        ref RcEdge edge = ref edges[edgeCount];
                         edge.vert[0] = v0;
                         edge.vert[1] = v1;
                         edge.poly[0] = i;
@@ -806,7 +802,7 @@ namespace DotRecast.Detour.TileCache
                         bool found = false;
                         for (int e = firstEdge[v1]; e != DT_TILECACHE_NULL_IDX; e = firstEdge[nextEdge + e])
                         {
-                            RcEdge edge = edges[e];
+                            ref RcEdge edge = ref edges[e];
                             if (edge.vert[1] == v0 && edge.poly[0] == edge.poly[1])
                             {
                                 edge.poly[1] = i;
@@ -819,7 +815,7 @@ namespace DotRecast.Detour.TileCache
                         if (!found)
                         {
                             // Matching edge not found, it is an open edge, add it.
-                            RcEdge edge = edges[edgeCount];
+                            ref RcEdge edge = ref edges[edgeCount];
                             edge.vert[0] = v1;
                             edge.vert[1] = v0;
                             edge.poly[0] = (short)i;
@@ -865,7 +861,7 @@ namespace DotRecast.Detour.TileCache
 
                         for (int m = 0; m < edgeCount; ++m)
                         {
-                            RcEdge e = edges[m];
+                            ref RcEdge e = ref edges[m];
                             // Skip connected edges.
                             if (e.poly[0] != e.poly[1])
                                 continue;
@@ -905,7 +901,7 @@ namespace DotRecast.Detour.TileCache
 
                         for (int m = 0; m < edgeCount; ++m)
                         {
-                            RcEdge e = edges[m];
+                            ref RcEdge e = ref edges[m];
                             // Skip connected edges.
                             if (e.poly[0] != e.poly[1])
                                 continue;
@@ -936,7 +932,7 @@ namespace DotRecast.Detour.TileCache
             // Store adjacency
             for (int i = 0; i < edgeCount; ++i)
             {
-                RcEdge e = edges[i];
+                ref RcEdge e = ref edges[i];
                 if (e.poly[0] != e.poly[1])
                 {
                     int p0 = e.poly[0] * maxVertsPerPoly * 2;
