@@ -1413,7 +1413,7 @@ namespace DotRecast.Recast
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_BUILD_DISTANCEFIELD);
 
-            int[] src = new int[chf.spanCount]; // TODO alloc
+            int[] src = new int[chf.spanCount];
 
             ctx.StartTimer(RcTimerLabel.RC_TIMER_BUILD_DISTANCEFIELD_DIST);
             int maxDist = CalculateDistanceField(chf, src);
@@ -1480,14 +1480,10 @@ namespace DotRecast.Recast
             int borderSize = chf.borderSize;
             int id = 1;
 
-            int[] srcReg = new int[chf.spanCount];
+            Span<int> srcReg = stackalloc int[chf.spanCount];
 
             int nsweeps = Math.Max(chf.width, chf.height);
-            RcSweepSpan[] sweeps = new RcSweepSpan[nsweeps];
-            //for (int i = 0; i < sweeps.Length; i++)
-            //{
-            //    sweeps[i] = new RcSweepSpan();
-            //}
+            Span<RcSweepSpan> sweeps = stackalloc RcSweepSpan[nsweeps];
 
             // Mark border regions.
             if (borderSize > 0)
@@ -1506,7 +1502,7 @@ namespace DotRecast.Recast
                 id++;
             }
 
-            int[] prev = new int[1024];
+            int[] prev = new int[1024]; // TODO alloc
 
             // Sweep one line at a time.
             for (int y = borderSize; y < h - borderSize; ++y)
