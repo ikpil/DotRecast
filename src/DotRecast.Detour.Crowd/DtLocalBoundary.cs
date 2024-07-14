@@ -23,17 +23,19 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using DotRecast.Core;
 using System.Numerics;
+using System;
 
 
 namespace DotRecast.Detour.Crowd
 {
-    public class DtLocalBoundary
+    public sealed class DtLocalBoundary
     {
         public const int MAX_LOCAL_SEGS = 8;
         public const int MAX_LOCAL_POLYS = 16;
 
-        private Vector3 m_center = new Vector3();
-        private List<DtSegment> m_segs = new List<DtSegment>(); // TODO array
+        private Vector3 m_center;
+        private DtSegment[] m_segs = new DtSegment[MAX_LOCAL_SEGS];
+        private int m_nsegs;
         private long[] m_polys = new long[MAX_LOCAL_POLYS];
         private int m_npolys;
 
@@ -42,56 +44,57 @@ namespace DotRecast.Detour.Crowd
             m_center.X = m_center.Y = m_center.Z = float.MaxValue;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Reset()
         {
             m_center.X = m_center.Y = m_center.Z = float.MaxValue;
             m_npolys = 0;
-            m_segs.Clear();
+            m_nsegs = 0;
         }
 
         protected unsafe void AddSegment(float dist, RcSegmentVert s)
         {
             // Insert neighbour based on the distance.
-            DtSegment seg = new DtSegment();
-            Unsafe.WriteUnaligned(seg.s, s.vmin);
-            Unsafe.WriteUnaligned(seg.s + 3, s.vmax);
-            seg.d = dist;
-            if (0 == m_segs.Count)
+            var p_segs = (DtSegment*)Unsafe.AsPointer(ref MemoryMarshal.GetArrayDataReference(m_segs));
+            DtSegment* seg = null;
+            if (0 == m_nsegs)
             {
-                m_segs.Add(seg);
+                seg = &p_segs[0];
             }
-            else if (dist >= m_segs[m_segs.Count - 1].d)
+            else if (dist >= m_segs[m_nsegs - 1].d)
             {
-                if (m_segs.Count >= MAX_LOCAL_SEGS)
-                {
+                if (m_nsegs >= MAX_LOCAL_SEGS)
                     return;
-                }
 
-                m_segs.Add(seg);
+                seg = &p_segs[m_nsegs];
             }
             else
             {
                 // Insert inbetween.
                 int i;
-                for (i = 0; i < m_segs.Count; ++i)
-                {
+                for (i = 0; i < m_nsegs; ++i)
                     if (dist <= m_segs[i].d)
-                    {
                         break;
-                    }
-                }
 
-                m_segs.Insert(i, seg);
+                int tgt = i + 1;
+                int n = Math.Min(m_nsegs - i, MAX_LOCAL_SEGS - tgt);
+                System.Diagnostics.Debug.Assert(tgt + n <= MAX_LOCAL_SEGS);
+                if (n > 0)
+                    m_segs.AsSpan(i, n).CopyTo(m_segs.AsSpan(tgt));
+                seg = &p_segs[i];
             }
 
-            while (m_segs.Count > MAX_LOCAL_SEGS)
-            {
-                m_segs.RemoveAt(m_segs.Count - 1);
-            }
+            seg->d = dist;
+            Unsafe.CopyBlockUnaligned((float*)&s, seg->s, (uint)sizeof(RcSegmentVert));
+
+            if (m_nsegs < MAX_LOCAL_SEGS)
+                m_nsegs++;
         }
 
         public void Update(long startRef, Vector3 pos, float collisionQueryRange, DtNavMeshQuery navquery, IDtQueryFilter filter)
         {
+            const int MAX_SEGS_PER_POLY = DtDetour.DT_VERTS_PER_POLYGON * 3;
+
             if (startRef == 0)
             {
                 Reset();
@@ -105,19 +108,18 @@ namespace DotRecast.Detour.Crowd
             if (status.Succeeded())
             {
                 // Secondly, store all polygon edges.
-                m_segs.Clear();
-
-                var segmentVerts = new List<RcSegmentVert>(); // TODO temp alloc
-                var segmentRefs = new List<long>(); // TODO temp alloc
+                m_nsegs = 0;
+                Span<RcSegmentVert> segs = stackalloc RcSegmentVert[MAX_SEGS_PER_POLY];
+                int nsegs = 0;
 
                 for (int j = 0; j < m_npolys; ++j)
                 {
-                    var result = navquery.GetPolyWallSegments(m_polys[j], false, filter, ref segmentVerts, ref segmentRefs);
+                    var result = navquery.GetPolyWallSegments(m_polys[j], filter, segs, null, out nsegs, MAX_SEGS_PER_POLY);
                     if (result.Succeeded())
                     {
-                        for (int k = 0; k < segmentRefs.Count; ++k)
+                        for (int k = 0; k < nsegs; ++k)
                         {
-                            RcSegmentVert s = segmentVerts[k];
+                            ref readonly RcSegmentVert s = ref segs[k];
                             var s0 = s.vmin;
                             var s3 = s.vmax;
 
@@ -154,19 +156,13 @@ namespace DotRecast.Detour.Crowd
             return true;
         }
 
-        public Vector3 GetCenter()
-        {
-            return m_center;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Vector3 GetCenter() => m_center;
 
-        public DtSegment GetSegment(int j)
-        {
-            return m_segs[j];
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref DtSegment GetSegment(int j) => ref m_segs[j];
 
-        public int GetSegmentCount()
-        {
-            return m_segs.Count;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int GetSegmentCount() => m_nsegs;
     }
 }

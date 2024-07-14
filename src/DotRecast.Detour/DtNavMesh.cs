@@ -105,18 +105,12 @@ namespace DotRecast.Detour
      *
      * @return The maximum number of tiles supported by the navigation mesh.
      */
-        public int GetMaxTiles()
-        {
-            return m_maxTiles;
-        }
+        public int GetMaxTiles() => m_maxTiles;
 
         /**
      * Returns tile in the tile array.
      */
-        public DtMeshTile GetTile(int i)
-        {
-            return m_tiles[i];
-        }
+        public DtMeshTile GetTile(int i) => m_tiles[i];
 
         /**
      * Gets the polygon reference for the tile's base polygon.
@@ -241,10 +235,7 @@ namespace DotRecast.Detour
             return true;
         }
 
-        public ref readonly DtNavMeshParams GetParams()
-        {
-            return ref m_params;
-        }
+        public ref readonly DtNavMeshParams GetParams() => ref m_params;
 
 
         // TODO: These methods are duplicates from dtNavMeshQuery, but are needed
@@ -789,7 +780,7 @@ namespace DotRecast.Detour
 
             for (int i = 0; i < target.data.header.offMeshConCount; ++i)
             {
-                DtOffMeshConnection targetCon = target.data.offMeshCons[i];
+                ref DtOffMeshConnection targetCon = ref target.data.offMeshCons[i];
                 if (targetCon.side != oppositeSide)
                 {
                     continue;
@@ -811,7 +802,7 @@ namespace DotRecast.Detour
                 };
 
                 // Find polygon to connect to.
-                Vector3 p = targetCon.pos[1];
+                Vector3 p = new Vector3(targetCon.pos[3 + 0], targetCon.pos[3 + 1], targetCon.pos[3 + 2]);
                 var refs = FindNearestPolyInTile(tile, p, ext, out var nearestPt);
                 if (refs == 0)
                 {
@@ -981,7 +972,7 @@ namespace DotRecast.Detour
             // Base off-mesh connection start points.
             for (int i = 0; i < tile.data.header.offMeshConCount; ++i)
             {
-                DtOffMeshConnection con = tile.data.offMeshCons[i];
+                ref DtOffMeshConnection con = ref tile.data.offMeshCons[i];
                 DtPoly poly = tile.data.polys[con.poly];
 
                 var ext = new Vector3()
@@ -992,16 +983,16 @@ namespace DotRecast.Detour
                 };
 
                 // Find polygon to connect to.
-                var refs = FindNearestPolyInTile(tile, con.pos[0], ext, out var nearestPt);
+                Vector3 p0 = new Vector3(con.pos[0 + 0], con.pos[0 + 1], con.pos[0 + 2]);
+                var refs = FindNearestPolyInTile(tile, p0, ext, out var nearestPt);
                 if (refs == 0)
                 {
                     continue;
                 }
 
-                Vector3[] p = con.pos; // First vertex
                 // findNearestPoly may return too optimistic results, further check
                 // to make sure.
-                if (RcMath.Sqr(nearestPt.X - p[0].X) + RcMath.Sqr(nearestPt.Z - p[0].Z) > RcMath.Sqr(con.rad))
+                if (RcMath.Sqr(nearestPt.X - p0.X) + RcMath.Sqr(nearestPt.Z - p0.Z) > RcMath.Sqr(con.rad))
                 {
                     continue;
                 }
@@ -1402,10 +1393,7 @@ namespace DotRecast.Detour
             return n;
         }
 
-        public long GetTileRefAt(int x, int y, int layer)
-        {
-            return GetTileRef(GetTileAt(x, y, layer));
-        }
+        public long GetTileRefAt(int x, int y, int layer) => GetTileRef(GetTileAt(x, y, layer));
 
         public DtMeshTile GetTileByRef(long refs)
         {
@@ -1511,20 +1499,11 @@ namespace DotRecast.Detour
             return DtStatus.DT_SUCCESS;
         }
 
-        public int GetMaxVertsPerPoly()
-        {
-            return m_maxVertPerPoly;
-        }
+        public int GetMaxVertsPerPoly() => m_maxVertPerPoly;
 
-        public int GetTileCount()
-        {
-            return m_tileCount;
-        }
+        public int GetTileCount() => m_tileCount;
 
-        public bool IsAvailableTileCount()
-        {
-            return null != m_nextFree;
-        }
+        public bool IsAvailableTileCount() => null != m_nextFree;
 
         public DtStatus SetPolyFlags(long refs, int flags)
         {

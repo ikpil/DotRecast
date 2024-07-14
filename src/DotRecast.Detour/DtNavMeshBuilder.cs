@@ -608,14 +608,15 @@ namespace DotRecast.Detour
                 // Only store connections which start from this tile.
                 if (offMeshConClass[i * 2 + 0] == 0xff)
                 {
-                    DtOffMeshConnection con = new DtOffMeshConnection();
-                    offMeshCons[n] = con;
+                    ref DtOffMeshConnection con = ref offMeshCons[n];
                     con.poly = (offMeshPolyBase + n);
                     // Copy connection end-points.
                     int endPts = i * 2 * 3;
                     for (int j = 0; j < 2; ++j)
                     {
-                        con.pos[j] = RcVec.Create(option.offMeshConVerts, endPts + (j * 3));
+                        con.pos[j * 3 + 0] = option.offMeshConVerts[endPts + (j * 3) + 0];
+                        con.pos[j * 3 + 1] = option.offMeshConVerts[endPts + (j * 3) + 1];
+                        con.pos[j * 3 + 2] = option.offMeshConVerts[endPts + (j * 3) + 2];
                     }
 
                     con.rad = option.offMeshConRads[i];
