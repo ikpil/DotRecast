@@ -813,7 +813,6 @@ namespace DotRecast.Detour
 
             if (startRef == endRef)
             {
-                //path.Add(startRef);
                 path[0] = startRef;
                 pathCount = 1;
                 return DtStatus.DT_SUCCESS;
