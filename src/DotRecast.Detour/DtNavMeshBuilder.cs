@@ -105,8 +105,8 @@ namespace DotRecast.Detour
             else
             {
                 // Split
-                fixed(int* nmim = node.bmin)
-                fixed(int* nmax = node.bmax)
+                fixed (int* nmim = node.bmin)
+                fixed (int* nmax = node.bmax)
                 {
                     CalcExtends(items, nitems, imin, imax, nmim, nmax);
                 }
@@ -232,27 +232,18 @@ namespace DotRecast.Detour
             outcode |= (pt.X < bmin.X) ? XM : 0;
             outcode |= (pt.Z < bmin.Z) ? ZM : 0;
 
-            switch (outcode)
+            return outcode switch
             {
-                case XP:
-                    return 0;
-                case XP | ZP:
-                    return 1;
-                case ZP:
-                    return 2;
-                case XM | ZP:
-                    return 3;
-                case XM:
-                    return 4;
-                case XM | ZM:
-                    return 5;
-                case ZM:
-                    return 6;
-                case XP | ZM:
-                    return 7;
-            }
-
-            return 0xff;
+                XP => 0,
+                XP | ZP => 1,
+                ZP => 2,
+                XM | ZP => 3,
+                XM => 4,
+                XM | ZM => 5,
+                ZM => 6,
+                XP | ZM => 7,
+                _ => 0xff,
+            };
         }
 
         // TODO: Better error handling.
@@ -277,18 +268,19 @@ namespace DotRecast.Detour
 
             // Classify off-mesh connection points. We store only the connections
             // whose start point is inside the tile.
-            int[] offMeshConClass = null;
+            scoped Span<int> offMeshConClass = null;
+
             int storedOffMeshConCount = 0;
             int offMeshConLinkCount = 0;
 
             if (option.offMeshConCount > 0)
             {
-                offMeshConClass = new int[option.offMeshConCount * 2];
+                offMeshConClass = stackalloc int[option.offMeshConCount * 2];
 
                 // Find tight heigh bounds, used for culling out off-mesh start
                 // locations.
                 float hmin = float.MaxValue;
-                float hmax = -float.MaxValue;
+                float hmax = float.MinValue;
 
                 if (option.detailVerts != null && option.detailVertsCount != 0)
                 {
@@ -532,7 +524,7 @@ namespace DotRecast.Detour
                     DtPoly p = new DtPoly(offMeshPolyBase + n, nvp);
                     navPolys[offMeshPolyBase + n] = p;
                     p.vertCount = 2;
-                    p.verts[0] = offMeshVertsBase + n * 2;
+                    p.verts[0] = offMeshVertsBase + n * 2 + 0;
                     p.verts[1] = offMeshVertsBase + n * 2 + 1;
                     p.flags = option.offMeshConFlags[i];
                     p.SetArea(option.offMeshConAreas[i]);
@@ -626,8 +618,8 @@ namespace DotRecast.Detour
                         con.pos[j] = RcVec.Create(option.offMeshConVerts, endPts + (j * 3));
                     }
 
-                    con.rad = option.offMeshConRad[i];
-                    con.flags = option.offMeshConDir[i] != 0 ? DT_OFFMESH_CON_BIDIR : 0;
+                    con.rad = option.offMeshConRads[i];
+                    con.flags = option.offMeshConDirs[i] != false ? DT_OFFMESH_CON_BIDIR : 0;
                     con.side = offMeshConClass[i * 2 + 1];
                     if (option.offMeshConUserID != null)
                         con.userId = option.offMeshConUserID[i];

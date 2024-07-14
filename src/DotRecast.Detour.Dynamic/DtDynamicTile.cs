@@ -169,8 +169,8 @@ namespace DotRecast.Detour.Dynamic
 
             option.offMeshConCount = 0;
             option.offMeshConVerts = Array.Empty<float>();
-            option.offMeshConRad = Array.Empty<float>();
-            option.offMeshConDir = Array.Empty<int>();
+            option.offMeshConRads = Array.Empty<float>();
+            option.offMeshConDirs = Array.Empty<bool>();
             option.offMeshConAreas = Array.Empty<int>();
             option.offMeshConFlags = Array.Empty<int>();
             option.offMeshConUserID = Array.Empty<int>();

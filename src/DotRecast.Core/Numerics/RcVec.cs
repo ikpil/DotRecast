@@ -113,19 +113,27 @@ namespace DotRecast.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Cross(Span<float> dest, ReadOnlySpan<float> v1, ReadOnlySpan<float> v2)
+        public static void Cross(Span<float> dst, ReadOnlySpan<float> v1, ReadOnlySpan<float> v2)
         {
-            dest[0] = v1[1] * v2[2] - v1[2] * v2[1];
-            dest[1] = v1[2] * v2[0] - v1[0] * v2[2];
-            dest[2] = v1[0] * v2[1] - v1[1] * v2[0];
+            dst[0] = v1[1] * v2[2] - v1[2] * v2[1];
+            dst[1] = v1[2] * v2[0] - v1[0] * v2[2];
+            dst[2] = v1[0] * v2[1] - v1[1] * v2[0];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Copy(Span<float> @out, int n, ReadOnlySpan<float> @in, int m)
+        public static void Copy(Span<float> dst, ReadOnlySpan<float> src)
         {
-            @out[n + 0] = @in[m + 0];
-            @out[n + 1] = @in[m + 1];
-            @out[n + 2] = @in[m + 2];
+            dst[0] = src[0];
+            dst[1] = src[1];
+            dst[2] = src[2];
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Copy(Span<float> dst, int n, ReadOnlySpan<float> src, int m)
+        {
+            dst[n + 0] = src[m + 0];
+            dst[n + 1] = src[m + 1];
+            dst[n + 2] = src[m + 2];
         }
 
         /// Returns the distance between two points.

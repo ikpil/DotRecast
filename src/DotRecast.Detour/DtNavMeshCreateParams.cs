@@ -61,7 +61,7 @@ namespace DotRecast.Detour
         public float[] offMeshConVerts;
 
         /// Off-mesh connection radii. [Size: #offMeshConCount] [Unit: wu]
-        public float[] offMeshConRad;
+        public float[] offMeshConRads;
 
         /// User defined flags assigned to the off-mesh connections. [Size: #offMeshConCount]
         public int[] offMeshConFlags;
@@ -73,7 +73,7 @@ namespace DotRecast.Detour
         ///
         /// 0 = Travel only from endpoint A to endpoint B.<br/>
         /// #DT_OFFMESH_CON_BIDIR = Bidirectional travel.
-        public int[] offMeshConDir;
+        public bool[] offMeshConDirs;
 
         /// The user defined ids of the off-mesh connection. [Size: #offMeshConCount]
         public int[] offMeshConUserID;

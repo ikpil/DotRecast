@@ -32,20 +32,21 @@ namespace DotRecast.Recast.Toolset.Tools
             // Delete
             // Find nearest link end-point
             float nearestDist = float.MaxValue;
-            RcOffMeshConnection nearestConnection = null;
-            foreach (RcOffMeshConnection offMeshCon in geom.GetOffMeshConnections())
+            int nearestId = -1;
+            for (int i = 0; i < geom.OffMeshConCount; i++)
             {
-                float d = Math.Min(RcVec.DistanceSquared(p, offMeshCon.verts, 0), RcVec.DistanceSquared(p, offMeshCon.verts, 3));
+                var verts = geom.OffMeshConVerts.AsSpan(i * 6);
+                float d = Math.Min(RcVec.DistanceSquared(p, verts, 0), RcVec.DistanceSquared(p, verts, 3));
                 if (d < nearestDist && Math.Sqrt(d) < settings.agentRadius)
                 {
                     nearestDist = d;
-                    nearestConnection = offMeshCon;
+                    nearestId = i;
                 }
             }
 
-            if (nearestConnection != null)
+            if (nearestId != -1)
             {
-                geom.GetOffMeshConnections().Remove(nearestConnection);
+                geom.RemoveOffMeshConnection(nearestId);
             }
         }
     }

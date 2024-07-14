@@ -106,10 +106,10 @@ public class TestMeshDataFactory
         option.offMeshConVerts[3] = 0.4f;
         option.offMeshConVerts[4] = 0.5f;
         option.offMeshConVerts[5] = 0.6f;
-        option.offMeshConRad = new float[1];
-        option.offMeshConRad[0] = 0.1f;
-        option.offMeshConDir = new int[1];
-        option.offMeshConDir[0] = 1;
+        option.offMeshConRads = new float[1];
+        option.offMeshConRads[0] = 0.1f;
+        option.offMeshConDirs = new bool[1];
+        option.offMeshConDirs[0] = true;
         option.offMeshConAreas = new int[1];
         option.offMeshConAreas[0] = 2;
         option.offMeshConFlags = new int[1];
