@@ -20,6 +20,18 @@ namespace DotRecast.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe static Vector3 Create(float* values)
+        {
+            return *(Vector3*)(values);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe static Vector3 Create(float* values, int n)
+        {
+            return *(Vector3*)(values + n);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Create(ReadOnlySpan<float> values, int n)
         {
 #if NET8_0_OR_GREATER

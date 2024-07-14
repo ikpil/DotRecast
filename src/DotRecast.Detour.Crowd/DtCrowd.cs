@@ -1044,6 +1044,8 @@ namespace DotRecast.Detour.Crowd
 
         void BuildNeighbours(ReadOnlySpan<DtCrowdAgent> agents)
         {
+            // TODO performance check
+
             using var timer = m_telemetry.ScopedTimer(DtCrowdTimerLabel.BuildNeighbours);
 
             for (var i = 0; i < agents.Length; i++)
@@ -1105,7 +1107,7 @@ namespace DotRecast.Detour.Crowd
             return n;
         }
 
-        static int AddNeighbour(DtCrowdAgent idx, float dist, Span<DtCrowdNeighbour> neis, int nneis, int maxNeis)
+        static int AddNeighbour(DtCrowdAgent ag, float dist, Span<DtCrowdNeighbour> neis, int nneis, int maxNeis)
         {
             // Insert neighbour based on the distance.
             int nei = 0;
@@ -1143,7 +1145,7 @@ namespace DotRecast.Detour.Crowd
                 nei = i;
             }
 
-            neis[nei] = new DtCrowdNeighbour(idx, dist);
+            neis[nei] = new DtCrowdNeighbour(ag, dist);
 
             return Math.Min(nneis + 1, maxNeis);
         }
@@ -1346,6 +1348,7 @@ namespace DotRecast.Detour.Crowd
 
         private unsafe void PlanVelocity(DtCrowdAgentDebugInfo debug, ReadOnlySpan<DtCrowdAgent> agents)
         {
+            // TODO performance check
             using var timer = m_telemetry.ScopedTimer(DtCrowdTimerLabel.PlanVelocity);
 
             DtCrowdAgent debugAgent = debug != null ? debug.agent : null;
@@ -1371,10 +1374,10 @@ namespace DotRecast.Detour.Crowd
                     // Append neighbour segments as obstacles.
                     for (int j = 0; j < ag.boundary.GetSegmentCount(); ++j)
                     {
-                        var s = ag.boundary.GetSegment(j);
-                        Vector3 s0 = Unsafe.ReadUnaligned<Vector3>(s.s);
-                        Vector3 s3 = Unsafe.ReadUnaligned<Vector3>(s.s + 3);
-                        //RcArrays.Copy(s, 3, s3, 0, 3);
+                        var s = (DtSegment*)Unsafe.AsPointer(ref ag.boundary.GetSegment(j));
+                        Vector3 s0 = *(Vector3*)(s->s);
+                        Vector3 s3 = *(Vector3*)(s->s + 3);
+
                         if (DtUtils.TriArea2D(ag.npos, s0, s3) < 0.0f)
                         {
                             continue;
@@ -1385,9 +1388,7 @@ namespace DotRecast.Detour.Crowd
 
                     DtObstacleAvoidanceDebugData vod = null;
                     if (debugAgent == ag)
-                    {
                         vod = debug.vod;
-                    }
 
                     // Sample new safe velocity.
                     bool adaptive = true;
