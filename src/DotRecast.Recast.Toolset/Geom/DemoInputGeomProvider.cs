@@ -35,8 +35,17 @@ namespace DotRecast.Recast.Toolset.Geom
         private readonly Vector3 bmin;
         private readonly Vector3 bmax;
 
+        const int MAX_OFFMESH_CONNECTIONS = 256;
+        public int OffMeshConCount => m_offMeshConCount;
+        public float[] OffMeshConVerts { get; } = new float[MAX_OFFMESH_CONNECTIONS * 3 * 2];
+        public float[] OffMeshConRads { get; } = new float[MAX_OFFMESH_CONNECTIONS];
+        public bool[] OffMeshConDirs { get; } = new bool[MAX_OFFMESH_CONNECTIONS];
+        public int[] OffMeshConAreas { get; } = new int[MAX_OFFMESH_CONNECTIONS];
+        public int[] OffMeshConFlags { get; } = new int[MAX_OFFMESH_CONNECTIONS];
+        public int[] OffMeshConId { get; } = new int[MAX_OFFMESH_CONNECTIONS];
+        int m_offMeshConCount;
+
         private readonly List<RcConvexVolume> _convexVolumes = new List<RcConvexVolume>();
-        private readonly List<RcOffMeshConnection> _offMeshConnections = new List<RcOffMeshConnection>();
         private readonly RcTriMesh _mesh;
 
         public static DemoInputGeomProvider LoadFile(string objFilePath)
@@ -68,20 +77,11 @@ namespace DotRecast.Recast.Toolset.Geom
             _mesh = new RcTriMesh(vertices, faces);
         }
 
-        public RcTriMesh GetMesh()
-        {
-            return _mesh;
-        }
+        public RcTriMesh GetMesh() => _mesh;
 
-        public Vector3 GetMeshBoundsMin()
-        {
-            return bmin;
-        }
+        public Vector3 GetMeshBoundsMin() => bmin;
 
-        public Vector3 GetMeshBoundsMax()
-        {
-            return bmax;
-        }
+        public Vector3 GetMeshBoundsMax() => bmax;
 
         public void CalculateNormals()
         {
@@ -107,30 +107,36 @@ namespace DotRecast.Recast.Toolset.Geom
             }
         }
 
-        public IList<RcConvexVolume> ConvexVolumes()
+        public IList<RcConvexVolume> ConvexVolumes() => _convexVolumes;
+
+        public IEnumerable<RcTriMesh> Meshes() => RcImmutableArray.Create(_mesh);
+
+        public void AddOffMeshConnection(Vector3 spos, Vector3 epos, float radius, bool bidir, int area, int flags)
         {
-            return _convexVolumes;
+            if (m_offMeshConCount >= MAX_OFFMESH_CONNECTIONS)
+                return;
+            Span<float> v = OffMeshConVerts.AsSpan(m_offMeshConCount * 3 * 2);
+            OffMeshConRads[m_offMeshConCount] = radius;
+            OffMeshConDirs[m_offMeshConCount] = bidir;
+            OffMeshConAreas[m_offMeshConCount] = area;
+            OffMeshConFlags[m_offMeshConCount] = flags;
+            OffMeshConId[m_offMeshConCount] = 1000 + m_offMeshConCount;
+            spos.CopyTo(v);
+            epos.CopyTo(v.Slice(3));
+            m_offMeshConCount++;
         }
 
-        public IEnumerable<RcTriMesh> Meshes()
+        public void RemoveOffMeshConnection(int i)
         {
-            return RcImmutableArray.Create(_mesh);
-        }
-
-        public List<RcOffMeshConnection> GetOffMeshConnections()
-        {
-            return _offMeshConnections;
-        }
-
-        public void AddOffMeshConnection(Vector3 start, Vector3 end, float radius, bool bidir, int area, int flags)
-        {
-            _offMeshConnections.Add(new RcOffMeshConnection(start, end, radius, bidir, area, flags));
-        }
-
-        public void RemoveOffMeshConnections(Predicate<RcOffMeshConnection> filter)
-        {
-            //offMeshConnections.RetainAll(offMeshConnections.Stream().Filter(c -> !filter.Test(c)).Collect(ToList()));
-            _offMeshConnections.RemoveAll(filter); // TODO : 확인 필요
+            m_offMeshConCount--;
+            var src = OffMeshConVerts.AsSpan(m_offMeshConCount * 3 * 2);
+            var dst = OffMeshConVerts.AsSpan(i * 3 * 2);
+            RcVec.Copy(dst, src);
+            RcVec.Copy(dst.Slice(3), src.Slice(3));
+            OffMeshConRads[i] = OffMeshConRads[m_offMeshConCount];
+            OffMeshConDirs[i] = OffMeshConDirs[m_offMeshConCount];
+            OffMeshConAreas[i] = OffMeshConAreas[m_offMeshConCount];
+            OffMeshConFlags[i] = OffMeshConFlags[m_offMeshConCount];
         }
 
         public bool RaycastMesh(Vector3 src, Vector3 dst, out float tmin)
@@ -204,24 +210,15 @@ namespace DotRecast.Recast.Toolset.Geom
             AddConvexVolume(volume);
         }
 
-        public void AddConvexVolume(RcConvexVolume volume)
-        {
-            _convexVolumes.Add(volume);
-        }
+        public void AddConvexVolume(RcConvexVolume volume) => _convexVolumes.Add(volume);
 
-        public void ClearConvexVolumes()
-        {
-            _convexVolumes.Clear();
-        }
+        public void ClearConvexVolumes() => _convexVolumes.Clear();
 
         private static int[] MapFaces(List<int> meshFaces)
         {
             int[] faces = new int[meshFaces.Count];
             for (int i = 0; i < faces.Length; i++)
-            {
                 faces[i] = meshFaces[i];
-            }
-
             return faces;
         }
 
@@ -229,10 +226,7 @@ namespace DotRecast.Recast.Toolset.Geom
         {
             float[] vertices = new float[vertexPositions.Count];
             for (int i = 0; i < vertices.Length; i++)
-            {
                 vertices[i] = vertexPositions[i];
-            }
-
             return vertices;
         }
     }
