@@ -269,6 +269,11 @@ void main(){{
         vertices.Add(new OpenGLVertex(x, y, z, color));
     }
 
+    public unsafe void Vertex(float* pos, int color)
+    {
+        vertices.Add(new OpenGLVertex(pos[0], pos[1], pos[2], color));
+    }
+
     public void Vertex(float[] pos, int color)
     {
         vertices.Add(new OpenGLVertex(pos, color));

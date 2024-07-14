@@ -160,7 +160,7 @@ namespace DotRecast.Detour.Crowd
         public Vector3 GetCenter() => m_center;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public DtSegment GetSegment(int j) => m_segs[j];
+        public ref DtSegment GetSegment(int j) => ref m_segs[j];
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetSegmentCount() => m_nsegs;

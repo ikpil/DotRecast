@@ -36,7 +36,7 @@ public class NavMeshBuilderTest
     }
 
     [Test]
-    public void TestBVTree()
+    public unsafe void TestBVTree()
     {
         Assert.That(nmd.verts.Length / 3, Is.EqualTo(225));
         Assert.That(nmd.polys.Length, Is.EqualTo(119));
@@ -53,9 +53,10 @@ public class NavMeshBuilderTest
             //Assert.That(nmd.bvTree[i], Is.Not.Null);
         }
 
+        var offMeshCon = nmd.offMeshCons[0];
         for (int i = 0; i < 2; i++)
         {
-            Assert.That(RcVec.Create(nmd.verts, 223 * 3 + (i * 3)), Is.EqualTo(nmd.offMeshCons[0].pos[i]));
+            Assert.That(RcVec.Create(nmd.verts, 223 * 3 + (i * 3)), Is.EqualTo(RcVec.Create(offMeshCon.pos, (i * 3))));
         }
 
         Assert.That(nmd.offMeshCons[0].rad, Is.EqualTo(0.1f));

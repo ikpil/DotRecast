@@ -233,17 +233,17 @@ namespace DotRecast.Detour.Io
             return nodes;
         }
 
-        private DtOffMeshConnection[] ReadOffMeshCons(RcByteBuffer buf, DtMeshHeader header)
+        private unsafe DtOffMeshConnection[] ReadOffMeshCons(RcByteBuffer buf, DtMeshHeader header)
         {
             DtOffMeshConnection[] cons = new DtOffMeshConnection[header.offMeshConCount];
             for (int i = 0; i < cons.Length; i++)
             {
-                cons[i] = new DtOffMeshConnection();
+               ref DtOffMeshConnection con = ref cons[i];
                 for (int j = 0; j < 2; j++)
                 {
-                    cons[i].pos[j].X = buf.GetFloat();
-                    cons[i].pos[j].Y = buf.GetFloat();
-                    cons[i].pos[j].Z = buf.GetFloat();
+                    con.pos[j * 3 + 0] = buf.GetFloat();
+                    con.pos[j * 3 + 1] = buf.GetFloat();
+                    con.pos[j * 3 + 2] = buf.GetFloat();
                 }
 
                 cons[i].rad = buf.GetFloat();

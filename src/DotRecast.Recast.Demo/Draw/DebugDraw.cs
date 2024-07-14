@@ -93,6 +93,11 @@ public class DebugDraw
         GetOpenGlDraw().Vertex(pos, color);
     }
 
+    public unsafe void Vertex(float* pos, int color)
+    {
+        GetOpenGlDraw().Vertex(pos, color);
+    }
+
     public void Vertex(Vector3 pos, int color)
     {
         GetOpenGlDraw().Vertex(pos, color);

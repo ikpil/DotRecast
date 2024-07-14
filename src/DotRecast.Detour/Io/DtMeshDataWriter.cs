@@ -157,15 +157,15 @@ namespace DotRecast.Detour.Io
             }
         }
 
-        private void WriteOffMeshCons(BinaryWriter stream, DtMeshData data, RcByteOrder order)
+        private unsafe void WriteOffMeshCons(BinaryWriter stream, DtMeshData data, RcByteOrder order)
         {
             for (int i = 0; i < data.header.offMeshConCount; i++)
             {
                 for (int j = 0; j < 2; j++)
                 {
-                    RcIO.Write(stream, data.offMeshCons[i].pos[j].X, order);
-                    RcIO.Write(stream, data.offMeshCons[i].pos[j].Y, order);
-                    RcIO.Write(stream, data.offMeshCons[i].pos[j].Z, order);
+                    RcIO.Write(stream, data.offMeshCons[i].pos[j * 3 + 0], order);
+                    RcIO.Write(stream, data.offMeshCons[i].pos[j * 3 + 1], order);
+                    RcIO.Write(stream, data.offMeshCons[i].pos[j * 3 + 2], order);
                 }
 
                 RcIO.Write(stream, data.offMeshCons[i].rad, order);
