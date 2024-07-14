@@ -271,7 +271,7 @@ namespace DotRecast.Detour
                 DtNode bestNode = m_openList.Pop();
                 bestNode.flags &= ~DtNodeFlags.DT_NODE_OPEN;
                 bestNode.flags |= DtNodeFlags.DT_NODE_CLOSED;
-                
+
                 // Get poly and tile.
                 // The API input has been checked already, skip checking internal data.
                 long bestRef = bestNode.id;
@@ -3090,11 +3090,14 @@ namespace DotRecast.Detour
         }
 
 
-        protected void InsertInterval(List<DtSegInterval> ints, int tmin, int tmax, long refs)
+        protected void InsertInterval(Span<DtSegInterval> ints, ref int nints, int maxInts, int tmin, int tmax, long refs)
         {
+            if (nints + 1 > maxInts)
+                return;
+
             // Find insertion point.
             int idx = 0;
-            while (idx < ints.Count)
+            while (idx < nints)
             {
                 if (tmax <= ints[idx].tmin)
                 {
@@ -3104,29 +3107,36 @@ namespace DotRecast.Detour
                 idx++;
             }
 
+            // Move current results.
+            if (0 != nints - idx)
+            {
+                RcSpans.Move(ints, idx, idx + 1, nints - idx);
+            }
+
             // Store
-            ints.Insert(idx, new DtSegInterval(refs, tmin, tmax));
+            ints[idx] = new DtSegInterval(refs, tmin, tmax);
+            nints++;
         }
 
         /// @par
         ///
-        /// If the @p segmentRefs parameter is provided, then all polygon segments will be returned.
+        /// If the @p segmentRefs parameter is provided, then all polygon segments will be returned. 
         /// Otherwise only the wall segments are returned.
-        ///
-        /// A segment that is normally a portal will be included in the result set as a
+        /// 
+        /// A segment that is normally a portal will be included in the result set as a 
         /// wall if the @p filter results in the neighbor polygon becoomming impassable.
-        ///
-        /// The @p segmentVerts and @p segmentRefs buffers should normally be sized for the
+        /// 
+        /// The @p segmentVerts and @p segmentRefs buffers should normally be sized for the 
         /// maximum segments per polygon of the source navigation mesh.
-        ///
+        /// 
         /// Returns the segments for the specified polygon, optionally including portals.
-        /// @param[in] ref The reference id of the polygon.
-        /// @param[in] filter The polygon filter to apply to the query.
-        /// @param[out] segmentVerts The segments. [(ax, ay, az, bx, by, bz) * segmentCount]
-        /// @param[out] segmentRefs The reference ids of each segment's neighbor polygon.
-        /// Or zero if the segment is a wall. [opt] [(parentRef) * @p segmentCount]
-        /// @param[out] segmentCount The number of segments returned.
-        /// @param[in] maxSegments The maximum number of segments the result arrays can hold.
+        ///  @param[in]		ref				The reference id of the polygon.
+        ///  @param[in]		filter			The polygon filter to apply to the query.
+        ///  @param[out]	segmentVerts	The segments. [(ax, ay, az, bx, by, bz) * segmentCount]
+        ///  @param[out]	segmentRefs		The reference ids of each segment's neighbor polygon. 
+        ///  								Or zero if the segment is a wall. [opt] [(parentRef) * @p segmentCount] 
+        ///  @param[out]	segmentCount	The number of segments returned.
+        ///  @param[in]		maxSegments		The maximum number of segments the result arrays can hold.
         /// @returns The status flags for the query.
         public DtStatus GetPolyWallSegments(long refs, bool storePortals, IDtQueryFilter filter,
             ref List<RcSegmentVert> segmentVerts, ref List<long> segmentRefs)
@@ -3134,7 +3144,7 @@ namespace DotRecast.Detour
             segmentVerts.Clear();
             segmentRefs.Clear();
 
-            var status = m_nav.GetTileAndPolyByRef(refs, out var tile, out var poly);
+            DtStatus status = m_nav.GetTileAndPolyByRef(refs, out var tile, out var poly);
             if (status.Failed())
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
@@ -3145,11 +3155,17 @@ namespace DotRecast.Detour
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            List<DtSegInterval> ints = new List<DtSegInterval>(16);
+            int n = 0;
+            const int MAX_INTERVAL = 16;
+            Span<DtSegInterval> ints = stackalloc DtSegInterval[MAX_INTERVAL];
+            int nints;
+
+            status = DtStatus.DT_SUCCESS;
+
             for (int i = 0, j = poly.vertCount - 1; i < poly.vertCount; j = i++)
             {
                 // Skip non-solid edges.
-                ints.Clear();
+                nints = 0;
                 if ((poly.neis[j] & DT_EXT_LINK) != 0)
                 {
                     // Tile border.
@@ -3163,7 +3179,7 @@ namespace DotRecast.Detour
                                 m_nav.GetTileAndPolyByRefUnsafe(link.refs, out var neiTile, out var neiPoly);
                                 if (filter.PassFilter(link.refs, neiTile, neiPoly))
                                 {
-                                    InsertInterval(ints, link.bmin, link.bmax, link.refs);
+                                    InsertInterval(ints, ref nints, MAX_INTERVAL, link.bmin, link.bmax, link.refs);
                                 }
                             }
                         }
@@ -3198,17 +3214,18 @@ namespace DotRecast.Detour
                     // RcArrays.Copy(tile.data.verts, ivi, seg, 3, 3);
                     segmentVerts.Add(seg);
                     segmentRefs.Add(neiRef);
+                    n++;
                     continue;
                 }
 
                 // Add sentinels
-                InsertInterval(ints, -1, 0, 0);
-                InsertInterval(ints, 255, 256, 0);
+                InsertInterval(ints, ref nints, MAX_INTERVAL, -1, 0, 0);
+                InsertInterval(ints, ref nints, MAX_INTERVAL, 255, 256, 0);
 
                 // Store segments.
                 int vj = poly.verts[j] * 3;
                 int vi = poly.verts[i] * 3;
-                for (int k = 1; k < ints.Count; ++k)
+                for (int k = 1; k < nints; ++k)
                 {
                     // Portal segment.
                     if (storePortals && ints[k].refs != 0)
@@ -3220,6 +3237,7 @@ namespace DotRecast.Detour
                         seg.vmax = RcVec.Lerp(tile.data.verts, vj, vi, tmax);
                         segmentVerts.Add(seg);
                         segmentRefs.Add(ints[k].refs);
+                        n++;
                     }
 
                     // Wall segment.
@@ -3234,11 +3252,12 @@ namespace DotRecast.Detour
                         seg.vmax = RcVec.Lerp(tile.data.verts, vj, vi, tmax);
                         segmentVerts.Add(seg);
                         segmentRefs.Add(0L);
+                        n++;
                     }
                 }
             }
 
-            return DtStatus.DT_SUCCESS;
+            return status;
         }
 
         /// @par
