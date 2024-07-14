@@ -38,7 +38,7 @@ public class OffMeshConnectionSampleTool : ISampleTool
 
     private readonly RcOffMeshConnectionTool _tool;
 
-    private int _bidir;
+    private int _bidir = 1;
     private bool _hasStartPt;
     private Vector3 _startPt;
 

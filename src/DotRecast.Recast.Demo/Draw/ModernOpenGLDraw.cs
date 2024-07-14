@@ -157,6 +157,10 @@ void main(){{
         _gl.BindVertexArray(0);
         _gl.BindBuffer(GLEnum.ArrayBuffer, 0);
         _gl.BindBuffer(GLEnum.ElementArrayBuffer, 0);
+
+        //int* range = stackalloc int[2];
+        //_gl.GetInteger(GetPName.LineWidthRange, range);
+        //Console.WriteLine($"\nLineWidthRange: {range[0]} {range[1]}");
     }
 
     public void Clear()

@@ -8,7 +8,7 @@ namespace DotRecast.Recast.Toolset.Geom
 {
     public class DemoDtTileCacheMeshProcess : IDtTileCacheMeshProcess
     {
-        private IInputGeomProvider _geom;
+        private IInputGeomProvider m_geom;
 
         public DemoDtTileCacheMeshProcess()
         {
@@ -16,7 +16,7 @@ namespace DotRecast.Recast.Toolset.Geom
 
         public void Init(IInputGeomProvider geom)
         {
-            _geom = geom;
+            m_geom = geom;
         }
 
         public void Process(DtNavMeshCreateParams option)
@@ -44,30 +44,15 @@ namespace DotRecast.Recast.Toolset.Geom
             }
 
             // Pass in off-mesh connections.
-            if (null != _geom)
+            if (null != m_geom)
             {
-                var offMeshConnections = _geom.GetOffMeshConnections();
-                option.offMeshConCount = offMeshConnections.Count;
-                option.offMeshConVerts = new float[option.offMeshConCount * 6];
-                option.offMeshConRad = new float[option.offMeshConCount];
-                option.offMeshConDir = new int[option.offMeshConCount];
-                option.offMeshConAreas = new int[option.offMeshConCount];
-                option.offMeshConFlags = new int[option.offMeshConCount];
-                option.offMeshConUserID = new int[option.offMeshConCount];
-                for (int i = 0; i < option.offMeshConCount; i++)
-                {
-                    RcOffMeshConnection offMeshCon = offMeshConnections[i];
-                    for (int j = 0; j < 6; j++)
-                    {
-                        option.offMeshConVerts[6 * i + j] = offMeshCon.verts[j];
-                    }
-
-                    option.offMeshConRad[i] = offMeshCon.radius;
-                    option.offMeshConDir[i] = offMeshCon.bidir ? 1 : 0;
-                    option.offMeshConAreas[i] = offMeshCon.area;
-                    option.offMeshConFlags[i] = offMeshCon.flags;
-                    // option.offMeshConUserID[i] = offMeshCon.userId;
-                }
+                option.offMeshConCount = m_geom.OffMeshConCount;
+                option.offMeshConVerts = m_geom.OffMeshConVerts;
+                option.offMeshConRads = m_geom.OffMeshConRads;
+                option.offMeshConDirs = m_geom.OffMeshConDirs;
+                option.offMeshConAreas = m_geom.OffMeshConAreas;
+                option.offMeshConFlags = m_geom.OffMeshConFlags;
+                option.offMeshConUserID = m_geom.OffMeshConId;
             }
         }
     }

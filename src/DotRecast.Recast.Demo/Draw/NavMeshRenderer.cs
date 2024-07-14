@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using DotRecast.Detour;
@@ -226,21 +227,24 @@ public class NavMeshRenderer
         _debugDraw.DepthMask(false);
 
         _debugDraw.Begin(DebugDrawPrimitives.LINES, 2.0f);
-        foreach (var con in geom.GetOffMeshConnections())
+
+        for (int i = 0; i < geom.OffMeshConCount; i++)
         {
-            float[] v = con.verts;
+            var v = geom.OffMeshConVerts.AsSpan(i * 6);
+            var rad = geom.OffMeshConRads[i];
+            var bdir = geom.OffMeshConDirs[i];
             _debugDraw.Vertex(v[0], v[1], v[2], baseColor);
             _debugDraw.Vertex(v[0], v[1] + 0.2f, v[2], baseColor);
 
             _debugDraw.Vertex(v[3], v[4], v[5], baseColor);
             _debugDraw.Vertex(v[3], v[4] + 0.2f, v[5], baseColor);
 
-            _debugDraw.AppendCircle(v[0], v[1] + 0.1f, v[2], con.radius, baseColor);
-            _debugDraw.AppendCircle(v[3], v[4] + 0.1f, v[5], con.radius, baseColor);
+            _debugDraw.AppendCircle(v[0], v[1] + 0.1f, v[2], rad, baseColor);
+            _debugDraw.AppendCircle(v[3], v[4] + 0.1f, v[5], rad, baseColor);
 
             if (hilight)
             {
-                _debugDraw.AppendArc(v[0], v[1], v[2], v[3], v[4], v[5], 0.25f, con.bidir ? 0.6f : 0.0f, 0.6f, conColor);
+                _debugDraw.AppendArc(v[0], v[1], v[2], v[3], v[4], v[5], 0.25f, bdir ? 0.6f : 0.0f, 0.6f, conColor);
             }
         }
 
