@@ -3138,12 +3138,12 @@ namespace DotRecast.Detour
         ///  @param[out]	segmentCount	The number of segments returned.
         ///  @param[in]		maxSegments		The maximum number of segments the result arrays can hold.
         /// @returns The status flags for the query.
-        public DtStatus GetPolyWallSegments(long refs, bool storePortals, IDtQueryFilter filter,
-            ref List<RcSegmentVert> segmentVerts, ref List<long> segmentRefs)
+        public DtStatus GetPolyWallSegments(long refs, IDtQueryFilter filter,
+            Span<RcSegmentVert> segmentVerts, Span<long> segmentRefs, ref int segmentCount,
+            int maxSegments)
         {
-            segmentVerts.Clear();
-            segmentRefs.Clear();
-
+            segmentCount = 0;
+            
             DtStatus status = m_nav.GetTileAndPolyByRef(refs, out var tile, out var poly);
             if (status.Failed())
             {
@@ -3159,6 +3159,8 @@ namespace DotRecast.Detour
             const int MAX_INTERVAL = 16;
             Span<DtSegInterval> ints = stackalloc DtSegInterval[MAX_INTERVAL];
             int nints;
+
+            bool storePortals = segmentRefs != null;
 
             status = DtStatus.DT_SUCCESS;
 
@@ -3205,16 +3207,26 @@ namespace DotRecast.Detour
                         continue;
                     }
 
-                    int ivj = poly.verts[j] * 3;
-                    int ivi = poly.verts[i] * 3;
-                    var seg = new RcSegmentVert();
-                    seg.vmin = RcVec.Create(tile.data.verts, ivj);
-                    seg.vmax = RcVec.Create(tile.data.verts, ivi);
-                    // RcArrays.Copy(tile.data.verts, ivj, seg, 0, 3);
-                    // RcArrays.Copy(tile.data.verts, ivi, seg, 3, 3);
-                    segmentVerts.Add(seg);
-                    segmentRefs.Add(neiRef);
-                    n++;
+                    if (n < maxSegments)
+                    {
+                        int ivj = poly.verts[j] * 3;
+                        int ivi = poly.verts[i] * 3;
+                        var seg = new RcSegmentVert();
+                        seg.vmin = RcVec.Create(tile.data.verts, ivj);
+                        seg.vmax = RcVec.Create(tile.data.verts, ivi);
+                        segmentVerts[n] = seg;
+                        if (null != segmentRefs)
+                        {
+                            segmentRefs[n] = neiRef;
+                        }
+
+                        n++;
+                    }
+                    else
+                    {
+                        status |= DtStatus.DT_BUFFER_TOO_SMALL;
+                    }
+
                     continue;
                 }
 
@@ -3232,12 +3244,25 @@ namespace DotRecast.Detour
                     {
                         float tmin = ints[k].tmin / 255.0f;
                         float tmax = ints[k].tmax / 255.0f;
-                        var seg = new RcSegmentVert();
-                        seg.vmin = RcVec.Lerp(tile.data.verts, vj, vi, tmin);
-                        seg.vmax = RcVec.Lerp(tile.data.verts, vj, vi, tmax);
-                        segmentVerts.Add(seg);
-                        segmentRefs.Add(ints[k].refs);
-                        n++;
+
+                        if (n < maxSegments)
+                        {
+                            var seg = new RcSegmentVert();
+                            seg.vmin = RcVec.Lerp(tile.data.verts, vj, vi, tmin);
+                            seg.vmax = RcVec.Lerp(tile.data.verts, vj, vi, tmax);
+                            segmentVerts[n] = seg;
+
+                            if (null != segmentRefs)
+                            {
+                                segmentRefs[n] = ints[k].refs;
+                            }
+
+                            n++;
+                        }
+                        else
+                        {
+                            status |= DtStatus.DT_BUFFER_TOO_SMALL;
+                        }
                     }
 
                     // Wall segment.
@@ -3247,15 +3272,30 @@ namespace DotRecast.Detour
                     {
                         float tmin = imin / 255.0f;
                         float tmax = imax / 255.0f;
-                        var seg = new RcSegmentVert();
-                        seg.vmin = RcVec.Lerp(tile.data.verts, vj, vi, tmin);
-                        seg.vmax = RcVec.Lerp(tile.data.verts, vj, vi, tmax);
-                        segmentVerts.Add(seg);
-                        segmentRefs.Add(0L);
-                        n++;
+
+                        if (n < maxSegments)
+                        {
+                            var seg = new RcSegmentVert();
+                            seg.vmin = RcVec.Lerp(tile.data.verts, vj, vi, tmin);
+                            seg.vmax = RcVec.Lerp(tile.data.verts, vj, vi, tmax);
+                            segmentVerts[n] = seg;
+
+                            if (null != segmentRefs)
+                            {
+                                segmentRefs[n] = 0;
+                            }
+
+                            n++;
+                        }
+                        else
+                        {
+                            status |= DtStatus.DT_BUFFER_TOO_SMALL;
+                        }
                     }
                 }
             }
+
+            segmentCount = n;
 
             return status;
         }

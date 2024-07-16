@@ -17,12 +17,12 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
 using System.Collections.Generic;
 using DotRecast.Core;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
-
 
 public class GetPolyWallSegmentsTest : AbstractDetourTest
 {
@@ -83,28 +83,30 @@ public class GetPolyWallSegmentsTest : AbstractDetourTest
     [Test]
     public void TestFindDistanceToWall()
     {
-        var segmentVerts = new List<RcSegmentVert>();
-        var segmentRefs = new List<long>();
+        const int MAX_SEGS = DtDetour.DT_VERTS_PER_POLYGON * 4;
+        Span<RcSegmentVert> segs = stackalloc RcSegmentVert[MAX_SEGS];
+        Span<long> refs = stackalloc long[MAX_SEGS];
+        int nsegs = 0;
 
         IDtQueryFilter filter = new DtQueryDefaultFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
-            var result = query.GetPolyWallSegments(startRefs[i], true, filter, ref segmentVerts, ref segmentRefs);
-            Assert.That(segmentVerts.Count, Is.EqualTo(VERTICES[i].Length));
-            Assert.That(segmentRefs.Count, Is.EqualTo(REFS[i].Length));
+            var result = query.GetPolyWallSegments(startRefs[i], filter, segs, refs, ref nsegs, MAX_SEGS);
+            Assert.That(nsegs, Is.EqualTo(VERTICES[i].Length));
+            Assert.That(nsegs, Is.EqualTo(REFS[i].Length));
             for (int v = 0; v < VERTICES[i].Length / 6; v++)
             {
-                Assert.That(segmentVerts[v].vmin.X, Is.EqualTo(VERTICES[i][v].vmin.X).Within(0.001f));
-                Assert.That(segmentVerts[v].vmin.Y, Is.EqualTo(VERTICES[i][v].vmin.Y).Within(0.001f));
-                Assert.That(segmentVerts[v].vmin.Z, Is.EqualTo(VERTICES[i][v].vmin.Z).Within(0.001f));
-                Assert.That(segmentVerts[v].vmax.X, Is.EqualTo(VERTICES[i][v].vmax.X).Within(0.001f));
-                Assert.That(segmentVerts[v].vmax.Y, Is.EqualTo(VERTICES[i][v].vmax.Y).Within(0.001f));
-                Assert.That(segmentVerts[v].vmax.Z, Is.EqualTo(VERTICES[i][v].vmax.Z).Within(0.001f));
+                Assert.That(segs[v].vmin.X, Is.EqualTo(VERTICES[i][v].vmin.X).Within(0.001f));
+                Assert.That(segs[v].vmin.Y, Is.EqualTo(VERTICES[i][v].vmin.Y).Within(0.001f));
+                Assert.That(segs[v].vmin.Z, Is.EqualTo(VERTICES[i][v].vmin.Z).Within(0.001f));
+                Assert.That(segs[v].vmax.X, Is.EqualTo(VERTICES[i][v].vmax.X).Within(0.001f));
+                Assert.That(segs[v].vmax.Y, Is.EqualTo(VERTICES[i][v].vmax.Y).Within(0.001f));
+                Assert.That(segs[v].vmax.Z, Is.EqualTo(VERTICES[i][v].vmax.Z).Within(0.001f));
             }
 
             for (int v = 0; v < REFS[i].Length; v++)
             {
-                Assert.That(segmentRefs[v], Is.EqualTo(REFS[i][v]));
+                Assert.That(refs[v], Is.EqualTo(REFS[i][v]));
             }
         }
     }

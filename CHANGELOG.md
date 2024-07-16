@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Changed data structure of 'neis' from List<byte> to byte[] for optimized memory usage and improved access speed in `DtLayerMonotoneRegion`
 - Changed new RcVec3f[3] to stackalloc RcVec3f[3] in DtNavMesh.GetPolyHeight() to reduce heap allocation
 - Changed memory handling to use stackalloc in DtNavMeshQuery.GetPolyWallSegments for reducing SOH
+- Changed DtNavMeshQuery.GetPolyWallSegments() to use Span<T> for enhanced performance, memory efficiency.
 
 ### Removed
 - Nothing

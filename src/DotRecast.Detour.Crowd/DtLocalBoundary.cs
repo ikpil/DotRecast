@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
 using System.Collections.Generic;
 using DotRecast.Core;
 using DotRecast.Core.Numerics;
@@ -90,6 +91,8 @@ namespace DotRecast.Detour.Crowd
 
         public void Update(long startRef, RcVec3f pos, float collisionQueryRange, DtNavMeshQuery navquery, IDtQueryFilter filter)
         {
+            const int MAX_SEGS_PER_POLY = DtDetour.DT_VERTS_PER_POLYGON * 3;
+
             if (startRef == 0)
             {
                 Reset();
@@ -104,18 +107,17 @@ namespace DotRecast.Detour.Crowd
             {
                 // Secondly, store all polygon edges.
                 m_segs.Clear();
-
-                var segmentVerts = new List<RcSegmentVert>();
-                var segmentRefs = new List<long>();
+                Span<RcSegmentVert> segs = stackalloc RcSegmentVert[MAX_SEGS_PER_POLY];
+                int nsegs = 0;
 
                 for (int j = 0; j < m_polys.Count; ++j)
                 {
-                    var result = navquery.GetPolyWallSegments(m_polys[j], false, filter, ref segmentVerts, ref segmentRefs);
+                    var result = navquery.GetPolyWallSegments(m_polys[j], filter, segs, null, ref nsegs, MAX_SEGS_PER_POLY);
                     if (result.Succeeded())
                     {
-                        for (int k = 0; k < segmentRefs.Count; ++k)
+                        for (int k = 0; k < nsegs; ++k)
                         {
-                            RcSegmentVert s = segmentVerts[k];
+                            ref RcSegmentVert s = ref segs[k];
                             var s0 = s.vmin;
                             var s3 = s.vmax;
 

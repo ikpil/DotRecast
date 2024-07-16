@@ -472,8 +472,9 @@ public class TestNavmeshSampleTool : ISampleTool
         {
             if (m_polys != null)
             {
-                var segmentVerts = new List<RcSegmentVert>();
-                var segmentRefs = new List<long>();
+                const int MAX_SEGS = DtDetour.DT_VERTS_PER_POLYGON * 4;
+                Span<RcSegmentVert> segs = stackalloc RcSegmentVert[MAX_SEGS];
+                Span<long> refs = stackalloc long[MAX_SEGS];
 
                 for (int i = 0; i < m_polys.Count; i++)
                 {
@@ -491,18 +492,20 @@ public class TestNavmeshSampleTool : ISampleTool
                     dd.DepthMask(true);
                     if (_sample.GetNavMeshQuery() != null)
                     {
+                        int nsegs = 0;
                         var result = _sample
                             .GetNavMeshQuery()
-                            .GetPolyWallSegments(m_polys[i], false, m_filter, ref segmentVerts, ref segmentRefs);
+                            .GetPolyWallSegments(m_polys[i], m_filter, segs, refs, ref nsegs, MAX_SEGS);
 
                         if (result.Succeeded())
                         {
                             dd.Begin(LINES, 2.0f);
-                            for (int j = 0; j < segmentVerts.Count; ++j)
+                            for (int j = 0; j < nsegs; ++j)
                             {
-                                RcSegmentVert s = segmentVerts[j];
+                                ref RcSegmentVert s = ref segs[j];
                                 var v0 = s.vmin;
                                 var s3 = s.vmax;
+                                
                                 // Skip too distant segments.
                                 var distSqr = DtUtils.DistancePtSegSqr2D(m_spos, v0, s3, out var tseg);
                                 if (distSqr > RcMath.Sqr(m_neighbourhoodRadius))
@@ -515,8 +518,9 @@ public class TestNavmeshSampleTool : ISampleTool
                                 RcVec3f norm = new RcVec3f(delta.Z, 0, -delta.X);
                                 norm = RcVec3f.Normalize(norm);
                                 RcVec3f p1 = RcVec.Mad(p0, norm, agentRadius * 0.5f);
+                                
                                 // Skip backfacing segments.
-                                if (segmentRefs[j] != 0)
+                                if (refs[j] != 0)
                                 {
                                     int col = DuRGBA(255, 255, 255, 32);
                                     dd.Vertex(s.vmin.X, s.vmin.Y + agentClimb, s.vmin.Z, col);
