@@ -6,6 +6,7 @@ namespace DotRecast.Detour
 {
     public static class DtUtils
     {
+        // TODO rcMath
         public static int NextPow2(int v)
         {
             v--;

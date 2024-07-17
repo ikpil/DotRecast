@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using DotRecast.Core;
 using System.Numerics;
+using System.Buffers;
 
 namespace DotRecast.Recast
 {
@@ -79,8 +80,8 @@ namespace DotRecast.Recast
             int w = chf.width;
             int h = chf.height;
 
-            Span<byte> srcReg = stackalloc byte[chf.spanCount];
-            srcReg.Fill(0xFF);
+            byte[] srcReg = ArrayPool<byte>.Shared.Rent(chf.spanCount);
+            Array.Fill<byte>(srcReg, 0xFF);
 
             int nsweeps = chf.width;
             Span<RcLayerSweepSpan> sweeps = stackalloc RcLayerSweepSpan[nsweeps];
@@ -260,6 +261,8 @@ namespace DotRecast.Recast
                 }
             }
 
+            ArrayPool<byte>.Shared.Return(srcReg);
+
             // Create 2D layers from regions.
             byte layerId = 0;
 
@@ -339,7 +342,7 @@ namespace DotRecast.Recast
 
                 byte newId = ri.layerId;
 
-                for (;;)
+                for (; ; )
                 {
                     int oldId = 0xff;
 

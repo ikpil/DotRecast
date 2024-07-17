@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using DotRecast.Core;
 
@@ -744,7 +745,7 @@ namespace DotRecast.Recast
             cset.borderSize = chf.borderSize;
             cset.maxError = maxError;
 
-            Span<int> flags = stackalloc int[chf.spanCount];
+            int[] flags = ArrayPool<int>.Shared.Rent(chf.spanCount);
 
             ctx.StartTimer(RcTimerLabel.RC_TIMER_BUILD_CONTOURS_TRACE);
 
@@ -867,11 +868,13 @@ namespace DotRecast.Recast
                 }
             }
 
+            ArrayPool<int>.Shared.Return(flags);
+
             // Merge holes if needed.
             if (cset.conts.Count > 0)
             {
                 // Calculate winding of all polygons.
-                int[] winding = new int[cset.conts.Count];
+                int[] winding = new int[cset.conts.Count]; // TODO alloc temp
                 int nholes = 0;
                 for (int i = 0; i < cset.conts.Count; ++i)
                 {

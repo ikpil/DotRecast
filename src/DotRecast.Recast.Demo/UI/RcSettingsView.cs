@@ -176,9 +176,9 @@ public class RcSettingsView : IRcView
         ImGui.Checkbox("Enable", ref settings.tiled);
         if (settings.tiled)
         {
-            if (0 < (settings.tileSize % 16))
-                settings.tileSize = settings.tileSize + (16 - (settings.tileSize % 16));
-            ImGui.SliderInt("Tile Size", ref settings.tileSize, 16, 1024);
+            ImGui.SliderInt("Tile Size", ref settings.tileSize, 16, 128);
+            if (0 < (settings.tileSize % 8))
+                settings.tileSize = settings.tileSize + (8 - (settings.tileSize % 8));
 
             ImGui.Text($"Tiles {tiles[0]} x {tiles[1]}");
             ImGui.Text($"Max Tiles {maxTiles}");

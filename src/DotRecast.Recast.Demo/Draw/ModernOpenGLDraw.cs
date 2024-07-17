@@ -6,6 +6,8 @@ using DotRecast.Core;
 
 namespace DotRecast.Recast.Demo.Draw;
 
+// TODO use a lot of Memory, 2GB+
+
 public class ModernOpenGLDraw : IOpenGLDraw
 {
     private GL _gl;
