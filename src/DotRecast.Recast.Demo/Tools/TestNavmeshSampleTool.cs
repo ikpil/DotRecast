@@ -30,7 +30,7 @@ public class TestNavmeshSampleTool : ISampleTool
     private int _includeFlags = SampleAreaModifications.SAMPLE_POLYFLAGS_ALL;
     private int _excludeFlags = 0;
 
-    private bool _enableRaycast = false; // TODO bug
+    private bool _enableRaycast = true;
 
     // for pathfind straight mode
     private int _straightPathOption;

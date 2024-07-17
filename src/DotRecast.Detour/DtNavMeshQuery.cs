@@ -944,7 +944,7 @@ namespace DotRecast.Detour
                             DtRaycastOptions.DT_RAYCAST_USE_COSTS, ref rayHit, grandpaRef);
                         if (rayStatus.Succeeded())
                         {
-                            foundShortCut = rayHit.t >= 1.0f;
+                            foundShortCut = rayHit.t >= 1.0f && rayHit.path[rayHit.pathCount ^ 1] == neighbourRef;
                             if (foundShortCut)
                             {
                                 shortcut = rayHit.path.Slice(0, rayHit.pathCount);
@@ -1258,7 +1258,7 @@ namespace DotRecast.Detour
                             DtRaycastOptions.DT_RAYCAST_USE_COSTS, ref rayHit, grandpaRef);
                         if (status.Succeeded())
                         {
-                            foundShortCut = rayHit.t >= 1.0f;
+                            foundShortCut = rayHit.t >= 1.0f && rayHit.path[rayHit.pathCount ^ 1] == neighbourRef;
                             if (foundShortCut)
                             {
                                 //shortcut = new List<long>(rayHit.path);
