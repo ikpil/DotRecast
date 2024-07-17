@@ -1223,7 +1223,7 @@ namespace DotRecast.Detour.Crowd
                 if (ag.OverOffmeshConnection(triggerRadius))
                 {
                     // Prepare to off-mesh connection.
-                    DtCrowdAgentAnimation anim = ag.animation;
+                    ref DtCrowdAgentAnimation anim = ref ag.animation;
 
                     // Adjust the path over the off-mesh connection.
                     if (ag.corridor.MoveOverOffmeshConnection(ag.corners[ag.ncorners - 1].refs, refs, ref anim.startPos,
@@ -1545,7 +1545,7 @@ namespace DotRecast.Detour.Crowd
             for (var i = 0; i < agents.Length; i++)
             {
                 var ag = agents[i];
-                DtCrowdAgentAnimation anim = ag.animation;
+                ref DtCrowdAgentAnimation anim = ref ag.animation;
                 if (!anim.active)
                 {
                     continue;

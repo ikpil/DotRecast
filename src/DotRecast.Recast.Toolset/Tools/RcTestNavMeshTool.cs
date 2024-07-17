@@ -273,7 +273,7 @@ namespace DotRecast.Recast.Toolset.Tools
             // results ...
             //polys = path;
 
-            if (t >= 1)
+            if (t > 1)
             {
                 // No hit
                 hitPos = endPos;
@@ -410,7 +410,7 @@ namespace DotRecast.Recast.Toolset.Tools
             return status;
         }
 
-        public DtStatus FindRandomPointAroundCircle(DtNavMeshQuery navQuery, long startRef, long endRef, Vector3 spos, Vector3 epos, IDtQueryFilter filter, bool constrainByCircle, int count,
+        public DtStatus FindRandomPointAroundCircle(DtNavMeshQuery navQuery, long startRef, long endRef, Vector3 spos, Vector3 epos, IDtQueryFilter filter, /*bool constrainByCircle, */int count,
             ref List<Vector3> points)
         {
             if (startRef == 0 || endRef == 0)
@@ -422,9 +422,9 @@ namespace DotRecast.Recast.Toolset.Tools
             float dz = epos.Z - spos.Z;
             float dist = MathF.Sqrt(dx * dx + dz * dz);
 
-            IDtPolygonByCircleConstraint constraint = constrainByCircle
-                ? DtStrictDtPolygonByCircleConstraint.Shared
-                : DtNoOpDtPolygonByCircleConstraint.Shared;
+            //IDtPolygonByCircleConstraint constraint = constrainByCircle
+            //    ? DtStrictDtPolygonByCircleConstraint.Shared
+            //    : DtNoOpDtPolygonByCircleConstraint.Shared;
 
             var frand = new RcRand();
             int prevCnt = points.Count;
@@ -432,7 +432,7 @@ namespace DotRecast.Recast.Toolset.Tools
             points = new List<Vector3>();
             while (0 < count && points.Count < prevCnt + count)
             {
-                var status = navQuery.FindRandomPointAroundCircle(startRef, spos, dist, filter, frand, constraint,
+                var status = navQuery.FindRandomPointAroundCircle(startRef, spos, dist, filter, frand/*, constraint*/,
                     out var randomRef, out var randomPt);
 
                 if (status.Succeeded())

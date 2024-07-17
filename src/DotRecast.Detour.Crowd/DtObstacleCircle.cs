@@ -3,7 +3,7 @@ using System.Numerics;
 namespace DotRecast.Detour.Crowd
 {
     /// < Max number of adaptive rings.
-    public struct DtObstacleCircle // TODO struct
+    public struct DtObstacleCircle
     {
         /** Position of the obstacle */
         public Vector3 p;

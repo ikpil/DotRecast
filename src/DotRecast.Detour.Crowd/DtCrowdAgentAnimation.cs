@@ -22,12 +22,12 @@ using System.Numerics;
 
 namespace DotRecast.Detour.Crowd
 {
-    public class DtCrowdAgentAnimation
+    public struct DtCrowdAgentAnimation
     {
         public bool active;
-        public Vector3 initPos = new Vector3();
-        public Vector3 startPos = new Vector3();
-        public Vector3 endPos = new Vector3();
+        public Vector3 initPos;
+        public Vector3 startPos;
+        public Vector3 endPos;
         public long polyRef;
         public float t, tmax;
     }

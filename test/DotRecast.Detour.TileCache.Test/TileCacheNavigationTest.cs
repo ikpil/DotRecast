@@ -99,25 +99,4 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
             }
         }
     }
-
-    [Test]
-    public void TestFindPathWithNoHeuristic()
-    {
-        IDtQueryFilter filter = new DtQueryDefaultFilter();
-        var path = new long[32];
-        for (int i = 0; i < startRefs.Length; i++)
-        {
-            long startRef = startRefs[i];
-            long endRef = endRefs[i];
-            Vector3 startPos = startPoss[i];
-            Vector3 endPos = endPoss[i];
-            var status = query.FindPath(startRef, endRef, startPos, endPos, filter, path, out var pathCount, DtFindPathOption.ZeroScale);
-            Assert.That(status, Is.EqualTo(statuses[i]));
-            Assert.That(pathCount, Is.EqualTo(results[i].Length));
-            for (int j = 0; j < results[i].Length; j++)
-            {
-                Assert.That(path[j], Is.EqualTo(results[i][j])); // TODO : 확인 필요
-            }
-        }
-    }
 }

@@ -27,9 +27,8 @@ namespace DotRecast.Detour
     {
         private readonly RcSortedQueue<DtNode> m_heap;
 
-        public DtNodeQueue() : this(8)
-        {
-        }
+        public DtNodeQueue() : this(512)
+        { }
 
         public DtNodeQueue(int capacity)
         {
@@ -37,34 +36,19 @@ namespace DotRecast.Detour
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Count()
-        {
-            return m_heap.Count();
-        }
+        public int Count() => m_heap.Count();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Clear()
-        {
-            m_heap.Clear();
-        }
+        public void Clear() => m_heap.Clear();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public DtNode Peek()
-        {
-            return m_heap.Peek();
-        }
+        public DtNode Peek() => m_heap.Peek();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public DtNode Pop()
-        {
-            return m_heap.Dequeue();
-        }
+        public DtNode Pop() => m_heap.Dequeue();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Push(DtNode node)
-        {
-            m_heap.Enqueue(node);
-        }
+        public void Push(DtNode node) => m_heap.Enqueue(node);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Modify(DtNode node)
@@ -74,9 +58,6 @@ namespace DotRecast.Detour
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool IsEmpty()
-        {
-            return m_heap.IsEmpty();
-        }
+        public bool IsEmpty() => m_heap.IsEmpty();
     }
 }

@@ -29,7 +29,7 @@ using System;
 
 namespace DotRecast.Detour.Crowd
 {
-    public class DtPathQueue
+    public sealed class DtPathQueue
     {
         class PathQuery
         {

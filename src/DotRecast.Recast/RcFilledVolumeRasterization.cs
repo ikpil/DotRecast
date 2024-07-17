@@ -34,7 +34,7 @@ namespace DotRecast.Recast
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_RASTERIZE_SPHERE);
 
-            float[] bounds =
+            Span<float> bounds = stackalloc float[]
             {
                 center.X - radius, center.Y - radius, center.Z - radius, center.X + radius, center.Y + radius,
                 center.Z + radius
@@ -46,7 +46,7 @@ namespace DotRecast.Recast
         public static void RasterizeCapsule(RcHeightfield hf, Vector3 start, Vector3 end, float radius, int area, int flagMergeThr, RcContext ctx)
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_RASTERIZE_CAPSULE);
-            float[] bounds =
+            Span<float> bounds = stackalloc float[]
             {
                 Math.Min(start.X, end.X) - radius, Math.Min(start.Y, end.Y) - radius,
                 Math.Min(start.Z, end.Z) - radius, Math.Max(start.X, end.X) + radius, Math.Max(start.Y, end.Y) + radius,
@@ -61,7 +61,7 @@ namespace DotRecast.Recast
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_RASTERIZE_CYLINDER);
 
-            float[] bounds =
+            Span<float> bounds = stackalloc float[]
             {
                 Math.Min(start.X, end.X) - radius, Math.Min(start.Y, end.Y) - radius,
                 Math.Min(start.Z, end.Z) - radius, Math.Max(start.X, end.X) + radius, Math.Max(start.Y, end.Y) + radius,
@@ -76,7 +76,7 @@ namespace DotRecast.Recast
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_RASTERIZE_BOX);
 
-            Vector3[] normals =
+            Span<Vector3> normals = stackalloc Vector3[]
             {
                 new Vector3(halfEdges[0].X, halfEdges[0].Y, halfEdges[0].Z),
                 new Vector3(halfEdges[1].X, halfEdges[1].Y, halfEdges[1].Z),
@@ -86,8 +86,8 @@ namespace DotRecast.Recast
             normals[1] = Vector3.Normalize(normals[1]);
             normals[2] = Vector3.Normalize(normals[2]);
 
-            float[] vertices = new float[8 * 3];
-            float[] bounds = new float[]
+            float[] vertices = new float[8 * 3]; // TODO alloc
+            Span<float> bounds = stackalloc float[]
             {
                 float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity,
                 float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity
@@ -184,8 +184,9 @@ namespace DotRecast.Recast
             planes[p][3] = planes[p][0] * vertices[vert] + planes[p][1] * vertices[vert + 1] + planes[p][2] * vertices[vert + 2];
         }
 
-        private static void RasterizationFilledShape(RcHeightfield hf, float[] bounds, int area, int flagMergeThr,
-            Func<float[], float[]> intersection) // TODO alloc delegate
+        public delegate float[] Intersection(Span<float> pts);
+        private static void RasterizationFilledShape(RcHeightfield hf, Span<float> bounds, int area, int flagMergeThr,
+            Intersection intersection) // TODO alloc delegate
         {
             if (!OverlapBounds(hf.bmin, hf.bmax, bounds))
             {
@@ -208,7 +209,7 @@ namespace DotRecast.Recast
             int zMin = (int)((bounds[2] - hf.bmin.Z) * ics);
             int xMax = Math.Min(hf.width - 1, (int)((bounds[3] - hf.bmin.X) * ics));
             int zMax = Math.Min(hf.height - 1, (int)((bounds[5] - hf.bmin.Z) * ics));
-            float[] rectangle = new float[5]; // TODO alloc
+            Span<float> rectangle = stackalloc float[5];
             rectangle[4] = hf.bmin.Y;
             for (int x = xMin; x <= xMax; x++)
             {
@@ -234,7 +235,7 @@ namespace DotRecast.Recast
             }
         }
 
-        private static float[] IntersectSphere(float[] rectangle, Vector3 center, float radiusSqr)
+        private static float[] IntersectSphere(ReadOnlySpan<float> rectangle, Vector3 center, float radiusSqr)
         {
             float x = Math.Max(rectangle[0], Math.Min(center.X, rectangle[2]));
             float y = rectangle[4];
@@ -269,7 +270,7 @@ namespace DotRecast.Recast
             return new float[] { y + tmin, y + tmax };
         }
 
-        private static float[] IntersectCapsule(float[] rectangle, Vector3 start, Vector3 end, Vector3 axis, float radiusSqr)
+        private static float[] IntersectCapsule(ReadOnlySpan<float> rectangle, Vector3 start, Vector3 end, Vector3 axis, float radiusSqr)
         {
             float[] s = MergeIntersections(IntersectSphere(rectangle, start, radiusSqr), IntersectSphere(rectangle, end, radiusSqr));
             float axisLen2dSqr = axis.X * axis.X + axis.Z * axis.Z;
@@ -281,7 +282,7 @@ namespace DotRecast.Recast
             return s;
         }
 
-        private static float[] IntersectCylinder(float[] rectangle, Vector3 start, Vector3 end, Vector3 axis, float radiusSqr)
+        private static float[] IntersectCylinder(ReadOnlySpan<float> rectangle, Vector3 start, Vector3 end, Vector3 axis, float radiusSqr)
         {
             float[] s = MergeIntersections(
                 RayCylinderIntersection(new Vector3(
@@ -367,7 +368,7 @@ namespace DotRecast.Recast
             return s;
         }
 
-        private static float[] SlabsCylinderIntersection(float[] rectangle, Vector3 start, Vector3 end, Vector3 axis, float radiusSqr, float[] s)
+        private static float[] SlabsCylinderIntersection(ReadOnlySpan<float> rectangle, Vector3 start, Vector3 end, Vector3 axis, float radiusSqr, float[] s)
         {
             if (Math.Min(start.X, end.X) < rectangle[0])
             {
@@ -392,12 +393,12 @@ namespace DotRecast.Recast
             return s;
         }
 
-        private static float[] XSlabCylinderIntersection(float[] rectangle, Vector3 start, Vector3 axis, float radiusSqr, float x)
+        private static float[] XSlabCylinderIntersection(ReadOnlySpan<float> rectangle, Vector3 start, Vector3 axis, float radiusSqr, float x)
         {
             return RayCylinderIntersection(XSlabRayIntersection(rectangle, start, axis, x), start, axis, radiusSqr);
         }
 
-        private static Vector3 XSlabRayIntersection(float[] rectangle, Vector3 start, Vector3 direction, float x)
+        private static Vector3 XSlabRayIntersection(ReadOnlySpan<float> rectangle, Vector3 start, Vector3 direction, float x)
         {
             // 2d intersection of plane and segment
             float t = (x - start.X) / direction.X;
@@ -405,12 +406,12 @@ namespace DotRecast.Recast
             return new Vector3(x, rectangle[4], z);
         }
 
-        private static float[] ZSlabCylinderIntersection(float[] rectangle, Vector3 start, Vector3 axis, float radiusSqr, float z)
+        private static float[] ZSlabCylinderIntersection(ReadOnlySpan<float> rectangle, Vector3 start, Vector3 axis, float radiusSqr, float z)
         {
             return RayCylinderIntersection(ZSlabRayIntersection(rectangle, start, axis, z), start, axis, radiusSqr);
         }
 
-        private static Vector3 ZSlabRayIntersection(float[] rectangle, Vector3 start, Vector3 direction, float z)
+        private static Vector3 ZSlabRayIntersection(ReadOnlySpan<float> rectangle, Vector3 start, Vector3 direction, float z)
         {
             // 2d intersection of plane and segment
             float t = (z - start.Z) / direction.Z;
@@ -503,7 +504,7 @@ namespace DotRecast.Recast
             return new float[] { point.Y + Math.Min(t1, t2), point.Y + Math.Max(t1, t2) };
         }
 
-        private static float[] IntersectBox(float[] rectangle, float[] vertices, float[][] planes)
+        private static float[] IntersectBox(ReadOnlySpan<float> rectangle, float[] vertices, float[][] planes)
         {
             float yMin = float.PositiveInfinity;
             float yMax = float.NegativeInfinity;
@@ -605,7 +606,7 @@ namespace DotRecast.Recast
             return null;
         }
 
-        private static float[] IntersectConvex(float[] rectangle, int[] triangles, float[] verts, float[][] planes,
+        private static float[] IntersectConvex(Span<float> rectangle, int[] triangles, float[] verts, float[][] planes,
             float[][] triBounds)
         {
             float imin = float.PositiveInfinity;
@@ -694,7 +695,7 @@ namespace DotRecast.Recast
             return null;
         }
 
-        private static bool XSlabSegmentIntersection(float[] rectangle, float x, float y, float z, float dx, float dy, float dz, float slabX, out float iy)
+        private static bool XSlabSegmentIntersection(ReadOnlySpan<float> rectangle, float x, float y, float z, float dx, float dy, float dz, float slabX, out float iy)
         {
             float x2 = x + dx;
             if ((x < slabX && x2 > slabX) || (x > slabX && x2 < slabX))
@@ -712,7 +713,7 @@ namespace DotRecast.Recast
             return false;
         }
 
-        private static bool ZSlabSegmentIntersection(float[] rectangle, float x, float y, float z, float dx, float dy, float dz, float slabZ, out float iy)
+        private static bool ZSlabSegmentIntersection(ReadOnlySpan<float> rectangle, float x, float y, float z, float dx, float dy, float dz, float slabZ, out float iy)
         {
             float z2 = z + dz;
             if ((z < slabZ && z2 > slabZ) || (z > slabZ && z2 < slabZ))
@@ -777,7 +778,7 @@ namespace DotRecast.Recast
             return dx * dx + dy * dy + dz * dz;
         }
 
-        private static bool OverlapBounds(Vector3 amin, Vector3 amax, float[] bounds)
+        private static bool OverlapBounds(Vector3 amin, Vector3 amax, Span<float> bounds)
         {
             bool overlap = true;
             overlap = (amin.X > bounds[3] || amax.X < bounds[0]) ? false : overlap;
