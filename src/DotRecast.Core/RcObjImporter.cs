@@ -26,6 +26,7 @@ namespace DotRecast.Core
 {
     public static class RcObjImporter
     {
+        [Obsolete("use 'LoadContext(Stream)' instead")]
         public static RcObjImporterContext LoadContext(byte[] chunk)
         {
             RcObjImporterContext context = new RcObjImporterContext();
@@ -47,9 +48,30 @@ namespace DotRecast.Core
             return context;
         }
 
-
-        public static void ReadLine(string line, RcObjImporterContext context)
+        public static RcObjImporterContext LoadContext(Stream stream)
         {
+            RcObjImporterContext context = new RcObjImporterContext();
+            try
+            {
+                using StreamReader reader = new StreamReader(stream);
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    ReadLine(line, context);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message, e);
+            }
+
+            return context;
+        }
+
+
+        public static void ReadLine(ReadOnlySpan<char> line, RcObjImporterContext context)
+        {
+            line = line.Trim();
             if (line.StartsWith("v"))
             {
                 ReadVertex(line, context);
@@ -60,7 +82,7 @@ namespace DotRecast.Core
             }
         }
 
-        private static void ReadVertex(string line, RcObjImporterContext context)
+        private static void ReadVertex(ReadOnlySpan<char> line, RcObjImporterContext context)
         {
             if (line.StartsWith("v "))
             {
@@ -71,44 +93,47 @@ namespace DotRecast.Core
             }
         }
 
-        private static Vector3 ReadVector3f(string line)
+        private static Vector3 ReadVector3f(ReadOnlySpan<char> line)
         {
-            string[] v = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            if (v.Length < 4)
+            Span<Range> v = stackalloc Range[4];
+            var n = line.Split(v, ' ', StringSplitOptions.RemoveEmptyEntries);
+            if (n < 4)
             {
-                throw new Exception("Invalid vector, expected 3 coordinates, found " + (v.Length - 1));
+                throw new Exception("Invalid vector, expected 3 coordinates, found " + (n - 1));
             }
 
             // fix - https://github.com/ikpil/DotRecast/issues/7
             return new Vector3(
-                float.Parse(v[1], CultureInfo.InvariantCulture),
-                float.Parse(v[2], CultureInfo.InvariantCulture),
-                float.Parse(v[3], CultureInfo.InvariantCulture)
+                float.Parse(line[v[1]], CultureInfo.InvariantCulture),
+                float.Parse(line[v[2]], CultureInfo.InvariantCulture),
+                float.Parse(line[v[3]], CultureInfo.InvariantCulture)
             );
         }
 
-        private static void ReadFace(string line, RcObjImporterContext context)
+        private static void ReadFace(ReadOnlySpan<char> line, RcObjImporterContext context)
         {
-            string[] v = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            if (v.Length < 4)
+            Span<Range> v = stackalloc Range[16]; // incase
+            var n = line.Split(v, ' ', StringSplitOptions.RemoveEmptyEntries);
+            if (n < 4)
             {
-                throw new Exception("Invalid number of face vertices: 3 coordinates expected, found " + v.Length);
+                throw new Exception("Invalid number of face vertices: 3 coordinates expected, found " + n);
             }
 
-            for (int j = 0; j < v.Length - 3; j++)
+            for (int j = 0; j < n - 3; j++)
             {
-                context.meshFaces.Add(ReadFaceVertex(v[1], context));
+                context.meshFaces.Add(ReadFaceVertex(line[v[1]], context));
                 for (int i = 0; i < 2; i++)
                 {
-                    context.meshFaces.Add(ReadFaceVertex(v[2 + j + i], context));
+                    context.meshFaces.Add(ReadFaceVertex(line[v[2 + j + i]], context));
                 }
             }
         }
 
-        private static int ReadFaceVertex(string face, RcObjImporterContext context)
+        private static int ReadFaceVertex(ReadOnlySpan<char> face, RcObjImporterContext context)
         {
-            string[] v = face.Split("/");
-            return GetIndex(int.Parse(v[0]), context.vertexPositions.Count);
+            Span<Range> v = stackalloc Range[2];
+            var n = face.Split(v, '/');
+            return GetIndex(int.Parse(face[v[0]]), context.vertexPositions.Count);
         }
 
         private static int GetIndex(int posi, int size)
