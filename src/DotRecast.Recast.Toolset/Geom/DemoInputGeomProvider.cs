@@ -24,6 +24,7 @@ using DotRecast.Core;
 using DotRecast.Core.Collections;
 using System.Numerics;
 using DotRecast.Recast.Geom;
+using System.IO;
 
 namespace DotRecast.Recast.Toolset.Geom
 {
@@ -48,10 +49,36 @@ namespace DotRecast.Recast.Toolset.Geom
         private readonly List<RcConvexVolume> _convexVolumes = new List<RcConvexVolume>();
         private readonly RcTriMesh _mesh;
 
+        [Obsolete("use 'Load()' instead")]
         public static DemoInputGeomProvider LoadFile(string objFilePath)
         {
             byte[] chunk = RcIO.ReadFileIfFound(objFilePath);
             var context = RcObjImporter.LoadContext(chunk);
+            return new DemoInputGeomProvider(context.vertexPositions, context.meshFaces);
+        }
+
+        public static DemoInputGeomProvider Load(string filename)
+        {
+            if (string.IsNullOrEmpty(filename))
+                return null;
+
+            if (!File.Exists(filename))
+            {
+                var searchFilePath = RcDirectory.SearchFile($"{filename}");
+                if (!File.Exists(searchFilePath))
+                {
+                    searchFilePath = RcDirectory.SearchFile($"resources/{filename}");
+                }
+
+                if (File.Exists(searchFilePath))
+                {
+                    filename = searchFilePath;
+                }
+            }
+
+            using var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
+            var context = RcObjImporter.LoadContext(fs);
+            //Console.WriteLine($"{{context.capcatiy}} {context.vertexPositions.Count} {context.meshFaces.Count}");
             return new DemoInputGeomProvider(context.vertexPositions, context.meshFaces);
         }
 
