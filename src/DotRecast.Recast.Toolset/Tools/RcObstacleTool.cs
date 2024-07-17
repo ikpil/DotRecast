@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using DotRecast.Core;
 using DotRecast.Core.Collections;
@@ -14,6 +14,8 @@ namespace DotRecast.Recast.Toolset.Tools
 {
     public class RcObstacleTool : IRcToolable
     {
+        const int EXPECTED_LAYERS_PER_TILE = 4;
+
         private readonly IDtTileCacheCompressorFactory _comp;
         private readonly DemoDtTileCacheMeshProcess _proc;
         private DtTileCache _tc;
@@ -131,15 +133,18 @@ namespace DotRecast.Recast.Toolset.Tools
             option.walkableRadius = setting.agentRadius;
             option.walkableClimb = setting.agentMaxClimb;
             option.maxSimplificationError = setting.edgeMaxError;
-            option.maxTiles = tw * th * 4; // for test EXPECTED_LAYERS_PER_TILE;
+            option.maxTiles = tw * th * EXPECTED_LAYERS_PER_TILE; // for test EXPECTED_LAYERS_PER_TILE;
             option.maxObstacles = 128;
 
             DtNavMeshParams navMeshParams = new DtNavMeshParams();
             navMeshParams.orig = geom.GetMeshBoundsMin();
             navMeshParams.tileWidth = setting.tileSize * setting.cellSize;
             navMeshParams.tileHeight = setting.tileSize * setting.cellSize;
-            navMeshParams.maxTiles = 256; // ..
-            navMeshParams.maxPolys = 16384;
+
+            navMeshParams.maxTiles = TileNavMeshBuilder.GetMaxTiles(geom, setting.cellSize, setting.tileSize, EXPECTED_LAYERS_PER_TILE);
+            navMeshParams.maxPolys = TileNavMeshBuilder.GetMaxPolysPerTile(geom, setting.cellSize, setting.tileSize, EXPECTED_LAYERS_PER_TILE);
+            //navMeshParams.maxTiles = 256; // ..
+            //navMeshParams.maxPolys = 16384;
 
             var navMesh = new DtNavMesh();
             navMesh.Init(navMeshParams, 6);

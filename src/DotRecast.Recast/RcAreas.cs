@@ -22,6 +22,7 @@ using System;
 using DotRecast.Core;
 using DotRecast.Core.Collections;
 using System.Numerics;
+using System.Buffers;
 
 namespace DotRecast.Recast
 {
@@ -52,8 +53,8 @@ namespace DotRecast.Recast
 
             using var timer = context.ScopedTimer(RcTimerLabel.RC_TIMER_ERODE_AREA);
 
-            int[] distanceToBoundary = new int[compactHeightfield.spanCount]; // TODO alloc
-            Array.Fill(distanceToBoundary, 255);
+            int[] distanceToBoundary = ArrayPool<int>.Shared.Rent(compactHeightfield.spanCount);
+            distanceToBoundary.AsSpan(0, compactHeightfield.spanCount).Fill(255);
 
             // Mark boundary cells.
             for (int z = 0; z < zSize; ++z)
@@ -248,6 +249,8 @@ namespace DotRecast.Recast
                     compactHeightfield.areas[spanIndex] = RC_NULL_AREA;
                 }
             }
+
+            ArrayPool<int>.Shared.Return(distanceToBoundary);
         }
 
         /// Applies a median filter to walkable area types (based on area id), removing noise.

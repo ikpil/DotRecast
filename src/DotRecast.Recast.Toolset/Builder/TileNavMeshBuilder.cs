@@ -28,6 +28,8 @@ namespace DotRecast.Recast.Toolset.Builder
 {
     public class TileNavMeshBuilder
     {
+        public const int EXPECTED_LAYERS_PER_TILE = 4;
+
         public TileNavMeshBuilder()
         {
         }
@@ -114,8 +116,8 @@ namespace DotRecast.Recast.Toolset.Builder
 
             // Snprintf(text, 64, "Tiles %d x %d", tw, th);
 
-            navMeshParams.maxTiles = GetMaxTiles(geom, cellSize, tileSize);
-            navMeshParams.maxPolys = GetMaxPolysPerTile(geom, cellSize, tileSize);
+            navMeshParams.maxTiles = GetMaxTiles(geom, cellSize, tileSize, EXPECTED_LAYERS_PER_TILE); // TODO tests
+            navMeshParams.maxPolys = GetMaxPolysPerTile(geom, cellSize, tileSize, EXPECTED_LAYERS_PER_TILE);
             DtNavMesh navMesh = new DtNavMesh();
             navMesh.Init(navMeshParams, vertsPerPoly);
             meshData.ForEach(md => navMesh.AddTile(md, 0, 0, out _));
@@ -146,28 +148,30 @@ namespace DotRecast.Recast.Toolset.Builder
         }
 
 
-        public int GetMaxTiles(IInputGeomProvider geom, float cellSize, int tileSize)
+        public static int GetMaxTiles(IInputGeomProvider geom, float cellSize, int tileSize, int EXPECTED_LAYERS_PER_TILE)
         {
-            int tileBits = GetTileBits(geom, cellSize, tileSize);
+            int tileBits = GetTileBits(geom, cellSize, tileSize, EXPECTED_LAYERS_PER_TILE);
             return 1 << tileBits;
         }
 
-        public int GetMaxPolysPerTile(IInputGeomProvider geom, float cellSize, int tileSize)
+        public static int GetMaxPolysPerTile(IInputGeomProvider geom, float cellSize, int tileSize, int EXPECTED_LAYERS_PER_TILE)
         {
-            int polyBits = 22 - GetTileBits(geom, cellSize, tileSize);
+            int polyBits = 22 - GetTileBits(geom, cellSize, tileSize, EXPECTED_LAYERS_PER_TILE);
             return 1 << polyBits;
         }
 
-        private int GetTileBits(IInputGeomProvider geom, float cellSize, int tileSize)
+        static int GetTileBits(IInputGeomProvider geom, float cellSize, int tileSize, int EXPECTED_LAYERS_PER_TILE)
         {
             RcRecast.CalcGridSize(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), cellSize, out var gw, out var gh);
             int tw = (gw + tileSize - 1) / tileSize;
             int th = (gh + tileSize - 1) / tileSize;
-            int tileBits = Math.Min(DtUtils.Ilog2(DtUtils.NextPow2(tw * th)), 14);
+            int tileBits = Math.Min(DtUtils.Ilog2(DtUtils.NextPow2(tw * th * EXPECTED_LAYERS_PER_TILE)), 14);
+            if (tileBits > 14)
+                tileBits = 14;
             return tileBits;
         }
 
-        public int[] GetTiles(DemoInputGeomProvider geom, float cellSize, int tileSize)
+        public static int[] GetTiles(DemoInputGeomProvider geom, float cellSize, int tileSize)
         {
             RcRecast.CalcGridSize(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), cellSize, out var gw, out var gh);
             int tw = (gw + tileSize - 1) / tileSize;

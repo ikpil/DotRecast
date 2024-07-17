@@ -117,6 +117,8 @@ public class RecastDemo : IRecastDemoChannel
     private RecastDebugDraw dd;
     private readonly Queue<IRecastDemoMessage> _messages;
 
+    public const int EXPECTED_LAYERS_PER_TILE = 4;
+
     public RecastDemo()
     {
         _messages = new();
@@ -292,7 +294,7 @@ public class RecastDemo : IRecastDemoChannel
 
     private DemoInputGeomProvider LoadInputMesh(string filename)
     {
-        DemoInputGeomProvider geom = DemoInputGeomProvider.LoadFile(filename);
+        DemoInputGeomProvider geom = DemoInputGeomProvider.Load(filename);
         _lastGeomFileName = filename;
         return geom;
     }
@@ -452,9 +454,9 @@ public class RecastDemo : IRecastDemoChannel
             Vector3 bmax = _sample.GetInputGeom().GetMeshBoundsMax();
             RcRecast.CalcGridSize(bmin, bmax, settings.cellSize, out var gw, out var gh);
             settingsView.SetVoxels(gw, gh);
-            settingsView.SetTiles(tileNavMeshBuilder.GetTiles(_sample.GetInputGeom(), settings.cellSize, settings.tileSize));
-            settingsView.SetMaxTiles(tileNavMeshBuilder.GetMaxTiles(_sample.GetInputGeom(), settings.cellSize, settings.tileSize));
-            settingsView.SetMaxPolys(tileNavMeshBuilder.GetMaxPolysPerTile(_sample.GetInputGeom(), settings.cellSize, settings.tileSize));
+            settingsView.SetTiles(TileNavMeshBuilder.GetTiles(_sample.GetInputGeom(), settings.cellSize, settings.tileSize));
+            settingsView.SetMaxTiles(TileNavMeshBuilder.GetMaxTiles(_sample.GetInputGeom(), settings.cellSize, settings.tileSize, EXPECTED_LAYERS_PER_TILE));
+            settingsView.SetMaxPolys(TileNavMeshBuilder.GetMaxPolysPerTile(_sample.GetInputGeom(), settings.cellSize, settings.tileSize, EXPECTED_LAYERS_PER_TILE));
         }
 
         UpdateKeyboard((float)dt);
