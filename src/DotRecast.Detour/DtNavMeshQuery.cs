@@ -980,7 +980,7 @@ namespace DotRecast.Detour
                             DtRaycastOptions.DT_RAYCAST_USE_COSTS, ref rayHit, grandpaRef);
                         if (rayStatus.Succeeded())
                         {
-                            foundShortCut = rayHit.t >= 1.0f;
+                            foundShortCut = rayHit.t >= 1.0f && rayHit.path[^1] == neighbourRef;
                             if (foundShortCut)
                             {
                                 shortcut = new List<long>(rayHit.path);
@@ -1296,7 +1296,7 @@ namespace DotRecast.Detour
                             DtRaycastOptions.DT_RAYCAST_USE_COSTS, ref rayHit, grandpaRef);
                         if (status.Succeeded())
                         {
-                            foundShortCut = rayHit.t >= 1.0f;
+                            foundShortCut = rayHit.t >= 1.0f && rayHit.path[^1] == neighbourRef;
                             if (foundShortCut)
                             {
                                 shortcut = new List<long>(rayHit.path);
@@ -3143,7 +3143,7 @@ namespace DotRecast.Detour
             int maxSegments)
         {
             segmentCount = 0;
-            
+
             DtStatus status = m_nav.GetTileAndPolyByRef(refs, out var tile, out var poly);
             if (status.Failed())
             {

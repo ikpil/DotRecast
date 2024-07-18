@@ -272,7 +272,7 @@ namespace DotRecast.Recast.Toolset.Tools
             // results ...
             polys = path;
 
-            if (t > 1)
+            if (t >= 1)
             {
                 // No hit
                 hitPos = endPos;
