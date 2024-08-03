@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+using System.Linq;
 using BenchmarkDotNet.Running;
 using DotRecast.Benchmark.Benchmarks;
 
@@ -7,11 +9,13 @@ public static class BenchmarkProgram
 {
     public static int Main(string[] args)
     {
-        var summary = BenchmarkRunner.Run([
-            //BenchmarkConverter.TypeToBenchmarks(typeof(VectorBenchmarks)),
-            //BenchmarkConverter.TypeToBenchmarks(typeof(PriorityQueueBenchmarks)),
-            BenchmarkConverter.TypeToBenchmarks(typeof(StackallocBenchmarks)),
-        ]);
+        var runs = ImmutableArray.Create(
+            BenchmarkConverter.TypeToBenchmarks(typeof(VectorBenchmarks)),
+            BenchmarkConverter.TypeToBenchmarks(typeof(PriorityQueueBenchmarks)),
+            BenchmarkConverter.TypeToBenchmarks(typeof(StackallocBenchmarks))
+        );
+
+        var summary = BenchmarkRunner.Run(runs.ToArray());
 
         return 0;
     }
