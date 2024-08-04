@@ -192,7 +192,17 @@ public class PriorityQueueBenchmarks
     public void EnqueueDequeue_RcSortedQueue()
     {
         _sq.Clear();
-        for (int i = 0; i < Count; i++)
+        int half = Count / 2;
+        for (int i = 0; i < half; i++)
+        {
+            _sq.Enqueue(new Node
+            {
+                id = i,
+                total = _priority[i],
+            });
+        }
+        
+        for (int i = half; i < Count; i++)
         {
             _sq.Enqueue(new Node
             {
@@ -202,13 +212,24 @@ public class PriorityQueueBenchmarks
 
             _sq.Dequeue();
         }
+
     }
 
     [Benchmark]
     public void EnqueueDequeue_RcBinaryMinHeap()
     {
         _bmHeap.Clear();
-        for (int i = 0; i < Count; i++)
+        int half = Count / 2;
+        for (int i = 0; i < half; i++)
+        {
+            _bmHeap.Push(new Node
+            {
+                id = i,
+                total = _priority[i],
+            });
+        }
+        
+        for (int i = half; i < Count; i++)
         {
             _bmHeap.Push(new Node
             {
@@ -218,13 +239,15 @@ public class PriorityQueueBenchmarks
 
             _bmHeap.Pop();
         }
+
     }
 
     [Benchmark]
     public void EnqueueDequeue_PriorityQueue()
     {
         _pq.Clear();
-        for (int i = 0; i < Count; i++)
+        int half = Count / 2;
+        for (int i = 0; i < half; i++)
         {
             var node = new Node
             {
@@ -232,7 +255,16 @@ public class PriorityQueueBenchmarks
                 total = _priority[i],
             };
             _pq.Enqueue(node, node);
+        }
 
+        for (int i = half; i < Count; i++)
+        {
+            var node = new Node
+            {
+                id = i,
+                total = _priority[i],
+            };
+            _pq.Enqueue(node, node);
             _pq.Dequeue();
         }
     }
