@@ -7,7 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased] - yyyy-mm-dd
 
 ### Added
-- Nothing
+- Added RcBinaryMinHeap ([@Sarofc](https://github.com/Sarofc))
+- Added DotRecast.Benchmark ([@Sarofc](https://github.com/Sarofc))
 
 ### Fixed
 - Fix raycast shortcuts ([@Sarofc](https://github.com/Sarofc)) [#72](https://github.com/ikpil/DotRecast/issues/72)
