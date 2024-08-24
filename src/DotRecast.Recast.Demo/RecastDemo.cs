@@ -25,6 +25,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Runtime;
+using System.Runtime.InteropServices;
 using DotRecast.Core;
 using Serilog;
 using Silk.NET.Input;
@@ -409,9 +411,17 @@ public class RecastDemo : IRecastDemoChannel
 
         var workingDirectory = Directory.GetCurrentDirectory();
         Logger.Information($"Working directory - {workingDirectory}");
-        Logger.Information($"ImGui.Net - version({ImGui.GetVersion()}) UI scale({scale}) fontSize({fontSize})");
-        Logger.Information($"Dotnet - {Environment.Version.ToString()} culture({currentCulture.Name})");
         Logger.Information($"OS Version - {Environment.OSVersion} {bitness}");
+        Logger.Information($"{RuntimeInformation.OSArchitecture} {RuntimeInformation.OSDescription}");
+        Logger.Information($"{RuntimeInformation.ProcessArchitecture} {RuntimeInformation.FrameworkDescription}");
+        Logger.Information($"Dotnet - {Environment.Version.ToString()} culture({currentCulture.Name})");
+        Logger.Information($"Processor Count : {Environment.ProcessorCount}");
+
+        Logger.Information($"Server garbage collection : {(GCSettings.IsServerGC ? "Enabled" : "Disabled")}");
+        Logger.Information($"Current latency mode for garbage collection: {GCSettings.LatencyMode}");
+        Logger.Information("");
+
+        Logger.Information($"ImGui.Net - version({ImGui.GetVersion()}) UI scale({scale}) fontSize({fontSize})");
         Logger.Information($"{vendor} {rendererGl}");
         Logger.Information($"gl version({version}) lang version({glslString})");
     }
