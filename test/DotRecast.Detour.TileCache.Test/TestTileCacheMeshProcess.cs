@@ -1,4 +1,4 @@
-﻿using DotRecast.Recast.Geom;
+using DotRecast.Recast.Geom;
 
 namespace DotRecast.Detour.TileCache.Test;
 

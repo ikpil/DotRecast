@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Recast.Toolset.Gizmos
+namespace DotRecast.Recast.Toolset.Gizmos
 {
     public class RcTrimeshGizmo : IRcGizmoMeshFilter
     {

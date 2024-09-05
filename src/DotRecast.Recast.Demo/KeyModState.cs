@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Recast.Demo;
+namespace DotRecast.Recast.Demo;
 
 public static class KeyModState
 {

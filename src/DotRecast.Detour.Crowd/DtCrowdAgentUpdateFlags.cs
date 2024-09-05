@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Detour.Crowd
+namespace DotRecast.Detour.Crowd
 {
     /// Crowd agent update flags.
     /// @ingroup crowd

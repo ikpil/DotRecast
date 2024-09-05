@@ -1,4 +1,4 @@
-﻿using DotRecast.Core.Numerics;
+using DotRecast.Core.Numerics;
 using static DotRecast.Recast.Toolset.Gizmos.RcGizmoHelper;
 
 namespace DotRecast.Recast.Toolset.Gizmos

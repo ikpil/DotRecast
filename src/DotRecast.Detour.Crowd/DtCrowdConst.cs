@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Detour.Crowd
+namespace DotRecast.Detour.Crowd
 {
     public static class DtCrowdConst
     {

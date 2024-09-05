@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Recast
+namespace DotRecast.Recast
 {
     // Struct to keep track of entries in the region table that have been changed.
     public readonly struct RcDirtyEntry

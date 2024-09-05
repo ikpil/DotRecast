@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using DotRecast.Core.Numerics;
 using DotRecast.Recast.Geom;
 using DotRecast.Recast.Toolset.Builder;

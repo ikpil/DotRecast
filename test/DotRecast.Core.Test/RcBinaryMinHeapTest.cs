@@ -1,4 +1,4 @@
-﻿using DotRecast.Core.Collections;
+using DotRecast.Core.Collections;
 using NUnit.Framework;
 
 namespace DotRecast.Core.Test;

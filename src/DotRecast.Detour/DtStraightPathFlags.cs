@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Detour
+namespace DotRecast.Detour
 {
     /// Vertex flags returned by dtNavMeshQuery::findStraightPath.
     public static class DtStraightPathFlags

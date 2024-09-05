@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Recast
+namespace DotRecast.Recast
 {
     /// Contour build flags.
     /// @see rcBuildContours

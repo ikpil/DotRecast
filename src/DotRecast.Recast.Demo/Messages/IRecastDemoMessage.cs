@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Recast.Demo.Messages;
+namespace DotRecast.Recast.Demo.Messages;
 
 public class IRecastDemoMessage
 {

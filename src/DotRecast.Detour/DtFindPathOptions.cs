@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Detour
+namespace DotRecast.Detour
 {
     /// Options for dtNavMeshQuery::initSlicedFindPath and updateSlicedFindPath
     public static class DtFindPathOptions

@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Core.Collections
+namespace DotRecast.Core.Collections
 {
     public readonly partial struct RcImmutableArray<T>
     {

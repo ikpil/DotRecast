@@ -1,4 +1,4 @@
-﻿using DotRecast.Core;
+using DotRecast.Core;
 using ImGuiNET;
 
 namespace DotRecast.Recast.Demo.UI;

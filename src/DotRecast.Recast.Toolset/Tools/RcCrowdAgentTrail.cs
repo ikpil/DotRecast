@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Recast.Toolset.Tools
+namespace DotRecast.Recast.Toolset.Tools
 {
     public class RcCrowdAgentTrail
     {

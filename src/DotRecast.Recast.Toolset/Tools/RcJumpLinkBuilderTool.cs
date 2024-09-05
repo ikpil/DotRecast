@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour.Extras.Jumplink;
 using DotRecast.Recast.Geom;

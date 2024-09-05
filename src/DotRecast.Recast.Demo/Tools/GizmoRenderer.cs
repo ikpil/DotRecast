@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
 using DotRecast.Recast.Demo.Draw;

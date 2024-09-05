@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Detour.TileCache
+namespace DotRecast.Detour.TileCache
 {
     public enum DtTileCacheObstacleType
     {

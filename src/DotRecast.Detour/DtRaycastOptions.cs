@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Detour
+namespace DotRecast.Detour
 {
     /// Options for dtNavMeshQuery::raycast
     public static class DtRaycastOptions

@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Recast
+namespace DotRecast.Recast
 {
     public static class RcAxis
     {

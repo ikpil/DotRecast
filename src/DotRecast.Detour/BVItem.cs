@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Detour
+namespace DotRecast.Detour
 {
     public class BVItem
     {

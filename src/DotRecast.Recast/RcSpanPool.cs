@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright (c) 2009-2010 Mikko Mononen memon@inside.org
 DotRecast Copyright (c) 2023-2024 Choi Ikpil ikpil@naver.com
 

@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Core
+namespace DotRecast.Core
 {
     public interface IRcRand
     {

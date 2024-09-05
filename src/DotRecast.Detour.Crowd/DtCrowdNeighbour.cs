@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Detour.Crowd
+namespace DotRecast.Detour.Crowd
 {
     /// Provides neighbor data for agents managed by the crowd.
     /// @ingroup crowd

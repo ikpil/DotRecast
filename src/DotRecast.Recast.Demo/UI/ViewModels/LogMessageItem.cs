@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Recast.Demo.UI.ViewModels;
+namespace DotRecast.Recast.Demo.UI.ViewModels;
 
 public class LogMessageItem
 {

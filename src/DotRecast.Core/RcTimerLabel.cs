@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Core
+namespace DotRecast.Core
 {
     /// Recast performance timer categories.
     /// @see rcContext

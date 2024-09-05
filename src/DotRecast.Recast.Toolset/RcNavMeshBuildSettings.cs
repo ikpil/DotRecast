@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Recast.Toolset
+namespace DotRecast.Recast.Toolset
 {
     public class RcNavMeshBuildSettings
     {

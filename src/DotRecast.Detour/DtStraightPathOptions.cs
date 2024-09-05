@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Detour
+namespace DotRecast.Detour
 {
     /// Options for dtNavMeshQuery::findStraightPath.
     public static class DtStraightPathOptions

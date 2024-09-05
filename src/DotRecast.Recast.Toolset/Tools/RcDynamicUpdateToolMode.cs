@@ -1,4 +1,4 @@
-﻿using DotRecast.Core.Collections;
+using DotRecast.Core.Collections;
 
 namespace DotRecast.Recast.Toolset.Tools
 {

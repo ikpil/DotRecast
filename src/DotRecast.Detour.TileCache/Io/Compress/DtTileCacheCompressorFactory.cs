@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using DotRecast.Core;
 
 namespace DotRecast.Detour.TileCache.Io.Compress

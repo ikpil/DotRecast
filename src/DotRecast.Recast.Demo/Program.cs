@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Threading;
 using DotRecast.Core;
 using DotRecast.Recast.Demo.Logging.Sinks;

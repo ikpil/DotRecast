@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using DotRecast.Core;
 using DotRecast.Core.Collections;
 using NUnit.Framework;

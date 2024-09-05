@@ -1,4 +1,4 @@
-﻿namespace DotRecast.Detour.Crowd
+namespace DotRecast.Detour.Crowd
 {
     /// The type of navigation mesh polygon the agent is currently traversing.
     /// @ingroup crowd

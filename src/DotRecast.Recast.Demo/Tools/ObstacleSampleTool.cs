@@ -1,4 +1,4 @@
-﻿using DotRecast.Core;
+using DotRecast.Core;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour.TileCache;
 using DotRecast.Detour.TileCache.Io.Compress;
