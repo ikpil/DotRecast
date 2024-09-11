@@ -140,22 +140,22 @@ public class TestNavmeshSampleTool : ISampleTool
         ImGui.Text("Common");
         ImGui.Separator();
 
-        ImGui.Text("Include Flags");
+        ImGui.Text("+ Include Flags");
         ImGui.Separator();
-        ImGui.CheckboxFlags("Walk", ref _includeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_WALK);
-        ImGui.CheckboxFlags("Swim", ref _includeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_SWIM);
-        ImGui.CheckboxFlags("Door", ref _includeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_DOOR);
-        ImGui.CheckboxFlags("Jump", ref _includeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP);
+        ImGui.CheckboxFlags("+ Walk", ref _includeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_WALK);
+        ImGui.CheckboxFlags("+ Swim", ref _includeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_SWIM);
+        ImGui.CheckboxFlags("+ Door", ref _includeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_DOOR);
+        ImGui.CheckboxFlags("+ Jump", ref _includeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP);
         ImGui.NewLine();
 
         m_filter.SetIncludeFlags(_includeFlags);
 
-        ImGui.Text("Exclude Flags");
+        ImGui.Text("- Exclude Flags");
         ImGui.Separator();
-        ImGui.CheckboxFlags("Walk", ref _excludeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_WALK);
-        ImGui.CheckboxFlags("Swim", ref _excludeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_SWIM);
-        ImGui.CheckboxFlags("Door", ref _excludeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_DOOR);
-        ImGui.CheckboxFlags("Jump", ref _excludeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP);
+        ImGui.CheckboxFlags("- Walk", ref _excludeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_WALK);
+        ImGui.CheckboxFlags("- Swim", ref _excludeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_SWIM);
+        ImGui.CheckboxFlags("- Door", ref _excludeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_DOOR);
+        ImGui.CheckboxFlags("- Jump", ref _excludeFlags, SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP);
         ImGui.NewLine();
 
         m_filter.SetExcludeFlags(_excludeFlags);
