@@ -78,7 +78,7 @@ namespace DotRecast.Detour.Dynamic.Io
                 walkbableAreaMod, buildMeshDetail);
         }
 
-        public static DtVoxelFile From(RcConfig config, List<RcBuilderResult> results)
+        public static DtVoxelFile From(RcConfig config, IList<RcBuilderResult> results)
         {
             DtVoxelFile f = new DtVoxelFile();
             f.version = 1;
@@ -109,13 +109,14 @@ namespace DotRecast.Detour.Dynamic.Io
             };
             foreach (RcBuilderResult r in results)
             {
+                float pad = r.SolidHeightfiled.borderSize * r.SolidHeightfiled.cs;
                 f.tiles.Add(new DtVoxelTile(r.TileX, r.TileZ, r.SolidHeightfiled));
-                f.bounds[0] = Math.Min(f.bounds[0], r.SolidHeightfiled.bmin.X);
+                f.bounds[0] = Math.Min(f.bounds[0], r.SolidHeightfiled.bmin.X + pad);
                 f.bounds[1] = Math.Min(f.bounds[1], r.SolidHeightfiled.bmin.Y);
-                f.bounds[2] = Math.Min(f.bounds[2], r.SolidHeightfiled.bmin.Z);
-                f.bounds[3] = Math.Max(f.bounds[3], r.SolidHeightfiled.bmax.X);
+                f.bounds[2] = Math.Min(f.bounds[2], r.SolidHeightfiled.bmin.Z + pad);
+                f.bounds[3] = Math.Max(f.bounds[3], r.SolidHeightfiled.bmax.X - pad);
                 f.bounds[4] = Math.Max(f.bounds[4], r.SolidHeightfiled.bmax.Y);
-                f.bounds[5] = Math.Max(f.bounds[5], r.SolidHeightfiled.bmax.Z);
+                f.bounds[5] = Math.Max(f.bounds[5], r.SolidHeightfiled.bmax.Z - pad);
             }
 
             return f;
@@ -155,12 +156,13 @@ namespace DotRecast.Detour.Dynamic.Io
             {
                 RcHeightfield heightfield = vt.Heightfield();
                 f.tiles.Add(new DtVoxelTile(vt.tileX, vt.tileZ, heightfield));
-                f.bounds[0] = Math.Min(f.bounds[0], vt.boundsMin.X);
+                float pad = vt.borderSize * vt.cellSize;
+                f.bounds[0] = Math.Min(f.bounds[0], vt.boundsMin.X + pad);
                 f.bounds[1] = Math.Min(f.bounds[1], vt.boundsMin.Y);
-                f.bounds[2] = Math.Min(f.bounds[2], vt.boundsMin.Z);
-                f.bounds[3] = Math.Max(f.bounds[3], vt.boundsMax.X);
+                f.bounds[2] = Math.Min(f.bounds[2], vt.boundsMin.Z + pad);
+                f.bounds[3] = Math.Max(f.bounds[3], vt.boundsMax.X - pad);
                 f.bounds[4] = Math.Max(f.bounds[4], vt.boundsMax.Y);
-                f.bounds[5] = Math.Max(f.bounds[5], vt.boundsMax.Z);
+                f.bounds[5] = Math.Max(f.bounds[5], vt.boundsMax.Z - pad);
             }
 
             return f;

@@ -32,6 +32,7 @@ namespace DotRecast.Recast.Demo
         private DtNavMesh _navMesh;
         private DtNavMeshQuery _navMeshQuery;
         private readonly RcNavMeshBuildSettings _settings;
+        private RcConfig _cfg;
         private IList<RcBuilderResult> _recastResults;
         private bool _changed;
 
@@ -54,6 +55,11 @@ namespace DotRecast.Recast.Demo
         public DemoInputGeomProvider GetInputGeom()
         {
             return _geom;
+        }
+
+        public RcConfig GetRecastConfig()
+        {
+            return _cfg;
         }
 
         public IList<RcBuilderResult> GetRecastResults()
@@ -86,9 +92,10 @@ namespace DotRecast.Recast.Demo
             _changed = changed;
         }
 
-        public void Update(DemoInputGeomProvider geom, IList<RcBuilderResult> recastResults, DtNavMesh navMesh)
+        public void Update(DemoInputGeomProvider geom, RcConfig cfg, IList<RcBuilderResult> recastResults, DtNavMesh navMesh)
         {
             _geom = geom;
+            _cfg = cfg;
             _recastResults = recastResults;
             _navMesh = navMesh;
             SetQuery(navMesh);

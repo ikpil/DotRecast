@@ -12,6 +12,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 - Fix raycast shortcuts ([@Sarofc](https://github.com/Sarofc)) [#72](https://github.com/ikpil/DotRecast/issues/72)
+- Fix dynamic mesh bounds calculation ([@ppiastucki](https://github.com/ppiastucki)) [#77](https://github.com/ikpil/DotRecast/issues/77)
+    - issuer : [@OhJeongrok](https://github.com/OhJeongrok)
 
 ### Changed
 - Changed data structure of 'neis' from List<byte> to byte[] for optimized memory usage and improved access speed in `DtLayerMonotoneRegion`

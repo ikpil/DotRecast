@@ -32,7 +32,7 @@ public class ObstacleSampleTool : ISampleTool
             var buildResult = _tool.Build(geom, settings, RcByteOrder.LITTLE_ENDIAN, true);
             if (buildResult.Success)
             {
-                _sample.Update(_sample.GetInputGeom(), buildResult.RecastBuilderResults, buildResult.NavMesh);
+                _sample.Update(_sample.GetInputGeom(), buildResult.Cfg, buildResult.RecastBuilderResults, buildResult.NavMesh);
             }
         }
 

@@ -78,7 +78,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 _tc.BuildNavMeshTile(refs);
             }
 
-            return new NavMeshBuildResult(RcImmutableArray<RcBuilderResult>.Empty, _tc.GetNavMesh());
+            return new NavMeshBuildResult(cfg, RcImmutableArray<RcBuilderResult>.Empty, _tc.GetNavMesh());
         }
 
         public void ClearAllTempObstacles()

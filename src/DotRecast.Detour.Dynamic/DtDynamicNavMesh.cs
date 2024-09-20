@@ -167,7 +167,7 @@ namespace DotRecast.Detour.Dynamic
         {
             foreach (var tile in tiles)
                 Rebuild(tile);
-            
+
             return UpdateNavMesh();
         }
 
@@ -188,17 +188,17 @@ namespace DotRecast.Detour.Dynamic
                 return _tiles.Values;
             }
 
-            int minx = (int)MathF.Floor((bounds[0] - navMeshParams.orig.X) / navMeshParams.tileWidth);
-            int minz = (int)MathF.Floor((bounds[2] - navMeshParams.orig.Z) / navMeshParams.tileHeight);
-            int maxx = (int)MathF.Floor((bounds[3] - navMeshParams.orig.X) / navMeshParams.tileWidth);
-            int maxz = (int)MathF.Floor((bounds[5] - navMeshParams.orig.Z) / navMeshParams.tileHeight);
+            int minx = (int)MathF.Floor((bounds[0] - navMeshParams.orig.X) / navMeshParams.tileWidth) - 1;
+            int minz = (int)MathF.Floor((bounds[2] - navMeshParams.orig.Z) / navMeshParams.tileHeight) - 1;
+            int maxx = (int)MathF.Floor((bounds[3] - navMeshParams.orig.X) / navMeshParams.tileWidth) + 1;
+            int maxz = (int)MathF.Floor((bounds[5] - navMeshParams.orig.Z) / navMeshParams.tileHeight) + 1;
             List<DtDynamicTile> tiles = new List<DtDynamicTile>();
             for (int z = minz; z <= maxz; ++z)
             {
                 for (int x = minx; x <= maxx; ++x)
                 {
                     DtDynamicTile tile = GetTileAt(x, z);
-                    if (tile != null)
+                    if (tile != null && IntersectsXZ(tile, bounds))
                     {
                         tiles.Add(tile);
                     }
@@ -206,6 +206,12 @@ namespace DotRecast.Detour.Dynamic
             }
 
             return tiles;
+        }
+
+        private bool IntersectsXZ(DtDynamicTile tile, float[] bounds)
+        {
+            return tile.voxelTile.boundsMin.X <= bounds[3] && tile.voxelTile.boundsMax.X >= bounds[0] &&
+                   tile.voxelTile.boundsMin.Z <= bounds[5] && tile.voxelTile.boundsMax.Z >= bounds[2];
         }
 
         private List<DtDynamicTile> GetTilesByCollider(long cid)

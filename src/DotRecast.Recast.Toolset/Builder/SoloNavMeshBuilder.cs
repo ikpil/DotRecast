@@ -69,7 +69,7 @@ namespace DotRecast.Recast.Toolset.Builder
             }
 
             var navMesh = BuildNavMesh(meshData, vertsPerPoly);
-            return new NavMeshBuildResult(RcImmutableArray.Create(rcResult), navMesh);
+            return new NavMeshBuildResult(cfg, RcImmutableArray.Create(rcResult), navMesh);
         }
 
         private DtNavMesh BuildNavMesh(DtMeshData meshData, int vertsPerPoly)

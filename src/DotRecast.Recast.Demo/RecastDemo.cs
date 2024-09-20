@@ -320,7 +320,7 @@ public class RecastDemo : IRecastDemoChannel
 
             if (null != mesh)
             {
-                _sample.Update(_sample.GetInputGeom(), ImmutableArray<RcBuilderResult>.Empty, mesh);
+                _sample.Update(_sample.GetInputGeom(), _sample.GetRecastConfig(), ImmutableArray<RcBuilderResult>.Empty, mesh);
                 _toolsetView.SetEnabled(true);
             }
         }
@@ -684,7 +684,7 @@ public class RecastDemo : IRecastDemoChannel
     {
         var geom = LoadInputMesh(args.FilePath);
 
-        _sample.Update(geom, ImmutableArray<RcBuilderResult>.Empty, null);
+        _sample.Update(geom, null, ImmutableArray<RcBuilderResult>.Empty, null);
     }
 
     private void OnNavMeshBuildBegan(NavMeshBuildBeganEvent args)
@@ -719,7 +719,7 @@ public class RecastDemo : IRecastDemoChannel
             return;
         }
 
-        _sample.Update(_sample.GetInputGeom(), buildResult.RecastBuilderResults, buildResult.NavMesh);
+        _sample.Update(_sample.GetInputGeom(), buildResult.Cfg, buildResult.RecastBuilderResults, buildResult.NavMesh);
         _sample.SetChanged(false);
         settingsView.SetBuildTime((RcFrequency.Ticks - t) / TimeSpan.TicksPerMillisecond);
         //settingsUI.SetBuildTelemetry(buildResult.Item1.Select(x => x.GetTelemetry()).ToList());

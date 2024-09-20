@@ -58,7 +58,7 @@ namespace DotRecast.Recast.Toolset.Builder
             bool filterLowHangingObstacles, bool filterLedgeSpans, bool filterWalkableLowHeightSpans,
             bool keepInterResults, bool buildAll)
         {
-            List<RcBuilderResult> results = BuildRecastResult(
+            NavMeshBuildResult result = BuildRecastResult(
                 geom,
                 tileSize,
                 partitionType,
@@ -72,12 +72,12 @@ namespace DotRecast.Recast.Toolset.Builder
                 keepInterResults, buildAll
             );
 
-            var tileMeshData = BuildMeshData(geom, cellSize, cellHeight, agentHeight, agentRadius, agentMaxClimb, results);
+            var tileMeshData = BuildMeshData(geom, cellSize, cellHeight, agentHeight, agentRadius, agentMaxClimb, result.RecastBuilderResults);
             var tileNavMesh = BuildNavMesh(geom, tileMeshData, cellSize, tileSize, vertsPerPoly);
-            return new NavMeshBuildResult(results, tileNavMesh);
+            return new NavMeshBuildResult(result.Cfg, result.RecastBuilderResults, tileNavMesh);
         }
 
-        public List<RcBuilderResult> BuildRecastResult(IInputGeomProvider geom,
+        public NavMeshBuildResult BuildRecastResult(IInputGeomProvider geom,
             int tileSize,
             RcPartition partitionType,
             float cellSize, float cellHeight,
@@ -102,7 +102,8 @@ namespace DotRecast.Recast.Toolset.Builder
                 filterLowHangingObstacles, filterLedgeSpans, filterWalkableLowHeightSpans,
                 SampleAreaModifications.SAMPLE_AREAMOD_WALKABLE, true);
             RcBuilder rcBuilder = new RcBuilder();
-            return rcBuilder.BuildTiles(geom, cfg, keepInterResults, buildAll, Environment.ProcessorCount + 1, Task.Factory);
+            var results = rcBuilder.BuildTiles(geom, cfg, keepInterResults, buildAll, Environment.ProcessorCount + 1, Task.Factory);
+            return new NavMeshBuildResult(cfg, results);
         }
 
         public DtNavMesh BuildNavMesh(IInputGeomProvider geom, List<DtMeshData> meshData, float cellSize, int tileSize, int vertsPerPoly)

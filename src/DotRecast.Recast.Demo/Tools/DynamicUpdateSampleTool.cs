@@ -25,6 +25,7 @@ using DotRecast.Core;
 using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour.Dynamic;
+using DotRecast.Detour.Dynamic.Io;
 using DotRecast.Recast.Toolset;
 using DotRecast.Recast.Toolset.Tools;
 using DotRecast.Recast.Demo.Draw;
@@ -117,8 +118,16 @@ public class DynamicUpdateSampleTool : ISampleTool
         if (mode == RcDynamicUpdateToolMode.BUILD)
         {
             const string loadVoxelPopupStrId = "Load Voxels Popup";
-            
+
             bool isLoadVoxelPopup = true;
+            if (_sample.GetRecastResults() != null && _sample.GetRecastConfig() != null)
+            {
+                if (ImGui.Button("Import Voxels"))
+                {
+                    Copy();
+                }
+            }
+
             if (ImGui.Button("Load Voxels..."))
             {
                 ImGui.OpenPopup(loadVoxelPopupStrId);
@@ -410,7 +419,7 @@ public class DynamicUpdateSampleTool : ISampleTool
             {
                 buildTime = (RcFrequency.Ticks - t) / TimeSpan.TicksPerMillisecond;
                 var dynaMesh = _tool.GetDynamicNavMesh();
-                _sample.Update(null, dynaMesh.RecastResults(), dynaMesh.NavMesh());
+                _sample.Update(null, null, dynaMesh.RecastResults(), dynaMesh.NavMesh());
                 _sample.SetChanged(false);
             }
         }
@@ -420,6 +429,15 @@ public class DynamicUpdateSampleTool : ISampleTool
         }
     }
 
+    private void Copy()
+    {
+        if (_sample.GetRecastResults() != null && _sample.GetRecastConfig() != null)
+        {
+            var dynaMesh = _tool.Copy(_sample.GetRecastConfig(), _sample.GetRecastResults());
+            UpdateFrom(dynaMesh.config);
+            BuildDynaMesh();
+        }
+    }
 
     private void Load(string filename)
     {
@@ -457,7 +475,7 @@ public class DynamicUpdateSampleTool : ISampleTool
         }
 
         buildTime = (RcFrequency.Ticks - t) / TimeSpan.TicksPerMillisecond;
-        _sample.Update(null, dynaMesh.RecastResults(), dynaMesh.NavMesh());
+        _sample.Update(null, null, dynaMesh.RecastResults(), dynaMesh.NavMesh());
     }
 
     private void UpdateTo(DtDynamicNavMeshConfig config)

@@ -141,6 +141,16 @@ namespace DotRecast.Recast.Toolset.Tools
             return colliderWithGizmo;
         }
 
+        public DtDynamicNavMesh Copy(RcConfig cfg, IList<RcBuilderResult> results)
+        {
+            var voxelFile = DtVoxelFile.From(cfg, results);
+            dynaMesh = new DtDynamicNavMesh(voxelFile);
+            dynaMesh.config.keepIntermediateResults = true;
+            colliderGizmos.Clear();
+
+            return dynaMesh;
+        }
+
         public DtDynamicNavMesh Load(string filename, IRcCompressor compressor)
         {
             using var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
@@ -184,7 +194,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 (1f - 2 * (float)random.NextDouble())
             );
             a = RcVec3f.Normalize(a);
-            
+
             float len = 1f + (float)random.NextDouble() * 20f;
             a.X *= len;
             a.Y *= len;
@@ -235,7 +245,7 @@ namespace DotRecast.Recast.Toolset.Tools
             RcVec3f baseUp = new RcVec3f(0, 1, 0);
             RcVec3f forward = new RcVec3f((1f - 2 * (float)random.NextDouble()), 0, (1f - 2 * (float)random.NextDouble()));
             forward = RcVec3f.Normalize(forward);
-            
+
             RcVec3f side = RcVec3f.Cross(forward, baseUp);
             DtBoxCollider @base = new DtBoxCollider(baseCenter, Detour.Dynamic.Colliders.DtBoxCollider.GetHalfEdges(baseUp, forward, baseExtent),
                 SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD, walkableClimb);
