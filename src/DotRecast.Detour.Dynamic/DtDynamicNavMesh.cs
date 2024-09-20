@@ -62,8 +62,8 @@ namespace DotRecast.Detour.Dynamic
             navMeshParams.orig.X = voxelFile.bounds[0];
             navMeshParams.orig.Y = voxelFile.bounds[1];
             navMeshParams.orig.Z = voxelFile.bounds[2];
-            navMeshParams.tileWidth = voxelFile.cellSize * voxelFile.tileSizeX;
-            navMeshParams.tileHeight = voxelFile.cellSize * voxelFile.tileSizeZ;
+            navMeshParams.tileWidth = voxelFile.useTiles ? voxelFile.cellSize * voxelFile.tileSizeX : voxelFile.bounds[3] - voxelFile.bounds[0];
+            navMeshParams.tileHeight = voxelFile.useTiles ? voxelFile.cellSize * voxelFile.tileSizeZ: voxelFile.bounds[5] - voxelFile.bounds[2];
             navMeshParams.maxTiles = voxelFile.tiles.Count;
             navMeshParams.maxPolys = 0x8000;
             foreach (var t in voxelFile.tiles)
