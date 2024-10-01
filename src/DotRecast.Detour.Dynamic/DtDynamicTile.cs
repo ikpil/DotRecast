@@ -189,5 +189,10 @@ namespace DotRecast.Detour.Dynamic
                 id = 0;
             }
         }
+
+        public void SetMeshData(DtMeshData data)
+        {
+            this.meshData = data;
+        }
     }
 }

@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DotRecast.Core;
+using DotRecast.Core.Collections;
 using DotRecast.Detour.Dynamic.Colliders;
 using DotRecast.Detour.Dynamic.Io;
 using DotRecast.Recast;
@@ -63,7 +64,7 @@ namespace DotRecast.Detour.Dynamic
             navMeshParams.orig.Y = voxelFile.bounds[1];
             navMeshParams.orig.Z = voxelFile.bounds[2];
             navMeshParams.tileWidth = voxelFile.useTiles ? voxelFile.cellSize * voxelFile.tileSizeX : voxelFile.bounds[3] - voxelFile.bounds[0];
-            navMeshParams.tileHeight = voxelFile.useTiles ? voxelFile.cellSize * voxelFile.tileSizeZ: voxelFile.bounds[5] - voxelFile.bounds[2];
+            navMeshParams.tileHeight = voxelFile.useTiles ? voxelFile.cellSize * voxelFile.tileSizeZ : voxelFile.bounds[5] - voxelFile.bounds[2];
             navMeshParams.maxTiles = voxelFile.tiles.Count;
             navMeshParams.maxPolys = 0x8000;
             foreach (var t in voxelFile.tiles)
@@ -230,6 +231,8 @@ namespace DotRecast.Detour.Dynamic
         {
             if (_dirty)
             {
+                _dirty = false;
+
                 DtNavMesh navMesh = new DtNavMesh();
                 navMesh.Init(navMeshParams, MAX_VERTS_PER_POLY);
 
@@ -239,7 +242,6 @@ namespace DotRecast.Detour.Dynamic
                 }
 
                 _navMesh = navMesh;
-                _dirty = false;
                 return true;
             }
 
@@ -266,6 +268,22 @@ namespace DotRecast.Detour.Dynamic
         public List<RcBuilderResult> RecastResults()
         {
             return _tiles.Values.Select(t => t.recastResult).ToList();
+        }
+
+        public void NavMesh(DtNavMesh mesh)
+        {
+            _tiles.Values.ForEach(t =>
+            {
+                const int MAX_NEIS = 32;
+                DtMeshTile[] tiles = new DtMeshTile[MAX_NEIS];
+                int nneis = mesh.GetTilesAt(t.voxelTile.tileX, t.voxelTile.tileZ, tiles, MAX_NEIS);
+                if (0 < nneis)
+                {
+                    t.SetMeshData(tiles[0].data);
+                }
+            });
+            _navMesh = mesh;
+            _dirty = false;
         }
     }
 }
