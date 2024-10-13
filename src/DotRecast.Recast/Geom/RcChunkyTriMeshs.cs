@@ -99,7 +99,7 @@ namespace DotRecast.Recast.Geom
         }
 
         /// Returns the chunk indices which overlap the input rectable.
-        public static List<RcChunkyTriMeshNode> GetChunksOverlappingRect(RcChunkyTriMesh cm, float[] bmin, float[] bmax)
+        public static List<RcChunkyTriMeshNode> GetChunksOverlappingRect(RcChunkyTriMesh cm, RcVec2f bmin, RcVec2f bmax)
         {
             // Traverse tree
             List<RcChunkyTriMeshNode> ids = new List<RcChunkyTriMeshNode>();
@@ -252,11 +252,11 @@ namespace DotRecast.Recast.Geom
             }
         }
 
-        private static bool CheckOverlapRect(float[] amin, float[] amax, RcVec2f bmin, RcVec2f bmax)
+        private static bool CheckOverlapRect(RcVec2f amin, RcVec2f amax, RcVec2f bmin, RcVec2f bmax)
         {
             bool overlap = true;
-            overlap = (amin[0] > bmax.X || amax[0] < bmin.X) ? false : overlap;
-            overlap = (amin[1] > bmax.Y || amax[1] < bmin.Y) ? false : overlap;
+            overlap = (amin.X > bmax.X || amax.X < bmin.X) ? false : overlap;
+            overlap = (amin.Y > bmax.Y || amax.Y < bmin.Y) ? false : overlap;
             return overlap;
         }
 

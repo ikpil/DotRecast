@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using DotRecast.Core.Numerics;
 
 namespace DotRecast.Recast.Geom
 {
@@ -46,7 +47,7 @@ namespace DotRecast.Recast.Geom
             return vertices;
         }
 
-        public List<RcChunkyTriMeshNode> GetChunksOverlappingRect(float[] bmin, float[] bmax)
+        public List<RcChunkyTriMeshNode> GetChunksOverlappingRect(RcVec2f bmin, RcVec2f bmax)
         {
             return RcChunkyTriMeshs.GetChunksOverlappingRect(chunkyTriMesh, bmin, bmax);
         }

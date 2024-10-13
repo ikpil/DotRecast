@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 using DotRecast.Core;
+using DotRecast.Core.Numerics;
 using DotRecast.Recast.Geom;
 
 namespace DotRecast.Recast
@@ -44,12 +45,12 @@ namespace DotRecast.Recast
                 float[] verts = geom.GetVerts();
                 if (cfg.UseTiles)
                 {
-                    float[] tbmin = new float[2];
-                    float[] tbmax = new float[2];
-                    tbmin[0] = builderCfg.bmin.X;
-                    tbmin[1] = builderCfg.bmin.Z;
-                    tbmax[0] = builderCfg.bmax.X;
-                    tbmax[1] = builderCfg.bmax.Z;
+                    RcVec2f tbmin;
+                    RcVec2f tbmax;
+                    tbmin.X = builderCfg.bmin.X;
+                    tbmin.Y = builderCfg.bmin.Z;
+                    tbmax.X = builderCfg.bmax.X;
+                    tbmax.Y = builderCfg.bmax.Z;
                     List<RcChunkyTriMeshNode> nodes = geom.GetChunksOverlappingRect(tbmin, tbmax);
                     foreach (RcChunkyTriMeshNode node in nodes)
                     {
