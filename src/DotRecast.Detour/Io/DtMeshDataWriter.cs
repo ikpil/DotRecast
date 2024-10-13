@@ -130,27 +130,23 @@ namespace DotRecast.Detour.Io
             {
                 if (cCompatibility)
                 {
-                    for (int j = 0; j < 3; j++)
-                    {
-                        RcIO.Write(stream, (short)data.bvTree[i].bmin[j], order);
-                    }
+                    RcIO.Write(stream, (short)data.bvTree[i].bmin.X, order);
+                    RcIO.Write(stream, (short)data.bvTree[i].bmin.Y, order);
+                    RcIO.Write(stream, (short)data.bvTree[i].bmin.Z, order);
 
-                    for (int j = 0; j < 3; j++)
-                    {
-                        RcIO.Write(stream, (short)data.bvTree[i].bmax[j], order);
-                    }
+                    RcIO.Write(stream, (short)data.bvTree[i].bmax.X, order);
+                    RcIO.Write(stream, (short)data.bvTree[i].bmax.Y, order);
+                    RcIO.Write(stream, (short)data.bvTree[i].bmax.Z, order);
                 }
                 else
                 {
-                    for (int j = 0; j < 3; j++)
-                    {
-                        RcIO.Write(stream, data.bvTree[i].bmin[j], order);
-                    }
+                    RcIO.Write(stream, data.bvTree[i].bmin.X, order);
+                    RcIO.Write(stream, data.bvTree[i].bmin.Y, order);
+                    RcIO.Write(stream, data.bvTree[i].bmin.Z, order);
 
-                    for (int j = 0; j < 3; j++)
-                    {
-                        RcIO.Write(stream, data.bvTree[i].bmax[j], order);
-                    }
+                    RcIO.Write(stream, data.bvTree[i].bmax.X, order);
+                    RcIO.Write(stream, data.bvTree[i].bmax.Y, order);
+                    RcIO.Write(stream, data.bvTree[i].bmax.Z, order);
                 }
 
                 RcIO.Write(stream, data.bvTree[i].i, order);

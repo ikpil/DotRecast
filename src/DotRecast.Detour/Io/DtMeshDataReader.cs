@@ -204,27 +204,23 @@ namespace DotRecast.Detour.Io
                 nodes[i] = new DtBVNode();
                 if (header.version < DT_NAVMESH_VERSION_RECAST4J_32BIT_BVTREE)
                 {
-                    for (int j = 0; j < 3; j++)
-                    {
-                        nodes[i].bmin[j] = buf.GetShort() & 0xFFFF;
-                    }
+                    nodes[i].bmin.X = buf.GetShort() & 0xFFFF;
+                    nodes[i].bmin.Y = buf.GetShort() & 0xFFFF;
+                    nodes[i].bmin.Z = buf.GetShort() & 0xFFFF;
 
-                    for (int j = 0; j < 3; j++)
-                    {
-                        nodes[i].bmax[j] = buf.GetShort() & 0xFFFF;
-                    }
+                    nodes[i].bmax.X = buf.GetShort() & 0xFFFF;
+                    nodes[i].bmax.Y = buf.GetShort() & 0xFFFF;
+                    nodes[i].bmax.Z = buf.GetShort() & 0xFFFF;
                 }
                 else
                 {
-                    for (int j = 0; j < 3; j++)
-                    {
-                        nodes[i].bmin[j] = buf.GetInt();
-                    }
+                    nodes[i].bmin.X = buf.GetInt();
+                    nodes[i].bmin.Y = buf.GetInt();
+                    nodes[i].bmin.Z = buf.GetInt();
 
-                    for (int j = 0; j < 3; j++)
-                    {
-                        nodes[i].bmax[j] = buf.GetInt();
-                    }
+                    nodes[i].bmax.X = buf.GetInt();
+                    nodes[i].bmax.Y = buf.GetInt();
+                    nodes[i].bmax.Z = buf.GetInt();
                 }
 
                 nodes[i].i = buf.GetInt();

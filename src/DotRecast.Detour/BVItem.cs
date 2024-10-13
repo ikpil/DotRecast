@@ -1,9 +1,11 @@
+using DotRecast.Core.Numerics;
+
 namespace DotRecast.Detour
 {
     public class BVItem
     {
-        public readonly int[] bmin = new int[3];
-        public readonly int[] bmax = new int[3];
+        public RcVec3i bmin;
+        public RcVec3i bmax;
         public int i;
     };
 }

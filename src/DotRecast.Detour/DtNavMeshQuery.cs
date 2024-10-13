@@ -609,8 +609,8 @@ namespace DotRecast.Detour
                 float qfac = tile.data.header.bvQuantFactor;
 
                 // Calculate quantized box
-                Span<int> bmin = stackalloc int[3];
-                Span<int> bmax = stackalloc int[3];
+                RcVec3i bmin;
+                RcVec3i bmax;
                 // dtClamp query box to world box.
                 float minx = Math.Clamp(qmin.X, tbmin.X, tbmax.X) - tbmin.X;
                 float miny = Math.Clamp(qmin.Y, tbmin.Y, tbmax.Y) - tbmin.Y;
@@ -619,19 +619,19 @@ namespace DotRecast.Detour
                 float maxy = Math.Clamp(qmax.Y, tbmin.Y, tbmax.Y) - tbmin.Y;
                 float maxz = Math.Clamp(qmax.Z, tbmin.Z, tbmax.Z) - tbmin.Z;
                 // Quantize
-                bmin[0] = (int)(qfac * minx) & 0x7ffffffe;
-                bmin[1] = (int)(qfac * miny) & 0x7ffffffe;
-                bmin[2] = (int)(qfac * minz) & 0x7ffffffe;
-                bmax[0] = (int)(qfac * maxx + 1) | 1;
-                bmax[1] = (int)(qfac * maxy + 1) | 1;
-                bmax[2] = (int)(qfac * maxz + 1) | 1;
+                bmin.X = (int)(qfac * minx) & 0x7ffffffe;
+                bmin.Y = (int)(qfac * miny) & 0x7ffffffe;
+                bmin.Z = (int)(qfac * minz) & 0x7ffffffe;
+                bmax.X = (int)(qfac * maxx + 1) | 1;
+                bmax.Y = (int)(qfac * maxy + 1) | 1;
+                bmax.Z = (int)(qfac * maxz + 1) | 1;
 
                 // Traverse tree
                 long @base = m_nav.GetPolyRefBase(tile);
                 while (nodeIndex < end)
                 {
                     DtBVNode node = tile.data.bvTree[nodeIndex];
-                    bool overlap = DtUtils.OverlapQuantBounds(bmin, bmax, node.bmin, node.bmax);
+                    bool overlap = DtUtils.OverlapQuantBounds(ref bmin, ref bmax, ref node.bmin, ref node.bmax);
                     bool isLeafNode = node.i >= 0;
 
                     if (isLeafNode && overlap)
