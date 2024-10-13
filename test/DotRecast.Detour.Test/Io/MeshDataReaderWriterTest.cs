@@ -117,11 +117,8 @@ public class MeshDataReaderWriterTest
         for (int i = 0; i < meshData.header.bvNodeCount; i++)
         {
             Assert.That(readData.bvTree[i].i, Is.EqualTo(meshData.bvTree[i].i));
-            for (int j = 0; j < 3; j++)
-            {
-                Assert.That(readData.bvTree[i].bmin[j], Is.EqualTo(meshData.bvTree[i].bmin[j]));
-                Assert.That(readData.bvTree[i].bmax[j], Is.EqualTo(meshData.bvTree[i].bmax[j]));
-            }
+            Assert.That(readData.bvTree[i].bmin, Is.EqualTo(meshData.bvTree[i].bmin));
+            Assert.That(readData.bvTree[i].bmax, Is.EqualTo(meshData.bvTree[i].bmax));
         }
 
         for (int i = 0; i < meshData.header.offMeshConCount; i++)

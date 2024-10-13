@@ -31,37 +31,28 @@ namespace DotRecast.Detour
         const int MESH_NULL_IDX = 0xffff;
 
 
-        private static int[][] CalcExtends(BVItem[] items, int nitems, int imin, int imax)
+        private static void CalcExtends(BVItem[] items, int nitems, int imin, int imax, ref RcVec3i bmin, ref RcVec3i bmax)
         {
-            int[] bmin = new int[3];
-            int[] bmax = new int[3];
-            bmin[0] = items[imin].bmin[0];
-            bmin[1] = items[imin].bmin[1];
-            bmin[2] = items[imin].bmin[2];
-
-            bmax[0] = items[imin].bmax[0];
-            bmax[1] = items[imin].bmax[1];
-            bmax[2] = items[imin].bmax[2];
+            bmin = items[imin].bmin;
+            bmax = items[imin].bmax;
 
             for (int i = imin + 1; i < imax; ++i)
             {
                 BVItem it = items[i];
-                if (it.bmin[0] < bmin[0])
-                    bmin[0] = it.bmin[0];
-                if (it.bmin[1] < bmin[1])
-                    bmin[1] = it.bmin[1];
-                if (it.bmin[2] < bmin[2])
-                    bmin[2] = it.bmin[2];
+                if (it.bmin.X < bmin.X)
+                    bmin.X = it.bmin.X;
+                if (it.bmin.Y < bmin.Y)
+                    bmin.Y = it.bmin.Y;
+                if (it.bmin.Z < bmin.Z)
+                    bmin.Z = it.bmin.Z;
 
-                if (it.bmax[0] > bmax[0])
-                    bmax[0] = it.bmax[0];
-                if (it.bmax[1] > bmax[1])
-                    bmax[1] = it.bmax[1];
-                if (it.bmax[2] > bmax[2])
-                    bmax[2] = it.bmax[2];
+                if (it.bmax.X > bmax.X)
+                    bmax.X = it.bmax.X;
+                if (it.bmax.Y > bmax.Y)
+                    bmax.Y = it.bmax.Y;
+                if (it.bmax.Z > bmax.Z)
+                    bmax.Z = it.bmax.Z;
             }
-
-            return new int[][] { bmin, bmax };
         }
 
         private static int LongestAxis(int x, int y, int z)
@@ -94,27 +85,20 @@ namespace DotRecast.Detour
             if (inum == 1)
             {
                 // Leaf
-                node.bmin[0] = items[imin].bmin[0];
-                node.bmin[1] = items[imin].bmin[1];
-                node.bmin[2] = items[imin].bmin[2];
-
-                node.bmax[0] = items[imin].bmax[0];
-                node.bmax[1] = items[imin].bmax[1];
-                node.bmax[2] = items[imin].bmax[2];
+                node.bmin = items[imin].bmin;
+                node.bmax = items[imin].bmax;
 
                 node.i = items[imin].i;
             }
             else
             {
                 // Split
-                int[][] minmax = CalcExtends(items, nitems, imin, imax);
-                node.bmin = minmax[0];
-                node.bmax = minmax[1];
+                CalcExtends(items, nitems, imin, imax, ref node.bmin, ref node.bmax);
 
                 int axis = LongestAxis(
-                    node.bmax[0] - node.bmin[0],
-                    node.bmax[1] - node.bmin[1],
-                    node.bmax[2] - node.bmin[2]
+                    node.bmax.X - node.bmin.X,
+                    node.bmax.Y - node.bmin.Y,
+                    node.bmax.Z - node.bmin.Z
                 );
 
                 if (axis == 0)
@@ -173,20 +157,20 @@ namespace DotRecast.Detour
                     }
 
                     // BV-tree uses cs for all dimensions
-                    it.bmin[0] = Math.Clamp((int)((bmin.X - option.bmin.X) * quantFactor), 0, int.MaxValue);
-                    it.bmin[1] = Math.Clamp((int)((bmin.Y - option.bmin.Y) * quantFactor), 0, int.MaxValue);
-                    it.bmin[2] = Math.Clamp((int)((bmin.Z - option.bmin.Z) * quantFactor), 0, int.MaxValue);
+                    it.bmin.X = Math.Clamp((int)((bmin.X - option.bmin.X) * quantFactor), 0, int.MaxValue);
+                    it.bmin.Y = Math.Clamp((int)((bmin.Y - option.bmin.Y) * quantFactor), 0, int.MaxValue);
+                    it.bmin.Z = Math.Clamp((int)((bmin.Z - option.bmin.Z) * quantFactor), 0, int.MaxValue);
 
-                    it.bmax[0] = Math.Clamp((int)((bmax.X - option.bmin.X) * quantFactor), 0, int.MaxValue);
-                    it.bmax[1] = Math.Clamp((int)((bmax.Y - option.bmin.Y) * quantFactor), 0, int.MaxValue);
-                    it.bmax[2] = Math.Clamp((int)((bmax.Z - option.bmin.Z) * quantFactor), 0, int.MaxValue);
+                    it.bmax.X = Math.Clamp((int)((bmax.X - option.bmin.X) * quantFactor), 0, int.MaxValue);
+                    it.bmax.Y = Math.Clamp((int)((bmax.Y - option.bmin.Y) * quantFactor), 0, int.MaxValue);
+                    it.bmax.Z = Math.Clamp((int)((bmax.Z - option.bmin.Z) * quantFactor), 0, int.MaxValue);
                 }
                 else
                 {
                     int p = i * option.nvp * 2;
-                    it.bmin[0] = it.bmax[0] = option.verts[option.polys[p] * 3 + 0];
-                    it.bmin[1] = it.bmax[1] = option.verts[option.polys[p] * 3 + 1];
-                    it.bmin[2] = it.bmax[2] = option.verts[option.polys[p] * 3 + 2];
+                    it.bmin.X = it.bmax.X = option.verts[option.polys[p] * 3 + 0];
+                    it.bmin.Y = it.bmax.Y = option.verts[option.polys[p] * 3 + 1];
+                    it.bmin.Z = it.bmax.Z = option.verts[option.polys[p] * 3 + 2];
 
                     for (int j = 1; j < option.nvp; ++j)
                     {
@@ -196,24 +180,24 @@ namespace DotRecast.Detour
                         int y = option.verts[option.polys[p + j] * 3 + 1];
                         int z = option.verts[option.polys[p + j] * 3 + 2];
 
-                        if (x < it.bmin[0])
-                            it.bmin[0] = x;
-                        if (y < it.bmin[1])
-                            it.bmin[1] = y;
-                        if (z < it.bmin[2])
-                            it.bmin[2] = z;
+                        if (x < it.bmin.X)
+                            it.bmin.X = x;
+                        if (y < it.bmin.Y)
+                            it.bmin.Y = y;
+                        if (z < it.bmin.Z)
+                            it.bmin.Z = z;
 
-                        if (x > it.bmax[0])
-                            it.bmax[0] = x;
-                        if (y > it.bmax[1])
-                            it.bmax[1] = y;
-                        if (z > it.bmax[2])
-                            it.bmax[2] = z;
+                        if (x > it.bmax.X)
+                            it.bmax.X = x;
+                        if (y > it.bmax.Y)
+                            it.bmax.Y = y;
+                        if (z > it.bmax.Z)
+                            it.bmax.Z = z;
                     }
 
                     // Remap y
-                    it.bmin[1] = (int)MathF.Floor(it.bmin[1] * option.ch * quantFactor);
-                    it.bmax[1] = (int)MathF.Ceiling(it.bmax[1] * option.ch * quantFactor);
+                    it.bmin.Y = (int)MathF.Floor(it.bmin.Y * option.ch * quantFactor);
+                    it.bmax.Y = (int)MathF.Ceiling(it.bmax.Y * option.ch * quantFactor);
                 }
             }
 

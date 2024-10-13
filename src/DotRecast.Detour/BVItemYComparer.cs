@@ -12,7 +12,7 @@ namespace DotRecast.Detour
 
         public int Compare(BVItem a, BVItem b)
         {
-            return a.bmin[1].CompareTo(b.bmin[1]);
+            return a.bmin.Y.CompareTo(b.bmin.Y);
         }
     }
 }

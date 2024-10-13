@@ -18,6 +18,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using DotRecast.Core.Numerics;
+
 namespace DotRecast.Detour
 {
     /// Bounding volume node.
@@ -25,8 +27,8 @@ namespace DotRecast.Detour
     /// @see dtMeshTile
     public class DtBVNode
     {
-        public int[] bmin = new int[3]; //< Minimum bounds of the node's AABB. [(x, y, z)]
-        public int[] bmax = new int[3]; //< Maximum bounds of the node's AABB. [(x, y, z)]
+        public RcVec3i bmin; //< Minimum bounds of the node's AABB. [(x, y, z)]
+        public RcVec3i bmax; //< Maximum bounds of the node's AABB. [(x, y, z)]
         public int i; //< The node's index. (Negative for escape sequence.)
     }
 }
