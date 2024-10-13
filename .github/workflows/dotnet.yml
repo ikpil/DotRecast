@@ -39,7 +39,10 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: ${{ matrix.dotnet-version }}.x
+          dotnet-version: |
+            6
+            7
+            8
             
       - name: Restore dependencies
         run: dotnet restore
