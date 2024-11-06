@@ -69,7 +69,7 @@ public class ImFilePicker
         ImGui.Text("Current Folder: " + CurrentFolder);
         bool result = false;
 
-        if (ImGui.BeginChildFrame(1, new Vector2(1024, 400)))
+        if (ImGui.BeginChild(1, new Vector2(1024, 400)))
         {
             var di = new DirectoryInfo(CurrentFolder);
             if (di.Exists)
@@ -111,7 +111,7 @@ public class ImFilePicker
             }
         }
 
-        ImGui.EndChildFrame();
+        ImGui.EndChild();
 
 
         if (ImGui.Button("Cancel"))
