@@ -607,7 +607,8 @@ namespace DotRecast.Detour
         {
             const int batchSize = 32;
             Span<long> polyRefs = stackalloc long[batchSize];
-            DtPoly[] polys = new DtPoly[batchSize];
+            using RcRentedArray<DtPoly> polysRent = RcRentedArray.Rent<DtPoly>(batchSize);
+            Span<DtPoly> polys = polysRent.AsSpan();
             int n = 0;
 
             if (tile.data.bvTree != null)
