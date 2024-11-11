@@ -186,12 +186,12 @@ namespace DotRecast.Detour
             var endIndex = nvisited - 1;
             var length1 = endIndex - furthestVisited;
             var length2 = npath - furthestPath;
-            using var result = RcRentedArray.Rent<long>(length1 + length2);
+            using var result = RcRentedArray.Shared.Rent<long>(length1 + length2);
             // Adjust beginning of the buffer to include the visited.
             // Store visited
-            for (int i = 0; i < length1; ++i) 
+            for (int i = 0; i < length1; ++i)
                 result[i] = visited[endIndex - i];
-            
+
             path.CopyTo(furthestPath, result.AsArray(), length1, length2);
 
             path.Clear();
@@ -233,7 +233,7 @@ namespace DotRecast.Detour
             // Concatenate paths.
             var length1 = furthestPath;
             var length2 = nvisited - furthestVisited;
-            using var result = RcRentedArray.Rent<long>(length1 + length2);
+            using var result = RcRentedArray.Shared.Rent<long>(length1 + length2);
             path.CopyTo(0, result.AsArray(), 0, length1);
             visited.Slice(furthestVisited, nvisited - furthestVisited).CopyTo(result.AsSpan().Slice(length1, length2));
 
@@ -278,7 +278,7 @@ namespace DotRecast.Detour
             // Adjust beginning of the buffer to include the visited.
             var length1 = furthestVisited;
             var length2 = npath - furthestPath;
-            using var result = RcRentedArray.Rent<long>(length1 + length2);
+            using var result = RcRentedArray.Shared.Rent<long>(length1 + length2);
             visited.CopyTo(0, result.AsArray(), 0, length1);
             path.CopyTo(furthestPath, result.AsArray(), length1, length2);
 

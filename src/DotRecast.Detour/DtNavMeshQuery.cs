@@ -267,9 +267,9 @@ namespace DotRecast.Detour
             float radiusSqr = maxRadius * maxRadius;
             float areaSum = 0.0f;
             
-            using RcRentedArray<float> polyVertsBuffer = RcRentedArray.Rent<float>(MAX_VERT_BUFFER_SIZE);
-            using RcRentedArray<float> randomPolyVertsBuffer = RcRentedArray.Rent<float>(MAX_VERT_BUFFER_SIZE);
-            using RcRentedArray<float> constrainedVertsBuffer = RcRentedArray.Rent<float>(MAX_VERT_BUFFER_SIZE);
+            using RcRentedArray<float> polyVertsBuffer = RcRentedArray.Shared.Rent<float>(MAX_VERT_BUFFER_SIZE);
+            using RcRentedArray<float> randomPolyVertsBuffer = RcRentedArray.Shared.Rent<float>(MAX_VERT_BUFFER_SIZE);
+            using RcRentedArray<float> constrainedVertsBuffer = RcRentedArray.Shared.Rent<float>(MAX_VERT_BUFFER_SIZE);
             
             DtPoly randomPoly = null;
             long randomPolyRef = 0;
@@ -608,7 +608,7 @@ namespace DotRecast.Detour
         {
             const int batchSize = 32;
             Span<long> polyRefs = stackalloc long[batchSize];
-            using RcRentedArray<DtPoly> polysRent = RcRentedArray.Rent<DtPoly>(batchSize);
+            using RcRentedArray<DtPoly> polysRent = RcRentedArray.Shared.Rent<DtPoly>(batchSize);
             Span<DtPoly> polys = polysRent.AsSpan();
             int n = 0;
 
@@ -799,7 +799,7 @@ namespace DotRecast.Detour
             m_nav.CalcTileLoc(bmax, out var maxx, out var maxy);
 
             const int MAX_NEIS = 32;
-            using RcRentedArray<DtMeshTile> neisRent = RcRentedArray.Rent<DtMeshTile>(MAX_NEIS);
+            using RcRentedArray<DtMeshTile> neisRent = RcRentedArray.Shared.Rent<DtMeshTile>(MAX_NEIS);
             Span<DtMeshTile> neis = neisRent.AsSpan();
 
             for (int y = miny; y <= maxy; ++y)
@@ -891,7 +891,7 @@ namespace DotRecast.Detour
             float lastBestNodeCost = startNode.total;
 
             DtRaycastHit rayHit = new DtRaycastHit();
-            using var pathRent = RcRentedArray.Rent<long>(MAX_PATH_LENGTH);
+            using var pathRent = RcRentedArray.Shared.Rent<long>(MAX_PATH_LENGTH);
             rayHit.path = pathRent.AsArray();
             while (!m_openList.IsEmpty())
             {
@@ -1181,7 +1181,7 @@ namespace DotRecast.Detour
             }
 
             var rayHit = new DtRaycastHit();
-            using var pathRent = RcRentedArray.Rent<long>(MAX_PATH_LENGTH);
+            using var pathRent = RcRentedArray.Shared.Rent<long>(MAX_PATH_LENGTH);
             rayHit.path = pathRent.AsArray();
 
             int iter = 0;
@@ -2274,7 +2274,7 @@ namespace DotRecast.Detour
             out float t, out RcVec3f hitNormal, ref List<long> path)
         {
             DtRaycastHit hit = new DtRaycastHit();
-            using var pathRent = RcRentedArray.Rent<long>(MAX_PATH_LENGTH);
+            using var pathRent = RcRentedArray.Shared.Rent<long>(MAX_PATH_LENGTH);
             hit.path = pathRent.AsArray();
 
             DtStatus status = Raycast(startRef, startPos, endPos, filter, 0, ref hit, 0);

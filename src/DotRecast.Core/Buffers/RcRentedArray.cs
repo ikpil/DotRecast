@@ -67,6 +67,12 @@ namespace DotRecast.Core.Buffers
             }
         }
 
+        [Obsolete("This method is risky, and we are considering alternative approaches.")]
+        public T[] AsArray()
+        {
+            return _items;
+        }
+
         public Span<T> AsSpan()
         {
             if (_disposed)
