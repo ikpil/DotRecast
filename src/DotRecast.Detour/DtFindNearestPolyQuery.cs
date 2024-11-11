@@ -23,7 +23,7 @@ namespace DotRecast.Detour
             _overPoly = default;
         }
 
-        public void Process(DtMeshTile tile, DtPoly[] poly, Span<long> refs, int count)
+        public void Process(DtMeshTile tile, Span<DtPoly> poly, Span<long> refs, int count)
         {
             for (int i = 0; i < count; ++i)
             {
