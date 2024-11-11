@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Buffers;
 using System.Runtime.CompilerServices;
 
@@ -41,6 +41,11 @@ namespace DotRecast.Core.Buffers
         public T[] AsArray()
         {
             return _array;
+        }
+
+        public Span<T> AsSpan()
+        {
+            return new Span<T>(_array, 0, Length);
         }
 
 
