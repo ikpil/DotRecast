@@ -21,6 +21,7 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using DotRecast.Core;
+using DotRecast.Core.Buffers;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
@@ -597,7 +598,8 @@ namespace DotRecast.Detour
         {
             const int batchSize = 32;
             Span<long> polyRefs = stackalloc long[batchSize];
-            DtPoly[] polys = new DtPoly[batchSize];
+            using RcRentedArray<DtPoly> polysRent = RcRentedArray.Rent<DtPoly>(batchSize);
+            Span<DtPoly> polys = new Span<DtPoly>(polysRent.AsArray(), 0, batchSize);
             int n = 0;
 
             if (tile.data.bvTree != null)
