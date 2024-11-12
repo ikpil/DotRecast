@@ -52,25 +52,12 @@ namespace DotRecast.Detour.Extras.Jumplink
 
             RcVec3f halfExtents = new RcVec3f { X = cs, Y = heightRange, Z = cs };
             float maxHeight = pt.Y + heightRange;
-            RcAtomicBoolean found = new RcAtomicBoolean();
-            RcAtomicFloat minHeight = new RcAtomicFloat(pt.Y);
+            var query = new DtHeightSamplePolyQuery(navMeshQuery, pt, pt.Y, maxHeight);
+            navMeshQuery.QueryPolygons(pt, halfExtents, DtQueryNoOpFilter.Shared, ref query);
 
-            navMeshQuery.QueryPolygons(pt, halfExtents, DtQueryNoOpFilter.Shared, new DtCallbackPolyQuery((tile, poly, refs) =>
+            if (query.Found)
             {
-                var status = navMeshQuery.GetPolyHeight(refs, pt, out var h);
-                if (status.Succeeded())
-                {
-                    if (h > minHeight.Get() && h < maxHeight)
-                    {
-                        minHeight.Exchange(h);
-                        found.Set(true);
-                    }
-                }
-            }));
-
-            if (found.Get())
-            {
-                height = minHeight.Get();
+                height = query.MinHeight;
                 return true;
             }
 
