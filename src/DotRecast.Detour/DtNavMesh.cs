@@ -1363,6 +1363,11 @@ namespace DotRecast.Detour
         /// Returns neighbour tile based on side.
         public int GetTilesAt(int x, int y, DtMeshTile[] tiles, int maxTiles)
         {
+            return GetTilesAt(x, y, (Span<DtMeshTile>)tiles, maxTiles);
+        }
+
+        public int GetTilesAt(int x, int y, Span<DtMeshTile> tiles, int maxTiles)
+        {
             int n = 0;
 
             // Find tile based on hash.

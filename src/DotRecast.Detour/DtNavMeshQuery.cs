@@ -797,7 +797,8 @@ namespace DotRecast.Detour
             m_nav.CalcTileLoc(bmax, out var maxx, out var maxy);
 
             const int MAX_NEIS = 32;
-            DtMeshTile[] neis = new DtMeshTile[MAX_NEIS];
+            using RcRentedArray<DtMeshTile> neisRent = RcRentedArray.Rent<DtMeshTile>(MAX_NEIS);
+            Span<DtMeshTile> neis = neisRent.AsSpan();
 
             for (int y = miny; y <= maxy; ++y)
             {
