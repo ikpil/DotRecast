@@ -565,14 +565,18 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
+        private readonly RcSortedQueue<DtCrowdAgent> UpdateMoveRequest_queue = new RcSortedQueue<DtCrowdAgent>((a1, a2) => a2.targetReplanTime.CompareTo(a1.targetReplanTime));
+        private readonly List<long> UpdateMoveRequest_reqPath = new List<long>();
         private void UpdateMoveRequest(IList<DtCrowdAgent> agents, float dt)
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.UpdateMoveRequest);
 
-            RcSortedQueue<DtCrowdAgent> queue = new RcSortedQueue<DtCrowdAgent>((a1, a2) => a2.targetReplanTime.CompareTo(a1.targetReplanTime));
+            RcSortedQueue<DtCrowdAgent> queue = UpdateMoveRequest_queue;
+            queue.Clear();
 
             // Fire off new requests.
-            List<long> reqPath = new List<long>();
+            List<long> reqPath = UpdateMoveRequest_reqPath;
+            reqPath.Clear();
             for (var i = 0; i < agents.Count; i++)
             {
                 var ag = agents[i];
