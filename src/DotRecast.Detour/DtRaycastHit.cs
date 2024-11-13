@@ -38,9 +38,16 @@ namespace DotRecast.Detour
         public int hitEdgeIndex;
 
         /// Pointer to an array of reference ids of the visited polygons. [opt]
-        public List<long> path;
+        public long[] path;
+
+        public int pathCount;
 
         ///  The cost of the path until hit.
         public float pathCost;
+
+        public void AddPathNode(long nodeRef)
+        {
+            path[pathCount++] = nodeRef;
+        }
     }
 }
