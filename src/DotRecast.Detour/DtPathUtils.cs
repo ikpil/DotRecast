@@ -20,7 +20,10 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using DotRecast.Core.Buffers;
+using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
+using CollectionExtensions = DotRecast.Core.Collections.CollectionExtensions;
 
 namespace DotRecast.Detour
 {
@@ -180,20 +183,20 @@ namespace DotRecast.Detour
             }
 
             // Concatenate paths.
-
+            var endIndex = nvisited - 1;
+            var length1 = endIndex - furthestVisited;
+            var length2 = npath - furthestPath;
+            using var result = RcRentedArray.Rent<long>(length1 + length2);
             // Adjust beginning of the buffer to include the visited.
-            List<long> result = new List<long>();
             // Store visited
-            for (int i = nvisited - 1; i > furthestVisited; --i)
-            {
-                result.Add(visited[i]);
-            }
-
-            result.AddRange(path.GetRange(furthestPath, npath - furthestPath));
+            for (int i = 0; i < length1; ++i) 
+                result[i] = visited[endIndex - i];
+            
+            path.CopyTo(furthestPath, result.AsArray(), length1, length2);
 
             path.Clear();
-            path.AddRange(result);
-            return result.Count;
+            CollectionExtensions.AddRange(path, result.AsSpan());
+            return result.Length;
         }
 
         public static int MergeCorridorEndMoved(List<long> path, int npath, int maxPath, Span<long> visited, int nvisited)
@@ -228,15 +231,15 @@ namespace DotRecast.Detour
             }
 
             // Concatenate paths.
-            List<long> result = path.GetRange(0, furthestPath);
-            foreach (var v in visited.Slice(furthestVisited, nvisited - furthestVisited))
-            {
-                result.Add(v);
-            }
+            var length1 = furthestPath;
+            var length2 = nvisited - furthestVisited;
+            using var result = RcRentedArray.Rent<long>(length1 + length2);
+            path.CopyTo(0, result.AsArray(), 0, length1);
+            visited.Slice(furthestVisited, nvisited - furthestVisited).CopyTo(result.AsSpan().Slice(length1, length2));
 
             path.Clear();
-            path.AddRange(path);
-            return result.Count;
+            CollectionExtensions.AddRange(path, result.AsSpan());
+            return path.Count;
         }
 
         public static int MergeCorridorStartShortcut(List<long> path, int npath, int maxPath, List<long> visited, int nvisited)
@@ -273,12 +276,15 @@ namespace DotRecast.Detour
             // Concatenate paths.
 
             // Adjust beginning of the buffer to include the visited.
-            List<long> result = visited.GetRange(0, furthestVisited);
-            result.AddRange(path.GetRange(furthestPath, npath - furthestPath));
+            var length1 = furthestVisited;
+            var length2 = npath - furthestPath;
+            using var result = RcRentedArray.Rent<long>(length1 + length2);
+            visited.CopyTo(0, result.AsArray(), 0, length1);
+            path.CopyTo(furthestPath, result.AsArray(), length1, length2);
 
             path.Clear();
-            path.AddRange(result);
-            return result.Count;
+            CollectionExtensions.AddRange(path, result.AsSpan());
+            return path.Count;
         }
     }
 }
