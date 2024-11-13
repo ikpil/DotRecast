@@ -238,7 +238,7 @@ namespace DotRecast.Detour
             }
 
             path.Clear();
-            path.AddRange(path);
+            path.AddRange(result);
             return result.Count;
         }
 
