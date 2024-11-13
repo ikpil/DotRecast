@@ -231,15 +231,15 @@ namespace DotRecast.Detour
             }
 
             // Concatenate paths.
-            List<long> result = path.GetRange(0, furthestPath);
-            foreach (var v in visited.Slice(furthestVisited, nvisited - furthestVisited))
-            {
-                result.Add(v);
-            }
+            var length1 = furthestPath;
+            var length2 = nvisited - furthestVisited;
+            using var result = RcRentedArray.Rent<long>(length1 + length2);
+            path.CopyTo(0, result.AsArray(), 0, length1);
+            visited.Slice(furthestVisited, nvisited - furthestVisited).CopyTo(result.AsSpan().Slice(length1, length2));
 
             path.Clear();
-            path.AddRange(result);
-            return result.Count;
+            CollectionExtensions.AddRange(path, result.AsSpan());
+            return path.Count;
         }
 
         public static int MergeCorridorStartShortcut(List<long> path, int npath, int maxPath, List<long> visited, int nvisited)
@@ -284,7 +284,7 @@ namespace DotRecast.Detour
 
             path.Clear();
             CollectionExtensions.AddRange(path, result.AsSpan());
-            return result.Length;
+            return path.Count;
         }
     }
 }
