@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Buffers;
 using System.Runtime.CompilerServices;
 
@@ -28,6 +28,16 @@ namespace DotRecast.Core.Buffers
             Length = length;
         }
 
+        public void Dispose()
+        {
+            if (null != _owner && null != _array)
+            {
+                _owner.Return(_array, true);
+                _owner = null;
+                _array = null;
+            }
+        }
+
         public ref T this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -38,6 +48,7 @@ namespace DotRecast.Core.Buffers
             }
         }
 
+
         public T[] AsArray()
         {
             return _array;
@@ -46,17 +57,6 @@ namespace DotRecast.Core.Buffers
         public Span<T> AsSpan()
         {
             return new Span<T>(_array, 0, Length);
-        }
-
-
-        public void Dispose()
-        {
-            if (null != _owner && null != _array)
-            {
-                _owner.Return(_array, true);
-                _owner = null;
-                _array = null;
-            }
         }
     }
 }

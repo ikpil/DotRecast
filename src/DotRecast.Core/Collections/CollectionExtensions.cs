@@ -45,5 +45,13 @@ namespace DotRecast.Core.Collections
                 (list[k], list[n]) = (list[n], list[k]);
             }
         }
+
+        public static void AddRange<T>(this List<T> list, Span<T> span)
+        {
+            foreach (var i in span)
+            {
+                list.Add(i);
+            }
+        }
     }
 }
