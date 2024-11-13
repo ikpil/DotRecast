@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using DotRecast.Core.Buffers;
 
 namespace DotRecast.Detour.Crowd
 {
@@ -30,12 +31,14 @@ namespace DotRecast.Detour.Crowd
         private readonly float _cellSize;
         private readonly float _invCellSize;
         private readonly Dictionary<long, List<DtCrowdAgent>> _items;
+        private readonly RcObjectPool<List<DtCrowdAgent>> _listPool;
 
         public DtProximityGrid(float cellSize)
         {
             _cellSize = cellSize;
             _invCellSize = 1.0f / cellSize;
             _items = new Dictionary<long, List<DtCrowdAgent>>();
+            _listPool = new RcObjectPool<List<DtCrowdAgent>>(() => new List<DtCrowdAgent>());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -57,6 +60,8 @@ namespace DotRecast.Detour.Crowd
 
         public void Clear()
         {
+            foreach (var pair in _items)
+                _listPool.Return(pair.Value);
             _items.Clear();
         }
 
@@ -74,7 +79,7 @@ namespace DotRecast.Detour.Crowd
                     long key = CombineKey(x, y);
                     if (!_items.TryGetValue(key, out var ids))
                     {
-                        ids = new List<DtCrowdAgent>();
+                        ids = _listPool.Get();
                         _items.Add(key, ids);
                     }
 
