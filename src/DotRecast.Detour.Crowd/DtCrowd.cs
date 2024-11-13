@@ -129,7 +129,7 @@ namespace DotRecast.Detour.Crowd
         private readonly DtObstacleAvoidanceParams[] _obstacleQueryParams;
         private readonly DtObstacleAvoidanceQuery _obstacleQuery;
 
-        private DtProximityGrid _grid;
+        private readonly DtProximityGrid _grid;
 
         private int _maxPathResult;
         private readonly RcVec3f _agentPlacementHalfExtents;
@@ -174,6 +174,7 @@ namespace DotRecast.Detour.Crowd
             _agentIdx = new RcAtomicInteger(0);
             _agents = new Dictionary<int, DtCrowdAgent>();
             _activeAgents = new List<DtCrowdAgent>();
+            _grid = new DtProximityGrid(_config.maxAgentRadius * 3);
 
             // The navQuery is mostly used for local searches, no need for large node pool.
             SetNavMesh(nav);
@@ -864,7 +865,7 @@ namespace DotRecast.Detour.Crowd
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.BuildProximityGrid);
 
-            _grid = new DtProximityGrid(_config.maxAgentRadius * 3);
+            _grid.Clear();
 
             for (var i = 0; i < agents.Count; i++)
             {
