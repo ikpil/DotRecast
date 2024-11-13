@@ -276,12 +276,15 @@ namespace DotRecast.Detour
             // Concatenate paths.
 
             // Adjust beginning of the buffer to include the visited.
-            List<long> result = visited.GetRange(0, furthestVisited);
-            result.AddRange(path.GetRange(furthestPath, npath - furthestPath));
+            var length1 = furthestVisited;
+            var length2 = npath - furthestPath;
+            using var result = RcRentedArray.Rent<long>(length1 + length2);
+            visited.CopyTo(0, result.AsArray(), 0, length1);
+            path.CopyTo(furthestPath, result.AsArray(), length1, length2);
 
             path.Clear();
-            path.AddRange(result);
-            return result.Count;
+            CollectionExtensions.AddRange(path, result.AsSpan());
+            return result.Length;
         }
     }
 }
