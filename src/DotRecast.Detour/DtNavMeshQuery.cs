@@ -1837,6 +1837,7 @@ namespace DotRecast.Detour
             return DtStatus.DT_SUCCESS | (straightPathCount >= maxStraightPath ? DtStatus.DT_BUFFER_TOO_SMALL : DtStatus.DT_STATUS_NOTHING);
         }
 
+        private readonly Queue<DtNode> MoveAlongSurface_queue = new Queue<DtNode>();
         /// @par
         ///
         /// This method is optimized for small delta movement and a small number of 
@@ -1892,8 +1893,8 @@ namespace DotRecast.Detour
             startNode.total = 0;
             startNode.id = startRef;
             startNode.flags = DtNodeFlags.DT_NODE_CLOSED;
-            LinkedList<DtNode> stack = new LinkedList<DtNode>();
-            stack.AddLast(startNode);
+            MoveAlongSurface_queue.Clear();
+            MoveAlongSurface_queue.Enqueue(startNode);
 
             RcVec3f bestPos = new RcVec3f();
             float bestDist = float.MaxValue;
@@ -1909,11 +1910,10 @@ namespace DotRecast.Detour
             const int MAX_NEIS = 8;
             Span<long> neis = stackalloc long[MAX_NEIS];
 
-            while (0 < stack.Count)
+            while (0 < MoveAlongSurface_queue.Count)
             {
                 // Pop front.
-                DtNode curNode = stack.First?.Value;
-                stack.RemoveFirst();
+                DtNode curNode = MoveAlongSurface_queue.Dequeue();
 
                 // Get poly and tile.
                 // The API input has been checked already, skip checking internal data.
@@ -2012,7 +2012,7 @@ namespace DotRecast.Detour
                             // Mark as the node as visited and push to queue.
                             neighbourNode.pidx = m_tinyNodePool.GetNodeIdx(curNode);
                             neighbourNode.flags |= DtNodeFlags.DT_NODE_CLOSED;
-                            stack.AddLast(neighbourNode);
+                            MoveAlongSurface_queue.Enqueue(neighbourNode);
                         }
                     }
                 }
@@ -2903,6 +2903,7 @@ namespace DotRecast.Detour
             return DtStatus.DT_SUCCESS;
         }
 
+        private readonly Queue<DtNode> FindLocalNeighbourhood_queue = new Queue<DtNode>();
         /// @par
         ///
         /// This method is optimized for a small search radius and small number of result 
@@ -2954,8 +2955,8 @@ namespace DotRecast.Detour
             startNode.pidx = 0;
             startNode.id = startRef;
             startNode.flags = DtNodeFlags.DT_NODE_CLOSED;
-            LinkedList<DtNode> stack = new LinkedList<DtNode>();
-            stack.AddLast(startNode);
+            FindLocalNeighbourhood_queue.Clear();
+            FindLocalNeighbourhood_queue.Enqueue(startNode);
 
             resultRef.Add(startNode.id);
             resultParent.Add(0L);
@@ -2965,11 +2966,11 @@ namespace DotRecast.Detour
             Span<float> pa = stackalloc float[m_nav.GetMaxVertsPerPoly() * 3];
             Span<float> pb = stackalloc float[m_nav.GetMaxVertsPerPoly() * 3];
 
-            while (0 < stack.Count)
+            while (0 < FindLocalNeighbourhood_queue.Count)
             {
                 // Pop front.
-                DtNode curNode = stack.First?.Value;
-                stack.RemoveFirst();
+                
+                DtNode curNode = FindLocalNeighbourhood_queue.Dequeue();
 
                 // Get poly and tile.
                 // The API input has been checked already, skip checking internal data.
@@ -3082,7 +3083,7 @@ namespace DotRecast.Detour
 
                     resultRef.Add(neighbourRef);
                     resultParent.Add(curRef);
-                    stack.AddLast(neighbourNode);
+                    FindLocalNeighbourhood_queue.Enqueue(neighbourNode);
                 }
             }
 
