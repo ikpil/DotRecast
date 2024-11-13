@@ -80,6 +80,7 @@ namespace DotRecast.Detour.Crowd
                     if (!_items.TryGetValue(key, out var ids))
                     {
                         ids = _listPool.Get();
+                        ids.Clear();
                         _items.Add(key, ids);
                     }
 
