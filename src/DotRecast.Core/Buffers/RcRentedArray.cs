@@ -43,6 +43,11 @@ namespace DotRecast.Core.Buffers
             return _array;
         }
 
+        public Span<T> AsSpan()
+        {
+            return new Span<T>(_array, 0, Length);
+        }
+
 
         public void Dispose()
         {
