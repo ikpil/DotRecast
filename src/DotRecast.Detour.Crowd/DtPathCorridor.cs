@@ -33,7 +33,7 @@ namespace DotRecast.Detour.Crowd
         private RcVec3f m_pos;
         private RcVec3f m_target;
 
-        private List<long> m_path;
+        private List<long> m_path = new List<long>();
         private int m_npath;
         private int m_maxPath;
 
@@ -89,7 +89,8 @@ namespace DotRecast.Detour.Crowd
         /// @return True if the initialization succeeded.
         public bool Init(int maxPath)
         {
-            m_path = new List<long>(maxPath);
+            if (m_path.Capacity < maxPath)
+                m_path.Capacity = maxPath;
             m_npath = 0;
             m_maxPath = maxPath;
             return true;
@@ -218,7 +219,7 @@ namespace DotRecast.Detour.Crowd
             {
                 if (res.Count > 1 && t > 0.99f)
                 {
-                    m_npath = DtPathUtils.MergeCorridorStartShortcut(ref m_path, m_npath, m_maxPath, res, res.Count);
+                    m_npath = DtPathUtils.MergeCorridorStartShortcut(m_path, m_npath, m_maxPath, res, res.Count);
                 }
             }
         }
@@ -250,7 +251,7 @@ namespace DotRecast.Detour.Crowd
 
             if (status.Succeeded() && res.Count > 0)
             {
-                m_npath = DtPathUtils.MergeCorridorStartShortcut(ref m_path, m_npath, m_maxPath, res, res.Count);
+                m_npath = DtPathUtils.MergeCorridorStartShortcut(m_path, m_npath, m_maxPath, res, res.Count);
                 return true;
             }
 
@@ -276,7 +277,7 @@ namespace DotRecast.Detour.Crowd
             }
 
             // Prune path
-            m_path = m_path.GetRange(npos, m_npath - npos);
+            m_path.RemoveRange(0, npos);
             m_npath -= npos;
 
             refs[0] = prevRef;
@@ -322,7 +323,7 @@ namespace DotRecast.Detour.Crowd
             var status = navquery.MoveAlongSurface(m_path[0], m_pos, npos, filter, out var result, visited, out var nvisited, MAX_VISITED);
             if (status.Succeeded())
             {
-                m_npath = DtPathUtils.MergeCorridorStartMoved(ref m_path, m_npath, m_maxPath, visited, nvisited);
+                m_npath = DtPathUtils.MergeCorridorStartMoved(m_path, m_npath, m_maxPath, visited, nvisited);
 
                 // Adjust the position to stay on top of the navmesh.
                 m_pos = result;
@@ -366,7 +367,7 @@ namespace DotRecast.Detour.Crowd
             var status = navquery.MoveAlongSurface(m_path[^1], m_target, npos, filter, out var result, visited, out nvisited, MAX_VISITED);
             if (status.Succeeded())
             {
-                m_npath = DtPathUtils.MergeCorridorEndMoved(ref m_path, m_npath, m_maxPath, visited, nvisited);
+                m_npath = DtPathUtils.MergeCorridorEndMoved(m_path, m_npath, m_maxPath, visited, nvisited);
 
                 // TODO: should we do that?
                 // Adjust the position to stay on top of the navmesh.
@@ -394,7 +395,11 @@ namespace DotRecast.Detour.Crowd
         public void SetCorridor(RcVec3f target, List<long> path)
         {
             m_target = target;
-            m_path = new List<long>(path);
+            if(path != m_path)
+            {
+                m_path.Clear();
+                m_path.AddRange(path);
+            }
             m_npath = path.Count;
         }
 
@@ -444,7 +449,7 @@ namespace DotRecast.Detour.Crowd
             else if (n < m_npath)
             {
                 // The path is partially usable.
-                m_path = m_path.GetRange(0, n);
+                m_path.RemoveRange(n, m_path.Count - n);
                 m_npath = n;
             }
 
