@@ -21,7 +21,9 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using DotRecast.Core;
+using DotRecast.Core.Buffers;
 using DotRecast.Core.Numerics;
+using CollectionExtensions = DotRecast.Core.Collections.CollectionExtensions;
 
 namespace DotRecast.Detour
 {
@@ -32,6 +34,8 @@ namespace DotRecast.Detour
     /// @ingroup detour
     public class DtNavMeshQuery
     {
+        public const int MAX_PATH_LENGTH = 256;
+        
         protected readonly DtNavMesh m_nav; //< Pointer to navmesh data.
         protected DtQueryData m_query; //< Sliced query state.
 
@@ -877,7 +881,8 @@ namespace DotRecast.Detour
             float lastBestNodeCost = startNode.total;
 
             DtRaycastHit rayHit = new DtRaycastHit();
-            rayHit.path = new List<long>();
+            using var pathRent = RcRentedArray.Rent<long>(MAX_PATH_LENGTH);
+            rayHit.path = pathRent.AsArray();
             while (!m_openList.IsEmpty())
             {
                 // Remove node from open list and put it in closed list.
@@ -1166,7 +1171,8 @@ namespace DotRecast.Detour
             }
 
             var rayHit = new DtRaycastHit();
-            rayHit.path = new List<long>();
+            using var pathRent = RcRentedArray.Rent<long>(MAX_PATH_LENGTH);
+            rayHit.path = pathRent.AsArray();
 
             int iter = 0;
             while (iter < maxIter && !m_openList.IsEmpty())
@@ -2258,13 +2264,15 @@ namespace DotRecast.Detour
             out float t, out RcVec3f hitNormal, ref List<long> path)
         {
             DtRaycastHit hit = new DtRaycastHit();
-            hit.path = path;
+            using var pathRent = RcRentedArray.Rent<long>(MAX_PATH_LENGTH);
+            hit.path = pathRent.AsArray();
 
             DtStatus status = Raycast(startRef, startPos, endPos, filter, 0, ref hit, 0);
 
             t = hit.t;
             hitNormal = hit.hitNormal;
-            path = hit.path;
+            path.Clear();
+            CollectionExtensions.AddRange(path, new Span<long>(hit.path, 0, hit.pathCount));
 
             return status;
         }
@@ -2330,7 +2338,7 @@ namespace DotRecast.Detour
             }
 
             hit.t = 0;
-            hit.path.Clear();
+            hit.pathCount = 0;
             hit.pathCost = 0;
 
             Span<RcVec3f> verts = stackalloc RcVec3f[m_nav.GetMaxVertsPerPoly() + 1];
@@ -2383,7 +2391,7 @@ namespace DotRecast.Detour
                 }
 
                 // Store visited polygons.
-                hit.path.Add(curRef);
+                hit.AddPathNode(curRef);
 
                 // Ray end is completely inside the polygon.
                 if (segMax == -1)
