@@ -27,7 +27,7 @@ namespace DotRecast.Detour
     {
         private const float EPSILON = 0.0001f;
 
-        public static float[] Intersect(Span<float> p, Span<float> q)
+        public static Span<float> Intersect(Span<float> p, Span<float> q, Span<float> buffer)
         {
             int n = p.Length / 3;
             int m = q.Length / 3;
@@ -95,7 +95,7 @@ namespace DotRecast.Detour
                 /* Special case: A & B parallel and separated. */
                 if (parallel && aHB < 0f && bHA < 0f)
                 {
-                    return null;
+                    return Span<float>.Empty;
                 }
                 /* Special case: A & B collinear. */
                 else if (parallel && MathF.Abs(aHB) < EPSILON && MathF.Abs(bHA) < EPSILON)
@@ -168,8 +168,9 @@ namespace DotRecast.Detour
                 return null;
             }
 
-            float[] copied = inters.Slice(0, ii).ToArray();
-            return copied;
+            Span<float> result = buffer.Slice(0, ii);
+            inters.Slice(0, ii).CopyTo(result);
+            return result;
         }
 
         private static int AddVertex(Span<float> inters, int ii, RcVec3f p)
