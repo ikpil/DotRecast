@@ -39,8 +39,7 @@ namespace DotRecast.Detour
             }
         }
 
-
-        public float[] Apply(float[] verts, RcVec3f center, float radius)
+        public Span<float> Apply(Span<float> verts, RcVec3f center, float radius, Span<float> resultBuffer)
         {
             float radiusSqr = radius * radius;
             int outsideVertex = -1;
@@ -56,19 +55,30 @@ namespace DotRecast.Detour
             if (outsideVertex == -1)
             {
                 // polygon inside circle
-                return verts;
+                var result = resultBuffer.Slice(0, verts.Length);
+                verts.CopyTo(result);
+                return result;
             }
 
             Span<float> qCircle = stackalloc float[UnitCircle.Length];
             ScaleCircle(UnitCircle, center, radius, qCircle);
-            float[] intersection = DtConvexConvexIntersections.Intersect(verts, qCircle);
-            if (intersection == null && DtUtils.PointInPolygon(center, verts, verts.Length / 3))
+            Span<float> intersection = DtConvexConvexIntersections.Intersect(verts, qCircle, resultBuffer);
+            if (intersection.IsEmpty && DtUtils.PointInPolygon(center, verts, verts.Length / 3))
             {
                 // circle inside polygon
-                return qCircle.ToArray();
+                var result = resultBuffer.Slice(0, qCircle.Length);
+                qCircle.CopyTo(result);
+                return result;
             }
 
-            return intersection;
+            if(!intersection.IsEmpty)
+            {
+                var result = resultBuffer.Slice(0, intersection.Length);
+                // No need to copy, data is already in buffer
+                return result;
+            }
+            
+            return Span<float>.Empty;
         }
     }
 }

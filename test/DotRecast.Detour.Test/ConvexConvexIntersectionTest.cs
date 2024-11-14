@@ -17,6 +17,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
 using NUnit.Framework;
 
 namespace DotRecast.Detour.Test;
@@ -29,9 +30,10 @@ public class ConvexConvexIntersectionTest
     {
         float[] p = { -4, 0, 0, -3, 0, 3, 2, 0, 3, 3, 0, -3, -2, 0, -4 };
         float[] q = { -4, 0, 0, -3, 0, 3, 2, 0, 3, 3, 0, -3, -2, 0, -4 };
-        float[] intersection = DtConvexConvexIntersections.Intersect(p, q);
+        float[] buffer = new float[128];
+        Span<float> intersection = DtConvexConvexIntersections.Intersect(p, q, buffer);
         Assert.That(intersection.Length, Is.EqualTo(5 * 3));
-        Assert.That(intersection, Is.EqualTo(p));
+        Assert.That(intersection.ToArray(), Is.EquivalentTo(p));
     }
 
     [Test]
@@ -39,8 +41,9 @@ public class ConvexConvexIntersectionTest
     {
         float[] p = { -5, 0, -5, -5, 0, 4, 1, 0, 4, 1, 0, -5 };
         float[] q = { -4, 0, 0, -3, 0, 3, 2, 0, 3, 3, 0, -3, -2, 0, -4 };
-        float[] intersection = DtConvexConvexIntersections.Intersect(p, q);
+        float[] buffer = new float[128];
+        Span<float> intersection = DtConvexConvexIntersections.Intersect(p, q, buffer);
         Assert.That(intersection.Length, Is.EqualTo(5 * 3));
-        Assert.That(intersection, Is.EqualTo(new[] { 1, 0, 3, 1, 0, -3.4f, -2, 0, -4, -4, 0, 0, -3, 0, 3 }));
+        Assert.That(intersection.ToArray(), Is.EquivalentTo(new[] { 1, 0, 3, 1, 0, -3.4f, -2, 0, -4, -4, 0, 0, -3, 0, 3 }));
     }
 }
