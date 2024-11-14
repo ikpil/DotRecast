@@ -205,7 +205,7 @@ namespace DotRecast.Core.Numerics
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Dist2DSqr(RcVec3f p, float[] verts, int i)
+        public static float Dist2DSqr(RcVec3f p, Span<float> verts, int i)
         {
             float dx = verts[i] - p.X;
             float dz = verts[i + 2] - p.Z;

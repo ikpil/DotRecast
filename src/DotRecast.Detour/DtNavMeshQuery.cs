@@ -233,6 +233,7 @@ namespace DotRecast.Detour
             IDtQueryFilter filter, IRcRand frand, IDtPolygonByCircleConstraint constraint,
             out long randomRef, out RcVec3f randomPt)
         {
+            const int MAX_VERT_BUFFER_SIZE = 128;
             randomRef = startRef;
             randomPt = centerPos;
 
@@ -265,10 +266,14 @@ namespace DotRecast.Detour
 
             float radiusSqr = maxRadius * maxRadius;
             float areaSum = 0.0f;
-
+            
+            using RcRentedArray<float> polyVertsBuffer = RcRentedArray.Rent<float>(MAX_VERT_BUFFER_SIZE);
+            using RcRentedArray<float> randomPolyVertsBuffer = RcRentedArray.Rent<float>(MAX_VERT_BUFFER_SIZE);
+            using RcRentedArray<float> constrainedVertsBuffer = RcRentedArray.Rent<float>(MAX_VERT_BUFFER_SIZE);
+            
             DtPoly randomPoly = null;
             long randomPolyRef = 0;
-            float[] randomPolyVerts = null;
+            Span<float> randomPolyVerts = Span<float>.Empty;
 
             while (!m_openList.IsEmpty())
             {
@@ -286,14 +291,14 @@ namespace DotRecast.Detour
                 {
                     // Calc area of the polygon.
                     float polyArea = 0.0f;
-                    float[] polyVerts = new float[bestPoly.vertCount * 3];
+                    Span<float> polyVerts = polyVertsBuffer.AsSpan().Slice(0, bestPoly.vertCount * 3);
                     for (int j = 0; j < bestPoly.vertCount; ++j)
                     {
-                        RcArrays.Copy(bestTile.data.verts, bestPoly.verts[j] * 3, polyVerts, j * 3, 3);
+                        RcSpans.Copy(bestTile.data.verts, bestPoly.verts[j] * 3, polyVerts, j * 3, 3);
                     }
 
-                    float[] constrainedVerts = constraint.Apply(polyVerts, centerPos, maxRadius);
-                    if (constrainedVerts != null)
+                    Span<float> constrainedVerts = constraint.Apply(polyVerts, centerPos, maxRadius, constrainedVertsBuffer.AsSpan());
+                    if (!constrainedVerts.IsEmpty)
                     {
                         int vertCount = constrainedVerts.Length / 3;
                         for (int j = 2; j < vertCount; ++j)
@@ -311,7 +316,8 @@ namespace DotRecast.Detour
                         {
                             randomPoly = bestPoly;
                             randomPolyRef = bestRef;
-                            randomPolyVerts = constrainedVerts;
+                            randomPolyVerts = randomPolyVertsBuffer.AsSpan().Slice(0, constrainedVerts.Length);
+                            constrainedVerts.CopyTo(randomPolyVerts);
                         }
                     }
                 }

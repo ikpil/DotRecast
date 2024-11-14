@@ -1,3 +1,4 @@
+using System;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
@@ -10,9 +11,11 @@ namespace DotRecast.Detour
         {
         }
 
-        public float[] Apply(float[] polyVerts, RcVec3f circleCenter, float radius)
+        public Span<float> Apply(Span<float> polyVerts, RcVec3f circleCenter, float radius, Span<float> resultBuffer)
         {
-            return polyVerts;
+            var result = resultBuffer.Slice(0, polyVerts.Length);
+            polyVerts.CopyTo(result);
+            return result;
         }
     }
 }

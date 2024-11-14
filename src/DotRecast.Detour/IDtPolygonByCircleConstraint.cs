@@ -24,6 +24,6 @@ namespace DotRecast.Detour
 {
     public interface IDtPolygonByCircleConstraint
     {
-        float[] Apply(float[] polyVerts, RcVec3f circleCenter, float radius);
+        Span<float> Apply(Span<float> polyVerts, RcVec3f circleCenter, float radius, Span<float> resultBuffer);
     }
 }

@@ -17,6 +17,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
 using DotRecast.Core.Numerics;
 using NUnit.Framework;
 
@@ -32,9 +33,12 @@ public class PolygonByCircleConstraintTest
     {
         float[] polygon = { -2, 0, 2, 2, 0, 2, 2, 0, -2, -2, 0, -2 };
         RcVec3f center = new RcVec3f(1, 0, 1);
-        float[] constrained = _constraint.Apply(polygon, center, 6);
+        var radius = 6;
+        
+        float[] buffer = new float[128];
+        Span<float> constrained = _constraint.Apply(polygon, center, radius, buffer);
 
-        Assert.That(constrained, Is.EqualTo(polygon));
+        Assert.That(constrained.ToArray(), Is.EquivalentTo(polygon));
     }
 
     [Test]
@@ -43,10 +47,13 @@ public class PolygonByCircleConstraintTest
         int expectedSize = 21;
         float[] polygon = { -2, 0, 2, 2, 0, 2, 2, 0, -2, -2, 0, -2 };
         RcVec3f center = new RcVec3f(2, 0, 0);
+        var radius = 3;
 
-        float[] constrained = _constraint.Apply(polygon, center, 3);
+        float[] buffer = new float[128];
+        Span<float> constrained = _constraint.Apply(polygon, center, radius, buffer);
+
         Assert.That(constrained.Length, Is.EqualTo(expectedSize));
-        Assert.That(constrained, Is.SupersetOf(new[] { 2f, 0f, 2f, 2f, 0f, -2f }));
+        Assert.That(constrained.ToArray(), Is.SupersetOf(new[] { 2f, 0f, 2f, 2f, 0f, -2f }));
     }
 
     [Test]
@@ -55,7 +62,10 @@ public class PolygonByCircleConstraintTest
         int expectedSize = 12 * 3;
         float[] polygon = { -4, 0, 0, -3, 0, 3, 2, 0, 3, 3, 0, -3, -2, 0, -4 };
         RcVec3f center = new RcVec3f(-1, 0, -1);
-        float[] constrained = _constraint.Apply(polygon, center, 2);
+        var radius = 2;
+        
+        float[] buffer = new float[128];
+        Span<float> constrained = _constraint.Apply(polygon, center, radius, buffer);
 
         Assert.That(constrained.Length, Is.EqualTo(expectedSize));
 
@@ -73,10 +83,13 @@ public class PolygonByCircleConstraintTest
         int expectedSize = 9 * 3;
         float[] polygon = { -4, 0, 0, -3, 0, 3, 2, 0, 3, 3, 0, -3, -2, 0, -4 };
         RcVec3f center = new RcVec3f(-2, 0, -1);
-        float[] constrained = _constraint.Apply(polygon, center, 3);
+        var radius = 3;
+        
+        float[] buffer = new float[128];
+        Span<float> constrained = _constraint.Apply(polygon, center, radius, buffer);
 
         Assert.That(constrained.Length, Is.EqualTo(expectedSize));
-        Assert.That(constrained, Is.SupersetOf(new[] { -2f, 0f, -4f, -4f, 0f, 0f, -3.4641016f, 0.0f, 1.60769534f, -2.0f, 0.0f, 2.0f }));
+        Assert.That(constrained.ToArray(), Is.SupersetOf(new[] { -2f, 0f, -4f, -4f, 0f, 0f, -3.4641016f, 0.0f, 1.60769534f, -2.0f, 0.0f, 2.0f }));
     }
 
     [Test]
@@ -85,9 +98,12 @@ public class PolygonByCircleConstraintTest
         int expectedSize = 7 * 3;
         float[] polygon = { -4, 0, 0, -3, 0, 3, 2, 0, 3, 3, 0, -3, -2, 0, -4 };
         RcVec3f center = new RcVec3f(4, 0, 0);
-        float[] constrained = _constraint.Apply(polygon, center, 4);
+        var radius = 4;
+        
+        float[] buffer = new float[128];
+        Span<float> constrained = _constraint.Apply(polygon, center, radius, buffer);
 
         Assert.That(constrained.Length, Is.EqualTo(expectedSize));
-        Assert.That(constrained, Is.SupersetOf(new[] { 1.53589869f, 0f, 3f, 2f, 0f, 3f, 3f, 0f, -3f }));
+        Assert.That(constrained.ToArray(), Is.SupersetOf(new[] { 1.53589869f, 0f, 3f, 2f, 0f, 3f, 3f, 0f, -3f }));
     }
 }
