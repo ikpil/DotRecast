@@ -7,6 +7,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased] - yyyy-mm-dd
 
 ### Added
+- Nothing
+
+### Fixed
+- Nothing
+
+### Changed
+- Nothing
+
+### Removed
+- Nothing
+
+### Special Thanks
+- [@Doprez](https://github.com/Doprez)
+
+
+## [2024.4.1] - 2024-11-19
+
+### Added
 - Added RcBinaryMinHeap ([@Sarofc](https://github.com/Sarofc))
 - Added DotRecast.Benchmark ([@Sarofc](https://github.com/Sarofc))
 
