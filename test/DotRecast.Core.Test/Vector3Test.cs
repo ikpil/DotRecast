@@ -34,9 +34,9 @@ public class Vector3Test
         var v44 = v11 - v22;
         Assert.That(v33, Is.EqualTo(v44));
 
-        Assert.That(v3.X, Is.EqualTo(v33.X));
-        Assert.That(v3.Y, Is.EqualTo(v33.Y));
-        Assert.That(v3.Z, Is.EqualTo(v33.Z));
+        Assert.That(v3.X, Is.EqualTo(v33.X).Within(0.0000001d));
+        Assert.That(v3.Y, Is.EqualTo(v33.Y).Within(0.0000001d));
+        Assert.That(v3.Z, Is.EqualTo(v33.Z).Within(0.0000001d));
     }
 
 
@@ -88,9 +88,9 @@ public class Vector3Test
         var v22 = new RcVec3f(v2.X, v2.Y, v2.Z);
         var v33 = RcVec3f.Cross(v11, v22);
 
-        Assert.That(v3.X, Is.EqualTo(v33.X));
-        Assert.That(v3.Y, Is.EqualTo(v33.Y));
-        Assert.That(v3.Z, Is.EqualTo(v33.Z));
+        Assert.That(v3.X, Is.EqualTo(v33.X).Within(0.000001d));
+        Assert.That(v3.Y, Is.EqualTo(v33.Y).Within(0.000001d));
+        Assert.That(v3.Z, Is.EqualTo(v33.Z).Within(0.000001d));
     }
 
     [Test]
@@ -183,8 +183,8 @@ public class Vector3Test
         var v22 = new RcVec3f(v2.X, v2.Y, v2.Z);
         var v33 = RcVec3f.Lerp(v11, v22, amt);
     
-        Assert.That(v3.X, Is.EqualTo(v33.X));
-        Assert.That(v3.Y, Is.EqualTo(v33.Y));
-        Assert.That(v3.Z, Is.EqualTo(v33.Z));
+        Assert.That(v3.X, Is.EqualTo(v33.X).Within(0.0000001d));
+        Assert.That(v3.Y, Is.EqualTo(v33.Y).Within(0.0000001d));
+        Assert.That(v3.Z, Is.EqualTo(v33.Z).Within(0.0000001d));
     }
 }

@@ -28,7 +28,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        dotnet-version: [ '6', '7', '8' ]
+        dotnet-version: [ '6', '7', '8', '9' ]
         os: [ windows-latest, ubuntu-latest, macos-latest ]
 
     steps:
@@ -43,6 +43,7 @@ jobs:
             6
             7
             8
+            9
             
       - name: Restore dependencies
         run: dotnet restore

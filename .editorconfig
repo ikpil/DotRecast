@@ -9,7 +9,7 @@
 indent_style = space
 charset = utf-8
 
-[*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,projitems,shproj,props,targets,ruleset,config,nuspec,resx,vsixmanifest,vsct,proto,json}]
+[*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,projitems,shproj,props,targets,ruleset,config,nuspec,resx,vsixmanifest,vsct,proto,json,yml,yaml}]
 indent_size = 2
 
 [*.cs]
