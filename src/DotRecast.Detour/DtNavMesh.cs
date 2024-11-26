@@ -99,31 +99,22 @@ namespace DotRecast.Detour
         }
 
 
-        /**
-     * The maximum number of tiles supported by the navigation mesh.
-     *
-     * @return The maximum number of tiles supported by the navigation mesh.
-     */
+        /// The maximum number of tiles supported by the navigation mesh.
+        /// @return The maximum number of tiles supported by the navigation mesh.
         public int GetMaxTiles()
         {
             return m_maxTiles;
         }
 
-        /**
-     * Returns tile in the tile array.
-     */
+        /// Returns pointer to tile in the tile array.
         public DtMeshTile GetTile(int i)
         {
             return m_tiles[i];
         }
 
-        /**
-     * Gets the polygon reference for the tile's base polygon.
-     *
-     * @param tile
-     *            The tile.
-     * @return The polygon reference for the base polygon in the specified tile.
-     */
+        /// Gets the polygon reference for the tile's base polygon.
+        ///  @param[in]	tile		The tile.
+        /// @return The polygon reference for the base polygon in the specified tile.
         public long GetPolyRefBase(DtMeshTile tile)
         {
             if (tile == null)
@@ -151,13 +142,10 @@ namespace DotRecast.Detour
             tile.linksFreeList = link;
         }
 
-        /**
-     * Calculates the tile grid location for the specified world position.
-     *
-     * @param pos
-     *            The world position for the query. [(x, y, z)]
-     * @return 2-element int array with (tx,ty) tile location
-     */
+        /// Calculates the tile grid location for the specified world position.
+        ///  @param[in]	pos  The world position for the query. [(x, y, z)]
+        ///  @param[out]	tx		The tile's x-location. (x, y)
+        ///  @param[out]	ty		The tile's y-location. (x, y)
         public void CalcTileLoc(RcVec3f pos, out int tx, out int ty)
         {
             tx = (int)MathF.Floor((pos.X - m_orig.X) / m_tileWidth);
@@ -207,6 +195,10 @@ namespace DotRecast.Detour
         /// reference is valid. This function is faster than #getTileAndPolyByRef,
         /// but
         /// it does not validate the reference.
+        /// Returns the tile and polygon for the specified polygon reference.
+        ///  @param[in]		ref		A known valid reference for a polygon.
+        ///  @param[out]	tile	The tile containing the polygon.
+        ///  @param[out]	poly	The polygon.
         public void GetTileAndPolyByRefUnsafe(long refs, out DtMeshTile tile, out DtPoly poly)
         {
             DecodePolyId(refs, out var salt, out var it, out var ip);
@@ -214,6 +206,9 @@ namespace DotRecast.Detour
             poly = m_tiles[it].data.polys[ip];
         }
 
+        /// Checks the validity of a polygon reference.
+        ///  @param[in]	ref		The polygon reference to check.
+        /// @return True if polygon reference is valid for the navigation mesh.
         public bool IsValidPolyRef(long refs)
         {
             if (refs == 0)
@@ -246,9 +241,9 @@ namespace DotRecast.Detour
         }
 
 
-        // TODO: These methods are duplicates from dtNavMeshQuery, but are needed
-        // for off-mesh connection finding.
-
+        // TODO: These methods are duplicates from dtNavMeshQuery, but are needed for off-mesh connection finding.
+	
+        /// Queries polygons within a tile.
         List<long> QueryPolygonsInTile(DtMeshTile tile, RcVec3f qmin, RcVec3f qmax)
         {
             List<long> polys = new List<long>();
@@ -856,8 +851,8 @@ namespace DotRecast.Detour
             }
         }
 
-        private int FindConnectingPolys(float[] verts, int va, int vb, DtMeshTile tile, int side,
-            ref List<DtConnectPoly> cons)
+        /// Returns all polygons in neighbour tile based on portal defined by the segment.
+        private int FindConnectingPolys(float[] verts, int va, int vb, DtMeshTile tile, int side, ref List<DtConnectPoly> cons)
         {
             if (tile == null)
                 return 0;
@@ -1326,6 +1321,7 @@ namespace DotRecast.Detour
             return null;
         }
 
+        /// Returns neighbour tile based on side.
         int GetNeighbourTilesAt(int x, int y, int side, DtMeshTile[] tiles, int maxTiles)
         {
             int nx = x, ny = y;
@@ -1364,6 +1360,7 @@ namespace DotRecast.Detour
             return GetTilesAt(nx, ny, tiles, maxTiles);
         }
 
+        /// Returns neighbour tile based on side.
         public int GetTilesAt(int x, int y, DtMeshTile[] tiles, int maxTiles)
         {
             int n = 0;
