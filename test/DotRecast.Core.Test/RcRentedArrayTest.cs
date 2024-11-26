@@ -103,4 +103,19 @@ public class RcRentedArrayTest
         Assert.That(r1.IsDisposed, Is.EqualTo(true));
         Assert.That(r1.AsArray(), Is.Null);
     }
+
+    [Test]
+    public void TestIdPoolCapacity()
+    {
+        var buffer = new RcRentedArray<int>[RcRentedArray.START_RENT_ID_POOL_CAPACITY + 2];
+        for (int i = 0; i < buffer.Length; i++)
+        {
+            Assert.DoesNotThrow(() => buffer[i] = RcRentedArray.Rent<int>(4));
+        }
+        
+        for (int i = 0; i < buffer.Length; i++)
+        {
+            Assert.DoesNotThrow(() => buffer[i].Dispose());
+        }
+    }
 }
