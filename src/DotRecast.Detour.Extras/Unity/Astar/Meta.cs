@@ -57,7 +57,7 @@ namespace DotRecast.Detour.Extras.Unity.Astar
             return true;
         }
 
-        private int[] ParseVersion(string version)
+        private static int[] ParseVersion(string version)
         {
             Match m = VERSION_PATTERN.Match(version);
             if (m.Success)
