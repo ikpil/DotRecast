@@ -1031,9 +1031,9 @@ namespace DotRecast.Detour
      */
         RcVec3f ClosestPointOnDetailEdges(DtMeshTile tile, DtPoly poly, RcVec3f pos, bool onlyBoundary)
         {
-            int ANY_BOUNDARY_EDGE = (DtDetailTriEdgeFlags.DT_DETAIL_EDGE_BOUNDARY << 0) |
-                                    (DtDetailTriEdgeFlags.DT_DETAIL_EDGE_BOUNDARY << 2) |
-                                    (DtDetailTriEdgeFlags.DT_DETAIL_EDGE_BOUNDARY << 4);
+            const int ANY_BOUNDARY_EDGE = (DtDetailTriEdgeFlags.DT_DETAIL_EDGE_BOUNDARY << 0) |
+                                          (DtDetailTriEdgeFlags.DT_DETAIL_EDGE_BOUNDARY << 2) |
+                                          (DtDetailTriEdgeFlags.DT_DETAIL_EDGE_BOUNDARY << 4);
             int ip = poly.index;
             float dmin = float.MaxValue;
             float tmin = 0;
