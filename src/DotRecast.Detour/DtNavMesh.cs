@@ -242,7 +242,7 @@ namespace DotRecast.Detour
 
 
         // TODO: These methods are duplicates from dtNavMeshQuery, but are needed for off-mesh connection finding.
-	
+
         /// Queries polygons within a tile.
         List<long> QueryPolygonsInTile(DtMeshTile tile, RcVec3f qmin, RcVec3f qmax)
         {
@@ -1509,6 +1509,13 @@ namespace DotRecast.Detour
             return null != m_nextFree;
         }
 
+        /// @{
+        /// @name State Management
+        /// These functions do not effect #dtTileRef or #dtPolyRef's. 
+        /// Sets the user defined flags for the specified polygon.
+        ///  @param[in]	ref		The polygon reference.
+        ///  @param[in]	flags	The new flags for the polygon.
+        /// @return The status flags for the operation.
         public DtStatus SetPolyFlags(long refs, int flags)
         {
             if (refs == 0)
@@ -1577,6 +1584,10 @@ namespace DotRecast.Detour
             return DtStatus.DT_SUCCESS;
         }
 
+        /// Sets the user defined area for the specified polygon.
+        ///  @param[in]	ref		The polygon reference.
+        ///  @param[in]	area	The new area id for the polygon. [Limit: DT_MAX_AREAS]
+        /// @return The status flags for the operation.
         public DtStatus SetPolyArea(long refs, char area)
         {
             if (refs == 0)
@@ -1608,6 +1619,10 @@ namespace DotRecast.Detour
             return DtStatus.DT_SUCCESS;
         }
 
+        /// Gets the user defined area for the specified polygon.
+        ///  @param[in]		ref			The polygon reference.
+        ///  @param[out]	resultArea	The area id for the polygon.
+        /// @return The status flags for the operation.
         public DtStatus GetPolyArea(long refs, out int resultArea)
         {
             resultArea = 0;
