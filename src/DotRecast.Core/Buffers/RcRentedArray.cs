@@ -6,107 +6,50 @@ using System.Threading;
 
 namespace DotRecast.Core.Buffers
 {
-    public readonly struct RcRentIdGen
+    public class RcRentedArray
     {
-        public readonly int Id;
-        public readonly int Gen;
+        public static readonly RcRentedArray Shared = new RcRentedArray();
 
-        public RcRentIdGen(int id, int gen)
+        private RcRentedArray()
         {
-            Id = id;
-            Gen = gen;
-        }
-    }
-    
-    internal sealed class RcRentIdPool
-    {
-        private int[] _generations;
-        private readonly Queue<int> _freeIds;
-        private int _maxId;
-
-        public RcRentIdPool(int capacity)
-        {
-            _generations = new int[capacity];
-            _freeIds = new Queue<int>(capacity);
         }
 
-        internal RcRentIdGen AcquireId()
+        public RcRentedArray<T> Rent<T>(int minimumLength)
         {
-            if (!_freeIds.TryDequeue(out int id))
-            {
-                id = _maxId++;
-                if (_generations.Length <= id)
-                {
-                    Array.Resize(ref _generations, _generations.Length << 1);
-                }
-            }
-
-            return new RcRentIdGen(id, _generations[id]);
+            return new RcRentedArray<T>(minimumLength);
         }
 
-        internal void ReturnId(int id)
+        public void Return<T>(RcRentedArray<T> array)
         {
-            _generations[id]++;
-            _freeIds.Enqueue(id);
-        }
+            if (array.IsDisposed)
+                return;
 
-        internal int GetGeneration(int id)
-        {
-            return _generations.Length <= id ? 0 : _generations[id];
+            array.Dispose();
         }
     }
 
-    public static class RcRentedArray
+    public ref struct RcRentedArray<T>
     {
-        public const int START_RENT_ID_POOL_CAPACITY = 16;
-        private static readonly ThreadLocal<RcRentIdPool> _rentPool = new ThreadLocal<RcRentIdPool>(() => new RcRentIdPool(START_RENT_ID_POOL_CAPACITY));
+        private readonly T[] _items;
+        public readonly int Length;
+        private bool _disposed;
 
-        public static RcRentedArray<T> Rent<T>(int minimumLength)
+        public bool IsDisposed => _disposed;
+
+        internal RcRentedArray(int length)
         {
-            var array = ArrayPool<T>.Shared.Rent(minimumLength);
-            return new RcRentedArray<T>(ArrayPool<T>.Shared, _rentPool.Value.AcquireId(), array, minimumLength);
-        }
-
-        internal static bool IsDisposed(RcRentIdGen rentIdGen)
-        {
-            return _rentPool.Value.GetGeneration(rentIdGen.Id) != rentIdGen.Gen;
-        }
-
-        internal static void ReturnId(RcRentIdGen rentIdGen)
-        {
-            _rentPool.Value.ReturnId(rentIdGen.Id);
-        }
-    }
-
-
-
-    public struct RcRentedArray<T> : IDisposable
-    {
-        private ArrayPool<T> _owner;
-        private T[] _array;
-        private readonly RcRentIdGen _rentIdGen;
-
-        public int Length { get; }
-        public bool IsDisposed => null == _owner || null == _array || RcRentedArray.IsDisposed(_rentIdGen);
-
-        internal RcRentedArray(ArrayPool<T> owner, RcRentIdGen rentIdGen, T[] array, int length)
-        {
-            _owner = owner;
-            _array = array;
             Length = length;
-            _rentIdGen = rentIdGen;
+            _items = ArrayPool<T>.Shared.Rent(length);
+            _disposed = false;
         }
 
         public void Dispose()
         {
-            if (null != _owner && null != _array && !RcRentedArray.IsDisposed(_rentIdGen))
-            {
-                RcRentedArray.ReturnId(_rentIdGen);
-                _owner.Return(_array, true);
-            }
+            if (_disposed)
+                return;
 
-            _owner = null;
-            _array = null;
+            _disposed = true;
+            ArrayPool<T>.Shared.Return(_items, true);
         }
 
         public ref T this[int index]
@@ -114,22 +57,22 @@ namespace DotRecast.Core.Buffers
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                RcThrowHelper.ThrowExceptionIfIndexOutOfRange(index, Length);
-                if (IsDisposed)
-                    throw new NullReferenceException();
-                return ref _array[index];
+                if (0 > index || Length <= index)
+                    RcThrowHelper.ThrowExceptionIfIndexOutOfRange(index, Length);
+
+                if (_disposed)
+                    RcThrowHelper.ThrowNullReferenceException("already disposed");
+
+                return ref _items[index];
             }
-        }
-
-
-        public T[] AsArray()
-        {
-            return _array;
         }
 
         public Span<T> AsSpan()
         {
-            return new Span<T>(_array, 0, Length);
+            if (_disposed)
+                RcThrowHelper.ThrowNullReferenceException("already disposed");
+
+            return new Span<T>(_items, 0, Length);
         }
     }
 }

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using DotRecast.Core.Buffers;
 using NUnit.Framework;
 
@@ -32,7 +31,8 @@ public class RcRentedArrayTest
             {
                 int length = Math.Max(2, (int)(rand.Next() * 2048));
                 var values = RandomValues(length);
-                using var array = RcRentedArray.Rent<int>(length);
+                using var array = RcRentedArray.Shared.Rent<int>(length);
+                using var array2 = RcRentedArray.Shared.Rent<int>(length);
 
                 for (int i = 0; i < array.Length; ++i)
                 {
@@ -44,17 +44,8 @@ public class RcRentedArrayTest
                     Assert.That(array[i], Is.EqualTo(values[i]));
                 }
 
-                Assert.That(array[^1], Is.EqualTo(values[^1]));
-
-                Assert.Throws<IndexOutOfRangeException>(() => array[-1] = 0);
-                Assert.Throws<IndexOutOfRangeException>(() => array[array.Length + 1] = 0);
-                Assert.Throws<IndexOutOfRangeException>(() => _ = array[-1]);
-                Assert.Throws<IndexOutOfRangeException>(() => _ = array[array.Length + 1]);
-
-                // danger
-                rentedArray = array;
+                Assert.That(array[array.Length - 1], Is.EqualTo(values[^1]));
             }
-            Assert.Throws<NullReferenceException>(() => rentedArray[^1] = 0);
         }
     }
 
@@ -63,36 +54,36 @@ public class RcRentedArrayTest
     {
         // not same
         {
-            using var r1 = RcRentedArray.Rent<float>(1024);
-            using var r2 = RcRentedArray.Rent<float>(1024);
+            using var r1 = RcRentedArray.Shared.Rent<float>(1024);
+            using var r2 = RcRentedArray.Shared.Rent<float>(1024);
 
-            Assert.That(r2.AsArray() != r1.AsArray(), Is.EqualTo(true));
+            Assert.That(r2.AsSpan() != r1.AsSpan(), Is.EqualTo(true));
         }
 
         // same
         {
             // error case 
-            float[] r1Array;
-            using (var r1 = RcRentedArray.Rent<float>(1024))
+            Span<float> r1Array;
+
             {
-                r1Array = r1.AsArray();
+                using var r1 = RcRentedArray.Shared.Rent<float>(1024);
+                r1Array = r1.AsSpan();
                 for (int i = 0; i < r1.Length; ++i)
                 {
                     r1[i] = 123;
                 }
             }
 
-            using var r2 = RcRentedArray.Rent<float>(1024);
+            using var r2 = RcRentedArray.Shared.Rent<float>(1024);
 
-            Assert.That(r2.AsArray() == r1Array, Is.EqualTo(true));
-            Assert.That(r2.AsArray().Sum(), Is.EqualTo(0));
+            Assert.That(r2.AsSpan() == r1Array, Is.EqualTo(true));
         }
     }
 
     [Test]
     public void TestDispose()
     {
-        var r1 = RcRentedArray.Rent<float>(1024);
+        using var r1 = RcRentedArray.Shared.Rent<float>(1024);
         for (int i = 0; i < r1.Length; ++i)
         {
             r1[i] = 123;
@@ -101,21 +92,5 @@ public class RcRentedArrayTest
         Assert.That(r1.IsDisposed, Is.EqualTo(false));
         r1.Dispose();
         Assert.That(r1.IsDisposed, Is.EqualTo(true));
-        Assert.That(r1.AsArray(), Is.Null);
-    }
-
-    [Test]
-    public void TestIdPoolCapacity()
-    {
-        var buffer = new RcRentedArray<int>[RcRentedArray.START_RENT_ID_POOL_CAPACITY + 2];
-        for (int i = 0; i < buffer.Length; i++)
-        {
-            Assert.DoesNotThrow(() => buffer[i] = RcRentedArray.Rent<int>(4));
-        }
-        
-        for (int i = 0; i < buffer.Length; i++)
-        {
-            Assert.DoesNotThrow(() => buffer[i].Dispose());
-        }
     }
 }

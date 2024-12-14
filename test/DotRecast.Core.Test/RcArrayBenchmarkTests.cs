@@ -54,8 +54,8 @@ public class RcArrayBenchmarkTests
 
     private void RoundForRcRentedArray(int len)
     {
-        using var rentedArray = RcRentedArray.Rent<int>(len);
-        var array = rentedArray.AsArray();
+        using var rentedArray = RcRentedArray.Shared.Rent<int>(len);
+        var array = rentedArray.AsSpan();
         for (int i = 0; i < rentedArray.Length; ++i)
         {
             array[i] = _rand.NextInt32();
@@ -88,7 +88,7 @@ public class RcArrayBenchmarkTests
         var results = new List<(string title, long ticks)>();
         results.Add(Bench("new int[len]", RoundForArray));
         results.Add(Bench("ArrayPool<int>.Shared.Rent(len)", RoundForPureRentArray));
-        results.Add(Bench("RcRentedArray.Rent<int>(len)", RoundForRcRentedArray));
+        results.Add(Bench("RcRentedArray.Shared.Rent<int>(len)", RoundForRcRentedArray));
         results.Add(Bench("new RcStackArray512<int>()", RoundForRcStackArray));
         results.Add(Bench("stackalloc int[len]", RoundForStackalloc));
 

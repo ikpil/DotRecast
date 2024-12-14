@@ -10,9 +10,9 @@ public static class BenchmarkProgram
     public static int Main(string[] args)
     {
         var runs = ImmutableArray.Create(
-            BenchmarkConverter.TypeToBenchmarks(typeof(VectorBenchmarks)),
-            BenchmarkConverter.TypeToBenchmarks(typeof(PriorityQueueBenchmarks)),
-            BenchmarkConverter.TypeToBenchmarks(typeof(StackallocBenchmarks))
+            // BenchmarkConverter.TypeToBenchmarks(typeof(VectorBenchmarks)),
+            // BenchmarkConverter.TypeToBenchmarks(typeof(PriorityQueueBenchmarks)),
+            BenchmarkConverter.TypeToBenchmarks(typeof(ArrayBenchmarks))
         );
 
         var summary = BenchmarkRunner.Run(runs.ToArray());
