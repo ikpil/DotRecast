@@ -2,7 +2,7 @@ using System;
 
 namespace DotRecast.Detour.Crowd
 {
-    internal readonly struct DtCrowdScopedTimer : IDisposable
+    internal readonly ref struct DtCrowdScopedTimer
     {
         private readonly DtCrowdTimerLabel _label;
         private readonly DtCrowdTelemetry _telemetry;

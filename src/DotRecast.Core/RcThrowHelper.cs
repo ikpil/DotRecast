@@ -14,13 +14,20 @@ namespace DotRecast.Core
                 throw new IndexOutOfRangeException($"Index {index} is out of range - size({size})");
             }
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowArgumentOutOfRangeException(string argument)
         {
             throw new ArgumentOutOfRangeException(argument);
         }
-        
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowNullReferenceException(string argument)
+        {
+            throw new NullReferenceException(argument);
+        }
+
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void StackOverflow()
         {
@@ -34,15 +41,13 @@ namespace DotRecast.Core
             var array_8_512_1 = RcStackArray8<RcStackArray512<float>>.Empty; // 8 * 512 = 4196
             var array_4_256_1 = RcStackArray4<RcStackArray256<float>>.Empty; // 4 * 256 = 1024
             var array_4_64_1 = RcStackArray4<RcStackArray64<float>>.Empty; // 4 * 64 = 256
-        
+
             //
             var array_2_8_1 = RcStackArray2<RcStackArray8<float>>.Empty; // 2 * 8 = 16
             var array_2_4_1 = RcStackArray2<RcStackArray2<float>>.Empty; // 2 * 2 = 4
-            
+
             float f1 = 0.0f; // 1
             //float f2 = 0.0f; // my system stack overflow!
         }
-
- 
     }
 }

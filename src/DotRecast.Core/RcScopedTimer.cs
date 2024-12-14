@@ -2,7 +2,7 @@ using System;
 
 namespace DotRecast.Core
 {
-    public readonly struct RcScopedTimer : IDisposable
+    public readonly ref struct RcScopedTimer
     {
         private readonly RcContext _context;
         private readonly RcTimerLabel _label;
