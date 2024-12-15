@@ -55,6 +55,7 @@ namespace DotRecast.Detour.Crowd
             y = (int)uy;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
             _items.Clear();
