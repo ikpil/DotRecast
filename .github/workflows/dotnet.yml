@@ -28,7 +28,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        dotnet-version: [ '6', '7', '8', '9' ]
+        dotnet-version: [ '8', '9' ]
         os: [ windows-latest, ubuntu-latest, macos-latest ]
 
     steps:
@@ -40,8 +40,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: |
-            6
-            7
             8
             9
             
