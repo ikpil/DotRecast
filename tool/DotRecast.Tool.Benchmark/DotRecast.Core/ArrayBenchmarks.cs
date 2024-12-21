@@ -3,7 +3,7 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
 using DotRecast.Core.Buffers;
 
-namespace DotRecast.Tool.Benchmark.Benchmarks;
+namespace DotRecast.Tool.Benchmark.DotRecast.Core;
 
 /*
 

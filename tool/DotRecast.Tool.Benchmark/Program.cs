@@ -1,6 +1,6 @@
 using System;
 using BenchmarkDotNet.Running;
-using DotRecast.Tool.Benchmark.Benchmarks;
+using DotRecast.Tool.Benchmark.DotRecast.Core;
 
 namespace DotRecast.Tool.Benchmark;
 

@@ -2,19 +2,30 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
 using DotRecast.Core.Numerics;
 
-namespace DotRecast.Tool.Benchmark.Benchmarks;
+namespace DotRecast.Tool.Benchmark.DotRecast.Core;
 
 /*
-| Method            | Mean      | Error     | StdDev    |
-|------------------ |----------:|----------:|----------:|
-| Dot_Vector3       | 0.6395 ns | 0.0125 ns | 0.0104 ns |
-| Dot_RcVec3f       | 0.2275 ns | 0.0281 ns | 0.0375 ns |
-| Cross_Vector3     | 1.1652 ns | 0.0102 ns | 0.0085 ns |
-| Cross_RcVec3f     | 1.1687 ns | 0.0140 ns | 0.0124 ns |
-| Normalize_Vector3 | 1.7964 ns | 0.0173 ns | 0.0162 ns |
-| Normalize_RcVec3f | 1.2806 ns | 0.0088 ns | 0.0078 ns |
+ 
+// * Summary *
+BenchmarkDotNet v0.14.0, Windows 11 (10.0.26100.2605)
+AMD Ryzen 5 5625U with Radeon Graphics, 1 CPU, 12 logical and 6 physical cores
+.NET SDK 9.0.100
+  [Host]     : .NET 9.0.0 (9.0.24.52809), X64 RyuJIT AVX2
+  DefaultJob : .NET 9.0.0 (9.0.24.52809), X64 RyuJIT AVX2
+
+
+| Method            | Mean      | Error     | StdDev    | Allocated |
+|------------------ |----------:|----------:|----------:|----------:|
+| Dot_Vector3       | 0.4205 ns | 0.0023 ns | 0.0020 ns |         - |
+| Dot_RcVec3f       | 0.0560 ns | 0.0164 ns | 0.0145 ns |         - |
+| Cross_Vector3     | 1.3648 ns | 0.0406 ns | 0.0380 ns |         - |
+| Cross_RcVec3f     | 1.2007 ns | 0.0279 ns | 0.0233 ns |         - |
+| Normalize_Vector3 | 1.4201 ns | 0.0210 ns | 0.0186 ns |         - |
+| Normalize_RcVec3f | 1.1737 ns | 0.0090 ns | 0.0084 ns |         - |
+
 */
 
+[MemoryDiagnoser]
 public class VectorBenchmarks
 {
     private readonly Consumer _consumer = new();

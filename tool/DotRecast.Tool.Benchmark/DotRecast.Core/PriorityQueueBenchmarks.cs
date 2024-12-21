@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
 using DotRecast.Core.Collections;
 
-namespace DotRecast.Tool.Benchmark.Benchmarks;
+namespace DotRecast.Tool.Benchmark.DotRecast.Core;
 
 /*
 
@@ -55,9 +55,11 @@ AMD Ryzen 5 3600, 1 CPU, 12 logical and 6 physical cores
 
 */
 
+[MemoryDiagnoser]
 public class PriorityQueueBenchmarks
 {
-    [Params(10, 100, 1000, 10000)] public int Count;
+    [Params(10, 100, 1000, 10000)]
+    public int Count;
 
     private RcSortedQueue<Node> _sq;
     private RcBinaryMinHeap<Node> _bmHeap;
@@ -208,7 +210,7 @@ public class PriorityQueueBenchmarks
                 total = _priority[i],
             });
         }
-        
+
         for (int i = half; i < Count; i++)
         {
             _sq.Enqueue(new Node
@@ -219,7 +221,6 @@ public class PriorityQueueBenchmarks
 
             _sq.Dequeue();
         }
-
     }
 
     [Benchmark]
@@ -235,7 +236,7 @@ public class PriorityQueueBenchmarks
                 total = _priority[i],
             });
         }
-        
+
         for (int i = half; i < Count; i++)
         {
             _bmHeap.Push(new Node
@@ -246,7 +247,6 @@ public class PriorityQueueBenchmarks
 
             _bmHeap.Pop();
         }
-
     }
 
     [Benchmark]
