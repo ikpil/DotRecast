@@ -1,6 +1,6 @@
 using System;
+using System.Reflection;
 using BenchmarkDotNet.Running;
-using DotRecast.Tool.Benchmark.DotRecast.Core;
 
 namespace DotRecast.Tool.Benchmark;
 
@@ -8,14 +8,7 @@ public static class Program
 {
     public static int Main(string[] args)
     {
-        Type[] benchmarkTypes =
-        [
-            typeof(VectorBenchmarks),
-            typeof(PriorityQueueBenchmarks),
-            typeof(ArrayBenchmarks)
-        ];
-
-        var switcher = new BenchmarkSwitcher(benchmarkTypes);
+        var switcher = BenchmarkSwitcher.FromAssembly(Assembly.GetExecutingAssembly());
 
         if (args == null || args.Length == 0)
         {

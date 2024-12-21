@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\DotRecast.Core\DotRecast.Core.csproj" />
+    <ProjectReference Include="..\..\src\DotRecast.Recast.Toolset\DotRecast.Recast.Toolset.csproj" />
   </ItemGroup>
 
 </Project>
