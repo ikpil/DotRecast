@@ -1,9 +1,9 @@
 using System.Collections.Immutable;
 using System.Linq;
 using BenchmarkDotNet.Running;
-using DotRecast.Benchmark.Benchmarks;
+using DotRecast.Tool.Benchmark.Benchmarks;
 
-namespace DotRecast.Benchmark;
+namespace DotRecast.Tool.Benchmark;
 
 public static class BenchmarkProgram
 {

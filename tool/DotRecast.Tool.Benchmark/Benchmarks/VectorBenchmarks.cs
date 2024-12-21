@@ -2,7 +2,7 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
 using DotRecast.Core.Numerics;
 
-namespace DotRecast.Benchmark.Benchmarks;
+namespace DotRecast.Tool.Benchmark.Benchmarks;
 
 /*
 | Method            | Mean      | Error     | StdDev    |

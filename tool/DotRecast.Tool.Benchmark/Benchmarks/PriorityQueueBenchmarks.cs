@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
 using DotRecast.Core.Collections;
 
-namespace DotRecast.Benchmark.Benchmarks;
+namespace DotRecast.Tool.Benchmark.Benchmarks;
 
 /*
 
