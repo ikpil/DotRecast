@@ -264,7 +264,7 @@ namespace DotRecast.Detour
 
             DtPoly randomPoly = null;
             long randomPolyRef = 0;
-            float[] randomPolyVerts = null;
+            Span<float> randomPolyVerts = null;
 
             while (!m_openList.IsEmpty())
             {
@@ -288,8 +288,8 @@ namespace DotRecast.Detour
                         RcArrays.Copy(bestTile.data.verts, bestPoly.verts[j] * 3, polyVerts, j * 3, 3);
                     }
 
-                    float[] constrainedVerts = constraint.Apply(polyVerts, centerPos, maxRadius);
-                    if (constrainedVerts != null)
+                    var ncverts = constraint.Apply(polyVerts, centerPos, maxRadius, out var constrainedVerts);
+                    if (!constrainedVerts.IsEmpty)
                     {
                         int vertCount = constrainedVerts.Length / 3;
                         for (int j = 2; j < vertCount; ++j)

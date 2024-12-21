@@ -40,7 +40,7 @@ namespace DotRecast.Detour
         }
 
 
-        public float[] Apply(float[] verts, RcVec3f center, float radius)
+        public int Apply(Span<float> verts, RcVec3f center, float radius, out Span<float> constrainedVerts)
         {
             float radiusSqr = radius * radius;
             int outsideVertex = -1;
@@ -56,7 +56,8 @@ namespace DotRecast.Detour
             if (outsideVertex == -1)
             {
                 // polygon inside circle
-                return verts;
+                constrainedVerts = verts;
+                return verts.Length;
             }
 
             Span<float> qCircle = stackalloc float[UnitCircle.Length];
@@ -65,10 +66,13 @@ namespace DotRecast.Detour
             if (intersection == null && DtUtils.PointInPolygon(center, verts, verts.Length / 3))
             {
                 // circle inside polygon
-                return qCircle.ToArray();
+                float[] qCircleArray = qCircle.ToArray();
+                constrainedVerts = qCircleArray;
+                return qCircleArray.Length;
             }
 
-            return intersection;
+            constrainedVerts = intersection;
+            return intersection?.Length ?? 0;
         }
     }
 }
