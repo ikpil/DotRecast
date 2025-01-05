@@ -1408,8 +1408,13 @@ namespace DotRecast.Detour.TileCache
                 int nv = CountPolyVerts(mesh.polys, p, maxVertsPerPoly);
                 bool hasRem = false;
                 for (int j = 0; j < nv; ++j)
+                {
                     if (mesh.polys[p + j] == rem)
+                    {
                         hasRem = true;
+                    }
+                }
+
                 if (hasRem)
                 {
                     // Collect edges which does not touch the removed vertex.
@@ -1450,8 +1455,12 @@ namespace DotRecast.Detour.TileCache
                 int p = i * maxVertsPerPoly * 2;
                 int nv = CountPolyVerts(mesh.polys, p, maxVertsPerPoly);
                 for (int j = 0; j < nv; ++j)
+                {
                     if (mesh.polys[p + j] > rem)
+                    {
                         mesh.polys[p + j]--;
+                    }
+                }
             }
 
             for (int i = 0; i < nedges; ++i)
@@ -1606,10 +1615,13 @@ namespace DotRecast.Detour.TileCache
             {
                 if (mesh.npolys >= maxTris)
                     break;
+                
                 int p = mesh.npolys * maxVertsPerPoly * 2;
                 Array.Fill(mesh.polys, DT_TILECACHE_NULL_IDX, p, maxVertsPerPoly * 2);
+                
                 for (int j = 0; j < maxVertsPerPoly; ++j)
                     mesh.polys[p + j] = polys[i * maxVertsPerPoly + j];
+                
                 mesh.areas[mesh.npolys] = pareas[i];
                 mesh.npolys++;
                 if (mesh.npolys > maxTris)
