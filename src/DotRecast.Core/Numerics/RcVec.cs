@@ -9,7 +9,7 @@ namespace DotRecast.Core.Numerics
         public static readonly float EQUAL_THRESHOLD = RcMath.Sqr(1.0f / 16384.0f);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static RcVec3f Create(Span<float> values, int n)
+        public static RcVec3f Create(ReadOnlySpan<float> values, int n)
         {
             return new RcVec3f(values[n + 0], values[n + 1], values[n + 2]);
         }
@@ -137,7 +137,7 @@ namespace DotRecast.Core.Numerics
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Copy(Span<float> @out, int n, Span<float> @in, int m)
+        public static void Copy(Span<float> @out, int n, ReadOnlySpan<float> @in, int m)
         {
             @out[n + 0] = @in[m + 0];
             @out[n + 1] = @in[m + 1];
@@ -205,7 +205,7 @@ namespace DotRecast.Core.Numerics
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Dist2DSqr(RcVec3f p, Span<float> verts, int i)
+        public static float Dist2DSqr(RcVec3f p, ReadOnlySpan<float> verts, int i)
         {
             float dx = verts[i] - p.X;
             float dz = verts[i + 2] - p.Z;
@@ -256,7 +256,7 @@ namespace DotRecast.Core.Numerics
         /// @param[in] v2 The destination vector.
         /// @param[in] t The interpolation factor. [Limits: 0 <= value <= 1.0]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static RcVec3f Lerp(Span<float> verts, int v1, int v2, float t)
+        public static RcVec3f Lerp(ReadOnlySpan<float> verts, int v1, int v2, float t)
         {
             return new RcVec3f(
                 verts[v1 + 0] + (verts[v2 + 0] - verts[v1 + 0]) * t,

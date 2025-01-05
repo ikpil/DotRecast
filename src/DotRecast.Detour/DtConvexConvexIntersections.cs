@@ -27,7 +27,7 @@ namespace DotRecast.Detour
     {
         private const float EPSILON = 0.0001f;
 
-        public static float[] Intersect(Span<float> p, Span<float> q)
+        public static float[] Intersect(ReadOnlySpan<float> p, ReadOnlySpan<float> q)
         {
             int n = p.Length / 3;
             int m = q.Length / 3;

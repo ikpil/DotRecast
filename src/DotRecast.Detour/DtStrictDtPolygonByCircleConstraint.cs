@@ -29,7 +29,7 @@ namespace DotRecast.Detour
             return temp;
         }
 
-        public static void ScaleCircle(Span<float> src, RcVec3f center, float radius, Span<float> dst)
+        public static void ScaleCircle(ReadOnlySpan<float> src, RcVec3f center, float radius, Span<float> dst)
         {
             for (int i = 0; i < CIRCLE_SEGMENTS; i++)
             {
