@@ -30,7 +30,7 @@ namespace DotRecast.Detour.TileCache
         public DtObstacleBox box = new DtObstacleBox();
         public DtObstacleOrientedBox orientedBox = new DtObstacleOrientedBox();
 
-        public List<long> touched = new List<long>();
+        public readonly List<long> touched = new List<long>();
         public readonly List<long> pending = new List<long>();
         public int salt;
         public DtTileCacheObstacleType type;
