@@ -35,62 +35,50 @@ namespace DotRecast.Recast
 
         public readonly int TileSizeZ;
 
-        /** The xz-plane cell size to use for fields. [Limit: &gt; 0] [Units: wu] **/
+        /// The xz-plane cell size to use for fields. [Limit: > 0] [Units: wu] 
         public readonly float Cs;
 
-        /** The y-axis cell size to use for fields. [Limit: &gt; 0] [Units: wu] **/
+        /// The y-axis cell size to use for fields. [Limit: > 0] [Units: wu]
         public readonly float Ch;
 
-        /** The maximum slope that is considered walkable. [Limits: 0 &lt;= value &lt; 90] [Units: Degrees] **/
+        /// The maximum slope that is considered walkable. [Limits: 0 <= value < 90] [Units: Degrees] 
         public readonly float WalkableSlopeAngle;
 
-        /**
-         * Minimum floor to 'ceiling' height that will still allow the floor area to be considered walkable. [Limit: &gt;= 3]
-         * [Units: vx]
-         **/
+        /// Minimum floor to 'ceiling' height that will still allow the floor area to 
+        /// be considered walkable. [Limit: >= 3] [Units: vx] 
         public readonly int WalkableHeight;
 
-        /** Maximum ledge height that is considered to still be traversable. [Limit: &gt;=0] [Units: vx] **/
+        /// Maximum ledge height that is considered to still be traversable. [Limit: >=0] [Units: vx] 
         public readonly int WalkableClimb;
 
-        /**
-         * The distance to erode/shrink the walkable area of the heightfield away from obstructions. [Limit: &gt;=0] [Units:
-         * vx]
-         **/
+        /// The distance to erode/shrink the walkable area of the heightfield away from 
+        /// obstructions.  [Limit: >=0] [Units: vx] 
         public readonly int WalkableRadius;
 
-        /** The maximum allowed length for contour edges along the border of the mesh. [Limit: &gt;=0] [Units: vx] **/
+        /// The maximum allowed length for contour edges along the border of the mesh. [Limit: >=0] [Units: vx] 
         public readonly int MaxEdgeLen;
 
-        /**
-         * The maximum distance a simplfied contour's border edges should deviate the original raw contour. [Limit: &gt;=0]
-         * [Units: vx]
-         **/
+        /// The maximum distance a simplified contour's border edges should deviate 
+        /// the original raw contour. [Limit: >=0] [Units: vx]
         public readonly float MaxSimplificationError;
 
-        /** The minimum number of cells allowed to form isolated island areas. [Limit: &gt;=0] [Units: vx] **/
+        /// The minimum number of cells allowed to form isolated island areas. [Limit: >=0] [Units: vx] 
         public readonly int MinRegionArea;
 
-        /**
-         * Any regions with a span count smaller than this value will, if possible, be merged with larger regions. [Limit:&gt;=0] [Units: vx]
-         **/
+        /// Any regions with a span count smaller than this value will, if possible, 
+        /// be merged with larger regions. [Limit: >=0] [Units: vx] 
         public readonly int MergeRegionArea;
 
-        /**
-         * The maximum number of vertices allowed for polygons generated during the contour to polygon conversion process.
-         * [Limit: &gt;= 3]
-         **/
+        /// The maximum number of vertices allowed for polygons generated during the 
+        /// contour to polygon conversion process. [Limit: >= 3] 
         public readonly int MaxVertsPerPoly;
 
-        /**
-         * Sets the sampling distance to use when generating the detail mesh. (For height detail only.) [Limits: 0 or >= 0.9] [Units: wu]
-         **/
+        /// Sets the sampling distance to use when generating the detail mesh.
+        /// (For height detail only.) [Limits: 0 or >= 0.9] [Units: wu] 
         public readonly float DetailSampleDist;
 
-        /**
-         * The maximum distance the detail mesh surface should deviate from heightfield data. (For height detail only.)
-         * [Limit: &gt;=0] [Units: wu]
-         **/
+        /// The maximum distance the detail mesh surface should deviate from heightfield
+        /// data. (For height detail only.) [Limit: >=0] [Units: wu] 
         public readonly float DetailSampleMaxError;
 
         public readonly RcAreaModification WalkableAreaMod;
