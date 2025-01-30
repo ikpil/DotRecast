@@ -131,7 +131,7 @@ namespace DotRecast.Recast.Toolset.Tools
             option.walkableRadius = setting.agentRadius;
             option.walkableClimb = setting.agentMaxClimb;
             option.maxSimplificationError = setting.edgeMaxError;
-            option.maxTiles = tw * th * 4; // for test EXPECTED_LAYERS_PER_TILE;
+            option.maxTiles = tw * th * DtTileCacheLayer.EXPECTED_LAYERS_PER_TILE; // for test EXPECTED_LAYERS_PER_TILE;
             option.maxObstacles = 128;
 
             DtNavMeshParams navMeshParams = new DtNavMeshParams();

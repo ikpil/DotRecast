@@ -22,16 +22,11 @@ using DotRecast.Core;
 using DotRecast.Detour.TileCache.Io.Compress;
 using DotRecast.Recast;
 using DotRecast.Recast.Geom;
-using NUnit.Framework;
-
 
 namespace DotRecast.Detour.TileCache.Test;
 
-
 public class AbstractTileCacheTest
 {
-    private const int EXPECTED_LAYERS_PER_TILE = 4;
-
     private readonly float m_cellSize = 0.3f;
     private readonly float m_cellHeight = 0.2f;
     private readonly float m_agentHeight = 2.0f;
@@ -54,7 +49,7 @@ public class AbstractTileCacheTest
         option.walkableRadius = m_agentRadius;
         option.walkableClimb = m_agentMaxClimb;
         option.maxSimplificationError = m_edgeMaxError;
-        option.maxTiles = tw * th * EXPECTED_LAYERS_PER_TILE;
+        option.maxTiles = tw * th * DtTileCacheLayer.EXPECTED_LAYERS_PER_TILE;
         option.maxObstacles = 128;
 
         DtNavMeshParams navMeshParams = new DtNavMeshParams();

@@ -22,6 +22,9 @@ namespace DotRecast.Detour.TileCache
 {
     public class DtTileCacheLayer
     {
+        // This value specifies how many layers (or "floors") each navmesh tile is expected to have.
+        public const int EXPECTED_LAYERS_PER_TILE = 4;
+
         public DtTileCacheLayerHeader header;
         public byte regCount; // < Region count.
         public byte[] heights; // unsigned char
