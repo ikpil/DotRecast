@@ -19,29 +19,20 @@ namespace DotRecast.Core
             Array.Copy(sourceArray, destinationArray, length);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T[] CopyOf<T>(T[] source, int startIdx, int length)
         {
-            var deatArr = new T[length];
-            for (int i = 0; i < length; ++i)
-            {
-                deatArr[i] = source[startIdx + i];
-            }
-
-            return deatArr;
+            var slice = source.AsSpan(startIdx, length);
+            return slice.ToArray();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T[] CopyOf<T>(T[] source, long length)
         {
-            var deatArr = new T[length];
-            var count = Math.Max(0, Math.Min(source.Length, length));
-            for (int i = 0; i < count; ++i)
-            {
-                deatArr[i] = source[i];
-            }
-
-            return deatArr;
+            return CopyOf(source, 0, (int)length);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T[][] Of<T>(int len1, int len2)
         {
             var temp = new T[len1][];
