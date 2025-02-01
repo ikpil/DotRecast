@@ -33,7 +33,7 @@ namespace DotRecast.Recast
         public static void RasterizeSphere(RcHeightfield hf, RcVec3f center, float radius, int area, int flagMergeThr, RcContext ctx)
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_RASTERIZE_SPHERE);
-            float[] bounds =
+            Span<float> bounds = stackalloc float[]
             {
                 center.X - radius, center.Y - radius, center.Z - radius, center.X + radius, center.Y + radius,
                 center.Z + radius
@@ -45,7 +45,7 @@ namespace DotRecast.Recast
         public static void RasterizeCapsule(RcHeightfield hf, RcVec3f start, RcVec3f end, float radius, int area, int flagMergeThr, RcContext ctx)
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_RASTERIZE_CAPSULE);
-            float[] bounds =
+            Span<float> bounds = stackalloc float[]
             {
                 Math.Min(start.X, end.X) - radius, Math.Min(start.Y, end.Y) - radius,
                 Math.Min(start.Z, end.Z) - radius, Math.Max(start.X, end.X) + radius, Math.Max(start.Y, end.Y) + radius,
@@ -59,7 +59,7 @@ namespace DotRecast.Recast
         public static void RasterizeCylinder(RcHeightfield hf, RcVec3f start, RcVec3f end, float radius, int area, int flagMergeThr, RcContext ctx)
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_RASTERIZE_CYLINDER);
-            float[] bounds =
+            Span<float> bounds = stackalloc float[]
             {
                 Math.Min(start.X, end.X) - radius, Math.Min(start.Y, end.Y) - radius,
                 Math.Min(start.Z, end.Z) - radius, Math.Max(start.X, end.X) + radius, Math.Max(start.Y, end.Y) + radius,
@@ -73,7 +73,7 @@ namespace DotRecast.Recast
         public static void RasterizeBox(RcHeightfield hf, RcVec3f center, RcVec3f[] halfEdges, int area, int flagMergeThr, RcContext ctx)
         {
             using var timer = ctx.ScopedTimer(RcTimerLabel.RC_TIMER_RASTERIZE_BOX);
-            RcVec3f[] normals =
+            Span<RcVec3f> normals = stackalloc RcVec3f[]
             {
                 new RcVec3f(halfEdges[0].X, halfEdges[0].Y, halfEdges[0].Z),
                 new RcVec3f(halfEdges[1].X, halfEdges[1].Y, halfEdges[1].Z),
@@ -84,7 +84,7 @@ namespace DotRecast.Recast
             normals[2] = RcVec3f.Normalize(normals[2]);
 
             float[] vertices = new float[8 * 3];
-            float[] bounds = new float[]
+            Span<float> bounds = stackalloc float[]
             {
                 float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity,
                 float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity
@@ -105,7 +105,7 @@ namespace DotRecast.Recast
                 bounds[5] = Math.Max(bounds[5], vertices[i * 3 + 2]);
             }
 
-            float[][] planes = RcArrays.Of<float>(6, 4);
+            float[][] planes = RcArrays.Create2D<float>(6, 4);
             for (int i = 0; i < 6; i++)
             {
                 float m = i < 3 ? -1 : 1;
@@ -135,8 +135,8 @@ namespace DotRecast.Recast
             }
 
 
-            float[][] planes = RcArrays.Of<float>(triangles.Length, 4);
-            float[][] triBounds = RcArrays.Of<float>(triangles.Length / 3, 4);
+            float[][] planes = RcArrays.Create2D<float>(triangles.Length, 4);
+            float[][] triBounds = RcArrays.Create2D<float>(triangles.Length / 3, 4);
             for (int i = 0, j = 0; i < triangles.Length; i += 3, j++)
             {
                 int a = triangles[i] * 3;
@@ -180,7 +180,7 @@ namespace DotRecast.Recast
             planes[p][3] = planes[p][0] * vertices[vert] + planes[p][1] * vertices[vert + 1] + planes[p][2] * vertices[vert + 2];
         }
 
-        private static void RasterizationFilledShape(RcHeightfield hf, float[] bounds, int area, int flagMergeThr,
+        private static void RasterizationFilledShape(RcHeightfield hf, Span<float> bounds, int area, int flagMergeThr,
             Func<float[], float[]> intersection)
         {
             if (!OverlapBounds(hf.bmin, hf.bmax, bounds))
@@ -499,7 +499,7 @@ namespace DotRecast.Recast
             return new float[] { point.Y + Math.Min(t1, t2), point.Y + Math.Max(t1, t2) };
         }
 
-        private static float[] IntersectBox(float[] rectangle, float[] vertices, float[][] planes)
+        private static float[] IntersectBox(float[] rectangle, Span<float> vertices, float[][] planes)
         {
             float yMin = float.PositiveInfinity;
             float yMax = float.NegativeInfinity;
@@ -773,7 +773,7 @@ namespace DotRecast.Recast
             return dx * dx + dy * dy + dz * dz;
         }
 
-        private static bool OverlapBounds(RcVec3f amin, RcVec3f amax, float[] bounds)
+        private static bool OverlapBounds(RcVec3f amin, RcVec3f amax, ReadOnlySpan<float> bounds)
         {
             bool overlap = true;
             overlap = (amin.X > bounds[3] || amax.X < bounds[0]) ? false : overlap;

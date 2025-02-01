@@ -33,7 +33,7 @@ namespace DotRecast.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T[][] Of<T>(int len1, int len2)
+        public static T[][] Create2D<T>(int len1, int len2)
         {
             var temp = new T[len1][];
 
