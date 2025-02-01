@@ -34,6 +34,7 @@ namespace DotRecast.Detour.TileCache
         public const byte DT_TILECACHE_NULL_AREA = 0;
         public const byte DT_TILECACHE_WALKABLE_AREA = 63;
         public const int DT_TILECACHE_NULL_IDX = 0xffff;
+        public const uint VERTEX_BUCKET_COUNT2 = (1 << 8);
 
         private static readonly int[] DirOffsetX = { -1, 0, 1, 0, };
         private static readonly int[] DirOffsetY = { 0, 1, 0, -1 };
@@ -275,7 +276,7 @@ namespace DotRecast.Detour.TileCache
                     continue;
 
                 int nnei = reg.nneis;
-                for (int j = 0; j < nnei ; ++j)
+                for (int j = 0; j < nnei; ++j)
                 {
                     if (regs[reg.neis[j]].regId == newRegId)
                         count++;
@@ -357,7 +358,8 @@ namespace DotRecast.Detour.TileCache
             int w = layer.header.width;
             int h = layer.header.height;
 
-            cont.Clear();
+            cont.nverts = 0;
+            cont.verts.Clear();
 
             int startX = x;
             int startY = y;
@@ -472,7 +474,7 @@ namespace DotRecast.Detour.TileCache
                     cont.poly.Add(i);
             }
 
-            if (cont.Npoly() < 2)
+            if (cont.poly.Count < 2)
             {
                 // If there is no transitions at all,
                 // create some initial points for the simplification process.
@@ -509,9 +511,9 @@ namespace DotRecast.Detour.TileCache
 
             // Add points until all raw points are within
             // error tolerance to the simplified shape.
-            for (int i = 0; i < cont.Npoly();)
+            for (int i = 0; i < cont.poly.Count;)
             {
-                int ii = (i + 1) % cont.Npoly();
+                int ii = (i + 1) % cont.poly.Count;
 
                 int ai = cont.poly[i];
                 int ax = cont.verts[ai * 4];
@@ -569,14 +571,14 @@ namespace DotRecast.Detour.TileCache
 
             // Remap vertices
             int start = 0;
-            for (int i = 1; i < cont.Npoly(); ++i)
+            for (int i = 1; i < cont.poly.Count; ++i)
                 if (cont.poly[i] < cont.poly[start])
                     start = i;
 
             cont.nverts = 0;
-            for (int i = 0; i < cont.Npoly(); ++i)
+            for (int i = 0; i < cont.poly.Count; ++i)
             {
-                int j = (start + i) % cont.Npoly();
+                int j = (start + i) % cont.poly.Count;
                 int src = cont.poly[j] * 4;
                 int dst = cont.nverts * 4;
                 cont.verts[dst] = cont.verts[src];
@@ -637,7 +639,7 @@ namespace DotRecast.Detour.TileCache
         }
 
         // TODO: move this somewhere else, once the layer meshing is done.
-        public static DtTileCacheContourSet BuildTileCacheContours(DtTileCacheLayer layer, int walkableClimb, float maxError)
+        public static DtTileCacheContourSet BuildTileCacheContours(DtTileCacheAlloc alloc, DtTileCacheLayer layer, int walkableClimb, float maxError)
         {
             int w = layer.header.width;
             int h = layer.header.height;
@@ -651,6 +653,16 @@ namespace DotRecast.Detour.TileCache
             }
 
             // Allocate temp buffer for contour tracing.
+            // TODO: @ikpil, improve pooling system
+            // int maxTempVerts = (w + h) * 2 * 2; // Twice around the layer.
+            // dtFixedArray<unsigned char> tempVerts(alloc, maxTempVerts*4);
+            // if (!tempVerts)
+            //     return DT_FAILURE | DT_OUT_OF_MEMORY;
+	           //
+            // dtFixedArray<unsigned short> tempPoly(alloc, maxTempVerts);
+            // if (!tempPoly)
+            //     return DT_FAILURE | DT_OUT_OF_MEMORY;
+
             DtTempContour temp = new DtTempContour();
 
             // Find contours.
@@ -712,7 +724,6 @@ namespace DotRecast.Detour.TileCache
             return lcset;
         }
 
-        const uint VERTEX_BUCKET_COUNT2 = (1 << 8);
 
         public static int ComputeVertexHash2(int x, int y, int z)
         {
@@ -1615,13 +1626,13 @@ namespace DotRecast.Detour.TileCache
             {
                 if (mesh.npolys >= maxTris)
                     break;
-                
+
                 int p = mesh.npolys * maxVertsPerPoly * 2;
                 Array.Fill(mesh.polys, DT_TILECACHE_NULL_IDX, p, maxVertsPerPoly * 2);
-                
+
                 for (int j = 0; j < maxVertsPerPoly; ++j)
                     mesh.polys[p + j] = polys[i * maxVertsPerPoly + j];
-                
+
                 mesh.areas[mesh.npolys] = pareas[i];
                 mesh.npolys++;
                 if (mesh.npolys > maxTris)

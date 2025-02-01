@@ -44,6 +44,7 @@ namespace DotRecast.Detour.TileCache
         private readonly DtTileCacheParams m_params;
         private readonly DtTileCacheStorageParams m_storageParams;
 
+        private readonly DtTileCacheAlloc m_talloc;
         private readonly IRcCompressor m_tcomp;
         private readonly IDtTileCacheMeshProcess m_tmproc;
 
@@ -58,6 +59,7 @@ namespace DotRecast.Detour.TileCache
             m_params = option;
             m_storageParams = storageParams;
             m_navmesh = navmesh;
+            m_talloc = new DtTileCacheAlloc(); // TODO: ikpil, improve pooling system
             m_tcomp = tcomp;
             m_tmproc = tmprocs;
 
@@ -636,7 +638,7 @@ namespace DotRecast.Detour.TileCache
 
             // Build navmesh
             DtTileCacheBuilder.BuildTileCacheRegions(layer, walkableClimbVx);
-            DtTileCacheContourSet lcset = DtTileCacheBuilder.BuildTileCacheContours(layer, walkableClimbVx, m_params.maxSimplificationError);
+            DtTileCacheContourSet lcset = DtTileCacheBuilder.BuildTileCacheContours(m_talloc, layer, walkableClimbVx, m_params.maxSimplificationError);
             DtTileCachePolyMesh polyMesh = DtTileCacheBuilder.BuildTileCachePolyMesh(lcset, m_navmesh.GetMaxVertsPerPoly());
 
             // Early out if the mesh tile is empty.
