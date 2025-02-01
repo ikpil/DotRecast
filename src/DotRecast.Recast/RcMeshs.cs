@@ -344,7 +344,7 @@ namespace DotRecast.Recast
                 int i2 = Next(i1, n);
                 if (Diagonal(i, i2, n, verts, indices))
                 {
-                    indices[i1] |= int.MinValue; // TODO : 체크 필요
+                    indices[i1] |= int.MinValue; // TODO: @ikpil, check
                 }
             }
 

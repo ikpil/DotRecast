@@ -95,7 +95,7 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
             Assert.That(path.Count, Is.EqualTo(results[i].Length));
             for (int j = 0; j < results[i].Length; j++)
             {
-                Assert.That(path[j], Is.EqualTo(results[i][j])); // TODO : 확인 필요
+                Assert.That(path[j], Is.EqualTo(results[i][j])); // TODO: @ikpil, check
             }
         }
     }
@@ -116,7 +116,7 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
             Assert.That(path.Count, Is.EqualTo(results[i].Length));
             for (int j = 0; j < results[i].Length; j++)
             {
-                Assert.That(path[j], Is.EqualTo(results[i][j])); // TODO : 확인 필요
+                Assert.That(path[j], Is.EqualTo(results[i][j])); // TODO: @ikpil, check
             }
         }
     }

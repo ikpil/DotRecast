@@ -130,7 +130,7 @@ namespace DotRecast.Recast.Toolset.Geom
         public void RemoveOffMeshConnections(Predicate<RcOffMeshConnection> filter)
         {
             //offMeshConnections.RetainAll(offMeshConnections.Stream().Filter(c -> !filter.Test(c)).Collect(ToList()));
-            _offMeshConnections.RemoveAll(filter); // TODO : 확인 필요
+            _offMeshConnections.RemoveAll(filter); // TODO: @ikpil, check
         }
 
         public bool RaycastMesh(RcVec3f src, RcVec3f dst, out float tmin)
