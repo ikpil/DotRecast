@@ -1,5 +1,3 @@
-using System;
-
 namespace DotRecast.Core
 {
     public readonly ref struct RcScopedTimer

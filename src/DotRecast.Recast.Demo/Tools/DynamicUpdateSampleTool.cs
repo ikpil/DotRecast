@@ -25,7 +25,6 @@ using DotRecast.Core;
 using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour.Dynamic;
-using DotRecast.Detour.Dynamic.Io;
 using DotRecast.Recast.Toolset;
 using DotRecast.Recast.Toolset.Tools;
 using DotRecast.Recast.Demo.Draw;

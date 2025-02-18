@@ -19,7 +19,6 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using System.Collections.Generic;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour.Crowd

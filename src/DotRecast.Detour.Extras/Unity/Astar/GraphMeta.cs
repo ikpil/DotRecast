@@ -17,8 +17,6 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using DotRecast.Core.Numerics;
-
 namespace DotRecast.Detour.Extras.Unity.Astar
 {
     // for unity meta parsing

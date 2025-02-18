@@ -1,6 +1,5 @@
 using DotRecast.Detour;
 using DotRecast.Recast.Geom;
-using DotRecast.Recast.Toolset.Geom;
 
 namespace DotRecast.Recast.Toolset.Builder
 {

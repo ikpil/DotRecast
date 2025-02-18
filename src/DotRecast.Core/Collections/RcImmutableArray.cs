@@ -1,5 +1,3 @@
-using System;
-
 namespace DotRecast.Core.Collections
 {
     public static class RcImmutableArray

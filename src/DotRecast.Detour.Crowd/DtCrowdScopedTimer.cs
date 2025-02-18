@@ -1,5 +1,3 @@
-using System;
-
 namespace DotRecast.Detour.Crowd
 {
     internal readonly ref struct DtCrowdScopedTimer

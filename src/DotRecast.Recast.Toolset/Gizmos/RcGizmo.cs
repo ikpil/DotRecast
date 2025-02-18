@@ -1,5 +1,4 @@
 using DotRecast.Detour.Dynamic.Colliders;
-using DotRecast.Recast.Toolset.Gizmos;
 
 namespace DotRecast.Recast.Toolset.Gizmos
 {

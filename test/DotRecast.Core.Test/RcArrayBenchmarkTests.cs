@@ -1,7 +1,6 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
-using System.Net.Sockets;
 using DotRecast.Core.Buffers;
 using DotRecast.Core.Collections;
 using NUnit.Framework;

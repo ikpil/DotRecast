@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace DotRecast.Detour.TileCache
 {
     public class DtLayerMonotoneRegion

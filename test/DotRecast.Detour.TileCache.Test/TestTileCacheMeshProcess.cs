@@ -1,5 +1,3 @@
-using DotRecast.Recast.Geom;
-
 namespace DotRecast.Detour.TileCache.Test;
 
 public class TestTileCacheMeshProcess : IDtTileCacheMeshProcess

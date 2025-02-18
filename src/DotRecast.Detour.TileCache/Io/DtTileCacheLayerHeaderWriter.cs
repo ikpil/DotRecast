@@ -20,7 +20,6 @@ freely, subject to the following restrictions:
 
 using System.IO;
 using DotRecast.Core;
-using DotRecast.Detour.Io;
 
 namespace DotRecast.Detour.TileCache.Io
 {
