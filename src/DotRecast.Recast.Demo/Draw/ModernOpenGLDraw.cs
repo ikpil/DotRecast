@@ -29,6 +29,7 @@ public class ModernOpenGLDraw : IOpenGLDraw
     private int uniformFog;
     private int uniformFogStart;
     private int uniformFogEnd;
+    private GLEnum _windingOrder = GLEnum.Ccw;
 
     public ModernOpenGLDraw(GL gl)
     {
@@ -172,6 +173,7 @@ void main(){{
         _gl.Disable(GLEnum.Texture2D);
         _gl.Enable(GLEnum.DepthTest);
         _gl.Enable(GLEnum.CullFace);
+        _gl.FrontFace(_windingOrder);
     }
 
     public void Begin(DebugDrawPrimitives prim, float size)
@@ -329,5 +331,10 @@ void main(){{
     public void Fog(bool state)
     {
         fogEnabled = state;
+    }
+
+    public void SetWindingOrder(GLEnum windingOrder)
+    {
+        _windingOrder = windingOrder;
     }
 }

@@ -30,6 +30,8 @@ public class DebugDraw
     private readonly GLCheckerTexture g_tex;
     private readonly ModernOpenGLDraw openGlDraw;
 
+    private bool _renderAsLeftHanded = false;
+
     public DebugDraw(GL gl)
     {
         g_tex = new GLCheckerTexture(gl);
@@ -649,6 +651,14 @@ public class DebugDraw
         t.M42 = -cameraPos.Y;
         t.M43 = -cameraPos.Z;
         _viewMatrix = RcMatrix4x4f.Mul(ref r, ref t);
+
+        if (_renderAsLeftHanded)
+        {
+            _viewMatrix.M31 = -_viewMatrix.M31;
+            _viewMatrix.M32 = -_viewMatrix.M32;
+            _viewMatrix.M33 = -_viewMatrix.M33;
+        }
+
         GetOpenGlDraw().ViewMatrix(ref _viewMatrix);
         UpdateFrustum();
         return _viewMatrix;
@@ -749,5 +759,11 @@ public class DebugDraw
     public bool FrustumTest(RcVec3f bmin, RcVec3f bmax)
     {
         return FrustumTest(stackalloc float[] { bmin.X, bmin.Y, bmin.Z, bmax.X, bmax.Y, bmax.Z });
+    }
+
+    public void SetAsRenderLeftHanded(bool renderAsLeftHanded)
+    {
+        _renderAsLeftHanded = renderAsLeftHanded;
+        GetOpenGlDraw().SetWindingOrder(_renderAsLeftHanded ? GLEnum.CW : GLEnum.Ccw);
     }
 }

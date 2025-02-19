@@ -153,7 +153,7 @@ public class RecastDemo : IRecastDemoChannel
         var modelviewMatrix = dd.ViewMatrix(cameraPos, cameraEulers);
         cameraPos.X += scrollZoom * 2.0f * modelviewMatrix.M13;
         cameraPos.Y += scrollZoom * 2.0f * modelviewMatrix.M23;
-        cameraPos.Z += scrollZoom * 2.0f * modelviewMatrix.M33;
+        cameraPos.Z += scrollZoom * 2.0f * modelviewMatrix.M33 * (settingsView.RenderAsLeftHanded ? -1 : 1);
         scrollZoom = 0;
     }
 
@@ -180,11 +180,11 @@ public class RecastDemo : IRecastDemoChannel
 
             cameraPos.X -= 0.1f * dx * modelviewMatrix.M11;
             cameraPos.Y -= 0.1f * dx * modelviewMatrix.M21;
-            cameraPos.Z -= 0.1f * dx * modelviewMatrix.M31;
+            cameraPos.Z -= 0.1f * dx * modelviewMatrix.M31 * (settingsView.RenderAsLeftHanded ? -1 : 1);
 
             cameraPos.X += 0.1f * dy * modelviewMatrix.M12;
             cameraPos.Y += 0.1f * dy * modelviewMatrix.M22;
-            cameraPos.Z += 0.1f * dy * modelviewMatrix.M32;
+            cameraPos.Z += 0.1f * dy * modelviewMatrix.M32 * (settingsView.RenderAsLeftHanded ? -1 : 1);
             if (dx * dx + dy * dy > 3 * 3)
             {
                 movedDuringPan = true;
@@ -479,6 +479,8 @@ public class RecastDemo : IRecastDemoChannel
             settingsView.SetMaxPolys(tileNavMeshBuilder.GetMaxPolysPerTile(_sample.GetInputGeom(), settings.cellSize, settings.tileSize));
         }
 
+        //if ()
+
         UpdateKeyboard((float)dt);
 
         // camera move
@@ -494,11 +496,11 @@ public class RecastDemo : IRecastDemoChannel
 
         cameraPos.X += (float)(movex * modelviewMatrix[0]);
         cameraPos.Y += (float)(movex * modelviewMatrix[4]);
-        cameraPos.Z += (float)(movex * modelviewMatrix[8]);
+        cameraPos.Z += (float)(movex * modelviewMatrix[8]) * (settingsView.RenderAsLeftHanded ? -1 : 1);
 
         cameraPos.X += (float)(movey * modelviewMatrix[2]);
         cameraPos.Y += (float)(movey * modelviewMatrix[6]);
-        cameraPos.Z += (float)(movey * modelviewMatrix[10]);
+        cameraPos.Z += (float)(movey * modelviewMatrix[10]) * (settingsView.RenderAsLeftHanded ? -1 : 1);
 
         cameraPos.Y += (float)((_moveUp - _moveDown) * keySpeed * dt);
 
@@ -628,6 +630,7 @@ public class RecastDemo : IRecastDemoChannel
     private void OnWindowRender(double dt)
     {
         // Clear the screen
+        dd.SetAsRenderLeftHanded(settingsView.RenderAsLeftHanded);
         dd.Clear();
         dd.ProjectionMatrix(50f, (float)width / (float)height, 1.0f, camr).CopyTo(projectionMatrix);
         dd.ViewMatrix(cameraPos, cameraEulers).CopyTo(modelviewMatrix);
