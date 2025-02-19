@@ -45,6 +45,9 @@ public class RcSettingsView : IRcView
     private bool _isHovered;
     public bool IsHovered() => _isHovered;
 
+    public bool RenderAsLeftHanded => _renderAsLeftHanded;
+    private bool _renderAsLeftHanded = false;
+
     private DemoSample _sample;
     private RcCanvas _canvas;
 
@@ -72,6 +75,8 @@ public class RcSettingsView : IRcView
         var settings = _sample.GetSettings();
 
         ImGui.Begin("Properties");
+
+        ImGui.Checkbox("Render As Left-Handed", ref _renderAsLeftHanded);
 
         // size reset
         var size = ImGui.GetItemRectSize();
