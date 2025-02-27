@@ -12,12 +12,6 @@ public class RcMenuView : IRcView
         _canvas = canvas;
     }
 
-    public bool IsHovered()
-    {
-        //throw new System.NotImplementedException();
-        return false;
-    }
-
     public void Update(double dt)
     {
         //throw new System.NotImplementedException();

@@ -42,9 +42,6 @@ public class RcSettingsView : IRcView
 
     private int drawMode = DrawMode.DRAWMODE_NAVMESH.Idx;
 
-    private bool _isHovered;
-    public bool IsHovered() => _isHovered;
-
     public bool RenderAsLeftHanded => _renderAsLeftHanded;
     private bool _renderAsLeftHanded = false;
 
@@ -87,8 +84,6 @@ public class RcSettingsView : IRcView
             //ImGui.SetWindowPos(new Vector2(posX, 0));
             ImGui.SetWindowSize(new Vector2(width, _canvas.Size.Y));
         }
-
-        _isHovered = ImGui.IsWindowHovered(ImGuiHoveredFlags.RectOnly | ImGuiHoveredFlags.RootAndChildWindows);
 
         ImGui.Text("Input Mesh");
         ImGui.Separator();

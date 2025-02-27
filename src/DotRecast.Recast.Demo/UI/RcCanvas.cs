@@ -30,9 +30,6 @@ public class RcCanvas
 
     private readonly IWindow _window;
     private readonly IRcView[] _views;
-    private bool _mouseOver;
-
-    public bool IsMouseOver() => _mouseOver;
 
     public Vector2D<int> Size => _window.Size;
 
@@ -105,11 +102,9 @@ public class RcCanvas
 
     public void Draw(double dt)
     {
-        _mouseOver = false;
         foreach (var view in _views)
         {
             view.Draw(dt);
-            _mouseOver |= view.IsHovered();
         }
     }
 }
