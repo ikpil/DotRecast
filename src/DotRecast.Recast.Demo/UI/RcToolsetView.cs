@@ -32,8 +32,6 @@ public class RcToolsetView : IRcView
     private ISampleTool _currentSampleTool;
     private bool enabled;
     private readonly ISampleTool[] tools;
-    private bool _isHovered;
-    public bool IsHovered() => _isHovered;
 
     private RcCanvas _canvas;
 
@@ -63,8 +61,6 @@ public class RcToolsetView : IRcView
             //ImGui.SetWindowPos(new Vector2(0, 0));
             ImGui.SetWindowSize(new Vector2(width, _canvas.Size.Y));
         }
-
-        _isHovered = ImGui.IsWindowHovered(ImGuiHoveredFlags.RectOnly | ImGuiHoveredFlags.RootAndChildWindows);
 
         for (int i = 0; i < tools.Length; ++i)
         {

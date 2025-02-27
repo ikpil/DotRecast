@@ -647,7 +647,7 @@ public class RecastDemo : IRecastDemoChannel
         dd.Fog(false);
 
         _canvas.Draw(dt);
-        _mouseOverMenu = _canvas.IsMouseOver();
+        _mouseOverMenu = ImGui.GetIO().WantCaptureMouse;
 
         _imgui.Render();
 

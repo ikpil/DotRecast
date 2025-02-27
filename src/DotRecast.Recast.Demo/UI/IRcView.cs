@@ -22,7 +22,6 @@ namespace DotRecast.Recast.Demo.UI;
 public interface IRcView
 {
     void Bind(RcCanvas canvas);
-    bool IsHovered();
     void Update(double dt);
     void Draw(double dt);
 }
