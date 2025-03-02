@@ -587,8 +587,7 @@ namespace DotRecast.Recast
                 int t = i * 4;
                 if (tris[t + 0] == -1 || tris[t + 1] == -1 || tris[t + 2] == -1)
                 {
-                    Console.Error.WriteLine("Dangling! " + tris[t] + " " + tris[t + 1] + "  " + tris[t + 2]);
-                    // ctx.Log(RC_LOG_WARNING, "delaunayHull: Removing dangling face %d [%d,%d,%d].", i, t.x,t.y,t.z);
+                    Console.Error.WriteLine($"delaunayHull: Removing dangling face {i} [{tris[t]},{tris[t + 1]},{tris[t + 2]}]");
                     tris[t + 0] = tris[tris.Count - 4];
                     tris[t + 1] = tris[tris.Count - 3];
                     tris[t + 2] = tris[tris.Count - 2];
@@ -711,11 +710,11 @@ namespace DotRecast.Recast
             return (((i * 0xd8163841) & 0xffff) / 65535.0f * 2.0f) - 1.0f;
         }
 
-        public static int BuildPolyDetail(RcContext ctx, float[] @in, int nin, 
-                                            float sampleDist, float sampleMaxError, 
-                                            int heightSearchRadius, RcCompactHeightfield chf, 
-                                            RcHeightPatch hp, float[] verts, 
-                                            ref List<int> tris, ref List<int> edges, ref List<int> samples)
+        public static int BuildPolyDetail(RcContext ctx, float[] @in, int nin,
+            float sampleDist, float sampleMaxError,
+            int heightSearchRadius, RcCompactHeightfield chf,
+            RcHeightPatch hp, float[] verts,
+            ref List<int> tris, ref List<int> edges, ref List<int> samples)
         {
             const int MAX_VERTS = 127;
             const int MAX_TRIS = 255; // Max tris for delaunay is 2n-2-k (n=num verts, k=num hull verts).
