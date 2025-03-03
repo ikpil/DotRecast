@@ -22,49 +22,69 @@ using DotRecast.Core.Collections;
 
 namespace DotRecast.Detour
 {
+
     public class DtNodeQueue
     {
-        private readonly RcSortedQueue<DtNode> m_heap;
+        public enum dtNodeQueueType
+        {
+            DT_SORTED_LIST,
+            DT_BINARY_HEAP
+        };
+
+        public static dtNodeQueueType Type;
+
+        private IPriorityQueue<DtNode> m_queue;
 
         public DtNodeQueue()
         {
-            m_heap = new RcSortedQueue<DtNode>(DtNode.ComparisonNodeTotal);
+            m_queue = Create();
         }
 
         public int Count()
         {
-            return m_heap.Count();
+            return m_queue.Count();
         }
 
         public void Clear()
         {
-            m_heap.Clear();
+            m_queue.Clear();
         }
 
         public DtNode Peek()
         {
-            return m_heap.Peek();
+            return m_queue.Peek();
         }
 
         public DtNode Pop()
         {
-            return m_heap.Dequeue();
+            return m_queue.Pop();
         }
 
         public void Push(DtNode node)
         {
-            m_heap.Enqueue(node);
+            m_queue.Push(node);
         }
 
         public void Modify(DtNode node)
         {
-            m_heap.Remove(node);
-            Push(node);
+            m_queue.Modify(node);
         }
 
         public bool IsEmpty()
         {
-            return m_heap.IsEmpty();
+            return m_queue.Count() == 0;
+        }
+
+        private IPriorityQueue<DtNode> Create()
+        {
+            switch (Type)
+            {
+                case dtNodeQueueType.DT_SORTED_LIST:
+                    return new RcSortedQueue<DtNode>(DtNode.ComparisonNodeTotal);
+                case dtNodeQueueType.DT_BINARY_HEAP:
+                    return new RcBinaryMinHeap<DtNode>(DtNode.ComparisonNodeTotal);
+            }
+            throw new System.Exception("Invalid queue type");
         }
     }
 }
