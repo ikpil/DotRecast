@@ -101,15 +101,15 @@ public class RcBinaryMinHeapTest
         minHeap.Push(new Node(3));
         minHeap.Push(new Node(7));
 
-        Assert.That(minHeap.Count, Is.EqualTo(3));
+        Assert.That(minHeap.Count(), Is.EqualTo(3));
 
         minHeap.Pop();
 
-        Assert.That(minHeap.Count, Is.EqualTo(2));
+        Assert.That(minHeap.Count(), Is.EqualTo(2));
 
         minHeap.Clear();
 
-        Assert.That(minHeap.Count, Is.EqualTo(0));
+        Assert.That(minHeap.Count(), Is.EqualTo(0));
     }
 
     [Test]

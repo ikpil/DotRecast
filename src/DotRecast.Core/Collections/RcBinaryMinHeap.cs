@@ -4,13 +4,17 @@ using System.Runtime.CompilerServices;
 
 namespace DotRecast.Core.Collections
 {
-    public sealed class RcBinaryMinHeap<T>
+    public sealed class RcBinaryMinHeap<T> : IPriorityQueue<T>
     {
         private readonly List<T> _items;
         private readonly Comparison<T> _comparision;
 
-        public int Count => _items.Count;
         public int Capacity => _items.Capacity;
+
+        public int Count()
+        {
+            return _items.Count;
+        }
 
         public RcBinaryMinHeap(Comparison<T> comparision)
         {
@@ -113,21 +117,24 @@ namespace DotRecast.Core.Collections
 
         private void MinHeapify(int nodeIndex, int lastIndex)
         {
-            int left = (nodeIndex * 2) + 1;
-            int right = left + 1;
-            int smallest = nodeIndex;
+            while (true)
+            {
+                int left = (nodeIndex * 2) + 1;
+                int right = left + 1;
+                int smallest = nodeIndex;
 
-            if (left <= lastIndex && _comparision.Invoke(_items[left], _items[nodeIndex]) < 0)
-                smallest = left;
+                if (left <= lastIndex && _comparision.Invoke(_items[left], _items[nodeIndex]) < 0)
+                    smallest = left;
 
-            if (right <= lastIndex && _comparision.Invoke(_items[right], _items[smallest]) < 0)
-                smallest = right;
+                if (right <= lastIndex && _comparision.Invoke(_items[right], _items[smallest]) < 0)
+                    smallest = right;
 
-            if (smallest == nodeIndex)
-                return;
+                if (smallest == nodeIndex)
+                    break;
 
-            Swap(nodeIndex, smallest);
-            MinHeapify(smallest, lastIndex);
+                Swap(nodeIndex, smallest);
+                nodeIndex = smallest;
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
