@@ -11,6 +11,7 @@ using ImGuiNET;
 using Serilog;
 using static DotRecast.Recast.Demo.Draw.DebugDraw;
 using static DotRecast.Recast.Demo.Draw.DebugDrawPrimitives;
+using System.Diagnostics;
 
 namespace DotRecast.Recast.Demo.Tools;
 
@@ -68,6 +69,10 @@ public class TestNavmeshSampleTool : ISampleTool
 
     // for mode RANDOM_POINTS_IN_CIRCLE
     private List<RcVec3f> _randomPoints = new();
+
+    // for performance test
+    private int m_pathFindingIterationCount = 1;
+    private double m_lastIterationsTime = 0.0;
 
     public TestNavmeshSampleTool()
     {
@@ -161,6 +166,23 @@ public class TestNavmeshSampleTool : ISampleTool
         m_filter.SetExcludeFlags(_excludeFlags);
 
         ImGui.Checkbox("Raycast shortcuts", ref _enableRaycast);
+
+        ImGui.Separator();
+        ImGui.Text("Node Queue Type");
+
+        int type = (int)DtNodeQueue.Type;
+        ImGui.RadioButton("Sorted List", ref type, (int)(DtNodeQueue.dtNodeQueueType.DT_SORTED_LIST));
+        ImGui.RadioButton("Binary Heap", ref type, (int)(DtNodeQueue.dtNodeQueueType.DT_BINARY_HEAP));
+        if ((int)DtNodeQueue.Type != type)
+        {
+            _sample.UpdateNodeQueueType((DtNodeQueue.dtNodeQueueType)type);
+            Recalc();
+        }
+        ImGui.Separator();
+
+        ImGui.InputInt("Iteration count", ref m_pathFindingIterationCount);
+
+        ImGui.LabelText("Last iterations time", $"{m_lastIterationsTime} ms");
 
         if (prevMode != _mode || prevIncludeFlags != _includeFlags
                               || prevExcludeFlags != _excludeFlags
@@ -636,8 +658,19 @@ public class TestNavmeshSampleTool : ISampleTool
         Recalc();
     }
 
-
     private void Recalc()
+    {
+        var startTime = new Stopwatch();
+        startTime.Start();
+        for (int i = 0; i < m_pathFindingIterationCount; i++)
+        {
+            RecalcSingle();
+        }
+        m_lastIterationsTime = startTime.Elapsed.TotalMilliseconds;
+    }
+
+
+    private void RecalcSingle()
     {
         var geom = _sample.GetInputGeom();
         var settings = _sample.GetSettings();
