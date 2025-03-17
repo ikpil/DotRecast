@@ -30,13 +30,16 @@ public class RcCanvas
 
     private readonly IWindow _window;
     private readonly IRcView[] _views;
-
+    private readonly RcCanvasLayout _layout;
+    
     public Vector2D<int> Size => _window.Size;
+    public RcCanvasLayout Layout => _layout;
 
     public RcCanvas(IWindow window, params IRcView[] views)
     {
         _window = window;
         _views = views;
+        _layout = new();
         foreach (var view in _views)
         {
             view.Bind(this);

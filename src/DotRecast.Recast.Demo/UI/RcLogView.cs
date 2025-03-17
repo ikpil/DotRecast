@@ -59,24 +59,14 @@ public class RcLogView : IRcView
 
     public void Draw(double dt)
     {
-        if (!ImGui.Begin("Log"))
+        ImGui.SetNextWindowPos(new Vector2(2 * _canvas.Layout.WidthPadding + _canvas.Layout.ToolMenuWidth, _canvas.Size.Y - _canvas.Layout.LogViewHeight - _canvas.Layout.BottomPadding + _canvas.Layout.TopPadding));
+        ImGui.SetNextWindowSize(new Vector2(_canvas.Size.X - (4 * _canvas.Layout.WidthPadding) - _canvas.Layout.ToolMenuWidth - _canvas.Layout.PropertiesMenuWidth, _canvas.Layout.LogViewHeight));
+        
+        if (!ImGui.Begin("Log", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse))
         {
             ImGui.End();
             return;
         }
-
-        // size reset
-        var size = ImGui.GetItemRectSize();
-        if (32 >= size.X && 32 >= size.Y)
-        {
-            int otherWidth = 310;
-            int height = 234;
-            var width = _canvas.Size.X - (otherWidth * 2);
-            //var posX = _canvas.Size.X - width;
-            // ImGui.SetNextWindowPos(new Vector2(otherWidth1, _canvas.Size.Y - height));
-            ImGui.SetWindowSize(new Vector2(width, height));
-        }
-
 
         if (ImGui.BeginChild("scrolling", Vector2.Zero, ImGuiChildFlags.None, ImGuiWindowFlags.HorizontalScrollbar))
         {

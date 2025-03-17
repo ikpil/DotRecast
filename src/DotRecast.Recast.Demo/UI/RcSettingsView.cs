@@ -67,23 +67,18 @@ public class RcSettingsView : IRcView
     {
     }
 
+
+
     public void Draw(double dt)
     {
         var settings = _sample.GetSettings();
 
-        ImGui.Begin("Properties");
+        ImGui.SetNextWindowPos(new Vector2(_canvas.Size.X - _canvas.Layout.PropertiesMenuWidth - _canvas.Layout.WidthPadding, _canvas.Layout.TopPadding));
+        ImGui.SetNextWindowSize(new Vector2(_canvas.Layout.PropertiesMenuWidth, _canvas.Size.Y - _canvas.Layout.BottomPadding));
+        
+        ImGui.Begin("Properties", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse);
 
         ImGui.Checkbox("Render As Left-Handed", ref _renderAsLeftHanded);
-
-        // size reset
-        var size = ImGui.GetItemRectSize();
-        if (32 >= size.X && 32 >= size.Y)
-        {
-            int width = 310;
-            var posX = _canvas.Size.X - width;
-            //ImGui.SetWindowPos(new Vector2(posX, 0));
-            ImGui.SetWindowSize(new Vector2(width, _canvas.Size.Y));
-        }
 
         ImGui.Text("Input Mesh");
         ImGui.Separator();

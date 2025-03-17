@@ -369,14 +369,15 @@ public class RecastDemo : IRecastDemoChannel
 
 
         var scale = (float)_resolution.X / 1920;
-        int fontSize = Math.Max(10, (int)(16 * scale));
+        //int fontSize = Math.Max(10, (int)(16 * scale));
+        int fontSize = 15;
 
         // for windows : Microsoft Visual C++ Redistributable Package
         // link - https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist
         var imGuiFontConfig = new ImGuiFontConfig(Path.Combine("resources\\fonts", "DroidSans.ttf"), fontSize, null);
         _imgui = new ImGuiController(_gl, window, _input, imGuiFontConfig);
 
-        ImGui.GetStyle().ScaleAllSizes(scale);
+        //ImGui.GetStyle().ScaleAllSizes(scale);
         //ImGui.GetIO().FontGlobalScale = 2.0f;
 
         DemoInputGeomProvider geom = LoadInputMesh("nav_test.obj");
