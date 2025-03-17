@@ -20,10 +20,11 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using System.Xml.Linq;
 
 namespace DotRecast.Core.Collections
 {
-    public class RcSortedQueue<T>
+    public class RcSortedQueue<T> : IPriorityQueue<T>
     {
         private bool _dirty;
         private readonly List<T> _items;
@@ -66,11 +67,21 @@ namespace DotRecast.Core.Collections
             return _items[^1];
         }
 
+        public T Pop()
+        {
+            return Dequeue();
+        }
+
         public T Dequeue()
         {
             var node = Peek();
             _items.RemoveAt(_items.Count - 1);
             return node;
+        }
+
+        public void Push(T item)
+        {
+            Enqueue(item);
         }
 
         public void Enqueue(T item)
@@ -80,6 +91,16 @@ namespace DotRecast.Core.Collections
 
             _items.Add(item);
             _dirty = true;
+        }
+
+        public bool Modify(T item)
+        {
+            if (Remove(item))
+            {
+                Enqueue(item);
+                return true;
+            }
+            return false;
         }
 
         public bool Remove(T item)

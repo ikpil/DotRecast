@@ -51,6 +51,12 @@ namespace DotRecast.Recast.Demo
             _navMeshQuery = navMesh != null ? new DtNavMeshQuery(navMesh) : null;
         }
 
+        public void UpdateNodeQueueType(DtNodeQueue.dtNodeQueueType type)
+        {
+            DtNodeQueue.Type = type;
+            _navMeshQuery = new DtNavMeshQuery(_navMesh);
+        }
+
         public DemoInputGeomProvider GetInputGeom()
         {
             return _geom;

@@ -170,7 +170,7 @@ public class PriorityQueueBenchmarks
             });
         }
 
-        while (_bmHeap.Count > 0)
+        while (_bmHeap.Count() > 0)
         {
             _bmHeap.Pop();
         }
