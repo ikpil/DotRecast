@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace DotRecast.Core.Test;
 
 
-public class RcStackArrayTest
+public class RcFixedArrayTest
 {
     public List<int> RandomValues(int size)
     {
@@ -26,19 +26,19 @@ public class RcStackArrayTest
     public void TestStackOverflow()
     {
         // normal
-        var array_128_512_1 = RcStackArray2<RcStackArray512<float>>.Empty; // 128 * 512 = 65536
+        var array_128_512_1 = new RcFixedArray2<RcFixedArray512<float>>(); // 128 * 512 = 65536
         
         // warn
-        //var array_128_512_2 = RcStackArray128<RcStackArray512<float>>.Empty; // 128 * 512 = 65536
+        //var array_128_512_2 = RcFixedArray128<RcFixedArray512<float>>.Empty; // 128 * 512 = 65536
 
         // danger
-        // var array_32_512_1 = RcStackArray32<RcStackArray512<float>>.Empty; // 32 * 512 = 16384
-        // var array_16_512_1 = RcStackArray16<RcStackArray512<float>>.Empty; // 16 * 512 = 8192
-        // var array_8_512_1 = RcStackArray8<RcStackArray512<float>>.Empty; // 8 * 512 = 4196
-        // var array_4_256_1 = RcStackArray4<RcStackArray256<float>>.Empty; // 4 * 256 = 1024
-        // var array_4_64_1 = RcStackArray4<RcStackArray64<float>>.Empty; // 4 * 64 = 256
-        // var array_2_8_1 = RcStackArray2<RcStackArray8<float>>.Empty; // 2 * 8 = 16
-        // var array_2_4_1 = RcStackArray2<RcStackArray2<float>>.Empty; // 2 * 2 = 4
+        // var array_32_512_1 = RcFixedArray32<RcFixedArray512<float>>.Empty; // 32 * 512 = 16384
+        // var array_16_512_1 = RcFixedArray16<RcFixedArray512<float>>.Empty; // 16 * 512 = 8192
+        // var array_8_512_1 = RcFixedArray8<RcFixedArray512<float>>.Empty; // 8 * 512 = 4196
+        // var array_4_256_1 = RcFixedArray4<RcFixedArray256<float>>.Empty; // 4 * 256 = 1024
+        // var array_4_64_1 = RcFixedArray4<RcFixedArray64<float>>.Empty; // 4 * 64 = 256
+        // var array_2_8_1 = RcFixedArray2<RcFixedArray8<float>>.Empty; // 2 * 8 = 16
+        // var array_2_4_1 = RcFixedArray2<RcFixedArray2<float>>.Empty; // 2 * 2 = 4
 
         float f1 = 0.0f; // 1
         //float f2 = 0.0f; // my system stack overflow!
@@ -46,9 +46,9 @@ public class RcStackArrayTest
     }
 
     [Test]
-    public void TestRcStackArray2()
+    public void TestRcFixedArray2()
     {
-        var array = RcStackArray2<int>.Empty;
+        var array = new RcFixedArray2<int>();
         Assert.That(array.Length, Is.EqualTo(2));
 
         var values = RandomValues(array.Length);
@@ -71,9 +71,9 @@ public class RcStackArrayTest
     }
 
     [Test]
-    public void TestRcStackArray4()
+    public void TestRcFixedArray4()
     {
-        var array = RcStackArray4<int>.Empty;
+        var array = new RcFixedArray4<int>();
         Assert.That(array.Length, Is.EqualTo(4));
 
         var values = RandomValues(array.Length);
@@ -96,9 +96,9 @@ public class RcStackArrayTest
     }
 
     [Test]
-    public void TestRcStackArray8()
+    public void TestRcFixedArray8()
     {
-        var array = RcStackArray8<int>.Empty;
+        var array = new RcFixedArray8<int>();
         Assert.That(array.Length, Is.EqualTo(8));
 
         var values = RandomValues(array.Length);
@@ -121,9 +121,9 @@ public class RcStackArrayTest
     }
 
     [Test]
-    public void TestRcStackArray16()
+    public void TestRcFixedArray16()
     {
-        var array = RcStackArray16<int>.Empty;
+        var array = new RcFixedArray16<int>();
         Assert.That(array.Length, Is.EqualTo(16));
 
         var values = RandomValues(array.Length);
@@ -146,9 +146,9 @@ public class RcStackArrayTest
     }
 
     [Test]
-    public void TestRcStackArray32()
+    public void TestRcFixedArray32()
     {
-        var array = RcStackArray32<int>.Empty;
+        var array = new RcFixedArray32<int>();
         Assert.That(array.Length, Is.EqualTo(32));
 
         var values = RandomValues(array.Length);
@@ -171,9 +171,9 @@ public class RcStackArrayTest
     }
 
     [Test]
-    public void TestRcStackArray64()
+    public void TestRcFixedArray64()
     {
-        var array = RcStackArray64<int>.Empty;
+        var array = new RcFixedArray64<int>();
         Assert.That(array.Length, Is.EqualTo(64));
 
         var values = RandomValues(array.Length);
@@ -196,9 +196,9 @@ public class RcStackArrayTest
     }
 
     [Test]
-    public void TestRcStackArray128()
+    public void TestRcFixedArray128()
     {
-        var array = RcStackArray128<int>.Empty;
+        var array = new RcFixedArray128<int>();
         Assert.That(array.Length, Is.EqualTo(128));
 
         var values = RandomValues(array.Length);
@@ -221,9 +221,9 @@ public class RcStackArrayTest
     }
 
     [Test]
-    public void TestRcStackArray256()
+    public void TestRcFixedArray256()
     {
-        var array = RcStackArray256<int>.Empty;
+        var array = new RcFixedArray256<int>();
         Assert.That(array.Length, Is.EqualTo(256));
 
         var values = RandomValues(array.Length);
@@ -246,9 +246,9 @@ public class RcStackArrayTest
     }
 
     [Test]
-    public void TestRcStackArray512()
+    public void TestRcFixedArray512()
     {
-        var array = RcStackArray512<int>.Empty;
+        var array = new RcFixedArray512<int>();
         Assert.That(array.Length, Is.EqualTo(512));
 
         var values = RandomValues(array.Length);

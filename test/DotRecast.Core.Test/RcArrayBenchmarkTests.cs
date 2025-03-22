@@ -62,9 +62,9 @@ public class RcArrayBenchmarkTests
     }
 
 
-    private void RoundForRcStackArray(int len)
+    private void RoundForRcFixedArray(int len)
     {
-        var array = new RcStackArray512<int>();
+        var array = new RcFixedArray512<int>();
         for (int ii = 0; ii < len; ++ii)
         {
             array[ii] = _rand.NextInt32();
@@ -88,7 +88,7 @@ public class RcArrayBenchmarkTests
         results.Add(Bench("new int[len]", RoundForArray));
         results.Add(Bench("ArrayPool<int>.Shared.Rent(len)", RoundForPureRentArray));
         results.Add(Bench("RcRentedArray.Shared.Rent<int>(len)", RoundForRcRentedArray));
-        results.Add(Bench("new RcStackArray512<int>()", RoundForRcStackArray));
+        results.Add(Bench("new RcFixedArray512<int>()", RoundForRcFixedArray));
         results.Add(Bench("stackalloc int[len]", RoundForStackalloc));
 
         results.Sort((x, y) => x.ticks.CompareTo(y.ticks));
