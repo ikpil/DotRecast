@@ -79,6 +79,12 @@ namespace DotRecast.Detour
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Has(DtStatus has)
+        {
+            return 0 != (Value & has.Value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DtStatus operator |(DtStatus left, DtStatus right)
         {
             return new DtStatus(left.Value | right.Value);

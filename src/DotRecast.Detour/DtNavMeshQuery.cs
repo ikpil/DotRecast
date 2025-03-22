@@ -2341,6 +2341,8 @@ namespace DotRecast.Detour
             curPos = startPos;
             RcVec3f dir = RcVec3f.Subtract(endPos, startPos);
             hit.hitNormal = RcVec3f.Zero;
+            
+            DtStatus status = DtStatus.DT_SUCCESS;
 
             DtMeshTile prevTile, tile, nextTile;
             DtPoly prevPoly, poly, nextPoly;
@@ -2397,7 +2399,7 @@ namespace DotRecast.Detour
                             curRef, tile, poly);
                     }
 
-                    return DtStatus.DT_SUCCESS;
+                    return status;
                 }
 
                 // Follow neighbours.
@@ -2525,7 +2527,7 @@ namespace DotRecast.Detour
                     float dx = verts[b].X - verts[a].X;
                     float dz = verts[b].Z - verts[a].X;
                     hit.hitNormal = RcVec3f.Normalize(new RcVec3f(dz, 0, -dx));
-                    return DtStatus.DT_SUCCESS;
+                    return status;
                 }
 
                 // No hit, advance to neighbour polygon.
@@ -2535,9 +2537,16 @@ namespace DotRecast.Detour
                 tile = nextTile;
                 prevPoly = poly;
                 poly = nextPoly;
+                
+                
+                if (status.Has(DtStatus.DT_BUFFER_TOO_SMALL))
+                {
+                    status |= DtStatus.DT_PARTIAL_RESULT;
+                    break;
+                }
             }
 
-            return DtStatus.DT_SUCCESS;
+            return status;
         }
 
         /// @par
