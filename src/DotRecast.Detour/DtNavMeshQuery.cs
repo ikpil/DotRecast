@@ -695,13 +695,13 @@ namespace DotRecast.Detour
 
                     // Calc polygon bounds.
                     int v = p.verts[0] * 3;
-                    bmin = RcVec.Create(tile.data.verts, v);
-                    bmax = RcVec.Create(tile.data.verts, v);
+                    bmin = tile.data.verts.ToVec3(v);
+                    bmax = tile.data.verts.ToVec3(v);
                     for (int j = 1; j < p.vertCount; ++j)
                     {
                         v = p.verts[j] * 3;
-                        bmin = RcVec3f.Min(bmin, RcVec.Create(tile.data.verts, v));
-                        bmax = RcVec3f.Max(bmax, RcVec.Create(tile.data.verts, v));
+                        bmin = RcVec3f.Min(bmin, tile.data.verts.ToVec3(v));
+                        bmax = RcVec3f.Max(bmax, tile.data.verts.ToVec3(v));
                     }
 
                     if (DtUtils.OverlapBounds(qmin, qmax, bmin, bmax))
@@ -2372,7 +2372,7 @@ namespace DotRecast.Detour
                 int nv = 0;
                 for (int i = 0; i < poly.vertCount; ++i)
                 {
-                    verts[nv] = RcVec.Create(tile.data.verts, poly.verts[i] * 3);
+                    verts[nv] = tile.data.verts.ToVec3(poly.verts[i] * 3);
                     nv++;
                 }
 
@@ -3228,8 +3228,8 @@ namespace DotRecast.Detour
                         int ivj = poly.verts[j] * 3;
                         int ivi = poly.verts[i] * 3;
                         var seg = new RcSegmentVert();
-                        seg.vmin = RcVec.Create(tile.data.verts, ivj);
-                        seg.vmax = RcVec.Create(tile.data.verts, ivi);
+                        seg.vmin = tile.data.verts.ToVec3(ivj);
+                        seg.vmax = tile.data.verts.ToVec3(ivi);
                         segmentVerts[n] = seg;
                         if (null != segmentRefs)
                         {
@@ -3448,8 +3448,8 @@ namespace DotRecast.Detour
                     hitPos.Y = bestTile.data.verts[vj + 1] + (bestTile.data.verts[vi + 1] - bestTile.data.verts[vj + 1]) * tseg;
                     hitPos.Z = bestTile.data.verts[vj + 2] + (bestTile.data.verts[vi + 2] - bestTile.data.verts[vj + 2]) * tseg;
                     hasBestV = true;
-                    bestvj = RcVec.Create(bestTile.data.verts, vj);
-                    bestvi = RcVec.Create(bestTile.data.verts, vi);
+                    bestvj = bestTile.data.verts.ToVec3(vj);
+                    bestvi = bestTile.data.verts.ToVec3(vi);
                 }
 
                 for (int i = bestPoly.firstLink; i != DT_NULL_LINK; i = bestTile.links[i].next)

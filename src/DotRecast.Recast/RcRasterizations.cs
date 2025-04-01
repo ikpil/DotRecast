@@ -295,13 +295,13 @@ namespace DotRecast.Recast
             int flagMergeThreshold)
         {
             // Calculate the bounding box of the triangle.
-            RcVec3f triBBMin = RcVec.Create(verts, v0 * 3);
-            triBBMin = RcVec3f.Min(triBBMin, RcVec.Create(verts, v1 * 3));
-            triBBMin = RcVec3f.Min(triBBMin, RcVec.Create(verts, v2 * 3));
+            RcVec3f triBBMin = verts.ToVec3(v0 * 3);
+            triBBMin = RcVec3f.Min(triBBMin, verts.ToVec3(v1 * 3));
+            triBBMin = RcVec3f.Min(triBBMin, verts.ToVec3(v2 * 3));
 
-            RcVec3f triBBMax = RcVec.Create(verts, v0 * 3);
-            triBBMax = RcVec3f.Max(triBBMax, RcVec.Create(verts, v1 * 3));
-            triBBMax = RcVec3f.Max(triBBMax, RcVec.Create(verts, v2 * 3));
+            RcVec3f triBBMax = verts.ToVec3(v0 * 3);
+            triBBMax = RcVec3f.Max(triBBMax, verts.ToVec3(v1 * 3));
+            triBBMax = RcVec3f.Max(triBBMax, verts.ToVec3(v2 * 3));
 
             // If the triangle does not touch the bounding box of the heightfield, skip the triangle.
             if (!OverlapBounds(triBBMin, triBBMax, heightfieldBBMin, heightfieldBBMax))

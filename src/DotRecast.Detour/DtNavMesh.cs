@@ -314,13 +314,13 @@ namespace DotRecast.Detour
 
                     // Calc polygon bounds.
                     int v = p.verts[0] * 3;
-                    bmin = RcVec.Create(tile.data.verts, v);
-                    bmax = RcVec.Create(tile.data.verts, v);
+                    bmin = tile.data.verts.ToVec3(v);
+                    bmax = tile.data.verts.ToVec3(v);
                     for (int j = 1; j < p.vertCount; ++j)
                     {
                         v = p.verts[j] * 3;
-                        bmin = RcVec3f.Min(bmin, RcVec.Create(tile.data.verts, v));
-                        bmax = RcVec3f.Max(bmax, RcVec.Create(tile.data.verts, v));
+                        bmin = RcVec3f.Min(bmin, tile.data.verts.ToVec3(v));
+                        bmax = RcVec3f.Max(bmax, tile.data.verts.ToVec3(v));
                     }
 
                     if (DtUtils.OverlapBounds(qmin, qmax, bmin, bmax))
@@ -1488,8 +1488,8 @@ namespace DotRecast.Detour
                 }
             }
 
-            startPos = RcVec.Create(tile.data.verts, poly.verts[idx0] * 3);
-            endPos = RcVec.Create(tile.data.verts, poly.verts[idx1] * 3);
+            startPos = tile.data.verts.ToVec3(poly.verts[idx0] * 3);
+            endPos = tile.data.verts.ToVec3(poly.verts[idx1] * 3);
 
             return DtStatus.DT_SUCCESS;
         }

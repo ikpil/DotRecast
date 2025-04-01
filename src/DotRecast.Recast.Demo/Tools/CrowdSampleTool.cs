@@ -234,7 +234,7 @@ public class CrowdSampleTool : ISampleTool
                 dd.Vertex(prev.X, prev.Y + 0.1f, prev.Z, DuRGBA(0, 0, 0, (int)(128 * preva)));
                 dd.Vertex(trail.trail[v], trail.trail[v + 1] + 0.1f, trail.trail[v + 2], DuRGBA(0, 0, 0, (int)(128 * a)));
                 preva = a;
-                prev = RcVec.Create(trail.trail, v);
+                prev = trail.trail.ToVec3(v);
             }
 
             dd.End();

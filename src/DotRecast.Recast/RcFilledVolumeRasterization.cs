@@ -525,7 +525,7 @@ namespace DotRecast.Recast
                 {
                     if (MathF.Abs(planes[j][1]) > EPSILON)
                     {
-                        float dotNormalPoint = RcVec3f.Dot(new RcVec3f(planes[j]), point);
+                        float dotNormalPoint = RcVec3f.Dot(planes[j].ToVec3(), point);
                         float t = (planes[j][3] - dotNormalPoint) / planes[j][1];
                         float y = point.Y + t;
                         bool valid = true;
@@ -729,15 +729,15 @@ namespace DotRecast.Recast
         private static bool RayTriangleIntersection(RcVec3f point, int plane, float[][] planes, out float y)
         {
             y = 0.0f;
-            float t = (planes[plane][3] - RcVec3f.Dot(new RcVec3f(planes[plane]), point)) / planes[plane][1];
+            float t = (planes[plane][3] - RcVec3f.Dot(planes[plane].ToVec3(), point)) / planes[plane][1];
             RcVec3f s = new RcVec3f(point.X, point.Y + t, point.Z);
-            float u = RcVec3f.Dot(s, new RcVec3f(planes[plane + 1])) - planes[plane + 1][3];
+            float u = RcVec3f.Dot(s, planes[plane + 1].ToVec3()) - planes[plane + 1][3];
             if (u < 0.0f || u > 1.0f)
             {
                 return false;
             }
 
-            float v = RcVec3f.Dot(s, new RcVec3f(planes[plane + 2])) - planes[plane + 2][3];
+            float v = RcVec3f.Dot(s, planes[plane + 2].ToVec3()) - planes[plane + 2][3];
             if (v < 0.0f)
             {
                 return false;
