@@ -268,6 +268,9 @@ namespace DotRecast.Detour
             RcFixedArray256<float> randomPolyVerts = new RcFixedArray256<float>();
             int randomPolyVertCount = 0;
 
+            RcFixedArray256<float> polyVertBuffer = new RcFixedArray256<float>();
+            RcFixedArray256<float> constrainedVertBuffer = new RcFixedArray256<float>();
+            
             while (!m_openList.IsEmpty())
             {
                 DtNode bestNode = m_openList.Pop();
@@ -284,15 +287,14 @@ namespace DotRecast.Detour
                 {
                     // Calc area of the polygon.
                     float polyArea = 0.0f;
-                    RcFixedArray256<float> polyVertBuffer = new RcFixedArray256<float>();
                     Span<float> polyVerts = polyVertBuffer.AsSpan().Slice(0, bestPoly.vertCount * 3);
                     for (int j = 0; j < bestPoly.vertCount; ++j)
                     {
                         RcSpans.Copy(bestTile.data.verts, bestPoly.verts[j] * 3, polyVerts, j * 3, 3);
                     }
 
-                    RcFixedArray256<float> constrainedVerts = new RcFixedArray256<float>();
-                    var result = constraint.Apply(polyVerts, centerPos, maxRadius, constrainedVerts.AsSpan(), out var ncverts);
+                    Span<float> constrainedVerts = constrainedVertBuffer.AsSpan();
+                    var result = constraint.Apply(polyVerts, centerPos, maxRadius, constrainedVerts, out var ncverts);
                     if (0 < ncverts)
                     {
                         int vertCount = ncverts / 3;
@@ -301,7 +303,7 @@ namespace DotRecast.Detour
                             int va = 0;
                             int vb = (j - 1) * 3;
                             int vc = j * 3;
-                            polyArea += DtUtils.TriArea2D(constrainedVerts.AsSpan(), va, vb, vc);
+                            polyArea += DtUtils.TriArea2D(constrainedVerts, va, vb, vc);
                         }
 
                         // Choose random polygon weighted by area, using reservoir sampling.
@@ -311,7 +313,7 @@ namespace DotRecast.Detour
                         {
                             randomPoly = bestPoly;
                             randomPolyRef = bestRef;
-                            randomPolyVerts = constrainedVerts;
+                            randomPolyVerts.CopyFrom(constrainedVerts, ncverts);
                             randomPolyVertCount = ncverts;
                         }
                     }
