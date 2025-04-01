@@ -1,5 +1,6 @@
 using System;
 using DotRecast.Core;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour.Extras.Jumplink
@@ -13,9 +14,9 @@ namespace DotRecast.Detour.Extras.Jumplink
             this.jumpHeight = jumpHeight;
         }
 
-        public RcVec3f Apply(RcVec3f start, RcVec3f end, float u)
+        public Vector3 Apply(Vector3 start, Vector3 end, float u)
         {
-            return new RcVec3f
+            return new Vector3
             {
                 X = RcMath.Lerp(start.X, end.X, u),
                 Y = InterpolateHeight(start.Y, end.Y, u),

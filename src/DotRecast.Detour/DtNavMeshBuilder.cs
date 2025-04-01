@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using DotRecast.Core;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
@@ -152,8 +153,8 @@ namespace DotRecast.Detour
                     var bmax = option.detailVerts.ToVec3(dv);
                     for (int j = 1; j < ndv; j++)
                     {
-                        bmin = RcVec3f.Min(bmin, option.detailVerts.ToVec3(dv + j * 3));
-                        bmax = RcVec3f.Max(bmax, option.detailVerts.ToVec3(dv + j * 3));
+                        bmin = Vector3.Min(bmin, option.detailVerts.ToVec3(dv + j * 3));
+                        bmax = Vector3.Max(bmax, option.detailVerts.ToVec3(dv + j * 3));
                     }
 
                     // BV-tree uses cs for all dimensions
@@ -209,7 +210,7 @@ namespace DotRecast.Detour
         const int XM = 1 << 2;
         const int ZM = 1 << 3;
 
-        public static int ClassifyOffMeshPoint(RcVec3f pt, RcVec3f bmin, RcVec3f bmax)
+        public static int ClassifyOffMeshPoint(Vector3 pt, Vector3 bmin, Vector3 bmax)
         {
             int outcode = 0;
             outcode |= (pt.X >= bmax.X) ? XP : 0;
@@ -297,8 +298,8 @@ namespace DotRecast.Detour
 
                 hmin -= option.walkableClimb;
                 hmax += option.walkableClimb;
-                RcVec3f bmin = new RcVec3f();
-                RcVec3f bmax = new RcVec3f();
+                Vector3 bmin = new Vector3();
+                Vector3 bmax = new Vector3();
                 bmin = option.bmin;
                 bmax = option.bmax;
                 bmin.Y = hmin;

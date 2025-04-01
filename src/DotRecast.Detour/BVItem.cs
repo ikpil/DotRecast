@@ -1,3 +1,4 @@
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour

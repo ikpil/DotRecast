@@ -1,3 +1,4 @@
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
@@ -134,7 +135,7 @@ namespace DotRecast.Detour
             return 0;
         }
 
-        public static void CalcSlabEndPoints(float[] verts, int va, int vb, ref RcVec2f bmin, ref RcVec2f bmax, int side)
+        public static void CalcSlabEndPoints(float[] verts, int va, int vb, ref Vector2 bmin, ref Vector2 bmax, int side)
         {
             if (side == 0 || side == 4)
             {

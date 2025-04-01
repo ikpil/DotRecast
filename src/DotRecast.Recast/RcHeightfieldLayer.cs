@@ -1,3 +1,4 @@
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Recast
@@ -6,8 +7,8 @@ namespace DotRecast.Recast
     /// @see rcHeightfieldLayerSet
     public class RcHeightfieldLayer
     {
-        public RcVec3f bmin = new RcVec3f(); // < The minimum bounds in world space. [(x, y, z)]
-        public RcVec3f bmax = new RcVec3f(); // < The maximum bounds in world space. [(x, y, z)]
+        public Vector3 bmin = new Vector3(); // < The minimum bounds in world space. [(x, y, z)]
+        public Vector3 bmax = new Vector3(); // < The maximum bounds in world space. [(x, y, z)]
         public float cs; // < The size of each cell. (On the xz-plane.)
         public float ch; // < The height of each cell. (The minimum increment along the y-axis.)
         public int width; // < The width of the heightfield. (Along the x-axis in cell units.)

@@ -1,3 +1,4 @@
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Recast.Toolset.Tools
@@ -5,9 +6,9 @@ namespace DotRecast.Recast.Toolset.Tools
     public class RcCrowdAgentData
     {
         public readonly RcCrowdAgentType type;
-        public readonly RcVec3f home = new RcVec3f();
+        public readonly Vector3 home = new Vector3();
 
-        public RcCrowdAgentData(RcCrowdAgentType type, RcVec3f home)
+        public RcCrowdAgentData(RcCrowdAgentType type, Vector3 home)
         {
             this.type = type;
             this.home = home;

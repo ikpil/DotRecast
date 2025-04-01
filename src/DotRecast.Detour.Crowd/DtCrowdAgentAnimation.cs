@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour.Crowd
@@ -25,9 +26,9 @@ namespace DotRecast.Detour.Crowd
     public class DtCrowdAgentAnimation
     {
         public bool active;
-        public RcVec3f initPos = new RcVec3f();
-        public RcVec3f startPos = new RcVec3f();
-        public RcVec3f endPos = new RcVec3f();
+        public Vector3 initPos = new Vector3();
+        public Vector3 startPos = new Vector3();
+        public Vector3 endPos = new Vector3();
         public long polyRef;
         public float t, tmax;
     }

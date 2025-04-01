@@ -17,6 +17,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Linq;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour.Extras.Jumplink;
 using DotRecast.Recast.Demo.Draw;
@@ -315,7 +316,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
                     {
                         GroundSample s = link.start.gsamples[i];
                         float u = i / (float)(link.start.gsamples.Length - 1);
-                        RcVec3f spt = RcVec3f.Lerp(link.start.p, link.start.q, u);
+                        Vector3 spt = Vector3.Lerp(link.start.p, link.start.q, u);
                         int col = DuRGBA(48, 16, 16, 255); // DuRGBA(255,(s->flags & 4)?255:0,0,255);
                         float off = 0.1f;
                         if (!s.validHeight)
@@ -335,7 +336,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
                     {
                         GroundSample s = link.start.gsamples[i];
                         float u = i / (float)(link.start.gsamples.Length - 1);
-                        RcVec3f spt = RcVec3f.Lerp(link.start.p, link.start.q, u);
+                        Vector3 spt = Vector3.Lerp(link.start.p, link.start.q, u);
                         int col = DuRGBA(255, 255, 255, 255);
                         float off = 0;
                         if (s.validHeight)
@@ -355,7 +356,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
                         {
                             GroundSample s = end.gsamples[i];
                             float u = i / (float)(end.gsamples.Length - 1);
-                            RcVec3f spt = RcVec3f.Lerp(end.p, end.q, u);
+                            Vector3 spt = Vector3.Lerp(end.p, end.q, u);
                             int col = DuRGBA(48, 16, 16, 255); // DuRGBA(255,(s->flags & 4)?255:0,0,255);
                             float off = 0.1f;
                             if (!s.validHeight)
@@ -374,7 +375,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
                         {
                             GroundSample s = end.gsamples[i];
                             float u = i / (float)(end.gsamples.Length - 1);
-                            RcVec3f spt = RcVec3f.Lerp(end.p, end.q, u);
+                            Vector3 spt = Vector3.Lerp(end.p, end.q, u);
                             int col = DuRGBA(255, 255, 255, 255);
                             float off = 0;
                             if (s.validHeight)
@@ -412,12 +413,12 @@ public class JumpLinkBuilderSampleTool : ISampleTool
     }
 
 
-    public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
+    public void HandleClick(Vector3 s, Vector3 p, bool shift)
     {
     }
 
 
-    private void DrawTrajectory(RecastDebugDraw dd, JumpLink link, RcVec3f pa, RcVec3f pb, ITrajectory tra, int cola)
+    private void DrawTrajectory(RecastDebugDraw dd, JumpLink link, Vector3 pa, Vector3 pb, ITrajectory tra, int cola)
     {
     }
 
@@ -426,7 +427,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
     }
 
 
-    public void HandleClickRay(RcVec3f start, RcVec3f direction, bool shift)
+    public void HandleClickRay(Vector3 start, Vector3 direction, bool shift)
     {
     }
 }

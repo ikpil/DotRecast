@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 using System.IO;
 using System.Collections.Generic;
 using DotRecast.Core;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour.Extras.Unity.Astar;
 using DotRecast.Detour.Io;
@@ -34,8 +35,8 @@ public class UnityAStarPathfindingImporterTest
     public void Test_v4_0_6()
     {
         DtNavMesh mesh = LoadNavMesh("graph.zip");
-        RcVec3f startPos = new RcVec3f(8.200293f, 2.155071f, -26.176147f);
-        RcVec3f endPos = new RcVec3f(11.971109f, 0.000000f, 8.663261f);
+        Vector3 startPos = new Vector3(8.200293f, 2.155071f, -26.176147f);
+        Vector3 endPos = new Vector3(11.971109f, 0.000000f, 8.663261f);
         var path = new List<long>();
         var status = FindPath(mesh, startPos, endPos, ref path);
         Assert.That(status, Is.EqualTo(DtStatus.DT_SUCCESS));
@@ -47,8 +48,8 @@ public class UnityAStarPathfindingImporterTest
     public void Test_v4_1_16()
     {
         DtNavMesh mesh = LoadNavMesh("graph_v4_1_16.zip");
-        RcVec3f startPos = new RcVec3f(22.93f, -2.37f, -5.11f);
-        RcVec3f endPos = new RcVec3f(16.81f, -2.37f, 25.52f);
+        Vector3 startPos = new Vector3(22.93f, -2.37f, -5.11f);
+        Vector3 endPos = new Vector3(16.81f, -2.37f, 25.52f);
         var path = new List<long>();
         var status = FindPath(mesh, startPos, endPos, ref path);
         Assert.That(status.Succeeded(), Is.True);
@@ -60,7 +61,7 @@ public class UnityAStarPathfindingImporterTest
     public void TestBoundsTree()
     {
         DtNavMesh mesh = LoadNavMesh("test_boundstree.zip");
-        RcVec3f position = new RcVec3f(387.52988f, 19.997f, 368.86282f);
+        Vector3 position = new Vector3(387.52988f, 19.997f, 368.86282f);
 
         mesh.CalcTileLoc(position, out var tileX, out var tileY);
         long tileRef = mesh.GetTileRefAt(tileX, tileY, 0);
@@ -91,7 +92,7 @@ public class UnityAStarPathfindingImporterTest
         return meshes[0];
     }
 
-    private DtStatus FindPath(DtNavMesh mesh, RcVec3f startPos, RcVec3f endPos, ref List<long> path)
+    private DtStatus FindPath(DtNavMesh mesh, Vector3 startPos, Vector3 endPos, ref List<long> path)
     {
         // Perform a simple pathfinding
         DtNavMeshQuery query = new DtNavMeshQuery(mesh);
@@ -101,19 +102,19 @@ public class UnityAStarPathfindingImporterTest
         return query.FindPath(polys[0].refs, polys[1].refs, startPos, endPos, filter, ref path, DtFindPathOption.NoOption);
     }
 
-    private DtPolyPoint[] GetNearestPolys(DtNavMesh mesh, params RcVec3f[] positions)
+    private DtPolyPoint[] GetNearestPolys(DtNavMesh mesh, params Vector3[] positions)
     {
         DtNavMeshQuery query = new DtNavMeshQuery(mesh);
         IDtQueryFilter filter = new DtQueryDefaultFilter();
-        RcVec3f extents = new RcVec3f(0.1f, 0.1f, 0.1f);
+        Vector3 extents = new Vector3(0.1f, 0.1f, 0.1f);
 
         var results = new DtPolyPoint[positions.Length];
         for (int i = 0; i < results.Length; i++)
         {
-            RcVec3f position = positions[i];
+            Vector3 position = positions[i];
             var status = query.FindNearestPoly(position, extents, filter, out var nearestRef, out var nearestPt, out var _);
             Assert.That(status.Succeeded(), Is.True);
-            Assert.That(nearestPt, Is.Not.EqualTo(RcVec3f.Zero), "Nearest start position is null!");
+            Assert.That(nearestPt, Is.Not.EqualTo(Vector3.Zero), "Nearest start position is null!");
 
             results[i] = new DtPolyPoint(nearestRef, nearestPt);
         }

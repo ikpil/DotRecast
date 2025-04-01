@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
@@ -42,10 +43,10 @@ namespace DotRecast.Detour
             int ii = 0;
             
             /* Initialize variables. */
-            RcVec3f a = new RcVec3f();
-            RcVec3f b = new RcVec3f();
-            RcVec3f a1 = new RcVec3f();
-            RcVec3f b1 = new RcVec3f();
+            Vector3 a = new Vector3();
+            Vector3 b = new Vector3();
+            Vector3 a1 = new Vector3();
+            Vector3 b1 = new Vector3();
 
             int aa = 0;
             int ba = 0;
@@ -54,8 +55,8 @@ namespace DotRecast.Detour
 
             DtConvexConvexInFlag f = DtConvexConvexInFlag.Unknown;
             bool firstPoint = true;
-            RcVec3f ip = new RcVec3f();
-            RcVec3f iq = new RcVec3f();
+            Vector3 ip = new Vector3();
+            Vector3 iq = new Vector3();
 
             do
             {
@@ -64,8 +65,8 @@ namespace DotRecast.Detour
                 a1 = p.ToVec3(3 * ((ai + n - 1) % n)); // prev a
                 b1 = q.ToVec3(3 * ((bi + m - 1) % m)); // prev b
 
-                RcVec3f A = RcVec3f.Subtract(a, a1);
-                RcVec3f B = RcVec3f.Subtract(b, b1);
+                Vector3 A = Vector3.Subtract(a, a1);
+                Vector3 B = Vector3.Subtract(b, b1);
 
                 float cross = B.X * A.Z - A.X * B.Z; // TriArea2D({0, 0}, A, B);
                 float aHB = DtUtils.TriArea2D(b1, b, a);
@@ -181,7 +182,7 @@ namespace DotRecast.Detour
             return true;
         }
 
-        private static int AddVertex(Span<float> inters, int ii, RcVec3f p)
+        private static int AddVertex(Span<float> inters, int ii, Vector3 p)
         {
             if (ii > 0)
             {
@@ -217,7 +218,7 @@ namespace DotRecast.Detour
             return inflag;
         }
 
-        private static DtConvexConvexIntersection SegSegInt(RcVec3f a, RcVec3f b, RcVec3f c, RcVec3f d, ref RcVec3f p, ref RcVec3f q)
+        private static DtConvexConvexIntersection SegSegInt(Vector3 a, Vector3 b, Vector3 c, Vector3 d, ref Vector3 p, ref Vector3 q)
         {
             if (DtUtils.IntersectSegSeg2D(a, b, c, d, out var s, out var t))
             {
@@ -233,7 +234,7 @@ namespace DotRecast.Detour
             return DtConvexConvexIntersection.None;
         }
 
-        private static DtConvexConvexIntersection ParallelInt(RcVec3f a, RcVec3f b, RcVec3f c, RcVec3f d, ref RcVec3f p, ref RcVec3f q)
+        private static DtConvexConvexIntersection ParallelInt(Vector3 a, Vector3 b, Vector3 c, Vector3 d, ref Vector3 p, ref Vector3 q)
         {
             if (Between(a, b, c) && Between(a, b, d))
             {
@@ -280,7 +281,7 @@ namespace DotRecast.Detour
             return DtConvexConvexIntersection.None;
         }
 
-        private static bool Between(RcVec3f a, RcVec3f b, RcVec3f c)
+        private static bool Between(Vector3 a, Vector3 b, Vector3 c)
         {
             if (MathF.Abs(a.X - b.X) > MathF.Abs(a.Z - b.Z))
             {

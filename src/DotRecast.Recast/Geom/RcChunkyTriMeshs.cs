@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Recast.Geom
@@ -99,7 +100,7 @@ namespace DotRecast.Recast.Geom
         }
 
         /// Returns the chunk indices which overlap the input rectable.
-        public static List<RcChunkyTriMeshNode> GetChunksOverlappingRect(RcChunkyTriMesh cm, RcVec2f bmin, RcVec2f bmax)
+        public static List<RcChunkyTriMeshNode> GetChunksOverlappingRect(RcChunkyTriMesh cm, Vector2 bmin, Vector2 bmax)
         {
             // Traverse tree
             List<RcChunkyTriMeshNode> ids = new List<RcChunkyTriMeshNode>();
@@ -129,7 +130,7 @@ namespace DotRecast.Recast.Geom
         }
 
         /// Returns the chunk indices which overlap the input segment.
-        public static List<RcChunkyTriMeshNode> GetChunksOverlappingSegment(RcChunkyTriMesh cm, RcVec2f p, RcVec2f q)
+        public static List<RcChunkyTriMeshNode> GetChunksOverlappingSegment(RcChunkyTriMesh cm, Vector2 p, Vector2 q)
         {
             // Traverse tree
             List<RcChunkyTriMeshNode> ids = new List<RcChunkyTriMeshNode>();
@@ -159,7 +160,7 @@ namespace DotRecast.Recast.Geom
         }
 
 
-        private static void CalcExtends(BoundsItem[] items, int imin, int imax, ref RcVec2f bmin, ref RcVec2f bmax)
+        private static void CalcExtends(BoundsItem[] items, int imin, int imax, ref Vector2 bmin, ref Vector2 bmax)
         {
             bmin.X = items[imin].bmin.X;
             bmin.Y = items[imin].bmin.Y;
@@ -252,7 +253,7 @@ namespace DotRecast.Recast.Geom
             }
         }
 
-        private static bool CheckOverlapRect(RcVec2f amin, RcVec2f amax, RcVec2f bmin, RcVec2f bmax)
+        private static bool CheckOverlapRect(Vector2 amin, Vector2 amax, Vector2 bmin, Vector2 bmax)
         {
             bool overlap = true;
             overlap = (amin.X > bmax.X || amax.X < bmin.X) ? false : overlap;
@@ -261,13 +262,13 @@ namespace DotRecast.Recast.Geom
         }
 
 
-        private static bool CheckOverlapSegment(RcVec2f p, RcVec2f q, RcVec2f bmin, RcVec2f bmax)
+        private static bool CheckOverlapSegment(Vector2 p, Vector2 q, Vector2 bmin, Vector2 bmax)
         {
             const float EPSILON = 1e-6f;
 
             float tmin = 0;
             float tmax = 1;
-            var d = new RcVec2f();
+            var d = new Vector2();
             d.X = q.X - p.X;
             d.Y = q.Y - p.Y;
 

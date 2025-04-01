@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Recast
@@ -34,8 +35,8 @@ namespace DotRecast.Recast
         public int borderSize;				// The AABB border size used during the build of the field. (See: rcConfig::borderSize)
         public int maxDistance;	            // The maximum distance value of any span within the field. 
         public int maxRegions;	            // The maximum region id of any span within the field. 
-        public RcVec3f bmin;				// The minimum bounds in world space. [(x, y, z)]
-        public RcVec3f bmax;				// The maximum bounds in world space. [(x, y, z)]
+        public Vector3 bmin;				// The minimum bounds in world space. [(x, y, z)]
+        public Vector3 bmax;				// The maximum bounds in world space. [(x, y, z)]
         public float cs;					// The size of each cell. (On the xz-plane.)
         public float ch;					// The height of each cell. (The minimum increment along the y-axis.)
         public RcCompactCell[] cells;		// Array of cells. [Size: #width*#height]

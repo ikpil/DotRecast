@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
@@ -28,14 +29,14 @@ namespace DotRecast.Detour
 
     public static class DtPathUtils
     {
-        public static bool GetSteerTarget(DtNavMeshQuery navQuery, RcVec3f startPos, RcVec3f endPos,
+        public static bool GetSteerTarget(DtNavMeshQuery navQuery, Vector3 startPos, Vector3 endPos,
             float minTargetDist,
             List<long> path, int pathSize,
-            out RcVec3f steerPos, out int steerPosFlag, out long steerPosRef)
+            out Vector3 steerPos, out int steerPosFlag, out long steerPosRef)
         {
             const int MAX_STEER_POINTS = 3;
 
-            steerPos = RcVec3f.Zero;
+            steerPos = Vector3.Zero;
             steerPosFlag = 0;
             steerPosRef = 0;
 
@@ -70,7 +71,7 @@ namespace DotRecast.Detour
             return true;
         }
 
-        public static bool InRange(RcVec3f v1, RcVec3f v2, float r, float h)
+        public static bool InRange(Vector3 v1, Vector3 v2, float r, float h)
         {
             float dx = v2.X - v1.X;
             float dy = v2.Y - v1.Y;

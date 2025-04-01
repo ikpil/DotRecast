@@ -1,3 +1,4 @@
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour.Crowd
@@ -6,21 +7,21 @@ namespace DotRecast.Detour.Crowd
     public class DtObstacleCircle
     {
         /** Position of the obstacle */
-        public RcVec3f p = new RcVec3f();
+        public Vector3 p = new Vector3();
 
         /** Velocity of the obstacle */
-        public RcVec3f vel = new RcVec3f();
+        public Vector3 vel = new Vector3();
 
         /** Velocity of the obstacle */
-        public RcVec3f dvel = new RcVec3f();
+        public Vector3 dvel = new Vector3();
 
         /** Radius of the obstacle */
         public float rad;
 
         /** Use for side selection during sampling. */
-        public RcVec3f dp = new RcVec3f();
+        public Vector3 dp = new Vector3();
 
         /** Use for side selection during sampling. */
-        public RcVec3f np = new RcVec3f();
+        public Vector3 np = new Vector3();
     }
 }

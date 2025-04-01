@@ -17,6 +17,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 using NUnit.Framework;
@@ -28,22 +29,22 @@ public class FindDistanceToWallTest : AbstractDetourTest
 {
     private static readonly float[] DISTANCES_TO_WALL = { 0.597511f, 3.201085f, 0.603713f, 2.791475f, 2.815544f };
 
-    private static readonly RcVec3f[] HIT_POSITION =
+    private static readonly Vector3[] HIT_POSITION =
     {
-        new RcVec3f(23.177608f, 10.197294f, -45.742954f),
-        new RcVec3f(22.331268f, 10.197294f, -4.241272f),
-        new RcVec3f(18.108675f, 15.743596f, -73.236839f),
-        new RcVec3f(1.984785f, 10.197294f, -8.441269f),
-        new RcVec3f(-22.315216f, 4.997294f, -11.441269f),
+        new Vector3(23.177608f, 10.197294f, -45.742954f),
+        new Vector3(22.331268f, 10.197294f, -4.241272f),
+        new Vector3(18.108675f, 15.743596f, -73.236839f),
+        new Vector3(1.984785f, 10.197294f, -8.441269f),
+        new Vector3(-22.315216f, 4.997294f, -11.441269f),
     };
 
-    private static readonly RcVec3f[] HIT_NORMAL =
+    private static readonly Vector3[] HIT_NORMAL =
     {
-        new RcVec3f(-0.955779f, 0.0f, -0.29408592f),
-        new RcVec3f(0.0f, 0.0f, 1.0f),
-        new RcVec3f(0.97014254f, 0.0f, 0.24253564f),
-        new RcVec3f(-1.0f, 0.0f, 0.0f),
-        new RcVec3f(1.0f, 0.0f, 0.0f),
+        new Vector3(-0.955779f, 0.0f, -0.29408592f),
+        new Vector3(0.0f, 0.0f, 1.0f),
+        new Vector3(0.97014254f, 0.0f, 0.24253564f),
+        new Vector3(-1.0f, 0.0f, 0.0f),
+        new Vector3(1.0f, 0.0f, 0.0f),
     };
 
     [Test]
@@ -52,7 +53,7 @@ public class FindDistanceToWallTest : AbstractDetourTest
         IDtQueryFilter filter = new DtQueryDefaultFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
-            RcVec3f startPos = startPoss[i];
+            Vector3 startPos = startPoss[i];
             query.FindDistanceToWall(startRefs[i], startPos, 3.5f, filter,
                 out var hitDist, out var hitPos, out var hitNormal);
             Assert.That(hitDist, Is.EqualTo(DISTANCES_TO_WALL[i]).Within(0.001f));

@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using DotRecast.Core;
 using DotRecast.Core.Collections;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 using DotRecast.Recast.Geom;
 
@@ -32,8 +33,8 @@ namespace DotRecast.Recast.Toolset.Geom
         public readonly float[] vertices;
         public readonly int[] faces;
         public readonly float[] normals;
-        private readonly RcVec3f bmin;
-        private readonly RcVec3f bmax;
+        private readonly Vector3 bmin;
+        private readonly Vector3 bmax;
 
         private readonly List<RcConvexVolume> _convexVolumes = new List<RcConvexVolume>();
         private readonly List<RcOffMeshConnection> _offMeshConnections = new List<RcOffMeshConnection>();
@@ -61,8 +62,8 @@ namespace DotRecast.Recast.Toolset.Geom
             bmax = vertices.ToVec3();
             for (int i = 1; i < vertices.Length / 3; i++)
             {
-                bmin = RcVec3f.Min(bmin, vertices.ToVec3(i * 3));
-                bmax = RcVec3f.Max(bmax, vertices.ToVec3(i * 3));
+                bmin = Vector3.Min(bmin, vertices.ToVec3(i * 3));
+                bmax = Vector3.Max(bmax, vertices.ToVec3(i * 3));
             }
 
             _mesh = new RcTriMesh(vertices, faces);
@@ -73,12 +74,12 @@ namespace DotRecast.Recast.Toolset.Geom
             return _mesh;
         }
 
-        public RcVec3f GetMeshBoundsMin()
+        public Vector3 GetMeshBoundsMin()
         {
             return bmin;
         }
 
-        public RcVec3f GetMeshBoundsMax()
+        public Vector3 GetMeshBoundsMax()
         {
             return bmax;
         }
@@ -87,11 +88,11 @@ namespace DotRecast.Recast.Toolset.Geom
         {
             for (int i = 0; i < faces.Length; i += 3)
             {
-                RcVec3f v0 = vertices.ToVec3(faces[i] * 3);
-                RcVec3f v1 = vertices.ToVec3(faces[i + 1] * 3);
-                RcVec3f v2 = vertices.ToVec3(faces[i + 2] * 3);
-                RcVec3f e0 = v1 - v0;
-                RcVec3f e1 = v2 - v0;
+                Vector3 v0 = vertices.ToVec3(faces[i] * 3);
+                Vector3 v1 = vertices.ToVec3(faces[i + 1] * 3);
+                Vector3 v2 = vertices.ToVec3(faces[i + 2] * 3);
+                Vector3 e0 = v1 - v0;
+                Vector3 e1 = v2 - v0;
 
                 normals[i] = e0.Y * e1.Z - e0.Z * e1.Y;
                 normals[i + 1] = e0.Z * e1.X - e0.X * e1.Z;
@@ -122,7 +123,7 @@ namespace DotRecast.Recast.Toolset.Geom
             return _offMeshConnections;
         }
 
-        public void AddOffMeshConnection(RcVec3f start, RcVec3f end, float radius, bool bidir, int area, int flags)
+        public void AddOffMeshConnection(Vector3 start, Vector3 end, float radius, bool bidir, int area, int flags)
         {
             _offMeshConnections.Add(new RcOffMeshConnection(start, end, radius, bidir, area, flags));
         }
@@ -133,7 +134,7 @@ namespace DotRecast.Recast.Toolset.Geom
             _offMeshConnections.RemoveAll(filter); // TODO: @ikpil, check
         }
 
-        public bool RaycastMesh(RcVec3f src, RcVec3f dst, out float tmin)
+        public bool RaycastMesh(Vector3 src, Vector3 dst, out float tmin)
         {
             tmin = 1.0f;
 
@@ -143,8 +144,8 @@ namespace DotRecast.Recast.Toolset.Geom
                 return false;
             }
 
-            var p = new RcVec2f();
-            var q = new RcVec2f();
+            var p = new Vector2();
+            var q = new Vector2();
             p.X = src.X + (dst.X - src.X) * btmin;
             p.Y = src.Z + (dst.Z - src.Z) * btmin;
             q.X = src.X + (dst.X - src.X) * btmax;
@@ -163,17 +164,17 @@ namespace DotRecast.Recast.Toolset.Geom
                 int[] tris = chunk.tris;
                 for (int j = 0; j < chunk.tris.Length; j += 3)
                 {
-                    RcVec3f v1 = new RcVec3f(
+                    Vector3 v1 = new Vector3(
                         vertices[tris[j] * 3],
                         vertices[tris[j] * 3 + 1],
                         vertices[tris[j] * 3 + 2]
                     );
-                    RcVec3f v2 = new RcVec3f(
+                    Vector3 v2 = new Vector3(
                         vertices[tris[j + 1] * 3],
                         vertices[tris[j + 1] * 3 + 1],
                         vertices[tris[j + 1] * 3 + 2]
                     );
-                    RcVec3f v3 = new RcVec3f(
+                    Vector3 v3 = new Vector3(
                         vertices[tris[j + 2] * 3],
                         vertices[tris[j + 2] * 3 + 1],
                         vertices[tris[j + 2] * 3 + 2]

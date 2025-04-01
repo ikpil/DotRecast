@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 using NUnit.Framework;
 
@@ -137,7 +138,7 @@ public class FindPolysAroundShapeTest : AbstractDetourTest
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
-            RcVec3f startPos = startPoss[i];
+            Vector3 startPos = startPoss[i];
             query.FindPolysAroundShape(startRef, GetQueryPoly(startPos, endPoss[i]), filter, ref refs, ref parentRefs, ref costs);
 
             Assert.That(refs.Count, Is.EqualTo(REFS[i].Length));
@@ -159,13 +160,13 @@ public class FindPolysAroundShapeTest : AbstractDetourTest
         }
     }
 
-    private RcVec3f[] GetQueryPoly(RcVec3f m_spos, RcVec3f m_epos)
+    private Vector3[] GetQueryPoly(Vector3 m_spos, Vector3 m_epos)
     {
         float nx = (m_epos.Z - m_spos.Z) * 0.25f;
         float nz = -(m_epos.X - m_spos.X) * 0.25f;
         float agentHeight = 2.0f;
 
-        RcVec3f[] m_queryPoly = new RcVec3f[4];
+        Vector3[] m_queryPoly = new Vector3[4];
         m_queryPoly[0].X = m_spos.X + nx * 1.2f;
         m_queryPoly[0].Y = m_spos.Y + agentHeight / 2;
         m_queryPoly[0].Z = m_spos.Z + nz * 1.2f;

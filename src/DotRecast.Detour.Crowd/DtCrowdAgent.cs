@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour.Crowd
@@ -53,11 +54,11 @@ namespace DotRecast.Detour.Crowd
         /// The desired speed.
         public float desiredSpeed;
 
-        public RcVec3f npos = new RcVec3f(); // < The current agent position. [(x, y, z)]
-        public RcVec3f disp = new RcVec3f(); // < A temporary value used to accumulate agent displacement during iterative collision resolution. [(x, y, z)]
-        public RcVec3f dvel = new RcVec3f(); // < The desired velocity of the agent. Based on the current path, calculated from scratch each frame. [(x, y, z)]
-        public RcVec3f nvel = new RcVec3f(); // < The desired velocity adjusted by obstacle avoidance, calculated from scratch each frame. [(x, y, z)]
-        public RcVec3f vel = new RcVec3f(); // < The actual velocity of the agent. The change from nvel -> vel is constrained by max acceleration. [(x, y, z)]
+        public Vector3 npos = new Vector3(); // < The current agent position. [(x, y, z)]
+        public Vector3 disp = new Vector3(); // < A temporary value used to accumulate agent displacement during iterative collision resolution. [(x, y, z)]
+        public Vector3 dvel = new Vector3(); // < The desired velocity of the agent. Based on the current path, calculated from scratch each frame. [(x, y, z)]
+        public Vector3 nvel = new Vector3(); // < The desired velocity adjusted by obstacle avoidance, calculated from scratch each frame. [(x, y, z)]
+        public Vector3 vel = new Vector3(); // < The actual velocity of the agent. The change from nvel -> vel is constrained by max acceleration. [(x, y, z)]
 
         /// The agent's configuration parameters.
         public DtCrowdAgentParams option;
@@ -70,7 +71,7 @@ namespace DotRecast.Detour.Crowd
 
         public DtMoveRequestState targetState; // < State of the movement request.
         public long targetRef; // < Target polyref of the movement request.
-        public RcVec3f targetPos = new RcVec3f(); // < Target position of the movement request (or velocity in case of DT_CROWDAGENT_TARGET_VELOCITY).
+        public Vector3 targetPos = new Vector3(); // < Target position of the movement request (or velocity in case of DT_CROWDAGENT_TARGET_VELOCITY).
         public DtPathQueryResult targetPathQueryResult; // < Path finder query
         public bool targetReplan; // < Flag indicating that the current path is being replanned.
         public float targetReplanTime; // <Time since the agent's target was replanned.
@@ -90,17 +91,17 @@ namespace DotRecast.Detour.Crowd
         {
             // Fake dynamic constraint.
             float maxDelta = option.maxAcceleration * dt;
-            RcVec3f dv = RcVec3f.Subtract(nvel, vel);
+            Vector3 dv = Vector3.Subtract(nvel, vel);
             float ds = dv.Length();
             if (ds > maxDelta)
                 dv = dv * (maxDelta / ds);
-            vel = RcVec3f.Add(vel, dv);
+            vel = Vector3.Add(vel, dv);
 
             // Integrate
             if (vel.Length() > 0.0001f)
                 npos = RcVec.Mad(npos, vel, dt);
             else
-                vel = RcVec3f.Zero;
+                vel = Vector3.Zero;
         }
 
         public bool OverOffmeshConnection(float radius)
@@ -134,9 +135,9 @@ namespace DotRecast.Detour.Crowd
             return range;
         }
 
-        public RcVec3f CalcSmoothSteerDirection()
+        public Vector3 CalcSmoothSteerDirection()
         {
-            RcVec3f dir = new RcVec3f();
+            Vector3 dir = new Vector3();
             if (0 < ncorners)
             {
                 int ip0 = 0;
@@ -144,8 +145,8 @@ namespace DotRecast.Detour.Crowd
                 var p0 = corners[ip0].pos;
                 var p1 = corners[ip1].pos;
 
-                var dir0 = RcVec3f.Subtract(p0, npos);
-                var dir1 = RcVec3f.Subtract(p1, npos);
+                var dir0 = Vector3.Subtract(p0, npos);
+                var dir1 = Vector3.Subtract(p1, npos);
                 dir0.Y = 0;
                 dir1.Y = 0;
 
@@ -157,26 +158,26 @@ namespace DotRecast.Detour.Crowd
                 dir.X = dir0.X - dir1.X * len0 * 0.5f;
                 dir.Y = 0;
                 dir.Z = dir0.Z - dir1.Z * len0 * 0.5f;
-                dir = RcVec3f.Normalize(dir);
+                dir = Vector3.Normalize(dir);
             }
 
             return dir;
         }
 
-        public RcVec3f CalcStraightSteerDirection()
+        public Vector3 CalcStraightSteerDirection()
         {
-            RcVec3f dir = new RcVec3f();
+            Vector3 dir = new Vector3();
             if (0 < ncorners)
             {
-                dir = RcVec3f.Subtract(corners[0].pos, npos);
+                dir = Vector3.Subtract(corners[0].pos, npos);
                 dir.Y = 0;
-                dir = RcVec3f.Normalize(dir);
+                dir = Vector3.Normalize(dir);
             }
 
             return dir;
         }
 
-        public void SetTarget(long refs, RcVec3f pos)
+        public void SetTarget(long refs, Vector3 pos)
         {
             targetRef = refs;
             targetPos = pos;

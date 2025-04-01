@@ -1,10 +1,11 @@
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour.Extras.Jumplink
 {
     public class JumpEdge
     {
-        public RcVec3f sp = new RcVec3f();
-        public RcVec3f sq = new RcVec3f();
+        public Vector3 sp = new Vector3();
+        public Vector3 sq = new Vector3();
     }
 }

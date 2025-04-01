@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 
 using System.IO;
 using DotRecast.Core;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour.Io;
 using DotRecast.Recast;
@@ -68,8 +69,8 @@ public class MeshSetReaderWriterTest
         DtNavMesh mesh = new DtNavMesh();
         mesh.Init(header.option, 6);
 
-        RcVec3f bmin = geom.GetMeshBoundsMin();
-        RcVec3f bmax = geom.GetMeshBoundsMax();
+        Vector3 bmin = geom.GetMeshBoundsMin();
+        Vector3 bmax = geom.GetMeshBoundsMax();
         RcRecast.CalcTileCount(bmin, bmax, m_cellSize, m_tileSize, m_tileSize, out var tw, out var th);
         for (int y = 0; y < th; ++y)
         {

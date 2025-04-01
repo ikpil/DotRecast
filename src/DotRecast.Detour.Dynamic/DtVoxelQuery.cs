@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 using DotRecast.Recast;
 
@@ -30,12 +31,12 @@ namespace DotRecast.Detour.Dynamic
  */
     public class DtVoxelQuery
     {
-        private readonly RcVec3f origin;
+        private readonly Vector3 origin;
         private readonly float tileWidth;
         private readonly float tileDepth;
         private readonly Func<int, int, RcHeightfield> heightfieldProvider;
 
-        public DtVoxelQuery(RcVec3f origin, float tileWidth, float tileDepth, Func<int, int, RcHeightfield> heightfieldProvider)
+        public DtVoxelQuery(Vector3 origin, float tileWidth, float tileDepth, Func<int, int, RcHeightfield> heightfieldProvider)
         {
             this.origin = origin;
             this.tileWidth = tileWidth;
@@ -48,12 +49,12 @@ namespace DotRecast.Detour.Dynamic
      *
      * @return Optional with hit parameter (t) or empty if no hit found
      */
-        public bool Raycast(RcVec3f start, RcVec3f end, out float hit)
+        public bool Raycast(Vector3 start, Vector3 end, out float hit)
         {
             return TraverseTiles(start, end, out hit);
         }
 
-        private bool TraverseTiles(RcVec3f start, RcVec3f end, out float hit)
+        private bool TraverseTiles(Vector3 start, Vector3 end, out float hit)
         {
             float relStartX = start.X - origin.X;
             float relStartZ = start.Z - origin.Z;
@@ -108,7 +109,7 @@ namespace DotRecast.Detour.Dynamic
             return false;
         }
 
-        private bool TraversHeightfield(int x, int z, RcVec3f start, RcVec3f end, float tMin, float tMax, out float hit)
+        private bool TraversHeightfield(int x, int z, Vector3 start, Vector3 end, float tMin, float tMax, out float hit)
         {
             RcHeightfield hf = heightfieldProvider.Invoke(x, z);
             if (null != hf)

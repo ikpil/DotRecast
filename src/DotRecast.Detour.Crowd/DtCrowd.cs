@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using DotRecast.Core;
 using DotRecast.Core.Collections;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour.Crowd
@@ -132,7 +133,7 @@ namespace DotRecast.Detour.Crowd
         private readonly DtProximityGrid _grid;
 
         private int _maxPathResult;
-        private readonly RcVec3f _agentPlacementHalfExtents;
+        private readonly Vector3 _agentPlacementHalfExtents;
 
         private readonly IDtQueryFilter[] _filters;
 
@@ -151,7 +152,7 @@ namespace DotRecast.Detour.Crowd
         public DtCrowd(DtCrowdConfig config, DtNavMesh nav, Func<int, IDtQueryFilter> queryFilterFactory)
         {
             _config = config;
-            _agentPlacementHalfExtents = new RcVec3f(config.maxAgentRadius * 2.0f, config.maxAgentRadius * 1.5f, config.maxAgentRadius * 2.0f);
+            _agentPlacementHalfExtents = new Vector3(config.maxAgentRadius * 2.0f, config.maxAgentRadius * 1.5f, config.maxAgentRadius * 2.0f);
 
             _obstacleQuery = new DtObstacleAvoidanceQuery(config.maxObstacleAvoidanceCircles, config.maxObstacleAvoidanceSegments);
 
@@ -237,7 +238,7 @@ namespace DotRecast.Detour.Crowd
         ///  @param[in]		pos		The requested position of the agent. [(x, y, z)]
         ///  @param[in]		params	The configuration of the agent.
         /// @return The index of the agent in the agent pool. Or -1 if the agent could not be added.
-        public DtCrowdAgent AddAgent(RcVec3f pos, DtCrowdAgentParams option)
+        public DtCrowdAgent AddAgent(Vector3 pos, DtCrowdAgentParams option)
         {
             int idx = _agentIdx.GetAndIncrement();
             DtCrowdAgent ag = new DtCrowdAgent(idx);
@@ -261,9 +262,9 @@ namespace DotRecast.Detour.Crowd
             ag.targetReplanTime = 0;
             ag.nneis = 0;
 
-            ag.dvel = RcVec3f.Zero;
-            ag.nvel = RcVec3f.Zero;
-            ag.vel = RcVec3f.Zero;
+            ag.dvel = Vector3.Zero;
+            ag.nvel = Vector3.Zero;
+            ag.vel = Vector3.Zero;
             ag.npos = nearestPt;
 
             ag.desiredSpeed = 0;
@@ -305,7 +306,7 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        private bool RequestMoveTargetReplan(DtCrowdAgent ag, long refs, RcVec3f pos)
+        private bool RequestMoveTargetReplan(DtCrowdAgent ag, long refs, Vector3 pos)
         {
             ag.SetTarget(refs, pos);
             ag.targetReplan = true;
@@ -323,7 +324,7 @@ namespace DotRecast.Detour.Crowd
         /// The position will be constrained to the surface of the navigation mesh.
         ///
         /// The request will be processed during the next #Update().
-        public bool RequestMoveTarget(DtCrowdAgent agent, long refs, RcVec3f pos)
+        public bool RequestMoveTarget(DtCrowdAgent agent, long refs, Vector3 pos)
         {
             if (refs == 0)
             {
@@ -340,7 +341,7 @@ namespace DotRecast.Detour.Crowd
         /// @param[in] idx The agent index. [Limits: 0 <= value < #GetAgentCount()]
         /// @param[in] vel The movement velocity. [(x, y, z)]
         /// @return True if the request was successfully submitted.
-        public bool RequestMoveVelocity(DtCrowdAgent agent, RcVec3f vel)
+        public bool RequestMoveVelocity(DtCrowdAgent agent, Vector3 vel)
         {
             // Initialize request.
             agent.targetRef = 0;
@@ -359,8 +360,8 @@ namespace DotRecast.Detour.Crowd
         {
             // Initialize request.
             agent.targetRef = 0;
-            agent.targetPos = RcVec3f.Zero;
-            agent.dvel = RcVec3f.Zero;
+            agent.targetPos = Vector3.Zero;
+            agent.dvel = Vector3.Zero;
             agent.targetPathQueryResult = null;
             agent.targetReplan = false;
             agent.targetState = DtMoveRequestState.DT_CROWDAGENT_TARGET_NONE;
@@ -377,7 +378,7 @@ namespace DotRecast.Detour.Crowd
             return _activeAgents;
         }
 
-        public RcVec3f GetQueryExtents()
+        public Vector3 GetQueryExtents()
         {
             return _agentPlacementHalfExtents;
         }
@@ -473,7 +474,7 @@ namespace DotRecast.Detour.Crowd
                 bool replan = false;
 
                 // First check that the current location is valid.
-                RcVec3f agentPos = new RcVec3f();
+                Vector3 agentPos = new Vector3();
                 long agentRef = ag.corridor.GetFirstPoly();
                 agentPos = ag.npos;
                 if (!_navQuery.IsValidPolyRef(agentRef, _filters[ag.option.queryFilterType]))
@@ -613,7 +614,7 @@ namespace DotRecast.Detour.Crowd
                         status = _navQuery.FinalizeSlicedFindPath(ref reqPath);
                     }
 
-                    RcVec3f reqPos = new RcVec3f();
+                    Vector3 reqPos = new Vector3();
                     if (status.Succeeded() && reqPath.Count > 0)
                     {
                         // In progress or succeed.
@@ -870,7 +871,7 @@ namespace DotRecast.Detour.Crowd
             for (var i = 0; i < agents.Count; i++)
             {
                 var ag = agents[i];
-                RcVec3f p = ag.npos;
+                Vector3 p = ag.npos;
                 float r = ag.option.radius;
                 _grid.AddItem(ag, p.X - r, p.Z - r, p.X + r, p.Z + r);
             }
@@ -946,7 +947,7 @@ namespace DotRecast.Detour.Crowd
             return Math.Min(nneis + 1, maxNeis);
         }
 
-        private int GetNeighbours(RcVec3f pos, float height, float range, DtCrowdAgent skip, DtCrowdNeighbour[] result, int maxResult, DtProximityGrid grid)
+        private int GetNeighbours(Vector3 pos, float height, float range, DtCrowdAgent skip, DtCrowdNeighbour[] result, int maxResult, DtProximityGrid grid)
         {
             int n = 0;
 
@@ -965,7 +966,7 @@ namespace DotRecast.Detour.Crowd
                 }
 
                 // Check for overlap.
-                RcVec3f diff = RcVec3f.Subtract(pos, ag.npos);
+                Vector3 diff = Vector3.Subtract(pos, ag.npos);
                 if (MathF.Abs(diff.Y) >= (height + ag.option.height) / 2.0f)
                 {
                     continue;
@@ -1010,7 +1011,7 @@ namespace DotRecast.Detour.Crowd
                 // and short cut to there.
                 if ((ag.option.updateFlags & DtCrowdAgentUpdateFlags.DT_CROWD_OPTIMIZE_VIS) != 0 && ag.ncorners > 0)
                 {
-                    RcVec3f target = ag.corners[Math.Min(1, ag.ncorners - 1)].pos;
+                    Vector3 target = ag.corners[Math.Min(1, ag.ncorners - 1)].pos;
                     ag.corridor.OptimizePathVisibility(target, ag.option.pathOptimizationRange, _navQuery,
                         _filters[ag.option.queryFilterType]);
 
@@ -1026,8 +1027,8 @@ namespace DotRecast.Detour.Crowd
                     // Copy data for debug purposes.
                     if (debugAgent == ag)
                     {
-                        debug.optStart = RcVec3f.Zero;
-                        debug.optEnd = RcVec3f.Zero;
+                        debug.optStart = Vector3.Zero;
+                        debug.optEnd = Vector3.Zero;
                     }
                 }
             }
@@ -1099,7 +1100,7 @@ namespace DotRecast.Detour.Crowd
                     continue;
                 }
 
-                RcVec3f dvel = new RcVec3f();
+                Vector3 dvel = new Vector3();
 
                 if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                 {
@@ -1134,13 +1135,13 @@ namespace DotRecast.Detour.Crowd
                     float separationWeight = ag.option.separationWeight;
 
                     float w = 0;
-                    RcVec3f disp = new RcVec3f();
+                    Vector3 disp = new Vector3();
 
                     for (int j = 0; j < ag.nneis; ++j)
                     {
                         DtCrowdAgent nei = ag.neis[j].agent;
 
-                        RcVec3f diff = RcVec3f.Subtract(ag.npos, nei.npos);
+                        Vector3 diff = Vector3.Subtract(ag.npos, nei.npos);
                         diff.Y = 0;
 
                         float distSqr = diff.LengthSquared();
@@ -1207,8 +1208,8 @@ namespace DotRecast.Detour.Crowd
                     // Append neighbour segments as obstacles.
                     for (int j = 0; j < ag.boundary.GetSegmentCount(); ++j)
                     {
-                        RcVec3f[] s = ag.boundary.GetSegment(j);
-                        RcVec3f s3 = s[1];
+                        Vector3[] s = ag.boundary.GetSegment(j);
+                        Vector3 s3 = s[1];
                         //RcArrays.Copy(s, 3, s3, 0, 3);
                         if (DtUtils.TriArea2D(ag.npos, s[0], s3) < 0.0f)
                         {
@@ -1282,7 +1283,7 @@ namespace DotRecast.Detour.Crowd
                         continue;
                     }
 
-                    ag.disp = RcVec3f.Zero;
+                    ag.disp = Vector3.Zero;
 
                     float w = 0;
 
@@ -1290,7 +1291,7 @@ namespace DotRecast.Detour.Crowd
                     {
                         DtCrowdAgent nei = ag.neis[j].agent;
                         long idx1 = nei.idx;
-                        RcVec3f diff = RcVec3f.Subtract(ag.npos, nei.npos);
+                        Vector3 diff = Vector3.Subtract(ag.npos, nei.npos);
                         diff.Y = 0;
 
                         float dist = diff.LengthSquared();
@@ -1306,11 +1307,11 @@ namespace DotRecast.Detour.Crowd
                             // Agents on top of each other, try to choose diverging separation directions.
                             if (idx0 > idx1)
                             {
-                                diff = new RcVec3f(-ag.dvel.Z, 0, ag.dvel.X);
+                                diff = new Vector3(-ag.dvel.Z, 0, ag.dvel.X);
                             }
                             else
                             {
-                                diff = new RcVec3f(ag.dvel.Z, 0, -ag.dvel.X);
+                                diff = new Vector3(ag.dvel.Z, 0, -ag.dvel.X);
                             }
 
                             pen = 0.01f;
@@ -1340,7 +1341,7 @@ namespace DotRecast.Detour.Crowd
                         continue;
                     }
 
-                    ag.npos = RcVec3f.Add(ag.npos, ag.disp);
+                    ag.npos = Vector3.Add(ag.npos, ag.disp);
                 }
             }
         }
@@ -1401,17 +1402,17 @@ namespace DotRecast.Detour.Crowd
                 if (anim.t < ta)
                 {
                     float u = Tween(anim.t, 0.0f, ta);
-                    ag.npos = RcVec3f.Lerp(anim.initPos, anim.startPos, u);
+                    ag.npos = Vector3.Lerp(anim.initPos, anim.startPos, u);
                 }
                 else
                 {
                     float u = Tween(anim.t, ta, tb);
-                    ag.npos = RcVec3f.Lerp(anim.startPos, anim.endPos, u);
+                    ag.npos = Vector3.Lerp(anim.startPos, anim.endPos, u);
                 }
 
                 // Update velocity.
-                ag.vel = RcVec3f.Zero;
-                ag.dvel = RcVec3f.Zero;
+                ag.vel = Vector3.Zero;
+                ag.dvel = Vector3.Zero;
             }
         }
 

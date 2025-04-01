@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using DotRecast.Core.Collections;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour;
 
@@ -22,7 +23,7 @@ public class PolygonByCircleConstraintBenchmarks
         
         for (int i = 0; i < Count; ++i)
         {
-            RcVec3f center = new RcVec3f(1, 0, 1);
+            Vector3 center = new Vector3(1, 0, 1);
             RcFixedArray256<float> constrained = new RcFixedArray256<float>();
 
             _constraint.Apply(polygon, center, 6, constrained.AsSpan(), out var ncverts);

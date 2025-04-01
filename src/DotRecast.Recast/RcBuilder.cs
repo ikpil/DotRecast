@@ -25,6 +25,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DotRecast.Core;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 using DotRecast.Recast.Geom;
 
@@ -50,8 +51,8 @@ namespace DotRecast.Recast
         public List<RcBuilderResult> BuildTiles(IInputGeomProvider geom, RcConfig cfg, bool keepInterResults, bool buildAll,
             int threads = 0, TaskFactory taskFactory = null, CancellationToken cancellation = default)
         {
-            RcVec3f bmin = geom.GetMeshBoundsMin();
-            RcVec3f bmax = geom.GetMeshBoundsMax();
+            Vector3 bmin = geom.GetMeshBoundsMin();
+            Vector3 bmax = geom.GetMeshBoundsMax();
             CalcTileCount(bmin, bmax, cfg.Cs, cfg.TileSizeX, cfg.TileSizeZ, out var tw, out var th);
 
             if (1 < threads)
@@ -62,7 +63,7 @@ namespace DotRecast.Recast
             return BuildSingleThread(geom, cfg, bmin, bmax, tw, th, keepInterResults, buildAll);
         }
 
-        private List<RcBuilderResult> BuildSingleThread(IInputGeomProvider geom, RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tw, int th,
+        private List<RcBuilderResult> BuildSingleThread(IInputGeomProvider geom, RcConfig cfg, Vector3 bmin, Vector3 bmax, int tw, int th,
             bool keepInterResults, bool buildAll)
         {
             var results = new List<RcBuilderResult>(th * tw);
@@ -80,7 +81,7 @@ namespace DotRecast.Recast
             return results;
         }
 
-        private List<RcBuilderResult> BuildMultiThread(IInputGeomProvider geom, RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tw, int th,
+        private List<RcBuilderResult> BuildMultiThread(IInputGeomProvider geom, RcConfig cfg, Vector3 bmin, Vector3 bmax, int tw, int th,
             int threads, TaskFactory taskFactory, CancellationToken cancellation,
             bool keepInterResults, bool buildAll)
         {
@@ -129,7 +130,7 @@ namespace DotRecast.Recast
             return list;
         }
 
-        public RcBuilderResult BuildTile(IInputGeomProvider geom, RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tx, int ty, RcAtomicInteger progress, int total, bool keepInterResults)
+        public RcBuilderResult BuildTile(IInputGeomProvider geom, RcConfig cfg, Vector3 bmin, Vector3 bmax, int tx, int ty, RcAtomicInteger progress, int total, bool keepInterResults)
         {
             var bcfg = new RcBuilderConfig(cfg, bmin, bmax, tx, ty);
             RcBuilderResult result = Build(geom, bcfg, keepInterResults);

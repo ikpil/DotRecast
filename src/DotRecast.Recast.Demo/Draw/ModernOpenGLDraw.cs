@@ -1,5 +1,6 @@
 using System;
 using Silk.NET.OpenGL;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Recast.Demo.Draw;
@@ -282,13 +283,13 @@ void main(){{
         vertices.Add(new OpenGLVertex(pos, color));
     }
 
-    public void Vertex(RcVec3f pos, int color)
+    public void Vertex(Vector3 pos, int color)
     {
         vertices.Add(new OpenGLVertex(pos, color));
     }
 
 
-    public void Vertex(RcVec3f pos, int color, RcVec2f uv)
+    public void Vertex(Vector3 pos, int color, Vector2 uv)
     {
         vertices.Add(new OpenGLVertex(pos, uv, color));
     }

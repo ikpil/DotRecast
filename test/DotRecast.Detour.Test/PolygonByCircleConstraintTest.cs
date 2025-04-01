@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 */
 
 using DotRecast.Core.Collections;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 using NUnit.Framework;
 
@@ -31,7 +32,7 @@ public class PolygonByCircleConstraintTest
     public void ShouldHandlePolygonFullyInsideCircle()
     {
         float[] polygon = { -2, 0, 2, 2, 0, 2, 2, 0, -2, -2, 0, -2 };
-        RcVec3f center = new RcVec3f(1, 0, 1);
+        Vector3 center = new Vector3(1, 0, 1);
         RcFixedArray256<float> constrained = new RcFixedArray256<float>();
 
         _constraint.Apply(polygon, center, 6, constrained.AsSpan(), out var ncverts);
@@ -43,7 +44,7 @@ public class PolygonByCircleConstraintTest
     {
         int expectedSize = 21;
         float[] polygon = { -2, 0, 2, 2, 0, 2, 2, 0, -2, -2, 0, -2 };
-        RcVec3f center = new RcVec3f(2, 0, 0);
+        Vector3 center = new Vector3(2, 0, 0);
         RcFixedArray256<float> constrained = new RcFixedArray256<float>();
 
         _constraint.Apply(polygon, center, 3, constrained.AsSpan(), out var ncverts);
@@ -56,7 +57,7 @@ public class PolygonByCircleConstraintTest
     {
         int expectedSize = 12 * 3;
         float[] polygon = { -4, 0, 0, -3, 0, 3, 2, 0, 3, 3, 0, -3, -2, 0, -4 };
-        RcVec3f center = new RcVec3f(-1, 0, -1);
+        Vector3 center = new Vector3(-1, 0, -1);
         RcFixedArray256<float> constrained = new RcFixedArray256<float>();
 
         _constraint.Apply(polygon, center, 2, constrained.AsSpan(), out var ncverts);
@@ -76,7 +77,7 @@ public class PolygonByCircleConstraintTest
     {
         int expectedSize = 9 * 3;
         float[] polygon = { -4, 0, 0, -3, 0, 3, 2, 0, 3, 3, 0, -3, -2, 0, -4 };
-        RcVec3f center = new RcVec3f(-2, 0, -1);
+        Vector3 center = new Vector3(-2, 0, -1);
         RcFixedArray256<float> constrained = new RcFixedArray256<float>();
 
         _constraint.Apply(polygon, center, 3, constrained.AsSpan(), out var ncverts);
@@ -90,7 +91,7 @@ public class PolygonByCircleConstraintTest
     {
         int expectedSize = 7 * 3;
         float[] polygon = { -4, 0, 0, -3, 0, 3, 2, 0, 3, 3, 0, -3, -2, 0, -4 };
-        RcVec3f center = new RcVec3f(4, 0, 0);
+        Vector3 center = new Vector3(4, 0, 0);
         RcFixedArray256<float> constrained = new RcFixedArray256<float>();
 
         _constraint.Apply(polygon, center, 4, constrained.AsSpan(), out var ncverts);

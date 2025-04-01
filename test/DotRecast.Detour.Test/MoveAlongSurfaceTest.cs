@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 using NUnit.Framework;
 
@@ -56,13 +57,13 @@ public class MoveAlongSurfaceTest : AbstractDetourTest
         }
     };
 
-    private static readonly RcVec3f[] POSITION =
+    private static readonly Vector3[] POSITION =
     {
-        new RcVec3f(6.457663f, 10.197294f, -18.334061f),
-        new RcVec3f(-1.433933f, 10.197294f, -1.359993f),
-        new RcVec3f(12.184784f, 9.997294f, -18.941269f),
-        new RcVec3f(0.863553f, 10.197294f, -10.310320f),
-        new RcVec3f(18.784092f, 10.197294f, 3.054368f),
+        new Vector3(6.457663f, 10.197294f, -18.334061f),
+        new Vector3(-1.433933f, 10.197294f, -1.359993f),
+        new Vector3(12.184784f, 9.997294f, -18.941269f),
+        new Vector3(0.863553f, 10.197294f, -10.310320f),
+        new Vector3(18.784092f, 10.197294f, 3.054368f),
     };
 
     [Test]
@@ -74,8 +75,8 @@ public class MoveAlongSurfaceTest : AbstractDetourTest
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
-            RcVec3f startPos = startPoss[i];
-            RcVec3f endPos = endPoss[i];
+            Vector3 startPos = startPoss[i];
+            Vector3 endPos = endPoss[i];
             var status = query.MoveAlongSurface(startRef, startPos, endPos, filter, out var result, visited, out var nvisited, MAX_VISITED);
             Assert.That(status.Succeeded(), Is.True);
 

@@ -1,3 +1,4 @@
+using System.Numerics;
 using DotRecast.Core.Numerics;
 using static DotRecast.Recast.Toolset.Gizmos.RcGizmoHelper;
 
@@ -8,9 +9,9 @@ namespace DotRecast.Recast.Toolset.Gizmos
         public readonly float[] vertices;
         public readonly int[] triangles;
         public readonly float radius;
-        public readonly RcVec3f center;
+        public readonly Vector3 center;
 
-        public RcSphereGizmo(RcVec3f center, float radius)
+        public RcSphereGizmo(Vector3 center, float radius)
         {
             this.center = center;
             this.radius = radius;

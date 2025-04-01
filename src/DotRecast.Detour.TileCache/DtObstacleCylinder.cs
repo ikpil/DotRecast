@@ -1,10 +1,11 @@
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour.TileCache
 {
     public class DtObstacleCylinder
     {
-        public RcVec3f pos;
+        public Vector3 pos;
         public float radius;
         public float height;
     }

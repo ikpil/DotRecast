@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour.Crowd
@@ -78,7 +79,7 @@ namespace DotRecast.Detour.Crowd
             NormalizeArray(m_tpen, m_nsamples);
         }
 
-        public void AddSample(RcVec3f vel, float ssize, float pen, float vpen, float vcpen, float spen, float tpen)
+        public void AddSample(Vector3 vel, float ssize, float pen, float vpen, float vcpen, float spen, float tpen)
         {
             if (m_nsamples >= m_maxSamples)
                 return;
@@ -99,9 +100,9 @@ namespace DotRecast.Detour.Crowd
             return m_nsamples;
         }
 
-        public RcVec3f GetSampleVelocity(int i)
+        public Vector3 GetSampleVelocity(int i)
         {
-            RcVec3f vel = new RcVec3f();
+            Vector3 vel = new Vector3();
             vel.X = m_vel[i * 3];
             vel.Y = m_vel[i * 3 + 1];
             vel.Z = m_vel[i * 3 + 2];

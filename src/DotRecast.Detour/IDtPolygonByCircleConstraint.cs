@@ -18,12 +18,13 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
 {
     public interface IDtPolygonByCircleConstraint
     {
-        bool Apply(Span<float> polyVerts, RcVec3f circleCenter, float radius, Span<float> constrainedVerts, out int constrainedVertCount);
+        bool Apply(Span<float> polyVerts, Vector3 circleCenter, float radius, Span<float> constrainedVerts, out int constrainedVertCount);
     }
 }

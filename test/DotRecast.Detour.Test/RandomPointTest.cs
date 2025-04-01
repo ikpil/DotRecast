@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 
 using System;
 using DotRecast.Core;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 using NUnit.Framework;
 

@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour;
 using DotRecast.Recast.Toolset.Builder;
@@ -80,8 +81,8 @@ public class NavMeshRenderer
         if (geom != null)
         {
             int gw = 0, gh = 0;
-            RcVec3f bmin = geom.GetMeshBoundsMin();
-            RcVec3f bmax = geom.GetMeshBoundsMax();
+            Vector3 bmin = geom.GetMeshBoundsMin();
+            Vector3 bmax = geom.GetMeshBoundsMax();
             CalcGridSize(bmin, bmax, settings.cellSize, out gw, out gh);
             int tw = (gw + settings.tileSize - 1) / settings.tileSize;
             int th = (gh + settings.tileSize - 1) / settings.tileSize;
@@ -210,8 +211,8 @@ public class NavMeshRenderer
     private void DrawGeomBounds(DemoInputGeomProvider geom)
     {
         // Draw bounds
-        RcVec3f bmin = geom.GetMeshBoundsMin();
-        RcVec3f bmax = geom.GetMeshBoundsMax();
+        Vector3 bmin = geom.GetMeshBoundsMin();
+        Vector3 bmax = geom.GetMeshBoundsMax();
         _debugDraw.DebugDrawBoxWire(bmin.X, bmin.Y, bmin.Z, bmax.X, bmax.Y, bmax.Z,
             DebugDraw.DuRGBA(255, 255, 255, 128), 1.0f);
         _debugDraw.Begin(DebugDrawPrimitives.POINTS, 5.0f);
@@ -260,8 +261,8 @@ public class NavMeshRenderer
             int col = DebugDraw.DuTransCol(DebugDraw.AreaToCol(vol.areaMod.GetMaskedValue()), 32);
             for (int j = 0, k = vol.verts.Length - 3; j < vol.verts.Length; k = j, j += 3)
             {
-                var va = new RcVec3f(vol.verts[k], vol.verts[k + 1], vol.verts[k + 2]);
-                var vb = new RcVec3f(vol.verts[j], vol.verts[j + 1], vol.verts[j + 2]);
+                var va = new Vector3(vol.verts[k], vol.verts[k + 1], vol.verts[k + 2]);
+                var vb = new Vector3(vol.verts[j], vol.verts[j + 1], vol.verts[j + 2]);
 
                 _debugDraw.Vertex(vol.verts[0], vol.hmax, vol.verts[2], col);
                 _debugDraw.Vertex(vb.X, vol.hmax, vb.Z, col);
@@ -285,8 +286,8 @@ public class NavMeshRenderer
             int col = DebugDraw.DuTransCol(DebugDraw.AreaToCol(vol.areaMod.GetMaskedValue()), 220);
             for (int j = 0, k = vol.verts.Length - 3; j < vol.verts.Length; k = j, j += 3)
             {
-                var va = new RcVec3f(vol.verts[k], vol.verts[k + 1], vol.verts[k + 2]);
-                var vb = new RcVec3f(vol.verts[j], vol.verts[j + 1], vol.verts[j + 2]);
+                var va = new Vector3(vol.verts[k], vol.verts[k + 1], vol.verts[k + 2]);
+                var vb = new Vector3(vol.verts[j], vol.verts[j + 1], vol.verts[j + 2]);
                 _debugDraw.Vertex(va.X, vol.hmin, va.Z, DebugDraw.DuDarkenCol(col));
                 _debugDraw.Vertex(vb.X, vol.hmin, vb.Z, DebugDraw.DuDarkenCol(col));
                 _debugDraw.Vertex(va.X, vol.hmax, va.Z, col);

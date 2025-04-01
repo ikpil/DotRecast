@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 using NUnit.Framework;
 
@@ -32,17 +33,17 @@ public class DtPathCorridorTest
     public void SetUp()
     {
         corridor.Init(256);
-        corridor.Reset(0, new RcVec3f(10, 20, 30));
+        corridor.Reset(0, new Vector3(10, 20, 30));
     }
 
     [Test]
     public void ShouldKeepOriginalPathInFindCornersWhenNothingCanBePruned()
     {
         var straightPath = new DtStraightPath[4];
-        straightPath[0] = new DtStraightPath(new RcVec3f(11, 20, 30.00001f), 0, 0);
-        straightPath[1] = new DtStraightPath(new RcVec3f(12, 20, 30.00002f), 0, 0);
-        straightPath[2] = new DtStraightPath(new RcVec3f(11f, 21, 32f), 0, 0);
-        straightPath[3] = new DtStraightPath(new RcVec3f(11f, 21, 32f), 0, 0);
+        straightPath[0] = new DtStraightPath(new Vector3(11, 20, 30.00001f), 0, 0);
+        straightPath[1] = new DtStraightPath(new Vector3(12, 20, 30.00002f), 0, 0);
+        straightPath[2] = new DtStraightPath(new Vector3(11f, 21, 32f), 0, 0);
+        straightPath[3] = new DtStraightPath(new Vector3(11f, 21, 32f), 0, 0);
         var query = new DtNavMeshQueryMock(straightPath, DtStatus.DT_SUCCESS);
 
         Span<DtStraightPath> path = stackalloc DtStraightPath[8];
@@ -56,11 +57,11 @@ public class DtPathCorridorTest
     public void ShouldPrunePathInFindCorners()
     {
         DtStraightPath[] straightPath = new DtStraightPath[5];
-        straightPath[0] = (new DtStraightPath(new RcVec3f(10, 20, 30.00001f), 0, 0)); // too close
-        straightPath[1] = (new DtStraightPath(new RcVec3f(10, 20, 30.00002f), 0, 0)); // too close
-        straightPath[2] = (new DtStraightPath(new RcVec3f(11f, 21, 32f), 0, 0));
-        straightPath[3] = (new DtStraightPath(new RcVec3f(12f, 22, 33f), DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION, 0)); // offmesh
-        straightPath[4] = (new DtStraightPath(new RcVec3f(11f, 21, 32f), DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION, 0)); // offmesh
+        straightPath[0] = (new DtStraightPath(new Vector3(10, 20, 30.00001f), 0, 0)); // too close
+        straightPath[1] = (new DtStraightPath(new Vector3(10, 20, 30.00002f), 0, 0)); // too close
+        straightPath[2] = (new DtStraightPath(new Vector3(11f, 21, 32f), 0, 0));
+        straightPath[3] = (new DtStraightPath(new Vector3(12f, 22, 33f), DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION, 0)); // offmesh
+        straightPath[4] = (new DtStraightPath(new Vector3(11f, 21, 32f), DtStraightPathFlags.DT_STRAIGHTPATH_OFFMESH_CONNECTION, 0)); // offmesh
 
         var query = new DtNavMeshQueryMock(straightPath, DtStatus.DT_SUCCESS);
 

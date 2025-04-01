@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Recast
@@ -36,16 +37,16 @@ namespace DotRecast.Recast
         public readonly int height;
 
         /** The minimum bounds of the field's AABB. [(x, y, z)] [Units: wu] **/
-        public readonly RcVec3f bmin = new RcVec3f();
+        public readonly Vector3 bmin = new Vector3();
 
         /** The maximum bounds of the field's AABB. [(x, y, z)] [Units: wu] **/
-        public readonly RcVec3f bmax = new RcVec3f();
+        public readonly Vector3 bmax = new Vector3();
 
-        public RcBuilderConfig(RcConfig cfg, RcVec3f bmin, RcVec3f bmax) : this(cfg, bmin, bmax, 0, 0)
+        public RcBuilderConfig(RcConfig cfg, Vector3 bmin, Vector3 bmax) : this(cfg, bmin, bmax, 0, 0)
         {
         }
 
-        public RcBuilderConfig(RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tileX, int tileZ)
+        public RcBuilderConfig(RcConfig cfg, Vector3 bmin, Vector3 bmax, int tileX, int tileZ)
         {
             this.tileX = tileX;
             this.tileZ = tileZ;

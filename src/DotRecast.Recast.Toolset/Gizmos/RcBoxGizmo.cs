@@ -1,3 +1,4 @@
+using System.Numerics;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour.Dynamic.Colliders;
 
@@ -11,28 +12,28 @@ namespace DotRecast.Recast.Toolset.Gizmos
             2, 6, 7, 2, 7, 3, 4, 0, 3, 4, 3, 7
         };
 
-        public static readonly RcVec3f[] VERTS =
+        public static readonly Vector3[] VERTS =
         {
-            new RcVec3f(-1f, -1f, -1f),
-            new RcVec3f(1f, -1f, -1f),
-            new RcVec3f(1f, -1f, 1f),
-            new RcVec3f(-1f, -1f, 1f),
-            new RcVec3f(-1f, 1f, -1f),
-            new RcVec3f(1f, 1f, -1f),
-            new RcVec3f(1f, 1f, 1f),
-            new RcVec3f(-1f, 1f, 1f),
+            new Vector3(-1f, -1f, -1f),
+            new Vector3(1f, -1f, -1f),
+            new Vector3(1f, -1f, 1f),
+            new Vector3(-1f, -1f, 1f),
+            new Vector3(-1f, 1f, -1f),
+            new Vector3(1f, 1f, -1f),
+            new Vector3(1f, 1f, 1f),
+            new Vector3(-1f, 1f, 1f),
         };
 
         public readonly float[] vertices = new float[8 * 3];
-        public readonly RcVec3f center;
-        public readonly RcVec3f[] halfEdges;
+        public readonly Vector3 center;
+        public readonly Vector3[] halfEdges;
 
-        public RcBoxGizmo(RcVec3f center, RcVec3f extent, RcVec3f forward, RcVec3f up) :
+        public RcBoxGizmo(Vector3 center, Vector3 extent, Vector3 forward, Vector3 up) :
             this(center, DtBoxCollider.GetHalfEdges(up, forward, extent))
         {
         }
 
-        public RcBoxGizmo(RcVec3f center, RcVec3f[] halfEdges)
+        public RcBoxGizmo(Vector3 center, Vector3[] halfEdges)
         {
             this.center = center;
             this.halfEdges = halfEdges;

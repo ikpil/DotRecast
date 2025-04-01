@@ -1,11 +1,12 @@
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Recast.Geom
 {
     public class BoundsItem
     {
-        public RcVec2f bmin;
-        public RcVec2f bmax;
+        public Vector2 bmin;
+        public Vector2 bmax;
         public int i;
     }
 }

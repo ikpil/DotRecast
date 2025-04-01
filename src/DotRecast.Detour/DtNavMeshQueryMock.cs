@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
@@ -16,7 +17,7 @@ namespace DotRecast.Detour
             _status = status;
         }
 
-        public override DtStatus FindStraightPath(RcVec3f startPos, RcVec3f endPos,
+        public override DtStatus FindStraightPath(Vector3 startPos, Vector3 endPos,
             List<long> path, int pathSize,
             Span<DtStraightPath> straightPath, out int straightPathCount, int maxStraightPath,
             int options)

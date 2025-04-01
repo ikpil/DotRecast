@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 using DotRecast.Core;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 using DotRecast.Recast.Geom;
 
@@ -45,8 +46,8 @@ namespace DotRecast.Recast
                 float[] verts = geom.GetVerts();
                 if (cfg.UseTiles)
                 {
-                    RcVec2f tbmin;
-                    RcVec2f tbmax;
+                    Vector2 tbmin;
+                    Vector2 tbmax;
                     tbmin.X = builderCfg.bmin.X;
                     tbmin.Y = builderCfg.bmin.Z;
                     tbmax.X = builderCfg.bmax.X;

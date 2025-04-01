@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
@@ -29,7 +30,7 @@ namespace DotRecast.Detour
             return temp;
         }
 
-        public static void ScaleCircle(ReadOnlySpan<float> src, RcVec3f center, float radius, Span<float> dst)
+        public static void ScaleCircle(ReadOnlySpan<float> src, Vector3 center, float radius, Span<float> dst)
         {
             for (int i = 0; i < CIRCLE_SEGMENTS; i++)
             {
@@ -40,7 +41,7 @@ namespace DotRecast.Detour
         }
 
 
-        public bool Apply(Span<float> verts, RcVec3f center, float radius, Span<float> constrainedVerts, out int constrainedVertCount)
+        public bool Apply(Span<float> verts, Vector3 center, float radius, Span<float> constrainedVerts, out int constrainedVertCount)
         {
             float radiusSqr = radius * radius;
             int outsideVertex = -1;

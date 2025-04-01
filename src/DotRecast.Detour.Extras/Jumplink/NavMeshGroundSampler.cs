@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 using DotRecast.Core;
 using DotRecast.Core.Numerics;
 using DotRecast.Recast;
@@ -10,7 +11,7 @@ namespace DotRecast.Detour.Extras.Jumplink
         public override void Sample(JumpLinkBuilderConfig acfg, RcBuilderResult result, EdgeSampler es)
         {
             DtNavMeshQuery navMeshQuery = CreateNavMesh(result, acfg.agentRadius, acfg.agentHeight, acfg.agentClimb);
-            SampleGround(acfg, es, (RcVec3f pt, float heightRange, out float height) => GetNavMeshHeight(navMeshQuery, pt, acfg.cellSize, heightRange, out height));
+            SampleGround(acfg, es, (Vector3 pt, float heightRange, out float height) => GetNavMeshHeight(navMeshQuery, pt, acfg.cellSize, heightRange, out height));
         }
 
         private DtNavMeshQuery CreateNavMesh(RcBuilderResult r, float agentRadius, float agentHeight, float agentClimb)
@@ -47,11 +48,11 @@ namespace DotRecast.Detour.Extras.Jumplink
         }
 
 
-        private bool GetNavMeshHeight(DtNavMeshQuery navMeshQuery, RcVec3f pt, float cs, float heightRange, out float height)
+        private bool GetNavMeshHeight(DtNavMeshQuery navMeshQuery, Vector3 pt, float cs, float heightRange, out float height)
         {
             height = 0;
 
-            RcVec3f halfExtents = new RcVec3f(cs, heightRange, cs);
+            Vector3 halfExtents = new Vector3(cs, heightRange, cs);
             float maxHeight = pt.Y + heightRange;
             RcAtomicBoolean found = new RcAtomicBoolean();
             RcAtomicFloat minHeight = new RcAtomicFloat(pt.Y);

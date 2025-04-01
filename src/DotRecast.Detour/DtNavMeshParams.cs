@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
@@ -28,7 +29,7 @@ namespace DotRecast.Detour
     /// @ingroup detour
     public struct DtNavMeshParams
     {
-        public RcVec3f orig; //< The world space origin of the navigation mesh's tile space. [(x, y, z)]
+        public Vector3 orig; //< The world space origin of the navigation mesh's tile space. [(x, y, z)]
         public float tileWidth; //< The width of each tile. (Along the x-axis.)
         public float tileHeight; //< The height of each tile. (Along the z-axis.)
         public int maxTiles; //< The maximum number of tiles the navigation mesh can contain. This and maxPolys are used to calculate how many bits are needed to identify tiles and polygons uniquely.

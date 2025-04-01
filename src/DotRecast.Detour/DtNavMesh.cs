@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using DotRecast.Core;
 using DotRecast.Core.Numerics;
 
@@ -32,7 +33,7 @@ namespace DotRecast.Detour
     public class DtNavMesh
     {
         private DtNavMeshParams m_params; //< Current initialization params. TODO: do not store this info twice.
-        private RcVec3f m_orig; // < Origin of the tile (0,0)
+        private Vector3 m_orig; // < Origin of the tile (0,0)
         private float m_tileWidth; // < Dimensions of each tile.
         private float m_tileHeight; // < Dimensions of each tile.
         private int m_maxTiles; // < Max number of tiles.
@@ -146,7 +147,7 @@ namespace DotRecast.Detour
         ///  @param[in]	pos  The world position for the query. [(x, y, z)]
         ///  @param[out]	tx		The tile's x-location. (x, y)
         ///  @param[out]	ty		The tile's y-location. (x, y)
-        public void CalcTileLoc(RcVec3f pos, out int tx, out int ty)
+        public void CalcTileLoc(Vector3 pos, out int tx, out int ty)
         {
             tx = (int)MathF.Floor((pos.X - m_orig.X) / m_tileWidth);
             ty = (int)MathF.Floor((pos.Z - m_orig.Z) / m_tileHeight);
@@ -244,7 +245,7 @@ namespace DotRecast.Detour
         // TODO: These methods are duplicates from dtNavMeshQuery, but are needed for off-mesh connection finding.
 
         /// Queries polygons within a tile.
-        private List<long> QueryPolygonsInTile(DtMeshTile tile, RcVec3f qmin, RcVec3f qmax)
+        private List<long> QueryPolygonsInTile(DtMeshTile tile, Vector3 qmin, Vector3 qmax)
         {
             List<long> polys = new List<long>();
             if (tile.data.bvTree != null)
@@ -300,8 +301,8 @@ namespace DotRecast.Detour
             }
             else
             {
-                RcVec3f bmin = new RcVec3f();
-                RcVec3f bmax = new RcVec3f();
+                Vector3 bmin = new Vector3();
+                Vector3 bmax = new Vector3();
                 long @base = GetPolyRefBase(tile);
                 for (int i = 0; i < tile.data.header.polyCount; ++i)
                 {
@@ -319,8 +320,8 @@ namespace DotRecast.Detour
                     for (int j = 1; j < p.vertCount; ++j)
                     {
                         v = p.verts[j] * 3;
-                        bmin = RcVec3f.Min(bmin, tile.data.verts.ToVec3(v));
-                        bmax = RcVec3f.Max(bmax, tile.data.verts.ToVec3(v));
+                        bmin = Vector3.Min(bmin, tile.data.verts.ToVec3(v));
+                        bmax = Vector3.Max(bmax, tile.data.verts.ToVec3(v));
                     }
 
                     if (DtUtils.OverlapBounds(qmin, qmax, bmin, bmax))
@@ -794,7 +795,7 @@ namespace DotRecast.Detour
                     continue;
                 }
 
-                var ext = new RcVec3f()
+                var ext = new Vector3()
                 {
                     X = targetCon.rad,
                     Y = target.data.header.walkableClimb,
@@ -802,7 +803,7 @@ namespace DotRecast.Detour
                 };
 
                 // Find polygon to connect to.
-                RcVec3f p = targetCon.pos[1];
+                Vector3 p = targetCon.pos[1];
                 var refs = FindNearestPolyInTile(tile, p, ext, out var nearestPt);
                 if (refs == 0)
                 {
@@ -859,14 +860,14 @@ namespace DotRecast.Detour
 
             cons.Clear();
 
-            RcVec2f amin = RcVec2f.Zero;
-            RcVec2f amax = RcVec2f.Zero;
+            Vector2 amin = Vector2.Zero;
+            Vector2 amax = Vector2.Zero;
             CalcSlabEndPoints(verts, va, vb, ref amin, ref amax, side);
             float apos = GetSlabCoord(verts, va, side);
 
             // Remove links pointing to 'side' and compact the links array.
-            RcVec2f bmin = RcVec2f.Zero;
-            RcVec2f bmax = RcVec2f.Zero;
+            Vector2 bmin = Vector2.Zero;
+            Vector2 bmax = Vector2.Zero;
             int m = DT_EXT_LINK | side;
             int n = 0;
             long @base = GetPolyRefBase(tile);
@@ -913,7 +914,7 @@ namespace DotRecast.Detour
             return n;
         }
 
-        private bool OverlapSlabs(RcVec2f amin, RcVec2f amax, RcVec2f bmin, RcVec2f bmax, float px, float py)
+        private bool OverlapSlabs(Vector2 amin, Vector2 amax, Vector2 bmin, Vector2 bmax, float px, float py)
         {
             // Check for horizontal overlap.
             // The segment is shrunken a little so that slabs which touch
@@ -969,7 +970,7 @@ namespace DotRecast.Detour
                 DtOffMeshConnection con = tile.data.offMeshCons[i];
                 DtPoly poly = tile.data.polys[con.poly];
 
-                var ext = new RcVec3f()
+                var ext = new Vector3()
                 {
                     X = con.rad,
                     Y = tile.data.header.walkableClimb,
@@ -983,7 +984,7 @@ namespace DotRecast.Detour
                     continue;
                 }
 
-                RcVec3f[] p = con.pos; // First vertex
+                Vector3[] p = con.pos; // First vertex
                 // findNearestPoly may return too optimistic results, further check
                 // to make sure.
                 if (RcMath.Sqr(nearestPt.X - p[0].X) + RcMath.Sqr(nearestPt.Z - p[0].Z) > RcMath.Sqr(con.rad))
@@ -1029,7 +1030,7 @@ namespace DotRecast.Detour
      * @param pos
      * @return
      */
-        RcVec3f ClosestPointOnDetailEdges(DtMeshTile tile, DtPoly poly, RcVec3f pos, bool onlyBoundary)
+        Vector3 ClosestPointOnDetailEdges(DtMeshTile tile, DtPoly poly, Vector3 pos, bool onlyBoundary)
         {
             const int ANY_BOUNDARY_EDGE = (DtDetailTriEdgeFlags.DT_DETAIL_EDGE_BOUNDARY << 0) |
                                           (DtDetailTriEdgeFlags.DT_DETAIL_EDGE_BOUNDARY << 2) |
@@ -1037,10 +1038,10 @@ namespace DotRecast.Detour
             int ip = poly.index;
             float dmin = float.MaxValue;
             float tmin = 0;
-            RcVec3f pmin = new RcVec3f();
-            RcVec3f pmax = new RcVec3f();
+            Vector3 pmin = new Vector3();
+            Vector3 pmax = new Vector3();
 
-            Span<RcVec3f> tempV = stackalloc RcVec3f[3];
+            Span<Vector3> tempV = stackalloc Vector3[3];
             if (tile.data.detailMeshes != null)
             {
                 ref DtPolyDetail pd = ref tile.data.detailMeshes[ip];
@@ -1053,13 +1054,13 @@ namespace DotRecast.Detour
                         continue;
                     }
 
-                    Span<RcVec3f> v = tempV;
+                    Span<Vector3> v = tempV;
                     for (int j = 0; j < 3; ++j)
                     {
                         if (tris[ti + j] < poly.vertCount)
                         {
                             int index = poly.verts[tris[ti + j]] * 3;
-                            v[j] = new RcVec3f
+                            v[j] = new Vector3
                             {
                                 X = tile.data.verts[index],
                                 Y = tile.data.verts[index + 1],
@@ -1069,7 +1070,7 @@ namespace DotRecast.Detour
                         else
                         {
                             int index = (pd.vertBase + (tris[ti + j] - poly.vertCount)) * 3;
-                            v[j] = new RcVec3f
+                            v[j] = new Vector3
                             {
                                 X = tile.data.detailVerts[index],
                                 Y = tile.data.detailVerts[index + 1],
@@ -1101,7 +1102,7 @@ namespace DotRecast.Detour
             }
             else
             {
-                Span<RcVec3f> v = tempV.Slice(0, 2);
+                Span<Vector3> v = tempV.Slice(0, 2);
                 for (int j = 0; j < poly.vertCount; ++j)
                 {
                     int k = (j + 1) % poly.vertCount;
@@ -1123,10 +1124,10 @@ namespace DotRecast.Detour
                 }
             }
 
-            return RcVec3f.Lerp(pmin, pmax, tmin);
+            return Vector3.Lerp(pmin, pmax, tmin);
         }
 
-        public bool GetPolyHeight(DtMeshTile tile, DtPoly poly, RcVec3f pos, out float height)
+        public bool GetPolyHeight(DtMeshTile tile, DtPoly poly, Vector3 pos, out float height)
         {
             height = 0;
 
@@ -1152,20 +1153,20 @@ namespace DotRecast.Detour
             }
 
             // Find height at the location.
-            Span<RcVec3f> tempV = stackalloc RcVec3f[3];
+            Span<Vector3> tempV = stackalloc Vector3[3];
             if (tile.data.detailMeshes != null)
             {
                 ref DtPolyDetail pd = ref tile.data.detailMeshes[ip];
                 for (int j = 0; j < pd.triCount; ++j)
                 {
                     int t = (pd.triBase + j) * 4;
-                    Span<RcVec3f> v = tempV;
+                    Span<Vector3> v = tempV;
                     for (int k = 0; k < 3; ++k)
                     {
                         if (tile.data.detailTris[t + k] < poly.vertCount)
                         {
                             int index = poly.verts[tile.data.detailTris[t + k]] * 3;
-                            v[k] = new RcVec3f
+                            v[k] = new Vector3
                             {
                                 X = tile.data.verts[index],
                                 Y = tile.data.verts[index + 1],
@@ -1175,7 +1176,7 @@ namespace DotRecast.Detour
                         else
                         {
                             int index = (pd.vertBase + (tile.data.detailTris[t + k] - poly.vertCount)) * 3;
-                            v[k] = new RcVec3f
+                            v[k] = new Vector3
                             {
                                 X = tile.data.detailVerts[index],
                                 Y = tile.data.detailVerts[index + 1],
@@ -1193,7 +1194,7 @@ namespace DotRecast.Detour
             }
             else
             {
-                Span<RcVec3f> v = tempV;
+                Span<Vector3> v = tempV;
                 v[0].X = tile.data.verts[poly.verts[0] * 3];
                 v[0].Y = tile.data.verts[poly.verts[0] * 3 + 1];
                 v[0].Z = tile.data.verts[poly.verts[0] * 3 + 2];
@@ -1223,7 +1224,7 @@ namespace DotRecast.Detour
             return true;
         }
 
-        public void ClosestPointOnPoly(long refs, RcVec3f pos, out RcVec3f closest, out bool posOverPoly)
+        public void ClosestPointOnPoly(long refs, Vector3 pos, out Vector3 closest, out bool posOverPoly)
         {
             GetTileAndPolyByRefUnsafe(refs, out var tile, out var poly);
             closest = pos;
@@ -1241,11 +1242,11 @@ namespace DotRecast.Detour
             if (poly.GetPolyType() == DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
                 int i = poly.verts[0] * 3;
-                var v0 = new RcVec3f(tile.data.verts[i], tile.data.verts[i + 1], tile.data.verts[i + 2]);
+                var v0 = new Vector3(tile.data.verts[i], tile.data.verts[i + 1], tile.data.verts[i + 2]);
                 i = poly.verts[1] * 3;
-                var v1 = new RcVec3f(tile.data.verts[i], tile.data.verts[i + 1], tile.data.verts[i + 2]);
+                var v1 = new Vector3(tile.data.verts[i], tile.data.verts[i + 1], tile.data.verts[i + 2]);
                 DtUtils.DistancePtSegSqr2D(pos, v0, v1, out var t);
-                closest = RcVec3f.Lerp(v0, v1, t);
+                closest = Vector3.Lerp(v0, v1, t);
                 return;
             }
 
@@ -1254,13 +1255,13 @@ namespace DotRecast.Detour
         }
 
         /// Find nearest polygon within a tile.
-        private long FindNearestPolyInTile(DtMeshTile tile, RcVec3f center, RcVec3f halfExtents, out RcVec3f nearestPt)
+        private long FindNearestPolyInTile(DtMeshTile tile, Vector3 center, Vector3 halfExtents, out Vector3 nearestPt)
         {
-            nearestPt = RcVec3f.Zero;
+            nearestPt = Vector3.Zero;
 
             bool overPoly = false;
-            RcVec3f bmin = RcVec3f.Subtract(center, halfExtents);
-            RcVec3f bmax = RcVec3f.Add(center, halfExtents);
+            Vector3 bmin = Vector3.Subtract(center, halfExtents);
+            Vector3 bmax = Vector3.Add(center, halfExtents);
 
             // Get nearby polygons from proximity grid.
             List<long> polys = QueryPolygonsInTile(tile, bmin, bmax);
@@ -1276,7 +1277,7 @@ namespace DotRecast.Detour
 
                 // If a point is directly over a polygon and closer than
                 // climb height, favor that instead of straight line nearest point.
-                RcVec3f diff = RcVec3f.Subtract(center, closestPtPoly);
+                Vector3 diff = Vector3.Subtract(center, closestPtPoly);
                 if (posOverPoly)
                 {
                     d = MathF.Abs(diff.Y) - tile.data.header.walkableClimb;
@@ -1463,7 +1464,7 @@ namespace DotRecast.Detour
         /// inside a normal polygon. So an off-mesh connection is "entered" from a 
         /// normal polygon at one of its endpoints. This is the polygon identified by 
         /// the prevRef parameter.
-        public DtStatus GetOffMeshConnectionPolyEndPoints(long prevRef, long polyRef, ref RcVec3f startPos, ref RcVec3f endPos)
+        public DtStatus GetOffMeshConnectionPolyEndPoints(long prevRef, long polyRef, ref Vector3 startPos, ref Vector3 endPos)
         {
             if (polyRef == 0)
             {
@@ -1681,9 +1682,9 @@ namespace DotRecast.Detour
             return DtStatus.DT_SUCCESS;
         }
 
-        public RcVec3f GetPolyCenter(long refs)
+        public Vector3 GetPolyCenter(long refs)
         {
-            RcVec3f center = RcVec3f.Zero;
+            Vector3 center = Vector3.Zero;
 
             var status = GetTileAndPolyByRef(refs, out var tile, out var poly);
             if (status.Succeeded())
@@ -1705,10 +1706,10 @@ namespace DotRecast.Detour
             return center;
         }
 
-        public void ComputeBounds(out RcVec3f bmin, out RcVec3f bmax)
+        public void ComputeBounds(out Vector3 bmin, out Vector3 bmax)
         {
-            bmin = new RcVec3f(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
-            bmax = new RcVec3f(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
+            bmin = new Vector3(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
+            bmax = new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
             for (int t = 0; t < GetMaxTiles(); ++t)
             {
                 DtMeshTile tile = GetTile(t);

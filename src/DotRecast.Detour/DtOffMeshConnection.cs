@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
@@ -27,7 +28,7 @@ namespace DotRecast.Detour
     public class DtOffMeshConnection
     {
         /// The endpoints of the connection. [(ax, ay, az, bx, by, bz)]
-        public RcVec3f[] pos = new RcVec3f[2];
+        public Vector3[] pos = new Vector3[2];
 
         /// The radius of the endpoints. [Limit: >= 0]
         public float rad;

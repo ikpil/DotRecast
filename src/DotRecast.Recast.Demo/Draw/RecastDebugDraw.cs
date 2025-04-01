@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour;
 using DotRecast.Recast.Toolset.Builder;
@@ -42,9 +43,9 @@ public class RecastDebugDraw : DebugDraw
     {
         float walkableThr = MathF.Cos(walkableSlopeAngle / 180.0f * MathF.PI);
 
-        RcVec2f uva = RcVec2f.Zero;
-        RcVec2f uvb = RcVec2f.Zero;
-        RcVec2f uvc = RcVec2f.Zero;
+        Vector2 uva = Vector2.Zero;
+        Vector2 uvb = Vector2.Zero;
+        Vector2 uvc = Vector2.Zero;
 
         Texture(true);
 
@@ -52,7 +53,7 @@ public class RecastDebugDraw : DebugDraw
         Begin(DebugDrawPrimitives.TRIS);
         for (int i = 0; i < tris.Length; i += 3)
         {
-            RcVec3f norm = new RcVec3f(normals[i], normals[i + 1], normals[i + 2]);
+            Vector3 norm = new Vector3(normals[i], normals[i + 1], normals[i + 2]);
 
             int color;
             char a = (char)(220 * (2 + norm.X + norm.Y) / 4);
@@ -65,9 +66,9 @@ public class RecastDebugDraw : DebugDraw
                 color = DuRGBA(a, a, a, 255);
             }
 
-            RcVec3f va = new RcVec3f(verts[tris[i] * 3], verts[tris[i] * 3 + 1], verts[tris[i] * 3 + 2]);
-            RcVec3f vb = new RcVec3f(verts[tris[i + 1] * 3], verts[tris[i + 1] * 3 + 1], verts[tris[i + 1] * 3 + 2]);
-            RcVec3f vc = new RcVec3f(verts[tris[i + 2] * 3], verts[tris[i + 2] * 3 + 1], verts[tris[i + 2] * 3 + 2]);
+            Vector3 va = new Vector3(verts[tris[i] * 3], verts[tris[i] * 3 + 1], verts[tris[i] * 3 + 2]);
+            Vector3 vb = new Vector3(verts[tris[i + 1] * 3], verts[tris[i + 1] * 3 + 1], verts[tris[i + 1] * 3 + 2]);
+            Vector3 vc = new Vector3(verts[tris[i + 2] * 3], verts[tris[i + 2] * 3 + 1], verts[tris[i + 2] * 3 + 2]);
 
             int ax = 0, ay = 0;
             if (MathF.Abs(norm.Y) > MathF.Abs(norm.Get(ax)))
@@ -187,11 +188,11 @@ public class RecastDebugDraw : DebugDraw
                 }
 
                 DtOffMeshConnection con = tile.data.offMeshCons[i - tile.data.header.offMeshBase];
-                RcVec3f va = new RcVec3f(
+                Vector3 va = new Vector3(
                     tile.data.verts[p.verts[0] * 3], tile.data.verts[p.verts[0] * 3 + 1],
                     tile.data.verts[p.verts[0] * 3 + 2]
                 );
-                RcVec3f vb = new RcVec3f(
+                Vector3 vb = new Vector3(
                     tile.data.verts[p.verts[1] * 3], tile.data.verts[p.verts[1] * 3 + 1],
                     tile.data.verts[p.verts[1] * 3 + 2]
                 );
@@ -300,7 +301,7 @@ public class RecastDebugDraw : DebugDraw
 
         Begin(DebugDrawPrimitives.LINES, linew);
 
-        Span<RcVec3f> tv = stackalloc RcVec3f[3];
+        Span<Vector3> tv = stackalloc Vector3[3];
         for (int i = 0; i < tile.data.header.polyCount; ++i)
         {
             DtPoly p = tile.data.polys[i];
@@ -354,11 +355,11 @@ public class RecastDebugDraw : DebugDraw
                     }
                 }
 
-                var v0 = new RcVec3f(
+                var v0 = new Vector3(
                     tile.data.verts[p.verts[j] * 3], tile.data.verts[p.verts[j] * 3 + 1],
                     tile.data.verts[p.verts[j] * 3 + 2]
                 );
-                var v1 = new RcVec3f(
+                var v1 = new Vector3(
                     tile.data.verts[p.verts[(j + 1) % nj] * 3],
                     tile.data.verts[p.verts[(j + 1) % nj] * 3 + 1],
                     tile.data.verts[p.verts[(j + 1) % nj] * 3 + 2]
@@ -377,7 +378,7 @@ public class RecastDebugDraw : DebugDraw
                             int v = tile.data.detailTris[t + m];
                             if (v < p.vertCount)
                             {
-                                tv[m] = new RcVec3f(
+                                tv[m] = new Vector3(
                                     tile.data.verts[p.verts[v] * 3],
                                     tile.data.verts[p.verts[v] * 3 + 1],
                                     tile.data.verts[p.verts[v] * 3 + 2]
@@ -385,7 +386,7 @@ public class RecastDebugDraw : DebugDraw
                             }
                             else
                             {
-                                tv[m] = new RcVec3f(
+                                tv[m] = new Vector3(
                                     tile.data.detailVerts[(pd.vertBase + (v - p.vertCount)) * 3],
                                     tile.data.detailVerts[(pd.vertBase + (v - p.vertCount)) * 3 + 1],
                                     tile.data.detailVerts[(pd.vertBase + (v - p.vertCount)) * 3 + 2]
@@ -422,7 +423,7 @@ public class RecastDebugDraw : DebugDraw
         End();
     }
 
-    static float DistancePtLine2d(RcVec3f pt, RcVec3f p, RcVec3f q)
+    static float DistancePtLine2d(Vector3 pt, Vector3 p, Vector3 q)
     {
         float pqx = q.X - p.X;
         float pqz = q.Z - p.Z;
@@ -528,7 +529,7 @@ public class RecastDebugDraw : DebugDraw
     {
         float alpha = 1f;
 
-        RcVec3f orig = cset.bmin;
+        Vector3 orig = cset.bmin;
         float cs = cset.cs;
         float ch = cset.ch;
 
@@ -539,7 +540,7 @@ public class RecastDebugDraw : DebugDraw
         for (int i = 0; i < cset.conts.Count; ++i)
         {
             RcContour cont = cset.conts[i];
-            RcVec3f pos = GetContourCenter(cont, orig, cs, ch);
+            Vector3 pos = GetContourCenter(cont, orig, cs, ch);
             for (int j = 0; j < cont.nverts; ++j)
             {
                 int v = j * 4;
@@ -551,7 +552,7 @@ public class RecastDebugDraw : DebugDraw
                 RcContour cont2 = FindContourFromSet(cset, (short)cont.verts[v + 3]);
                 if (cont2 != null)
                 {
-                    RcVec3f pos2 = GetContourCenter(cont2, orig, cs, ch);
+                    Vector3 pos2 = GetContourCenter(cont2, orig, cs, ch);
                     AppendArc(pos.X, pos.Y, pos.Z, pos2.X, pos2.Y, pos2.Z, 0.25f, 0.6f, 0.6f, color);
                 }
             }
@@ -567,16 +568,16 @@ public class RecastDebugDraw : DebugDraw
         {
             RcContour cont = cset.conts[i];
             int col = DuDarkenCol(DuIntToCol(cont.reg, a));
-            RcVec3f pos = GetContourCenter(cont, orig, cs, ch);
+            Vector3 pos = GetContourCenter(cont, orig, cs, ch);
             Vertex(pos, col);
         }
 
         End();
     }
 
-    private RcVec3f GetContourCenter(RcContour cont, RcVec3f orig, float cs, float ch)
+    private Vector3 GetContourCenter(RcContour cont, Vector3 orig, float cs, float ch)
     {
-        RcVec3f center = new RcVec3f();
+        Vector3 center = new Vector3();
         center.X = 0;
         center.Y = 0;
         center.Z = 0;
@@ -618,7 +619,7 @@ public class RecastDebugDraw : DebugDraw
 
     public void DebugDrawRawContours(RcContourSet cset, float alpha)
     {
-        RcVec3f orig = cset.bmin;
+        Vector3 orig = cset.bmin;
         float cs = cset.cs;
         float ch = cset.ch;
 
@@ -694,7 +695,7 @@ public class RecastDebugDraw : DebugDraw
     public void DebugDrawContours(RcContourSet cset)
     {
         float alpha = 1f;
-        RcVec3f orig = cset.bmin;
+        Vector3 orig = cset.bmin;
         float cs = cset.cs;
         float ch = cset.ch;
 
@@ -776,7 +777,7 @@ public class RecastDebugDraw : DebugDraw
             return;
         }
 
-        RcVec3f orig = hf.bmin;
+        Vector3 orig = hf.bmin;
         float cs = hf.cs;
         float ch = hf.ch;
 
@@ -808,7 +809,7 @@ public class RecastDebugDraw : DebugDraw
 
     public void DebugDrawHeightfieldWalkable(RcHeightfield hf)
     {
-        RcVec3f orig = hf.bmin;
+        Vector3 orig = hf.bmin;
         float cs = hf.cs;
         float ch = hf.ch;
 
@@ -941,7 +942,7 @@ public class RecastDebugDraw : DebugDraw
         int nvp = mesh.nvp;
         float cs = mesh.cs;
         float ch = mesh.ch;
-        RcVec3f orig = mesh.bmin;
+        Vector3 orig = mesh.bmin;
 
         Begin(DebugDrawPrimitives.TRIS);
 
@@ -1348,11 +1349,11 @@ public class RecastDebugDraw : DebugDraw
                         continue;
 
                     // Create new links
-                    var va = new RcVec3f(
+                    var va = new Vector3(
                         tile.data.verts[poly.verts[j] * 3],
                         tile.data.verts[poly.verts[j] * 3 + 1], tile.data.verts[poly.verts[j] * 3 + 2]
                     );
-                    var vb = new RcVec3f(
+                    var vb = new Vector3(
                         tile.data.verts[poly.verts[(j + 1) % nv] * 3],
                         tile.data.verts[poly.verts[(j + 1) % nv] * 3 + 1],
                         tile.data.verts[poly.verts[(j + 1) % nv] * 3 + 2]

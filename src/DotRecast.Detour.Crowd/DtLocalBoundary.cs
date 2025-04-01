@@ -21,6 +21,7 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using DotRecast.Core;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 
@@ -30,7 +31,7 @@ namespace DotRecast.Detour.Crowd
     {
         public const int MAX_LOCAL_SEGS = 8;
 
-        private RcVec3f m_center = new RcVec3f();
+        private Vector3 m_center = new Vector3();
         private List<DtSegment> m_segs = new List<DtSegment>();
         private List<long> m_polys = new List<long>();
         private List<long> m_parents = new List<long>();
@@ -89,7 +90,7 @@ namespace DotRecast.Detour.Crowd
             }
         }
 
-        public void Update(long startRef, RcVec3f pos, float collisionQueryRange, DtNavMeshQuery navquery, IDtQueryFilter filter)
+        public void Update(long startRef, Vector3 pos, float collisionQueryRange, DtNavMeshQuery navquery, IDtQueryFilter filter)
         {
             const int MAX_SEGS_PER_POLY = DtDetour.DT_VERTS_PER_POLYGON * 3;
 
@@ -154,12 +155,12 @@ namespace DotRecast.Detour.Crowd
             return true;
         }
 
-        public RcVec3f GetCenter()
+        public Vector3 GetCenter()
         {
             return m_center;
         }
 
-        public RcVec3f[] GetSegment(int j)
+        public Vector3[] GetSegment(int j)
         {
             return m_segs[j].s;
         }

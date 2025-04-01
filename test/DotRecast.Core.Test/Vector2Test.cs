@@ -12,9 +12,9 @@ public class Vector2Test
     public void TestImplicitCasting()
     {
         var v1 = new Vector2(Random.Shared.NextSingle(), Random.Shared.NextSingle());
-        var v2 = new RcVec2f(Random.Shared.NextSingle(), Random.Shared.NextSingle());
+        var v2 = new Vector2(Random.Shared.NextSingle(), Random.Shared.NextSingle());
 
-        Assert.That(Vector2.Distance(v1, v2), Is.EqualTo(RcVec2f.Distance(v1, v2)));
+        Assert.That(Vector2.Distance(v1, v2), Is.EqualTo(Vector2.Distance(v1, v2)));
     }
 
 }

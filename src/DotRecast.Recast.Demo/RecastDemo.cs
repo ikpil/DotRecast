@@ -35,6 +35,7 @@ using Silk.NET.OpenGL;
 using Silk.NET.OpenGL.Extensions.ImGui;
 using Silk.NET.Windowing;
 using ImGuiNET;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour;
 using DotRecast.Detour.Extras.Unity.Astar;
@@ -81,7 +82,7 @@ public class RecastDemo : IRecastDemoChannel
     private bool processHitTestShift;
     private int _modState;
 
-    private RcVec2f mousePos = new RcVec2f();
+    private Vector2 mousePos = new Vector2();
 
     private bool _mouseOverMenu;
     private bool pan;
@@ -89,12 +90,12 @@ public class RecastDemo : IRecastDemoChannel
     private bool rotate;
     private bool movedDuringRotate;
     private float scrollZoom;
-    private RcVec2f origMousePos = new RcVec2f();
-    private RcVec2f origCameraEulers = new RcVec2f();
-    private RcVec3f origCameraPos = new RcVec3f();
+    private Vector2 origMousePos = new Vector2();
+    private Vector2 origCameraEulers = new Vector2();
+    private Vector3 origCameraPos = new Vector3();
 
-    private RcVec2f cameraEulers = new RcVec2f(45, -45);
-    private RcVec3f cameraPos = new RcVec3f(0, 0, 0);
+    private Vector2 cameraEulers = new Vector2(45, -45);
+    private Vector3 cameraPos = new Vector3(0, 0, 0);
 
 
     private float[] projectionMatrix = new float[16];
@@ -110,7 +111,7 @@ public class RecastDemo : IRecastDemoChannel
 
     private int[] viewport;
     private bool markerPositionSet;
-    private RcVec3f markerPosition = new RcVec3f();
+    private Vector3 markerPosition = new Vector3();
 
     private RcMenuView _menuView;
     private RcToolsetView _toolsetView;
@@ -471,8 +472,8 @@ public class RecastDemo : IRecastDemoChannel
         if (_sample.GetInputGeom() != null)
         {
             var settings = _sample.GetSettings();
-            RcVec3f bmin = _sample.GetInputGeom().GetMeshBoundsMin();
-            RcVec3f bmax = _sample.GetInputGeom().GetMeshBoundsMax();
+            Vector3 bmin = _sample.GetInputGeom().GetMeshBoundsMin();
+            Vector3 bmax = _sample.GetInputGeom().GetMeshBoundsMax();
             RcRecast.CalcGridSize(bmin, bmax, settings.cellSize, out var gw, out var gh);
             settingsView.SetVoxels(gw, gh);
             settingsView.SetTiles(tileNavMeshBuilder.GetTiles(_sample.GetInputGeom(), settings.cellSize, settings.tileSize));
@@ -532,8 +533,8 @@ public class RecastDemo : IRecastDemoChannel
         {
             processHitTest = false;
 
-            RcVec3f rayStart = new RcVec3f();
-            RcVec3f rayEnd = new RcVec3f();
+            Vector3 rayStart = new Vector3();
+            Vector3 rayEnd = new Vector3();
 
             GLU.GlhUnProjectf(mousePos.X, viewport[3] - 1 - mousePos.Y, 0.0f, modelviewMatrix, projectionMatrix, viewport, ref rayStart);
             GLU.GlhUnProjectf(mousePos.X, viewport[3] - 1 - mousePos.Y, 1.0f, modelviewMatrix, projectionMatrix, viewport, ref rayEnd);
@@ -548,8 +549,8 @@ public class RecastDemo : IRecastDemoChannel
         if (_sample.IsChanged())
         {
             bool hasBound = false;
-            RcVec3f bminN = RcVec3f.Zero;
-            RcVec3f bmaxN = RcVec3f.Zero;
+            Vector3 bminN = Vector3.Zero;
+            Vector3 bmaxN = Vector3.Zero;
 
             if (_sample.GetInputGeom() != null)
             {
@@ -570,17 +571,17 @@ public class RecastDemo : IRecastDemoChannel
                     {
                         if (!hasBound)
                         {
-                            bminN = new RcVec3f(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
-                            bmaxN = new RcVec3f(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
+                            bminN = new Vector3(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
+                            bmaxN = new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
                         }
 
-                        bminN = new RcVec3f(
+                        bminN = new Vector3(
                             Math.Min(bminN.X, result.CompactHeightfield.bmin.X),
                             Math.Min(bminN.Y, result.CompactHeightfield.bmin.Y),
                             Math.Min(bminN.Z, result.CompactHeightfield.bmin.Z)
                         );
 
-                        bmaxN = new RcVec3f(
+                        bmaxN = new Vector3(
                             Math.Max(bmaxN.X, result.CompactHeightfield.bmax.X),
                             Math.Max(bmaxN.Y, result.CompactHeightfield.bmax.Y),
                             Math.Max(bmaxN.Z, result.CompactHeightfield.bmax.Z)
@@ -594,8 +595,8 @@ public class RecastDemo : IRecastDemoChannel
             // Reset camera and fog to match the mesh bounds.
             if (hasBound)
             {
-                RcVec3f bmin = bminN;
-                RcVec3f bmax = bmaxN;
+                Vector3 bmin = bminN;
+                Vector3 bmax = bmaxN;
 
                 camr = (float)(Math.Sqrt(RcMath.Sqr(bmax.X - bmin.X) +
                                          RcMath.Sqr(bmax.Y - bmin.Y) +
@@ -817,8 +818,8 @@ public class RecastDemo : IRecastDemoChannel
             hit = RcPolyMeshRaycast.Raycast(_sample.GetRecastResults(), rayStart, rayEnd, out hitTime);
         }
 
-        RcVec3f rayDir = new RcVec3f(rayEnd.X - rayStart.X, rayEnd.Y - rayStart.Y, rayEnd.Z - rayStart.Z);
-        rayDir = RcVec3f.Normalize(rayDir);
+        Vector3 rayDir = new Vector3(rayEnd.X - rayStart.X, rayEnd.Y - rayStart.Y, rayEnd.Z - rayStart.Z);
+        rayDir = Vector3.Normalize(rayDir);
 
         ISampleTool raySampleTool = _toolsetView.GetTool();
 
@@ -840,7 +841,7 @@ public class RecastDemo : IRecastDemoChannel
             }
             else
             {
-                RcVec3f pos = new RcVec3f();
+                Vector3 pos = new Vector3();
                 pos.X = rayStart.X + (rayEnd.X - rayStart.X) * hitTime;
                 pos.Y = rayStart.Y + (rayEnd.Y - rayStart.Y) * hitTime;
                 pos.Z = rayStart.Z + (rayEnd.Z - rayStart.Z) * hitTime;

@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
@@ -26,7 +27,7 @@ namespace DotRecast.Detour
     {
         bool PassFilter(long refs, DtMeshTile tile, DtPoly poly);
 
-        float GetCost(RcVec3f pa, RcVec3f pb, long prevRef, DtMeshTile prevTile, DtPoly prevPoly, long curRef, DtMeshTile curTile,
+        float GetCost(Vector3 pa, Vector3 pb, long prevRef, DtMeshTile prevTile, DtPoly prevPoly, long curRef, DtMeshTile curTile,
             DtPoly curPoly, long nextRef, DtMeshTile nextTile, DtPoly nextPoly);
     }
 }

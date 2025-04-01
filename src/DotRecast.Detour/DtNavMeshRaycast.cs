@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 
 using System;
 using DotRecast.Core;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
@@ -28,7 +29,7 @@ namespace DotRecast.Detour
  */
     public static class DtNavMeshRaycast
     {
-        public static bool Raycast(DtNavMesh mesh, RcVec3f src, RcVec3f dst, out float hitTime)
+        public static bool Raycast(DtNavMesh mesh, Vector3 src, Vector3 dst, out float hitTime)
         {
             hitTime = 0.0f;
             for (int t = 0; t < mesh.GetMaxTiles(); ++t)
@@ -46,10 +47,10 @@ namespace DotRecast.Detour
             return false;
         }
 
-        private static bool Raycast(DtMeshTile tile, RcVec3f sp, RcVec3f sq, out float hitTime)
+        private static bool Raycast(DtMeshTile tile, Vector3 sp, Vector3 sq, out float hitTime)
         {
             hitTime = 0.0f;
-            Span<RcVec3f> tempVerts = stackalloc RcVec3f[3];
+            Span<Vector3> tempVerts = stackalloc Vector3[3];
             for (int i = 0; i < tile.data.header.polyCount; ++i)
             {
                 DtPoly p = tile.data.polys[i];
@@ -60,7 +61,7 @@ namespace DotRecast.Detour
 
                 ref DtPolyDetail pd = ref tile.data.detailMeshes[i];
 
-                Span<RcVec3f> verts = tempVerts;
+                Span<Vector3> verts = tempVerts;
                 for (int j = 0; j < pd.triCount; ++j)
                 {
                     int t = (pd.triBase + j) * 4;

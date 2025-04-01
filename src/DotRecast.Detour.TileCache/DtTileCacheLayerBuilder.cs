@@ -21,6 +21,7 @@ freely, subject to the following restrictions:
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour.TileCache.Io.Compress;
 using DotRecast.Recast;
@@ -85,8 +86,8 @@ namespace DotRecast.Detour.TileCache
         protected virtual RcHeightfieldLayerSet BuildHeightfieldLayerSet(IInputGeomProvider geom, RcConfig cfg, int tx, int ty)
         {
             RcBuilder rcBuilder = new RcBuilder();
-            RcVec3f bmin = geom.GetMeshBoundsMin();
-            RcVec3f bmax = geom.GetMeshBoundsMax();
+            Vector3 bmin = geom.GetMeshBoundsMin();
+            Vector3 bmax = geom.GetMeshBoundsMax();
             RcBuilderConfig builderCfg = new RcBuilderConfig(cfg, bmin, bmax, tx, ty);
             RcHeightfieldLayerSet lset = rcBuilder.BuildLayers(geom, builderCfg);
             return lset;

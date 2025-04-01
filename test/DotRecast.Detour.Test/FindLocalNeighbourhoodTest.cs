@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 using NUnit.Framework;
 
@@ -58,7 +59,7 @@ public class FindLocalNeighbourhoodTest : AbstractDetourTest
         IDtQueryFilter filter = new DtQueryDefaultFilter();
         for (int i = 0; i < startRefs.Length; i++)
         {
-            RcVec3f startPos = startPoss[i];
+            Vector3 startPos = startPoss[i];
             var refs = new List<long>();
             var parentRefs = new List<long>();
             var status = query.FindLocalNeighbourhood(startRefs[i], startPos, 3.5f, filter, ref refs, ref parentRefs);

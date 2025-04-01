@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 using NUnit.Framework;
 
@@ -52,12 +53,12 @@ public class FindCollectPolyTest : AbstractDetourTest
     public void TestFindNearestPoly()
     {
         IDtQueryFilter filter = new DtQueryDefaultFilter();
-        RcVec3f extents = new RcVec3f(2, 4, 2);
+        Vector3 extents = new Vector3(2, 4, 2);
         var polys = new long[32];
         for (int i = 0; i < startRefs.Length; i++)
         {
             Array.Fill(polys, 0);
-            RcVec3f startPos = startPoss[i];
+            Vector3 startPos = startPoss[i];
             var status = query.QueryPolygons(startPos, extents, filter, polys, out var polyCount, 32);
             Assert.That(status.Succeeded(), Is.True, $"index({i})");
             Assert.That(polyCount, Is.EqualTo(POLY_REFS[i].Length), $"index({i})");

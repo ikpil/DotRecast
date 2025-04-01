@@ -22,6 +22,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using DotRecast.Core;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour.Dynamic.Io;
 using DotRecast.Detour.Dynamic.Test.Io;
@@ -35,7 +36,7 @@ public class VoxelQueryTest
 {
     private const int TILE_WIDTH = 100;
     private const int TILE_DEPTH = 90;
-    private static readonly RcVec3f ORIGIN = new RcVec3f(50, 10, 40);
+    private static readonly Vector3 ORIGIN = new Vector3(50, 10, 40);
 
 
     [Test]
@@ -57,8 +58,8 @@ public class VoxelQueryTest
             });
 
         DtVoxelQuery query = new DtVoxelQuery(ORIGIN, TILE_WIDTH, TILE_DEPTH, hfProvider.Object);
-        RcVec3f start = new RcVec3f(120, 10, 365);
-        RcVec3f end = new RcVec3f(320, 10, 57);
+        Vector3 start = new Vector3(120, 10, 365);
+        Vector3 end = new Vector3(320, 10, 57);
 
         // When
         query.Raycast(start, end, out var hit);
@@ -73,8 +74,8 @@ public class VoxelQueryTest
     {
         DtDynamicNavMesh mesh = CreateDynaMesh();
         DtVoxelQuery query = mesh.VoxelQuery();
-        RcVec3f start = new RcVec3f(7.4f, 0.5f, -64.8f);
-        RcVec3f end = new RcVec3f(31.2f, 0.5f, -75.3f);
+        Vector3 start = new Vector3(7.4f, 0.5f, -64.8f);
+        Vector3 end = new Vector3(31.2f, 0.5f, -75.3f);
         bool isHit = query.Raycast(start, end, out var hit);
         Assert.That(isHit, Is.EqualTo(false));
     }
@@ -84,8 +85,8 @@ public class VoxelQueryTest
     {
         DtDynamicNavMesh mesh = CreateDynaMesh();
         DtVoxelQuery query = mesh.VoxelQuery();
-        RcVec3f start = new RcVec3f(32.3f, 0.5f, 47.9f);
-        RcVec3f end = new RcVec3f(-31.2f, 0.5f, -29.8f);
+        Vector3 start = new Vector3(32.3f, 0.5f, 47.9f);
+        Vector3 end = new Vector3(-31.2f, 0.5f, -29.8f);
         bool isHit = query.Raycast(start, end, out var hit);
         Assert.That(isHit, Is.EqualTo(true));
         Assert.That(hit, Is.EqualTo(0.5263836f).Within(1e-7f));

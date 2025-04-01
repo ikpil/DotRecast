@@ -20,13 +20,14 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using DotRecast.Core;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Recast
 {
     public static class RcPolyMeshRaycast
     {
-        public static bool Raycast(IList<RcBuilderResult> results, RcVec3f src, RcVec3f dst, out float hitTime)
+        public static bool Raycast(IList<RcBuilderResult> results, Vector3 src, Vector3 dst, out float hitTime)
         {
             hitTime = 0.0f;
             foreach (RcBuilderResult result in results)
@@ -43,10 +44,10 @@ namespace DotRecast.Recast
             return false;
         }
 
-        private static bool Raycast(RcPolyMesh poly, RcPolyMeshDetail meshDetail, RcVec3f sp, RcVec3f sq, out float hitTime)
+        private static bool Raycast(RcPolyMesh poly, RcPolyMeshDetail meshDetail, Vector3 sp, Vector3 sq, out float hitTime)
         {
             hitTime = 0;
-            Span<RcVec3f> tempVs = stackalloc RcVec3f[3];
+            Span<Vector3> tempVs = stackalloc Vector3[3];
             if (meshDetail != null)
             {
                 for (int i = 0; i < meshDetail.nmeshes; ++i)
@@ -59,7 +60,7 @@ namespace DotRecast.Recast
                     int tris = btris * 4;
                     for (int j = 0; j < ntris; ++j)
                     {
-                        Span<RcVec3f> vs = tempVs;
+                        Span<Vector3> vs = tempVs;
                         for (int k = 0; k < 3; ++k)
                         {
                             vs[k].X = meshDetail.verts[verts + meshDetail.tris[tris + j * 4 + k] * 3];

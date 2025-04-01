@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 using DotRecast.Core.Numerics;
 using DotRecast.Recast;
 
@@ -6,7 +7,7 @@ namespace DotRecast.Detour.Extras.Jumplink
 {
     public abstract class AbstractGroundSampler : IGroundSampler
     {
-        public delegate bool ComputeNavMeshHeight(RcVec3f pt, float cellSize, out float height);
+        public delegate bool ComputeNavMeshHeight(Vector3 pt, float cellSize, out float height);
 
         protected void SampleGround(JumpLinkBuilderConfig acfg, EdgeSampler es, ComputeNavMeshHeight heightFunc)
         {
@@ -33,7 +34,7 @@ namespace DotRecast.Detour.Extras.Jumplink
 
                 GroundSample s = new GroundSample();
                 seg.gsamples[i] = s;
-                RcVec3f pt = RcVec3f.Lerp(seg.p, seg.q, u);
+                Vector3 pt = Vector3.Lerp(seg.p, seg.q, u);
                 bool success = heightFunc.Invoke(pt, seg.height, out var height);
                 s.p.X = pt.X;
                 s.p.Y = height;
