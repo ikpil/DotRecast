@@ -182,9 +182,9 @@ namespace DotRecast.Recast
             float dmin = float.MaxValue;
             for (int i = 0; i < ntris; ++i)
             {
-                RcVec3f va = RcVec.Create(verts, tris[i * 4 + 0] * 3);
-                RcVec3f vb = RcVec.Create(verts, tris[i * 4 + 1] * 3);
-                RcVec3f vc = RcVec.Create(verts, tris[i * 4 + 2] * 3);
+                RcVec3f va = verts.ToVec3(tris[i * 4 + 0] * 3);
+                RcVec3f vb = verts.ToVec3(tris[i * 4 + 1] * 3);
+                RcVec3f vc = verts.ToVec3(tris[i * 4 + 2] * 3);
                 float d = DistPtTri(p, va, vb, vc);
                 if (d < dmin)
                 {
@@ -421,9 +421,9 @@ namespace DotRecast.Recast
                     continue;
                 }
 
-                RcVec3f vs = RcVec.Create(pts, s * 3);
-                RcVec3f vt = RcVec.Create(pts, t * 3);
-                RcVec3f vu = RcVec.Create(pts, u * 3);
+                RcVec3f vs = pts.ToVec3(s * 3);
+                RcVec3f vt = pts.ToVec3(t * 3);
+                RcVec3f vu = pts.ToVec3(u * 3);
 
                 if (Cross2(vs, vt, vu) > EPS)
                 {
@@ -883,12 +883,12 @@ namespace DotRecast.Recast
             if (sampleDist > 0)
             {
                 // Create sample locations in a grid.
-                RcVec3f bmin = new RcVec3f(@in);
-                RcVec3f bmax = new RcVec3f(@in);
+                RcVec3f bmin = @in.ToVec3();
+                RcVec3f bmax = @in.ToVec3();
                 for (int i = 1; i < nin; ++i)
                 {
-                    bmin = RcVec3f.Min(bmin, RcVec.Create(@in, i * 3));
-                    bmax = RcVec3f.Max(bmax, RcVec.Create(@in, i * 3));
+                    bmin = RcVec3f.Min(bmin, @in.ToVec3(i * 3));
+                    bmax = RcVec3f.Max(bmax, @in.ToVec3(i * 3));
                 }
 
                 int x0 = (int)MathF.Floor(bmin.X / sampleDist);

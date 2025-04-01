@@ -59,10 +59,10 @@ namespace DotRecast.Detour
 
             do
             {
-                a = RcVec.Create(p, 3 * (ai % n));
-                b = RcVec.Create(q, 3 * (bi % m));
-                a1 = RcVec.Create(p, 3 * ((ai + n - 1) % n)); // prev a
-                b1 = RcVec.Create(q, 3 * ((bi + m - 1) % m)); // prev b
+                a = p.ToVec3(3 * (ai % n));
+                b = q.ToVec3(3 * (bi % m));
+                a1 = p.ToVec3(3 * ((ai + n - 1) % n)); // prev a
+                b1 = q.ToVec3(3 * ((bi + m - 1) % m)); // prev b
 
                 RcVec3f A = RcVec3f.Subtract(a, a1);
                 RcVec3f B = RcVec3f.Subtract(b, b1);

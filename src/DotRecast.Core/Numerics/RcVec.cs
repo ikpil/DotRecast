@@ -7,12 +7,37 @@ namespace DotRecast.Core.Numerics
     {
         public const float EPSILON = 1e-6f;
         public static readonly float EQUAL_THRESHOLD = RcMath.Sqr(1.0f / 16384.0f);
-
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static RcVec3f Create(ReadOnlySpan<float> values, int n)
+        public static RcVec3f ToVec3(this float[] values)
+        {
+            return new RcVec3f(values[0], values[1], values[2]);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static RcVec3f ToVec3(this float[] values, int n)
         {
             return new RcVec3f(values[n + 0], values[n + 1], values[n + 2]);
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static RcVec3f ToVec3(this Span<float> values)
+        {
+            return new RcVec3f(values[0], values[1], values[2]);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static RcVec3f ToVec3(this Span<float> values, int n)
+        {
+            return new RcVec3f(values[n + 0], values[n + 1], values[n + 2]);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static RcVec3f ToVec3(this ReadOnlySpan<float> values, int n)
+        {
+            return new RcVec3f(values[n + 0], values[n + 1], values[n + 2]);
+        }
+
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Get(this RcVec2f v, int i)

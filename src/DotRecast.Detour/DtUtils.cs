@@ -228,10 +228,10 @@ namespace DotRecast.Detour
         public static RcVec2f ProjectPoly(RcVec3f axis, Span<float> poly, int npoly)
         {
             float rmin, rmax;
-            rmin = rmax = axis.Dot2D(new RcVec3f(poly));
+            rmin = rmax = axis.Dot2D(poly.ToVec3());
             for (int i = 1; i < npoly; ++i)
             {
-                float d = axis.Dot2D(RcVec.Create(poly, i * 3));
+                float d = axis.Dot2D(poly.ToVec3(i * 3));
                 rmin = Math.Min(rmin, d);
                 rmax = Math.Max(rmax, d);
             }
@@ -288,8 +288,8 @@ namespace DotRecast.Detour
 
         public static float DistancePtSegSqr2D(RcVec3f pt, Span<float> verts, int p, int q, out float t)
         {
-            var vp = RcVec.Create(verts, p);
-            var vq = RcVec.Create(verts, q);
+            var vp = verts.ToVec3(p);
+            var vq = verts.ToVec3(q);
             return DistancePtSegSqr2D(pt, vp, vq, out t);
         }
 
