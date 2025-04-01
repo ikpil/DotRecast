@@ -21,6 +21,7 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using DotRecast.Core;
+using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
@@ -264,7 +265,8 @@ namespace DotRecast.Detour
 
             DtPoly randomPoly = null;
             long randomPolyRef = 0;
-            Span<float> randomPolyVerts = null;
+            RcFixedArray256<float> randomPolyVerts = new RcFixedArray256<float>();
+            int randomPolyVertCount = 0;
 
             while (!m_openList.IsEmpty())
             {
@@ -282,22 +284,24 @@ namespace DotRecast.Detour
                 {
                     // Calc area of the polygon.
                     float polyArea = 0.0f;
-                    float[] polyVerts = new float[bestPoly.vertCount * 3];
+                    RcFixedArray256<float> polyVertBuffer = new RcFixedArray256<float>();
+                    Span<float> polyVerts = polyVertBuffer.AsSpan().Slice(0, bestPoly.vertCount * 3);
                     for (int j = 0; j < bestPoly.vertCount; ++j)
                     {
-                        RcArrays.Copy(bestTile.data.verts, bestPoly.verts[j] * 3, polyVerts, j * 3, 3);
+                        RcSpans.Copy(bestTile.data.verts, bestPoly.verts[j] * 3, polyVerts, j * 3, 3);
                     }
 
-                    var ncverts = constraint.Apply(polyVerts, centerPos, maxRadius, out var constrainedVerts);
-                    if (!constrainedVerts.IsEmpty)
+                    RcFixedArray256<float> constrainedVerts = new RcFixedArray256<float>();
+                    var result = constraint.Apply(polyVerts, centerPos, maxRadius, constrainedVerts.AsSpan(), out var ncverts);
+                    if (0 < ncverts)
                     {
-                        int vertCount = constrainedVerts.Length / 3;
+                        int vertCount = ncverts / 3;
                         for (int j = 2; j < vertCount; ++j)
                         {
                             int va = 0;
                             int vb = (j - 1) * 3;
                             int vc = j * 3;
-                            polyArea += DtUtils.TriArea2D(constrainedVerts, va, vb, vc);
+                            polyArea += DtUtils.TriArea2D(constrainedVerts.AsSpan(), va, vb, vc);
                         }
 
                         // Choose random polygon weighted by area, using reservoir sampling.
@@ -308,6 +312,7 @@ namespace DotRecast.Detour
                             randomPoly = bestPoly;
                             randomPolyRef = bestRef;
                             randomPolyVerts = constrainedVerts;
+                            randomPolyVertCount = ncverts;
                         }
                     }
                 }
@@ -405,8 +410,8 @@ namespace DotRecast.Detour
             float s = frand.Next();
             float t = frand.Next();
 
-            Span<float> areas = stackalloc float[randomPolyVerts.Length / 3];
-            DtUtils.RandomPointInConvexPoly(randomPolyVerts, randomPolyVerts.Length / 3, areas, s, t, out var pt);
+            Span<float> areas = stackalloc float[randomPolyVertCount / 3];
+            DtUtils.RandomPointInConvexPoly(randomPolyVerts.AsSpan(), randomPolyVertCount / 3, areas, s, t, out var pt);
             ClosestPointOnPoly(randomPolyRef, pt, out var closest, out var _);
 
             randomRef = randomPolyRef;

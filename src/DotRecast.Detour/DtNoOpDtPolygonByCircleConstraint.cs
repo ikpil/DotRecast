@@ -11,10 +11,11 @@ namespace DotRecast.Detour
         {
         }
 
-        public int Apply(Span<float> polyVerts, RcVec3f circleCenter, float radius, out Span<float> constrainedVerts)
+        public bool Apply(Span<float> polyVerts, RcVec3f circleCenter, float radius, Span<float> constrainedVerts, out int constrainedVertCount)
         {
-            constrainedVerts = polyVerts;
-            return polyVerts.Length;
+            polyVerts.CopyTo(constrainedVerts);
+            constrainedVertCount = polyVerts.Length;
+            return true;
         }
     }
 }
