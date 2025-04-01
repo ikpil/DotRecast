@@ -5,6 +5,8 @@ using DotRecast.Detour;
 
 namespace DotRecast.Tool.Benchmark.DotRecast.Detour;
 
+
+
 [MemoryDiagnoser]
 public class PolygonByCircleConstraintBenchmarks
 {
@@ -16,9 +18,10 @@ public class PolygonByCircleConstraintBenchmarks
     [Benchmark]
     public void ShouldHandlePolygonFullyInsideCircle()
     {
+        float[] polygon = { -2, 0, 2, 2, 0, 2, 2, 0, -2, -2, 0, -2 };
+        
         for (int i = 0; i < Count; ++i)
         {
-            float[] polygon = { -2, 0, 2, 2, 0, 2, 2, 0, -2, -2, 0, -2 };
             RcVec3f center = new RcVec3f(1, 0, 1);
             RcFixedArray256<float> constrained = new RcFixedArray256<float>();
 

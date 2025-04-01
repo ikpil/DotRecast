@@ -51,6 +51,12 @@ namespace DotRecast.Core.Collections
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => ref AsSpan()[index];
         }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void CopyFrom(ReadOnlySpan<T> source, int length)
+        {
+            source.Slice(0, length).CopyTo(AsSpan());
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<T> AsSpan()
