@@ -27,12 +27,20 @@ namespace DotRecast.Detour
     {
         private const float EPSILON = 0.0001f;
 
-        public static float[] Intersect(ReadOnlySpan<float> p, ReadOnlySpan<float> q)
+        public static int CalculateIntersectionBufferSize(int n, int m)
         {
+            return Math.Max(m, n) * 3 * 3;
+        }
+
+        public static bool Intersect(ReadOnlySpan<float> p, ReadOnlySpan<float> q, Span<float> intersection, out int nin)
+        {
+            nin = 0;
             int n = p.Length / 3;
             int m = q.Length / 3;
-            Span<float> inters = stackalloc float[Math.Max(m, n) * 3 * 3];
+            int maxInters = CalculateIntersectionBufferSize(n, m);
+            Span<float> inters = stackalloc float[maxInters];
             int ii = 0;
+            
             /* Initialize variables. */
             RcVec3f a = new RcVec3f();
             RcVec3f b = new RcVec3f();
@@ -95,7 +103,7 @@ namespace DotRecast.Detour
                 /* Special case: A & B parallel and separated. */
                 if (parallel && aHB < 0f && bHA < 0f)
                 {
-                    return null;
+                    return false;
                 }
                 /* Special case: A & B collinear. */
                 else if (parallel && MathF.Abs(aHB) < EPSILON && MathF.Abs(bHA) < EPSILON)
@@ -165,11 +173,12 @@ namespace DotRecast.Detour
             /* Deal with special cases: not implemented. */
             if (f == DtConvexConvexInFlag.Unknown)
             {
-                return null;
+                return false;
             }
 
-            float[] copied = inters.Slice(0, ii).ToArray();
-            return copied;
+            inters.Slice(0, ii).CopyTo(intersection);
+            nin = ii;
+            return true;
         }
 
         private static int AddVertex(Span<float> inters, int ii, RcVec3f p)

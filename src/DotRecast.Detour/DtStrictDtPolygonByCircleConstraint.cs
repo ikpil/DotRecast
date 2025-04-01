@@ -63,8 +63,11 @@ namespace DotRecast.Detour
 
             Span<float> qCircle = stackalloc float[UnitCircle.Length];
             ScaleCircle(UnitCircle, center, radius, qCircle);
-            float[] intersection = DtConvexConvexIntersections.Intersect(verts, qCircle);
-            if (intersection == null && DtUtils.PointInPolygon(center, verts, verts.Length / 3))
+
+            int maxIntersection = DtConvexConvexIntersections.CalculateIntersectionBufferSize(verts.Length / 3, qCircle.Length / 3);
+            Span<float> intersection = stackalloc float[maxIntersection];
+            bool result = DtConvexConvexIntersections.Intersect(verts, qCircle, intersection, out int nverts);
+            if (!result && DtUtils.PointInPolygon(center, verts, verts.Length / 3))
             {
                 // circle inside polygon
                 qCircle.CopyTo(constrainedVerts);
@@ -72,8 +75,8 @@ namespace DotRecast.Detour
                 return true;
             }
 
-            intersection.CopyTo(constrainedVerts);
-            constrainedVertCount = intersection?.Length ?? 0;
+            intersection.Slice(0, nverts).CopyTo(constrainedVerts);
+            constrainedVertCount = nverts;
             return true;
         }
     }
