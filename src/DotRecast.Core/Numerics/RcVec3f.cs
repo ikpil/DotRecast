@@ -256,5 +256,17 @@ namespace DotRecast.Core.Numerics
                 v.Z *= d
             );
         }
+
+#if NET8_0_OR_GREATER
+        public static implicit operator RcVec3f(System.Numerics.Vector3 v)
+        {
+            return Unsafe.BitCast<System.Numerics.Vector3, RcVec3f>(v);
+        }
+
+        public static implicit operator System.Numerics.Vector3(RcVec3f v)
+        {
+            return Unsafe.BitCast<RcVec3f, System.Numerics.Vector3>(v);
+        }
+#endif
     }
 }
