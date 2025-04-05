@@ -793,7 +793,7 @@ namespace DotRecast.Detour
             m_nav.CalcTileLoc(bmax, out var maxx, out var maxy);
 
             const int MAX_NEIS = 32;
-            DtMeshTile[] neis = new DtMeshTile[MAX_NEIS];
+            Span<int> neis = stackalloc int[MAX_NEIS];
 
             for (int y = miny; y <= maxy; ++y)
             {
@@ -802,7 +802,8 @@ namespace DotRecast.Detour
                     int nneis = m_nav.GetTilesAt(x, y, neis, MAX_NEIS);
                     for (int j = 0; j < nneis; ++j)
                     {
-                        QueryPolygonsInTile(neis[j], bmin, bmax, filter, query);
+                        var nei = m_nav.GetTile(neis[j]);
+                        QueryPolygonsInTile(nei, bmin, bmax, filter, query);
                     }
                 }
             }

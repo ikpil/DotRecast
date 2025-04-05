@@ -1299,7 +1299,7 @@ namespace DotRecast.Detour
             return nearest;
         }
 
-        DtMeshTile GetTileAt(int x, int y, int layer)
+        private DtMeshTile GetTileAt(int x, int y, int layer)
         {
             // Find tile based on hash.
             int h = ComputeTileHash(x, y, m_tileLutMask);
@@ -1322,7 +1322,7 @@ namespace DotRecast.Detour
         }
 
         /// Returns neighbour tile based on side.
-        int GetNeighbourTilesAt(int x, int y, int side, DtMeshTile[] tiles, int maxTiles)
+        private int GetNeighbourTilesAt(int x, int y, int side, DtMeshTile[] tiles, int maxTiles)
         {
             int nx = x, ny = y;
             switch (side)
@@ -1384,6 +1384,32 @@ namespace DotRecast.Detour
 
             return n;
         }
+        
+        /// Returns neighbour tile based on side.
+        public int GetTilesAt(int x, int y, Span<int> tiles, int maxTiles)
+        {
+            int n = 0;
+
+            // Find tile based on hash.
+            int h = ComputeTileHash(x, y, m_tileLutMask);
+            DtMeshTile tile = m_posLookup[h];
+            while (null != tile)
+            {
+                if (null != tile.data &&
+                    null != tile.data.header &&
+                    tile.data.header.x == x &&
+                    tile.data.header.y == y)
+                {
+                    if (n < maxTiles)
+                        tiles[n++] = tile.index;
+                }
+
+                tile = tile.next;
+            }
+
+            return n;
+        }
+
 
         public long GetTileRefAt(int x, int y, int layer)
         {
