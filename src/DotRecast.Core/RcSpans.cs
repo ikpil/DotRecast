@@ -6,13 +6,13 @@ namespace DotRecast.Core
     public static class RcSpans
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Copy<T>(Span<T> src, Span<T> dst)
+        public static void Copy<T>(ReadOnlySpan<T> src, Span<T> dst)
         {
             src.CopyTo(dst);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Copy<T>(Span<T> src, int srcIdx, Span<T> dst, int dstIdx, int length)
+        public static void Copy<T>(ReadOnlySpan<T> src, int srcIdx, Span<T> dst, int dstIdx, int length)
         {
             var slicedSrc = src.Slice(srcIdx, length);
             var slicedDst = dst.Slice(dstIdx);
