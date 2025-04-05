@@ -244,7 +244,7 @@ namespace DotRecast.Detour
         // TODO: These methods are duplicates from dtNavMeshQuery, but are needed for off-mesh connection finding.
 
         /// Queries polygons within a tile.
-        List<long> QueryPolygonsInTile(DtMeshTile tile, RcVec3f qmin, RcVec3f qmax)
+        private List<long> QueryPolygonsInTile(DtMeshTile tile, RcVec3f qmin, RcVec3f qmax)
         {
             List<long> polys = new List<long>();
             if (tile.data.bvTree != null)

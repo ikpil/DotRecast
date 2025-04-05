@@ -11,11 +11,13 @@ namespace DotRecast.Detour
             _callback = callback;
         }
 
-        public void Process(DtMeshTile tile, DtPoly[] poly, Span<long> refs, int count)
+        public void Process(DtMeshTile tile, ReadOnlySpan<int> polys, ReadOnlySpan<long> polyRefs, int count)
         {
             for (int i = 0; i < count; ++i)
             {
-                _callback?.Invoke(tile, poly[i], refs[i]);
+                int polyIdx = polys[i];
+                DtPoly poly = tile.data.polys[polyIdx];
+                _callback?.Invoke(tile, poly, polyRefs[i]);
             }
         }
     }

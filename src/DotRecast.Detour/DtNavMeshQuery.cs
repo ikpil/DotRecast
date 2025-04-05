@@ -270,7 +270,7 @@ namespace DotRecast.Detour
 
             RcFixedArray256<float> polyVertBuffer = new RcFixedArray256<float>();
             RcFixedArray256<float> constrainedVertBuffer = new RcFixedArray256<float>();
-            
+
             while (!m_openList.IsEmpty())
             {
                 DtNode bestNode = m_openList.Pop();
@@ -604,7 +604,7 @@ namespace DotRecast.Detour
         {
             const int batchSize = 32;
             Span<long> polyRefs = stackalloc long[batchSize];
-            DtPoly[] polys = new DtPoly[batchSize];
+            Span<int> polys = stackalloc int[batchSize];
             int n = 0;
 
             if (tile.data.bvTree != null)
@@ -647,7 +647,7 @@ namespace DotRecast.Detour
                         if (filter.PassFilter(refs, tile, tile.data.polys[node.i]))
                         {
                             polyRefs[n] = refs;
-                            polys[n] = tile.data.polys[node.i];
+                            polys[n] = tile.data.polys[node.i].index;
 
                             if (n == batchSize - 1)
                             {
@@ -707,7 +707,7 @@ namespace DotRecast.Detour
                     if (DtUtils.OverlapBounds(qmin, qmax, bmin, bmax))
                     {
                         polyRefs[n] = refs;
-                        polys[n] = p;
+                        polys[n] = p.index;
 
                         if (n == batchSize - 1)
                         {
@@ -2349,7 +2349,7 @@ namespace DotRecast.Detour
             curPos = startPos;
             RcVec3f dir = RcVec3f.Subtract(endPos, startPos);
             hit.hitNormal = RcVec3f.Zero;
-            
+
             DtStatus status = DtStatus.DT_SUCCESS;
 
             DtMeshTile prevTile, tile, nextTile;
@@ -2545,8 +2545,8 @@ namespace DotRecast.Detour
                 tile = nextTile;
                 prevPoly = poly;
                 poly = nextPoly;
-                
-                
+
+
                 if (status.Has(DtStatus.DT_BUFFER_TOO_SMALL))
                 {
                     status |= DtStatus.DT_PARTIAL_RESULT;

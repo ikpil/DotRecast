@@ -26,7 +26,7 @@ namespace DotRecast.Detour
             return m_overflow;
         }
 
-        public void Process(DtMeshTile tile, DtPoly[] poly, Span<long> refs, int count)
+        public void Process(DtMeshTile tile, ReadOnlySpan<int> polys, ReadOnlySpan<long> polyRefs, int count)
         {
             int numLeft = m_maxPolys - m_numCollected;
             int toCopy = count;
@@ -36,7 +36,7 @@ namespace DotRecast.Detour
                 toCopy = numLeft;
             }
 
-            RcSpans.Copy<long>(refs, 0, m_polys, m_numCollected, toCopy);
+            RcSpans.Copy<long>(polyRefs, 0, m_polys, m_numCollected, toCopy);
             m_numCollected += toCopy;
         }
     }
