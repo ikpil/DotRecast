@@ -549,9 +549,9 @@ namespace DotRecast.Detour
             if (poly.GetPolyType() == DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
                 int i = poly.verts[0] * 3;
-                var v0 = new RcVec3f { X = tile.data.verts[i], Y = tile.data.verts[i + 1], Z = tile.data.verts[i + 2] };
+                var v0 = new RcVec3f(tile.data.verts[i], tile.data.verts[i + 1], tile.data.verts[i + 2]);
                 i = poly.verts[1] * 3;
-                var v1 = new RcVec3f { X = tile.data.verts[i], Y = tile.data.verts[i + 1], Z = tile.data.verts[i + 2] };
+                var v1 = new RcVec3f(tile.data.verts[i], tile.data.verts[i + 1], tile.data.verts[i + 2]);
                 DtUtils.DistancePtSegSqr2D(pos, v0, v1, out var t);
                 height = v0.Y + (v1.Y - v0.Y) * t;
 

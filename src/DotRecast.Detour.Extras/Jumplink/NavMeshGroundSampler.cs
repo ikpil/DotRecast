@@ -1,3 +1,4 @@
+using System;
 using DotRecast.Core;
 using DotRecast.Core.Numerics;
 using DotRecast.Recast;
@@ -48,14 +49,14 @@ namespace DotRecast.Detour.Extras.Jumplink
 
         private bool GetNavMeshHeight(DtNavMeshQuery navMeshQuery, RcVec3f pt, float cs, float heightRange, out float height)
         {
-            height = default;
+            height = 0;
 
-            RcVec3f halfExtents = new RcVec3f { X = cs, Y = heightRange, Z = cs };
+            RcVec3f halfExtents = new RcVec3f(cs, heightRange, cs);
             float maxHeight = pt.Y + heightRange;
             RcAtomicBoolean found = new RcAtomicBoolean();
             RcAtomicFloat minHeight = new RcAtomicFloat(pt.Y);
 
-            navMeshQuery.QueryPolygons(pt, halfExtents, DtQueryNoOpFilter.Shared, new DtCallbackPolyQuery((tile, poly, refs) =>
+            void UpdateMinHeight(DtMeshTile tile, DtPoly poly, long refs)
             {
                 var status = navMeshQuery.GetPolyHeight(refs, pt, out var h);
                 if (status.Succeeded())
@@ -66,7 +67,11 @@ namespace DotRecast.Detour.Extras.Jumplink
                         found.Set(true);
                     }
                 }
-            }));
+            }
+
+            DtCallbackPolyQuery query = new DtCallbackPolyQuery(UpdateMinHeight);
+
+            navMeshQuery.QueryPolygons(pt, halfExtents, DtQueryNoOpFilter.Shared, query);
 
             if (found.Get())
             {
