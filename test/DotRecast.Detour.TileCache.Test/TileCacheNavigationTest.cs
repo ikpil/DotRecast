@@ -90,7 +90,7 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
             long endRef = endRefs[i];
             RcVec3f startPos = startPoss[i];
             RcVec3f endPos = endPoss[i];
-            var status = query.FindPath(startRef, endRef, startPos, endPos, filter, ref path, DtFindPathOption.NoOption);
+            var status = query.FindPath(startRef, endRef, startPos, endPos, filter, ref path);
             Assert.That(status, Is.EqualTo(statuses[i]));
             Assert.That(path.Count, Is.EqualTo(results[i].Length));
             for (int j = 0; j < results[i].Length; j++)
@@ -111,7 +111,7 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
             long endRef = endRefs[i];
             RcVec3f startPos = startPoss[i];
             RcVec3f endPos = endPoss[i];
-            var status = query.FindPath(startRef, endRef, startPos, endPos, filter, ref path, DtFindPathOption.ZeroScale);
+            var status = query.FindPath(startRef, endRef, startPos, endPos, filter, ref path);
             Assert.That(status, Is.EqualTo(statuses[i]));
             Assert.That(path.Count, Is.EqualTo(results[i].Length));
             for (int j = 0; j < results[i].Length; j++)

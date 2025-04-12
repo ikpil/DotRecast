@@ -33,12 +33,13 @@ public class TiledFindPathTest
     {
         new[]
         {
-            281475015507969L, 281475014459393L, 281475014459392L, 281475006070784L,
-            281475005022208L, 281475003973636L, 281475012362240L, 281475012362241L, 281475012362242L, 281475003973634L,
-            281475003973635L, 281475003973633L, 281475002925059L, 281475002925057L, 281475002925056L, 281474998730753L,
-            281474998730754L, 281474994536450L, 281474994536451L, 281474994536452L, 281474994536448L, 281474990342146L,
-            281474990342145L, 281474991390723L, 281474991390724L, 281474991390725L, 281474987196418L, 281474987196417L,
-            281474988244996L, 281474988244995L, 281474988244997L, 281474985099266L
+            281475015507969L, 
+            281475014459393L, 281475014459392L, 281475013410816L, 281475012362240L, 281475012362241L, 281475012362242L, 
+            281475003973634L, 281475003973635L, 281475003973633L, 281475002925059L, 281475002925057L, 281475002925056L, 
+            281474998730753L, 281474998730754L, 281474994536450L, 281474994536451L, 281474994536452L, 281474994536448L, 
+            281474990342146L, 281474990342145L, 281474991390723L, 281474991390724L, 281474991390725L, 281474992439298L, 
+            281474992439300L, 281474992439299L, 281474992439297L, 281474988244996L, 281474988244995L, 281474988244997L, 
+            281474985099266L, 
         }
     };
 
@@ -71,14 +72,16 @@ public class TiledFindPathTest
         {
             long startRef = START_REFS[i];
             long endRef = END_REFS[i];
+            
             RcVec3f startPos = START_POS[i];
             RcVec3f endPos = END_POS[i];
-            var status = query.FindPath(startRef, endRef, startPos, endPos, filter, ref path, DtFindPathOption.NoOption);
+            
+            var status = query.FindPath(startRef, endRef, startPos, endPos, filter, ref path);
             Assert.That(status, Is.EqualTo(STATUSES[i]));
             Assert.That(path.Count, Is.EqualTo(RESULTS[i].Length));
-            for (int j = 0; j < RESULTS[i].Length; j++)
+            for (int j = 0; j < path.Count; j++)
             {
-                Assert.That(RESULTS[i][j], Is.EqualTo(path[j]));
+                Assert.That(path[j], Is.EqualTo(RESULTS[i][j]), $"path[{j}] != Results[{i}][{j}]");
             }
         }
     }

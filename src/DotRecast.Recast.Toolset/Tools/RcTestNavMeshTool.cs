@@ -39,8 +39,7 @@ namespace DotRecast.Recast.Toolset.Tools
 
             smoothPath.Clear();
 
-            var opt = new DtFindPathOption(enableRaycast ? DtFindPathOptions.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue);
-            navQuery.FindPath(startRef, endRef, startPt, endPt, filter, ref pathIterPolys, opt);
+            navQuery.FindPath(startRef, endRef, startPt, endPt, filter, ref pathIterPolys);
             if (0 >= pathIterPolys.Count)
                 return DtStatus.DT_FAILURE;
 
@@ -184,8 +183,7 @@ namespace DotRecast.Recast.Toolset.Tools
             polys.Clear();
             straightPath.Clear();
 
-            var opt = new DtFindPathOption(enableRaycast ? DtFindPathOptions.DT_FINDPATH_ANY_ANGLE : 0, float.MaxValue);
-            navQuery.FindPath(startRef, endRef, startPt, endPt, filter, ref polys, opt);
+            navQuery.FindPath(startRef, endRef, startPt, endPt, filter, ref polys);
 
             if (0 >= polys.Count)
                 return DtStatus.DT_FAILURE;
@@ -213,10 +211,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 return DtStatus.DT_FAILURE;
             }
 
-            return navQuery.InitSlicedFindPath(startRef, endRef, startPos, endPos, filter,
-                enableRaycast ? DtFindPathOptions.DT_FINDPATH_ANY_ANGLE : 0,
-                float.MaxValue
-            );
+            return navQuery.InitSlicedFindPath(startRef, endRef, startPos, endPos, filter, enableRaycast ? DtFindPathOptions.DT_FINDPATH_ANY_ANGLE : 0);
         }
 
         public DtStatus UpdateSlicedFindPath(DtNavMeshQuery navQuery, int maxIter, long endRef, RcVec3f startPos, RcVec3f endPos,
@@ -263,7 +258,7 @@ namespace DotRecast.Recast.Toolset.Tools
             }
 
             var path = new List<long>();
-            var status = navQuery.Raycast(startRef, startPos, endPos, filter, out var t, out var hitNormal2, ref path);
+            var status = navQuery.Raycast(startRef, startPos, endPos, filter, out var t, out var hitNormal2, ref path, out var npath, MAX_POLYS);
             if (!status.Succeeded())
             {
                 return status;
@@ -287,9 +282,9 @@ namespace DotRecast.Recast.Toolset.Tools
             }
 
             // Adjust height.
-            if (path.Count > 0)
+            if (npath > 0)
             {
-                var result = navQuery.GetPolyHeight(path[path.Count - 1], hitPos, out var h);
+                var result = navQuery.GetPolyHeight(path[npath - 1], hitPos, out var h);
                 if (result.Succeeded())
                 {
                     hitPos.Y = h;
