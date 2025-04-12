@@ -108,7 +108,6 @@ namespace DotRecast.Detour
             node.id = id;
             node.state = state;
             node.flags = 0;
-            node.shortcut = null;
 
             nodes.Add(node);
             return node;

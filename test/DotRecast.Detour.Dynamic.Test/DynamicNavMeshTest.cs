@@ -43,7 +43,7 @@ public class DynamicNavMeshTest
         query.FindNearestPoly(END_POS, EXTENT, filter, out var endRef, out var endPt, out var _);
 
         var path = new List<long>();
-        query.FindPath(startRef, endRef, startPt, endPt, filter, ref path, DtFindPathOption.AnyAngle);
+        query.FindPath(startRef, endRef, startPt, endPt, filter, ref path);
         // check path length without any obstacles
         Assert.That(path.Count, Is.EqualTo(16));
 
@@ -60,7 +60,7 @@ public class DynamicNavMeshTest
         // find path again
         query.FindNearestPoly(START_POS, EXTENT, filter, out startRef, out startPt, out var _);
         query.FindNearestPoly(END_POS, EXTENT, filter, out endRef, out endPt, out var _);
-        query.FindPath(startRef, endRef, startPt, endPt, filter, ref path, DtFindPathOption.AnyAngle);
+        query.FindPath(startRef, endRef, startPt, endPt, filter, ref path);
 
         // check path length with obstacles
         Assert.That(path.Count, Is.EqualTo(19));
@@ -74,7 +74,7 @@ public class DynamicNavMeshTest
         // find path one more time
         query.FindNearestPoly(START_POS, EXTENT, filter, out startRef, out startPt, out var _);
         query.FindNearestPoly(END_POS, EXTENT, filter, out endRef, out endPt, out var _);
-        query.FindPath(startRef, endRef, startPt, endPt, filter, ref path, DtFindPathOption.AnyAngle);
+        query.FindPath(startRef, endRef, startPt, endPt, filter, ref path);
 
         // path length should be back to the initial value
         Assert.That(path.Count, Is.EqualTo(16));
@@ -133,7 +133,7 @@ public class DynamicNavMeshTest
             _ = query.FindNearestPoly(END_POS, EXTENT, filter, out var endNearestRef, out var endNearestPos, out var _);
 
             List<long> path = new List<long>();
-            query.FindPath(startNearestRef, endNearestRef, startNearestPos, endNearestPos, filter, ref path, DtFindPathOption.AnyAngle);
+            query.FindPath(startNearestRef, endNearestRef, startNearestPos, endNearestPos, filter, ref path);
 
             // check path length without any obstacles
             Assert.That(path.Count, Is.EqualTo(16));
@@ -153,7 +153,7 @@ public class DynamicNavMeshTest
             _ = query.FindNearestPoly(END_POS, EXTENT, filter, out endNearestRef, out endNearestPos, out var _);
 
             path = new List<long>();
-            query.FindPath(startNearestRef, endNearestRef, startNearestPos, endNearestPos, filter, ref path, DtFindPathOption.AnyAngle);
+            query.FindPath(startNearestRef, endNearestRef, startNearestPos, endNearestPos, filter, ref path);
 
             // check path length with obstacles
             Assert.That(path.Count, Is.EqualTo(19));
@@ -170,7 +170,7 @@ public class DynamicNavMeshTest
             _ = query.FindNearestPoly(END_POS, EXTENT, filter, out endNearestRef, out endNearestPos, out var _);
 
             path = new List<long>();
-            query.FindPath(startNearestRef, endNearestRef, startNearestPos, endNearestPos, filter, ref path, DtFindPathOption.AnyAngle);
+            query.FindPath(startNearestRef, endNearestRef, startNearestPos, endNearestPos, filter, ref path);
 
             // path length should be back to the initial value
             Assert.That(path.Count, Is.EqualTo(16));

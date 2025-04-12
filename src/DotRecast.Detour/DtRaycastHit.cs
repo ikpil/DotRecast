@@ -39,6 +39,12 @@ namespace DotRecast.Detour
 
         /// Pointer to an array of reference ids of the visited polygons. [opt]
         public List<long> path;
+        
+        /// The number of visited polygons. [opt]
+        public int pathCount;
+
+        /// The maximum number of polygons the @p path array can hold.
+        public int maxPath;
 
         ///  The cost of the path until hit.
         public float pathCost;
