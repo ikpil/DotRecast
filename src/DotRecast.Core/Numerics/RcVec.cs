@@ -69,6 +69,7 @@ namespace DotRecast.Core.Numerics
         ///
         /// Basically, this function will return true if the specified points are
         /// close enough to eachother to be considered colocated.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Equal(RcVec3f p0, RcVec3f p1)
         {
             float d = RcVec3f.DistanceSquared(p0, p1);

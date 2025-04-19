@@ -258,11 +258,13 @@ namespace DotRecast.Core.Numerics
         }
 
 #if NET8_0_OR_GREATER
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator RcVec3f(System.Numerics.Vector3 v)
         {
             return Unsafe.BitCast<System.Numerics.Vector3, RcVec3f>(v);
         }
-
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator System.Numerics.Vector3(RcVec3f v)
         {
             return Unsafe.BitCast<RcVec3f, System.Numerics.Vector3>(v);
