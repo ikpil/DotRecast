@@ -624,7 +624,7 @@ namespace DotRecast.Detour.Crowd
                             var cr = _navQuery.ClosestPointOnPoly(reqPath[reqPath.Count - 1], ag.targetPos, out reqPos, out var _);
                             if (cr.Failed())
                             {
-                                reqPath = new List<long>();
+                                reqPath.Clear();
                             }
                         }
                         else
@@ -637,7 +637,7 @@ namespace DotRecast.Detour.Crowd
                         // Could not find path, start the request from current
                         // location.
                         reqPos = ag.npos;
-                        reqPath = new List<long>();
+                        reqPath.Clear();
                         reqPath.Add(path[0]);
                     }
 
