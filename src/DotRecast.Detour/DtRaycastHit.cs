@@ -18,7 +18,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-using System.Collections.Generic;
+using System;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
@@ -26,7 +26,7 @@ namespace DotRecast.Detour
     /// Provides information about raycast hit
     /// filled by dtNavMeshQuery::raycast
     /// @ingroup detour
-    public struct DtRaycastHit
+    public ref struct DtRaycastHit
     {
         /// The hit parameter. (FLT_MAX if no wall hit.)
         public float t;
@@ -38,7 +38,7 @@ namespace DotRecast.Detour
         public int hitEdgeIndex;
 
         /// Pointer to an array of reference ids of the visited polygons. [opt]
-        public List<long> path;
+        public Span<long> path;
         
         /// The number of visited polygons. [opt]
         public int pathCount;

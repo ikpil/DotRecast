@@ -59,8 +59,10 @@ public class TestNavmeshSampleTool : ISampleTool
     private float m_distanceToWall;
     private DtStraightPath[] m_straightPath;
     private int m_straightPathCount;
-    private List<long> m_polys;
-    private List<long> m_parent;
+    private long[] m_polys = new long[MAX_POLYS];
+    private int m_npolys;
+    private long[] m_parent = new long[MAX_POLYS];
+    private int m_nparent;
     private float m_neighbourhoodRadius;
     private RcVec3f[] m_queryPoly = new RcVec3f[4];
     private List<RcVec3f> m_smoothPath;
@@ -207,10 +209,11 @@ public class TestNavmeshSampleTool : ISampleTool
             dd.DebugDrawNavMeshPoly(m_navMesh, m_startRef, startCol);
             dd.DebugDrawNavMeshPoly(m_navMesh, m_endRef, endCol);
 
-            if (m_polys != null)
+            if (0 < m_npolys)
             {
-                foreach (long poly in m_polys)
+                for (int i = 0; i < m_npolys; ++i)
                 {
+                    var poly = m_polys[i];
                     if (poly == m_startRef || poly == m_endRef)
                     {
                         continue;
@@ -273,10 +276,11 @@ public class TestNavmeshSampleTool : ISampleTool
             dd.DebugDrawNavMeshPoly(m_navMesh, m_startRef, startCol);
             dd.DebugDrawNavMeshPoly(m_navMesh, m_endRef, endCol);
 
-            if (m_polys != null)
+            if (0 < m_npolys)
             {
-                foreach (long poly in m_polys)
+                for (int i = 0; i < m_npolys; ++i)
                 {
+                    var poly = m_polys[i];
                     dd.DebugDrawNavMeshPoly(m_navMesh, poly, pathCol);
                 }
             }
@@ -341,10 +345,11 @@ public class TestNavmeshSampleTool : ISampleTool
 
             if (m_straightPath != null)
             {
-                if (m_polys != null)
+                if (0 < m_npolys)
                 {
-                    foreach (long poly in m_polys)
+                    for (int i = 0; i < m_npolys; ++i)
                     {
+                        var poly = m_polys[i];
                         dd.DebugDrawNavMeshPoly(m_navMesh, poly, pathCol);
                     }
                 }
@@ -403,9 +408,9 @@ public class TestNavmeshSampleTool : ISampleTool
         }
         else if (_mode == RcTestNavmeshToolMode.FIND_POLYS_IN_CIRCLE)
         {
-            if (m_polys != null)
+            if (0 < m_npolys)
             {
-                for (int i = 0; i < m_polys.Count; i++)
+                for (int i = 0; i < m_npolys; i++)
                 {
                     dd.DebugDrawNavMeshPoly(m_navMesh, m_polys[i], pathCol);
                     dd.DepthMask(false);
@@ -434,9 +439,9 @@ public class TestNavmeshSampleTool : ISampleTool
         }
         else if (_mode == RcTestNavmeshToolMode.FIND_POLYS_IN_SHAPE)
         {
-            if (m_polys != null)
+            if (0 < m_npolys)
             {
-                for (int i = 0; i < m_polys.Count; i++)
+                for (int i = 0; i < m_npolys; i++)
                 {
                     dd.DebugDrawNavMeshPoly(m_navMesh, m_polys[i], pathCol);
                     dd.DepthMask(false);
@@ -470,13 +475,13 @@ public class TestNavmeshSampleTool : ISampleTool
         }
         else if (_mode == RcTestNavmeshToolMode.FIND_LOCAL_NEIGHBOURHOOD)
         {
-            if (m_polys != null)
+            if (0 < m_npolys)
             {
                 const int MAX_SEGS = DtDetour.DT_VERTS_PER_POLYGON * 4;
                 Span<RcSegmentVert> segs = stackalloc RcSegmentVert[MAX_SEGS];
                 Span<long> refs = stackalloc long[MAX_SEGS];
 
-                for (int i = 0; i < m_polys.Count; i++)
+                for (int i = 0; i < m_npolys; i++)
                 {
                     dd.DebugDrawNavMeshPoly(m_navMesh, m_polys[i], pathCol);
                     dd.DepthMask(false);
@@ -505,7 +510,7 @@ public class TestNavmeshSampleTool : ISampleTool
                                 ref RcSegmentVert s = ref segs[j];
                                 var v0 = s.vmin;
                                 var s3 = s.vmax;
-                                
+
                                 // Skip too distant segments.
                                 var distSqr = DtUtils.DistancePtSegSqr2D(m_spos, v0, s3, out var tseg);
                                 if (distSqr > RcMath.Sqr(m_neighbourhoodRadius))
@@ -518,7 +523,7 @@ public class TestNavmeshSampleTool : ISampleTool
                                 RcVec3f norm = new RcVec3f(delta.Z, 0, -delta.X);
                                 norm = RcVec3f.Normalize(norm);
                                 RcVec3f p1 = RcVec.Mad(p0, norm, agentRadius * 0.5f);
-                                
+
                                 // Skip backfacing segments.
                                 if (refs[j] != 0)
                                 {
@@ -668,23 +673,23 @@ public class TestNavmeshSampleTool : ISampleTool
         if (_mode == RcTestNavmeshToolMode.PATHFIND_FOLLOW)
         {
             _tool.FindFollowPath(navMesh, navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, _enableRaycast,
-                ref m_polys, m_polys?.Count ?? 0, ref m_smoothPath);
+                m_polys, out m_npolys, ref m_smoothPath);
         }
         else if (_mode == RcTestNavmeshToolMode.PATHFIND_STRAIGHT)
         {
             _tool.FindStraightPath(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, _enableRaycast,
-                ref m_polys, m_straightPath, out m_straightPathCount, MAX_POLYS, _straightPathOption);
+                m_polys, out m_npolys, m_straightPath, out m_straightPathCount, MAX_POLYS, _straightPathOption);
         }
         else if (_mode == RcTestNavmeshToolMode.PATHFIND_SLICED)
         {
-            m_polys?.Clear();
+            m_npolys = 0;
             m_straightPathCount = 0;
             m_pathFindStatus = _tool.InitSlicedFindPath(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, _enableRaycast);
         }
         else if (_mode == RcTestNavmeshToolMode.RAYCAST)
         {
             _tool.Raycast(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter,
-                ref m_polys, m_straightPath, out m_straightPathCount, MAX_POLYS, ref m_hitPos, ref m_hitNormal, ref m_hitResult);
+                m_polys, out m_npolys, m_straightPath, out m_straightPathCount, MAX_POLYS, ref m_hitPos, ref m_hitNormal, ref m_hitResult);
         }
         else if (_mode == RcTestNavmeshToolMode.DISTANCE_TO_WALL)
         {
@@ -692,16 +697,16 @@ public class TestNavmeshSampleTool : ISampleTool
         }
         else if (_mode == RcTestNavmeshToolMode.FIND_POLYS_IN_CIRCLE)
         {
-            _tool.FindPolysAroundCircle(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, ref m_polys, ref m_parent);
+            _tool.FindPolysAroundCircle(navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, m_polys, m_parent, out m_npolys);
         }
         else if (_mode == RcTestNavmeshToolMode.FIND_POLYS_IN_SHAPE)
         {
-            _tool.FindPolysAroundShape(navQuery, settings.agentHeight, m_startRef, m_endRef, m_spos, m_epos, m_filter, ref m_polys, ref m_parent, ref m_queryPoly);
+            _tool.FindPolysAroundShape(navQuery, settings.agentHeight, m_startRef, m_endRef, m_spos, m_epos, m_filter, m_polys, m_parent, m_queryPoly, out m_npolys);
         }
         else if (_mode == RcTestNavmeshToolMode.FIND_LOCAL_NEIGHBOURHOOD)
         {
             m_neighbourhoodRadius = settings.agentRadius * 20.0f;
-            _tool.FindLocalNeighbourhood(navQuery, m_startRef, m_spos, m_neighbourhoodRadius, m_filter, ref m_polys, ref m_parent);
+            _tool.FindLocalNeighbourhood(navQuery, m_startRef, m_spos, m_neighbourhoodRadius, m_filter, m_polys, m_parent, out m_npolys);
         }
         else if (_mode == RcTestNavmeshToolMode.RANDOM_POINTS_IN_CIRCLE)
         {
@@ -719,7 +724,7 @@ public class TestNavmeshSampleTool : ISampleTool
 
             if (m_pathFindStatus.InProgress())
             {
-                m_pathFindStatus = _tool.UpdateSlicedFindPath(navQuery, 1, m_endRef, m_spos, m_epos, ref m_polys, m_straightPath, out m_straightPathCount, MAX_POLYS);
+                m_pathFindStatus = _tool.UpdateSlicedFindPath(navQuery, 1, m_endRef, m_spos, m_epos, m_polys, out m_npolys, m_polys.Length, m_straightPath, out m_straightPathCount, MAX_POLYS);
             }
         }
     }

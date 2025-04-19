@@ -27,13 +27,21 @@ namespace DotRecast.Detour.Crowd
     public class DtPathQueue
     {
         private readonly DtCrowdConfig m_config;
-        private readonly LinkedList<DtPathQuery> m_queue;
+        private LinkedList<DtPathQuery> m_queue;
+        private int m_maxPathSize;
 
         public DtPathQueue(DtCrowdConfig config)
         {
             m_config = config;
-            m_queue = new LinkedList<DtPathQuery>();
         }
+
+        public bool Init(int maxPathSize)
+        {
+            m_queue = new LinkedList<DtPathQuery>();
+            m_maxPathSize = maxPathSize;
+            return true;
+        }
+
 
         public void Update(DtNavMesh navMesh)
         {
@@ -66,7 +74,7 @@ namespace DotRecast.Detour.Crowd
 
                 if (q.result.status.Succeeded())
                 {
-                    q.result.status = q.navQuery.FinalizeSlicedFindPath(ref q.result.path);
+                    q.result.status = q.navQuery.FinalizeSlicedFindPath(q.result.path, out q.result.npath, m_maxPathSize);
                 }
 
                 if (!(q.result.status.Failed() || q.result.status.Succeeded()))
@@ -89,6 +97,7 @@ namespace DotRecast.Detour.Crowd
             q.endPos = endPos;
             q.endRef = endRef;
             q.filter = filter;
+            q.result.path = new long[m_maxPathSize];
             m_queue.AddLast(q);
             return q.result;
         }

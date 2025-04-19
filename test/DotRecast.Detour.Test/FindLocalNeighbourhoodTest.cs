@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
 using NUnit.Framework;
 
@@ -59,10 +60,10 @@ public class FindLocalNeighbourhoodTest : AbstractDetourTest
         for (int i = 0; i < startRefs.Length; i++)
         {
             RcVec3f startPos = startPoss[i];
-            var refs = new List<long>();
-            var parentRefs = new List<long>();
-            var status = query.FindLocalNeighbourhood(startRefs[i], startPos, 3.5f, filter, ref refs, ref parentRefs);
-            Assert.That(refs.Count, Is.EqualTo(REFS[i].Length));
+            RcFixedArray256<long> refs = new RcFixedArray256<long>();
+            RcFixedArray256<long> parentRefs = new RcFixedArray256<long>();
+            var status = query.FindLocalNeighbourhood(startRefs[i], startPos, 3.5f, filter, refs.AsSpan(), parentRefs.AsSpan(), out var nrefs, refs.Length);
+            Assert.That(nrefs, Is.EqualTo(REFS[i].Length));
             for (int v = 0; v < REFS[i].Length; v++)
             {
                 Assert.That(refs[v], Is.EqualTo(REFS[i][v]));

@@ -17,7 +17,7 @@ namespace DotRecast.Detour
         }
 
         public override DtStatus FindStraightPath(RcVec3f startPos, RcVec3f endPos,
-            List<long> path, int pathSize,
+            Span<long> path, int pathSize,
             Span<DtStraightPath> straightPath, out int straightPathCount, int maxStraightPath,
             int options)
         {

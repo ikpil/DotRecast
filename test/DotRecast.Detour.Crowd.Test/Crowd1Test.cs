@@ -645,12 +645,12 @@ public class Crowd1Test : AbstractCrowdTest
             crowd.Update(1 / 5f, null);
             foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
             {
-                Assert.That(ag.npos.X, Is.EqualTo(EXPECTED_A1Q0T[i][0]).Within(0.001));
-                Assert.That(ag.npos.Y, Is.EqualTo(EXPECTED_A1Q0T[i][1]).Within(0.001));
-                Assert.That(ag.npos.Z, Is.EqualTo(EXPECTED_A1Q0T[i][2]).Within(0.001));
-                Assert.That(ag.nvel.X, Is.EqualTo(EXPECTED_A1Q0T[i][3]).Within(0.001));
-                Assert.That(ag.nvel.Y, Is.EqualTo(EXPECTED_A1Q0T[i][4]).Within(0.001));
-                Assert.That(ag.nvel.Z, Is.EqualTo(EXPECTED_A1Q0T[i][5]).Within(0.001));
+                Assert.That(ag.npos.X, Is.EqualTo(EXPECTED_A1Q0T[i][0]).Within(0.001), $"EXPECTED_A1Q0T[{i}]");
+                Assert.That(ag.npos.Y, Is.EqualTo(EXPECTED_A1Q0T[i][1]).Within(0.001), $"EXPECTED_A1Q0T[{i}]");
+                Assert.That(ag.npos.Z, Is.EqualTo(EXPECTED_A1Q0T[i][2]).Within(0.001), $"EXPECTED_A1Q0T[{i}]");
+                Assert.That(ag.nvel.X, Is.EqualTo(EXPECTED_A1Q0T[i][3]).Within(0.001), $"EXPECTED_A1Q0T[{i}]");
+                Assert.That(ag.nvel.Y, Is.EqualTo(EXPECTED_A1Q0T[i][4]).Within(0.001), $"EXPECTED_A1Q0T[{i}]");
+                Assert.That(ag.nvel.Z, Is.EqualTo(EXPECTED_A1Q0T[i][5]).Within(0.001), $"EXPECTED_A1Q0T[{i}]");
             }
         }
     }

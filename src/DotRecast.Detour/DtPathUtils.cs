@@ -20,6 +20,8 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using DotRecast.Core;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
@@ -30,7 +32,7 @@ namespace DotRecast.Detour
     {
         public static bool GetSteerTarget(DtNavMeshQuery navQuery, RcVec3f startPos, RcVec3f endPos,
             float minTargetDist,
-            List<long> path, int pathSize,
+            Span<long> path, int pathSize,
             out RcVec3f steerPos, out int steerPosFlag, out long steerPosRef)
         {
             const int MAX_STEER_POINTS = 3;
@@ -90,7 +92,7 @@ namespace DotRecast.Detour
         // +-S-+-T-+
         // |:::| | <-- the step can end up in here, resulting U-turn path.
         // +---+---+
-        public static int FixupShortcuts(ref List<long> path, int npath, DtNavMeshQuery navQuery)
+        public static int FixupShortcuts(Span<long> path, int npath, DtNavMeshQuery navQuery)
         {
             if (npath < 3)
             {
@@ -137,18 +139,16 @@ namespace DotRecast.Detour
 
             if (cut > 1)
             {
-                List<long> shortcut = new List<long>();
-                shortcut.Add(path[0]);
-                shortcut.AddRange(path.GetRange(cut, npath - cut));
-
-                path = shortcut;
-                return shortcut.Count;
+                int offset = cut-1;
+                npath -= offset;
+                for (int i = 1; i < npath; i++)
+                    path[i] = path[i+offset];
             }
 
             return npath;
         }
 
-        public static int MergeCorridorStartMoved(ref List<long> path, int npath, int maxPath, Span<long> visited, int nvisited)
+        public static int MergeCorridorStartMoved(Span<long> path, int npath, int maxPath, Span<long> visited, int nvisited)
         {
             int furthestPath = -1;
             int furthestVisited = -1;
@@ -182,20 +182,22 @@ namespace DotRecast.Detour
             // Concatenate paths.
 
             // Adjust beginning of the buffer to include the visited.
-            List<long> result = new List<long>();
+            int req = nvisited - furthestVisited;
+            int orig = Math.Min(furthestPath+1, npath);
+            int size = Math.Max(0, npath-orig);
+            if (req+size > maxPath)
+                size = maxPath-req;
+            if (size > 0)
+                RcSpans.Move(path, orig, req, size);
+
             // Store visited
-            for (int i = nvisited - 1; i > furthestVisited; --i)
-            {
-                result.Add(visited[i]);
-            }
+            for (int i = 0, n = Math.Min(req, maxPath); i < n; ++i)
+                path[i] = visited[(nvisited-1)-i];
 
-            result.AddRange(path.GetRange(furthestPath, npath - furthestPath));
-
-            path = result;
-            return result.Count;
+            return req+size;
         }
 
-        public static int MergeCorridorEndMoved(ref List<long> path, int npath, int maxPath, Span<long> visited, int nvisited)
+        public static int MergeCorridorEndMoved(Span<long> path, int npath, int maxPath, Span<long> visited, int nvisited)
         {
             int furthestPath = -1;
             int furthestVisited = -1;
@@ -227,17 +229,17 @@ namespace DotRecast.Detour
             }
 
             // Concatenate paths.
-            List<long> result = path.GetRange(0, furthestPath);
-            foreach (var v in visited.Slice(furthestVisited, nvisited - furthestVisited))
-            {
-                result.Add(v);
-            }
-
-            path = result;
-            return result.Count;
+            int ppos = furthestPath+1;
+            int vpos = furthestVisited+1;
+            int count = Math.Min(nvisited-vpos, maxPath-ppos);
+            Debug.Assert(ppos+count <= maxPath);
+            if (0 != count)
+                RcSpans.Copy(visited, vpos, path, ppos, count);
+	
+            return ppos+count;
         }
 
-        public static int MergeCorridorStartShortcut(ref List<long> path, int npath, int maxPath, List<long> visited, int nvisited)
+        public static int MergeCorridorStartShortcut(Span<long> path, int npath, int maxPath, Span<long> visited, int nvisited)
         {
             int furthestPath = -1;
             int furthestVisited = -1;
@@ -269,13 +271,24 @@ namespace DotRecast.Detour
             }
 
             // Concatenate paths.
-
+            
             // Adjust beginning of the buffer to include the visited.
-            List<long> result = visited.GetRange(0, furthestVisited);
-            result.AddRange(path.GetRange(furthestPath, npath - furthestPath));
-
-            path = result;
-            return result.Count;
+            int req = furthestVisited;
+            if (req <= 0)
+                return npath;
+	
+            int orig = furthestPath;
+            int size = Math.Max(0, npath-orig);
+            if (req+size > maxPath)
+                size = maxPath-req;
+            if (0 != size)
+                RcSpans.Move(path, orig, req, size);
+	
+            // Store visited
+            for (int i = 0; i < req; ++i)
+                path[i] = visited[i];
+	
+            return req+size;
         }
     }
 }
