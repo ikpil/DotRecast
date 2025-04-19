@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
 
 using NUnit.Framework;
@@ -67,7 +68,6 @@ public class TiledFindPathTest
     public void TestFindPath()
     {
         IDtQueryFilter filter = new DtQueryDefaultFilter();
-        var path = new List<long>();
         for (int i = 0; i < START_REFS.Length; i++)
         {
             long startRef = START_REFS[i];
@@ -75,11 +75,12 @@ public class TiledFindPathTest
             
             RcVec3f startPos = START_POS[i];
             RcVec3f endPos = END_POS[i];
-            
-            var status = query.FindPath(startRef, endRef, startPos, endPos, filter, ref path);
+
+            RcFixedArray256<long> path = new RcFixedArray256<long>();
+            var status = query.FindPath(startRef, endRef, startPos, endPos, filter, path.AsSpan(), out var npath, path.Length);
             Assert.That(status, Is.EqualTo(STATUSES[i]));
-            Assert.That(path.Count, Is.EqualTo(RESULTS[i].Length));
-            for (int j = 0; j < path.Count; j++)
+            Assert.That(npath, Is.EqualTo(RESULTS[i].Length));
+            for (int j = 0; j < npath; j++)
             {
                 Assert.That(path[j], Is.EqualTo(RESULTS[i][j]), $"path[{j}] != Results[{i}][{j}]");
             }

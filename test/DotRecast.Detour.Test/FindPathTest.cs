@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
 using NUnit.Framework;
 
@@ -135,16 +136,17 @@ public class FindPathTest : AbstractDetourTest
     public void TestFindPath()
     {
         IDtQueryFilter filter = new DtQueryDefaultFilter();
-        var path = new List<long>();
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
             long endRef = endRefs[i];
             RcVec3f startPos = startPoss[i];
             RcVec3f endPos = endPoss[i];
-            var status = query.FindPath(startRef, endRef, startPos, endPos, filter, ref path);
+
+            RcFixedArray256<long> path = new RcFixedArray256<long>();
+            var status = query.FindPath(startRef, endRef, startPos, endPos, filter, path.AsSpan(), out var npath, path.Length);
             Assert.That(status, Is.EqualTo(STATUSES[i]));
-            Assert.That(path.Count, Is.EqualTo(RESULTS[i].Length));
+            Assert.That(npath, Is.EqualTo(RESULTS[i].Length));
             for (int j = 0; j < RESULTS[i].Length; j++)
             {
                 Assert.That(path[j], Is.EqualTo(RESULTS[i][j]));
@@ -156,7 +158,6 @@ public class FindPathTest : AbstractDetourTest
     public void TestFindPathSliced()
     {
         IDtQueryFilter filter = new DtQueryDefaultFilter();
-        var path = new List<long>();
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
@@ -170,9 +171,10 @@ public class FindPathTest : AbstractDetourTest
                 status = query.UpdateSlicedFindPath(10, out var _);
             }
 
-            status = query.FinalizeSlicedFindPath(ref path);
+            RcFixedArray256<long> path = new RcFixedArray256<long>();
+            status = query.FinalizeSlicedFindPath(path.AsSpan(), out var npath, path.Length);
             Assert.That(status, Is.EqualTo(STATUSES[i]), $"index({i})");
-            Assert.That(path.Count, Is.EqualTo(RESULTS[i].Length));
+            Assert.That(npath, Is.EqualTo(RESULTS[i].Length));
             for (int j = 0; j < RESULTS[i].Length; j++)
             {
                 Assert.That(path[j], Is.EqualTo(RESULTS[i][j]));
@@ -184,8 +186,6 @@ public class FindPathTest : AbstractDetourTest
     public void TestFindPathStraight()
     {
         IDtQueryFilter filter = new DtQueryDefaultFilter();
-        var path = new List<long>();
-        Span<DtStraightPath> straightPath = stackalloc DtStraightPath[256];
         for (int i = 0; i < STRAIGHT_PATHS.Length; i++)
         {
             // startRefs.Length; i++) {
@@ -193,8 +193,12 @@ public class FindPathTest : AbstractDetourTest
             long endRef = endRefs[i];
             var startPos = startPoss[i];
             var endPos = endPoss[i];
-            var status = query.FindPath(startRef, endRef, startPos, endPos, filter, ref path);
-            query.FindStraightPath(startPos, endPos, path, path.Count, straightPath, out var nstraightPath, 256, 0);
+
+            RcFixedArray256<long> path = new RcFixedArray256<long>();
+            RcFixedArray256<DtStraightPath> straightPath = new RcFixedArray256<DtStraightPath>();
+            
+            var status = query.FindPath(startRef, endRef, startPos, endPos, filter, path.AsSpan(), out var npath, path.Length);
+            query.FindStraightPath(startPos, endPos, path.AsSpan(), npath, straightPath.AsSpan(), out var nstraightPath, straightPath.Length, 0);
             Assert.That(nstraightPath, Is.EqualTo(STRAIGHT_PATHS[i].Length));
             for (int j = 0; j < STRAIGHT_PATHS[i].Length; j++)
             {

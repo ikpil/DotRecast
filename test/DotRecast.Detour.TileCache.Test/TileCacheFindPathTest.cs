@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using DotRecast.Core;
+using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour.TileCache.Io;
 using DotRecast.Detour.TileCache.Io.Compress;
@@ -53,13 +54,13 @@ public class TileCacheFindPathTest : AbstractTileCacheTest
         query.FindNearestPoly(start, extents, filter, out var startRef, out var startPos, out var _);
         query.FindNearestPoly(end, extents, filter, out var endRef, out var endPos, out var _);
 
-        var path = new List<long>();
-        var status = query.FindPath(startRef, endRef, startPos, endPos, filter, ref path);
+        RcFixedArray256<long> path = new RcFixedArray256<long>();
+        var status = query.FindPath(startRef, endRef, startPos, endPos, filter, path.AsSpan(), out var npath, path.Length);
         const int maxStraightPath = 256;
         int options = 0;
 
         Span<DtStraightPath> pathStr = stackalloc DtStraightPath[maxStraightPath];
-        query.FindStraightPath(startPos, endPos, path, path.Count, pathStr, out var npathStr, maxStraightPath, options);
+        query.FindStraightPath(startPos, endPos, path.AsSpan(), npath, pathStr, out var npathStr, maxStraightPath, options);
         Assert.That(npathStr, Is.EqualTo(8));
     }
 }

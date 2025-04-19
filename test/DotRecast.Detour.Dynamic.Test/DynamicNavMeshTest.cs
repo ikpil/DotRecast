@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using DotRecast.Core;
+using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour.Dynamic.Colliders;
 using DotRecast.Detour.Dynamic.Io;
@@ -42,10 +43,10 @@ public class DynamicNavMeshTest
         query.FindNearestPoly(START_POS, EXTENT, filter, out var startRef, out var startPt, out var _);
         query.FindNearestPoly(END_POS, EXTENT, filter, out var endRef, out var endPt, out var _);
 
-        var path = new List<long>();
-        query.FindPath(startRef, endRef, startPt, endPt, filter, ref path);
+        RcFixedArray256<long> path = new RcFixedArray256<long>();
+        query.FindPath(startRef, endRef, startPt, endPt, filter, path.AsSpan(), out var npath, path.Length);
         // check path length without any obstacles
-        Assert.That(path.Count, Is.EqualTo(16));
+        Assert.That(npath, Is.EqualTo(16));
 
         // place obstacle
         IDtCollider colldier = new DtSphereCollider(SPHERE_POS, 20, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GROUND, 0.1f);
@@ -60,10 +61,10 @@ public class DynamicNavMeshTest
         // find path again
         query.FindNearestPoly(START_POS, EXTENT, filter, out startRef, out startPt, out var _);
         query.FindNearestPoly(END_POS, EXTENT, filter, out endRef, out endPt, out var _);
-        query.FindPath(startRef, endRef, startPt, endPt, filter, ref path);
+        query.FindPath(startRef, endRef, startPt, endPt, filter, path.AsSpan(), out npath, path.Length);
 
         // check path length with obstacles
-        Assert.That(path.Count, Is.EqualTo(19));
+        Assert.That(npath, Is.EqualTo(19));
         // remove obstacle
         mesh.RemoveCollider(colliderId);
         // update navmesh asynchronously
@@ -74,10 +75,10 @@ public class DynamicNavMeshTest
         // find path one more time
         query.FindNearestPoly(START_POS, EXTENT, filter, out startRef, out startPt, out var _);
         query.FindNearestPoly(END_POS, EXTENT, filter, out endRef, out endPt, out var _);
-        query.FindPath(startRef, endRef, startPt, endPt, filter, ref path);
+        query.FindPath(startRef, endRef, startPt, endPt, filter, path.AsSpan(), out npath, path.Length);
 
         // path length should be back to the initial value
-        Assert.That(path.Count, Is.EqualTo(16));
+        Assert.That(npath, Is.EqualTo(16));
     }
 
 
@@ -132,11 +133,11 @@ public class DynamicNavMeshTest
             _ = query.FindNearestPoly(START_POS, EXTENT, filter, out var startNearestRef, out var startNearestPos, out var _);
             _ = query.FindNearestPoly(END_POS, EXTENT, filter, out var endNearestRef, out var endNearestPos, out var _);
 
-            List<long> path = new List<long>();
-            query.FindPath(startNearestRef, endNearestRef, startNearestPos, endNearestPos, filter, ref path);
+            RcFixedArray256<long> path = new RcFixedArray256<long>();
+            query.FindPath(startNearestRef, endNearestRef, startNearestPos, endNearestPos, filter, path.AsSpan(), out var npath, path.Length);
 
             // check path length without any obstacles
-            Assert.That(path.Count, Is.EqualTo(16));
+            Assert.That(npath, Is.EqualTo(16));
 
             // place obstacle
             DtCollider colldier = new DtSphereCollider(SPHERE_POS, 20, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_GROUND, 0.1f);
@@ -152,11 +153,11 @@ public class DynamicNavMeshTest
             _ = query.FindNearestPoly(START_POS, EXTENT, filter, out startNearestRef, out startNearestPos, out var _);
             _ = query.FindNearestPoly(END_POS, EXTENT, filter, out endNearestRef, out endNearestPos, out var _);
 
-            path = new List<long>();
-            query.FindPath(startNearestRef, endNearestRef, startNearestPos, endNearestPos, filter, ref path);
+            path = new RcFixedArray256<long>();
+            query.FindPath(startNearestRef, endNearestRef, startNearestPos, endNearestPos, filter, path.AsSpan(), out npath, path.Length);
 
             // check path length with obstacles
-            Assert.That(path.Count, Is.EqualTo(19));
+            Assert.That(npath, Is.EqualTo(19));
 
             // remove obstacle
             mesh.RemoveCollider(colliderId);
@@ -169,11 +170,11 @@ public class DynamicNavMeshTest
             _ = query.FindNearestPoly(START_POS, EXTENT, filter, out startNearestRef, out startNearestPos, out var _);
             _ = query.FindNearestPoly(END_POS, EXTENT, filter, out endNearestRef, out endNearestPos, out var _);
 
-            path = new List<long>();
-            query.FindPath(startNearestRef, endNearestRef, startNearestPos, endNearestPos, filter, ref path);
+            path = new RcFixedArray256<long>();
+            query.FindPath(startNearestRef, endNearestRef, startNearestPos, endNearestPos, filter, path.AsSpan(), out npath, path.Length);
 
             // path length should be back to the initial value
-            Assert.That(path.Count, Is.EqualTo(16));
+            Assert.That(npath, Is.EqualTo(16));
         }
     }
 }

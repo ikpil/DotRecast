@@ -17,9 +17,11 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
 using System.IO;
 using System.Collections.Generic;
 using DotRecast.Core;
+using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour.Extras.Unity.Astar;
 using DotRecast.Detour.Io;
@@ -36,10 +38,11 @@ public class UnityAStarPathfindingImporterTest
         DtNavMesh mesh = LoadNavMesh("graph.zip");
         RcVec3f startPos = new RcVec3f(8.200293f, 2.155071f, -26.176147f);
         RcVec3f endPos = new RcVec3f(11.971109f, 0.000000f, 8.663261f);
-        var path = new List<long>();
-        var status = FindPath(mesh, startPos, endPos, ref path);
+        RcFixedArray256<long> path = new RcFixedArray256<long>();
+
+        var status = FindPath(mesh, startPos, endPos, path.AsSpan(), out var npath, path.Length);
         Assert.That(status, Is.EqualTo(DtStatus.DT_SUCCESS));
-        Assert.That(path.Count, Is.EqualTo(57));
+        Assert.That(npath, Is.EqualTo(57));
         SaveMesh(mesh, "v4_0_6");
     }
 
@@ -49,10 +52,11 @@ public class UnityAStarPathfindingImporterTest
         DtNavMesh mesh = LoadNavMesh("graph_v4_1_16.zip");
         RcVec3f startPos = new RcVec3f(22.93f, -2.37f, -5.11f);
         RcVec3f endPos = new RcVec3f(16.81f, -2.37f, 25.52f);
-        var path = new List<long>();
-        var status = FindPath(mesh, startPos, endPos, ref path);
+        RcFixedArray256<long> path = new RcFixedArray256<long>();
+
+        var status = FindPath(mesh, startPos, endPos, path.AsSpan(), out var npath, path.Length);
         Assert.That(status.Succeeded(), Is.True);
-        Assert.That(path.Count, Is.EqualTo(15));
+        Assert.That(npath, Is.EqualTo(15));
         SaveMesh(mesh, "v4_1_16");
     }
 
@@ -91,14 +95,14 @@ public class UnityAStarPathfindingImporterTest
         return meshes[0];
     }
 
-    private DtStatus FindPath(DtNavMesh mesh, RcVec3f startPos, RcVec3f endPos, ref List<long> path)
+    private DtStatus FindPath(DtNavMesh mesh, RcVec3f startPos, RcVec3f endPos, Span<long> path, out int npath, int maxPath)
     {
         // Perform a simple pathfinding
         DtNavMeshQuery query = new DtNavMeshQuery(mesh);
         IDtQueryFilter filter = new DtQueryDefaultFilter();
 
         var polys = GetNearestPolys(mesh, startPos, endPos);
-        return query.FindPath(polys[0].refs, polys[1].refs, startPos, endPos, filter, ref path);
+        return query.FindPath(polys[0].refs, polys[1].refs, startPos, endPos, filter, path, out npath, maxPath);
     }
 
     private DtPolyPoint[] GetNearestPolys(DtNavMesh mesh, params RcVec3f[] positions)

@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 */
 
 using System.Collections.Generic;
+using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
 using NUnit.Framework;
 
@@ -103,17 +104,19 @@ public class FindPolysAroundCircleTest : AbstractDetourTest
     public void TestFindPolysAroundCircle()
     {
         IDtQueryFilter filter = new DtQueryDefaultFilter();
-        var refs = new List<long>();
-        var parentRefs = new List<long>();
-        var costs = new List<float>();
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
             RcVec3f startPos = startPoss[i];
-            var status = query.FindPolysAroundCircle(startRef, startPos, 7.5f, filter, ref refs, ref parentRefs, ref costs);
+            
+            RcFixedArray256<long> refs = new RcFixedArray256<long>();
+            RcFixedArray256<long> parentRefs = new RcFixedArray256<long>();
+            RcFixedArray256<float> costs = new RcFixedArray256<float>();
+
+            var status = query.FindPolysAroundCircle(startRef, startPos, 7.5f, filter, refs.AsSpan(), parentRefs.AsSpan(), costs.AsSpan(), out var resultCount, refs.Length);
             Assert.That(status.Succeeded(), Is.True);
 
-            Assert.That(refs.Count, Is.EqualTo(REFS[i].Length));
+            Assert.That(resultCount, Is.EqualTo(REFS[i].Length), $"index({i})");
             for (int v = 0; v < REFS[i].Length; v++)
             {
                 bool found = false;

@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 using DotRecast.Core;
+using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
 using DotRecast.Recast.Geom;
 using NUnit.Framework;
@@ -83,16 +84,17 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
     public void TestFindPathWithDefaultHeuristic()
     {
         IDtQueryFilter filter = new DtQueryDefaultFilter();
-        var path = new List<long>();
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
             long endRef = endRefs[i];
             RcVec3f startPos = startPoss[i];
             RcVec3f endPos = endPoss[i];
-            var status = query.FindPath(startRef, endRef, startPos, endPos, filter, ref path);
+
+            RcFixedArray256<long> path = new RcFixedArray256<long>();
+            var status = query.FindPath(startRef, endRef, startPos, endPos, filter, path.AsSpan(), out var npath, path.Length);
             Assert.That(status, Is.EqualTo(statuses[i]));
-            Assert.That(path.Count, Is.EqualTo(results[i].Length));
+            Assert.That(npath, Is.EqualTo(results[i].Length));
             for (int j = 0; j < results[i].Length; j++)
             {
                 Assert.That(path[j], Is.EqualTo(results[i][j])); // TODO: @ikpil, check
@@ -104,16 +106,16 @@ public class TileCacheNavigationTest : AbstractTileCacheTest
     public void TestFindPathWithNoHeuristic()
     {
         IDtQueryFilter filter = new DtQueryDefaultFilter();
-        var path = new List<long>();
         for (int i = 0; i < startRefs.Length; i++)
         {
             long startRef = startRefs[i];
             long endRef = endRefs[i];
             RcVec3f startPos = startPoss[i];
             RcVec3f endPos = endPoss[i];
-            var status = query.FindPath(startRef, endRef, startPos, endPos, filter, ref path);
+            RcFixedArray256<long> path = new RcFixedArray256<long>();
+            var status = query.FindPath(startRef, endRef, startPos, endPos, filter, path.AsSpan(), out var npath, path.Length);
             Assert.That(status, Is.EqualTo(statuses[i]));
-            Assert.That(path.Count, Is.EqualTo(results[i].Length));
+            Assert.That(npath, Is.EqualTo(results[i].Length));
             for (int j = 0; j < results[i].Length; j++)
             {
                 Assert.That(path[j], Is.EqualTo(results[i][j])); // TODO: @ikpil, check

@@ -29,11 +29,12 @@ namespace DotRecast.Detour.Crowd
     public class DtLocalBoundary
     {
         public const int MAX_LOCAL_SEGS = 8;
+        public const int MAX_LOCAL_POLYS = 16;
 
         private RcVec3f m_center = new RcVec3f();
         private List<DtSegment> m_segs = new List<DtSegment>();
-        private List<long> m_polys = new List<long>();
-        private List<long> m_parents = new List<long>();
+        private long[] m_polys = new long[MAX_LOCAL_POLYS];
+        private int m_npolys;
 
         public DtLocalBoundary()
         {
@@ -43,7 +44,7 @@ namespace DotRecast.Detour.Crowd
         public void Reset()
         {
             m_center.X = m_center.Y = m_center.Z = float.MaxValue;
-            m_polys.Clear();
+            m_npolys = 0;
             m_segs.Clear();
         }
 
@@ -102,7 +103,7 @@ namespace DotRecast.Detour.Crowd
             m_center = pos;
 
             // First query non-overlapping polygons.
-            var status = navquery.FindLocalNeighbourhood(startRef, pos, collisionQueryRange, filter, ref m_polys, ref m_parents);
+            var status = navquery.FindLocalNeighbourhood(startRef, pos, collisionQueryRange, filter, m_polys, null, out m_npolys, MAX_LOCAL_POLYS);
             if (status.Succeeded())
             {
                 // Secondly, store all polygon edges.
@@ -110,7 +111,7 @@ namespace DotRecast.Detour.Crowd
                 Span<RcSegmentVert> segs = stackalloc RcSegmentVert[MAX_SEGS_PER_POLY];
                 int nsegs = 0;
 
-                for (int j = 0; j < m_polys.Count; ++j)
+                for (int j = 0; j < m_npolys; ++j)
                 {
                     var result = navquery.GetPolyWallSegments(m_polys[j], filter, segs, null, ref nsegs, MAX_SEGS_PER_POLY);
                     if (result.Succeeded())
@@ -137,15 +138,15 @@ namespace DotRecast.Detour.Crowd
 
         public bool IsValid(DtNavMeshQuery navquery, IDtQueryFilter filter)
         {
-            if (m_polys.Count == 0)
+            if (m_npolys <= 0)
             {
                 return false;
             }
 
             // Check that all polygons still pass query filter.
-            foreach (long refs in m_polys)
+            for (int i = 0; i < m_npolys; ++i)
             {
-                if (!navquery.IsValidPolyRef(refs, filter))
+                if (!navquery.IsValidPolyRef(m_polys[i], filter))
                 {
                     return false;
                 }

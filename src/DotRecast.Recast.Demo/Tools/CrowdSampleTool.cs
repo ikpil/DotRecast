@@ -170,7 +170,7 @@ public class CrowdSampleTool : ISampleTool
                 if (!_showDetailAll && ag != agentDebug.agent)
                     continue;
 
-                List<long> path = ag.corridor.GetPath();
+                Span<long> path = ag.corridor.GetPath();
                 int npath = ag.corridor.GetPathCount();
                 for (int j = 0; j < npath; ++j)
                 {

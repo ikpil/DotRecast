@@ -176,6 +176,9 @@ namespace DotRecast.Detour.Crowd
             _activeAgents = new List<DtCrowdAgent>();
             _grid = new DtProximityGrid(_config.maxAgentRadius * 3);
 
+            //
+            _pathQ.Init(_maxPathResult);
+
             // The navQuery is mostly used for local searches, no need for large node pool.
             SetNavMesh(nav);
         }
@@ -572,7 +575,6 @@ namespace DotRecast.Detour.Crowd
             RcSortedQueue<DtCrowdAgent> queue = new RcSortedQueue<DtCrowdAgent>((a1, a2) => a2.targetReplanTime.CompareTo(a1.targetReplanTime));
 
             // Fire off new requests.
-            List<long> reqPath = new List<long>();
             for (var i = 0; i < agents.Count; i++)
             {
                 var ag = agents[i];
@@ -589,42 +591,45 @@ namespace DotRecast.Detour.Crowd
 
                 if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING)
                 {
-                    List<long> path = ag.corridor.GetPath();
-                    if (0 == path.Count)
-                    {
-                        throw new ArgumentException("Empty path");
-                    }
+                    Span<long> path = ag.corridor.GetPath();
+                    int npath = ag.corridor.GetPathCount();
+                    Debug.Assert(0 != npath);
 
+                    const int MAX_RES = 32;
+                    RcVec3f reqPos = new RcVec3f();
+                    RcFixedArray32<long> reqPath = new RcFixedArray32<long>(); // The path to the request location
+                    int reqPathCount = 0;
+
+                    Debug.Assert(reqPath.Length == MAX_RES);
 
                     // Quick search towards the goal.
-                    _navQuery.InitSlicedFindPath(path[0], ag.targetRef, ag.npos, ag.targetPos,
-                        _filters[ag.option.queryFilterType], 0);
+                    const int MAX_ITER = 20;
+                    _navQuery.InitSlicedFindPath(path[0], ag.targetRef, ag.npos, ag.targetPos, _filters[ag.option.queryFilterType], 0);
                     _navQuery.UpdateSlicedFindPath(_config.maxTargetFindPathIterations, out var _);
 
-                    DtStatus status;
+                    DtStatus status = DtStatus.DT_STATUS_NOTHING;
                     if (ag.targetReplan) // && npath > 10)
                     {
                         // Try to use existing steady path during replan if possible.
-                        status = _navQuery.FinalizeSlicedFindPathPartial(path, path.Count, ref reqPath);
+                        status = _navQuery.FinalizeSlicedFindPathPartial(path, npath, reqPath.AsSpan(), out reqPathCount, MAX_RES);
                     }
                     else
                     {
                         // Try to move towards target when goal changes.
-                        status = _navQuery.FinalizeSlicedFindPath(ref reqPath);
+                        status = _navQuery.FinalizeSlicedFindPath(reqPath.AsSpan(), out reqPathCount, MAX_RES);
                     }
 
-                    RcVec3f reqPos = new RcVec3f();
-                    if (status.Succeeded() && reqPath.Count > 0)
+                    if (status.Succeeded() && reqPathCount > 0)
                     {
                         // In progress or succeed.
-                        if (reqPath[reqPath.Count - 1] != ag.targetRef)
+                        if (reqPath[reqPathCount - 1] != ag.targetRef)
                         {
                             // Partial path, constrain target position inside the
                             // last polygon.
-                            var cr = _navQuery.ClosestPointOnPoly(reqPath[reqPath.Count - 1], ag.targetPos, out reqPos, out var _);
+                            var cr = _navQuery.ClosestPointOnPoly(reqPath[reqPathCount - 1], ag.targetPos, out reqPos, out var _);
                             if (cr.Failed())
                             {
-                                reqPath.Clear();
+                                reqPathCount = 0;
                             }
                         }
                         else
@@ -634,18 +639,17 @@ namespace DotRecast.Detour.Crowd
                     }
                     else
                     {
-                        // Could not find path, start the request from current
-                        // location.
+                        // Could not find path, start the request from current location.
                         reqPos = ag.npos;
-                        reqPath.Clear();
-                        reqPath.Add(path[0]);
+                        reqPath[0] = path[0];
+                        reqPathCount = 1;
                     }
 
-                    ag.corridor.SetCorridor(reqPos, reqPath);
+                    ag.corridor.SetCorridor(reqPos, reqPath.AsSpan(), reqPathCount);
                     ag.boundary.Reset();
                     ag.partial = false;
 
-                    if (reqPath[reqPath.Count - 1] == ag.targetRef)
+                    if (reqPath[reqPathCount - 1] == ag.targetRef)
                     {
                         ag.targetState = DtMoveRequestState.DT_CROWDAGENT_TARGET_VALID;
                         ag.targetReplanTime = 0;
@@ -690,8 +694,7 @@ namespace DotRecast.Detour.Crowd
             for (var i = 0; i < agents.Count; i++)
             {
                 var ag = agents[i];
-                if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_NONE
-                    || ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
+                if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_NONE || ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_VELOCITY)
                 {
                     continue;
                 }
@@ -703,8 +706,7 @@ namespace DotRecast.Detour.Crowd
                     DtStatus status = ag.targetPathQueryResult.status;
                     if (status.Failed())
                     {
-                        // Path find failed, retry if the target location is still
-                        // valid.
+                        // Path find failed, retry if the target location is still valid.
                         ag.targetPathQueryResult = null;
                         if (ag.targetRef != 0)
                         {
@@ -719,18 +721,18 @@ namespace DotRecast.Detour.Crowd
                     }
                     else if (status.Succeeded())
                     {
-                        List<long> path = ag.corridor.GetPath();
-                        if (0 == path.Count)
-                        {
-                            throw new ArgumentException("Empty path");
-                        }
+                        Span<long> path = ag.corridor.GetPath();
+                        int npath = ag.corridor.GetPathCount();
+                        Debug.Assert(0 != npath);
 
                         // Apply results.
                         var targetPos = ag.targetPos;
 
                         bool valid = true;
-                        List<long> res = ag.targetPathQueryResult.path;
-                        if (status.Failed() || 0 == res.Count)
+                        Span<long> res = ag.targetPathQueryResult.path;
+                        int nres = ag.targetPathQueryResult.npath;
+                        status = ag.targetPathQueryResult.status;
+                        if (status.Failed() || 0 == nres)
                         {
                             valid = false;
                         }
@@ -753,7 +755,7 @@ namespace DotRecast.Detour.Crowd
 
                         // The last ref in the old path should be the same as
                         // the location where the request was issued..
-                        if (valid && path[path.Count - 1] != res[0])
+                        if (valid && path[npath - 1] != res[0])
                         {
                             valid = false;
                         }
@@ -761,33 +763,39 @@ namespace DotRecast.Detour.Crowd
                         if (valid)
                         {
                             // Put the old path infront of the old path.
-                            if (path.Count > 1)
+                            if (npath > 1)
                             {
-                                path.RemoveAt(path.Count - 1);
-                                path.AddRange(res);
-                                res = path;
+                                // Make space for the old path.
+                                if ((npath - 1) + nres > _maxPathResult)
+                                    nres = _maxPathResult - (npath - 1);
+
+                                RcSpans.Move(res, 0, npath - 1, nres);
+                                // Copy old path in the beginning.
+                                RcSpans.Copy(path, 0, res, 0, npath - 1);
+                                nres += npath - 1;
+
                                 // Remove trackbacks
-                                for (int j = 1; j < res.Count - 1; ++j)
+                                for (int j = 0; j < nres; ++j)
                                 {
-                                    if (j - 1 >= 0 && j + 1 < res.Count)
+                                    if (j - 1 >= 0 && j + 1 < nres)
                                     {
                                         if (res[j - 1] == res[j + 1])
                                         {
-                                            res.RemoveAt(j + 1);
-                                            res.RemoveAt(j);
+                                            RcSpans.Move(res, j + 1, (j - 1), nres - (j + 1));
+                                            nres -= 2;
                                             j -= 2;
                                         }
                                     }
                                 }
                             }
 
+
                             // Check for partial path.
-                            if (res[res.Count - 1] != ag.targetRef)
+                            if (res[nres - 1] != ag.targetRef)
                             {
-                                // Partial path, constrain target position inside
-                                // the last polygon.
-                                var cr = _navQuery.ClosestPointOnPoly(res[res.Count - 1], targetPos, out var nearest, out var _);
-                                if (cr.Succeeded())
+                                // Partial path, constrain target position inside the last polygon.
+                                status = _navQuery.ClosestPointOnPoly(res[nres - 1], targetPos, out var nearest, out var _);
+                                if (status.Succeeded())
                                 {
                                     targetPos = nearest;
                                 }
@@ -801,7 +809,7 @@ namespace DotRecast.Detour.Crowd
                         if (valid)
                         {
                             // Set current corridor.
-                            ag.corridor.SetCorridor(targetPos, res);
+                            ag.corridor.SetCorridor(targetPos, res, nres);
                             // Force to update boundary.
                             ag.boundary.Reset();
                             ag.targetState = DtMoveRequestState.DT_CROWDAGENT_TARGET_VALID;
@@ -930,7 +938,7 @@ namespace DotRecast.Detour.Crowd
 
                 int tgt = i + 1;
                 int n = Math.Min(nneis - i, maxNeis - tgt);
-                
+
                 Debug.Assert(tgt + n <= maxNeis);
 
                 if (n > 0)
