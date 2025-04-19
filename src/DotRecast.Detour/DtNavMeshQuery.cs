@@ -1140,8 +1140,7 @@ namespace DotRecast.Detour
                 }
 
                 // Get current poly and tile.
-                // The API input has been checked already, skip checking internal
-                // data.
+                // The API input has been checked already, skip checking internal data.
                 long bestRef = bestNode.id;
                 var status = m_nav.GetTileAndPolyByRef(bestRef, out var bestTile, out var bestPoly);
                 if (status.Failed())
