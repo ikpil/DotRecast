@@ -21,6 +21,7 @@ freely, subject to the following restrictions:
 using System;
 using System.Collections.Generic;
 using DotRecast.Core;
+using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
@@ -242,14 +243,13 @@ namespace DotRecast.Detour
 
 
         // TODO: These methods are duplicates from dtNavMeshQuery, but are needed for off-mesh connection finding.
-
         /// Queries polygons within a tile.
-        private List<long> QueryPolygonsInTile(DtMeshTile tile, RcVec3f qmin, RcVec3f qmax)
+        private int QueryPolygonsInTile(DtMeshTile tile, RcVec3f qmin, RcVec3f qmax, Span<long> polys, int maxPolys)
         {
-            List<long> polys = new List<long>();
             if (tile.data.bvTree != null)
             {
                 int nodeIndex = 0;
+                int end = tile.data.header.bvNodeCount;
                 var tbmin = tile.data.header.bmin;
                 var tbmax = tile.data.header.bmax;
                 float qfac = tile.data.header.bvQuantFactor;
@@ -273,7 +273,7 @@ namespace DotRecast.Detour
 
                 // Traverse tree
                 long @base = GetPolyRefBase(tile);
-                int end = tile.data.header.bvNodeCount;
+                int n = 0;
                 while (nodeIndex < end)
                 {
                     DtBVNode node = tile.data.bvTree[nodeIndex];
@@ -282,7 +282,10 @@ namespace DotRecast.Detour
 
                     if (isLeafNode && overlap)
                     {
-                        polys.Add(@base | (long)node.i);
+                        if (n < maxPolys)
+                        {
+                            polys[n++] = (@base | (long)node.i);
+                        }
                     }
 
                     if (overlap || isLeafNode)
@@ -296,12 +299,13 @@ namespace DotRecast.Detour
                     }
                 }
 
-                return polys;
+                return n;
             }
             else
             {
                 RcVec3f bmin = new RcVec3f();
                 RcVec3f bmax = new RcVec3f();
+                int n = 0;
                 long @base = GetPolyRefBase(tile);
                 for (int i = 0; i < tile.data.header.polyCount; ++i)
                 {
@@ -325,11 +329,14 @@ namespace DotRecast.Detour
 
                     if (DtUtils.OverlapBounds(qmin, qmax, bmin, bmax))
                     {
-                        polys.Add(@base | (long)i);
+                        if (n < maxPolys)
+                        {
+                            polys[n++] = (@base | (long)i);
+                        }
                     }
                 }
 
-                return polys;
+                return n;
             }
         }
 
@@ -1258,17 +1265,19 @@ namespace DotRecast.Detour
         {
             nearestPt = RcVec3f.Zero;
 
-            bool overPoly = false;
             RcVec3f bmin = RcVec3f.Subtract(center, halfExtents);
             RcVec3f bmax = RcVec3f.Add(center, halfExtents);
 
             // Get nearby polygons from proximity grid.
-            List<long> polys = QueryPolygonsInTile(tile, bmin, bmax);
+            RcFixedArray256<long> fixedArrayPolys = new RcFixedArray256<long>();
+            var polys = fixedArrayPolys.AsSpan();
+
+            int polyCount = QueryPolygonsInTile(tile, bmin, bmax, polys, polys.Length);
 
             // Find nearest polygon amongst the nearby polygons.
             long nearest = 0;
             float nearestDistanceSqr = float.MaxValue;
-            for (int i = 0; i < polys.Count; ++i)
+            for (int i = 0; i < polyCount; ++i)
             {
                 long refs = polys[i];
                 float d;
@@ -1292,7 +1301,6 @@ namespace DotRecast.Detour
                     nearestPt = closestPtPoly;
                     nearestDistanceSqr = d;
                     nearest = refs;
-                    overPoly = posOverPoly;
                 }
             }
 
@@ -1384,7 +1392,7 @@ namespace DotRecast.Detour
 
             return n;
         }
-        
+
         /// Returns neighbour tile based on side.
         public int GetTilesAt(int x, int y, Span<int> tiles, int maxTiles)
         {
