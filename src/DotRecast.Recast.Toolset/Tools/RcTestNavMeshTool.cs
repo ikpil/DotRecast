@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using DotRecast.Core;
-using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour;
 
@@ -9,9 +8,6 @@ namespace DotRecast.Recast.Toolset.Tools
 {
     public class RcTestNavMeshTool : IRcToolable
     {
-        public const int MAX_POLYS = 256;
-        public const int MAX_SMOOTH = 2048;
-
         public RcTestNavMeshTool()
         {
         }
@@ -22,22 +18,15 @@ namespace DotRecast.Recast.Toolset.Tools
         }
 
         public DtStatus FindFollowPath(DtNavMesh navMesh, DtNavMeshQuery navQuery, long startRef, long endRef, RcVec3f startPt, RcVec3f endPt, IDtQueryFilter filter, bool enableRaycast,
-            Span<long> polys, out int npolys, ref List<RcVec3f> smoothPath)
+            Span<long> polys, out int npolys, Span<RcVec3f> smoothPath, out int nsmoothPath)
         {
             npolys = 0;
+            nsmoothPath = 0;
             
             if (startRef == 0 || endRef == 0)
             {
-                smoothPath?.Clear();
-
                 return DtStatus.DT_FAILURE;
             }
-
-            smoothPath ??= new List<RcVec3f>();
-
-            npolys = 0;
-
-            smoothPath.Clear();
 
             navQuery.FindPath(startRef, endRef, startPt, endPt, filter, polys, out npolys, polys.Length);
             if (0 >= npolys)
@@ -50,8 +39,9 @@ namespace DotRecast.Recast.Toolset.Tools
             const float STEP_SIZE = 0.5f;
             const float SLOP = 0.01f;
 
-            smoothPath.Clear();
-            smoothPath.Add(iterPos);
+            int n = 0;
+
+            smoothPath[n++] = iterPos;
 
             Span<long> visited = stackalloc long[16];
             int nvisited = 0;
@@ -59,7 +49,7 @@ namespace DotRecast.Recast.Toolset.Tools
 
             // Move towards target a small advancement at a time until target reached or
             // when ran out of memory to store the path.
-            while (0 < npolys && smoothPath.Count < MAX_SMOOTH)
+            while (0 < npolys && n < smoothPath.Length)
             {
                 // Find location to steer towards.
                 if (!DtPathUtils.GetSteerTarget(navQuery, iterPos, targetPos, SLOP,
@@ -91,11 +81,11 @@ namespace DotRecast.Recast.Toolset.Tools
                 RcVec3f moveTgt = RcVec.Mad(iterPos, delta, len);
 
                 // Move
-                navQuery.MoveAlongSurface(polys[0], iterPos, moveTgt, filter, out var result, visited, out nvisited, 16);
+                navQuery.MoveAlongSurface(polys[0], iterPos, moveTgt, filter, out var result, visited, out nvisited, visited.Length);
 
                 iterPos = result;
 
-                npolys = DtPathUtils.MergeCorridorStartMoved(polys, npolys, MAX_POLYS, visited, nvisited);
+                npolys = DtPathUtils.MergeCorridorStartMoved(polys, npolys, polys.Length, visited, nvisited);
                 npolys = DtPathUtils.FixupShortcuts(polys, npolys, navQuery);
 
                 var status = navQuery.GetPolyHeight(polys[0], result, out var h);
@@ -109,9 +99,9 @@ namespace DotRecast.Recast.Toolset.Tools
                 {
                     // Reached end of path.
                     iterPos = targetPos;
-                    if (smoothPath.Count < MAX_SMOOTH)
+                    if (n < smoothPath.Length)
                     {
-                        smoothPath.Add(iterPos);
+                        smoothPath[n++] = iterPos;
                     }
 
                     break;
@@ -141,13 +131,13 @@ namespace DotRecast.Recast.Toolset.Tools
                     var status2 = navMesh.GetOffMeshConnectionPolyEndPoints(prevRef, polyRef, ref startPos, ref endPos);
                     if (status2.Succeeded())
                     {
-                        if (smoothPath.Count < MAX_SMOOTH)
+                        if (n < smoothPath.Length)
                         {
-                            smoothPath.Add(startPos);
+                            smoothPath[n++] = startPos;
                             // Hack to make the dotted path not visible during off-mesh connection.
-                            if ((smoothPath.Count & 1) != 0)
+                            if ((n & 1) != 0)
                             {
-                                smoothPath.Add(startPos);
+                                smoothPath[n++] = startPos;
                             }
                         }
 
@@ -159,11 +149,13 @@ namespace DotRecast.Recast.Toolset.Tools
                 }
 
                 // Store results.
-                if (smoothPath.Count < MAX_SMOOTH)
+                if (n < smoothPath.Length)
                 {
-                    smoothPath.Add(iterPos);
+                    smoothPath[n++] = iterPos;
                 }
             }
+            
+            nsmoothPath = n;
 
             return DtStatus.DT_SUCCESS;
         }
@@ -253,7 +245,7 @@ namespace DotRecast.Recast.Toolset.Tools
                 return DtStatus.DT_FAILURE;
             }
 
-            var status = navQuery.Raycast(startRef, startPos, endPos, filter, out var t, out var hitNormal2, path, out npath, MAX_POLYS);
+            var status = navQuery.Raycast(startRef, startPos, endPos, filter, out var t, out var hitNormal2, path, out npath, path.Length);
             if (!status.Succeeded())
             {
                 return status;
