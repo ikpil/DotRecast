@@ -19,6 +19,7 @@ public class TestNavmeshSampleTool : ISampleTool
     private static readonly ILogger Logger = Log.ForContext<TestNavmeshSampleTool>();
 
     private const int MAX_POLYS = 256;
+    private const int MAX_SMOOTH = 2048;
 
     private DemoSample _sample;
     private readonly RcTestNavMeshTool _tool;
@@ -65,7 +66,8 @@ public class TestNavmeshSampleTool : ISampleTool
     private int m_nparent;
     private float m_neighbourhoodRadius;
     private RcVec3f[] m_queryPoly = new RcVec3f[4];
-    private List<RcVec3f> m_smoothPath;
+    private RcVec3f[] m_smoothPath = new RcVec3f[MAX_SMOOTH];
+    private int m_nsmoothPath;
     private DtStatus m_pathFindStatus = DtStatus.DT_FAILURE;
 
     // for mode RANDOM_POINTS_IN_CIRCLE
@@ -228,7 +230,7 @@ public class TestNavmeshSampleTool : ISampleTool
                 dd.DepthMask(false);
                 int spathCol = DuRGBA(0, 0, 0, 220);
                 dd.Begin(LINES, 3.0f);
-                for (int i = 0; i < m_smoothPath.Count; ++i)
+                for (int i = 0; i < m_nsmoothPath; ++i)
                 {
                     dd.Vertex(m_smoothPath[i].X, m_smoothPath[i].Y + 0.1f, m_smoothPath[i].Z, spathCol);
                 }
@@ -672,8 +674,7 @@ public class TestNavmeshSampleTool : ISampleTool
 
         if (_mode == RcTestNavmeshToolMode.PATHFIND_FOLLOW)
         {
-            _tool.FindFollowPath(navMesh, navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, _enableRaycast,
-                m_polys, out m_npolys, ref m_smoothPath);
+            _tool.FindFollowPath(navMesh, navQuery, m_startRef, m_endRef, m_spos, m_epos, m_filter, _enableRaycast, m_polys, out m_npolys, m_smoothPath, out m_nsmoothPath);
         }
         else if (_mode == RcTestNavmeshToolMode.PATHFIND_STRAIGHT)
         {
