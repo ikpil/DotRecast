@@ -7,9 +7,9 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/src/DotRecast.Recast.Demo/DotRecast.Recast.Demo.csproj",
+                "${workspaceFolder}/DotRecast.sln",
                 "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+                "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
             "problemMatcher": "$msCompile"
         },
@@ -19,9 +19,9 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/src/DotRecast.Recast.Demo/DotRecast.Recast.Demo.csproj",
+                "${workspaceFolder}/DotRecast.sln",
                 "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+                "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
             "problemMatcher": "$msCompile"
         },
@@ -33,7 +33,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/src/DotRecast.Recast.Demo/DotRecast.Recast.Demo.csproj"
+                "${workspaceFolder}/DotRecast.sln"
             ],
             "problemMatcher": "$msCompile"
         }
