@@ -21,6 +21,33 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Special Thanks
 - [@Doprez](https://github.com/Doprez)
 
+## [2025.2.1] - 2025-06-01
+
+### Added
+- Nothing
+
+### Fixed
+- Nothing
+
+### Changed
+- Refactor FindFollowPath to use Span for better performance and safety (#100) @ikpil
+- Refactor QueryPolygonsInTile to use Span for memory reuse (#99) @ikpil
+- Replaced List with Span to reduce heap memory usage (#98) @ikpil
+- Pr/remove list in raycast hit (#97) @ikpil
+- revmoe RcArrayBenchmarkTests (#96) @ikpil
+- changed PriorityQueueBenchmarks (#95) @ikpil
+- change to ToVec3 for .NET Standard 2.1 Numerics compatibility (#94) @ikpil
+- optimize DtConvexConvexIntersections.Intersect (#93) @ikpil
+- Pr/optimize circle constraint (#92) @ikpil
+- refactor(imgui): determined whether the mouse is on the UI through WantCaptureMouse property (#88) @sssooonnnggg
+- feat(debug-draw): add an option to render meshes in a left-handed coordinate system (#86) @sssooonnnggg
+- Nothing
+
+### Removed
+- Nothing
+
+### Special Thanks
+- [@Doprez](https://github.com/Doprez)
 
 ## [2024.4.1] - 2024-11-19
 
