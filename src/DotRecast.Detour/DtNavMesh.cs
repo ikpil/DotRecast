@@ -73,6 +73,7 @@ namespace DotRecast.Detour
                 m_tiles[i].salt = 1;
                 m_tiles[i].next = m_nextFree;
                 m_nextFree = m_tiles[i];
+                m_tileCount++;
             }
 
             return DtStatus.DT_SUCCESS;
@@ -98,7 +99,6 @@ namespace DotRecast.Detour
             option.maxPolys = data.header.polyCount;
             return option;
         }
-
 
         /// The maximum number of tiles supported by the navigation mesh.
         /// @return The maximum number of tiles supported by the navigation mesh.
@@ -174,7 +174,11 @@ namespace DotRecast.Detour
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            if (m_tiles[it].salt != salt || m_tiles[it].data == null || m_tiles[it].data.header == null)
+            if (
+                m_tiles[it].salt != salt
+                || m_tiles[it].data == null
+                || m_tiles[it].data.header == null
+            )
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
@@ -241,10 +245,15 @@ namespace DotRecast.Detour
             return ref m_params;
         }
 
-
         // TODO: These methods are duplicates from dtNavMeshQuery, but are needed for off-mesh connection finding.
         /// Queries polygons within a tile.
-        private int QueryPolygonsInTile(DtMeshTile tile, RcVec3f qmin, RcVec3f qmax, Span<long> polys, int maxPolys)
+        private int QueryPolygonsInTile(
+            DtMeshTile tile,
+            RcVec3f qmin,
+            RcVec3f qmax,
+            Span<long> polys,
+            int maxPolys
+        )
         {
             if (tile.data.bvTree != null)
             {
@@ -277,7 +286,12 @@ namespace DotRecast.Detour
                 while (nodeIndex < end)
                 {
                     DtBVNode node = tile.data.bvTree[nodeIndex];
-                    bool overlap = DtUtils.OverlapQuantBounds(ref bmin, ref bmax, ref node.bmin, ref node.bmax);
+                    bool overlap = DtUtils.OverlapQuantBounds(
+                        ref bmin,
+                        ref bmax,
+                        ref node.bmin,
+                        ref node.bmax
+                    );
                     bool isLeafNode = node.i >= 0;
 
                     if (isLeafNode && overlap)
@@ -354,7 +368,7 @@ namespace DotRecast.Detour
         ///
         /// The lastRef parameter is used to restore a tile with the same tile
         /// reference it had previously used.  In this case the #dtPolyRef's for the
-        /// tile will be restored to the same values they were before the tile was 
+        /// tile will be restored to the same values they were before the tile was
         /// removed.
         ///
         /// The nav mesh assumes exclusive access to the data passed and will make
@@ -369,7 +383,7 @@ namespace DotRecast.Detour
         ///  @param[in]		flags		Tile flags. (See: #dtTileFlags)
         ///  @param[in]		lastRef		The desired reference for the tile. (When reloading a tile.) [opt] [Default: 0]
         ///  @param[out]	result		The tile reference. (If the tile was succesfully added.) [opt]
-        /// @return The status flags for the operation. 
+        /// @return The status flags for the operation.
         public DtStatus AddTile(DtMeshData data, int flags, long lastRef, out long result)
         {
             result = 0;
@@ -439,7 +453,6 @@ namespace DotRecast.Detour
             int h = ComputeTileHash(header.x, header.y, m_tileLutMask);
             tile.next = m_posLookup[h];
             m_posLookup[h] = tile;
-
 
             // Patch header pointers.
             tile.data = data;
@@ -564,14 +577,21 @@ namespace DotRecast.Detour
             nneis = GetTilesAt(tile.data.header.x, tile.data.header.y, neis, MAX_NEIS);
             for (int j = 0; j < nneis; ++j)
             {
-                if (neis[j] == tile) continue;
+                if (neis[j] == tile)
+                    continue;
                 UnconnectLinks(neis[j], tile);
             }
 
             // Disconnect from neighbour tiles.
             for (int i = 0; i < 8; ++i)
             {
-                nneis = GetNeighbourTilesAt(tile.data.header.x, tile.data.header.y, i, neis, MAX_NEIS);
+                nneis = GetNeighbourTilesAt(
+                    tile.data.header.x,
+                    tile.data.header.y,
+                    i,
+                    neis,
+                    MAX_NEIS
+                );
                 for (int j = 0; j < nneis; ++j)
                 {
                     UnconnectLinks(neis[j], tile);
@@ -720,7 +740,14 @@ namespace DotRecast.Detour
                     // Create new links
                     int va = poly.verts[j] * 3;
                     int vb = poly.verts[(j + 1) % nv] * 3;
-                    int nnei = FindConnectingPolys(tile.data.verts, va, vb, target, DtUtils.OppositeTile(dir), ref connectPolys);
+                    int nnei = FindConnectingPolys(
+                        tile.data.verts,
+                        va,
+                        vb,
+                        target,
+                        DtUtils.OppositeTile(dir),
+                        ref connectPolys
+                    );
                     foreach (var connectPoly in connectPolys)
                     {
                         int idx = AllocLink(tile);
@@ -737,10 +764,12 @@ namespace DotRecast.Detour
                             // Compress portal limits to a byte value.
                             if (dir == 0 || dir == 4)
                             {
-                                float tmin = (connectPoly.tmin - tile.data.verts[va + 2])
-                                             / (tile.data.verts[vb + 2] - tile.data.verts[va + 2]);
-                                float tmax = (connectPoly.tmax - tile.data.verts[va + 2])
-                                             / (tile.data.verts[vb + 2] - tile.data.verts[va + 2]);
+                                float tmin =
+                                    (connectPoly.tmin - tile.data.verts[va + 2])
+                                    / (tile.data.verts[vb + 2] - tile.data.verts[va + 2]);
+                                float tmax =
+                                    (connectPoly.tmax - tile.data.verts[va + 2])
+                                    / (tile.data.verts[vb + 2] - tile.data.verts[va + 2]);
                                 if (tmin > tmax)
                                 {
                                     float temp = tmin;
@@ -748,15 +777,19 @@ namespace DotRecast.Detour
                                     tmax = temp;
                                 }
 
-                                link.bmin = (byte)MathF.Round(Math.Clamp(tmin, 0.0f, 1.0f) * 255.0f);
-                                link.bmax = (byte)MathF.Round(Math.Clamp(tmax, 0.0f, 1.0f) * 255.0f);
+                                link.bmin = (byte)
+                                    MathF.Round(Math.Clamp(tmin, 0.0f, 1.0f) * 255.0f);
+                                link.bmax = (byte)
+                                    MathF.Round(Math.Clamp(tmax, 0.0f, 1.0f) * 255.0f);
                             }
                             else if (dir == 2 || dir == 6)
                             {
-                                float tmin = (connectPoly.tmin - tile.data.verts[va])
-                                             / (tile.data.verts[vb] - tile.data.verts[va]);
-                                float tmax = (connectPoly.tmax - tile.data.verts[va])
-                                             / (tile.data.verts[vb] - tile.data.verts[va]);
+                                float tmin =
+                                    (connectPoly.tmin - tile.data.verts[va])
+                                    / (tile.data.verts[vb] - tile.data.verts[va]);
+                                float tmax =
+                                    (connectPoly.tmax - tile.data.verts[va])
+                                    / (tile.data.verts[vb] - tile.data.verts[va]);
                                 if (tmin > tmax)
                                 {
                                     float temp = tmin;
@@ -764,8 +797,10 @@ namespace DotRecast.Detour
                                     tmax = temp;
                                 }
 
-                                link.bmin = (byte)MathF.Round(Math.Clamp(tmin, 0.0f, 1.0f) * 255.0f);
-                                link.bmax = (byte)MathF.Round(Math.Clamp(tmax, 0.0f, 1.0f) * 255.0f);
+                                link.bmin = (byte)
+                                    MathF.Round(Math.Clamp(tmin, 0.0f, 1.0f) * 255.0f);
+                                link.bmax = (byte)
+                                    MathF.Round(Math.Clamp(tmax, 0.0f, 1.0f) * 255.0f);
                             }
                         }
                     }
@@ -805,7 +840,7 @@ namespace DotRecast.Detour
                 {
                     X = targetCon.rad,
                     Y = target.data.header.walkableClimb,
-                    Z = targetCon.rad
+                    Z = targetCon.rad,
                 };
 
                 // Find polygon to connect to.
@@ -819,7 +854,10 @@ namespace DotRecast.Detour
                 // findNearestPoly may return too optimistic results, further check
                 // to make sure.
 
-                if (RcMath.Sqr(nearestPt.X - p.X) + RcMath.Sqr(nearestPt.Z - p.Z) > RcMath.Sqr(targetCon.rad))
+                if (
+                    RcMath.Sqr(nearestPt.X - p.X) + RcMath.Sqr(nearestPt.Z - p.Z)
+                    > RcMath.Sqr(targetCon.rad)
+                )
                 {
                     continue;
                 }
@@ -859,7 +897,14 @@ namespace DotRecast.Detour
         }
 
         /// Returns all polygons in neighbour tile based on portal defined by the segment.
-        private int FindConnectingPolys(float[] verts, int va, int vb, DtMeshTile tile, int side, ref List<DtConnectPoly> cons)
+        private int FindConnectingPolys(
+            float[] verts,
+            int va,
+            int vb,
+            DtMeshTile tile,
+            int side,
+            ref List<DtConnectPoly> cons
+        )
         {
             if (tile == null)
                 return 0;
@@ -902,7 +947,9 @@ namespace DotRecast.Detour
                     // Check if the segments touch.
                     CalcSlabEndPoints(tile.data.verts, vc, vd, ref bmin, ref bmax, side);
 
-                    if (!OverlapSlabs(amin, amax, bmin, bmax, 0.01f, tile.data.header.walkableClimb))
+                    if (
+                        !OverlapSlabs(amin, amax, bmin, bmax, 0.01f, tile.data.header.walkableClimb)
+                    )
                     {
                         continue;
                     }
@@ -920,7 +967,14 @@ namespace DotRecast.Detour
             return n;
         }
 
-        private bool OverlapSlabs(RcVec2f amin, RcVec2f amax, RcVec2f bmin, RcVec2f bmax, float px, float py)
+        private bool OverlapSlabs(
+            RcVec2f amin,
+            RcVec2f amax,
+            RcVec2f bmin,
+            RcVec2f bmax,
+            float px,
+            float py
+        )
         {
             // Check for horizontal overlap.
             // The segment is shrunken a little so that slabs which touch
@@ -993,7 +1047,10 @@ namespace DotRecast.Detour
                 RcVec3f[] p = con.pos; // First vertex
                 // findNearestPoly may return too optimistic results, further check
                 // to make sure.
-                if (RcMath.Sqr(nearestPt.X - p[0].X) + RcMath.Sqr(nearestPt.Z - p[0].Z) > RcMath.Sqr(con.rad))
+                if (
+                    RcMath.Sqr(nearestPt.X - p[0].X) + RcMath.Sqr(nearestPt.Z - p[0].Z)
+                    > RcMath.Sqr(con.rad)
+                )
                 {
                     continue;
                 }
@@ -1036,11 +1093,17 @@ namespace DotRecast.Detour
      * @param pos
      * @return
      */
-        RcVec3f ClosestPointOnDetailEdges(DtMeshTile tile, DtPoly poly, RcVec3f pos, bool onlyBoundary)
+        RcVec3f ClosestPointOnDetailEdges(
+            DtMeshTile tile,
+            DtPoly poly,
+            RcVec3f pos,
+            bool onlyBoundary
+        )
         {
-            const int ANY_BOUNDARY_EDGE = (DtDetailTriEdgeFlags.DT_DETAIL_EDGE_BOUNDARY << 0) |
-                                          (DtDetailTriEdgeFlags.DT_DETAIL_EDGE_BOUNDARY << 2) |
-                                          (DtDetailTriEdgeFlags.DT_DETAIL_EDGE_BOUNDARY << 4);
+            const int ANY_BOUNDARY_EDGE =
+                (DtDetailTriEdgeFlags.DT_DETAIL_EDGE_BOUNDARY << 0)
+                | (DtDetailTriEdgeFlags.DT_DETAIL_EDGE_BOUNDARY << 2)
+                | (DtDetailTriEdgeFlags.DT_DETAIL_EDGE_BOUNDARY << 4);
             int ip = poly.index;
             float dmin = float.MaxValue;
             float tmin = 0;
@@ -1070,7 +1133,7 @@ namespace DotRecast.Detour
                             {
                                 X = tile.data.verts[index],
                                 Y = tile.data.verts[index + 1],
-                                Z = tile.data.verts[index + 2]
+                                Z = tile.data.verts[index + 2],
                             };
                         }
                         else
@@ -1080,15 +1143,20 @@ namespace DotRecast.Detour
                             {
                                 X = tile.data.detailVerts[index],
                                 Y = tile.data.detailVerts[index + 1],
-                                Z = tile.data.detailVerts[index + 2]
+                                Z = tile.data.detailVerts[index + 2],
                             };
                         }
                     }
 
                     for (int k = 0, j = 2; k < 3; j = k++)
                     {
-                        if ((GetDetailTriEdgeFlags(tris[ti + 3], j) & DtDetailTriEdgeFlags.DT_DETAIL_EDGE_BOUNDARY) == 0
-                            && (onlyBoundary || tris[ti + j] < tris[ti + k]))
+                        if (
+                            (
+                                GetDetailTriEdgeFlags(tris[ti + 3], j)
+                                & DtDetailTriEdgeFlags.DT_DETAIL_EDGE_BOUNDARY
+                            ) == 0
+                            && (onlyBoundary || tris[ti + j] < tris[ti + k])
+                        )
                         {
                             // Only looking at boundary edges and this is internal, or
                             // this is an inner edge that we will see again or have already seen.
@@ -1176,17 +1244,18 @@ namespace DotRecast.Detour
                             {
                                 X = tile.data.verts[index],
                                 Y = tile.data.verts[index + 1],
-                                Z = tile.data.verts[index + 2]
+                                Z = tile.data.verts[index + 2],
                             };
                         }
                         else
                         {
-                            int index = (pd.vertBase + (tile.data.detailTris[t + k] - poly.vertCount)) * 3;
+                            int index =
+                                (pd.vertBase + (tile.data.detailTris[t + k] - poly.vertCount)) * 3;
                             v[k] = new RcVec3f
                             {
                                 X = tile.data.detailVerts[index],
                                 Y = tile.data.detailVerts[index + 1],
-                                Z = tile.data.detailVerts[index + 2]
+                                Z = tile.data.detailVerts[index + 2],
                             };
                         }
                     }
@@ -1230,7 +1299,12 @@ namespace DotRecast.Detour
             return true;
         }
 
-        public void ClosestPointOnPoly(long refs, RcVec3f pos, out RcVec3f closest, out bool posOverPoly)
+        public void ClosestPointOnPoly(
+            long refs,
+            RcVec3f pos,
+            out RcVec3f closest,
+            out bool posOverPoly
+        )
         {
             GetTileAndPolyByRefUnsafe(refs, out var tile, out var poly);
             closest = pos;
@@ -1248,9 +1322,17 @@ namespace DotRecast.Detour
             if (poly.GetPolyType() == DtPolyTypes.DT_POLYTYPE_OFFMESH_CONNECTION)
             {
                 int i = poly.verts[0] * 3;
-                var v0 = new RcVec3f(tile.data.verts[i], tile.data.verts[i + 1], tile.data.verts[i + 2]);
+                var v0 = new RcVec3f(
+                    tile.data.verts[i],
+                    tile.data.verts[i + 1],
+                    tile.data.verts[i + 2]
+                );
                 i = poly.verts[1] * 3;
-                var v1 = new RcVec3f(tile.data.verts[i], tile.data.verts[i + 1], tile.data.verts[i + 2]);
+                var v1 = new RcVec3f(
+                    tile.data.verts[i],
+                    tile.data.verts[i + 1],
+                    tile.data.verts[i + 2]
+                );
                 DtUtils.DistancePtSegSqr2D(pos, v0, v1, out var t);
                 closest = RcVec3f.Lerp(v0, v1, t);
                 return;
@@ -1261,7 +1343,12 @@ namespace DotRecast.Detour
         }
 
         /// Find nearest polygon within a tile.
-        private long FindNearestPolyInTile(DtMeshTile tile, RcVec3f center, RcVec3f halfExtents, out RcVec3f nearestPt)
+        private long FindNearestPolyInTile(
+            DtMeshTile tile,
+            RcVec3f center,
+            RcVec3f halfExtents,
+            out RcVec3f nearestPt
+        )
         {
             nearestPt = RcVec3f.Zero;
 
@@ -1314,11 +1401,13 @@ namespace DotRecast.Detour
             DtMeshTile tile = m_posLookup[h];
             while (null != tile)
             {
-                if (null != tile.data &&
-                    null != tile.data.header &&
-                    tile.data.header.x == x &&
-                    tile.data.header.y == y &&
-                    tile.data.header.layer == layer)
+                if (
+                    null != tile.data
+                    && null != tile.data.header
+                    && tile.data.header.x == x
+                    && tile.data.header.y == y
+                    && tile.data.header.layer == layer
+                )
                 {
                     return tile;
                 }
@@ -1332,7 +1421,8 @@ namespace DotRecast.Detour
         /// Returns neighbour tile based on side.
         private int GetNeighbourTilesAt(int x, int y, int side, DtMeshTile[] tiles, int maxTiles)
         {
-            int nx = x, ny = y;
+            int nx = x,
+                ny = y;
             switch (side)
             {
                 case 0:
@@ -1378,10 +1468,12 @@ namespace DotRecast.Detour
             DtMeshTile tile = m_posLookup[h];
             while (null != tile)
             {
-                if (null != tile.data &&
-                    null != tile.data.header &&
-                    tile.data.header.x == x &&
-                    tile.data.header.y == y)
+                if (
+                    null != tile.data
+                    && null != tile.data.header
+                    && tile.data.header.x == x
+                    && tile.data.header.y == y
+                )
                 {
                     if (n < maxTiles)
                         tiles[n++] = tile;
@@ -1403,10 +1495,12 @@ namespace DotRecast.Detour
             DtMeshTile tile = m_posLookup[h];
             while (null != tile)
             {
-                if (null != tile.data &&
-                    null != tile.data.header &&
-                    tile.data.header.x == x &&
-                    tile.data.header.y == y)
+                if (
+                    null != tile.data
+                    && null != tile.data.header
+                    && tile.data.header.x == x
+                    && tile.data.header.y == y
+                )
                 {
                     if (n < maxTiles)
                         tiles[n++] = tile.index;
@@ -1417,7 +1511,6 @@ namespace DotRecast.Detour
 
             return n;
         }
-
 
         public long GetTileRefAt(int x, int y, int layer)
         {
@@ -1463,15 +1556,20 @@ namespace DotRecast.Detour
         ///  @param[out]	startPos	The start position of the off-mesh connection. [(x, y, z)]
         ///  @param[out]	endPos		The end position of the off-mesh connection. [(x, y, z)]
         /// @return The status flags for the operation.
-        /// 
+        ///
         /// @par
         ///
-        /// Off-mesh connections are stored in the navigation mesh as special 2-vertex 
-        /// polygons with a single edge. At least one of the vertices is expected to be 
-        /// inside a normal polygon. So an off-mesh connection is "entered" from a 
-        /// normal polygon at one of its endpoints. This is the polygon identified by 
+        /// Off-mesh connections are stored in the navigation mesh as special 2-vertex
+        /// polygons with a single edge. At least one of the vertices is expected to be
+        /// inside a normal polygon. So an off-mesh connection is "entered" from a
+        /// normal polygon at one of its endpoints. This is the polygon identified by
         /// the prevRef parameter.
-        public DtStatus GetOffMeshConnectionPolyEndPoints(long prevRef, long polyRef, ref RcVec3f startPos, ref RcVec3f endPos)
+        public DtStatus GetOffMeshConnectionPolyEndPoints(
+            long prevRef,
+            long polyRef,
+            ref RcVec3f startPos,
+            ref RcVec3f endPos
+        )
         {
             if (polyRef == 0)
             {
@@ -1505,7 +1603,8 @@ namespace DotRecast.Detour
             }
 
             // Figure out which way to hand out the vertices.
-            int idx0 = 0, idx1 = 1;
+            int idx0 = 0,
+                idx1 = 1;
 
             // Find link that points to first vertex.
             for (int i = poly.firstLink; i != DT_NULL_LINK; i = tile.links[i].next)
@@ -1545,7 +1644,7 @@ namespace DotRecast.Detour
 
         /// @{
         /// @name State Management
-        /// These functions do not effect #dtTileRef or #dtPolyRef's. 
+        /// These functions do not effect #dtTileRef or #dtPolyRef's.
         /// Sets the user defined flags for the specified polygon.
         ///  @param[in]	ref		The polygon reference.
         ///  @param[in]	flags	The new flags for the polygon.
@@ -1563,7 +1662,11 @@ namespace DotRecast.Detour
                 return DtStatus.DT_INVALID_PARAM;
             }
 
-            if (m_tiles[it].salt != salt || m_tiles[it].data == null || m_tiles[it].data.header == null)
+            if (
+                m_tiles[it].salt != salt
+                || m_tiles[it].data == null
+                || m_tiles[it].data.header == null
+            )
             {
                 return DtStatus.DT_INVALID_PARAM;
             }
@@ -1600,7 +1703,11 @@ namespace DotRecast.Detour
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            if (m_tiles[it].salt != salt || m_tiles[it].data == null || m_tiles[it].data.header == null)
+            if (
+                m_tiles[it].salt != salt
+                || m_tiles[it].data == null
+                || m_tiles[it].data.header == null
+            )
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
@@ -1635,7 +1742,11 @@ namespace DotRecast.Detour
                 return DtStatus.DT_FAILURE;
             }
 
-            if (m_tiles[it].salt != salt || m_tiles[it].data == null || m_tiles[it].data.header == null)
+            if (
+                m_tiles[it].salt != salt
+                || m_tiles[it].data == null
+                || m_tiles[it].data.header == null
+            )
             {
                 return DtStatus.DT_INVALID_PARAM;
             }
@@ -1672,7 +1783,11 @@ namespace DotRecast.Detour
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            if (m_tiles[it].salt != salt || m_tiles[it].data == null || m_tiles[it].data.header == null)
+            if (
+                m_tiles[it].salt != salt
+                || m_tiles[it].data == null
+                || m_tiles[it].data.header == null
+            )
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
@@ -1715,8 +1830,16 @@ namespace DotRecast.Detour
 
         public void ComputeBounds(out RcVec3f bmin, out RcVec3f bmax)
         {
-            bmin = new RcVec3f(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
-            bmax = new RcVec3f(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
+            bmin = new RcVec3f(
+                float.PositiveInfinity,
+                float.PositiveInfinity,
+                float.PositiveInfinity
+            );
+            bmax = new RcVec3f(
+                float.NegativeInfinity,
+                float.NegativeInfinity,
+                float.NegativeInfinity
+            );
             for (int t = 0; t < GetMaxTiles(); ++t)
             {
                 DtMeshTile tile = GetTile(t);
