@@ -47,8 +47,6 @@ namespace DotRecast.Detour
         /** The maximum number of vertices per navigation polygon. */
         private int m_maxVertPerPoly;
 
-        private int m_tileCount;
-
         public DtStatus Init(DtNavMeshParams param, int maxVertsPerPoly)
         {
             m_params = param;
@@ -392,7 +390,6 @@ namespace DotRecast.Detour
                     tile = m_nextFree;
                     m_nextFree = tile.next;
                     tile.next = null;
-                    m_tileCount++;
                 }
             }
             else
@@ -594,7 +591,6 @@ namespace DotRecast.Detour
             // Add to free list.
             tile.next = m_nextFree;
             m_nextFree = tile;
-            m_tileCount--;
             return GetTileRef(tile);
         }
 
@@ -1531,11 +1527,6 @@ namespace DotRecast.Detour
         public int GetMaxVertsPerPoly()
         {
             return m_maxVertPerPoly;
-        }
-
-        public int GetTileCount()
-        {
-            return m_tileCount;
         }
 
         public bool IsAvailableTileCount()

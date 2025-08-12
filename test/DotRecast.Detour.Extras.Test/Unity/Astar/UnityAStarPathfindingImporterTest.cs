@@ -29,7 +29,6 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Extras.Test.Unity.Astar;
 
-
 public class UnityAStarPathfindingImporterTest
 {
     [Test]
@@ -128,20 +127,31 @@ public class UnityAStarPathfindingImporterTest
     private void SaveMesh(DtNavMesh mesh, string filePostfix)
     {
         // Set the flag to RecastDemo work properly
-        for (int i = 0; i < mesh.GetTileCount(); i++)
+        for (int i = 0; i < mesh.GetMaxTiles(); i++)
         {
-            foreach (DtPoly p in mesh.GetTile(i).data.polys)
+            DtMeshTile tile = mesh.GetTile(i);
+            if (tile == null)
+            {
+                continue;
+            }
+
+            if (tile.data == null || tile.data.polys == null)
+            {
+                continue;
+            }
+
+            foreach (DtPoly p in tile.data.polys)
             {
                 p.flags = 1;
             }
-        }
 
-        // Save the mesh as recast file,
-        DtMeshSetWriter writer = new DtMeshSetWriter();
-        string filename = $"all_tiles_navmesh_{filePostfix}.bin";
-        string filepath = Path.Combine("test-output", filename);
-        using var fs = new FileStream(filename, FileMode.Create);
-        using var bw = new BinaryWriter(fs);
-        writer.Write(bw, mesh, RcByteOrder.LITTLE_ENDIAN, true);
+            // Save the mesh as recast file,
+            DtMeshSetWriter writer = new DtMeshSetWriter();
+            string filename = $"all_tiles_navmesh_{filePostfix}.bin";
+            string filepath = Path.Combine("test-output", filename);
+            using var fs = new FileStream(filename, FileMode.Create);
+            using var bw = new BinaryWriter(fs);
+            writer.Write(bw, mesh, RcByteOrder.LITTLE_ENDIAN, true);
+        }
     }
 }
