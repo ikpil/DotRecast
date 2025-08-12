@@ -169,7 +169,7 @@ namespace DotRecast.Recast
                     {
                         if (regId == 255)
                         {
-                            throw new Exception("rcBuildHeightfieldLayers: Region ID overflow.");
+                            RcThrowHelper.ThrowException("rcBuildHeightfieldLayers: Region ID overflow.");
                             return false;
                         }
 

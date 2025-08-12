@@ -27,7 +27,6 @@ public class RcRentedArrayTest
         var rand = new RcRand();
         for (int loop = 0; loop < 1024; ++loop)
         {
-            RcRentedArray<int> rentedArray;
             {
                 int length = Math.Max(2, (int)(rand.Next() * 2048));
                 var values = RandomValues(length);

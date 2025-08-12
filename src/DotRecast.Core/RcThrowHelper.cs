@@ -6,7 +6,6 @@ namespace DotRecast.Core
 {
     public static class RcThrowHelper
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowExceptionIfIndexOutOfRange(int index, int size)
         {
             if (0 > index || index >= size)
@@ -15,20 +14,21 @@ namespace DotRecast.Core
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowArgumentOutOfRangeException(string argument)
         {
             throw new ArgumentOutOfRangeException(argument);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowNullReferenceException(string argument)
         {
             throw new NullReferenceException(argument);
         }
+        
+        public static void ThrowException(string message)
+        {
+            throw new Exception(message);
+        }
 
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void StackOverflow()
         {
             var array_128_512_1 = new RcFixedArray128<RcFixedArray512<float>>(); // 128 * 512 = 65536
@@ -49,22 +49,17 @@ namespace DotRecast.Core
             float f1 = 0.0f; // 1
             //float f2 = 0.0f; // my system stack overflow!
             
-            Unused(ref array_128_512_1);
-            Unused(ref array_128_512_2);
-            Unused(ref array_32_512_1);
-            Unused(ref array_16_512_1);
-            Unused(ref array_8_512_1);
-            Unused(ref array_4_256_1);
-            Unused(ref array_4_64_1);
-            Unused(ref array_2_8_1);
-            Unused(ref array_2_4_1);
-            Unused(ref f1);
+            RcDebug.UnusedRef(ref array_128_512_1);
+            RcDebug.UnusedRef(ref array_128_512_2);
+            RcDebug.UnusedRef(ref array_32_512_1);
+            RcDebug.UnusedRef(ref array_16_512_1);
+            RcDebug.UnusedRef(ref array_8_512_1);
+            RcDebug.UnusedRef(ref array_4_256_1);
+            RcDebug.UnusedRef(ref array_4_64_1);
+            RcDebug.UnusedRef(ref array_2_8_1);
+            RcDebug.UnusedRef(ref array_2_4_1);
+            RcDebug.UnusedRef(ref f1);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Unused<T>(ref T _)
-        {
-            // ..
-        }
     }
 }

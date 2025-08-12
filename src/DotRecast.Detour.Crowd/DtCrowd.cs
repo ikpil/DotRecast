@@ -593,17 +593,19 @@ namespace DotRecast.Detour.Crowd
                 {
                     Span<long> path = ag.corridor.GetPath();
                     int npath = ag.corridor.GetPathCount();
-                    Debug.Assert(0 != npath);
+                    RcDebug.Assert(0 != npath);
 
                     const int MAX_RES = 32;
                     RcVec3f reqPos = new RcVec3f();
                     RcFixedArray32<long> reqPath = new RcFixedArray32<long>(); // The path to the request location
                     int reqPathCount = 0;
 
-                    Debug.Assert(reqPath.Length == MAX_RES);
+                    RcDebug.Assert(reqPath.Length == MAX_RES);
 
                     // Quick search towards the goal.
                     const int MAX_ITER = 20;
+                    RcDebug.Unused(MAX_ITER); // warning CS0219
+                    
                     _navQuery.InitSlicedFindPath(path[0], ag.targetRef, ag.npos, ag.targetPos, _filters[ag.option.queryFilterType], 0);
                     _navQuery.UpdateSlicedFindPath(_config.maxTargetFindPathIterations, out var _);
 
@@ -723,7 +725,7 @@ namespace DotRecast.Detour.Crowd
                     {
                         Span<long> path = ag.corridor.GetPath();
                         int npath = ag.corridor.GetPathCount();
-                        Debug.Assert(0 != npath);
+                        RcDebug.Assert(0 != npath);
 
                         // Apply results.
                         var targetPos = ag.targetPos;
@@ -939,7 +941,7 @@ namespace DotRecast.Detour.Crowd
                 int tgt = i + 1;
                 int n = Math.Min(nneis - i, maxNeis - tgt);
 
-                Debug.Assert(tgt + n <= maxNeis);
+                RcDebug.Assert(tgt + n <= maxNeis);
 
                 if (n > 0)
                 {

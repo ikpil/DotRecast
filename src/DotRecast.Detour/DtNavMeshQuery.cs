@@ -1376,7 +1376,7 @@ namespace DotRecast.Detour
             else
             {
                 // Reverse the path.
-                Debug.Assert(null != m_query.lastBestNode);
+                RcDebug.Assert(null != m_query.lastBestNode);
 		
                 if (m_query.lastBestNode.id != m_query.endRef)
                     m_query.status |= DtStatus.DT_PARTIAL_RESULT;
@@ -1487,7 +1487,7 @@ namespace DotRecast.Detour
                 if (null == node)
                 {
                     m_query.status |= DtStatus.DT_PARTIAL_RESULT;
-                    Debug.Assert(null != m_query.lastBestNode);
+                    RcDebug.Assert(null != m_query.lastBestNode);
                     node = m_query.lastBestNode;
                 }
 		
@@ -3785,7 +3785,7 @@ namespace DotRecast.Detour
             int writeCount;
             for (writeCount = length; writeCount > maxPath; writeCount--)
             {
-                Debug.Assert(null != curNode);
+                RcDebug.Assert(null != curNode);
 
                 curNode = m_nodePool.GetNodeAtIdx(curNode.pidx);
             }
@@ -3793,13 +3793,13 @@ namespace DotRecast.Detour
             // Write path
             for (int i = writeCount - 1; i >= 0; i--)
             {
-                Debug.Assert(null != curNode);
+                RcDebug.Assert(null != curNode);
 
                 path[i] = curNode.id;
                 curNode = m_nodePool.GetNodeAtIdx(curNode.pidx);
             }
 
-            Debug.Assert(null == curNode);
+            RcDebug.Assert(null == curNode);
 
             pathCount = Math.Min(length, maxPath);
 

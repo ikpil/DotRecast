@@ -245,10 +245,11 @@ namespace DotRecast.Detour.Crowd
                 return false;
             }
             
-            
             const int MAX_ITER = 32;
             const int MAX_RES = 32;
 
+            RcDebug.Unused(MAX_ITER); // warning CS0219
+            
             Span<long> res = stackalloc long[MAX_RES];
             int nres = 0;
             
@@ -292,7 +293,7 @@ namespace DotRecast.Detour.Crowd
             refs[1] = polyRef;
 
             DtNavMesh nav = navquery.GetAttachedNavMesh();
-            Debug.Assert(null != nav);
+            RcDebug.Assert(null != nav);
             
             var startEnd = nav.GetOffMeshConnectionPolyEndPoints(refs[0], refs[1], ref startPos, ref endPos);
             if (startEnd.Succeeded())
