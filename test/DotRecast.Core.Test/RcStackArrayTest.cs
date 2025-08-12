@@ -43,6 +43,8 @@ public class RcFixedArrayTest
         float f1 = 0.0f; // 1
         //float f2 = 0.0f; // my system stack overflow!
         Assert.That(f1, Is.EqualTo(0.0f));
+        
+        RcDebug.UnusedRef(ref array_128_512_1);
     }
 
     [Test]

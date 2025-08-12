@@ -25,7 +25,7 @@ using NUnit.Framework;
 
 namespace DotRecast.Detour.Crowd.Test;
 
-public class AbstractCrowdTest
+public abstract class AbstractCrowdTest
 {
     protected readonly long[] startRefs =
     {

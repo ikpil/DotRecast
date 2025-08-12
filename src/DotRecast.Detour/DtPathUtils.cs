@@ -232,7 +232,7 @@ namespace DotRecast.Detour
             int ppos = furthestPath+1;
             int vpos = furthestVisited+1;
             int count = Math.Min(nvisited-vpos, maxPath-ppos);
-            Debug.Assert(ppos+count <= maxPath);
+            RcDebug.Assert(ppos+count <= maxPath);
             if (0 != count)
                 RcSpans.Copy(visited, vpos, path, ppos, count);
 	
