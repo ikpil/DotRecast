@@ -48,6 +48,23 @@ namespace DotRecast.Core
 
             float f1 = 0.0f; // 1
             //float f2 = 0.0f; // my system stack overflow!
+            
+            Unused(ref array_128_512_1);
+            Unused(ref array_128_512_2);
+            Unused(ref array_32_512_1);
+            Unused(ref array_16_512_1);
+            Unused(ref array_8_512_1);
+            Unused(ref array_4_256_1);
+            Unused(ref array_4_64_1);
+            Unused(ref array_2_8_1);
+            Unused(ref array_2_4_1);
+            Unused(ref f1);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void Unused<T>(ref T _)
+        {
+            // ..
         }
     }
 }
