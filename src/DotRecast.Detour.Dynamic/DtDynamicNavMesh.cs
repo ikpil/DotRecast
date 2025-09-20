@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DotRecast.Core;
-using DotRecast.Core.Collections;
+using DotRecast.Core.Collections.Extensions;
 using DotRecast.Detour.Dynamic.Colliders;
 using DotRecast.Detour.Dynamic.Io;
 using DotRecast.Recast;

@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using DotRecast.Core.Buffers;
-using DotRecast.Core.Collections;
+using DotRecast.Core.Collections.Extensions;
 using NUnit.Framework;
 
 namespace DotRecast.Core.Test;

@@ -20,7 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using DotRecast.Core;
-using DotRecast.Core.Collections;
+using DotRecast.Core.Collections.Extensions;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Recast

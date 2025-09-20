@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace DotRecast.Core.Collections
+namespace DotRecast.Core.Collections.Extensions
 {
-    public static class CollectionExtensions
+    public static class RcCollectionExtensions
     {
         /// Sorts the given data in-place using insertion sort.
         ///
@@ -26,11 +26,19 @@ namespace DotRecast.Core.Collections
             }
         }
 
-        public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
+        public static void ForEach<T>(this IEnumerable<T> list, Action<T> action)
         {
-            foreach (var item in collection)
+            foreach (var item in list)
             {
                 action.Invoke(item);
+            }
+        }
+
+        public static void ForEach<T>(this RcImmutableArray<T> list, Action<T> action)
+        {
+            for (int i = 0; i < list.Count; ++i)
+            {
+                action.Invoke(list[i]);
             }
         }
 
