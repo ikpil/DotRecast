@@ -28,7 +28,7 @@ namespace DotRecast.Recast
 {
     using static RcRecast;
     using static RcVec;
-    using static EdgeValues;
+    using static RcEdgeValues;
 
     public static class RcMeshDetails
     {

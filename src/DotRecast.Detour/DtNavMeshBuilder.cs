@@ -31,14 +31,14 @@ namespace DotRecast.Detour
         const int MESH_NULL_IDX = 0xffff;
 
 
-        private static void CalcExtends(BVItem[] items, int nitems, int imin, int imax, ref RcVec3i bmin, ref RcVec3i bmax)
+        private static void CalcExtends(DtBVItem[] items, int nitems, int imin, int imax, ref RcVec3i bmin, ref RcVec3i bmax)
         {
             bmin = items[imin].bmin;
             bmax = items[imin].bmax;
 
             for (int i = imin + 1; i < imax; ++i)
             {
-                BVItem it = items[i];
+                DtBVItem it = items[i];
                 if (it.bmin.X < bmin.X)
                     bmin.X = it.bmin.X;
                 if (it.bmin.Y < bmin.Y)
@@ -74,7 +74,7 @@ namespace DotRecast.Detour
             return axis;
         }
 
-        public static int Subdivide(BVItem[] items, int nitems, int imin, int imax, int curNode, DtBVNode[] nodes)
+        public static int Subdivide(DtBVItem[] items, int nitems, int imin, int imax, int curNode, DtBVNode[] nodes)
         {
             int inum = imax - imin;
             int icur = curNode;
@@ -104,17 +104,17 @@ namespace DotRecast.Detour
                 if (axis == 0)
                 {
                     // Sort along x-axis
-                    Array.Sort(items, imin, inum, BVItemXComparer.Shared);
+                    Array.Sort(items, imin, inum, DtBVItemXComparer.Shared);
                 }
                 else if (axis == 1)
                 {
                     // Sort along y-axis
-                    Array.Sort(items, imin, inum, BVItemYComparer.Shared);
+                    Array.Sort(items, imin, inum, DtBVItemYComparer.Shared);
                 }
                 else
                 {
                     // Sort along z-axis
-                    Array.Sort(items, imin, inum, BVItemZComparer.Shared);
+                    Array.Sort(items, imin, inum, DtBVItemZComparer.Shared);
                 }
 
                 int isplit = imin + inum / 2;
@@ -136,10 +136,10 @@ namespace DotRecast.Detour
         {
             // Build tree
             float quantFactor = 1 / option.cs;
-            BVItem[] items = new BVItem[option.polyCount];
+            DtBVItem[] items = new DtBVItem[option.polyCount];
             for (int i = 0; i < option.polyCount; i++)
             {
-                BVItem it = new BVItem();
+                DtBVItem it = new DtBVItem();
                 items[i] = it;
                 it.i = i;
                 // Calc polygon bounds. Use detail meshes if available.

@@ -15,7 +15,7 @@ namespace DotRecast.Recast.Toolset.Tools
             return "Tiles";
         }
 
-        public void RemoveAllTiles(IInputGeomProvider geom, RcNavMeshBuildSettings settings, DtNavMesh navMesh)
+        public void RemoveAllTiles(IRcInputGeomProvider geom, RcNavMeshBuildSettings settings, DtNavMesh navMesh)
         {
             if (null == settings || null == geom || navMesh == null)
                 return;
@@ -39,7 +39,7 @@ namespace DotRecast.Recast.Toolset.Tools
             }
         }
 
-        public void BuildAllTiles(IInputGeomProvider geom, RcNavMeshBuildSettings settings, DtNavMesh navMesh)
+        public void BuildAllTiles(IRcInputGeomProvider geom, RcNavMeshBuildSettings settings, DtNavMesh navMesh)
         {
             if (null == settings || null == geom || navMesh == null)
                 return;
@@ -62,7 +62,7 @@ namespace DotRecast.Recast.Toolset.Tools
             }
         }
 
-        public bool BuildTile(IInputGeomProvider geom, RcNavMeshBuildSettings settings, DtNavMesh navMesh, int tx, int ty, out long tileBuildTicks, out int tileTriCount, out int tileMemUsage)
+        public bool BuildTile(IRcInputGeomProvider geom, RcNavMeshBuildSettings settings, DtNavMesh navMesh, int tx, int ty, out long tileBuildTicks, out int tileTriCount, out int tileMemUsage)
         {
             tileBuildTicks = 0;
             tileTriCount = 0; // ...
@@ -112,7 +112,7 @@ namespace DotRecast.Recast.Toolset.Tools
             return true;
         }
 
-        public bool BuildTile(IInputGeomProvider geom, RcNavMeshBuildSettings settings, DtNavMesh navMesh, RcVec3f pos, out long tileBuildTicks, out int tileTriCount, out int tileMemUsage)
+        public bool BuildTile(IRcInputGeomProvider geom, RcNavMeshBuildSettings settings, DtNavMesh navMesh, RcVec3f pos, out long tileBuildTicks, out int tileTriCount, out int tileMemUsage)
         {
             tileBuildTicks = 0;
             tileTriCount = 0;
@@ -132,7 +132,7 @@ namespace DotRecast.Recast.Toolset.Tools
             return BuildTile(geom, settings, navMesh, tx, ty, out tileBuildTicks, out tileTriCount, out tileMemUsage);
         }
 
-        public bool RemoveTile(IInputGeomProvider geom, RcNavMeshBuildSettings settings, DtNavMesh navMesh, RcVec3f pos)
+        public bool RemoveTile(IRcInputGeomProvider geom, RcNavMeshBuildSettings settings, DtNavMesh navMesh, RcVec3f pos)
         {
             if (null == settings || null == geom || navMesh == null)
                 return false;

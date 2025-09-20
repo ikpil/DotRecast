@@ -29,7 +29,7 @@ namespace DotRecast.Recast.Toolset.Tools
             return "Temp Obstacles";
         }
 
-        public NavMeshBuildResult Build(IInputGeomProvider geom, RcNavMeshBuildSettings setting, RcByteOrder order, bool cCompatibility)
+        public NavMeshBuildResult Build(IRcInputGeomProvider geom, RcNavMeshBuildSettings setting, RcByteOrder order, bool cCompatibility)
         {
             if (null == geom || null == geom.GetMesh())
             {
@@ -119,7 +119,7 @@ namespace DotRecast.Recast.Toolset.Tools
             return _tc;
         }
 
-        public DtTileCache CreateTileCache(IInputGeomProvider geom, RcNavMeshBuildSettings setting, int tw, int th, RcByteOrder order, bool cCompatibility)
+        public DtTileCache CreateTileCache(IRcInputGeomProvider geom, RcNavMeshBuildSettings setting, int tw, int th, RcByteOrder order, bool cCompatibility)
         {
             DtTileCacheParams option = new DtTileCacheParams();
             option.ch = setting.cellHeight;

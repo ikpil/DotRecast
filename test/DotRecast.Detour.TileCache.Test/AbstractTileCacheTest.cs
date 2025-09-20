@@ -36,7 +36,7 @@ public class AbstractTileCacheTest
     private readonly int m_tileSize = 48;
 
 
-    public DtTileCache GetTileCache(IInputGeomProvider geom, RcByteOrder order, bool cCompatibility)
+    public DtTileCache GetTileCache(IRcInputGeomProvider geom, RcByteOrder order, bool cCompatibility)
     {
         DtTileCacheParams option = new DtTileCacheParams();
         RcRecast.CalcTileCount(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), m_cellSize, m_tileSize, m_tileSize, out var tw, out var th);

@@ -36,16 +36,16 @@ namespace DotRecast.Recast.Geom
             cm.ntris = ntris;
 
             // Build tree
-            BoundsItem[] items = new BoundsItem[ntris];
+            RcBoundsItem[] items = new RcBoundsItem[ntris];
             for (int i = 0; i < ntris; ++i)
             {
-                items[i] = new BoundsItem();
+                items[i] = new RcBoundsItem();
             }
 
             for (int i = 0; i < ntris; i++)
             {
                 int t = i * 3;
-                BoundsItem it = items[i];
+                RcBoundsItem it = items[i];
                 it.i = i;
                 // Calc triangle XZ bounds.
                 it.bmin.X = it.bmax.X = verts[tris[t] * 3 + 0];
@@ -159,7 +159,7 @@ namespace DotRecast.Recast.Geom
         }
 
 
-        private static void CalcExtends(BoundsItem[] items, int imin, int imax, ref RcVec2f bmin, ref RcVec2f bmax)
+        private static void CalcExtends(RcBoundsItem[] items, int imin, int imax, ref RcVec2f bmin, ref RcVec2f bmax)
         {
             bmin.X = items[imin].bmin.X;
             bmin.Y = items[imin].bmin.Y;
@@ -169,7 +169,7 @@ namespace DotRecast.Recast.Geom
 
             for (int i = imin + 1; i < imax; ++i)
             {
-                BoundsItem it = items[i];
+                RcBoundsItem it = items[i];
                 if (it.bmin.X < bmin.X)
                 {
                     bmin.X = it.bmin.X;
@@ -197,7 +197,7 @@ namespace DotRecast.Recast.Geom
             return y > x ? 1 : 0;
         }
 
-        private static void Subdivide(BoundsItem[] items, int imin, int imax, int trisPerChunk, List<RcChunkyTriMeshNode> nodes, int[] inTris)
+        private static void Subdivide(RcBoundsItem[] items, int imin, int imax, int trisPerChunk, List<RcChunkyTriMeshNode> nodes, int[] inTris)
         {
             int inum = imax - imin;
 
@@ -231,12 +231,12 @@ namespace DotRecast.Recast.Geom
 
                 if (axis == 0)
                 {
-                    Array.Sort(items, imin, imax - imin, BoundsItemXComparer.Shared);
+                    Array.Sort(items, imin, imax - imin, RcBoundsItemXComparer.Shared);
                     // Sort along x-axis
                 }
                 else if (axis == 1)
                 {
-                    Array.Sort(items, imin, imax - imin, BoundsItemYComparer.Shared);
+                    Array.Sort(items, imin, imax - imin, RcBoundsItemYComparer.Shared);
                     // Sort along y-axis
                 }
 

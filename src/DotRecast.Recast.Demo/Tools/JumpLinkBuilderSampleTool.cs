@@ -78,8 +78,8 @@ public class JumpLinkBuilderSampleTool : ISampleTool
         ImGui.Text("Mode");
         ImGui.Separator();
         //int buildTypes = 0;
-        ImGui.CheckboxFlags("Climb Down", ref _cfg.buildTypes, JumpLinkType.EDGE_CLIMB_DOWN.Bit);
-        ImGui.CheckboxFlags("Edge Jump", ref _cfg.buildTypes, JumpLinkType.EDGE_JUMP.Bit);
+        ImGui.CheckboxFlags("Climb Down", ref _cfg.buildTypes, DtJumpLinkType.EDGE_CLIMB_DOWN.Bit);
+        ImGui.CheckboxFlags("Edge Jump", ref _cfg.buildTypes, DtJumpLinkType.EDGE_JUMP.Bit);
         ImGui.NewLine();
         //option.buildTypes = buildTypes;
 
@@ -146,7 +146,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
             {
                 var selEdge = _tool.GetSelEdge();
 
-                foreach (JumpEdge[] edges in annotationBuilder.GetEdges())
+                foreach (DtJumpEdge[] edges in annotationBuilder.GetEdges())
                 {
                     dd.Begin(LINES, 3.0f);
                     for (int i = 0; i < edges.Length; ++i)
@@ -201,7 +201,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
         if ((_drawFlags & DRAW_ANNOTATIONS) != 0)
         {
             dd.Begin(QUADS);
-            foreach (JumpLink link in _tool.GetLinks())
+            foreach (DtJumpLink link in _tool.GetLinks())
             {
                 for (int j = 0; j < link.nspine - 1; ++j)
                 {
@@ -216,7 +216,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
 
             dd.End();
             dd.Begin(LINES, 3.0f);
-            foreach (JumpLink link in _tool.GetLinks())
+            foreach (DtJumpLink link in _tool.GetLinks())
             {
                 for (int j = 0; j < link.nspine - 1; ++j)
                 {
@@ -241,7 +241,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
 
         if (annotationBuilder != null)
         {
-            foreach (JumpLink link in _tool.GetLinks())
+            foreach (DtJumpLink link in _tool.GetLinks())
             {
                 if ((_drawFlags & DRAW_ANIM_TRAJECTORY) != 0)
                 {
@@ -268,7 +268,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
                     dd.Vertex(link.start.p.X, link.start.p.Y, link.start.p.Z, colb);
                     dd.End();
 
-                    GroundSegment end = link.end;
+                    DtGroundSegment end = link.end;
                     r = end.height;
                     // End segment.
                     dd.Begin(LINES, 3.0f);
@@ -313,7 +313,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
                     dd.Begin(POINTS, 8.0f);
                     for (int i = 0; i < link.start.gsamples.Length; ++i)
                     {
-                        GroundSample s = link.start.gsamples[i];
+                        DtGroundSample s = link.start.gsamples[i];
                         float u = i / (float)(link.start.gsamples.Length - 1);
                         RcVec3f spt = RcVec3f.Lerp(link.start.p, link.start.q, u);
                         int col = DuRGBA(48, 16, 16, 255); // DuRGBA(255,(s->flags & 4)?255:0,0,255);
@@ -333,7 +333,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
                     dd.Begin(POINTS, 4.0f);
                     for (int i = 0; i < link.start.gsamples.Length; ++i)
                     {
-                        GroundSample s = link.start.gsamples[i];
+                        DtGroundSample s = link.start.gsamples[i];
                         float u = i / (float)(link.start.gsamples.Length - 1);
                         RcVec3f spt = RcVec3f.Lerp(link.start.p, link.start.q, u);
                         int col = DuRGBA(255, 255, 255, 255);
@@ -349,11 +349,11 @@ public class JumpLinkBuilderSampleTool : ISampleTool
 
                     dd.End();
                     {
-                        GroundSegment end = link.end;
+                        DtGroundSegment end = link.end;
                         dd.Begin(POINTS, 8.0f);
                         for (int i = 0; i < end.gsamples.Length; ++i)
                         {
-                            GroundSample s = end.gsamples[i];
+                            DtGroundSample s = end.gsamples[i];
                             float u = i / (float)(end.gsamples.Length - 1);
                             RcVec3f spt = RcVec3f.Lerp(end.p, end.q, u);
                             int col = DuRGBA(48, 16, 16, 255); // DuRGBA(255,(s->flags & 4)?255:0,0,255);
@@ -372,7 +372,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
                         dd.Begin(POINTS, 4.0f);
                         for (int i = 0; i < end.gsamples.Length; ++i)
                         {
-                            GroundSample s = end.gsamples[i];
+                            DtGroundSample s = end.gsamples[i];
                             float u = i / (float)(end.gsamples.Length - 1);
                             RcVec3f spt = RcVec3f.Lerp(end.p, end.q, u);
                             int col = DuRGBA(255, 255, 255, 255);
@@ -417,7 +417,7 @@ public class JumpLinkBuilderSampleTool : ISampleTool
     }
 
 
-    private void DrawTrajectory(RecastDebugDraw dd, JumpLink link, RcVec3f pa, RcVec3f pb, ITrajectory tra, int cola)
+    private void DrawTrajectory(RecastDebugDraw dd, DtJumpLink link, RcVec3f pa, RcVec3f pb, IDtTrajectory tra, int cola)
     {
     }
 

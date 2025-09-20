@@ -88,7 +88,7 @@ public class UnityAStarPathfindingImporterTest
         using var fs = new FileStream(filepath, FileMode.Open, FileAccess.Read, FileShare.Read);
 
         // Import the graphs
-        UnityAStarPathfindingImporter importer = new UnityAStarPathfindingImporter();
+        DtUnityAStarPathfindingImporter importer = new DtUnityAStarPathfindingImporter();
 
         DtNavMesh[] meshes = importer.Load(fs);
         return meshes[0];

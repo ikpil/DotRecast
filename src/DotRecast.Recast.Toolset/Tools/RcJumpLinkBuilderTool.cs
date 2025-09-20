@@ -8,13 +8,13 @@ namespace DotRecast.Recast.Toolset.Tools
 {
     public class RcJumpLinkBuilderTool : IRcToolable
     {
-        private readonly List<JumpLink> _links;
-        private JumpLinkBuilder _annotationBuilder;
+        private readonly List<DtJumpLink> _links;
+        private DtJumpLinkBuilder _annotationBuilder;
         private readonly int _selEdge = -1;
 
         public RcJumpLinkBuilderTool()
         {
-            _links = new List<JumpLink>();
+            _links = new List<DtJumpLink>();
         }
 
 
@@ -28,7 +28,7 @@ namespace DotRecast.Recast.Toolset.Tools
             _annotationBuilder = null;
         }
 
-        public JumpLinkBuilder GetAnnotationBuilder()
+        public DtJumpLinkBuilder GetAnnotationBuilder()
         {
             return _annotationBuilder;
         }
@@ -38,18 +38,18 @@ namespace DotRecast.Recast.Toolset.Tools
             return _selEdge;
         }
 
-        public List<JumpLink> GetLinks()
+        public List<DtJumpLink> GetLinks()
         {
             return _links;
         }
 
-        public void Build(IInputGeomProvider geom, RcNavMeshBuildSettings settings, IList<RcBuilderResult> results, RcJumpLinkBuilderToolConfig cfg)
+        public void Build(IRcInputGeomProvider geom, RcNavMeshBuildSettings settings, IList<RcBuilderResult> results, RcJumpLinkBuilderToolConfig cfg)
         {
             if (_annotationBuilder == null)
             {
                 if (0 < results.Count)
                 {
-                    _annotationBuilder = new JumpLinkBuilder(results);
+                    _annotationBuilder = new DtJumpLinkBuilder(results);
                 }
             }
 
@@ -62,9 +62,9 @@ namespace DotRecast.Recast.Toolset.Tools
                 float agentClimb = settings.agentMaxClimb;
                 float cellHeight = settings.cellHeight;
 
-                if ((cfg.buildTypes & JumpLinkType.EDGE_CLIMB_DOWN.Bit) != 0)
+                if ((cfg.buildTypes & DtJumpLinkType.EDGE_CLIMB_DOWN.Bit) != 0)
                 {
-                    JumpLinkBuilderConfig config = new JumpLinkBuilderConfig(
+                    DtJumpLinkBuilderConfig config = new DtJumpLinkBuilderConfig(
                         cellSize,
                         cellHeight,
                         agentRadius,
@@ -77,12 +77,12 @@ namespace DotRecast.Recast.Toolset.Tools
                         -cfg.climbDownMinHeight,
                         0
                     );
-                    _links.AddRange(_annotationBuilder.Build(config, JumpLinkType.EDGE_CLIMB_DOWN));
+                    _links.AddRange(_annotationBuilder.Build(config, DtJumpLinkType.EDGE_CLIMB_DOWN));
                 }
 
-                if ((cfg.buildTypes & JumpLinkType.EDGE_JUMP.Bit) != 0)
+                if ((cfg.buildTypes & DtJumpLinkType.EDGE_JUMP.Bit) != 0)
                 {
-                    JumpLinkBuilderConfig config = new JumpLinkBuilderConfig(
+                    DtJumpLinkBuilderConfig config = new DtJumpLinkBuilderConfig(
                         cellSize,
                         cellHeight,
                         agentRadius,
@@ -95,7 +95,7 @@ namespace DotRecast.Recast.Toolset.Tools
                         cfg.edgeJumpUpMaxHeight,
                         cfg.edgeJumpHeight
                     );
-                    _links.AddRange(_annotationBuilder.Build(config, JumpLinkType.EDGE_JUMP));
+                    _links.AddRange(_annotationBuilder.Build(config, DtJumpLinkType.EDGE_JUMP));
                 }
 
                 if (cfg.buildOffMeshConnections)
@@ -107,7 +107,7 @@ namespace DotRecast.Recast.Toolset.Tools
             }
         }
 
-        private void AddOffMeshLink(JumpLink link, IInputGeomProvider geom, float agentRadius)
+        private void AddOffMeshLink(DtJumpLink link, IRcInputGeomProvider geom, float agentRadius)
         {
             int area = SampleAreaModifications.SAMPLE_POLYAREA_TYPE_JUMP_AUTO;
             int flags = SampleAreaModifications.SAMPLE_POLYFLAGS_JUMP;

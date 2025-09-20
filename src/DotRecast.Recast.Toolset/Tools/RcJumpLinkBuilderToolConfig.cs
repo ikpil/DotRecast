@@ -22,7 +22,7 @@ namespace DotRecast.Recast.Toolset.Tools
 {
     public class RcJumpLinkBuilderToolConfig
     {
-        public int buildTypes = JumpLinkType.EDGE_CLIMB_DOWN.Bit | JumpLinkType.EDGE_JUMP.Bit;
+        public int buildTypes = DtJumpLinkType.EDGE_CLIMB_DOWN.Bit | DtJumpLinkType.EDGE_JUMP.Bit;
         public bool buildOffMeshConnections = false;
         
         public float groundTolerance = 0.3f;

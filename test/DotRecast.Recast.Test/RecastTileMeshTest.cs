@@ -56,7 +56,7 @@ public class RecastTileMeshTest
 
     public void TestBuild(string filename)
     {
-        IInputGeomProvider geom = SimpleInputGeomProvider.LoadFile(filename);
+        IRcInputGeomProvider geom = RcSimpleInputGeomProvider.LoadFile(filename);
         RcBuilder builder = new RcBuilder();
         RcConfig cfg = new RcConfig(
             true, m_tileSize, m_tileSize, RcConfig.CalcBorder(m_agentRadius, m_cellSize),
@@ -98,7 +98,7 @@ public class RecastTileMeshTest
     [Test]
     public void TestPerformance()
     {
-        IInputGeomProvider geom = SimpleInputGeomProvider.LoadFile("dungeon.obj");
+        IRcInputGeomProvider geom = RcSimpleInputGeomProvider.LoadFile("dungeon.obj");
         RcBuilder builder = new RcBuilder();
         RcConfig cfg = new RcConfig(
             true, m_tileSize, m_tileSize,
@@ -135,7 +135,7 @@ public class RecastTileMeshTest
         Console.WriteLine(" Time MT : " + (t3 - t2) / TimeSpan.TicksPerMillisecond);
     }
 
-    private void Build(IInputGeomProvider geom, RcBuilder builder, RcConfig cfg, int threads, bool validate)
+    private void Build(IRcInputGeomProvider geom, RcBuilder builder, RcConfig cfg, int threads, bool validate)
     {
         CancellationTokenSource cts = new CancellationTokenSource();
         List<RcBuilderResult> tiles = builder.BuildTiles(geom, cfg, false, true, threads, Task.Factory, cts.Token);

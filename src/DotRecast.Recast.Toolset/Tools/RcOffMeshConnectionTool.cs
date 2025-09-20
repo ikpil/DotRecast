@@ -16,7 +16,7 @@ namespace DotRecast.Recast.Toolset.Tools
             return "Off-Mesh Links";
         }
 
-        public void Add(IInputGeomProvider geom, RcNavMeshBuildSettings settings, RcVec3f start, RcVec3f end, bool bidir)
+        public void Add(IRcInputGeomProvider geom, RcNavMeshBuildSettings settings, RcVec3f start, RcVec3f end, bool bidir)
         {
             if (null == geom)
                 return;
@@ -26,7 +26,7 @@ namespace DotRecast.Recast.Toolset.Tools
             geom.AddOffMeshConnection(start, end, settings.agentRadius, bidir, area, flags);
         }
 
-        public void Remove(IInputGeomProvider geom, RcNavMeshBuildSettings settings, RcVec3f p)
+        public void Remove(IRcInputGeomProvider geom, RcNavMeshBuildSettings settings, RcVec3f p)
         {
             // Delete
             // Find nearest link end-point

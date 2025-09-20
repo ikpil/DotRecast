@@ -7,13 +7,13 @@ namespace DotRecast.Recast.Toolset.Geom
 {
     public class DemoDtTileCacheMeshProcess : IDtTileCacheMeshProcess
     {
-        private IInputGeomProvider _geom;
+        private IRcInputGeomProvider _geom;
 
         public DemoDtTileCacheMeshProcess()
         {
         }
 
-        public void Init(IInputGeomProvider geom)
+        public void Init(IRcInputGeomProvider geom)
         {
             _geom = geom;
         }

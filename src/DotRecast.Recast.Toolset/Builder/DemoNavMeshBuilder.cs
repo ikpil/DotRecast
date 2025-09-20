@@ -5,7 +5,7 @@ namespace DotRecast.Recast.Toolset.Builder
 {
     public static class DemoNavMeshBuilder
     {
-        public static DtNavMeshCreateParams GetNavMeshCreateParams(IInputGeomProvider geom, float cellSize,
+        public static DtNavMeshCreateParams GetNavMeshCreateParams(IRcInputGeomProvider geom, float cellSize,
             float cellHeight, float agentHeight, float agentRadius, float agentMaxClimb,
             RcBuilderResult rcResult)
         {

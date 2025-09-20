@@ -45,14 +45,14 @@ public class TestTiledNavMeshBuilder
     private const int m_tileSize = 32;
 
     public TestTiledNavMeshBuilder() :
-        this(SimpleInputGeomProvider.LoadFile("dungeon.obj"),
+        this(RcSimpleInputGeomProvider.LoadFile("dungeon.obj"),
             RcPartition.WATERSHED, m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_agentMaxSlope,
             m_regionMinSize, m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, m_detailSampleDist,
             m_detailSampleMaxError, m_tileSize)
     {
     }
 
-    public TestTiledNavMeshBuilder(IInputGeomProvider geom, RcPartition partitionType, float cellSize, float cellHeight,
+    public TestTiledNavMeshBuilder(IRcInputGeomProvider geom, RcPartition partitionType, float cellSize, float cellHeight,
         float agentHeight, float agentRadius, float agentMaxClimb, float agentMaxSlope, int regionMinSize,
         int regionMergeSize, float edgeMaxLen, float edgeMaxError, int vertsPerPoly, float detailSampleDist,
         float detailSampleMaxError, int tileSize)

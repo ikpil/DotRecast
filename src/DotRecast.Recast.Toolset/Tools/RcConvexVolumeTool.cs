@@ -74,7 +74,7 @@ namespace DotRecast.Recast.Toolset.Tools
         }
 
 
-        public bool TryRemove(IInputGeomProvider geom, RcVec3f pos, out RcConvexVolume volume)
+        public bool TryRemove(IRcInputGeomProvider geom, RcVec3f pos, out RcConvexVolume volume)
         {
             // Delete
             int nearestIndex = -1;
@@ -101,7 +101,7 @@ namespace DotRecast.Recast.Toolset.Tools
             return null != volume;
         }
 
-        public bool TryAdd(IInputGeomProvider geom, RcVec3f p, RcAreaModification areaType, float boxDescent, float boxHeight, float polyOffset, out RcConvexVolume volume)
+        public bool TryAdd(IRcInputGeomProvider geom, RcVec3f p, RcAreaModification areaType, float boxDescent, float boxHeight, float polyOffset, out RcConvexVolume volume)
         {
             // Create
 

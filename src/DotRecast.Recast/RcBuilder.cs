@@ -47,7 +47,7 @@ namespace DotRecast.Recast
             _progressListener = progressListener;
         }
 
-        public List<RcBuilderResult> BuildTiles(IInputGeomProvider geom, RcConfig cfg, bool keepInterResults, bool buildAll,
+        public List<RcBuilderResult> BuildTiles(IRcInputGeomProvider geom, RcConfig cfg, bool keepInterResults, bool buildAll,
             int threads = 0, TaskFactory taskFactory = null, CancellationToken cancellation = default)
         {
             RcVec3f bmin = geom.GetMeshBoundsMin();
@@ -62,7 +62,7 @@ namespace DotRecast.Recast
             return BuildSingleThread(geom, cfg, bmin, bmax, tw, th, keepInterResults, buildAll);
         }
 
-        private List<RcBuilderResult> BuildSingleThread(IInputGeomProvider geom, RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tw, int th,
+        private List<RcBuilderResult> BuildSingleThread(IRcInputGeomProvider geom, RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tw, int th,
             bool keepInterResults, bool buildAll)
         {
             var results = new List<RcBuilderResult>(th * tw);
@@ -80,7 +80,7 @@ namespace DotRecast.Recast
             return results;
         }
 
-        private List<RcBuilderResult> BuildMultiThread(IInputGeomProvider geom, RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tw, int th,
+        private List<RcBuilderResult> BuildMultiThread(IRcInputGeomProvider geom, RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tw, int th,
             int threads, TaskFactory taskFactory, CancellationToken cancellation,
             bool keepInterResults, bool buildAll)
         {
@@ -129,7 +129,7 @@ namespace DotRecast.Recast
             return list;
         }
 
-        public RcBuilderResult BuildTile(IInputGeomProvider geom, RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tx, int ty, RcAtomicInteger progress, int total, bool keepInterResults)
+        public RcBuilderResult BuildTile(IRcInputGeomProvider geom, RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tx, int ty, RcAtomicInteger progress, int total, bool keepInterResults)
         {
             var bcfg = new RcBuilderConfig(cfg, bmin, bmax, tx, ty);
             RcBuilderResult result = Build(geom, bcfg, keepInterResults);
@@ -142,7 +142,7 @@ namespace DotRecast.Recast
             return result;
         }
 
-        public RcBuilderResult Build(IInputGeomProvider geom, RcBuilderConfig bcfg, bool keepInterResults)
+        public RcBuilderResult Build(IRcInputGeomProvider geom, RcBuilderConfig bcfg, bool keepInterResults)
         {
             RcConfig cfg = bcfg.cfg;
             RcContext ctx = new RcContext();
@@ -153,7 +153,7 @@ namespace DotRecast.Recast
             return Build(ctx, bcfg.tileX, bcfg.tileZ, geom, cfg, solid, keepInterResults);
         }
 
-        public RcBuilderResult Build(RcContext ctx, int tileX, int tileZ, IInputGeomProvider geom, RcConfig cfg, RcHeightfield solid, bool keepInterResults)
+        public RcBuilderResult Build(RcContext ctx, int tileX, int tileZ, IRcInputGeomProvider geom, RcConfig cfg, RcHeightfield solid, bool keepInterResults)
         {
             FilterHeightfield(ctx, solid, cfg);
             RcCompactHeightfield chf = BuildCompactHeightfield(ctx, geom, cfg, solid);
@@ -264,7 +264,7 @@ namespace DotRecast.Recast
         /*
          * Step 3. Partition walkable surface to simple regions.
          */
-        private RcCompactHeightfield BuildCompactHeightfield(RcContext ctx, IInputGeomProvider geom, RcConfig cfg, RcHeightfield solid)
+        private RcCompactHeightfield BuildCompactHeightfield(RcContext ctx, IRcInputGeomProvider geom, RcConfig cfg, RcHeightfield solid)
         {
             // Compact the heightfield so that it is faster to handle from now on.
             // This will result more cache coherent data as well as the neighbours
@@ -285,7 +285,7 @@ namespace DotRecast.Recast
             return chf;
         }
 
-        public RcHeightfieldLayerSet BuildLayers(IInputGeomProvider geom, RcBuilderConfig builderCfg)
+        public RcHeightfieldLayerSet BuildLayers(IRcInputGeomProvider geom, RcBuilderConfig builderCfg)
         {
             RcContext ctx = new RcContext();
             RcHeightfield solid = RcVoxelizations.BuildSolidHeightfield(ctx, geom, builderCfg);

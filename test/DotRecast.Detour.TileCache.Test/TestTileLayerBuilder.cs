@@ -52,11 +52,11 @@ public class TestTileLayerBuilder : DtTileCacheLayerBuilder
     private readonly RcConfig _cfg;
     private const int m_tileSize = 48;
 
-    private readonly IInputGeomProvider _geom;
+    private readonly IRcInputGeomProvider _geom;
     public readonly int tw;
     public readonly int th;
 
-    public TestTileLayerBuilder(IInputGeomProvider geom) : base(DtTileCacheCompressorFactory.Shared)
+    public TestTileLayerBuilder(IRcInputGeomProvider geom) : base(DtTileCacheCompressorFactory.Shared)
     {
         _geom = geom;
         _cfg = new RcConfig(true, m_tileSize, m_tileSize,

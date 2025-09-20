@@ -27,7 +27,7 @@ using DotRecast.Recast.Geom;
 
 namespace DotRecast.Recast.Toolset.Geom
 {
-    public class DemoInputGeomProvider : IInputGeomProvider
+    public class DemoInputGeomProvider : IRcInputGeomProvider
     {
         public readonly float[] vertices;
         public readonly int[] faces;

@@ -308,7 +308,7 @@ public class RecastDemo : IRecastDemoChannel
             DtNavMesh mesh = null;
             if (filename.EndsWith(".zip"))
             {
-                UnityAStarPathfindingImporter importer = new UnityAStarPathfindingImporter();
+                DtUnityAStarPathfindingImporter importer = new DtUnityAStarPathfindingImporter();
                 mesh = importer.Load(file)[0];
             }
             else

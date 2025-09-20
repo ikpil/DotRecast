@@ -50,7 +50,7 @@ public class TileCacheReaderWriterTest : AbstractTileCacheTest
 
     private void TestDungeon(bool cCompatibility)
     {
-        IInputGeomProvider geom = SimpleInputGeomProvider.LoadFile("dungeon.obj");
+        IRcInputGeomProvider geom = RcSimpleInputGeomProvider.LoadFile("dungeon.obj");
         TestTileLayerBuilder layerBuilder = new TestTileLayerBuilder(geom);
         List<byte[]> layers = layerBuilder.Build(RcByteOrder.LITTLE_ENDIAN, cCompatibility, 1);
         DtTileCache tc = GetTileCache(geom, RcByteOrder.LITTLE_ENDIAN, cCompatibility);
