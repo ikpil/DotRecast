@@ -28,20 +28,21 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        dotnet-version: [ '8', '9' ]
+        dotnet-version: [ '8', '9', '10' ]
         os: [ windows-latest, ubuntu-latest, macos-latest ]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0 # Get all history to allow automatic versioning using MinVer
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: |
             8
             9
+            10
             
       - name: Restore dependencies
         run: dotnet restore
