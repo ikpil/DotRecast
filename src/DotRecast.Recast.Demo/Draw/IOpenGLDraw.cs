@@ -27,9 +27,9 @@ public interface IOpenGLDraw
 
     void Texture(GLCheckerTexture g_tex, bool state);
 
-    void ProjectionMatrix(ref RcMatrix4x4f projectionMatrix);
+    void ProjectionMatrix(in RcMatrix4x4f projectionMatrix);
 
-    void ViewMatrix(ref RcMatrix4x4f viewMatrix);
+    void ViewMatrix(in RcMatrix4x4f viewMatrix);
 
     void Fog(float start, float end);
 }
