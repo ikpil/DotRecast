@@ -28,7 +28,7 @@ jobs:
         run: echo ok
 
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0 # Get all history to allow automatic versioning using MinVer
 
