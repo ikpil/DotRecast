@@ -634,7 +634,7 @@ public class DebugDraw
     public RcMatrix4x4f ProjectionMatrix(float fovy, float aspect, float near, float far)
     {
         GLU.GlhPerspectivef2(ref _projectionMatrix, fovy, aspect, near, far);
-        GetOpenGlDraw().ProjectionMatrix(ref _projectionMatrix);
+        GetOpenGlDraw().ProjectionMatrix(_projectionMatrix);
         UpdateFrustum();
         return _projectionMatrix;
     }
@@ -643,14 +643,14 @@ public class DebugDraw
     {
         var rx = RcMatrix4x4f.CreateFromRotate(cameraEulers.X, 1, 0, 0);
         var ry = RcMatrix4x4f.CreateFromRotate(cameraEulers.Y, 0, 1, 0);
-        var r = RcMatrix4x4f.Mul(ref rx, ref ry);
+        var r = RcMatrix4x4f.Mul(rx, ry);
 
         var t = new RcMatrix4x4f();
         t.M11 = t.M22 = t.M33 = t.M44 = 1;
         t.M41 = -cameraPos.X;
         t.M42 = -cameraPos.Y;
         t.M43 = -cameraPos.Z;
-        _viewMatrix = RcMatrix4x4f.Mul(ref r, ref t);
+        _viewMatrix = RcMatrix4x4f.Mul(r, t);
 
         if (_renderAsLeftHanded)
         {
@@ -659,7 +659,7 @@ public class DebugDraw
             _viewMatrix.M33 = -_viewMatrix.M33;
         }
 
-        GetOpenGlDraw().ViewMatrix(ref _viewMatrix);
+        GetOpenGlDraw().ViewMatrix(_viewMatrix);
         UpdateFrustum();
         return _viewMatrix;
     }
@@ -677,7 +677,7 @@ public class DebugDraw
 
     private void UpdateFrustum()
     {
-        var vpm = RcMatrix4x4f.Mul(ref _projectionMatrix, ref _viewMatrix);
+        var vpm = RcMatrix4x4f.Mul(_projectionMatrix, _viewMatrix);
         NormalizePlane(vpm.M14 + vpm.M11, vpm.M24 + vpm.M21, vpm.M34 + vpm.M31, vpm.M44 + vpm.M41, ref frustumPlanes[0]); // left
         NormalizePlane(vpm.M14 - vpm.M11, vpm.M24 - vpm.M21, vpm.M34 - vpm.M31, vpm.M44 - vpm.M41, ref frustumPlanes[1]); // right
         NormalizePlane(vpm.M14 - vpm.M12, vpm.M24 - vpm.M22, vpm.M34 - vpm.M32, vpm.M44 - vpm.M42, ref frustumPlanes[2]); // top

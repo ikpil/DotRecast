@@ -311,7 +311,7 @@ namespace DotRecast.Recast.Toolset.Tools
         {
             var rx = RcMatrix4x4f.CreateFromRotate((float)random.NextDouble() * ax, 1, 0, 0);
             var ry = RcMatrix4x4f.CreateFromRotate((float)random.NextDouble() * 360, 0, 1, 0);
-            var m = RcMatrix4x4f.Mul(ref rx, ref ry);
+            var m = RcMatrix4x4f.Mul(rx, ry);
             float[] verts = new float[geom.vertices.Length];
             RcVec3f v = new RcVec3f();
             RcVec3f vr = new RcVec3f();
@@ -340,7 +340,7 @@ namespace DotRecast.Recast.Toolset.Tools
             return resultvector;
         }
 
-        private static RcVec3f MulMatrixVector(ref RcVec3f resultvector, RcMatrix4x4f matrix, RcVec3f pvector)
+        private static RcVec3f MulMatrixVector(ref RcVec3f resultvector, in RcMatrix4x4f matrix, RcVec3f pvector)
         {
             resultvector.X = matrix.M11 * pvector.X + matrix.M21 * pvector.Y + matrix.M31 * pvector.Z;
             resultvector.Y = matrix.M12 * pvector.X + matrix.M22 * pvector.Y + matrix.M32 * pvector.Z;

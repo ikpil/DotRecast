@@ -109,7 +109,7 @@ namespace DotRecast.Core.Numerics
             M41 == 0f && M42 == 0f && M43 == 0f;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static RcMatrix4x4f Mul(ref RcMatrix4x4f left, ref RcMatrix4x4f right)
+        public static RcMatrix4x4f Mul(in RcMatrix4x4f left, in RcMatrix4x4f right)
         {
             float m11 = left.M11 * right.M11 + left.M21 * right.M12 + left.M31 * right.M13 + left.M41 * right.M14;
             float m12 = left.M12 * right.M11 + left.M22 * right.M12 + left.M32 * right.M13 + left.M42 * right.M14;

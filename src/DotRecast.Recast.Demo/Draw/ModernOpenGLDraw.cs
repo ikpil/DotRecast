@@ -312,12 +312,12 @@ void main(){{
         }
     }
 
-    public void ProjectionMatrix(ref RcMatrix4x4f projectionMatrix)
+    public void ProjectionMatrix(in RcMatrix4x4f projectionMatrix)
     {
         projectionMatrix.CopyTo(_projectionMatrix);
     }
 
-    public void ViewMatrix(ref RcMatrix4x4f viewMatrix)
+    public void ViewMatrix(in RcMatrix4x4f viewMatrix)
     {
         viewMatrix.CopyTo(_viewMatrix);
     }
