@@ -108,11 +108,11 @@ namespace DotRecast.Recast
                         byte sid = 0xFF;
 
                         // -x
-                        if (GetCon(ref s, 0) != RC_NOT_CONNECTED)
+                        if (GetCon(s, 0) != RC_NOT_CONNECTED)
                         {
                             int ax = x + GetDirOffsetX(0);
                             int ay = y + GetDirOffsetY(0);
-                            int ai = chf.cells[ax + ay * w].index + GetCon(ref s, 0);
+                            int ai = chf.cells[ax + ay * w].index + GetCon(s, 0);
                             if (chf.areas[ai] != RC_NULL_AREA && srcReg[ai] != 0xff)
                                 sid = srcReg[ai];
                         }
@@ -125,11 +125,11 @@ namespace DotRecast.Recast
                         }
 
                         // -y
-                        if (GetCon(ref s, 3) != RC_NOT_CONNECTED)
+                        if (GetCon(s, 3) != RC_NOT_CONNECTED)
                         {
                             int ax = x + GetDirOffsetX(3);
                             int ay = y + GetDirOffsetY(3);
-                            int ai = chf.cells[ax + ay * w].index + GetCon(ref s, 3);
+                            int ai = chf.cells[ax + ay * w].index + GetCon(s, 3);
                             byte nr = srcReg[ai];
                             if (nr != 0xff)
                             {
@@ -225,11 +225,11 @@ namespace DotRecast.Recast
                         // Update neighbours
                         for (int dir = 0; dir < 4; ++dir)
                         {
-                            if (GetCon(ref s, dir) != RC_NOT_CONNECTED)
+                            if (GetCon(s, dir) != RC_NOT_CONNECTED)
                             {
                                 int ax = x + GetDirOffsetX(dir);
                                 int ay = y + GetDirOffsetY(dir);
-                                int ai = chf.cells[ax + ay * w].index + GetCon(ref s, dir);
+                                int ai = chf.cells[ax + ay * w].index + GetCon(s, dir);
                                 int rai = srcReg[ai];
                                 if (rai != 0xff && rai != ri)
                                 {
@@ -538,11 +538,11 @@ namespace DotRecast.Recast
                             char con = (char)0;
                             for (int dir = 0; dir < 4; ++dir)
                             {
-                                if (GetCon(ref s, dir) != RC_NOT_CONNECTED)
+                                if (GetCon(s, dir) != RC_NOT_CONNECTED)
                                 {
                                     int ax = cx + GetDirOffsetX(dir);
                                     int ay = cy + GetDirOffsetY(dir);
-                                    int ai = chf.cells[ax + ay * w].index + GetCon(ref s, dir);
+                                    int ai = chf.cells[ax + ay * w].index + GetCon(s, dir);
                                     int alid = srcReg[ai] != 0xff ? regs[srcReg[ai]].layerId : 0xff;
                                     // Portal mask
                                     if (chf.areas[ai] != RC_NULL_AREA && lid != alid)
