@@ -118,7 +118,7 @@ namespace DotRecast.Recast
         /// @param[in]		span		The span to check.
         /// @param[in]		direction	The direction to check. [Limits: 0 <= value < 4]
         /// @return The neighbor connection data for the specified direction, or #RC_NOT_CONNECTED if there is no connection.
-        public static int GetCon(ref RcCompactSpan s, int dir)
+        public static int GetCon(in RcCompactSpan s, int dir)
         {
             int shift = dir * 6;
             return (s.con >> shift) & 0x3f;

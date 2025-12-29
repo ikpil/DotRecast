@@ -7,7 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased] - yyyy-mm-dd
 
 ### Added
-- Added DtTileFlags ([@ikpil](https://github.com/ikpil))
+- Nothing
 
 ### Fixed
 - Nothing
@@ -17,6 +17,37 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Removed
 - Nothing
+
+### Special Thanks
+- [@Doprez](https://github.com/Doprez)
+
+## [2026.1.1] - 2026-01-03
+
+### Added
+- Added DtTileFlags ([@ikpil](https://github.com/ikpil))
+- Added RcDebug ([@ikpil](https://github.com/ikpil))
+
+### Fixed
+- Remove m_tileCount #102 ([@ikpil](https://github.com/ikpil))
+
+### Changed
+- Support .NET 10 ([@ikpil](https://github.com/ikpil))
+- Refactor: RcRecast.GetCon to use `in` parameter modifier ([@ikpil](https://github.com/ikpil))
+- Refactor: RcMatrix4x4f to use 'in' modifier and enforce CS9191 ([@ikpil](https://github.com/ikpil))
+- Refactor: Moved RcCollectionExtensions to the Extensions namespace to resolve naming conflicts ([@ikpil](https://github.com/ikpil))
+- Refactor: Added Rc and Dt prefixes to classes to maintain consistency and prevent naming conflicts ([@ikpil](https://github.com/ikpil))
+- Upgrade Microsoft.NET.Test.Sdk to 18.0.1 ([@ikpil](https://github.com/ikpil))
+- Upgrade NUnit to 4.4.0 ([@ikpil](https://github.com/ikpil))
+- Upgrade NUnit3TestAdapter to 6.0.1 ([@ikpil](https://github.com/ikpil))
+- Upgrade NUnit.Analyzers to 4.11.2 ([@ikpil](https://github.com/ikpil))
+- Upgrade BenchmarkDotNet to 0.15.8 ([@ikpil](https://github.com/ikpil))
+- Upgrade Serilog.Settings.Configuration to 10.0.0 ([@ikpil](https://github.com/ikpil))
+- Upgrade Serilog.Sinks.Console to 6.1.1 ([@ikpil](https://github.com/ikpil))
+- Upgrade Newtonsoft.Json to 13.0.4 ([@ikpil](https://github.com/ikpil))
+- Upgrade actions/checkout@v6 ([@ikpil](https://github.com/ikpil))
+
+### Removed
+- Removed m_tileCount ([@ikpil](https://github.com/ikpil))
 
 ### Special Thanks
 - [@Doprez](https://github.com/Doprez)
