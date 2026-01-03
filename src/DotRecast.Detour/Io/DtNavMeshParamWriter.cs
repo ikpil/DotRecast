@@ -5,7 +5,7 @@ namespace DotRecast.Detour.Io
 {
     public class DtNavMeshParamWriter
     {
-        public void Write(BinaryWriter stream, DtNavMeshParams option, RcByteOrder order)
+        public void Write(BinaryWriter stream, in DtNavMeshParams option, RcByteOrder order)
         {
             RcIO.Write(stream, option.orig.X, order);
             RcIO.Write(stream, option.orig.Y, order);

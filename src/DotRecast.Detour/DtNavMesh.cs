@@ -47,7 +47,7 @@ namespace DotRecast.Detour
         /** The maximum number of vertices per navigation polygon. */
         private int m_maxVertPerPoly;
 
-        public DtStatus Init(DtNavMeshParams param, int maxVertsPerPoly)
+        public DtStatus Init(in DtNavMeshParams param, int maxVertsPerPoly)
         {
             m_params = param;
             m_orig = param.orig;
