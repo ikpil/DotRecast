@@ -69,7 +69,7 @@ namespace DotRecast.Detour.TileCache.Io
             }
         }
 
-        private void WriteCacheParams(BinaryWriter stream, DtTileCacheParams option, RcByteOrder order)
+        private void WriteCacheParams(BinaryWriter stream, in DtTileCacheParams option, RcByteOrder order)
         {
             RcIO.Write(stream, option.orig.X, order);
             RcIO.Write(stream, option.orig.Y, order);
