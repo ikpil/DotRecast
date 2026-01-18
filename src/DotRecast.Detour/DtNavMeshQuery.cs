@@ -639,7 +639,7 @@ namespace DotRecast.Detour
                 while (nodeIndex < end)
                 {
                     DtBVNode node = tile.data.bvTree[nodeIndex];
-                    bool overlap = DtUtils.OverlapQuantBounds(ref bmin, ref bmax, ref node.bmin, ref node.bmax);
+                    bool overlap = DtUtils.OverlapQuantBounds(bmin, bmax, node.bmin, node.bmax);
                     bool isLeafNode = node.i >= 0;
 
                     if (isLeafNode && overlap)
