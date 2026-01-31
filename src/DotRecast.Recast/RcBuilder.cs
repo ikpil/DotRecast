@@ -79,28 +79,30 @@ namespace DotRecast.Recast
 
             return results;
         }
-
+        
         private List<RcBuilderResult> BuildMultiThread(IRcInputGeomProvider geom, RcConfig cfg, RcVec3f bmin, RcVec3f bmax, int tw, int th,
             int threads, TaskFactory taskFactory, CancellationToken cancellation,
             bool keepInterResults, bool buildAll)
         {
             var results = new ConcurrentQueue<RcBuilderResult>();
             RcAtomicInteger progress = new RcAtomicInteger(0);
+            RcAtomicInteger worker = new RcAtomicInteger(0);
 
-            List<Task> limits = new List<Task>(threads);
             for (int x = 0; x < tw; ++x)
             {
                 for (int y = 0; y < th; ++y)
                 {
                     int tx = x;
                     int ty = y;
+                    
+                    worker.IncrementAndGet();
                     var task = taskFactory.StartNew(state =>
                     {
-                        if (cancellation.IsCancellationRequested)
-                            return;
-
                         try
                         {
+                            if (cancellation.IsCancellationRequested)
+                                return;
+
                             RcBuilderResult result = BuildTile(geom, cfg, bmin, bmax, tx, ty, progress, tw * th, keepInterResults);
                             results.Enqueue(result);
                         }
@@ -108,21 +110,22 @@ namespace DotRecast.Recast
                         {
                             Console.WriteLine(e);
                         }
+                        finally
+                        {
+                            worker.DecrementAndGet();
+                        }
                     }, null, cancellation);
 
-                    limits.Add(task);
-                    if (threads <= limits.Count)
+                    while (threads <= worker.Read())
                     {
-                        Task.WaitAll(limits.ToArray());
-                        limits.Clear();
+                        Thread.Sleep(1);
                     }
                 }
             }
-
-            if (0 < limits.Count)
+            
+            while (0 < worker.Read())
             {
-                Task.WaitAll(limits.ToArray());
-                limits.Clear();
+                Thread.Sleep(1);
             }
 
             var list = results.ToList();
