@@ -21,6 +21,7 @@ freely, subject to the following restrictions:
 using System.Collections.Generic;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour;
+using DotRecast.Recast.Geom;
 using DotRecast.Recast.Toolset.Builder;
 using DotRecast.Recast.Toolset.Geom;
 using static DotRecast.Recast.RcRecast;
@@ -50,7 +51,7 @@ public class NavMeshRenderer
         }
 
         DtNavMeshQuery navQuery = sample.GetNavMeshQuery();
-        DemoInputGeomProvider geom = sample.GetInputGeom();
+        RcSampleInputGeomProvider geom = sample.GetInputGeom();
         IList<RcBuilderResult> rcBuilderResults = sample.GetRecastResults();
         DtNavMesh navMesh = sample.GetNavMesh();
         var settings = sample.GetSettings();
@@ -207,7 +208,7 @@ public class NavMeshRenderer
         }
     }
 
-    private void DrawGeomBounds(DemoInputGeomProvider geom)
+    private void DrawGeomBounds(RcSampleInputGeomProvider geom)
     {
         // Draw bounds
         RcVec3f bmin = geom.GetMeshBoundsMin();
@@ -219,7 +220,7 @@ public class NavMeshRenderer
         _debugDraw.End();
     }
 
-    public void DrawOffMeshConnections(DemoInputGeomProvider geom, bool hilight)
+    public void DrawOffMeshConnections(RcSampleInputGeomProvider geom, bool hilight)
     {
         int conColor = DebugDraw.DuRGBA(192, 0, 128, 192);
         int baseColor = DebugDraw.DuRGBA(0, 0, 0, 64);
@@ -249,7 +250,7 @@ public class NavMeshRenderer
         _debugDraw.DepthMask(true);
     }
 
-    void DrawConvexVolumes(DemoInputGeomProvider geom)
+    void DrawConvexVolumes(RcSampleInputGeomProvider geom)
     {
         _debugDraw.DepthMask(false);
 

@@ -56,7 +56,7 @@ public class RecastTileMeshTest
 
     public void TestBuild(string filename)
     {
-        IRcInputGeomProvider geom = RcSimpleInputGeomProvider.LoadFile(filename);
+        IRcInputGeomProvider geom = RcSampleInputGeomProvider.LoadFile(filename);
         RcBuilder builder = new RcBuilder();
         RcConfig cfg = new RcConfig(
             true, m_tileSize, m_tileSize, RcConfig.CalcBorder(m_agentRadius, m_cellSize),
@@ -98,7 +98,7 @@ public class RecastTileMeshTest
     [Test]
     public void TestPerformance()
     {
-        IRcInputGeomProvider geom = RcSimpleInputGeomProvider.LoadFile("dungeon.obj");
+        IRcInputGeomProvider geom = RcSampleInputGeomProvider.LoadFile("dungeon.obj");
         RcBuilder builder = new RcBuilder();
         RcConfig cfg = new RcConfig(
             true, m_tileSize, m_tileSize,

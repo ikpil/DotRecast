@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using DotRecast.Core.Numerics;
 using DotRecast.Recast.Demo.Draw;
+using DotRecast.Recast.Geom;
 using DotRecast.Recast.Toolset;
 using DotRecast.Recast.Toolset.Geom;
 using DotRecast.Recast.Toolset.Tools;
@@ -64,7 +65,7 @@ public class OffMeshConnectionSampleTool : ISampleTool
             dd.DebugDrawCross(_startPt.X, _startPt.Y + 0.1f, _startPt.Z, s, DuRGBA(0, 0, 0, 128), 2.0f);
         }
 
-        DemoInputGeomProvider geom = _sample.GetInputGeom();
+        RcSampleInputGeomProvider geom = _sample.GetInputGeom();
         if (geom != null)
         {
             renderer.DrawOffMeshConnections(geom, true);
@@ -89,7 +90,7 @@ public class OffMeshConnectionSampleTool : ISampleTool
 
     public void HandleClick(RcVec3f s, RcVec3f p, bool shift)
     {
-        DemoInputGeomProvider geom = _sample.GetInputGeom();
+        RcSampleInputGeomProvider geom = _sample.GetInputGeom();
         if (geom == null)
         {
             return;

@@ -32,7 +32,7 @@ public class TempObstaclesTest : AbstractTileCacheTest
     public void TestDungeon()
     {
         bool cCompatibility = true;
-        IRcInputGeomProvider geom = RcSimpleInputGeomProvider.LoadFile("dungeon.obj");
+        IRcInputGeomProvider geom = RcSampleInputGeomProvider.LoadFile("dungeon.obj");
         TestTileLayerBuilder layerBuilder = new TestTileLayerBuilder(geom);
         List<byte[]> layers = layerBuilder.Build(RcByteOrder.LITTLE_ENDIAN, cCompatibility, 1);
         DtTileCache tc = GetTileCache(geom, RcByteOrder.LITTLE_ENDIAN, cCompatibility);
@@ -74,7 +74,7 @@ public class TempObstaclesTest : AbstractTileCacheTest
     public void TestDungeonBox()
     {
         bool cCompatibility = true;
-        IRcInputGeomProvider geom = RcSimpleInputGeomProvider.LoadFile("dungeon.obj");
+        IRcInputGeomProvider geom = RcSampleInputGeomProvider.LoadFile("dungeon.obj");
         TestTileLayerBuilder layerBuilder = new TestTileLayerBuilder(geom);
         List<byte[]> layers = layerBuilder.Build(RcByteOrder.LITTLE_ENDIAN, cCompatibility, 1);
         DtTileCache tc = GetTileCache(geom, RcByteOrder.LITTLE_ENDIAN, cCompatibility);

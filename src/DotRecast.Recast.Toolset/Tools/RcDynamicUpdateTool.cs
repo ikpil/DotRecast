@@ -6,6 +6,7 @@ using DotRecast.Core.Numerics;
 using DotRecast.Detour.Dynamic;
 using DotRecast.Detour.Dynamic.Colliders;
 using DotRecast.Detour.Dynamic.Io;
+using DotRecast.Recast.Geom;
 using DotRecast.Recast.Toolset.Builder;
 using DotRecast.Recast.Toolset.Geom;
 using DotRecast.Recast.Toolset.Gizmos;
@@ -18,11 +19,11 @@ namespace DotRecast.Recast.Toolset.Tools
         private readonly Dictionary<long, RcGizmo> colliderGizmos;
 
         private readonly IRcRand random;
-        private readonly DemoInputGeomProvider bridgeGeom;
-        private readonly DemoInputGeomProvider houseGeom;
-        private readonly DemoInputGeomProvider convexGeom;
+        private readonly RcSampleInputGeomProvider bridgeGeom;
+        private readonly RcSampleInputGeomProvider houseGeom;
+        private readonly RcSampleInputGeomProvider convexGeom;
 
-        public RcDynamicUpdateTool(IRcRand rand, DemoInputGeomProvider bridgeGeom, DemoInputGeomProvider houseGeom, DemoInputGeomProvider convexGeom)
+        public RcDynamicUpdateTool(IRcRand rand, RcSampleInputGeomProvider bridgeGeom, RcSampleInputGeomProvider houseGeom, RcSampleInputGeomProvider convexGeom)
         {
             this.colliderGizmos = new Dictionary<long, RcGizmo>();
             this.random = rand;
@@ -297,7 +298,7 @@ namespace DotRecast.Recast.Toolset.Tools
             return new RcGizmo(collider, gizmo);
         }
 
-        private RcGizmo TrimeshCollider(RcVec3f p, DemoInputGeomProvider geom, float walkableClimb)
+        private RcGizmo TrimeshCollider(RcVec3f p, RcSampleInputGeomProvider geom, float walkableClimb)
         {
             float[] verts = TransformVertices(p, geom, 0);
             var collider = new DtTrimeshCollider(verts, geom.faces, SampleAreaModifications.SAMPLE_POLYAREA_TYPE_ROAD,
@@ -307,7 +308,7 @@ namespace DotRecast.Recast.Toolset.Tools
             return new RcGizmo(collider, gizmo);
         }
 
-        private float[] TransformVertices(RcVec3f p, DemoInputGeomProvider geom, float ax)
+        private float[] TransformVertices(RcVec3f p, RcSampleInputGeomProvider geom, float ax)
         {
             var rx = RcMatrix4x4f.CreateFromRotate((float)random.NextDouble() * ax, 1, 0, 0);
             var ry = RcMatrix4x4f.CreateFromRotate((float)random.NextDouble() * 360, 0, 1, 0);

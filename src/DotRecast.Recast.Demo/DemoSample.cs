@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 using DotRecast.Detour;
+using DotRecast.Recast.Geom;
 using DotRecast.Recast.Toolset;
 using DotRecast.Recast.Toolset.Geom;
 
@@ -27,7 +28,7 @@ namespace DotRecast.Recast.Demo
 {
     public class DemoSample
     {
-        private DemoInputGeomProvider _geom;
+        private RcSampleInputGeomProvider _geom;
         private DtNavMesh _navMesh;
         private DtNavMeshQuery _navMeshQuery;
         private readonly RcNavMeshBuildSettings _settings;
@@ -35,7 +36,7 @@ namespace DotRecast.Recast.Demo
         private IList<RcBuilderResult> _recastResults;
         private bool _changed;
 
-        public DemoSample(DemoInputGeomProvider geom, IList<RcBuilderResult> recastResults, DtNavMesh navMesh)
+        public DemoSample(RcSampleInputGeomProvider geom, IList<RcBuilderResult> recastResults, DtNavMesh navMesh)
         {
             _geom = geom;
             _recastResults = recastResults;
@@ -51,7 +52,7 @@ namespace DotRecast.Recast.Demo
             _navMeshQuery = navMesh != null ? new DtNavMeshQuery(navMesh) : null;
         }
 
-        public DemoInputGeomProvider GetInputGeom()
+        public RcSampleInputGeomProvider GetInputGeom()
         {
             return _geom;
         }
@@ -91,7 +92,7 @@ namespace DotRecast.Recast.Demo
             _changed = changed;
         }
 
-        public void Update(DemoInputGeomProvider geom, RcConfig cfg, IList<RcBuilderResult> recastResults, DtNavMesh navMesh)
+        public void Update(RcSampleInputGeomProvider geom, RcConfig cfg, IList<RcBuilderResult> recastResults, DtNavMesh navMesh)
         {
             _geom = geom;
             _cfg = cfg;

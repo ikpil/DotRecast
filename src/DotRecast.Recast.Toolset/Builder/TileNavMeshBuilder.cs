@@ -168,7 +168,7 @@ namespace DotRecast.Recast.Toolset.Builder
             return tileBits;
         }
 
-        public int[] GetTiles(DemoInputGeomProvider geom, float cellSize, int tileSize)
+        public int[] GetTiles(RcSampleInputGeomProvider geom, float cellSize, int tileSize)
         {
             RcRecast.CalcGridSize(geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax(), cellSize, out var gw, out var gh);
             int tw = (gw + tileSize - 1) / tileSize;
