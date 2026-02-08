@@ -54,7 +54,7 @@ public class MeshSetReaderWriterTest
     [Test]
     public void Test()
     {
-        IRcInputGeomProvider geom = RcSimpleInputGeomProvider.LoadFile("dungeon.obj");
+        IRcInputGeomProvider geom = RcSampleInputGeomProvider.LoadFile("dungeon.obj");
 
         NavMeshSetHeader header = new NavMeshSetHeader();
         header.magic = NavMeshSetHeader.NAVMESHSET_MAGIC;

@@ -45,7 +45,7 @@ public class TestTiledNavMeshBuilder
     private const int m_tileSize = 32;
 
     public TestTiledNavMeshBuilder() :
-        this(RcSimpleInputGeomProvider.LoadFile("dungeon.obj"),
+        this(RcSampleInputGeomProvider.LoadFile("dungeon.obj"),
             RcPartition.WATERSHED, m_cellSize, m_cellHeight, m_agentHeight, m_agentRadius, m_agentMaxClimb, m_agentMaxSlope,
             m_regionMinSize, m_regionMergeSize, m_edgeMaxLen, m_edgeMaxError, m_vertsPerPoly, m_detailSampleDist,
             m_detailSampleMaxError, m_tileSize)

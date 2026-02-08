@@ -19,13 +19,14 @@ freely, subject to the following restrictions:
 
 using DotRecast.Core.Collections;
 using DotRecast.Detour;
+using DotRecast.Recast.Geom;
 using DotRecast.Recast.Toolset.Geom;
 
 namespace DotRecast.Recast.Toolset.Builder
 {
     public class SoloNavMeshBuilder
     {
-        public NavMeshBuildResult Build(DemoInputGeomProvider geom, RcNavMeshBuildSettings settings)
+        public NavMeshBuildResult Build(RcSampleInputGeomProvider geom, RcNavMeshBuildSettings settings)
         {
             return Build(geom,
                 RcPartitionType.OfValue(settings.partitioning),
@@ -39,7 +40,7 @@ namespace DotRecast.Recast.Toolset.Builder
                 settings.keepInterResults);
         }
 
-        public NavMeshBuildResult Build(DemoInputGeomProvider geom,
+        public NavMeshBuildResult Build(RcSampleInputGeomProvider geom,
             RcPartition partitionType,
             float cellSize, float cellHeight,
             float agentMaxSlope, float agentHeight, float agentRadius, float agentMaxClimb,
@@ -84,14 +85,14 @@ namespace DotRecast.Recast.Toolset.Builder
             return mesh;
         }
 
-        private RcBuilderResult BuildRecastResult(DemoInputGeomProvider geom, RcConfig cfg, bool keepInterResults)
+        private RcBuilderResult BuildRecastResult(RcSampleInputGeomProvider geom, RcConfig cfg, bool keepInterResults)
         {
             RcBuilderConfig bcfg = new RcBuilderConfig(cfg, geom.GetMeshBoundsMin(), geom.GetMeshBoundsMax());
             RcBuilder rcBuilder = new RcBuilder();
             return rcBuilder.Build(geom, bcfg, keepInterResults);
         }
 
-        public DtMeshData BuildMeshData(DemoInputGeomProvider geom,
+        public DtMeshData BuildMeshData(RcSampleInputGeomProvider geom,
             float cellSize, float cellHeight,
             float agentHeight, float agentRadius, float agentMaxClimb,
             RcBuilderResult result)

@@ -23,11 +23,10 @@ using System.Collections.Generic;
 using DotRecast.Core;
 using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
-using DotRecast.Recast.Geom;
 
-namespace DotRecast.Recast.Toolset.Geom
+namespace DotRecast.Recast.Geom
 {
-    public class DemoInputGeomProvider : IRcInputGeomProvider
+    public class RcSampleInputGeomProvider : IRcInputGeomProvider
     {
         public readonly float[] vertices;
         public readonly int[] faces;
@@ -39,19 +38,19 @@ namespace DotRecast.Recast.Toolset.Geom
         private readonly List<RcOffMeshConnection> _offMeshConnections = new List<RcOffMeshConnection>();
         private readonly RcTriMesh _mesh;
 
-        public static DemoInputGeomProvider LoadFile(string objFilePath)
+        public static RcSampleInputGeomProvider LoadFile(string objFilePath)
         {
             byte[] chunk = RcIO.ReadFileIfFound(objFilePath);
             var context = RcObjImporter.LoadContext(chunk);
-            return new DemoInputGeomProvider(context.vertexPositions, context.meshFaces);
+            return new RcSampleInputGeomProvider(context.vertexPositions, context.meshFaces);
         }
 
-        public DemoInputGeomProvider(List<float> vertexPositions, List<int> meshFaces) :
+        public RcSampleInputGeomProvider(List<float> vertexPositions, List<int> meshFaces) :
             this(MapVertices(vertexPositions), MapFaces(meshFaces))
         {
         }
 
-        public DemoInputGeomProvider(float[] vertices, int[] faces)
+        public RcSampleInputGeomProvider(float[] vertices, int[] faces)
         {
             this.vertices = vertices;
             this.faces = faces;

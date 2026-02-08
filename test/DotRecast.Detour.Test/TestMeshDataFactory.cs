@@ -40,7 +40,7 @@ public static class TestMeshDataFactory
 
     public static DtMeshData Create()
     {
-        IRcInputGeomProvider geom = RcSimpleInputGeomProvider.LoadFile("dungeon.obj");
+        IRcInputGeomProvider geom = RcSampleInputGeomProvider.LoadFile("dungeon.obj");
         RcPartition partition = RcPartition.WATERSHED;
         float cellSize = m_cellSize;
         float cellHeight = m_cellHeight;
