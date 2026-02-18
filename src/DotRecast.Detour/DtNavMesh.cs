@@ -1026,12 +1026,12 @@ namespace DotRecast.Detour
         }
 
         /**
-     * Returns closest point on polygon.
-     *
-     * @param ref
-     * @param pos
-     * @return
-     */
+         * Returns closest point on polygon.
+         *
+         * @param ref
+         * @param pos
+         * @return
+         */
         RcVec3f ClosestPointOnDetailEdges(DtMeshTile tile, DtPoly poly, RcVec3f pos, bool onlyBoundary)
         {
             const int ANY_BOUNDARY_EDGE = (DtDetailTriEdgeFlags.DT_DETAIL_EDGE_BOUNDARY << 0) |
