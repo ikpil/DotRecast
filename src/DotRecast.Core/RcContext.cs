@@ -72,6 +72,11 @@ namespace DotRecast.Core
             Console.WriteLine(message);
         }
 
+        public void Log(RcLogCategory logLevel, string message)
+        {
+            Console.WriteLine(message);
+        }
+
         public List<RcTelemetryTick> ToList()
         {
             return _timerAccum

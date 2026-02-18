@@ -112,7 +112,7 @@ namespace DotRecast.Recast
         /// @param[in]	max					The new span's maximum cell index
         /// @param[in]	areaID				The new span's area type ID
         /// @param[in]	flagMergeThreshold	How close two spans maximum extents need to be to merge area type IDs
-        public static void AddSpan(RcHeightfield heightfield, int x, int z, int min, int max, int areaID, int flagMergeThreshold)
+        public static bool AddSpan(RcHeightfield heightfield, int x, int z, int min, int max, int areaID, int flagMergeThreshold)
         {
             // Create the new span.
             RcSpan newSpan = new RcSpan();
@@ -127,7 +127,7 @@ namespace DotRecast.Recast
             if (heightfield.spans[columnIndex] == null)
             {
                 heightfield.spans[columnIndex] = newSpan;
-                return;
+                return true;
             }
 
             RcSpan previousSpan = null;
@@ -196,7 +196,51 @@ namespace DotRecast.Recast
                 newSpan.next = heightfield.spans[columnIndex];
                 heightfield.spans[columnIndex] = newSpan;
             }
+
+            return true;
         }
+
+        /// Adds a span to the specified heightfield.
+        /// 
+        /// The span addition can be set to favor flags. If the span is merged to
+        /// another span and the new @p spanMax is within @p flagMergeThreshold units
+        /// from the existing span, the span flags are merged.
+        /// 
+        /// @ingroup recast
+        /// @param[in,out]	context				The build context to use during the operation.
+        /// @param[in,out]	heightfield			An initialized heightfield.
+        /// @param[in]		x					The column x index where the span is to be added.
+        /// 									[Limits: 0 <= value < rcHeightfield::width]
+        /// @param[in]		z					The column z index where the span is to be added.
+        /// 									[Limits: 0 <= value < rcHeightfield::height]
+        /// @param[in]		spanMin				The minimum height of the span. [Limit: < @p spanMax] [Units: vx]
+        /// @param[in]		spanMax				The maximum height of the span. [Limit: <= #RC_SPAN_MAX_HEIGHT] [Units: vx]
+        /// @param[in]		areaID				The area id of the span. [Limit: <= #RC_WALKABLE_AREA)
+        /// @param[in]		flagMergeThreshold	The merge threshold. [Limit: >= 0] [Units: vx]
+        /// @returns True if the operation completed successfully.
+        public static bool AddSpan(RcContext context, RcHeightfield heightfield,
+            int x, int z,
+            short spanMin, short spanMax,
+            char areaID, int flagMergeThreshold)
+        {
+            RcDebug.Assert(context);
+
+            // Span is zero size or inverted size. Ignore.
+            if (spanMin >= spanMax)
+            {
+                context.Log(RcLogCategory.RC_LOG_WARNING, "rcAddSpan: Adding a span with zero or negative size. Ignored.");
+                return true;
+            }
+
+            if (!AddSpan(heightfield, x, z, spanMin, spanMax, areaID, flagMergeThreshold))
+            {
+                context.Log(RcLogCategory.RC_LOG_ERROR, "rcAddSpan: Out of memory.");
+                return false;
+            }
+
+            return true;
+        }
+
 
         /// Divides a convex polygon of max 12 vertices into two convex polygons
         /// across a separating axis.
