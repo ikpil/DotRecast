@@ -11,6 +11,12 @@ namespace DotRecast.Core
             Debug.Assert(condition);
         }
         
+        [Conditional("DEBUG")]
+        public static void Assert<T>(T obj) where T : class
+        {
+            Debug.Assert(null != obj);
+        }
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void UnusedRef<T>(ref T _)
         {
