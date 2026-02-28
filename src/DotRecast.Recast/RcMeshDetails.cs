@@ -946,6 +946,10 @@ namespace DotRecast.Recast
                         pt.X = samples[s + 0] * sampleDist + GetJitterX(i) * cs * 0.1f;
                         pt.Y = samples[s + 1] * chf.ch;
                         pt.Z = samples[s + 2] * sampleDist + GetJitterY(i) * cs * 0.1f;
+                        
+                        if (tris.Count == 0) 
+                            continue;
+                        
                         float d = DistToTriMesh(pt, verts, nverts, tris, tris.Count / 4);
                         if (d < 0)
                         {
