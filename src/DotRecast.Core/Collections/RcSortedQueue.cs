@@ -25,6 +25,7 @@ namespace DotRecast.Core.Collections
 {
     public class RcSortedQueue<T>
     {
+        private bool _dirty;
         private readonly List<T> _items;
         private readonly Comparison<T> _comparison;
 
@@ -47,10 +48,32 @@ namespace DotRecast.Core.Collections
         public void Clear()
         {
             _items.Clear();
+            _dirty = false;
+        }
+
+        public void MarkDirty()
+        {
+            _dirty = true;
+        }
+
+        private void Balance()
+        {
+            if (!_dirty)
+            {
+                return;
+            }
+
+            for (int i = (_items.Count / 2) - 1; i >= 0; --i)
+            {
+                SiftDown(i);
+            }
+
+            _dirty = false;
         }
 
         public T Peek()
         {
+            Balance();
             return _items[0];
         }
 
@@ -76,7 +99,10 @@ namespace DotRecast.Core.Collections
                 return;
 
             _items.Add(item);
-            SiftUp(_items.Count - 1);
+            if (!_dirty)
+            {
+                SiftUp(_items.Count - 1);
+            }
         }
 
         public bool Remove(T item)
@@ -99,6 +125,11 @@ namespace DotRecast.Core.Collections
             _items.RemoveAt(lastIndex);
             _items[idx] = last;
 
+            if (_dirty)
+            {
+                return true;
+            }
+
             int parent = (idx - 1) / 2;
             if (0 < idx && IsHigherPriority(idx, parent))
             {
@@ -115,6 +146,7 @@ namespace DotRecast.Core.Collections
 
         public List<T> ToList()
         {
+            Balance();
             var temp = new List<T>(_items);
             temp.Sort(_comparison);
             return temp;

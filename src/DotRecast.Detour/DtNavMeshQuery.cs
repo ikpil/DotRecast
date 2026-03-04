@@ -40,6 +40,7 @@ namespace DotRecast.Detour
         protected readonly DtNodePool m_tinyNodePool; //< Pointer to small node pool. 
         protected readonly DtNodePool m_nodePool; //< Pointer to node pool. 
         protected readonly DtNodeQueue m_openList; //< Pointer to open list queue. 
+        protected readonly DtFindNearestPolyQuery m_findNearestPolyQuery;
 
         //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -64,6 +65,7 @@ namespace DotRecast.Detour
             m_nodePool = new DtNodePool();
             m_openList = new DtNodeQueue();
             m_tinyNodePool = new DtNodePool();
+            m_findNearestPolyQuery = new DtFindNearestPolyQuery(this, RcVec3f.Zero);
         }
 
         /// Returns random location on navmesh.
@@ -586,16 +588,16 @@ namespace DotRecast.Detour
             isOverPoly = false;
 
             // Get nearby polygons from proximity grid.
-            DtFindNearestPolyQuery query = new DtFindNearestPolyQuery(this, center);
-            DtStatus status = QueryPolygons(center, halfExtents, filter, query);
+            m_findNearestPolyQuery.Reset(center);
+            DtStatus status = QueryPolygons(center, halfExtents, filter, m_findNearestPolyQuery);
             if (status.Failed())
             {
                 return status;
             }
 
-            nearestRef = query.NearestRef();
-            nearestPt = query.NearestPt();
-            isOverPoly = query.OverPoly();
+            nearestRef = m_findNearestPolyQuery.NearestRef();
+            nearestPt = m_findNearestPolyQuery.NearestPt();
+            isOverPoly = m_findNearestPolyQuery.OverPoly();
 
             return DtStatus.DT_SUCCESS;
         }
