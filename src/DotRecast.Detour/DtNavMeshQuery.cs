@@ -454,6 +454,11 @@ namespace DotRecast.Detour
             return DtStatus.DT_SUCCESS;
         }
 
+        internal void ClosestPointOnPolyUnsafe(DtMeshTile tile, DtPoly poly, RcVec3f pos, out RcVec3f closest, out bool posOverPoly)
+        {
+            m_nav.ClosestPointOnPoly(tile, poly, pos, out closest, out posOverPoly);
+        }
+
         /// @par
         ///
         /// Much faster than ClosestPointOnPoly().

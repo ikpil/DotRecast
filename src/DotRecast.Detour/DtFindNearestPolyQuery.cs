@@ -29,25 +29,29 @@ namespace DotRecast.Detour
 
         public void Process(DtMeshTile tile, ReadOnlySpan<int> polys, ReadOnlySpan<long> refs, int count)
         {
+            float walkableClimb = tile.data.header.walkableClimb;
+
             for (int i = 0; i < count; ++i)
             {
                 long polyRef = refs[i];
                 float d;
-                
+
                 // Find nearest polygon amongst the nearby polygons.
-                _query.ClosestPointOnPoly(polyRef, _center, out var closestPtPoly, out var posOverPoly);
+                _query.ClosestPointOnPolyUnsafe(tile, tile.data.polys[polys[i]], _center, out var closestPtPoly, out var posOverPoly);
 
                 // If a point is directly over a polygon and closer than
                 // climb height, favor that instead of straight line nearest point.
-                RcVec3f diff = RcVec3f.Subtract(_center, closestPtPoly);
+                float dx = _center.X - closestPtPoly.X;
+                float dy = _center.Y - closestPtPoly.Y;
+                float dz = _center.Z - closestPtPoly.Z;
                 if (posOverPoly)
                 {
-                    d = MathF.Abs(diff.Y) - tile.data.header.walkableClimb;
+                    d = MathF.Abs(dy) - walkableClimb;
                     d = d > 0 ? d * d : 0;
                 }
                 else
                 {
-                    d = diff.LengthSquared();
+                    d = dx * dx + dy * dy + dz * dz;
                 }
 
                 if (d < _nearestDistanceSqr)
