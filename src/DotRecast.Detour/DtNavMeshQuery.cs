@@ -866,6 +866,8 @@ namespace DotRecast.Detour
                 return DtStatus.DT_SUCCESS;
             }
 
+            DtQueryDefaultFilter defaultFilter = filter as DtQueryDefaultFilter;
+
             m_nodePool.Clear();
             m_openList.Clear();
 
@@ -930,7 +932,14 @@ namespace DotRecast.Detour
                     // The API input has been checked already, skip checking internal data.
                     m_nav.GetTileAndPolyByRefUnsafe(neighbourRef, out var neighbourTile, out var neighbourPoly);
 
-                    if (!filter.PassFilter(neighbourRef, neighbourTile, neighbourPoly))
+                    if (null != defaultFilter)
+                    {
+                        if (!defaultFilter.PassFilter(neighbourPoly.flags))
+                        {
+                            continue;
+                        }
+                    }
+                    else if (!filter.PassFilter(neighbourRef, neighbourTile, neighbourPoly))
                     {
                         continue;
                     }
@@ -964,14 +973,25 @@ namespace DotRecast.Detour
                     if (neighbourRef == endRef)
                     {
                         // Cost
-                        float curCost = filter.GetCost(bestNode.pos, neighbourNode.pos,
-                            parentRef, parentTile, parentPoly,
-                            bestRef, bestTile, bestPoly,
-                            neighbourRef, neighbourTile, neighbourPoly);
-                        float endCost = filter.GetCost(neighbourNode.pos, endPos,
-                            bestRef, bestTile, bestPoly,
-                            neighbourRef, neighbourTile, neighbourPoly,
-                            0, null, null);
+                        float curCost;
+                        float endCost;
+                        if (null != defaultFilter)
+                        {
+                            float areaCost = defaultFilter.GetAreaCost(neighbourPoly.GetArea());
+                            curCost = RcVec3f.Distance(bestNode.pos, neighbourNode.pos) * areaCost;
+                            endCost = RcVec3f.Distance(neighbourNode.pos, endPos) * areaCost;
+                        }
+                        else
+                        {
+                            curCost = filter.GetCost(bestNode.pos, neighbourNode.pos,
+                                parentRef, parentTile, parentPoly,
+                                bestRef, bestTile, bestPoly,
+                                neighbourRef, neighbourTile, neighbourPoly);
+                            endCost = filter.GetCost(neighbourNode.pos, endPos,
+                                bestRef, bestTile, bestPoly,
+                                neighbourRef, neighbourTile, neighbourPoly,
+                                0, null, null);
+                        }
 
                         cost = bestNode.cost + curCost + endCost;
                         heuristic = 0;
@@ -979,10 +999,19 @@ namespace DotRecast.Detour
                     else
                     {
                         // Cost
-                        float curCost = filter.GetCost(bestNode.pos, neighbourNode.pos,
-                            parentRef, parentTile, parentPoly,
-                            bestRef, bestTile, bestPoly,
-                            neighbourRef, neighbourTile, neighbourPoly);
+                        float curCost;
+                        if (null != defaultFilter)
+                        {
+                            curCost = RcVec3f.Distance(bestNode.pos, neighbourNode.pos) * defaultFilter.GetAreaCost(neighbourPoly.GetArea());
+                        }
+                        else
+                        {
+                            curCost = filter.GetCost(bestNode.pos, neighbourNode.pos,
+                                parentRef, parentTile, parentPoly,
+                                bestRef, bestTile, bestPoly,
+                                neighbourRef, neighbourTile, neighbourPoly);
+                        }
+
                         cost = bestNode.cost + curCost;
                         heuristic = RcVec3f.Distance(neighbourNode.pos, endPos) * DtDefaultQueryHeuristic.H_SCALE;
                     }
@@ -1131,6 +1160,7 @@ namespace DotRecast.Detour
 
             var rayHit = new DtRaycastHit();
             rayHit.maxPath = 0;
+            DtQueryDefaultFilter defaultFilter = m_query.filter as DtQueryDefaultFilter;
 
             int iter = 0;
             while (iter < maxIter && !m_openList.IsEmpty())
@@ -1216,7 +1246,14 @@ namespace DotRecast.Detour
                     // The API input has been checked already, skip checking internal data.
                     m_nav.GetTileAndPolyByRefUnsafe(neighbourRef, out var neighbourTile, out var neighbourPoly);
 
-                    if (!m_query.filter.PassFilter(neighbourRef, neighbourTile, neighbourPoly))
+                    if (null != defaultFilter)
+                    {
+                        if (!defaultFilter.PassFilter(neighbourPoly.flags))
+                        {
+                            continue;
+                        }
+                    }
+                    else if (!m_query.filter.PassFilter(neighbourRef, neighbourTile, neighbourPoly))
                     {
                         continue;
                     }
@@ -1266,20 +1303,37 @@ namespace DotRecast.Detour
                     else
                     {
                         // No shortcut found.
-                        float curCost = m_query.filter.GetCost(bestNode.pos, neighbourNode.pos,
-                            parentRef, parentTile, parentPoly,
-                            bestRef, bestTile, bestPoly,
-                            neighbourRef, neighbourTile, neighbourPoly);
+                        float curCost;
+                        if (null != defaultFilter)
+                        {
+                            curCost = RcVec3f.Distance(bestNode.pos, neighbourNode.pos) * defaultFilter.GetAreaCost(neighbourPoly.GetArea());
+                        }
+                        else
+                        {
+                            curCost = m_query.filter.GetCost(bestNode.pos, neighbourNode.pos,
+                                parentRef, parentTile, parentPoly,
+                                bestRef, bestTile, bestPoly,
+                                neighbourRef, neighbourTile, neighbourPoly);
+                        }
+
                         cost = bestNode.cost + curCost;
                     }
 
                     // Special case for last node.
                     if (neighbourRef == m_query.endRef)
                     {
-                        float endCost = m_query.filter.GetCost(neighbourNode.pos, m_query.endPos,
-                            bestRef, bestTile, bestPoly,
-                            neighbourRef, neighbourTile, neighbourPoly,
-                            0, null, null);
+                        float endCost;
+                        if (null != defaultFilter)
+                        {
+                            endCost = RcVec3f.Distance(neighbourNode.pos, m_query.endPos) * defaultFilter.GetAreaCost(neighbourPoly.GetArea());
+                        }
+                        else
+                        {
+                            endCost = m_query.filter.GetCost(neighbourNode.pos, m_query.endPos,
+                                bestRef, bestTile, bestPoly,
+                                neighbourRef, neighbourTile, neighbourPoly,
+                                0, null, null);
+                        }
 
                         cost = cost + endCost;
                         heuristic = 0;
@@ -1697,6 +1751,7 @@ namespace DotRecast.Detour
 
             if (pathSize > 1)
             {
+                bool appendCrossings = (options & (DtStraightPathOptions.DT_STRAIGHTPATH_AREA_CROSSINGS | DtStraightPathOptions.DT_STRAIGHTPATH_ALL_CROSSINGS)) != 0;
                 RcVec3f portalApex = closestStartPos;
                 RcVec3f portalLeft = portalApex;
                 RcVec3f portalRight = portalApex;
@@ -1733,7 +1788,7 @@ namespace DotRecast.Detour
                             }
 
                             // Append portals along the current straight path segment.
-                            if ((options & (DtStraightPathOptions.DT_STRAIGHTPATH_AREA_CROSSINGS | DtStraightPathOptions.DT_STRAIGHTPATH_ALL_CROSSINGS)) != 0)
+                            if (appendCrossings)
                             {
                                 // Ignore status return value as we're just about to return anyway.
                                 AppendPortals(apexIndex, i, closestEndPos, path, straightPath, ref straightPathCount, maxStraightPath, options);
@@ -1776,7 +1831,7 @@ namespace DotRecast.Detour
                         else
                         {
                             // Append portals along the current straight path segment.
-                            if ((options & (DtStraightPathOptions.DT_STRAIGHTPATH_AREA_CROSSINGS | DtStraightPathOptions.DT_STRAIGHTPATH_ALL_CROSSINGS)) != 0)
+                            if (appendCrossings)
                             {
                                 stat = AppendPortals(apexIndex, leftIndex, portalLeft, path, straightPath, ref straightPathCount, maxStraightPath, options);
                                 if (!stat.InProgress())
@@ -1832,7 +1887,7 @@ namespace DotRecast.Detour
                         else
                         {
                             // Append portals along the current straight path segment.
-                            if ((options & (DtStraightPathOptions.DT_STRAIGHTPATH_AREA_CROSSINGS | DtStraightPathOptions.DT_STRAIGHTPATH_ALL_CROSSINGS)) != 0)
+                            if (appendCrossings)
                             {
                                 stat = AppendPortals(apexIndex, rightIndex, portalRight, path, straightPath, ref straightPathCount, maxStraightPath, options);
                                 if (!stat.InProgress())
@@ -1877,7 +1932,7 @@ namespace DotRecast.Detour
                 }
 
                 // Append portals along the current straight path segment.
-                if ((options & (DtStraightPathOptions.DT_STRAIGHTPATH_AREA_CROSSINGS | DtStraightPathOptions.DT_STRAIGHTPATH_ALL_CROSSINGS)) != 0)
+                if (appendCrossings)
                 {
                     stat = AppendPortals(apexIndex, pathSize - 1, closestEndPos, path, straightPath, ref straightPathCount, maxStraightPath, options);
                     if (!stat.InProgress())
