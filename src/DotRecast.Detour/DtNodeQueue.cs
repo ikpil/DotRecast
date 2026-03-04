@@ -58,6 +58,7 @@ namespace DotRecast.Detour
 
         public void Modify(DtNode node)
         {
+            m_heap.MarkDirty();
             m_heap.Remove(node);
             Push(node);
         }
