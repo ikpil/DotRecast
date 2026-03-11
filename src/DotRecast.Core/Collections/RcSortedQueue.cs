@@ -32,7 +32,7 @@ namespace DotRecast.Core.Collections
         public RcSortedQueue(Comparison<T> comp)
         {
             _items = new List<T>();
-            _comparison = (x, y) => comp(x, y) * -1;
+            _comparison = comp;
         }
 
         public int Count()
@@ -51,25 +51,45 @@ namespace DotRecast.Core.Collections
             _dirty = false;
         }
 
+        public void MarkDirty()
+        {
+            _dirty = true;
+        }
+
         private void Balance()
         {
-            if (_dirty)
+            if (!_dirty)
             {
-                _items.Sort(_comparison); // reverse
-                _dirty = false;
+                return;
             }
+
+            for (int i = (_items.Count / 2) - 1; i >= 0; --i)
+            {
+                SiftDown(i);
+            }
+
+            _dirty = false;
         }
 
         public T Peek()
         {
             Balance();
-            return _items[^1];
+            return _items[0];
         }
 
         public T Dequeue()
         {
             var node = Peek();
-            _items.RemoveAt(_items.Count - 1);
+            int lastIndex = _items.Count - 1;
+            T last = _items[lastIndex];
+            _items.RemoveAt(lastIndex);
+
+            if (0 < _items.Count)
+            {
+                _items[0] = last;
+                SiftDown(0);
+            }
+
             return node;
         }
 
@@ -79,7 +99,10 @@ namespace DotRecast.Core.Collections
                 return;
 
             _items.Add(item);
-            _dirty = true;
+            if (!_dirty)
+            {
+                SiftUp(_items.Count - 1);
+            }
         }
 
         public bool Remove(T item)
@@ -87,13 +110,36 @@ namespace DotRecast.Core.Collections
             if (null == item)
                 return false;
 
-            //int idx = _items.BinarySearch(item, _comparer); // don't use this! Because reference types can be reused externally.
-            //int idx = _items.FindLastIndex(x => item.Equals(x));
             int idx = _items.LastIndexOf(item);
             if (0 > idx)
                 return false;
 
-            _items.RemoveAt(idx);
+            int lastIndex = _items.Count - 1;
+            if (idx == lastIndex)
+            {
+                _items.RemoveAt(lastIndex);
+                return true;
+            }
+
+            T last = _items[lastIndex];
+            _items.RemoveAt(lastIndex);
+            _items[idx] = last;
+
+            if (_dirty)
+            {
+                return true;
+            }
+
+            int parent = (idx - 1) / 2;
+            if (0 < idx && IsHigherPriority(idx, parent))
+            {
+                SiftUp(idx);
+            }
+            else
+            {
+                SiftDown(idx);
+            }
+
             return true;
         }
 
@@ -102,8 +148,56 @@ namespace DotRecast.Core.Collections
         {
             Balance();
             var temp = new List<T>(_items);
-            temp.Reverse();
+            temp.Sort(_comparison);
             return temp;
+        }
+
+        private bool IsHigherPriority(int index, int parentIndex)
+        {
+            return 0 > _comparison(_items[index], _items[parentIndex]);
+        }
+
+        private void SiftUp(int index)
+        {
+            while (0 < index)
+            {
+                int parent = (index - 1) / 2;
+                if (!IsHigherPriority(index, parent))
+                {
+                    break;
+                }
+
+                (_items[index], _items[parent]) = (_items[parent], _items[index]);
+                index = parent;
+            }
+        }
+
+        private void SiftDown(int index)
+        {
+            int count = _items.Count;
+            while (true)
+            {
+                int left = (index * 2) + 1;
+                if (left >= count)
+                {
+                    break;
+                }
+
+                int right = left + 1;
+                int best = left;
+                if (right < count && 0 > _comparison(_items[right], _items[left]))
+                {
+                    best = right;
+                }
+
+                if (0 >= _comparison(_items[index], _items[best]))
+                {
+                    break;
+                }
+
+                (_items[index], _items[best]) = (_items[best], _items[index]);
+                index = best;
+            }
         }
     }
 }
