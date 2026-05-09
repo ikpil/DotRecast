@@ -60,7 +60,10 @@ public class RcVec3iTest
         Assert.That(v[0], Is.EqualTo(1));
         Assert.That(v[1], Is.EqualTo(2));
         Assert.That(v[2], Is.EqualTo(3));
-        Assert.Throws<IndexOutOfRangeException>(() => { var _ = v[3]; });
+        Assert.Throws<IndexOutOfRangeException>((Action)(() =>
+        {
+            var _ = v[3];
+        }));
     }
 
     [Test]

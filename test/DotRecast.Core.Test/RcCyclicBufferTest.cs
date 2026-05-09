@@ -32,7 +32,7 @@ public class RcCyclicBufferTests
     [Test]
     public void RcCyclicBuffer_Constructor_ExceptionWhenSourceIsLargerThanCapacity()
     {
-        Assert.Throws<ArgumentException>(() => new RcCyclicBuffer<int>(3, new[] { 0, 1, 2, 3 }));
+        Assert.Throws<ArgumentException>((Action)(() => new RcCyclicBuffer<int>(3, new[] { 0, 1, 2, 3 })));
     }
 
     [Test]
@@ -173,14 +173,14 @@ public class RcCyclicBufferTests
     {
         var buffer = new RcCyclicBuffer<int>(5);
 
-        Assert.Throws<InvalidOperationException>(() => buffer.Front());
+        Assert.Throws<InvalidOperationException>((Action)(() => buffer.Front()));
     }
 
     [Test]
     public void RcCyclicBuffer_Back_EmptyBufferThrowsException()
     {
         var buffer = new RcCyclicBuffer<int>(5);
-        Assert.Throws<InvalidOperationException>(() => buffer.Back());
+        Assert.Throws<InvalidOperationException>((Action)(() => buffer.Back()));
     }
 
     [Test]

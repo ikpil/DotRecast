@@ -66,10 +66,10 @@ public class RcFixedArrayTest
 
         Assert.That(array[^1], Is.EqualTo(values[^1]));
 
-        Assert.Throws<IndexOutOfRangeException>(() => array[-1] = 0);
-        Assert.Throws<IndexOutOfRangeException>(() => array[array.Length + 1] = 0);
-        Assert.Throws<IndexOutOfRangeException>(() => _ = array[-1]);
-        Assert.Throws<IndexOutOfRangeException>(() => _ = array[array.Length + 1]);
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => array[-1] = 0));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => array[array.Length + 1] = 0));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => _ = array[-1]));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => _ = array[array.Length + 1]));
     }
 
     [Test]
@@ -91,10 +91,10 @@ public class RcFixedArrayTest
 
         Assert.That(array[^1], Is.EqualTo(values[^1]));
 
-        Assert.Throws<IndexOutOfRangeException>(() => array[-1] = 0);
-        Assert.Throws<IndexOutOfRangeException>(() => array[array.Length + 1] = 0);
-        Assert.Throws<IndexOutOfRangeException>(() => _ = array[-1]);
-        Assert.Throws<IndexOutOfRangeException>(() => _ = array[array.Length + 1]);
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => array[-1] = 0));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => array[array.Length + 1] = 0));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => _ = array[-1]));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => _ = array[array.Length + 1]));
     }
 
     [Test]
@@ -116,10 +116,10 @@ public class RcFixedArrayTest
 
         Assert.That(array[^1], Is.EqualTo(values[^1]));
 
-        Assert.Throws<IndexOutOfRangeException>(() => array[-1] = 0);
-        Assert.Throws<IndexOutOfRangeException>(() => array[array.Length + 1] = 0);
-        Assert.Throws<IndexOutOfRangeException>(() => _ = array[-1]);
-        Assert.Throws<IndexOutOfRangeException>(() => _ = array[array.Length + 1]);
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => array[-1] = 0));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => array[array.Length + 1] = 0));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => _ = array[-1]));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => _ = array[array.Length + 1]));
     }
 
     [Test]
@@ -141,10 +141,10 @@ public class RcFixedArrayTest
 
         Assert.That(array[^1], Is.EqualTo(values[^1]));
 
-        Assert.Throws<IndexOutOfRangeException>(() => array[-1] = 0);
-        Assert.Throws<IndexOutOfRangeException>(() => array[array.Length + 1] = 0);
-        Assert.Throws<IndexOutOfRangeException>(() => _ = array[-1]);
-        Assert.Throws<IndexOutOfRangeException>(() => _ = array[array.Length + 1]);
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => array[-1] = 0));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => array[array.Length + 1] = 0));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => _ = array[-1]));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => _ = array[array.Length + 1]));
     }
 
     [Test]
@@ -166,10 +166,10 @@ public class RcFixedArrayTest
 
         Assert.That(array[^1], Is.EqualTo(values[^1]));
 
-        Assert.Throws<IndexOutOfRangeException>(() => array[-1] = 0);
-        Assert.Throws<IndexOutOfRangeException>(() => array[array.Length + 1] = 0);
-        Assert.Throws<IndexOutOfRangeException>(() => _ = array[-1]);
-        Assert.Throws<IndexOutOfRangeException>(() => _ = array[array.Length + 1]);
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => array[-1] = 0));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => array[array.Length + 1] = 0));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => _ = array[-1]));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => _ = array[array.Length + 1]));
     }
 
     [Test]
@@ -191,10 +191,10 @@ public class RcFixedArrayTest
 
         Assert.That(array[^1], Is.EqualTo(values[^1]));
 
-        Assert.Throws<IndexOutOfRangeException>(() => array[-1] = 0);
-        Assert.Throws<IndexOutOfRangeException>(() => array[array.Length + 1] = 0);
-        Assert.Throws<IndexOutOfRangeException>(() => _ = array[-1]);
-        Assert.Throws<IndexOutOfRangeException>(() => _ = array[array.Length + 1]);
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => array[-1] = 0));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => array[array.Length + 1] = 0));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => _ = array[-1]));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => _ = array[array.Length + 1]));
     }
 
     [Test]
@@ -216,10 +216,10 @@ public class RcFixedArrayTest
 
         Assert.That(array[^1], Is.EqualTo(values[^1]));
 
-        Assert.Throws<IndexOutOfRangeException>(() => array[-1] = 0);
-        Assert.Throws<IndexOutOfRangeException>(() => array[array.Length + 1] = 0);
-        Assert.Throws<IndexOutOfRangeException>(() => _ = array[-1]);
-        Assert.Throws<IndexOutOfRangeException>(() => _ = array[array.Length + 1]);
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => array[-1] = 0));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => array[array.Length + 1] = 0));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => _ = array[-1]));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => _ = array[array.Length + 1]));
     }
 
     [Test]
@@ -241,10 +241,10 @@ public class RcFixedArrayTest
 
         Assert.That(array[^1], Is.EqualTo(values[^1]));
 
-        Assert.Throws<IndexOutOfRangeException>(() => array[-1] = 0);
-        Assert.Throws<IndexOutOfRangeException>(() => array[array.Length + 1] = 0);
-        Assert.Throws<IndexOutOfRangeException>(() => _ = array[-1]);
-        Assert.Throws<IndexOutOfRangeException>(() => _ = array[array.Length + 1]);
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => array[-1] = 0));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => array[array.Length + 1] = 0));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => _ = array[-1]));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => _ = array[array.Length + 1]));
     }
 
     [Test]
@@ -266,9 +266,9 @@ public class RcFixedArrayTest
 
         Assert.That(array[^1], Is.EqualTo(values[^1]));
 
-        Assert.Throws<IndexOutOfRangeException>(() => array[-1] = 0);
-        Assert.Throws<IndexOutOfRangeException>(() => array[array.Length + 1] = 0);
-        Assert.Throws<IndexOutOfRangeException>(() => _ = array[-1]);
-        Assert.Throws<IndexOutOfRangeException>(() => _ = array[array.Length + 1]);
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => array[-1] = 0));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => array[array.Length + 1] = 0));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => _ = array[-1]));
+        Assert.Throws<IndexOutOfRangeException>((Action)(() => _ = array[array.Length + 1]));
     }
 }

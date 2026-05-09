@@ -29,12 +29,12 @@ public class RcSpanTest
 
         // Test for an error when copying to a Span with a smaller size.
         {
-            Assert.Throws<ArgumentException>(() =>
+            Assert.Throws<ArgumentException>((Action)(() =>
             {
                 Span<long> src = stackalloc long[] { 1, 2, 3, 4, 5 };
                 Span<long> dst = stackalloc long[] { 0, 0, 0 };
                 RcSpans.Copy(src, dst);
-            });
+            }));
         }
 
         // Test for copying a specific range of elements from the source span to a specific range in the destination span.
@@ -56,45 +56,45 @@ public class RcSpanTest
         }
 
         // Test for src (index + length) over
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
+        Assert.Throws<ArgumentOutOfRangeException>((Action)(() =>
         {
             Span<long> src = stackalloc long[] { 5, 4, 3, 2, 1 };
             Span<long> dst = stackalloc long[] { 0, 0, 0 };
 
             //
             RcSpans.Copy(src, 3, dst, 0, 3);
-        });
+        }));
 
         // Test for src (index + length) over
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
+        Assert.Throws<ArgumentOutOfRangeException>((Action)(() =>
         {
             Span<long> src = stackalloc long[] { 5, 4, 3, 2, 1 };
             Span<long> dst = stackalloc long[] { 0, 0, 0 };
 
             //
             RcSpans.Copy(src, 5, dst, 0, 1);
-        });
+        }));
 
 
         // Test for dst (idx + length) over 
-        Assert.Throws<ArgumentException>(() =>
+        Assert.Throws<ArgumentException>((Action)(() =>
         {
             Span<long> src = stackalloc long[] { 5, 4, 3, 2, 1 };
             Span<long> dst = stackalloc long[] { 0, 0, 0 };
 
             //
             RcSpans.Copy(src, 0, dst, 1, 3);
-        });
+        }));
 
         // Test for dst (idx + length) over 
-        Assert.Throws<ArgumentException>(() =>
+        Assert.Throws<ArgumentException>((Action)(() =>
         {
             Span<long> src = stackalloc long[] { 5, 4, 3, 2, 1 };
             Span<long> dst = stackalloc long[] { 0, 0, 0 };
 
             //
             RcSpans.Copy(src, 0, dst, 0, 4);
-        });
+        }));
     }
 
     [Test]
@@ -125,24 +125,24 @@ public class RcSpanTest
         }
 
         // length over
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
+        Assert.Throws<ArgumentOutOfRangeException>((Action)(() =>
         {
             Span<long> src = stackalloc long[] { 3, 2, 1 };
             RcSpans.Move(src, 0, 0, 4);
-        });
+        }));
         
         // source index over
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
+        Assert.Throws<ArgumentOutOfRangeException>((Action)(() =>
         {
             Span<long> src = stackalloc long[] { 3, 2, 1 };
             RcSpans.Move(src, 3, 0, 1);
-        });
+        }));
         
         // destination index over
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
+        Assert.Throws<ArgumentOutOfRangeException>((Action)(() =>
         {
             Span<long> src = stackalloc long[] { 3, 2, 1 };
             RcSpans.Move(src, 0, 3, 1);
-        });
+        }));
     }
 }
