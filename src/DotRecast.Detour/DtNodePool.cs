@@ -25,20 +25,31 @@ namespace DotRecast.Detour
 {
     public class DtNodePool
     {
-        private readonly Dictionary<long, List<DtNode>> m_map;
+        private readonly Dictionary<long, NodeBucket> m_map;
+        private readonly Stack<NodeBucket> m_bucketPool;
+        private readonly List<DtNode> m_findNodesBuffer;
 
         private int m_nodeCount;
         private readonly List<DtNode> m_nodes;
 
         public DtNodePool()
         {
-            m_map = new Dictionary<long, List<DtNode>>();
+            m_map = new Dictionary<long, NodeBucket>();
+            m_bucketPool = new Stack<NodeBucket>();
+            m_findNodesBuffer = new List<DtNode>(4);
             m_nodes = new List<DtNode>();
         }
 
         public void Clear()
         {
+            foreach (NodeBucket bucket in m_map.Values)
+            {
+                bucket.Reset();
+                m_bucketPool.Push(bucket);
+            }
+
             m_map.Clear();
+            m_findNodesBuffer.Clear();
             m_nodeCount = 0;
         }
 
@@ -49,21 +60,23 @@ namespace DotRecast.Detour
 
         public int FindNodes(long id, out List<DtNode> nodes)
         {
-            var hasNode = m_map.TryGetValue(id, out nodes);
-            if (hasNode)
+            if (m_map.TryGetValue(id, out var bucket))
             {
-                return nodes.Count;
+                m_findNodesBuffer.Clear();
+                bucket.CopyTo(m_findNodesBuffer);
+                nodes = m_findNodesBuffer;
+                return m_findNodesBuffer.Count;
             }
 
+            nodes = null;
             return 0;
         }
 
         public DtNode FindNode(long id)
         {
-            m_map.TryGetValue(id, out var nodes);
-            if (nodes != null && 0 != nodes.Count)
+            if (m_map.TryGetValue(id, out var bucket))
             {
-                return nodes[0];
+                return bucket.FindAny();
             }
 
             return null;
@@ -71,27 +84,25 @@ namespace DotRecast.Detour
 
         public DtNode GetNode(long id, int state)
         {
-            m_map.TryGetValue(id, out var nodes);
-            if (nodes != null)
+            m_map.TryGetValue(id, out var bucket);
+            if (bucket == null)
             {
-                foreach (DtNode node in nodes)
-                {
-                    if (node.state == state)
-                    {
-                        return node;
-                    }
-                }
-            }
-            else
-            {
-                nodes = new List<DtNode>();
-                m_map.Add(id, nodes);
+                bucket = RentBucket();
+                m_map.Add(id, bucket);
             }
 
-            return Create(id, state, nodes);
+            DtNode node = bucket.Find(state);
+            if (node != null)
+            {
+                return node;
+            }
+
+            node = Create(id, state);
+            bucket.Add(state, node);
+            return node;
         }
 
-        private DtNode Create(long id, int state, List<DtNode> nodes)
+        private DtNode Create(long id, int state)
         {
             if (m_nodes.Count <= m_nodeCount)
             {
@@ -108,8 +119,6 @@ namespace DotRecast.Detour
             node.id = id;
             node.state = state;
             node.flags = 0;
-
-            nodes.Add(node);
             return node;
         }
 
@@ -135,6 +144,115 @@ namespace DotRecast.Detour
         public IEnumerable<DtNode> AsEnumerable()
         {
             return m_nodes.Take(m_nodeCount);
+        }
+
+        private NodeBucket RentBucket()
+        {
+            if (0 < m_bucketPool.Count)
+            {
+                return m_bucketPool.Pop();
+            }
+
+            return new NodeBucket();
+        }
+
+        private sealed class NodeBucket
+        {
+            private DtNode _node0;
+            private DtNode _node1;
+            private DtNode _node2;
+            private DtNode _node3;
+            private List<DtNode> _overflow;
+            private int _count;
+
+            public void Reset()
+            {
+                _node0 = null;
+                _node1 = null;
+                _node2 = null;
+                _node3 = null;
+                _overflow?.Clear();
+                _count = 0;
+            }
+
+            public DtNode Find(int state)
+            {
+                if (null != _node0 && _node0.state == state) return _node0;
+                if (null != _node1 && _node1.state == state) return _node1;
+                if (null != _node2 && _node2.state == state) return _node2;
+                if (null != _node3 && _node3.state == state) return _node3;
+
+                if (_overflow == null)
+                {
+                    return null;
+                }
+
+                for (int i = 0; i < _overflow.Count; ++i)
+                {
+                    DtNode node = _overflow[i];
+                    if (node.state == state)
+                    {
+                        return node;
+                    }
+                }
+
+                return null;
+            }
+
+            public void Add(int state, DtNode node)
+            {
+                if (null == node)
+                    return;
+
+                if (_node0 == null)
+                {
+                    _node0 = node;
+                }
+                else if (_node1 == null)
+                {
+                    _node1 = node;
+                }
+                else if (_node2 == null)
+                {
+                    _node2 = node;
+                }
+                else if (_node3 == null)
+                {
+                    _node3 = node;
+                }
+                else
+                {
+                    _overflow ??= new List<DtNode>(4);
+                    _overflow.Add(node);
+                }
+
+                _count++;
+            }
+
+            public DtNode FindAny()
+            {
+                if (_node0 != null) return _node0;
+                if (_node1 != null) return _node1;
+                if (_node2 != null) return _node2;
+                if (_node3 != null) return _node3;
+                if (_overflow != null && 0 < _overflow.Count) return _overflow[0];
+                return null;
+            }
+
+            public void CopyTo(List<DtNode> dst)
+            {
+                if (_count == 0)
+                    return;
+
+                if (_node0 != null) dst.Add(_node0);
+                if (_node1 != null) dst.Add(_node1);
+                if (_node2 != null) dst.Add(_node2);
+                if (_node3 != null) dst.Add(_node3);
+                if (_overflow != null)
+                {
+                    dst.AddRange(_overflow);
+                }
+            }
         }
     }
 }

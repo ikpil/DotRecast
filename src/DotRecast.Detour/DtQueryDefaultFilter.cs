@@ -19,6 +19,7 @@ freely, subject to the following restrictions:
 */
 
 using System;
+using System.Runtime.CompilerServices;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
@@ -81,15 +82,29 @@ namespace DotRecast.Detour
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool PassFilter(long refs, DtMeshTile tile, DtPoly poly)
         {
             return (poly.flags & m_includeFlags) != 0 && (poly.flags & m_excludeFlags) == 0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float GetCost(RcVec3f pa, RcVec3f pb, long prevRef, DtMeshTile prevTile, DtPoly prevPoly, long curRef,
             DtMeshTile curTile, DtPoly curPoly, long nextRef, DtMeshTile nextTile, DtPoly nextPoly)
         {
             return RcVec3f.Distance(pa, pb) * m_areaCost[curPoly.GetArea()];
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool PassFilter(int polyFlags)
+        {
+            return (polyFlags & m_includeFlags) != 0 && (polyFlags & m_excludeFlags) == 0;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public float GetAreaCost(int area)
+        {
+            return m_areaCost[area];
         }
 
         public int GetIncludeFlags()
