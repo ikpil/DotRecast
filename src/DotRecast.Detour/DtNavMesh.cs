@@ -1229,6 +1229,11 @@ namespace DotRecast.Detour
         public void ClosestPointOnPoly(long refs, RcVec3f pos, out RcVec3f closest, out bool posOverPoly)
         {
             GetTileAndPolyByRefUnsafe(refs, out var tile, out var poly);
+            ClosestPointOnPoly(tile, poly, pos, out closest, out posOverPoly);
+        }
+
+        public void ClosestPointOnPoly(DtMeshTile tile, DtPoly poly, RcVec3f pos, out RcVec3f closest, out bool posOverPoly)
+        {
             closest = pos;
 
             if (GetPolyHeight(tile, poly, pos, out var h))
