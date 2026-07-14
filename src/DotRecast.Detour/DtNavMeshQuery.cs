@@ -3758,12 +3758,12 @@ namespace DotRecast.Detour
             }
 
             if (m_nodePool.FindNodes(endRef, out var endNodes) != 1
-                || (endNodes[0].flags & DtNodeFlags.DT_NODE_CLOSED) == 0)
+                || (endNodes.flags & DtNodeFlags.DT_NODE_CLOSED) == 0)
             {
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
             }
 
-            DtNode endNode = endNodes[0];
+            DtNode endNode = endNodes;
 
             return GetPathToNode(endNode, path, out pathCount, maxPath);
         }
@@ -3821,10 +3821,10 @@ namespace DotRecast.Detour
                 return false;
             }
 
-            int n = m_nodePool.FindNodes(refs, out var nodes);
-            for (int i = 0; i < n; ++i)
+            m_nodePool.FindNodes(refs, out var nodes);
+            for (DtNode node = nodes; node != null; node = node.next)
             {
-                if ((nodes[i].flags & DtNodeFlags.DT_NODE_CLOSED) != 0)
+                if ((node.flags & DtNodeFlags.DT_NODE_CLOSED) != 0)
                 {
                     return true;
                 }
