@@ -25,14 +25,14 @@ namespace DotRecast.Detour
 {
     public class DtNodePool
     {
-        private readonly Dictionary<long, List<DtNode>> m_map;
+        private readonly Dictionary<long, DtNode> m_map;
 
         private int m_nodeCount;
         private readonly List<DtNode> m_nodes;
 
         public DtNodePool()
         {
-            m_map = new Dictionary<long, List<DtNode>>();
+            m_map = new Dictionary<long, DtNode>();
             m_nodes = new List<DtNode>();
         }
 
@@ -47,51 +47,44 @@ namespace DotRecast.Detour
             return m_nodeCount;
         }
 
-        public int FindNodes(long id, out List<DtNode> nodes)
+        public int FindNodes(long id, out DtNode nodes)
         {
-            var hasNode = m_map.TryGetValue(id, out nodes);
-            if (hasNode)
+            m_map.TryGetValue(id, out nodes);
+            int count = 0;
+            for (DtNode node = nodes; node != null; node = node.next)
             {
-                return nodes.Count;
+                count++;
             }
 
-            return 0;
+            return count;
         }
 
         public DtNode FindNode(long id)
         {
-            m_map.TryGetValue(id, out var nodes);
-            if (nodes != null && 0 != nodes.Count)
-            {
-                return nodes[0];
-            }
-
-            return null;
+            m_map.TryGetValue(id, out var node);
+            return node;
         }
 
         public DtNode GetNode(long id, int state)
         {
-            m_map.TryGetValue(id, out var nodes);
-            if (nodes != null)
+            DtNode tail = null;
+            if (m_map.TryGetValue(id, out var node))
             {
-                foreach (DtNode node in nodes)
+                for (; node != null; node = node.next)
                 {
                     if (node.state == state)
                     {
                         return node;
                     }
+
+                    tail = node;
                 }
             }
-            else
-            {
-                nodes = new List<DtNode>();
-                m_map.Add(id, nodes);
-            }
 
-            return Create(id, state, nodes);
+            return Create(id, state, tail);
         }
 
-        private DtNode Create(long id, int state, List<DtNode> nodes)
+        private DtNode Create(long id, int state, DtNode tail)
         {
             if (m_nodes.Count <= m_nodeCount)
             {
@@ -108,8 +101,17 @@ namespace DotRecast.Detour
             node.id = id;
             node.state = state;
             node.flags = 0;
+            node.next = null;   // pooled instance may carry a stale chain from the previous query
 
-            nodes.Add(node);
+            if (tail != null)
+            {
+                tail.next = node;
+            }
+            else
+            {
+                m_map[id] = node;
+            }
+
             return node;
         }
 

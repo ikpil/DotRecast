@@ -58,13 +58,20 @@ public class DtNodePoolTest
             var count = counts[i];
             var n = pool.FindNodes(i, out var nodes);
             Assert.That(n, Is.EqualTo(count));
-            Assert.That(nodes, Has.Count.EqualTo(count));
+
+            int chainLength = 0;
+            for (var chainNode = nodes; chainNode != null; chainNode = chainNode.next)
+            {
+                chainLength++;
+            }
+
+            Assert.That(chainLength, Is.EqualTo(count));
 
             var node = pool.FindNode(i);
-            Assert.That(nodes[0], Is.SameAs(node));
+            Assert.That(nodes, Is.SameAs(node));
 
             var node2 = pool.FindNode(i);
-            Assert.That(nodes[0], Is.SameAs(node2));
+            Assert.That(nodes, Is.SameAs(node2));
         }
 
         // check other count

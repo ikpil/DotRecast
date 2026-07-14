@@ -35,6 +35,10 @@ namespace DotRecast.Detour
         public int flags; // Node flags. A combination of dtNodeFlags.
         public long id; // Polygon ref the node corresponds to.
 
+        // intrusive same-poly-ref chain owned by DtNodePool, replacing
+        // the upstream per-ref List<DtNode> that allocated once per visited poly on every query.
+        public DtNode next;
+
         public DtNode(int ptr)
         {
             this.ptr = ptr;
