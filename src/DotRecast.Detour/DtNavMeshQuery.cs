@@ -587,7 +587,7 @@ namespace DotRecast.Detour
 
             // Get nearby polygons from proximity grid.
             DtFindNearestPolyQuery query = new DtFindNearestPolyQuery(this, center);
-            DtStatus status = QueryPolygons(center, halfExtents, filter, query);
+            DtStatus status = QueryPolygons(center, halfExtents, filter, ref query);
             if (status.Failed())
             {
                 return status;
@@ -601,7 +601,8 @@ namespace DotRecast.Detour
         }
 
         /// Queries polygons within a tile.
-        protected void QueryPolygonsInTile(DtMeshTile tile, RcVec3f qmin, RcVec3f qmax, IDtQueryFilter filter, IDtPolyQuery query)
+        protected void QueryPolygonsInTile<TQuery>(DtMeshTile tile, RcVec3f qmin, RcVec3f qmax, IDtQueryFilter filter, ref TQuery query)
+            where TQuery : struct, IDtPolyQuery
         {
             const int batchSize = 32;
             Span<long> polyRefs = stackalloc long[batchSize];
@@ -756,7 +757,7 @@ namespace DotRecast.Detour
                 return DtStatus.DT_FAILURE | DtStatus.DT_INVALID_PARAM;
 
             DtCollectPolysQuery collector = new DtCollectPolysQuery(polys, maxPolys);
-            DtStatus status = QueryPolygons(center, halfExtents, filter, collector);
+            DtStatus status = QueryPolygons(center, halfExtents, filter, ref collector);
             if (status.Failed())
                 return status;
 
@@ -778,7 +779,8 @@ namespace DotRecast.Detour
         ///  @param[in]		halfExtents		The search distance along each axis. [(x, y, z)]
         ///  @param[in]		filter		The polygon filter to apply to the query.
         ///  @param[in]		query		The query. Polygons found will be batched together and passed to this query.
-        public DtStatus QueryPolygons(RcVec3f center, RcVec3f halfExtents, IDtQueryFilter filter, IDtPolyQuery query)
+        public DtStatus QueryPolygons<TQuery>(RcVec3f center, RcVec3f halfExtents, IDtQueryFilter filter, ref TQuery query)
+            where TQuery : struct, IDtPolyQuery
         {
             if (!center.IsFinite() || !halfExtents.IsFinite() || null == filter)
             {
@@ -804,7 +806,7 @@ namespace DotRecast.Detour
                     for (int j = 0; j < nneis; ++j)
                     {
                         var nei = m_nav.GetTile(neis[j]);
-                        QueryPolygonsInTile(nei, bmin, bmax, filter, query);
+                        QueryPolygonsInTile(nei, bmin, bmax, filter, ref query);
                     }
                 }
             }

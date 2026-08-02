@@ -3,7 +3,7 @@ using DotRecast.Core;
 
 namespace DotRecast.Detour
 {
-    public class DtCollectPolysQuery : IDtPolyQuery
+    public struct DtCollectPolysQuery : IDtPolyQuery
     {
         private long[] m_polys;
         private int m_maxPolys;
@@ -14,6 +14,8 @@ namespace DotRecast.Detour
         {
             m_polys = polys;
             m_maxPolys = maxPolys;
+            m_numCollected = 0;
+            m_overflow = false;
         }
 
         public int NumCollected()

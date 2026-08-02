@@ -3,7 +3,7 @@ using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
 {
-    public class DtFindNearestPolyQuery : IDtPolyQuery
+    public struct DtFindNearestPolyQuery : IDtPolyQuery
     {
         private readonly DtNavMeshQuery _query;
         private readonly RcVec3f _center;
@@ -17,7 +17,9 @@ namespace DotRecast.Detour
             _query = query;
             _center = center;
             _nearestDistanceSqr = float.MaxValue;
+            _nearestRef = 0;
             _nearestPoint = center;
+            _overPoly = false;
         }
 
         public void Process(DtMeshTile tile, ReadOnlySpan<int> polys, ReadOnlySpan<long> refs, int count)

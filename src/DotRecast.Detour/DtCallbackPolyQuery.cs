@@ -2,7 +2,7 @@ using System;
 
 namespace DotRecast.Detour
 {
-    public class DtCallbackPolyQuery : IDtPolyQuery
+    public struct DtCallbackPolyQuery : IDtPolyQuery
     {
         private readonly Action<DtMeshTile, DtPoly, long> _callback;
 

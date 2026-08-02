@@ -17,6 +17,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
 using DotRecast.Core.Numerics;
 using NUnit.Framework;
 
@@ -70,5 +71,35 @@ public class FindNearestPolyTest : AbstractDetourTest
             Assert.That(nearestPt.Y, Is.EqualTo(startPos.Y).Within(0.001f));
             Assert.That(nearestPt.Z, Is.EqualTo(startPos.Z).Within(0.001f));
         }
+    }
+
+    [Test]
+    public void ShouldNotAllocate()
+    {
+        IDtQueryFilter filter = new DtQueryDefaultFilter();
+        RcVec3f extents = new RcVec3f(2, 4, 2);
+        RcVec3f startPos = startPoss[0];
+
+        for (int i = 0; i < 256; ++i)
+        {
+            query.FindNearestPoly(startPos, extents, filter, out _, out _, out _);
+        }
+
+        long nearestRefSum = 0;
+        Span<long> allocatedBytes = stackalloc long[4];
+        for (int batch = 0; batch < allocatedBytes.Length; ++batch)
+        {
+            long allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
+            for (int i = 0; i < 256; ++i)
+            {
+                query.FindNearestPoly(startPos, extents, filter, out var nearestRef, out _, out _);
+                nearestRefSum += nearestRef;
+            }
+
+            allocatedBytes[batch] = GC.GetAllocatedBytesForCurrentThread() - allocatedBefore;
+        }
+
+        Assert.That(nearestRefSum, Is.Not.Zero);
+        Assert.That(allocatedBytes.ToArray(), Is.All.Zero);
     }
 }

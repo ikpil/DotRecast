@@ -71,7 +71,7 @@ namespace DotRecast.Detour.Extras.Jumplink
 
             DtCallbackPolyQuery query = new DtCallbackPolyQuery(UpdateMinHeight);
 
-            navMeshQuery.QueryPolygons(pt, halfExtents, DtQueryNoOpFilter.Shared, query);
+            navMeshQuery.QueryPolygons(pt, halfExtents, DtQueryNoOpFilter.Shared, ref query);
 
             if (found.Get())
             {
