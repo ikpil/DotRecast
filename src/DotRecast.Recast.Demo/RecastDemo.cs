@@ -687,6 +687,12 @@ public class RecastDemo : IRecastDemoChannel
 
     private void OnGeomLoadBegan(GeomLoadBeganEvent args)
     {
+        if (string.IsNullOrEmpty(args.FilePath))
+        {
+            Logger.Error("file path is empty");
+            return;
+        }
+
         var geom = LoadInputMesh(args.FilePath);
 
         _sample.Update(geom, null, ImmutableArray<RcBuilderResult>.Empty, null);
