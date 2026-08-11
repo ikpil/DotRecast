@@ -24,16 +24,16 @@ namespace DotRecast.Detour
 {
     public class DtNodeQueue
     {
-        private readonly RcSortedQueue<DtNode> m_heap;
+        private readonly RcBinaryMinHeap<DtNode> m_heap;
 
         public DtNodeQueue()
         {
-            m_heap = new RcSortedQueue<DtNode>(DtNode.ComparisonNodeTotal);
+            m_heap = new RcBinaryMinHeap<DtNode>(DtNode.ComparisonNodeTotal);
         }
 
         public int Count()
         {
-            return m_heap.Count();
+            return m_heap.Count;
         }
 
         public void Clear()
@@ -48,18 +48,23 @@ namespace DotRecast.Detour
 
         public DtNode Pop()
         {
-            return m_heap.Dequeue();
+            return m_heap.Pop();
         }
 
         public void Push(DtNode node)
         {
-            m_heap.Enqueue(node);
+            if (null == node)
+                return;
+
+            m_heap.Push(node);
         }
 
         public void Modify(DtNode node)
         {
-            m_heap.Remove(node);
-            Push(node);
+            if (null == node)
+                return;
+
+            m_heap.Modify(node);
         }
 
         public bool IsEmpty()

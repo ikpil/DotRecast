@@ -4,61 +4,49 @@ using System.Runtime.CompilerServices;
 
 namespace DotRecast.Core.Collections
 {
+    // Binary min-heap mirroring recastnavigation's dtNodeQueue (DetourNode.h/cpp),
+    // generalized over T and Comparison<T>. BubbleUp/TrickleDown move a hole
+    // instead of swapping - one write per level, no recursion, same as upstream.
     public sealed class RcBinaryMinHeap<T>
     {
         private readonly List<T> _items;
-        private readonly Comparison<T> _comparision;
+        private readonly Comparison<T> _comparison;
 
         public int Count => _items.Count;
         public int Capacity => _items.Capacity;
 
-        public RcBinaryMinHeap(Comparison<T> comparision)
+        public RcBinaryMinHeap(Comparison<T> comparison)
         {
             _items = new List<T>();
-            _comparision = comparision;
+            _comparison = comparison ?? throw new ArgumentNullException(nameof(comparison));
         }
 
-        public RcBinaryMinHeap(int capacity, Comparison<T> comparison) : this(comparison)
+        public RcBinaryMinHeap(int capacity, Comparison<T> comparison)
         {
             if (capacity <= 0)
-                throw new ArgumentException("capacity must greater than zero");
+                throw new ArgumentException("capacity must be greater than zero", nameof(capacity));
 
             _items = new List<T>(capacity);
-            _comparision = comparison;
+            _comparison = comparison ?? throw new ArgumentNullException(nameof(comparison));
         }
 
         public void Push(T val)
         {
             _items.Add(val);
-            SiftUp(_items.Count - 1);
+            BubbleUp(_items.Count - 1, val);
         }
 
         public T Pop()
         {
             var min = Peek();
-            RemoveMin();
-            return min;
-        }
-
-        private void RemoveMin()
-        {
-            if (_items.Count == 0)
-            {
-                Throw();
-                static void Throw() => throw new InvalidOperationException("no element to pop");
-            }
 
             int last = _items.Count - 1;
-            Swap(0, last);
+            var node = _items[last];
             _items.RemoveAt(last);
+            if (0 < last)
+                TrickleDown(0, node);
 
-            MinHeapify(0, last - 1);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T Top()
-        {
-            return _items[0];
+            return min;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -66,12 +54,11 @@ namespace DotRecast.Core.Collections
         {
             if (IsEmpty())
             {
-                throw new Exception("Heap is empty.");
+                throw new InvalidOperationException("Heap is empty.");
             }
 
             return _items[0];
         }
-
 
         public bool Modify(T node)
         {
@@ -79,7 +66,12 @@ namespace DotRecast.Core.Collections
             {
                 if (_items[i].Equals(node))
                 {
-                    SiftUp(i);
+                    int parent = (i - 1) / 2;
+                    if (0 < i && _comparison.Invoke(node, _items[parent]) < 0)
+                        BubbleUp(i, node);
+                    else
+                        TrickleDown(i, node);
+
                     return true;
                 }
             }
@@ -99,46 +91,38 @@ namespace DotRecast.Core.Collections
             return 0 == _items.Count;
         }
 
-        private void SiftUp(int nodeIndex)
+        private void BubbleUp(int i, T node)
         {
-            int parent = (nodeIndex - 1) / 2;
-            while (_comparision.Invoke(_items[nodeIndex], _items[parent]) < 0)
+            int parent = (i - 1) / 2;
+            // note: (i > 0) means there is a parent
+            while (0 < i && _comparison.Invoke(node, _items[parent]) < 0)
             {
-                Swap(parent, nodeIndex);
-                nodeIndex = parent;
-                parent = (nodeIndex - 1) / 2;
+                _items[i] = _items[parent];
+                i = parent;
+                parent = (i - 1) / 2;
             }
+
+            _items[i] = node;
         }
 
-
-        private void MinHeapify(int nodeIndex, int lastIndex)
+        private void TrickleDown(int i, T node)
         {
-            int left = (nodeIndex * 2) + 1;
-            int right = left + 1;
-            int smallest = nodeIndex;
+            int count = _items.Count;
+            int child = (i * 2) + 1;
+            while (child < count)
+            {
+                if (child + 1 < count && _comparison.Invoke(_items[child + 1], _items[child]) < 0)
+                {
+                    child++;
+                }
 
-            if (left <= lastIndex && _comparision.Invoke(_items[left], _items[nodeIndex]) < 0)
-                smallest = left;
+                _items[i] = _items[child];
+                i = child;
+                child = (i * 2) + 1;
+            }
 
-            if (right <= lastIndex && _comparision.Invoke(_items[right], _items[smallest]) < 0)
-                smallest = right;
-
-            if (smallest == nodeIndex)
-                return;
-
-            Swap(nodeIndex, smallest);
-            MinHeapify(smallest, lastIndex);
+            BubbleUp(i, node);
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Swap(int x, int y)
-        {
-            if (x == y)
-                return;
-
-            (_items[y], _items[x]) = (_items[x], _items[y]);
-        }
-
 
         public T[] ToArray()
         {
