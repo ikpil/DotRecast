@@ -89,16 +89,14 @@ public class DtNodeQueueTest
         // check modify
         queue.Modify(null);
 
-        // change total
+        // change total and modify immediately, one node at a time.
+        // a heap can only be rebalanced incrementally - mutating a key requires
+        // an immediate Modify() before any other key changes, which is exactly
+        // how DtNavMeshQuery uses the open list.
         var r = new RcRand();
         foreach (var node in expectedNodes)
         {
             node.total = r.NextInt32() % (count / 50); // duplication for test
-        }
-
-        // test modify
-        foreach (var node in expectedNodes)
-        {
             queue.Modify(node);
         }
         

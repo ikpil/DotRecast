@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using DotRecast.Core.Collections;
 using NUnit.Framework;
 
@@ -5,143 +8,213 @@ namespace DotRecast.Core.Test;
 
 public class RcBinaryMinHeapTest
 {
-    private static readonly RcAtomicLong Gen = new();
-
-    private class Node
+    // Reference type on purpose: the heap must track identity (SameAs),
+    // exactly like DtNodeQueue tracks DtNode instances.
+    private sealed class Node
     {
-        public readonly long Id;
-        public long Value;
+        public int Value;
 
         public Node(int value)
         {
-            Id = Gen.IncrementAndGet();
             Value = value;
         }
     }
 
-    [Test]
-    public void TestPush()
+    private static readonly Comparison<Node> ByValue = (x, y) => x.Value.CompareTo(y.Value);
+
+    private static RcBinaryMinHeap<Node> HeapOf(params int[] values)
     {
-        var minHeap = new RcBinaryMinHeap<Node>((x, y) => x.Value.CompareTo(y.Value));
-
-        minHeap.Push(new Node(5));
-        minHeap.Push(new Node(3));
-        minHeap.Push(new Node(7));
-        minHeap.Push(new Node(2));
-        minHeap.Push(new Node(4));
-
-        // Push 후 힙의 속성을 검증
-        AssertHeapProperty(minHeap.ToArray());
-    }
-
-    [Test]
-    public void TestPop()
-    {
-        var minHeap = new RcBinaryMinHeap<Node>((x, y) => x.Value.CompareTo(y.Value));
-
-        minHeap.Push(new Node(5));
-        minHeap.Push(new Node(3));
-        minHeap.Push(new Node(7));
-        minHeap.Push(new Node(2));
-        minHeap.Push(new Node(4));
-
-        // Pop을 통해 최소 값부터 순서대로 제거하면서 검증
-        Assert.That(minHeap.Pop().Value, Is.EqualTo(2));
-        Assert.That(minHeap.Pop().Value, Is.EqualTo(3));
-        Assert.That(minHeap.Pop().Value, Is.EqualTo(4));
-        Assert.That(minHeap.Pop().Value, Is.EqualTo(5));
-        Assert.That(minHeap.Pop().Value, Is.EqualTo(7));
-
-        // 모든 요소를 Pop한 후에는 비어있어야 함
-        Assert.That(minHeap.IsEmpty(), Is.True);
-    }
-
-
-    [Test]
-    public void TestTop()
-    {
-        var minHeap = new RcBinaryMinHeap<Node>((x, y) => x.Value.CompareTo(y.Value));
-
-        minHeap.Push(new Node(5));
-        minHeap.Push(new Node(3));
-        minHeap.Push(new Node(7));
-
-        Assert.That(minHeap.Top().Value, Is.EqualTo(3));
-        AssertHeapProperty(minHeap.ToArray());
-    }
-
-    [Test]
-    public void TestModify()
-    {
-        var minHeap = new RcBinaryMinHeap<Node>((x, y) => x.Value.CompareTo(y.Value));
-
-        var node7 = new Node(7);
-        minHeap.Push(new Node(5));
-        minHeap.Push(new Node(3));
-        minHeap.Push(node7);
-        minHeap.Push(new Node(2));
-        minHeap.Push(new Node(4));
-
-        node7.Value = 1;
-        var result = minHeap.Modify(node7); // Modify value 7 to 1
-        var result2 = minHeap.Modify(new Node(4));
-
-        Assert.That(result, Is.EqualTo(true));
-        Assert.That(result2, Is.EqualTo(false));
-        Assert.That(minHeap.Top().Value, Is.EqualTo(1));
-        AssertHeapProperty(minHeap.ToArray());
-    }
-
-    [Test]
-    public void TestCount()
-    {
-        var minHeap = new RcBinaryMinHeap<Node>((x, y) => x.Value.CompareTo(y.Value));
-
-        minHeap.Push(new Node(5));
-        minHeap.Push(new Node(3));
-        minHeap.Push(new Node(7));
-
-        Assert.That(minHeap.Count, Is.EqualTo(3));
-
-        minHeap.Pop();
-
-        Assert.That(minHeap.Count, Is.EqualTo(2));
-
-        minHeap.Clear();
-
-        Assert.That(minHeap.Count, Is.EqualTo(0));
-    }
-
-    [Test]
-    public void TestIsEmpty()
-    {
-        var minHeap = new RcBinaryMinHeap<Node>((x, y) => x.Value.CompareTo(y.Value));
-
-        Assert.That(minHeap.IsEmpty(), Is.True);
-
-        minHeap.Push(new Node(5));
-
-        Assert.That(minHeap.IsEmpty(), Is.False);
-
-        minHeap.Pop();
-
-        Assert.That(minHeap.IsEmpty(), Is.True);
-    }
-
-    private void AssertHeapProperty(Node[] array)
-    {
-        for (int i = 0; i < array.Length / 2; i++)
+        var heap = new RcBinaryMinHeap<Node>(ByValue);
+        foreach (var value in values)
         {
-            int leftChildIndex = 2 * i + 1;
-            int rightChildIndex = 2 * i + 2;
-
-            // 왼쪽 자식 노드가 있는지 확인하고 비교
-            if (leftChildIndex < array.Length)
-                Assert.That(array[i].Value, Is.LessThanOrEqualTo(array[leftChildIndex].Value));
-
-            // 오른쪽 자식 노드가 있는지 확인하고 비교
-            if (rightChildIndex < array.Length)
-                Assert.That(array[i].Value, Is.LessThanOrEqualTo(array[rightChildIndex].Value));
+            heap.Push(new Node(value));
         }
+
+        return heap;
+    }
+
+    // The single invariant a binary min-heap guarantees: every parent <= its children.
+    private static void AssertHeapProperty(RcBinaryMinHeap<Node> heap)
+    {
+        var items = heap.ToArray();
+        for (int child = 1; child < items.Length; ++child)
+        {
+            int parent = (child - 1) / 2;
+            Assert.That(items[parent].Value, Is.LessThanOrEqualTo(items[child].Value),
+                $"parent[{parent}]={items[parent].Value} > child[{child}]={items[child].Value}");
+        }
+    }
+
+    private static void AssertPopsAllInSortedOrder(RcBinaryMinHeap<Node> heap, IReadOnlyCollection<Node> pushed)
+    {
+        var expected = pushed.Select(node => node.Value).OrderBy(value => value).ToList();
+
+        var actual = new List<int>(pushed.Count);
+        while (!heap.IsEmpty())
+        {
+            actual.Add(heap.Pop().Value);
+        }
+
+        Assert.That(actual, Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void Constructor_NonPositiveCapacity_Throws()
+    {
+        Assert.Throws<ArgumentException>((TestDelegate)(() => new RcBinaryMinHeap<Node>(0, ByValue)));
+        Assert.Throws<ArgumentException>((TestDelegate)(() => new RcBinaryMinHeap<Node>(-1, ByValue)));
+    }
+
+    [Test]
+    public void Constructor_NullComparison_Throws()
+    {
+        Assert.Throws<ArgumentNullException>((TestDelegate)(() => new RcBinaryMinHeap<Node>(null)));
+        Assert.Throws<ArgumentNullException>((TestDelegate)(() => new RcBinaryMinHeap<Node>(16, null)));
+    }
+
+    [Test]
+    public void Push_KeepsHeapPropertyAndCount()
+    {
+        var rand = new Random(12345);
+        var heap = new RcBinaryMinHeap<Node>(ByValue);
+
+        for (int i = 0; i < 256; ++i)
+        {
+            heap.Push(new Node(rand.Next(-1000, 1000)));
+
+            Assert.That(heap.Count, Is.EqualTo(i + 1));
+            AssertHeapProperty(heap);
+        }
+    }
+
+    [Test]
+    public void Pop_ReturnsElementsInAscendingOrder()
+    {
+        var rand = new Random(12345);
+
+        // narrow value range - duplicate values must be handled too
+        var pushed = Enumerable.Range(0, 500)
+            .Select(_ => new Node(rand.Next(-100, 100)))
+            .ToList();
+
+        var heap = new RcBinaryMinHeap<Node>(ByValue);
+        foreach (var node in pushed)
+        {
+            heap.Push(node);
+        }
+
+        AssertPopsAllInSortedOrder(heap, pushed);
+        Assert.That(heap.IsEmpty(), Is.True);
+    }
+
+    [Test]
+    public void Pop_EmptyHeap_Throws()
+    {
+        var heap = new RcBinaryMinHeap<Node>(ByValue);
+        Assert.Throws<InvalidOperationException>((TestDelegate)(() => heap.Pop()));
+    }
+
+    [Test]
+    public void Peek_ReturnsMinWithoutRemoving()
+    {
+        var heap = HeapOf(5, 3, 7, 2, 4);
+
+        Assert.That(heap.Peek().Value, Is.EqualTo(2));
+        Assert.That(heap.Count, Is.EqualTo(5));
+    }
+
+    [Test]
+    public void Peek_EmptyHeap_Throws()
+    {
+        var heap = new RcBinaryMinHeap<Node>(ByValue);
+        Assert.Throws<InvalidOperationException>((TestDelegate)(() => heap.Peek()));
+    }
+
+    [Test]
+    public void Modify_DecreasedValue_MovesToTop()
+    {
+        var heap = new RcBinaryMinHeap<Node>(ByValue);
+        var target = new Node(70);
+
+        heap.Push(new Node(10));
+        heap.Push(new Node(20));
+        heap.Push(target);
+        heap.Push(new Node(30));
+
+        target.Value = 5;
+
+        Assert.That(heap.Modify(target), Is.True);
+        Assert.That(heap.Peek(), Is.SameAs(target));
+        AssertHeapProperty(heap);
+    }
+
+    [Test]
+    public void Modify_IncreasedValue_MovesDown()
+    {
+        var heap = new RcBinaryMinHeap<Node>(ByValue);
+        var target = new Node(1);
+
+        heap.Push(target);
+        heap.Push(new Node(10));
+        heap.Push(new Node(20));
+        heap.Push(new Node(30));
+
+        target.Value = 100;
+
+        Assert.That(heap.Modify(target), Is.True);
+        Assert.That(heap.Peek(), Is.Not.SameAs(target));
+        AssertHeapProperty(heap);
+    }
+
+    [Test]
+    public void Modify_NodeNotInHeap_ReturnsFalse()
+    {
+        var heap = HeapOf(1, 2, 3);
+
+        Assert.That(heap.Modify(new Node(2)), Is.False);
+        Assert.That(heap.Count, Is.EqualTo(3));
+    }
+
+    // Contract check: mutate one key, Modify() immediately, repeat.
+    // This is the access pattern of an A* open list (DtNodeQueue).
+    [Test]
+    public void Modify_RepeatedSingleKeyUpdates_StayConsistent()
+    {
+        var rand = new Random(12345);
+        var pushed = Enumerable.Range(0, 100)
+            .Select(_ => new Node(rand.Next(-1000, 1000)))
+            .ToList();
+
+        var heap = new RcBinaryMinHeap<Node>(ByValue);
+        foreach (var node in pushed)
+        {
+            heap.Push(node);
+        }
+
+        for (int i = 0; i < 1000; ++i)
+        {
+            var node = pushed[rand.Next(pushed.Count)];
+            node.Value = rand.Next(-1000, 1000);
+
+            Assert.That(heap.Modify(node), Is.True);
+            AssertHeapProperty(heap);
+        }
+
+        AssertPopsAllInSortedOrder(heap, pushed);
+    }
+
+    [Test]
+    public void CountClearIsEmpty_Lifecycle()
+    {
+        var heap = HeapOf(5, 3, 7);
+        Assert.That(heap.Count, Is.EqualTo(3));
+        Assert.That(heap.IsEmpty(), Is.False);
+
+        heap.Pop();
+        Assert.That(heap.Count, Is.EqualTo(2));
+
+        heap.Clear();
+        Assert.That(heap.Count, Is.EqualTo(0));
+        Assert.That(heap.IsEmpty(), Is.True);
     }
 }
