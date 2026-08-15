@@ -572,7 +572,9 @@ namespace DotRecast.Detour.Crowd
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.UpdateMoveRequest);
 
-            RcBinaryMinHeap<DtCrowdAgent> queue = new RcBinaryMinHeap<DtCrowdAgent>((a1, a2) => a2.targetReplanTime.CompareTo(a1.targetReplanTime));
+            // Longest-waiting agent goes first. The queue is filled completely
+            // before it is drained, so a single sort beats a priority queue here.
+            List<DtCrowdAgent> queue = new List<DtCrowdAgent>();
 
             // Fire off new requests.
             for (var i = 0; i < agents.Count; i++)
@@ -667,13 +669,14 @@ namespace DotRecast.Detour.Crowd
 
                 if (ag.targetState == DtMoveRequestState.DT_CROWDAGENT_TARGET_WAITING_FOR_QUEUE)
                 {
-                    queue.Push(ag);
+                    queue.Add(ag);
                 }
             }
 
-            while (!queue.IsEmpty())
+            queue.Sort((a1, a2) => a2.targetReplanTime.CompareTo(a1.targetReplanTime));
+            for (var i = 0; i < queue.Count; i++)
             {
-                DtCrowdAgent ag = queue.Pop();
+                DtCrowdAgent ag = queue[i];
                 ag.targetPathQueryResult = _pathQ.Request(ag.corridor.GetLastPoly(), ag.targetRef, ag.corridor.GetTarget(), ag.targetPos, _filters[ag.option.queryFilterType]);
                 if (ag.targetPathQueryResult != null)
                 {
@@ -835,7 +838,9 @@ namespace DotRecast.Detour.Crowd
         {
             using var timer = _telemetry.ScopedTimer(DtCrowdTimerLabel.UpdateTopologyOptimization);
 
-            RcBinaryMinHeap<DtCrowdAgent> queue = new RcBinaryMinHeap<DtCrowdAgent>((a1, a2) => a2.topologyOptTime.CompareTo(a1.topologyOptTime));
+            // Longest-waiting agent goes first. The queue is filled completely
+            // before it is drained, so a single sort beats a priority queue here.
+            List<DtCrowdAgent> queue = new List<DtCrowdAgent>();
 
             for (var i = 0; i < agents.Count; i++)
             {
@@ -859,13 +864,14 @@ namespace DotRecast.Detour.Crowd
                 ag.topologyOptTime += dt;
                 if (ag.topologyOptTime >= _config.topologyOptimizationTimeThreshold)
                 {
-                    queue.Push(ag);
+                    queue.Add(ag);
                 }
             }
 
-            while (!queue.IsEmpty())
+            queue.Sort((a1, a2) => a2.topologyOptTime.CompareTo(a1.topologyOptTime));
+            for (var i = 0; i < queue.Count; i++)
             {
-                DtCrowdAgent ag = queue.Pop();
+                DtCrowdAgent ag = queue[i];
                 ag.corridor.OptimizePathTopology(_navQuery, _filters[ag.option.queryFilterType], _config.maxTopologyOptimizationIterations);
                 ag.topologyOptTime = 0;
             }
