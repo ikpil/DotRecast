@@ -20,22 +20,37 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace DotRecast.Detour.Crowd
 {
+    // Spatial hash mirroring recastnavigation's dtProximityGrid: a flat item
+    // pool chained from power-of-two hash buckets. Clearing resets the pool
+    // head and bucket heads, so a steady-state update allocates nothing.
     public class DtProximityGrid
     {
+        private struct Item
+        {
+            public int id;
+            public int x;
+            public int y;
+            public int next;
+        }
+
         private readonly float _cellSize;
         private readonly float _invCellSize;
-        private readonly Dictionary<long, List<DtCrowdAgent>> _items;
+
+        private int[] _buckets; // index of the first pool item per bucket, -1 if empty
+        private Item[] _pool;
+        private int _poolHead;
 
         public DtProximityGrid(float cellSize)
         {
             _cellSize = cellSize;
             _invCellSize = 1.0f / cellSize;
-            _items = new Dictionary<long, List<DtCrowdAgent>>();
+            _pool = new Item[256];
+            _buckets = new int[NextPow2(_pool.Length)];
+            Array.Fill(_buckets, -1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -56,9 +71,43 @@ namespace DotRecast.Detour.Crowd
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int HashPos2(int x, int y, int n)
+        {
+            return ((x * 73856093) ^ (y * 19349663)) & (n - 1);
+        }
+
+        private static int NextPow2(int v)
+        {
+            v--;
+            v |= v >> 1;
+            v |= v >> 2;
+            v |= v >> 4;
+            v |= v >> 8;
+            v |= v >> 16;
+            v++;
+            return v;
+        }
+
         public void Clear()
         {
-            _items.Clear();
+            Array.Fill(_buckets, -1);
+            _poolHead = 0;
+        }
+
+        // Unlike upstream, the pool grows instead of dropping items: DtCrowd
+        // does not cap the agent count, so the grid cannot size itself up front.
+        private void Grow()
+        {
+            Array.Resize(ref _pool, _pool.Length * 2);
+            _buckets = new int[NextPow2(_pool.Length)];
+            Array.Fill(_buckets, -1);
+            for (int i = 0; i < _poolHead; ++i)
+            {
+                ref Item item = ref _pool[i];
+                int h = HashPos2(item.x, item.y, _buckets.Length);
+                item.next = _buckets[h];
+                _buckets[h] = i;
+            }
         }
 
         public void AddItem(DtCrowdAgent agent, float minx, float miny, float maxx, float maxy)
@@ -72,14 +121,21 @@ namespace DotRecast.Detour.Crowd
             {
                 for (int x = iminx; x <= imaxx; ++x)
                 {
-                    long key = CombineKey(x, y);
-                    if (!_items.TryGetValue(key, out var ids))
+                    if (_poolHead >= _pool.Length)
                     {
-                        ids = new List<DtCrowdAgent>();
-                        _items.Add(key, ids);
+                        Grow();
                     }
 
-                    ids.Add(agent);
+                    int h = HashPos2(x, y, _buckets.Length);
+                    int idx = _poolHead;
+                    _poolHead++;
+
+                    ref Item item = ref _pool[idx];
+                    item.x = x;
+                    item.y = y;
+                    item.id = agent.idx;
+                    item.next = _buckets[h];
+                    _buckets[h] = idx;
                 }
             }
         }
@@ -97,33 +153,31 @@ namespace DotRecast.Detour.Crowd
             {
                 for (int x = iminx; x <= imaxx; ++x)
                 {
-                    long key = CombineKey(x, y);
-                    bool hasPool = _items.TryGetValue(key, out var pool);
-                    if (!hasPool)
+                    int idx = _buckets[HashPos2(x, y, _buckets.Length)];
+                    while (idx != -1)
                     {
-                        continue;
-                    }
-
-                    for (int idx = 0; idx < pool.Count; ++idx)
-                    {
-                        var item = pool[idx];
-
-                        // Check if the id exists already.
-                        int end = n;
-                        int i = 0;
-                        while (i != end && ids[i] != item.idx)
+                        ref Item item = ref _pool[idx];
+                        if (item.x == x && item.y == y)
                         {
-                            ++i;
+                            // Check if the id exists already.
+                            int end = n;
+                            int i = 0;
+                            while (i != end && ids[i] != item.id)
+                            {
+                                ++i;
+                            }
+
+                            // Item not found, add it.
+                            if (i == n)
+                            {
+                                ids[n++] = item.id;
+
+                                if (n >= maxIds)
+                                    return n;
+                            }
                         }
 
-                        // Item not found, add it.
-                        if (i == n)
-                        {
-                            ids[n++] = item.idx;
-
-                            if (n >= maxIds)
-                                return n;
-                        }
+                        idx = item.next;
                     }
                 }
             }
@@ -133,9 +187,19 @@ namespace DotRecast.Detour.Crowd
 
         public IEnumerable<(long, int)> GetItemCounts()
         {
-            return _items
-                .Where(e => e.Value.Count > 0)
-                .Select(e => (e.Key, e.Value.Count));
+            // Debug/visualization only - allocation here is fine.
+            Dictionary<long, int> counts = new Dictionary<long, int>();
+            for (int i = 0; i < _poolHead; ++i)
+            {
+                long key = CombineKey(_pool[i].x, _pool[i].y);
+                counts.TryGetValue(key, out var count);
+                counts[key] = count + 1;
+            }
+
+            foreach (var e in counts)
+            {
+                yield return (e.Key, e.Value);
+            }
         }
 
         public float GetCellSize()
