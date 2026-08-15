@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using System.Collections.Generic;
+using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
 using DotRecast.Detour;
 using DotRecast.Detour.Crowd;
@@ -307,7 +308,7 @@ public class CrowdSampleTool : ISampleTool
                 for (int j = 0; j < ag.boundary.GetSegmentCount(); ++j)
                 {
                     int col = DuRGBA(192, 0, 128, 192);
-                    RcVec3f[] s = ag.boundary.GetSegment(j);
+                    ref RcFixedArray2<RcVec3f> s = ref ag.boundary.GetSegment(j);
                     RcVec3f s0 = s[0];
                     RcVec3f s3 = s[1];
                     if (DtUtils.TriArea2D(pos, s0, s3) < 0.0f)

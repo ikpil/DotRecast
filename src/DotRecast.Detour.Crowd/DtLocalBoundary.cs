@@ -19,8 +19,8 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using System.Collections.Generic;
 using DotRecast.Core;
+using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
 
 
@@ -32,8 +32,9 @@ namespace DotRecast.Detour.Crowd
         public const int MAX_LOCAL_POLYS = 16;
 
         private RcVec3f m_center = new RcVec3f();
-        private List<DtSegment> m_segs = new List<DtSegment>();
-        private long[] m_polys = new long[MAX_LOCAL_POLYS];
+        private RcFixedArray8<DtSegment> m_segs;
+        private int m_nsegs;
+        private RcFixedArray16<long> m_polys;
         private int m_npolys;
 
         public DtLocalBoundary()
@@ -45,35 +46,34 @@ namespace DotRecast.Detour.Crowd
         {
             m_center.X = m_center.Y = m_center.Z = float.MaxValue;
             m_npolys = 0;
-            m_segs.Clear();
+            m_nsegs = 0;
         }
 
         protected void AddSegment(float dist, RcSegmentVert s)
         {
             // Insert neighbour based on the distance.
-            DtSegment seg = new DtSegment();
-            seg.s[0] = s.vmin;
-            seg.s[1] = s.vmax;
-            //RcArrays.Copy(s, seg.s, 6);
-            seg.d = dist;
-            if (0 == m_segs.Count)
+            int segIdx;
+            if (0 == m_nsegs)
             {
-                m_segs.Add(seg);
+                // First, trivial accept.
+                segIdx = 0;
             }
-            else if (dist >= m_segs[m_segs.Count - 1].d)
+            else if (dist >= m_segs[m_nsegs - 1].d)
             {
-                if (m_segs.Count >= MAX_LOCAL_SEGS)
+                // Further than the last segment, skip.
+                if (m_nsegs >= MAX_LOCAL_SEGS)
                 {
                     return;
                 }
 
-                m_segs.Add(seg);
+                // Last, trivial accept.
+                segIdx = m_nsegs;
             }
             else
             {
                 // Insert inbetween.
                 int i;
-                for (i = 0; i < m_segs.Count; ++i)
+                for (i = 0; i < m_nsegs; ++i)
                 {
                     if (dist <= m_segs[i].d)
                     {
@@ -81,13 +81,27 @@ namespace DotRecast.Detour.Crowd
                     }
                 }
 
-                m_segs.Insert(i, seg);
+                int tgt = i + 1;
+                int n = Math.Min(m_nsegs - i, MAX_LOCAL_SEGS - tgt);
+                if (n > 0)
+                {
+                    Span<DtSegment> segs = m_segs.AsSpan();
+                    segs.Slice(i, n).CopyTo(segs.Slice(tgt, n));
+                }
+
+                segIdx = i;
             }
 
-            while (m_segs.Count > MAX_LOCAL_SEGS)
+            m_nsegs++;
+            if (m_nsegs > MAX_LOCAL_SEGS)
             {
-                m_segs.RemoveAt(m_segs.Count - 1);
+                m_nsegs = MAX_LOCAL_SEGS;
             }
+
+            ref DtSegment seg = ref m_segs[segIdx];
+            seg.s[0] = s.vmin;
+            seg.s[1] = s.vmax;
+            seg.d = dist;
         }
 
         public void Update(long startRef, RcVec3f pos, float collisionQueryRange, DtNavMeshQuery navquery, IDtQueryFilter filter)
@@ -103,11 +117,11 @@ namespace DotRecast.Detour.Crowd
             m_center = pos;
 
             // First query non-overlapping polygons.
-            var status = navquery.FindLocalNeighbourhood(startRef, pos, collisionQueryRange, filter, m_polys, null, out m_npolys, MAX_LOCAL_POLYS);
+            var status = navquery.FindLocalNeighbourhood(startRef, pos, collisionQueryRange, filter, m_polys.AsSpan(), null, out m_npolys, MAX_LOCAL_POLYS);
             if (status.Succeeded())
             {
                 // Secondly, store all polygon edges.
-                m_segs.Clear();
+                m_nsegs = 0;
                 Span<RcSegmentVert> segs = stackalloc RcSegmentVert[MAX_SEGS_PER_POLY];
                 int nsegs = 0;
 
@@ -160,14 +174,14 @@ namespace DotRecast.Detour.Crowd
             return m_center;
         }
 
-        public RcVec3f[] GetSegment(int j)
+        public ref RcFixedArray2<RcVec3f> GetSegment(int j)
         {
-            return m_segs[j].s;
+            return ref m_segs[j].s;
         }
 
         public int GetSegmentCount()
         {
-            return m_segs.Count;
+            return m_nsegs;
         }
     }
 }

@@ -144,6 +144,10 @@ namespace DotRecast.Detour.Crowd
         private DtNavMesh _navMesh;
         private readonly DtCrowdTelemetry _telemetry = new DtCrowdTelemetry();
 
+        // Reused per-update scratch queues, see UpdateMoveRequest / UpdateTopologyOptimization.
+        private readonly List<DtCrowdAgent> _moveRequestQueue = new List<DtCrowdAgent>();
+        private readonly List<DtCrowdAgent> _topologyOptQueue = new List<DtCrowdAgent>();
+
         public DtCrowd(DtCrowdConfig config, DtNavMesh nav) : this(config, nav, i => new DtQueryDefaultFilter())
         {
         }
@@ -574,7 +578,8 @@ namespace DotRecast.Detour.Crowd
 
             // Longest-waiting agent goes first. The queue is filled completely
             // before it is drained, so a single sort beats a priority queue here.
-            List<DtCrowdAgent> queue = new List<DtCrowdAgent>();
+            List<DtCrowdAgent> queue = _moveRequestQueue;
+            queue.Clear();
 
             // Fire off new requests.
             for (var i = 0; i < agents.Count; i++)
@@ -840,7 +845,8 @@ namespace DotRecast.Detour.Crowd
 
             // Longest-waiting agent goes first. The queue is filled completely
             // before it is drained, so a single sort beats a priority queue here.
-            List<DtCrowdAgent> queue = new List<DtCrowdAgent>();
+            List<DtCrowdAgent> queue = _topologyOptQueue;
+            queue.Clear();
 
             for (var i = 0; i < agents.Count; i++)
             {
@@ -1075,8 +1081,8 @@ namespace DotRecast.Detour.Crowd
                     DtCrowdAgentAnimation anim = ag.animation;
 
                     // Adjust the path over the off-mesh connection.
-                    long[] refs = new long[2];
-                    if (ag.corridor.MoveOverOffmeshConnection(ag.corners[ag.ncorners - 1].refs, refs, ref anim.startPos,
+                    RcFixedArray2<long> refs = new RcFixedArray2<long>();
+                    if (ag.corridor.MoveOverOffmeshConnection(ag.corners[ag.ncorners - 1].refs, refs.AsSpan(), ref anim.startPos,
                             ref anim.endPos, _navQuery))
                     {
                         anim.initPos = ag.npos;
@@ -1223,7 +1229,7 @@ namespace DotRecast.Detour.Crowd
                     // Append neighbour segments as obstacles.
                     for (int j = 0; j < ag.boundary.GetSegmentCount(); ++j)
                     {
-                        RcVec3f[] s = ag.boundary.GetSegment(j);
+                        ref RcFixedArray2<RcVec3f> s = ref ag.boundary.GetSegment(j);
                         RcVec3f s3 = s[1];
                         //RcArrays.Copy(s, 3, s3, 0, 3);
                         if (DtUtils.TriArea2D(ag.npos, s[0], s3) < 0.0f)
