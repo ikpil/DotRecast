@@ -16,24 +16,24 @@ namespace DotRecast.Core.Collections
         private T _v0002;
         private T _v0003;
 
-        public int Length => Size;
+        public readonly int Length => Size;
 
-        public ref T this[int index]
+        public readonly ref T this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => ref AsSpan()[index];
+            get => ref AsSpanUnsafe()[index];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyFrom(ReadOnlySpan<T> source, int length)
+        internal readonly Span<T> AsSpanUnsafe()
         {
-            source.Slice(0, length).CopyTo(AsSpan());
+            return MemoryMarshal.CreateSpan(ref Unsafe.AsRef(in _v0000), Size);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<T> AsSpan()
+        public readonly ReadOnlySpan<T> AsReadOnlySpan()
         {
-            return MemoryMarshal.CreateSpan(ref _v0000, Size);
+            return MemoryMarshal.CreateReadOnlySpan(ref Unsafe.AsRef(in _v0000), Size);
         }
     }
 }
