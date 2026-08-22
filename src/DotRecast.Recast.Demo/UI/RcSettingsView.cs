@@ -18,7 +18,6 @@ freely, subject to the following restrictions:
 */
 
 using System;
-using System.IO;
 using System.Numerics;
 using DotRecast.Core.Collections.Extensions;
 using DotRecast.Recast.Demo.Draw;
@@ -33,6 +32,15 @@ public class RcSettingsView : IRcView
     private static readonly ILogger Logger = Log.ForContext<RcSettingsView>();
 
     private readonly IRecastDemoChannel _channel;
+    private readonly FilePicker _sourceGeomFilePicker = new FilePicker(
+        "Load Source Geom",
+        "LoadSourceGeom",
+        new FilePicker.Filter("Wavefront OBJ (*.obj)", ".obj")
+    );
+    private readonly FilePicker _navMeshFilePicker = new FilePicker(
+        "Load NavMesh",
+        "LoadNavMesh"
+    );
     private long buildTime;
 
     private readonly int[] voxels = new int[2];
@@ -86,23 +94,15 @@ public class RcSettingsView : IRcView
         const string strLoadSourceGeom = "Load Source Geom...";
         if (ImGui.Button(strLoadSourceGeom))
         {
-            ImGui.OpenPopup(strLoadSourceGeom);
+            _sourceGeomFilePicker.ShowOpen(Environment.CurrentDirectory);
         }
 
-        bool loadSourceGeomPopup = true;
-        if (ImGui.BeginPopupModal(strLoadSourceGeom, ref loadSourceGeomPopup, ImGuiWindowFlags.NoTitleBar))
+        if (_sourceGeomFilePicker.Draw(out string sourceGeomPath))
         {
-            var picker = ImFilePicker.GetFilePicker(strLoadSourceGeom, Path.Combine(Environment.CurrentDirectory), ".obj");
-            if (picker.Draw())
+            _channel.SendMessage(new GeomLoadBeganEvent()
             {
-                _channel.SendMessage(new GeomLoadBeganEvent()
-                {
-                    FilePath = picker.SelectedFile,
-                });
-                ImFilePicker.RemoveFilePicker(strLoadSourceGeom);
-            }
-
-            ImGui.EndPopup();
+                FilePath = sourceGeomPath,
+            });
         }
 
         ImGui.Text($"Verts: {voxels[0]} Tris: {voxels[1]}");
@@ -194,23 +194,15 @@ public class RcSettingsView : IRcView
             const string strLoadNavMesh = "Load NavMesh";
             if (ImGui.Button(strLoadNavMesh))
             {
-                ImGui.OpenPopup(strLoadNavMesh);
+                _navMeshFilePicker.ShowOpen(Environment.CurrentDirectory);
             }
 
-            bool isLoadNavMesh = true;
-            if (ImGui.BeginPopupModal(strLoadNavMesh, ref isLoadNavMesh, ImGuiWindowFlags.NoTitleBar))
+            if (_navMeshFilePicker.Draw(out string navMeshPath))
             {
-                var picker = ImFilePicker.GetFilePicker(strLoadNavMesh, Path.Combine(Environment.CurrentDirectory));
-                if (picker.Draw())
+                _channel.SendMessage(new NavMeshLoadBeganEvent()
                 {
-                    _channel.SendMessage(new NavMeshLoadBeganEvent()
-                    {
-                        FilePath = picker.SelectedFile,
-                    });
-                    ImFilePicker.RemoveFilePicker(strLoadNavMesh);
-                }
-
-                ImGui.EndPopup();
+                    FilePath = navMeshPath,
+                });
             }
         }
 

@@ -19,7 +19,6 @@ freely, subject to the following restrictions:
 
 
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using DotRecast.Core;
 using DotRecast.Core.Collections.Extensions;
@@ -44,6 +43,16 @@ public class DynamicUpdateSampleTool : ISampleTool
 
     private DemoSample _sample;
     private readonly RcDynamicUpdateTool _tool;
+    private readonly FilePicker _loadVoxelFilePicker = new FilePicker(
+        "Load Voxels",
+        "LoadVoxels",
+        new FilePicker.Filter("Voxel files (*.voxels)", ".voxels")
+    );
+    private readonly FilePicker _saveVoxelFilePicker = new FilePicker(
+        "Save Voxels",
+        "SaveVoxels",
+        new FilePicker.Filter("Voxel files (*.voxels)", ".voxels")
+    );
 
     private RcDynamicUpdateToolMode mode = RcDynamicUpdateToolMode.BUILD;
     private float cellSize = 0.3f;
@@ -117,9 +126,6 @@ public class DynamicUpdateSampleTool : ISampleTool
 
         if (mode == RcDynamicUpdateToolMode.BUILD)
         {
-            const string loadVoxelPopupStrId = "Load Voxels Popup";
-
-            bool isLoadVoxelPopup = true;
             if (_sample.GetRecastResults() != null && _sample.GetRecastConfig() != null)
             {
                 if (ImGui.Button("Import Voxels"))
@@ -130,23 +136,13 @@ public class DynamicUpdateSampleTool : ISampleTool
 
             if (ImGui.Button("Load Voxels..."))
             {
-                ImGui.OpenPopup(loadVoxelPopupStrId);
+                _loadVoxelFilePicker.ShowOpen(Environment.CurrentDirectory);
             }
 
-            if (ImGui.BeginPopupModal(loadVoxelPopupStrId, ref isLoadVoxelPopup, ImGuiWindowFlags.NoTitleBar))
+            if (_loadVoxelFilePicker.Draw(out string loadVoxelPath))
             {
-                var picker = ImFilePicker.GetFilePicker(loadVoxelPopupStrId, Path.Combine(Environment.CurrentDirectory), ".voxels");
-                if (picker.Draw())
-                {
-                    Load(picker.SelectedFile);
-                    ImFilePicker.RemoveFilePicker(loadVoxelPopupStrId);
-                }
-
-                ImGui.EndPopup();
+                Load(loadVoxelPath);
             }
-
-            const string saveVoxelPopupStrId = "Save Voxels Popup";
-            bool isSaveVoxelPopup = true;
 
             var dynaMesh = _tool.GetDynamicNavMesh();
             if (dynaMesh != null)
@@ -154,19 +150,12 @@ public class DynamicUpdateSampleTool : ISampleTool
                 ImGui.Checkbox("Compression", ref compression);
                 if (ImGui.Button("Save Voxels..."))
                 {
-                    ImGui.OpenPopup(saveVoxelPopupStrId);
+                    _saveVoxelFilePicker.ShowSave(Environment.CurrentDirectory);
                 }
 
-                if (ImGui.BeginPopupModal(saveVoxelPopupStrId, ref isSaveVoxelPopup, ImGuiWindowFlags.NoTitleBar))
+                if (_saveVoxelFilePicker.Draw(out string saveVoxelPath))
                 {
-                    var picker = ImFilePicker.GetFilePicker(saveVoxelPopupStrId, Path.Combine(Environment.CurrentDirectory), ".voxels");
-                    if (picker.Draw())
-                    {
-                        Save(picker.SelectedFile);
-                        ImFilePicker.RemoveFilePicker(saveVoxelPopupStrId);
-                    }
-
-                    ImGui.EndPopup();
+                    Save(saveVoxelPath);
                 }
             }
 
