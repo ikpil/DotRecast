@@ -24,15 +24,15 @@ using DotRecast.Core.Numerics;
 
 namespace DotRecast.Recast.Geom
 {
-    public static class RcChunkyTriMeshs
+    public static class RcPartitionedMeshes
     {
         /// Creates partitioned triangle mesh (AABB tree),
         /// where each node contains at max trisPerChunk triangles.
-        public static bool CreateChunkyTriMesh(float[] verts, int[] tris, int ntris, int trisPerChunk, RcChunkyTriMesh cm)
+        public static bool CreatePartitionedMesh(float[] verts, int[] tris, int ntris, int trisPerChunk, RcPartitionedMesh cm)
         {
             int nchunks = (ntris + trisPerChunk - 1) / trisPerChunk;
 
-            cm.nodes = new List<RcChunkyTriMeshNode>(nchunks);
+            cm.nodes = new List<RcPartitionedMeshNode>(nchunks);
             cm.ntris = ntris;
 
             // Build tree
@@ -81,7 +81,7 @@ namespace DotRecast.Recast.Geom
 
             // Calc max tris per node.
             cm.maxTrisPerChunk = 0;
-            foreach (RcChunkyTriMeshNode node in cm.nodes)
+            foreach (RcPartitionedMeshNode node in cm.nodes)
             {
                 bool isLeaf = node.i >= 0;
                 if (!isLeaf)
@@ -99,14 +99,14 @@ namespace DotRecast.Recast.Geom
         }
 
         /// Returns the chunk indices which overlap the input rectable.
-        public static List<RcChunkyTriMeshNode> GetChunksOverlappingRect(RcChunkyTriMesh cm, RcVec2f bmin, RcVec2f bmax)
+        public static List<RcPartitionedMeshNode> GetChunksOverlappingRect(RcPartitionedMesh cm, RcVec2f bmin, RcVec2f bmax)
         {
             // Traverse tree
-            List<RcChunkyTriMeshNode> ids = new List<RcChunkyTriMeshNode>();
+            List<RcPartitionedMeshNode> ids = new List<RcPartitionedMeshNode>();
             int i = 0;
             while (i < cm.nodes.Count)
             {
-                RcChunkyTriMeshNode node = cm.nodes[i];
+                RcPartitionedMeshNode node = cm.nodes[i];
                 bool overlap = CheckOverlapRect(bmin, bmax, node.bmin, node.bmax);
                 bool isLeafNode = node.i >= 0;
 
@@ -129,14 +129,14 @@ namespace DotRecast.Recast.Geom
         }
 
         /// Returns the chunk indices which overlap the input segment.
-        public static List<RcChunkyTriMeshNode> GetChunksOverlappingSegment(RcChunkyTriMesh cm, RcVec2f p, RcVec2f q)
+        public static List<RcPartitionedMeshNode> GetChunksOverlappingSegment(RcPartitionedMesh cm, RcVec2f p, RcVec2f q)
         {
             // Traverse tree
-            List<RcChunkyTriMeshNode> ids = new List<RcChunkyTriMeshNode>();
+            List<RcPartitionedMeshNode> ids = new List<RcPartitionedMeshNode>();
             int i = 0;
             while (i < cm.nodes.Count)
             {
-                RcChunkyTriMeshNode node = cm.nodes[i];
+                RcPartitionedMeshNode node = cm.nodes[i];
                 bool overlap = CheckOverlapSegment(p, q, node.bmin, node.bmax);
                 bool isLeafNode = node.i >= 0;
 
@@ -197,11 +197,11 @@ namespace DotRecast.Recast.Geom
             return y > x ? 1 : 0;
         }
 
-        private static void Subdivide(RcBoundsItem[] items, int imin, int imax, int trisPerChunk, List<RcChunkyTriMeshNode> nodes, int[] inTris)
+        private static void Subdivide(RcBoundsItem[] items, int imin, int imax, int trisPerChunk, List<RcPartitionedMeshNode> nodes, int[] inTris)
         {
             int inum = imax - imin;
 
-            RcChunkyTriMeshNode node = new RcChunkyTriMeshNode();
+            RcPartitionedMeshNode node = new RcPartitionedMeshNode();
             nodes.Add(node);
 
             if (inum <= trisPerChunk)

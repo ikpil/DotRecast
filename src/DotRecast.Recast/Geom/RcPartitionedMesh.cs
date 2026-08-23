@@ -22,9 +22,9 @@ using System.Collections.Generic;
 
 namespace DotRecast.Recast.Geom
 {
-    public class RcChunkyTriMesh
+    public class RcPartitionedMesh
     {
-        public List<RcChunkyTriMeshNode> nodes;
+        public List<RcPartitionedMeshNode> nodes;
         public int ntris;
         public int maxTrisPerChunk;
     }
