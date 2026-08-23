@@ -74,7 +74,7 @@ namespace DotRecast.Core
         
         public void Error(string message)
         {
-            Console.WriteLine(message);
+            Console.Error.WriteLine(message);
         }
 
 

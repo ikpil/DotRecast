@@ -23,33 +23,12 @@ using DotRecast.Core.Numerics;
 
 namespace DotRecast.Recast.Geom
 {
-    public class RcTriMesh
+    public interface IRcTriMesh
     {
-        private readonly float[] vertices;
-        private readonly int[] faces;
-        public readonly RcPartitionedMesh chunkyTriMesh;
+        int[] GetTris();
 
-        public RcTriMesh(float[] vertices, int[] faces)
-        {
-            this.vertices = vertices;
-            this.faces = faces;
-            chunkyTriMesh = new RcPartitionedMesh();
-            RcPartitionedMeshes.CreatePartitionedMesh(vertices, faces, faces.Length / 3, 32, chunkyTriMesh);
-        }
+        float[] GetVerts();
 
-        public int[] GetTris()
-        {
-            return faces;
-        }
-
-        public float[] GetVerts()
-        {
-            return vertices;
-        }
-
-        public List<RcPartitionedMeshNode> GetChunksOverlappingRect(RcVec2f bmin, RcVec2f bmax)
-        {
-            return RcPartitionedMeshes.GetChunksOverlappingRect(chunkyTriMesh, bmin, bmax);
-        }
+        List<int[]> GetChunksOverlappingRect(RcVec2f bmin, RcVec2f bmax);
     }
 }

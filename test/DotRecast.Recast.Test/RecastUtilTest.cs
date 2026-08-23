@@ -223,7 +223,7 @@ public class RecastUtilTest
         Assert.That(areas[0], Is.EqualTo(1), "One walkable triangle");
 
         areas = RcRecast.MarkWalkableTriangles(
-            context, 45, verts, unwalkableTriangle, 1, new RcAreaModification(0, 0));
+            context, 45, verts, unwalkableTriangle, 1, new RcAreaModification(1, 1));
         Assert.That(areas[0], Is.EqualTo(0), "One non-walkable triangle");
 
         areas = RcRecast.MarkWalkableTriangles(

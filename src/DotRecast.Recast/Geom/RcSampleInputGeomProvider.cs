@@ -36,7 +36,7 @@ namespace DotRecast.Recast.Geom
 
         private readonly List<RcConvexVolume> _convexVolumes = new List<RcConvexVolume>();
         private readonly List<RcOffMeshConnection> _offMeshConnections = new List<RcOffMeshConnection>();
-        private readonly RcTriMesh _mesh;
+        private readonly RcPartitionedMesh _mesh;
 
         public static RcSampleInputGeomProvider LoadFile(string objFilePath)
         {
@@ -64,10 +64,10 @@ namespace DotRecast.Recast.Geom
                 bmax = RcVec3f.Max(bmax, vertices.ToVec3(i * 3));
             }
 
-            _mesh = new RcTriMesh(vertices, faces);
+            _mesh = new RcPartitionedMesh(vertices, faces);
         }
 
-        public RcTriMesh GetMesh()
+        public IRcTriMesh GetMesh()
         {
             return _mesh;
         }
@@ -111,7 +111,7 @@ namespace DotRecast.Recast.Geom
             return _convexVolumes;
         }
 
-        public IEnumerable<RcTriMesh> Meshes()
+        public IEnumerable<IRcTriMesh> Meshes()
         {
             return RcImmutableArray.Create(_mesh);
         }
@@ -149,7 +149,7 @@ namespace DotRecast.Recast.Geom
             q.X = src.X + (dst.X - src.X) * btmax;
             q.Y = src.Z + (dst.Z - src.Z) * btmax;
 
-            List<RcPartitionedMeshNode> chunks = RcPartitionedMeshes.GetChunksOverlappingSegment(_mesh.chunkyTriMesh, p, q);
+            List<int[]> chunks = _mesh.GetChunksOverlappingSegment(p, q);
             if (0 == chunks.Count)
             {
                 return false;
@@ -157,10 +157,9 @@ namespace DotRecast.Recast.Geom
 
             tmin = 1.0f;
             bool hit = false;
-            foreach (RcPartitionedMeshNode chunk in chunks)
+            foreach (int[] tris in chunks)
             {
-                int[] tris = chunk.tris;
-                for (int j = 0; j < chunk.tris.Length; j += 3)
+                for (int j = 0; j < tris.Length; j += 3)
                 {
                     RcVec3f v1 = new RcVec3f(
                         vertices[tris[j] * 3],
