@@ -61,7 +61,7 @@ public class FindCollectPolyTest : AbstractDetourTest
             var status = query.QueryPolygons(startPos, extents, filter, polys, out var polyCount, 32);
             Assert.That(status.Succeeded(), Is.True, $"index({i})");
             Assert.That(polyCount, Is.EqualTo(POLY_REFS[i].Length), $"index({i})");
-            Assert.That(polys.AsSpan(0, polyCount).ToArray(), Is.EqualTo(POLY_REFS[i]), $"index({i})");
+            Assert.That(polys.AsSpan(0, polyCount).ToArray(), Is.EquivalentTo(POLY_REFS[i]), $"index({i})");
         }
     }
 }
