@@ -149,7 +149,7 @@ namespace DotRecast.Recast.Geom
             q.X = src.X + (dst.X - src.X) * btmax;
             q.Y = src.Z + (dst.Z - src.Z) * btmax;
 
-            List<RcChunkyTriMeshNode> chunks = RcChunkyTriMeshs.GetChunksOverlappingSegment(_mesh.chunkyTriMesh, p, q);
+            List<RcPartitionedMeshNode> chunks = RcPartitionedMeshes.GetChunksOverlappingSegment(_mesh.chunkyTriMesh, p, q);
             if (0 == chunks.Count)
             {
                 return false;
@@ -157,7 +157,7 @@ namespace DotRecast.Recast.Geom
 
             tmin = 1.0f;
             bool hit = false;
-            foreach (RcChunkyTriMeshNode chunk in chunks)
+            foreach (RcPartitionedMeshNode chunk in chunks)
             {
                 int[] tris = chunk.tris;
                 for (int j = 0; j < chunk.tris.Length; j += 3)

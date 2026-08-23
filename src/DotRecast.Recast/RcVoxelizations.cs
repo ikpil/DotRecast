@@ -51,8 +51,8 @@ namespace DotRecast.Recast
                     tbmin.Y = builderCfg.bmin.Z;
                     tbmax.X = builderCfg.bmax.X;
                     tbmax.Y = builderCfg.bmax.Z;
-                    List<RcChunkyTriMeshNode> nodes = geom.GetChunksOverlappingRect(tbmin, tbmax);
-                    foreach (RcChunkyTriMeshNode node in nodes)
+                    List<RcPartitionedMeshNode> nodes = geom.GetChunksOverlappingRect(tbmin, tbmax);
+                    foreach (RcPartitionedMeshNode node in nodes)
                     {
                         int[] tris = node.tris;
                         int ntris = tris.Length / 3;
