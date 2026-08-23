@@ -126,7 +126,7 @@ public class RecastSoloMeshTest
         // Allocate voxel heightfield where we rasterize our input data to.
         RcHeightfield m_solid = new RcHeightfield(bcfg.width, bcfg.height, bcfg.bmin, bcfg.bmax, cfg.Cs, cfg.Ch, cfg.BorderSize);
 
-        foreach (RcTriMesh geom in geomProvider.Meshes())
+        foreach (IRcTriMesh geom in geomProvider.Meshes())
         {
             float[] verts = geom.GetVerts();
             int[] tris = geom.GetTris();

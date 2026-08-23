@@ -26,12 +26,12 @@ namespace DotRecast.Recast.Geom
 {
     public interface IRcInputGeomProvider
     {
-        RcTriMesh GetMesh();
+        IRcTriMesh GetMesh();
         RcVec3f GetMeshBoundsMin();
 
         RcVec3f GetMeshBoundsMax();
 
-        IEnumerable<RcTriMesh> Meshes();
+        IEnumerable<IRcTriMesh> Meshes();
         
         // convex volume
         void AddConvexVolume(RcConvexVolume convexVolume);

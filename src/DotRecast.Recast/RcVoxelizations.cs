@@ -40,7 +40,7 @@ namespace DotRecast.Recast
             // Find triangles which are walkable based on their slope and rasterize them.
             // If your input data is multiple meshes, you can transform them here, calculate
             // the are type for each of the meshes and rasterize them.
-            foreach (RcTriMesh geom in geomProvider.Meshes())
+            foreach (IRcTriMesh geom in geomProvider.Meshes())
             {
                 float[] verts = geom.GetVerts();
                 if (cfg.UseTiles)
@@ -51,10 +51,9 @@ namespace DotRecast.Recast
                     tbmin.Y = builderCfg.bmin.Z;
                     tbmax.X = builderCfg.bmax.X;
                     tbmax.Y = builderCfg.bmax.Z;
-                    List<RcPartitionedMeshNode> nodes = geom.GetChunksOverlappingRect(tbmin, tbmax);
-                    foreach (RcPartitionedMeshNode node in nodes)
+                    List<int[]> overlappingTris = geom.GetChunksOverlappingRect(tbmin, tbmax);
+                    foreach (int[] tris in overlappingTris)
                     {
-                        int[] tris = node.tris;
                         int ntris = tris.Length / 3;
                         int[] m_triareas = RcRecast.MarkWalkableTriangles(ctx, cfg.WalkableSlopeAngle, verts, tris, ntris, cfg.WalkableAreaMod);
                         RcRasterizations.RasterizeTriangles(ctx, verts, tris, m_triareas, ntris, solid, cfg.WalkableClimb);
