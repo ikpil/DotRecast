@@ -20,6 +20,7 @@ freely, subject to the following restrictions:
 
 using System;
 using DotRecast.Core;
+using DotRecast.Core.Collections;
 using DotRecast.Core.Numerics;
 
 namespace DotRecast.Detour
@@ -101,23 +102,19 @@ namespace DotRecast.Detour
                     node.bmax.Z - node.bmin.Z
                 );
 
+                int isplit = imin + inum / 2;
                 if (axis == 0)
                 {
-                    // Sort along x-axis
-                    Array.Sort(items, imin, inum, DtBVItemXComparer.Shared);
+                    RcNthElement.NthElement(items, imin, isplit, imax, DtBVItemXComparer.Shared);
                 }
                 else if (axis == 1)
                 {
-                    // Sort along y-axis
-                    Array.Sort(items, imin, inum, DtBVItemYComparer.Shared);
+                    RcNthElement.NthElement(items, imin, isplit, imax, DtBVItemYComparer.Shared);
                 }
                 else
                 {
-                    // Sort along z-axis
-                    Array.Sort(items, imin, inum, DtBVItemZComparer.Shared);
+                    RcNthElement.NthElement(items, imin, isplit, imax, DtBVItemZComparer.Shared);
                 }
-
-                int isplit = imin + inum / 2;
 
                 // Left
                 curNode = Subdivide(items, nitems, imin, isplit, curNode, nodes);
