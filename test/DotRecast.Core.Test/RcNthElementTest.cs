@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using DotRecast.Recast.Geom;
+using DotRecast.Core.Collections;
 using NUnit.Framework;
 
-namespace DotRecast.Recast.Test;
+namespace DotRecast.Core.Test;
 
 public class RcNthElementTest
 {
@@ -39,7 +39,7 @@ public class RcNthElementTest
         int[] sorted = (int[])values.Clone();
         Array.Sort(sorted);
         Assert.That(values[2], Is.EqualTo(sorted[2]));
-        AssertPartition(values, 2, Comparer<int>.Default);
+        AssertPartition(values, 0, 2, values.Length, Comparer<int>.Default);
     }
 
     [Test]
@@ -63,7 +63,7 @@ public class RcNthElementTest
 
                 Assert.That(copy[nth], Is.EqualTo(sorted[nth]),
                     $"nth element should match sorted value for size={size} nth={nth}");
-                AssertPartition(copy, nth, Comparer<int>.Default);
+                AssertPartition(copy, 0, nth, copy.Length, Comparer<int>.Default);
             }
         }
     }
@@ -85,18 +85,37 @@ public class RcNthElementTest
         RcNthElement.NthElement(items, 0, 2, items.Length, ItemComparer.Shared);
 
         Assert.That(items[2].Key, Is.EqualTo(expected[2].Key));
-        AssertPartition(items, 2, ItemComparer.Shared);
+        AssertPartition(items, 0, 2, items.Length, ItemComparer.Shared);
     }
 
-    private static void AssertPartition<T>(T[] values, int nth, IComparer<T> comparer)
+    [Test]
+    public void TestNthElementWithNonZeroLowIndex()
     {
-        for (int i = 0; i < nth; i++)
+        int[] values = { 100, 90, 8, 2, 7, 1, 6, 3, 5, 4, -90 };
+        int[] expected = (int[])values.Clone();
+        const int low = 2;
+        const int nth = 6;
+        const int high = 10;
+        Array.Sort(expected, low, high - low);
+
+        RcNthElement.NthElement(values, low, nth, high, Comparer<int>.Default);
+
+        Assert.That(values[nth], Is.EqualTo(expected[nth]));
+        Assert.That(values[0], Is.EqualTo(expected[0]));
+        Assert.That(values[1], Is.EqualTo(expected[1]));
+        Assert.That(values[high], Is.EqualTo(expected[high]));
+        AssertPartition(values, low, nth, high, Comparer<int>.Default);
+    }
+
+    private static void AssertPartition<T>(T[] values, int low, int nth, int high, IComparer<T> comparer)
+    {
+        for (int i = low; i < nth; i++)
         {
             Assert.That(comparer.Compare(values[i], values[nth]), Is.LessThanOrEqualTo(0),
                 "element before nth should be <= nth");
         }
 
-        for (int i = nth + 1; i < values.Length; i++)
+        for (int i = nth + 1; i < high; i++)
         {
             Assert.That(comparer.Compare(values[nth], values[i]), Is.LessThanOrEqualTo(0),
                 "element after nth should be >= nth");

@@ -19,7 +19,7 @@ freely, subject to the following restrictions:
 
 using System.Collections.Generic;
 
-namespace DotRecast.Recast.Geom
+namespace DotRecast.Core.Collections
 {
     public static class RcNthElement
     {
