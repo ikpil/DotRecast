@@ -59,7 +59,7 @@ public class RandomPointTest : AbstractDetourTest
         }
 
         var ticks = RcFrequency.Ticks - begin;
-        Console.WriteLine($"RandomPointTest::TestRandom() - {(double)ticks / TimeSpan.TicksPerMillisecond} ms");
+        TestContext.Out.WriteLine($"RandomPointTest::TestRandom() - {(double)ticks / TimeSpan.TicksPerMillisecond} ms");
     }
 
     [Test]
@@ -148,7 +148,7 @@ public class RandomPointTest : AbstractDetourTest
         }
 
         long t3 = RcFrequency.Ticks;
-        Console.WriteLine("Random point around circle: " + (t2 - t1) / TimeSpan.TicksPerMillisecond + "ms");
-        Console.WriteLine("Random point within circle: " + (t3 - t2) / TimeSpan.TicksPerMillisecond + "ms");
+        TestContext.Out.WriteLine("Random point around circle: " + (t2 - t1) / TimeSpan.TicksPerMillisecond + "ms");
+        TestContext.Out.WriteLine("Random point within circle: " + (t3 - t2) / TimeSpan.TicksPerMillisecond + "ms");
     }
 }

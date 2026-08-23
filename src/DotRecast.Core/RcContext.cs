@@ -71,6 +71,12 @@ namespace DotRecast.Core
         {
             Console.WriteLine(message);
         }
+        
+        public void Error(string message)
+        {
+            Console.WriteLine(message);
+        }
+
 
         public void Log(RcLogCategory logLevel, string message)
         {

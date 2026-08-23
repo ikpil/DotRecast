@@ -159,12 +159,12 @@ public abstract class AbstractCrowdTest
 
     protected void DumpActiveAgents(int i)
     {
-        Console.WriteLine(crowd.GetActiveAgents().Count);
+        TestContext.Out.WriteLine(crowd.GetActiveAgents().Count);
         foreach (DtCrowdAgent ag in crowd.GetActiveAgents())
         {
-            Console.WriteLine(ag.state + ", " + ag.targetState);
-            Console.WriteLine(ag.npos.X + ", " + ag.npos.Y + ", " + ag.npos.Z);
-            Console.WriteLine(ag.nvel.X + ", " + ag.nvel.Y + ", " + ag.nvel.Z);
+            TestContext.Out.WriteLine(ag.state + ", " + ag.targetState);
+            TestContext.Out.WriteLine(ag.npos.X + ", " + ag.npos.Y + ", " + ag.npos.Z);
+            TestContext.Out.WriteLine(ag.nvel.X + ", " + ag.nvel.Y + ", " + ag.nvel.Z);
         }
     }
 }
