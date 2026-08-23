@@ -456,8 +456,8 @@ namespace DotRecast.Detour.Crowd
 
                 if ((nd & 1) == 0)
                 {
-                    pat[npat * 2 + 2] = pat[last2] * ca - pat[last2 + 1] * sa;
-                    pat[npat * 2 + 3] = pat[last2] * sa + pat[last2 + 1] * ca;
+                    pat[npat * 2 + 0] = pat[last2] * ca - pat[last2 + 1] * sa;
+                    pat[npat * 2 + 1] = pat[last2] * sa + pat[last2 + 1] * ca;
                     npat++;
                 }
             }
