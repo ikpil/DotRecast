@@ -75,7 +75,7 @@ public class TileCacheReaderTest
         tile = tc.GetNavMesh().GetTile(8);
         data = tile.data;
         header = data.header;
-        Console.WriteLine(data.header.x + "  " + data.header.y + "  " + data.header.layer);
+        TestContext.Out.WriteLine(data.header.x + "  " + data.header.y + "  " + data.header.layer);
         Assert.That(header.x, Is.EqualTo(4));
         Assert.That(header.y, Is.EqualTo(1));
         Assert.That(header.layer, Is.EqualTo(0));

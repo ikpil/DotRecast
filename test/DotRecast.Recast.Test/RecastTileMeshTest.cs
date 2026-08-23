@@ -131,8 +131,8 @@ public class RecastTileMeshTest
         }
 
         long t3 = RcFrequency.Ticks;
-        Console.WriteLine(" Time ST : " + (t2 - t1) / TimeSpan.TicksPerMillisecond);
-        Console.WriteLine(" Time MT : " + (t3 - t2) / TimeSpan.TicksPerMillisecond);
+        TestContext.Out.WriteLine(" Time ST : " + (t2 - t1) / TimeSpan.TicksPerMillisecond);
+        TestContext.Out.WriteLine(" Time MT : " + (t3 - t2) / TimeSpan.TicksPerMillisecond);
     }
 
     private void Build(IRcInputGeomProvider geom, RcBuilder builder, RcConfig cfg, int threads, bool validate)
@@ -161,15 +161,8 @@ public class RecastTileMeshTest
             Assert.That(rcResult.Mesh.nverts, Is.EqualTo(15));
         }
 
-        try
-        {
-            cts.Cancel();
-            //executor.AwaitTermination(1000, TimeUnit.HOURS);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
+        cts.Cancel();
+        //executor.AwaitTermination(1000, TimeUnit.HOURS);
     }
 
     private RcBuilderResult GetTile(List<RcBuilderResult> tiles, int x, int z)

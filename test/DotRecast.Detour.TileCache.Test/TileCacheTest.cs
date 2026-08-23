@@ -73,8 +73,8 @@ public class TileCacheTest : AbstractTileCacheTest
             cacheRawSize += 4 * 48 * 48 + 56; // FIXME
         }
 
-        Console.WriteLine("Compressor: " + tc.GetCompressor().GetType().Name + " C Compatibility: " + cCompatibility
-                          + " Layers: " + cacheLayerCount + " Raw Size: " + cacheRawSize + " Compressed: " + cacheCompressedSize);
+        TestContext.Out.WriteLine("Compressor: " + tc.GetCompressor().GetType().Name + " C Compatibility: " + cCompatibility
+                                  + " Layers: " + cacheLayerCount + " Raw Size: " + cacheRawSize + " Compressed: " + cacheCompressedSize);
         Assert.That(tc.GetNavMesh().GetMaxTiles(), Is.EqualTo(256));
         Assert.That(tc.GetNavMesh().GetParams().maxPolys, Is.EqualTo(16384));
         Assert.That(tc.GetNavMesh().GetParams().tileWidth, Is.EqualTo(14.4f).Within(0.001f));
@@ -169,8 +169,8 @@ public class TileCacheTest : AbstractTileCacheTest
             cacheRawSize += 4 * 48 * 48 + 56;
         }
 
-        Console.WriteLine("Compressor: " + tc.GetCompressor().GetType().Name + " C Compatibility: " + cCompatibility
-                          + " Layers: " + cacheLayerCount + " Raw Size: " + cacheRawSize + " Compressed: " + cacheCompressedSize);
+        TestContext.Out.WriteLine("Compressor: " + tc.GetCompressor().GetType().Name + " C Compatibility: " + cCompatibility
+                                  + " Layers: " + cacheLayerCount + " Raw Size: " + cacheRawSize + " Compressed: " + cacheCompressedSize);
     }
 
     [Test]
@@ -202,8 +202,8 @@ public class TileCacheTest : AbstractTileCacheTest
         }
 
         long t3 = RcFrequency.Ticks;
-        Console.WriteLine(" Time ST : " + (t2 - t1) / TimeSpan.TicksPerMillisecond);
-        Console.WriteLine(" Time MT : " + (t3 - t2) / TimeSpan.TicksPerMillisecond);
+        TestContext.Out.WriteLine(" Time ST : " + (t2 - t1) / TimeSpan.TicksPerMillisecond);
+        TestContext.Out.WriteLine(" Time MT : " + (t3 - t2) / TimeSpan.TicksPerMillisecond);
         DtTileCache tc = GetTileCache(geom, order, cCompatibility);
         foreach (byte[] layer in layers)
         {

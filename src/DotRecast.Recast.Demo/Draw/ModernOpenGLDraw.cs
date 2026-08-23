@@ -1,6 +1,7 @@
 using System;
 using Silk.NET.OpenGL;
 using DotRecast.Core.Numerics;
+using Serilog;
 
 namespace DotRecast.Recast.Demo.Draw;
 
@@ -8,6 +9,8 @@ namespace DotRecast.Recast.Demo.Draw;
 
 public class ModernOpenGLDraw : IOpenGLDraw
 {
+    private static readonly ILogger Logger = Log.ForContext<ModernOpenGLDraw>();
+    
     private GL _gl;
     private uint program;
     private int uniformTexture;
@@ -161,7 +164,7 @@ void main(){{
 
         //int* range = stackalloc int[2];
         //_gl.GetInteger(GetPName.LineWidthRange, range);
-        //Console.WriteLine($"\nLineWidthRange: {range[0]} {range[1]}");
+        //Logger.Information($"\nLineWidthRange: {range[0]} {range[1]}");
     }
 
     public void Clear()

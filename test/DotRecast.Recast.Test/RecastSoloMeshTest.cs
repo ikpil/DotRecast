@@ -262,86 +262,68 @@ public class RecastSoloMeshTest
         Assert.That(m_dmesh.nverts, Is.EqualTo(expDetVerts), "Mesh Detail Verts");
         Assert.That(m_dmesh.ntris, Is.EqualTo(expDetTris), "Mesh Detail Tris");
         long time2 = RcFrequency.Ticks;
-        Console.WriteLine(filename + " : " + partitionType + "  " + (time2 - time) / TimeSpan.TicksPerMillisecond + " ms");
-        Console.WriteLine("           " + (time3 - time) / TimeSpan.TicksPerMillisecond + " ms");
+        TestContext.Out.WriteLine(filename + " : " + partitionType + "  " + (time2 - time) / TimeSpan.TicksPerMillisecond + " ms");
+        TestContext.Out.WriteLine("           " + (time3 - time) / TimeSpan.TicksPerMillisecond + " ms");
         SaveObj(filename.Substring(0, filename.LastIndexOf('.')) + "_" + partitionType + "_detail.obj", m_dmesh);
         SaveObj(filename.Substring(0, filename.LastIndexOf('.')) + "_" + partitionType + ".obj", m_pmesh);
         foreach (var rtt in m_ctx.ToList())
         {
-            Console.WriteLine($"{rtt.Key} : {rtt.Millis} ms");
+            TestContext.Out.WriteLine($"{rtt.Key} : {rtt.Millis} ms");
         }
     }
 
     private void SaveObj(string filename, RcPolyMesh mesh)
     {
-        try
+        string path = Path.Combine("test-output", filename);
+        Directory.CreateDirectory(Path.GetDirectoryName(path));
+        using StreamWriter fw = new StreamWriter(path);
+        for (int v = 0; v < mesh.nverts; v++)
         {
-            string path = Path.Combine("test-output", filename);
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
-            using StreamWriter fw = new StreamWriter(path);
-            for (int v = 0; v < mesh.nverts; v++)
-            {
-                fw.Write("v " + (mesh.bmin.X + mesh.verts[v * 3] * mesh.cs) + " "
-                         + (mesh.bmin.Y + mesh.verts[v * 3 + 1] * mesh.ch) + " "
-                         + (mesh.bmin.Z + mesh.verts[v * 3 + 2] * mesh.cs) + "\n");
-            }
+            fw.Write("v " + (mesh.bmin.X + mesh.verts[v * 3] * mesh.cs) + " "
+                     + (mesh.bmin.Y + mesh.verts[v * 3 + 1] * mesh.ch) + " "
+                     + (mesh.bmin.Z + mesh.verts[v * 3 + 2] * mesh.cs) + "\n");
+        }
 
-            for (int i = 0; i < mesh.npolys; i++)
+        for (int i = 0; i < mesh.npolys; i++)
+        {
+            int p = i * mesh.nvp * 2;
+            fw.Write("f ");
+            for (int j = 0; j < mesh.nvp; ++j)
             {
-                int p = i * mesh.nvp * 2;
-                fw.Write("f ");
-                for (int j = 0; j < mesh.nvp; ++j)
+                int v = mesh.polys[p + j];
+                if (v == RC_MESH_NULL_IDX)
                 {
-                    int v = mesh.polys[p + j];
-                    if (v == RC_MESH_NULL_IDX)
-                    {
-                        break;
-                    }
-
-                    fw.Write((v + 1) + " ");
+                    break;
                 }
 
-                fw.Write("\n");
+                fw.Write((v + 1) + " ");
             }
 
-            fw.Close();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
+            fw.Write("\n");
         }
     }
 
     private void SaveObj(string filename, RcPolyMeshDetail dmesh)
     {
-        try
+        string filePath = Path.Combine("test-output", filename);
+        Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+        using StreamWriter fw = new StreamWriter(filePath);
+        for (int v = 0; v < dmesh.nverts; v++)
         {
-            string filePath = Path.Combine("test-output", filename);
-            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-            using StreamWriter fw = new StreamWriter(filePath);
-            for (int v = 0; v < dmesh.nverts; v++)
-            {
-                fw.Write(
-                    "v " + dmesh.verts[v * 3] + " " + dmesh.verts[v * 3 + 1] + " " + dmesh.verts[v * 3 + 2] + "\n");
-            }
-
-            for (int m = 0; m < dmesh.nmeshes; m++)
-            {
-                int vfirst = dmesh.meshes[m * 4];
-                int tfirst = dmesh.meshes[m * 4 + 2];
-                for (int f = 0; f < dmesh.meshes[m * 4 + 3]; f++)
-                {
-                    fw.Write("f " + (vfirst + dmesh.tris[(tfirst + f) * 4] + 1) + " "
-                             + (vfirst + dmesh.tris[(tfirst + f) * 4 + 1] + 1) + " "
-                             + (vfirst + dmesh.tris[(tfirst + f) * 4 + 2] + 1) + "\n");
-                }
-            }
-
-            fw.Close();
+            fw.Write(
+                "v " + dmesh.verts[v * 3] + " " + dmesh.verts[v * 3 + 1] + " " + dmesh.verts[v * 3 + 2] + "\n");
         }
-        catch (Exception e)
+
+        for (int m = 0; m < dmesh.nmeshes; m++)
         {
-            Console.WriteLine(e);
+            int vfirst = dmesh.meshes[m * 4];
+            int tfirst = dmesh.meshes[m * 4 + 2];
+            for (int f = 0; f < dmesh.meshes[m * 4 + 3]; f++)
+            {
+                fw.Write("f " + (vfirst + dmesh.tris[(tfirst + f) * 4] + 1) + " "
+                         + (vfirst + dmesh.tris[(tfirst + f) * 4 + 1] + 1) + " "
+                         + (vfirst + dmesh.tris[(tfirst + f) * 4 + 2] + 1) + "\n");
+            }
         }
     }
 }
