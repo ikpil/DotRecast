@@ -1,5 +1,5 @@
 /*
-recast4j copyright (c) 2021 Piotr Piastucki piotr@jtilia.org
+recast4j copyright (c) 2021-2026 Piotr Piastucki piotr@jtilia.org
 DotRecast Copyright (c) 2023-2024 Choi Ikpil ikpil@naver.com
 
 This software is provided 'as-is', without any express or implied
@@ -68,5 +68,105 @@ public class DtPathCorridorTest
         int npath = corridor.FindCorners(path, 8, query, filter);
         Assert.That(npath, Is.EqualTo(2));
         Assert.That(path.Slice(0, npath).ToArray(), Is.EqualTo(new DtStraightPath[] { straightPath[2], straightPath[3] }));
+    }
+
+    [Test]
+    public void TestMergeCorridorStartMovedEmptyInput()
+    {
+        long[] path = Array.Empty<long>();
+        long[] visited = Array.Empty<long>();
+
+        int npath = DtPathUtils.MergeCorridorStartMoved(path, 0, 0, visited, 0);
+
+        Assert.That(npath, Is.Zero);
+    }
+
+    [Test]
+    public void TestMergeCorridorStartMovedEmptyVisited()
+    {
+        long[] path = { 1L };
+        long[] visited = Array.Empty<long>();
+
+        int npath = DtPathUtils.MergeCorridorStartMoved(path, 1, path.Length, visited, 0);
+
+        Assert.That(npath, Is.EqualTo(1));
+        Assert.That(path.AsSpan(0, npath).ToArray(), Is.EqualTo(new long[] { 1L }));
+    }
+
+    [Test]
+    public void TestMergeCorridorStartMovedEmptyPath()
+    {
+        long[] path = Array.Empty<long>();
+        long[] visited = { 1L };
+
+        int npath = DtPathUtils.MergeCorridorStartMoved(path, 0, 0, visited, visited.Length);
+
+        Assert.That(npath, Is.Zero);
+    }
+
+    [Test]
+    public void TestMergeCorridorStartMovedStripVisitedPointsFromPath()
+    {
+        long[] path = { 1L, 2L };
+        long[] visited = { 1L, 2L };
+
+        int npath = DtPathUtils.MergeCorridorStartMoved(path, 2, path.Length, visited, visited.Length);
+
+        Assert.That(npath, Is.EqualTo(1));
+        Assert.That(path.AsSpan(0, npath).ToArray(), Is.EqualTo(new long[] { 2L }));
+    }
+
+    [Test]
+    public void TestMergeCorridorStartMovedAddVisitedPointsNotInPath()
+    {
+        long[] path = new long[4];
+        path[0] = 1L;
+        path[1] = 2L;
+        long[] visited = { 1L, 2L, 3L, 4L };
+
+        int npath = DtPathUtils.MergeCorridorStartMoved(path, 2, path.Length, visited, visited.Length);
+
+        Assert.That(npath, Is.EqualTo(3));
+        Assert.That(path.AsSpan(0, npath).ToArray(), Is.EqualTo(new long[] { 4L, 3L, 2L }));
+    }
+
+    [Test]
+    public void TestMergeCorridorStartMovedAddVisitedPointsUpToCapacity()
+    {
+        long[] path = new long[4];
+        path[0] = 1L;
+        path[1] = 2L;
+        long[] visited = { 1L, 2L, 3L, 4L, 5L };
+
+        int npath = DtPathUtils.MergeCorridorStartMoved(path, 2, path.Length, visited, visited.Length);
+
+        Assert.That(npath, Is.EqualTo(path.Length));
+        Assert.That(path, Is.EqualTo(new long[] { 5L, 4L, 3L, 2L }));
+    }
+
+    [Test]
+    public void TestMergeCorridorStartMovedNoIntersectionWithVisited()
+    {
+        long[] path = { 1L, 2L };
+        long[] visited = { 3L, 4L };
+
+        int npath = DtPathUtils.MergeCorridorStartMoved(path, 2, path.Length, visited, visited.Length);
+
+        Assert.That(npath, Is.EqualTo(2));
+        Assert.That(path.AsSpan(0, npath).ToArray(), Is.EqualTo(new long[] { 1L, 2L }));
+    }
+
+    [Test]
+    public void TestMergeCorridorStartMovedSaveUnvisitedPathPoints()
+    {
+        long[] path = new long[3];
+        path[0] = 1L;
+        path[1] = 2L;
+        long[] visited = { 1L, 3L };
+
+        int npath = DtPathUtils.MergeCorridorStartMoved(path, 2, path.Length, visited, visited.Length);
+
+        Assert.That(npath, Is.EqualTo(3));
+        Assert.That(path, Is.EqualTo(new long[] { 3L, 1L, 2L }));
     }
 }
