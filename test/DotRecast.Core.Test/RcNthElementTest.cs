@@ -29,6 +29,17 @@ public class RcNthElementTest
         }
     }
 
+    private sealed class CountingComparer : IComparer<int>
+    {
+        public int Count { get; private set; }
+
+        public int Compare(int x, int y)
+        {
+            Count++;
+            return x.CompareTo(y);
+        }
+    }
+
     [Test]
     public void TestNthElementSimple()
     {
@@ -105,6 +116,68 @@ public class RcNthElementTest
         Assert.That(values[1], Is.EqualTo(expected[1]));
         Assert.That(values[high], Is.EqualTo(expected[high]));
         AssertPartition(values, low, nth, high, Comparer<int>.Default);
+    }
+
+    [Test]
+    public void TestNthElementRejectsInvalidArguments()
+    {
+        int[] values = { 3, 1, 2 };
+
+        Assert.That(
+            Assert.Throws<ArgumentNullException>((Action)(() => RcNthElement.NthElement<int>(null, 0, 0, 1, Comparer<int>.Default)))!.ParamName,
+            Is.EqualTo("array"));
+        Assert.That(
+            Assert.Throws<ArgumentNullException>((Action)(() => RcNthElement.NthElement(values, 0, 0, 1, null)))!.ParamName,
+            Is.EqualTo("comparer"));
+        Assert.That(
+            Assert.Throws<ArgumentOutOfRangeException>((Action)(() => RcNthElement.NthElement(values, -1, 0, 1, Comparer<int>.Default)))!.ParamName,
+            Is.EqualTo("low"));
+        Assert.That(
+            Assert.Throws<ArgumentOutOfRangeException>((Action)(() => RcNthElement.NthElement(values, 0, 0, values.Length + 1, Comparer<int>.Default)))!.ParamName,
+            Is.EqualTo("high"));
+        Assert.That(
+            Assert.Throws<ArgumentOutOfRangeException>((Action)(() => RcNthElement.NthElement(values, 2, 2, 1, Comparer<int>.Default)))!.ParamName,
+            Is.EqualTo("high"));
+        Assert.That(
+            Assert.Throws<ArgumentOutOfRangeException>((Action)(() => RcNthElement.NthElement(values, 1, 0, 2, Comparer<int>.Default)))!.ParamName,
+            Is.EqualTo("nth"));
+        Assert.That(
+            Assert.Throws<ArgumentOutOfRangeException>((Action)(() => RcNthElement.NthElement(values, 0, 2, 2, Comparer<int>.Default)))!.ParamName,
+            Is.EqualTo("nth"));
+    }
+
+    [Test]
+    public void TestNthElementLimitsWorkForMedianOfThreeKillerSequence()
+    {
+        const int size = 1024;
+        int[] values = CreateMedianOfThreeKillerSequence(size);
+        CountingComparer comparer = new CountingComparer();
+
+        RcNthElement.NthElement(values, 0, size / 2, values.Length, comparer);
+
+        Assert.That(values[size / 2], Is.EqualTo(size / 2));
+        AssertPartition(values, 0, size / 2, values.Length, Comparer<int>.Default);
+        Assert.That(comparer.Count, Is.LessThan(size * 64),
+            "pathological partitions should fall back before comparison count becomes quadratic");
+    }
+
+    private static int[] CreateMedianOfThreeKillerSequence(int size)
+    {
+        int[] values = new int[size];
+        int index = 0;
+        int half = size / 2;
+        for (int value = 1; value <= half; value += 2)
+        {
+            values[index++] = value - 1;
+            values[index++] = half + value - 1;
+        }
+
+        for (int value = 2; value <= size; value += 2)
+        {
+            values[index++] = value - 1;
+        }
+
+        return values;
     }
 
     private static void AssertPartition<T>(T[] values, int low, int nth, int high, IComparer<T> comparer)
