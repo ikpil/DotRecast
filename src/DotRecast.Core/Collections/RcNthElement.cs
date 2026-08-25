@@ -17,6 +17,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+using System;
 using System.Collections.Generic;
 
 namespace DotRecast.Core.Collections
@@ -25,8 +26,43 @@ namespace DotRecast.Core.Collections
     {
         public static void NthElement<T>(T[] array, int low, int nth, int high, IComparer<T> comparer)
         {
+            if (array == null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+
+            if (comparer == null)
+            {
+                throw new ArgumentNullException(nameof(comparer));
+            }
+
+            if ((uint)low > (uint)array.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(low));
+            }
+
+            if (high < low || high > array.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(high));
+            }
+
+            if (nth < low || nth >= high)
+            {
+                throw new ArgumentOutOfRangeException(nameof(nth));
+            }
+
+            int depthLimit = 2 * FloorLog2(high - low);
             while (high - low > 3)
             {
+                // Keep the fast average-case selection path, but do not let patterned input
+                // repeatedly produce highly unbalanced partitions and quadratic running time.
+                if (depthLimit == 0)
+                {
+                    Array.Sort(array, low, high - low, comparer);
+                    return;
+                }
+
+                depthLimit--;
                 T midValue = MedianOfThree(
                     array[low],
                     array[low + ((high - low) >> 1)],
@@ -67,6 +103,18 @@ namespace DotRecast.Core.Collections
             }
 
             InsertionSort(array, low, high, comparer);
+        }
+
+        private static int FloorLog2(int value)
+        {
+            int result = 0;
+            while (value > 1)
+            {
+                value >>= 1;
+                result++;
+            }
+
+            return result;
         }
 
         private static void InsertionSort<T>(T[] array, int low, int high, IComparer<T> comparer)
