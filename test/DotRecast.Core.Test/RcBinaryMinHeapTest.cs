@@ -61,15 +61,15 @@ public class RcBinaryMinHeapTest
     [Test]
     public void Constructor_NonPositiveCapacity_Throws()
     {
-        Assert.Throws<ArgumentException>((TestDelegate)(() => new RcBinaryMinHeap<Node>(0, ByValue)));
-        Assert.Throws<ArgumentException>((TestDelegate)(() => new RcBinaryMinHeap<Node>(-1, ByValue)));
+        Assert.Throws<ArgumentException>(() => new RcBinaryMinHeap<Node>(0, ByValue));
+        Assert.Throws<ArgumentException>(() => new RcBinaryMinHeap<Node>(-1, ByValue));
     }
 
     [Test]
     public void Constructor_NullComparison_Throws()
     {
-        Assert.Throws<ArgumentNullException>((TestDelegate)(() => new RcBinaryMinHeap<Node>(null)));
-        Assert.Throws<ArgumentNullException>((TestDelegate)(() => new RcBinaryMinHeap<Node>(16, null)));
+        Assert.Throws<ArgumentNullException>(() => new RcBinaryMinHeap<Node>(null));
+        Assert.Throws<ArgumentNullException>(() => new RcBinaryMinHeap<Node>(16, null));
     }
 
     [Test]
@@ -111,7 +111,7 @@ public class RcBinaryMinHeapTest
     public void Pop_EmptyHeap_Throws()
     {
         var heap = new RcBinaryMinHeap<Node>(ByValue);
-        Assert.Throws<InvalidOperationException>((TestDelegate)(() => heap.Pop()));
+        Assert.Throws<InvalidOperationException>(() => heap.Pop());
     }
 
     [Test]
@@ -127,7 +127,7 @@ public class RcBinaryMinHeapTest
     public void Peek_EmptyHeap_Throws()
     {
         var heap = new RcBinaryMinHeap<Node>(ByValue);
-        Assert.Throws<InvalidOperationException>((TestDelegate)(() => heap.Peek()));
+        Assert.Throws<InvalidOperationException>(() => heap.Peek());
     }
 
     [Test]
