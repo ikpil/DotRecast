@@ -82,7 +82,9 @@ public class PolygonByCircleConstraintTest
         _constraint.Apply(polygon, center, 3, constrained.AsSpan(), out var ncverts);
 
         Assert.That(ncverts, Is.EqualTo(expectedSize));
-        Assert.That(constrained.AsSpan().Slice(0, ncverts).ToArray(), Is.SupersetOf(new[] { -2f, 0f, -4f, -4f, 0f, 0f, -3.4641016f, 0.0f, 1.60769534f, -2.0f, 0.0f, 2.0f }));
+        Assert.That(constrained.AsSpan().Slice(0, ncverts).ToArray(), Is.EqualTo(
+            new float[] { -4.0f, 0.0f, 0.0f, -3.4641f, 0.0f, 1.6076f, -2.0f, 0.0f, 2.0f, -0.5f, 0.0f, 1.5980f, 0.5980f, 0.0f,
+                0.4999f, 1.0f, 0.0f, -1f, 0.5980f, 0.0f, -2.5f, -0.5f, 0.0f, -3.5980f, -2.0f, 0.0f, -4.0f }).Within(0.0001f));
     }
 
     [Test]
@@ -96,6 +98,8 @@ public class PolygonByCircleConstraintTest
         _constraint.Apply(polygon, center, 4, constrained.AsSpan(), out var ncverts);
 
         Assert.That(ncverts, Is.EqualTo(expectedSize));
-        Assert.That(constrained.AsSpan().Slice(0, ncverts).ToArray(), Is.SupersetOf(new[] { 1.53589869f, 0f, 3f, 2f, 0f, 3f, 3f, 0f, -3f }));
+        Assert.That(constrained.AsSpan().Slice(0, ncverts).ToArray(), Is.EqualTo(
+            new float[] { 0.5358f, 0.0f, -1.9999f, 0f, 0.0f, 0f, 0.5358f, 0.0f, 2.0f, 1.5358f,
+                0.0f, 3.0f, 2.0f, 0.0f, 3.0f, 3.0f, 0.0f, -3.0f, 1.7799f, 0.0f, -3.2440f }).Within(0.0001f));
     }
 }
