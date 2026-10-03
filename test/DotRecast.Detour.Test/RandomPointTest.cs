@@ -117,6 +117,20 @@ public class RandomPointTest : AbstractDetourTest
     }
 
     [Test]
+    public void TestRandomWithinZeroRadiusCircle()
+    {
+        RcRand f = new RcRand(1);
+        IDtQueryFilter filter = new DtQueryDefaultFilter();
+        var status = query.FindRandomPoint(filter, f, out var randomRef, out var randomPt);
+        Assert.That(status.Succeeded(), Is.True);
+        status = query.FindRandomPointWithinCircle(randomRef, randomPt, 0f, filter, f, out var nextRandomRef, out var nextRandomPt);
+        Assert.That(status.Succeeded(), Is.True);
+        Assert.That(nextRandomRef, Is.EqualTo(randomRef));
+        Assert.That(nextRandomPt.X, Is.EqualTo(randomPt.X));
+        Assert.That(nextRandomPt.Z, Is.EqualTo(randomPt.Z));
+    }
+
+    [Test]
     public void TestPerformance()
     {
         RcRand f = new RcRand(1);
