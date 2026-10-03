@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRecast.Tool.PublishToUni
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRecast.Tool.Benchmark", "tool\DotRecast.Tool.Benchmark\DotRecast.Tool.Benchmark.csproj", "{D1EFC625-D095-4208-98A2-112B73CB40B0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRecast.Recast.Toolset.Test", "test\DotRecast.Recast.Toolset.Test\DotRecast.Recast.Toolset.Test.csproj", "{0A643784-C359-4FB6-B01B-CD289A5F69F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -126,6 +128,10 @@ Global
 		{1822BBA8-FE4E-4C5F-B9C0-3E20E6353446}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1822BBA8-FE4E-4C5F-B9C0-3E20E6353446}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1822BBA8-FE4E-4C5F-B9C0-3E20E6353446}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A643784-C359-4FB6-B01B-CD289A5F69F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A643784-C359-4FB6-B01B-CD289A5F69F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A643784-C359-4FB6-B01B-CD289A5F69F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A643784-C359-4FB6-B01B-CD289A5F69F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FFE40BBF-843B-41FA-8504-F4ABD166762E} = {8ED75CF7-A3D6-423D-8499-9316DD413DAD}
@@ -146,5 +152,6 @@ Global
 		{10395C8F-DFBD-4263-8A20-EA3500A6E55A} = {A7CB8D8B-70DA-4567-8316-0659FCAE1C73}
 		{D1EFC625-D095-4208-98A2-112B73CB40B0} = {A7CB8D8B-70DA-4567-8316-0659FCAE1C73}
 		{1822BBA8-FE4E-4C5F-B9C0-3E20E6353446} = {9C213609-BF13-4024-816E-A6ADD641DF24}
+		{0A643784-C359-4FB6-B01B-CD289A5F69F5} = {A7CB8D8B-70DA-4567-8316-0659FCAE1C73}
 	EndGlobalSection
 EndGlobal

@@ -397,18 +397,20 @@ namespace DotRecast.Recast.Toolset.Tools
                 : DtNoOpDtPolygonByCircleConstraint.Shared;
 
             var frand = new RcRand();
-            int prevCnt = points.Count;
 
             points = new List<RcVec3f>();
-            while (0 < count && points.Count < prevCnt + count)
+            for (int i = 0; i < count; ++i)
             {
                 var status = navQuery.FindRandomPointAroundCircle(startRef, spos, dist, filter, frand, constraint,
                     out var randomRef, out var randomPt);
 
-                if (status.Succeeded())
+                if (!status.Succeeded())
                 {
-                    points.Add(randomPt);
+                    // Retrying unchanged query inputs cannot create a missing overlap.
+                    return status;
                 }
+
+                points.Add(randomPt);
             }
 
             return DtStatus.DT_SUCCESS;
