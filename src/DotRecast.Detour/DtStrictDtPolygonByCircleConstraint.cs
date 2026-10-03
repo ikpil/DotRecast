@@ -83,18 +83,30 @@ namespace DotRecast.Detour
             Span<float> qCircle = stackalloc float[UnitCircle.Length];
             ScaleCircle(UnitCircle, center, radius, qCircle);
 
-            int maxIntersection = DtConvexPolygonIntersector.CalculateIntersectionBufferSize(verts.Length / 3, qCircle.Length / 3);
-            Span<float> intersection = stackalloc float[maxIntersection];
-            bool result = DtConvexPolygonIntersector.Intersect(verts, qCircle, intersection, out int nverts);
+            bool result = DtConvexPolygonIntersector.Intersect(verts, qCircle, constrainedVerts, out int nverts);
             if (!result && DtUtils.PointInPolygon(center, verts, verts.Length / 3))
             {
-                // circle inside polygon
-                qCircle.CopyTo(constrainedVerts);
-                constrainedVertCount = qCircle.Length;
-                return true;
+                // A rejected thin intersection does not imply circle containment.
+                // Check every circle vertex before using the containment fallback.
+                bool circleInsidePolygon = true;
+                for (int i = 0; i < qCircle.Length; i += 3)
+                {
+                    RcVec3f vertex = new RcVec3f(qCircle[i], qCircle[i + 1], qCircle[i + 2]);
+                    if (!DtUtils.PointInPolygon(vertex, verts, verts.Length / 3))
+                    {
+                        circleInsidePolygon = false;
+                        break;
+                    }
+                }
+                if (circleInsidePolygon)
+                {
+                    // circle inside polygon
+                    qCircle.CopyTo(constrainedVerts);
+                    constrainedVertCount = qCircle.Length;
+                    return true;
+                }
             }
 
-            intersection.Slice(0, nverts).CopyTo(constrainedVerts);
             constrainedVertCount = nverts;
             return true;
         }
